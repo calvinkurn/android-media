@@ -42,6 +42,10 @@
     <string name="path_onboarding" translatable="false">/onboarding</string>
     <string name="path_shop_page" translatable="false">/shop-page</string>
     <string name="path_shop_info" translatable="false">/shop-info/.*\\/</string>
+    <string name="path_shop_review" translatable="false">/shop/.*\\/review</string>
+
+    <string name="path_review_inbox" translatable="false">/review</string>
+    <string name="path_review_inbox_detail" translatable="false">/review/.*\\/</string>
 
     <string name="path_shop_settings_address" translatable="false">/shop-settings-address</string>
     <string name="path_shop_settings_info" translatable="false">/shop-settings-info</string>

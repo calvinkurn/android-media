@@ -6,6 +6,13 @@ internal infix fun Any?.shouldBe(expectedValue: Any?) {
     }
 }
 
+internal fun Any?.shouldBe(expectedValue: Any?, customFailMessage: String = "") {
+    if (this != expectedValue) {
+        val message = if (customFailMessage.isNotEmpty()) customFailMessage else "$this should be $expectedValue"
+        throw AssertionError(message)
+    }
+}
+
 internal infix fun Map<String, Any?>?.shouldContain(expectedKey: String) {
     if (this == null) {
         throw AssertionError("Map is null")

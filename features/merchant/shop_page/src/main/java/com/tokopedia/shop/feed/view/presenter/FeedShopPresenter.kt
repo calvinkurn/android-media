@@ -2,7 +2,7 @@ package com.tokopedia.shop.feed.view.presenter
 
 import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
@@ -83,32 +83,7 @@ class FeedShopPresenter @Inject constructor(
                     }
             )
         } else {
-            getDynamicFeedUseCase.execute(
-                    GetDynamicFeedUseCase.createRequestParams(
-                            userId = getUserId(),
-                            cursor = cursor,
-                            source = GetDynamicFeedUseCase.FeedV2Source.Shop,
-                            sourceId = shopId),
-                    object : Subscriber<DynamicFeedDomainModel>() {
-                        override fun onNext(t: DynamicFeedDomainModel?) {
-                            t?.let {
-                                view.onSuccessGetFeed(t.postList, t.cursor)
-                            }
-                        }
-
-                        override fun onCompleted() {
-                        }
-
-                        override fun onError(e: Throwable?) {
-                            if (isViewAttached) {
-                                if (GlobalConfig.isAllowDebuggingTools()) {
-                                    e?.printStackTrace()
-                                }
-                                view.showGetListError(e)
-                            }
-                        }
-                    }
-            )
+            getFeed(shopId)
         }
     }
 

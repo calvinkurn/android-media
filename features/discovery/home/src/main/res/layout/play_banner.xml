@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/play_frame_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,8 +8,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bannerPlay"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+        android:layout_height="wrap_content">
         <!-- Use a separate view for the background, rather than on the root view because it is a
                shared element. Otherwise it interferes with the window enter transition i.e. as it is
                resized for the shared element transition, many views are considered 'off-screen' so
@@ -28,32 +28,26 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
-            app:typographyType="heading_2"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textSize="@dimen/sp_18"
+            android:textColor="@color/Neutral_N700"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="2dp"
-            tools:visibility="gone"
-            app:typographyType="body_1"
-            app:layout_constraintTop_toBottomOf="@+id/title"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:typographyType="heading_3"
+            tools:text="Tonton Keseruannya"/>
         <com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
             android:id="@+id/video_player"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl0"
             android:layout_marginTop="@dimen/home_play_banner_player_margin_top"
             android:layout_gravity="center"
-            app:layout_constraintDimensionRatio="16:9"
+            app:layout_constraintDimensionRatio="2:1"
             app:show_play_buffering="when_playing"
-            app:layout_constraintTop_toBottomOf="@+id/description"/>
+            app:layout_constraintTop_toBottomOf="@+id/title"/>
         <ImageView
             android:id="@+id/thumbnail_image_play"
             android:layout_width="match_parent"
@@ -61,9 +55,9 @@
             android:layout_marginTop="@dimen/home_play_banner_thumbnail_margin_top"
             android:visibility="visible"
             android:scaleType="centerCrop"
-            app:layout_constraintDimensionRatio="16:9"
+            app:layout_constraintDimensionRatio="2:1"
             tools:visibility="visible"
-            app:layout_constraintTop_toBottomOf="@+id/description"/>
+            app:layout_constraintTop_toBottomOf="@+id/title"/>
 
         <View android:background="@drawable/home_gradient_action_play"
             android:layout_width="match_parent"
@@ -72,38 +66,46 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <include
-            android:id="@+id/live"
-            layout="@layout/layout_live_badge"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_20"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/spacing_lvl2"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/title_play"
-            app:layout_constraintStart_toStartOf="parent"
-            />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/viewer"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/home_play_banner_viewer_margin_start"
-            android:layout_marginLeft="@dimen/home_play_banner_viewer_margin_start"
-            android:textColor="@android:color/white"
-            android:visibility="visible"
-            android:drawablePadding="@dimen/spacing_lvl2"
-            app:drawableLeftCompat="@drawable/ic_chip_home_play_viewers"
-            app:drawableStartCompat="@drawable/ic_chip_home_play_viewers"
-            app:layout_constraintBottom_toBottomOf="@+id/live"
-            app:layout_constraintStart_toEndOf="@+id/live"
-            app:layout_constraintTop_toTopOf="@+id/live"
-            app:layout_goneMarginBottom="@dimen/spacing_lvl5"
-            app:layout_goneMarginLeft="@dimen/spacing_lvl4"
-            app:layout_goneMarginStart="@dimen/spacing_lvl4"
-            app:typographyType="body_3"
-            tools:text="2382"/>
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="@dimen/spacing_lvl2"
+            app:layout_constraintBottom_toTopOf="@+id/title_play"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <include
+                android:id="@+id/live"
+                layout="@layout/layout_live_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_4"
+                android:layout_marginRight="@dimen/dp_4"
+                android:visibility="gone"
+                tools:visibility="visible"
+                />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/image_viewer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/home_play_banner_viewer_margin_end"
+                android:layout_marginEnd="@dimen/home_play_banner_viewer_margin_end"
+                app:srcCompat="@drawable/ic_chip_home_play_viewers"
+                tools:visibility="gone"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/viewer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:visibility="visible"
+                app:typographyType="body_3"
+                tools:text="2382"/>
+
+        </LinearLayout>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title_play"

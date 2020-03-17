@@ -5,6 +5,7 @@ ext {
             campaignShakeLanding            : ":features:user:campaign_shake_landing",
 
             resourcesCommon                 : ":features:common:resources_common",
+            qrscanner                       : ":features:common:qr_scanner",
             developerOptions                : ":features:common:developer_options",
             nps                             : ":features:common:nps",
             commonTradein                   : ":features:common:common_tradein",
@@ -12,6 +13,7 @@ ext {
             agerestriction                  : ":features:category:age_restriction",
             tradeIn                         : ":features:category:tradein",
             basemvvm                        : ":features:category:basemvvm",
+            exploreCategory                 : ":features:category:explore_category",
 
             broadcastMessage                : ":features:communication:broadcast_message",
 //            broadcastMessage                : ":features:communication:broadcast_message_no_op", // toggle for no op
@@ -64,10 +66,8 @@ ext {
 //            flashsaleManagement         : ":features:discovery:flashsale_management_no_op",
             flashsaleManagementCommon       : ":features:discovery:flashsale_management_common",
             home                            : ":features:discovery:home",
-            homePageBanner                  : ":features:discovery:home_page_banner",
             homeRecom                       : ":features:discovery:home_recom",
             homeWishlist                    : ":features:discovery:home_wishlist",
-            smartRecycler                   : ":features:discovery:smart_recycler_diffutil_helper",
 //            home                          : ":features:discovery:home_no_op",
             recentview                      : ":features:discovery:recentview",
             //recentview                    : ":features:discovery:recentview_no_op",
@@ -99,12 +99,9 @@ ext {
             navigationCommon                : ":features:home:navigation-common",
             searchbar                       : ":features:home:searchbar",
 
-            challenges                      : ":features:im:challenges",
-//            challenges                    : ":features:im:challenges_no_op",
-
             logisticdata                    : ":features:logistic:logisticdata",
             logisticaddaddress              : ":features:logistic:logisticaddaddress",
-            tracking                        : ":features:logistic:tracking",
+            logisticorder                   : ":features:logistic:logisticorder",
             logisticcart                    : ":features:logistic:logisticcart",
 
             goldMerchant                    : ":features:merchant:gold_merchant",
@@ -116,7 +113,6 @@ ext {
             productDetail                   : ":features:merchant:product_detail",
             atc_variant                     : ":features:merchant:atc_variant",
             kyc                             : ":features:kyc",
-            scanner                         : ":features:scanner",
             ovop2p                          : ":features:ovop2p",
             productManageItem               : ":features:merchant:product_manage_item",
             productManageList               : ":features:merchant:product_manage_list",
@@ -124,6 +120,7 @@ ext {
             report                          : ":features:merchant:report",
             common_promo                    : ":features:im:common_promo",
             referral                        : ":features:im:referral",
+            install_referral                : ":features:im:install_referral",
 
             reputation                      : ":features:merchant:reputation",
             reputationCommon                : ":features:merchant:reputation_common",
@@ -135,6 +132,7 @@ ext {
 //            shopPage                        : ":features:merchant:shop_page_no_op",
             shopSettings                    : ":features:merchant:shop_settings",
             officialStore                  : ":features:merchant:official_store",
+            brandlist                       : ":features:merchant:brandlist",
             onboarding                      : ":features:user:onboarding",
             contactUs                       : ":features:operational:contact_us",
             csat_rating                       : ":features:operational:csat_rating",
@@ -193,12 +191,14 @@ ext {
             logout                          : ":features:user:logout",
             loginphone                      : ":features:user:loginphone",
             loginregister                   : ":features:user:loginregister",
+            loginfingerprint                : ":features:user:loginfingerprint",
             sessioncommon                   : ":features:user:sessioncommon",
             notifCenter                     : ":features:user:notifcenter",
 //            notifCenter                     : ":features:user:notifcenter_no_op",
             otp                             : ":features:user:otp",
             phoneVerification               : ":features:user:phoneverification",
             profileCompletion               : ":features:user:profilecompletion",
+            profileCommon                   : ":features:user:profilecommon",
             settingbank                     : ":features:user:settingbank",
             settingnotif                    : ":features:user:settingnotif",
             talk                            : ":features:user:talk",
@@ -212,9 +212,8 @@ ext {
             userIdentificationCommon        : ":features:user:user_identification_common",
             kyccentralized                  : ":features:user:kyc_centralized",
             vote                            : ":features:user:vote",
-
-            fcm_common                            : ":features:fcm_common",
-
+            liveness                        : ":features:user:liveness",
+            fcm_common                      : ":features:fcm_common",
             tkpdcore                        : ":tkpdcore",
             tkpddiscovery                   : ":tkpddiscovery",
             tkpdinbox                       : ":tkpdinbox",

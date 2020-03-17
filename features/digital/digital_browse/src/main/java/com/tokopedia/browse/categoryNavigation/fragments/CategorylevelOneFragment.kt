@@ -14,7 +14,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 
 import com.tokopedia.browse.R
 import com.tokopedia.browse.categoryNavigation.adapters.CategoryLevelOneAdapter
-import com.tokopedia.browse.categoryNavigation.data.model.category.CategoriesItem
+import com.tokopedia.browse.categoryNavigation.data.model.newcategory.CategoriesItem
 import com.tokopedia.browse.categoryNavigation.di.CategoryNavigationComponent
 import com.tokopedia.browse.categoryNavigation.di.DaggerCategoryNavigationComponent
 import com.tokopedia.browse.categoryNavigation.view.ActivityStateListener
@@ -26,23 +26,23 @@ import kotlinx.android.synthetic.main.fragment_categorylevel_one.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
+private const val EXTRA_CATEGORY_NAME = "CATEGORY_NAME"
 
 class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComponent> {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    lateinit var categoryBrowseViewModel: CategoryLevelOneViewModel
+    private lateinit var categoryBrowseViewModel: CategoryLevelOneViewModel
     private val categoryList = ArrayList<CategoriesItem>()
 
     var activityStateListener: ActivityStateListener? = null
 
     var selectedPosition = 0
 
-    var selectedItemIdentifier: String? = null
+    private var selectedItemIdentifier: String? = null
 
     companion object {
-        private val EXTRA_CATEGORY_NAME = "CATEGORY_NAME"
         @JvmStatic
         fun newInstance(categoryName: String?): CategorylevelOneFragment {
             val fragment = CategorylevelOneFragment()
@@ -67,8 +67,10 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
         super.onViewCreated(view, savedInstanceState)
 
         component.inject(this)
-        if (arguments != null && arguments!!.containsKey(EXTRA_CATEGORY_NAME)) {
-            selectedItemIdentifier = arguments!!.getString(EXTRA_CATEGORY_NAME)
+        arguments?.let {
+            if (it.containsKey(EXTRA_CATEGORY_NAME)) {
+                selectedItemIdentifier = it.getString(EXTRA_CATEGORY_NAME)
+            }
         }
         initView()
         setUpObserver()
@@ -77,17 +79,26 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
     private fun initView() {
         val linearLayoutManager = LinearLayoutManager(context)
         master_list.layoutManager = linearLayoutManager
+        addShimmerItems(categoryList)
         val categoryLevelOneAdapter = CategoryLevelOneAdapter(categoryList, listener, activityStateListener?.getActivityTrackingQueue())
         master_list.adapter = categoryLevelOneAdapter
 
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            categoryBrowseViewModel = viewModelProvider.get(CategoryLevelOneViewModel::class.java)
-            categoryBrowseViewModel.bound()
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        categoryBrowseViewModel = viewModelProvider.get(CategoryLevelOneViewModel::class.java)
+        categoryBrowseViewModel.bound()
+    }
+
+    private fun addShimmerItems(categoryList: ArrayList<CategoriesItem>) {
+        // adding shimmer elements in recyclerview
+        val item = CategoriesItem()
+        item.type = 0
+        for (i in 0..8) {
+            categoryList.add(item)
+        }
     }
 
     private fun setUpObserver() {
         categoryBrowseViewModel.getCategoryList().observe(viewLifecycleOwner, Observer {
-
             when (it) {
                 is Success -> {
                     categoryList.clear()
@@ -101,11 +112,10 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
                     }
                     master_list.adapter?.notifyDataSetChanged()
                     master_list.layoutManager?.scrollToPosition(selectedPosition)
-
                     initiateSlaveFragmentLoading(selectedPosition)
                 }
                 is Fail -> {
-                    (activity as CategoryChangeListener).onError()
+                    (activity as CategoryChangeListener).onError(it.throwable)
                 }
             }
 
@@ -114,12 +124,13 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
 
     private fun getPositionFromIdentifier(categoryList: ArrayList<CategoriesItem>): Int {
         for (i in 0 until categoryList.size) {
-            if (categoryList[i].identifier!!.equals(selectedItemIdentifier)) {
-                selectedPosition = i
-                return i
+            categoryList[i].identifier?.let {
+                if (it == selectedItemIdentifier) {
+                    selectedPosition = i
+                    return i
+                }
             }
         }
-
         return 0
     }
 
@@ -130,7 +141,8 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
 
     private fun initiateSlaveFragmentLoading(position: Int) {
         if (activity != null) {
-            (activity as CategoryChangeListener).onCategoryChanged(categoryList[position].id!!, categoryList[position].name!!, categoryList[position].applinks)
+            (activity as CategoryChangeListener).onCategoryChanged(categoryList[position].id
+                    ?: "", categoryList[position].name ?: "", categoryList[position].applinks)
         }
     }
 

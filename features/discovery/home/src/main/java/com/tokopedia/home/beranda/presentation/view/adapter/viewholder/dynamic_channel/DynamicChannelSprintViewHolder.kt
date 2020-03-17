@@ -5,32 +5,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
-import com.tokopedia.home.analytics.HomePageTracking
+import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
-import com.tokopedia.home.beranda.helper.glide.CrossFadeFactory
+import com.tokopedia.home.beranda.helper.glide.loadImage
 import com.tokopedia.home.beranda.helper.glide.loadImageCenterCrop
+import com.tokopedia.home.beranda.helper.glide.loadImageWithoutPlaceholder
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.ThematicCardView
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.v2.BlankSpaceConfig
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -48,8 +41,6 @@ class DynamicChannelSprintViewHolder(sprintView: View,
     private var adapter: SprintAdapter? = null
     val recyclerView: RecyclerView = itemView.findViewById(R.id.recycleList)
     val backgroundThematic: ImageView = itemView.findViewById(R.id.background_thematic)
-    val seeAllButton: UnifyButton = itemView.findViewById(R.id.see_all_button_unify)
-    val seeAllButtonText: TextView = itemView.findViewById(R.id.see_all_button)
 
     companion object {
         @LayoutRes
@@ -60,7 +51,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
     private val defaultSpanCount = 3
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
-        HomePageTracking.eventClickSeeAllProductSprint(context, channel.id)
+        HomePageTrackingV2.SprintSale.sendSprintSaleSeeAllClick(channel)
     }
 
     override fun getViewHolderClassName(): String {
@@ -72,13 +63,13 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         recyclerView.setHasFixedSize(true)
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
                 GridSpacingItemDecoration(defaultSpanCount,
-                        itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_8),
-                        true))
+                        itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_4),
+                        false))
         recyclerView.layoutManager = GridLayoutManager(
                 itemView.context,
                 defaultSpanCount,
                 GridLayoutManager.VERTICAL, false)
-        backgroundThematic.loadImageCenterCrop(channel.header.backImage)
+        backgroundThematic.loadImageWithoutPlaceholder(channel.header.backImage)
         mappingHeader(channel)
         mappingGrid(channel)
     }
@@ -90,7 +81,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
             payloads.forEach { payload->
                 if (payload == DynamicChannelViewModel.HOME_RV_SPRINT_BG_IMAGE_URL) {
                     channel?.let {
-                        backgroundThematic.loadImageCenterCrop(channel.header.backImage)
+                        backgroundThematic.loadImageWithoutPlaceholder(channel.header.backImage)
                     }
                 }
             }
@@ -107,19 +98,13 @@ class DynamicChannelSprintViewHolder(sprintView: View,
             val channelTitle: Typography = itemView.findViewById(R.id.channel_title)
             channelTitle.setTextColor(ContextCompat.getColor(channelTitle.context, R.color.white))
             backgroundThematic.show()
-            seeAllButton.show()
-            seeAllButtonText.hide()
-            seeAllButton.setOnClickListener {
+            seeAllButtonUnify?.setOnClickListener {
                 homeCategoryListener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header))
                 HomeTrackingUtils.homeDiscoveryWidgetViewAll(context,
                         DynamicLinkHelper.getActionLink(channel.header))
                 onSeeAllClickTracker(channel, DynamicLinkHelper.getActionLink(channel.header))
 
             }
-        } else {
-            seeAllButton.hide()
-            seeAllButtonText.show()
-            backgroundThematic.hide()
         }
     }
 
@@ -156,7 +141,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
                              private val listener: HomeCategoryListener,
                              private val channels: DynamicHomeChannel.Channels,
                              private val sprintType: Int,
-                             private val countDownView: CountDownView,
+                             private val countDownView: CountDownView?,
                              private val isFreeOngkir: Boolean,
                              private val blankSpaceConfig: BlankSpaceConfig) : RecyclerView.Adapter<SprintViewHolder>() {
         private var grids: Array<DynamicHomeChannel.Grid> = channels.grids
@@ -176,8 +161,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
                 holder.thematicCardView.run {
                     setItemWithWrapBlankSpaceConfig(grid, blankSpaceConfig)
                     setOnClickListener {
-                        HomePageTracking.eventEnhancedClickSprintSaleProduct(context,
-                                channels.getEnhanceClickSprintSaleHomePage(position, countDownView.currentCountDown, grid.freeOngkir.isActive))
+                        HomePageTrackingV2.SprintSale.sendSprintSaleClick(channels, countDownView?.currentCountDown?:"", grid, position)
                         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid))
                     }
                 }

@@ -2,7 +2,9 @@ package com.tokopedia.play.view.fragment
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
@@ -11,7 +13,6 @@ import android.widget.ImageView
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
@@ -28,8 +29,10 @@ import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play_common.state.TokopediaPlayVideoState
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.dpToPx
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
@@ -38,6 +41,8 @@ import javax.inject.Inject
 class PlayFragment : BaseDaggerFragment() {
 
     companion object {
+
+        private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
 
         private val MARGIN_CHAT_VIDEO = 16f.dpToPx()
 
@@ -92,7 +97,6 @@ class PlayFragment : BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
         channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: ""
-        PlayAnalytics.sendScreen(channelId)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -126,8 +130,8 @@ class PlayFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        playViewModel.getChannelInfo(channelId)
 
+        observeGetChannelInfo()
         observeSocketInfo()
         observeEventUserInfo()
         observeVideoProperty()
@@ -135,6 +139,7 @@ class PlayFragment : BaseDaggerFragment() {
 
     override fun onResume() {
         super.onResume()
+        playViewModel.resumeWithChannelId(channelId)
         requireView().post {
             registerKeyboardListener(requireView())
         }
@@ -187,29 +192,22 @@ class PlayFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun observeGetChannelInfo() {
+        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success ->
+                    PlayAnalytics.sendScreen(channelId, playViewModel.isLive)
+            }
+        })
+    }
+
     private fun observeSocketInfo() {
         playViewModel.observableSocketInfo.observe(viewLifecycleOwner, Observer {
-            view?.let { view ->
-                if (it == PlaySocketInfo.ERROR) {
-                    PlayAnalytics.errorState(channelId, getString(R.string.play_message_socket_error), playViewModel.isLive)
-                    Toaster.make(
-                            view,
-                            getString(R.string.play_message_socket_error),
-                            type = Toaster.TYPE_ERROR,
-                            duration = Snackbar.LENGTH_INDEFINITE,
-                            actionText = getString(R.string.play_try_again),
-                            clickListener = View.OnClickListener {
-                                playViewModel.getChannelInfo(channelId)
-                            }
-                    )
-                } else if (it == PlaySocketInfo.RECONNECT) {
-                    Toaster.make(
-                            view,
-                            getString(R.string.play_message_socket_reconnect),
-                            type = Toaster.TYPE_ERROR,
-                            duration = Toaster.LENGTH_LONG
-                    )
-                }
+            when(it) {
+                is PlaySocketInfo.Reconnect ->
+                    PlayAnalytics.errorState(channelId, getString(R.string.play_message_socket_reconnect), playViewModel.isLive)
+                is PlaySocketInfo.Error ->
+                    PlayAnalytics.errorState(channelId, String.format(getString(R.string.play_message_socket_error), it.throwable.localizedMessage), playViewModel.isLive)
             }
         })
     }
@@ -226,6 +224,11 @@ class PlayFragment : BaseDaggerFragment() {
     private fun observeVideoProperty() {
         playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
             setWindowSoftInputMode(it.type.isLive)
+            if (it.state is TokopediaPlayVideoState.Error) {
+                PlayAnalytics.errorState(channelId,
+                        it.state.error.message?:getString(R.string.play_common_video_error_message),
+                        playViewModel.isLive)
+            }
         })
     }
 
@@ -294,6 +297,13 @@ class PlayFragment : BaseDaggerFragment() {
         onKeyboardHiddenAnimator.apply {
             playTogether(animatorX, animatorY)
         }.start()
+    }
+
+    fun setResultBeforeFinish() {
+        activity?.setResult(Activity.RESULT_OK, Intent().apply {
+            val totalView = playViewModel.totalView
+            if (!totalView.isNullOrEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
+        })
     }
 
     private fun hideKeyboard() {

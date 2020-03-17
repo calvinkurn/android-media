@@ -175,7 +175,8 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 searchDestinationName,
                 searchDestinationType,
                 searchParam,
-                data.properties)
+                data.properties,
+                adapter.dataSize)
 
         val searchProperties = data.properties
 
@@ -217,7 +218,9 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 trackingHotelUtil.hotelUserClickSort(sort.displayName)
 
                 searchResultviewModel.addSort(sort)
-                sortMenu.dismiss()
+                if (sortMenu.isAdded) {
+                    sortMenu.dismiss()
+                }
                 loadInitialData()
             }
         }

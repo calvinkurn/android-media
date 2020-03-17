@@ -3,12 +3,12 @@ package com.tokopedia.travelhomepage.homepage.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.travelhomepage.homepage.presentation.activity.TravelHomepageActivity
 import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
-import kotlinx.coroutines.CoroutineDispatcher
 
 /**
  * @author by furqan on 05/08/2019
@@ -22,7 +22,7 @@ interface TravelHomepageComponent {
 
     fun userSessionInterface(): UserSessionInterface
 
-    fun dispatcher(): CoroutineDispatcher
+    fun dispatcherProvider(): TravelDispatcherProvider
 
     fun graphQlRepository(): GraphqlRepository
 

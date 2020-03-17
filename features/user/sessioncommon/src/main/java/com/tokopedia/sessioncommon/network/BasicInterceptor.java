@@ -3,7 +3,7 @@ package com.tokopedia.sessioncommon.network;
 import android.content.Context;
 import android.util.Base64;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;

@@ -3,6 +3,8 @@ package com.tokopedia.product.detail.data.util
 import com.tokopedia.url.TokopediaUrl
 
 object ProductDetailConstant {
+
+
     @JvmField
     var BASE_REST_URL = TokopediaUrl.getInstance().WS
 
@@ -62,7 +64,7 @@ object ProductDetailConstant {
     //PAYLOADS
     const val PAYLOAD_WISHLIST = 1
     const val PAYLOAD_COD = 2
-    const val PAYLOAD_TRADEIN = 3
+    const val PAYLOAD_CONFIGURATION_CHANGED = 4
     const val PAYLOAD_TOOGLE_FAVORITE = 2
     const val PAYLOAD_TOOGLE_AND_FAVORITE_SHOP = 3
 
@@ -134,6 +136,7 @@ object ProductDetailConstant {
 
     //Save Instance State
     const val SAVED_NOTE = "saved_note"
+    const val SAVED_ACTIVITY_RESULT = "saved_activity_result"
     const val SAVED_QUANTITY = "saved_quantity"
     const val SAVED_VARIANT = "saved_variant"
 

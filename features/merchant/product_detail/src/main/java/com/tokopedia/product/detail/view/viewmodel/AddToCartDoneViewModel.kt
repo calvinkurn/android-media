@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -51,7 +51,7 @@ class AddToCartDoneViewModel @Inject constructor(
     fun getRecommendationProduct(productId: String) {
         launchCatchError(block = {
             val recommendationWidget = withContext(Dispatchers.IO) {
-                if (GlobalConfig.isCustomerApp())
+                if (!GlobalConfig.isSellerApp())
                     loadRecommendationProduct(productId)
                 else listOf()
             }

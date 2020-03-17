@@ -1,5 +1,5 @@
 query SearchProduct(
-    $params: String,
+    $params: String!,
     $query: String!,
     $headline_params: String
 ) {
@@ -84,6 +84,7 @@ query SearchProduct(
             }
             is_featured
             rating
+            rating_average
             count_review
             original_price
             discount_expired_time
@@ -191,6 +192,7 @@ query SearchProduct(
                 product_new_label
                 product_cashback_rate
                 product_rating
+                product_rating_format
               	free_ongkir {
                   is_active
                   img_url
@@ -316,6 +318,7 @@ query SearchProduct(
             background
             see_all_applink
             see_all_url
+            show_topads
             list {
                 category_name
                 name
@@ -327,6 +330,30 @@ query SearchProduct(
                 strikethrough
                 background_url
                 logo_url
+            }
+        }
+    }
+
+    searchInspirationCarousel(params: $params) {
+        data {
+            title
+            type
+            position
+            options {
+                title
+                url
+                applink
+                product {
+                    id
+                    name
+                    price
+                    price_str
+                    image_url
+                    rating
+                    count_review
+                    url
+                    applink
+                }
             }
         }
     }

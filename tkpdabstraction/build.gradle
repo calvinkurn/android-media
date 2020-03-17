@@ -32,6 +32,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.networkDependencies.glide
@@ -44,7 +45,6 @@ dependencies {
     api rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
 
-    implementation project(rootProject.ext.libraries.promotionsTarget)
     kapt rootProject.ext.miscDependencies.daggerCompiler
 }
 

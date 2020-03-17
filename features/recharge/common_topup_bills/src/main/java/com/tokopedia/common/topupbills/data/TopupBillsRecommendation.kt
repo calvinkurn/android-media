@@ -11,34 +11,34 @@ import com.google.gson.annotations.SerializedName
 class TopupBillsRecommendation(
         @SerializedName("iconUrl")
         @Expose
-        val iconUrl: String,
+        val iconUrl: String = "",
         @SerializedName("title")
         @Expose
-        val title: String,
+        val title: String = "",
         @SerializedName("clientNumber")
         @Expose
-        val clientNumber: String,
+        val clientNumber: String = "",
         @SerializedName("appLink")
         @Expose
-        val applink: String,
+        val applink: String = "",
         @SerializedName("webLink")
         @Expose
-        val weblink: String,
+        val weblink: String = "",
         @SerializedName("type")
         @Expose
-        val type: String,
+        val type: String = "",
         @SerializedName("categoryId")
         @Expose
-        val categoryId: Int,
+        val categoryId: Int = 0,
         @SerializedName("productId")
         @Expose
-        val productId: Int,
+        val productId: Int = 0,
         @SerializedName("isATC")
         @Expose
         val isAtc: Boolean = false,
         @SerializedName("operatorID")
         @Expose
-        val operatorId: Int,
+        val operatorId: Int = 0,
         @SerializedName("description")
         @Expose
         val description: String = "",

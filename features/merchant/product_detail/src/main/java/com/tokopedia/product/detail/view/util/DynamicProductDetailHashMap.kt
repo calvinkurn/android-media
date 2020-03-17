@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.util
 
 import android.content.Context
+import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.joinToStringWithLast
@@ -12,7 +13,7 @@ import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationResponse
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import java.util.*
 import kotlin.collections.ArrayList
@@ -23,8 +24,8 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     val socialProofMap: ProductSocialProofDataModel?
         get() = mapOfData[ProductDetailConstant.SOCIAL_PROOF] as? ProductSocialProofDataModel
 
-    val snapShotMap: ProductSnapshotDataModel
-        get() = mapOfData[ProductDetailConstant.PRODUCT_SNAPSHOT] as ProductSnapshotDataModel
+    val snapShotMap: ProductSnapshotDataModel?
+        get() = mapOfData[ProductDetailConstant.PRODUCT_SNAPSHOT] as? ProductSnapshotDataModel
 
     val shopInfoMap: ProductShopInfoDataModel?
         get() = mapOfData[ProductDetailConstant.SHOP_INFO] as? ProductShopInfoDataModel
@@ -81,10 +82,11 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     val getShopInfo: ProductShopInfoDataModel
         get() = shopInfoMap ?: ProductShopInfoDataModel()
 
-    fun updateDataP1(dataP1: DynamicProductInfoP1?) {
+    fun updateDataP1(dataP1: DynamicProductInfoP1?, imageHeight: Int) {
         dataP1?.let {
-            snapShotMap.run {
+            snapShotMap?.run {
                 dynamicProductInfoP1 = it
+                screenHeight = imageHeight
                 media = it.data.media.map { media ->
                     ProductMediaDataModel(media.type, media.uRL300, media.uRLOriginal, media.uRLThumbnail, media.description, media.videoURLAndroid, media.isAutoplay)
                 }
@@ -138,11 +140,13 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
         }
     }
 
-    fun updateDataTradein(tradeinResponse: ValidateTradeInPDP) {
+    fun updateDataTradein(tradeinResponse: ValidateTradeInResponse) {
         productTradeinMap?.run {
-            snapShotMap.shouldShowTradein = true
+            snapShotMap?.shouldShowTradein = true
             data.first().subtitle = if (tradeinResponse.usedPrice > 0) {
                 context.getString(R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice, true))
+            } else if (!tradeinResponse.widgetString.isNullOrEmpty()) {
+                tradeinResponse.widgetString
             } else {
                 context.getString(R.string.trade_in_exchange)
             }
@@ -168,11 +172,11 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                 data.first().subtitle = context.getString(R.string.multiorigin_desc)
             }
 
-            snapShotMap.run {
+            snapShotMap?.run {
                 isAllowManage = it.shopInfo?.isAllowManage ?: 0
                 nearestWarehouse = it.nearestWarehouse
                 statusTitle = it.shopInfo?.statusInfo?.statusTitle ?: ""
-                statusTitle = it.shopInfo?.statusInfo?.statusMessage ?: ""
+                statusMessage = it.shopInfo?.statusInfo?.statusMessage ?: ""
                 shopStatus = it.shopInfo?.statusInfo?.shopStatus ?: 1
             }
 
@@ -183,7 +187,7 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     }
 
     fun updateDataP2Login(it: ProductInfoP2Login) {
-        snapShotMap.apply {
+        snapShotMap?.apply {
             isWishlisted = it.isWishlisted
         }
     }
@@ -287,24 +291,20 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                     isWishlistVisible = false,
                     isWishlisted = it.isWishlist,
                     shopBadgeList = it.badgesUrl.map {
-                        ProductCardModel.ShopBadge(imageUrl = it ?: "")
+                        ProductCardModel.ShopBadge(imageUrl = it
+                                ?: "")
                     },
                     freeOngkir = ProductCardModel.FreeOngkir(
                             isActive = it.isFreeOngkirActive,
                             imageUrl = it.freeOngkirImageUrl
                     ),
-                    labelPromo = ProductCardModel.Label(
-                            title = it.labelPromo.title,
-                            type = it.labelPromo.type
-                    ),
-                    labelCredibility = ProductCardModel.Label(
-                            title = it.labelCredibility.title,
-                            type = it.labelCredibility.type
-                    ),
-                    labelOffers = ProductCardModel.Label(
-                            title = it.labelOffers.title,
-                            type = it.labelOffers.type
-                    )
+                    labelGroupList = it.labelGroupList.map { recommendationLabel ->
+                        ProductCardModel.LabelGroup(
+                                position = recommendationLabel.position,
+                                title = recommendationLabel.title,
+                                type = recommendationLabel.type
+                        )
+                    }
             )
         }
     }

@@ -19,12 +19,15 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        multiDexEnabled (project.hasProperty('coverage'))
     }
     buildTypes {
         debug{
-            testCoverageEnabled (project.hasProperty('coverage')? true : false)
+            ext.enableHansel = project.hasProperty('hanselEnableDebug')
+            testCoverageEnabled (project.hasProperty('coverage'))
         }
         release {
+            ext.enableHansel = !project.hasProperty('hanselDisableRelease')
             minifyEnabled false
             //proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             proguardFiles 'proguard-rules.pro'
@@ -101,4 +104,5 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.powerMockJUnitRule
     testImplementation rootProject.ext.testDependencies.powerMockito
     testImplementation rootProject.ext.testDependencies.powerMockXstream
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
 }

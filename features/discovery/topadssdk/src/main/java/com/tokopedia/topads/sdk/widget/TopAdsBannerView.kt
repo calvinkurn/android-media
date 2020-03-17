@@ -125,6 +125,12 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     }
                 }
             }
+            shop_image?.setOnClickListener {
+                if (topAdsBannerClickListener != null) {
+                    topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)
+                    ImpresionTask().execute(cpmData?.adClickUrl)
+                }
+            }
             if (cpmData.cpm.cpmShop.isPowerMerchant && !cpmData.cpm.cpmShop.isOfficial) {
                 container?.background = ContextCompat.getDrawable(context, R.drawable.bg_pm_gradient)
             } else if (cpmData.cpm.cpmShop.isOfficial) {
@@ -149,7 +155,19 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 }
             }
             shop_name?.text = cpmData?.cpm?.cpmShop?.name
-            description?.text = cpmData?.cpm?.cpmShop?.tagline
+            description?.text = cpmData?.cpm?.cpmShop?.slogan
+            shop_badge?.setOnClickListener {
+                if (topAdsBannerClickListener != null) {
+                    topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)
+                    ImpresionTask().execute(cpmData?.adClickUrl)
+                }
+            }
+            shop_name?.setOnClickListener {
+                if (topAdsBannerClickListener != null) {
+                    topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)
+                    ImpresionTask().execute(cpmData?.adClickUrl)
+                }
+            }
             kunjungi_toko?.setOnClickListener {
                 if (topAdsBannerClickListener != null) {
                     topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)

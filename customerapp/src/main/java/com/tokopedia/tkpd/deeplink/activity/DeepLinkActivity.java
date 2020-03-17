@@ -4,27 +4,24 @@ import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 
 import androidx.core.app.TaskStackBuilder;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.discovery.catalog.listener.ICatalogActionFragment;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;
@@ -39,10 +36,7 @@ import timber.log.Timber;
  * modified Alvarisi
  */
 public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> implements
-        DeepLinkView,
-        ICatalogActionFragment {
-
-    private TkpdProgressDialog progressDialog;
+        DeepLinkView{
 
     private Uri uriData;
     private static final String EXTRA_STATE_APP_WEB_VIEW = "EXTRA_STATE_APP_WEB_VIEW";
@@ -62,6 +56,9 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         checkUrlMapToApplink();
         isAllowFetchDepartmentView = true;
         presenter.sendAuthenticatedEvent(uriData, getScreenName());
+
+        ImageView loadingView = findViewById(R.id.iv_loading);
+        ImageHandler.loadGif(loadingView, R.drawable.ic_loading_indeterminate, -1);
     }
 
     private void checkUrlMapToApplink() {
@@ -136,16 +133,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     }
 
     @Override
-    public void showLoading() {
-        showProgressService();
-    }
-
-    @Override
-    public void finishLoading() {
-        if (progressDialog != null && progressDialog.isProgress()) progressDialog.dismiss();
-    }
-
-    @Override
     public void inflateFragment(Fragment fragment, String tag) {
         getFragmentManager().beginTransaction().add(R.id.main_view, fragment, tag).commit();
     }
@@ -179,19 +166,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         }
     }
 
-    private void showProgressService() {
-        if (isFinishing())
-            return;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && isDestroyed())
-            return;
-
-        if (progressDialog != null && progressDialog.isProgress()) return;
-
-        progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
-        progressDialog.setCancelable(false);
-        progressDialog.showDialog();
-    }
-
     @SuppressLint("MissingSuperCall")
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -218,17 +192,5 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
             return Uri.parse(uriData.toString().replaceFirst(AMP + "/", ""));
         }
         return uriData;
-    }
-
-    @Override
-    public void navigateToCatalogProductList(String catalogId) {
-        getFragmentManager().beginTransaction().replace(R.id.main_view,
-                DetailProductRouter.getCatalogDetailListFragment(this, catalogId))
-                .addToBackStack(null).commit();
-    }
-
-    @Override
-    public void deliverCatalogShareData(LinkerData shareData) {
-
     }
 }

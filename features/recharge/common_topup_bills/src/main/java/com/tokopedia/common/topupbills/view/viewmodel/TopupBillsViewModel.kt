@@ -3,11 +3,15 @@ package com.tokopedia.common.topupbills.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -51,17 +55,22 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
                     if (status == STATUS_PENDING && retryDuration > 0) delay((retryDuration.toLong()) * 1000)
                 }
             } while (data.enquiry.status != STATUS_DONE)
-            _enquiryData.value = Success(data)
+            _enquiryData.value = if (data.enquiry.attributes != null) {
+                Success(data)
+            } else {
+                Fail(MessageErrorException(NULL_RESPONSE))
+            }
         }) {
             _enquiryData.value = Fail(it)
         }
     }
 
-    fun getMenuDetail(rawQuery: String, mapParam: Map<String, Any>) {
+    fun getMenuDetail(rawQuery: String, mapParam: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogMenuDetailData::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST).build()
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<TelcoCatalogMenuDetailData>()
 
             _menuDetailData.value = Success(data.catalogMenuDetailData)
@@ -70,11 +79,12 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         }
     }
 
-    fun getFavoriteNumbers(rawQuery: String, mapParam: Map<String, Any>) {
+    fun getFavoriteNumbers(rawQuery: String, mapParam: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TopupBillsFavNumberData::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST).build()
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<TopupBillsFavNumberData>()
 
             _favNumberData.value = Success(data.favNumber)
@@ -117,6 +127,8 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         const val ENQUIRY_PARAM_DEVICE_ID_DEFAULT_VALUE = "4"
         const val ENQUIRY_PARAM_SOURCE_TYPE = "source_type"
         const val ENQUIRY_PARAM_SOURCE_TYPE_DEFAULT_VALUE = "c20ad4d76fe977"
+
+        const val NULL_RESPONSE = "null response"
     }
 
 }

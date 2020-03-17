@@ -56,6 +56,7 @@ import com.tokopedia.transaction.orders.orderlist.view.adapter.WishListResponseL
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomTitleViewModel;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomViewModel;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListViewModel;
+import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -79,6 +80,10 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
+
+import static com.tokopedia.transaction.orders.orderlist.view.fragment.OrderListFragment.ACTION_ASK_SELLER;
+import static com.tokopedia.transaction.orders.orderlist.view.fragment.OrderListFragment.ACTION_BUY_AGAIN;
+import static com.tokopedia.transaction.orders.orderlist.view.fragment.OrderListFragment.ACTION_SUBMIT_CANCELLATION;
 
 public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContract.View> implements OrderListContract.Presenter {
 
@@ -173,7 +178,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                     visitables.add(new OrderListRecomTitleViewModel(recomTitle));
                 }
                 visitables.addAll(getRecommendationVisitables(recommendationWidget));
-                getView().addData(visitables, true);
+                getView().addData(visitables, true, isFirstTime);
             }
         });
     }
@@ -282,7 +287,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                     Data data = response.getData(Data.class);
                     if (!data.orders().isEmpty()) {
                         orderList.addAll(getOrderListVisitables(data));
-                        getView().addData(getOrderListVisitables(data), false);
+                        getView().addData(getOrderListVisitables(data), false, typeRequest == TxOrderNetInteractor.TypeRequest.INITIAL);
                         getView().setLastOrderId(data.orders().get(0).getOrderId());
                         if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
                             checkBomSurveyEligibility();
@@ -728,14 +733,14 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
     private void handleActionButtonClick(String buttonLabel) {
         switch (buttonLabel) {
-            case "beli lagi":
+            case ACTION_BUY_AGAIN:
                 buyAgainItem();
                 break;
-            case "tanya penjual":
+            case ACTION_ASK_SELLER:
                 getView().startSellerAndAddInvoice();
                 orderListAnalytics.sendActionButtonClickEventList("click ask seller",orderDetails.getStatusInfo());
                 break;
-            case "ajukan pembatalan":
+            case ACTION_SUBMIT_CANCELLATION:
                 getView().requestCancelOrder(getStatus());
                 orderListAnalytics.sendActionButtonClickEventList("", "");
                 break;

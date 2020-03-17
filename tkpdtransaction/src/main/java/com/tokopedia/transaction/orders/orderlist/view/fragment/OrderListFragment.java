@@ -119,10 +119,10 @@ public class OrderListFragment extends BaseDaggerFragment implements
     public static final int REJECT_BUYER_REQUEST = 102;
     public static final int CANCEL_BUYER_REQUEST = 103;
     private static final long KEYBOARD_SEARCH_WAITING_TIME = 300;
-    private static final String ACTION_BUY_AGAIN = "beli lagi";
-    private static final String ACTION_ASK_SELLER = "tanya penjual";
+    public static final String ACTION_BUY_AGAIN = "beli lagi";
+    public static final String ACTION_ASK_SELLER = "tanya penjual";
     private static final String ACTION_TRACK_IT = "lacak";
-    private static final String ACTION_SUBMIT_CANCELLATION = "ajukan pembatalan";
+    public static final String ACTION_SUBMIT_CANCELLATION = "ajukan pembatalan";
     private static final String ACTION_DONE = "selesai";
     private static final String ACTION_SIMILAR_PRODUCT = "rekomendasi";
     private static final String CLICK_SIMILAR_PRODUCT = "click lihat produk serupa";
@@ -642,14 +642,18 @@ public class OrderListFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void addData(List<Visitable> data, Boolean isRecommendation) {
+    public void addData(List<Visitable> data, Boolean isRecommendation, boolean isInitial) {
         this.isRecommendation = isRecommendation;
         if (!hasRecyclerListener) {
             addRecyclerListener();
         }
         refreshHandler.finishRefresh();
         refreshHandler.setPullEnabled(true);
-        orderListAdapter.addElement(data);
+        if (isInitial) {
+            orderListAdapter.setElements(data);
+        } else {
+            orderListAdapter.addElement(data);
+        }
         endlessRecyclerViewScrollListener.updateStateAfterGetData();
         swipeToRefresh.setVisibility(View.VISIBLE);
         if ((mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || (mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) && !isRecommendation )|| orderLabelList.getOrderCategory().equalsIgnoreCase(OrderCategory.DIGITAL)) {

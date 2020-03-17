@@ -9,7 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
-import com.tokopedia.home.beranda.helper.glide.loadImage
+import com.tokopedia.home.beranda.helper.glide.loadImageNoRounded
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
 import com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
@@ -32,19 +32,19 @@ class PlayCardViewHolder(
     internal val container = view.findViewById<ConstraintLayout>(R.id.bannerPlay)
     private val play = view.findViewById<ImageView>(R.id.play)
     private val thumbnailView = view.findViewById<ImageView>(R.id.thumbnail_image_play)
+    private val imageViewer = view.findViewById<ImageView>(R.id.image_viewer)
     private val viewer = view.findViewById<TextView>(R.id.viewer)
     private val live = view.findViewById<View>(R.id.live)
     private val titlePlay = view.findViewById<TextView>(R.id.title_play)
     private val broadcasterName = view.findViewById<TextView>(R.id.title_description)
     private val title = view.findViewById<TextView>(R.id.title)
-    private val description = view.findViewById<TextView>(R.id.description)
     private var isClickable = false
     private val masterJob = Job()
     private var playCardViewModel: PlayCardViewModel? = null
 
     companion object {
         @LayoutRes val LAYOUT = R.layout.play_banner
-        private const val DELAY_CLICKABLE = 1000L
+        private const val DELAY_CLICKABLE = 1500L
     }
 
     private var helper: HomePlayWidgetHelper? = null
@@ -60,31 +60,58 @@ class PlayCardViewHolder(
     override val coroutineContext: CoroutineContext
         get() = masterJob + Dispatchers.IO
 
-    override fun bind(element: PlayCardViewModel) {
-        container.hide()
+    override fun bind(element: PlayCardViewModel?) {
+        if(element?.playCardHome == null){
+            container.hide()
+            listener.getPlayChannel(adapterPosition)
+        } else {
+            onBind(element)
+        }
     }
 
     override fun bind(element: PlayCardViewModel?, payloads: MutableList<Any>) {
+        onBind(element)
+    }
+
+    private fun onBind(element: PlayCardViewModel?) {
         playCardViewModel = element
-        if(playCardViewModel != null && element?.playCardHome != null) {
+        playCardViewModel?.let { playCardViewModel ->
             if (container.visibility == View.GONE) container.show()
-            initView(playCardViewModel!!)
-            playCardViewModel!!.playCardHome?.videoStream?.config?.streamUrl?.let { playChannel(it) }
+            initView(playCardViewModel)
+            initAutoPlayVideo(playCardViewModel)
+        }
+    }
+
+    private fun initAutoPlayVideo(playCardViewModel: PlayCardViewModel) {
+        val videoStream = playCardViewModel.playCardHome?.videoStream
+        if (videoStream != null) {
+            helper?.isAutoPlay = videoStream.config.isAutoPlay
+            if (helper?.isAutoPlay == true && videoStream.config.streamUrl.isNotEmpty()) {
+                playChannel(videoStream.config.streamUrl)
+            }
         }
     }
 
     private fun initView(model: PlayCardViewModel){
         model.playCardHome?.let{ playChannel ->
             handlingTracker(model)
-            title.setValue(model.channel.header.name)
-            description.setValue("")
+            title.setValue(model.channel.name)
 
             thumbnailView.show()
-            thumbnailView.loadImage(playChannel.coverUrl, 350, 150, true)
+            thumbnailView.loadImageNoRounded(playChannel.coverUrl)
 
             broadcasterName.text = playChannel.moderatorName
             titlePlay.text = playChannel.title
-            viewer.text = playChannel.totalView
+
+            if(playChannel.totalView.isNotEmpty() && playChannel.isShowTotalView){
+                viewer.text = playChannel.totalView
+                viewer.show()
+                imageViewer.show()
+            } else {
+                viewer.hide()
+                imageViewer.hide()
+            }
+
             if(playChannel.videoStream.isLive) live.show()
             else live.hide()
 

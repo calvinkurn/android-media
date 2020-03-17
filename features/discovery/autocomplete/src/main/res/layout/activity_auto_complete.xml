@@ -7,14 +7,15 @@
     android:orientation="vertical">
 
     <com.tokopedia.autocomplete.searchbar.SearchBarView
-        android:id="@+id/search_bar"
+        android:id="@+id/autocompleteSearchBar"
         android:layout_height="?attr/actionBarSize"
         android:layout_width="match_parent"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/search_initial_state_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dp_4">
 
         <fragment
             android:id="@+id/search_initial_state"

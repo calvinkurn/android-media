@@ -1,5 +1,6 @@
 package com.tokopedia.navigation.presentation.activity;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -30,6 +31,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.TextUtils;
+import android.util.SparseArray;
+import android.view.FrameMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -52,6 +55,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.analytics.performance.util.JankyFrameMonitoringUtil;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.DeeplinkDFMapper;
@@ -61,13 +65,14 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.dynamicfeatures.DFInstaller;
-import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
+import com.tokopedia.navigation.analytics.performance.HomePerformanceData;
+import com.tokopedia.navigation.analytics.performance.PerformanceData;
 import com.tokopedia.navigation.domain.model.Notification;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
@@ -78,18 +83,25 @@ import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener;
+import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.weaver.WeaveInterface;
+import com.tokopedia.weaver.Weaver;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -109,7 +121,8 @@ public class MainParentActivity extends BaseActivity implements
         CartNotifyListener,
         RefreshNotificationListener,
         MainParentStatusBarListener,
-        HomePerformanceMonitoringListener {
+        HomePerformanceMonitoringListener,
+        JankyFramesMonitoringListener {
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
@@ -134,6 +147,10 @@ public class MainParentActivity extends BaseActivity implements
     private static final String ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED = "android_customer_new_os_home_enabled";
     private static final String SOURCE_ACCOUNT = "account";
     private static final String HOME_PERFORMANCE_MONITORING_KEY = "mp_home";
+    private static final String MAIN_PARENT_PERFORMANCE_MONITORING_KEY = "mp_slow_rendering_perf";
+    private static final String FPM_METRIC_ALL_FRAMES = "all_frames";
+    private static final String FPM_METRIC_JANKY_FRAMES = "janky_frames";
+    private static final float DEFAULT_WARNING_LEVEL_MS = 17f;
 
     @Inject
     UserSessionInterface userSession;
@@ -148,6 +165,8 @@ public class MainParentActivity extends BaseActivity implements
     List<Fragment> fragmentList;
     private Notification notification;
     Fragment currentFragment;
+    private int currentSelectedFragmentPosition = HOME_MENU;
+    private SparseArray<PerformanceData> fragmentPerformanceDatas = new SparseArray<>();
     private boolean isUserFirstTimeLogin = false;
     private boolean doubleTapExit = false;
     private BroadcastReceiver newFeedClickedReceiver;
@@ -158,6 +177,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private PerformanceMonitoring homePerformanceMonitoring;
 
+    private PerformanceMonitoring mainParentPerformanceMonitoring;
 
     // animate icon OS
     private MenuItem osMenu;
@@ -165,6 +185,7 @@ public class MainParentActivity extends BaseActivity implements
     private float OS_STATE_SELECTED = 1f;
     private float OS_STATE_UNSELECTED = 0f;
     private float OS_STATE_ANIMATED = 0.7f;
+    private JankyFrameMonitoringUtil jankyFrameMonitoringUtil;
 
     @DeepLink({ApplinkConst.HOME, ApplinkConst.HOME_CATEGORY})
     public static Intent getApplinkIntent(Context context, Bundle bundle) {
@@ -229,6 +250,9 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         startHomePerformanceMonitoring();
+        startMainParentPerformanceMonitoring();
+        startJankyFrameMonitoringUtil();
+
         super.onCreate(savedInstanceState);
         initInjector();
         presenter.setView(this);
@@ -237,9 +261,14 @@ public class MainParentActivity extends BaseActivity implements
         }
         cacheManager = PreferenceManager.getDefaultSharedPreferences(this);
         createView(savedInstanceState);
-        ((GlobalNavRouter) getApplicationContext()).sendOpenHomeEvent();
-
-        initCategoryConfig();
+        WeaveInterface executeEventsWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return sendOpenHomeEvent();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(executeEventsWeave, RemoteConfigKey.ENABLE_ASYNC_OPENHOME_EVENT, getContext());
 
         if (userSession.hasShop() && !DFInstaller.isInstalled(getApplication(), DFM_MERCHANT_SELLER_CUSTOMERAPP)) {
             ArrayList<String> list = new ArrayList<>();
@@ -248,8 +277,15 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
-    private void initCategoryConfig() {
-        ((GlobalNavRouter) getApplicationContext()).setCategoryAbTestingConfig();
+    private void startJankyFrameMonitoringUtil() {
+        jankyFrameMonitoringUtil = new JankyFrameMonitoringUtil();
+        jankyFrameMonitoringUtil.init(this);
+    }
+
+    @NotNull
+    private boolean sendOpenHomeEvent() {
+        ((GlobalNavRouter) getApplicationContext()).sendOpenHomeEvent();
+        return true;
     }
 
     @Override
@@ -314,7 +350,6 @@ public class MainParentActivity extends BaseActivity implements
 
     private void createView(Bundle savedInstanceState) {
         isFirstNavigationImpression = true;
-        GraphqlClient.init(this);
         setContentView(R.layout.activity_main_parent);
 
         bottomNavigation = findViewById(R.id.bottomnav);
@@ -330,15 +365,28 @@ public class MainParentActivity extends BaseActivity implements
 
         fragmentList = fragments();
 
-        if (isFirstTime()) {
-            globalNavAnalytics.trackFirstTime(this);
-        }
+        WeaveInterface firstTimeWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return executeFirstTimeEvent();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(firstTimeWeave, RemoteConfigKey.ENABLE_ASYNC_FIRSTTIME_EVENT, getContext());
 
         handleAppLinkBottomNavigation(savedInstanceState);
         checkAppUpdateAndInApp();
         checkApplinkCouponCode(getIntent());
 
         initNewFeedClickReceiver();
+    }
+
+    @NotNull
+    private boolean executeFirstTimeEvent(){
+        if (isFirstTime()) {
+            globalNavAnalytics.trackFirstTime(MainParentActivity.this);
+        }
+        return true;
     }
 
     private void handleAppLinkBottomNavigation(Bundle savedInstanceState) {
@@ -417,6 +465,7 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int position = getPositionFragmentByMenu(item);
+        this.currentSelectedFragmentPosition = position;
         if (!isFirstNavigationImpression) {
             globalNavAnalytics.eventBottomNavigation(item.getTitle().toString()); // push analytics
         }
@@ -569,13 +618,35 @@ public class MainParentActivity extends BaseActivity implements
         }
         isUserFirstTimeLogin = !userSession.isLoggedIn();
 
-        addShortcuts();
+        WeaveInterface addShortcutsWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return addShortcuts();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(addShortcutsWeave, RemoteConfigKey.ENABLE_ASYNC_ADDSHORTCUTS, getContext());
 
         registerNewFeedClickedReceiver();
 
+        WeaveInterface checkAppSignatureWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return checkAppSignature();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(checkAppSignatureWeave, RemoteConfigKey.ENABLE_ASYNC_CHECKAPPSIGNATURE, getContext());
+
+        if (currentFragment != null) configureStatusBarBasedOnFragment(currentFragment);
+    }
+
+    @NotNull
+    private boolean checkAppSignature(){
         if (!((BaseMainApplication) getApplication()).checkAppSignature()) {
             finish();
         }
+        return true;
     }
 
     @Override
@@ -902,7 +973,8 @@ public class MainParentActivity extends BaseActivity implements
         this.presenter = presenter;
     }
 
-    private void addShortcuts() {
+    @NotNull
+    private boolean addShortcuts() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             try {
                 ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
@@ -914,46 +986,46 @@ public class MainParentActivity extends BaseActivity implements
                     args.putBoolean(GlobalNavConstant.EXTRA_APPLINK_FROM_PUSH, true);
                     args.putBoolean(GlobalNavConstant.FROM_APP_SHORTCUTS, true);
 
-                    Intent intentHome = MainParentActivity.start(this);
+                    Intent intentHome = MainParentActivity.start(MainParentActivity.this);
                     intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intentHome.setAction(Intent.ACTION_VIEW);
 
-                    Intent productIntent = RouteManager.getIntent(this, ApplinkConstInternalDiscovery.AUTOCOMPLETE);
+                    Intent productIntent = RouteManager.getIntent(MainParentActivity.this, ApplinkConstInternalDiscovery.AUTOCOMPLETE);
                     productIntent.setAction(Intent.ACTION_VIEW);
                     productIntent.putExtras(args);
 
-                    ShortcutInfo productShortcut = new ShortcutInfo.Builder(this, SHORTCUT_BELI_ID)
+                    ShortcutInfo productShortcut = new ShortcutInfo.Builder(MainParentActivity.this, SHORTCUT_BELI_ID)
                             .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
                             .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
-                            .setIcon(Icon.createWithResource(this, R.drawable.ic_search_shortcut))
+                            .setIcon(Icon.createWithResource(MainParentActivity.this, R.drawable.ic_search_shortcut))
                             .setIntents(new Intent[]{intentHome, productIntent})
                             .setRank(0)
                             .build();
                     shortcutInfos.add(productShortcut);
 
                     if (userSession.isLoggedIn()) {
-                        Intent wishlistIntent = ((GlobalNavRouter) getApplication()).gotoWishlistPage(this);
+                        Intent wishlistIntent = RouteManager.getIntent(MainParentActivity.this, ApplinkConst.NEW_WISHLIST);
                         wishlistIntent.setAction(Intent.ACTION_VIEW);
                         wishlistIntent.putExtras(args);
 
-                        ShortcutInfo wishlistShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHARE_ID)
+                        ShortcutInfo wishlistShortcut = new ShortcutInfo.Builder(MainParentActivity.this, SHORTCUT_SHARE_ID)
                                 .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
                                 .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
-                                .setIcon(Icon.createWithResource(this, R.drawable.ic_wishlist_shortcut))
+                                .setIcon(Icon.createWithResource(MainParentActivity.this, R.drawable.ic_wishlist_shortcut))
                                 .setIntents(new Intent[]{intentHome, wishlistIntent})
                                 .setRank(1)
                                 .build();
                         shortcutInfos.add(wishlistShortcut);
                     }
 
-                    Intent digitalIntent = RouteManager.getIntent(this, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME);
+                    Intent digitalIntent = RouteManager.getIntent(MainParentActivity.this, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME);
                     digitalIntent.setAction(Intent.ACTION_VIEW);
                     digitalIntent.putExtras(args);
 
-                    ShortcutInfo digitalShortcut = new ShortcutInfo.Builder(this, SHORTCUT_DIGITAL_ID)
+                    ShortcutInfo digitalShortcut = new ShortcutInfo.Builder(MainParentActivity.this, SHORTCUT_DIGITAL_ID)
                             .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_bayar))
                             .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_bayar))
-                            .setIcon(Icon.createWithResource(this, R.drawable.ic_pay_shortcut))
+                            .setIcon(Icon.createWithResource(MainParentActivity.this, R.drawable.ic_pay_shortcut))
                             .setIntents(new Intent[]{intentHome, digitalIntent})
                             .setRank(2)
                             .build();
@@ -972,10 +1044,10 @@ public class MainParentActivity extends BaseActivity implements
                         shopIntent.setAction(Intent.ACTION_VIEW);
                         shopIntent.putExtras(args);
 
-                        ShortcutInfo shopShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHOP_ID)
+                        ShortcutInfo shopShortcut = new ShortcutInfo.Builder(MainParentActivity.this, SHORTCUT_SHOP_ID)
                                 .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_jual))
                                 .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_jual))
-                                .setIcon(Icon.createWithResource(this, R.drawable.ic_sell_shortcut))
+                                .setIcon(Icon.createWithResource(MainParentActivity.this, R.drawable.ic_sell_shortcut))
                                 .setIntents(new Intent[]{intentHome, shopIntent})
                                 .setRank(3)
                                 .build();
@@ -989,6 +1061,7 @@ public class MainParentActivity extends BaseActivity implements
                 e.printStackTrace();
             }
         }
+        return true;
     }
 
     @Override
@@ -1056,6 +1129,10 @@ public class MainParentActivity extends BaseActivity implements
         homePerformanceMonitoring = PerformanceMonitoring.start(HOME_PERFORMANCE_MONITORING_KEY);
     }
 
+    private void startMainParentPerformanceMonitoring() {
+        mainParentPerformanceMonitoring = PerformanceMonitoring.start(MAIN_PARENT_PERFORMANCE_MONITORING_KEY);
+    }
+
     @Override
     public void stopHomePerformanceMonitoring() {
         if (homePerformanceMonitoring != null) {
@@ -1063,7 +1140,7 @@ public class MainParentActivity extends BaseActivity implements
             homePerformanceMonitoring = null;
         }
     }
-         
+
     @Override
     public void requestStatusBarDark() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -1084,5 +1161,10 @@ public class MainParentActivity extends BaseActivity implements
             setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
             this.getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
+    }
+
+    @Override
+    public JankyFrameMonitoringUtil getMainJankyFrameMonitoringUtil() {
+        return jankyFrameMonitoringUtil;
     }
 }

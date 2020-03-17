@@ -2,7 +2,8 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 
 data class DynamicProductInfoP1(
         val basic: BasicInfo = BasicInfo(),
-        val data: ComponentData = ComponentData()
+        val data: ComponentData = ComponentData(),
+        val layoutName: String = ""
 ) {
 
     val parentProductId: String
@@ -19,4 +20,12 @@ data class DynamicProductInfoP1(
     val getProductName: String
         get() = data.name
 
+    val finalPrice: Int
+        get() {
+            return if (data.campaign.isActive) {
+                data.campaign.discountedPrice
+            } else {
+                data.price.value
+            }
+        }
 }
