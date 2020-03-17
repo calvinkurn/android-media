@@ -86,7 +86,7 @@
 
         <activity
             android:name="com.facebook.react.devsupport.DevSettingsActivity"
-            android:label="com.tokopedia.tkpd:string/app_name" />
+            android:label="@string/app_name" />
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
