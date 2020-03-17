@@ -835,6 +835,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     override fun onClickEditVariantButton(product: ProductViewModel) {
+        goToEditProduct(product.id)
         ProductManageTracking.eventEditVariants(product.id)
     }
 
