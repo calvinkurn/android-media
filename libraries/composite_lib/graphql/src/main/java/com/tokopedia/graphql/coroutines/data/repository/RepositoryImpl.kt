@@ -33,7 +33,7 @@ open class RepositoryImpl(private val graphqlCloudDataStore: GraphqlCloudDataSto
                     responseCloud?.let {
                         responseCache.originalResponse.addAll(it.originalResponse)
                     }
-                    GraphqlResponseInternal(responseCache.originalResponse, cacheStrategy.isSessionIncluded, responseCache.indexOfEmptyCached)
+                    GraphqlResponseInternal(responseCache.originalResponse, responseCache.indexOfEmptyCached)
                 } catch (e: Exception) {
                     e.printStackTrace()
                     graphqlCloudDataStore.getResponse(requests, cacheStrategy)

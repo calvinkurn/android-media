@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
@@ -24,6 +25,8 @@ import com.tokopedia.sellerhome.common.WidgetType
 import com.tokopedia.sellerhome.common.utils.Utils
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
+import com.tokopedia.sellerhome.domain.model.PROVINCE_ID_EMPTY
+import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
 import com.tokopedia.sellerhome.view.bottomsheet.view.SellerHomeBottomSheetContent
 import com.tokopedia.sellerhome.view.model.*
@@ -95,6 +98,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         hideTooltipIfExist()
         setupView()
 
+        observeShopLocationLiveData()
         observeWidgetLayoutLiveData()
         observeWidgetData(sellerHomeViewModel.cardWidgetData, WidgetType.CARD)
         observeWidgetData(sellerHomeViewModel.lineGraphWidgetData, WidgetType.LINE_GRAPH)
@@ -150,7 +154,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         hasLoadCarouselData = false
 
         val isAdapterNotEmpty = adapter.data.isNotEmpty()
-        showGetWidgetProgress(!isAdapterNotEmpty)
+        setProgressBarVisibility(!isAdapterNotEmpty)
         swipeRefreshLayout.isRefreshing = isAdapterNotEmpty
 
         sahGlobalError.gone()
@@ -234,9 +238,34 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         showErrorToaster()
     }
 
-    private fun showGetWidgetProgress(isShown: Boolean) {
+    private fun setProgressBarVisibility(isShown: Boolean) {
         view?.progressBarSah?.visibility = if (isShown) View.VISIBLE else View.GONE
     }
+
+    private fun observeShopLocationLiveData() {
+        sellerHomeViewModel.shopLocation.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Success -> setOnSuccessGetShopLocation(result.data)
+                is Fail -> {
+                    result.throwable.printStackTrace()
+                }
+            }
+            setProgressBarVisibility(false)
+        })
+
+        setProgressBarVisibility(true)
+        sellerHomeViewModel.getShopLocation()
+    }
+
+    private fun setOnSuccessGetShopLocation(data: ShippingLoc) {
+        if (data.provinceID == PROVINCE_ID_EMPTY) {
+            activity?.let {
+                RouteManager.route(it, ApplinkConst.CREATE_SHOP)
+                it.finish()
+            }
+        }
+    }
+
 
     private fun observeWidgetLayoutLiveData() {
         sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner, Observer { result ->
@@ -246,7 +275,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             }
         })
 
-        showGetWidgetProgress(true)
+        setProgressBarVisibility(true)
         sellerHomeViewModel.getWidgetLayout()
     }
 
@@ -268,7 +297,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
         renderWidgetOrGetWidgetDataFirst(widgets)
 
-        showGetWidgetProgress(false)
+        setProgressBarVisibility(false)
     }
 
     /**
@@ -305,7 +334,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             sahGlobalError.gone()
         }
         view?.swipeRefreshLayout?.isRefreshing = false
-        showGetWidgetProgress(false)
+        setProgressBarVisibility(false)
     }
 
     private fun showErrorToaster() = view?.run {

@@ -2,11 +2,10 @@ package com.tokopedia.centralizedpromo.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.centralizedpromo.domain.usecase.GetPostUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
+import com.tokopedia.centralizedpromo.domain.usecase.GetPostUseCase
 import com.tokopedia.centralizedpromo.view.LayoutType
-import com.tokopedia.centralizedpromo.view.OnGoingPromoStaticData
-import com.tokopedia.centralizedpromo.view.RecommendedPromotionStaticData
+import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
 import com.tokopedia.centralizedpromo.view.model.BaseUiModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhome.common.utils.DateTimeUtil
@@ -58,15 +57,14 @@ class CentralizedPromoViewModel @Inject constructor(
 
     private suspend fun getResult(type: LayoutType) = when (type) {
         LayoutType.ON_GOING_PROMO -> getOnGoingPromotion()
-        LayoutType.RECOMMENDED_PROMO -> getRecommendedPromotion()
+        LayoutType.PROMO_CREATION -> getRecommendedPromotion()
         LayoutType.POST -> getPostList()
     }
 
     private suspend fun getOnGoingPromotion(): Result<BaseUiModel> {
         return try {
-//            getOnGoingPromotionUseCase.params = GetOnGoingPromotionUseCase.getRequestParams(false)
-//            Success(getOnGoingPromotionUseCase.executeOnBackground())
-            Success(OnGoingPromoStaticData.provideStaticData())
+            getOnGoingPromotionUseCase.params = GetOnGoingPromotionUseCase.getRequestParams(false)
+            Success(getOnGoingPromotionUseCase.executeOnBackground())
         } catch (t: Throwable) {
             Fail(t)
         }
@@ -83,7 +81,7 @@ class CentralizedPromoViewModel @Inject constructor(
 
     private fun getRecommendedPromotion(): Result<BaseUiModel> {
         return try {
-            Success(RecommendedPromotionStaticData.provideStaticData())
+            Success(PromoCreationStaticData.provideStaticData())
         } catch (t: Throwable) {
             Fail(t)
         }

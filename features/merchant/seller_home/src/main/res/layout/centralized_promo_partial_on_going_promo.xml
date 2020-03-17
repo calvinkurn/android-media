@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <include layout="@layout/centralized_promo_partial_on_going_promo_success" />
+
+    <include layout="@layout/centralized_promo_partial_on_going_promo_shimmering" />
+
+    <ViewStub
+        android:id="@+id/stubLayoutCentralizedPromoOnGoingPromoError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout="@layout/centralized_promo_partial_on_going_promo_error" />
+
+    <View
+        android:id="@+id/onGoingPromoLayoutDivider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl1"
+        android:background="@color/Neutral_N50" />
+</merge>

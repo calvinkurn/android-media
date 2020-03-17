@@ -14,6 +14,9 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.kotlin.extensions.view.setupStatusBarUnderMarshmallow
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
@@ -31,6 +34,7 @@ import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
 import com.tokopedia.sellerhome.view.viewmodel.SharedViewModel
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_sah_seller_home.*
 import javax.inject.Inject
 
@@ -41,6 +45,8 @@ class SellerHomeActivity : BaseActivity() {
         fun createIntent(context: Context) = Intent(context, SellerHomeActivity::class.java)
     }
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
@@ -75,6 +81,14 @@ class SellerHomeActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         homeViewModel.getNotifications()
+
+        if (!userSession.isLoggedIn) {
+            RouteManager.route(this, ApplinkConstInternalSellerapp.WELCOME)
+            finish()
+        } else if (!userSession.hasShop()) {
+            RouteManager.route(this, ApplinkConst.CREATE_SHOP)
+            finish()
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {

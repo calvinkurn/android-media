@@ -49,6 +49,10 @@
     <string name="path_product_draft_list" translatable="false">/product-draft-list</string>
     <string name="path_mitra_toppers_dashboard" translatable="false">/mitra-toppers-dashboard</string>
     <string name="path_seller_info" translatable="false">/seller-info</string>
+    <string name="path_shop_review" translatable="false">/shop/.*\\/review</string>
+
+    <string name="path_review_inbox" translatable="false">/review</string>
+    <string name="path_review_inbox_detail" translatable="false">/review/.*\\/</string>
 
     <string name="path_shop_settings_address" translatable="false">/shop-settings-address</string>
     <string name="path_shop_settings_info" translatable="false">/shop-settings-info</string>
@@ -78,16 +82,5 @@
     <string name="path_sellerapp_notification" translatable="false">sellerinfo</string>
     <string name="path_etalase_dynamic_picker">/etalase-dynamic-picker</string>
     <string name="path_category_dynamic_picker">/category-dynamic-picker</string>
-    <string name="path_sellerhome" translatable="false">/sellerhome</string>
     <string name="path_centralized_promo" translatable="false">/centralized-promo</string>
-
-    <string name="path_sellerhome_product" translatable="false">/sellerhome-product</string>
-    <string name="path_sellerhome_chat" translatable="false">/sellerhome-chat</string>
-    <string name="path_sellerhome_som_all_order" translatable="false">/sellerhome-som-allorder</string>
-    <string name="path_sellerhome_som_new_order" translatable="false">/sellerhome-som-neworder</string>
-    <string name="path_sellerhome_som_ready_to_ship" translatable="false">/sellerhome-som-readytoship</string>
-    <string name="path_sellerhome_som_in_shipping" translatable="false">/sellerhome-som-inshipping</string>
-    <string name="path_sellerhome_som_done" translatable="false">/sellerhome-som-done</string>
-    <string name="path_sellerhome_som_cacelled" translatable="false">/sellerhome-som-done</string>
-    <string name="path_sellerhome_other_settings" translatable="false">/sellerhome-othersettings</string>
 </resources>

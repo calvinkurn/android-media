@@ -468,7 +468,8 @@ class OfficialHomeFragment :
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
                         (position + 1).toString(10),
-                        it
+                        it,
+                        channelData
                 )
             }
 
@@ -483,9 +484,9 @@ class OfficialHomeFragment :
         }
     }
 
-    override fun onClickFlashSaleActionText(applink: String): View.OnClickListener {
+    override fun onClickFlashSaleActionText(applink: String, headerId: Long): View.OnClickListener {
         return View.OnClickListener {
-            tracking?.flashSaleActionTextClick(viewModel.currentSlug)
+            tracking?.flashSaleActionTextClick(viewModel.currentSlug, headerId)
             RouteManager.route(context, applink)
         }
     }
@@ -551,7 +552,8 @@ class OfficialHomeFragment :
                 tracking?.dynamicChannelMixBannerClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
-                        it
+                        it,
+                        channelData
                 )
             }
 

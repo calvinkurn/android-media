@@ -9,7 +9,8 @@ public class TokenMarginUtil {
     private static final double RATIO_IMAGE_MARGIN_BOTTOM = 0.64;
     public static final double RATIO_IMAGE_MARGIN_TOP = 0.795;
     private static final double RATIO_TIMER_MARGIN_BOTTOM = 0.75;
-    public static final float STAGE_PIXEL = 1670;
+    public static final float STAGE_PIXEL = 1670f;
+    public static final float BASE_DRAWABLE_HEIGHT = 2701f;
 
 
     public static int getEggWidth(int rootWidth, int rootHeight) {

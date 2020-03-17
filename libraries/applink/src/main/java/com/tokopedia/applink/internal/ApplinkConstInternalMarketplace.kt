@@ -14,7 +14,13 @@ object ApplinkConstInternalMarketplace {
     val HOST_MARKETPLACE = "marketplace"
 
     @JvmField
+    val HOST_SELLERAPP = "sellerapp"
+
+    @JvmField
     val INTERNAL_MARKETPLACE = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_MARKETPLACE}"
+
+    @JvmField
+    val INTERNAL_SELLERAPP = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_SELLERAPP}"
 
     // StoreSettingActivity
     @JvmField
@@ -82,6 +88,12 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val CREATE_REVIEW = "$INTERNAL_MARKETPLACE/product-review/create/{reputation_id}/{product_id}/"
 
+    // InboxReputationActivity
+    val INBOX_REPUTATION = "$INTERNAL_MARKETPLACE/review"
+
+    // InboxReputationDetailActivity
+    val INBOX_REPUTATION_DETAIL = "$INTERNAL_MARKETPLACE/review/{reputation_id}/"
+
     @JvmField
     val HOME_RECOMMENDATION = "$INTERNAL_MARKETPLACE/rekomendasi/{id}/?ref={ref}"
 
@@ -104,10 +116,13 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val SHOP_PAGE = "$INTERNAL_MARKETPLACE/shop-page/{shop_id}/"
 
+    //ReviewShopInfoActiviy
+    @JvmField
+    val SHOP_REVIEW_APPLINK = "$INTERNAL_MARKETPLACE/shop/{shop_id}/review"
+
     // GmSubscribeHomeActivity
     @JvmField
     val GOLD_MERCHANT_SUBSCRIBE_DASHBOARD = "$INTERNAL_MARKETPLACE/gold-merchant-subscribe-dashboard"
-
 
     @JvmField
     val CONTACT_US = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://customercare/{ticket_id}"
@@ -241,24 +256,27 @@ object ApplinkConstInternalMarketplace {
 
     //SellerHomeActivity
     @JvmField
-    val SELLER_HOME = "$INTERNAL_MARKETPLACE/sellerhome"
+    val SELLER_HOME = "$INTERNAL_SELLERAPP/sellerhome"
 
     @JvmField
-    val SELLER_HOME_PRODUCT = "$INTERNAL_MARKETPLACE/sellerhome-product"
+    val SELLER_HOME_PRODUCT = "$INTERNAL_SELLERAPP/sellerhome-product"
 
     @JvmField
-    val SELLER_HOME_CHAT = "$INTERNAL_MARKETPLACE/sellerhome-chat"
+    val SELLER_HOME_CHAT = "$INTERNAL_SELLERAPP/sellerhome-chat"
 
     @JvmField
-    val SELLER_HOME_SOM_ALL = "$INTERNAL_MARKETPLACE/sellerhome-som-allorder"
+    val SELLER_HOME_SOM_ALL = "$INTERNAL_SELLERAPP/sellerhome-som-allorder"
 
     @JvmField
-    val SELLER_HOME_SOM_NEW_ORDER = "$INTERNAL_MARKETPLACE/sellerhome-som-neworder"
+    val SELLER_HOME_SOM_NEW_ORDER = "$INTERNAL_SELLERAPP/sellerhome-som-neworder"
 
     @JvmField
-    val SELLER_HOME_SOM_READY_TO_SHIP = "$INTERNAL_MARKETPLACE/sellerhome-som-readytoship"
+    val SELLER_HOME_SOM_READY_TO_SHIP = "$INTERNAL_SELLERAPP/sellerhome-som-readytoship"
 
     //CentralizedPromoActivity
     @JvmField
     val CENTRALIZED_PROMO = "$INTERNAL_MARKETPLACE/centralized-promo"
+    @JvmField
+    val PARAM_IS_NEED_LOC = "IS_NEED_LOC"
+
 }
