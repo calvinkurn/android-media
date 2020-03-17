@@ -20,6 +20,30 @@ object ApplinkConstInternalSellerapp {
     @JvmField
     val SELLER_HOME = "$INTERNAL_SELLERAPP/sellerhome"
 
+    @JvmField
+    val SELLER_HOME_PRODUCT_MANAGE = "$INTERNAL_SELLERAPP/sellerhome-product"
+
+    @JvmField
+    val SELLER_HOME_CHAT = "$INTERNAL_SELLERAPP/sellerhome-chat"
+
+    @JvmField
+    val SELLER_HOME_SOM_ALL = "$INTERNAL_SELLERAPP/sellerhome-som-allorder"
+
+    @JvmField
+    val SELLER_HOME_SOM_NEW_ORDER = "$INTERNAL_SELLERAPP/sellerhome-som-neworder"
+
+    @JvmField
+    val SELLER_HOME_SOM_READY_TO_SHIP = "$INTERNAL_SELLERAPP/sellerhome-som-readytoship"
+
+    @JvmField
+    val SELLER_HOME_SOM_SHIPPED = "$INTERNAL_SELLERAPP/sellerhome-som-inshipping"
+
+    @JvmField
+    val SELLER_HOME_SOM_DONE = "$INTERNAL_SELLERAPP/sellerhome-som-done"
+
+    @JvmField
+    val SELLER_HOME_SOM_CANCELLED = "$INTERNAL_SELLERAPP/sellerhome-som-cancelled"
+
     //WelcomeActivity
     @JvmField
     val WELCOME = "$INTERNAL_SELLERAPP/welcome"
