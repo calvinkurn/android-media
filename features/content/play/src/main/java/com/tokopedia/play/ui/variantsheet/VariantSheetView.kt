@@ -121,8 +121,9 @@ class VariantSheetView(
         )
 
         if (!listOfVariants.isNullOrEmpty()) {
-            val selectedProduct = VariantCommonMapper.selectedProductData(
+            val pairSelectedProduct = VariantCommonMapper.selectedProductData(
                     variantSheetUiModel?.parentVariant?: ProductVariantCommon())
+            val selectedProduct = pairSelectedProduct?.second
             if (selectedProduct != null) {
                 val stock = selectedProduct.stock
 
