@@ -258,7 +258,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
             val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.WEBVIEW, fallbackUrl)
             intent?.let { it ->
                 ctaAction = { ->
-                    Timber.w("P1#DFM_FALLBACK#click;url='$fallbackUrl'")
+                    Timber.w("P1#DFM_FALLBACK#click;mod_name=$moduleName;url='$fallbackUrl'")
                     startActivity(it)
                 }
             }

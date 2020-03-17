@@ -16,16 +16,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.bugsnag.android.BeforeNotify;
 import com.bugsnag.android.BreadcrumbType;
 import com.bugsnag.android.Bugsnag;
-import com.bugsnag.android.Error;
 import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.crashlytics.android.Crashlytics;
@@ -373,16 +370,14 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     private void initializeSdk() {
-        Bugsnag.beforeNotify(new BeforeNotify() {
-            @Override
-            public boolean run(@NonNull Error error) {
-                UserSessionInterface userSession = new UserSession(ConsumerMainApplication.this);
-                if (!TextUtils.isEmpty(userSession.getUserId())) {
-                    error.addToTab("account", "userId", userSession.getUserId());
-                    error.addToTab("account", "deviceId", userSession.getDeviceId());
-                }
-                return false;
+        Bugsnag.beforeNotify(error -> {
+            UserSessionInterface userSession = new UserSession(ConsumerMainApplication.this);
+            if (!TextUtils.isEmpty(userSession.getUserId())) {
+                error.addToTab("account", "userId", userSession.getUserId());
+                error.addToTab("account", "deviceId", userSession.getDeviceId());
+                error.addToTab("account", "owner", "core");
             }
+            return true;
         });
         try {
             FirebaseApp.initializeApp(this);
