@@ -51,8 +51,8 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         sendEventByPage(
                 page,
                 EVENT_NAME_VIEW,
-                EventAction.VIEW_BLACKLIST_ERROR_AFTER_APPLY_PROMO,
-                ""
+                EventAction.VIEW_AVAILABLE_PROMO_LIST,
+                EventLabel.BLACKLIST_ERROR
         )
     }
 
@@ -60,8 +60,8 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         sendEventByPage(
                 page,
                 EVENT_NAME_VIEW,
-                EventAction.VIEW_PHONE_VERIFICATION_MESSAGE,
-                ""
+                EventAction.VIEW_AVAILABLE_PROMO_LIST,
+                EventLabel.PHONE_VERIFICATION_MESSAGE
         )
     }
 
