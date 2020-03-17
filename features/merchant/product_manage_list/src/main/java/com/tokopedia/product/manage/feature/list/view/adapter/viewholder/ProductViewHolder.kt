@@ -63,7 +63,7 @@ class ProductViewHolder(
     }
 
     private fun showProductLabel(product: ProductViewModel) {
-        itemView.labelBanned.showViewIf(product.isBanned())
+        itemView.labelBanned.showViewIf(product.isViolation())
         itemView.labelInactive.showViewIf(product.isInactive())
         itemView.labelActive.showViewIf(product.isActive())
     }
@@ -80,7 +80,7 @@ class ProductViewHolder(
             itemView.btnEditStock.hide()
             itemView.btnMoreOptions.hide()
         } else {
-            itemView.btnContactCS.showViewIf(product.isBanned())
+            itemView.btnContactCS.showViewIf(product.isViolation())
             itemView.btnEditVariant.showViewIf(product.isVariant())
             itemView.btnEditPrice.showViewIf(product.isNotVariant())
             itemView.btnEditStock.showViewIf(product.isNotVariant())

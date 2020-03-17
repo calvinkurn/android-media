@@ -5,6 +5,8 @@ import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.*
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
 
 object ProductMapper {
 
@@ -19,7 +21,7 @@ object ProductMapper {
                 imageUrl = picture?.urlThumbnail,
                 price = price.toString(),
                 priceFormatted = price?.getCurrencyFormatted(),
-                status = it.status,
+                status = mapProductStatus(it),
                 stock = it.stock,
                 isVariant = it.isVariant,
                 isFeatured = it.featured > 0,
@@ -30,30 +32,19 @@ object ProductMapper {
         } ?: emptyList()
     }
 
+    private fun mapProductStatus(product: Product): ProductStatus? {
+        return when(product.status) {
+            PENDING, MODERATED -> VIOLATION
+            else -> product.status
+        }
+    }
+
     fun mapToTabFilters(productList: List<ProductViewModel>?): List<FilterViewModel> {
         val productFilters = mutableListOf<FilterViewModel>(MoreFilter)
 
-//        val availableFilters = productList
-//            ?.filter { filterType.contains(it.status) }
-//            ?.distinctBy { it.status }
-//            ?.sortedBy { it.status }
-//            ?.map { product ->
-//                val productStatus = product.status
-//                val productCount = productList.filter {
-//                    it.status == productStatus
-//                }.count()
-//
-//                when (productStatus) {
-//                    ACTIVE -> Active(productCount)
-//                    INACTIVE -> InActive(productCount)
-//                    BANNED -> Banned(productCount)
-//                    else -> MoreFilter
-//                }
-//            } ?: emptyList()
-
         val activeProductFilter = productList?.filter { it.isActive() }.orEmpty()
         val inActiveProductFilter = productList?.filter { it.isInactive()}.orEmpty()
-        val bannedProductFilter = productList?.filter { it.isBanned() }.orEmpty()
+        val violationProductFilter = productList?.filter { it.isViolation() }.orEmpty()
 
         if(activeProductFilter.isNotEmpty()) {
             val activeFilterCount = activeProductFilter.count()
@@ -67,10 +58,10 @@ object ProductMapper {
             productFilters.add(inActiveFilter)
         }
 
-        if(bannedProductFilter.isNotEmpty()) {
-            val bannedFilterCount = activeProductFilter.count()
-            val bannedFilter = Banned(bannedFilterCount)
-            productFilters.add(bannedFilter)
+        if(violationProductFilter.isNotEmpty()) {
+            val violationFilterCount = violationProductFilter.count()
+            val violationFilter = Violation(violationFilterCount)
+            productFilters.add(violationFilter)
         }
 
         return productFilters

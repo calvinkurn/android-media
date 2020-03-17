@@ -7,5 +7,6 @@ enum class ProductStatus {
     EMPTY,
     MODERATED,
     DELETED,
-    PENDING
+    PENDING,
+    VIOLATION
 }
