@@ -53,11 +53,11 @@ class ProductViewHolder(
 
     private fun showProductStock(product: ProductViewModel) {
         if(product.isNotVariant()) {
-            val productStock = itemView.context
-                .getString(R.string.product_manage_stock_format, product.stock)
-            itemView.textStock.text = productStock
+            itemView.textStockCount.text = product.stock.toString()
+            itemView.textStockCount.show()
             itemView.textStock.show()
         } else {
+            itemView.textStockCount.hide()
             itemView.textStock.hide()
         }
     }
