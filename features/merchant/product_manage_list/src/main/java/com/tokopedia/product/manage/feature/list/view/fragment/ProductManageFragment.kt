@@ -15,7 +15,13 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.view.Window
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -79,8 +85,9 @@ import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageBottomSheet
-import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
+import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.StockInformationBottomSheet
 import com.tokopedia.product.manage.feature.multiedit.ui.bottomsheet.ProductMultiEditBottomSheet
+import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
 import com.tokopedia.product.manage.feature.multiedit.ui.toast.MultiEditToastMessage.getRetryMessage
 import com.tokopedia.product.manage.feature.multiedit.ui.toast.MultiEditToastMessage.getSuccessMessage
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
@@ -154,6 +161,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private var productManageBottomSheet: ProductManageBottomSheet? = null
     private var filterProductBottomSheet: ProductManageFilterFragment? = null
     private var multiEditBottomSheet: ProductMultiEditBottomSheet? = null
+    private val stockInfoBottomSheet by lazy { StockInformationBottomSheet(view, fragmentManager) }
 
     private var productManageFilterModel: ProductManageFilterModel = ProductManageFilterModel()
     private val productManageListAdapter by lazy { adapter as ProductManageListAdapter }
@@ -817,6 +825,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     override fun onClickStockInformation() {
+        stockInfoBottomSheet.show()
     }
 
     override fun onClickEditStockButton(product: ProductViewModel) {
