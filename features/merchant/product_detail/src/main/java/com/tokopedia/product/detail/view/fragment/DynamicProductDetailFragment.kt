@@ -2095,7 +2095,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                             shopId = viewModel.shopInfo?.shopCore?.shopID ?: "",
                             quantity = data.basic.minOrder.toString(),
                             attribution = trackerAttributionPdp ?: "",
-                            listTracker = trackerListNamePdp ?: ""
+                            listTracker = trackerListNamePdp ?: "",
+                            warehouseId = selectedWarehouseId.toString()
                     )
                     viewModel.addToCart(addToCartOccRequestParams)
                 }
