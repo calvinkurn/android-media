@@ -9,11 +9,10 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.domain.PostAddToCartUseCase
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.Event
-import com.tokopedia.play.view.type.DiscountedPrice
-import com.tokopedia.play.view.type.OutOfStock
+import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
-import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.CartFeedbackUiModel
+import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.VariantSheetUiModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
@@ -80,25 +79,34 @@ class PlayBottomSheetViewModel @Inject constructor(
         )
     }
 
-    fun addToCart(product: ProductLineUiModel, notes: String = "", action: ProductAction) {
+    fun addToCart(product: ProductLineUiModel, notes: String = "", action: ProductAction, type: BottomInsetsType) {
         launchCatchError(block = {
             val responseCart = withContext(dispatchers.io) {
-                postAddToCartUseCase.parameters = AddToCartUseCase.getMinimumParams(product.id, product.shopId, product.minQty, notes)
+                postAddToCartUseCase.parameters = AddToCartUseCase.getMinimumParams(
+                        product.id,
+                        product.shopId,
+                        product.minQty,
+                        notes
+                )
                 postAddToCartUseCase.executeOnBackground()
             }
 
-            _observableAddToCart.value = mappingResponseCart(responseCart, action, product)
+            _observableAddToCart.value = mappingResponseCart(responseCart, product, action, type)
         }) { }
     }
 
-    private fun mappingResponseCart(addToCartDataModel: AddToCartDataModel, action: ProductAction, product: ProductLineUiModel) =
+    private fun mappingResponseCart(addToCartDataModel: AddToCartDataModel,
+                                    product: ProductLineUiModel,
+                                    action: ProductAction,
+                                    bottomInsetsType: BottomInsetsType) =
             CartFeedbackUiModel(
                     isSuccess = addToCartDataModel.data.success == 1,
                     errorMessage = if (addToCartDataModel.errorMessage.size > 0)
                         addToCartDataModel.errorMessage.joinToString { "$it " } else "",
                     cartId = addToCartDataModel.data.cartId.toString(),
                     product = product,
-                    action = action
+                    action = action,
+                    bottomInsetsType = bottomInsetsType
             )
 
     override fun onCleared() {

@@ -221,11 +221,9 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
             hideLoadingView()
             if (it.isSuccess) {
                 playViewModel.updateBadgeCart()
-                if (it.action == ProductAction.BuyInVariant && it.action == ProductAction.Buy) {
-                    RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
-                }
-                if (it.action == ProductAction.AddToCart && it.action == ProductAction.AddToCartInVariant) {
-                    Toaster.make(requireView(),
+                when (it.action) {
+                    ProductAction.Buy -> RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+                    ProductAction.AddToCart -> Toaster.make(requireView(),
                             getString(R.string.play_add_to_cart_message_success),
                             Snackbar.LENGTH_LONG,
                             actionText = getString(R.string.play_view_idn),
@@ -234,10 +232,10 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
                                 PlayAnalytics.clickSeeToasterAfterAtc(channelId, playViewModel.channelType)
                             })
                 }
-                if (it.action == ProductAction.BuyInVariant && it.action == ProductAction.AddToCartInVariant) {
+                if (it.bottomInsetsType == BottomInsetsType.VariantSheet) {
                     closeVariantSheet()
                 }
-                PlayAnalytics.clickProductAction(trackingQueue, channelId, it.product, it.cartId, playViewModel.channelType, it.action)
+                PlayAnalytics.clickProductAction(trackingQueue, channelId, it.product, it.cartId, playViewModel.channelType, it.action, it.bottomInsetsType)
             }
             else Toaster.make(requireView(), it.errorMessage, Snackbar.LENGTH_LONG, type = Toaster.TYPE_ERROR)
         })
@@ -269,8 +267,8 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
                     .collect {
                         when (it) {
                             ProductSheetInteractionEvent.OnCloseProductSheet -> closeProductSheet()
-                            is ProductSheetInteractionEvent.OnBuyProduct -> checkProductVariant(it.product, ProductAction.Buy)
-                            is ProductSheetInteractionEvent.OnAtcProduct -> checkProductVariant(it.product, ProductAction.AddToCart)
+                            is ProductSheetInteractionEvent.OnBuyProduct -> shouldCheckProductVariant(it.product, ProductAction.Buy)
+                            is ProductSheetInteractionEvent.OnAtcProduct -> shouldCheckProductVariant(it.product, ProductAction.AddToCart)
                             is ProductSheetInteractionEvent.OnProductCardClicked -> onProductCardClicked(it.product)
                             is ProductSheetInteractionEvent.OnVoucherScrolled -> onVoucherScrolled(it.lastPositionViewed)
                         }
@@ -299,8 +297,8 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
                     .collect {
                         when (it) {
                             VariantSheetInteractionEvent.OnCloseVariantSheet -> closeVariantSheet()
-                            is VariantSheetInteractionEvent.OnBuyProduct -> doActionProduct(it.product, ProductAction.BuyInVariant)
-                            is VariantSheetInteractionEvent.OnAddProductToCart -> doActionProduct(it.product, ProductAction.AddToCartInVariant)
+                            is VariantSheetInteractionEvent.OnBuyProduct -> doActionProduct(it.product, ProductAction.Buy, BottomInsetsType.VariantSheet)
+                            is VariantSheetInteractionEvent.OnAddProductToCart -> doActionProduct(it.product, ProductAction.AddToCart, BottomInsetsType.VariantSheet)
                             is VariantSheetInteractionEvent.OnClickVariantGuideline -> {
                                 startActivity(ImagePreviewActivity.getCallingIntent(requireContext(), arrayListOf(it.url)))
                             }
@@ -315,12 +313,12 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
         playViewModel.onHideProductSheet()
     }
 
-    private fun checkProductVariant(product: ProductLineUiModel, action: ProductAction) {
+    private fun shouldCheckProductVariant(product: ProductLineUiModel, action: ProductAction) {
         if (product.isVariantAvailable) {
             openVariantSheet(product, action)
             PlayAnalytics.clickActionProductWithVariant(channelId, product.id, playViewModel.channelType, action)
         } else {
-            shouldDoActionProduct(product, action)
+            shouldDoActionProduct(product, action, BottomInsetsType.ProductSheet)
         }
     }
 
@@ -344,8 +342,8 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
         loadingDialog.dismiss()
     }
 
-    private fun shouldDoActionProduct(product: ProductLineUiModel, action: ProductAction) {
-        viewModel.doInteractionEvent(InteractionEvent.DoActionProduct(product, action))
+    private fun shouldDoActionProduct(product: ProductLineUiModel, action: ProductAction, type: BottomInsetsType) {
+        viewModel.doInteractionEvent(InteractionEvent.DoActionProduct(product, action, type))
     }
 
     private fun pushParentPlayBySheetHeight(productSheetHeight: Int) {
@@ -361,12 +359,14 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun handleInteractionEvent(event: InteractionEvent) {
-        if(event is InteractionEvent.DoActionProduct) doActionProduct(event.product, event.action)
+        if(event is InteractionEvent.DoActionProduct) {
+            doActionProduct(event.product, event.action, event.type)
+        }
     }
 
-    private fun doActionProduct(product: ProductLineUiModel, productAction: ProductAction) {
+    private fun doActionProduct(product: ProductLineUiModel, productAction: ProductAction, type: BottomInsetsType) {
         showLoadingView()
-        viewModel.addToCart(product, action = productAction)
+        viewModel.addToCart(product, action = productAction, type = type)
     }
 
     private fun openLoginPage() {

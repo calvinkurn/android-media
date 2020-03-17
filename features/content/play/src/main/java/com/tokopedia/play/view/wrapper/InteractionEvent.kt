@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.wrapper
 
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
+import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
 
@@ -16,7 +17,7 @@ sealed class InteractionEvent {
     }
     data class Like(val shouldLike: Boolean, override val needLogin: Boolean = true) : InteractionEvent()
     data class Follow(val partnerId: Long, val partnerAction: PartnerFollowAction, override val needLogin: Boolean = true) : InteractionEvent()
-    data class DoActionProduct(val product: ProductLineUiModel, val action: ProductAction, override val needLogin: Boolean = true) : InteractionEvent()
+    data class DoActionProduct(val product: ProductLineUiModel, val action: ProductAction, val type: BottomInsetsType, override val needLogin: Boolean = true) : InteractionEvent()
     object CartPage : InteractionEvent() {
         override val needLogin: Boolean = true
     }

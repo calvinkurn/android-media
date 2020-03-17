@@ -1,9 +1,6 @@
 package com.tokopedia.play.analytic
 
-import com.tokopedia.play.view.type.DiscountedPrice
-import com.tokopedia.play.view.type.OriginalPrice
-import com.tokopedia.play.view.type.PlayChannelType
-import com.tokopedia.play.view.type.ProductAction
+import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -244,16 +241,24 @@ object PlayAnalytics {
     }
 
     fun clickProductAction(trackingQueue: TrackingQueue,
-                                        channelId: String,
-                                        productLineUiModel: ProductLineUiModel,
-                                        cartId: String,
-                                        channelType: PlayChannelType,
-                                        productAction: ProductAction) {
+                           channelId: String,
+                           productLineUiModel: ProductLineUiModel,
+                           cartId: String,
+                           channelType: PlayChannelType,
+                           productAction: ProductAction,
+                           bottomInsetsType: BottomInsetsType) {
         when(productAction) {
-            ProductAction.AddToCart -> clickAtcButtonProductWithNoVariant(trackingQueue, channelId, productLineUiModel, cartId, channelType)
-            ProductAction.AddToCartInVariant -> clickAtcButtonInVariant(trackingQueue, channelId, productLineUiModel, cartId, channelType)
-            ProductAction.Buy -> clickBeliButtonProductWithNoVariant(trackingQueue, channelId, productLineUiModel, cartId, channelType)
-            ProductAction.BuyInVariant -> clickBeliButtonInVariant(trackingQueue, channelId, productLineUiModel, cartId, channelType)
+            ProductAction.AddToCart ->
+                when (bottomInsetsType) {
+                    BottomInsetsType.VariantSheet -> clickAtcButtonInVariant(trackingQueue, channelId, productLineUiModel, cartId, channelType)
+                    else -> clickAtcButtonProductWithNoVariant(trackingQueue, channelId, productLineUiModel, cartId, channelType)
+                }
+            ProductAction.Buy -> {
+                when (bottomInsetsType) {
+                    BottomInsetsType.VariantSheet -> clickBeliButtonInVariant(trackingQueue, channelId, productLineUiModel, cartId, channelType)
+                    else -> clickBeliButtonProductWithNoVariant(trackingQueue, channelId, productLineUiModel, cartId, channelType)
+                }
+            }
         }
     }
 

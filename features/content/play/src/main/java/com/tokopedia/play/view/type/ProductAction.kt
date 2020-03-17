@@ -6,7 +6,5 @@ package com.tokopedia.play.view.type
 enum class ProductAction {
 
     Buy,
-    BuyInVariant,
-    AddToCart,
-    AddToCartInVariant
+    AddToCart
 }
