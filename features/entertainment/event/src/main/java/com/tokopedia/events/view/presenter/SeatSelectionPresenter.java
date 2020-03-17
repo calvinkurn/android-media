@@ -187,7 +187,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<EventBaseContrac
                             saveInstanceCacheManager.put(Utils.Constants.EXTRA_SEATSELECTEDMODEL,mSelectedSeatViewModel,7);
                             saveInstanceCacheManager.put("event_detail",eventsDetailsViewModel,7);
                             saveInstanceCacheManager.put(Utils.Constants.EXTRA_VERIFY_RESPONSE, cartJsonString,7);
-                            reviewTicketIntent.putExtra("review", saveInstanceCacheManager.getId());
+                            reviewTicketIntent.putExtra(Utils.Constants.REVIEW_ACTIVITY_ID, saveInstanceCacheManager.getId());
                             mView.navigateToActivityRequest(reviewTicketIntent, 100);
                             mView.hideProgressBar();
                         }
@@ -217,7 +217,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<EventBaseContrac
                         saveInstanceCacheManager.put(Utils.Constants.EXTRA_PACKAGEVIEWMODEL,selectedpkgViewModel,7);
                         saveInstanceCacheManager.put(Utils.Constants.EXTRA_SEATSELECTEDMODEL,mSelectedSeatViewModel,7);
                         saveInstanceCacheManager.put(Utils.Constants.EXTRA_VERIFY_RESPONSE, gson.toJson(verifyCartResponse.getCart()),7);
-                        reviewTicketIntent.putExtra("review", saveInstanceCacheManager.getId());
+                        reviewTicketIntent.putExtra(Utils.Constants.REVIEW_ACTIVITY_ID, saveInstanceCacheManager.getId());
                         mView.navigateToActivityRequest(reviewTicketIntent, Utils.Constants.REVIEW_REQUEST);
                     } else {
                         mView.showSnackBar(verifyCartResponse.getCart().getError(), false);

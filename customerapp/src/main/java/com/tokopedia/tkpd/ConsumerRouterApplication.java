@@ -14,9 +14,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.bugsnag.android.BreadcrumbType;
+import com.bugsnag.android.Bugsnag;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.google.android.gms.tagmanager.DataLayer;
+import com.google.android.play.core.inappreview.InAppReviewInfo;
+import com.google.android.play.core.inappreview.InAppReviewManager;
+import com.google.android.play.core.inappreview.InAppReviewManagerFactory;
+import com.google.android.play.core.tasks.OnCompleteListener;
+import com.google.android.play.core.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -29,9 +36,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
+import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
@@ -46,6 +53,7 @@ import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.constant.DigitalCache;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -76,7 +84,6 @@ import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.DataMapper;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.design.component.BottomSheets;
@@ -183,7 +190,6 @@ import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.drawer.NoOpDrawerHelper;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
-import com.tokopedia.tkpd.home.SimpleHomeActivity;
 import com.tokopedia.tkpd.home.analytics.HomeAnalytics;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
@@ -226,12 +232,13 @@ import okhttp3.Interceptor;
 import okhttp3.Response;
 import rx.Observable;
 import rx.functions.Func1;
-import com.tokopedia.common_tradein.utils.TradeInUtils;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
 import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
+import static com.tokopedia.tkpd.thankyou.view.ReactNativeThankYouPageActivity.CACHE_KEY_HAS_SHOWN_IN_APP_REVIEW_BEFORE;
+import static com.tokopedia.tkpd.thankyou.view.ReactNativeThankYouPageActivity.CACHE_THANK_YOU_PAGE;
 
 
 /**
@@ -607,6 +614,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         PersistentCacheManager.instance.delete(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV);
         new CacheApiClearAllUseCase(this).executeSync();
         TkpdSellerLogout.onLogOut(appComponent);
+        Bugsnag.leaveBreadcrumb("user_state", BreadcrumbType.STATE, new HashMap<String, String>() {{
+            put("init", "logout");
+        }});
     }
 
     public Intent getLoginIntent(Context context) {
@@ -735,6 +745,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = CustomerRouter.getSplashScreenIntent(getBaseContext());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+        Bugsnag.leaveBreadcrumb("user_state", BreadcrumbType.STATE, new HashMap<String, String>() {{
+            put("init", "force_logout");
+        }});
     }
 
     @Override
@@ -915,7 +928,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void logInvalidGrant(Response response) {
         AnalyticsLog.logInvalidGrant(this, legacyGCMHandler(), legacySessionHandler(), response.request().url().toString());
-
+        Bugsnag.leaveBreadcrumb("user_state", BreadcrumbType.STATE, new HashMap<String, String>() {{
+            put("init", "log_invalid");
+        }});
     }
 
     public boolean isIndicatorVisible() {
@@ -1064,7 +1079,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             try {
                 return DeeplinkHandlerActivity.getApplinkDelegateInstance().getIntent((Activity) context, applink);
             } catch (Exception e) {
-                e.printStackTrace();
+                Bugsnag.notify(e);
             }
         }
 
@@ -1105,16 +1120,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Global Nav Router
-     */
-    @Override
-    public Intent gotoWishlistPage(Context context) {
-        Intent intent = new Intent(context, SimpleHomeActivity.class);
-        intent.putExtra(SimpleHomeActivity.FRAGMENT_TYPE, SimpleHomeActivity.WISHLIST_FRAGMENT);
-        return intent;
+        Bugsnag.leaveBreadcrumb("user_state", BreadcrumbType.STATE, new HashMap<String, String>() {{
+            put("init", "re_login");
+        }});
     }
 
     @Override
@@ -1249,6 +1257,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
         mIris.setUserId("");
         setTetraUserId("");
+        Bugsnag.leaveBreadcrumb("user_state", BreadcrumbType.STATE, new HashMap<String, String>() {{
+            put("init", "logout_account");
+        }});
     }
 
     @Override
@@ -1289,7 +1300,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private boolean executeAppflyerInit(){
-        TkpdAppsFlyerMapper.getInstance(this).mapAnalytics();
+        TkpdAppsFlyerMapper.getInstance(ConsumerRouterApplication.this).mapAnalytics();
         return true;
     }
 
@@ -1312,7 +1323,43 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void showSimpleAppRatingDialog(Activity activity) {
-        SimpleAppRatingDialog.show(activity);
+        //this code needs to be improved in the future
+        boolean hasShownInAppReviewBefore = getInAppReviewHasShownBefore();
+        boolean enableInAppReview = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE, false);
+
+        if (enableInAppReview && !hasShownInAppReviewBefore) {
+            launchInAppReview(activity);
+        } else {
+            SimpleAppRatingDialog.show(activity);
+        }
+    }
+
+    private boolean getInAppReviewHasShownBefore() {
+        LocalCacheHandler cacheHandler = new LocalCacheHandler(this, CACHE_THANK_YOU_PAGE);
+        return cacheHandler.getBoolean(CACHE_KEY_HAS_SHOWN_IN_APP_REVIEW_BEFORE);
+    }
+
+    private void setInAppReviewHasShownBefore() {
+        LocalCacheHandler cacheHandler = new LocalCacheHandler(this, CACHE_THANK_YOU_PAGE);
+        cacheHandler.putBoolean(CACHE_KEY_HAS_SHOWN_IN_APP_REVIEW_BEFORE, true);
+        cacheHandler.applyEditor();
+    }
+
+    private void launchInAppReview(Activity activity) {
+        InAppReviewManager inAppReviewManager = InAppReviewManagerFactory.create(activity);
+        inAppReviewManager.requestInAppReviewFlow().addOnCompleteListener(new OnCompleteListener<InAppReviewInfo>() {
+            @Override
+            public void onComplete(Task<InAppReviewInfo> request) {
+                if (request.isSuccessful()) {
+                    inAppReviewManager.launchInAppReviewFlow(activity, request.getResult()).addOnCompleteListener(new OnCompleteListener<Integer>() {
+                        @Override
+                        public void onComplete(Task<Integer> task) {
+                            setInAppReviewHasShownBefore();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     @Override

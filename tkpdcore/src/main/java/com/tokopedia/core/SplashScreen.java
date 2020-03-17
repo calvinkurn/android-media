@@ -128,7 +128,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
 
     @NotNull
     private boolean executeMoveToHomeFlow(){
-        boolean status = GCMHandler.isPlayServicesAvailable(this);
+        boolean status = GCMHandler.isPlayServicesAvailable(SplashScreen.this);
         if(!status){
             Timber.w("P2#PLAY_SERVICE_ERROR#Problem with PlayStore | " + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
                     + Build.BRAND + " | "+Build.DEVICE+" | "+Build.PRODUCT+ " | "+Build.MODEL
@@ -203,13 +203,10 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
 
     @NotNull
     private boolean getBranchDefferedDeeplink() {
-        if(LinkerManager.getInstance() == null){
-            initLinker();
-        }
         LinkerDeeplinkData linkerDeeplinkData = new LinkerDeeplinkData();
-        linkerDeeplinkData.setClientId(TrackingUtils.getClientID(this));
-        linkerDeeplinkData.setReferrable(this.getIntent().getData());
-        linkerDeeplinkData.setActivity(this);
+        linkerDeeplinkData.setClientId(TrackingUtils.getClientID(SplashScreen.this));
+        linkerDeeplinkData.setReferrable(SplashScreen.this.getIntent().getData());
+        linkerDeeplinkData.setActivity(SplashScreen.this);
 
         LinkerManager.getInstance().handleDefferedDeeplink(LinkerUtils.createDeeplinkRequest(0,
                 linkerDeeplinkData, new DefferedDeeplinkCallback() {
@@ -245,21 +242,8 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                     @Override
                     public void onError(LinkerError linkerError) {
                     }
-                }, this));
+                }, SplashScreen.this));
         return true;
-    }
-
-    private void initLinker(){
-        LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(SplashScreen.this.getApplicationContext()));
-        UserSession userSession = new UserSession(SplashScreen.this);
-
-        if(userSession.isLoggedIn()) {
-            UserData userData = new UserData();
-            userData.setUserId(userSession.getUserId());
-
-            LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY,
-                    userData));
-        }
     }
 
     @Override

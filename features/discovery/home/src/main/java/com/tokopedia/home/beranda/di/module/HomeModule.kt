@@ -34,8 +34,7 @@ import dagger.Provides
     HomeDatabaseModule::class,
     HomePresenterModule::class,
     HomeMapperModule::class,
-    HomeUseCaseModule::class,
-    TopAdsWishlistModule::class
+    HomeUseCaseModule::class
 ])
 class HomeModule {
 

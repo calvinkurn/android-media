@@ -8,11 +8,13 @@ import com.tokopedia.autocomplete.initialstate.popularsearch.RefreshPopularSearc
 import com.tokopedia.autocomplete.initialstate.popularsearch.convertPopularSearchToVisitableList
 import com.tokopedia.autocomplete.initialstate.recentsearch.DeleteRecentSearchUseCase
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchTitleViewModel
+import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.convertRecentSearchToVisitableList
 import com.tokopedia.autocomplete.initialstate.recentview.ReecentViewTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.convertRecentViewSearchToVisitableList
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.user.session.UserSessionInterface
+import retrofit2.Response
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -30,7 +32,7 @@ class InitialStatePresenter @Inject constructor(
     }
 
     private var querySearch = ""
-    private var listVistable = listOf<Visitable<*>>()
+    private var listVistable = mutableListOf<Visitable<*>>()
 
     private fun getInitialStateSubscriber(): Subscriber<List<InitialStateData>> = object : Subscriber<List<InitialStateData>>() {
         override fun onCompleted() {}
@@ -84,7 +86,62 @@ class InitialStatePresenter @Inject constructor(
         }
     }
 
-    private fun getInitialStateResult(list: MutableList<InitialStateData>): List<Visitable<*>> {
+    private fun getDeleteRecentSearchSubscriber(keyword: String): Subscriber<Response<Void>> = object : Subscriber<Response<Void>>() {
+        override fun onCompleted() {}
+
+        override fun onError(e: Throwable) {
+            e.printStackTrace()
+        }
+
+        override fun onNext(response: Response<Void>) {
+            if (response.isSuccessful) {
+                var needDelete = false
+                listVistable.forEachIndexed { _, visitable ->
+                    if (visitable is RecentSearchViewModel) {
+                        if (visitable.list.size == 1) {
+                            needDelete = true
+                        } else {
+                            val deleted = visitable.list.find { it.title == keyword }
+                            visitable.list.remove(deleted)
+                        }
+                    }
+                }
+                if(needDelete){
+                    removeRecentSearchTitle()
+                    removeRecentSearch()
+                }
+                view.deleteRecentSearch(listVistable)
+            }
+        }
+    }
+
+    private fun removeRecentSearchTitle() {
+        val titleViewModel = listVistable.filterIsInstance<RecentSearchTitleViewModel>()
+        listVistable.removeAll(titleViewModel)
+    }
+
+    private fun removeRecentSearch() {
+        val recentSearchViewModel = listVistable.filterIsInstance<RecentSearchViewModel>()
+        listVistable.removeAll(recentSearchViewModel)
+    }
+
+    private fun getDeleteAllRecentSearchSubscriber(): Subscriber<Response<Void>> = object : Subscriber<Response<Void>>() {
+        override fun onCompleted() {}
+
+        override fun onError(e: Throwable) {
+            e.printStackTrace()
+        }
+
+        override fun onNext(response: Response<Void>) {
+            if (response.isSuccessful) {
+                removeRecentSearchTitle()
+                removeRecentSearch()
+                view.deleteRecentSearch(listVistable)
+            }
+        }
+    }
+
+    private fun getInitialStateResult(list: MutableList<InitialStateData>): MutableList<Visitable<*>> {
         val data = mutableListOf<Visitable<*>>()
         for (initialStateData in list) {
             when (initialStateData.id) {
@@ -135,7 +192,7 @@ class InitialStatePresenter @Inject constructor(
             val model = BaseItemInitialStateSearch(
                     template = item.template,
                     imageUrl = item.imageUrl,
-                    applink =  item.applink,
+                    applink = item.applink,
                     url = item.url,
                     title = item.title,
                     subtitle = item.subtitle,
@@ -170,7 +227,7 @@ class InitialStatePresenter @Inject constructor(
         )
         deleteRecentSearchUseCase.execute(
                 params,
-                getInitialStateSubscriber()
+                getDeleteRecentSearchSubscriber(keyword)
         )
     }
 
@@ -181,13 +238,13 @@ class InitialStatePresenter @Inject constructor(
         )
         deleteRecentSearchUseCase.execute(
                 params,
-                getInitialStateSubscriber()
+                getDeleteAllRecentSearchSubscriber()
         )
     }
 
     override fun refreshPopularSearch(searchParameter: SearchParameter) {
         refreshPopularSearchUseCase.execute(
-                InitialStateUseCase.getParams(
+                RefreshPopularSearchUseCase.getParams(
                         searchParameter.getSearchParameterMap(),
                         userSession.deviceId,
                         userSession.userId

@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.listener
 
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analytics.performance.util.JankyFrameMonitoringUtil
 
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
@@ -81,6 +82,8 @@ interface HomeCategoryListener {
 
     fun onCloseGeolocationView()
 
+    fun sendEETracking(data: HashMap<String, Any>)
+
     fun putEEToTrackingQueue(data: HashMap<String, Any>)
 
     fun putEEToIris(data: HashMap<String, Any>)
@@ -88,4 +91,12 @@ interface HomeCategoryListener {
     fun getWindowWidth(): Int
 
     fun refreshHomeData()
+
+    fun getHomeJankyFramesUtil(): JankyFrameMonitoringUtil?
+
+    fun getTabBusinessWidget(position: Int)
+
+    fun getBusinessUnit(tabId: Int, position: Int)
+
+    fun getPlayChannel(position: Int)
 }

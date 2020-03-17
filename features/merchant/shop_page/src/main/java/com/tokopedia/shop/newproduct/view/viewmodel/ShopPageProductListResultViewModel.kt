@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PRODUCT_LIST_RESULT_SOURCE
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
@@ -56,7 +57,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
         if (id == 0 && shopDomain == null) return
         launchCatchError(block = {
             getShopInfoUseCase.params = GQLGetShopInfoUseCase
-                    .createParams(if (id == 0)listOf() else listOf(id), shopDomain)
+                    .createParams(if (id == 0)listOf() else listOf(id), shopDomain, source = SHOP_PRODUCT_LIST_RESULT_SOURCE)
             getShopInfoUseCase.isFromCacheFirst = !isRefresh
             val shopInfo = withContext(Dispatchers.IO){getShopInfoUseCase.executeOnBackground()}
             shopInfoResp.value = Success(shopInfo)

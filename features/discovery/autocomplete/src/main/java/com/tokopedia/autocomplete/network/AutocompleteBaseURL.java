@@ -9,5 +9,6 @@ public class AutocompleteBaseURL {
         public static String ACE_DOMAIN = TokopediaUrl.Companion.getInstance().getACE();
         public static final String PATH_INITIAL_STATE = "/initial-state/v1";
         public static final String PATH_POPULAR_SEARCH = "/universe/popular/v1";
+        public static final String PATH_SUGGESTION = "/suggestion/v1";
     }
 }

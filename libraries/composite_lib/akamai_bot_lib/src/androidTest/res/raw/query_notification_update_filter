@@ -1,0 +1,17 @@
+query get_notification_update_filter($typeOfNotif: Int){
+  notifcenter_filter(type_of_notif: $typeOfNotif) {
+    notifcenter_typeList {
+      list {
+        id
+        name
+      }
+    }
+    notifcenter_tagList {
+      list {
+        tag_id
+        tag_key
+        tag_name
+      }
+    }
+  }
+}

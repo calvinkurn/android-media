@@ -1,0 +1,5 @@
+mutation travelUpsertContact ($data: UpsertContactArgs!) {
+    travelUpsertContact(input: $data){
+        Success
+    }
+}

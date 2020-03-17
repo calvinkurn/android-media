@@ -55,4 +55,11 @@ public class TemplateChatModel implements Visitable<TemplateChatTypeFactory> {
     public void setIcon(boolean icon) {
         isIcon = icon;
     }
+
+    public String getEllipsizedMessage() {
+        if (message.length() > 15) {
+            return message.substring(0, 16) + "...";
+        }
+        return message;
+    }
 }
