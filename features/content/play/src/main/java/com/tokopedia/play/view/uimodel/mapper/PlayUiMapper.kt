@@ -12,8 +12,8 @@ import com.tokopedia.play.view.uimodel.*
  */
 object PlayUiMapper {
 
-    private const val MAX_PRODUCTS = 1
-    private const val MAX_VOUCHERS = 1
+    private const val MAX_PRODUCTS = 5
+    private const val MAX_VOUCHERS = 5
 
     fun mapChannelInfo(channel: Channel) = ChannelInfoUiModel(
             id = channel.channelId,
