@@ -10,6 +10,7 @@ import com.tokopedia.discovery2.data.DataItem
 
 
 class Utils {
+    
     companion object {
         const val TIME_ZONE = "Asia/Jakarta"
         const val TIMER_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm"
