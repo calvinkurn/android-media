@@ -59,10 +59,15 @@ object VariantCommonMapper {
         return listOfVariant
     }
 
-    fun selectedProductData(variantData: ProductVariantCommon): VariantChildCommon? {
-        return variantData.children.find {
-            it.optionIds == selectedOptionId
+    fun selectedProductData(variantData: ProductVariantCommon): Pair<Int, VariantChildCommon?>? {
+        var pairOfValue: Pair<Int, VariantChildCommon?>? = null
+        for ((index, it: VariantChildCommon) in variantData.children.withIndex()) {
+            if (it.optionIds == selectedOptionId) {
+                pairOfValue = Pair(index, it)
+                break
+            }
         }
+        return pairOfValue
     }
 
     private fun updateSelectedOptionsIds(variantData: ProductVariantCommon, updatedSelectedOptionsId: List<Int>, mapOfSelectedVariant: MutableMap<String, Int>?) {
