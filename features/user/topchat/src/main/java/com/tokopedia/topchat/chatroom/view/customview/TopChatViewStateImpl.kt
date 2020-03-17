@@ -109,11 +109,6 @@ class TopChatViewStateImpl(
             }
         }
 
-        sendButton.setOnClickListener {
-            sendListener.onSendClicked(replyEditText.text.toString(),
-                    SendableViewModel.generateStartTime())
-        }
-
         templateAdapter = TemplateChatAdapter(TemplateChatTypeFactoryImpl(templateListener))
         templateRecyclerView.setHasFixedSize(true)
         templateRecyclerView.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)

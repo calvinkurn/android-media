@@ -1,6 +1,5 @@
 package com.tokopedia.shop.pageheader.presentation.adapter
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
@@ -22,7 +21,7 @@ import java.lang.ref.WeakReference
 internal class ShopPageFragmentPagerAdapter(
         ctx: Context?,
         fragmentManager: FragmentManager
-) : FragmentStatePagerAdapter(fragmentManager) {
+) : FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     private val registeredFragments = SparseArrayCompat<Fragment>()
     private var listTitleIcon = listOf<Int>()
     private var listFragment = listOf<Fragment>()
