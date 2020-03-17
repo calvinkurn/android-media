@@ -66,6 +66,7 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.state.PlayVideoState
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineScope
@@ -108,6 +109,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     @Inject
     lateinit var dispatchers: CoroutineDispatcherProvider
+
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
     
     private val offset24 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl5) }
     private val offset16 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl4) }
@@ -204,13 +208,18 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         observeLoggedInInteractionEvent()
     }
 
+    override fun onPause() {
+        super.onPause()
+        trackingQueue.sendAll()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         job.cancel()
     }
 
     override fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet) {
-        PlayAnalytics.clickWatchMode(channelId, playViewModel.isLive)
+        PlayAnalytics.clickWatchMode(channelId, playViewModel.channelType)
         triggerImmersive(clPlayInteraction, VISIBLE_ALPHA)
         bottomSheet.dismiss()
     }
@@ -262,7 +271,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun observeVideoProperty() {
         playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
-            if (it.state == PlayVideoState.Playing) PlayAnalytics.clickPlayVideo(channelId, playViewModel.isLive)
+            if (it.state == PlayVideoState.Playing) PlayAnalytics.clickPlayVideo(channelId, playViewModel.channelType)
             if (it.state == PlayVideoState.Ended) showInteractionIfWatchMode()
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
@@ -489,7 +498,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                     .collect {
                         when (it) {
                             is PinnedInteractionEvent.PinnedMessageClicked -> {
-                                PlayAnalytics.clickPinnedMessage(channelId, it.message, playViewModel.isLive)
+                                PlayAnalytics.clickPinnedMessage(channelId, it.message, playViewModel.channelType)
                                 openPageByApplink(it.applink)
                             }
                             PinnedInteractionEvent.PinnedProductClicked -> {
@@ -566,7 +575,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                     .collect {
                         when (it) {
                             ImmersiveBoxInteractionEvent.BoxClicked -> {
-                                PlayAnalytics.clickWatchArea(channelId, playViewModel.isLive)
+                                PlayAnalytics.clickWatchArea(channelId, playViewModel.channelType)
                                 triggerImmersive(clPlayInteraction, VISIBLE_ALPHA)
                             }
                         }
@@ -930,7 +939,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     //endregion
 
     private fun doLeaveRoom() {
-        PlayAnalytics.clickLeaveRoom(channelId, playViewModel.getDurationCurrentVideo(), playViewModel.isLive)
+        PlayAnalytics.clickLeaveRoom(channelId, playViewModel.getDurationCurrentVideo(), playViewModel.channelType)
         activity?.onBackPressed()
     }
 
@@ -939,7 +948,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun doActionFollowPartner(partnerId: Long, action: PartnerFollowAction) {
-        PlayAnalytics.clickFollowShop(channelId, partnerId.toString(), action.value, playViewModel.isLive)
+        PlayAnalytics.clickFollowShop(channelId, partnerId.toString(), action.value, playViewModel.channelType)
         viewModel.doFollow(partnerId, action)
 
         sendEventFollowPartner(action == PartnerFollowAction.Follow)
@@ -965,7 +974,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun openShopPage(partnerId: Long) {
-        PlayAnalytics.clickShop(channelId, partnerId.toString(), playViewModel.isLive)
+        PlayAnalytics.clickShop(channelId, partnerId.toString(), playViewModel.channelType)
         openPageByApplink(ApplinkConst.SHOP, partnerId.toString())
     }
 
@@ -986,6 +995,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun shouldOpenCartPage() {
+        PlayAnalytics.clickCartIcon(channelId, playViewModel.channelType)
         viewModel.doInteractionEvent(InteractionEvent.CartPage)
     }
 
@@ -1029,7 +1039,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 shouldLike)
 
         sendEventLikeContent(shouldLike)
-        PlayAnalytics.clickLike(channelId, shouldLike, playViewModel.isLive)
+        PlayAnalytics.clickLike(channelId, shouldLike, playViewModel.channelType)
     }
 
     private fun sendEventLikeContent(shouldLike: Boolean) {
@@ -1123,6 +1133,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun openProductSheet() {
+        PlayAnalytics.clickPinnedProduct(channelId)
         playViewModel.onShowProductSheet(productSheetMaxHeight)
     }
 

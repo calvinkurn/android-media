@@ -54,8 +54,8 @@ class ProductSheetView(
             listener.onAtcButtonClicked(this@ProductSheetView, product)
         }
 
-        override fun onClickProductCard(applink: String) {
-            listener.onProductCardClicked(this@ProductSheetView, applink)
+        override fun onClickProductCard(product: ProductLineUiModel) {
+            listener.onProductCardClicked(this@ProductSheetView, product)
         }
     })
     private val voucherAdapter = MerchantVoucherAdapter()
@@ -78,6 +78,18 @@ class ProductSheetView(
             layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
             adapter = voucherAdapter
             addItemDecoration(MerchantVoucherItemDecoration(view.context))
+        }
+
+        rvVoucherList.apply {
+            addOnScrollListener(object: RecyclerView.OnScrollListener(){
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    if (newState == RecyclerView.SCROLL_STATE_SETTLING &&
+                            layoutManager is LinearLayoutManager) {
+                        val llManager = layoutManager as LinearLayoutManager
+                        listener.onVoucherScrolled(llManager.findLastVisibleItemPosition())
+                    }
+                }
+            })
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
@@ -166,6 +178,7 @@ class ProductSheetView(
         fun onCloseButtonClicked(view: ProductSheetView)
         fun onBuyButtonClicked(view: ProductSheetView, product: ProductLineUiModel)
         fun onAtcButtonClicked(view: ProductSheetView, product: ProductLineUiModel)
-        fun onProductCardClicked(view: ProductSheetView, applink: String)
+        fun onProductCardClicked(view: ProductSheetView, product: ProductLineUiModel)
+        fun onVoucherScrolled(lastPositionViewed: Int)
     }
 }

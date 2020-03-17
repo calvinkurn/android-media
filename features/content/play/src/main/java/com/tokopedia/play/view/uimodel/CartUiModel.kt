@@ -1,5 +1,7 @@
 package com.tokopedia.play.view.uimodel
 
+import com.tokopedia.play.analytic.TrackingField
+import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
 
 
@@ -14,5 +16,14 @@ data class CartUiModel(
 data class CartFeedbackUiModel(
         val isSuccess: Boolean = false,
         val errorMessage: String = "",
-        val action: ProductAction
+        val action: ProductAction,
+
+        @TrackingField
+        val cartId: String,
+
+        @TrackingField
+        val product: ProductLineUiModel,
+
+        @TrackingField
+        val bottomInsetsType: BottomInsetsType
 )

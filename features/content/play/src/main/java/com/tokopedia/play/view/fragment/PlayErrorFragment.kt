@@ -151,7 +151,7 @@ class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
                     }
                 }
             }
-            PlayAnalytics.errorState(channelId, globalError.errorDescription.text.toString(), playViewModel.isLive)
+            PlayAnalytics.errorState(channelId, globalError.errorDescription.text.toString(), playViewModel.channelType)
             container.visible()
         }
     }

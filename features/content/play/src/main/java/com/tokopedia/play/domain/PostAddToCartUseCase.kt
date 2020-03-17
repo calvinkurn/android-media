@@ -14,9 +14,6 @@ class PostAddToCartUseCase @Inject constructor(
         private val addToCartUseCase: AddToCartUseCase
 ) : UseCase<AddToCartDataModel>() {
 
-    /**
-     * Please follow AddtoCartUseCase getMinimumParams(productId: String, shopId: String, quantity: Int = 1, notes: String = "")
-     */
     var parameters: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): AddToCartDataModel {

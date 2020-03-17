@@ -10,6 +10,7 @@ sealed class PlayProductUiModel
 
 data class ProductLineUiModel(
         val id: String,
+        val shopId: String,
         val imageUrl: String,
         val title: String,
         val stock: ProductStock,

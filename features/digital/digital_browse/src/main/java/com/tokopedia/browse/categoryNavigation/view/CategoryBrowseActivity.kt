@@ -17,7 +17,7 @@ class CategoryBrowseActivity : BaseCategoryBrowseActivity() {
         return launchSource
     }
 
-    override fun getScreenName() = getString(R.string.belanja_screen_name)
+    override fun getScreenName(): String = getString(R.string.belanja_screen_name)
 
     object DeepLinkIntents {
         lateinit var bundle: Bundle

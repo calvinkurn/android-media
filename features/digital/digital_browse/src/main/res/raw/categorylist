@@ -1,39 +1,36 @@
-query AllCategoryQuery($safeSearch: Boolean!) {
-  categoryAllList(safeSearch:$safeSearch) {
+query AllCategoryQuery($depth :Int,$isTrending: Boolean!) {
+  categoryAllList(depth:$depth,isTrending:$isTrending) {
     categories {
       id
       name
       identifier
-      isAdult
       url
+      parentName
       iconImageUrl
-      template
+      iconImageUrlGray
+      iconBannerURL
+      hexColor
       applinks
-      isRevamp
-      isIntermediary
       child {
         id
         name
         identifier
         url
-        iconImageUrl
-        isAdult
         parentName
-        template
+        iconImageUrl
+        iconBannerURL
+        hexColor
         applinks
-        isRevamp
-        isIntermediary
         child {
           id
           name
-          isAdult
           identifier
           url
+          parentName
           iconImageUrl
-          template
+          iconBannerURL
+          hexColor
           applinks
-          isRevamp
-          isIntermediary
         }
       }
     }

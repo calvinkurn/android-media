@@ -79,7 +79,7 @@ class PlayViewModel @Inject constructor(
         get() = _observableProductSheetContent
     val observableBadgeCart: LiveData<CartUiModel>
         get() = _observableBadgeCart
-    val isLive: PlayChannelType
+    val channelType: PlayChannelType
         get() {
             val channelInfo = _observableGetChannelInfo.value
             return if (channelInfo != null && channelInfo is Success) {
@@ -214,9 +214,9 @@ class PlayViewModel @Inject constructor(
 //        startMockFreeze()
 //        setMockProductSocket()
 //        setMockVoucherSocket()
-        setMockProductSheetContent()
+//        setMockProductSheetContent()
 //        setMockVariantSheetContent()
-        setMockProductPinned()
+//        setMockProductPinned()
     }
 
     //region lifecycle
@@ -374,21 +374,12 @@ class PlayViewModel @Inject constructor(
                 return@withContext getChannelInfoUseCase.executeOnBackground()
             }
 
-            // TODO("testing")
-            channel.isShowCart = true
-            channel.isShowProductTagging = true
-
             launch { getTotalLikes(channel.contentId, channel.contentType, channel.likeType) }
             launch { getIsLike(channel.contentId, channel.contentType) }
             launch { getBadgeCart(channel.isShowCart) }
             launch { if (channel.isShowProductTagging) getProductTagItems(channel) }
 
-            /**
-             * If Live => start web socket
-             */
-            if (channel.videoStream.isLive
-                    && channel.videoStream.type.equals(PlayChannelType.Live.value, true))
-                startWebSocket(channelId, channel.gcToken, channel.settings)
+            startWebSocket(channelId, channel.gcToken, channel.settings)
 
             playVideoStream(channel)
 
@@ -667,16 +658,18 @@ class PlayViewModel @Inject constructor(
                         productList = List(5) {
                             ProductLineUiModel(
                                     id = it.toString(),
+                                    shopId = "123",
                                     imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
                                     title = "Product $it",
                                     isVariantAvailable = true,
                                     price = if (it % 2 == 0) {
-                                        OriginalPrice("Rp20$it.000")
+                                        OriginalPrice("Rp20$it.000", 20000)
                                     } else {
                                         DiscountedPrice(
                                                 originalPrice = "Rp20$it.000",
                                                 discountPercent = it * 10,
-                                                discountedPrice = "Rp2$it.000"
+                                                discountedPrice = "Rp2$it.000",
+                                                discountedPriceNumber = 20000
                                         )
                                     },
                                     stock = if (it % 2 == 0) {
@@ -719,26 +712,28 @@ class PlayViewModel @Inject constructor(
                 _observableProductSheetContent.value = PlayResult.Success(ProductSheetUiModel(
                         title = "Barang & Promo Pilihan",
                         voucherList = List(5) { voucherIndex ->
-                            //                            MerchantVoucherUiModel(
-//                                    type = if (voucherIndex % 2 == 0) MerchantVoucherType.Discount else MerchantVoucherType.Shipping,
-//                                    title = if (voucherIndex % 2 == 0) "Cashback ${(voucherIndex + 1) * 2}rb" else "Gratis ongkir ${(voucherIndex + 1) * 2}rb",
-//                                    description = "min. pembelian ${(voucherIndex + 1)}00rb"
-//                            )
-                            VoucherPlaceholderUiModel
+                                                        MerchantVoucherUiModel(
+                                    type = if (voucherIndex % 2 == 0) MerchantVoucherType.Discount else MerchantVoucherType.Shipping,
+                                    title = if (voucherIndex % 2 == 0) "Cashback ${(voucherIndex + 1) * 2}rb" else "Gratis ongkir ${(voucherIndex + 1) * 2}rb",
+                                    description = "min. pembelian ${(voucherIndex + 1)}00rb"
+                            )
+//                            VoucherPlaceholderUiModel
                         },
                         productList = List(5) {
                             ProductLineUiModel(
                                     id = "689413405",
+                                    shopId = "123",
                                     imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
                                     title = "Product $it",
                                     isVariantAvailable = true,
                                     price = if (it % 2 == 0) {
-                                        OriginalPrice("Rp20$it.000")
+                                        OriginalPrice("Rp20$it.000", 20000)
                                     } else {
                                         DiscountedPrice(
                                                 originalPrice = "Rp20$it.000",
                                                 discountPercent = it * 10,
-                                                discountedPrice = "Rp2$it.000"
+                                                discountedPrice = "Rp2$it.000",
+                                                discountedPriceNumber = 20000
                                         )
                                     },
                                     stock = if (it % 2 == 0) {

@@ -9,11 +9,10 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.domain.PostAddToCartUseCase
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.Event
-import com.tokopedia.play.view.type.DiscountedPrice
-import com.tokopedia.play.view.type.OutOfStock
+import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
-import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.CartFeedbackUiModel
+import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.VariantSheetUiModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
@@ -80,23 +79,34 @@ class PlayBottomSheetViewModel @Inject constructor(
         )
     }
 
-    fun addToCart(productId: String, shopId: String, quantity: Int, notes: String = "", action: ProductAction) {
+    fun addToCart(product: ProductLineUiModel, notes: String = "", action: ProductAction, type: BottomInsetsType) {
         launchCatchError(block = {
             val responseCart = withContext(dispatchers.io) {
-                postAddToCartUseCase.parameters = AddToCartUseCase.getMinimumParams(productId, shopId, quantity, notes)
+                postAddToCartUseCase.parameters = AddToCartUseCase.getMinimumParams(
+                        product.id,
+                        product.shopId,
+                        product.minQty,
+                        notes
+                )
                 postAddToCartUseCase.executeOnBackground()
             }
 
-            _observableAddToCart.value = mappingResponseCart(responseCart, action)
+            _observableAddToCart.value = mappingResponseCart(responseCart, product, action, type)
         }) { }
     }
 
-    private fun mappingResponseCart(addToCartDataModel: AddToCartDataModel, action: ProductAction) =
+    private fun mappingResponseCart(addToCartDataModel: AddToCartDataModel,
+                                    product: ProductLineUiModel,
+                                    action: ProductAction,
+                                    bottomInsetsType: BottomInsetsType) =
             CartFeedbackUiModel(
                     isSuccess = addToCartDataModel.data.success == 1,
                     errorMessage = if (addToCartDataModel.errorMessage.size > 0)
                         addToCartDataModel.errorMessage.joinToString { "$it " } else "",
-                    action = action
+                    cartId = addToCartDataModel.data.cartId.toString(),
+                    product = product,
+                    action = action,
+                    bottomInsetsType = bottomInsetsType
             )
 
     override fun onCleared() {
@@ -104,23 +114,23 @@ class PlayBottomSheetViewModel @Inject constructor(
         job.cancelChildren()
     }
 
-    private fun setMockVariantSheetContent(action: ProductAction) {
-        _observableProductVariant.value = PlayResult.Success(VariantSheetUiModel(
-                product = ProductLineUiModel(
-                        id = "123",
-                        imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
-                        title = "Product Value",
-                        isVariantAvailable = true,
-                        price = DiscountedPrice(
-                                originalPrice = "Rp20.000",
-                                discountPercent = 10,
-                                discountedPrice = "Rp20.000"
-                        ),
-                        stock = OutOfStock,
-                        minQty = 1,
-                        applink = null
-                ),
-                action = action
-        ))
-    }
+//    private fun setMockVariantSheetContent(action: ProductAction) {
+//        _observableProductVariant.value = PlayResult.Success(VariantSheetUiModel(
+//                product = ProductLineUiModel(
+//                        id = "123",
+//                        imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
+//                        title = "Product Value",
+//                        isVariantAvailable = true,
+//                        price = DiscountedPrice(
+//                                originalPrice = "Rp20.000",
+//                                discountPercent = 10,
+//                                discountedPrice = "Rp20.000"
+//                        ),
+//                        stock = OutOfStock,
+//                        minQty = 1,
+//                        applink = null
+//                ),
+//                action = action
+//        ))
+//    }
 }

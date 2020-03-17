@@ -65,7 +65,7 @@ data class Channel(
         val likeType: Int = 1,
 
         @SerializedName("video_stream")
-        var videoStream: VideoStream = VideoStream(),
+        val videoStream: VideoStream = VideoStream(),
 
         @SerializedName("pinned_message")
         val pinnedMessage: PinnedMessage = PinnedMessage(),
@@ -92,10 +92,10 @@ data class Channel(
         val channelType: Int = 0,
 
         @SerializedName("is_show_cart")
-        var isShowCart: Boolean = false,
+        val isShowCart: Boolean = false,
 
         @SerializedName("is_show_product_tagging")
-        var isShowProductTagging: Boolean = false
+        val isShowProductTagging: Boolean = false
 
 ) {
 

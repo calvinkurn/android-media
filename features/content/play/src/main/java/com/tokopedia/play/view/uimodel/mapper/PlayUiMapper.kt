@@ -86,16 +86,19 @@ object PlayUiMapper {
         return products.map {
             ProductLineUiModel(
                     id = it.id.toString(),
+                    shopId = it.shopId,
                     imageUrl = it.image,
                     title = it.name,
-                    price = if (it.price != 0) {
+                    price = if (it.price != 0L) {
                         DiscountedPrice(
                                 originalPrice = it.originalPriceFormatted,
                                 discountedPrice = it.priceFormatted,
+                                discountedPriceNumber = it.price,
                                 discountPercent = it.discount
                         )
                     } else {
-                        OriginalPrice(price = it.originalPriceFormatted)
+                        OriginalPrice(price = it.originalPriceFormatted,
+                                priceNumber = it.originalPrice)
                     },
                     isVariantAvailable = it.isVariant,
                     stock = if (it.isAvailable) StockAvailable(it.quantity) else OutOfStock,

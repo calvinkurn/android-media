@@ -128,15 +128,16 @@ class VariantSheetView(
 
                 val product = ProductLineUiModel(
                         id = selectedProduct.productId.toString(),
+                        shopId = variantSheetUiModel?.product?.shopId.toEmptyStringIfNull(),
                         imageUrl = selectedProduct.picture?.original ?: "",
                         title = selectedProduct.name,
                         stock = if (stock == null) OutOfStock else StockAvailable(stock.stock.orZero()),
                         isVariantAvailable = true,
-                        price = OriginalPrice(selectedProduct.priceFmt.toEmptyStringIfNull()),
+                        price = OriginalPrice(selectedProduct.priceFmt.toEmptyStringIfNull(), selectedProduct.price.toLong()),
                         minQty = variantSheetUiModel?.product?.minQty.orZero(),
                         applink = null
                 )
-                variantSheetUiModel?.stockWording = selectedProduct.stock?.stockWordingHTML
+                variantSheetUiModel?.stockWording = stock?.stockWordingHTML
                 variantSheetUiModel?.product = product
                 setProduct(product)
 
@@ -187,8 +188,10 @@ class VariantSheetView(
         )
 
         btnAction.setOnClickListener {
-            if (model.action == ProductAction.Buy) listener.onBuyClicked(this, model.product)
-            else listener.onAddToCartClicked(this, model.product)
+            variantSheetUiModel?.product?.let { product ->
+                if (model.action == ProductAction.Buy) listener.onBuyClicked(this, product)
+                else listener.onAddToCartClicked(this, product)
+            }
         }
     }
 

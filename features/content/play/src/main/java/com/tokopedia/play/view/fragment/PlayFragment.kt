@@ -158,7 +158,7 @@ class PlayFragment : BaseDaggerFragment() {
 
         if (childFragmentManager.findFragmentByTag(BOTTOM_SHEET_FRAGMENT_TAG) == null) {
             childFragmentManager.beginTransaction()
-                    .replace(fl_bottom_sheet.id, PlayBottomSheetFragment.newInstance(), BOTTOM_SHEET_FRAGMENT_TAG)
+                    .replace(fl_bottom_sheet.id, PlayBottomSheetFragment.newInstance(channelId), BOTTOM_SHEET_FRAGMENT_TAG)
                     .commit()
         }
 
@@ -238,7 +238,7 @@ class PlayFragment : BaseDaggerFragment() {
         playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success ->
-                    PlayAnalytics.sendScreen(channelId, playViewModel.isLive)
+                    PlayAnalytics.sendScreen(channelId, playViewModel.channelType)
             }
         })
     }
@@ -247,9 +247,9 @@ class PlayFragment : BaseDaggerFragment() {
         playViewModel.observableSocketInfo.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is PlaySocketInfo.Reconnect ->
-                    PlayAnalytics.errorState(channelId, getString(R.string.play_message_socket_reconnect), playViewModel.isLive)
+                    PlayAnalytics.errorState(channelId, getString(R.string.play_message_socket_reconnect), playViewModel.channelType)
                 is PlaySocketInfo.Error ->
-                    PlayAnalytics.errorState(channelId, String.format(getString(R.string.play_message_socket_error), it.throwable.localizedMessage), playViewModel.isLive)
+                    PlayAnalytics.errorState(channelId, String.format(getString(R.string.play_message_socket_error), it.throwable.localizedMessage), playViewModel.channelType)
             }
         })
     }
@@ -269,7 +269,7 @@ class PlayFragment : BaseDaggerFragment() {
             if (it.state is PlayVideoState.Error) {
                 PlayAnalytics.errorState(channelId,
                         it.state.error.message?:getString(R.string.play_common_video_error_message),
-                        playViewModel.isLive)
+                        playViewModel.channelType)
             }
         })
     }
