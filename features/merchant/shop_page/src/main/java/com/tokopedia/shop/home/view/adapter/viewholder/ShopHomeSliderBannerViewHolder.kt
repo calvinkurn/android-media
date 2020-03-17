@@ -56,13 +56,20 @@ class ShopHomeSliderBannerViewHolder(
 
     init {
         carouselShopPage = view?.findViewById(R.id.carousel_shop_page)
+        carouselShopPage?.apply {
+            autoplayDuration = 5000L
+            autoplay = true
+            indicatorPosition = CarouselUnify.INDICATOR_BL
+            infinite = true
+            onActiveIndexChangedListener = this@ShopHomeSliderBannerViewHolder
+        }
     }
 
     override fun onActiveIndexChanged(prev: Int, current: Int) {
         itemView.isVisibleOnTheScreen({
             bannerData?.let { shopHomeDisplayWidgetUiModel ->
                 shopHomeDisplayWidgetUiModel.data?.let { listDisplayWidget ->
-                    if (current < shopHomeDisplayWidgetUiModel.data.size) {
+                    if (current >= 0 && current < shopHomeDisplayWidgetUiModel.data.size) {
                         val item = listDisplayWidget[current]
                         if (!item.isInvoke) {
                             listener.onDisplayItemImpression(
@@ -83,13 +90,9 @@ class ShopHomeSliderBannerViewHolder(
         bannerData = shopHomeDisplayWidgetUiModel
         carouselData = dataWidgetToCarouselData(shopHomeDisplayWidgetUiModel)
         carouselShopPage?.apply {
-            autoplayDuration = 5000L
-            autoplay = true
-            indicatorPosition = CarouselUnify.INDICATOR_BL
-            infinite = true
             carouselData?.let {
-                addItems(R.layout.widget_slider_banner_item, it, itmListener)
-                onActiveIndexChangedListener = this@ShopHomeSliderBannerViewHolder
+                if(stage.childCount == 0)
+                    addItems(R.layout.widget_slider_banner_item, it, itmListener)
             }
         }
         itemView.textViewTitle?.apply {
