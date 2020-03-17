@@ -1308,6 +1308,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void showSimpleAppRatingDialog(Activity activity) {
+        //this code needs to be improved in the future
         boolean hasShownInAppReviewBefore = getInAppReviewHasShownBefore();
         boolean enableInAppReview = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE, false);
 
