@@ -134,8 +134,16 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
         val item = list[position]
         ImageHandler.loadImage(productHeaderViewHolder.itemView.context, productHeaderViewHolder.productHeaderImage, item.iconImageUrl, R.drawable.category_ic_broken_image)
         productHeaderViewHolder.productHeaderName.text = item.name
-        setDrawableRoundedImage(productHeaderViewHolder.productHeaderRoot, item.hexColor)
-
+        item.hexColor?.let {
+            if (it.isEmpty()) {
+                val shape = GradientDrawable()
+                shape.cornerRadius = 17.0f
+                shape.setColor(productHeaderViewHolder.itemView.context.resources.getColor(R.color.Blue_B500))
+                productHeaderViewHolder.productHeaderRoot.background = shape
+            } else {
+                setDrawableRoundedImage(productHeaderViewHolder.productHeaderRoot, it)
+            }
+        }
         productHeaderViewHolder.productHeaderRoot.setOnClickListener {
             fireApplink(productHeaderViewHolder.itemView.context, item.applinks)
             categoryAnalytics.eventBannerCategoryLevelOneClick(list[position])

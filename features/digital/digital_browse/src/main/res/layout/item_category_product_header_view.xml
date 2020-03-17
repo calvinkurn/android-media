@@ -16,8 +16,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:srcCompat="@drawable/category_ic_broken_image"
+        tools:ignore="ContentDescription" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_name"
@@ -28,7 +28,7 @@
         android:padding="@dimen/dp_12"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/arrow_icon"
         app:layout_constraintRight_toRightOf="@+id/arrow_icon"
         app:layout_constraintStart_toEndOf="@+id/product_image"
         app:layout_constraintTop_toTopOf="parent"
