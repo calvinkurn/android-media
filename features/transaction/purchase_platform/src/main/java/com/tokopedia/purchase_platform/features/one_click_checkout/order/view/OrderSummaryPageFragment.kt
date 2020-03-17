@@ -14,7 +14,11 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment
+import com.tokopedia.common.payment.PaymentConstant
+import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.design.component.Tooltip
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.globalerror.GlobalError
@@ -35,7 +39,9 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ProfilesItemModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.ProfileResponse
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.PaymentParameter
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.di.OrderSummaryPageComponent
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.ErrorCheckoutBottomSheet
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.OccInfoBottomSheet
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.PreferenceListBottomSheet
@@ -183,6 +189,16 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                             message = ErrorHandler.getErrorMessage(context, it.throwable)
                         }
                         Toaster.make(v, message, type = Toaster.TYPE_ERROR)
+                    }
+                }
+                is OccGlobalEvent.CheckoutError -> {
+                    progressDialog?.dismiss()
+                    view?.let { v ->
+                        ErrorCheckoutBottomSheet().show(this, it, object : ErrorCheckoutBottomSheet.Listener {
+                            override fun onClickSimilarProduct() {
+                                RouteManager.route(context, ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT, viewModel.orderProduct.productId.toString())
+                            }
+                        })
                     }
                 }
             }
@@ -346,6 +362,27 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 OrderPriceSummaryBottomSheet().show(this, orderTotal.orderCost)
             }
         }
+
+        btn_pay.setOnClickListener {
+            viewModel.finalUpdate { paymentParameter: PaymentParameter ->
+                view?.let {v ->
+                    activity?.let {
+                        if (paymentParameter.callbackUrl.isNotEmpty() && paymentParameter.payload.isNotEmpty()) {
+                            val paymentPassData = PaymentPassData()
+                            paymentPassData.redirectUrl = paymentParameter.callbackUrl
+                            paymentPassData.queryString = paymentParameter.payload
+
+                            val intent = RouteManager.getIntent(activity, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
+                            intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
+                            startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
+                            it.finish()
+                        } else {
+                            // redirect params?
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun showMessage(preference: ProfileResponse) {
@@ -366,6 +403,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             tv_subheader_action.visible()
             tv_subheader.visible()
         }
+        ticker_preference_info.visibility = if (preference.isChangedProfile) View.VISIBLE else View.GONE
     }
 
     private fun initViews(view: View) {

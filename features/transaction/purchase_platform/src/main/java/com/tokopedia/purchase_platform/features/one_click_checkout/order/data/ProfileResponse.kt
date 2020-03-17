@@ -12,6 +12,8 @@ data class ProfileResponse(
         val onboardingComponent: OnboardingComponentResponse = OnboardingComponentResponse(),
         @SerializedName("has_preference")
         val hasPreference: Boolean = false,
+        @SerializedName("is_changed_profile")
+        val isChangedProfile: Boolean = false,
         @SerializedName("profile_id")
         val profileId: Int = 0,
         @SerializedName("status")

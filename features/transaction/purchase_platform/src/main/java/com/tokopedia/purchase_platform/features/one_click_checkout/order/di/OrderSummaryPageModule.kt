@@ -15,6 +15,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.GetOccCartGqlResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.UpdateCartOccGqlResponse
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.CheckoutOccGqlResponse
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -55,6 +56,10 @@ class OrderSummaryPageModule {
     @OrderSummaryPageScope
     @Provides
     fun providesUpdateCartOccGraphqlUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<UpdateCartOccGqlResponse> = GraphqlUseCase(graphqlRepository)
+
+    @OrderSummaryPageScope
+    @Provides
+    fun providesCheckoutOccGraphqlUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<CheckoutOccGqlResponse> = GraphqlUseCase(graphqlRepository)
 
     @OrderSummaryPageScope
     @Provides

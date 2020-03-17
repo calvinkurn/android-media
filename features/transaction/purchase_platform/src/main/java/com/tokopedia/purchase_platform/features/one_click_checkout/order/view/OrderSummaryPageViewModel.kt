@@ -14,6 +14,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.purchase_platform.common.data.model.param.EditAddressParam
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.*
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.PromoRequest
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.EditAddressUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetPreferenceListUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccGlobalEvent
@@ -23,6 +24,8 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.Up
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.UpdateCartOccGqlResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.UpdateCartOccProfileRequest
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.UpdateCartOccRequest
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.*
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.domain.CheckoutOccUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.domain.GetOccCartUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.domain.UpdateCartOccUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.*
@@ -44,6 +47,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                     val updateCartOccUseCase: UpdateCartOccUseCase,
                                                     private val ratesResponseStateConverter: RatesResponseStateConverter,
                                                     private val editAddressUseCase: EditAddressUseCase,
+                                                    private val checkoutOccUseCase: CheckoutOccUseCase,
                                                     private val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher) {
 
     var orderProduct: OrderProduct = OrderProduct()
@@ -62,6 +66,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     private var debounceJob: Job? = null
 
     fun getOccCart() {
+        globalEvent.value = OccGlobalEvent.Normal
         getOccCartUseCase.execute({ orderData: OrderData ->
             orderProduct = orderData.cart.product
             orderShop = orderData.cart.shop
@@ -174,6 +179,9 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                     val serviceDur = tempServiceDuration.substring(tempServiceDuration.indexOf("(")+1,tempServiceDuration.indexOf(")"))
                                                     shipping = shipping.copy(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
                                                             shipperId = selectedShippingCourierUiModel.productData.shipperId,
+                                                            ratesId = selectedShippingCourierUiModel.ratesId,
+                                                            ut = selectedShippingCourierUiModel.productData.unixTime,
+                                                            checksum = selectedShippingCourierUiModel.productData.checkSum,
                                                             shipperName = selectedShippingCourierUiModel.productData.shipperName,
                                                             insuranceData = selectedShippingCourierUiModel.productData.insurance,
                                                             serviceId = shippingDurationViewModel.serviceData.serviceId,
@@ -233,6 +241,9 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                         val serviceDur = tempServiceDuration.substring(tempServiceDuration.indexOf("(")+1,tempServiceDuration.indexOf(")"))
                                                         shipping = Shipment(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
                                                                 shipperId = selectedShippingCourierUiModel.productData.shipperId,
+                                                                ratesId = selectedShippingCourierUiModel.ratesId,
+                                                                ut = selectedShippingCourierUiModel.productData.unixTime,
+                                                                checksum = selectedShippingCourierUiModel.productData.checkSum,
                                                                 shipperName = selectedShippingCourierUiModel.productData.shipperName,
                                                                 needPinpoint = flagNeedToSetPinpoint,
                                                                 serviceErrorMessage = if (flagNeedToSetPinpoint) "Butuh pinpoint lokasi" else null,
@@ -307,12 +318,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     private fun getCourierDatabySpId(spId: Int, shippingCourierViewModels: List<ShippingCourierUiModel>): ShippingCourierUiModel? {
         return shippingCourierViewModels.firstOrNull { it.productData.shipperProductId == spId }
-//        for (shippingCourierViewModel in shippingCourierViewModels) {
-//            if (shippingCourierViewModel.productData.shipperProductId == spId) {
-//                return ShippingCourierConverter().convertToCourierItemData(shippingCourierViewModel)
-//            }
-//        }
-//        return null
     }
 
     private fun getRatesDataFromLogisticPromo(serviceId: Int, list: List<ShippingDurationUiModel>): ShippingDurationUiModel? {
@@ -357,6 +362,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
                             paymentErrorMessage = "maximum pembayaran adalah ${CurrencyFormatUtil.convertPriceValueToIdrFormat(minimumAmount, false)}",
                             isButtonChoosePayment = true)
+                } else if (_orderPreference?.preference?.payment?.gatewayCode?.contains("OVO") == true && subtotal > _orderPreference?.preference?.payment?.walletAmount ?: 0) {
+                    orderTotal.value = orderTotal.value?.copy(orderCost = orderCost, paymentErrorMessage = "OVO kamu tidak cukup", isButtonChoosePayment = true)
                 } else {
                     orderTotal.value = orderTotal.value?.copy(orderCost = orderCost, paymentErrorMessage = null, isButtonChoosePayment = false)
                 }
@@ -511,6 +518,9 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                         selectedShippingCourierUiModel.isSelected = true
                         _orderPreference = _orderPreference?.copy(shipping = shipping.copy(
                                 shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
+                                ratesId = selectedShippingCourierUiModel.ratesId,
+                                ut = selectedShippingCourierUiModel.productData.unixTime,
+                                checksum = selectedShippingCourierUiModel.productData.checkSum,
                                 shipperId = selectedShippingCourierUiModel.productData.shipperId,
                                 shipperName = selectedShippingCourierUiModel.productData.shipperName,
                                 insuranceData = selectedShippingCourierUiModel.productData.insurance,
@@ -583,6 +593,9 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     serviceDuration = serviceDur,
                     serviceName = selectedShippingDurationViewModel.serviceData.serviceName,
                     shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
+                    ratesId = selectedShippingCourierUiModel.ratesId,
+                    ut = selectedShippingCourierUiModel.productData.unixTime,
+                    checksum = selectedShippingCourierUiModel.productData.checkSum,
                     shipperId = selectedShippingCourierUiModel.productData.shipperId,
                     shipperName = selectedShippingCourierUiModel.productData.shipperName,
                     insuranceData = selectedShippingCourierUiModel.productData.insurance,
@@ -696,8 +709,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     quantity.orderQuantity,
                     op.notes,
                     op.productId.toString(),
-                    pref.shipping?.shipperId.toZeroIfNull().toString(),
-                    pref.shipping?.shipperProductId.toZeroIfNull().toString()
+                    pref.shipping?.shipperId.toZeroIfNull(),
+                    pref.shipping?.shipperProductId.toZeroIfNull()
             )
             val profile = UpdateCartOccProfileRequest(
                     pref.preference.profileId.toString(),
@@ -733,5 +746,82 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 }
             })
         }
+    }
+
+    fun finalUpdate(onSuccessCheckout: (PaymentParameter) -> Unit) {
+        val product = orderProduct
+        val shop = orderShop
+        val pref = _orderPreference
+        if (orderTotal.value?.buttonState == ButtonBayarState.NORMAL && pref != null && pref.shipping?.shipperProductId ?: 0 > 0) {
+            val param = generateUpdateCartParam()
+            if (param != null) {
+                globalEvent.value = OccGlobalEvent.Loading
+                updateCartOccUseCase.execute(param, { updateCartOccGqlResponse: UpdateCartOccGqlResponse ->
+                    doCheckout(product, shop, pref, onSuccessCheckout)
+                }, { throwable: Throwable ->
+                    throwable.printStackTrace()
+                    if (throwable is MessageErrorException && throwable.message != null) {
+                        globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message
+                                ?: "Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
+                    } else {
+                        globalEvent.value = OccGlobalEvent.Error(throwable)
+                    }
+                })
+            }
+        }
+    }
+
+    private fun doCheckout(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (PaymentParameter) -> Unit) {
+        val param = CheckoutOccRequest(Profile(pref.preference.profileId), ParamCart(data = listOf(ParamData(
+                pref.preference.address.addressId,
+                listOf(
+                        ShopProduct(
+                                shopId = shop.shopId,
+                                isPreorder = shop.cartResponse.product.isPreorder,
+                                warehouseId = shop.cartResponse.product.wareHouseId,
+                                finsurance = if (pref.shipping!!.isCheckInsurance) 1 else 0,
+                                productData = listOf(
+                                        ProductData(
+                                                product.productId,
+                                                product.quantity!!.orderQuantity,
+                                                product.notes
+                                        )
+                                ),
+                                shippingInfo = ShippingInfo(
+                                        pref.shipping.shipperId!!,
+                                        pref.shipping.shipperProductId!!,
+                                        pref.shipping.ratesId!!,
+                                        pref.shipping.ut!!,
+                                        pref.shipping.checksum!!
+                                )
+                        )
+                )
+        ))))
+        checkoutOccUseCase.execute(param, { checkoutOccGqlResponse: CheckoutOccGqlResponse ->
+            if (checkoutOccGqlResponse.response.status.equals("OK", true)) {
+                if (checkoutOccGqlResponse.response.data.success == 1) {
+                    val paymentParameter = checkoutOccGqlResponse.response.data.paymentParameter
+                    onSuccessCheckout(paymentParameter)
+                    globalEvent.value = OccGlobalEvent.Normal
+                } else {
+                    if (checkoutOccGqlResponse.response.data.error.imageUrl.isNotEmpty()) {
+                        globalEvent.value = OccGlobalEvent.CheckoutError(checkoutOccGqlResponse.response.data.error)
+                    } else if (checkoutOccGqlResponse.response.data.error.message.isNotBlank()) {
+                        globalEvent.value = OccGlobalEvent.Error(errorMessage = checkoutOccGqlResponse.response.data.error.message)
+                    } else {
+                        globalEvent.value = OccGlobalEvent.Error(errorMessage = "Terjadi kesalahan dengan kode ${checkoutOccGqlResponse.response.data.error.message}")
+                    }
+                }
+            } else {
+                if (checkoutOccGqlResponse.response.header.messages.isNotEmpty()) {
+                    globalEvent.value = OccGlobalEvent.Error(errorMessage = checkoutOccGqlResponse.response.header.messages[0])
+                } else {
+                    globalEvent.value = OccGlobalEvent.Error(errorMessage = "Terjadi kesalahan")
+                }
+            }
+        }, { throwable: Throwable ->
+            throwable.printStackTrace()
+            globalEvent.value = OccGlobalEvent.Error(throwable)
+        })
     }
 }

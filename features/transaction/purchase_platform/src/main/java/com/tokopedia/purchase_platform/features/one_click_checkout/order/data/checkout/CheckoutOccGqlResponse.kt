@@ -8,11 +8,11 @@ data class CheckoutOccGqlResponse(
 )
 
 data class CheckoutOccResponse(
-        @SerializedName("header")
+        @SerializedName("Header")
         val header: Header = Header(),
-        @SerializedName("status")
+        @SerializedName("Status")
         val status: String = "",
-        @SerializedName("data")
+        @SerializedName("Data")
         val data: Data = Data()
 )
 
@@ -26,28 +26,39 @@ data class Header(
 )
 
 data class Data(
-        @SerializedName("success")
+        @SerializedName("Success")
         val success: Int = 0,
-        @SerializedName("error")
+        @SerializedName("Error")
         val error: Error = Error(),
         @SerializedName("payment_parameter")
         val paymentParameter: PaymentParameter = PaymentParameter()
 )
 
 data class Error(
-        @SerializedName("code")
+        @SerializedName("Code")
         val code: String = "",
-        @SerializedName("reason")
-        val reason: String = "",
-        @SerializedName("error_code")
-        val errorCode: String = ""
+        @SerializedName("ImageURL")
+        val imageUrl: String = "",
+        @SerializedName("Message")
+        val message: String = ""
 )
 
 data class PaymentParameter(
-        @SerializedName("callback_url")
+        @SerializedName("CallbackURL")
         val callbackUrl: String = "",
-        @SerializedName("payload")
+        @SerializedName("Payload")
         val payload: String = "",
-        @SerializedName("redirect_param")
-        val redirectParam: String = ""
+        @SerializedName("RedirectParam")
+        val redirectParam: RedirectParam = RedirectParam()
+)
+
+data class RedirectParam(
+        @SerializedName("URL")
+        val url: String = "",
+        @SerializedName("Gateway")
+        val gateway: String = "",
+        @SerializedName("Method")
+        val method: String = "",
+        @SerializedName("Form")
+        val form: String = ""
 )

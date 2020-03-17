@@ -2,12 +2,17 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.b
 
 import android.view.View
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccGlobalEvent
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderSummaryPageFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.android.synthetic.main.bottom_sheet_error_checkout.view.*
 
-class ErrorCheckoutBottomSheet{
+class ErrorCheckoutBottomSheet {
 
-    fun show(view: OrderSummaryPageFragment){
+    var listener: Listener? = null
+
+    fun show(view: OrderSummaryPageFragment, error: OccGlobalEvent.CheckoutError, listener: Listener) {
+        this.listener = listener
         view.fragmentManager?.let {
             BottomSheetUnify().apply {
                 showCloseIcon = true
@@ -17,9 +22,25 @@ class ErrorCheckoutBottomSheet{
 //                view.view?.height?.div(2)?.let { height ->
 //                    customPeekHeight = height
 //                }
+                setupView(child, error)
                 setChild(child)
                 show(it, null)
             }
         }
+    }
+
+    private fun setupView(child: View, error: OccGlobalEvent.CheckoutError) {
+        val esCheckout = child.es_checkout
+        esCheckout.setImageUrl(error.error.imageUrl)
+        esCheckout.setDescription(error.error.message)
+        esCheckout.setPrimaryCTAText("Cari Barang Serupa")
+        esCheckout.setPrimaryCTAClickListener {
+            listener?.onClickSimilarProduct()
+        }
+    }
+
+    interface Listener {
+
+        fun onClickSimilarProduct()
     }
 }

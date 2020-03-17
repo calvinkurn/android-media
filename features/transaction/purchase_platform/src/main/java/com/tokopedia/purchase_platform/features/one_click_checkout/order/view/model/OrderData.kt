@@ -20,6 +20,9 @@ data class Shipment(
         val shipperName: String? = null,
         val shipperId: Int? = null,
         val shipperProductId: Int? = null,
+        val ratesId: String? = null,
+        val ut: String? = null,
+        val checksum: String? = null,
         val shippingPrice: Int? = null,
         val logisticPromoTickerMessage: String? = null,
         val logisticPromoViewModel: LogisticPromoUiModel? = null, // BBO ?

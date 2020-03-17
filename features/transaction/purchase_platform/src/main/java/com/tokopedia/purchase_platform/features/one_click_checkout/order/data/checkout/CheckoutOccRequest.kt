@@ -1,7 +1,8 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout
 
 data class CheckoutOccRequest(
-        val profile: Profile = Profile()
+        val profile: Profile = Profile(),
+        val carts: ParamCart = ParamCart()
 )
 
 data class Profile(
@@ -11,6 +12,16 @@ data class Profile(
 data class PromoRequest(
         val type: String = "",
         val code: String = ""
+)
+
+data class ParamCart(
+        val promos: List<PromoRequest> = emptyList(),
+        val data: List<ParamData> = emptyList()
+)
+
+data class ParamData(
+        val addressId: Int = 0,
+        val shopProducts: List<ShopProduct> = emptyList()
 )
 
 data class ShopProduct(
