@@ -1,5 +1,10 @@
 package com.tokopedia.core.analytics.fingerprint.domain.model;
 
+import android.text.TextUtils;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 /**
  * Created by Herdi_WORK on 20.06.17.
  */
@@ -30,6 +35,7 @@ public class FingerPrint {
     private String packageName;
     private String androidId;
     private boolean isx86;
+    private String pid;
 
     private FingerPrint(FingerPrintBuilder fingerPrintBuilder) {
         device_model = fingerPrintBuilder.deviceModel;
@@ -56,6 +62,27 @@ public class FingerPrint {
         androidId = fingerPrintBuilder.androidId;
         isx86 = fingerPrintBuilder.isx86;
         packageName = fingerPrintBuilder.packageName;
+        if (TextUtils.isEmpty(fingerPrintBuilder.imei)) {
+            pid = "";
+        } else {
+            pid = getMD5Hash(fingerPrintBuilder.imei);
+        }
+    }
+
+    protected static String getMD5Hash(String raw) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            digest.update(raw.getBytes());
+            byte[] messageDigest = digest.digest();
+            StringBuilder hexString = new StringBuilder();
+            for (byte message : messageDigest) {
+                hexString.append(String.format("%02x", message & 0xff));
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     public static class FingerPrintBuilder {
@@ -83,7 +110,7 @@ public class FingerPrint {
         private String androidId;
         private boolean isx86;
         private String packageName;
-        private int appsCount;
+        private String imei;
 
         public FingerPrintBuilder() {
 
@@ -206,6 +233,11 @@ public class FingerPrint {
 
         public FingerPrintBuilder packageName(String packageName) {
             this.packageName = packageName;
+            return this;
+        }
+
+        public FingerPrintBuilder imei(String imei) {
+            this.imei = imei;
             return this;
         }
 
