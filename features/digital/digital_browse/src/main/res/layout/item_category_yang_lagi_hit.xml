@@ -5,8 +5,6 @@
     android:id="@+id/yang_lagi_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/dp_10"
-    android:layout_marginLeft="@dimen/dp_10"
     android:layout_marginBottom="@dimen/dp_10">
 
     <ImageView
@@ -25,6 +23,9 @@
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="2"
+        android:minLines="2"
         android:padding="@dimen/dp_10"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"

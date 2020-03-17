@@ -3,6 +3,7 @@ package com.tokopedia.browse.categoryNavigation.adapters
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics.Compa
 import com.tokopedia.browse.categoryNavigation.data.model.newcategory.CategoryChildItem
 import com.tokopedia.browse.categoryNavigation.utils.Constants
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.item_category_product_header_view.view.*
 import kotlinx.android.synthetic.main.item_category_product_header_view.view.product_name
@@ -142,6 +144,15 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
 
     private fun initYangLagiHitViewHolderLayout(yangLagiHitsViewHolder: YangLagiHitsViewHolder, position: Int) {
         val item = list[position]
+        when (position % 2) {
+            0 -> {
+                yangLagiHitsViewHolder.ylhRootLayout.setMargin(convertDpToPx(yangLagiHitsViewHolder.itemView.context, 4), 0, 0, convertDpToPx(yangLagiHitsViewHolder.itemView.context, 8))
+            }
+
+            1 -> {
+                yangLagiHitsViewHolder.ylhRootLayout.setMargin(0, 0, convertDpToPx(yangLagiHitsViewHolder.itemView.context, 4), convertDpToPx(yangLagiHitsViewHolder.itemView.context, 8))
+            }
+        }
         setDrawableRoundedImage(yangLagiHitsViewHolder.ylhRootLayout, item.hexColor)
         ImageHandler.loadImage(yangLagiHitsViewHolder.itemView.context, yangLagiHitsViewHolder.ylhProductImage, item.iconImageUrl, R.drawable.category_ic_broken_image)
         yangLagiHitsViewHolder.ylhProductName.text = item.name
@@ -229,5 +240,9 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
                 }
             }
         }
+    }
+
+    private fun convertDpToPx(context: Context, dp: Int): Int {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), context.resources.displayMetrics).toInt()
     }
 }

@@ -11,6 +11,8 @@
         android:id="@+id/product_image"
         android:layout_width="@dimen/dp_85"
         android:layout_height="@dimen/dp_85"
+        android:layout_marginStart="@dimen/dp_18"
+        android:layout_marginLeft="@dimen/dp_18"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

@@ -70,13 +70,17 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<com.tokopedi
         }
         if (categoryList[position].isSelected) {
             ImageHandler.loadImage(holder.itemView.context, holder.categoryImage, categoryList[position].iconImageUrl, R.drawable.category_ic_broken_image)
-            holder.categoryName.text = categoryList[position].name
             holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, R.color.white))
-
         } else {
             ImageHandler.loadImage(holder.itemView.context, holder.categoryImage, categoryList[position].iconImageUrlGray, R.drawable.category_ic_broken_image)
-            holder.categoryName.text = categoryList[position].name
             holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, R.color.category_background))
+        }
+
+        val categoryName: String = categoryList[position].name ?: ""
+        if (categoryName.length > 18) {
+            holder.categoryName.text = categoryName.substring(0, 18) + "..."
+        } else {
+            holder.categoryName.text = categoryName
         }
     }
 
