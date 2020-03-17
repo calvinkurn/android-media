@@ -324,7 +324,13 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                             }
                         }
                         if (successCount == responseValidatePromo.voucherOrders.size) {
-                            analytics.eventClickPakaiPromoSuccess(getPageSource(), "true", promoList)
+                            var selectedRecommendationCount = 0
+                            promoRecommendationUiModel.value?.uiData?.promoCodes?.forEach {
+                                if (promoList.contains(it)) selectedRecommendationCount++
+                            }
+                            val promoRecommendationCount = promoRecommendationUiModel.value?.uiData?.promoCodes?.size ?: 0
+                            val status = if (promoList.size == promoRecommendationCount && selectedRecommendationCount == promoRecommendationCount) 1 else 0
+                            analytics.eventClickPakaiPromoSuccess(getPageSource(), status.toString(), promoList)
                             // If all promo merchant are success, then navigate to cart
                             applyPromoResponse.value?.let {
                                 it.state = ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CART
