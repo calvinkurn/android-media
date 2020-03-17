@@ -102,6 +102,8 @@ class ProductViewHolder(
         itemView.imageStockInformation.setOnClickListener { listener.onClickStockInformation() }
         itemView.btnEditPrice.setOnClickListener { listener.onClickEditPriceButton(product) }
         itemView.btnEditStock.setOnClickListener { listener.onClickEditStockButton(product) }
+        itemView.btnEditVariant.setOnClickListener { listener.onClickEditVariantButton(product) }
+        itemView.btnContactCS.setOnClickListener { listener.onClickContactCsButton(product)}
     }
 
     private fun showProductCheckBox(product: ProductViewModel) {
@@ -118,5 +120,7 @@ class ProductViewHolder(
         fun onClickProductItem(product: ProductViewModel)
         fun onClickEditPriceButton(product: ProductViewModel)
         fun onClickEditStockButton(product: ProductViewModel)
+        fun onClickEditVariantButton(product: ProductViewModel)
+        fun onClickContactCsButton(product: ProductViewModel)
     }
 }

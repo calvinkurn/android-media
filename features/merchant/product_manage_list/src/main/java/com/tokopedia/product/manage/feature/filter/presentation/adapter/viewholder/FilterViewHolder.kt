@@ -60,7 +60,7 @@ class FilterViewHolder(view: View,
             ProductManageFilterMapper.ETALASE_HEADER -> {
                 ChipsAdapter(chipClickListener, false, element.title)
             }
-            else -> ChipsAdapter(chipClickListener, true)
+            else -> ChipsAdapter(chipClickListener, true, element.title)
         }
         recyclerView.adapter = adapter
         adapter?.setData(element)

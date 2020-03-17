@@ -25,6 +25,7 @@ import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.Produc
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChipsAdapter
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SeeAllListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ShowChipsListener
+import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
@@ -109,6 +110,7 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
             ProductManageFilterMapper.SORT_HEADER -> {
                 cacheManager?.put(SORT_CACHE_MANAGER_KEY, element)
                 intent.putExtra(ACTIVITY_EXPAND_FLAG, SORT_CACHE_MANAGER_KEY)
+                ProductManageTracking.eventSortingFilter()
             }
             ProductManageFilterMapper.ETALASE_HEADER -> {
                 cacheManager?.put(ETALASE_CACHE_MANAGER_KEY, element)
@@ -117,10 +119,12 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
             ProductManageFilterMapper.CATEGORY_HEADER -> {
                 cacheManager?.put(CATEGORIES_CACHE_MANAGER_KEY, element)
                 intent.putExtra(ACTIVITY_EXPAND_FLAG, CATEGORIES_CACHE_MANAGER_KEY)
+                ProductManageTracking.eventCategoryFilter()
             }
             ProductManageFilterMapper.OTHER_FILTER_HEADER -> {
                 cacheManager?.put(OTHER_FILTER_CACHE_MANAGER_KEY, element)
                 intent.putExtra(ACTIVITY_EXPAND_FLAG, OTHER_FILTER_CACHE_MANAGER_KEY)
+                ProductManageTracking.eventOthersFilter()
             }
         }
         intent.putExtra(CACHE_MANAGER_KEY, cacheManager?.id)
@@ -163,8 +167,18 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
     override fun onChipClicked(element: FilterDataViewModel, canSelectMany: Boolean, title: String) {
         if(canSelectMany) {
             productManageFilterViewModel.updateSelect(element)
+            if(title == ProductManageFilterMapper.OTHER_FILTER_HEADER) {
+                ProductManageTracking.eventOthersFilterName(element.name)
+            }
         } else {
             productManageFilterViewModel.updateSelect(element, title)
+            if(title == ProductManageFilterMapper.ETALASE_HEADER) {
+                if(element.name == getString(R.string.product_manage_filter_all_products) || element.name == getString(R.string.product_manage_filter_product_sold)) {
+                    ProductManageTracking.eventEtalaseFilter(element.name)
+                }
+            } else {
+                ProductManageTracking.eventSortingFilterName(element.name)
+            }
         }
     }
 
@@ -202,6 +216,7 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
                 val dataToSave = ProductManageFilterMapper.mapFiltersToFilterOptions(data)
                 onFinishedListener.onFinish(dataToSave)
                 super.dismiss()
+                ProductManageTracking.eventFilter()
             }
         }
         adjustBottomSheetPadding()
