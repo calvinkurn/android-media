@@ -13,7 +13,8 @@ data class AddAddressParam(
         val latitude: String,
         val longitude: String,
         var checksum: String = "",
-        var feature: String? = null
+        var feature: String? = null,
+        var is_ana_positive: String
 ) {
     fun toMap(): Map<String, Any> = mapOf(
             "addr_name" to addr_name,
@@ -26,6 +27,7 @@ data class AddAddressParam(
             "city" to city,
             "district" to district,
             "latitude" to latitude,
-            "longitude" to longitude
+            "longitude" to longitude,
+            "is_ana_positive" to is_ana_positive
     )
 }
