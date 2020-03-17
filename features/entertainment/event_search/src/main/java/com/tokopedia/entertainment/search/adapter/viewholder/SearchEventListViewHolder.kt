@@ -42,13 +42,14 @@ class SearchEventListViewHolder(val view: View) : SearchEventViewHolder<SearchEv
 
     data class KegiatanSuggestion(
             val id: String,
-            val price: Int,
+            val price: String,
             val nama_kegiatan : String,
             val tanggal_kegiatan : String,
             val lokasi_kegiatan : String,
             val image_url : String,
+            val app_url : String,
             val isLiked: Boolean,
-            val app_url: String
+            val category: String
     ) : ImpressHolder()
 
     class KegiatanAdapter : RecyclerView.Adapter<KegiatanHolder>(){
@@ -81,7 +82,7 @@ class SearchEventListViewHolder(val view: View) : SearchEventViewHolder<SearchEv
                 EventSearchPageTracking.getInstance().onClickedEventSearchSuggestion(element, listKegiatan, position+1)
             }
 
-            if(element.tanggal_kegiatan.isBlank() || element.tanggal_kegiatan.equals("0")){
+            if(element.tanggal_kegiatan.isBlank() || element.tanggal_kegiatan.equals("0") || element.category.equals("3")){
                 holder.view.txtTanggalSearch.visibility = View.INVISIBLE
                 holder.view.txtTanggalSearch.text = ""
                 holder.view.txtLokasiSearch.text = element.lokasi_kegiatan

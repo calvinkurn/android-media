@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
 import com.tokopedia.entertainment.home.adapter.ItemUtilCallback
@@ -41,7 +42,10 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
         itemView.ent_title_card.text = element.title
         itemAdapter.items = element.items
         itemView.btn_see_all.setOnClickListener {
-            EventHomePageTracking.getInstance().clickSeeAllCuratedEventProduct(element.title, adapterPosition + 1)
+            RouteManager.route(itemView.context, ApplinkConstInternalEntertainment.EVENT_CATEGORY,
+                    element.id)
+            EventHomePageTracking.getInstance().clickSeeAllCuratedEventProduct(element.title,
+                    adapterPosition + 1)
         }
     }
 

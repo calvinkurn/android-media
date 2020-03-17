@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment.EVENT_LOCATION
+import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.entertainment.search.R
 import com.tokopedia.entertainment.search.adapter.SearchEventAdapter
 import com.tokopedia.entertainment.search.adapter.factory.SearchTypeFactoryImp
@@ -52,15 +52,16 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope {
         super.onCreate(savedInstanceState)
         activity?.run {
             viewModel = ViewModelProviders.of(this, factory).get(EventSearchViewModel::class.java)
+            viewModel.resources = resources
         }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         if(activity?.txt_search?.searchBarTextField?.text!!.isNotBlank()){
-            viewModel.getSearchData(resources, activity?.txt_search?.searchBarTextField?.text.toString())
+            viewModel.getSearchData(activity?.txt_search?.searchBarTextField?.text.toString())
         } else {
-            viewModel.getHistorySearch(resources)
+            viewModel.getHistorySearch()
         }
     }
 
@@ -76,9 +77,9 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope {
         swipe_refresh_layout.setOnRefreshListener {
             if(activity?.txt_search?.searchBarTextField?.text?.toString()!!.isNotEmpty()
                     || activity?.txt_search?.searchBarTextField?.text?.toString()!!.isNotBlank()){
-                viewModel.getSearchData(resources, activity?.txt_search?.searchBarTextField?.text?.toString()!!)
+                viewModel.getSearchData(activity?.txt_search?.searchBarTextField?.text?.toString()!!)
             } else{
-                viewModel.getHistorySearch(resources)
+                viewModel.getHistorySearch()
             }
         }
     }
@@ -105,7 +106,7 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun allLocation(){
-        RouteManager.route(context, EVENT_LOCATION)
+        RouteManager.route(context, ApplinkConstInternalEntertainment.EVENT_LOCATION)
     }
 
     private fun initSearchBar(){
@@ -120,12 +121,12 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope {
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 if(p0.toString().length == 0){
-                    viewModel.getHistorySearch(resources)
+                    viewModel.getHistorySearch()
                 }
                 else{
                     launch {
                         delay(200)
-                        viewModel.getSearchData(resources, p0.toString())
+                        viewModel.getSearchData(p0.toString())
                     }
                 }
             }

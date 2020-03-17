@@ -38,13 +38,13 @@ class SearchEventGridViewHolder(val view : View) : DetailEventViewHolder<SearchE
 
     data class EventGrid(
             val id: String,
+            val app_url: String,
             val image_url : String,
             val location : String,
             val nama_event : String,
             val harga_start : String,
             val harga_now : String,
-            val isFavorite : Boolean,
-            val app_url : String
+            val isFavorite : Boolean
     ): ImpressHolder()
 
     class EventGridAdapter : RecyclerView.Adapter<EventGridViewHolder>(){

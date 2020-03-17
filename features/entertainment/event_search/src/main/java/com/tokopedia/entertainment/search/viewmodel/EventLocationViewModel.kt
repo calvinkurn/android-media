@@ -29,17 +29,18 @@ class EventLocationViewModel(private val dispatcher: CoroutineDispatcher,
         private val TAG = EventSearchViewModel::class.java.simpleName
     }
 
+    lateinit var resources: Resources
     val searchList: MutableLiveData<List<SearchEventItem<*>>> by lazy { MutableLiveData<List<SearchEventItem<*>>>() }
     val listViewHolder : MutableList<SearchEventItem<*>> = mutableListOf()
 
     val errorReport : MutableLiveData<String> by lazy { MutableLiveData<String>() }
 
-    fun getFullLocationData(resources: Resources){
+    fun getFullLocationData(){
         launchCatchError(
                 block = {
                     val lists: MutableList<SearchLocationListViewHolder.LocationSuggestion> = mutableListOf()
                     listViewHolder.clear()
-                    val dataLocation = getFullLocationSuggestionData(resources)
+                    val dataLocation = getFullLocationSuggestionData()
                     dataLocation.let {
                         it.eventLocationSearch.let {
                             if(it.count.toInt() > 0){
@@ -58,7 +59,7 @@ class EventLocationViewModel(private val dispatcher: CoroutineDispatcher,
         )
     }
 
-    private suspend fun getFullLocationSuggestionData(resources: Resources) : EventSearchFullLocationResponse.Data{
+    suspend fun getFullLocationSuggestionData() : EventSearchFullLocationResponse.Data{
         return withContext(Dispatchers.IO){
             val req = GraphqlRequest(
                     GraphqlHelper.loadRawString(resources, R.raw.query_event_search_location_full),

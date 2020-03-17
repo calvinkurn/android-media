@@ -11,10 +11,12 @@ import com.tokopedia.entertainment.home.data.EventHomeDataResponse
 class EventGridViewModel(var layout: EventHomeDataResponse.Data.EventHome.Layout)
     : HomeEventItem<HomeTypeFactory> {
 
+    var id : String = ""
     var title : String = ""
     var items : MutableList<EventItemModel> = mutableListOf()
 
     init {
+        id = layout.id
         title = layout.title
         layout.items.forEachIndexed { index, it ->
             if(index < 4) {

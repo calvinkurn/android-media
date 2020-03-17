@@ -36,17 +36,18 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
         private val CITIES = "cities"
     }
 
-    private val hashSet = HashSet<String>()
+    val hashSet = HashSet<String>()
     lateinit var resources: Resources
     private var cityID: String = ""
     private var searchQuery: String = ""
-    private var category : String = ""
+    var category : String = ""
 
     val isItRefreshing : MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
 
     val catLiveData: MutableLiveData<List<DetailEventItem<*>>> by lazy { MutableLiveData<List<DetailEventItem<*>>>() }
     val eventLiveData : MutableLiveData<List<DetailEventItem<*>>> by lazy { MutableLiveData<List<DetailEventItem<*>>>() }
     val errorReport : MutableLiveData<String> by lazy { MutableLiveData<String>() }
+    val categoryData : MutableList<CategoryTextViewHolder.CategoryTextBubble> = mutableListOf()
 
     val categoryList : MutableList<DetailEventItem<*>> = mutableListOf()
     val eventList : MutableList<DetailEventItem<*>> = mutableListOf()
@@ -54,25 +55,26 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
     fun getData(cityID : String = "", searchQuery: String= ""){
         this.cityID = cityID
         this.searchQuery = searchQuery
+        if(category.isBlank()) hashSet.clear()
 
         launchCatchError(
                  block = {
-                     val categoryData : MutableList<CategoryTextViewHolder.CategoryTextBubble> = mutableListOf()
                      val eventData : MutableList<SearchEventGridViewHolder.EventGrid> = mutableListOf()
                      categoryList.clear()
                      eventList.clear()
-                     val data = getQueryData(resources, this.searchQuery, this.cityID, category)
+                     val data = getQueryData(this.searchQuery, this.cityID, category)
                      data.let {
-                         if(category.isBlank()){
-                             hashSet.clear()
-                             it.eventChildCategory.let {
+                         it.eventChildCategory.let {
+                             if(categoryIsDifferentOrEmpty(it)){
+                                 categoryData.clear()
                                  it.categories.forEach {
                                      categoryData.add(DetailMapper.mapToCategory(it))
                                  }
-                                 categoryList.add(CategoryTextViewModel(categoryData))
+                                 categoryList.add(CategoryTextViewModel(categoryData, hashSet))
                                  catLiveData.value = categoryList
                              }
                          }
+
                          it.eventSearch.let {
                              if(it.products.size  > 0){
                                  it.products.forEach {
@@ -93,6 +95,21 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
                      isItRefreshing.value = false
                  }
         )
+    }
+
+    private fun categoryIsDifferentOrEmpty(list: EventDetailResponse.Data.EventChildCategory): Boolean{
+        //Case 1 Still empty or Data Category size and API Category Size is different
+        if(categoryData.size == 0 || categoryData.size != list.categories.size) return true
+
+        //Add all id to hashset
+        val listHashSet = HashSet<String>()
+        list.categories.forEach{item -> listHashSet.add(item.id) }
+
+        //Case 2 Data Category Size is Different but the data is different then change the data
+        categoryData.forEachIndexed{index, it -> if(!listHashSet.contains(categoryData.get(index).id)) return true }
+
+        //Default no need to change the data
+        return false
     }
 
     fun clearFilter(){
@@ -118,7 +135,7 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
         category = stringHash
     }
 
-    private suspend fun getQueryData(resources: Resources, searchQuery: String, cityID: String, category: String = "") : EventDetailResponse.Data{
+    suspend fun getQueryData(searchQuery: String, cityID: String, category: String = "") : EventDetailResponse.Data{
         return withContext(Dispatchers.IO){
             val req = GraphqlRequest(
                     GraphqlHelper.loadRawString(resources, R.raw.query_event_search_category),

@@ -1,6 +1,7 @@
 package com.tokopedia.entertainment.home.activity
 
 import android.os.Bundle
+import android.view.MotionEvent
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -22,8 +23,12 @@ class HomeEventActivity : BaseSimpleActivity(), HasComponent<EventHomeComponent>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         txt_search.searchBarTextField.inputType = 0
-        txt_search.searchBarTextField.setOnTouchListener { v, event -> openEventSearch() }
-        txt_search.setOnClickListener {openEventSearch() }
+        txt_search.searchBarTextField.setOnTouchListener { v, event ->
+            when(event.action){
+                MotionEvent.ACTION_DOWN -> openEventSearch()
+            }
+            return@setOnTouchListener true
+        }
     }
 
     private fun openEventSearch(): Boolean {

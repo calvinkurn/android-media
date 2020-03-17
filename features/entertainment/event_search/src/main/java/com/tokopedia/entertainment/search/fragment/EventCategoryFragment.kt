@@ -33,6 +33,7 @@ class EventCategoryFragment : BaseDaggerFragment() {
     lateinit var eventAdapter : DetailEventAdapter
     private var QUERY_TEXT : String = ""
     private var CITY_ID : String = ""
+    private var CATEGORY_ID: String = ""
 
     @Inject
     lateinit var factory: EventDetailViewModelFactory
@@ -55,6 +56,7 @@ class EventCategoryFragment : BaseDaggerFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         QUERY_TEXT = if ((activity as EventCategoryActivity).getQueryText() != null) (activity as EventCategoryActivity).getQueryText()!! else ""
         CITY_ID = if ((activity as EventCategoryActivity).getCityId() != null) (activity as EventCategoryActivity).getCityId()!! else ""
+        CATEGORY_ID = if((activity as EventCategoryActivity).getCategoryId() != null) (activity as EventCategoryActivity).getCategoryId()!! else ""
         return inflater.inflate(R.layout.ent_search_fragment, container, false)
     }
 
@@ -71,6 +73,7 @@ class EventCategoryFragment : BaseDaggerFragment() {
         activity?.txt_search?.searchBarTextField?.setText(QUERY_TEXT)
         observeSearchList()
         observeErrorReport()
+        setInitCategory()
         getEventData(QUERY_TEXT, CITY_ID)
 
         categoryAdapter = DetailEventAdapter(DetailTypeFactoryImp(::onCategoryClicked))
@@ -92,6 +95,15 @@ class EventCategoryFragment : BaseDaggerFragment() {
         swipe_refresh_layout.apply {
             setOnRefreshListener {
                 getEventData(QUERY_TEXT, CITY_ID)
+            }
+        }
+    }
+
+    private fun setInitCategory(){
+        if(CATEGORY_ID.isNotBlank()){
+            val cat = CATEGORY_ID.split(",")
+            cat.forEach{
+                viewModel.putCategoryToQuery(it)
             }
         }
     }

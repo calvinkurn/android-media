@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment.EVENT_CATEGORY
+import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.entertainment.search.R
 import com.tokopedia.entertainment.search.adapter.SearchEventViewHolder
 import com.tokopedia.entertainment.search.adapter.viewmodel.SearchLocationViewModel
@@ -81,11 +81,11 @@ class SearchLocationListViewHolder(val view: View, val onClicked: (() -> Unit)) 
             val location: LocationSuggestion = listLocation.get(position)
 
             holder.view.loc_name.text = getSpannableText(location.city, searchQuery)
-            holder.view.loc_country.text = location.country
             holder.view.loc_type.text = location.type
 
             holder.view.setOnClickListener {
-                EventSearchPageTracking.getInstance().onClickLocationSuggestion(location, listLocation, position+1)
+                EventSearchPageTracking.getInstance().onClickLocationSuggestion(location,
+                        listLocation, position+1)
                 goToDetail(holder, location.city, location.id_city)
             }
 
@@ -94,13 +94,17 @@ class SearchLocationListViewHolder(val view: View, val onClicked: (() -> Unit)) 
             })
         }
 
-        private fun getSpannableText(city_full_text: String, text_to_bold: String): SpannableStringBuilder {
+        private fun getSpannableText(city_full_text: String, text_to_bold: String):
+                SpannableStringBuilder {
             spannable = SpannableStringBuilder(city_full_text)
             try {
-                val startIndex = city_full_text.toLowerCase(Locale.US).indexOf(text_to_bold.toLowerCase(Locale.US)) + text_to_bold.length
-                spannable.setSpan(StyleSpan(Typeface.BOLD), startIndex, city_full_text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                val startIndex = city_full_text.toLowerCase(Locale.US)
+                        .indexOf(text_to_bold.toLowerCase(Locale.US)) + text_to_bold.length
+                spannable.setSpan(StyleSpan(Typeface.BOLD), startIndex, city_full_text.length,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 if (startIndex - 1 - text_to_bold.length > -1)
-                    spannable.setSpan(StyleSpan(Typeface.BOLD), 0, startIndex - 1 - text_to_bold.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    spannable.setSpan(StyleSpan(Typeface.BOLD), 0, startIndex - 1 -
+                            text_to_bold.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -108,7 +112,9 @@ class SearchLocationListViewHolder(val view: View, val onClicked: (() -> Unit)) 
         }
 
         fun goToDetail(holder: LocationViewHolder, query_text: String, id_city: String) {
-            val intent = RouteManager.getIntent(holder.view.context, EVENT_CATEGORY, query_text, id_city)
+            val intent = RouteManager.getIntent(holder.view.context,
+                    ApplinkConstInternalEntertainment.EVENT_CATEGORY + "?id_city={id_city}&query_text={query_text}",
+                    id_city, query_text)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
             holder.view.context.startActivity(intent)
         }

@@ -28,27 +28,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/loc_nameBold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:maxLines="1"
-        app:typographyType="body_2"
-        app:typographyWeight="bold"
-        tools:text = "baya"
-        app:layout_constraintStart_toEndOf="@+id/loc_name"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/loc_country"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp"
-        tools:text = "Indonesia"
-        app:typographyType="body_3"
-        app:layout_constraintStart_toEndOf="@id/imgCity"
-        app:layout_constraintTop_toBottomOf="@id/loc_name"/>
-
-    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/loc_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

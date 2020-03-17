@@ -1,5 +1,6 @@
 package com.tokopedia.entertainment.search.adapter.viewholder
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +18,6 @@ import kotlinx.android.synthetic.main.ent_search_category_text_item.view.*
 class CategoryTextViewHolder(val view: View, val onClicked : ((String)->Unit)?) : DetailEventViewHolder<CategoryTextViewModel>(view) {
 
     val categoryTextBubbleAdapter = CategoryTextBubbleAdapter(onClicked)
-
     init {
         initRecycle()
     }
@@ -35,6 +35,7 @@ class CategoryTextViewHolder(val view: View, val onClicked : ((String)->Unit)?) 
     override fun bind(element: CategoryTextViewModel) {
         initRecycle()
         categoryTextBubbleAdapter.listCategory = element.listsCategory
+        categoryTextBubbleAdapter.hashSet = element.hashSet
         categoryTextBubbleAdapter.notifyDataSetChanged()
     }
 
@@ -49,6 +50,7 @@ class CategoryTextViewHolder(val view: View, val onClicked : ((String)->Unit)?) 
 
     class CategoryTextBubbleAdapter(val onClicked: ((String) -> Unit)?) : RecyclerView.Adapter<CategoryTextBubbleViewHolder>(){
         lateinit var listCategory : List<CategoryTextBubble>
+        lateinit var hashSet: HashSet<String>
         private val FIRST_ITEM = 100
         private val LAST_ITEM = 101
 
@@ -87,22 +89,28 @@ class CategoryTextViewHolder(val view: View, val onClicked : ((String)->Unit)?) 
             with(holder.view){
                 name_category.text = category.category
                 name_category.setOnClickListener {
-                   if(clicked){
-                       name_category.background = ContextCompat.getDrawable(context,R.drawable.bg_text_category)
-                       name_category.setTextColor(ContextCompat.getColor(context,R.color.color_gray))
-                       clicked = false
-                   }else{
-                       name_category.background = ContextCompat.getDrawable(context,R.drawable.bg_text_category_green)
-                       name_category.setTextColor(ContextCompat.getColor(context, R.color.green_tkpd_text))
-                       clicked = true
-                   }
+                    clicked = setClicked(this, context, clicked)
                     EventCategoryPageTracking.getInstance().onClickCategoryBubble(category)
                     if (onClicked != null) {
                         onClicked.invoke(category.id)
                     }
                 }
+                if(hashSet.contains(category.id)) {
+                    clicked = setClicked(this, context, clicked)
+                }
             }
+        }
 
+        private fun setClicked(view: View, context: Context, clicked: Boolean) : Boolean{
+            if(clicked){
+                view.name_category.background = ContextCompat.getDrawable(context,R.drawable.bg_text_category)
+                view.name_category.setTextColor(ContextCompat.getColor(context,R.color.color_gray))
+                return false
+            }else{
+                view.name_category.background = ContextCompat.getDrawable(context,R.drawable.bg_text_category_green)
+                view.name_category.setTextColor(ContextCompat.getColor(context, R.color.green_tkpd_text))
+                return true
+            }
         }
     }
 

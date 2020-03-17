@@ -13,13 +13,13 @@ object DetailMapper {
     fun mapToGrid(event : EventDetailResponse.Data.EventSearch.ProductsItem) : SearchEventGridViewHolder.EventGrid{
         return SearchEventGridViewHolder.EventGrid(
                 id = event.id,
+                app_url = event.appUrl,
                 image_url = event.imageApp,
                 location = event.cityName,
                 nama_event = event.title,
                 isFavorite = event.isLiked,
                 harga_start = "Mulai dari",
-                harga_now = event.salesPrice,
-                app_url = event.appUrl
+                harga_now = event.price
         )
     }
 }

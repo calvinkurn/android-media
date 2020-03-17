@@ -1,4 +1,5 @@
 package com.tokopedia.entertainment.search.adapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ public class SearchEventAdapter extends RecyclerView.Adapter<SearchEventViewHold
     }
 
     public void setItems(List<SearchEventItem> items) {
+        Log.d("SearchEventAdapter", "setitem "+items.size());
         this.items = items;
         notifyDataSetChanged();
     }

@@ -1,6 +1,7 @@
 package com.tokopedia.entertainment.search.viewmodel
 
 import android.content.res.Resources
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -28,6 +29,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import javax.annotation.Resource
 
 /**
  * Author errysuprayogi on 04,March,2020
@@ -41,19 +43,21 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
         private val SEARCHQUERY = "search_query"
     }
 
+    lateinit var resources: Resources
+
     val searchList: MutableLiveData<List<SearchEventItem<*>>> by lazy { MutableLiveData<List<SearchEventItem<*>>>() }
     val listViewHolder : MutableList<SearchEventItem<*>> = mutableListOf()
-    val isItRefreshing : MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
+    val isItRefreshing = MutableLiveData<Boolean>()
 
     val errorReport : MutableLiveData<String> by lazy { MutableLiveData<String>() }
 
-    fun getHistorySearch(resources: Resources){
+    fun getHistorySearch(){
         launchCatchError(
                 block = {
                     val lists: MutableList<HistoryBackgroundItemViewHolder.EventModel> = mutableListOf()
                     listViewHolder.clear()
                     if(userSession.isLoggedIn){
-                        val data = getHistorySearchData(resources)
+                        val data = getHistorySearchData()
                         data.let {
                             it.travelCollectiveRecentSearches.let {
                                 it.items.forEach {
@@ -61,30 +65,29 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
                                 }
                                 listViewHolder.add(HistoryViewModel(lists))
 
-                                searchList.value = listViewHolder
-                                isItRefreshing.value = false
+                                searchList.postValue(listViewHolder)
+                                isItRefreshing.postValue(false)
                             }
                         }
                     }else{
                         listViewHolder.add(FirstTimeViewModel())
-                        searchList.value = listViewHolder
-                        isItRefreshing.value = false
+                        searchList.postValue(listViewHolder)
+                        isItRefreshing.postValue(false)
                     }
                 },
                 onError = {
                     errorReport.value = it.message
-                    isItRefreshing.value = false
+                    isItRefreshing.postValue(false)
                 }
         )
     }
 
-    fun getSearchData(resources: Resources, text: String){
-        Timber.tag(TAG + " before clear").d(listViewHolder.size.toString())
+    fun getSearchData(text: String){
         launchCatchError(
                 block = {
                     val listsLocation : MutableList<SearchLocationListViewHolder.LocationSuggestion> = mutableListOf()
                     val listsKegiatan : MutableList<SearchEventListViewHolder.KegiatanSuggestion> = mutableListOf()
-                    val dataLocation = getLocationSuggestionData(resources, text)
+                    val dataLocation = getLocationSuggestionData(text)
                     listViewHolder.clear()
                     Timber.tag(TAG + " after clear").d(listViewHolder.size.toString())
                     dataLocation.let {
@@ -99,25 +102,24 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
                         it.eventSearch.let {
                             if(it.count.toInt() > 0){
                                 it.products.forEach{
-                                    if(!it.childCategoryIds.equals("3")){
-                                        listsKegiatan.add(SearchMapper.mappingEventSuggestion(it))
-                                    }
+                                    listsKegiatan.add(SearchMapper.mappingEventSuggestion(it))
                                 }
-                                listViewHolder.add(SearchEventViewModel(listsKegiatan, resources))
+                                if(listsKegiatan.size > 0) listViewHolder.add(SearchEventViewModel(listsKegiatan, resources))
                             }
                         }
-                        searchList.value = listViewHolder
+                        searchList.postValue(listViewHolder)
                         isItRefreshing.value = false
                     }
                 },
                 onError = {
+                    it.printStackTrace()
                     errorReport.value = it.message
                     isItRefreshing.value = false
                 }
         )
     }
 
-    private suspend fun getLocationSuggestionData(resources: Resources, text: String) : EventSearchLocationResponse.Data{
+    suspend fun getLocationSuggestionData(text: String) : EventSearchLocationResponse.Data{
         return withContext(Dispatchers.IO){
             val req = GraphqlRequest(
                     GraphqlHelper.loadRawString(resources, R.raw.query_event_search_location),
@@ -128,7 +130,7 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
         }
     }
 
-    private suspend fun getHistorySearchData(resources : Resources): EventSearchHistoryResponse.Data{
+    suspend fun getHistorySearchData(): EventSearchHistoryResponse.Data{
         return withContext(Dispatchers.IO){
             val req = GraphqlRequest(
                     GraphqlHelper.loadRawString(resources, R.raw.query_event_search_history),

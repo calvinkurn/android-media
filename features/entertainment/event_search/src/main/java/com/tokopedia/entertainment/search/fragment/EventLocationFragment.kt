@@ -43,6 +43,7 @@ class EventLocationFragment : BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
         activity?.run {
             viewModel = ViewModelProviders.of(this, factory).get(EventLocationViewModel::class.java)
+            viewModel.resources = resources
         }
     }
 
@@ -71,7 +72,7 @@ class EventLocationFragment : BaseDaggerFragment() {
     }
 
     private fun getLocationData(){
-        viewModel.getFullLocationData(resources)
+        viewModel.getFullLocationData()
     }
 
     companion object{

@@ -18,8 +18,7 @@ object SearchMapper {
                 nama_event = event.title,
                 lokasi_event = event.subtitle,
                 tanggal_event = "",
-                image_url = event.imageURL,
-                app_url = event.appURL
+                image_url = event.imageURL
         )
     }
 
@@ -36,13 +35,14 @@ object SearchMapper {
     fun mappingEventSuggestion(event: EventSearchLocationResponse.Data.EventSearch.ProductsItem) : SearchEventListViewHolder.KegiatanSuggestion{
         return SearchEventListViewHolder.KegiatanSuggestion(
                 id = event.id,
-                price = event.price.toInt(),
+                price = event.price,
                 nama_kegiatan = event.displayName,
                 tanggal_kegiatan = event.minStartDate,
                 lokasi_kegiatan = event.cityName,
                 image_url = event.imageApp,
+                app_url = event.appUrl,
                 isLiked = event.isLiked,
-                app_url = event.appUrl
+                category = event.childCategoryIds
         )
     }
 

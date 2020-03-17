@@ -7,6 +7,8 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemLocationModel
@@ -60,6 +62,8 @@ class EventLocationEventViewHolder(itemView: View) : HomeEventViewHolder<EventLo
                         position + 1)
             })
             holder.view.setOnClickListener {
+                RouteManager.route(holder.view.context, ApplinkConstInternalEntertainment.EVENT_CATEGORY,
+                        items.get(position).id)
                 EventHomePageTracking.getInstance().clickLocationEvent(items.get(position), items,
                         position + 1)
             }

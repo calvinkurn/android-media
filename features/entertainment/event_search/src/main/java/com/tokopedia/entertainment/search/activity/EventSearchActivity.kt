@@ -20,29 +20,28 @@ import kotlinx.android.synthetic.main.ent_search_activity.*
 /**
  * Author errysuprayogi on 27,February,2020
  */
-class EventSearchActivity : BaseSimpleActivity(), HasComponent<EventSearchComponent>{
+class EventSearchActivity : BaseSimpleActivity(), HasComponent<EventSearchComponent> {
 
-    companion object{
+    companion object {
         val EXTRAS_QUERY = "query_text"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         txt_search.searchBarTextField.setText(getExtrasQuery())
-        txt_search.searchBarTextField.setOnFocusChangeListener(OnFocusChangeListener { v, hasFocus ->
+        txt_search.searchBarTextField.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
             txt_search.searchBarTextField.post(Runnable {
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.showSoftInput(txt_search.searchBarTextField, InputMethodManager.SHOW_IMPLICIT)
             })
-        })
+        }
         txt_search.searchBarTextField.requestFocus()
-        txt_search.searchBarTextField.setOnTouchListener { _, _ -> EventSearchPageTracking.getInstance().clickSearchBarOnSearchActivity() }
-        txt_search.setOnClickListener { EventSearchPageTracking.getInstance().clickSearchBarOnSearchActivity() }
+        txt_search.searchBarTextField.setOnClickListener { EventSearchPageTracking.getInstance().clickSearchBarOnSearchActivity() }
     }
 
     private fun getExtrasQuery(): String {
         val query = intent.getStringExtra(EXTRAS_QUERY)
-        if (!query.contains(EXTRAS_QUERY)) {
+        if (query != null && !query.contains(EXTRAS_QUERY)) {
             return query
         } else {
             return ""

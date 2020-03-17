@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.entertainment.search.R
 import com.tokopedia.entertainment.search.adapter.SearchEventViewHolder
 import com.tokopedia.entertainment.search.adapter.viewmodel.HistoryViewModel
@@ -36,11 +35,7 @@ class HistoryBackgroundItemViewHolder(val view: View) : SearchEventViewHolder<Hi
     }
 
 
-    data class EventModel(val nama_event : String,
-                          val tanggal_event : String,
-                          val lokasi_event : String,
-                          val image_url : String,
-                          val app_url : String)
+    data class EventModel(val nama_event : String, val tanggal_event : String, val lokasi_event : String, val image_url : String)
 
     class EventAdapter : RecyclerView.Adapter<EventViewHolder>(){
         lateinit var list: List<EventModel>
@@ -62,9 +57,7 @@ class HistoryBackgroundItemViewHolder(val view: View) : SearchEventViewHolder<Hi
             holder.view.txtTanggalSearch.text = element.tanggal_event
             holder.view.txtJudulEvent.text = element.nama_event
             holder.view.txtLokasiSearch.text = element.lokasi_event
-            holder.view.setOnClickListener {
-                RouteManager.route(holder.view.context, element.app_url)
-            }
+
             if(element.tanggal_event.isBlank()){
                 holder.view.txtLokasiSearch.setMargin(0,0,0,0)
             }
