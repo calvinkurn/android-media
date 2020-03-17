@@ -66,10 +66,9 @@ class MixTopBannerViewHolder(
     override fun bind(element: DynamicChannelViewModel?, payloads: MutableList<Any>) {
         super.bind(element, payloads)
         val channel = element?.channel
-        val blankSpaceConfig = computeBlankSpaceConfig(channel)
         element?.let {
             channel?.let {channel->
-                val visitables = mappingVisitablesFromChannel(channel, blankSpaceConfig)
+                val visitables = mappingVisitablesFromChannel(channel)
                 mappingHeader(channel)
                 mappingItem(channel, visitables)
             }
@@ -85,20 +84,28 @@ class MixTopBannerViewHolder(
     }
 
     override fun onBannerSeeMoreClicked(applink: String, channel: DynamicHomeChannel.Channels) {
-
+        homeCategoryListener.sendEETracking(MixTopTracking.getMixTopSeeAllClick(channel.header.name) as HashMap<String, Any>)
     }
 
     override fun onFlashSaleCardImpressed(position: Int, channel: DynamicHomeChannel.Channels) {
-
+        homeCategoryListener.putEEToTrackingQueue(MixTopTracking.getMixTopView(
+                MixTopTracking.mapChannelToProductTracker(channel),
+                channel.header.name,
+                adapterPosition.toString()
+        ) as HashMap<String, Any>)
     }
 
     override fun onFlashSaleCardClicked(position: Int, channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, applink: String) {
-
+        homeCategoryListener.sendEETracking(MixTopTracking.getMixTopClick(
+                MixTopTracking.mapChannelToProductTracker(channel),
+                channel.header.name,
+                channel.id,
+                adapterPosition.toString()
+        ) as HashMap<String, Any>)
     }
 
     private fun mappingView(channel: DynamicHomeChannel.Channels) {
-        val blankSpaceConfig = computeBlankSpaceConfig(channel)
-        val visitables = mappingVisitablesFromChannel(channel, blankSpaceConfig)
+        val visitables = mappingVisitablesFromChannel(channel)
 
         recyclerView.setRecycledViewPool(parentRecycledViewPool)
         recyclerView.setHasFixedSize(true)
@@ -201,20 +208,6 @@ class MixTopBannerViewHolder(
                 Snackbar.LENGTH_LONG)
     }
 
-    private fun computeBlankSpaceConfig(channel: DynamicHomeChannel.Channels?): BlankSpaceConfig {
-        val blankSpaceConfig = BlankSpaceConfig(
-                twoLinesProductName = true
-        )
-        channel?.grids?.forEach {
-            if (it.freeOngkir.isActive) blankSpaceConfig.freeOngkir = true
-            if (it.slashedPrice.isNotEmpty()) blankSpaceConfig.slashedPrice = true
-            if (it.price.isNotEmpty()) blankSpaceConfig.price = true
-            if (it.discount.isNotEmpty()) blankSpaceConfig.discountPercentage = true
-            if (it.name.isNotEmpty()) blankSpaceConfig.productName = true
-        }
-        return blankSpaceConfig
-    }
-
     private fun valuateRecyclerViewDecoration() {
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(SimpleHorizontalLinearLayoutDecoration())
         recyclerView.layoutManager = LinearLayoutManager(
@@ -228,8 +221,7 @@ class MixTopBannerViewHolder(
         startSnapHelper.attachToRecyclerView(recyclerView)
     }
 
-    private fun mappingVisitablesFromChannel(channel: DynamicHomeChannel.Channels,
-                                             blankSpaceConfig: BlankSpaceConfig): MutableList<Visitable<*>> {
+    private fun mappingVisitablesFromChannel(channel: DynamicHomeChannel.Channels): MutableList<Visitable<*>> {
         val visitables: MutableList<Visitable<*>> = convertDataToProductData(channel)
         if (isHasSeeMoreApplink(channel) && getLayoutType(channel) == TYPE_BANNER_CAROUSEL) {
             visitables.add(SeeMorePdpDataModel(
