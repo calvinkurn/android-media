@@ -36,6 +36,7 @@ public class ShopPageTrackingConstant {
     public static final String TOP_SECTION = "top section";
     public static final String INFO = "info";
     public static final String MERCHANT_VOUCHER_CODE = "merchant voucher code";
+    public static final String CLICK_DETAIL = "click detail";
     public static final String MERCHANT_VOUCHER = "merchant voucher";
     public static final String PROMO_BANNER = "promo banner";
     public static final String MANAGE_SHOP = "manage shop";
@@ -209,7 +210,6 @@ public class ShopPageTrackingConstant {
 
     public static final String VERTICAL_POSITION = "p%1d";
     public static final String HOME_TAB = "home";
-    public static final String PROMO_SLOT_NAME = "promo slot name";
     public static final String HOME_FEATURED_PRODUCT = "featured product";
     public static final String ALL_PRODUCT = "all product";
     public static final String WITH_CART = "with cart";

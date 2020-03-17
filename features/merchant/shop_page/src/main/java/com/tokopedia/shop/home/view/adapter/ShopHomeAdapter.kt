@@ -25,6 +25,7 @@ class ShopHomeAdapter(
         private const val ALL_PRODUCT_STRING = "Semua Produk"
     }
 
+    var isOwner: Boolean = false
     private var productListViewModel: MutableList<ShopHomeProductViewModel> = mutableListOf()
 
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {

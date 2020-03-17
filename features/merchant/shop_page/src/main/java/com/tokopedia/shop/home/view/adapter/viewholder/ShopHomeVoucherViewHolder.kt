@@ -1,6 +1,5 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
-import android.content.res.Resources
 import android.view.View
 
 import androidx.annotation.LayoutRes
@@ -10,9 +9,6 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 
 import com.tokopedia.shop.R
-import com.tokopedia.shop.home.view.listener.ShopPageHomeProductClickListener
-import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import java.util.ArrayList
 
@@ -22,11 +18,18 @@ import java.util.ArrayList
 
 class ShopHomeVoucherViewHolder(
         itemView: View,
-        private val onMerchantVoucherListWidgetListener: OnMerchantVoucherListWidgetListener
-) : AbstractViewHolder<ShopHomeVoucherUiModel>(itemView) {
+        override val isOwner: Boolean,
+        private val shopHomeVoucherViewHolderListener: ShopHomeVoucherViewHolderListener
+) : AbstractViewHolder<ShopHomeVoucherUiModel>(itemView), MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener {
 
-    interface OnMerchantVoucherListWidgetListener : MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener {
-        fun onVoucherListImpression(listVoucher: List<MerchantVoucherViewModel>)
+    interface ShopHomeVoucherViewHolderListener {
+        fun onVoucherListImpression(parentPosition: Int, listVoucher: List<MerchantVoucherViewModel>)
+        fun onVoucherSeeAllClicked()
+        fun onVoucherClicked(
+                parentPosition: Int,
+                position: Int,
+                merchantVoucherViewModel: MerchantVoucherViewModel
+        )
     }
 
     companion object {
@@ -39,22 +42,39 @@ class ShopHomeVoucherViewHolder(
     }
 
     private var merchantVoucherListWidget: MerchantVoucherListWidget? = null
+    private var merchantVoucherUiModel: ShopHomeVoucherUiModel? = null
 
     private fun findView(itemView: View) {
         merchantVoucherListWidget = itemView.findViewById(R.id.merchantVoucherListWidget)
     }
 
     override fun bind(model: ShopHomeVoucherUiModel) {
+        merchantVoucherUiModel = model
         val recyclerViewState = merchantVoucherListWidget?.recyclerView?.layoutManager?.onSaveInstanceState()
         itemView.addOnImpressionListener(model) {
             model.data?.let {
-                onMerchantVoucherListWidgetListener.onVoucherListImpression(it)
+                shopHomeVoucherViewHolderListener.onVoucherListImpression(adapterPosition, it)
             }
         }
         merchantVoucherListWidget?.setData(model.data as ArrayList<MerchantVoucherViewModel>?)
-        merchantVoucherListWidget?.setOnMerchantVoucherListWidgetListener(onMerchantVoucherListWidgetListener)
+        merchantVoucherListWidget?.setOnMerchantVoucherListWidgetListener(this@ShopHomeVoucherViewHolder)
         recyclerViewState?.let {
             merchantVoucherListWidget?.recyclerView?.layoutManager?.onRestoreInstanceState(it)
         }
+    }
+
+    override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {}
+
+    override fun onItemClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
+        val position = merchantVoucherUiModel?.data?.indexOf(merchantVoucherViewModel) ?: 0
+        shopHomeVoucherViewHolderListener.onVoucherClicked(
+                adapterPosition,
+                position,
+                merchantVoucherViewModel
+        )
+    }
+
+    override fun onSeeAllClicked() {
+        shopHomeVoucherViewHolderListener.onVoucherSeeAllClicked()
     }
 }

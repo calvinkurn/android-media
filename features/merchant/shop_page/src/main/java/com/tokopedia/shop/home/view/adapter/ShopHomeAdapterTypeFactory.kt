@@ -4,7 +4,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_TRIPLE_COLUMN
@@ -22,10 +21,10 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 
 class ShopHomeAdapterTypeFactory(
         private val listener: ShopHomeDisplayWidgetListener,
-        private val onMerchantVoucherListWidgetListener: ShopHomeVoucherViewHolder.OnMerchantVoucherListWidgetListener,
+        private val onMerchantVoucherListWidgetListener: ShopHomeVoucherViewHolder.ShopHomeVoucherViewHolderListener,
         private val shopPageHomeProductClickListener: ShopPageHomeProductClickListener
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome {
-
+    var adapter: ShopHomeAdapter? = null
     override fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
         when(baseShopHomeWidgetUiModel.name) {
             DISPLAY_SINGLE_COLUMN, DISPLAY_DOUBLE_COLUMN, DISPLAY_TRIPLE_COLUMN -> return ShopHomeMultipleImageColumnViewHolder.LAYOUT_RES
@@ -78,7 +77,7 @@ class ShopHomeAdapterTypeFactory(
                 ShopHomeCarousellProductViewHolder(parent, shopPageHomeProductClickListener)
             }
             ShopHomeVoucherViewHolder.LAYOUT -> {
-                ShopHomeVoucherViewHolder(parent, onMerchantVoucherListWidgetListener)
+                ShopHomeVoucherViewHolder(parent, adapter?.isOwner ?: false, onMerchantVoucherListWidgetListener)
             }
             ShopHomeLoadingShimmerViewHolder.LAYOUT -> {
                 ShopHomeLoadingShimmerViewHolder(parent)
