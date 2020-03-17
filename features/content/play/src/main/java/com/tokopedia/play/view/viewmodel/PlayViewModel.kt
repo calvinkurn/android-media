@@ -374,10 +374,6 @@ class PlayViewModel @Inject constructor(
                 return@withContext getChannelInfoUseCase.executeOnBackground()
             }
 
-            // TODO("testing")
-            channel.isShowCart = true
-            channel.isShowProductTagging = true
-
             launch { getTotalLikes(channel.contentId, channel.contentType, channel.likeType) }
             launch { getIsLike(channel.contentId, channel.contentType) }
             launch { getBadgeCart(channel.isShowCart) }
