@@ -335,6 +335,7 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.digitalEmoney)
+    implementation project(rootProject.ext.features.rechargeCreditCard)
     implementation project(rootProject.ext.features.commonTopupBills)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.logout)
