@@ -3,13 +3,13 @@ package com.tokopedia.home_wishlist.view.adapter
 import android.os.Bundle
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.home_wishlist.model.datamodel.*
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
 import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
 import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.smart_recycler_helper.SmartRecyclerAdapter
+import com.tokopedia.smart_recycler_helper.SmartVisitable
 
 /**
  * A Class of WishlistAdapter.
@@ -80,7 +80,7 @@ class WishlistAdapter(
      * @param holder the viewHolder on bind
      * @param position the position of the viewHolder
      */
-    override fun bind(holder: SmartAbstractViewHolder<Visitable<*>>, item: WishlistDataModel) {
+    override fun bind(holder: SmartAbstractViewHolder<SmartVisitable<*>>, item: WishlistDataModel) {
         val layout = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
         when(item){
             is WishlistItemDataModel,
@@ -95,7 +95,7 @@ class WishlistAdapter(
         holder.bind(item, wishlistListener)
     }
 
-    override fun bind(holder: SmartAbstractViewHolder<Visitable<*>>, item: WishlistDataModel, payloads: MutableList<Any>) {
+    override fun bind(holder: SmartAbstractViewHolder<SmartVisitable<*>>, item: WishlistDataModel, payloads: MutableList<Any>) {
         if(payloads.isNotEmpty()){
             holder.bind(item, wishlistListener, payloads)
         }

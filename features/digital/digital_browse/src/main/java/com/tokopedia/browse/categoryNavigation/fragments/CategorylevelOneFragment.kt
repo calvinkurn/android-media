@@ -26,23 +26,22 @@ import kotlinx.android.synthetic.main.fragment_categorylevel_one.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-
+private const val EXTRA_CATEGORY_NAME = "CATEGORY_NAME"
 class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComponent> {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    lateinit var categoryBrowseViewModel: CategoryLevelOneViewModel
+    private lateinit var categoryBrowseViewModel: CategoryLevelOneViewModel
     private val categoryList = ArrayList<CategoriesItem>()
 
     var activityStateListener: ActivityStateListener? = null
 
     var selectedPosition = 0
 
-    var selectedItemIdentifier: String? = null
+    private var selectedItemIdentifier: String? = null
 
     companion object {
-        private val EXTRA_CATEGORY_NAME = "CATEGORY_NAME"
         @JvmStatic
         fun newInstance(categoryName: String?): CategorylevelOneFragment {
             val fragment = CategorylevelOneFragment()
@@ -67,8 +66,10 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
         super.onViewCreated(view, savedInstanceState)
 
         component.inject(this)
-        if (arguments != null && arguments!!.containsKey(EXTRA_CATEGORY_NAME)) {
-            selectedItemIdentifier = arguments!!.getString(EXTRA_CATEGORY_NAME)
+        arguments?.let {
+            if (it.containsKey(EXTRA_CATEGORY_NAME)) {
+                selectedItemIdentifier = it.getString(EXTRA_CATEGORY_NAME)
+            }
         }
         initView()
         setUpObserver()
@@ -80,9 +81,9 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
         val categoryLevelOneAdapter = CategoryLevelOneAdapter(categoryList, listener, activityStateListener?.getActivityTrackingQueue())
         master_list.adapter = categoryLevelOneAdapter
 
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            categoryBrowseViewModel = viewModelProvider.get(CategoryLevelOneViewModel::class.java)
-            categoryBrowseViewModel.bound()
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        categoryBrowseViewModel = viewModelProvider.get(CategoryLevelOneViewModel::class.java)
+        categoryBrowseViewModel.bound()
     }
 
     private fun setUpObserver() {
@@ -114,9 +115,12 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
 
     private fun getPositionFromIdentifier(categoryList: ArrayList<CategoriesItem>): Int {
         for (i in 0 until categoryList.size) {
-            if (categoryList[i].identifier!!.equals(selectedItemIdentifier)) {
-                selectedPosition = i
-                return i
+
+            categoryList[i].identifier?.let {
+                if (it == selectedItemIdentifier) {
+                    selectedPosition = i
+                    return i
+                }
             }
         }
 
@@ -130,7 +134,8 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
 
     private fun initiateSlaveFragmentLoading(position: Int) {
         if (activity != null) {
-            (activity as CategoryChangeListener).onCategoryChanged(categoryList[position].id!!, categoryList[position].name!!, categoryList[position].applinks)
+            (activity as CategoryChangeListener).onCategoryChanged(categoryList[position].id
+                    ?: "", categoryList[position].name ?: "", categoryList[position].applinks)
         }
     }
 

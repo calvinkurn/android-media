@@ -18,6 +18,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.CreateStockReminderResponse
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.UpdateStockReminderResponse
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.getresponse.GetStockReminderResponse
@@ -38,6 +39,8 @@ class StockReminderFragment: BaseDaggerFragment() {
     companion object {
         private const val ARG_PRODUCT_ID = "product_id"
         private const val ARG_PRODUCT_NAME = "product_name"
+        private const val TOGGLE_ACTIVE = "active"
+        private const val TOGGLE_NOT_ACTIVE = "not active"
 
         fun createInstance(productId: Long, productName: String): Fragment {
             val fragment = StockReminderFragment()
@@ -49,6 +52,8 @@ class StockReminderFragment: BaseDaggerFragment() {
         }
     }
 
+    private var firstStateChecked: Boolean = false
+    private var toggleStateChecked: Boolean? = null
     private var productId: String? = null
     private var productName: String? = null
     private var warehouseId: String? = null
@@ -89,43 +94,8 @@ class StockReminderFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         checkLogin()
-
-        viewModel.getStockReminderLiveData.observe(viewLifecycleOwner, getStockReminderObserver())
-        viewModel.createStockReminderLiveData.observe(viewLifecycleOwner, createStockReminderObserver())
-        viewModel.updateStockReminderLiveData.observe(viewLifecycleOwner, updateStockReminderObserver())
-
-        getStockReminder()
-
-        swStockReminder.setOnCheckedChangeListener { _, isChecked ->
-            if(isChecked) {
-                containerStockReminder.visibility = View.VISIBLE
-            } else {
-                containerStockReminder.visibility = View.GONE
-            }
-        }
-
-        btnSaveReminder.setOnClickListener {
-            if(qeStock.getValue() == 0) {
-                qeStock.setValue(1)
-            } else if(qeStock.getValue() > 100) {
-                qeStock.setValue(100)
-            }
-
-            if (swStockReminder.isChecked) {
-                if (threshold == 0) {
-                    threshold = qeStock.getValue()
-                    createStockReminder()
-                } else {
-                    threshold = qeStock.getValue()
-                    updateStockReminder()
-                }
-            } else {
-                threshold = 0
-                updateStockReminder()
-            }
-        }
+        initView()
     }
 
     private fun checkLogin() {
@@ -138,14 +108,72 @@ class StockReminderFragment: BaseDaggerFragment() {
         }
     }
 
+    private fun initView() {
+        viewModel.getStockReminderLiveData.observe(viewLifecycleOwner, getStockReminderObserver())
+        viewModel.createStockReminderLiveData.observe(viewLifecycleOwner, createStockReminderObserver())
+        viewModel.updateStockReminderLiveData.observe(viewLifecycleOwner, updateStockReminderObserver())
+
+        getStockReminder()
+
+        swStockReminder.setOnCheckedChangeListener { _, isChecked ->
+            toggleStateChecked = isChecked
+            toggleStateChecked?.let { state ->
+                if(state) {
+                    containerStockReminder.visibility = View.VISIBLE
+                } else {
+                    containerStockReminder.visibility = View.GONE
+                }
+            }
+
+            if(firstStateChecked) {
+                if(isChecked) {
+                    ProductManageTracking.eventToggleReminder(TOGGLE_ACTIVE)
+                } else {
+                    ProductManageTracking.eventToggleReminder(TOGGLE_NOT_ACTIVE)
+                }
+            }
+            firstStateChecked = true
+        }
+
+        btnSaveReminder.setOnClickListener {
+            if(qeStock.getValue() == 0) {
+                qeStock.setValue(1)
+            } else if(qeStock.getValue() > 100) {
+                qeStock.setValue(100)
+            }
+            if (swStockReminder.isChecked) {
+                if (threshold == 0) {
+                    threshold = qeStock.getValue()
+                    createStockReminder()
+                } else {
+                    threshold = qeStock.getValue()
+                    updateStockReminder()
+                }
+            } else {
+                threshold = 0
+                updateStockReminder()
+            }
+
+            toggleStateChecked?.let { state ->
+                if (state) {
+                    ProductManageTracking.eventToggleReminderSave(TOGGLE_ACTIVE)
+                } else {
+                    ProductManageTracking.eventToggleReminderSave(TOGGLE_NOT_ACTIVE)
+                }
+            }
+        }
+    }
+
     private fun showLoading() {
         ImageHandler.loadGif(ivLoadingStockReminder, R.drawable.ic_loading_indeterminate, R.drawable.ic_loading_indeterminate)
         loadingStockReminder.visibility = View.VISIBLE
+        cardSaveBtn.visibility = View.GONE
     }
 
     private fun hideLoading() {
         ImageHandler.clearImage(ivLoadingStockReminder)
         loadingStockReminder.visibility = View.GONE
+        cardSaveBtn.visibility = View.VISIBLE
     }
 
     private fun doResultIntent() {
@@ -187,15 +215,16 @@ class StockReminderFragment: BaseDaggerFragment() {
                 threshold = stockReminderData.data.getByProductIds.data.getOrNull(0)?.productsWareHouse?.getOrNull(0)?.threshold
 
                 threshold?.let { qeStock.setValue(it) }
-                if (threshold != 0) {
-                    swStockReminder.isChecked = true
-                }
+                swStockReminder.isChecked = threshold != 0
+                if(!swStockReminder.isChecked) firstStateChecked = true
             }
             is Fail -> {
+                cardSaveBtn.visibility = View.GONE
                 globalErrorStockReminder.visibility = View.VISIBLE
                 geStockReminder.setType(GlobalError.SERVER_ERROR)
                 geStockReminder.setActionClickListener {
                     globalErrorStockReminder.visibility = View.GONE
+                    cardSaveBtn.visibility = View.VISIBLE
                     getStockReminder()
                 }
             }
@@ -223,5 +252,4 @@ class StockReminderFragment: BaseDaggerFragment() {
             }
         }
     }
-
 }

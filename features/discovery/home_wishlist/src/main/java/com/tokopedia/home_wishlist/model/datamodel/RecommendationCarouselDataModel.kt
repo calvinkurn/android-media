@@ -1,7 +1,7 @@
 package com.tokopedia.home_wishlist.model.datamodel
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_wishlist.view.adapter.WishlistTypeFactory
+import com.tokopedia.smart_recycler_helper.SmartVisitable
 
 data class RecommendationCarouselDataModel (
         val id: String = "",
@@ -11,7 +11,7 @@ data class RecommendationCarouselDataModel (
         var isOnBulkRemoveProgress: Boolean = false
 ): WishlistDataModel {
 
-    override fun equalsDataModel(dataModel: Visitable<*>): Boolean {
+    override fun equalsDataModel(dataModel: SmartVisitable<*>): Boolean {
         if(dataModel is RecommendationCarouselDataModel){
             return dataModel.isOnBulkRemoveProgress == isOnBulkRemoveProgress && dataModel.list == list && title == dataModel.title
                     && dataModel.list.zip(list).all { (list1, list2) -> list1.equalsDataModel(list2) }
