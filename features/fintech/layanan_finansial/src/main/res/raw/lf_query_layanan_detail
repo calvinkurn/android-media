@@ -1,0 +1,23 @@
+query GetFinancialWidget {
+  ft_genie_financial_widget {
+    financial_widget {
+      title
+      subtitle
+      type
+      background
+      widget_list {
+        datalayer_status
+        status
+        status_text_color
+        status_bg_color
+        image_url
+        category
+        name
+        desc_1
+        desc_2
+        cta
+        url
+      }
+    }
+  }
+}
