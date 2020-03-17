@@ -1,8 +1,9 @@
-package com.tokopedia.product.manage.feature.quickedit.stock.presentation.fragment
+package com.tokopedia.product.manage.feature.quickedit.stock.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.tokopedia.product.manage.feature.quickedit.stock.presentation.fragment.ProductManageQuickEditStockFragment
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import javax.inject.Inject
 
