@@ -75,6 +75,7 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         bindView(view)
         initInjector()
+        initViewModel()
         initTabList()
         initTabLayout()
         initViewPagerAdapter()
