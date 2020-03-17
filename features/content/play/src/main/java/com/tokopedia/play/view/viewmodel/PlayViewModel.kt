@@ -172,7 +172,7 @@ class PlayViewModel @Inject constructor(
             } else _observablePinnedProduct.value = _observablePinnedProduct.value
         }
         addSource(observableEvent) {
-            if (it.isFreeze) doOnChannelFreeze()
+            if (it.isFreeze || it.isBanned) doOnFreezeBan()
         }
     }
 
@@ -200,7 +200,7 @@ class PlayViewModel @Inject constructor(
         }
         _observablePinned.addSource(_observablePinnedProduct) {
             val productSheet = _observableProductSheetContent.value
-            if (productSheet is PlayResult.Success && productSheet.data.productList.isNotEmpty()) {
+            if (productSheet is PlayResult.Success && productSheet.data.productList.isNotEmpty() && it != null) {
                 _observablePinned.value = it
             } else {
                 val pinnedMessage = _observablePinnedMessage.value
@@ -224,14 +224,17 @@ class PlayViewModel @Inject constructor(
         getChannelInfo(channelId)
     }
 
-    fun destroy() {
-        playSocket.destroy()
+    override fun onCleared() {
+        super.onCleared()
+        stateHandler.removeObserver(stateHandlerObserver)
+        destroy()
+        stopPlayer()
     }
 
-    override fun onCleared() {
-        stateHandler.removeObserver(stateHandlerObserver)
-        stopPlayer()
-        super.onCleared()
+    override fun flush() {
+        if (isActive && !masterJob.isCancelled) {
+            masterJob.cancelChildren()
+        }
     }
     //endregion
 
@@ -444,6 +447,10 @@ class PlayViewModel @Inject constructor(
         return shownBottomSheets.isNotEmpty()
     }
 
+    private fun destroy() {
+        playSocket.destroy()
+    }
+
     private suspend fun getTotalLikes(contentId: Int, contentType: Int, likeType: Int) {
         try {
             val totalLike = withContext(dispatchers.io) {
@@ -622,10 +629,10 @@ class PlayViewModel @Inject constructor(
             bufferForPlaybackAfterRebufferMs = bufferControl.bufferForPlaybackAfterRebuffer * MS_PER_SECOND
     )
 
-    private fun doOnChannelFreeze() {
+    private fun doOnFreezeBan() {
         destroy()
         stopPlayer()
-        onKeyboardHidden()
+        hideAllInsets()
     }
     //endregion
 

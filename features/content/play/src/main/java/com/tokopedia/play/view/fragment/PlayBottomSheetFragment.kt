@@ -141,6 +141,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
         observeVariantSheetContent()
         observeBottomInsetsState()
         observeBuyEvent()
+        observeEventUserInfo()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -208,6 +209,15 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
                         is BottomInsetsState.Shown -> pushParentPlayBySheetHeight(productSheetState.estimatedInsetsHeight)
                     }
                 }
+            }
+        })
+    }
+
+    private fun observeEventUserInfo() {
+        playViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
+            if (it.isFreeze || it.isBanned) {
+                viewModel.onFreezeBan()
+                hideLoadingView()
             }
         })
     }
@@ -339,7 +349,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun hideLoadingView() {
-        loadingDialog.dismiss()
+        if (::loadingDialog.isInitialized) loadingDialog.dismiss()
     }
 
     private fun shouldDoActionProduct(product: ProductLineUiModel, action: ProductAction, type: BottomInsetsType) {
