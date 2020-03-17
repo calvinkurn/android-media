@@ -740,7 +740,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         }
     }
 
-    fun finalUpdate() {
+    fun finalUpdate(onSuccessCheckout: (PaymentParameter) -> Unit) {
         val product = orderProduct
         val shop = orderShop
         val pref = _orderPreference
@@ -749,7 +749,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             if (param != null) {
                 globalEvent.value = OccGlobalEvent.Loading
                 updateCartOccUseCase.execute(param, { updateCartOccGqlResponse: UpdateCartOccGqlResponse ->
-                    doCheckout(product, shop, pref)
+                    doCheckout(product, shop, pref, onSuccessCheckout)
                 }, { throwable: Throwable ->
                     throwable.printStackTrace()
                     if (throwable is MessageErrorException && throwable.message != null) {
@@ -763,7 +763,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         }
     }
 
-    private fun doCheckout(product: OrderProduct, shop: OrderShop, pref: OrderPreference) {
+    private fun doCheckout(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (PaymentParameter) -> Unit) {
         val param = CheckoutOccRequest(Profile(pref.preference.profileId), ParamCart(data = listOf(ParamData(
                 pref.preference.address.addressId,
                 listOf(
@@ -771,7 +771,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                 shopId = shop.shopId,
                                 isPreorder = shop.cartResponse.product.isPreorder,
                                 warehouseId = shop.cartResponse.product.wareHouseId,
-                                finsurance = shop.cartResponse.product.productFinsurance,
+                                finsurance = if (pref.shipping!!.isCheckInsurance) 1 else 0,
                                 productData = listOf(
                                         ProductData(
                                                 product.productId,
@@ -780,7 +780,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                         )
                                 ),
                                 shippingInfo = ShippingInfo(
-                                        pref.shipping!!.shipperId!!,
+                                        pref.shipping.shipperId!!,
                                         pref.shipping.shipperProductId!!,
                                         pref.shipping.ratesId!!,
                                         pref.shipping.ut!!,
@@ -793,9 +793,12 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             if (checkoutOccGqlResponse.response.status.equals("OK", true)) {
                 if (checkoutOccGqlResponse.response.data.success == 1) {
                     val paymentParameter = checkoutOccGqlResponse.response.data.paymentParameter
+                    onSuccessCheckout(paymentParameter)
                     globalEvent.value = OccGlobalEvent.Normal
                 } else {
-                    if (checkoutOccGqlResponse.response.data.error.message.isNotBlank()) {
+                    if (checkoutOccGqlResponse.response.data.error.imageUrl.isNotEmpty()) {
+                        globalEvent.value = OccGlobalEvent.CheckoutError(checkoutOccGqlResponse.response.data.error)
+                    } else if (checkoutOccGqlResponse.response.data.error.message.isNotBlank()) {
                         globalEvent.value = OccGlobalEvent.Error(errorMessage = checkoutOccGqlResponse.response.data.error.message)
                     } else {
                         globalEvent.value = OccGlobalEvent.Error(errorMessage = "Terjadi kesalahan dengan kode ${checkoutOccGqlResponse.response.data.error.message}")
