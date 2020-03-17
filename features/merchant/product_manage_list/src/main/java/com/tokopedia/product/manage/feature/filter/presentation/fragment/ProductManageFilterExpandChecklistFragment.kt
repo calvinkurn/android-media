@@ -27,6 +27,7 @@ import com.tokopedia.product.manage.feature.filter.presentation.fragment.Product
 import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterExpandChecklistViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChecklistClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
+import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
 import kotlinx.android.synthetic.main.fragment_product_manage_filter_search.*
 import java.util.*
 import javax.inject.Inject
@@ -36,6 +37,9 @@ class ProductManageFilterExpandChecklistFragment :
         HasComponent<ProductManageFilterComponent> {
 
     companion object {
+        private const val TOGGLE_ACTIVE = "active"
+        private const val TOGGLE_NOT_ACTIVE = "not active"
+
         fun createInstance(flag: String, cacheManagerId: String): ProductManageFilterExpandChecklistFragment {
             return ProductManageFilterExpandChecklistFragment().apply {
                 arguments = Bundle().apply {
@@ -88,6 +92,11 @@ class ProductManageFilterExpandChecklistFragment :
 
     override fun onChecklistClick(element: ChecklistViewModel) {
         productManageFilterExpandChecklistViewModel.updateSelectedItem(element)
+        if(element.isSelected) {
+            ProductManageTracking.eventMoreOthersFilter(element.name, TOGGLE_ACTIVE)
+        } else {
+            ProductManageTracking.eventMoreOthersFilter(element.name, TOGGLE_NOT_ACTIVE)
+        }
     }
 
     override fun onSelectClick(element: SelectViewModel) {
@@ -222,6 +231,7 @@ class ProductManageFilterExpandChecklistFragment :
                         Intent().putExtra(ProductManageFilterFragment.CACHE_MANAGER_KEY, cacheManagerId))
             }
             this.activity?.finish()
+            ProductManageTracking.eventMoreOthersFilterSave()
         }
         filterSearchHeader.actionTextView?.setOnClickListener {
             adapter?.reset()

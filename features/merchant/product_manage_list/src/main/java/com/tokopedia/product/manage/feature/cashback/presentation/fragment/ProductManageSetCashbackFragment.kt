@@ -24,6 +24,7 @@ import com.tokopedia.product.manage.feature.cashback.presentation.adapter.viewmo
 import com.tokopedia.product.manage.feature.cashback.presentation.viewmodel.ProductManageSetCashbackViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
+import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import kotlinx.android.synthetic.main.fragment_product_manage_set_cashback.*
 import javax.inject.Inject
@@ -32,7 +33,6 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
         HasComponent<ProductManageSetCashbackComponent> {
 
     companion object {
-
         const val SET_CASHBACK_CACHE_MANAGER_KEY = "set_cashback_cache_id"
         const val SET_CASHBACK_PRODUCT = "set_cashback_product"
         const val ZERO_CASHBACK = 0
@@ -54,6 +54,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
     lateinit var viewModel: ProductManageSetCashbackViewModel
 
     private var adapter: SetCashbackAdapter? = null
+    private var product: ProductViewModel? = null
 
     override fun getComponent(): ProductManageSetCashbackComponent? {
         return activity?.run {
@@ -74,7 +75,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
         }
         val manager = this.context?.let { SaveInstanceCacheManager(it, savedInstanceState) }
         val cacheManager = if (savedInstanceState == null) this.context?.let { SaveInstanceCacheManager(it, cacheManagerId) } else manager
-        val product : ProductViewModel? = cacheManager?.get(SET_CASHBACK_PRODUCT, ProductViewModel::class.java)
+        product = cacheManager?.get(SET_CASHBACK_PRODUCT, ProductViewModel::class.java)
         product?.let {
             viewModel.updateProduct(it)
         }
@@ -127,6 +128,9 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
                 it.put(SET_CASHBACK_PRODUCT, viewModel.product.value)
                 this.activity?.setResult(Activity.RESULT_OK, Intent().putExtra(SET_CASHBACK_CACHE_MANAGER_KEY, cacheManagerId))
                 this.activity?.finish()
+            }
+            product?.let {
+                ProductManageTracking.eventCashbackSettingsSave(it.id)
             }
         }
     }

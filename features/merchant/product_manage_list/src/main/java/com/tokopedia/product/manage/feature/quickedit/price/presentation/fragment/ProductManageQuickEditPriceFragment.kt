@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
+import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.CurrencyIdrTextWatcher
@@ -78,6 +79,7 @@ class ProductManageQuickEditPriceFragment(private val onFinishedListener: OnFini
         quickEditPriceTextField.requestFocus()
         quickEditPriceSaveButton.setOnClickListener {
             isPriceValid()
+            ProductManageTracking.eventEditPriceSave(product.id)
         }
     }
 
