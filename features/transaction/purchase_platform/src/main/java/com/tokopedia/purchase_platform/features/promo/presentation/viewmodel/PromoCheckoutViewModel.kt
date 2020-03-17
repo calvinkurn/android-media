@@ -328,7 +328,8 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                             promoRecommendationUiModel.value?.uiData?.promoCodes?.forEach {
                                 if (promoList.contains(it)) selectedRecommendationCount++
                             }
-                            val promoRecommendationCount = promoRecommendationUiModel.value?.uiData?.promoCodes?.size ?: 0
+                            val promoRecommendationCount = promoRecommendationUiModel.value?.uiData?.promoCodes?.size
+                                    ?: 0
                             val status = if (promoList.size == promoRecommendationCount && selectedRecommendationCount == promoRecommendationCount) 1 else 0
                             analytics.eventClickPakaiPromoSuccess(getPageSource(), status.toString(), promoList)
                             // If all promo merchant are success, then navigate to cart
@@ -494,7 +495,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    private fun calculateClash(selectedItem: PromoListItemUiModel): Boolean {
+    private fun calculateClash(selectedItem: PromoListItemUiModel) {
         // Return clash result for analytics purpose
         var clashResult = false
         if (selectedItem.uiState.isSelected) {
@@ -537,7 +538,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             }
         }
 
-        return clashResult
+        if (clashResult) {
+            selectedItem.uiState.isCausingOtherPromoClash = true
+        }
     }
 
     private fun checkAndSetClashOnUnSelectionEvent(promoListItemUiModel: PromoListItemUiModel, selectedItem: PromoListItemUiModel) {
@@ -722,15 +725,15 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             // Update view
             _tmpUiModel.value = Update(promoItem)
 
-            // Perform clash calculation. ClashResult of deselection action should be always false
-            val clashResult = calculateClash(promoItem)
+            // Perform clash calculation
+            calculateClash(promoItem)
             if (promoItem.uiState.isSelected) {
-                analytics.eventClickSelectKupon(getPageSource(), promoItem.uiData.promoCode, clashResult)
+                analytics.eventClickSelectKupon(getPageSource(), promoItem.uiData.promoCode, promoItem.uiState.isCausingOtherPromoClash)
                 if (promoItem.uiState.isAttempted) {
                     analytics.eventClickSelectPromo(getPageSource(), promoItem.uiData.promoCode)
                 }
             } else {
-                analytics.eventClickDeselectKupon(getPageSource(), promoItem.uiData.promoCode, false)
+                analytics.eventClickDeselectKupon(getPageSource(), promoItem.uiData.promoCode, promoItem.uiState.isCausingOtherPromoClash)
                 if (promoItem.uiState.isAttempted) {
                     analytics.eventClickDeselectPromo(getPageSource(), promoItem.uiData.promoCode)
                 }

@@ -245,7 +245,6 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         )
     }
 
-    // Todo FU : `status` meaning?
     fun eventClickPakaiPromoSuccess(page: Int, status: String, promoCodes: List<String>) {
         val data = hashMapOf<String, Any>()
         if (page == PAGE_CART) {
@@ -256,7 +255,7 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
             data["eventCategory"] = EventCategory.COURIER_SELECTION
         }
         data["eventAction"] = EventAction.CLICK_PAKAI_PROMO
-        data["eventLabel"] = "success $status"
+        data["eventLabel"] = "success - $status"
         data["promoCode"] = promoCodes.joinToString(", ", "[", "]")
 
         if (data.containsKey("event") && data.containsKey("eventCategory")) {
