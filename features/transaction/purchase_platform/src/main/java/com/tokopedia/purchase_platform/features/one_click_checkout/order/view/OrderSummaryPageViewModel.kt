@@ -72,12 +72,11 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             orderProduct = orderData.cart.product
             orderShop = orderData.cart.shop
             kero = orderData.cart.kero
-            var preference = orderData.preference
-//            preference = preference.copy(shipment = preference.shipment.copy(serviceId = 1000))
-            if (_orderPreference == null) {
-                _orderPreference = OrderPreference(preference)
+            val preference = orderData.preference
+            _orderPreference = if (_orderPreference == null) {
+                OrderPreference(preference)
             } else {
-                _orderPreference = _orderPreference?.copy(preference = preference)
+                _orderPreference?.copy(preference = preference)
             }
             orderPreference.value = OccState.FirstLoad(_orderPreference!!)
             if (orderProduct.productId > 0 && preference.shipment.serviceId > 0) {
@@ -363,8 +362,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 //                val minimumAmount = 500000
                 val maximumAmount = _orderPreference?.preference?.payment?.maximumAmount ?: 0
 //                val maximumAmount = 700000
-                val fee = _orderPreference?.preference?.payment?.fee ?: 0
-                val orderCost = OrderCost(totalProductPrice, subtotal, totalShippingPrice, insurancePrice)
+                val fee = _orderPreference?.preference?.payment?.fee?.toDouble() ?: 0.0
+                val orderCost = OrderCost(totalProductPrice, subtotal, totalShippingPrice, insurancePrice, fee)
                 if (minimumAmount > subtotal) {
                     orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
                             paymentErrorMessage = "minimum pembayaran adalah ${CurrencyFormatUtil.convertPriceValueToIdrFormat(minimumAmount, false)}",

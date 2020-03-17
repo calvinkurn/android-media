@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.PriceValidation
 
 data class CheckoutOccGqlResponse(
         @SerializedName("one_click_checkout")
@@ -8,11 +9,11 @@ data class CheckoutOccGqlResponse(
 )
 
 data class CheckoutOccResponse(
-        @SerializedName("Header")
+        @SerializedName("header")
         val header: Header = Header(),
-        @SerializedName("Status")
+        @SerializedName("status")
         val status: String = "",
-        @SerializedName("Data")
+        @SerializedName("data")
         val data: Data = Data()
 )
 
@@ -26,39 +27,46 @@ data class Header(
 )
 
 data class Data(
-        @SerializedName("Success")
+        @SerializedName("success")
         val success: Int = 0,
-        @SerializedName("Error")
+        @SerializedName("error")
         val error: Error = Error(),
         @SerializedName("payment_parameter")
         val paymentParameter: PaymentParameter = PaymentParameter()
 )
 
 data class Error(
-        @SerializedName("Code")
+        @SerializedName("code")
         val code: String = "",
-        @SerializedName("ImageURL")
+        @SerializedName("image_url")
         val imageUrl: String = "",
-        @SerializedName("Message")
-        val message: String = ""
+        @SerializedName("message")
+        val message: String = "",
+        @SerializedName("additional_info")
+        val additionalInfo: AdditionalInfo = AdditionalInfo()
+)
+
+data class AdditionalInfo(
+        @SerializedName("price_validation")
+        val priceValidation: PriceValidation = PriceValidation()
 )
 
 data class PaymentParameter(
-        @SerializedName("CallbackURL")
+        @SerializedName("callback_url")
         val callbackUrl: String = "",
-        @SerializedName("Payload")
+        @SerializedName("payload")
         val payload: String = "",
-        @SerializedName("RedirectParam")
+        @SerializedName("redirect_param")
         val redirectParam: RedirectParam = RedirectParam()
 )
 
 data class RedirectParam(
-        @SerializedName("URL")
+        @SerializedName("url")
         val url: String = "",
-        @SerializedName("Gateway")
+        @SerializedName("gateway")
         val gateway: String = "",
-        @SerializedName("Method")
+        @SerializedName("method")
         val method: String = "",
-        @SerializedName("Form")
+        @SerializedName("form")
         val form: String = ""
 )

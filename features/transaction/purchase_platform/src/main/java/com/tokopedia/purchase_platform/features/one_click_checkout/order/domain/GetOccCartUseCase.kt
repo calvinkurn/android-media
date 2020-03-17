@@ -25,7 +25,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
         graphqlUseCase.setGraphqlQuery(graphqlRequest)
         val response = graphqlUseCase.executeOnBackground()
         if (response.response.status.equals("OK", true)) {
-            if (response.response.data.cartList.isNotEmpty() && response.response.data.profileResponse.profileId > 0) {
+            if (response.response.data.cartList.isNotEmpty()) {
                 val orderCart = OrderCart()
                 val cart = response.response.data.cartList[0]
                 val orderProduct = generateOrderProduct(cart.product)
