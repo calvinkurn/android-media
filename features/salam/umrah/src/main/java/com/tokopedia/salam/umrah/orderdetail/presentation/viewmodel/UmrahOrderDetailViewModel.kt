@@ -12,6 +12,7 @@ import com.tokopedia.salam.umrah.common.presentation.model.UmrahMyUmrahWidgetMod
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahSimpleDetailModel
 import com.tokopedia.salam.umrah.common.presentation.model.UmrahSimpleModel
 import com.tokopedia.salam.umrah.common.util.UmrahDispatchersProvider
+import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailButtonModel
 import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailsEntity
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -104,11 +105,11 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
         return data
     }
 
-    fun transformToButtonModel(actionButtons: List<UmrahOrderDetailsEntity.ActionButton>): List<UmrahOrderDetailButtonViewModel> {
-        val data = arrayListOf<UmrahOrderDetailButtonViewModel>()
+    fun transformToButtonModel(actionButtons: List<UmrahOrderDetailsEntity.ActionButton>): List<UmrahOrderDetailButtonModel> {
+        val data = arrayListOf<UmrahOrderDetailButtonModel>()
 
         for (item in actionButtons) {
-            data.add(UmrahOrderDetailButtonViewModel(item.label, item.buttonType, item.body.appUrl))
+            data.add(UmrahOrderDetailButtonModel(item.label, item.buttonType, item.body.appUrl))
         }
 
         return data

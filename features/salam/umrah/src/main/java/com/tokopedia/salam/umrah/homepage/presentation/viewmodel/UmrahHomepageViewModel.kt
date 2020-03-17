@@ -4,6 +4,8 @@ package com.tokopedia.salam.umrah.homepage.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.salam.umrah.common.data.UmrahSearchParameterEntity
+import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentsEntity
 import com.tokopedia.salam.umrah.homepage.data.*
 import com.tokopedia.salam.umrah.common.usecase.UmrahSearchParameterUseCase
 import com.tokopedia.salam.umrah.common.usecase.UmrahTravelAgentsUseCase
@@ -38,7 +40,7 @@ class UmrahHomepageViewModel @Inject constructor(private val getEmptyData: Umrah
 
 
     fun getIntialList(isLoadFromCloud: Boolean) {
-        val list: List<UmrahHomepageModel> = getEmptyData.requestEmptyViewModels(isLoadFromCloud)
+        val list: List<UmrahHomepageModel> = requestEmptyViewModels(isLoadFromCloud)
         homePageModelMutable.value = list
         isErrorMutable.value = false
 
@@ -202,6 +204,34 @@ class UmrahHomepageViewModel @Inject constructor(private val getEmptyData: Umrah
                 }
             }
         }
+    }
+
+    fun requestEmptyViewModels(isLoadedFromCloud: Boolean): List<UmrahHomepageModel> {
+        val umrahSearchParam = UmrahSearchParameterEntity()
+        umrahSearchParam.isLoadFromCloud = isLoadedFromCloud
+
+        val umrahDreamFund = UmrahHomepageMyUmrahEntity()
+        umrahDreamFund.isLoadFromCloud = isLoadedFromCloud
+
+        val umrahCategory = UmrahHomepageCategoryEntity()
+        umrahCategory.isLoadFromCloud = isLoadedFromCloud
+
+        val umrahCategoryFeatured = UmrahHomepageCategoryFeaturedEntity()
+        umrahCategoryFeatured.isLoadFromCloud = isLoadedFromCloud
+
+        val umrahBanner = UmrahHomepageBannerEntity()
+        umrahBanner.isLoadFromCloud = isLoadedFromCloud
+
+        val umrahPartnerTravel = UmrahTravelAgentsEntity()
+        umrahPartnerTravel.isLoadFromCloud = isLoadedFromCloud
+
+        return listOf(umrahSearchParam,
+                umrahBanner,
+                umrahDreamFund,
+                umrahCategory,
+                umrahCategoryFeatured,
+                umrahPartnerTravel
+        )
     }
 
     companion object {
