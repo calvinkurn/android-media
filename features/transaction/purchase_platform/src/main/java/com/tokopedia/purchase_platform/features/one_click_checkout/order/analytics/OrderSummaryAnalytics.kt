@@ -110,11 +110,11 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         )
     }
 
-    fun eventAturPreferensiFromOSP() {
+    fun eventAddPreferensiFromOSP() {
         sendEventCategoryAction(
                 EventName.CLICK_CHECKOUT_EXPRESS,
                 EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_ATUR_PREFERENSI_FROM_OSP
+                EventAction.CLICK_ADD_PREFERENSI_FROM_OSP
         )
     }
 

@@ -170,12 +170,14 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 //                                                    selectedShippingCourierUiModel = shippingCourierViewModelList[0]
 //                                                }
                                                 if (selectedShippingCourierUiModel != null) {
+                                                    val tempServiceDuration = shippingDurationViewModel.serviceData.serviceName
+                                                    val serviceDur = tempServiceDuration.substring(tempServiceDuration.indexOf("(")+1,tempServiceDuration.indexOf(")"))
                                                     shipping = shipping.copy(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
                                                             shipperId = selectedShippingCourierUiModel.productData.shipperId,
                                                             shipperName = selectedShippingCourierUiModel.productData.shipperName,
                                                             insuranceData = selectedShippingCourierUiModel.productData.insurance,
                                                             serviceId = shippingDurationViewModel.serviceData.serviceId,
-                                                            serviceDuration = shippingDurationViewModel.serviceData.texts.textEtd,
+                                                            serviceDuration = serviceDur,
                                                             serviceName = shippingDurationViewModel.serviceData.serviceName,
                                                             shippingPrice = selectedShippingCourierUiModel.productData.price.price,
                                                             shippingRecommendationData = shippingRecommendationData)
@@ -197,9 +199,11 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                 selectedShippingDurationViewModel = shippingDurationViewModel
                                                 val durationError = shippingDurationViewModel.serviceData.error
                                                 if (durationError.errorId != null && durationError.errorId.isNotBlank() && durationError.errorMessage.isNotBlank()) {
+                                                    val tempServiceDuration = shippingDurationViewModel.serviceData.serviceName
+                                                    val serviceDur = tempServiceDuration.substring(tempServiceDuration.indexOf("(")+1,tempServiceDuration.indexOf(")"))
                                                     shipping = Shipment(
                                                             serviceId = shippingDurationViewModel.serviceData.serviceId,
-                                                            serviceDuration = shippingDurationViewModel.serviceData.texts.textEtd,
+                                                            serviceDuration = serviceDur,
                                                             serviceName = shippingDurationViewModel.serviceData.serviceName,
                                                             needPinpoint = durationError.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED,
                                                             serviceErrorMessage = durationError.errorMessage,
@@ -225,6 +229,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                                 flagNeedToSetPinpoint = true
                                                             }
                                                         }
+                                                        val tempServiceDuration = shippingDurationViewModel.serviceData.serviceName
+                                                        val serviceDur = tempServiceDuration.substring(tempServiceDuration.indexOf("(")+1,tempServiceDuration.indexOf(")"))
                                                         shipping = Shipment(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
                                                                 shipperId = selectedShippingCourierUiModel.productData.shipperId,
                                                                 shipperName = selectedShippingCourierUiModel.productData.shipperName,
@@ -232,7 +238,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                                 serviceErrorMessage = if (flagNeedToSetPinpoint) "Butuh pinpoint lokasi" else null,
                                                                 insuranceData = selectedShippingCourierUiModel.productData.insurance,
                                                                 serviceId = shippingDurationViewModel.serviceData.serviceId,
-                                                                serviceDuration = shippingDurationViewModel.serviceData.texts.textEtd,
+                                                                serviceDuration = serviceDur,
                                                                 serviceName = shippingDurationViewModel.serviceData.serviceName,
                                                                 shippingPrice = selectedShippingCourierUiModel.productData.price.price,
                                                                 shippingRecommendationData = shippingRecommendationData)
@@ -567,12 +573,14 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 //                        shippingRecommendationData = shippingRecommendationData))
 //                orderPreference.value = OccState.Success(_orderPreference!!)
 //            } else {
+            val tempServiceDuration = selectedShippingDurationViewModel.serviceData.serviceName
+            val serviceDur = tempServiceDuration.substring(tempServiceDuration.indexOf("(")+1,tempServiceDuration.indexOf(")"))
             val shipping1 = shipping.copy(
                     needPinpoint = flagNeedToSetPinpoint,
                     serviceErrorMessage = if (flagNeedToSetPinpoint) "Butuh pinpoint lokasi" else null,
                     isServicePickerEnable = !flagNeedToSetPinpoint,
                     serviceId = selectedShippingDurationViewModel.serviceData.serviceId,
-                    serviceDuration = selectedShippingDurationViewModel.serviceData.texts.textEtd,
+                    serviceDuration = serviceDur,
                     serviceName = selectedShippingDurationViewModel.serviceData.serviceName,
                     shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
                     shipperId = selectedShippingCourierUiModel.productData.shipperId,

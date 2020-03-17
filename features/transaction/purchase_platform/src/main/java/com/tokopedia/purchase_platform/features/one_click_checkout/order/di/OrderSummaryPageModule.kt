@@ -12,6 +12,7 @@ import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetPreferenceListUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.mapper.PreferenceListModelMapper
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.GetOccCartGqlResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.UpdateCartOccGqlResponse
 import dagger.Module
@@ -54,4 +55,10 @@ class OrderSummaryPageModule {
     @OrderSummaryPageScope
     @Provides
     fun providesUpdateCartOccGraphqlUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<UpdateCartOccGqlResponse> = GraphqlUseCase(graphqlRepository)
+
+    @OrderSummaryPageScope
+    @Provides
+    fun provideOrderSummaryAnalytics(): OrderSummaryAnalytics {
+        return OrderSummaryAnalytics()
+    }
 }

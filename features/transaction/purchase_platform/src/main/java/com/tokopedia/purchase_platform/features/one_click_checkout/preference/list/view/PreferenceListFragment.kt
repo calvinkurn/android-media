@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.preference.l
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -93,15 +94,22 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                     global_error.gone()
                     main_content.visible()
                     val profiles = it.data.profiles ?: ArrayList()
+                    val maxProfiles = it.data.maxProfile
                     adapter.submitList(profiles)
                     adapter.notifyDataSetChanged()
                     if (profiles.isEmpty()) {
                         group_empty_state.visible()
                         rv_preference_list.gone()
+                        btn_preference_list_action.visible()
                         btn_preference_list_action.setText(R.string.add_first_preference)
+                    } else if (profiles.isNotEmpty() && profiles.size > maxProfiles) {
+                        group_empty_state.gone()
+                        rv_preference_list.visible()
+                        btn_preference_list_action.gone()
                     } else {
                         group_empty_state.gone()
                         rv_preference_list.visible()
+                        btn_preference_list_action.visible()
                         btn_preference_list_action.setText(R.string.add_preference)
                     }
                 }
