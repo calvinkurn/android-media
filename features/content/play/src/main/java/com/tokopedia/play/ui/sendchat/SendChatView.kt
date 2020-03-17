@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
@@ -19,7 +20,7 @@ import com.tokopedia.play.component.UIView
 /**
  * Created by jegul on 02/12/19
  */
-class SendChatView(container: ViewGroup, listener: Listener) : UIView(container) {
+class SendChatView(container: ViewGroup, val listener: Listener) : UIView(container) {
 
     companion object {
         private const val MAX_CHARS = 140
@@ -59,12 +60,24 @@ class SendChatView(container: ViewGroup, listener: Listener) : UIView(container)
             listener.onChatFormClicked(this)
         }
 
-        ivSend.setOnClickListener {
-            val message: String = etChat.text.toString()
-            if (message.isNotEmpty() && message.isNotBlank()) {
-                listener.onSendChatClicked(this, message)
-                etChat.setText("")
+        etChat.setOnEditorActionListener { textView, actionId, keyEvent ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                send()
+                return@setOnEditorActionListener true
             }
+            return@setOnEditorActionListener false
+        }
+
+        ivSend.setOnClickListener {
+            send()
+        }
+    }
+
+    private fun send() {
+        val message: String = etChat.text.toString()
+        if (message.isNotEmpty() && message.isNotBlank()) {
+            listener.onSendChatClicked(this, message)
+            etChat.setText("")
         }
     }
 

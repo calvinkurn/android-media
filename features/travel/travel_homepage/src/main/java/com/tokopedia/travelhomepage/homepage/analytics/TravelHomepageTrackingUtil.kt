@@ -1,6 +1,6 @@
 package com.tokopedia.travelhomepage.homepage.analytics
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -35,10 +35,9 @@ import com.tokopedia.travelhomepage.homepage.analytics.TravelHomepageTrackingEve
 import com.tokopedia.travelhomepage.homepage.analytics.TravelHomepageTrackingEventNameConstant.PROMO_CLICK
 import com.tokopedia.travelhomepage.homepage.analytics.TravelHomepageTrackingEventNameConstant.PROMO_VIEW
 import com.tokopedia.travelhomepage.homepage.analytics.TravelHomepageTrackingLabelConstant.CLICK
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageBannerModel
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageCategoryListModel
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageDestinationModel
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageSectionViewModel
+import com.tokopedia.travelhomepage.homepage.data.TravelHomepageSectionModel
 
 /**
  * @author by furqan on 23/08/2019
@@ -125,7 +124,7 @@ class TravelHomepageTrackingUtil {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, TRAVEL_HOMEPAGE_CATEGORY, POPULAR_SEARCH_CLICK, "$position - $categoryName")
     }
 
-    fun travelHomepageClickDeal(item: TravelHomepageSectionViewModel.Item, position: Int) {
+    fun travelHomepageClickDeal(item: TravelHomepageSectionModel.Item, position: Int) {
         val products = mutableListOf<Any>()
         products.add(DataLayer.mapOf(
                 NAME, "${item.subtitle} - best deals widget",

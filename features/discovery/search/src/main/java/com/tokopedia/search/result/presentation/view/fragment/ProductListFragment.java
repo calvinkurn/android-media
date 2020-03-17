@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -50,6 +51,7 @@ import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper;
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.filter.newdynamicfilter.helper.SortHelper;
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener;
+import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.search.R;
@@ -59,6 +61,7 @@ import com.tokopedia.search.analytics.SearchEventTracking;
 import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
+import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration;
@@ -66,6 +69,7 @@ import com.tokopedia.search.result.presentation.view.listener.BannedProductsRedi
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener;
+import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener;
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterListener;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
@@ -120,6 +124,7 @@ public class ProductListFragment
         BannerAdsListener,
         EmptyStateListener,
         RecommendationListener,
+        InspirationCarouselListener,
         BannedProductsRedirectToBrowserListener {
 
     private static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
@@ -150,6 +155,7 @@ public class ProductListFragment
     private SearchParameter searchParameter;
     private FilterController quickFilterController = new FilterController();
     private FilterController filterController = new FilterController();
+    private IrisSession irisSession;
 
     private ArrayList<Sort> sort;
     private ArrayList<Filter> filters;
@@ -175,7 +181,7 @@ public class ProductListFragment
     }
 
     private void loadDataFromArguments() {
-        if(getArguments() != null) {
+        if (getArguments() != null) {
             copySearchParameter(getArguments().getParcelable(EXTRA_SEARCH_PARAMETER));
         }
     }
@@ -187,7 +193,7 @@ public class ProductListFragment
     }
 
     private void initTrackingQueue() {
-        if(getContext() == null) return;
+        if (getContext() == null) return;
         trackingQueue = new TrackingQueue(getContext());
     }
 
@@ -205,6 +211,9 @@ public class ProductListFragment
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         presenter.attachView(this);
         presenter.initInjector(this);
+
+        if(irisSession == null && container != null)
+            irisSession = new IrisSession(container.getContext());
 
         return inflater.inflate(R.layout.search_result_product_fragment_layout, null);
     }
@@ -251,7 +260,8 @@ public class ProductListFragment
     }
 
     private void initTopAdsConfig() {
-        if(getActivity() == null || getActivity().getApplicationContext() == null || presenter == null) return;
+        if (getActivity() == null || getActivity().getApplicationContext() == null || presenter == null)
+            return;
 
         topAdsConfig = new Config.Builder()
                 .setSessionId(getRegistrationId())
@@ -266,7 +276,7 @@ public class ProductListFragment
         adsParams.getParam().put(TopAdsParams.KEY_QUERY, getQueryKey());
         adsParams.getParam().put(TopAdsParams.KEY_USER_ID, getUserId());
 
-        if(getSearchParameter() != null) {
+        if (getSearchParameter() != null) {
             getSearchParameter().cleanUpNullValuesInMap();
             adsParams.getParam().putAll(getSearchParameter().getSearchParameterHashMap());
         }
@@ -281,7 +291,7 @@ public class ProductListFragment
                 this, this,
                 this, this,
                 this, this, this,
-                this,
+                this, this,
                 topAdsConfig);
 
         adapter = new ProductListAdapter(this, productListTypeFactory);
@@ -376,7 +386,7 @@ public class ProductListFragment
     }
 
     private SearchPerformanceMonitoringListener castContextToSearchPerformanceMonitoring(Context context) {
-        if(context instanceof SearchPerformanceMonitoringListener) {
+        if (context instanceof SearchPerformanceMonitoringListener) {
             return (SearchPerformanceMonitoringListener) context;
         }
 
@@ -429,11 +439,11 @@ public class ProductListFragment
                 break;
             case SMALL_GRID:
                 switchLayoutTypeTo(LIST);
-                SearchTracking.eventSearchResultChangeGrid(getActivity(),"list", getScreenName());
+                SearchTracking.eventSearchResultChangeGrid(getActivity(), "list", getScreenName());
                 break;
             case BIG_GRID:
                 switchLayoutTypeTo(SMALL_GRID);
-                SearchTracking.eventSearchResultChangeGrid(getActivity(),"grid 2", getScreenName());
+                SearchTracking.eventSearchResultChangeGrid(getActivity(), "grid 2", getScreenName());
                 break;
         }
     }
@@ -462,7 +472,7 @@ public class ProductListFragment
     }
 
     private void refreshMenuItemGridIcon() {
-        if(searchNavigationListener == null || adapter == null) return;
+        if (searchNavigationListener == null || adapter == null) return;
 
         searchNavigationListener.refreshMenuItemGridIcon(adapter.getTitleTypeRecyclerView(), adapter.getIconTypeRecyclerView());
     }
@@ -485,7 +495,7 @@ public class ProductListFragment
     }
 
     private void openBottomSheetFilter() {
-        if(searchParameter == null || getFilters() == null) return;
+        if (searchParameter == null || getFilters() == null) return;
 
         FilterTracking.eventOpenFilterPage(getFilterTrackingData());
 
@@ -509,7 +519,7 @@ public class ProductListFragment
     }
 
     private void openSortActivity() {
-        if(getActivity() == null) return;
+        if (getActivity() == null) return;
 
         if (!FilterSortManager.openSortActivity(this, sort, getSelectedSort())) {
             NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_sort_data_not_ready));
@@ -545,7 +555,7 @@ public class ProductListFragment
         addProductList(list);
     }
 
-    public void addRecommendationList(List<Visitable> list){
+    public void addRecommendationList(List<Visitable> list) {
         isListEmpty = false;
 
         adapter.appendItems(list);
@@ -556,7 +566,7 @@ public class ProductListFragment
                 .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
-                        if(searchPerformanceMonitoringListener != null) {
+                        if (searchPerformanceMonitoringListener != null) {
                             searchPerformanceMonitoringListener.stopPerformanceMonitoring();
                         }
 
@@ -581,7 +591,12 @@ public class ProductListFragment
                 }
             }
         }
-        SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey());
+        if(irisSession != null){
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(),
+                    irisSession.getSessionId());
+        }else {
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(), "");
+        }
     }
 
     private String getSearchRef() {
@@ -607,7 +622,7 @@ public class ProductListFragment
     }
 
     private void generateLoadMoreParameter(int startRow) {
-        if(getSearchParameter() == null) setSearchParameter(new SearchParameter());
+        if (getSearchParameter() == null) setSearchParameter(new SearchParameter());
 
         getSearchParameter().set(SearchApiConst.UNIQUE_ID, generateUniqueId());
         getSearchParameter().set(SearchApiConst.USER_ID, getUserId());
@@ -671,7 +686,7 @@ public class ProductListFragment
         setSelectedSort(new HashMap<>(selectedSort));
         String userId = presenter.getUserId();
         SearchTracking.eventSearchResultSort(getScreenName(), selectedSortName, userId);
-        if(searchParameter != null) {
+        if (searchParameter != null) {
             searchParameter.getSearchParameterHashMap().put(SearchApiConst.ORIGIN_FILTER,
                     SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_SORT_PAGE);
 
@@ -690,12 +705,12 @@ public class ProductListFragment
     }
 
     private void handleWishlistAction(ProductCardOptionsModel productCardOptionsModel) {
-        if (productCardOptionsModel == null || productCardOptionsModel.getWishlistResult() == null) return;
+        if (productCardOptionsModel == null || productCardOptionsModel.getWishlistResult() == null)
+            return;
 
         if (productCardOptionsModel.getWishlistResult().isSuccess()) {
             handleSuccessWishlistAction(productCardOptionsModel);
-        }
-        else {
+        } else {
             handleFailedWishlistAction(productCardOptionsModel);
         }
     }
@@ -727,7 +742,11 @@ public class ProductListFragment
     @Override
     public void onPause() {
         super.onPause();
-        TopAdsGtmTracker.getInstance().eventSearchResultProductView(trackingQueue, getQueryKey(), SCREEN_SEARCH_PAGE_PRODUCT_TAB);
+        if(irisSession == null) {
+            TopAdsGtmTracker.getInstance().eventSearchResultProductView(trackingQueue, getQueryKey(), SCREEN_SEARCH_PAGE_PRODUCT_TAB, "");
+        }else{
+            TopAdsGtmTracker.getInstance().eventSearchResultProductView(trackingQueue, getQueryKey(), SCREEN_SEARCH_PAGE_PRODUCT_TAB, irisSession.getSessionId());
+        }
         trackingQueue.sendAll();
     }
 
@@ -762,7 +781,7 @@ public class ProductListFragment
     }
 
     private void redirectionStartActivity(String applink, String url) {
-        if(redirectionListener == null) return;
+        if (redirectionListener == null) return;
 
         if (!TextUtils.isEmpty(applink)) {
             redirectionListener.startActivityWithApplink(applink);
@@ -775,7 +794,7 @@ public class ProductListFragment
     public void onItemClicked(ProductItemViewModel item, int adapterPosition) {
         Intent intent = getProductIntent(item.getProductID(), item.getWarehouseID());
 
-        if(intent != null) {
+        if (intent != null) {
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
             sendItemClickTrackingEvent(item, adapterPosition);
             startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
@@ -809,7 +828,7 @@ public class ProductListFragment
     }
 
     private Product createTopAdsProductForTracking(ProductItemViewModel item) {
-        Product product  = new Product();
+        Product product = new Product();
         product.setId(item.getProductID());
         product.setName(item.getProductName());
         product.setPriceFormat(item.getPrice());
@@ -834,11 +853,11 @@ public class ProductListFragment
     public void onProductClick(@NotNull RecommendationItem item, @org.jetbrains.annotations.Nullable String layoutType, @NotNull int... position) {
         Intent intent = getProductIntent(String.valueOf(item.getProductId()), "0");
 
-        if(intent != null) {
+        if (intent != null) {
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, item.getPosition());
-            if(presenter.isUserLoggedIn()){
+            if (presenter.isUserLoggedIn()) {
                 RecommendationTracking.Companion.eventClickProductRecommendationLogin(item, String.valueOf(item.getPosition()));
-            }else {
+            } else {
                 RecommendationTracking.Companion.eventClickProductRecommendationNonLogin(item, String.valueOf(item.getPosition()));
             }
             startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
@@ -847,7 +866,7 @@ public class ProductListFragment
 
     @Override
     public void onProductImpression(@NotNull RecommendationItem item) {
-        if(presenter.isUserLoggedIn()){
+        if (presenter.isUserLoggedIn()) {
             RecommendationTracking.Companion.eventImpressionProductRecommendationLogin(trackingQueue, item, String.valueOf(item.getPosition()));
         } else {
             RecommendationTracking.Companion.eventImpressionProductRecommendationNonLogin(trackingQueue, item, String.valueOf(item.getPosition()));
@@ -857,18 +876,18 @@ public class ProductListFragment
     @Override
     public void onWishlistClick(@NotNull RecommendationItem item, boolean isAddWishlist, @NotNull Function2<? super Boolean, ? super Throwable, Unit> callback) {
         presenter.handleWishlistButtonClicked(item);
-        if(presenter.isUserLoggedIn()){
+        if (presenter.isUserLoggedIn()) {
             RecommendationTracking.Companion.eventUserClickProductToWishlistForUserLogin(!isAddWishlist);
         } else {
             RecommendationTracking.Companion.eventUserClickProductToWishlistForNonLogin();
         }
     }
 
-    private Intent getProductIntent(String productId, String warehouseId){
+    private Intent getProductIntent(String productId, String warehouseId) {
         if (getContext() == null) {
             return null;
         }
-        
+
         if (!TextUtils.isEmpty(warehouseId)) {
             return RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID, productId, warehouseId);
         } else {
@@ -878,7 +897,7 @@ public class ProductListFragment
 
     @Override
     public void onLongClick(ProductItemViewModel item, int adapterPosition) {
-        if(getSearchParameter() == null || getActivity() == null) return;
+        if (getSearchParameter() == null || getActivity() == null) return;
 
         SearchTracking.trackEventProductLongPress(getSearchParameter().getSearchQuery(), item.getProductID());
         ProductCardOptionsManager.showProductCardOptions(this, createProductCardOptionsModel(item));
@@ -920,7 +939,7 @@ public class ProductListFragment
     }
 
     public void refreshSearchParameter(Map<String, String> queryParams) {
-        if(searchParameter == null) return;
+        if (searchParameter == null) return;
 
         this.searchParameter.getSearchParameterHashMap().clear();
         this.searchParameter.getSearchParameterHashMap().putAll(queryParams);
@@ -930,7 +949,7 @@ public class ProductListFragment
 
     @Override
     public void refreshFilterController(HashMap<String, String> queryParams) {
-        if(filterController == null || getFilters() == null) return;
+        if (filterController == null || getFilters() == null) return;
 
         HashMap<String, String> params = new HashMap<>(queryParams);
         params.put(SearchApiConst.ORIGIN_FILTER,
@@ -951,8 +970,9 @@ public class ProductListFragment
 
     @Override
     public void onTickerDismissed() {
-        if (presenter != null) {
-            presenter.setIsTickerHasDismissed(true);
+        if (presenter != null && adapter != null) {
+            presenter.onPriceFilterTickerDismissed();
+            adapter.removePriceFilterTicker();
         }
     }
 
@@ -978,14 +998,14 @@ public class ProductListFragment
 
     @Override
     public boolean isQuickFilterSelected(Option option) {
-        if(quickFilterController == null) return false;
+        if (quickFilterController == null) return false;
 
         return quickFilterController.getFilterViewState(option.getUniqueId());
     }
 
     @Override
     public void onQuickFilterSelected(Option option) {
-        if(quickFilterController == null) return;
+        if (quickFilterController == null) return;
 
         boolean isQuickFilterSelectedReversed = !isQuickFilterSelected(option);
 
@@ -1002,7 +1022,7 @@ public class ProductListFragment
     }
 
     private void setFilterToQuickFilterController(Option option, boolean isQuickFilterSelected) {
-        if(quickFilterController == null) return;
+        if (quickFilterController == null) return;
 
         if (option.isCategoryOption()) {
             quickFilterController.setFilter(option, isQuickFilterSelected, true);
@@ -1021,7 +1041,7 @@ public class ProductListFragment
     }
 
     private void removeSelectedFilter(String uniqueId) {
-        if(filterController == null) return;
+        if (filterController == null) return;
 
         Option option = OptionHelper.generateOptionFromUniqueId(uniqueId);
 
@@ -1033,7 +1053,7 @@ public class ProductListFragment
     }
 
     private void removeFilterFromFilterController(Option option) {
-        if(filterController == null) return;
+        if (filterController == null) return;
 
         String optionKey = option.getKey();
 
@@ -1070,7 +1090,7 @@ public class ProductListFragment
     }
 
     private List<Option> getOptionListFromFilterController() {
-        if(filterController == null) return new ArrayList<>();
+        if (filterController == null) return new ArrayList<>();
 
         return OptionHelper.combinePriceFilterIfExists(filterController.getActiveFilterOptionList(),
                 getResources().getString(R.string.empty_state_selected_filter_price_name));
@@ -1195,7 +1215,7 @@ public class ProductListFragment
     }
 
     private boolean isFilterActive() {
-        if(filterController == null) return false;
+        if (filterController == null) return false;
 
         return filterController.isFilterActive();
     }
@@ -1205,14 +1225,14 @@ public class ProductListFragment
         setFilterData(pojo.getData().getFilter());
         setSortData(pojo.getData().getSort());
 
-        if(filterController == null || searchParameter == null
+        if (filterController == null || searchParameter == null
                 || getFilters() == null || getSort() == null) return;
 
         List<Filter> initializedFilterList = FilterHelper.initializeFilterList(getFilters());
         filterController.initFilterController(searchParameter.getSearchParameterHashMap(), initializedFilterList);
         initSelectedSort();
 
-        if(isListEmpty) {
+        if (isListEmpty) {
             refreshAdapterForEmptySearch();
         }
     }
@@ -1245,7 +1265,7 @@ public class ProductListFragment
     }
 
     private void initSelectedSort() {
-        if(getSort() == null) return;
+        if (getSort() == null) return;
 
         HashMap<String, String> selectedSort = new HashMap<>(
                 SortHelper.Companion.getSelectedSortFromSearchParameter(searchParameter.getSearchParameterHashMap(), getSort())
@@ -1276,8 +1296,7 @@ public class ProductListFragment
     public void trackEventImpressionBannedProducts(boolean isEmptySearch) {
         if (isEmptySearch) {
             SearchTracking.trackEventImpressionBannedProductsEmptySearch(getQueryKey());
-        }
-        else {
+        } else {
             SearchTracking.trackEventImpressionBannedProductsWithResult(getQueryKey());
         }
     }
@@ -1367,7 +1386,7 @@ public class ProductListFragment
 
     @Override
     public void initQuickFilter(List<Filter> quickFilterList) {
-        if(quickFilterController == null) return;
+        if (quickFilterController == null) return;
 
         quickFilterController.initFilterController(getSearchParameter().getSearchParameterHashMap(), quickFilterList);
     }
@@ -1410,13 +1429,13 @@ public class ProductListFragment
 
     @Override
     public void clearLastProductItemPositionFromCache() {
-        if(getActivity() == null || getActivity().getApplicationContext() == null) return;
+        if (getActivity() == null || getActivity().getApplicationContext() == null) return;
         LocalCacheHandler.clearCache(getActivity().getApplicationContext(), SEARCH_RESULT_ENHANCE_ANALYTIC);
     }
 
     @Override
     public void saveLastProductItemPositionToCache(int lastProductItemPositionToCache) {
-        if(getActivity() == null || getActivity().getApplicationContext() == null) return;
+        if (getActivity() == null || getActivity().getApplicationContext() == null) return;
 
         LocalCacheHandler cache = new LocalCacheHandler(getActivity().getApplicationContext(), SEARCH_RESULT_ENHANCE_ANALYTIC);
         cache.putInt(LAST_POSITION_ENHANCE_PRODUCT, lastProductItemPositionToCache);
@@ -1425,7 +1444,7 @@ public class ProductListFragment
 
     @Override
     public int getLastProductItemPositionFromCache() {
-        if(getActivity() == null || getActivity().getApplicationContext() == null) return 0;
+        if (getActivity() == null || getActivity().getApplicationContext() == null) return 0;
 
         LocalCacheHandler cache = new LocalCacheHandler(getActivity().getApplicationContext(), SEARCH_RESULT_ENHANCE_ANALYTIC);
         return cache.getInt(LAST_POSITION_ENHANCE_PRODUCT, 0);
@@ -1477,7 +1496,7 @@ public class ProductListFragment
     }
 
     private void finishActivity() {
-        if(getActivity() != null) {
+        if (getActivity() != null) {
             getActivity().finish();
         }
     }
@@ -1528,8 +1547,7 @@ public class ProductListFragment
     private void trackEventClickGoToBrowserBannedProducts(boolean isEmptySearch) {
         if (isEmptySearch) {
             SearchTracking.trackEventClickGoToBrowserBannedProductsEmptySearch(getQueryKey());
-        }
-        else {
+        } else {
             SearchTracking.trackEventClickGoToBrowserBannedProductsWithResult(getQueryKey());
         }
     }
@@ -1545,7 +1563,7 @@ public class ProductListFragment
 
     @Override
     public HashMap<String, String> getSelectedFilter() {
-        if(filterController == null) return new HashMap<>();
+        if (filterController == null) return new HashMap<>();
 
         return new HashMap<>(filterController.getActiveFilterMap());
     }
@@ -1559,9 +1577,9 @@ public class ProductListFragment
 
     @Nullable
     public BaseAppComponent getBaseAppComponent() {
-        if(getActivity() == null || getActivity().getApplication() == null) return null;
+        if (getActivity() == null || getActivity().getApplication() == null) return null;
 
-        return ((BaseMainApplication)getActivity().getApplication()).getBaseAppComponent();
+        return ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent();
     }
 
     @Override
@@ -1571,14 +1589,14 @@ public class ProductListFragment
 
     @Override
     public void renderFailRequestDynamicFilter() {
-        if(getActivity() == null) return;
+        if (getActivity() == null) return;
 
         NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_get_dynamic_filter));
     }
 
     @Override
     public void onBannerAdsClicked(int position, String applink, CpmData cpmData) {
-        if(getActivity() == null || redirectionListener == null) return;
+        if (getActivity() == null || redirectionListener == null) return;
 
         redirectionListener.startActivityWithApplink(applink);
 
@@ -1599,7 +1617,7 @@ public class ProductListFragment
     }
 
     public String getRegistrationId() {
-        if(getActivity() == null || getActivity().getApplicationContext() == null) return "";
+        if (getActivity() == null || getActivity().getApplicationContext() == null) return "";
 
         LocalCacheHandler cache = new LocalCacheHandler(getActivity().getApplicationContext(), GCM_STORAGE);
         return cache.getString(GCM_ID, "");
@@ -1621,5 +1639,36 @@ public class ProductListFragment
         if (searchNavigationListener != null) {
             searchNavigationListener.hideBottomNavigation();
         }
+    }
+
+    @Override
+    public void onInspirationCarouselProductClicked(InspirationCarouselViewModel.Option.Product product) {
+        redirectionStartActivity(product.getApplink(), product.getUrl());
+
+        List<Object> products = new ArrayList<>();
+        products.add(product.getProductAsObjectDataLayer());
+        SearchTracking.trackEventClickInspirationCarouselOptionProduct(getQueryKey(), products);
+    }
+
+    @Override
+    public void onInspirationCarouselSeeAllClicked(@NotNull InspirationCarouselViewModel.Option option) {
+        redirectionStartActivity(option.getApplink(), option.getUrl());
+
+        String keywordBefore = getQueryKey();
+        Uri applink = Uri.parse(option.getApplink());
+        String keywordAfter = applink.getQueryParameter(SearchApiConst.Q);
+        SearchTracking.trackEventClickInspirationCarouselOptionSeeAll(keywordBefore, keywordAfter);
+    }
+
+    @Override
+    public void sendImpressionInspirationCarousel(InspirationCarouselViewModel inspirationCarouselViewModel) {
+        List<Object> products = new ArrayList<>();
+
+        for (InspirationCarouselViewModel.Option option : inspirationCarouselViewModel.getOptions()) {
+            for (InspirationCarouselViewModel.Option.Product object : option.getProduct()) {
+                products.add(object.getProductImpressionAsObjectDataLayer());
+            }
+        }
+        SearchTracking.trackImpressionInspirationCarousel(getQueryKey(), products);
     }
 }

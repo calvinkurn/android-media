@@ -1,7 +1,6 @@
 package com.tokopedia.sellerhomedrawer.data.header
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig
-
+import com.tokopedia.config.GlobalConfig
 
 class SellerDrawerNotification {
 

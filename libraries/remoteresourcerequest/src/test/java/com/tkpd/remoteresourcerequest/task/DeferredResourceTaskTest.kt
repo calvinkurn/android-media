@@ -7,6 +7,7 @@ import com.tkpd.remoteresourcerequest.database.ResourceDB
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.spyk
 import io.mockk.verify
 import okhttp3.OkHttpClient
 import org.junit.Before
@@ -23,13 +24,13 @@ class DeferredResourceTaskTest {
     private var deferredImageView = mockk<DeferredImageView>()
     @Before
     fun setup() {
-        task = DeferredResourceTask(resourceDownloadManager, okHttpClient, roomDb)
+        task = spyk(DeferredResourceTask(resourceDownloadManager, okHttpClient, roomDb))
 
     }
 
     @Test
     fun initTest() {
-        task.initTask("abc", deferredImageView)
+        task.initTask("abc", deferredImageView, null)
         assert(task.deferredImageView!!.get() == deferredImageView)
         assert(task.getDownloadUrl() == "abc")
     }
@@ -46,17 +47,17 @@ class DeferredResourceTaskTest {
     fun testByteBuffer() {
         val byteArray = byteArrayOf()
         task.setByteBuffer(byteArray)
-        assert(task.getByteBuffer().contentEquals(byteArray))
+        assert(task.getByteBuffer()!!.contentEquals(byteArray))
     }
 
     @Test
     fun testHeightWidth() {
-        task.initTask("abc", deferredImageView)
+        task.initTask("abc", deferredImageView, null)
         every { deferredImageView.width } returns 50
         every { deferredImageView.height } returns 10
         assert(task.mTargetWidth == deferredImageView.width)
         assert(task.mTargetHeight == 10)
-        task.initTask("abc", null)
+        task.initTask("abc", null, null)
         assert(task.mTargetHeight == 0)
         assert(task.mTargetWidth == 0)
 
@@ -104,12 +105,22 @@ class DeferredResourceTaskTest {
         every { resourceDownloadManager.getContextWrapper() } returns wrapper
         every { wrapper.getDir("downloads", Context.MODE_PRIVATE) } returns directory
 
-        task.initTask("/def", null)
+        task.initTask("/def", null, null)
         val result = task.getFileLocationFromDirectory()
         verify { resourceDownloadManager.getContextWrapper() }
         verify { directory.mkdir() }
 
         assert(result.path == mockedFile.path +"/def")
         assert(result.name == "def")
+    }
+    @Test
+    fun recycleTaskTest(){
+        task.recycleTask()
+
+        assert(task.deferredImageView == null)
+        assert(task.getByteBuffer() == null)
+        assert(task.mDownloadRunnable == null)
+        assert(task.deferredTaskCallback == null)
+        assert(task.getBitmap() == null)
     }
 }

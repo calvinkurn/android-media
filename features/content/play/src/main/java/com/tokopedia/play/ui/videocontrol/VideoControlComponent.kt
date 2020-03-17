@@ -6,8 +6,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
+import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emptyFlow
@@ -19,14 +21,15 @@ import kotlinx.coroutines.launch
 open class VideoControlComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
-        coroutineScope: CoroutineScope
+        coroutineScope: CoroutineScope,
+        dispatchers: CoroutineDispatcherProvider
 ) : UIComponent<Unit>, CoroutineScope by coroutineScope {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container)
 
     init {
-        launch {
+        launch(dispatchers.immediate) {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {

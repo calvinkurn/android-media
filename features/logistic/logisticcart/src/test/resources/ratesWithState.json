@@ -1,5 +1,5 @@
 {
-  "shippingDurationViewModels": [
+  "shippingDurationUiModels": [
     {
       "codText": "",
       "isCodAvailable": false,
@@ -150,7 +150,7 @@
           "text_service_desc": ""
         }
       },
-      "shippingCourierViewModelList": [
+      "shippingCourierUiModelList": [
         {
           "additionalFee": 0,
           "allowDropshipper": false,
@@ -718,7 +718,7 @@
           "text_service_desc": ""
         }
       },
-      "shippingCourierViewModelList": [
+      "shippingCourierUiModelList": [
         {
           "additionalFee": 0,
           "allowDropshipper": false,
@@ -1286,7 +1286,7 @@
           "text_service_desc": ""
         }
       },
-      "shippingCourierViewModelList": [
+      "shippingCourierUiModelList": [
         {
           "additionalFee": 0,
           "allowDropshipper": true,
@@ -1962,7 +1962,7 @@
           "text_service_desc": ""
         }
       },
-      "shippingCourierViewModelList": [
+      "shippingCourierUiModelList": [
         {
           "additionalFee": 0,
           "allowDropshipper": true,

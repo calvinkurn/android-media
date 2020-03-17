@@ -2,10 +2,12 @@ package com.tokopedia.feedplus.view.di;
 
 import android.content.Context;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerCollector;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
+import com.chuckerteam.chucker.api.RetentionManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliatecommon.data.network.TopAdsApi;
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase;
@@ -97,7 +99,11 @@ public class FeedPlusModule {
     @FeedPlusChuckQualifier
     @Provides
     Interceptor provideChuckInterceptory(@ApplicationContext Context context) {
-        return new ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools());
+        ChuckerCollector collector = new ChuckerCollector(
+                context, GlobalConfig.isAllowDebuggingTools());
+
+        return new ChuckerInterceptor(
+                context, collector);
     }
 
     @FeedPlusScope

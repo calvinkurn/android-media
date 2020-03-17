@@ -61,8 +61,8 @@ class PromoCheckoutListModule {
 
     @PromoCheckoutListScope
     @Provides
-    fun provideMarketplacePresenter(checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase, checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper, getCatalogHighlightUseCase: GraphqlUseCase): PromoCheckoutListMarketplacePresenter {
-        return PromoCheckoutListMarketplacePresenter(checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, getCatalogHighlightUseCase)
+    fun provideMarketplacePresenter(graphqlUseCase: GraphqlUseCase, checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase): PromoCheckoutListMarketplacePresenter {
+        return PromoCheckoutListMarketplacePresenter(graphqlUseCase, checkPromoStackingCodeUseCase)
     }
 
     @PromoCheckoutListScope

@@ -3,10 +3,7 @@ package com.tokopedia.topchat.chatlist.data.repository;
 
 import com.google.gson.JsonObject;
 import com.tokopedia.topchat.chatlist.data.factory.MessageFactory;
-import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListViewModel;
-import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
-
-import java.util.HashMap;
+import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListUiModel;
 
 import rx.Observable;
 
@@ -23,12 +20,7 @@ public class MessageRepositoryImpl implements MessageRepository {
     }
 
     @Override
-    public Observable<InboxChatViewModel> getMessage(HashMap<String, Object> mapParam) {
-        return messageFactory.createCloudMessageDataSource().getMessage(mapParam);
-    }
-
-    @Override
-    public Observable<DeleteChatListViewModel> deleteMessage(JsonObject parameters) {
+    public Observable<DeleteChatListUiModel> deleteMessage(JsonObject parameters) {
         return messageFactory.createCloudMessageDataSource().deleteMessage(parameters);
     }
 
