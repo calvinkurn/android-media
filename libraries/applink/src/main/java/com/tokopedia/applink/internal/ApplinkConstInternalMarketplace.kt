@@ -56,9 +56,6 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val ONE_CLICK_CHECKOUT = "$INTERNAL_MARKETPLACE/one-click-checkout"
 
-    @JvmField
-    val ONE_CLICK_CHECKOUT = "$INTERNAL_MARKETPLACE/one-click-checkout"
-
     // ProductDetailActivity
     @JvmField
     val PRODUCT_ADD_ITEM = "$INTERNAL_MARKETPLACE/product-add-item"

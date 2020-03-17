@@ -30,6 +30,7 @@ class AddToCartOccUseCase @Inject constructor(@Named(MUTATION_ATC_OCC) private v
         private const val PARAM_ATTRIBUTION = "attribution"
         private const val PARAM_UC_PARAMS = "uc_params"
         private const val PARAM_LIST_TRACKER = "list_tracker"
+        private const val PARAM_NOTES = "notes"
     }
 
     override fun createObservable(requestParams: RequestParams?): Observable<AddToCartDataModel> {
@@ -55,7 +56,8 @@ class AddToCartOccUseCase @Inject constructor(@Named(MUTATION_ATC_OCC) private v
                         PARAM_IS_SCP to addToCartRequest.isScp,
                         PARAM_ATTRIBUTION to addToCartRequest.attribution,
                         PARAM_UC_PARAMS to addToCartRequest.ucParam,
-                        PARAM_LIST_TRACKER to addToCartRequest.listTracker
+                        PARAM_LIST_TRACKER to addToCartRequest.listTracker,
+                        PARAM_NOTES to addToCartRequest.notes
                 )
         )
     }
