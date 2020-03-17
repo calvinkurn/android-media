@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginLeft="@dimen/dp_12"
-            android:text="@string/label_add_product_photo_tips"
+            android:text="@string/preview_label_add_product_photo_tips"
             app:layout_constraintLeft_toRightOf="@id/iv_tips_bulb"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_3"
