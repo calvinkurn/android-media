@@ -4,7 +4,6 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.hansel.preprocessor'
 apply from: '../tools/set_debug_tools.gradle'
 
-apply from: '../tools/set_debug_tools.gradle'
 kapt {
     correctErrorTypes = true
     generateStubs = false
