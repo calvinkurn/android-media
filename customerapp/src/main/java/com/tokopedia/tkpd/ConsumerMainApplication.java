@@ -14,13 +14,18 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.bugsnag.android.BeforeNotify;
+import com.bugsnag.android.BreadcrumbType;
 import com.bugsnag.android.Bugsnag;
+import com.bugsnag.android.Error;
 import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.crashlytics.android.Crashlytics;
@@ -71,6 +76,8 @@ import com.tokopedia.tkpd.utils.DeviceUtil;
 import com.tokopedia.tkpd.utils.UIBlockDebugger;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
@@ -85,6 +92,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
@@ -122,6 +130,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         if (!isMainProcess()) {
             return;
         }
+        initBugSnag();
         Chucker.registerDefaultCrashHandler(new ChuckerCollector(this, false));
         initConfigValues();
         initializeSdk();
@@ -135,7 +144,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
         createAndCallPreSeq();
-
         super.onCreate();
 
         initGqlNWClient();
@@ -146,6 +154,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             @Override
             public void onShakeDetected(boolean isLongShake) {
                 openShakeDetectCampaignPage(isLongShake);
+                Bugsnag.leaveBreadcrumb("shake_campaign", BreadcrumbType.STATE, new HashMap<String, String>() {{
+                    put("shake_detected", "shake_detect");
+                }});
             }
         });
         registerActivityLifecycleCallbacks(shakeSubscriber);
@@ -160,7 +171,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         NFCSubscriber nfcSubscriber = new NFCSubscriber();
         registerActivityLifecycleCallbacks(nfcSubscriber);
-        Bugsnag.init(this);
     }
 
     private void createAndCallPreSeq(){
@@ -236,6 +246,14 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         generateConsumerAppNetworkKeys();
     }
 
+    private void initBugSnag() {
+        Bugsnag.init(this);
+        UserSessionInterface userSession = new UserSession(this);
+        if (!TextUtils.isEmpty(userSession.getUserId())) {
+            Bugsnag.setUser(userSession.getUserId(), userSession.getEmail(), userSession.getName());
+        }
+    }
+
     private void initGqlNWClient(){
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
@@ -278,6 +296,10 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConstInternalPromo.PROMO_CAMPAIGN_SHAKE_LANDING, Boolean.toString(isLongShake));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getApplicationContext().startActivity(intent);
+        Bugsnag.leaveBreadcrumb("shake_campaign", BreadcrumbType.STATE, new HashMap<String, String>() {{
+            put("init", "open_shake_detect");
+            put("long_shake", Boolean.toString(isLongShake));
+        }});
     }
 
 
@@ -351,11 +373,22 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     private void initializeSdk() {
+        Bugsnag.beforeNotify(new BeforeNotify() {
+            @Override
+            public boolean run(@NonNull Error error) {
+                UserSessionInterface userSession = new UserSession(ConsumerMainApplication.this);
+                if (!TextUtils.isEmpty(userSession.getUserId())) {
+                    error.addToTab("account", "userId", userSession.getUserId());
+                    error.addToTab("account", "deviceId", userSession.getDeviceId());
+                }
+                return false;
+            }
+        });
         try {
             FirebaseApp.initializeApp(this);
             FacebookSdk.sdkInitialize(this);
         } catch (Exception e) {
-            e.printStackTrace();
+            Bugsnag.notify(e);
         }
     }
 
@@ -364,7 +397,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         Long timestampAbTest = sharedPreferences.getLong(AbTestPlatform.Companion.getKEY_SP_TIMESTAMP_AB_TEST(), 0);
         RemoteConfigInstance.initAbTestPlatform(this);
         Long current = new Date().getTime();
-
+        Bugsnag.leaveBreadcrumb("initialization", BreadcrumbType.STATE, new HashMap<String, String>() {{
+            put("init", "ab_test_variant");
+            put("start_time", timestampAbTest.toString());
+            put("current_time", current.toString());
+        }});
         if (current >= timestampAbTest + TimeUnit.HOURS.toMillis(1)) {
             RemoteConfigInstance.getInstance().getABTestPlatform().fetch(getRemoteConfigListener());
         }
@@ -498,7 +535,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 }
             }
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            Bugsnag.notify(e);
             return false;
         }
     }
@@ -543,7 +580,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
             sb.append("\n");
         } catch (CertificateException e) {
-            // e.printStackTrace();
+            Bugsnag.notify(e);
         }
         return sb.toString();
     }
