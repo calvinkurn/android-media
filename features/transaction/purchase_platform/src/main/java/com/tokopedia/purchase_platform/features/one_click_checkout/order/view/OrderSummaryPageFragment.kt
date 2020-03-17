@@ -218,7 +218,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun showEmptyPreferenceCard() {
-        ImageHandler.LoadImage(image_empty_profile, EMPTY_STATE_PICT_URL)
+        ImageHandler.LoadImage(image_empty_profile, EMPTY_PROFILE_IMAGE)
         empty_preference_card.visible()
         preference_card.gone()
         tv_total_payment_label.gone()
@@ -395,6 +395,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             iv_subheader.gone()
         } else {
             tv_header_2.gone()
+            ImageHandler.LoadImage(iv_subheader, BELI_LANGSUNG_CART_IMAGE )
             iv_subheader.visible()
             tv_subheader.text = preference.onboardingHeaderMessage
             tv_subheader_action.setOnClickListener {
@@ -546,6 +547,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         const val REQUEST_CREATE_PREFERENCE = 12
 
         const val REQUEST_CODE_COURIER_PINPOINT = 13
-        private const val EMPTY_STATE_PICT_URL = "https://ecs7.tokopedia.net/android/others/pilih_alamat_pengiriman3x.png"
+        private const val EMPTY_PROFILE_IMAGE = "https://ecs7.tokopedia.net/android/others/beli_langsung_intro.png"
+        private const val BELI_LANGSUNG_CART_IMAGE = "https://ecs7.tokopedia.net/android/others/beli_langsung_keranjang.png"
     }
 }

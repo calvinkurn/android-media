@@ -23,10 +23,4 @@ class OrderSummaryPageActivity : BaseSimpleActivity(), HasComponent<OrderSummary
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .build()
     }
-
-    override fun onBackPressed() {
-        orderSummaryAnalytics.eventClickBackFromOSP()
-        super.onBackPressed()
-    }
-
 }
