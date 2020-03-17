@@ -229,4 +229,11 @@
 
     <string name="add_product_text_description">Tambah Produk</string>
     <string name="import_from_instagram_to_draft">Impor Instagram ke Draft</string>
+
+    <string name="title_picture_product">Gambar Produk</string>
+    <string name="product_label_variant">Varian</string>
+    <string name="product_label_wholesale">Harga Grosir</string>
+    <string name="product_label_po">PO</string>
+    <string name="product_manage_label_supervision">Pengawasan</string>
+
 </resources>

@@ -514,6 +514,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                 setPrimaryCTAClickListener {
                     dismiss()
                     RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
+                    ProductManageTracking.eventCashbackSettingsPopUp()
                 }
                 setSecondaryCTAClickListener {
                     dismiss()

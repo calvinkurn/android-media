@@ -26,11 +26,10 @@ import com.tokopedia.product.manage.feature.cashback.presentation.adapter.viewmo
 import com.tokopedia.product.manage.feature.cashback.presentation.viewmodel.ProductManageSetCashbackViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
+import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
-import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import kotlinx.android.synthetic.main.fragment_product_manage_set_cashback.*
 import javax.inject.Inject
 
