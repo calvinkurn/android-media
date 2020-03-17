@@ -4,15 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginLeft="-12dp"
+    android:layout_marginRight="-12dp"
     android:layout_marginBottom="@dimen/dp_8">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_4"
+        android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_12"
         android:textColor="@color/clr_f531353b"
         android:visibility="gone"
@@ -30,8 +32,6 @@
         android:id="@+id/youtube_home_shop_page"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_180"
-        android:layout_marginLeft="-12dp"
-        android:layout_marginRight="-12dp"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -50,7 +50,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewTitle" />
+        app:layout_constraintTop_toTopOf="@id/youtube_home_shop_page" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/loaderVideoYoutube"
@@ -61,7 +61,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewTitle" />
+        app:layout_constraintTop_toTopOf="@id/youtube_home_shop_page" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/btn_youtube_player"
@@ -75,26 +75,26 @@
         app:layout_constraintTop_toTopOf="@id/youtube_home_shop_page"
         app:srcCompat="@drawable/ic_play_play_round" />
 
-
     <View
         android:id="@+id/bgVideoError"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_180"
         android:background="@color/clr_31353B"
+        app:layout_constraintBottom_toBottomOf="@id/youtube_home_shop_page"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="@id/youtube_home_shop_page" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivVideoNotFound"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
         android:layout_marginTop="66dp"
         android:layout_marginBottom="92dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:adjustViewBounds="true"
+        app:layout_constraintBottom_toBottomOf="@id/youtube_home_shop_page"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/youtube_home_shop_page"
         app:srcCompat="@drawable/ic_video_error" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -109,9 +109,10 @@
         app:layout_constraintTop_toBottomOf="@id/ivVideoNotFound" />
 
     <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupVideoError"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_180"
-        app:constraint_referenced_ids="bgVideoError,ivVideoNotFound,tvYoutubeNotFound"
-        android:id="@+id/groupVideoError" />
+        android:visibility="gone"
+        app:constraint_referenced_ids="bgVideoError,ivVideoNotFound,tvYoutubeNotFound" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
