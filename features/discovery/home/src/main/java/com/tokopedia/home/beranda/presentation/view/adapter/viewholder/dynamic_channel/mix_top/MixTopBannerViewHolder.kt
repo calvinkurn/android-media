@@ -80,7 +80,7 @@ class MixTopBannerViewHolder(
     }
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
-        homeCategoryListener.putEEToTrackingQueue(MixTopTracking.getMixTopSeeAllClick(channel.header.name) as HashMap<String, Any>)
+        homeCategoryListener.sendEETracking(MixTopTracking.getMixTopSeeAllClick(channel.header.name) as HashMap<String, Any>)
     }
 
     override fun onBannerSeeMoreClicked(applink: String, channel: DynamicHomeChannel.Channels) {

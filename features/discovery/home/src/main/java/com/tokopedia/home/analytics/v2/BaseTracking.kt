@@ -150,7 +150,7 @@ abstract class BaseTracking {
             map[KEY_NAME] = promotion.name
             map[KEY_CREATIVE] = promotion.creative
             map[KEY_CREATIVE_URL] = promotion.creativeUrl
-            map[KEY_POSITION] = promotion.position.toString()
+            map[KEY_POSITION] = promotion.position
             map[KEY_PROMO_ID] = promotion.promoIds
             map[KEY_PROMO_CODE] = promotion.promoCodes
             return map
@@ -275,6 +275,25 @@ abstract class BaseTracking {
                 Category.KEY, eventCategory,
                 Action.KEY, eventAction,
                 Label.KEY, eventLabel,
+                Ecommerce.KEY, Ecommerce.getEcommerceProductView(products, list)
+        )
+    }
+
+    open fun getBasicProductView(
+            event: String,
+            eventCategory: String,
+            eventAction: String,
+            eventLabel: String,
+            channelId: String,
+            list: String,
+            products: List<Product>
+    ): Map<String, Any>{
+        return DataLayer.mapOf(
+                Event.KEY, event,
+                Category.KEY, eventCategory,
+                Action.KEY, eventAction,
+                Label.KEY, eventLabel,
+                Label.CHANNEL_LABEL, channelId,
                 Ecommerce.KEY, Ecommerce.getEcommerceProductView(products, list)
         )
     }

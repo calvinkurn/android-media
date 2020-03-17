@@ -359,7 +359,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         val variants = mapSelectedProductVariants(userInputVariant)
         val productImageUrl = productInfo?.data?.getProductImageUrl() ?: ""
         val productName = productInfo?.getProductName ?: ""
-        val productPrice = productInfo?.data?.price?.value?.getCurrencyFormatted() ?: ""
+        val productPrice = productInfo?.finalPrice?.getCurrencyFormatted() ?: ""
         val productUrl = productInfo?.basic?.url ?: ""
         val productFsIsActive = productInfo?.data?.getFsProductIsActive() ?: false
         val productFsImageUrl = productInfo?.data?.getFsProductImageUrl() ?: ""

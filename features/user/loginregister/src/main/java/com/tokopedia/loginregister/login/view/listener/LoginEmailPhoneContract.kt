@@ -113,6 +113,8 @@ interface LoginEmailPhoneContract {
         fun onSuccessCheckStatusFingerprint(data: StatusFingerprint)
 
         fun goToFingerprintRegisterPage()
+
+        fun getFingerprintConfig(): Boolean
     }
 
     interface Presenter : CustomerPresenter<View> {

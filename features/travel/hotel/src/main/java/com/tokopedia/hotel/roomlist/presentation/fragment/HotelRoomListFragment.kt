@@ -226,11 +226,11 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         hotel_date_layout.setOnClickListener { onDateClicked() }
     }
 
-    fun showFilterRecyclerView(show: Boolean) {
+    private fun showFilterRecyclerView(show: Boolean) {
         filter_recycler_view.visibility = if (show) View.VISIBLE else View.GONE
     }
 
-    fun onGuestInfoClicked() {
+    private fun onGuestInfoClicked() {
         val hotelRoomAndGuestBottomSheets = HotelRoomAndGuestBottomSheets()
         hotelRoomAndGuestBottomSheets.listener = this
         hotelRoomAndGuestBottomSheets.roomCount = hotelRoomListPageModel.room
@@ -240,7 +240,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         }
     }
 
-    fun onDateClicked() {
+    private fun onDateClicked() {
         configAndRenderCheckInDate()
     }
 
@@ -280,17 +280,19 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     override fun onItemClicked(room: HotelRoom) {
         val position = roomList.indexOf(room)
         trackingHotelUtil.hotelClickRoomDetails(room, hotelRoomListPageModel, position)
-        val objectId = System.currentTimeMillis().toString()
-        context?.run {
-            SaveInstanceCacheManager(this, objectId).apply {
-                val addCartParam = mapToAddCartParam(hotelRoomListPageModel, room)
-                put(HotelRoomDetailFragment.EXTRA_ROOM_DATA, HotelRoomDetailModel(room, addCartParam))
+        if (room.available) {
+            val objectId = System.currentTimeMillis().toString()
+            context?.run {
+                SaveInstanceCacheManager(this, objectId).apply {
+                    val addCartParam = mapToAddCartParam(hotelRoomListPageModel, room)
+                    put(HotelRoomDetailFragment.EXTRA_ROOM_DATA, HotelRoomDetailModel(room, addCartParam))
+                }
+                startActivityForResult(HotelRoomDetailActivity.getCallingIntent(this, objectId, position), RESULT_ROOM_DETAIL)
             }
-            startActivityForResult(HotelRoomDetailActivity.getCallingIntent(this, objectId, position), RESULT_ROOM_DETAIL)
         }
     }
 
-    fun mapToAddCartParam(hotelRoomListPageModel: HotelRoomListPageModel, room: HotelRoom): HotelAddCartParam {
+    private fun mapToAddCartParam(hotelRoomListPageModel: HotelRoomListPageModel, room: HotelRoom): HotelAddCartParam {
         return HotelAddCartParam("", hotelRoomListPageModel.checkIn,
                 hotelRoomListPageModel.checkOut, hotelRoomListPageModel.propertyId,
                 listOf(HotelAddCartParam.Room(roomId = room.roomId, numOfRooms = room.roomQtyReqiured)),
