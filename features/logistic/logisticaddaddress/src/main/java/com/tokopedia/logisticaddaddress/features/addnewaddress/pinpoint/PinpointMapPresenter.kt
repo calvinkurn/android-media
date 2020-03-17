@@ -70,7 +70,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
                                 val msg = it.messageError[0]
                                 when {
                                     msg.contains(FOREIGN_COUNTRY_MESSAGE) -> view?.showOutOfReachDialog()
-                                    msg.contains(LOCATION_NOT_FOUND_MESSAGE) -> view?.showUndetectedDialog()
+                                    msg.contains(LOCATION_NOT_FOUND_MESSAGE) -> view?.showLocationNotFoundCTA()
                                 }
                             }
                         },
