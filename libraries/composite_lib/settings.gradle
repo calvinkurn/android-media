@@ -26,8 +26,8 @@ include ":authentication"
 include ":akamai_bot_lib"
 include ":authentication_common"
 include ":analytic_constant"
-include ':app'
+//include ':app'
 include ':annotation'
 include ':processor'
-include ':FirebaseAnalyticRules'
+//include ':FirebaseAnalyticRules'
 include ':AnalyticParam'
