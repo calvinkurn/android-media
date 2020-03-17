@@ -15,7 +15,7 @@ project.ext {
     artifactId = 'user_session'
     groupId = 'com.tokopedia.user.session'
     versionName = "1.0.12"
-    artifactName = "user_session"
+    artifactName = "user_session-debug"
 }
 
 dependencies {
