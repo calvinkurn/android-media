@@ -54,14 +54,14 @@ class GetRechargeRecommendationUseCase @Inject constructor(
             {
                 "rechargeRecommendation": {
                   "UUID": "recharge_watf_1234567",
-                  "Recommendations": [
+                  "recommendations": [
                     {
-                      "ContentID": "70_0812345678",
-                      "MainText": "Tagihan Pulsa anda: 0812345678 sudah due",
-                      "SubText": "Rp 100.000",
-                      "AppLink": "tokopedia://digital/form?category_id=1&client_number=0812345678&operator_id=12&product_id=70&is_from_widget=true",
-                      "Link": "https://pulsa.tokopedia.com/?action=init_data&amp;client_number=0812345678&amp;instant_checkout=false&amp;operator_id=12&amp;product_id=70&amp;slug=pulsa",
-                      "IconURL": "https://ecs7.tokopedia.net/img/attachment/2019/10/22/21181130/21181130_31fffa3a-b61f-4b67-b183-785aef289a5b.png"
+                      "contentID": "70_0812345678",
+                      "mainText": "Tagihan Pulsa anda: 0812345678 sudah due",
+                      "subText": "Rp 100.000",
+                      "applink": "tokopedia://digital/form?category_id=1&client_number=0812345678&operator_id=12&product_id=70&is_from_widget=true",
+                      "link": "https://pulsa.tokopedia.com/?action=init_data&amp;client_number=0812345678&amp;instant_checkout=false&amp;operator_id=12&amp;product_id=70&amp;slug=pulsa",
+                      "iconURL": "https://ecs7.tokopedia.net/img/attachment/2019/10/22/21181130/21181130_31fffa3a-b61f-4b67-b183-785aef289a5b.png"
                     }
                   ]
                 }

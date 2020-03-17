@@ -86,4 +86,6 @@
     <string name="discovery_home_desc_error">Sambil kita perbaiki, lihat-lihat dulu kebawah atau </string>
     <string name="discovery_home_action_error"> coba lagi</string>
 
+    <string name="home_recharge_recommendation_button_label">Bayar Sekarang</string>
+
 </resources>
