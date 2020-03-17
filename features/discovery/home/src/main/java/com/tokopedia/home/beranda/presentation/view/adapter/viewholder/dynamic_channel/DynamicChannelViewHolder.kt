@@ -2,10 +2,11 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 
 import android.content.Context
 import android.graphics.Color
-import androidx.core.content.ContextCompat
 import android.text.TextUtils
 import android.view.View
+import android.view.ViewStub
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.countdown.CountDownView
@@ -16,15 +17,13 @@ import com.tokopedia.home.beranda.helper.DynamicLinkHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
-import com.tokopedia.unifyprinciples.Typography
-import android.view.ViewStub
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 
 abstract class DynamicChannelViewHolder(itemView: View,
-                                        private val listener: HomeCategoryListener,
-                                        private val countDownListener: CountDownView.CountDownListener) : AbstractViewHolder<DynamicChannelViewModel>(itemView) {
+                                        private val listener: HomeCategoryListener) : AbstractViewHolder<DynamicChannelViewModel>(itemView) {
     private val context: Context = itemView.context
 
     var countDownView: CountDownView? = null
@@ -32,6 +31,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
     var channelTitle: Typography? = null
     var channelSubtitle: TextView? = null
     var seeAllButtonUnify: UnifyButton? = null
+
     /**
      * List of possible layout from backend
      */
@@ -184,7 +184,9 @@ abstract class DynamicChannelViewHolder(itemView: View,
 
                         val expiredTime = DateHelper.getExpiredTime(channel.header.expiredTime)
                         if (!DateHelper.isExpired(element.serverTimeOffset, expiredTime)) {
-                            countDownView?.setup(element.serverTimeOffset, expiredTime, countDownListener)
+                            countDownView?.setup(element.serverTimeOffset, expiredTime) {
+                                listener.updateExpiredChannel(element, adapterPosition)
+                            }
                             countDownView?.visibility = View.VISIBLE
                         }
                     }

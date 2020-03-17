@@ -2,16 +2,15 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 
 import android.content.Context
 import android.graphics.Paint
-import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
-import com.tokopedia.design.countdown.CountDownView
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -29,10 +28,9 @@ import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 
 class ProductOrganicChannelViewHolder(sprintView: View,
                                       private val homeCategoryListener: HomeCategoryListener,
-                                      countDownListener: CountDownView.CountDownListener,
                                       private val parentRecycledViewPool: RecyclerView.RecycledViewPool) :
         DynamicChannelViewHolder(
-                sprintView, homeCategoryListener, countDownListener
+                sprintView, homeCategoryListener
         ) {
 
     companion object {

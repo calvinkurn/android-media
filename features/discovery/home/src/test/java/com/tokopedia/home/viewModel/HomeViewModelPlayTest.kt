@@ -12,7 +12,6 @@ import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.ext.observeOnce
 import com.tokopedia.home.rules.InstantTaskExecutorRuleSpek
 import io.mockk.coVerify
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
@@ -51,7 +50,7 @@ class HomeViewModelPlayTest : Spek({
             }
 
             When("viewModel load play data"){
-                homeViewModel.loadPlayBannerFromNetwork(playDataModel)
+                homeViewModel.getLoadPlayBannerFromNetwork(playDataModel)
             }
 
             Then("Expect the event on live data available and check image"){
@@ -97,7 +96,7 @@ class HomeViewModelPlayTest : Spek({
             }
 
             When("viewModel load play data"){
-                homeViewModel.loadPlayBannerFromNetwork(playDataModel)
+                homeViewModel.getLoadPlayBannerFromNetwork(playDataModel)
             }
 
             Then("Expect the event on live data not available"){
@@ -137,7 +136,7 @@ class HomeViewModelPlayTest : Spek({
             }
 
             When("viewModel load play data"){
-                homeViewModel.loadPlayBannerFromNetwork(playDataModel)
+                homeViewModel.getLoadPlayBannerFromNetwork(playDataModel)
             }
 
             Then("Expect the event on live data available and check image"){

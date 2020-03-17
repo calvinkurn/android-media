@@ -19,6 +19,9 @@ data class DynamicHomeChannel(
             @SerializedName("id")
             val id: String = "",
             @Expose
+            @SerializedName("group_id")
+            val groupId: String = "",
+            @Expose
             @SerializedName("galaxy_attribution")
             val galaxyAttribution: String = "",
             @Expose
