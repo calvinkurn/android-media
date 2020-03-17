@@ -30,9 +30,9 @@ class ChatListPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) 
 
     data class ChatListTab(
             val title: String,
-            var counter: String,
             val fragment: Fragment,
-            @DrawableRes val icon: Int
+            @DrawableRes val icon: Int,
+            var counter: String = "0"
     ) {
         fun increaseTabCounter() {
             var count = counter.toIntOrNull()
