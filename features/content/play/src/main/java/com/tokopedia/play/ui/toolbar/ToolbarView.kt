@@ -85,7 +85,7 @@ class ToolbarView(
             }
         }
 
-        if (partnerInfo.type == PartnerType.ADMIN || partnerInfo.name.isEmpty() || partnerInfo.name.isBlank()) clPartner.gone()
+        if (partnerInfo.name.isEmpty() || partnerInfo.name.isBlank()) clPartner.gone()
         else {
             clPartner.visible()
             if (!partnerInfo.isFollowable) groupFollowable.gone()
