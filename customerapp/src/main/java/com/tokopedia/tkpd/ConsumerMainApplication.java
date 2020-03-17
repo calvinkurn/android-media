@@ -502,6 +502,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     public boolean checkAppSignature() {
         try {
             PackageInfo info;
+            boolean signatureValid = false;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNING_CERTIFICATES);
                 if (null != info && info.signingInfo.getApkContentsSigners().length > 0) {
@@ -511,9 +512,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                         return true;
                     }
                     byte[] rawCertJava = info.signingInfo.getApkContentsSigners()[0].toByteArray();
-                    return getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
-                } else {
-                    return false;
+                    signatureValid = getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
                 }
             } else {
                 info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
@@ -524,12 +523,15 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                         return true;
                     }
                     byte[] rawCertJava = info.signatures[0].toByteArray();
-                    return getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
-                } else {
-                    return false;
+                    signatureValid = getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
                 }
             }
+            if (!signatureValid) {
+                Timber.w("P1#APP_SIGNATURE_FAILED#'certJava!=certNative'");
+            }
+            return signatureValid;
         } catch (PackageManager.NameNotFoundException e) {
+            Timber.w("P1#APP_SIGNATURE_FAILED#'PackageManager.NameNotFoundException'");
             Bugsnag.notify(e);
             return false;
         }
