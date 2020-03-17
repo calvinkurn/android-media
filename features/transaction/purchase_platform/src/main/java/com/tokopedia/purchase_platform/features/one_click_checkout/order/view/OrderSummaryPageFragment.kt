@@ -454,7 +454,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         override fun onChangePreference(preference: ProfilesItemModel) {
                             viewModel.updatePreference(preference)
                             orderSummaryAnalytics.eventChangesProfile()
-                            refresh()
                         }
 
                         override fun onEditPreference(preference: ProfilesItemModel, adapterPosition: Int) {
