@@ -76,3 +76,4 @@ val ONE_LABEL = "1"
 val TWO_LABEL = "2"
 
 val REGION_LABEL = "region"
+val LAST_SEARCH_LABEL = "last search"

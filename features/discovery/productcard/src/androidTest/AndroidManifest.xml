@@ -1,0 +1,20 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:versionCode="1"
+    android:versionName="1.0.0"
+    package="com.tokopedia.productcard.test">
+
+    <application
+        android:label="Product Card Test"
+        tools:replace="android:label">
+
+        <activity
+            android:name=".grid.ProductCardGridActivityTest"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
+        <activity
+            android:name=".list.ProductCardListActivityTest"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
+    </application>
+</manifest>

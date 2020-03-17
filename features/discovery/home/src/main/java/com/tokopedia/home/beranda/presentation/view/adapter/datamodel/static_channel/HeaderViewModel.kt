@@ -3,15 +3,12 @@ package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_ch
 import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
-
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
-import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 
 /**
@@ -93,13 +90,10 @@ data class HeaderViewModel(
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        if (b is HeaderViewModel) {
-            return homeHeaderWalletActionData == b.homeHeaderWalletActionData &&
+        return b is HeaderViewModel && homeHeaderWalletActionData == b.homeHeaderWalletActionData &&
                     tokoPointDrawerData == b.tokoPointDrawerData &&
                     tokopointsDrawerHomeData == b.tokopointsDrawerHomeData &&
                     cashBackData == b.cashBackData
-        }
-        return false
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {

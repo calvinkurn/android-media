@@ -155,11 +155,6 @@ class UmrahTravelAgentProductsFragment: BaseListFragment<UmrahTravelProduct, Umr
         umrahTracking.umrahTravelAgentProductClick(umrahTravelProduct, position)
     }
 
-    override fun trackingProduct() {
-        umrahTracking.umrahTravelAgentClickPDP()
-    }
-
-
     override fun getRecyclerViewResourceId(): Int = R.id.rv_umrah_travel_products
 
     override fun getEmptyDataViewModel(): Visitable<*> {

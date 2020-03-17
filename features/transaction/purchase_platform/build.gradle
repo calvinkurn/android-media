@@ -153,9 +153,6 @@ project.ext {
     groupId = 'com.tokopedia.transaction'
     versionName = "0.0.1"
     artifactName = "purchase_platform-release"
-    unitTestKotlinIncludes = [
-            '**/CartListPresenter.*'
-    ]
 }
 
 apply from: "$rootProject.projectDir/publish_local.gradle"

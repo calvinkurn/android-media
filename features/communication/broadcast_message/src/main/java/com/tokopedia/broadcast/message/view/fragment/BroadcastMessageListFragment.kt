@@ -60,7 +60,7 @@ class BroadcastMessageListFragment: BaseListFragment<TopChatBlastSeller, Broadca
             list.addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
                 .apply { setDrawable(ContextCompat.getDrawable(it, R.drawable.broadcast_message_card_divider)!!)})
         }
-        adapter.errorNetworkModel = ErrorNetworkModel().apply { iconDrawableRes = R.drawable.ic_error_network }
+        adapter.errorNetworkModel = ErrorNetworkModel().apply { iconDrawableRes = R.drawable.unify_globalerrors_connection }
 
         presenter.getMetaData()
     }
