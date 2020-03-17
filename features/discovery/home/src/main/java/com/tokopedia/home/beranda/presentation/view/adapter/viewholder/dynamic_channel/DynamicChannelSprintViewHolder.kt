@@ -161,7 +161,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
                 holder.thematicCardView.run {
                     setItemWithWrapBlankSpaceConfig(grid, blankSpaceConfig)
                     setOnClickListener {
-                        HomePageTrackingV2.SprintSale.sendSprintSaleClick(channels, grid, position)
+                        HomePageTrackingV2.SprintSale.sendSprintSaleClick(channels, countDownView?.currentCountDown?:"", grid, position)
                         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid))
                     }
                 }

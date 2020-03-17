@@ -24,6 +24,7 @@ class ProductSnapshotViewHolder(private val view: View,
     }
 
     private var header: PartialSnapshotView? = null
+
     init {
         header = PartialSnapshotView(view, listener)
         setupFabDetail()
@@ -38,29 +39,23 @@ class ProductSnapshotViewHolder(private val view: View,
                 view.addOnImpressionListener(element.impressHolder) {
                     listener.onImpressComponent(getComponentTrackData(element))
                 }
-                header?.renderData(it, element.nearestWarehouseDataModel?.nearestWarehouseStockWording ?: "")
+                header?.renderData(it, element.nearestWarehouseDataModel?.nearestWarehouseStockWording
+                        ?: "")
                 header?.showOfficialStore(it.data.isPowerMerchant, it.data.isOS)
                 view_picture_search_bar.renderShopStatusDynamicPdp(element.shopStatus, element.statusTitle, element.statusMessage,
                         it.basic.status)
             }
 
             renderWishlist(element.isAllowManage, element.isWishlisted)
-            renderCod(element.shouldShowCod)
-            renderTradein(element.shouldShowTradein)
+
+            renderTradein(element.showTradeIn())
+            renderCod(element.showCod())
+
             element.media?.let {
                 view_picture_search_bar.renderData(it, listener::onImageClicked, listener::onSwipePicture, listener.getProductFragmentManager(),
-                         getComponentTrackData(element), listener::onImageClickedTrack, listener.getLifecycleFragment())
+                        getComponentTrackData(element), listener::onImageClickedTrack, listener.getLifecycleFragment())
                 element.shouldRefreshViewPager = false
             }
-        }
-    }
-
-    private fun initializeClickListener(element: ProductSnapshotDataModel?) = with(view) {
-        tv_trade_in_promo.setOnClickListener {
-            listener.txtTradeinClicked(getComponentTrackData(element))
-        }
-        fab_detail.setOnClickListener {
-            listener.onFabWishlistClicked(it.isActivated, getComponentTrackData(element))
         }
     }
 
@@ -76,10 +71,18 @@ class ProductSnapshotViewHolder(private val view: View,
                 view.label_cod.visibility = if (element.shouldShowCod) View.VISIBLE else View.GONE
                 renderStockWording(element.getNearestWarehouse(), element.getCampaignModular(), element.dynamicProductInfoP1?.data?.variant?.isVariant
                         ?: false)
-                renderCod(element.shouldShowCod)
+                renderCod(element.showCod())
             }
-            ProductDetailConstant.PAYLOAD_TRADEIN -> renderTradein(element.shouldShowTradein)
             ProductDetailConstant.PAYLOAD_VARIANT_SELECTED -> view.view_picture_search_bar.updateImage(element.media)
+        }
+    }
+
+    private fun initializeClickListener(element: ProductSnapshotDataModel?) = with(view) {
+        tv_trade_in_promo.setOnClickListener {
+            listener.txtTradeinClicked(getComponentTrackData(element))
+        }
+        fab_detail.setOnClickListener {
+            listener.onFabWishlistClicked(it.isActivated, getComponentTrackData(element))
         }
     }
 

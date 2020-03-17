@@ -47,6 +47,14 @@ data class ProductSnapshotDataModel(
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int = typeFactory.type(this)
 
+    fun showTradeIn(): Boolean {
+        return shouldShowTradein && dynamicProductInfoP1?.data?.campaign?.activeAndHasId == false
+    }
+
+    fun showCod(): Boolean {
+        return shouldShowCod && !shouldShowTradein && dynamicProductInfoP1?.data?.campaign?.activeAndHasId == false
+    }
+
     fun getCampaignModular(): CampaignModular = dynamicProductInfoP1?.data?.campaign
             ?: CampaignModular()
 

@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 class RegisterOnboardingViewModel @Inject constructor(dispatcher: DispatcherProvider,
                                                       private val userSession: UserSessionInterface,
-                                                      private val cryptographyUtils: Cryptography,
+                                                      private val cryptographyUtils: Cryptography?,
                                                       private val fingerprintSetting: FingerprintSetting,
                                                       private val registerFingerprintUseCase: RegisterFingerprintUseCase)
     : BaseViewModel(dispatcher.io()){
@@ -34,9 +34,11 @@ class RegisterOnboardingViewModel @Inject constructor(dispatcher: DispatcherProv
         get() = mutableRegisterFingerprintResult
 
     fun registerFingerprint(){
-        val signature = cryptographyUtils.generateFingerprintSignature(userSession.userId, userSession.deviceId)
-        registerFingerprintUseCase.setRequestParams(registerFingerprintUseCase.createRequestParam(signature, cryptographyUtils.getPublicKey()))
-        registerFingerprintUseCase.executeUseCase(onSuccessRegisterFP(), onErrorRegisterFP())
+        val signature = cryptographyUtils?.generateFingerprintSignature(userSession.userId, userSession.deviceId)
+        signature?.run {
+            registerFingerprintUseCase.setRequestParams(registerFingerprintUseCase.createRequestParam(this, cryptographyUtils?.getPublicKey() ?: ""))
+            registerFingerprintUseCase.executeUseCase(onSuccessRegisterFP(), onErrorRegisterFP())
+        }
     }
 
     private fun onSuccessRegisterFP(): (RegisterFingerprintPojo) -> Unit {

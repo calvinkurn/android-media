@@ -11,6 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
@@ -30,7 +31,7 @@ class PictureScrollingView @JvmOverloads constructor(
 
     val position: Int
         get() = pdp_view_pager?.currentItem ?: 0
-    var shouldRenderViewPager :Boolean = true
+    var shouldRenderViewPager: Boolean = true
 
     init {
         instantiateView()
@@ -107,7 +108,7 @@ class PictureScrollingView @JvmOverloads constructor(
                 error_product_descr.text = MethodChecker.fromHtml(statusMessage)
             }
             productStatus != ProductStatusTypeDef.ACTIVE -> {
-                error_product_container.visible()
+                error_product_container.showWithCondition(productStatus != ProductStatusTypeDef.WAREHOUSE)
                 error_product_title.text = productStatusTitle
                 error_product_descr.text = productStatusMessage
             }

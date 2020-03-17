@@ -67,6 +67,7 @@ object HomePageTrackingV2 : BaseTracking() {
         private const val RECOMMENDATION_LIST_CAROUSEL_PRODUCT = "dynamic channel list"
         private const val RECOMMENDATION_LIST_IMPRESSION_EVENT_ACTION = "impression on dynamic channel list"
         private const val RECOMMENDATION_LIST_CLICK_EVENT_ACTION = "click on dynamic channel list"
+        private const val RECOMMENDATION_LIST_SEE_ALL_EVENT_ACTION = "click view all on dynamic channel list"
 
         fun getRecommendationListImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductView(
                 event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
@@ -77,9 +78,7 @@ object HomePageTrackingV2 : BaseTracking() {
                     Product(
                             name = grid.name,
                             id = grid.id,
-                            productPrice = convertRupiahToInt(
-                                    grid.price
-                            ).toString(),
+                            productPrice = convertRupiahToInt(grid.price).toString(),
                             brand = Value.NONE_OTHER,
                             category = Value.NONE_OTHER,
                             variant = Value.NONE_OTHER,
@@ -102,7 +101,7 @@ object HomePageTrackingV2 : BaseTracking() {
                         Product(
                                 name = grid.name,
                                 id = grid.id,
-                                productPrice = grid.price,
+                                productPrice = convertRupiahToInt(grid.price).toString(),
                                 brand = Value.NONE_OTHER,
                                 category = Value.NONE_OTHER,
                                 variant = Value.NONE_OTHER,
@@ -124,7 +123,7 @@ object HomePageTrackingV2 : BaseTracking() {
             return DataLayer.mapOf(
                     Event.KEY, Event.CLICK_HOMEPAGE,
                     Category.KEY, Category.HOMEPAGE,
-                    Action.KEY, "click view all on list carousel product",
+                    Action.KEY, RECOMMENDATION_LIST_SEE_ALL_EVENT_ACTION,
                     Label.KEY, channel.header.name
             ) as HashMap<String, Any>
         }
@@ -215,9 +214,7 @@ object HomePageTrackingV2 : BaseTracking() {
                     Product(
                             name = grid.name,
                             id = grid.id,
-                            productPrice = convertRupiahToInt(
-                                    grid.price
-                            ).toString(),
+                            productPrice = convertRupiahToInt(grid.price).toString(),
                             brand = Value.NONE_OTHER,
                             category = Value.NONE_OTHER,
                             variant = Value.NONE_OTHER,
@@ -230,17 +227,17 @@ object HomePageTrackingV2 : BaseTracking() {
                         Value.LIST, "1", LIST_VALUE_SPRINT_SALE
                 )
         )
-        private fun getSprintSaleClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductChannelClick(
+        private fun getSprintSaleClick(channel: DynamicHomeChannel.Channels, currentCountDown: String, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductChannelClick(
                 event = Event.PRODUCT_CLICK,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = EVENT_ACTION_SPRINT_SALE_CLICK,
-                eventLabel = grid.attribution,
+                eventLabel = currentCountDown,
                 channelId = channel.id,
                 products = listOf(
                         Product(
                                 name = grid.name,
                                 id = grid.id,
-                                productPrice = grid.price,
+                                productPrice = convertRupiahToInt(grid.price).toString(),
                                 brand = Value.NONE_OTHER,
                                 category = Value.NONE_OTHER,
                                 variant = Value.NONE_OTHER,
@@ -254,8 +251,8 @@ object HomePageTrackingV2 : BaseTracking() {
                 )
         )
 
-        fun sendSprintSaleClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) {
-            getTracker().sendEnhanceEcommerceEvent(getSprintSaleClick(channel, grid, position))
+        fun sendSprintSaleClick(channel: DynamicHomeChannel.Channels, currentCountDown: String, grid: DynamicHomeChannel.Grid, position: Int) {
+            getTracker().sendEnhanceEcommerceEvent(getSprintSaleClick(channel, currentCountDown, grid, position))
         }
 
         private fun getSprintSaleSeeAllClick(channel: DynamicHomeChannel.Channels): HashMap<String, Any>{
