@@ -18,7 +18,7 @@ sealed class FilterViewModel(
     data class InActive(override val count: Int): FilterViewModel(R.string.product_manage_filter_inactive, count, ProductStatus.INACTIVE)
     data class Banned(override val count: Int): FilterViewModel(R.string.product_manage_filter_banned, count, ProductStatus.BANNED)
 
-    object Default: FilterViewModel(R.string.product_manage_filter, icon = R.drawable.unify_filter_ic)
+    object MoreFilter: FilterViewModel(R.string.product_manage_filter, icon = R.drawable.unify_filter_ic)
 
     override fun type(typeFactory: ProductFilterAdapterFactory): Int {
         return typeFactory.type(this)

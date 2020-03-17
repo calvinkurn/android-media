@@ -9,7 +9,6 @@ import com.tokopedia.gm.common.domain.repository.GMCommonRepository
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.product.manage.feature.cashback.domain.SetCashbackUseCase
 import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
@@ -34,8 +33,6 @@ import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRep
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal
 import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingRepository
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -53,12 +50,6 @@ class ProductManageListModule {
     ): ProductDraftListCountPresenter {
         return ProductDraftListCountPresenterImpl(fetchAllDraftProductCountUseCase,
             clearAllDraftProductUseCase, updateUploadingDraftProductUseCase)
-    }
-
-    @ProductManageListScope
-    @Provides
-    fun provideUserSessionInterface(@ApplicationContext context: Context?): UserSessionInterface {
-        return UserSession(context)
     }
 
     @Provides
@@ -130,11 +121,6 @@ class ProductManageListModule {
     @Provides
     fun provideEditPriceUseCase(multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase) =
             EditPriceUseCase(multiRequestGraphqlUseCase)
-
-    @ProductManageListScope
-    @Provides
-    fun provideSetCashbackUseCase(multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase) =
-            SetCashbackUseCase(multiRequestGraphqlUseCase)
 
     @ProductManageListScope
     @Provides

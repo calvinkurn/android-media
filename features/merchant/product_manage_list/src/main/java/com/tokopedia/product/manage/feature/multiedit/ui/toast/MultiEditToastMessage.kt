@@ -20,6 +20,13 @@ object MultiEditToastMessage {
         return context.getString(stringResId, successCount)
     }
 
+    private fun getEditEtalaseSuccessMessage(context: Context, result: MultiEditResult): String {
+        val successCount = result.success.count()
+        val stringResId = R.string.product_manage_edit_products_etalase_success
+
+        return context.getString(stringResId, successCount)
+    }
+
     private fun getEditByStatusRetryMessage(context: Context, result: EditByStatus): String {
         val successCount = result.success.count()
         val failedCount = result.failed.count()
@@ -33,17 +40,25 @@ object MultiEditToastMessage {
         return context.getString(stringResId, successCount, failedCount)
     }
 
+    private fun getEditEtalaseRetryMessage(context: Context, result: EditByMenu): String {
+        val successCount = result.success.count()
+        val failedCount = result.failed.count()
+        val stringResId = R.string.product_manage_edit_products_etalase_retry
+
+        return context.getString(stringResId, successCount, failedCount)
+    }
+
     fun getSuccessMessage(context: Context, result: MultiEditResult): String {
         return when(result) {
             is EditByStatus -> getEditByStatusSuccessMessage(context, result)
-            is EditByMenu -> { "" } // TO DO
+            is EditByMenu -> getEditEtalaseSuccessMessage(context, result)
         }
     }
 
     fun getRetryMessage(context: Context, result: MultiEditResult): String {
         return when(result) {
             is EditByStatus -> getEditByStatusRetryMessage(context, result)
-            is EditByMenu -> { "" } // TO DO
+            is EditByMenu -> getEditEtalaseRetryMessage(context, result)
         }
     }
 }

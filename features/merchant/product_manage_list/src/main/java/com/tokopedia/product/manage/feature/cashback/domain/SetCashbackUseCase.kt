@@ -13,9 +13,9 @@ class SetCashbackUseCase @Inject constructor(
     companion object {
         const val CASHBACK_SUCCESS_CODE = "200"
         const val CASHBACK_NUMBER_OF_PRODUCT_EXCEED_LIMIT_ERROR_CODE = "422"
-        const val PARAM_PRODUCT_ID = "ProductID"
-        const val PARAM_CASHBACK = "Cashback"
-        const val PARAM_IS_BY_SYSTEM = "IsBySystem"
+        private const val PARAM_PRODUCT_ID = "ProductID"
+        private const val PARAM_CASHBACK = "Cashback"
+        private const val PARAM_IS_BY_SYSTEM = "IsBySystem"
 
         @JvmStatic
         fun createRequestParams(productId: Int, cashBack: Int, isBySystem: Boolean): RequestParams {
