@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card
 
 import android.text.*
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,14 +15,20 @@ import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewholder.QuantityViewHolder
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.MAX_QUANTITY
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.variant.adapter.OrderProductVariantAdapter
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.variant.listener.CheckoutVariantActionListener
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.*
 import kotlinx.android.synthetic.main.card_order_product.view.*
+import javax.inject.Inject
 
 class OrderProductCard(private val view: View, private val listener: OrderProductCardListener) {
 
+    @Inject
+    lateinit var orderSummaryAnalytics: OrderSummaryAnalytics
+
     private lateinit var product: OrderProduct
+    private lateinit var shop: OrderShop
 
     private val etQty: EditText
     private var quantityTextWatcher: QuantityTextWatcher? = null
@@ -98,6 +105,8 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             })
             etQty.addTextChangedListener(quantityTextWatcher)
             view.btn_qty_plus.setOnClickListener {
+                Log.d("increase_analytics", (product.productId.toString() + shop.shopId.toString() +product.quantity!!.orderQuantity.toString()))
+                orderSummaryAnalytics.eventEditQuantityIncrease(product.productId.toString(), shop.shopId.toString(), product.quantity!!.orderQuantity.toString())
                 if (product.quantity!!.orderQuantity < product.quantity!!.maxOrderQuantity) {
                     product.quantity!!.orderQuantity++
                     etQty.setText("${product.quantity!!.orderQuantity}")
@@ -179,6 +188,8 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     fun setShop(orderShop: OrderShop) {
         view.tv_shop_name.text = orderShop.shopName
         view.tv_shop_location.text = orderShop.cityName
+
+        this.shop = orderShop
     }
 
     interface OrderProductCardListener {
