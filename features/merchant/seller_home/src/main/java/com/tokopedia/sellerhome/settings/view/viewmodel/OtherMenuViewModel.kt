@@ -12,7 +12,7 @@ import com.tokopedia.sellerhome.settings.domain.toDecimalRupiahCurrency
 import com.tokopedia.sellerhome.settings.domain.usecase.GetSettingShopInfoUseCase
 import com.tokopedia.sellerhome.settings.domain.usecase.GetShopBadgeUseCase
 import com.tokopedia.sellerhome.settings.domain.usecase.GetShopTotalFollowersUseCase
-import com.tokopedia.sellerhome.settings.view.uimodel.SettingShopInfoUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.base.RegularMerchant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -75,7 +75,7 @@ class OtherMenuViewModel @Inject constructor(
             return SettingShopInfoUiModel(
                     info?.shopName.toEmptyStringIfNull(),
                     info?.shopAvatar.toEmptyStringIfNull(),
-                    owner?.getShopStatusType()?: RegularMerchant.NeedUpgrade,
+                    owner?.getShopStatusType() ?: RegularMerchant.NeedUpgrade,
                     shopInfo.balance?.sellerBalance.toDecimalRupiahCurrency(),
                     shopInfo.topadsDeposit.topadsAmount.toDecimalRupiahCurrency(),
                     shopBadge,

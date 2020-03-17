@@ -33,7 +33,7 @@ class OtherMenuAdapterTypeFactory : BaseAdapterTypeFactory(), OtherMenuTypeFacto
     }
 
     override fun type(menuItemUiModel: MenuItemUiModel): Int {
-        return MenuItemsViewHolder.getLayoutRes(menuItemUiModel.isNoIcon)
+        return MenuItemsViewHolder.getLayoutRes(isNoIcon = menuItemUiModel.isNoIcon)
     }
 
     override fun type(settingTitleMenuUiModel: SettingTitleMenuUiModel): Int {

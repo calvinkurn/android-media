@@ -20,6 +20,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
+import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant
 import com.tokopedia.sellerhome.settings.data.constant.SellerBaseUrl
 import com.tokopedia.sellerhome.settings.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.sellerhome.settings.view.uimodel.DividerUiModel
@@ -93,31 +94,66 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         val settingList = mutableListOf(
                 SettingTitleMenuUiModel(resources.getString(R.string.setting_menu_shop_setting), R.drawable.ic_pengaturan_toko),
                 IndentedSettingTitleUiModel(resources.getString(R.string.setting_menu_shop_profile)),
-                MenuItemUiModel(resources.getString(R.string.setting_menu_basic_info), clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO),
-                MenuItemUiModel(resources.getString(R.string.setting_menu_shop_notes), clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES),
-                MenuItemUiModel(resources.getString(R.string.setting_menu_shop_working_hours), clickApplink = ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE),
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_basic_info),
+                        clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO,
+                        settingTypeInfix = SettingTrackingConstant.SHOP_SETTING),
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_shop_notes),
+                        clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES,
+                        settingTypeInfix = SettingTrackingConstant.SHOP_SETTING),
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_shop_working_hours),
+                        clickApplink = ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE,
+                        settingTypeInfix = SettingTrackingConstant.SHOP_SETTING),
                 DividerUiModel(DividerType.THIN_INDENTED),
                 IndentedSettingTitleUiModel(resources.getString(R.string.setting_menu_location_and_shipment)),
-                MenuItemUiModel(resources.getString(R.string.setting_menu_add_and_shop_location), clickApplink =  ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS),
-                MenuItemUiModel(resources.getString(R.string.setting_menu_set_shipment_method), clickApplink = ApplinkConst.SELLER_SHIPPING_EDITOR),
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_add_and_shop_location),
+                        clickApplink =  ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS,
+                        settingTypeInfix = SettingTrackingConstant.SHOP_SETTING),
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_set_shipment_method),
+                        clickApplink = ApplinkConst.SELLER_SHIPPING_EDITOR,
+                        settingTypeInfix = SettingTrackingConstant.SHOP_SETTING),
                 DividerUiModel(DividerType.THIN_INDENTED),
                 IndentedSettingTitleUiModel(resources.getString(R.string.setting_menu_exclusive_feature)),
-                MenuItemUiModel(resources.getString(R.string.setting_menu_cash_on_delivery_service), clickApplink = ApplinkConstInternalMarketplace.COD),
-                MenuItemUiModel(resources.getString(R.string.setting_menu_priority_order)) {
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_cash_on_delivery_service),
+                        clickApplink = ApplinkConstInternalMarketplace.COD,
+                        settingTypeInfix = SettingTrackingConstant.SHOP_SETTING),
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_priority_order),
+                        settingTypeInfix = SettingTrackingConstant.SHOP_SETTING) {
                     val intent = RouteManager.getIntent(context, ApplinkConst.WEBVIEW)
                     intent.putExtra(OtherMenuFragment.URL_KEY, SellerBaseUrl.SELLER_HOSTNAME + SellerBaseUrl.SELLER_ORDER_PRIORITY)
                     context?.startActivity(intent)
                 },
                 DividerUiModel(DividerType.THICK),
                 SettingTitleMenuUiModel(resources.getString(R.string.setting_menu_account_setting), R.drawable.ic_account),
-                MenuItemUiModel(resources.getString(R.string.setting_menu_self_profile), clickApplink = ApplinkConst.SETTING_PROFILE),
-                MenuItemUiModel(resources.getString(R.string.setting_menu_bank_account), clickApplink = ApplinkConstInternalGlobal.SETTING_BANK),
-                MenuItemUiModel(resources.getString(R.string.setting_menu_password)) { addOrChangePassword() },
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_self_profile),
+                        clickApplink = ApplinkConst.SETTING_PROFILE,
+                        settingTypeInfix = SettingTrackingConstant.ACCOUNT_SETTING),
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_bank_account),
+                        clickApplink = ApplinkConstInternalGlobal.SETTING_BANK,
+                        settingTypeInfix = SettingTrackingConstant.ACCOUNT_SETTING),
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_password),
+                        settingTypeInfix = SettingTrackingConstant.ACCOUNT_SETTING) { addOrChangePassword() },
                 DividerUiModel(DividerType.THICK),
                 SettingTitleMenuUiModel(resources.getString(R.string.setting_menu_app_setting), R.drawable.ic_app_setting),
-                MenuItemUiModel(resources.getString(R.string.setting_menu_chat_and_notification), clickApplink = ApplinkConstInternalGlobal.MANAGE_NOTIFICATION),
-                MenuItemUiModel(resources.getString(R.string.setting_menu_share_app)) { shareApplication() },
-                MenuItemUiModel(resources.getString(R.string.setting_menu_review_app)) { reviewApplication() },
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_chat_and_notification),
+                        clickApplink = ApplinkConstInternalGlobal.MANAGE_NOTIFICATION,
+                        settingTypeInfix = SettingTrackingConstant.APP_SETTING),
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_share_app),
+                        settingTypeInfix = SettingTrackingConstant.APP_SETTING) { shareApplication() },
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_review_app),
+                        settingTypeInfix = SettingTrackingConstant.APP_SETTING) { reviewApplication() },
                 DividerUiModel(DividerType.THIN_INDENTED)
         )
         if (GlobalConfig.isAllowDebuggingTools())

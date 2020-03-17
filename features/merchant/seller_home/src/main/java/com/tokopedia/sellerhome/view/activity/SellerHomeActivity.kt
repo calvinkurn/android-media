@@ -125,7 +125,9 @@ class SellerHomeActivity : BaseActivity() {
     }
 
     private fun showOtherSettingsFragment() {
-        statusBarCallback?.setStatusBar()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            statusBarCallback?.setStatusBar()
+        }
         val type = FragmentType.OTHER
         if (currentSelectedMenu == type) return
         currentSelectedMenu = type
