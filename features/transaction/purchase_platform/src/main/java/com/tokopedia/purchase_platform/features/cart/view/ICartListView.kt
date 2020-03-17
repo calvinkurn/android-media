@@ -120,4 +120,6 @@ interface ICartListView : CustomerView {
     // fun generateValidateUseParams(): ValidateUsePromoRequest
 
     fun onSuccessClearRedPromosThenGoToCheckout()
+
+    fun navigateToPromoRecommendation()
 }

@@ -98,6 +98,8 @@ interface ICartListPresenter {
 
     fun redirectToLite(url: String)
 
+    fun doUpdateCartForPromo()
+
     fun doValidateUse(promoRequest: ValidateUsePromoRequest)
 
     fun doUpdateCartAndValidateUse(promoRequest: ValidateUsePromoRequest)
