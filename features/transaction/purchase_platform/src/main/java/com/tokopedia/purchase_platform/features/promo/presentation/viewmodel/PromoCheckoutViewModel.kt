@@ -12,7 +12,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRecommendationRequest
 import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest
-import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.Params
+import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.features.promo.data.response.ClearPromoResponse
 import com.tokopedia.purchase_platform.features.promo.data.response.CouponListRecommendationResponse
 import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus.Companion.STATUS_COUPON_LIST_EMPTY
@@ -265,11 +265,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    fun applyPromo(mutation: String, requestParam: PromoRequest) {
+    fun applyPromo(mutation: String, requestParam: ValidateUsePromoRequest) {
         launch { doApplyPromo(mutation, requestParam) }
     }
 
-    private suspend fun doApplyPromo(mutation: String, requestParam: PromoRequest) {
+    private suspend fun doApplyPromo(mutation: String, validateUsePromoRequest: ValidateUsePromoRequest) {
         launchCatchError(block = {
             // Initialize response action state
             if (applyPromoResponse.value == null) {
@@ -277,9 +277,12 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             }
 
             // Set param
-            val params = Params()
-            val promo = HashMap<String, Any>()
-            promo["params"] = params
+            val varPromo = mapOf(
+                    "promo" to validateUsePromoRequest
+            )
+            val varParams = mapOf(
+                    "params" to varPromo
+            )
 
             // Get all sellected promo for analytical purpose
             val promoList = ArrayList<String>()
@@ -297,7 +300,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
             // Get response
             val response = withContext(Dispatchers.IO) {
-                val request = GraphqlRequest(mutation, ValidateUseResponse::class.java, promo)
+                val request = GraphqlRequest(mutation, ValidateUseResponse::class.java, varParams)
                 graphqlRepository.getReseponse(listOf(request))
                         .getSuccessData<ValidateUseResponse>()
             }
