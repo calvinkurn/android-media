@@ -143,4 +143,7 @@
     <color name="bg_saldolock_ticker">#fffae6</color>
     <color name="background_splash_screen">#EDE6DB</color>
 
+    <color name="light_N700_96">#F531353B</color>
+    <color name="light_G500">#03AC0E</color>
+
 </resources>

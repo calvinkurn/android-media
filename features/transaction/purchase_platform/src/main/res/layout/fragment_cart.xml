@@ -83,7 +83,24 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:orientation="vertical"
-                    tools:visibility="visible">
+                    tools:visibility="visible"
+                    android:background="@color/white">
+
+                    <LinearLayout
+                        android:id="@+id/ll_promo_checkout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        tools:visibility="visible">
+
+                        <!--<include layout="@layout/item_promo_checkout" />-->
+
+                        <com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
+                            android:id="@+id/promo_checkout_btn_cart"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"

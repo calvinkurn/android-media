@@ -95,10 +95,6 @@
 
     </FrameLayout>
 
-    <include
-        layout="@layout/item_promo_merchant"
-        tools:visibility="visible" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_cart_item"
         android:layout_width="match_parent"

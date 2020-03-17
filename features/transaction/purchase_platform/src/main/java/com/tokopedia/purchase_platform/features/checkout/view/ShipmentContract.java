@@ -29,6 +29,7 @@ import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartResponse;
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
 import com.tokopedia.purchase_platform.common.domain.model.PriceValidationData;
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.DataChangeAddressRequest;
@@ -39,6 +40,11 @@ import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldAttri
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRecommendationRequest;
+import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest;
+import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest;
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoUiModel;
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,6 +98,8 @@ public interface ShipmentContract {
         void renderSubmitHelpTicketSuccess(SubmitTicketResult submitTicketResult);
 
         void renderCheckPromoStackCodeFromCourierSuccess(ResponseGetPromoStackUiModel responseGetPromoStackUiModel, int itemPosition, boolean noToast);
+
+        void renderPromoCheckoutFromCourierSuccess(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel, int itemPosition, boolean noToast);
 
         void renderCheckPromoStackLogisticSuccess(ResponseGetPromoStackUiModel responseGetPromoStackUiModel, String promoCode);
 
@@ -148,6 +156,10 @@ public interface ShipmentContract {
 
         Promo generateCheckPromoFirstStepParam();
 
+        ValidateUsePromoRequest generateValidateUsePromoRequest();
+
+        PromoRequest generateCouponListRecommendationRequest();
+
         void onClashCheckPromo(ClashingInfoDetailUiModel clashingInfoDetailUiModel, String type);
 
         void onSuccessCheckPromoFirstStepAfterClash(ResponseGetPromoStackUiModel responseGetPromoStackUiModel, String promoCode);
@@ -171,6 +183,8 @@ public interface ShipmentContract {
         void setPromoBenefit(List<SummariesUiModel> summariesUiModels);
 
         boolean isTradeInByDropOff();
+
+        void updateButtonPromoCheckout(PromoUiModel promoUiModel);
     }
 
     interface AnalyticsActionListener {
@@ -274,9 +288,15 @@ public interface ShipmentContract {
 
         void checkPromoFinalStackShipment(Promo promo);
 
+        void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest);
+
         void processCheckPromoStackingLogisticPromo(int cartPosition, String cartString, String code);
 
+        void doValidateuseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest);
+
         void processCheckPromoStackingCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast);
+
+        void processCheckPromoCheckoutCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast);
 
         void processSaveShipmentState(ShipmentCartItemModel shipmentCartItemModel);
 
@@ -322,9 +342,7 @@ public interface ShipmentContract {
 
         void cancelAutoApplyPromoStackLogistic(String promoCode);
 
-        void cancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList,
-                                                 boolean isFromMultipleAddress, boolean isOneClickShipment, boolean isTradeIn,
-                                                 @Nullable String cornerId, String deviceId, String type);
+        void cancelAutoApplyPromoStackAfterClash(ArrayList<String> promoCodesToBeCleared);
 
         void applyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList,
                                        boolean isFromMultipleAddress, boolean isOneClickShipment,
@@ -379,6 +397,12 @@ public interface ShipmentContract {
         void getInsuranceTechCartOnCheckout();
 
         ShipmentDataConverter getShipmentDataConverter();
+
+        void setLastApplyData(LastApplyUiModel lastApplyData);
+
+        LastApplyUiModel getLastApplyData();
+
+        ValidateUsePromoRevampUiModel getValidateUsePromoRevampUiModel();
     }
 
 }

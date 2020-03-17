@@ -18,10 +18,10 @@ class MandiriCheckBalance(val listener: MandiriActionListener) : ElectronicMoney
         val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
         if (tag != null) {
 
-            //do something with tagFromIntent
-            isoDep = IsoDep.get(tag)
-
             try {
+
+                //do something with tagFromIntent
+                isoDep = IsoDep.get(tag)
                 isoDep.close()
                 isoDep.connect()
                 isoDep.timeout = TRANSCEIVE_TIMEOUT_IN_SEC // 5 sec time out

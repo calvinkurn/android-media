@@ -6,5 +6,20 @@ package com.tokopedia.purchase_platform.features.checkout.view.uimodel
 
 data class NotEligiblePromoHolderdata(
         var promoTitle: String = "",
-        var promoCode: String = ""
-)
+        var promoCode: String = "",
+        var shopName: String = "",
+        var iconType: Int = 0,
+        var errorMessage: String = "",
+        var showShopSection: Boolean = false
+) {
+    companion object {
+        @JvmStatic
+        val TYPE_ICON_GLOBAL = 1
+
+        @JvmStatic
+        val TYPE_ICON_OFFICIAL_STORE = 2
+
+        @JvmStatic
+        val TYPE_ICON_POWER_MERCHANT = 3
+    }
+}

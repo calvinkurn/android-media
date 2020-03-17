@@ -5,5 +5,5 @@ import com.google.gson.annotations.SerializedName
 
 data class GetPublicMerchantVoucherList(
         @SerializedName("vouchers")
-        val vouchers: List<Voucher> = listOf()
+        val vouchers: List<VoucherUiModel> = listOf()
 )

@@ -33,7 +33,6 @@ import kotlin.math.min
  */
 
 class CartAdapter @Inject constructor(private val actionListener: ActionListener?,
-                                      private val promoActionListener: PromoActionListener?,
                                       private val cartItemActionListener: CartItemAdapter.ActionListener?,
                                       private val insuranceItemActionlistener: InsuranceItemActionListener?,
                                       private val tickerAnnouncementActionListener: TickerAnnouncementActionListener?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -312,11 +311,6 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 val view = LayoutInflater.from(parent.context)
                         .inflate(CartShopViewHolder.TYPE_VIEW_ITEM_SHOP, parent, false)
                 return CartShopViewHolder(view, actionListener, cartItemActionListener, compositeSubscription)
-            }
-            PromoGlobalViewHolder.TYPE_VIEW_PROMO -> {
-                val view = LayoutInflater.from(parent.context)
-                        .inflate(PromoGlobalViewHolder.TYPE_VIEW_PROMO, parent, false)
-                return PromoGlobalViewHolder(view, promoActionListener)
             }
             CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR -> {
                 val view = LayoutInflater.from(parent.context)
@@ -740,13 +734,8 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         checkForShipmentForm()
     }
 
-    fun addCartEmptyData() {
-        if (cartEmptyHolderData == null) {
-            cartEmptyHolderData = CartEmptyHolderData()
-        }
-        cartEmptyHolderData?.let {
-            cartDataList.add(it)
-        }
+    fun addCartEmptyData(cartEmptyHolderData: CartEmptyHolderData) {
+        cartDataList.add(cartEmptyHolderData)
     }
 
     fun addCartRecentViewData(cartSectionHeaderHolderData: CartSectionHeaderHolderData,

@@ -2,7 +2,7 @@
     <string name="app_name">voucher_game</string>
 
     <string name="vg_menu_promo">Promo</string>
-    <string name="vg_menu_help">Bantuan</string>
+    <string name="vg_menu_help">Tokopedia Care</string>
     <string name="vg_menu_transaction_list">Daftar Transaksi</string>
 
     <string name="vg_search_bar_label">Search vouchers</string>
