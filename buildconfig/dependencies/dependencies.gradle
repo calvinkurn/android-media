@@ -50,7 +50,7 @@ ext {
     playServiceFirebaseMessaging = '17.3.4'
     playServiceLocation = '16.0.0'
     playServiceMaps = '16.0.0'
-    playServiceAuth = '16.0.1'
+    playServiceAuth = '17.0.0'
     playServicePlace = '16.0.0'
     playServiceAuthApiPhone = '16.0.0'
     playServiceMapsUtil = '0.4'
@@ -189,7 +189,7 @@ ext {
 
     miscDependencies = [
             scannerZxing          : "com.journeyapps:zxing-android-embedded:3.5.0",
-            facebook              : "com.facebook.android:facebook-android-sdk:4.26.0",
+            facebook              : "com.facebook.android:facebook-android-sdk:6.2.0", //4.26.0
             parcelerApi           : "org.parceler:parceler-api:1.1.12",
             parceler              : "org.parceler:parceler:1.1.12",
             gson                  : "com.google.code.gson:gson:2.7",
