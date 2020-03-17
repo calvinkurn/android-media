@@ -18,10 +18,7 @@ import com.tokopedia.sellerhome.settings.analytics.sendTrackingManual
 import com.tokopedia.sellerhome.settings.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.sellerhome.settings.view.uimodel.base.RegularMerchant
 import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
-import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.BalanceUiModel
-import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.SettingShopInfoUiModel
-import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.ShopAvatarUiModel
-import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.ShopStatusUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.*
 import kotlinx.android.synthetic.main.fragment_other_menu.view.*
 import kotlinx.android.synthetic.main.fragment_other_menu.view.shopInfoLayout
 import kotlinx.android.synthetic.main.setting_balance.view.*
@@ -59,8 +56,8 @@ class OtherMenuViewHolder(private val itemView: View,
             setShopStatusType(shopStatusUiModel)
             setSaldoBalance(saldoBalanceUiModel)
             setKreditTopadsBalance(topadsBalanceUiModel)
-            onSuccessGetShopBadge(shopBadges)
-            onSuccessGetTotalFollowers(shopFollowers)
+            setShopBadge(shopBadgeUiModel)
+            setShopTotalFollowers(shopFollowersUiModel)
         }
     }
 
@@ -87,15 +84,25 @@ class OtherMenuViewHolder(private val itemView: View,
         }
     }
 
-    private fun onSuccessGetShopBadge(shopBadgeUrl: String) {
-        itemView.shopInfoLayout.shopBadges?.let {
-            ImageHandler.LoadImage(it, shopBadgeUrl)
+    private fun setShopBadge(shopBadgeUiModel: ShopBadgeUiModel) {
+        itemView.shopInfoLayout.shopBadges?.run {
+            ImageHandler.LoadImage(this, shopBadgeUiModel.shopBadgeUrl)
+            setOnClickListener {
+                shopBadgeUiModel.sendSettingShopInfoClickTracking()
+            }
+            // TODO : Add impression if PM agrees
         }
     }
 
     @SuppressLint("SetTextI18n")
-    fun onSuccessGetTotalFollowers(totalFollowing: Int) {
-        itemView.shopInfoLayout.shopFollowers?.text = "$totalFollowing ${context.resources.getString(R.string.setting_followers)}"
+    fun setShopTotalFollowers(shopTotalFollowersUiModel: ShopFollowersUiModel) {
+        itemView.shopInfoLayout.shopFollowers?.run {
+            text = "${shopTotalFollowersUiModel.shopFollowers} ${context.resources.getString(R.string.setting_followers)}"
+            setOnClickListener {
+                shopTotalFollowersUiModel.sendSettingShopInfoClickTracking()
+                listener.onFollowersCountClicked()
+            }
+        }
     }
 
     private fun setShopName(shopName: String) {
@@ -241,7 +248,6 @@ class OtherMenuViewHolder(private val itemView: View,
                         eventLabel = ""
                 )
             }
-            shopFollowers.setOnClickListener { listener.onFollowersCountClicked() }
         }
     }
 

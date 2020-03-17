@@ -22,6 +22,7 @@ object SettingTrackingConstant {
     const val SHOP_NAME = "shop name"
     const val SHOP_ARROW = "shop arrow"
     const val SHOP_BADGE = "shop badge"
+    const val SHOP_FOLLOWERS = "shop followers"
     const val SHOP_STATE = "shop state"
     const val ON_SALDO = "on saldo"
     const val ON_TOPADS_CREDIT = "on topads credits"
