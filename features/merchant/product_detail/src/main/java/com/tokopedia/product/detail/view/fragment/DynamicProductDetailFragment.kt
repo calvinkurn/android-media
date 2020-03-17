@@ -952,8 +952,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 setDesc(getString(R.string.campaign_expired_descr))
                 setBtnOk(getString(R.string.exp_dialog_ok))
                 setBtnCancel(getString(R.string.close))
-                setOnCancelClickListener { loadProductData(true); dismiss() }
-                setOnOkClickListener { dismiss(); }
+                setOnCancelClickListener { 
+                    onSwipeRefresh();
+                    dismiss();
+                }
+                setOnOkClickListener { 
+                    dismiss();
+                }
             }.show()
         }
     }
@@ -1623,7 +1628,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                             productInfo.basic.weightUnit,
                             if (viewModel.multiOrigin.isFulfillment)
                                 viewModel.multiOrigin.origin else null,
-                            productInfo.data.isFreeOngkir.isActive
+                            productInfo.data.isFreeOngkir.isActive,
+                            shopInfo.shopCore.shopID,
+                            productInfo.basic.productID
                     ))
                 }
             }

@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.topchat.chatsetting.di.ChatSettingComponent
+import com.tokopedia.topchat.chatsetting.di.ChatSettingModule
 import com.tokopedia.topchat.chatsetting.di.DaggerChatSettingComponent
 import com.tokopedia.topchat.chatsetting.view.fragment.ChatSettingFragment
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
@@ -38,6 +39,7 @@ class ChatSettingActivity : BaseSimpleActivity(), HasComponent<ChatSettingCompon
         return DaggerChatSettingComponent
                 .builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .chatSettingModule(ChatSettingModule(this))
                 .build()
     }
 

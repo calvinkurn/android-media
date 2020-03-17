@@ -154,6 +154,8 @@ public class RemoteConfigKey {
 
     public static final String APP_ENABLE_BANNED_NAVIGATION = "app_enable_banned_navigation";
 
+    public static final String APP_SEMUA_CATEGORY_ENABLE = "app_semua_category_enable";
+
     public static final String TOPCHAT_COMPRESS = "android_topchat_compress";
 
     public static final String ENABLE_CART_ICON_IN_SEARCH = "android_customer_enable_cart_icon_in_search";
@@ -210,4 +212,5 @@ public class RemoteConfigKey {
     public static final String ENABLE_ASYNC_CHECKAPPSIGNATURE = "android_async_checkappsignature";
 
     public static final String WHITELIST_USER_LOG_NOTIFICATION = "key_whitelist_user_log_notification";
+    public static final String ENABLE_BRANCH_UTM_SUPPORT = "app_enable_branch_utm_support";
 }
