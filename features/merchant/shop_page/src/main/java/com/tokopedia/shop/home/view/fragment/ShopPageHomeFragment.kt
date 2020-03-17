@@ -411,7 +411,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onVoucherSeeAllClicked() {
-        shopPageHomeTracking.clickSeeAllMerchantVoucher(isOwner, customDimensionShopPage)
+        shopPageHomeTracking.clickSeeAllMerchantVoucher(
+                isOwner,
+                shopId,
+                shopPageHomeLayoutUiModel?.layoutId ?: "",
+                customDimensionShopPage)
         context?.let {
             val intentMerchantVoucherList = MerchantVoucherListActivity.createIntent(
                     it,

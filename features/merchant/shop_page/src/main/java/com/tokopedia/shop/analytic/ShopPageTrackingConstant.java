@@ -42,6 +42,7 @@ public class ShopPageTrackingConstant {
     public static final String MANAGE_SHOP = "manage shop";
     public static final String MANAGE_PRODUCT = "manage product";
     public static final String CLICK = "click";
+    public static final String CLICK_SEE_ALL = "click see all";
     public static final String CLICK_CHAT_SELLER = "click chat seller";
     public static final String FOLLOW = "follow";
     public static final String UNFOLLOW = "unfollow";

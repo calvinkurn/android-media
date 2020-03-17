@@ -116,12 +116,14 @@ class ShopPageHomeTracking(
 
     fun clickSeeAllMerchantVoucher(
             isOwner: Boolean,
+            shopId: String,
+            layoutId: String,
             customDimensionShopPage: CustomDimensionShopPage
     ) {
         sendGeneralEvent(CLICK_SHOP_PAGE,
                 getShopPageCategory(isOwner),
-                joinDash(MERCHANT_VOUCHER_CODE, CLICK),
-                SEE_ALL,
+                "$MERCHANT_VOUCHER_CODE - $CLICK_SEE_ALL",
+                "$shopId - $MERCHANT_VOUCHER - $layoutId",
                 customDimensionShopPage
         )
     }
