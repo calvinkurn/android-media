@@ -95,10 +95,11 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
 
     /* This Method is use to tracking action click when user click product Voucher Game
      */
+
     private fun Intent.handleExtra() {
         if (intent.data != null) {
             val trackingClick = intent.getStringExtra(RECHARGE_PRODUCT_EXTRA)
-            if (trackingClick!=null) {
+            if (trackingClick != null) {
                 Timber.d("P2#ACTION_SLICE_CLICK_RECHARGE#$trackingClick")
             }
         }

@@ -51,7 +51,7 @@ class MainSliceProvider : SliceProvider() {
 
     override fun onBindSlice(sliceUri: Uri): Slice? {
         userSession = UserSession(contextNonNull)
-        return createGetInvoiceV3Slice(sliceUri)
+        return createGetInvoiceSlice(sliceUri)
     }
 
     private fun createPendingIntent(id: Int?, applink: String?, trackingClick: String): PendingIntent? {
@@ -73,7 +73,7 @@ class MainSliceProvider : SliceProvider() {
             0
     )
 
-    private fun createGetInvoiceV3Slice(sliceUri: Uri): Slice? {
+    private fun createGetInvoiceSlice(sliceUri: Uri): Slice? {
         val mainPendingIntent = PendingIntent.getActivity(
                 contextNonNull,
                 0,

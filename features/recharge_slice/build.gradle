@@ -29,13 +29,8 @@ dependencies {
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.playServicesDependencies.analytics
 
-    // Slice
     implementation rootProject.ext.miscDependencies.slice
-
-    //firebaseappindexing
     implementation rootProject.ext.firebase.appIndexing
-
-    // Glide
     implementation rootProject.ext.networkDependencies.glide
     annotationProcessor rootProject.ext.networkDependencies.glideProcessor
 
