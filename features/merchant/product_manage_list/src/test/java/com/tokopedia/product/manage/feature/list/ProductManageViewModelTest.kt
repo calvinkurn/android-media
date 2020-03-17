@@ -28,9 +28,6 @@ class ProductManageViewModelTest {
     lateinit var editPriceUseCase: EditPriceUseCase
 
     @RelaxedMockK
-    lateinit var deletePriceUseCase: DeleteProductUseCase
-
-    @RelaxedMockK
     lateinit var gqlGetShopInfoUseCase: GQLGetShopInfoUseCase
 
     @RelaxedMockK
@@ -38,9 +35,6 @@ class ProductManageViewModelTest {
 
     @RelaxedMockK
     lateinit var topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase
-
-    @RelaxedMockK
-    lateinit var setCashbackUseCase: SetCashbackUseCase
 
     @RelaxedMockK
     lateinit var popupManagerAddProductUseCase: PopupManagerAddProductUseCase
@@ -70,7 +64,6 @@ class ProductManageViewModelTest {
                 gqlGetShopInfoUseCase,
                 userSessionInterface,
                 topAdsGetShopDepositGraphQLUseCase,
-                setCashbackUseCase,
                 popupManagerAddProductUseCase,
                 getProductListUseCase,
                 editFeaturedProductUseCase,
