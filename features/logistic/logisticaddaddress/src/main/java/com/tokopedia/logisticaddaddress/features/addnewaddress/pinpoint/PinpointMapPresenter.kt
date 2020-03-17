@@ -25,6 +25,7 @@ import javax.inject.Inject
  * Created by fwidjaja on 2019-05-08.
  */
 const val FOREIGN_COUNTRY_MESSAGE = "Lokasi di luar Indonesia."
+const val LOCATION_NOT_FOUND_MESSAGE = "Lokasi gagal ditemukan"
 
 @AddNewAddressScope
 class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: GetDistrictUseCase,
@@ -63,10 +64,14 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         revGeocodeUseCase.execute(param)
                 .subscribe(
                         {
-                            if (it.messageError.isNotEmpty() && it.messageError[0].equals(FOREIGN_COUNTRY_MESSAGE, true)) {
-                                view.showOutOfReachDialog()
-                            } else {
+                            if (it.messageError.isEmpty()) {
                                 view?.onSuccessAutofill(it.data)
+                            } else {
+                                val msg = it.messageError[0]
+                                when {
+                                    msg.contains(FOREIGN_COUNTRY_MESSAGE) -> view?.showOutOfReachDialog()
+                                    msg.contains(LOCATION_NOT_FOUND_MESSAGE) -> view?.showUndetectedDialog()
+                                }
                             }
                         },
                         {

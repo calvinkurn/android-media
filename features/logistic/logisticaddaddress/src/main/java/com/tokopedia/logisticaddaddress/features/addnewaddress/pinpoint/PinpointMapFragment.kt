@@ -495,32 +495,36 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         }
     }
 
+    override fun showLocationNotFoundCTA() {
+        whole_loading_container?.visibility = View.GONE
+        getdistrict_container?.visibility = View.GONE
+        invalid_container?.visibility = View.VISIBLE
+
+        invalid_title?.text = getString(R.string.invalid_title)
+        invalid_desc?.text = getString(R.string.invalid_desc)
+        invalid_img?.setImageResource(R.drawable.ic_invalid_location)
+        invalid_button?.apply {
+            visibility = View.VISIBLE
+            setOnClickListener {
+                if (isFullFlow) AddNewAddressAnalytics.eventClickButtonUnnamedRoad(eventLabel = LOGISTIC_LABEL)
+                else AddNewAddressAnalytics.eventClickButtonUnnamedRoad(eventLabel = NON_LOGISTIC_LABEL)
+                goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = true, isZipCodeNull = false)
+            }
+        }
+
+        invalid_ic_search_btn?.setOnClickListener {
+            showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
+        }
+
+        if (isFullFlow) AddNewAddressAnalytics.eventViewErrorAlamatTidakValid(eventLabel = LOGISTIC_LABEL)
+        else AddNewAddressAnalytics.eventViewErrorAlamatTidakValid(eventLabel = NON_LOGISTIC_LABEL)
+    }
+
     private fun updateGetDistrictBottomSheet(saveAddressDataModel: SaveAddressDataModel) {
         this.saveAddressDataModel = saveAddressDataModel
         if (isFullFlow) {
             if (saveAddressDataModel.title.equals(UNNAMED_ROAD, true)) {
-                whole_loading_container?.visibility = View.GONE
-                getdistrict_container?.visibility = View.GONE
-                invalid_container?.visibility = View.VISIBLE
-
-                invalid_title?.text = getString(R.string.invalid_title)
-                invalid_desc?.text = getString(R.string.invalid_desc)
-                invalid_img?.setImageResource(R.drawable.ic_invalid_location)
-                invalid_button?.apply {
-                    visibility = View.VISIBLE
-                    setOnClickListener {
-                        if (isFullFlow) AddNewAddressAnalytics.eventClickButtonUnnamedRoad(eventLabel = LOGISTIC_LABEL)
-                        else AddNewAddressAnalytics.eventClickButtonUnnamedRoad(eventLabel = NON_LOGISTIC_LABEL)
-                        goToAddEditActivity(isMismatch = true, isMismatchSolved = false, isUnnamedRoad = true, isZipCodeNull = false)
-                    }
-                }
-
-                invalid_ic_search_btn?.setOnClickListener {
-                    showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
-                }
-                if (isFullFlow) AddNewAddressAnalytics.eventViewErrorAlamatTidakValid(eventLabel = LOGISTIC_LABEL)
-                else AddNewAddressAnalytics.eventViewErrorAlamatTidakValid(eventLabel = NON_LOGISTIC_LABEL)
-
+                showLocationNotFoundCTA()
             } else {
                 setDefaultResultGetDistrict(saveAddressDataModel)
             }
