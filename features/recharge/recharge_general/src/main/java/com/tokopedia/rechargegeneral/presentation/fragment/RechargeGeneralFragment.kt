@@ -545,18 +545,14 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     private fun setupAutoFillData(data: TopupBillsRecommendation) {
-        val operatorClusters = viewModel.operatorCluster.value
-        if (operatorClusters is Success
-                && !operatorClusters.data.operatorGroups.isNullOrEmpty()) {
-            with (data) {
-                this@RechargeGeneralFragment.operatorId = operatorId
-                selectedProduct = RechargeGeneralProductSelectData(productId.toString(), title)
-                if (clientNumber.isNotEmpty()) {
-                    inputData[PARAM_CLIENT_NUMBER] = clientNumber
-                }
+        with (data) {
+            this@RechargeGeneralFragment.operatorId = operatorId
+            selectedProduct = RechargeGeneralProductSelectData(productId.toString(), title)
+            if (clientNumber.isNotEmpty()) {
+                inputData[PARAM_CLIENT_NUMBER] = clientNumber
             }
-            renderInitialData()
         }
+        renderInitialData()
     }
 
     private fun renderTickers(tickers: List<TopupBillsTicker>) {
@@ -652,9 +648,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun renderClientNumber(favNumber: TopupBillsFavNumberItem) {
         with (favNumber) {
-            this@RechargeGeneralFragment.operatorId = operatorId.toIntOrNull() ?: 0
+            operatorId.toIntOrNull()?.let { oprId -> this@RechargeGeneralFragment.operatorId = oprId }
             inputData[PARAM_CLIENT_NUMBER] = clientNumber
-            selectedProduct = RechargeGeneralProductSelectData(productId)
+            if (productId.isNotEmpty()) selectedProduct = RechargeGeneralProductSelectData(productId)
 
             if (adapter.data.isNotEmpty()) {
                 val clientNumberInput: RechargeGeneralProductInput? = adapter.data.find { it is RechargeGeneralProductInput && it.name == PARAM_CLIENT_NUMBER } as? RechargeGeneralProductInput

@@ -164,7 +164,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
                     applyCarousel()
                     setProductModel(convertData(grid))
                     setOnClickListener {
-                        HomePageTrackingV2.SprintSale.sendSprintSaleClick(channels, grid, position)
+                        HomePageTrackingV2.SprintSale.sendSprintSaleClick(channels, countDownView?.currentCountDown?:"", grid, position)
                         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid))
                     }
                 }
