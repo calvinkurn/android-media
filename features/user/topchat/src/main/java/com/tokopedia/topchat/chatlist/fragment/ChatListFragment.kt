@@ -100,6 +100,12 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onAttachActivity(context: Context?) {
         if (context is ChatListContract.TabFragment) {
             chatTabListContract = context
+            return
+        }
+        parentFragment?.let { parent ->
+            if (parent is ChatListContract.TabFragment) {
+                chatTabListContract = parent
+            }
         }
     }
 
