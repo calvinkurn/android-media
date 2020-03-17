@@ -28,6 +28,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.ch
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.domain.CheckoutOccUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.domain.GetOccCartUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.domain.UpdateCartOccUseCase
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.ErrorCheckoutBottomSheet
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.*
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -811,10 +812,11 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             if (checkoutOccGqlResponse.response.status.equals("OK", true)) {
                 if (checkoutOccGqlResponse.response.data.success == 1) {
                     val paymentParameter = checkoutOccGqlResponse.response.data.paymentParameter
-                    onSuccessCheckout(paymentParameter)
                     globalEvent.value = OccGlobalEvent.Normal
+                    onSuccessCheckout(paymentParameter)
                 } else {
-                    if (checkoutOccGqlResponse.response.data.error.imageUrl.isNotEmpty() || true) {
+                    val errorCode = checkoutOccGqlResponse.response.data.error.code
+                    if (errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_STOCK_EMPTY || errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_SHOP_CLOSED) {
                         globalEvent.value = OccGlobalEvent.CheckoutError(checkoutOccGqlResponse.response.data.error)
                     } else if (checkoutOccGqlResponse.response.data.error.message.isNotBlank()) {
                         globalEvent.value = OccGlobalEvent.Error(errorMessage = checkoutOccGqlResponse.response.data.error.message)

@@ -263,7 +263,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         R.drawable.ic_pp_insurance)
             }
             cb_insurance.setOnCheckedChangeListener { _, isChecked ->
-                if(isChecked){
+                if (isChecked) {
 //                    orderSummaryAnalytics.eventClickOnInsurance(productId.toString(),"check", insuranceData.insurancePrice.toString())
                 } else {
 //                    orderSummaryAnalytics.eventClickOnInsurance(productId.toString(),"uncheck", insuranceData.insurancePrice.toString())
@@ -365,7 +365,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         btn_pay.setOnClickListener {
             viewModel.finalUpdate { paymentParameter: PaymentParameter ->
-                view?.let {v ->
+                view?.let { v ->
                     activity?.let {
                         if (paymentParameter.callbackUrl.isNotEmpty() && paymentParameter.payload.isNotEmpty()) {
                             val paymentPassData = PaymentPassData()
@@ -395,7 +395,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             iv_subheader.gone()
         } else {
             tv_header_2.gone()
-            ImageHandler.LoadImage(iv_subheader, BELI_LANGSUNG_CART_IMAGE )
+            ImageHandler.LoadImage(iv_subheader, BELI_LANGSUNG_CART_IMAGE)
             iv_subheader.visible()
             tv_subheader.text = preference.onboardingHeaderMessage
             tv_subheader_action.setOnClickListener {

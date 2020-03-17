@@ -17,7 +17,7 @@ class ErrorCheckoutBottomSheet {
             BottomSheetUnify().apply {
                 showCloseIcon = true
                 showHeader = true
-
+                setTitle(if (error.error.code == "510") "Yaah, barangnya habis" else "Yaah, tokonya baru aja tutup")
                 val child = View.inflate(view.context, R.layout.bottom_sheet_error_checkout, null)
 //                view.view?.height?.div(2)?.let { height ->
 //                    customPeekHeight = height
@@ -42,5 +42,10 @@ class ErrorCheckoutBottomSheet {
     interface Listener {
 
         fun onClickSimilarProduct()
+    }
+
+    companion object {
+        const val ERROR_CODE_PRODUCT_STOCK_EMPTY = "510"
+        const val ERROR_CODE_SHOP_CLOSED = "520"
     }
 }
