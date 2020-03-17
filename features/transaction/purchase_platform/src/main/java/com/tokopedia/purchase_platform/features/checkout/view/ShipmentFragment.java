@@ -1222,7 +1222,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                                        String eventLabel) {
         String sessionId = "";
         Context context = getContext();
-        if(context != null){
+        if (context != null) {
             IrisSession irisSession = new IrisSession(context);
             sessionId = irisSession.getSessionId();
 
@@ -2019,7 +2019,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         CheckPromoParam checkPromoParam = new CheckPromoParam();
         checkPromoParam.setPromo(generateCheckPromoFirstStepParam());
 
-        if(hasInsurance) {
+        if (hasInsurance) {
             mTrackerMacroInsurance.eventClickPaymentMethodWithInsurance(shipmentAdapter.getInsuranceProductId(),
                     shipmentAdapter.getInsuranceTitle());
         }
@@ -2653,10 +2653,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
                 order.setUniqueId(shipmentCartItemModel.getCartString());
                 order.setShopId(shipmentCartItemModel.getShopId());
-                if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
-                        shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
-                    order.setShippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperId());
-                    order.setSpId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperProductId());
+                if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
+                    if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+                        order.setShippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperId());
+                        order.setSpId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperProductId());
+                    } else if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff() != null) {
+                        order.setShippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShipperId());
+                        order.setSpId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShipperProductId());
+                    }
                 }
                 order.setInsurancePrice(shipmentCartItemModel.isInsurance() ? 1 : 0);
                 orders.add(order);
@@ -2682,6 +2686,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         promo.setSkipApply(0);
         promo.setSuggested(0);
+        if (isTradeIn()) {
+            promo.setTradeIn(1);
+            promo.setTradeInDropOff(isTradeInByDropOff() ? 1 : 0);
+        }
         return promo;
     }
 
