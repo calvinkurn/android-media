@@ -93,10 +93,14 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     view.tv_shipping_price.gone()
                     view.tv_shipping_slash_price.gone()
                     view.tv_shipping_message.text = shipping.serviceErrorMessage
-                    view.tv_shipping_change_duration.setOnClickListener {
-                        listener.chooseDuration()
+                    if (shipping.shippingRecommendationData != null) {
+                        view.tv_shipping_change_duration.setOnClickListener {
+                            listener.chooseDuration()
+                        }
+                        view.tv_shipping_change_duration.visible()
+                    } else {
+                        view.tv_shipping_change_duration.gone()
                     }
-                    view.tv_shipping_change_duration.visible()
                     view.tv_shipping_message.visible()
                 }
             }
