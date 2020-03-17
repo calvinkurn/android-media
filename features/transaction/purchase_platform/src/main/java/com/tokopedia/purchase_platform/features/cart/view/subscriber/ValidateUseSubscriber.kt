@@ -1,7 +1,6 @@
 package com.tokopedia.purchase_platform.features.cart.view.subscriber
 
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.AdditionalInfoUiModel
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel
 import rx.Subscriber
 

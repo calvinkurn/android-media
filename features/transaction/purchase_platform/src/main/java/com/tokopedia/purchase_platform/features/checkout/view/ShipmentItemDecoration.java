@@ -40,7 +40,7 @@ public class ShipmentItemDecoration extends RecyclerView.ItemDecoration {
         } else if (viewHolder instanceof ShipmentDonationViewHolder) {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_8);
         } else if (viewHolder instanceof PromoCheckoutViewHolder) {
-            outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
+            outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_8);
         } else if (viewHolder instanceof ShipmentEmasViewHolder) {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
             outRect.top = (int) context.getResources().getDimension(R.dimen.dp_8);

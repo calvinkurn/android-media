@@ -5,8 +5,8 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.promocheckout.common.view.model.PromoCheckoutData;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCheckoutRequest;
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel;
 
 import java.util.List;
 
@@ -127,7 +127,7 @@ public interface ShipmentAdapterActionListener {
 
     void onTradeInAddressTabChanged(int position);
 
-    void onClickPromoCheckout(PromoCheckoutData promoCheckoutData);
+    void onClickPromoCheckout(LastApplyUiModel lastApplyUiModel);
 
     void onSendAnalyticsClickPromoCheckout(Boolean isApplied, List<String> listAllPromoCodes);
 

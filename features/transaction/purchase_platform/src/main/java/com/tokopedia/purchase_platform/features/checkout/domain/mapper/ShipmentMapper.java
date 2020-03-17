@@ -21,6 +21,7 @@ import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.mode
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyMessageInfoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyMessageUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUsageSummariesUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo_global.domain.model.GlobalCouponAttrData;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerData;
@@ -37,6 +38,7 @@ import com.tokopedia.purchase_platform.features.checkout.data.model.response.shi
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.LastApply;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.MessageInfo;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.SummariesItem;
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.UsageSummaries;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.AddressesData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.DataAddressData;
@@ -288,7 +290,9 @@ public class ShipmentMapper implements IShipmentMapper {
                 dataResult.setCod(cod);
             }
 
-            if (shipmentAddressFormDataResponse.getPromoSAFResponse().getLastApply().getData() != null) {
+            if (shipmentAddressFormDataResponse.getPromoSAFResponse() != null &&
+                    shipmentAddressFormDataResponse.getPromoSAFResponse().getLastApply() != null &&
+                    shipmentAddressFormDataResponse.getPromoSAFResponse().getLastApply().getData() != null) {
                 LastApply lastApply = shipmentAddressFormDataResponse.getPromoSAFResponse().getLastApply();
                 if (lastApply.getData() != null) {
                     LastApplyUiModel lastApplyUiModel = new LastApplyUiModel();
@@ -343,29 +347,60 @@ public class ShipmentMapper implements IShipmentMapper {
                     lastApplyAdditionalInfoUiModel.setErrorDetail(lastApplyErrorDetailUiModel);
                     lastApplyAdditionalInfoUiModel.setEmptyCartInfo(lastApplyEmptyCartInfoUiModel);
 
+                    // set usage summaries
+                    ArrayList<LastApplyUsageSummariesUiModel> listUsageSummaries = new ArrayList<>();
+                    for (UsageSummaries usageSummaries : responseAdditionalInfo.getListUsageSummaries()) {
+                        LastApplyUsageSummariesUiModel lastApplyUsageSummariesUiModel = new LastApplyUsageSummariesUiModel();
+                        lastApplyUsageSummariesUiModel.setDescription(usageSummaries.getDesc());
+                        lastApplyUsageSummariesUiModel.setType(usageSummaries.getType());
+                        lastApplyUsageSummariesUiModel.setAmountStr(usageSummaries.getAmountStr());
+                        lastApplyUsageSummariesUiModel.setAmount(usageSummaries.getAmount());
+                        listUsageSummaries.add(lastApplyUsageSummariesUiModel);
+                    }
+                    lastApplyAdditionalInfoUiModel.setUsageSummaries(listUsageSummaries);
                     lastApplyUiModel.setAdditionalInfo(lastApplyAdditionalInfoUiModel);
 
                     // set message
-                    com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.Message lastApplyMessage = lastApply.getData().getMessage();
-                    LastApplyMessageUiModel lastApplyMessageUiModel = new LastApplyMessageUiModel();
-                    lastApplyMessageUiModel.setText(lastApplyMessage.getText());
-                    lastApplyMessageUiModel.setState(lastApplyMessage.getState());
-                    lastApplyMessageUiModel.setColor(lastApplyMessage.getColor());
-                    lastApplyUiModel.setMessage(lastApplyMessageUiModel);
+                    if (lastApply.getData().getMessage() != null) {
+                        com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.Message lastApplyMessage = lastApply.getData().getMessage();
+                        LastApplyMessageUiModel lastApplyMessageUiModel = new LastApplyMessageUiModel();
+                        lastApplyMessageUiModel.setText(lastApplyMessage.getText());
+                        lastApplyMessageUiModel.setState(lastApplyMessage.getState());
+                        lastApplyMessageUiModel.setColor(lastApplyMessage.getColor());
+                        lastApplyUiModel.setMessage(lastApplyMessageUiModel);
 
-                    ArrayList<String> listRedStates = new ArrayList<>();
-                    if (lastApply.getData().getMessage().getState().equalsIgnoreCase(STATE_RED)) {
-                        for (String code : lastApply.getData().getCodes()) {
-                            listRedStates.add(code);
+                        ArrayList<String> listRedStates = new ArrayList<>();
+                        if (lastApply.getData().getMessage().getState() != null) {
+                            if (lastApply.getData().getMessage().getState().equalsIgnoreCase(STATE_RED)) {
+                                for (String code : lastApply.getData().getCodes()) {
+                                    listRedStates.add(code);
+                                }
+                            }
+
+                            if (lastApply.getData().getVoucherOrders() != null) {
+                                for (com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.VoucherOrdersItem voucherOrdersItem : lastApply.getData().getVoucherOrders()) {
+                                    if (voucherOrdersItem.getMessage().getState().equalsIgnoreCase(STATE_RED)) {
+                                        listRedStates.add(voucherOrdersItem.getCode());
+                                    }
+                                }
+                            }
+                        }
+                        lastApplyUiModel.setListRedPromos(listRedStates);
+                    }
+
+                    ArrayList<String> listAllPromoCodes = new ArrayList<>();
+                    for (int i = 0; i < lastApply.getData().getCodes().size(); i++) {
+                        listAllPromoCodes.add(lastApply.getData().getCodes().get(i));
+                    }
+
+                    if (lastApply.getData().getVoucherOrders() != null) {
+                        for (com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.VoucherOrdersItem voucherOrdersItem : lastApply.getData().getVoucherOrders()) {
+                            listAllPromoCodes.add(voucherOrdersItem.getCode());
                         }
                     }
 
-                    for (com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.VoucherOrdersItem voucherOrdersItem : lastApply.getData().getVoucherOrders()) {
-                        if (voucherOrdersItem.getMessage().getState().equalsIgnoreCase(STATE_RED)) {
-                            listRedStates.add(voucherOrdersItem.getCode());
-                        }
-                    }
-                    lastApplyUiModel.setListRedPromos(listRedStates);
+                    lastApplyUiModel.setListAllPromoCodes(listAllPromoCodes);
+
                     dataResult.setLastApplyData(lastApplyUiModel);
                 }
             }

@@ -7,5 +7,6 @@ import kotlinx.android.parcel.Parcelize
 data class AdditionalInfoUiModel(
 		var messageInfoUiModel: MessageInfoUiModel = MessageInfoUiModel(),
 		var errorDetailUiModel: ErrorDetailUiModel = ErrorDetailUiModel(),
-		var emptyCartInfoUiModel: EmptyCartInfoUiModel = EmptyCartInfoUiModel()
+		var emptyCartInfoUiModel: EmptyCartInfoUiModel = EmptyCartInfoUiModel(),
+		var usageSummariesUiModel: List<UsageSummariesUiModel> = emptyList()
 ) : Parcelable

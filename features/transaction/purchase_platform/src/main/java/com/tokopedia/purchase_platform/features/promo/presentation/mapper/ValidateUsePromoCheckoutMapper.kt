@@ -81,6 +81,7 @@ class ValidateUsePromoCheckoutMapper {
 
         private fun mapToAdditionalInfoUiModel(additionalInfo: AdditionalInfo?) : AdditionalInfoUiModel {
             val additionalInfoUiModel = AdditionalInfoUiModel()
+            val listUsageSummariesUiModel = arrayListOf<UsageSummariesUiModel>()
             additionalInfo?.messageInfo?.let {
                 additionalInfoUiModel.messageInfoUiModel.message = it.message
                 additionalInfoUiModel.messageInfoUiModel.detail = it.detail
@@ -88,7 +89,23 @@ class ValidateUsePromoCheckoutMapper {
             additionalInfo?.errorDetail?.let {
                 additionalInfoUiModel.errorDetailUiModel.message = it.message
             }
+            additionalInfo?.emptyCartInfo?.let {
+                additionalInfoUiModel.emptyCartInfoUiModel.detail = it.detail
+                additionalInfoUiModel.emptyCartInfoUiModel.imgUrl = it.imageUrl
+                additionalInfoUiModel.emptyCartInfoUiModel.message = it.message
+            }
+            additionalInfo?.usageSummaries?.forEach {
+                listUsageSummariesUiModel.add(mapToUsageSummariesUiModel(it))
+            }
             return additionalInfoUiModel
+        }
+
+        private fun mapToUsageSummariesUiModel(usageSummaries: UsageSummaries): UsageSummariesUiModel {
+            return UsageSummariesUiModel(
+                    desc = usageSummaries.description,
+                    type = usageSummaries.type,
+                    amountStr = usageSummaries.amountString,
+                    amount = usageSummaries.amount)
         }
 
         private fun mapToBenefitSummaryInfoUiModel(benefitSummaryInfo: BenefitSummaryInfo?): BenefitSummaryInfoUiModel {

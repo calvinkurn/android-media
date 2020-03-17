@@ -169,6 +169,12 @@ mutation validate_use_promo_revamp($params: PromoStackRequest) {
            message
            detail
          }
+         usage_summaries {
+           description
+           type
+           amount_str
+           amount
+         }
          sp_ids
        }
      }

@@ -635,8 +635,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         // getView().setPromoStackingData(cartShipmentAddressFormData);
+        //getView().setLastApplyData(cartShipmentAddressFormData.getLastApplyData());
 
-        getView().setLastApplyData(cartShipmentAddressFormData.getLastApplyData());
+        if (cartShipmentAddressFormData.getLastApplyData() != null) {
+            setLastApplyData(cartShipmentAddressFormData.getLastApplyData());
+        } else {
+            setLastApplyData(null);
+        }
 
         setShipmentCartItemModelList(shipmentDataConverter.getShipmentItems(
                 cartShipmentAddressFormData, newAddress != null && newAddress.getLocationDataModel() != null)
@@ -1197,18 +1202,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             public void onNext(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
                                 ShipmentPresenter.this.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel;
                                 if (getView() != null) {
-
-                                    if (validateUsePromoRevampUiModel.getStatus() != null) {
-                                        if (validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK)) {
-                                            getView().updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel());
-                                        } else {
-                                            if (validateUsePromoRevampUiModel.getMessage() != null && validateUsePromoRevampUiModel.getMessage().size() > 0) {
-                                                String errMessage = validateUsePromoRevampUiModel.getMessage().get(0).toString();
-                                                mTrackerShipment.eventClickLanjutkanTerapkanPromoError(errMessage);
-                                                PromoRevampAnalytics.INSTANCE.eventCheckoutViewPromoMessage(errMessage);
-                                                getView().showToastError(errMessage);
-                                                getView().resetCourier(cartPosition);
-                                            }
+                                    if (validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK)) {
+                                        getView().updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel());
+                                    } else {
+                                        if (validateUsePromoRevampUiModel.getMessage().size() > 0) {
+                                            String errMessage = validateUsePromoRevampUiModel.getMessage().get(0);
+                                            mTrackerShipment.eventClickLanjutkanTerapkanPromoError(errMessage);
+                                            PromoRevampAnalytics.INSTANCE.eventCheckoutViewPromoMessage(errMessage);
+                                            getView().showToastError(errMessage);
+                                            getView().resetCourier(cartPosition);
                                         }
                                     }
                                 }

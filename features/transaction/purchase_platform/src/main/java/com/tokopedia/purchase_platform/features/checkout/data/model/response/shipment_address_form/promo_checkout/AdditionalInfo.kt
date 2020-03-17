@@ -16,5 +16,8 @@ data class AdditionalInfo(
 	val errorDetail: ErrorDetail? = null,
 
 		@field:SerializedName("cart_empty_info")
-	val cartEmptyInfo: CartEmptyInfo? = null
+	val cartEmptyInfo: CartEmptyInfo? = null,
+
+		@field:SerializedName("usage_summaries")
+		val listUsageSummaries: List<UsageSummaries>? = null
 )

@@ -142,8 +142,6 @@ public interface ShipmentContract {
 
         void setPromoStackingData(CartShipmentAddressFormData cartShipmentAddressFormData);
 
-        void setLastApplyData(LastApplyUiModel lastApplyData);
-
         void showToastFailedTickerPromo(String text);
 
         void stopTrace();

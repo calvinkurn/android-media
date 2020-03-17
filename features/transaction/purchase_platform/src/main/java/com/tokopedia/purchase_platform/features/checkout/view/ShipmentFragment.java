@@ -75,7 +75,6 @@ import com.tokopedia.promocheckout.common.data.entity.request.Order;
 import com.tokopedia.promocheckout.common.data.entity.request.ProductDetail;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
-import com.tokopedia.promocheckout.common.view.model.PromoCheckoutData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.BenefitSummaryInfoUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel;
@@ -113,6 +112,7 @@ import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.mo
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUsageSummariesUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo_clashing.ClashBottomSheetFragment;
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener;
@@ -254,7 +254,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     EgoldAttributeModel savedEgoldAttributeModel;
     RecipientAddressModel savedRecipientAddressModel;
     PromoStackingData savedPromoStackingData;
-    // PromoCheckoutData savedPromoCheckoutData;
     ShipmentDonationModel savedShipmentDonationModel;
     BenefitSummaryInfoUiModel benefitSummaryInfoUiModel;
     ShipmentButtonPaymentModel savedShipmentButtonPaymentModel;
@@ -318,7 +317,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 savedShipmentDonationModel = saveInstanceCacheManager.get(ShipmentDonationModel.class.getSimpleName(), ShipmentDonationModel.class);
                 savedShipmentButtonPaymentModel = saveInstanceCacheManager.get(ShipmentButtonPaymentModel.class.getSimpleName(), ShipmentButtonPaymentModel.class);
                 savedPromoStackingData = saveInstanceCacheManager.get(PromoStackingData.class.getSimpleName(), PromoStackingData.class);
-                // savedPromoCheckoutData = saveInstanceCacheManager.get(PromoCheckoutData.class.getSimpleName(), PromoCheckoutData.class);
                 savedLastApplyData = saveInstanceCacheManager.get(LastApplyUiModel.class.getSimpleName(), LastApplyUiModel.class);
             }
             ArrayList<ShipmentSelectionStateData> shipmentSelectionStateData =
@@ -391,8 +389,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentPresenter.setEgoldAttributeModel(savedEgoldAttributeModel);
             shipmentAdapter.setLastChooseCourierItemPosition(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION));
             shipmentAdapter.setLastServiceId(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSEN_SERVICE_ID));
-            // shipmentAdapter.addPromoCheckoutData(savedPromoCheckoutData);
-            // shipmentAdapter.addPromoStackingVoucherData(savedPromoStackingData);
             shipmentPresenter.setLastApplyData(savedLastApplyData);
             renderCheckoutPage(true, false, isOneClickShipment());
             swipeToRefresh.setEnabled(false);
@@ -451,7 +447,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                       RecipientAddressModel recipientAddressModel,
                                       List<ShipmentCartItemModel> shipmentCartItemModelList,
                                       ShipmentDonationModel shipmentDonationModel,
-                                      PromoCheckoutData promoCheckoutData,
+                                      LastApplyUiModel lastApplyUiModel,
                                       ShipmentCostModel shipmentCostModel,
                                       EgoldAttributeModel egoldAttributeModel,
                                       ShipmentButtonPaymentModel shipmentButtonPaymentModel,
@@ -507,7 +503,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentAdapter.addEgoldAttributeData(egoldAttributeModel);
         }
 
-        shipmentAdapter.addPromoCheckoutData(promoCheckoutData);
+        if (!lastApplyUiModel.getAdditionalInfo().getErrorDetail().getMessage().isEmpty()) {
+            PromoRevampAnalytics.INSTANCE.eventCartViewPromoChanged(lastApplyUiModel.getAdditionalInfo().getErrorDetail().getMessage());
+        }
+        shipmentAdapter.addLastApplyUiDataModel(lastApplyUiModel);
 
         shipmentAdapter.addShipmentCostData(shipmentCostModel);
         shipmentAdapter.updateShipmentSellerCashbackVisibility();
@@ -733,7 +732,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 recipientAddressModel,
                 shipmentPresenter.getShipmentCartItemModelList(),
                 shipmentPresenter.getShipmentDonationModel(),
-                shipmentAdapter.getPromoCheckoutData(),
+                shipmentPresenter.getLastApplyData(),
                 shipmentPresenter.getShipmentCostModel(),
                 shipmentPresenter.getEgoldAttributeModel(),
                 shipmentPresenter.getShipmentButtonPaymentModel(),
@@ -772,7 +771,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.getRecipientAddressModel(),
                 oldShipmentCartItemModelList,
                 shipmentPresenter.getShipmentDonationModel(),
-                shipmentAdapter.getPromoCheckoutData(),
+                shipmentPresenter.getLastApplyData(),
                 shipmentPresenter.getShipmentCostModel(),
                 shipmentPresenter.getEgoldAttributeModel(),
                 shipmentPresenter.getShipmentButtonPaymentModel(),
@@ -789,7 +788,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.getRecipientAddressModel(),
                 shipmentPresenter.getShipmentCartItemModelList(),
                 shipmentPresenter.getShipmentDonationModel(),
-                shipmentAdapter.getPromoCheckoutData(),
+                shipmentPresenter.getLastApplyData(),
                 shipmentPresenter.getShipmentCostModel(),
                 shipmentPresenter.getEgoldAttributeModel(),
                 shipmentPresenter.getShipmentButtonPaymentModel(),
@@ -1049,44 +1048,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
 
         // shipmentAdapter.addPromoStackingVoucherData(builder.build());
-        shipmentAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void setLastApplyData(LastApplyUiModel lastApplyData) {
-        PromoCheckoutData.Builder builder = new PromoCheckoutData.Builder();
-
-        String label = getString(R.string.promo_funnel_label);
-        if (!lastApplyData.getAdditionalInfo().getMessageInfo().getMessage().isEmpty())
-            label = lastApplyData.getAdditionalInfo().getMessageInfo().getMessage();
-
-        String usageInfo = getString(R.string.promo_benefit_info);
-        if (!lastApplyData.getAdditionalInfo().getMessageInfo().getDetail().isEmpty())
-            usageInfo = lastApplyData.getAdditionalInfo().getMessageInfo().getDetail();
-
-        ArrayList<String> listCodes = new ArrayList<>();
-        for (int i = 0; i < lastApplyData.getCodes().size(); i++) {
-            listCodes.add(lastApplyData.getCodes().get(i));
-        }
-
-        ArrayList<String> listAllPromoCodes = new ArrayList<>();
-        for (int i = 0; i < lastApplyData.getCodes().size(); i++) {
-            listAllPromoCodes.add(lastApplyData.getCodes().get(i));
-        }
-        for (LastApplyVoucherOrdersItemUiModel voucherOrdersItemUiModel : lastApplyData.getVoucherOrders()) {
-            listAllPromoCodes.add(voucherOrdersItemUiModel.getCode());
-        }
-
-        builder.setState(ButtonPromoCheckoutView.State.ACTIVE);
-        builder.promoLabel(label);
-        builder.promoUsageInfo(usageInfo);
-        builder.codes(listCodes);
-        // TODO: set with new structure of benefit!
-        builder.totalBenefitLabel("");
-        builder.totalBenefitAmountStr("");
-        builder.listAllPromoCodes(listAllPromoCodes);
-        shipmentAdapter.addPromoCheckoutData(builder.build());
-
         shipmentAdapter.notifyDataSetChanged();
     }
 
@@ -2762,13 +2723,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         validateUsePromoRequest.setState(PARAM_CHECKOUT);
         validateUsePromoRequest.setCartType(PARAM_DEFAULT);
 
-        PromoCheckoutData promoCheckoutData = shipmentAdapter.getPromoCheckoutData();
-        if (promoCheckoutData != null) {
+        LastApplyUiModel lastApplyUiModel = shipmentPresenter.getLastApplyData();
+        if (lastApplyUiModel != null) {
             ArrayList<String> globalPromoCodes = new ArrayList<>();
-            if (promoCheckoutData.getCodes().size() > 0) {
-                for (int i = 0; i < promoCheckoutData.getCodes().size(); i++) {
-                    globalPromoCodes.add(promoCheckoutData.getCodes().get(i));
-                }
+            if (lastApplyUiModel.getCodes().size() > 0) {
+                globalPromoCodes.addAll(lastApplyUiModel.getCodes());
             }
             validateUsePromoRequest.setCodes(globalPromoCodes);
         }
@@ -2813,16 +2772,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         promoRequest.setState(PARAM_CHECKOUT);
         promoRequest.setCartType(PARAM_DEFAULT);
 
-        PromoCheckoutData promoCheckoutData = shipmentAdapter.getPromoCheckoutData();
-        if (promoCheckoutData != null) {
+        LastApplyUiModel lastApplyUiModel = shipmentPresenter.getLastApplyData();
+        if (lastApplyUiModel != null) {
             ArrayList<String> globalPromoCodes = new ArrayList<>();
-            if (promoCheckoutData.getCodes().size() > 0) {
-                for (int i = 0; i < promoCheckoutData.getCodes().size(); i++) {
-                    globalPromoCodes.add(promoCheckoutData.getCodes().get(i));
-                }
+            if (lastApplyUiModel.getCodes().size() > 0) {
+                globalPromoCodes.addAll(lastApplyUiModel.getCodes());
             }
             promoRequest.setCodes(globalPromoCodes);
         }
+
         return promoRequest;
     }
 
@@ -3289,7 +3247,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onClickPromoCheckout(PromoCheckoutData promoCheckoutData) {
+    public void onClickPromoCheckout(LastApplyUiModel lastApplyUiModel) {
         ArrayList<com.tokopedia.purchase_platform.features.promo.data.request.Order> listOrder = new ArrayList<>();
         com.tokopedia.purchase_platform.features.promo.data.request.Order order = new com.tokopedia.purchase_platform.features.promo.data.request.Order();
         for (int i = 0; i < savedShipmentCartItemModelList.size(); i++) {
@@ -3314,7 +3272,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         PromoRequest promoRequest = new PromoRequest();
         promoRequest.setState(CheckoutConstant.CHECKOUT);
-        promoRequest.setCodes(new ArrayList<>(promoCheckoutData.getCodes()));
+        promoRequest.setCodes(new ArrayList<>(lastApplyUiModel.getCodes()));
 
         ValidateUsePromoRequest validateUseRequestParam = generateValidateUsePromoRequest();
         PromoRequest promoRequestParam = generateCouponListRecommendationRequest();
@@ -3333,7 +3291,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void doUpdateButtonPromoCheckout(PromoUiModel promoUiModel) {
         shipmentAdapter.updatePromoCheckoutData(promoUiModel);
-        onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
         onNeedUpdateViewItem(shipmentAdapter.getPromoCheckoutPosition());
     }
 

@@ -1385,6 +1385,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         var isApplied = false
         if (lastApplyData.additionalInfo.errorDetail.message.isNotEmpty()) {
             showToaster(lastApplyData.additionalInfo.errorDetail.message)
+            PromoRevampAnalytics.eventCartViewPromoChanged(lastApplyData.additionalInfo.errorDetail.message)
         }
 
         var title = getString(R.string.promo_funnel_label)
