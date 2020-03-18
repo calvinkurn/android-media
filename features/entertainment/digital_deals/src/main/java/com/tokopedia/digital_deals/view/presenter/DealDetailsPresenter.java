@@ -1,6 +1,5 @@
 package com.tokopedia.digital_deals.view.presenter;
 
-
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -13,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealDetailsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealLikesUseCase;
+import com.tokopedia.digital_deals.domain.getusecase.GetEventContentUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchNextUseCase;
 import com.tokopedia.digital_deals.domain.postusecase.PostNsqEventUseCase;
 import com.tokopedia.digital_deals.domain.postusecase.PostNsqTravelDataUseCase;
@@ -26,11 +26,14 @@ import com.tokopedia.digital_deals.view.model.nsqevents.NsqRecentSearchModel;
 import com.tokopedia.digital_deals.view.model.nsqevents.NsqServiceModel;
 import com.tokopedia.digital_deals.view.model.nsqevents.NsqTravelRecentSearchModel;
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
+import com.tokopedia.digital_deals.view.model.response.EventContentData;
 import com.tokopedia.digital_deals.view.model.response.GetLikesResponse;
 import com.tokopedia.digital_deals.view.model.response.SearchResponse;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.usecase.RequestParams;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -40,13 +43,12 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
-
-;
-
 
 public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContract.View>
         implements DealDetailsContract.Presenter {
@@ -58,6 +60,7 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
     private PostNsqEventUseCase postNsqEventUseCase;
     private PostNsqTravelDataUseCase postNsqTravelDataUseCase;
     private DealsDetailsResponse dealsDetailsResponse;
+    private GetEventContentUseCase getEventContentUseCase;
     public static final String HOME_DATA = "home_data";
     public final static String TAG = "url";
     public final static boolean DEFAULT_PARAM_ENABLE = true;
@@ -67,14 +70,23 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
     private boolean isLastPage;
     private RequestParams searchNextParams = RequestParams.create();
 
+    private static final int SALAM_INDICATOR = 0;
+    private static final int SALAM_VALUE = 131072;
+    private static final String typeId = "4";
 
     @Inject
-    public DealDetailsPresenter(GetDealDetailsUseCase getDealDetailsUseCase, GetSearchNextUseCase getSearchNextUseCase, GetDealLikesUseCase getDealLikesUseCase, PostNsqEventUseCase postNsqEventUseCase, PostNsqTravelDataUseCase postNsqTravelDataUseCase) {
+    public DealDetailsPresenter(GetDealDetailsUseCase getDealDetailsUseCase,
+                                GetSearchNextUseCase getSearchNextUseCase,
+                                GetDealLikesUseCase getDealLikesUseCase,
+                                PostNsqEventUseCase postNsqEventUseCase,
+                                PostNsqTravelDataUseCase postNsqTravelDataUseCase,
+                                GetEventContentUseCase getEventContentUseCase) {
         this.getDealDetailsUseCase = getDealDetailsUseCase;
         this.getSearchNextUseCase = getSearchNextUseCase;
         this.getDealLikesUseCase = getDealLikesUseCase;
         this.postNsqEventUseCase = postNsqEventUseCase;
         this.postNsqTravelDataUseCase = postNsqTravelDataUseCase;
+        this.getEventContentUseCase = getEventContentUseCase;
     }
 
     @Override
@@ -200,19 +212,20 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                if ((dealsDetailsResponse.customText1 & SALAM_VALUE) <= SALAM_INDICATOR){
+                    Type token = new TypeToken<DataResponse<SearchResponse>>() {
+                    }.getType();
+                    RestResponse restResponse = typeRestResponseMap.get(token);
+                    DataResponse data = restResponse.getData();
+                    SearchResponse searchResponse = (SearchResponse) data.getData();
 
-                Type token = new TypeToken<DataResponse<SearchResponse>>() {
-                }.getType();
-                RestResponse restResponse = typeRestResponseMap.get(token);
-                DataResponse data = restResponse.getData();
-                SearchResponse searchResponse = (SearchResponse) data.getData();
+                    isLoading = false;
+                    getView().removeFooter();
 
-                isLoading = false;
-                getView().removeFooter();
+                    getView().addDealsToCards((ArrayList<ProductItem>) processSearchResponse(searchResponse));
 
-                getView().addDealsToCards(processSearchResponse(searchResponse));
-
-                checkIfToLoad(getView().getLayoutManager());
+                    checkIfToLoad(getView().getLayoutManager());
+                }
             }
         });
     }
@@ -384,4 +397,8 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
     }
 
 
+    @Override
+    public void getEventContent(@NotNull Function1<? super EventContentData, Unit> onSuccess, @NotNull Function1<? super Throwable, Unit> onError) {
+        getEventContentUseCase.getEventContent(onSuccess, onError, this.typeId, String.valueOf(dealsDetailsResponse.getId()));
+    }
 }

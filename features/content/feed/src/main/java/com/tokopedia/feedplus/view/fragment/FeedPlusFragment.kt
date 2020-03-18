@@ -1181,6 +1181,20 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun userImagePostImpression(positionInFeed: Int, contentPosition: Int) {
+        if (adapter.getList()[positionInFeed] is DynamicPostViewModel) {
+            val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostViewModel
+            feedAnalytics.eventImageImpressionPost(
+                    FeedAnalyticTracker.Screen.FEED,
+                    trackingPostModel.postId.toString(),
+                    trackingPostModel.activityName,
+                    trackingPostModel.mediaType,
+                    trackingPostModel.mediaUrl,
+                    trackingPostModel.recomId,
+                    positionInFeed)
+        }
+    }
+
     override fun onImageClick(positionInFeed: Int, contentPosition: Int,
                               redirectLink: String) {
         onGoToLink(redirectLink)
