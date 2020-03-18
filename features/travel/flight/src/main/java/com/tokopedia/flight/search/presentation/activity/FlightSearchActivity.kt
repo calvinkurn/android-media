@@ -58,7 +58,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
 
     private fun initializeDataFromExtras() {
         passDataViewModel = intent.extras.getParcelable(EXTRA_PASS_DATA)
-        initializeToolbarData()
+//        initializeToolbarData()
     }
 
     open fun initializeToolbarData() {
@@ -133,7 +133,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
 
     override fun changeDate(flightSearchPassDataViewModel: FlightSearchPassDataViewModel) {
         passDataViewModel = flightSearchPassDataViewModel!!
-        initializeToolbarData()
+//        initializeToolbarData()
         setupSearchToolbar()
     }
 
