@@ -66,12 +66,12 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessAutoAds(data: AutoAdsResponse) {
-        tv_shop_status.text = autoAdsStatusDes
         when (data.topAdsGetAutoAds.data.status) {
             500 -> setActiveStatus(R.string.ads_active, R.drawable.active_status_green)
             600 -> setActiveStatus(R.string.ads_not_delivered, R.drawable.active_status_orange)
             else -> {
                 tv_shop_status.text = ""
+                tv_shop_status.setBackgroundResource(0)
             }
         }
 

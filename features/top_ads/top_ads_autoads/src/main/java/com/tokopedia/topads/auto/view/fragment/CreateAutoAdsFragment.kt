@@ -83,7 +83,6 @@ class CreateAutoAdsFragment : BaseDaggerFragment() {
             )))
         }
         budgetViewModel.autoAdsData.observe(this, Observer {
-            loading.visibility = View.GONE
             when (it!!.adsInfo.reason) {
                 TopAdsReasonOption.INSUFFICIENT_CREDIT -> insufficientCredit(it.adsInfo.message)
                 TopAdsReasonOption.ELIGIBLE -> eligible()
@@ -116,6 +115,7 @@ class CreateAutoAdsFragment : BaseDaggerFragment() {
         lowImpression = data.lowImpMultiplier
         highImpression = data.highImpMultiplier
         price_range.text = getPotentialReach()
+        loading.visibility = View.GONE
     }
 
     private fun notEligible() {
@@ -145,11 +145,10 @@ class CreateAutoAdsFragment : BaseDaggerFragment() {
         range_start.text = data.minDailyBudgetFmt
         range_end.text = data.maxDailyBudgetFmt
         //  price_range.text = getPotentialReach()
-        budgetEditText.setText(data.minDailyBudget.toString())
+        budgetEditText.setText(data.minDailyBudgetFmt.replace(".",",").replace("Rp",""))
         shopStatus = data.shopStatus
         seekbar.range = Range(data.minDailyBudget, data.maxDailyBudget, 1000)
         seekbar.value = budget
-        loading.visibility = View.GONE
         budgetViewModel.topadsStatisticsEstimationPotentialReach(this::onSuccessPotentialEstimation, userSession.shopId, source)
         seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
@@ -172,12 +171,9 @@ class CreateAutoAdsFragment : BaseDaggerFragment() {
                 if (!TextUtils.isEmpty(error)) {
                     error_text.visibility = View.VISIBLE
                     error_text.text = error
-                    //  budget_parent.error = error
                     btn_submit.isEnabled = false
                 } else {
                     error_text.visibility = View.GONE
-
-                    // budget_parent.error = null
                     btn_submit.isEnabled = true
                 }
             }
@@ -186,7 +182,7 @@ class CreateAutoAdsFragment : BaseDaggerFragment() {
 
     private fun getPotentialReach(): CharSequence? {
         return budgetViewModel.getPotentialImpressionGQL(budgetEditText.textWithoutPrefix.replace(",", "").toDouble()
-                , lowImpression, highImpression)
+                , highImpression)
     }
 
     fun onErrorBudgetInfo() {

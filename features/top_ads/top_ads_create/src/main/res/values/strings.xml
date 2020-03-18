@@ -17,7 +17,7 @@
     <string name="masukkan_kata_kunci_yang_sesuai_untuk_produkmu_secara_manual">Masukkan kata kunci yang sesuai untuk produkmu secara manual.</string>
     <string name="atur_biaya_iklan_manual">Atur biaya iklan manual</string>
     <string name="pasang_biaya_iklan_sesuai_dengan_rekomendasi">Pasang biaya iklan sesuai dengan rekomendasi.</string>
-    <string name="gunakan_iklan_manual">Gunakan Iklan Manual</string>
+    <string name="gunakan_iklan_manual">Mulai Iklan Manual</string>
     <string name="mulai_iklan_otomatis">Mulai Iklan Otomatis</string>
     <string name="urutkan">Urutkan</string>
     <string name="harga_terendah">Harga Terendah</string>
@@ -111,7 +111,7 @@
     <string name="confirmation_switch_manual_description">Dengan Iklan Otomatis, pasti lebih mudah dan cepat untuk promosikan produkmu di halaman teratas.</string>
     <string name="confirmation_switch_auto_description">Semua grup iklanmu akan dihapus dan diganti dengan Iklan Otomatis</string>
     <string name="active">Aktif</string>
-    <string name="cancel">Batalkan</string>
+    <string name="cancel_btn">Batalkan</string>
     <string name="select_ad_creation_option_auto">Sistem akan memilihkan produk dan kata kunci yang tepat sehingga iklan lebih efektif</string>
     <string name="select_ad_creation_option_manual">Pilih produk, kata kunci, dan atur biaya iklanmu sendiri secara manual</string>
     <string name="ticker_title">Iklan Otomatis akan dinonaktifkan</string>

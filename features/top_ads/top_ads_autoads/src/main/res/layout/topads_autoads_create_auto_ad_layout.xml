@@ -30,12 +30,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
-        android:text="0 - 0"
-        app:typographyType="heading_1"
+        android:text="0.00"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/potensi_tayang_txt"
-         />
+        app:typographyType="heading_1" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/potensi_tayang_txt"
@@ -46,26 +46,23 @@
         android:text="@string/potential_ads_reach"
         android:textColor="#F531353B"
         android:textSize="12sp"
-        app:typographyType="body_3"
-
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/price_range_text"
-        style="@style/text_bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="6sp"
         android:text="@string/price_range"
-        android:textColor="#F531353B"
+        android:textColor="@color/black"
         android:textSize="12sp"
-        app:typographyType="body_3"
-
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/price_range" />
+        app:layout_constraintTop_toBottomOf="@+id/price_range"
+        app:typographyType="body_3" />
 
 
     <androidx.cardview.widget.CardView

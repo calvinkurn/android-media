@@ -143,13 +143,8 @@ class DailyBudgetViewModel @Inject constructor(
         return 100 / 2.5 * (`val` / bid)
     }
 
-    fun getPotentialImpressionGQL(budget: Double, low: Double, high: Double): String {
-        return String.format("%,.0f - %,.0f", calculate(budget, low),
-                calculate(budget, high))
-    }
-
-    private fun calculate(budget: Double, imp: Double): Double {
-        return budget * imp
+    fun getPotentialImpressionGQL(budget: Double, high: Double): String {
+        return String.format("%,.0f", budget * high)
     }
 
     fun checkBudget(number: Double, minDailyBudget: Double, maxDailyBudget: Double): String? {
