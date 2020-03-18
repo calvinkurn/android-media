@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -158,7 +159,8 @@ open class FlightSearchActivity : BaseFlightActivity(),
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menu.clear()
         menuInflater.inflate(R.menu.menu_flight_search, menu)
-        setupChangeSearchCoachMark()
+        val coachMarkView = menu.findItem(R.id.menu_change_search).actionView
+        setupChangeSearchCoachMark(coachMarkView)
         return true
     }
 
@@ -202,10 +204,10 @@ open class FlightSearchActivity : BaseFlightActivity(),
 
     open fun isReturnPage(): Boolean = false
 
-    private fun setupChangeSearchCoachMark() {
+    private fun setupChangeSearchCoachMark(view: View) {
         val coachMarkItems = arrayListOf<CoachMarkItem>()
         coachMarkItems.add(CoachMarkItem(
-                findViewById(R.id.menu_change_search),
+                view,
                 getString(R.string.flight_search_coach_mark_change_title),
                 getString(R.string.flight_search_coach_mark_change_description)
         ))
