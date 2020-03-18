@@ -219,8 +219,8 @@ open class FlightSearchActivity : BaseFlightActivity(),
         ))
 
         val coachMark = CoachMarkBuilder().build()
-        coachMark.view.prevButton?.visibility = View.GONE
         coachMark.show(this, TAG_CHANGE_COACH_MARK, coachMarkItems)
+        coachMark.view.prevButton?.visibility = View.GONE
     }
 
     companion object {
