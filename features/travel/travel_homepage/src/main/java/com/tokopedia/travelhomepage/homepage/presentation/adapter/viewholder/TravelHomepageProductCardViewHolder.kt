@@ -55,6 +55,7 @@ class TravelHomepageProductCardViewHolder(itemView: View, private val onItemBind
             // show shimmering hide layout
             itemView.productCardWidget.setShimmeringVisibility(true)
             itemView.productCardWidget.setLayoutVisibility(false)
+            currentPosition = -1
             onItemBindListener.onProductCardItemBind(element.layoutData, adapterPosition, element.isLoadFromCloud)
         }
 

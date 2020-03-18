@@ -35,10 +35,11 @@ class TravelHomepageCategoryViewHolder(itemView: View, private val onItemBindLis
                     currentPosition = element.layoutData.position
                     adapter = TravelHomepageCategoryListAdapter(element.categories, travelHomepageActionListener)
                     categoriesRecyclerView.adapter = adapter
-                }
+                } else adapter.updateData(element.categories)
             } else categoriesRecyclerView.hide()
 
         } else {
+            currentPosition = -1
             categoriesRecyclerView.show()
             onItemBindListener.onCategoryItemBind(element.layoutData, adapterPosition, element.isLoadFromCloud)
             categoriesRecyclerView.adapter = TravelHomepageCategoryListShimmeringAdapter()

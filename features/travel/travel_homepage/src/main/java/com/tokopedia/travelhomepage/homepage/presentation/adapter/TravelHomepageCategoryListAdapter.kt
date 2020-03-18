@@ -23,6 +23,11 @@ class TravelHomepageCategoryListAdapter(private var list: List<TravelHomepageCat
         return CategoryViewHolder(view)
     }
 
+    fun updateData(updatedList: List<TravelHomepageCategoryListModel.Category>) {
+        this.list = updatedList
+        notifyDataSetChanged()
+    }
+
     override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {

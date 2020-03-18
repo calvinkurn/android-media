@@ -23,6 +23,7 @@ class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener:
     private val bannerView: BannerViewDynamicBackground = itemView.findViewById(R.id.banner)
     private lateinit var bannerList: List<TravelCollectiveBannerModel.Banner>
     private var showAllUrl: String = ""
+    private var isFirstTime = true
 
     init {
         bannerView.onPromoAllClickListener = this
@@ -46,7 +47,8 @@ class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener:
                 bannerView.setPromoList(promoUrls)
                 bannerView.buildView()
 
-                if (bannerList.isNotEmpty()) {
+                if (bannerList.isNotEmpty() && isFirstTime) {
+                    isFirstTime = false
                     travelHomepageActionListener.onViewSliderBanner(bannerList[0], 1)
                 }
             } catch (e: Throwable) {

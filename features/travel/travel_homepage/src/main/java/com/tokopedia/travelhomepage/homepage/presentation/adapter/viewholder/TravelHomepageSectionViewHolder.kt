@@ -61,6 +61,7 @@ class TravelHomepageSectionViewHolder(itemView: View,
         } else {
             itemView.shimmering.visibility = View.VISIBLE
             itemView.section_layout.visibility = View.GONE
+            currentPosition = -1
             onItemBindListener.onHomepageSectionItemBind(element.layoutData, adapterPosition, element.isLoadFromCloud)
         }
     }
