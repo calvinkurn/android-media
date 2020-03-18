@@ -124,14 +124,14 @@ class HomeViewModelDynamicChannelTest : Spek({
                     // check after removed is must add new channel from list of channel
                     observerHome.onChanged(match {
                         it.list.isNotEmpty() && it.list.first() is DynamicChannelViewModel &&
-                                (it.list.first() as DynamicChannelViewModel).channel?.id == "2"
+                                (it.list.first() as DynamicChannelViewModel).channel?.id == "3"
                     })
 
                     // check the second new channel from list of channel
-//                    observerHome.onChanged(match {
-//                        it.list.isNotEmpty() && it.list[1] is DynamicChannelViewModel &&
-//                                (it.list[1] as DynamicChannelViewModel).channel?.id == "3"
-//                    })
+                    observerHome.onChanged(match {
+                        it.list.isNotEmpty() && it.list.first() is DynamicChannelViewModel &&
+                                (it.list.first() as DynamicChannelViewModel).channel?.id == "2"
+                    })
                 }
                 confirmVerified(observerHome)
             }
