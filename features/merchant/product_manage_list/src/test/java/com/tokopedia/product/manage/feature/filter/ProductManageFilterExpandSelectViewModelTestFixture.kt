@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.feature.cashback
+package com.tokopedia.product.manage.feature.filter
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterExpandSelectViewModel

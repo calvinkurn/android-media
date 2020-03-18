@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.feature.cashback
+package com.tokopedia.product.manage.feature.filter
 
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectViewModel
 import org.junit.Test
