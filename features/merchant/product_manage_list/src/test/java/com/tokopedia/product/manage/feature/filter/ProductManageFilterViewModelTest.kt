@@ -1,49 +1,35 @@
 package com.tokopedia.product.manage.feature.filter
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.product.manage.feature.filter.domain.GetProductManageFilterOptionsUseCase
-import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterViewModel
-import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
-import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.Dispatchers
-import org.junit.Before
-import org.junit.Rule
+import com.tokopedia.core.common.category.domain.model.CategoriesResponse
+import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionsResponse
+import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaResponse
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.mockkObject
 import org.junit.Test
 
-class ProductManageFilterViewModelTest {
-
-    @RelaxedMockK
-    lateinit var getGetProductManageFilterOptionsUseCase: GetProductManageFilterOptionsUseCase
-
-    @RelaxedMockK
-    lateinit var userSession: UserSessionInterface
-
-    @get:Rule
-    val rule = InstantTaskExecutorRule()
-
-    private val dispatchers by lazy {
-        Dispatchers.Unconfined
-    }
-
-    private val viewModel by lazy {
-        ProductManageFilterViewModel(getGetProductManageFilterOptionsUseCase, userSession, dispatchers)
-    }
-
-    @Before
-    fun setup() {
-        MockKAnnotations.init(this)
-    }
+class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture() {
 
     @Test
     fun `getCombined should execute expected use case`() {
-        mockkObject(getGetProductManageFilterOptionsUseCase)
-        coEvery {
-            getGetProductManageFilterOptionsUseCase.executeOnBackground()
-        }
+        val filterOptionsResponse = FilterOptionsResponse(
+                productListMetaResponse = ProductListMetaResponse(),
+                shopEtalase =  arrayListOf(ShopEtalaseModel()),
+                categoriesResponse = CategoriesResponse()
+        )
+        onGetProductManageFilterOptions_thenReturn(filterOptionsResponse)
+
         viewModel.getData("0")
-        coVerify {
-            getGetProductManageFilterOptionsUseCase.executeOnBackground()
-        }
+
+        verifyGetProductManageFilterOptionsUseCaseCalled()
+    }
+
+    private fun onGetProductManageFilterOptions_thenReturn(filterOptionsResponse: FilterOptionsResponse) {
+        coEvery { getProductManageFilterOptionsUseCase.executeOnBackground() } returns filterOptionsResponse
+    }
+
+    private fun verifyGetProductManageFilterOptionsUseCaseCalled() {
+        coVerify { getProductManageFilterOptionsUseCase.executeOnBackground() }
     }
 }
