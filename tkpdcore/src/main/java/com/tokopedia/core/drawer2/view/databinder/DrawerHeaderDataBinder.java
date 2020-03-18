@@ -2,7 +2,10 @@ package com.tokopedia.core.drawer2.view.databinder;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +18,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tkpd.remoteresourcerequest.view.DeferredImageView;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core2.R;
@@ -73,7 +77,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         TextView deposit;
         TextView topPoint;
         TextView tokoCash;
-        ImageView coverImg;
+        DeferredImageView coverImg;
         LinearLayout drawerPointsLayout;
         RelativeLayout saldoLayout;
         RelativeLayout topPointsLayout;
@@ -107,7 +111,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
             topPoint = (TextView) itemView.findViewById(R.id.toppoints_text);
             tokoCash = (TextView) itemView.findViewById(R.id.top_cash_value);
 
-            coverImg = (ImageView) itemView.findViewById(R.id.cover_img);
+            coverImg = (DeferredImageView) itemView.findViewById(R.id.cover_img);
             drawerPointsLayout = (LinearLayout) itemView.findViewById(R.id.drawer_points_layout);
             saldoLayout = (RelativeLayout) itemView.findViewById(R.id.drawer_saldo);
             topPointsLayout = (RelativeLayout) itemView.findViewById(R.id.drawer_top_points);
@@ -188,7 +192,12 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         holder.verifiedIcon.setVisibility(View.GONE);
         holder.verifiedText.setVisibility(View.GONE);
         holder.drawerHeader.setVisibility(View.GONE);
-        ImageHandler.loadImageWithId(holder.coverImg, R.drawable.drawer_header_bg);
+
+        Drawable drawable = holder.coverImg.getRemoteDrawable();
+        if (drawable == null)
+            holder.coverImg.loadRemoteImageDrawable("drawer_header_bg.png");
+        else
+            ImageHandler.loadRemoteImageWithId(holder.coverImg, drawable);
     }
 
     protected void bindDrawerHeader(ViewHolder holder) {
@@ -231,11 +240,11 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         setListener(holder);
     }
 
-    private void setTokoCard(ViewHolder holder){
+    private void setTokoCard(ViewHolder holder) {
         FirebaseRemoteConfigImpl remoteConfig = new FirebaseRemoteConfigImpl(context);
         boolean showTokoCard = remoteConfig.getBoolean(RemoteConfigKey.SHOW_TOKOCARD, true);
 
-        if(!showTokoCard){
+        if (!showTokoCard) {
             holder.tokocardLayout.setVisibility(View.GONE);
         }
     }
@@ -266,7 +275,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         }
     }
 
-    private void eventUserClickedPoints(){
+    private void eventUserClickedPoints() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 "clickHomePage",
                 "homepage-tokopoints",
@@ -342,7 +351,6 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
                 listener.onGotoTokoCard();
             }
         });
-
 
 
     }

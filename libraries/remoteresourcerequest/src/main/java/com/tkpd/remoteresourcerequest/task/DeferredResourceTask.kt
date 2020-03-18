@@ -18,6 +18,7 @@ class DeferredResourceTask(
     var isRequestedFromWorker: Boolean = false
     private var mDecodeRunnable: Runnable? = null
 
+    override var filePath : String = ""
     var mDownloadRunnable: Runnable? = null
     private lateinit var mUrl: String
     private val downloadManager by lazy { resourceDownloadManager }

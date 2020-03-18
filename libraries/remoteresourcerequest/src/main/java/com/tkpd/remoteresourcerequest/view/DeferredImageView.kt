@@ -19,6 +19,7 @@ import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager
  */
 class DeferredImageView : AppCompatImageView {
     var mRemoteFileName: String = ""
+    var downloadFilePath = ""
 
     private var task: DeferredResourceTask? = null
 
@@ -97,6 +98,11 @@ class DeferredImageView : AppCompatImageView {
             context.resources.getDrawable(resId, context.applicationContext.theme)
         else
             AppCompatResources.getDrawable(context, resId)
+    }
+
+    fun getRemoteDrawable(): Drawable? {
+        if (downloadFilePath == "") return null
+        return Drawable.createFromPath(downloadFilePath)
     }
 }
 

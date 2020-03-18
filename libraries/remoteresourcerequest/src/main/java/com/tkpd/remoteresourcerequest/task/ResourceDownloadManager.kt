@@ -256,6 +256,7 @@ class ResourceDownloadManager private constructor() {
             if (weakRefIV.get() != null) {
                 task.getBitmap()?.let {
                     (weakRefIV.get() as ImageView).setImageBitmap(it)
+                    (weakRefIV.get() as DeferredImageView).downloadFilePath = task.filePath
                 }
                 handler.obtainMessage(TASK_COMPLETED, task).sendToTarget()
             } else {

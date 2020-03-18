@@ -19,6 +19,7 @@ class ResourceDownloadRunnable(
     private val resourceEntryDao = database.resourceEntryDao
 
     interface TaskDownloadProperties {
+        var filePath : String
         fun handleDownloadState(state: Int)
         fun getFileLocationFromDirectory(): File
         fun getDownloadUrl(): String
@@ -75,6 +76,7 @@ class ResourceDownloadRunnable(
     }
 
     private fun writeEntryToDatabase() {
+        task.filePath = filePath
         resourceEntryDao.createResourceEntry(
                 ResourceEntry(
                         task.getDownloadUrl(),

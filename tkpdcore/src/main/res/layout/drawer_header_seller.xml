@@ -8,13 +8,13 @@
     android:background="@color/grey_100"
     android:orientation="vertical">
 
-    <ImageView
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/cover_img"
         android:layout_width="match_parent"
         android:layout_height="@dimen/drawer_cover_height"
         android:scaleType="centerCrop"
         android:visibility="gone"
-        tools:src="@drawable/drawer_header_bg"/>
+        app:remoteFileName="drawer_header_bg.png"/>
 
     <RelativeLayout
         android:id="@+id/drawer_header"

@@ -83,6 +83,17 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         }
     }
 
+    public static void loadRemoteImageWithId(ImageView imageview, Drawable drawable) {
+        if (imageview.getContext() != null) {
+             Glide.with(imageview.getContext())
+                    .load("")
+                    .placeholder(R.drawable.loading_page)
+                    .dontAnimate()
+                    .error(drawable)
+                    .into(imageview);
+        }
+    }
+
     public static void loadImageWithIdWithoutPlaceholder(ImageView imageview, int resId) {
         if (imageview.getContext() != null) {
             Drawable drawable = AppCompatResources.getDrawable(imageview.getContext(), resId);
