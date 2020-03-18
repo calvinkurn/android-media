@@ -19,6 +19,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.runBlocking
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import org.junit.Assert.*
@@ -46,13 +47,14 @@ class ShopHomeViewModelTest {
     private val removeWishListUseCase: RemoveWishListUseCase = mockk(relaxed = true)
     private val userSessionInterface: UserSessionInterface = mockk(relaxed = true)
     private val gqlCheckWishlistUseCaseProvider: Provider<GQLCheckWishlistUseCase> = mockk(relaxed = true)
-    private val gqlCheckWishlistUseCase: GQLCheckWishlistUseCase = mockk(relaxed = true)
+    private lateinit var gqlCheckWishlistUseCase: GQLCheckWishlistUseCase
 
     private lateinit var viewModel: ShopHomeViewModel
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+        gqlCheckWishlistUseCase = mockk(relaxed = true)
         viewModel = ShopHomeViewModel(
                 userSessionInterface,
                 getShopPageHomeLayoutUseCase,
@@ -139,17 +141,15 @@ class ShopHomeViewModelTest {
     @Test
     fun `check whether response get wish list status success is not null`() {
 
-        val useCase = gqlCheckWishlistUseCaseProvider.get()
-        useCase.params = GQLCheckWishlistUseCase.createParams(anyString())
-
-        coEvery { useCase.executeOnBackground() } returns CheckWishlistResult.Response().checkWishlist
+        coEvery { gqlCheckWishlistUseCase.executeOnBackground() } returns CheckWishlistResult.Response().checkWishlist
 
         viewModel.getWishlistStatus(anyList())
 
-        coVerify { useCase.executeOnBackground() }
+        coVerify { gqlCheckWishlistUseCase.executeOnBackground() }
 
         assertTrue(viewModel.checkWishlistData.value is Success)
         assertNotNull(viewModel.checkWishlistData.value)
+
     }
 
 }
