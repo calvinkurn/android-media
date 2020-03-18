@@ -12,7 +12,6 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel.WishlistResu
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -48,9 +47,6 @@ import com.tokopedia.topads.sdk.domain.model.LabelGroup;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.wishlist.common.listener.WishListActionListener;
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -465,18 +461,7 @@ final class ProductListPresenter
         List<Visitable> list = new ArrayList<>(convertToListOfVisitable(productViewModel));
         productList.addAll(list);
 
-        if (inspirationCarouselViewModel.size() > 0) {
-            Iterator<InspirationCarouselViewModel> inspirationCarouselViewModelIterator = inspirationCarouselViewModel.iterator();
-            while(inspirationCarouselViewModelIterator.hasNext()) {
-                InspirationCarouselViewModel data = inspirationCarouselViewModelIterator.next();
-                if (data.getPosition() < getView().getLastProductItemPositionFromCache()) {
-                    Visitable product = productList.get(data.getPosition());
-                    list.add(list.indexOf(product), data);
-                    getView().sendImpressionInspirationCarousel(data);
-                    inspirationCarouselViewModelIterator.remove();
-                }
-            }
-        }
+        processInspirationCarouselPosition(list);
 
         getView().removeLoading();
         getView().addProductList(list);
@@ -843,19 +828,7 @@ final class ProductListPresenter
         }
 
         inspirationCarouselViewModel = productViewModel.getInspirationCarouselViewModel();
-
-        if (inspirationCarouselViewModel.size() > 0) {
-            Iterator<InspirationCarouselViewModel> inspirationCarouselViewModelIterator = inspirationCarouselViewModel.iterator();
-            while(inspirationCarouselViewModelIterator.hasNext()) {
-                InspirationCarouselViewModel data = inspirationCarouselViewModelIterator.next();
-                if (data.getPosition() < list.size()) {
-                    Visitable product = productList.get(data.getPosition());
-                    list.add(list.indexOf(product), data);
-                    getView().sendImpressionInspirationCarousel(data);
-                    inspirationCarouselViewModelIterator.remove();
-                }
-            }
-        }
+        processInspirationCarouselPosition(list);
 
         getView().removeLoading();
         getView().setProductList(list);
@@ -911,6 +884,33 @@ final class ProductListPresenter
                 + "Gunakan <a href=\"" + liteUrl + "\">browser</a>";
 
         return new BannedProductsTickerViewModel(htmlErrorMessage);
+    }
+
+    private void processInspirationCarouselPosition(List<Visitable> list) {
+        if (inspirationCarouselViewModel.size() > 0) {
+            Iterator<InspirationCarouselViewModel> inspirationCarouselViewModelIterator = inspirationCarouselViewModel.iterator();
+
+            while(inspirationCarouselViewModelIterator.hasNext()) {
+                InspirationCarouselViewModel data = inspirationCarouselViewModelIterator.next();
+
+                if (data.getPosition() <= 0) {
+                    inspirationCarouselViewModelIterator.remove();
+                    continue;
+                }
+
+                if (data.getPosition() <= getView().getLastProductItemPositionFromCache()) {
+                    try {
+                        Visitable product = productList.get(data.getPosition() - 1);
+                        list.add(list.indexOf(product) + 1, data);
+                        getView().sendImpressionInspirationCarousel(data);
+                        inspirationCarouselViewModelIterator.remove();
+                    }
+                    catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
     private boolean isExistsFreeOngkirBadge(List<Visitable> productList) {
