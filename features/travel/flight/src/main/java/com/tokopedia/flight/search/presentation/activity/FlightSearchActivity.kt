@@ -3,40 +3,24 @@ package com.tokopedia.flight.search.presentation.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.coachmark.CoachMarkBuilder
-import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
 import com.tokopedia.flight.bookingV3.presentation.activity.FlightBookingActivity
 import com.tokopedia.flight.common.constant.FlightFlowConstant
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
 import com.tokopedia.flight.common.util.FlightAnalytics
-import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightFlowUtil
 import com.tokopedia.flight.common.view.BaseFlightActivity
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel
 import com.tokopedia.flight.search.presentation.fragment.FlightSearchFragment
 import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
-import com.tokopedia.flight.search_universal.presentation.bottomsheet.FlightSearchUniversalBottomSheet
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
 open class FlightSearchActivity : BaseFlightActivity(),
-        FlightSearchFragment.OnFlightSearchFragmentListener,
-        FlightSearchUniversalBottomSheet.Listener {
+        FlightSearchFragment.OnFlightSearchFragmentListener {
 
-    protected lateinit var dateString: String
-    protected lateinit var passengerString: String
-    protected lateinit var classString: String
     protected lateinit var passDataViewModel: FlightSearchPassDataViewModel
 
     private lateinit var remoteConfig: RemoteConfig
@@ -44,8 +28,6 @@ open class FlightSearchActivity : BaseFlightActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         initializeDataFromExtras()
         super.onCreate(savedInstanceState)
-
-        setupSearchToolbar()
 
         remoteConfig = FirebaseRemoteConfigImpl(this)
     }
@@ -56,46 +38,11 @@ open class FlightSearchActivity : BaseFlightActivity(),
 
     private fun initializeDataFromExtras() {
         passDataViewModel = intent.extras.getParcelable(EXTRA_PASS_DATA)
-        initializeToolbarData()
-    }
-
-    open fun initializeToolbarData() {
-        dateString = FlightDateUtil.formatDate(
-                FlightDateUtil.DEFAULT_FORMAT,
-                FlightDateUtil.DEFAULT_VIEW_FORMAT,
-                passDataViewModel.departureDate
-        )
-        passengerString = buildPassengerTextFormatted(passDataViewModel.flightPassengerViewModel)
-        classString = passDataViewModel.flightClass.title
-    }
-
-    protected fun buildPassengerTextFormatted(passData: FlightPassengerViewModel): String {
-        var passengerFmt = ""
-
-        if (passData.adult > 0) {
-            passengerFmt += "${passData.adult}  ${getString(R.string.flight_dashboard_adult_passenger)}"
-            if (passData.children > 0) {
-                passengerFmt += ", ${passData.children} ${getString(R.string.flight_dashboard_adult_children)}"
-            }
-            if (passData.infant > 0) {
-                passengerFmt += ", ${passData.infant} ${getString(R.string.flight_dashboard_adult_infant)}"
-            }
-        }
-
-        return passengerFmt
     }
 
     open fun getDepartureAirport(): FlightAirportViewModel = passDataViewModel.departureAirport
 
     open fun getArrivalAirport(): FlightAirportViewModel = passDataViewModel.arrivalAirport
-
-    private fun setupSearchToolbar() {
-        toolbar.contentInsetStartWithNavigation = 0
-        toolbar.setSubtitleTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.grey_500))
-        val title = "${getDepartureAirport().cityName} ➝ ${getArrivalAirport().cityName}"
-        val subtitle = "$dateString | $passengerString | $classString"
-        updateTitle(title, subtitle)
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -114,15 +61,6 @@ open class FlightSearchActivity : BaseFlightActivity(),
                             FlightFlowUtil.actionSetResultAndClose(this, intent,
                                     FlightFlowConstant.EXPIRED_JOURNEY)
                         }
-                        FlightFlowConstant.CHANGE_SEARCH_PARAM -> {
-                            if (fragment is FlightSearchFragment) {
-                                (fragment as FlightSearchFragment).flightSearchPresenter
-                                        .attachView(fragment as FlightSearchFragment)
-                                (fragment as FlightSearchFragment)
-                                        .setSearchPassData((data.getParcelableExtra(EXTRA_PASS_DATA) as FlightSearchPassDataViewModel))
-                                (fragment as FlightSearchFragment).refreshData()
-                            }
-                        }
                     }
                 }
             }
@@ -130,9 +68,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
     }
 
     override fun changeDate(flightSearchPassDataViewModel: FlightSearchPassDataViewModel) {
-        passDataViewModel = flightSearchPassDataViewModel!!
-        initializeToolbarData()
-        setupSearchToolbar()
+        passDataViewModel = flightSearchPassDataViewModel
     }
 
     override fun selectFlight(selectedFlightID: String, selectedTerm: String, flightPriceViewModel: FlightPriceViewModel,
@@ -155,72 +91,6 @@ open class FlightSearchActivity : BaseFlightActivity(),
                             isBestPairing, flightPriceViewModel, isCombineDone),
                     REQUEST_CODE_RETURN)
         }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menu.clear()
-        menuInflater.inflate(R.menu.menu_flight_search, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.menu_change_search -> {
-                val flightChangeSearchBottomSheet = FlightSearchUniversalBottomSheet.getInstance()
-                flightChangeSearchBottomSheet.listener = this
-                flightChangeSearchBottomSheet.setShowListener { flightChangeSearchBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
-                flightChangeSearchBottomSheet.show(supportFragmentManager, FlightSearchUniversalBottomSheet.TAG_SEARCH_FORM)
-                true
-            }
-            else -> {
-                super.onOptionsItemSelected(item)
-            }
-        }
-    }
-
-    override fun onSaveSearchParams(flightSearchParams: FlightSearchPassDataViewModel) {
-        passDataViewModel.departureAirport = flightSearchParams.departureAirport
-        passDataViewModel.arrivalAirport = flightSearchParams.arrivalAirport
-        passDataViewModel.isOneWay = flightSearchParams.isOneWay
-        passDataViewModel.departureDate = flightSearchParams.departureDate
-        passDataViewModel.returnDate = flightSearchParams.returnDate
-        passDataViewModel.flightPassengerViewModel = flightSearchParams.flightPassengerViewModel
-        passDataViewModel.flightClass = flightSearchParams.flightClass
-
-        if (isReturnPage()) {
-            val intent = Intent()
-            intent.putExtra(EXTRA_PASS_DATA, passDataViewModel)
-            FlightFlowUtil.actionSetResultAndClose(this, intent, FlightFlowConstant.CHANGE_SEARCH_PARAM)
-        } else {
-            if (fragment is FlightSearchFragment) {
-                (fragment as FlightSearchFragment).flightSearchPresenter
-                        .attachView(fragment as FlightSearchFragment)
-                (fragment as FlightSearchFragment).setSearchPassData(passDataViewModel)
-                (fragment as FlightSearchFragment).refreshData()
-            }
-        }
-    }
-
-    open fun isReturnPage(): Boolean = false
-
-    fun setupChangeSearchCoachMark() {
-        Handler().post {
-            val coachMarkView: View = findViewById(R.id.menu_change_search)
-            setupCoachMark(coachMarkView)
-        }
-    }
-
-    private fun setupCoachMark(view: View) {
-        val coachMarkItems = arrayListOf<CoachMarkItem>()
-        coachMarkItems.add(CoachMarkItem(
-                view,
-                getString(R.string.flight_search_coach_mark_change_title),
-                getString(R.string.flight_search_coach_mark_change_description)
-        ))
-
-        val coachMark = CoachMarkBuilder().build()
-        coachMark.show(this, TAG_CHANGE_COACH_MARK, coachMarkItems)
-        coachMark.view.prevButton?.visibility = View.GONE
     }
 
     companion object {

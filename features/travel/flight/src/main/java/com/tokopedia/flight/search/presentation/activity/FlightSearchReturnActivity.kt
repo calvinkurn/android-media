@@ -8,7 +8,6 @@ import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
 import com.tokopedia.flight.bookingV3.presentation.activity.FlightBookingActivity
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
 import com.tokopedia.flight.common.util.FlightAnalytics
-import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightFlowUtil
 import com.tokopedia.flight.search.presentation.fragment.FlightSearchFragment
 import com.tokopedia.flight.search.presentation.fragment.FlightSearchReturnFragment
@@ -28,6 +27,9 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         remoteConfig = FirebaseRemoteConfigImpl(this)
+
+        selectedDepartureID = intent.getStringExtra(EXTRA_DEPARTURE_ID)
+        selectedDepartureTerm = intent.getStringExtra(EXTRA_DEPARTURE_TERM)
     }
 
     override fun getNewFragment(): Fragment {
@@ -36,18 +38,6 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
                 intent.getBooleanExtra(EXTRA_IS_BEST_PAIRING, false),
                 priceViewModel,
                 intent.getBooleanExtra(EXTRA_IS_COMBINE_DONE, false))
-    }
-
-    override fun initializeToolbarData() {
-        selectedDepartureID = intent.getStringExtra(EXTRA_DEPARTURE_ID)
-        selectedDepartureTerm = intent.getStringExtra(EXTRA_DEPARTURE_TERM)
-
-        dateString = FlightDateUtil.formatDate(
-                FlightDateUtil.DEFAULT_FORMAT,
-                FlightDateUtil.DEFAULT_VIEW_FORMAT,
-                passDataViewModel.returnDate)
-        passengerString = buildPassengerTextFormatted(passDataViewModel.flightPassengerViewModel)
-        classString = passDataViewModel.flightClass.title
     }
 
     override fun getScreenName(): String = FlightAnalytics.Screen.SEARCH_RETURN
@@ -91,8 +81,6 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
                     REQUEST_CODE_BOOKING)
         }
     }
-
-    override fun isReturnPage(): Boolean = true
 
     companion object {
         val EXTRA_DEPARTURE_ID = "EXTRA_DEPARTURE_ID"
