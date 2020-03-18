@@ -92,7 +92,7 @@ object CartListPresenterRecentViewTest : Spek({
             }
 
             When("process get recent view") {
-                cartListPresenter.processGetRecentViewData()
+                cartListPresenter.processGetRecentViewData(emptyList())
             }
 
             Then("should render recent view") {
@@ -127,7 +127,7 @@ object CartListPresenterRecentViewTest : Spek({
             }
 
             When("process get recent view") {
-                cartListPresenter.processGetRecentViewData()
+                cartListPresenter.processGetRecentViewData(emptyList())
             }
 
             Then("should not render recent view") {
@@ -156,7 +156,7 @@ object CartListPresenterRecentViewTest : Spek({
             }
 
             When("process get recent view") {
-                cartListPresenter.processGetRecentViewData()
+                cartListPresenter.processGetRecentViewData(emptyList())
             }
 
             Then("should try to stop firebase performance tracker") {

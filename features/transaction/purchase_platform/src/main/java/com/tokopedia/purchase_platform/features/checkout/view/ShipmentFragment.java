@@ -2400,10 +2400,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
                 if (getActivity() != null) {
                     shippingDurationBottomsheet.show(getActivity().getSupportFragmentManager(), null);
-                    List<ShippingCourierViewModel> shippingCourierViewModels = shipmentPresenter.getShippingCourierViewModelsState(cartPosition);
-                    shippingCourierBottomsheet = ShippingCourierBottomsheet.newInstance(
-                            shippingCourierViewModels, recipientAddressModel, cartPosition);
-                    shippingCourierBottomsheet.setShippingCourierBottomsheetListener(this);
                 }
             }
         }
