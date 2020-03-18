@@ -539,6 +539,8 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
                 image = CHAT_BUYER_EMPTY
                 title = it.getString(R.string.empty_chat_read_all_title)
                 subtitle = ""
+                ctaText = ""
+                ctaApplink = ""
             }
         }
 
