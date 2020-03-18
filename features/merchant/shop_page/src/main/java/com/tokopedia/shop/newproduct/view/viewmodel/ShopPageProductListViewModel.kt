@@ -70,7 +70,7 @@ class ShopPageProductListViewModel @Inject constructor(
         get() = userSession.isLoggedIn
     val userDeviceId: String
         get() = userSession.deviceId
-    private val listGetShopHighlightProductUseCase = mutableListOf<GqlGetShopProductUseCase>()
+    private val listGetShopHighlightProductUseCase = mutableListOf<GqlGetShopProductUseCase?>()
 
     fun getBuyerShopPageProductTabData(shopId: String, shopProductEtalaseListViewModel: ShopProductEtalaseListViewModel) {
         launchCatchError(coroutineContext, {
@@ -230,7 +230,7 @@ class ShopPageProductListViewModel @Inject constructor(
     }
 
     private fun getShopEtalaseData(shopId: String): List<ShopProductEtalaseChipItemViewModel> {
-        val params = GetShopEtalaseByShopUseCase.createRequestParams(shopId, true, false, isMyShop(shopId))
+        val params = GetShopEtalaseByShopUseCase.createRequestParams(shopId, !isMyShop(shopId), false, isMyShop(shopId))
         val listShopEtalaseResponse = getShopEtalaseByShopUseCase.createObservable(params).toBlocking().first()
         return ShopPageProductListMapper.mapToShopProductEtalaseListDataModel(listShopEtalaseResponse)
     }
@@ -245,7 +245,7 @@ class ShopPageProductListViewModel @Inject constructor(
         val isHasNextPage = isHasNextPage(productFilter.page, ShopPageConstant.DEFAULT_PER_PAGE, productListResponse.totalData)
         return Pair(
                 isHasNextPage,
-                productListResponse.data.map { ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId)) }
+                productListResponse.data.map { ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId), productFilter.etalaseMenu) }
         )
     }
 
@@ -335,7 +335,7 @@ class ShopPageProductListViewModel @Inject constructor(
         getShopEtalaseByShopUseCase.clearCache()
         clearGetShopProductUseCase()
         listGetShopHighlightProductUseCase.forEach{
-            it.clearCache()
+            it?.clearCache()
         }
         listGetShopHighlightProductUseCase.clear()
         getShopFeaturedProductUseCase.clearCache()

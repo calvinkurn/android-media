@@ -377,7 +377,7 @@ class ValidatorFragment: BaseDaggerFragment(){
     }
 
     private fun resendDialog(email: String) {
-        val dialogMessage = String.format(getString(R.string.message_resend_email_to), email)
+        val dialogMessage = String.format(getString(R.string.message_resend_email), email)
         activity?.let {
             AlertDialog.Builder(it)
                     .setTitle(R.string.resend_activation_email)

@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -662,7 +662,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         onLoadTopAdsShopDepositSuccess(dashboardPopulateResponse.dataDeposit)
         onSuccessPopulateTotalAds(dashboardPopulateResponse.totalAd)
         if (!isUsageExists || !isAdExists) {
-            isShowAutoAddPromo = GlobalConfig.isCustomerApp()
+            isShowAutoAddPromo = !GlobalConfig.isSellerApp()
         }
     }
 

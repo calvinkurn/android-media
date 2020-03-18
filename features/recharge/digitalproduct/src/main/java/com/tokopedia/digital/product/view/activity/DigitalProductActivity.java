@@ -6,8 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import androidx.core.app.TaskStackBuilder;
-
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData;
@@ -41,8 +39,9 @@ public class DigitalProductActivity extends BaseSimpleActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Uri uriData = getIntent().getData();
-        if (uriData != null && uriData.getQueryParameterNames().size() > 0 &&
-                getIntent().getExtras().getParcelable(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA) == null) {
+        if (getIntent().getExtras() != null && getIntent().getExtras().getParcelable(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA) != null) {
+            passData = getIntent().getExtras().getParcelable(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA);
+        } else {
             boolean isFromWidget = false;
             if (!TextUtils.isEmpty(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_IS_FROM_WIDGET))) {
                 isFromWidget = Boolean.valueOf(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_IS_FROM_WIDGET));
@@ -61,8 +60,6 @@ public class DigitalProductActivity extends BaseSimpleActivity
                     .isCouponApplied(isCouponApplied)
                     .build();
             this.passData = passData;
-        } else {
-            passData = getIntent().getExtras().getParcelable(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA);
         }
         super.onCreate(savedInstanceState);
     }

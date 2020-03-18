@@ -12,12 +12,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
+import com.otaliastudios.cameraview.CameraListener
+import com.otaliastudios.cameraview.CameraUtils
+import com.otaliastudios.cameraview.PictureResult
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.cameraview.CameraListener
-import com.tokopedia.cameraview.CameraUtils
-import com.tokopedia.cameraview.PictureResult
 import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.rechargeocr.analytics.RechargeCameraAnalytics

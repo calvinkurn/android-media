@@ -1,12 +1,12 @@
 package com.tokopedia.home.beranda.helper
 
-fun <X, T> Resource<X>.clone(data: T): Resource<T> {
-    return Resource(
-            status = this.status,
+fun <X, T> Result<X>.clone(data: T): Result<T> {
+    return Result(
+            status = status,
             data = data,
-            error = this.error
+            error = error
     )
 }
 
-fun <T> Resource<T>.isSuccess() = this.status.isSuccess()
-fun <T> Resource<T>.isError() = this.status.isError()
+fun <T> Result<T>.isSuccess() = this.status.isSuccess()
+fun <T> Result<T>.isError() = this.status.isError()

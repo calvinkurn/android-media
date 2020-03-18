@@ -67,19 +67,12 @@ public class DatePickerV2 {
 
     public interface OnDatePickerV2Listener{
         void onDatePicked(Date date);
-        void onCancel();
     }
 
     public static DatePickerV2 createInstance(Context context){
         DatePickerV2 picker = new DatePickerV2();
         picker.context = context;
         return picker;
-    };
-
-    public static Date getDayAfterToday(int day){
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.DAY_OF_MONTH, day);
-        return convertFromCalToDate(c);
     }
 
     private boolean isPicking;
@@ -102,13 +95,6 @@ public class DatePickerV2 {
         if(!isPicking){
             isPicking = true;
             createDatePicker(listener, startingDate, 946715844000L);
-        }
-    }
-
-    public void getDatePicker(OnDatePickerV2Listener listener, Date startingDate, long minDate){
-        if(!isPicking){
-            isPicking = true;
-            createDatePicker(listener, startingDate, minDate);
         }
     }
 

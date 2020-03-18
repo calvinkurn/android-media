@@ -519,7 +519,6 @@ public class SearchActivity extends BaseActivity
         availableSearchTabs.add(SearchConstant.ActiveTab.PRODUCT);
         availableSearchTabs.add(SearchConstant.ActiveTab.SHOP);
         availableSearchTabs.add(SearchConstant.ActiveTab.PROFILE);
-        availableSearchTabs.add(SearchConstant.ActiveTab.CATALOG);
 
         return !availableSearchTabs.contains(activeTab);
     }
@@ -559,7 +558,6 @@ public class SearchActivity extends BaseActivity
         searchSectionItemList.add(productTabTitle);
         searchSectionItemList.add(shopTabTitle);
         searchSectionItemList.add(profileTabTitle);
-        searchSectionItemList.add(catalogTabTitle);
     }
 
     private void initTabLayout() {
@@ -760,19 +758,21 @@ public class SearchActivity extends BaseActivity
 
     @Override
     public void setupSearchNavigation(ClickListener clickListener, boolean isSortEnabled) {
-        if (loadingView.getVisibility() != View.VISIBLE) {
-            showBottomNavigation();
-        }
+        searchNavContainer.post(() -> {
+            if (loadingView.getVisibility() != View.VISIBLE) {
+                showBottomNavigation();
+            }
 
-        if (isSortEnabled) {
-            buttonSort.setVisibility(View.VISIBLE);
-            searchNavDivider.setVisibility(View.VISIBLE);
-        } else {
-            buttonSort.setVisibility(View.GONE);
-            searchNavDivider.setVisibility(View.GONE);
-        }
+            if (isSortEnabled) {
+                buttonSort.setVisibility(View.VISIBLE);
+                searchNavDivider.setVisibility(View.VISIBLE);
+            } else {
+                buttonSort.setVisibility(View.GONE);
+                searchNavDivider.setVisibility(View.GONE);
+            }
 
-        this.searchNavigationClickListener = clickListener;
+            this.searchNavigationClickListener = clickListener;
+        });
     }
 
     @Override

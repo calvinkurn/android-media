@@ -16,6 +16,9 @@ import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.sellerhome.common.ShopStatus
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
@@ -62,6 +65,14 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
     override fun onResume() {
         sellerHomeDashboardDrawerPresenter?.attachView(this)
         super.onResume()
+
+        if (!userSession.isLoggedIn) {
+            RouteManager.route(this, ApplinkConstInternalSellerapp.WELCOME)
+            finish()
+        } else if (!userSession.hasShop()) {
+            RouteManager.route(this, ApplinkConst.CREATE_SHOP)
+            finish()
+        }
     }
 
     override fun setDrawerPosition(): Int {

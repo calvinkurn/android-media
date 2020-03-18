@@ -29,3 +29,5 @@ data class FeatureVariant (
         @Expose
         var variant: String = ""
 )
+
+data class FeatureVariantAnalytics (val name: String, var variant: String)

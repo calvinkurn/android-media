@@ -2,9 +2,8 @@ package com.tokopedia.groupchat.room.view.presenter
 
 import android.util.Log
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat
@@ -21,9 +20,9 @@ import com.tokopedia.groupchat.room.domain.usecase.GetPlayInfoUseCase
 import com.tokopedia.groupchat.room.domain.usecase.GetStickyComponentUseCase
 import com.tokopedia.groupchat.room.domain.usecase.GetVideoStreamUseCase
 import com.tokopedia.groupchat.room.view.listener.PlayContract
+import com.tokopedia.groupchat.room.view.viewmodel.ChatPermitViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
-import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentsViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
@@ -147,7 +146,7 @@ class PlayPresenter @Inject constructor(
             settingGroupChat: SettingGroupChat?,
             refreshInfo: Boolean
     ) {
-        var settings = settingGroupChat ?: SettingGroupChat()
+        val settings = settingGroupChat ?: SettingGroupChat()
         processUrl(userSession, channelId, groupChatToken, settings)
         connectWebSocket(userSession.accessToken, settings, refreshInfo)
     }
@@ -182,8 +181,7 @@ class PlayPresenter @Inject constructor(
                     Log.d("RxWebSocket Presenter", "item")
                 }
 
-                var item = webSocketMessageMapper.map(webSocketResponse)
-                var hideMessage = webSocketMessageMapper.mapHideMessage(webSocketResponse)
+                val item = webSocketMessageMapper.map(webSocketResponse)
                 item?.let {
                     when (it) {
                         is ParticipantViewModel -> view.onTotalViewChanged(it)
@@ -200,6 +198,7 @@ class PlayPresenter @Inject constructor(
                         is SprintSaleAnnouncementViewModel -> view.onSprintSaleReceived(it)
                         is StickyComponentsViewModel -> view.onStickyComponentReceived(it)
                         is VideoStreamViewModel -> view.onVideoStreamUpdated(it)
+                        is ChatPermitViewModel -> view.onChatDisabled(it)
                         else -> {
                             view.addIncomingMessage(it)
                         }
@@ -285,6 +284,11 @@ class PlayPresenter @Inject constructor(
             afterSendMessage: () -> Unit,
             onSuccessSendMessage: (PendingChatViewModel) -> Unit,
             onErrorSendMessage: (PendingChatViewModel, Exception?) -> Unit) {
+        if (viewModel.isChatDisabled && !viewModel.isQuickReply) {
+            showChatDisabledError()
+            return
+        }
+
         var errorSendIndicator: Exception? = null
         try {
             RxWebSocket.send(GroupChatWebSocketParam.getParamSend(channelId, viewModel.message), null)
@@ -321,5 +325,9 @@ class PlayPresenter @Inject constructor(
             }
 
         })
+    }
+
+    private fun showChatDisabledError() {
+        view.showChatDisabledError()
     }
 }

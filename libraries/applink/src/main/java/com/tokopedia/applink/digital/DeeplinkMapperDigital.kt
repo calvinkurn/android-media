@@ -5,6 +5,7 @@ import android.net.Uri
 import com.google.gson.Gson
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.MENU_ID_TELCO
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_GENERAL
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_VOUCHER
@@ -25,6 +26,7 @@ object DeeplinkMapperDigital {
 
     const val TEMPLATE_PARAM = "template"
     const val MENU_ID_PARAM = "menu_id"
+    const val HOST_DIGITAL_PRODUCT = "form"
 
     private fun readWhitelistFromFile(context: Context): List<WhitelistItem> {
         if (whiteList == null) {
@@ -46,7 +48,8 @@ object DeeplinkMapperDigital {
         val uri = Uri.parse(deeplink)
         if (deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true)) {
             if (!uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty()) return getDigitalTemplateNavigation(context, deeplink)
-            if (!uri.getQueryParameter(MENU_ID_PARAM).isNullOrEmpty()) return getDigitalMenuNavigation(context, deeplink)
+            return if (!uri.getQueryParameter(MENU_ID_PARAM).isNullOrEmpty()) getDigitalMenuNavigation(context, deeplink)
+            else deeplink.replaceBefore("://", DeeplinkConstant.SCHEME_INTERNAL)
         } else if (deeplink.startsWith(ApplinkConst.DIGITAL_SMARTCARD)){
             return getDigitalSmartcardNavigation(context, deeplink)
         }

@@ -44,8 +44,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation project(rootProject.ext.libraries.track)
-    implementation rootProject.ext.playServicesDependencies.tagManagerImpl
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
 
 }
 
@@ -57,3 +57,4 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
