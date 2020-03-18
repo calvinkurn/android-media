@@ -52,6 +52,9 @@ afterEvaluate {
 }
 
 subprojects {
+    tasks.withType(Test) {
+        maxParallelForks = Runtime.runtime.availableProcessors()
+    }
     project.configurations.all {
         resolutionStrategy {
             dependencySubstitution {
