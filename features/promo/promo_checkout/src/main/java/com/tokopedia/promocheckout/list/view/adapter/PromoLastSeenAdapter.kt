@@ -1,17 +1,17 @@
 package com.tokopedia.promocheckout.list.view.adapter
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.promocheckout.R
-import com.tokopedia.promocheckout.list.model.listpromolastseen.PromoHistoryItem
+import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 
-class PromoLastSeenAdapter(var listData: MutableList<PromoHistoryItem>,
-                           val listenerLastSeen: PromoLastSeenViewHolder.ListenerLastSeen)
+class PromoLastSeenAdapter(var listData: MutableList<PromoCheckoutLastSeenModel>,
+                           private val listenerLastSeen: PromoLastSeenViewHolder.ListenerLastSeen)
     : RecyclerView.Adapter<PromoLastSeenViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PromoLastSeenViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_last_seen_promo_history, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_promo_last_seen, parent, false)
         return PromoLastSeenViewHolder(view, listenerLastSeen)
     }
 
@@ -20,7 +20,7 @@ class PromoLastSeenAdapter(var listData: MutableList<PromoHistoryItem>,
     }
 
     override fun onBindViewHolder(holder: PromoLastSeenViewHolder, position: Int) {
-        holder.bind(listData.get(position))
+        holder.bind(listData[position])
     }
 
 }

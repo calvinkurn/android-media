@@ -9,12 +9,10 @@ import android.view.MenuItem;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationDetailFragment;
 
@@ -32,6 +30,7 @@ public class InboxReputationDetailActivity extends BaseSimpleActivity implements
     public static final String ARGS_IS_FROM_APPLINK = "ARGS_IS_FROM_APPLINK";
     public static final String REPUTATION_ID = "reputation_id";
     public static final String CACHE_PASS_DATA = InboxReputationDetailActivity.class.getName() + "-passData";
+    public static final String DEFAULT_REPUTATION_ID = "0";
 
     private ReputationTracking reputationTracking;
 
@@ -44,15 +43,24 @@ public class InboxReputationDetailActivity extends BaseSimpleActivity implements
     @Nullable
     @Override
     protected Fragment getNewFragment() {
+
         int tab = -1;
         boolean isFromApplink = false;
-        String reputationId = "0";
-        if (getIntent().getExtras() != null) {
-            if (getIntent().getExtras().getInt(ARGS_TAB, -1) != -1) {
-                tab = getIntent().getExtras().getInt(ARGS_TAB);
+        String reputationId = DEFAULT_REPUTATION_ID;
+        Uri intentData = getIntent().getData();
+        Bundle intentExtras = getIntent().getExtras();
+
+        // if from applink
+        if(intentData != null && intentData.getPathSegments().size() >= 2) {
+            isFromApplink = true;
+            reputationId = intentData.getPathSegments().get(1);
+        }
+
+        if(intentExtras != null && !isFromApplink) {
+            if(intentExtras.getInt(ARGS_TAB, -1) != -1) {
+                tab = intentExtras.getInt(ARGS_TAB);
             }
-            isFromApplink = getIntent().getExtras().getBoolean(ARGS_IS_FROM_APPLINK, false);
-            reputationId = getIntent().getExtras().getString(REPUTATION_ID, "");
+            reputationId = intentExtras.getString(REPUTATION_ID, "");
         }
 
         return InboxReputationDetailFragment.createInstance(tab, isFromApplink, reputationId);
@@ -73,16 +81,6 @@ public class InboxReputationDetailActivity extends BaseSimpleActivity implements
         return intent;
     }
 
-    @DeepLink(ApplinkConst.REPUTATION_DETAIL)
-    public static Intent getCallingIntent(Context context, Bundle extras) {
-        extras.putBoolean(ARGS_IS_FROM_APPLINK, true);
-
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, InboxReputationDetailActivity.class)
-                .setData(uri.build())
-                .putExtras(extras);
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(getFragment() != null && getFragment() instanceof InboxReputationDetailFragment) {
@@ -91,4 +89,6 @@ public class InboxReputationDetailActivity extends BaseSimpleActivity implements
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 }

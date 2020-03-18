@@ -9,6 +9,7 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.*
 import okhttp3.WebSocket
+import rx.Observable
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 
@@ -24,6 +25,8 @@ class PlaySocket @Inject constructor(
     var channelId: String = ""
     var gcToken: String = ""
     var settings: Channel.Settings = Channel.Settings(DEFAULT_PING, 0, DEFAULT_MAX_RETRIES, DEFAULT_DELAY)
+
+    private val playSocketCache: PlaySocketCache = PlaySocketCache()
 
     private var compositeSubscription: CompositeSubscription? = null
     private var rxWebSocketUtil: RxWebSocketUtil? = null
@@ -43,7 +46,9 @@ class PlaySocket @Inject constructor(
 
         val webSocketSubscriber = object : WebSocketSubscriber() {
 
-            override fun onOpen(webSocket: WebSocket) {}
+            override fun onOpen(webSocket: WebSocket) {
+                sendCachedMessages()
+            }
 
             override fun onClose() {
                 destroy()
@@ -57,8 +62,7 @@ class PlaySocket @Inject constructor(
                 onError(e)
             }
 
-            override fun onReconnect() {
-            }
+            override fun onReconnect() {}
         }
 
         rxWebSocketUtil = RxWebSocketUtil.getInstance(null, settings.minReconnectDelay, settings.maxRetries, settings.pingInterval)
@@ -70,7 +74,30 @@ class PlaySocket @Inject constructor(
         compositeSubscription?.add(webSocketSubscription)
     }
 
-    fun send(message: String, onSuccess: () -> Unit) {
+    private fun sendCachedMessages() {
+        if (playSocketCache.chatList.isNotEmpty()) {
+            Observable.just(playSocketCache.chatList)
+                    .flatMapIterable { items -> items }
+                    .map { item ->
+                        rxWebSocketUtil?.send(item.message)
+                        item
+                    }
+                    .subscribe { item ->
+                        item.isDeleted = true
+                    }
+            playSocketCache.clear()
+        }
+    }
+
+    fun send(message: String) {
+        val chat = parseMessage(message)
+        try { rxWebSocketUtil?.send(chat) }
+        catch (exception: WebSocketException) {
+            playSocketCache.putChat(PlaySocketCache.Chat(chat))
+        }
+    }
+
+    private fun parseMessage(message: String): String {
         val param = JsonObject()
         param.addProperty(PARAM_SEND_CHANNEL_ID, channelId.toIntOrZero())
         param.addProperty(PARAM_SEND_MESSAGE, message)
@@ -79,10 +106,7 @@ class PlaySocket @Inject constructor(
         bundle.addProperty(PARAM_SEND_TYPE, PARAM_SEND_TYPE_SEND)
         bundle.add(PARAM_SEND_DATA, param)
 
-        try {
-            rxWebSocketUtil?.send(bundle.toString())
-            onSuccess()
-        } catch (throwable: WebSocketException) { }
+        return bundle.toString()
     }
 
     fun destroy() {

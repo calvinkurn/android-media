@@ -13,7 +13,7 @@ import com.tokopedia.autocomplete.viewmodel.ProfileSearch
 import kotlinx.android.synthetic.main.layout_profile_item_autocomplete.view.*
 import java.util.*
 
-class ProfileViewHolder(val view: View, val clickListener : ItemClickListener) : AbstractViewHolder<ProfileSearch>(view) {
+class ProfileViewHolder(val view: View, val clickListener : ItemClickListener?) : AbstractViewHolder<ProfileSearch>(view) {
 
     private val context = view.context
     private var searchQueryStartIndexInKeyword = -1
@@ -115,7 +115,7 @@ class ProfileViewHolder(val view: View, val clickListener : ItemClickListener) :
         itemView.setOnClickListener {
             AutocompleteTracking.eventClickProfile(itemView.context, getFormattedStringForAutoCompleteTracking())
 
-            clickListener.onItemClicked(boundedProfileSearch.applink ?: "", boundedProfileSearch.url ?: "")
+            clickListener?.onItemClicked(boundedProfileSearch.applink ?: "", boundedProfileSearch.url ?: "")
         }
     }
 
