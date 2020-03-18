@@ -152,4 +152,16 @@ class ShopHomeViewModelTest {
 
     }
 
+    @Test
+    fun `check whether response get wish list status error is null`() {
+
+        coEvery { gqlCheckWishlistUseCase.executeOnBackground() } throws Exception()
+
+        viewModel.getWishlistStatus(anyList())
+
+        coVerify { gqlCheckWishlistUseCase.executeOnBackground() }
+
+        assertTrue(viewModel.checkWishlistData.value is Fail)
+    }
+
 }
