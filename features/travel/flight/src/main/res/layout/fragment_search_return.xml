@@ -6,11 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.tokopedia.header.HeaderUnify
-        android:id="@+id/flight_search_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <com.tokopedia.flight.common.view.HorizontalProgressBar
         android:id="@+id/horizontal_progress_bar"
         android:layout_width="match_parent"

@@ -17,8 +17,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.coachmark.CoachMarkBuilder
-import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.common.travel.ticker.TravelTickerUtils
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
@@ -127,7 +125,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
         flightSearchPresenter.attachView(this)
 
-        setupHeader()
+//        setupHeader()
         showLoading()
         setUpProgress()
         setUpSwipeRefresh()
@@ -254,7 +252,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
         if (flightSearchPresenter.isDoneLoadData()) {
             performanceMonitoringP2.stopTrace()
-            setupCoachMark()
+//            setupCoachMark()
         }
 
         setUpProgress()
@@ -748,7 +746,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         flightSearchPresenter.unsubscribeAll()
 
         initializeToolbarData()
-        setupHeader()
+//        setupHeader()
 
         setUpCombinationAirport()
         horizontal_progress_bar.visibility = View.VISIBLE
@@ -945,7 +943,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         inFilterMode = flightFilterModel.isHasFilter
     }
 
-    private fun setupHeader() {
+    /*private fun setupHeader() {
         flight_search_header.headerView?.setSingleLine(false)
         flight_search_header.addRightIcon(R.drawable.ic_flight_edit)
                 .setOnClickListener {
@@ -956,7 +954,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         flight_search_header.isShowBackButton = true
         flight_search_header.isShowShadow = true
         flight_search_header.setNavigationOnClickListener { activity?.onBackPressed() }
-    }
+    }*/
 
     private fun showChangeSearchBottomSheet() {
         val flightChangeSearchBottomSheet = FlightSearchUniversalBottomSheet.getInstance()
@@ -965,7 +963,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         flightChangeSearchBottomSheet.show(requireFragmentManager(), FlightSearchUniversalBottomSheet.TAG_SEARCH_FORM)
     }
 
-    private fun setupCoachMark() {
+    /*private fun setupCoachMark() {
         val view = flight_search_header.rightIcons?.get(0)
         val coachMarkItems = arrayListOf<CoachMarkItem>()
         coachMarkItems.add(CoachMarkItem(
@@ -976,7 +974,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
         val coachMark = CoachMarkBuilder().build()
         coachMark.show(activity, FlightSearchActivity.TAG_CHANGE_COACH_MARK, coachMarkItems)
-    }
+    }*/
 
     interface OnFlightSearchFragmentListener {
 

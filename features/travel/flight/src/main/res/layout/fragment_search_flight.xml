@@ -7,11 +7,6 @@
     android:background="@color/background_apps"
     android:orientation="vertical">
 
-    <com.tokopedia.header.HeaderUnify
-        android:id="@+id/flight_search_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
