@@ -19,6 +19,7 @@ import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
 import com.tokopedia.sellerhome.common.SomTabConst
+import com.tokopedia.sellerhome.common.StatusbarHelper
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.view.model.NotificationCenterUnreadUiModel
 import com.tokopedia.sellerhome.view.viewmodel.SharedViewModel
@@ -95,7 +96,7 @@ class ContainerFragment : Fragment() {
     }
 
     private fun setupView() = view?.run {
-
+        sahStatusBar?.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, StatusbarHelper.getStatusBarHeight(context))
     }
 
     private fun setupDefaultPage() {

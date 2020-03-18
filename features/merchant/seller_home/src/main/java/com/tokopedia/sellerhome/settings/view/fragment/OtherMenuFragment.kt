@@ -28,6 +28,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.common.StatusbarHelper
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant
 import com.tokopedia.sellerhome.settings.analytics.SettingTrackingListener
@@ -49,6 +50,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_other_menu.*
+import kotlinx.android.synthetic.main.fragment_sah_container.view.*
 import javax.inject.Inject
 
 class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), OtherMenuViewHolder.Listener, StatusBarCallback, SettingTrackingListener{
@@ -73,6 +75,9 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private var otherMenuViewHolder: OtherMenuViewHolder? = null
 
+    private val statusBarHeight by lazy {
+        context?.let { StatusbarHelper.getStatusBarHeight(it) }
+    }
     private var startToTransitionOffset = 0
     private var statusInfoTransitionOffset = 0
 
@@ -91,7 +96,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (activity as? SellerHomeActivity)?.attachCallback(this)
-        setupOffset()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -100,6 +104,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupOffset()
         setupView(view)
         observeLiveData()
     }
@@ -292,6 +297,9 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun setupView(view: View) {
+        view.run {
+            sahStatusBar?.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, statusBarHeight ?: HEIGHT_OFFSET)
+        }
         populateAdapterData()
         recycler_view.layoutManager = LinearLayoutManager(context)
         context?.let { otherMenuViewHolder = OtherMenuViewHolder(view, it, this, this)}
@@ -312,7 +320,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 startToTransitionOffset = START_OFFSET
             }
         }
-        statusInfoTransitionOffset = HEIGHT_OFFSET
+        statusInfoTransitionOffset = statusBarHeight ?: HEIGHT_OFFSET
     }
 
     private fun observeRecyclerViewScrollListener() {
