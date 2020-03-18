@@ -4,18 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:paddingTop="@dimen/setting_status_margin_top"
-    android:paddingBottom="@dimen/setting_status_margin"
+    android:paddingTop="@dimen/setting_status_loading_padding_top"
+    android:paddingBottom="@dimen/setting_status_loading_padding_bottom"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmeringShopStatus"
         android:layout_width="0dp"
         android:layout_height="@dimen/setting_card_height"
-        app:corners="10"
+        app:corners="30"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.95"/>
+        app:layout_constraintWidth_percent="0.925"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
