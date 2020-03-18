@@ -236,6 +236,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
         if (flightSearchPresenter.isDoneLoadData()) {
             performanceMonitoringP2.stopTrace()
+            (activity as FlightSearchActivity).setupChangeSearchCoachMark()
         }
 
         setUpProgress()

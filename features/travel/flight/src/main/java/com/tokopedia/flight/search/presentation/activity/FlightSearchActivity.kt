@@ -160,10 +160,6 @@ open class FlightSearchActivity : BaseFlightActivity(),
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menu.clear()
         menuInflater.inflate(R.menu.menu_flight_search, menu)
-        Handler().post {
-            val coachMarkView: View = findViewById(R.id.menu_change_search)
-            setupChangeSearchCoachMark(coachMarkView)
-        }
         return true
     }
 
@@ -207,7 +203,14 @@ open class FlightSearchActivity : BaseFlightActivity(),
 
     open fun isReturnPage(): Boolean = false
 
-    private fun setupChangeSearchCoachMark(view: View) {
+    fun setupChangeSearchCoachMark() {
+        Handler().post {
+            val coachMarkView: View = findViewById(R.id.menu_change_search)
+            setupCoachMark(coachMarkView)
+        }
+    }
+
+    private fun setupCoachMark(view: View) {
         val coachMarkItems = arrayListOf<CoachMarkItem>()
         coachMarkItems.add(CoachMarkItem(
                 view,
