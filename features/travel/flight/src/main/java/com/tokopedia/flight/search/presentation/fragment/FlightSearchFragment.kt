@@ -952,7 +952,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                     showChangeSearchBottomSheet()
                 }
         flight_search_header.title = "${getDepartureAirport().cityName} ➝ ${getArrivalAirport().cityName}"
-        val subtitle = "$dateString | $passengerString | $classString"
+        flight_search_header.subtitle = "$dateString | $passengerString | $classString"
+        flight_search_header.isShowBackButton = true
+        flight_search_header.isShowShadow = true
+        flight_search_header.setNavigationOnClickListener { activity?.onBackPressed() }
     }
 
     private fun showChangeSearchBottomSheet() {
