@@ -325,8 +325,13 @@ class PlayViewModel @Inject constructor(
         _observableBottomInsetsState.value = insetsMap
     }
 
-    fun hideAllInsets() {
-        _observableBottomInsetsState.value = getDefaultBottomInsetsMapState()
+    fun hideInsets(isKeyboardHandled: Boolean) {
+        val defaultBottomInsets = getDefaultBottomInsetsMapState()
+        _observableBottomInsetsState.value = if (isKeyboardHandled) {
+            defaultBottomInsets.toMutableMap().apply {
+                this[BottomInsetsType.Keyboard] = BottomInsetsState.Hidden(true)
+            }
+        } else defaultBottomInsets
     }
 
     private fun getLatestBottomInsetsMapState(): Map<BottomInsetsType, BottomInsetsState> {
@@ -651,7 +656,7 @@ class PlayViewModel @Inject constructor(
     private fun doOnFreezeBan() {
         destroy()
         stopPlayer()
-        hideAllInsets()
+        hideInsets(isKeyboardHandled = false)
     }
     //endregion
 

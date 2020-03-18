@@ -44,6 +44,7 @@ import javax.inject.Inject
 class PlayFragment : BaseDaggerFragment() {
 
     companion object {
+        const val ANIMATION_DURATION = 300L
 
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
 
@@ -54,7 +55,6 @@ class PlayFragment : BaseDaggerFragment() {
         private const val BOTTOM_SHEET_FRAGMENT_TAG = "FRAGMENT_INTERACTION"
         private const val ERROR_FRAGMENT_TAG = "FRAGMENT_ERROR"
 
-        private const val ANIMATION_DURATION = 300L
         private const val FULL_SCALE_FACTOR = 1.0f
 
         fun newInstance(channelId: String?): PlayFragment {
@@ -396,6 +396,7 @@ class PlayFragment : BaseDaggerFragment() {
             override fun onKeyboardHidden() {
                 playViewModel.onKeyboardHidden()
                 ivClose.invisible()
+                this@PlayFragment.onBottomInsetsViewHidden()
             }
         })
     }
@@ -406,6 +407,6 @@ class PlayFragment : BaseDaggerFragment() {
 
     private fun hideAllInsets() {
         hideKeyboard()
-        playViewModel.hideAllInsets()
+        playViewModel.hideInsets(isKeyboardHandled = true)
     }
 }
