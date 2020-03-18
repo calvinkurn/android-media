@@ -4,24 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeRouter
-import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
 import com.tokopedia.sellerhome.common.SomTabConst
+import com.tokopedia.sellerhome.common.StatusbarHelper
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.view.model.NotificationCenterUnreadUiModel
 import com.tokopedia.sellerhome.view.viewmodel.SharedViewModel
+import com.tokopedia.sellerhome.view.widget.toolbar.NotificationDotBadge
 import kotlinx.android.synthetic.main.fragment_sah_container.view.*
 import javax.inject.Inject
 
@@ -62,9 +62,12 @@ class ContainerFragment : Fragment() {
         sellerHomeRouter?.getChatListFragment()
     }
     private var somListFragment: Fragment? = null
-
     private var currentFragment: Fragment? = null
     private val fragmentManger: FragmentManager by lazy { childFragmentManager }
+
+    private val notificationBadge: NotificationDotBadge? by lazy {
+        NotificationDotBadge(context ?: return@lazy null)
+    }
 
     @FragmentType
     private var currentFragmentType: Int = 0
@@ -97,7 +100,17 @@ class ContainerFragment : Fragment() {
     }
 
     private fun setupView() = view?.run {
+        if (activity is AppCompatActivity) {
+            (activity as AppCompatActivity).setSupportActionBar(sahToolbar)
+        }
 
+        val statusBarHeight = StatusbarHelper.getStatusBarHeight(context)
+        val layoutParams = statusBarBackground.layoutParams
+        if (layoutParams is LinearLayout.LayoutParams) {
+            layoutParams.height = statusBarHeight
+            statusBarBackground.layoutParams = layoutParams
+            statusBarBackground.requestLayout()
+        }
     }
 
     private fun setupDefaultPage() {
@@ -124,10 +137,7 @@ class ContainerFragment : Fragment() {
         }
         showFragment(homeFragment, homeFragmentTitle)
 
-        view?.sahToolbar?.showNotificationActionMenu {
-            RouteManager.route(requireContext(), ApplinkConst.SELLER_INFO)
-            NavigationTracking.sendClickNotificationEvent()
-        }
+        homeFragment.showNotificationBadge()
     }
 
     private fun setupProductManagerFragment() {
@@ -138,10 +148,6 @@ class ContainerFragment : Fragment() {
             }
             showFragment(fragment, getString(R.string.sah_product_list))
         }
-
-        view?.sahToolbar?.showAddProductActionMenu {
-            RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM)
-        }
     }
 
     private fun setupChatFragment() {
@@ -151,10 +157,6 @@ class ContainerFragment : Fragment() {
                 hasAttachChatFragment = true
             }
             showFragment(fragment, getString(R.string.sah_chat))
-        }
-
-        view?.sahToolbar?.showChatSettingsActionMenu {
-            RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CHAT_SETTING_TEMPLATE)
         }
     }
 
@@ -171,8 +173,6 @@ class ContainerFragment : Fragment() {
             }
             showFragment(it, getString(R.string.sah_sale))
         }
-
-        view?.sahToolbar?.hideAllActionMenu()
     }
 
     private fun <T : Fragment> addFragment(fragment: T) {
@@ -193,11 +193,8 @@ class ContainerFragment : Fragment() {
         view?.sahToolbar?.title = title
     }
 
-    fun showNotifCenterBadge(chat: NotificationCenterUnreadUiModel) {
-        if (chat.notifUnreadInt > 0)
-            view?.sahToolbar?.showBadge()
-        else
-            view?.sahToolbar?.removeBadge()
+    fun showNotifCenterBadge(notif: NotificationCenterUnreadUiModel) {
+        homeFragment.setNotifCenterCounter(notif.notifUnreadInt)
     }
 
     fun showShopName(shopName: String) {
