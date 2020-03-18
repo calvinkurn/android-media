@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFitCenter
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import kotlinx.android.synthetic.main.item_manage_product_list.view.*
@@ -63,13 +64,13 @@ class ProductViewHolder(
     }
 
     private fun showProductLabel(product: ProductViewModel) {
-        itemView.labelBanned.showViewIf(product.isViolation())
-        itemView.labelInactive.showViewIf(product.isInactive())
-        itemView.labelActive.showViewIf(product.isActive())
+        itemView.labelBanned.showWithCondition(product.isViolation())
+        itemView.labelInactive.showWithCondition(product.isInactive())
+        itemView.labelActive.showWithCondition(product.isActive())
     }
 
     private fun showVariantLabel(product: ProductViewModel) {
-        itemView.labelVariant.showViewIf(product.isVariant())
+        itemView.labelVariant.showWithCondition(product.isVariant())
     }
 
     private fun showProductButton(product: ProductViewModel) {
@@ -80,16 +81,16 @@ class ProductViewHolder(
             itemView.btnEditStock.hide()
             itemView.btnMoreOptions.hide()
         } else {
-            itemView.btnContactCS.showViewIf(product.isViolation())
-            itemView.btnEditVariant.showViewIf(product.isVariant())
-            itemView.btnEditPrice.showViewIf(product.isNotVariant())
-            itemView.btnEditStock.showViewIf(product.isNotVariant())
+            itemView.btnContactCS.showWithCondition(product.isViolation())
+            itemView.btnEditVariant.showWithCondition(product.isVariant() && product.isNotViolation())
+            itemView.btnEditPrice.showWithCondition(product.isNotVariant() && product.isNotViolation())
+            itemView.btnEditStock.showWithCondition(product.isNotVariant() && product.isNotViolation())
             itemView.btnMoreOptions.show()
         }
     }
 
     private fun showStockHintImage(product: ProductViewModel) {
-        itemView.imageStockInformation.showViewIf(product.isEmpty())
+        itemView.imageStockInformation.showWithCondition(product.isEmpty())
     }
 
     private fun showProductImage(product: ProductViewModel) {
@@ -107,11 +108,7 @@ class ProductViewHolder(
     }
 
     private fun showProductCheckBox(product: ProductViewModel) {
-        itemView.checkBoxSelect.showViewIf(product.multiSelectActive)
-    }
-
-    private fun View.showViewIf(predicate: Boolean) {
-        if(predicate) show() else hide()
+        itemView.checkBoxSelect.showWithCondition(product.multiSelectActive)
     }
 
     interface ProductViewHolderView {
