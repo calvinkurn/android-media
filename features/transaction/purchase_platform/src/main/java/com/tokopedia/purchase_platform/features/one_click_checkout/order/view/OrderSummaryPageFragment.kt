@@ -595,7 +595,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     override fun onStop() {
         super.onStop()
-        viewModel.updateCart()
+        if (!swipe_refresh_layout.isRefreshing) {
+            viewModel.updateCart()
+        }
     }
 
     companion object {
