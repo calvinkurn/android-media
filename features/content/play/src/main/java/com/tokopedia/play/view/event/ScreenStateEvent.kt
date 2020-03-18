@@ -24,7 +24,7 @@ sealed class ScreenStateEvent : ComponentEvent {
     data class SetTotalCart(val cartUiModel: CartUiModel): ScreenStateEvent()
     data class SetTotalViews(val totalView: TotalViewUiModel): ScreenStateEvent()
     data class SetTotalLikes(val totalLikes: TotalLikeUiModel): ScreenStateEvent()
-    data class SetPinned(val pinned: PinnedUiModel) : ScreenStateEvent()
+    data class SetPinned(val pinned: PinnedUiModel, val stateHelper: StateHelperUiModel) : ScreenStateEvent()
     data class SetQuickReply(val quickReply: QuickReplyUiModel) : ScreenStateEvent()
     data class SetProductSheet(val productResult: PlayResult<ProductSheetUiModel>) : ScreenStateEvent()
     data class SetVariantSheet(val variantResult: PlayResult<VariantSheetUiModel>) : ScreenStateEvent()
@@ -44,7 +44,12 @@ sealed class ScreenStateEvent : ComponentEvent {
     /**
      * Keyboard
      */
-    data class BottomInsetsChanged(val insetsViewMap: Map<BottomInsetsType, BottomInsetsState>, val isAnyShown: Boolean, val isAnyHidden: Boolean) : ScreenStateEvent()
+    data class BottomInsetsChanged(
+            val insetsViewMap: Map<BottomInsetsType, BottomInsetsState>,
+            val isAnyShown: Boolean,
+            val isAnyHidden: Boolean,
+            val stateHelper: StateHelperUiModel
+    ) : ScreenStateEvent()
 
     @Deprecated(
             message = "Use BottomInsetsView with type BottomInsetsType.Keyboard",
@@ -55,7 +60,7 @@ sealed class ScreenStateEvent : ComponentEvent {
     /**
      * Video
      */
-    data class VideoPropertyChanged(val videoProp: VideoPropertyUiModel) : ScreenStateEvent()
+    data class VideoPropertyChanged(val videoProp: VideoPropertyUiModel, val stateHelper: StateHelperUiModel) : ScreenStateEvent()
     data class VideoStreamChanged(val videoStream: VideoStreamUiModel) : ScreenStateEvent()
     /**
      * Room Event

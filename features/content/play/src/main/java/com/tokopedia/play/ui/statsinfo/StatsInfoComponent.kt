@@ -30,7 +30,6 @@ open class StatsInfoComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.VideoPropertyChanged -> uiView.setLiveBadgeVisibility(it.videoProp.type.isLive)
                             is ScreenStateEvent.VideoStreamChanged ->
                                 uiView.setLiveBadgeVisibility(it.videoStream.channelType.isLive)
                             is ScreenStateEvent.SetTotalViews -> uiView.setTotalViews(it.totalView)

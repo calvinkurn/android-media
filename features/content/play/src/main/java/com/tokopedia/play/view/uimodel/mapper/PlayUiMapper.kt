@@ -19,7 +19,7 @@ object PlayUiMapper {
             id = channel.channelId,
             title = channel.title,
             description = channel.description,
-            channelType = if (channel.videoStream.isLive) PlayChannelType.Live else PlayChannelType.VOD,
+            channelType = PlayChannelType.Live,
             moderatorName = channel.moderatorName,
             partnerId = channel.partnerId,
             partnerType = PartnerType.getTypeByValue(channel.partnerType),
@@ -46,9 +46,7 @@ object PlayUiMapper {
 
     fun mapVideoStream(videoStream: VideoStream, isActive: Boolean) = VideoStreamUiModel(
             uriString = videoStream.config.streamUrl,
-            channelType = if (videoStream.isLive
-                    && videoStream.type.equals(PlayChannelType.Live.value, true))
-                PlayChannelType.Live else PlayChannelType.VOD,
+            channelType = PlayChannelType.Live,
             isActive = isActive
     )
 

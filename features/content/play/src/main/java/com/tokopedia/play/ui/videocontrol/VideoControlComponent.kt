@@ -34,12 +34,6 @@ open class VideoControlComponent(
                     .collect {
                         when (it) {
                             ScreenStateEvent.Init -> uiView.hide()
-                            is ScreenStateEvent.VideoPropertyChanged -> {
-                                uiView.run {
-                                    if (it.videoProp.type.isLive) uiView.hide()
-                                    else if (it.videoProp.type.isVod) uiView.show()
-                                }
-                            }
                             is ScreenStateEvent.SetVideo -> {
                                 uiView.setPlayer(it.videoPlayer)
                             }

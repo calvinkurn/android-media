@@ -148,7 +148,10 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
-                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden))
+                        .emit(
+                                ScreenStateEvent::class.java,
+                                ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden, playViewModel.stateHelper)
+                        )
             }
         })
     }
@@ -288,7 +291,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
-                            ScreenStateEvent.VideoPropertyChanged(prop)
+                            ScreenStateEvent.VideoPropertyChanged(prop, playViewModel.stateHelper)
                     )
         }
     }
