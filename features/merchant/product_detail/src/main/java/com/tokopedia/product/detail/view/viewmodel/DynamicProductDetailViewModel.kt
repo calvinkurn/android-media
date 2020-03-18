@@ -360,6 +360,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         val productImageUrl = productInfo?.data?.getProductImageUrl() ?: ""
         val productName = productInfo?.getProductName ?: ""
         val productPrice = productInfo?.finalPrice?.getCurrencyFormatted() ?: ""
+        val priceBefore = productInfo?.priceBeforeInt?.getCurrencyFormatted() ?: ""
+        val priceBeforeInt = productInfo?.priceBeforeInt ?: 0
+        val dropPercentage = productInfo?.dropPercentage ?: ""
         val productUrl = productInfo?.basic?.url ?: ""
         val productFsIsActive = productInfo?.data?.getFsProductIsActive() ?: false
         val productFsImageUrl = productInfo?.data?.getFsProductImageUrl() ?: ""
@@ -368,23 +371,24 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         val productSizeVariant = variants?.get("size")?.get("value") ?: ""
         val productColorVariantId = variants?.get("colour")?.get("id") ?: ""
         val productSizeVariantId = variants?.get("size")?.get("id") ?: ""
-
-        val productPreviews = listOf(
-                ProductPreview(
-                        productId,
-                        productImageUrl,
-                        productName,
-                        productPrice,
-                        productColorVariantId,
-                        productColorVariant,
-                        productColorHexVariant,
-                        productSizeVariantId,
-                        productSizeVariant,
-                        productUrl,
-                        productFsIsActive,
-                        productFsImageUrl
-                )
+        val productPreview = ProductPreview(
+                productId,
+                productImageUrl,
+                productName,
+                productPrice,
+                productColorVariantId,
+                productColorVariant,
+                productColorHexVariant,
+                productSizeVariantId,
+                productSizeVariant,
+                productUrl,
+                productFsIsActive,
+                productFsImageUrl,
+                priceBefore,
+                priceBeforeInt,
+                dropPercentage
         )
+        val productPreviews = listOf(productPreview)
         val stringProductPreviews = CommonUtil.toJson(productPreviews)
         intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
     }
