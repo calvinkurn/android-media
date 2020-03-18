@@ -9,21 +9,22 @@ import androidx.fragment.app.FragmentActivity
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.view.fragment.FeedPlusDetailFragment
-import com.tokopedia.feedplus.view.fragment.FeedPlusDetailNavFragment
 
-class FeedPlusDetailNavActivity : BaseSimpleActivity() {
+class FeedPlusDetailActivity : BaseSimpleActivity() {
 
-    object deepLinkIntents{
-        private const val EXTRA_DETAIL_ID = "extra_detail_id"
-        private const val EXTRA_ANALYTICS_PAGE_ROW_NUMBER = "EXTRA_ANALYTICS_PAGE_ROW_NUMBER"
+    companion object {
+        const val EXTRA_DETAIL_ID = "extra_detail_id"
+        const val EXTRA_ANALYTICS_PAGE_ROW_NUMBER = "EXTRA_ANALYTICS_PAGE_ROW_NUMBER"
+    }
+
+    object DeepLinkIntents {
 
         @JvmStatic
         @DeepLink(ApplinkConst.FEED_DETAILS)
         fun getCallingIntent(context: Context?, extras: Bundle): Intent? {
             val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-            return Intent(context, FeedPlusDetailNavActivity::class.java)
+            return Intent(context, FeedPlusDetailActivity::class.java)
                     .setData(uri.build())
                     .putExtras(extras)
         }
@@ -41,10 +42,6 @@ class FeedPlusDetailNavActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
         if (intent.extras != null) bundle.putAll(intent.extras)
-        return FeedPlusDetailNavFragment.createInstance(bundle)
+        return FeedPlusDetailFragment.createInstance(bundle)
     }
-
-//    override fun getLayoutRes(): Int {
-//        return R.layout.activity_feed_plus_detail_nav
-//    }
 }

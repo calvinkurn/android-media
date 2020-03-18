@@ -7,18 +7,13 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
         <activity
-            android:name=".view.activity.FeedPlusDetailNavActivity"
+            android:name=".view.activity.FeedPlusDetailActivity"
             android:label="@string/title_detail_feed"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
             android:name=".profilerecommendation.view.activity.FollowRecomActivity"
             android:label="@string/recommendation_for_you"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
-            android:name=".view.activity.FeedPlusDetailActivity"
-            android:label="@string/title_detail_feed"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity

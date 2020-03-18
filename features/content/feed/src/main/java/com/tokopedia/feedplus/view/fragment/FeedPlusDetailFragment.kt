@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -31,6 +30,7 @@ import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetail
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactoryImpl
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.DetailFeedAdapter
 import com.tokopedia.feedplus.view.analytics.FeedAnalytics
+import com.tokopedia.feedplus.view.analytics.FeedDetailAnalytics.Companion.feedDetailAnalytics
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel
 import com.tokopedia.feedplus.view.analytics.ProductEcommerce
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent
@@ -44,7 +44,6 @@ import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
-import com.tokopedia.track.TrackApp
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -58,8 +57,12 @@ import javax.inject.Inject
 
 private const val ARGS_DETAIL_ID = "DETAIL_ID"
 private const val REQUEST_OPEN_PDP = 111
+private const val TYPE = "text/plain"
+private const val PLACEHOLDER_LINK = "{{branchlink}}"
+private const val TITLE_OTHER = "Lainnya"
+const val KEY_OTHER = "lainnya"
 
-class FeedPlusDetailNavFragment : BaseDaggerFragment(), FeedPlusDetail.View, WishListActionListener, ShareCallback {
+class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetail.View, WishListActionListener, ShareCallback {
     private lateinit var recyclerView: RecyclerView
     private lateinit var shareButton: ImageButton
     private lateinit var seeShopButon: Typography
@@ -71,60 +74,11 @@ class FeedPlusDetailNavFragment : BaseDaggerFragment(), FeedPlusDetail.View, Wis
     private var detailId: String = ""
     private lateinit var shareData: LinkerData
 
-    private val TYPE = "text/plain"
-    private val PLACEHOLDER_LINK = "{{branchlink}}"
-    private val KEY_OTHER = "lainnya"
-    private val TITLE_OTHER = "Lainnya"
-
     companion object{
-        fun createInstance(bundle:Bundle): FeedPlusDetailNavFragment {
-            val feedPlusDetailNavFragment = FeedPlusDetailNavFragment()
+        fun createInstance(bundle:Bundle): FeedPlusDetailFragment {
+            val feedPlusDetailNavFragment = FeedPlusDetailFragment()
             feedPlusDetailNavFragment.arguments = bundle
             return feedPlusDetailNavFragment
-        }
-    }
-
-    internal interface Event {
-        companion object {
-            const val CATEGORY_PAGE = "clickKategori"
-            const val CLICK_APP_SHARE_WHEN_REFERRAL_OFF = "clickAppShare"
-            const val CLICK_APP_SHARE_REFERRAL = "clickReferral"
-            const val PRODUCT_DETAIL_PAGE = "clickPDP"
-        }
-    }
-
-    internal interface EventLabel {
-        companion object {
-            const val SHARE_TO = "Share - "
-        }
-    }
-
-    internal interface Category {
-        companion object {
-            const val CATEGORY_PAGE = "Category Page"
-            const val REFERRAL = "Referral"
-            const val APPSHARE = "App share"
-            const val PRODUCT_DETAIL = "Product Detail Page"
-        }
-    }
-
-    internal interface Action {
-        companion object {
-            const val CATEGORY_SHARE = "Bottom Navigation - Share"
-            const val SELECT_CHANNEL = "select channel"
-            const val CLICK = "Click"
-        }
-    }
-
-    internal interface MoEngage {
-        companion object {
-            const val CHANNEL = "channel"
-        }
-    }
-
-    internal interface EventMoEngage {
-        companion object {
-            const val REFERRAL_SHARE_EVENT = "Share_Event"
         }
     }
 
@@ -442,23 +396,6 @@ class FeedPlusDetailNavFragment : BaseDaggerFragment(), FeedPlusDetail.View, Wis
         outState.putString(ARGS_DETAIL_ID, detailId)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_OPEN_PDP && data != null && data.extras != null && data.extras.getInt(FeedPlusDetailFragment.WISHLIST_STATUS_UPDATED_POSITION, -1) != -1) {
-            val position = data.extras.getInt(FeedPlusDetailFragment.WISHLIST_STATUS_UPDATED_POSITION, -1)
-            val isWishlist = data.extras.getBoolean(FeedPlusDetailFragment.WIHSLIST_STATUS_IS_WISHLIST, false)
-            updateWishlistFromPDP(position, isWishlist)
-        }
-    }
-
-    private fun updateWishlistFromPDP(position: Int, isWishlist: Boolean) {
-        if (adapter != null && adapter.list != null && !adapter.list.isEmpty()
-                && position < adapter.list.size && adapter.list[position] != null && adapter.list[position] is FeedDetailViewModel) {
-            (adapter.list[position] as FeedDetailViewModel).isWishlist = isWishlist
-            adapter.notifyItemChanged(position)
-        }
-    }
-
     private fun trackImpression(listDetail: ArrayList<Visitable<*>>) {
         val productList = ArrayList<ProductEcommerce>()
         for (position in listDetail.indices) {
@@ -493,19 +430,16 @@ class FeedPlusDetailNavFragment : BaseDaggerFragment(), FeedPlusDetail.View, Wis
     override fun onError(linkerError: LinkerError?) {}
 
     private fun getIntent(contains: String, url: String): Intent {
-        var contains: String? = contains
+        var str: String? = contains
         val mIntent = Intent(Intent.ACTION_SEND)
         mIntent.type = TYPE
-        var title: String? = ""
-        if (shareData != null) {
-            title = shareData.name
-        }
+        val title: String? = shareData.name
         if (!TextUtils.isEmpty(shareData.custmMsg) && shareData.custmMsg.contains(PLACEHOLDER_LINK)) {
-            contains = FindAndReplaceHelper.findAndReplacePlaceHolders(shareData.custmMsg, PLACEHOLDER_LINK, url)
+            str = FindAndReplaceHelper.findAndReplacePlaceHolders(shareData.custmMsg, PLACEHOLDER_LINK, url)
         }
         mIntent.putExtra(Intent.EXTRA_TITLE, title)
         mIntent.putExtra(Intent.EXTRA_SUBJECT, title)
-        mIntent.putExtra(Intent.EXTRA_TEXT, contains)
+        mIntent.putExtra(Intent.EXTRA_TEXT, str)
         return mIntent
     }
 
@@ -513,73 +447,15 @@ class FeedPlusDetailNavFragment : BaseDaggerFragment(), FeedPlusDetail.View, Wis
         if (shareData.type == LinkerData.CATEGORY_TYPE) {
             shareCategory(shareData)
         } else {
-            sendAnalyticsToGtm(shareData.type)
+            feedDetailAnalytics.sendAnalyticsToGtm(shareData.type)
         }
     }
 
     private fun shareCategory(data: LinkerData) {
         val shareParam = data.getSplittedDescription(",")
         if (shareParam.size == 2) {
-            eventShareCategory(shareParam[0], shareParam[1].toString() + "-" + KEY_OTHER)
+            feedDetailAnalytics.eventShareCategory(shareParam[0], shareParam[1].toString() + "-" + KEY_OTHER)
         }
     }
 
-    fun eventShareCategory(parentCat: String, label: String?) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                FeedPlusDetailFragment.Event.CATEGORY_PAGE,
-                FeedPlusDetailFragment.Category.CATEGORY_PAGE + "-" + parentCat,
-                FeedPlusDetailFragment.Action.CATEGORY_SHARE,
-                label)
-    }
-
-    private fun sendAnalyticsToGtm(type: String) {
-        when (type) {
-            LinkerData.REFERRAL_TYPE -> {
-                sendEventReferralAndShare(
-                        FeedPlusDetailFragment.Action.SELECT_CHANNEL,
-                        KEY_OTHER
-                )
-                sendMoEngageReferralShareEvent(KEY_OTHER)
-            }
-            LinkerData.APP_SHARE_TYPE -> sendEventAppShareWhenReferralOff(
-                    FeedPlusDetailFragment.Action.SELECT_CHANNEL,
-                    KEY_OTHER
-            )
-            else -> sendEventShare(KEY_OTHER)
-        }
-    }
-
-    fun sendMoEngageReferralShareEvent(channel: String?) {
-        val value = DataLayer.mapOf(
-                FeedPlusDetailFragment.MoEngage.CHANNEL, channel
-        )
-        TrackApp.getInstance().moEngage.sendTrackEvent(value, FeedPlusDetailFragment.EventMoEngage.REFERRAL_SHARE_EVENT)
-    }
-
-    private fun sendEventReferralAndShare(action: String, label: String) {
-        val eventTracking: MutableMap<String, Any> = HashMap()
-        eventTracking["event"] = FeedPlusDetailFragment.Event.CLICK_APP_SHARE_REFERRAL
-        eventTracking["eventCategory"] = FeedPlusDetailFragment.Category.REFERRAL
-        eventTracking["eventAction"] = action
-        eventTracking["eventLabel"] = label
-        TrackApp.getInstance().gtm.sendGeneralEvent(eventTracking)
-    }
-
-    fun sendEventAppShareWhenReferralOff(action: String, label: String) {
-        val eventTracking: MutableMap<String, Any> = HashMap()
-        eventTracking["event"] = FeedPlusDetailFragment.Event.CLICK_APP_SHARE_WHEN_REFERRAL_OFF
-        eventTracking["eventCategory"] = FeedPlusDetailFragment.Category.APPSHARE
-        eventTracking["eventAction"] = action
-        eventTracking["eventLabel"] = label
-        TrackApp.getInstance().gtm.sendGeneralEvent(eventTracking)
-    }
-
-    fun sendEventShare(label: String) {
-        val eventTracking: MutableMap<String, Any> = HashMap()
-        eventTracking["event"] = FeedPlusDetailFragment.Event.PRODUCT_DETAIL_PAGE
-        eventTracking["eventCategory"] = FeedPlusDetailFragment.Category.PRODUCT_DETAIL
-        eventTracking["eventAction"] = FeedPlusDetailFragment.Action.CLICK
-        eventTracking["eventLabel"] = FeedPlusDetailFragment.EventLabel.SHARE_TO + label
-        TrackApp.getInstance().gtm.sendGeneralEvent(eventTracking)
-    }
 }
