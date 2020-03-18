@@ -136,6 +136,12 @@ class UmrahOrderDetailViewModelTest{
     }
 
     @Test
+    fun `transformToSimpleModel_SuccessTransformToSimpleModel_AllNullParameter`(){
+        val actual = viewModel.transformToSimpleModel()
+        assert(actual.isEmpty())
+    }
+
+    @Test
     fun `transformToSimpleDetailModel_SuccessTransformToSimpleDetailModel`(){
         val dataDetails = listOf(
                 UmrahOrderDetailsEntity.DataDetail("http://tokopedia.com/image",
