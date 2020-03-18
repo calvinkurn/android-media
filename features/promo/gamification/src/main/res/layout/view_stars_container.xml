@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/image_star1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/gf_ic_star_1"
+        tools:alpha="1"
+        tools:scaleX="2"
+        tools:scaleY="2"
+        tools:translationX="-30dp"
+        tools:translationY="91dp" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/image_star2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/gf_ic_star_2"
+        tools:alpha="1"
+        tools:scaleX="2"
+        tools:scaleY="2"
+        tools:translationX="370dp"
+        tools:translationY="200dp" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/image_star3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/gf_ic_star_3"
+        tools:alpha="1"
+        tools:scaleX="2"
+        tools:scaleY="2"
+        tools:translationX="350dp"
+        tools:translationY="400dp" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/image_star4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/gf_ic_star_4"
+        tools:alpha="1"
+        tools:scaleX="2"
+        tools:scaleY="2"
+        tools:translationX="50dp"
+        tools:translationY="400dp" />
+</FrameLayout>

@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
+    <com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
+        android:id="@+id/gift_box_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.tokopedia.gamification.giftbox.presentation.views.StarsContainer
+        android:id="@+id/starsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.tokopedia.gamification.giftbox.presentation.views.RewardContainer
+        android:id="@+id/reward_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvTapHint"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:alpha="0"
+        android:background="@drawable/gami_bg_text_hint"
+        android:gravity="center"
+        android:paddingStart="30dp"
+        android:paddingLeft="30dp"
+        android:paddingTop="14dp"
+        android:paddingEnd="30dp"
+        android:paddingRight="30dp"
+        android:paddingBottom="10dp"
+        android:textColor="#12883D"
+        android:textSize="18sp"
+        tools:alpha="1"
+        tools:text="Tap kotaknya untuk \n dapetin hadiah" />
+
+    <LinearLayout
+        android:id="@+id/ll_benefits"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        tools:alpha="0">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvBenefits"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:paddingStart="10dp"
+            android:paddingLeft="10dp"
+            android:paddingEnd="10dp"
+            android:paddingRight="10dp"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            tools:text="Hadiah yang bisa kamu dapatkan:" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <com.tokopedia.gamification.giftbox.presentation.views.GiftPrizeSmallView
+                android:id="@+id/giftPrizeSmallViewFirst"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                tools:background="@drawable/gf_bg_benefit_small"
+                tools:layout_height="46dp" />
+
+            <View
+                android:layout_width="8dp"
+                android:layout_height="0dp" />
+
+            <com.tokopedia.gamification.giftbox.presentation.views.GiftPrizeSmallView
+                android:id="@+id/giftPrizeSmallViewSecond"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                tools:background="@drawable/gf_bg_benefit_small"
+                tools:layout_height="46dp" />
+        </LinearLayout>
+
+        <com.tokopedia.gamification.giftbox.presentation.views.GiftPrizeLargeView
+            android:id="@+id/giftPrizeLargeView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="32dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
+            tools:background="@drawable/bg_large_benefit"
+            tools:layout_height="80dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:alpha="0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingBottom="18dp">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Yay, kamu dapat hadia"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="10dp"
+            android:textSize="14sp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"
+            android:text="@string/gami_kupon_undian_100_ovo_points"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="70dp"
+            android:layout_marginLeft="70dp"
+            android:layout_marginEnd="70dp"
+            android:layout_marginRight="70dp"
+            android:background="@android:color/holo_orange_dark"
+            android:text="@string/gami_palai_kupon_ovo_points"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="21dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/gami_bg_benefit_small"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="12dp"
+            android:paddingLeft="12dp"
+            android:paddingEnd="10dp"
+            android:paddingRight="10dp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="18dp"
+                android:layout_marginRight="18dp"
+                android:layout_marginBottom="8dp"
+                android:text="Besok bisa dapet hadiah lagi lho. Mau diingetin?"
+                android:textColor="@android:color/white"
+                android:textSize="12sp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="#00C17C"
+                android:paddingStart="15dp"
+                android:paddingLeft="15dp"
+                android:paddingTop="7dp"
+                android:paddingEnd="15dp"
+                android:paddingRight="15dp"
+                android:paddingBottom="7dp"
+                android:text="Ingatkan Besok"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="10sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+
+</FrameLayout>

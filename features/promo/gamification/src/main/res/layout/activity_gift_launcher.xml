@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Daily"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/btnShowCouponAndPoints"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="coupons and points" />
+
+    <Button
+        android:id="@+id/btnShowPoints"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="points" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="Tap-Tap 60"
+        android:textSize="24sp" />
+
+    <Button
+        android:onClick="openGiftBoxTapTapActivity"
+        android:text="Tap Tap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

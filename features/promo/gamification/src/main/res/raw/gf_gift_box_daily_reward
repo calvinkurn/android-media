@@ -1,0 +1,30 @@
+mutation {
+  gamiCrack(campaignSlug: "SCANQR", uniqueCode:"") {
+    resultStatus {
+      code
+      message
+      status
+    }
+    imageUrl
+    benefitText
+    benefits {
+      text
+      color
+      size
+      benefitType
+      imageUrl
+      dummyCode
+      referenceID
+      isAutoApply
+      autoApplyMsg
+      isBigPrize
+    }
+    actionButton {
+      text
+      url
+      applink
+      type
+      backgroundColor
+    }
+  }
+}

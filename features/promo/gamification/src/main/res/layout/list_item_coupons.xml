@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="289dp"
+    android:layout_height="148dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        app:srcCompat="@drawable/gf_ic_coupon"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</LinearLayout>

@@ -45,4 +45,9 @@
 
     <string name="path_gamification">/gamification</string>
     <string name="path_gamification2">/gamification2</string>
+    <string name="path_daily_gift">/dailygift</string>
+    <string name="path_tap_tap_gift">/taptapgift</string>
+
+    <string name="gami_kupon_undian_100_ovo_points"><![CDATA[Kupon Undian & 100 OVO Points]]></string>
+    <string name="gami_palai_kupon_ovo_points"><![CDATA[Palai Kupon & Ovo Points]]></string>
 </resources>
