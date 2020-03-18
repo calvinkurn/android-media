@@ -25,7 +25,7 @@ import javax.inject.Inject
  * @author by furqan on 08/10/2019
  */
 class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                    dispatcher: UmrahDispatchersProvider)
+                                                    private val dispatcher: UmrahDispatchersProvider)
     : BaseViewModel(dispatcher.Main) {
 
     val orderDetailData = MutableLiveData<Result<UmrahOrderDetailsEntity>>()
@@ -36,7 +36,7 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
                 PARAM_ORDER_CATEGORY_STR to UMRAH_CATEGORY)
 
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(dispatcher.Main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, UmrahOrderDetailsEntity.Response::class.java, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<UmrahOrderDetailsEntity.Response>()
@@ -50,7 +50,7 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
         val params = mapOf(PARAM_ORDER_ID to orderId)
 
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(dispatcher.Main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, MyUmrahEntity.Response::class.java, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<MyUmrahEntity.Response>()
