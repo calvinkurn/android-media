@@ -58,30 +58,27 @@ class GqlAkamaiBotInterceptor : Interceptor {
                     readFromBuffer(buffer, it).let {
 
                         // start time
-                        var functionNames: List<String> = mutableListOf();
                         try {
                             val time = measureTimeMillis {
                                 val jsonArray = JSONArray(it)
                                 val jsonObject: JSONObject = jsonArray.getJSONObject(0)
                                 val query = jsonObject.getString("query")
-                                functionNames = getAny(query)
+
+                                val xTkpdAkamai = getAny(query).asSequence().filter { it ->
+                                    registeredGqlFunctions.containsKey(it)
+                                }.take(1).map { it ->
+                                    registeredGqlFunctions[it]
+                                }.first()
+
+                                if (!xTkpdAkamai.isNullOrEmpty()) {
+                                    newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
+                                            ?: "")
+                                    newRequest.addHeader("X-TKPD-AKAMAI", xTkpdAkamai)
+                                }
+                                        
                             }
                         } catch (e: JSONException) {
                             e.printStackTrace()
-                        }
-                        // end time and elapse time
-
-
-
-                        for(functionName in functionNames){
-                            for ((registeredFunction, xTkpdAkamai) in registeredGqlFunctions){
-                                if (functionName.equals(registeredFunction)) {
-                                    newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                            ?: "")
-                                    newRequest.addHeader("X-TKPD-AKAMAI",xTkpdAkamai)
-                                    break;
-                                }
-                            }
                         }
                     }
                 }
