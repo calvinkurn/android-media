@@ -34,8 +34,6 @@ public class ShipmentItemDecoration extends RecyclerView.ItemDecoration {
         RecyclerView.ViewHolder viewHolder = parent.getChildViewHolder(view);
         if (viewHolder instanceof ShipmentNotifierViewHolder) {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
-        } else if (viewHolder instanceof PromoGlobalViewHolder) {
-            outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_8);
         } else if (viewHolder instanceof ShipmentDonationViewHolder) {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_8);
         } else if (viewHolder instanceof PromoCheckoutViewHolder) {
