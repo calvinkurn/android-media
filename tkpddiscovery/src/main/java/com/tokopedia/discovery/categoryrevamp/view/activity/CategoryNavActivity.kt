@@ -97,8 +97,10 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     @Inject
     lateinit var categoryNavViewModel: CategoryNavViewModel
 
+    // tokopedia-android-internal://marketplace/category/kesehatan/
+
     object DeepLinkIntents {
-        @DeepLink(Constants.Applinks.DISCOVERY_CATEGORY_DETAIL)
+        @DeepLink(Constants.Applinks.DISCOVERY_CATEGORY_DETAIL,Constants.Applinks.DISCOVERY_CATEGORY_DETAIL_MARKETPLACE)
         @JvmStatic
         fun getCallingCategoryIntent(context: Context?, bundle: Bundle): Intent? {
             val intent = Intent(context, CategoryNavActivity::class.java)

@@ -33,7 +33,6 @@ import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -801,7 +800,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         if (!urlParser.getParamKeyValueMap().isEmpty()) {
             context.startActivity(CategoryNavActivity.getCategoryIntentWithFilter(context,uriData));
         } else {
-            RouteManager.route(context, bundle, Constants.Applinks.DISCOVERY_CATEGORY_DETAIL, urlParser.getDepIDfromURI(context));
+            RouteManager.route(context, bundle, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, urlParser.getDepIDfromURI(context));
         }
     }
 
