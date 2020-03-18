@@ -4,13 +4,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
-import com.tokopedia.play.ui.chatlist.ChatListComponent
-import com.tokopedia.play.ui.chatlist.ChatListComponentTest
-import com.tokopedia.play.ui.chatlist.ChatListView
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayRoomEvent
-import com.tokopedia.play.view.uimodel.TotalLikeUiModel
-import com.tokopedia.play.view.uimodel.TotalViewUiModel
 import io.mockk.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -44,29 +39,6 @@ class EndLiveInfoComponentTest {
     @After
     fun tearDown() {
         Dispatchers.resetMain()
-    }
-
-    @Test
-    fun `test set total views`() = runBlockingTest(testDispatcher) {
-        val mockTotalView = TotalViewUiModel(
-                totalView = "1.2"
-        )
-
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetTotalViews(mockTotalView))
-        verify { component.uiView.statsView.setTotalViews(mockTotalView) }
-        confirmVerified(component.uiView)
-    }
-
-    @Test
-    fun `test set total likes`() = runBlockingTest(testDispatcher) {
-        val mockTotalLike = TotalLikeUiModel(
-                totalLike = 1200,
-                totalLikeFormatted = "1.2k"
-        )
-
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetTotalLikes(mockTotalLike))
-        verify { component.uiView.statsView.setTotalLikes(mockTotalLike) }
-        confirmVerified(component.uiView)
     }
 
     @Test

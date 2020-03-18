@@ -1,15 +1,13 @@
 package com.tokopedia.play.viewmodel
 
+import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.tokopedia.play.data.TotalLike
 import com.tokopedia.play.data.websocket.PlaySocket
-import com.tokopedia.play.domain.GetChannelInfoUseCase
-import com.tokopedia.play.domain.GetIsLikeUseCase
-import com.tokopedia.play.domain.GetPartnerInfoUseCase
-import com.tokopedia.play.domain.GetTotalLikeUseCase
+import com.tokopedia.play.domain.*
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.model.ModelBuilder
@@ -45,7 +43,9 @@ class PlayViewModelTest {
     private val mockGetPartnerInfoUseCase: GetPartnerInfoUseCase = mockk(relaxed = true)
     private val mockGetTotalLikeUseCase: GetTotalLikeUseCase = mockk(relaxed = true)
     private val mockGetIsLikeUseCase: GetIsLikeUseCase = mockk(relaxed = true)
-    private val mockPlaySocket: PlaySocket = mockk()
+    private val mockGetCartCountUseCase: GetCartCountUseCase = mockk(relaxed = true)
+    private val mockGetProductTagItemsUseCase: GetProductTagItemsUseCase = mockk(relaxed = true)
+    private val mockPlaySocket: PlaySocket = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
     private val dispatchers: CoroutineDispatcherProvider = TestCoroutineDispatchersProvider
 
@@ -54,6 +54,9 @@ class PlayViewModelTest {
     private val mockChannel = modelBuilder.buildChannel()
     private val mockShopInfo = modelBuilder.buildShopInfo()
     private val mockNewChat = modelBuilder.buildNewChat()
+    private val mockCartCount = 1
+    private val mockProductTagging = modelBuilder.buildProductTagging()
+
 
     private val mockTotalLikeContentData = modelBuilder.buildTotalLike()
     private val mockTotalLike = TotalLike(mockTotalLikeContentData.like.value, mockTotalLikeContentData.like.fmt)
@@ -71,6 +74,8 @@ class PlayViewModelTest {
                 mockGetPartnerInfoUseCase,
                 mockGetTotalLikeUseCase,
                 mockGetIsLikeUseCase,
+                mockGetCartCountUseCase,
+                mockGetProductTagItemsUseCase,
                 mockPlaySocket,
                 userSession,
                 dispatchers
@@ -80,6 +85,9 @@ class PlayViewModelTest {
         coEvery { mockGetPartnerInfoUseCase.executeOnBackground() } returns mockShopInfo
         coEvery { mockGetTotalLikeUseCase.executeOnBackground() } returns mockTotalLike
         coEvery { mockGetIsLikeUseCase.executeOnBackground() } returns mockIsLike
+        coEvery { mockGetCartCountUseCase.executeOnBackground() } returns mockCartCount
+        coEvery { mockGetProductTagItemsUseCase.executeOnBackground() } returns mockProductTagging
+        coEvery { mockPlaySocket.channelId } returns ""
     }
 
     @After
@@ -113,7 +121,8 @@ class PlayViewModelTest {
                 partnerType = PartnerType.getTypeByValue(mockChannel.partnerType),
                 contentId = mockChannel.contentId,
                 contentType = mockChannel.contentType,
-                likeType = mockChannel.likeType
+                likeType = mockChannel.likeType,
+                isShowCart = mockChannel.isShowCart
         )
         val expectedResult = Success(expectedModel)
 

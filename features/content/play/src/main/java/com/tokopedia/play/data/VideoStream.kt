@@ -28,7 +28,9 @@ data class VideoStream(
             @SerializedName("stream_url")
             val streamUrl: String = "", // type: vod, live
             @SerializedName("livestream_id")
-            val liveStreamId: String = "" // type: live
+            val liveStreamId: String = "", // type: live
+            @SerializedName("is_auto_play")
+            val isAutoPlay: Boolean = false
     )
 
     data class BufferControl(
