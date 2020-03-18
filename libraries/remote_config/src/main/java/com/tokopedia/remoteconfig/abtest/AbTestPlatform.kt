@@ -22,7 +22,13 @@ import java.util.*
 import kotlin.collections.HashMap
 
 class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteConfig {
+
+    private lateinit var userSession: UserSession
     private val graphqlUseCase: GraphqlUseCase = GraphqlUseCase()
+
+    init {
+        userSession = UserSession(context)
+    }
 
     private val sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCE_AB_TEST_PLATFORM, Context.MODE_PRIVATE)
     var editor = sharedPreferences.edit()
@@ -98,6 +104,11 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         val payloads = HashMap<String, Any>()
         payloads[REVISION] = revision
         payloads[CLIENTID] = ANDROID_CLIENTID
+        if (userSession.isLoggedIn) {
+            payloads[ID] = userSession.userId
+        } else {
+            payloads[ID] = userSession.deviceId
+        }
 
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
                 R.raw.gql_rollout_feature_variant), AbTestVariantPojo::class.java, payloads, false)
@@ -166,6 +177,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
     companion object {
         val REVISION = "rev"
         val CLIENTID = "client_id"
+        val ID = "id"
         val ANDROID_CLIENTID = 1
         val KEY_SP_TIMESTAMP_AB_TEST = "key_sp_timestamp_ab_test"
         val SHARED_PREFERENCE_AB_TEST_PLATFORM = "tkpd-ab-test-platform"
