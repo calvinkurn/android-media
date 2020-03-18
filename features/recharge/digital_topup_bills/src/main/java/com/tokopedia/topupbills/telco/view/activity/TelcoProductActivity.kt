@@ -69,7 +69,7 @@ class TelcoProductActivity : BaseTelcoActivity() {
         if(intent.data != null) {
             val trackingClick = intent.getStringExtra(RECHARGE_PRODUCT_EXTRA)
             if (trackingClick!=null){
-            Timber.d("P2#ACTION_SLICE_CLICK_RECHARGE#$trackingClick")
+            Timber.w("P2#ACTION_SLICE_CLICK_RECHARGE#$trackingClick")
             }
         }
     }

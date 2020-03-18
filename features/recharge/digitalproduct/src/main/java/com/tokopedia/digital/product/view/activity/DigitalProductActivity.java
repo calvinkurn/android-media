@@ -124,7 +124,7 @@ public class DigitalProductActivity extends BaseSimpleActivity
         if(intent.getData() != null) {
             String trackingSliceClick = intent.getStringExtra("RECHARGE_PRODUCT_EXTRA");
             if(trackingSliceClick!=null)
-            Timber.d("P2#ACTION_SLICE_CLICK_RECHARGE#"+trackingSliceClick);
+            Timber.w("P2#ACTION_SLICE_CLICK_RECHARGE#"+trackingSliceClick);
         }
     }
 }

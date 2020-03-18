@@ -61,7 +61,7 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
     private fun handleTracking(){
         val trackingClick = intent.getBooleanExtra(RECHARGE_HOME_PAGE_EXTRA, false)
         if (trackingClick) {
-            Timber.d("P2#ACTION_SLICE_CLICK_RECHARGE#DigitalHomepage")
+            Timber.w("P2#ACTION_SLICE_CLICK_RECHARGE#DigitalHomepage")
         }
     }
 }
