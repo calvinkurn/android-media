@@ -466,6 +466,8 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
 
     companion object {
         private val TAG_ONBOARDING = ChatTabListFragment::class.java.name + ".OnBoarding"
+
+        @JvmStatic
         fun create(): ChatTabListFragment {
             return ChatTabListFragment()
         }

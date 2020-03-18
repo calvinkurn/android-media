@@ -58,7 +58,9 @@ class ContainerFragment : Fragment() {
     private val productManageFragment: Fragment? by lazy {
         sellerHomeRouter?.getProductManageFragment()
     }
-    private var chatFragment: Fragment = ChatFragmentTemp()
+    private val chatFragment: Fragment? by lazy {
+        sellerHomeRouter?.getChatListFragment()
+    }
     private var somListFragment: Fragment? = null
 
     private var currentFragment: Fragment? = null
@@ -143,11 +145,13 @@ class ContainerFragment : Fragment() {
     }
 
     private fun setupChatFragment() {
-        if (!hasAttachChatFragment) {
-            addFragment(chatFragment)
-            hasAttachChatFragment = true
+        chatFragment?.let { fragment ->
+            if (!hasAttachChatFragment) {
+                addFragment(fragment)
+                hasAttachChatFragment = true
+            }
+            showFragment(fragment, getString(R.string.sah_chat))
         }
-        showFragment(chatFragment, getString(R.string.sah_chat))
 
         view?.sahToolbar?.showChatSettingsActionMenu {
             RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CHAT_SETTING_TEMPLATE)
