@@ -7,6 +7,8 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.adapter.HomeEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewmodel.CategoryViewModel
@@ -40,7 +42,7 @@ class CategoryEventViewHolder(itemView: View) : HomeEventViewHolder<CategoryView
         var LAYOUT: Int = R.layout.ent_layout_viewholder_category
     }
 
-    data class CategoryItemModel(var imageUrl: String, var title: String, var applink: String)
+    data class CategoryItemModel(var id: String, var imageUrl: String, var title: String, var applink: String)
 
     class InnerCategoryItemAdapter : RecyclerView.Adapter<InnerViewHolder>() {
 
@@ -56,7 +58,8 @@ class CategoryEventViewHolder(itemView: View) : HomeEventViewHolder<CategoryView
             Glide.with(holder.view).load(items.get(position).imageUrl).into(holder.view.icon)
             holder.view.title.text = items.get(position).title
             holder.view.setOnClickListener {
-                // RouteManager.route(holder.view.context, items.get(position).applink)
+                RouteManager.route(holder.view.context,
+                        ApplinkConstInternalEntertainment.EVENT_CATEGORY, items.get(position).id, "", "")
                 EventHomePageTracking.getInstance().clickCategoryIcon(items.get(position), position + 1)
             }
         }

@@ -113,8 +113,7 @@ class SearchLocationListViewHolder(val view: View, val onClicked: (() -> Unit)) 
 
         fun goToDetail(holder: LocationViewHolder, query_text: String, id_city: String) {
             val intent = RouteManager.getIntent(holder.view.context,
-                    ApplinkConstInternalEntertainment.EVENT_CATEGORY + "?id_city={id_city}&query_text={query_text}",
-                    id_city, query_text)
+                    ApplinkConstInternalEntertainment.EVENT_CATEGORY,"", id_city, query_text)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
             holder.view.context.startActivity(intent)
         }

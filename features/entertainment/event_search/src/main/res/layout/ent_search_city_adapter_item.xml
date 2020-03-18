@@ -25,7 +25,8 @@
         app:typographyType="body_2"
         tools:text="Sura"
         app:layout_constraintStart_toEndOf="@+id/imgCity"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/loc_type"

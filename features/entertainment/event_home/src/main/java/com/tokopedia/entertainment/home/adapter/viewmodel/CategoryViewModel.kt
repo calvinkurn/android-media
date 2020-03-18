@@ -16,7 +16,8 @@ class CategoryViewModel(var category: EventHomeDataResponse.Data.EventChildCateg
         category.categories.removeAt(0)
         category.categories.forEachIndexed { index, category ->
             if (index < 5)
-                items.add(CategoryEventViewHolder.CategoryItemModel(category.mediaUrl, category.title, category.appUrl))
+                items.add(CategoryEventViewHolder.CategoryItemModel(category.id,
+                        category.mediaUrl, category.title, category.appUrl))
         }
     }
 

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
@@ -33,7 +34,7 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
 
     init {
         itemView.ent_recycle_view.apply {
-            layoutManager = GridLayoutManager(itemView.context, 2)
+            layoutManager = GridLayoutManager(itemView.context, 2, LinearLayoutManager.VERTICAL, false)
             adapter = itemAdapter
         }
     }
@@ -42,8 +43,8 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
         itemView.ent_title_card.text = element.title
         itemAdapter.items = element.items
         itemView.btn_see_all.setOnClickListener {
-            RouteManager.route(itemView.context, ApplinkConstInternalEntertainment.EVENT_CATEGORY,
-                    element.id)
+            RouteManager.route(itemView.context, ApplinkConstInternalEntertainment.EVENT_CATEGORY
+                    , element.id,  "", "")
             EventHomePageTracking.getInstance().clickSeeAllCuratedEventProduct(element.title,
                     adapterPosition + 1)
         }

@@ -48,7 +48,8 @@ class EventCategoryActivity : BaseSimpleActivity(), HasComponent<EventSearchComp
     }
 
     private fun openSearchActivity(): Boolean {
-        val intent = RouteManager.getIntent(this, ApplinkConstInternalEntertainment.EVENT_SEARCH + "?query_text={query_text}", getQueryText())
+        val intent = RouteManager.getIntent(this, ApplinkConstInternalEntertainment.EVENT_SEARCH
+                        + "?query_text={query_text}", getQueryText())
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_NO_ANIMATION
         startActivity(intent)
         return true

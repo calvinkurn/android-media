@@ -17,7 +17,7 @@ object ApplinkConstInternalEntertainment {
     @JvmField
     val EVENT_FAVORITE = "$INTERNAL_EVENT/favorite"
     @JvmField
-    val EVENT_CATEGORY = "$INTERNAL_EVENT/category"
+    val EVENT_CATEGORY = "$INTERNAL_EVENT/category?category_id={category_id}&id_city={id_city}&query_text={query_text}"
     @JvmField
     val EVENT_SEARCH = "$INTERNAL_EVENT/search"
     @JvmField

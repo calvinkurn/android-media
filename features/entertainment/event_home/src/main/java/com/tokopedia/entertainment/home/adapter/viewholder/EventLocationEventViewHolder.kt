@@ -54,17 +54,18 @@ class EventLocationEventViewHolder(itemView: View) : HomeEventViewHolder<EventLo
         }
 
         override fun onBindViewHolder(holder: InnerViewHolder, position: Int) {
-            Glide.with(holder.view).load(items.get(position).imageUrl).into(holder.view.image)
-            holder.view.txt_title.text = items.get(position).title
-            holder.view.txt_subtitle.text = items.get(position).tagline
-            holder.view.addOnImpressionListener(items.get(position), {
-                EventHomePageTracking.getInstance().impressionLocationEvent(items.get(position), items,
+            var item = items.get(position)
+            Glide.with(holder.view).load(item.imageUrl).into(holder.view.image)
+            holder.view.txt_title.text = item.title
+            holder.view.txt_subtitle.text = item.tagline
+            holder.view.addOnImpressionListener(item, {
+                EventHomePageTracking.getInstance().impressionLocationEvent(item, items,
                         position + 1)
             })
             holder.view.setOnClickListener {
-                RouteManager.route(holder.view.context, ApplinkConstInternalEntertainment.EVENT_CATEGORY,
-                        items.get(position).id)
-                EventHomePageTracking.getInstance().clickLocationEvent(items.get(position), items,
+                RouteManager.route(holder.view.context,
+                        ApplinkConstInternalEntertainment.EVENT_CATEGORY,"", item.id, "")
+                EventHomePageTracking.getInstance().clickLocationEvent(item, items,
                         position + 1)
             }
         }
