@@ -1335,9 +1335,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             promoCheckoutBtn.desc = lastApplyData.additionalInfo.messageInfo.detail
         }
         promoCheckoutBtn.setOnClickListener {
-            dPresenter.doUpdateCartForPromo()
-            // analytics
-            PromoRevampAnalytics.eventCartClickPromoSection(getAllPromosApplied(lastApplyData), isApplied)
+            if (cartAdapter.selectedCartItemData.isEmpty()) showToaster(getString(R.string.promo_choose_item_cart))
+            else {
+                dPresenter.doUpdateCartForPromo()
+                // analytics
+                PromoRevampAnalytics.eventCartClickPromoSection(getAllPromosApplied(lastApplyData), isApplied)
+            }
         }
         if (isApplied) {
             PromoRevampAnalytics.eventCartViewPromoAlreadyApplied()

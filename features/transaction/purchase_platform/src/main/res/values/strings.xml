@@ -280,5 +280,6 @@
 
     <string name="promo_summary_usage_label">Diskon barang</string>
     <string name="promo_summary_usage_value">Rp20.000</string>
+    <string name="promo_choose_item_cart">Pilih barang dulu biar bisa pakai berbagai promo terbaik</string>
 
 </resources>
