@@ -2,7 +2,7 @@ package com.tokopedia.feedplus.view.analytics
 
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.feedplus.view.constants.Constants
-import com.tokopedia.feedplus.view.fragment.KEY_OTHER
+import com.tokopedia.feedplus.view.fragment.FeedPlusDetailFragment.Companion.KEY_OTHER
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics

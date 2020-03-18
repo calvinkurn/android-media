@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail
-import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel
+import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailItemModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
@@ -21,9 +21,9 @@ import kotlinx.android.synthetic.main.list_feed_detail.view.*
 private const val TYPE_DISCOUNT = "discount"
 private const val TYPE_CASHBACK = "cashback"
 
-class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDetail.View) : AbstractViewHolder<FeedDetailViewModel>(itemView) {
+class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDetail.View) : AbstractViewHolder<FeedDetailItemModel>(itemView) {
 
-    override fun bind(feedDetailViewModel: FeedDetailViewModel) {
+    override fun bind(feedDetailViewModel: FeedDetailItemModel) {
         itemView.run {
             ImageHandler.LoadImage(productImage, feedDetailViewModel.imageSource)
 

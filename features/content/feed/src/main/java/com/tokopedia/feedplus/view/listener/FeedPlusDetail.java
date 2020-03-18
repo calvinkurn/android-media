@@ -6,8 +6,8 @@ import android.content.res.Resources;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
-import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
+import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderModel;
+import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailItemModel;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public interface FeedPlusDetail {
 
         void onErrorGetFeedDetail(String errorMessage);
 
-        void onSuccessGetFeedDetail(FeedDetailHeaderViewModel header,
+        void onSuccessGetFeedDetail(FeedDetailHeaderModel header,
                                     ArrayList<Visitable> listDetail,
                                     boolean hasNextPage);
 
@@ -48,7 +48,7 @@ public interface FeedPlusDetail {
 
         void showLoadingProgress();
 
-        void onGoToProductDetail(FeedDetailViewModel feedDetailViewModel, int adapterPosition);
+        void onGoToProductDetail(FeedDetailItemModel feedDetailViewModel, int adapterPosition);
 
         void onEmptyFeedDetail();
 

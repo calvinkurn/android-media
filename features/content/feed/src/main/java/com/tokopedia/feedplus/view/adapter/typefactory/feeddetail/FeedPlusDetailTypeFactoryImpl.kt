@@ -8,18 +8,18 @@ import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.EmptyFeedDetail
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.FeedDetailHeaderViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.FeedDetailViewHolder
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail
-import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel
-import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel
+import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderModel
+import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailItemModel
 
 /**
  * @author by nisie on 5/18/17.
  */
 class FeedPlusDetailTypeFactoryImpl(private val viewListener: FeedPlusDetail.View) : BaseAdapterTypeFactory(), FeedPlusDetailTypeFactory {
-    override fun type(viewModel: FeedDetailViewModel): Int {
+    override fun type(viewModel: FeedDetailItemModel): Int {
         return FeedDetailViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: FeedDetailHeaderViewModel): Int {
+    override fun type(viewModel: FeedDetailHeaderModel): Int {
         return FeedDetailHeaderViewHolder.LAYOUT
     }
 

@@ -4,8 +4,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.feedplus.data.pojo.*
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail
-import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel
-import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel
+import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderModel
+import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailItemModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import rx.Subscriber
 import java.util.*
@@ -76,8 +76,8 @@ class FeedDetailSubscriber(private val viewListener: FeedPlusDetail.View, privat
         return listDetail
     }
 
-    private fun createProductViewModel(productFeed: ProductFeedType): FeedDetailViewModel {
-        return FeedDetailViewModel(
+    private fun createProductViewModel(productFeed: ProductFeedType): FeedDetailItemModel {
+        return FeedDetailItemModel(
                 productFeed.id,
                 productFeed.name,
                 productFeed.price,
@@ -85,9 +85,6 @@ class FeedDetailSubscriber(private val viewListener: FeedPlusDetail.View, privat
                 productFeed.image,
                 productFeed.productLink,
                 productFeed.cashback,
-                getIsWholesale(productFeed.wholesale),
-                productFeed.preorder,
-                productFeed.freereturns,
                 productFeed.wishlist,
                 productFeed.tags,
                 getRating(productFeed.rating),
@@ -102,14 +99,13 @@ class FeedDetailSubscriber(private val viewListener: FeedPlusDetail.View, privat
     private fun createHeaderViewModel(create_time: String,
                                       shop: ShopDetail,
                                       status_activity: String,
-                                      activityId: String): FeedDetailHeaderViewModel {
-        return FeedDetailHeaderViewModel(shop.id,
+                                      activityId: String): FeedDetailHeaderModel {
+        return FeedDetailHeaderModel(shop.id,
                 shop.name,
                 shop.avatar,
                 shop.isGold,
                 create_time,
                 shop.isOfficial,
-                shop.shopLink,
                 shop.shareLinkURL,
                 shop.shareLinkDescription,
                 status_activity,

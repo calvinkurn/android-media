@@ -1,24 +1,17 @@
 package com.tokopedia.feedplus.view.adapter.viewholder.feeddetail
 
-import android.graphics.Typeface
 import android.text.SpannableString
 import android.text.Spanned
-import android.text.TextPaint
 import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.text.style.ForegroundColorSpan
 import android.text.style.ImageSpan
-import android.text.style.TypefaceSpan
 import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail
-import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel
+import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderModel
 import com.tokopedia.kolcommon.util.TimeConverter
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -27,10 +20,10 @@ import kotlinx.android.synthetic.main.feed_detail_header.view.*
 /**
  * @author by nisie on 5/19/17.
  */
-class FeedDetailHeaderViewHolder(itemView: View, private val viewListener: FeedPlusDetail.View) : AbstractViewHolder<FeedDetailHeaderViewModel>(itemView) {
+class FeedDetailHeaderViewHolder(itemView: View, private val viewListener: FeedPlusDetail.View) : AbstractViewHolder<FeedDetailHeaderModel>(itemView) {
 
 
-    override fun bind(viewModel: FeedDetailHeaderViewModel) {
+    override fun bind(viewModel: FeedDetailHeaderModel) {
         itemView.run {
             val shopNameString = MethodChecker.fromHtml(viewModel.shopName).toString()
             ImageHandler.LoadImage(shopAvatar, viewModel.shopAvatar)
