@@ -92,30 +92,31 @@ class DFInstaller {
         }
     }
 
-    fun installOnBackground(context: Context, moduleNames: List<String>,
-                            onSuccessInstall: (() -> Unit)? = null,
-                            onFailedInstall: (() -> Unit)? = null,
-                            message: String) {
-        val moduleNameToDownload = getFilteredModuleList(context, moduleNames)
-        val dfConfig = DFRemoteConfig().getConfig(context.applicationContext)
+    fun installOnBackground(context: Context, moduleNames: List<String>, message: String) {
+        val dfConfig = DFRemoteConfig.getConfig(context.applicationContext)
         if (dfConfig.dowloadInBackground && !dfConfig.downloadInBackgroundExcludedSdkVersion.contains(Build.VERSION.SDK_INT)) {
-            DFDownloader.startSchedule(context.applicationContext, moduleNameToDownload, true)
+            DFDownloader.startSchedule(context.applicationContext, moduleNames, true)
         } else {
-            startDeferredInstall(context, moduleNameToDownload, message)
+            startDeferredInstall(context, moduleNames, message)
         }
     }
 
     private fun startDeferredInstall(context: Context, moduleNameToDownload: List<String>, message: String) {
+        val filteredModuleNameToDownload = getFilteredModuleList(context, moduleNameToDownload)
         val messageLog = "$TAG_LOG_DFM_DEFERRED_INSTALL {$message}"
-        getManager(context.applicationContext)?.deferredInstall(moduleNameToDownload)?.addOnSuccessListener {
-            logDeferredStatus(context.applicationContext, messageLog, moduleNameToDownload)
+        getManager(context.applicationContext)?.deferredInstall(filteredModuleNameToDownload)?.addOnSuccessListener {
+            logDeferredStatus(context.applicationContext, messageLog, filteredModuleNameToDownload)
         }?.addOnFailureListener {
             val errorCode = (it as? SplitInstallException)?.errorCode
-            logDeferredStatus(context.applicationContext, messageLog, moduleNameToDownload, listOf(errorCode?.toString() ?: it.toString()))
+            logDeferredStatus(context.applicationContext, messageLog, filteredModuleNameToDownload, listOf(errorCode?.toString() ?: it.toString()))
         }
     }
 
-    private fun getFilteredModuleList(context: Context, moduleNames: List<String>, installed: Boolean = true): List<String> {
+    /**
+     * installed = true
+     * will return the moduleList that need to install
+     */
+    fun getFilteredModuleList(context: Context, moduleNames: List<String>, installed: Boolean = true): List<String> {
         val moduleNameToDownload = mutableListOf<String>()
         val manager = getManager(context.applicationContext) ?: return moduleNameToDownload
         moduleNames.forEach { name ->

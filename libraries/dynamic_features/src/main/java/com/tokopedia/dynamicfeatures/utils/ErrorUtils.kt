@@ -10,7 +10,7 @@ object ErrorUtils {
 
     fun getValidatedErrorCode(context: Context, errCode: String, freeInternalStorage: Long): String {
         var errorCodeTemp = errCode
-        val maxThresholdInsufficientStorage = DFRemoteConfig().getConfig(context).maxThresholdInsufficientStorage
+        val maxThresholdInsufficientStorage = DFRemoteConfig.getConfig(context).maxThresholdInsufficientStorage
         if (!Utils.isPlayServiceConnected(context)) {
             errorCodeTemp = ErrorConstant.ERROR_PLAY_SERVICE_NOT_CONNECTED
         } else if (!Utils.isPlayStoreAvailable(context)) {
