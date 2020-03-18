@@ -52,7 +52,7 @@ open class FlightSearchActivity : BaseSimpleActivity(),
 
     override fun getLayoutRes(): Int = R.layout.activity_flight_search
 
-    override fun getToolbarResourceID(): Int = R.id.flight_search_header
+//    override fun getToolbarResourceID(): Int = R.id.flight_search_header
 
     override fun getParentViewResourceID(): Int = R.id.flight_search_parent_view
 
