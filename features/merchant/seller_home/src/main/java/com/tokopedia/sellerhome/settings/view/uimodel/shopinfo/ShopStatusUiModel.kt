@@ -12,15 +12,11 @@ class ShopStatusUiModel(val shopType: ShopType,
         SettingShopInfoClickTrackable
 {
 
-    companion object {
-        const val SHOP_STATE = "shop state"
-    }
-
     override val impressionEventAction: String
-        get() = "${SettingTrackingConstant.IMPRESSION} $SHOP_STATE - ${shopType.mapToEventCategory()}"
+        get() = "${SettingTrackingConstant.IMPRESSION} ${SettingTrackingConstant.SHOP_STATE} - ${shopType.mapToEventCategory()}"
 
     override val clickEventAction: String
-        get() = "${SettingTrackingConstant.CLICK} $SHOP_STATE - ${shopType.mapToEventCategory()}"
+        get() = "${SettingTrackingConstant.CLICK} ${SettingTrackingConstant.SHOP_STATE} - ${shopType.mapToEventCategory()}"
 
     private fun ShopType.mapToEventCategory(): String {
         val shopType = when(this) {
