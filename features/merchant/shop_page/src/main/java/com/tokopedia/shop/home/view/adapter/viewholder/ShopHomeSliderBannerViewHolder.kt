@@ -1,10 +1,10 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
+import android.os.Handler
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carousel.CarouselUnify
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisibleOnTheScreen
 import com.tokopedia.kotlin.extensions.view.show
@@ -12,7 +12,6 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.viewmodel_slider_banner.view.*
 import java.util.ArrayList
 
@@ -66,7 +65,6 @@ class ShopHomeSliderBannerViewHolder(
         carouselShopPage = view?.findViewById(R.id.carousel_shop_page)
         carouselShopPage?.apply {
             autoplayDuration = 5000L
-            autoplay = true
             indicatorPosition = CarouselUnify.INDICATOR_BL
             infinite = true
             onActiveIndexChangedListener = this@ShopHomeSliderBannerViewHolder
@@ -99,8 +97,13 @@ class ShopHomeSliderBannerViewHolder(
         carouselData = dataWidgetToCarouselData(shopHomeDisplayWidgetUiModel)
         carouselShopPage?.apply {
             carouselData?.let {
-                if(stage.childCount == 0)
+                if (stage.childCount == 0) {
                     addItems(R.layout.widget_slider_banner_item, it, itmListener)
+                    Handler().post {
+                        activeIndex = 0
+                        autoplay = true
+                    }
+                }
             }
         }
         itemView.textViewTitle?.apply {
