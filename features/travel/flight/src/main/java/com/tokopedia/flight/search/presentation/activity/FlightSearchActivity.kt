@@ -3,6 +3,7 @@ package com.tokopedia.flight.search.presentation.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -159,8 +160,10 @@ open class FlightSearchActivity : BaseFlightActivity(),
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menu.clear()
         menuInflater.inflate(R.menu.menu_flight_search, menu)
-        val coachMarkView = menu.findItem(R.id.menu_change_search).actionView
-        setupChangeSearchCoachMark(coachMarkView)
+        Handler().post {
+            val coachMarkView: View = findViewById(R.id.menu_change_search)
+            setupChangeSearchCoachMark(coachMarkView)
+        }
         return true
     }
 
