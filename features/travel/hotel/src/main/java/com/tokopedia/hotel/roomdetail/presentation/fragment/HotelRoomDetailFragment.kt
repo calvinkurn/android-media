@@ -28,6 +28,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
+import com.tokopedia.hotel.common.data.HotelErrorException
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
@@ -114,7 +115,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                     when {
                         ErrorHandlerHotel.isPhoneNotVerfiedError(it.throwable) -> navigateToAddPhonePage()
                         ErrorHandlerHotel.isGetFailedRoomError(it.throwable) -> {
-                            showFailedGetRoomErrorDialog()
+                            showFailedGetRoomErrorDialog((it as HotelErrorException).message)
                         }
                         else -> NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
                     }
@@ -393,10 +394,10 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         RouteManager.route(requireContext(), ApplinkConstInternalGlobal.ADD_PHONE)
     }
 
-    private fun showFailedGetRoomErrorDialog() {
+    private fun showFailedGetRoomErrorDialog(message: String) {
         val dialog = DialogUnify(activity as AppCompatActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ICON)
         dialog.setTitle(getString(R.string.hotel_room_list_failed_get_room_availability_error_title))
-        dialog.setDescription(getString(R.string.hotel_room_list_failed_get_room_availability_error_desc))
+        dialog.setDescription(message)
         dialog.setImageDrawable(R.drawable.ic_hotel_room_error_refresh)
         dialog.setPrimaryCTAText(getString(R.string.hotel_room_list_failed_get_room_availability_cta_title))
         dialog.setPrimaryCTAClickListener {

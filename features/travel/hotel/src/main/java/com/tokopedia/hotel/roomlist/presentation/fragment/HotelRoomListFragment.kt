@@ -29,6 +29,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
+import com.tokopedia.hotel.common.data.HotelErrorException
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
 import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity
@@ -149,7 +150,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                     if (ErrorHandlerHotel.isPhoneNotVerfiedError(it.throwable)) {
                         navigateToAddPhonePage()
                     } else if (ErrorHandlerHotel.isGetFailedRoomError(it.throwable)) {
-                        showFailedGetRoomErrorDialog()
+                        showFailedGetRoomErrorDialog((it.throwable as HotelErrorException).message)
                     } else {
                         NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
                     }
@@ -422,10 +423,10 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         RouteManager.route(requireContext(), ApplinkConstInternalGlobal.ADD_PHONE)
     }
 
-    private fun showFailedGetRoomErrorDialog() {
+    private fun showFailedGetRoomErrorDialog(message: String) {
         val dialog = DialogUnify(activity as AppCompatActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ICON)
         dialog.setTitle(getString(R.string.hotel_room_list_failed_get_room_availability_error_title))
-        dialog.setDescription(getString(R.string.hotel_room_list_failed_get_room_availability_error_desc))
+        dialog.setDescription(message)
         dialog.setImageDrawable(R.drawable.ic_hotel_room_error_refresh)
         dialog.setPrimaryCTAText(getString(R.string.hotel_room_list_failed_get_room_availability_cta_title))
         dialog.setPrimaryCTAClickListener {
