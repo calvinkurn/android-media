@@ -182,6 +182,8 @@ public interface ProductListSectionContract {
 
         boolean isUserLoggedIn();
 
+        String getDeviceId();
+
         void onPriceFilterTickerDismissed();
 
         boolean getIsTickerHasDismissed();

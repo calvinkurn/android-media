@@ -12,7 +12,7 @@ class AnalyticsDebuggerGtmErrorFragment : BaseAnalyticsDebuggerFragment(), Analy
     }
 
     companion object {
-
+        val TAG = AnalyticsDebuggerGtmErrorFragment::class.java.canonicalName
         fun newInstance(): Fragment {
             return AnalyticsDebuggerGtmErrorFragment()
         }

@@ -12,7 +12,7 @@ class AnalyticsDebuggerFragment : BaseAnalyticsDebuggerFragment(), AnalyticsDebu
     }
 
     companion object {
-
+        val TAG = AnalyticsDebuggerFragment::class.java.canonicalName
         fun newInstance(): Fragment {
             return AnalyticsDebuggerFragment()
         }

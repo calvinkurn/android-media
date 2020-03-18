@@ -139,3 +139,8 @@ const val UMRAH_CLICK_CONTENT = "click content"
 const val UMRAH_IMPRESSION_TRAVEL_AGENT =  "impression travel agent"
 const val UMRAH_CLICK_TRAVEL_AGENT =  "click travel agent"
 const val UMRAH_TRAVEL_AGENT = "travel agent"
+
+const val UMRAH_TRAVEL_LIST_UMROH = "travel list page umroh"
+const val UMRAH_IMPRESSION_TRAVEL_LIST = "impression travel agent"
+const val UMRAH_CLICK_TRAVEL_LIST = "click travel agent"
+
