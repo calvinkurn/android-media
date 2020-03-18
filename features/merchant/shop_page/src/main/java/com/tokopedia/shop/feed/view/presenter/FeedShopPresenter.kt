@@ -83,32 +83,7 @@ class FeedShopPresenter @Inject constructor(
                     }
             )
         } else {
-            getDynamicFeedUseCase.execute(
-                    GetDynamicFeedUseCase.createRequestParams(
-                            userId = getUserId(),
-                            cursor = cursor,
-                            source = GetDynamicFeedUseCase.FeedV2Source.Shop,
-                            sourceId = shopId),
-                    object : Subscriber<DynamicFeedDomainModel>() {
-                        override fun onNext(t: DynamicFeedDomainModel?) {
-                            t?.let {
-                                view.onSuccessGetFeed(t.postList, t.cursor)
-                            }
-                        }
-
-                        override fun onCompleted() {
-                        }
-
-                        override fun onError(e: Throwable?) {
-                            if (isViewAttached) {
-                                if (GlobalConfig.isAllowDebuggingTools()) {
-                                    e?.printStackTrace()
-                                }
-                                view.showGetListError(e)
-                            }
-                        }
-                    }
-            )
+            getFeed(shopId)
         }
     }
 

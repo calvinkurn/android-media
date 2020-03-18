@@ -9,16 +9,16 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 object MixTopTracking : BaseTracking() {
     private class CustomAction{
         companion object {
-            val IMPRESSION_ON_CAROUSEL_PRODUCT = Action.IMPRESSION_ON.format("product dynamic channel coupon")
-            val CLICK_ON_CAROUSEL_PRODUCT = Action.CLICK_ON.format("product dynamic channel coupon")
-            const val CLICK_VIEW_ALL_CAROUSEL = "click view all on dynamic channel coupon"
-            const val CLICK_BUTTON_CAROUSEL = "click %s on dynamic channel coupon"
+            val IMPRESSION_ON_CAROUSEL_PRODUCT = Action.IMPRESSION_ON.format("product dynamic channel top carousel")
+            val CLICK_ON_CAROUSEL_PRODUCT = Action.CLICK_ON.format("product dynamic channel top carousel")
+            const val CLICK_VIEW_ALL_CAROUSEL = "click view all on dynamic channel top carousel"
+            const val CLICK_BUTTON_CAROUSEL = "click %s on dynamic channel top carousel"
         }
     }
 
     private class CustomActionField{
         companion object {
-            val LIST_CAROUSEL_PRODUCT = LIST.format("%s", "dynamic channel coupon", "%s")
+            val LIST_CAROUSEL_PRODUCT = LIST.format("%s", "dynamic channel top carousel - %s")
         }
     }
 
@@ -31,11 +31,12 @@ object MixTopTracking : BaseTracking() {
             products
     )
 
-    fun getMixTopViewIris(products: List<Product>, headerName: String, positionOnWidgetHome: String) = getBasicProductView(
+    fun getMixTopViewIris(products: List<Product>, headerName: String, channelId: String, positionOnWidgetHome: String) = getBasicProductView(
             Event.PRODUCT_VIEW_IRIS,
             Category.HOMEPAGE,
             CustomAction.IMPRESSION_ON_CAROUSEL_PRODUCT,
             Label.NONE,
+            channelId,
             CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome, headerName),
             products
     )
