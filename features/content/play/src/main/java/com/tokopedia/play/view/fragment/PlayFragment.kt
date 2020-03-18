@@ -176,6 +176,7 @@ class PlayFragment : BaseDaggerFragment() {
         observeSocketInfo()
         observeEventUserInfo()
         observeVideoProperty()
+        observeVideoStream()
     }
 
     override fun onResume() {
@@ -265,12 +266,17 @@ class PlayFragment : BaseDaggerFragment() {
 
     private fun observeVideoProperty() {
         playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
-            setWindowSoftInputMode(it.type.isLive)
             if (it.state is PlayVideoState.Error) {
                 PlayAnalytics.errorState(channelId,
                         it.state.error.message?:getString(R.string.play_common_video_error_message),
                         playViewModel.channelType)
             }
+        })
+    }
+
+    private fun observeVideoStream() {
+        playViewModel.observableVideoStream.observe(viewLifecycleOwner, Observer {
+            setWindowSoftInputMode(it.channelType.isLive)
         })
     }
 

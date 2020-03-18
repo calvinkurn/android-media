@@ -277,7 +277,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
                                 ScreenStateEvent::class.java,
-                                ScreenStateEvent.VideoPropertyChanged(it)
+                                ScreenStateEvent.VideoPropertyChanged(it, playViewModel.stateHelper)
                         )
             }
         })
@@ -357,7 +357,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
-                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden))
+                        .emit(
+                                ScreenStateEvent::class.java,
+                                ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden, playViewModel.stateHelper)
+                        )
 
                 val keyboardState = it[BottomInsetsType.Keyboard]
                 if (keyboardState != null && !keyboardState.isPreviousStateSame) {
@@ -922,7 +925,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
           EventBusFactory.get(viewLifecycleOwner)
                   .emit(
                           ScreenStateEvent::class.java,
-                          ScreenStateEvent.SetPinned(pinnedMessage)
+                          ScreenStateEvent.SetPinned(pinnedMessage, playViewModel.stateHelper)
                   )
         }
     }

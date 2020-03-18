@@ -198,7 +198,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
-                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden))
+                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden, playViewModel.stateHelper))
 
                 val productSheetState = it[BottomInsetsType.ProductSheet]
 

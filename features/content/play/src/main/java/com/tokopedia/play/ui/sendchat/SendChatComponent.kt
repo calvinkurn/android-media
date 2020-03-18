@@ -33,7 +33,6 @@ open class SendChatComponent(
                     .collect {
                         when (it) {
                             ScreenStateEvent.Init -> uiView.hide()
-                            is ScreenStateEvent.VideoPropertyChanged -> if (it.videoProp.type.isLive) uiView.show() else uiView.hide()
                             is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.channelType.isLive) uiView.show() else uiView.hide()
                             is ScreenStateEvent.ComposeChat -> uiView.focusChatForm(shouldFocus = true, forceChangeKeyboardState = true)
                             is ScreenStateEvent.BottomInsetsChanged -> uiView.focusChatForm(it.insetsViewMap[BottomInsetsType.Keyboard] is BottomInsetsState.Shown)

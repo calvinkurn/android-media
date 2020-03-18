@@ -31,20 +31,15 @@ open class PinnedComponent(
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container)
 
-    //temp state
-    private var shouldShow: Boolean = false
-    private var isBottomInsetsShown: Boolean = false
-
     init {
         launch(dispatchers.immediate) {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
                             ScreenStateEvent.Init -> uiView.hide()
-                            is ScreenStateEvent.SetPinned -> setPinned(it.pinned)
+                            is ScreenStateEvent.SetPinned -> setPinned(it.pinned, it.stateHelper.isAnyBottomInsetsShown)
                             is ScreenStateEvent.BottomInsetsChanged -> {
-                                if (!it.isAnyShown && shouldShow) uiView.show() else uiView.hide()
-                                isBottomInsetsShown = it.isAnyShown
+                                if (!it.isAnyShown && it.stateHelper.shouldShowPinnedMessage) uiView.show() else uiView.hide()
                             }
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
                         }
@@ -77,21 +72,18 @@ open class PinnedComponent(
         uiView.onDestroy()
     }
 
-    private fun setPinned(pinnedUiModel: PinnedUiModel) {
-       shouldShow = when (pinnedUiModel) {
+    private fun setPinned(pinnedUiModel: PinnedUiModel, isBottomInsetsShown: Boolean) {
+        when (pinnedUiModel) {
             is PinnedMessageUiModel -> {
                 uiView.setPinnedMessage(pinnedUiModel)
                 if (!isBottomInsetsShown) uiView.show()
-                true
             }
             is PinnedProductUiModel -> {
                 uiView.setPinnedProduct(pinnedUiModel)
                 if (!isBottomInsetsShown) uiView.show()
-                true
             }
             is PinnedRemoveUiModel -> {
                 uiView.hide()
-                false
             }
         }
     }
