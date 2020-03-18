@@ -22,8 +22,8 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'chucker-no-op'
-    groupId = 'com.tokopedia.chuckerNoOp'
+    artifactId = 'chucker_no_op'
+    groupId = 'com.tokopedia.chuckernoop'
     versionName = "0.0.1"
     artifactName = "chucker-no-op-release"
 }

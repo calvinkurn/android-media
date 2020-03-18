@@ -15,6 +15,7 @@ ext {
             analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.3",
             williamchart            : "com.tokopedia.williamchart:williamchart:0.0.3",
             betaNotif               : "com.tokopedia.graphql:beta.notif:0.0.4"
+//            chuckNoOp               : "com.tokopedia.chuckernoop:chucker_no_op:0.0.1",
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -29,7 +30,6 @@ ext {
             baseListSeller          : ":libraries:base_list_seller",
             bannerDynamic           : ":libraries:banner_dynamic",
             bottomSheetBuilder      : ":libraries:bottom_sheet_builder",
-            chuckNoOp               : ":libraries:chucker-no-op",
             circularViewPager       : ":libraries:circular_view_pager",
             cmPushNotifications     : ":libraries:cm_push_notifications",
             commonNetwork           : ":libraries:common_network",

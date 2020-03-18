@@ -82,9 +82,9 @@ subprojects {
                 substitute module('com.google.android.gms:play-services-measurement-base') with module("com.google.android.gms:play-services-measurement-base:${playServiceMeasurementBase}")
                 substitute module('com.google.guava:guava') with module("com.google.guava:guava:${guavaVersion}")
                 substitute module('com.facebook.soloader:soloader') with module("com.facebook.soloader:soloader:0.8.0")
-                if (!rootProject.ext.debugToolsEnabled) {
+                /*if (!rootProject.ext.debugToolsEnabled) {
                     substitute module(rootProject.ext.debugToolsDependencies.chuck) with project(rootProject.ext.libraries.chuckNoOp)
-                }
+                }*/
             }
         }
     }
