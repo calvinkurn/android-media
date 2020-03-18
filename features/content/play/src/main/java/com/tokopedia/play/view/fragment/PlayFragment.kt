@@ -396,6 +396,7 @@ class PlayFragment : BaseDaggerFragment() {
             override fun onKeyboardHidden() {
                 playViewModel.onKeyboardHidden()
                 ivClose.invisible()
+                this@PlayFragment.onBottomInsetsViewHidden()
             }
         })
     }
@@ -406,6 +407,6 @@ class PlayFragment : BaseDaggerFragment() {
 
     private fun hideAllInsets() {
         hideKeyboard()
-        playViewModel.hideAllInsets()
+        playViewModel.hideInsets(isKeyboardHandled = true)
     }
 }
