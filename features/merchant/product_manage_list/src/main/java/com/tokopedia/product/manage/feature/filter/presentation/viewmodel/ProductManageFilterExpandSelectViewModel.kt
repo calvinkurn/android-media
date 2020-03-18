@@ -10,6 +10,8 @@ import javax.inject.Inject
 class ProductManageFilterExpandSelectViewModel @Inject constructor(): ViewModel() {
 
     private val _selectData = MutableLiveData<MutableList<SelectViewModel>>()
+    private var selectedElement: SelectViewModel? = null
+
     val selectData: LiveData<MutableList<SelectViewModel>>
         get() = _selectData
 
@@ -17,8 +19,6 @@ class ProductManageFilterExpandSelectViewModel @Inject constructor(): ViewModel(
         _selectData.postValue(data.toMutableList())
         selectedElement = findSelectedData(data)
     }
-
-    private var selectedElement: SelectViewModel? = null
 
     fun updateSelectedItem(element: SelectViewModel): Boolean {
         val currentData = _selectData.value
