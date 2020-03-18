@@ -45,8 +45,6 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
 
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
 
-    override fun getSearchInputViewResourceId(): Int = R.id.search_input_view_list
-
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_layout
 
     override fun onDraftCountLoadError() {
