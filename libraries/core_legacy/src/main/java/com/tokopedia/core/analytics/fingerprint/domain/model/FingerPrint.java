@@ -65,23 +65,7 @@ public class FingerPrint {
         if (TextUtils.isEmpty(fingerPrintBuilder.imei)) {
             pid = "";
         } else {
-            pid = getMD5Hash(fingerPrintBuilder.imei);
-        }
-    }
-
-    protected static String getMD5Hash(String raw) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("MD5");
-            digest.update(raw.getBytes());
-            byte[] messageDigest = digest.digest();
-            StringBuilder hexString = new StringBuilder();
-            for (byte message : messageDigest) {
-                hexString.append(String.format("%02x", message & 0xff));
-            }
-            return hexString.toString();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return "";
+            pid = fingerPrintBuilder.imei;
         }
     }
 

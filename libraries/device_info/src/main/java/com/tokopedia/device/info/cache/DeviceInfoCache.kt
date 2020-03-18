@@ -2,6 +2,9 @@ package com.tokopedia.device.info.cache
 
 import android.content.Context
 import android.content.SharedPreferences
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
+import kotlin.experimental.and
 
 const val DEVICE_INFO_PREF = "d_info"
 const val KEY_IMEI = "im"
@@ -32,7 +35,11 @@ class DeviceInfoCache(context: Context) {
 
     fun setImei(imei: String) {
         sp.edit()
-            .putString(KEY_IMEI, imei)
+            .putString(KEY_IMEI, if (imei.isEmpty()) {
+                ""
+            } else {
+                getMD5Hash(imei)
+            })
             .putLong(KEY_IMEI_TIMESTAMP, System.currentTimeMillis())
             .apply()
     }
@@ -42,5 +49,21 @@ class DeviceInfoCache(context: Context) {
             .putString(KEY_IMEI, "")
             .putLong(KEY_IMEI_TIMESTAMP, 0)
             .apply()
+    }
+
+    protected fun getMD5Hash(raw: String): String {
+        return try {
+            val digest = MessageDigest.getInstance("MD5")
+            digest.update(raw.toByteArray())
+            val messageDigest = digest.digest()
+            val hexString = StringBuilder()
+            for (message in messageDigest) {
+                hexString.append(String.format("%02x", message and 0xff.toByte()))
+            }
+            hexString.toString()
+        } catch (e: NoSuchAlgorithmException) {
+            e.printStackTrace()
+            ""
+        }
     }
 }
