@@ -56,7 +56,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         @JvmStatic
         fun newInstance() = SellerHomeFragment()
 
-        val NOTIFICATION_MENU_ID = R.id.menu_sah_notification
+        private val NOTIFICATION_MENU_ID = R.id.menu_sah_notification
         private const val NOTIFICATION_BADGE_DELAY = 3000L
         private const val TAG_TOOLTIP = "seller_home_tooltip"
         private const val TOAST_DURATION = 5000L
