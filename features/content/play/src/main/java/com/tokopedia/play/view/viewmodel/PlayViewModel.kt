@@ -227,9 +227,9 @@ class PlayViewModel @Inject constructor(
 //        startMockFreeze()
 //        setMockProductSocket()
 //        setMockVoucherSocket()
-        setMockProductSheetContent()
+//        setMockProductSheetContent()
 //        setMockVariantSheetContent()
-        setMockProductPinned()
+//        setMockProductPinned()
     }
 
     //region lifecycle
