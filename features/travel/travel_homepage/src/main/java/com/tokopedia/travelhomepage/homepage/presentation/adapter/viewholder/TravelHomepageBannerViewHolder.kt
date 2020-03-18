@@ -22,8 +22,8 @@ class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener:
 
     private val bannerView: BannerViewDynamicBackground = itemView.findViewById(R.id.banner)
     private lateinit var bannerList: List<TravelCollectiveBannerModel.Banner>
+    private var currentPosition = -1
     private var showAllUrl: String = ""
-    private var isFirstTime = true
 
     init {
         bannerView.onPromoAllClickListener = this
@@ -47,14 +47,16 @@ class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener:
                 bannerView.setPromoList(promoUrls)
                 bannerView.buildView()
 
-                if (bannerList.isNotEmpty() && isFirstTime) {
-                    isFirstTime = false
-                    travelHomepageActionListener.onViewSliderBanner(bannerList[0], 1)
+                if (currentPosition != element.layoutData.position) {
+                    currentPosition = element.layoutData.position
+                    travelHomepageActionListener.onViewSliderBanner(bannerList[0], 0)
                 }
+
             } catch (e: Throwable) {
 
             }
         } else {
+            currentPosition = -1
             onBindListener.onBannerItemBind(element.layoutData, adapterPosition, element.isLoadFromCloud)
         }
 
@@ -66,7 +68,7 @@ class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener:
     }
 
     override fun onPromoClick(position: Int) {
-        travelHomepageActionListener.onClickSliderBannerItem(bannerList[position], position + 1)
+        travelHomepageActionListener.onClickSliderBannerItem(bannerList[position], position)
         travelHomepageActionListener.onItemClick(bannerList[position].attribute.appUrl, bannerList[position].attribute.webUrl)
     }
 

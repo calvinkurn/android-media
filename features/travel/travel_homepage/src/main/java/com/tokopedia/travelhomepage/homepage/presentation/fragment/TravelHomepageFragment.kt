@@ -241,12 +241,12 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
         travelHomepageTrackingUtil.travelHomepageClickCategory(category, position)
     }
 
-    override fun onClickDynamicBannerItem(destination: TravelHomepageDestinationModel.Destination, position: Int) {
-        travelHomepageTrackingUtil.travelHomepageClickPopularDestination(destination, position, 0)
+    override fun onClickDynamicBannerItem(destination: TravelHomepageDestinationModel.Destination, position: Int, componentPosition: Int, sectionTitle: String) {
+        travelHomepageTrackingUtil.travelHomepageClickPopularDestination(destination, position, componentPosition, sectionTitle)
     }
 
-    override fun onViewDynamicBanners(destinations: List<TravelHomepageDestinationModel.Destination>, componentPosition: Int) {
-        travelHomepageTrackingUtil.travelHomepageDynamicBannerImpression(destinations, componentPosition)
+    override fun onViewDynamicBanners(destinations: List<TravelHomepageDestinationModel.Destination>, componentPosition: Int, sectionTitle: String) {
+        travelHomepageTrackingUtil.travelHomepageDynamicBannerImpression(destinations, componentPosition, sectionTitle)
     }
 
     override fun onViewProductCards(list: List<ProductGridCardItemModel>, componentPosition: Int, sectionTitle: String) {

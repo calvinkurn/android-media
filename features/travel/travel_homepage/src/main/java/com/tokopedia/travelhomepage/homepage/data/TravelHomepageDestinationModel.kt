@@ -22,7 +22,8 @@ class TravelHomepageDestinationModel(@SerializedName("destination")
                       @Expose
                       val attributes: Attribute = Attribute())
 
-    data class Attribute(@SerializedName("title")
+    data class Attribute(var id: String = "",
+                        @SerializedName("title")
                          @Expose
                          var title: String = "",
                          @SerializedName("subtitle")

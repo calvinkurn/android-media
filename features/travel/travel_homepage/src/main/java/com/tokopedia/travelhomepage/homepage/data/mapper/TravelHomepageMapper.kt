@@ -29,6 +29,8 @@ class TravelHomepageMapper {
         val banners = mutableListOf<LegoBannerItemModel>()
         for (item in unifiedModel) {
             val banner = LegoBannerItemModel()
+            banner.id = item.id
+            banner.product = item.product
             banner.appUrl = item.appUrl
             banner.imageUrl = item.imageUrl
             banner.webUrl = item.webUrl
@@ -45,6 +47,7 @@ class TravelHomepageMapper {
         val products = mutableListOf<TravelHomepageDestinationModel.Destination>()
         for (item in unifiedModel) {
             val product = TravelHomepageDestinationModel.Destination()
+            product.attributes.id = item.id
             product.attributes.title = item.title
             product.attributes.subtitle = item.subtitle
             product.attributes.webUrl = item.webUrl
@@ -63,6 +66,7 @@ class TravelHomepageMapper {
         val sectionItems = mutableListOf<TravelHomepageSectionModel.Item>()
         for (item in unifiedModel) {
             var sectionItem = TravelHomepageSectionModel.Item()
+            sectionItem.id = item.id
             sectionItem.title = item.title
             sectionItem.subtitle = item.subtitle
             sectionItem.prefix = item.prefix

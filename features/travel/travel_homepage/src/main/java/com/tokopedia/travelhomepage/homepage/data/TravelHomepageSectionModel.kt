@@ -17,6 +17,7 @@ data class TravelHomepageSectionModel(
     override fun type(typeFactory: TravelHomepageAdapterTypeFactory): Int = typeFactory.type(this)
 
     data class Item(
+            var id: String = "",
             var title: String = "",
             var subtitle: String = "",
             var prefix: String = "",

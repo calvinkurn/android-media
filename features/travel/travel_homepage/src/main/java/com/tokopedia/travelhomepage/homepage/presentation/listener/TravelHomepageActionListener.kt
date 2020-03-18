@@ -23,9 +23,9 @@ interface TravelHomepageActionListener {
 
     fun onClickDynamicIcon(category: TravelHomepageCategoryListModel.Category, position: Int)
 
-    fun onClickDynamicBannerItem(destination: TravelHomepageDestinationModel.Destination, position: Int)
+    fun onClickDynamicBannerItem(destination: TravelHomepageDestinationModel.Destination, position: Int, componentPosition: Int, sectionTitle: String)
 
-    fun onViewDynamicBanners(destination: List<TravelHomepageDestinationModel.Destination>, componentPosition: Int)
+    fun onViewDynamicBanners(destination: List<TravelHomepageDestinationModel.Destination>, componentPosition: Int, sectionTitle: String)
 
     fun onViewProductCards(list: List<ProductGridCardItemModel>, componentPosition: Int, sectionTitle: String)
 

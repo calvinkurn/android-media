@@ -5,6 +5,8 @@ package com.tokopedia.travelhomepage.homepage.data.widgetmodel
  */
 
 data class LegoBannerItemModel(
+        var id: String = "",
+        var product: String = "",
         var imageUrl: String = "",
         var appUrl: String = "",
         var webUrl: String = ""

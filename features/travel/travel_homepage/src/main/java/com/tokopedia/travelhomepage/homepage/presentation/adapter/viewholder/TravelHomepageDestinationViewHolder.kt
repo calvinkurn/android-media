@@ -37,8 +37,9 @@ class TravelHomepageDestinationViewHolder(itemView: View, private val onItemBind
 
                     if (!::recentSearchAdapter.isInitialized || currentPosition != element.layoutData.position) {
                         currentPosition = element.layoutData.position
-                        recentSearchAdapter = TravelHomepageDestinationAdapter(element.destination, travelHomepageActionListener, element.layoutData.position)
-                        travelHomepageActionListener.onViewDynamicBanners(element.destination, element.layoutData.position)
+                        recentSearchAdapter = TravelHomepageDestinationAdapter(element.destination, travelHomepageActionListener,
+                                element.layoutData.position, element.layoutData.title)
+                        travelHomepageActionListener.onViewDynamicBanners(element.destination, element.layoutData.position, element.layoutData.title)
                         val layoutManager = GridLayoutManager(this.context, 2, GridLayoutManager.VERTICAL, false)
                         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                             override fun getSpanSize(position: Int): Int {
