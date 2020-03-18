@@ -120,7 +120,7 @@ public class SeeAllView extends BottomSheets {
         list.add(gridItem);
 
         gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_deals,
+                R.drawable.ic_food_voucher,
                 getContext().getString(R.string.title_menu_deals),
                 ApplinkConst.DEALS_ORDER,
                 0,
