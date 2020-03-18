@@ -32,7 +32,6 @@ class UmrahOrderDetailViewModelTest{
         viewModel = UmrahOrderDetailViewModel(graphqlRepository, umrahDispatchersProvider)
     }
 
-
     @Test
     fun `getOrderDetail_SuccessRetreiveOrderDetail_ShouldSuccess`(){
         val graphqlSuccessResponse = GraphqlResponse(
@@ -79,18 +78,15 @@ class UmrahOrderDetailViewModelTest{
         assert(actual is Fail)
     }
 
-
     @Test
     fun `transformToSimpleModel_SuccessTransformToSimpleModel`(){
 
     }
 
-
     @Test
     fun `transformToSimpleDetailModel_SuccessTransformToSimpleDetailModel`(){
 
     }
-
 
     @Test
     fun `transformToButtonModel_SuccessTransformToButtonModel`(){
