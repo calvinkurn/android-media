@@ -364,6 +364,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         val priceBeforeInt = productInfo?.priceBeforeInt ?: 0
         val dropPercentage = productInfo?.dropPercentage ?: ""
         val productUrl = productInfo?.basic?.url ?: ""
+        val isActive = productInfo?.basic?.isActive() ?: true
         val productFsIsActive = productInfo?.data?.getFsProductIsActive() ?: false
         val productFsImageUrl = productInfo?.data?.getFsProductImageUrl() ?: ""
         val productColorVariant = variants?.get("colour")?.get("value") ?: ""
@@ -386,7 +387,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 productFsImageUrl,
                 priceBefore,
                 priceBeforeInt,
-                dropPercentage
+                dropPercentage,
+                isActive
         )
         val productPreviews = listOf(productPreview)
         val stringProductPreviews = CommonUtil.toJson(productPreviews)

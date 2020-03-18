@@ -18,8 +18,11 @@ open class ProductPreview(
         val productFsImageUrl: String = "",
         val priceBefore: String = "",
         val priceBeforeInt: Int = 0,
-        val dropPercentage: String = ""
+        val dropPercentage: String = "",
+        val isActive: Boolean = true
 ) {
+
+    val status: Int get() = if (isActive) 1 else 0
 
     fun notEnoughRequiredData(): Boolean {
         return name.isEmpty() || imageUrl.isEmpty() || price.isEmpty() || id.isEmpty()
