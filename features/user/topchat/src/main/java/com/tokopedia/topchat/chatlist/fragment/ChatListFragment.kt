@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -41,7 +42,8 @@ import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREAD
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_SELLER
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_USER
-import com.tokopedia.topchat.chatlist.di.ChatListComponent
+import com.tokopedia.topchat.chatlist.di.ChatListContextModule
+import com.tokopedia.topchat.chatlist.di.DaggerChatListComponent
 import com.tokopedia.topchat.chatlist.listener.ChatListContract
 import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.model.EmptyChatModel
@@ -69,10 +71,8 @@ import javax.inject.Inject
 /**
  * @author : Steven 2019-08-06
  */
-class ChatListFragment : BaseListFragment<Visitable<*>,
-        BaseAdapterTypeFactory>(),
-        ChatListItemListener,
-        LifecycleOwner {
+class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
+        ChatListItemListener, LifecycleOwner {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -84,7 +84,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val chatItemListViewModel by lazy { viewModelFragmentProvider.get(ChatItemListViewModel::class.java) }
     private lateinit var performanceMonitoring: PerformanceMonitoring
-    private var activityContract: ChatListContract.Activity? = null
+    private var chatTabListContract: ChatListContract.TabFragment? = null
     private var mUserSeen = false
     private var mViewCreated = false
     private var sightTag = ""
@@ -95,10 +95,17 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
     override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout
+    override fun getScreenName(): String = ""
 
     override fun onAttachActivity(context: Context?) {
-        if (context is ChatListContract.Activity) {
-            activityContract = context
+        if (context is ChatListContract.TabFragment) {
+            chatTabListContract = context
+            return
+        }
+        parentFragment?.let { parent ->
+            if (parent is ChatListContract.TabFragment) {
+                chatTabListContract = parent
+            }
         }
     }
 
@@ -387,12 +394,12 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
         }
     }
 
-    override fun getScreenName(): String {
-        return ""
-    }
-
     override fun initInjector() {
-        getComponent(ChatListComponent::class.java).inject(this)
+        DaggerChatListComponent.builder()
+                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                .chatListContextModule(context?.let { ChatListContextModule(it) })
+                .build()
+                .inject(this)
     }
 
     override fun loadData(page: Int) {
@@ -408,6 +415,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
             }
             val intent = RouteManager.getIntent(it, ApplinkConst.TOPCHAT, element.msgId)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+            intent.putExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, itemPosition)
             this@ChatListFragment.startActivityForResult(intent, OPEN_DETAIL_MESSAGE)
             it.overridePendingTransition(0, 0)
         }
@@ -428,15 +436,15 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
 
     override fun increaseNotificationCounter() {
         when (sightTag) {
-            PARAM_TAB_USER -> activityContract?.increaseUserNotificationCounter()
-            PARAM_TAB_SELLER -> activityContract?.increaseSellerNotificationCounter()
+            PARAM_TAB_USER -> chatTabListContract?.increaseUserNotificationCounter()
+            PARAM_TAB_SELLER -> chatTabListContract?.increaseSellerNotificationCounter()
         }
     }
 
     override fun decreaseNotificationCounter() {
         when (sightTag) {
-            PARAM_TAB_USER -> activityContract?.decreaseUserNotificationCounter()
-            PARAM_TAB_SELLER -> activityContract?.decreaseSellerNotificationCounter()
+            PARAM_TAB_USER -> chatTabListContract?.decreaseUserNotificationCounter()
+            PARAM_TAB_SELLER -> chatTabListContract?.decreaseSellerNotificationCounter()
         }
     }
 
@@ -491,7 +499,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
 
     private fun onViewCreatedFirstSight(view: View?) {
         Timber.d("$sightTag onViewCreatedFirstSight")
-        (activity as ChatListContract.Activity).notifyViewCreated()
+        chatTabListContract?.notifyViewCreated()
         loadInitialData()
     }
 
@@ -546,7 +554,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
 
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
-        activityContract?.loadNotificationCounter()
+        chatTabListContract?.loadNotificationCounter()
     }
 
     override fun trackChangeReadStatus(element: ItemChatListPojo) {

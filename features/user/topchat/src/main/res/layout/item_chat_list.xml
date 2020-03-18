@@ -128,5 +128,4 @@
         app:typographyType="body_3"
         tools:text="1" />
 
-
 </androidx.constraintlayout.widget.ConstraintLayout>
