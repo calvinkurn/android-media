@@ -7,14 +7,14 @@
 
     <include layout="@layout/partial_base_toolbar" />
 
-    <!--    <com.tokopedia.header.HeaderUnify
-            android:id="@+id/flight_search_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:unify_header_transparent_mode="true" />-->
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/flight_search_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_transparent_mode="true" />
 
     <FrameLayout
         android:id="@+id/flight_search_parent_view"
