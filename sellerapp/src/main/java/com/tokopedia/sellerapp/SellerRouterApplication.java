@@ -66,6 +66,7 @@ import com.tokopedia.inbox.common.ResolutionRouter;
 import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
+import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
@@ -204,6 +205,11 @@ public abstract class SellerRouterApplication extends MainApplication
 
     private void initResourceDownloadManager() {
         (new DeferredResourceInitializer()).initializeResourceDownloadManager(context);
+        initIris();
+    }
+
+    private void initIris() {
+        IrisAnalytics.Companion.getInstance(this).initialize();
     }
 
     private void initializeRemoteConfig() {
