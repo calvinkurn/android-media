@@ -20,7 +20,8 @@ class TravelHomepageSectionViewHolder(itemView: View,
                                       private val travelHomepageActionListener: TravelHomepageActionListener)
     : AbstractViewHolder<TravelHomepageSectionModel>(itemView) {
 
-    lateinit var orderAdapter: TravelHomepageSectionAdapter
+    lateinit var adapter: TravelHomepageSectionAdapter
+    private var currentPosition = -1
 
     override fun bind(element: TravelHomepageSectionModel) {
         if (element.isLoaded) {
@@ -37,21 +38,20 @@ class TravelHomepageSectionViewHolder(itemView: View,
                     if (element.seeAllUrl.isNotBlank()) {
                         section_see_all.show()
                         section_see_all.setOnClickListener {
-//                            if (element.type == TYPE_ORDER_LIST) travelHomepageActionListener.onTrackEventClick(TYPE_ALL_ORDER_LIST)
-//                            else if (element.type == TYPE_RECOMMENDATION) travelHomepageActionListener.onTrackEventClick(TYPE_ALL_DEALS)
-
+                            travelHomepageActionListener.onClickSeeAllProductSlider(element.layoutData.position, element.title)
                             travelHomepageActionListener.onItemClick(element.seeAllUrl)
                         }
                     } else section_see_all.hide()
 
-                    if (!::orderAdapter.isInitialized) {
-                        orderAdapter = TravelHomepageSectionAdapter(element.list, element.type, element.categoryType, travelHomepageActionListener)
+                    if (!::adapter.isInitialized || currentPosition != element.layoutData.position) {
+                        currentPosition = element.layoutData.position
+
+                        adapter = TravelHomepageSectionAdapter(element.list, element.layoutData, travelHomepageActionListener)
 
                         val layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
                         list_recycler_view.layoutManager = layoutManager
-                        list_recycler_view.adapter = orderAdapter
-                    } else {
-                        orderAdapter.updateList(element.list)
+                        list_recycler_view.adapter = adapter
+                        travelHomepageActionListener.onViewProductSlider(element.list, element.layoutData.position, element.title)
                     }
                 }
             } else {

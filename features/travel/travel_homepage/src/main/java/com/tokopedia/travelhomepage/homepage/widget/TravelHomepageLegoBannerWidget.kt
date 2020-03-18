@@ -43,8 +43,8 @@ class TravelHomepageLegoBannerWidget @JvmOverloads constructor(context: Context,
             TravelHomepageLegoBannerAdapter(bannerList, listener)
 
         travel_homepage_lego_banner_rv.layoutManager = GridLayoutManager(context, 3)
-
         travel_homepage_lego_banner_rv.adapter = adapter
+
     }
 
     fun setShimmeringVisibility(isShow: Boolean) {
@@ -56,6 +56,6 @@ class TravelHomepageLegoBannerWidget @JvmOverloads constructor(context: Context,
     }
 
     interface ActionListener {
-        fun onItemClickListener(item: LegoBannerItemModel)
+        fun onItemClickListener(item: LegoBannerItemModel, position: Int)
     }
 }

@@ -28,7 +28,7 @@ class TravelHomepageProductGridCardAdapter(var list: List<ProductGridCardItemMod
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(list[position])
-        holder.itemView.setOnClickListener { listener?.onItemClickListener(list[position]) }
+        holder.itemView.setOnClickListener { listener?.onItemClickListener(list[position], position) }
     }
 
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {

@@ -45,6 +45,10 @@ class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener:
                 }
                 bannerView.setPromoList(promoUrls)
                 bannerView.buildView()
+
+                if (bannerList.isNotEmpty()) {
+                    travelHomepageActionListener.onViewSliderBanner(bannerList[0], 1)
+                }
             } catch (e: Throwable) {
 
             }
@@ -60,16 +64,16 @@ class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener:
     }
 
     override fun onPromoClick(position: Int) {
-//        travelHomepageActionListener.onTrackBannerClick(bannerList[position], position + 1)
+        travelHomepageActionListener.onClickSliderBannerItem(bannerList[position], position + 1)
         travelHomepageActionListener.onItemClick(bannerList[position].attribute.appUrl, bannerList[position].attribute.webUrl)
     }
 
     override fun onPromoScrolled(position: Int) {
-//        travelHomepageActionListener.onTrackBannerImpression(bannerList[position], position + 1)
+        travelHomepageActionListener.onViewSliderBanner(bannerList[position], position + 1)
     }
 
     override fun onPromoAllClick() {
-//        travelHomepageActionListener.onTrackEventClick(TravelHomepageFragment.TYPE_ALL_PROMO)
+        travelHomepageActionListener.onClickSeeAllSliderBanner()
         travelHomepageActionListener.onItemClick(showAllUrl)
     }
 

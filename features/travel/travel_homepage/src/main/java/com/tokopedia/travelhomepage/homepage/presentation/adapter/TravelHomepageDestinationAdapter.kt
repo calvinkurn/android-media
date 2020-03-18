@@ -15,7 +15,8 @@ import kotlinx.android.synthetic.main.travel_homepage_destination_section_list_i
  */
 
 class TravelHomepageDestinationAdapter(private var list: List<TravelHomepageDestinationModel.Destination>,
-                                       var listener: TravelHomepageActionListener) :
+                                       var listener: TravelHomepageActionListener,
+                                       var componentPosition: Int) :
         RecyclerView.Adapter<TravelHomepageDestinationAdapter.DestinationViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): DestinationViewHolder {
@@ -26,7 +27,7 @@ class TravelHomepageDestinationAdapter(private var list: List<TravelHomepageDest
     override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(holder: DestinationViewHolder, position: Int) {
-        holder.bind(list[position], position, listener)
+        holder.bind(list[position], position, listener, componentPosition)
     }
 
     fun updateList(newList: List<TravelHomepageDestinationModel.Destination>) {
@@ -36,7 +37,7 @@ class TravelHomepageDestinationAdapter(private var list: List<TravelHomepageDest
 
     class DestinationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(destination: TravelHomepageDestinationModel.Destination, position: Int, listener: TravelHomepageActionListener) {
+        fun bind(destination: TravelHomepageDestinationModel.Destination, position: Int, listener: TravelHomepageActionListener, componentPosition: Int) {
             with(itemView) {
                 image.loadImage(destination.attributes.imageUrl)
                 title.text = destination.attributes.title
@@ -44,8 +45,8 @@ class TravelHomepageDestinationAdapter(private var list: List<TravelHomepageDest
                 destination_container.invalidate()
             }
             if (listener != null) itemView.setOnClickListener {
-//                listener.onTrackPopularDestinationClick(destination, position+1)
-//                listener.onPopularDestinationClick(destination.attributes.appUrl, destination.attributes.webUrl)
+                listener.onClickDynamicBannerItem(destination, position + 1)
+                listener.onItemClick(destination.attributes.appUrl, destination.attributes.webUrl)
             }
         }
 

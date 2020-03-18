@@ -8,6 +8,7 @@ import com.tokopedia.common.travel.utils.TextHtmlUtils
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageSectionModel
+import com.tokopedia.travelhomepage.homepage.data.TravelLayoutSubhomepage
 import com.tokopedia.travelhomepage.homepage.presentation.listener.TravelHomepageActionListener
 import kotlinx.android.synthetic.main.travel_homepage_travel_section_list_item.view.*
 
@@ -16,8 +17,7 @@ import kotlinx.android.synthetic.main.travel_homepage_travel_section_list_item.v
  */
 
 class TravelHomepageSectionAdapter(private var list: List<TravelHomepageSectionModel.Item>,
-                                   private var type: Int,
-                                   private var categoryType: String,
+                                   var layoutData: TravelLayoutSubhomepage.Data,
                                    var listener: TravelHomepageActionListener) :
         RecyclerView.Adapter<TravelHomepageSectionAdapter.ViewHolder>() {
 
@@ -28,7 +28,7 @@ class TravelHomepageSectionAdapter(private var list: List<TravelHomepageSectionM
     override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(list[position], position, listener, type, categoryType)
+        holder.bind(list[position], position, listener, layoutData)
     }
 
     fun updateList(newList: List<TravelHomepageSectionModel.Item>) {
@@ -43,7 +43,7 @@ class TravelHomepageSectionAdapter(private var list: List<TravelHomepageSectionM
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(item: TravelHomepageSectionModel.Item, position: Int, listener: TravelHomepageActionListener, type: Int, categoryType: String) {
+        fun bind(item: TravelHomepageSectionModel.Item, position: Int, listener: TravelHomepageActionListener, layoutData: TravelLayoutSubhomepage.Data) {
             with(itemView) {
                 image.loadImage(item.imageUrl)
                 title.text = item.title
@@ -56,6 +56,7 @@ class TravelHomepageSectionAdapter(private var list: List<TravelHomepageSectionM
                 }
             }
             if (listener != null) itemView.setOnClickListener {
+                listener.onClickProductSliderItem(item, position, layoutData.position, layoutData.title)
                 listener.onItemClick(item.appUrl)
             }
         }

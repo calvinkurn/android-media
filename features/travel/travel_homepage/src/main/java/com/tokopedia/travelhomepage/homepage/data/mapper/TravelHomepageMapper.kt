@@ -113,6 +113,8 @@ class TravelHomepageMapper {
             product.value = item.value
             product.imageUrl = item.imageUrl
             product.appUrl = item.appUrl
+            product.product = item.product
+            product.id = item.id
 
             productList.add(product)
         }

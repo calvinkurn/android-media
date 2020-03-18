@@ -12,5 +12,7 @@ data class ProductGridCardItemModel(
         var prefix: String = "",
         var value: String = "",
         var imageUrl: String = "",
-        var appUrl: String = ""
+        var appUrl: String = "",
+        var product: String = "",
+        var id: String = ""
 )

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.ListView
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -19,9 +20,12 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.homepage.analytics.TravelHomepageTrackingUtil
 import com.tokopedia.travelhomepage.homepage.data.*
+import com.tokopedia.travelhomepage.homepage.data.widgetmodel.LegoBannerItemModel
+import com.tokopedia.travelhomepage.homepage.data.widgetmodel.ProductGridCardItemModel
 import com.tokopedia.travelhomepage.homepage.di.TravelHomepageComponent
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.TravelHomepageAdapter
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.TravelHomepageAdapterTypeFactory
@@ -221,60 +225,60 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
         }
     }
 
-    override fun onViewSliderBanner() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onViewSliderBanner(banner: TravelCollectiveBannerModel.Banner, position: Int) {
+        travelHomepageTrackingUtil.travelHomepageImpressionBanner(banner, position)
     }
 
-    override fun onClickSliderBannerItem() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onClickSliderBannerItem(banner: TravelCollectiveBannerModel.Banner, position: Int) {
+        travelHomepageTrackingUtil.travelHomepageClickBanner(banner, position)
     }
 
     override fun onClickSeeAllSliderBanner() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        travelHomepageTrackingUtil.travelHomepageClickAllBanner()
     }
 
-    override fun onClickDynamicIcon() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onClickDynamicIcon(category: TravelHomepageCategoryListModel.Category, position: Int) {
+        travelHomepageTrackingUtil.travelHomepageClickCategory(category, position)
     }
 
-    override fun onClickDynamicBannerItem() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onClickDynamicBannerItem(destination: TravelHomepageDestinationModel.Destination, position: Int) {
+        travelHomepageTrackingUtil.travelHomepageClickPopularDestination(destination, position, 0)
     }
 
-    override fun onViewDynamicBanners() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onViewDynamicBanners(destinations: List<TravelHomepageDestinationModel.Destination>, componentPosition: Int) {
+        travelHomepageTrackingUtil.travelHomepageDynamicBannerImpression(destinations, componentPosition)
     }
 
-    override fun onViewProductCards() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onViewProductCards(list: List<ProductGridCardItemModel>, componentPosition: Int, sectionTitle: String) {
+        travelHomepageTrackingUtil.travelProductCardImpression(list, componentPosition, sectionTitle)
     }
 
-    override fun onClickProductCard() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onClickProductCard(item: ProductGridCardItemModel, position: Int, componentPosition: Int, sectionTitle: String) {
+        travelHomepageTrackingUtil.travelProductCardClick(item, position, componentPosition, sectionTitle)
     }
 
-    override fun onClickSeeAllProductCards() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onClickSeeAllProductCards(componentPosition: Int, sectionTitle: String) {
+        travelHomepageTrackingUtil.travelHomepageClickSeeAllProductCard(componentPosition, sectionTitle)
     }
 
-    override fun onViewLegoBanner() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onViewLegoBanner(list: List<LegoBannerItemModel>, componentPosition: Int, sectionTitle: String) {
+        travelHomepageTrackingUtil.travelHomepageLegoImpression(list, componentPosition, sectionTitle)
     }
 
-    override fun onClickLegoBanner() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onClickLegoBanner(item: LegoBannerItemModel, position: Int, componentPosition: Int, sectionTitle: String) {
+        travelHomepageTrackingUtil.travelHomepageLegoClick(item, position, componentPosition, sectionTitle)
     }
 
-    override fun onViewProductSlider() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onViewProductSlider(list: List<TravelHomepageSectionModel.Item>, componentPosition: Int, sectionTitle: String) {
+        travelHomepageTrackingUtil.travelProductCardSliderImpression(list, componentPosition, sectionTitle)
     }
 
-    override fun onClickProductSliderItem() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onClickProductSliderItem(item: TravelHomepageSectionModel.Item, position: Int, componentPosition: Int, sectionTitle: String) {
+        travelHomepageTrackingUtil.travelSliderProductCardClick(item, position, componentPosition, sectionTitle)
     }
 
-    override fun onClickSeeAllProductSlider() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onClickSeeAllProductSlider(componentPosition: Int, sectionTitle: String) {
+        travelHomepageTrackingUtil.travelHomepageClickSeeAllSliderProductCard(componentPosition, sectionTitle)
     }
 
     companion object {

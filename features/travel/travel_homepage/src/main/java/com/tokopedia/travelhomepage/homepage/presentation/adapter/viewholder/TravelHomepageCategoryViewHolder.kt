@@ -1,8 +1,8 @@
 package com.tokopedia.travelhomepage.homepage.presentation.adapter.viewholder
 
+import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -21,6 +21,8 @@ class TravelHomepageCategoryViewHolder(itemView: View, private val onItemBindLis
     : AbstractViewHolder<TravelHomepageCategoryListModel>(itemView) {
 
     private val categoriesRecyclerView: RecyclerView = itemView.findViewById(R.id.category_recycler_view)
+    lateinit var adapter: TravelHomepageCategoryListAdapter
+    private var currentPosition = -1
 
     override fun bind(element: TravelHomepageCategoryListModel) {
         val layoutManager = GridLayoutManager(itemView.context, CATEGORY_SPAN_COUNT)
@@ -29,9 +31,12 @@ class TravelHomepageCategoryViewHolder(itemView: View, private val onItemBindLis
         if (element.isLoaded) {
             if (element.isSuccess && element.categories.isNotEmpty()) {
                 categoriesRecyclerView.show()
-                categoriesRecyclerView.adapter = TravelHomepageCategoryListAdapter(element.categories, travelHomepageActionListener)
-            }
-            else categoriesRecyclerView.hide()
+                if (!::adapter.isInitialized || currentPosition != element.layoutData.position) {
+                    currentPosition = element.layoutData.position
+                    adapter = TravelHomepageCategoryListAdapter(element.categories, travelHomepageActionListener)
+                    categoriesRecyclerView.adapter = adapter
+                }
+            } else categoriesRecyclerView.hide()
 
         } else {
             categoriesRecyclerView.show()

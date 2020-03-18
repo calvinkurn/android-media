@@ -1,6 +1,8 @@
 package com.tokopedia.travelhomepage.homepage.presentation.adapter
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageItemModel
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.TravelHomepageTypeFactory
 

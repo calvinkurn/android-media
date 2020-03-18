@@ -21,6 +21,7 @@ class TravelHomepageDestinationViewHolder(itemView: View, private val onItemBind
     : AbstractViewHolder<TravelHomepageDestinationModel>(itemView) {
 
     lateinit var recentSearchAdapter: TravelHomepageDestinationAdapter
+    private var currentPosition = -1
 
     override fun bind(element: TravelHomepageDestinationModel) {
         if (element.isLoaded) {
@@ -34,26 +35,28 @@ class TravelHomepageDestinationViewHolder(itemView: View, private val onItemBind
                         section_title.text = element.meta.title
                     } else section_title.hide()
 
-                    recentSearchAdapter = TravelHomepageDestinationAdapter(element.destination, travelHomepageActionListener)
-
-                    val layoutManager = GridLayoutManager(this.context, 2, GridLayoutManager.VERTICAL, false)
-                    layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                        override fun getSpanSize(position: Int): Int {
-                            return when (element.spanSize) {
-                                0 -> if (position == 0) 2 else 1
-                                1 -> 2
-                                else -> 1
+                    if (!::recentSearchAdapter.isInitialized || currentPosition != element.layoutData.position) {
+                        currentPosition = element.layoutData.position
+                        recentSearchAdapter = TravelHomepageDestinationAdapter(element.destination, travelHomepageActionListener, element.layoutData.position)
+                        travelHomepageActionListener.onViewDynamicBanners(element.destination, element.layoutData.position)
+                        val layoutManager = GridLayoutManager(this.context, 2, GridLayoutManager.VERTICAL, false)
+                        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                            override fun getSpanSize(position: Int): Int {
+                                return when (element.spanSize) {
+                                    0 -> if (position == 0) 2 else 1
+                                    1 -> 2
+                                    else -> 1
+                                }
                             }
                         }
-                    }
-                    list_recycler_view.layoutManager = layoutManager
-                    list_recycler_view.adapter = recentSearchAdapter
+                        list_recycler_view.layoutManager = layoutManager
+                        list_recycler_view.adapter = recentSearchAdapter
 
-                    while (list_recycler_view.itemDecorationCount > 0) {
-                        list_recycler_view.removeItemDecorationAt(0)
+                        while (list_recycler_view.itemDecorationCount > 0) {
+                            list_recycler_view.removeItemDecorationAt(0)
+                        }
+                        list_recycler_view.addItemDecoration(TravelHomepageDestinationViewDecorator(element.spanSize))
                     }
-                    list_recycler_view.addItemDecoration(TravelHomepageDestinationViewDecorator(element.spanSize))
-
                 }
             } else {
                 itemView.section_layout.hide()

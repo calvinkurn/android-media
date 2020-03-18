@@ -25,7 +25,7 @@ class TravelHomepageLegoBannerAdapter(var list: List<LegoBannerItemModel>, var l
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(list[position])
-        holder.itemView.setOnClickListener { listener?.onItemClickListener(list[position]) }
+        holder.itemView.setOnClickListener { listener?.onItemClickListener(list[position], position) }
     }
 
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {

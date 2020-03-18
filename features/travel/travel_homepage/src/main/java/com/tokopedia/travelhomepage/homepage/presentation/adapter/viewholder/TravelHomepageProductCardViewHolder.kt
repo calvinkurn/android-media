@@ -17,6 +17,8 @@ import kotlinx.android.synthetic.main.layout_travel_homepage_product_card.view.*
 class TravelHomepageProductCardViewHolder(itemView: View, private val onItemBindListener: OnItemBindListener,
                                           private val travelHomepageActionListener: TravelHomepageActionListener) : AbstractViewHolder<TravelHomepageProductCardModel>(itemView) {
 
+    private var currentPosition = 0
+
     override fun bind(element: TravelHomepageProductCardModel) {
         if (element.isLoaded) {
             if (element.isSuccess && element.productItem.isNotEmpty()) {
@@ -28,15 +30,21 @@ class TravelHomepageProductCardViewHolder(itemView: View, private val onItemBind
                     productCardWidget.subtitleText = element.subtitle
                     productCardWidget.hasSeeAllButton = element.clickSeeAllUrl.isNotEmpty()
                     productCardWidget.listener = object: TravelHomepageProductGridCardWidget.ActionListener {
-                        override fun onItemClickListener(item: ProductGridCardItemModel) {
+                        override fun onItemClickListener(item: ProductGridCardItemModel, position: Int) {
+                            travelHomepageActionListener.onClickProductCard(item, position, element.layoutData.position, element.title)
                             travelHomepageActionListener.onItemClick(item.appUrl)
                         }
 
                         override fun onClickSeeAllListener() {
+                            travelHomepageActionListener.onClickSeeAllProductCards(element.layoutData.position, element.title)
                             travelHomepageActionListener.onItemClick(element.clickSeeAllUrl)
                         }
                     }
-                    productCardWidget.buildView(element.productItem)
+                    if (currentPosition != element.layoutData.position) {
+                        currentPosition = element.layoutData.position
+                        travelHomepageActionListener.onViewProductCards(element.productItem, element.layoutData.position, element.title)
+                        productCardWidget.buildView(element.productItem)
+                    }
                 }
             } else {
                 // hide shimmering and hide layout
