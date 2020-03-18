@@ -11,6 +11,19 @@ import java.net.UnknownHostException
 class ErrorHandlerHotel {
 
     companion object {
+        private const val ERROR_VERIFIED_PHONE_MESSAGE = "PhoneNotVerified"
+        private const val ERROR_VERIFIED_PHONE_CODE = "68"
+        private const val ERROR_GET_FAILED_ROOM_AVAILABILITY_MESSAGE = "FailedGetRoomAvailability"
+        private const val ERROR_GET_FAILED_ROOM_CODE = "206"
+
+        fun isPhoneNotVerfiedError(t: Throwable): Boolean {
+            return t.message?.isNotEmpty() ?: false && (t.message == ERROR_VERIFIED_PHONE_MESSAGE || t.message == ERROR_VERIFIED_PHONE_CODE)
+        }
+
+        fun isGetFailedRoomError(t: Throwable): Boolean {
+            return t.message?.isNotEmpty() ?: false && (t.message == ERROR_GET_FAILED_ROOM_AVAILABILITY_MESSAGE || t.message == ERROR_GET_FAILED_ROOM_CODE)
+        }
+
         fun getErrorMessage(context: Context?, e: Throwable?): String {
             if (context == null || e == null) {
                 return "Kami akan bereskan secepatnya. Klik tombol di bawah atau balik lagi nanti."
@@ -31,7 +44,7 @@ class ErrorHandlerHotel {
         fun getErrorImage(e: Throwable?): Int {
             if (e == null) {
                 return R.drawable.hotel_ic_server_error
-            } else if (e is UnknownHostException) return R.drawable.hotel_ic_no_internet_connection
+            } else if (e is UnknownHostException) return com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
             else return R.drawable.hotel_ic_server_error
         }
     }

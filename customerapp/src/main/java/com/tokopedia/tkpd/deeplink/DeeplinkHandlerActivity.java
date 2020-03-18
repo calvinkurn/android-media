@@ -91,8 +91,6 @@ import com.tokopedia.shop.applink.ShopAppLinkModule;
 import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
-import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
-import com.tokopedia.topchat.deeplink.TopChatAppLinkModuleLoader;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.logisticorder.applink.TrackingAppLinkModule;
 import com.tokopedia.logisticorder.applink.TrackingAppLinkModuleLoader;
@@ -138,7 +136,6 @@ import rx.schedulers.Schedulers;
         InterestPickApplinkModule.class,
         TrackingAppLinkModule.class,
         HowtopayApplinkModule.class,
-        TopChatAppLinkModule.class,
         HomeNavigationApplinkModule.class,
         AccountHomeApplinkModule.class,
         RecentViewApplinkModule.class,
@@ -161,6 +158,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     public static ApplinkDelegate getApplinkDelegateInstance() {
         if (applinkDelegate == null) {
             applinkDelegate = new TkpdApplinkDelegate(
+                    new ConsumerDeeplinkModuleLoader(),
                     new CoreDeeplinkModuleLoader(),
                     new InboxDeeplinkModuleLoader(),
                     new OvoUpgradeDeeplinkModuleLoader(),
@@ -182,7 +180,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new InterestPickApplinkModuleLoader(),
                     new TrackingAppLinkModuleLoader(),
                     new HowtopayApplinkModuleLoader(),
-                    new TopChatAppLinkModuleLoader(),
                     new HomeNavigationApplinkModuleLoader(),
                     new AccountHomeApplinkModuleLoader(),
                     new RecentViewApplinkModuleLoader(),

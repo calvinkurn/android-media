@@ -1,6 +1,7 @@
 package com.tokopedia.attachvoucher.view.fragment
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,21 +11,26 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.attachvoucher.R
 import com.tokopedia.attachvoucher.analytic.AttachVoucherAnalytic
-import com.tokopedia.attachvoucher.data.Voucher
+import com.tokopedia.attachvoucher.data.VoucherUiModel
 import com.tokopedia.attachvoucher.data.VoucherType
 import com.tokopedia.attachvoucher.di.AttachVoucherComponent
 import com.tokopedia.attachvoucher.view.adapter.AttachVoucherAdapter
 import com.tokopedia.attachvoucher.view.adapter.AttachVoucherTypeFactory
 import com.tokopedia.attachvoucher.view.adapter.AttachVoucherTypeFactoryImpl
 import com.tokopedia.attachvoucher.view.viewmodel.AttachVoucherViewModel
+import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.fragment_attachvoucher_attach_voucher.*
 import javax.inject.Inject
 
 class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFactory>() {
 
+    var shopId: String = ""
     private val screenName = "attach_voucher"
 
     @Inject
@@ -49,16 +55,21 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel.initializeArguments(arguments)
+        initializeArguments(arguments)
         setupRecyclerView()
         setupObserver()
         setupFilter()
         super.onViewCreated(view, savedInstanceState)
     }
 
+    private fun initializeArguments(arguments: Bundle?) {
+        if (arguments == null) return
+        shopId = arguments.getString(ApplinkConst.AttachVoucher.PARAM_SHOP_ID) ?: ""
+    }
+
     override fun loadData(page: Int) {
         if (page != 1) return
-        viewModel.loadVouchers()
+        viewModel.loadVouchers(shopId)
     }
 
     private fun setupRecyclerView() {
@@ -118,12 +129,34 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
         })
     }
 
-    private fun enableAttachButton(voucher: Voucher) {
+    private fun enableAttachButton(voucher: VoucherUiModel) {
         btnAttach?.isEnabled = true
         btnAttach.setOnClickListener {
             analytic.trackOnAttachVoucher(voucher)
-            activity?.setResult(Activity.RESULT_OK, viewModel.getVoucherPreviewIntent(voucher))
+            activity?.setResult(Activity.RESULT_OK, getVoucherPreviewIntent(voucher))
             activity?.finish()
+        }
+    }
+
+    private fun getVoucherPreviewIntent(voucher: VoucherUiModel): Intent {
+        val voucherPreview = VoucherPreview(
+                source = "inbox",
+                voucherId = voucher.voucherId,
+                tnc = voucher.tnc ?: "",
+                voucherCode = voucher.voucherCode ?: "",
+                voucherName = voucher.voucherName ?: "",
+                minimumSpend = voucher.minimumSpend,
+                validThru = voucher.validThru.toLong(),
+                desktopUrl = voucher.merchantVoucherBanner?.desktopUrl ?: "",
+                mobileUrl = voucher.merchantVoucherBanner?.mobileUrl ?: "",
+                amount = voucher.availableAmount.toIntOrZero(),
+                amountType = voucher.amountType ?: -1,
+                identifier = voucher.identifier,
+                voucherType = voucher.type ?: -1
+        )
+        val stringVoucherPreview = CommonUtil.toJson(voucherPreview)
+        return Intent().apply {
+            putExtra(ApplinkConst.AttachVoucher.PARAM_VOUCHER_PREVIEW, stringVoucherPreview)
         }
     }
 
@@ -153,9 +186,12 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
     override fun onItemClicked(t: Visitable<*>?) {}
 
     companion object {
-        fun createInstance(extra: Bundle?): AttachVoucherFragment {
+        fun createInstance(shopId: String): AttachVoucherFragment {
+            val args = Bundle().apply {
+                putString(ApplinkConst.AttachVoucher.PARAM_SHOP_ID, shopId)
+            }
             return AttachVoucherFragment().apply {
-                arguments = extra
+                arguments = args
             }
         }
     }

@@ -119,5 +119,7 @@ interface ICartListView : CustomerView {
 
     fun goToLite(url: String)
 
+    fun updateCartCounter(counter: Int)
+
     fun resetAdditionalData()
 }

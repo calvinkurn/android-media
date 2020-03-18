@@ -1,6 +1,6 @@
 package com.tokopedia.feedcomponent.analytics.posttag
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics.Event.EVENT_CLICK_SOCIAL_COMMERCE
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics.Action.CLICK_PRODUCT
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
@@ -46,6 +46,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
 
     object Screen {
         const val FEED = "/feed"
+        const val FEED_SHOP = "/shop-feed"
         const val PROFILE = "/user-profile-socialcommerce"
         const val MY_PROFILE = "/my-profile-socialcommerce"
         const val PROFILE_DETAIL = "/user-profile-socialcommerce-content-detail"
@@ -61,6 +62,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
 
     object Category {
         const val CONTENT_FEED_TIMELINE = "content feed timeline"
+        const val CONTENT_FEED_SHOP_TIMELINE = "content feed - shop page"
         const val USER_PROFILE_SOCIALCOMMERCE = "user profile socialcommerce"
         const val MY_PROFILE_SOCIALCOMMERCE = "my profile socialcommerce"
         const val USER_PROFILE_SOCIALCOMMERCE_DETAIL = "user profile socialcommerce - content detail"
@@ -78,6 +80,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
 
     object ListSource {
         const val FEED = "/feed - produk di post - %s"
+        const val FEED_SHOP = "/feed shop page - produk di post"
         const val MY_PROFILE_PAGE = "/my profile page - produk di post"
         const val USER_PROFILE_PAGE = "/user profile page - produk di post"
         const val MY_PROFILE_PAGE_DETAIL = "/my profile page detail - produk di post"
@@ -260,6 +263,8 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
         )
     }
 
+    //row 7
+    //docs - https://docs.google.com/spreadsheets/d/1pnZfjiNKbAk8LR37DhNGSwm2jvM3wKqNJc2lfWLejXA/edit#gid=1781959013
     fun trackViewPostTagFeed(
             postId: Int,
             postTagItemList: List<PostTagItem>,
@@ -272,7 +277,24 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                 postTagItemList,
                 trackingModel,
                 String.format(ListSource.FEED, author),
-                action = String.format(FORMAT_3_VALUE, Action.IMPRESSION_PRODUCT, trackingModel.activityName, trackingModel.recomId))
+                action = String.format(FORMAT_3_VALUE, Action.IMPRESSION_PRODUCT, trackingModel.activityName, trackingModel.mediaType))
+    }
+
+    // row 28
+    // docs - https://docs.google.com/spreadsheets/d/1pnZfjiNKbAk8LR37DhNGSwm2jvM3wKqNJc2lfWLejXA/edit#gid=1781959013
+    fun trackViewPostTagFeedShop(
+            postId: Int,
+            postTagItemList: List<PostTagItem>,
+            author: String,
+            trackingModel: TrackingPostModel) {
+        getBasicViewPostTagEvent(
+                Screen.FEED_SHOP,
+                Category.CONTENT_FEED_SHOP_TIMELINE,
+                postId.toString(),
+                postTagItemList,
+                trackingModel,
+                String.format(ListSource.FEED_SHOP, author),
+                action = String.format(FORMAT_3_VALUE, Action.IMPRESSION_PRODUCT, trackingModel.activityName, trackingModel.mediaType))
     }
 
     fun trackClickPostTagFeed(

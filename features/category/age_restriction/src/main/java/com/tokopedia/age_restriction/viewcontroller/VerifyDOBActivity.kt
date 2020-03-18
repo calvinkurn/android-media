@@ -1,20 +1,21 @@
 package com.tokopedia.age_restriction.viewcontroller
 
-import androidx.lifecycle.Observer
 import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.ShapeDrawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.core.content.ContextCompat
 import android.view.View
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.age_restriction.R
 import com.tokopedia.age_restriction.viewmodel.VerifyDOBViewModel
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel
+import com.tokopedia.track.TrackApp
+import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet
 import kotlinx.android.synthetic.main.layout_activity_dob.*
-import kotlinx.android.synthetic.main.layout_activity_dob.progress_bar_layout
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
 
 class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
@@ -29,11 +30,22 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
 
     private var startdate: Date? = null
 
+    @Inject
+    lateinit var viewModelProvider:  ViewModelProvider.Factory
+
+    override fun getVMFactory(): ViewModelProvider.Factory? {
+       return viewModelProvider
+    }
+
+    override fun initInject() {
+        getComponent().inject(this)
+    }
+
     override fun getViewModelType(): Class<VerifyDOBViewModel> {
         return VerifyDOBViewModel::class.java
     }
 
-    override fun setViewModel(viewModel: BaseViewModel?) {
+    override fun setViewModel(viewModel: BaseViewModel) {
         verifyDobModel = viewModel as VerifyDOBViewModel
     }
 
@@ -56,7 +68,7 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
                 val calendar = Calendar.getInstance()
                 calendar.time = selectedDate
 
-                verifyDobModel.updateUserDoB(getMeGQlString(R.raw.gql_user_profile_dob_update),
+                verifyDobModel.updateUserDoB(
                         calendar.get(Calendar.DATE).toString(),
                         (calendar.get(Calendar.MONTH) + 1).toString(),
                         calendar.get(Calendar.YEAR).toString())
@@ -71,6 +83,13 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
         }
     }
 
+    protected fun sendGeneralEvent(event: String, category: String, action: String, label: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(event,
+                category,
+                action,
+                label)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         group.visibility = View.INVISIBLE
@@ -78,7 +97,7 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
             val dob = intent.getStringExtra(PARAM_EXTRA_DOB)?.split("-")
             dob?.let {
                 if (it.size == 3) {
-                    verifyDobModel.updateUserDoB(getMeGQlString(R.raw.gql_user_profile_dob_update),
+                    verifyDobModel.updateUserDoB(
                             it[2],
                             it[1],
                             it[0])
@@ -111,18 +130,6 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
 
     override fun getMenuRes(): Int {
         return -1
-    }
-
-    override fun getTncFragmentInstance(TncResId: Int): Fragment? {
-        return null
-    }
-
-    override fun getBottomSheetLayoutRes(): Int {
-        return -1
-    }
-
-    override fun doNeedReattach(): Boolean {
-        return false
     }
 
     override fun getNewFragment(): Fragment? {

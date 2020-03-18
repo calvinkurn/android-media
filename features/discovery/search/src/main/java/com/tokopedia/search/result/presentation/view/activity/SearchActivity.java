@@ -1,6 +1,5 @@
 package com.tokopedia.search.result.presentation.view.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -21,7 +20,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
@@ -77,8 +75,6 @@ import javax.inject.Named;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.Cart.CACHE_TOTAL_CART;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
-import static com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_ID;
-import static com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_STORAGE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SEARCH_RESULT_TRACE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_FIRST_POSITION;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_FORTH_POSITION;
@@ -490,14 +486,9 @@ public class SearchActivity extends BaseActivity
     private void setSearchParameterUniqueId() {
         String uniqueId = userSession.isLoggedIn() ?
                 AuthHelper.getMD5Hash(userSession.getUserId()) :
-                AuthHelper.getMD5Hash(getRegistrationId(this));
+                AuthHelper.getMD5Hash(userSession.getDeviceId());
 
         searchParameter.set(SearchApiConst.UNIQUE_ID, uniqueId);
-    }
-
-    private String getRegistrationId(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        return cache.getString(GCM_ID, "");
     }
 
     private void setSearchParameterUserIdIfLoggedIn() {
@@ -519,7 +510,6 @@ public class SearchActivity extends BaseActivity
         availableSearchTabs.add(SearchConstant.ActiveTab.PRODUCT);
         availableSearchTabs.add(SearchConstant.ActiveTab.SHOP);
         availableSearchTabs.add(SearchConstant.ActiveTab.PROFILE);
-        availableSearchTabs.add(SearchConstant.ActiveTab.CATALOG);
 
         return !availableSearchTabs.contains(activeTab);
     }
@@ -559,7 +549,6 @@ public class SearchActivity extends BaseActivity
         searchSectionItemList.add(productTabTitle);
         searchSectionItemList.add(shopTabTitle);
         searchSectionItemList.add(profileTabTitle);
-        searchSectionItemList.add(catalogTabTitle);
     }
 
     private void initTabLayout() {
@@ -760,19 +749,21 @@ public class SearchActivity extends BaseActivity
 
     @Override
     public void setupSearchNavigation(ClickListener clickListener, boolean isSortEnabled) {
-        if (loadingView.getVisibility() != View.VISIBLE) {
-            showBottomNavigation();
-        }
+        searchNavContainer.post(() -> {
+            if (loadingView.getVisibility() != View.VISIBLE) {
+                showBottomNavigation();
+            }
 
-        if (isSortEnabled) {
-            buttonSort.setVisibility(View.VISIBLE);
-            searchNavDivider.setVisibility(View.VISIBLE);
-        } else {
-            buttonSort.setVisibility(View.GONE);
-            searchNavDivider.setVisibility(View.GONE);
-        }
+            if (isSortEnabled) {
+                buttonSort.setVisibility(View.VISIBLE);
+                searchNavDivider.setVisibility(View.VISIBLE);
+            } else {
+                buttonSort.setVisibility(View.GONE);
+                searchNavDivider.setVisibility(View.GONE);
+            }
 
-        this.searchNavigationClickListener = clickListener;
+            this.searchNavigationClickListener = clickListener;
+        });
     }
 
     @Override

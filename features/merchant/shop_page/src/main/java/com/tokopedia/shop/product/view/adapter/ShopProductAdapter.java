@@ -25,7 +25,7 @@ import com.tokopedia.shop.product.view.model.ShopProductEtalaseTitleViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.widget.OnStickySingleHeaderListener;
-import com.tokopedia.shop.product.view.widget.StickySingleHeaderView;
+import com.tokopedia.shop.product.view.widget.OldStickySingleHeaderView;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ import static com.tokopedia.shop.common.constant.ShopPageConstant.ITEM_OFFSET;
 
 public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel, ShopProductAdapterTypeFactory>
         implements DataEndlessScrollListener.OnDataEndlessScrollListener,
-        StickySingleHeaderView.OnStickySingleHeaderAdapter {
+        OldStickySingleHeaderView.OnStickySingleHeaderAdapter {
 
     private boolean needToShowEtalase = false;
 

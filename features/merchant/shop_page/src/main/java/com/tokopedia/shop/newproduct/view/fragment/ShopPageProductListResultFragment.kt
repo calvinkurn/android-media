@@ -26,6 +26,10 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
+import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
+import com.tokopedia.discovery.common.manager.showProductCardOptions
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -50,6 +54,7 @@ import com.tokopedia.shop.newproduct.view.datamodel.ShopProductEtalaseChipItemVi
 import com.tokopedia.shop.newproduct.view.datamodel.ShopProductEtalaseListViewModel
 import com.tokopedia.shop.newproduct.view.datamodel.ShopProductViewModel
 import com.tokopedia.shop.newproduct.view.listener.ShopProductClickedListener
+import com.tokopedia.shop.newproduct.view.listener.ShopProductImpressionListener
 import com.tokopedia.shop.newproduct.view.viewholder.ShopProductEtalaseListViewHolder
 import com.tokopedia.shop.newproduct.view.viewmodel.ShopPageProductListResultViewModel
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
@@ -71,7 +76,8 @@ import javax.inject.Inject
 
 class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>(),
         WishListActionListener, BaseEmptyViewHolder.Callback, ShopProductClickedListener,
-        ShopProductEtalaseListViewHolder.ShopProductEtalaseChipListViewHolderListener {
+        ShopProductEtalaseListViewHolder.ShopProductEtalaseChipListViewHolderListener,
+        ShopProductImpressionListener {
 
     interface ShopPageProductListResultFragmentListener {
         fun onSortValueUpdated(sortValue: String)
@@ -109,6 +115,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     internal var shopPageTracking: ShopPageTrackingBuyer? = null
 
     private var shopId: String? = null
+    private var shopRef: String = ""
     private var keyword: String = ""
     private var prevAnalyticKeyword: String? = ""
     private var sortValue: String? = null
@@ -144,6 +151,11 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             shopId?.let { viewModel.isMyShop(it) } ?: false
         } else false
 
+    private val isLogin: Boolean
+        get() = if (::viewModel.isInitialized) {
+            viewModel.isLogin
+        } else false
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.shopInfoResp.observe(this, Observer {
@@ -174,6 +186,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     override fun getAdapterTypeFactory(): ShopProductAdapterTypeFactory {
         return ShopProductAdapterTypeFactory(
                 null,
+                this,
                 this,
                 null,
                 this,
@@ -219,6 +232,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 keyword = it.getString(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, "")
                 sortValue = it.getString(ShopParamConstant.EXTRA_SORT_ID, Integer.MIN_VALUE.toString())
                 shopId = it.getString(ShopParamConstant.EXTRA_SHOP_ID, "")
+                shopRef = it.getString(ShopParamConstant.EXTRA_SHOP_REF, "")
             }
         } else {
             selectedEtalaseList = savedInstanceState.getParcelableArrayList(SAVED_SELECTED_ETALASE_LIST)
@@ -227,6 +241,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             keyword = savedInstanceState.getString(SAVED_KEYWORD) ?: ""
             sortValue = savedInstanceState.getString(SAVED_SORT_VALUE)
             shopId = savedInstanceState.getString(SAVED_SHOP_ID)
+            shopRef = savedInstanceState.getString(SAVED_SHOP_REF).orEmpty()
         }
         shopPageProductListResultFragmentListener?.onSortValueUpdated(sortValue ?: "")
         setHasOptionsMenu(true)
@@ -384,15 +399,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     private fun renderProductList(productList: List<ShopProductViewModel>, hasNextPage: Boolean) {
         shopInfo?.let {
-            if (productList.isNotEmpty()) {
-                shopPageTracking?.impressionProductList(
-                        viewModel.isMyShop(it.shopCore.shopID),
-                        if (TextUtils.isEmpty(keyword)) ListTitleTypeDef.ETALASE else ListTitleTypeDef.SEARCH_RESULT,
-                        selectedEtalaseName, CustomDimensionShopPageAttribution.create(it.shopCore.shopID,
-                        it.goldOS.isOfficial == 1, it.goldOS.isGold == 1, "", attribution),
-                        productList, shopProductAdapter.shopProductViewModelList.size, shopId, it.shopCore.name, it.freeOngkir.isActive
-                )
-            }
             if (!TextUtils.isEmpty(keyword) && prevAnalyticKeyword != keyword) {
                 shopPageTracking?.searchKeyword(viewModel.isMyShop(it.shopCore.shopID),
                         keyword,
@@ -434,11 +440,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     selectedEtalaseName,
                     CustomDimensionShopPage.create(it.shopCore.shopID,
                             it.goldOS.isOfficial == 1, it.goldOS.isGold == 1))
-
-            activity?.let { activity ->
-                val shopEtalaseIntent = ShopEtalasePickerActivity.createIntent(activity, it.shopCore.shopID, selectedEtalaseId,
+            context?.let { context ->
+                val shopEtalaseIntent = ShopEtalasePickerActivity.createIntent(context, it.shopCore.shopID, selectedEtalaseId,
                         true, false)
-                activity.startActivityForResult(shopEtalaseIntent, REQUEST_CODE_ETALASE)
+                startActivityForResult(shopEtalaseIntent, REQUEST_CODE_ETALASE)
             }
         }
     }
@@ -455,20 +460,48 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     override fun onProductClicked(shopProductViewModel: ShopProductViewModel, @ShopTrackProductTypeDef shopTrackType: Int,
                                   productPosition: Int) {
-        shopInfo?.let {
-            // shopTrackType is always from product
-            shopPageTracking?.clickProduct(
-                    viewModel.isMyShop(it.shopCore.shopID),
-                    if (TextUtils.isEmpty(keyword)) ListTitleTypeDef.ETALASE else ListTitleTypeDef.SEARCH_RESULT,
-                    selectedEtalaseName,
-                    CustomDimensionShopPageAttribution.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
-                            it.goldOS.isGold == 1, shopProductViewModel.id, attribution),
-                    shopProductViewModel, productPosition, shopId, it.shopCore.name, it.freeOngkir.isActive)
-        }
+        shopPageTracking?.clickProductSearchResult(
+                isMyShop,
+                isLogin,
+                selectedEtalaseName,
+                "",
+                CustomDimensionShopPageAttribution.create(
+                        shopInfo!!.shopCore.shopID,
+                        shopInfo!!.goldOS.isOfficial == 1,
+                        shopInfo!!.goldOS.isGold == 1,
+                        shopProductViewModel.id,
+                        attribution,
+                        shopRef
+                ),
+                shopProductViewModel,
+                productPosition + 1,
+                shopId
 
+        )
         startActivity(getProductIntent(shopProductViewModel.id ?: "", attribution,
                 shopPageTracking?.getListNameOfProduct(OldShopPageTrackingConstant.SEARCH, selectedEtalaseName)
                         ?: ""))
+    }
+
+    override fun onProductImpression(shopProductViewModel: ShopProductViewModel, shopTrackType: Int, productPosition: Int) {
+        shopPageTracking?.impressionProductListSearchResult(
+                isMyShop,
+                isLogin,
+                selectedEtalaseName,
+                "",
+                CustomDimensionShopPageAttribution.create(
+                        shopInfo!!.shopCore.shopID,
+                        shopInfo!!.goldOS.isOfficial == 1,
+                        shopInfo!!.goldOS.isGold == 1,
+                        shopProductViewModel.id,
+                        attribution,
+                        shopRef
+                ),
+                shopProductViewModel,
+                productPosition + 1,
+                shopId
+
+        )
     }
 
     private fun getProductIntent(productId: String, attribution: String?, listNameOfProduct: String): Intent? {
@@ -503,10 +536,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private fun onErrorAddToWishList(e: Throwable) {
         if (!viewModel.isLogin) {
             val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
-            activity?.let {
-                it.startActivityForResult(intent, REQUEST_CODE_USER_LOGIN)
-                return
-            }
+            startActivityForResult(intent, REQUEST_CODE_USER_LOGIN)
         }
         NetworkErrorHelper.showCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
     }
@@ -530,6 +560,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     fun clickSortButton() {
         shopInfo?.let {
+            shopPageTracking?.clickSort(isMyShop,customDimensionShopPage)
             openShopProductSortPage()
         }
     }
@@ -604,25 +635,15 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         return true
     }
 
-    override fun onWishListClicked(shopProductViewModel: ShopProductViewModel, @ShopTrackProductTypeDef shopTrackType: Int) {
-        shopInfo?.let {
-            //shopTrackType is always from Product
-            shopPageTracking?.clickWishlist(!shopProductViewModel.isWishList,
-                    if (TextUtils.isEmpty(keyword)) ListTitleTypeDef.ETALASE else ListTitleTypeDef.SEARCH_RESULT,
-                    selectedEtalaseName,
-                    CustomDimensionShopPageProduct.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
-                            it.goldOS.isGold == 1, shopProductViewModel.id))
-        }
-        if (!viewModel.isLogin) {
-            onErrorAddToWishList(UserNotLoginException())
-        } else {
-            viewModel.clearGetShopProductUseCase()
-            if (shopProductViewModel.isWishList) {
-                viewModel.removeWishList(shopProductViewModel.id ?: "", this)
-            } else {
-                viewModel.addWishList(shopProductViewModel.id ?: "", this)
-            }
-        }
+    override fun onThreeDotsClicked(shopProductViewModel: ShopProductViewModel, @ShopTrackProductTypeDef shopTrackType: Int) {
+        showProductCardOptions(
+                this,
+                ProductCardOptionsModel(
+                        hasWishlist = true,
+                        isWishlisted = shopProductViewModel.isWishList,
+                        productId = shopProductViewModel.id ?: ""
+                )
+        )
     }
 
     private fun onErrorGetEtalaseList(e: Throwable) {
@@ -706,6 +727,11 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 data?.let {
                     selectedEtalaseId = it.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID)
                     selectedEtalaseName = it.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME)
+                    shopPageTracking?.clickMoreMenuChip(
+                            isMyShop,
+                            selectedEtalaseName,
+                            customDimensionShopPage
+                    )
                     val useAce = it.getBooleanExtra(ShopParamConstant.EXTRA_USE_ACE, true)
                     val etalaseBadge = it.getStringExtra(ShopParamConstant.EXTRA_ETALASE_BADGE)
 
@@ -722,19 +748,71 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 data?.let {
                     sortValue = it.getStringExtra(ShopProductSortActivity.SORT_VALUE)
                     val sortName = data.getStringExtra(ShopProductSortActivity.SORT_NAME) ?: ""
+                    shopPageTracking?.sortProduct(sortName, isMyShop, customDimensionShopPage)
                     shopPageProductListResultFragmentListener?.onSortValueUpdated(sortValue ?: "")
                     this.isLoadingInitialData = true
                     loadInitialData()
-                    shopInfo?.let {
-                        shopPageTracking?.clickSortBy(viewModel.isMyShop(it.shopCore.shopID),
-                                sortValue, CustomDimensionShopPage.create(it.shopCore.shopID, isOfficialStore, isGoldMerchant))
-                    }
                 }
             }
             else -> {
             }
         }
+
+        handleProductCardOptionsActivityResult(requestCode, resultCode, data, object: ProductCardOptionsWishlistCallback {
+            override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                handleWishlistAction(productCardOptionsModel)
+            }
+        })
+
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
+        shopInfo?.let {
+            //shopTrackType is always from Product
+            shopPageTracking?.clickWishlistProductResultPage(
+                    !productCardOptionsModel.isWishlisted,
+                    isLogin,
+                    selectedEtalaseName,
+                    CustomDimensionShopPageProduct.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
+                            it.goldOS.isGold == 1, productCardOptionsModel.productId, shopRef))
+        }
+
+        if (!productCardOptionsModel.wishlistResult.isUserLoggedIn) {
+            onErrorAddToWishList(UserNotLoginException())
+        }
+        else {
+            handleWishlistActionForLoggedInUser(productCardOptionsModel)
+        }
+    }
+
+    private fun handleWishlistActionForLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
+        viewModel.clearGetShopProductUseCase()
+
+        if (productCardOptionsModel.wishlistResult.isAddWishlist) {
+            handleWishlistActionAddToWishlist(productCardOptionsModel)
+        }
+        else {
+            handleWishlistActionRemoveFromWishlist(productCardOptionsModel)
+        }
+    }
+
+    private fun handleWishlistActionAddToWishlist(productCardOptionsModel: ProductCardOptionsModel) {
+        if (productCardOptionsModel.wishlistResult.isSuccess) {
+            onSuccessAddWishlist(productCardOptionsModel.productId)
+        }
+        else {
+            onErrorAddWishList(getString(com.tokopedia.wishlist.common.R.string.msg_error_add_wishlist), productCardOptionsModel.productId)
+        }
+    }
+
+    private fun handleWishlistActionRemoveFromWishlist(productCardOptionsModel: ProductCardOptionsModel) {
+        if (productCardOptionsModel.wishlistResult.isSuccess) {
+            onSuccessRemoveWishlist(productCardOptionsModel.productId)
+        }
+        else {
+            onErrorRemoveWishlist(getString(com.tokopedia.wishlist.common.R.string.msg_error_remove_wishlist), productCardOptionsModel.productId)
+        }
     }
 
     override fun onResume() {
@@ -786,6 +864,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         outState.putString(SAVED_SORT_VALUE, sortValue)
         outState.putString(SAVED_KEYWORD, keyword)
         outState.putString(SAVED_SHOP_ID, shopId)
+        outState.putString(SAVED_SHOP_REF, shopRef)
         outState.putBoolean(SAVED_SHOP_IS_OFFICIAL, isOfficialStore)
         outState.putBoolean(SAVED_SHOP_IS_GOLD_MERCHANT, isGoldMerchant)
     }
@@ -815,6 +894,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         val SAVED_SELECTED_ETALASE_ID = "saved_etalase_id"
         val SAVED_SELECTED_ETALASE_NAME = "saved_etalase_name"
         val SAVED_SHOP_ID = "saved_shop_id"
+        val SAVED_SHOP_REF = "saved_shop_ref"
         val SAVED_SHOP_IS_OFFICIAL = "saved_shop_is_official"
         val SAVED_SHOP_IS_GOLD_MERCHANT = "saved_shop_is_gold_merchant"
         val SAVED_KEYWORD = "saved_keyword"
@@ -822,12 +902,14 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
         @JvmStatic
         fun createInstance(shopId: String,
+                           shopRef: String?,
                            keyword: String?,
                            etalaseId: String?,
                            sort: String?,
                            attribution: String?): ShopPageProductListResultFragment = ShopPageProductListResultFragment().also {
             it.arguments = Bundle().apply {
                 putString(ShopParamConstant.EXTRA_SHOP_ID, shopId)
+                putString(ShopParamConstant.EXTRA_SHOP_REF, shopRef.orEmpty())
                 putString(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, keyword ?: "")
                 putString(ShopParamConstant.EXTRA_ETALASE_ID, etalaseId ?: "")
                 putString(ShopParamConstant.EXTRA_SORT_ID, sort ?: "")

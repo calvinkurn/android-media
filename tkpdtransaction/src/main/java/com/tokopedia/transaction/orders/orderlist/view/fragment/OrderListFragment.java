@@ -642,14 +642,18 @@ public class OrderListFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void addData(List<Visitable> data, Boolean isRecommendation) {
+    public void addData(List<Visitable> data, Boolean isRecommendation, boolean isInitial) {
         this.isRecommendation = isRecommendation;
         if (!hasRecyclerListener) {
             addRecyclerListener();
         }
         refreshHandler.finishRefresh();
         refreshHandler.setPullEnabled(true);
-        orderListAdapter.addElement(data);
+        if (isInitial) {
+            orderListAdapter.setElements(data);
+        } else {
+            orderListAdapter.addElement(data);
+        }
         endlessRecyclerViewScrollListener.updateStateAfterGetData();
         swipeToRefresh.setVisibility(View.VISIBLE);
         if ((mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || (mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) && !isRecommendation )|| orderLabelList.getOrderCategory().equalsIgnoreCase(OrderCategory.DIGITAL)) {

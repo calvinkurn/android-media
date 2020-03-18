@@ -1,12 +1,15 @@
 package com.tokopedia.hotel.roomlist.presentation.fragment
 
+import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
@@ -15,13 +18,14 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
@@ -38,6 +42,7 @@ import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
 import com.tokopedia.hotel.roomlist.presentation.adapter.RoomListTypeFactory
 import com.tokopedia.hotel.roomlist.presentation.adapter.viewholder.RoomListViewHolder
 import com.tokopedia.hotel.roomlist.presentation.viewmodel.HotelRoomListViewModel
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -99,7 +104,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             hotelRoomListPageModel.checkOutDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
                     TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelRoomListPageModel.checkOut))
             hotelRoomListPageModel.destinationName = it.getString(ARG_DESTINATION_NAME, "")
-            hotelRoomListPageModel.destinationType =  it.getString(ARG_DESTINATION_TYPE, "")
+            hotelRoomListPageModel.destinationType = it.getString(ARG_DESTINATION_TYPE, "")
         }
 
         remoteConfig = FirebaseRemoteConfigImpl(context)
@@ -135,16 +140,32 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             when (it) {
                 is Success -> {
                     context?.run {
-                        startActivity(HotelBookingActivity.getCallingIntent(this,it.data.response.cartId,
+                        startActivity(HotelBookingActivity.getCallingIntent(this, it.data.response.cartId,
                                 hotelRoomListPageModel.destinationType, hotelRoomListPageModel.destinationName,
                                 hotelRoomListPageModel.room, hotelRoomListPageModel.adult))
                     }
                 }
                 is Fail -> {
-                    NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
+                    if (ErrorHandlerHotel.isPhoneNotVerfiedError(it.throwable)) {
+                        navigateToAddPhonePage()
+                    } else if (ErrorHandlerHotel.isGetFailedRoomError(it.throwable)) {
+                        showFailedGetRoomErrorDialog()
+                    } else {
+                        NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
+                    }
                 }
             }
         })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            RESULT_ROOM_DETAIL -> if (resultCode == Activity.RESULT_OK) {
+                loadInitialData()
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -160,7 +181,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         super.onViewCreated(view, savedInstanceState)
 
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_HOTEL_ROOM_LIST_MODEL)) {
-            hotelRoomListPageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_ROOM_LIST_MODEL) ?: HotelRoomListPageModel()
+            hotelRoomListPageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_ROOM_LIST_MODEL)
+                    ?: HotelRoomListPageModel()
         }
 
         (activity as HotelRoomListActivity).updateTitle(hotelRoomListPageModel.propertyName)
@@ -204,11 +226,11 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         hotel_date_layout.setOnClickListener { onDateClicked() }
     }
 
-    fun showFilterRecyclerView(show: Boolean) {
+    private fun showFilterRecyclerView(show: Boolean) {
         filter_recycler_view.visibility = if (show) View.VISIBLE else View.GONE
     }
 
-    fun onGuestInfoClicked() {
+    private fun onGuestInfoClicked() {
         val hotelRoomAndGuestBottomSheets = HotelRoomAndGuestBottomSheets()
         hotelRoomAndGuestBottomSheets.listener = this
         hotelRoomAndGuestBottomSheets.roomCount = hotelRoomListPageModel.room
@@ -218,7 +240,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         }
     }
 
-    fun onDateClicked() {
+    private fun onDateClicked() {
         configAndRenderCheckInDate()
     }
 
@@ -258,17 +280,19 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     override fun onItemClicked(room: HotelRoom) {
         val position = roomList.indexOf(room)
         trackingHotelUtil.hotelClickRoomDetails(room, hotelRoomListPageModel, position)
-        val objectId = System.currentTimeMillis().toString()
-        context?.run {
-            SaveInstanceCacheManager(this, objectId).apply {
-                val addCartParam = mapToAddCartParam(hotelRoomListPageModel, room)
-                put(HotelRoomDetailFragment.EXTRA_ROOM_DATA, HotelRoomDetailModel(room, addCartParam))
+        if (room.available) {
+            val objectId = System.currentTimeMillis().toString()
+            context?.run {
+                SaveInstanceCacheManager(this, objectId).apply {
+                    val addCartParam = mapToAddCartParam(hotelRoomListPageModel, room)
+                    put(HotelRoomDetailFragment.EXTRA_ROOM_DATA, HotelRoomDetailModel(room, addCartParam))
+                }
+                startActivityForResult(HotelRoomDetailActivity.getCallingIntent(this, objectId, position), RESULT_ROOM_DETAIL)
             }
-            startActivityForResult(HotelRoomDetailActivity.getCallingIntent(this, objectId, position), RESULT_ROOM_DETAIL)
         }
     }
 
-    fun mapToAddCartParam(hotelRoomListPageModel: HotelRoomListPageModel, room: HotelRoom): HotelAddCartParam {
+    private fun mapToAddCartParam(hotelRoomListPageModel: HotelRoomListPageModel, room: HotelRoom): HotelAddCartParam {
         return HotelAddCartParam("", hotelRoomListPageModel.checkIn,
                 hotelRoomListPageModel.checkOut, hotelRoomListPageModel.propertyId,
                 listOf(HotelAddCartParam.Room(roomId = room.roomId, numOfRooms = room.roomQtyReqiured)),
@@ -311,7 +335,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                 SelectionRangeCalendarWidget.DEFAULT_RANGE_DATE_SELECTED_ONE_MONTH.toLong(),
                 getString(R.string.hotel_min_date_label), getString(R.string.hotel_max_date_label), minSelectDateFromToday)
 
-        hotelCalendarDialog.listener = object : SelectionRangeCalendarWidget.OnDateClickListener{
+        hotelCalendarDialog.listener = object : SelectionRangeCalendarWidget.OnDateClickListener {
             override fun onDateClick(dateIn: Date, dateOut: Date) {
                 onCheckInDateChanged(dateIn)
                 onCheckOutDateChanged(dateOut)
@@ -373,7 +397,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             roomListViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
                     hotelAddCartParam)
         } else {
-            goToLoginPage()
+            navigateToLoginPage()
         }
     }
 
@@ -381,7 +405,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         trackingHotelUtil.hotelClickRoomListPhoto(room.additionalPropertyInfo.propertyId, room.roomId, room.roomPrice.priceAmount.roundToLong().toString())
     }
 
-    fun goToLoginPage() {
+    private fun navigateToLoginPage() {
         if (activity != null) {
             progressDialog.dismiss()
             RouteManager.route(context, ApplinkConst.LOGIN)
@@ -394,6 +418,25 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         adapter.errorNetworkModel.subErrorMessage = ErrorHandlerHotel.getErrorMessage(context, throwable)
         adapter.errorNetworkModel.onRetryListener = this
         adapter.showErrorNetwork()
+    }
+
+    private fun navigateToAddPhonePage() {
+        RouteManager.route(requireContext(), ApplinkConstInternalGlobal.ADD_PHONE)
+    }
+
+    private fun showFailedGetRoomErrorDialog() {
+        val dialog = DialogUnify(activity as AppCompatActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ICON)
+        dialog.setTitle(getString(R.string.hotel_room_list_failed_get_room_availability_error_title))
+        dialog.setDescription(getString(R.string.hotel_room_list_failed_get_room_availability_error_desc))
+        dialog.setImageDrawable(R.drawable.ic_hotel_room_error_refresh)
+        dialog.setPrimaryCTAText(getString(R.string.hotel_room_list_failed_get_room_availability_cta_title))
+        dialog.setPrimaryCTAClickListener {
+            dialog.dismiss()
+            loadInitialData()
+        }
+        dialog.setCancelable(false)
+        dialog.setOverlayClose(false)
+        dialog.show()
     }
 
     companion object {

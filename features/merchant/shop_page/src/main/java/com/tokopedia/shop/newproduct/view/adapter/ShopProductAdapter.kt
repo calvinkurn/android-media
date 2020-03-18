@@ -1,5 +1,6 @@
 package com.tokopedia.shop.newproduct.view.adapter
 
+import android.os.Handler
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -27,12 +28,24 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         shopProductAdapterTypeFactory.attachAdapter(this)
     }
 
+    companion object{
+        const val ETALASE_ID_SOLD = "sold"
+    }
+
     val shopProductViewModelList: MutableList<ShopProductViewModel> = mutableListOf()
     val shopProductEtalaseListViewModel: ShopProductEtalaseListViewModel?
         get() = mapOfDataModel[KEY_ETALASE_DATA_MODEL] as? ShopProductEtalaseListViewModel
     val shopProductEtalaseTitlePosition: Int
         get() = shopProductEtalaseTitleViewModel?.let {
-            visitables.indexOf(shopProductEtalaseTitleViewModel)
+            visitables.indexOf(it)
+        } ?: 0
+    val shopProductEtalaseListPosition: Int
+        get() = shopProductEtalaseListViewModel?.let {
+            visitables.indexOf(it)
+        } ?: 0
+    val shopProductFirstViewModelPosition: Int
+        get() = shopProductFirstViewModel?.let {
+            visitables.indexOf(it)
         } ?: 0
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
     private var recyclerView: RecyclerView? = null
@@ -53,6 +66,8 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         get() = mapOfDataModel[KEY_SHOP_BUYER_EMPTY_PRODUCT_DATA_MODEL] as? ShopEmptyProductViewModel
     private val shopProductAddViewModel: ShopProductAddViewModel?
         get() = mapOfDataModel[KEY_SHOP_PRODUCT_ADD_DATA_MODEL] as? ShopProductAddViewModel
+    private val shopProductFirstViewModel: ShopProductViewModel?
+        get() = mapOfDataModel[KEY_SHOP_PRODUCT_FIRST_DATA_MODEL] as? ShopProductViewModel
 
     override fun showErrorNetwork(message: String, onRetryListener: ErrorNetworkModel.OnRetryListener) {
         errorNetworkModel.errorMessage = message
@@ -101,6 +116,12 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
             (mapOfDataModel[KEY_ETALASE_DATA_MODEL] as? ShopProductEtalaseListViewModel)?.let {
                 viewHolder.bind(it)
             }
+        }
+    }
+
+    override fun updateEtalaseListViewHolderData() {
+        Handler().post {
+            notifyItemChanged(shopProductEtalaseListPosition)
         }
     }
 
@@ -171,7 +192,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
                 val sizej = shopProductViewModelList.size
                 while (j < sizej) {
                     val shopProductViewModelEtalase = shopProductViewModelList[j]
-                    if (shopProductViewModelEtalase.id == shopProductViewModel.id) {
+                    if (shopProductViewModelEtalase.id == shopProductViewModel.id && shopProductViewModel.etalaseId == etalaseHighlightCarouselViewModelList[i].shopEtalaseViewModel.etalaseId) {
                         return etalaseHighlightCarouselViewModelList[i].shopEtalaseViewModel.etalaseName
                     }
                     j++
@@ -220,10 +241,6 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         }
     }
 
-    fun getProductViewModelRealPosition(shopProductViewModel: ShopProductViewModel): Int {
-        return shopProductViewModelList.indexOf(shopProductViewModel)
-    }
-
     fun replaceProductList(shopProductViewModelArrayList: List<ShopProductViewModel>) {
         if (this.shopProductViewModelList === shopProductViewModelArrayList) {
             return
@@ -259,7 +276,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
             val shopProductViewModel = shopProductViewModelList[i]
             if (shopProductViewModel.id.equals(productId, ignoreCase = true)) {
                 shopProductViewModel.isWishList = wishList
-                notifyItemChanged(visitables.indexOf(shopProductViewModel))
+                notifyItemChanged(visitables.indexOf(shopProductViewModel), wishList)
                 break
             }
             i++
@@ -267,14 +284,14 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         shopProductFeaturedViewModel?.let {
             val isFeaturedChanged = it.updateWishListStatus(productId, wishList)
             if (isFeaturedChanged) {
-                notifyItemChanged(visitables.indexOf(it))
+                notifyItemChanged(visitables.indexOf(it), wishList)
             }
         }
 
         shopProductEtalaseHighlightViewModel?.let {
             val isEtalaseChanged = it.updateWishListStatus(productId, wishList)
             if (isEtalaseChanged) {
-                notifyItemChanged(visitables.indexOf(it))
+                notifyItemChanged(visitables.indexOf(it), wishList)
             }
         }
     }
@@ -437,5 +454,15 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
 
     private fun setmapDataModel(mutableMapDataModelPosition: MutableMap<String, Visitable<*>>) {
         this.mapOfDataModel = mutableMapDataModelPosition
+    }
+
+    fun isEtalaseHighlightSoldProduct(passedShopProductViewModel: ShopProductViewModel): Boolean {
+        return shopProductEtalaseHighlightViewModel?.let {
+            it.etalaseHighlightCarouselViewModelList.any {  etalaseHighlightCarouselViewModelList ->
+                etalaseHighlightCarouselViewModelList.shopProductViewModelList.any {shopProductViewModel ->
+                    etalaseHighlightCarouselViewModelList.shopEtalaseViewModel.etalaseId == ETALASE_ID_SOLD && shopProductViewModel.id == passedShopProductViewModel.id
+                }
+            }
+        } ?: false
     }
 }

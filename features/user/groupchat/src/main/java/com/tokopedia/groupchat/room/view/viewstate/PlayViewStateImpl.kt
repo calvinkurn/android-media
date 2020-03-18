@@ -1,6 +1,8 @@
 package com.tokopedia.groupchat.room.view.viewstate
 
 import android.content.Context
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Handler
 import android.text.InputFilter
@@ -10,12 +12,14 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.view.View.VISIBLE
+import android.view.WindowManager
 import android.webkit.URLUtil
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -49,6 +54,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.InteruptViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
+import com.tokopedia.groupchat.common.data.GroupChatUrl
 import com.tokopedia.groupchat.common.design.QuickReplyItemDecoration
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration
 import com.tokopedia.groupchat.common.util.TextFormatter
@@ -56,14 +62,13 @@ import com.tokopedia.groupchat.room.view.activity.PlayActivity
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayWebviewDialogFragment
 import com.tokopedia.groupchat.room.view.listener.PlayContract
+import com.tokopedia.groupchat.room.view.viewmodel.ChatPermitViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
-import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentsViewModel
-import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 import rx.Observable
@@ -87,22 +92,31 @@ open class PlayViewStateImpl(
         voteAnnouncementListener: ChatroomContract.ChatItem.VoteAnnouncementViewHolderListener,
         sprintSaleViewHolderListener: ChatroomContract.ChatItem.SprintSaleViewHolderListener,
         groupChatPointsViewHolderListener: ChatroomContract.ChatItem.GroupChatPointsViewHolderListener,
-        sendMessage: (viewModel: PendingChatViewModel) -> Unit,
+        private val sendMessage: (viewModel: PendingChatViewModel) -> Unit,
         dynamicButtonClickListener: ChatroomContract.DynamicButtonItem.DynamicButtonListener,
         interactiveButtonClickListener: ChatroomContract.DynamicButtonItem.InteractiveButtonListener
 
 ) : PlayViewState {
 
+    private val currentOrientation: Int
+        get() = activity.resources.configuration.orientation
+
+    private val isLandscape: Boolean
+        get() = currentOrientation == Configuration.ORIENTATION_LANDSCAPE
+
+    private val isPortrait: Boolean
+        get() = currentOrientation == Configuration.ORIENTATION_PORTRAIT
+
     private var viewModel: ChannelInfoViewModel? = null
-    private var stickyComponentViewModel: StickyComponentViewModel? = null
+    private var chatPermitViewModel: ChatPermitViewModel? = null
     private var dynamicButtonsViewModel: DynamicButtonsViewModel? = null
-    private var videoStreamViewModel: VideoStreamViewModel? = null
     private var listMessage: ArrayList<Visitable<*>> = arrayListOf()
 
     private var quickReplyAdapter: QuickReplyAdapter
     private var dynamicButtonAdapter: DynamicButtonsAdapter
     private var adapter: GroupChatAdapter
 
+    private var clLayout: ConstraintLayout = view.findViewById(R.id.cl_layout)
     private var toolbar: Toolbar = view.findViewById(R.id.toolbar)
     private var channelBanner: ImageView = view.findViewById(R.id.channel_banner)
     private var sponsorLayout = view.findViewById<View>(R.id.sponsor_layout)
@@ -128,9 +142,7 @@ open class PlayViewStateImpl(
     private var spaceChatVideo: View = view.findViewById(R.id.top_space_guideline)
     private var interactionGuideline = view.findViewById<FrameLayout>(R.id.interaction_button_guideline)
     private var bufferContainer = view.findViewById<View>(R.id.video_buffer_container)
-    private var videoFragment = fragmentManager.findFragmentById(R.id.video_container) as GroupChatVideoFragment
     private var gradientBackground = view.findViewById<View>(R.id.top_guideline)
-
 
     private lateinit var overlayDialog: CloseableBottomSheetDialog
     private lateinit var pinnedMessageDialog: CloseableBottomSheetDialog
@@ -144,7 +156,6 @@ open class PlayViewStateImpl(
     private var onPauseTime: Long = 0
     private var onEndTime: Long = 0
     private var onLeaveTime: Long = 0
-    private val onTrackingTime: Long = 0
 
     private var interactionAnimationHelper: InteractionAnimationHelper
     private var overflowMenuHelper: OverflowMenuHelper
@@ -203,11 +214,11 @@ open class PlayViewStateImpl(
                 .resources.getDimension(com.tokopedia.design.R.dimen.dp_16).toInt())
         quickReplyRecyclerView.addItemDecoration(quickReplyItemDecoration)
 
-        var dynamicButtonTypeFactory = DynamicButtonTypeFactoryImpl(
+        val dynamicButtonTypeFactory = DynamicButtonTypeFactoryImpl(
                 dynamicButtonClickListener, interactiveButtonClickListener, interactionGuideline)
 
         dynamicButtonRecyclerView.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
-        var buttonSpace = SpaceItemDecoration(activity.getResources()
+        val buttonSpace = SpaceItemDecoration(activity.getResources()
                 .getDimension(com.tokopedia.design.R.dimen.dp_8).toInt(), 2)
         dynamicButtonAdapter = DynamicButtonsAdapter(dynamicButtonTypeFactory)
         dynamicButtonRecyclerView.adapter = dynamicButtonAdapter
@@ -239,15 +250,7 @@ open class PlayViewStateImpl(
         }
 
         sendButton.setOnClickListener {
-            val emp = !TextUtils.isEmpty(replyEditText.text.toString().trim { it <= ' ' })
-            if (emp) {
-                val pendingChatViewModel = PendingChatViewModel(checkText(replyEditText.text.toString()),
-                        userSession.userId,
-                        userSession.name,
-                        userSession.profilePicture,
-                        false)
-                sendMessage(pendingChatViewModel)
-            }
+            shouldSendMessage(replyEditText.text.toString(), isQuickReply = false)
         }
         errorView.setOnClickListener {  }
 
@@ -275,20 +278,19 @@ open class PlayViewStateImpl(
                 setChatListHasSpaceOnTop(),
                 backgroundHelper,
                 analytics,
-                gradientBackground,
-                liveIndicator
-
+                gradientBackground
         )
         videoHorizontalHelper = VideoHorizontalHelper(
                 viewModel,
+                clLayout,
                 hideVideoToggle,
                 showVideoToggle,
                 videoHorizontalContainer,
                 youTubePlayer,
                 setChatListHasSpaceOnTop(),
-                liveIndicator,
                 analytics,
-                activity
+                activity,
+                toolbar
         )
         sponsorHelper = SponsorHelper(viewModel, sponsorLayout, sponsorImage, analytics, listener)
         welcomeHelper = PlayWelcomeHelper(viewModel, analytics, activity, view)
@@ -394,13 +396,12 @@ open class PlayViewStateImpl(
         showBottomSheetFirstTime(it)
         backgroundHelper.setDefaultBackground()
         onSuccessGetInfo(it)
-
     }
 
     override fun onSuccessGetInfo(it: ChannelInfoViewModel) {
         loadingView.hide()
 
-        var needCueVideo = viewModel?.videoId != it.videoId
+        val needCueVideo = viewModel?.videoId != it.videoId
         viewModel = it
         viewModel?.infoUrl = it.infoUrl
 
@@ -432,6 +433,8 @@ open class PlayViewStateImpl(
         sponsorHelper.setSponsor()
         overflowMenuHelper.assignViewModel(it)
         stickyComponentHelper.assignViewModel(it)
+
+        chatPermitViewModel = it.chatPermitViewModel
     }
 
     override fun onBackgroundUpdated(it: BackgroundViewModel) {
@@ -459,7 +462,7 @@ open class PlayViewStateImpl(
             viewModel?.let {
                 setPinnedMessage(it)
                 setQuickReply(it.quickRepliesViewModel)
-                stickyComponentHelper.show()
+                stickyComponentHelper.showIfNotEmpty()
             }
         } else {
             stickyComponentHelper.hide()
@@ -473,7 +476,7 @@ open class PlayViewStateImpl(
     }
 
     private fun showLoginButton(show: Boolean) {
-        if (show) {
+        if (show && isPortrait) {
             login.visibility = View.VISIBLE
             inputTextWidget.visibility = View.GONE
         } else {
@@ -553,7 +556,7 @@ open class PlayViewStateImpl(
         if (channelInfoViewModel?.pinnedMessageViewModel == null) {
             pinnedMessageContainer.visibility = View.GONE
         } else {
-            pinnedMessageContainer.visibility = View.VISIBLE
+            if (isPortrait) pinnedMessageContainer.visibility = View.VISIBLE
 
             channelInfoViewModel.pinnedMessageViewModel?.let {
                 if (it.title.isBlank()) {
@@ -580,21 +583,16 @@ open class PlayViewStateImpl(
         quickReplyRecyclerView.visibility = View.GONE
         quickRepliesViewModel?.let {
             if (it.isEmpty()) return
-            quickReplyRecyclerView.visibility = View.VISIBLE
+            if (isPortrait) quickReplyRecyclerView.visibility = View.VISIBLE
             quickReplyAdapter.setList(quickRepliesViewModel)
         }
     }
 
     override fun onQuickReplyClicked(message: String?) {
-        val text = replyEditText.text.toString()
-        val index = replyEditText.selectionStart
-        replyEditText.setText(MethodChecker.fromHtml(String.format(
-                "%s %s %s",
-                text.substring(0, index),
-                message,
-                text.substring(index)
-        )))
-        sendButton.performClick()
+        shouldSendMessage(
+                MethodChecker.fromHtml(message),
+                isQuickReply = true
+        )
 
         analytics.eventClickQuickReply(
                 String.format("%s - %s", viewModel?.channelId, message))
@@ -766,6 +764,7 @@ open class PlayViewStateImpl(
 
     override fun onVideoVerticalUpdated(it: VideoStreamViewModel) {
         videoVerticalHelper.setData(it)
+        setLiveLabel(it.isLive)
         if(it.isActive && it.androidStreamSD.isNotBlank()) {
             videoVerticalHelper.playVideo(VideoVerticalHelper.VIDEO_480)
             overflowMenuHelper.setQualityVideo(VideoVerticalHelper.VIDEO_480)
@@ -815,12 +814,13 @@ open class PlayViewStateImpl(
     }
 
     private fun initVideoFragment(videoId: String, isVideoLive: Boolean) {
+        setLiveLabel(isVideoLive)
         videoHorizontalHelper.hideVideoAndToggle()
         if(!videoId.isNullOrBlank()){
             videoVerticalHelper.releasePlayer()
             val videoFragment = fragmentManager.findFragmentById(R.id.video_container) as GroupChatVideoFragment
             videoFragment.run {
-                videoHorizontalHelper.showVideoOnly(isVideoLive)
+                videoHorizontalHelper.showVideoOnly()
                 sponsorHelper.hideSponsor()
                 youTubePlayer?.let {
                     it.cueVideo(videoId)
@@ -847,6 +847,10 @@ open class PlayViewStateImpl(
                         youTubePlayer?.let {
                             it.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT)
                             it.setShowFullscreenButton(false)
+                            it.fullscreenControlFlags = videoHorizontalHelper.getYoutubeFullScreenControlFlags(activity.resources.configuration.orientation)
+                            it.setOnFullscreenListener { isFullScreen ->
+                                doOnFullScreenChanged(isFullScreen)
+                            }
                             it.cueVideo(videoId)
                             autoPlayVideo()
 
@@ -947,7 +951,7 @@ open class PlayViewStateImpl(
     }
 
     private fun showNewMessageReceived(newMessageCounter: Int) {
-        if (login.visibility != VISIBLE) {
+        if (login.visibility != VISIBLE && isPortrait) {
             chatNotificationView.visibility = VISIBLE
         }
     }
@@ -965,7 +969,7 @@ open class PlayViewStateImpl(
         } else {
             ImageHandler.LoadImage(webviewIcon, floatingButton.imageUrl)
         }
-        webviewIcon.show()
+        if (isPortrait) webviewIcon.show()
 
         viewModel?.let {
             analytics.eventViewProminentButton(it, floatingButton)
@@ -1047,7 +1051,7 @@ open class PlayViewStateImpl(
     }
 
     override fun onNoInternetConnection() {
-        setEmptyState(R.drawable.ic_play_no_connection,
+        setEmptyState(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection,
                 getStringResource(R.string.no_connection_play),
                 getStringResource(R.string.try_connection_play),
                 getStringResource(com.tokopedia.abstraction.R.string.title_try_again),
@@ -1147,6 +1151,40 @@ open class PlayViewStateImpl(
         closeOverlayDialog()
         closePinnedMessageDialog()
         closeWebViewDialog()
+    }
+
+    override fun onOrientationChanged(orientation: Int) {
+        videoHorizontalHelper.onOrientationChanged(orientation)
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            inputTextWidget.gone()
+            quickReplyRecyclerView.gone()
+            pinnedMessageContainer.gone()
+            chatNotificationView.gone()
+            stickyComponentHelper.hide()
+            webviewIcon.gone()
+            login.gone()
+
+            backgroundHelper.setEmptyBackground()
+        }
+        else {
+            if (errorView.visibility != View.VISIBLE) {
+                showLoginButton(!userSession.isLoggedIn)
+                quickReplyRecyclerView.visibility = if (quickReplyAdapter.itemCount > 0) View.VISIBLE else View.GONE
+                pinnedMessageContainer.visibility = if (viewModel?.pinnedMessageViewModel != null &&
+                        viewModel?.pinnedMessageViewModel?.title?.isNotEmpty() == true &&
+                        viewModel?.pinnedMessageViewModel?.title?.isNotBlank() == true) View.VISIBLE else View.GONE
+                stickyComponentHelper.showIfNotEmpty()
+                webviewIcon.visibility = if (webviewIcon.drawable == null) View.GONE else View.VISIBLE
+
+                val backgroundModel = backgroundHelper.backgroundViewModel
+                if (backgroundModel == null) backgroundHelper.setDefaultBackground()
+                else backgroundHelper.setBackground(backgroundModel)
+            }
+        }
+    }
+
+    override fun exitFullScreen() {
+        videoHorizontalHelper?.exitFullScreen()
     }
 
     private fun showPinnedMessage(viewModel: ChannelInfoViewModel) {
@@ -1259,6 +1297,23 @@ open class PlayViewStateImpl(
             return !it
         }
         return false
+    }
+
+    override fun setChatPermitDisabled(chatPermitViewModel: ChatPermitViewModel) {
+        this.chatPermitViewModel = chatPermitViewModel
+    }
+
+    override fun onChatDisabledError(message: String, action: String) {
+        Toaster.make(
+                view,
+                chatPermitViewModel?.errorMessage?:message,
+                type = Toaster.TYPE_ERROR,
+                duration = Snackbar.LENGTH_LONG,
+                actionText = action,
+                clickListener = View.OnClickListener {
+                    RouteManager.route(view.context, GroupChatUrl.FAQ_URL)
+                }
+        )
     }
 
     private fun toggleHorizontalVideo(): (Boolean) -> Unit {
@@ -1408,5 +1463,25 @@ open class PlayViewStateImpl(
 
     private fun getCurrentTime(): Long {
         return Date().time / 1000L
+    }
+
+    private fun shouldSendMessage(rawMessage: CharSequence, isQuickReply: Boolean) {
+        val emp = !TextUtils.isEmpty(rawMessage.trim { it <= ' ' })
+        if (emp) {
+            val pendingChatViewModel = PendingChatViewModel(checkText(rawMessage.toString()),
+                    userSession.userId,
+                    userSession.name,
+                    userSession.profilePicture,
+                    isInfluencer = false,
+                    isChatDisabled = !(chatPermitViewModel?.isChatDisabled?:false),
+                    isQuickReply = isQuickReply)
+            sendMessage(pendingChatViewModel)
+        }
+    }
+
+    private fun setLiveLabel(isLive: Boolean) = liveIndicator.showWithCondition(isLive)
+
+    private fun doOnFullScreenChanged(isFullScreen: Boolean) {
+        activity.requestedOrientation = if (isFullScreen) ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     }
 }

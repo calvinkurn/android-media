@@ -3,6 +3,7 @@ package com.tokopedia.play.ui.stats
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play.component.EventBusFactory
+import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.uimodel.TotalLikeUiModel
@@ -92,7 +93,7 @@ class StatsComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class StatsComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : StatsComponent(container, bus, coroutineScope) {
+    class StatsComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : StatsComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): StatsView {
             return mockk(relaxed = true)
         }

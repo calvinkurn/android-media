@@ -1,13 +1,11 @@
 package com.tokopedia.profilecompletion.addname.presenter
 
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.profilecompletion.addname.listener.AddNameListener
 import com.tokopedia.sessioncommon.data.register.RegisterPojo
 import com.tokopedia.sessioncommon.domain.usecase.RegisterUseCase
-import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import javax.inject.Inject
 

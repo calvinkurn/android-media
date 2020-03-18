@@ -6,6 +6,7 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.notifications.model.*
 import org.json.JSONObject
 import java.util.*
@@ -57,6 +58,7 @@ object PayloadConverter {
         }
         model.isVibration = data.getBoolean(CMConstant.PayloadKeys.VIBRATE, true)
         model.isUpdateExisting = data.getBoolean(CMConstant.PayloadKeys.UPDATE_NOTIFICATION, false)
+        model.isTest = data.getBoolean(CMConstant.PayloadKeys.IS_TEST, false)
         val gridList = getGridList(data)
         if (gridList != null)
             model.gridList = gridList
@@ -88,7 +90,7 @@ object PayloadConverter {
         if (model.notificationMode != NotificationMode.OFFLINE && (model.startTime == 0L ||
                         model.endTime == 0L)) {
             model.startTime = System.currentTimeMillis()
-            model.endTime = System.currentTimeMillis() + HOURS_24_IN_MILLIS
+            model.endTime = System.currentTimeMillis() + CMPushNotificationManager.instance.cmPushEndTimeInterval
         }
 
         model.status = NotificationStatus.PENDING
