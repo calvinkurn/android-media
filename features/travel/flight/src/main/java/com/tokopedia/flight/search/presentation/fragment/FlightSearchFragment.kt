@@ -127,7 +127,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
         flightSearchPresenter.attachView(this)
 
-//        setupHeader()
+        setupHeader()
         showLoading()
         setUpProgress()
         setUpSwipeRefresh()
@@ -748,7 +748,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         flightSearchPresenter.unsubscribeAll()
 
         initializeToolbarData()
-//        setupHeader()
+        setupHeader()
 
         setUpCombinationAirport()
         horizontal_progress_bar.visibility = View.VISIBLE
@@ -976,7 +976,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
         val coachMark = CoachMarkBuilder().build()
         coachMark.show(activity, FlightSearchActivity.TAG_CHANGE_COACH_MARK, coachMarkItems)
-        coachMark.view.prevButton?.visibility = View.GONE
     }
 
     interface OnFlightSearchFragmentListener {
