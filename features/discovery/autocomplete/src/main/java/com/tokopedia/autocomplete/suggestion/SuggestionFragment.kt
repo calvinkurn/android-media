@@ -40,8 +40,6 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, Sugges
 
     private var suggestionViewUpdateListener: SuggestionViewUpdateListener? = null
 
-    var previousKeyword = ""
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initResources()
