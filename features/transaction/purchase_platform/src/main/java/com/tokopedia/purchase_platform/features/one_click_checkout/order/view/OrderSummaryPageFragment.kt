@@ -406,7 +406,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         btn_pay.setOnClickListener {
             viewModel.finalUpdate { paymentParameter: PaymentParameter ->
-                view?.let { v ->
+                view?.let { _ ->
                     activity?.let {
                         if (paymentParameter.callbackUrl.isNotEmpty() && paymentParameter.payload.isNotEmpty()) {
                             val paymentPassData = PaymentPassData()
@@ -512,7 +512,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     listener = object : PreferenceListBottomSheet.PreferenceListBottomSheetListener {
                         override fun onChangePreference(preference: ProfilesItemModel) {
                             viewModel.updatePreference(preference)
-                            orderSummaryAnalytics.eventChangesProfile()
                         }
 
                         override fun onEditPreference(preference: ProfilesItemModel, adapterPosition: Int) {
