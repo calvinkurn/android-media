@@ -40,13 +40,12 @@ import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckou
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
  * Created by resakemal on 12/08/19.
  */
-abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
+abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
 
     lateinit var checkoutPassData: DigitalCheckoutPassData
 
@@ -70,12 +69,12 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
 
     // Express Checkout
     var isExpressCheckout = false
-    set(value) {
-        field = value
-        promoTicker?.run {
-            if (value) this.show() else this.hide()
+        set(value) {
+            field = value
+            promoTicker?.run {
+                if (value) this.show() else this.hide()
+            }
         }
-    }
     var isInstantCheckout = false
     var inputFields: Map<String, String> = mapOf()
 
@@ -130,7 +129,7 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
 
         topupBillsViewModel.checkVoucherData.observe(this, Observer {
             it.run {
-                promoTicker?.hideLoading()
+                promoTicker?.toggleLoading(false)
                 when (it) {
                     is Success -> setupPromoTicker(it.data)
                     is Fail -> onCheckVoucherError(it.throwable)
@@ -218,53 +217,45 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
     abstract fun getCheckoutView(): TopupBillsCheckoutWidget?
 
     fun getPromoListener(): TickerPromoStackingCheckoutView.ActionListener {
-        return object: TickerPromoStackingCheckoutView.ActionListener {
+        return object : TickerPromoStackingCheckoutView.ActionListener {
             override fun onClickUsePromo() {
-//                if (checkVoucherJob?.isActive != true) {
-                    commonTopupBillsAnalytics.eventClickUsePromo()
+                commonTopupBillsAnalytics.eventClickUsePromo()
 
-                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_DIGITAL)
-                    intent.putExtra(EXTRA_PROMO_DIGITAL_MODEL, getPromoDigitalModel())
-                    startActivityForResult(intent, REQUEST_CODE_PROMO_LIST)
-//                }
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_DIGITAL)
+                intent.putExtra(EXTRA_PROMO_DIGITAL_MODEL, getPromoDigitalModel())
+                startActivityForResult(intent, REQUEST_CODE_PROMO_LIST)
             }
 
             override fun onResetPromoDiscount() {
-//                if (checkVoucherJob?.isActive != true) {
-                    commonTopupBillsAnalytics.eventClickRemovePromo()
-                    promoCode = ""
-                    promoTicker?.resetPromoTicker()
-//                }
+                commonTopupBillsAnalytics.eventClickRemovePromo()
+                promoCode = ""
+                promoTicker?.resetPromoTicker()
             }
 
             override fun onDisablePromoDiscount() {
-//                if (checkVoucherJob?.isActive != true) {
-                    promoCode = ""
-                    promoTicker?.resetPromoTicker()
-//                }
+                promoCode = ""
+                promoTicker?.resetPromoTicker()
             }
 
             override fun onClickDetailPromo() {
-//                if (checkVoucherJob?.isActive != true) {
-                    val intent: Intent
-                    if (promoCode.isNotEmpty()) {
-                        val requestCode: Int
-                        if (isCoupon) {
-                            intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL)
-                            intent.putExtra(EXTRA_IS_USE, true)
-                            intent.putExtra(EXTRA_COUPON_CODE, promoCode)
-                            intent.putExtra(EXTRA_PROMO_DATA, getPromoDigitalModel())
-                            requestCode = REQUEST_CODE_PROMO_DETAIL
-                        } else {
-                            intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_HOTEL)
-                            intent.putExtra(EXTRA_PROMO_CODE, promoCode)
-                            intent.putExtra(EXTRA_COUPON_ACTIVE, true)
-                            intent.putExtra(EXTRA_PROMO_DATA, getPromoDigitalModel())
-                            requestCode = REQUEST_CODE_PROMO_LIST
-                        }
-                        startActivityForResult(intent, requestCode)
+                val intent: Intent
+                if (promoCode.isNotEmpty()) {
+                    val requestCode: Int
+                    if (isCoupon) {
+                        intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL)
+                        intent.putExtra(EXTRA_IS_USE, true)
+                        intent.putExtra(EXTRA_COUPON_CODE, promoCode)
+                        intent.putExtra(EXTRA_PROMO_DATA, getPromoDigitalModel())
+                        requestCode = REQUEST_CODE_PROMO_DETAIL
+                    } else {
+                        intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_HOTEL)
+                        intent.putExtra(EXTRA_PROMO_CODE, promoCode)
+                        intent.putExtra(EXTRA_COUPON_ACTIVE, true)
+                        intent.putExtra(EXTRA_PROMO_DIGITAL_MODEL, getPromoDigitalModel())
+                        requestCode = REQUEST_CODE_PROMO_LIST
                     }
-//                }
+                    startActivityForResult(intent, requestCode)
+                }
             }
         }
     }
@@ -334,8 +325,9 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
     }
 
     fun checkVoucher() {
-        promoTicker?.showLoading()
-        topupBillsViewModel.checkVoucher(promoCode, PromoDigitalModel(categoryId, productId, price = price ?: 0))
+        promoTicker?.toggleLoading(true)
+        topupBillsViewModel.checkVoucher(promoCode, PromoDigitalModel(categoryId, productId, price = price
+                ?: 0))
     }
 
     private fun processExpressCheckout() {
@@ -345,14 +337,16 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
         } ?: ""
         if (productId > 0) {
             topupBillsViewModel.processExpressCheckout(GraphqlHelper.loadRawString(resources, R.raw.query_recharge_express_checkout),
-                    topupBillsViewModel.createExpressCheckoutParams(productId, inputFields, price ?: 0, voucherCode))
+                    topupBillsViewModel.createExpressCheckoutParams(productId, inputFields, price
+                            ?: 0, voucherCode))
         }
     }
 
     abstract fun processEnquiry(data: TopupBillsEnquiryData)
 
     open fun processMenuDetail(data: TopupBillsMenuDetail) {
-        isExpressCheckout = data.isExpressCheckout
+//        isExpressCheckout = data.isExpressCheckout
+        isExpressCheckout = true
     }
 
     abstract fun processFavoriteNumbers(data: TopupBillsFavNumber)
