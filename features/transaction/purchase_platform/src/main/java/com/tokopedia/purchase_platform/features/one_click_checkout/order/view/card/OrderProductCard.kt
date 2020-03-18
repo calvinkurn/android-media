@@ -36,6 +36,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             view.et_note.filters = arrayOf(InputFilter.LengthFilter(100))
             view.et_note.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
+                    orderSummaryAnalytics.eventClickSellerNotes(product.productId.toString(), shop.shopId.toString())
                     product.notes = s?.toString() ?: ""
                     listener.onProductChange(product, false)
                 }
