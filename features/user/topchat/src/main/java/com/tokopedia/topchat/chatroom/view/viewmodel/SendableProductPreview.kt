@@ -8,8 +8,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.Attachment
 import com.tokopedia.websocket.RxWebSocket
 import okhttp3.Interceptor
 
-class
-SendableProductPreview(
+class SendableProductPreview(
         val productPreview: ProductPreview
 ) : SendablePreview {
 
