@@ -350,7 +350,7 @@ internal class SimilarSearchViewModel(
     }
 
     private fun trackAddToCartStatusOK(addToCartDataModel: AddToCartDataModel?) {
-        val cartId = addToCartDataModel?.data?.cartId ?: 0
+        val cartId = addToCartDataModel?.data?.cartId ?: ""
         val originalProductAsObjectDataLayerAddToCart = originalProduct.asObjectDataLayerAddToCart(cartId)
 
         trackingAddToCartEventLiveData.postValue(Event(originalProductAsObjectDataLayerAddToCart))
@@ -383,7 +383,7 @@ internal class SimilarSearchViewModel(
     }
 
     private fun trackBuyStatusOK(addToCartDataModel: AddToCartDataModel?) {
-        val cartId = addToCartDataModel?.data?.cartId ?: 0
+        val cartId = addToCartDataModel?.data?.cartId ?: ""
         val originalProductAsObjectDataLayerAddToCart = originalProduct.asObjectDataLayerAddToCart(cartId)
 
         trackingBuyEventLiveData.postValue(Event(originalProductAsObjectDataLayerAddToCart))
