@@ -200,6 +200,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private RelativeLayout rlProductInfo;
     private FrameLayout flDisableContainer;
     private Ticker tickerOtd;
+    private Ticker productTicker;
     private ConstraintLayout layoutTradeInShippingInfo;
     private Typography tvTradeInShippingPriceTitle;
     private Typography tvTradeInShippingPriceDetail;
@@ -365,6 +366,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvTradeInShippingPriceDetail = itemView.findViewById(R.id.tv_trade_in_shipping_price_detail);
         labelChooseDurationTradeIn = itemView.findViewById(R.id.label_choose_duration_trade_in);
         tvChooseDurationTradeIn = itemView.findViewById(R.id.tv_choose_duration_trade_in);
+        productTicker = itemView.findViewById(R.id.product_ticker);
 
         //priority
         llPrioritas = itemView.findViewById(R.id.ll_prioritas);
