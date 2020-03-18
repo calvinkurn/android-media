@@ -131,7 +131,7 @@ class MainSliceProvider : SliceProvider() {
                             }
                         }
                         val trackingImpression = TrackingData(listProduct)
-                        Timber.d(contextNonNull.resources.getString(R.string.slice_track_timber_impression) + trackingImpression)
+                        Timber.w(contextNonNull.resources.getString(R.string.slice_track_timber_impression) + trackingImpression)
                     }
                 }
             } else {
@@ -174,7 +174,7 @@ class MainSliceProvider : SliceProvider() {
                 alreadyLoadData = true
                 updateSlice(sliceUri)
             } catch (e: Exception) {
-                Timber.d(contextNonNull.resources.getString(R.string.slice_track_timber_impression) + e.message)
+                Timber.w(contextNonNull.resources.getString(R.string.slice_track_timber_impression) + e.message)
             }
         }
     }
