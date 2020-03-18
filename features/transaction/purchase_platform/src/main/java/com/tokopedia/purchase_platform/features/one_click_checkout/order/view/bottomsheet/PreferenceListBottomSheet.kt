@@ -8,28 +8,18 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetPreferenceListUseCase
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccGlobalEvent
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.PreferenceListResponseModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ProfilesItemModel
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.UpdateCartOccGqlResponse
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.UpdateCartOccProfileRequest
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.UpdateCartOccRequest
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.domain.UpdateCartOccUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderSummaryPageFragment
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.list.view.PreferenceListAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.bottom_sheet_preference_list.view.*
-import kotlinx.coroutines.*
-import kotlinx.coroutines.NonCancellable.cancel
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import kotlin.coroutines.CoroutineContext
 
 class PreferenceListBottomSheet(
         private val getPreferenceListUseCase: GetPreferenceListUseCase,
@@ -65,7 +55,7 @@ class PreferenceListBottomSheet(
         btnAddPreference?.gone()
         progressBar?.visible()
         getPreferenceListUseCase.execute({ preferenceListResponseModel: PreferenceListResponseModel ->
-            updateList(preferenceListResponseModel.profiles ?: ArrayList())
+            updateList(preferenceListResponseModel)
         }, { throwable: Throwable ->
             throwable.printStackTrace()
             handleError(throwable)
@@ -76,7 +66,7 @@ class PreferenceListBottomSheet(
     private fun handleError(throwable: Throwable) {
         when (throwable) {
             is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
-                    showGlobalError(GlobalError.NO_CONNECTION)
+                showGlobalError(GlobalError.NO_CONNECTION)
             }
             is RuntimeException -> {
                 when (throwable.localizedMessage.toIntOrNull()) {
@@ -84,13 +74,13 @@ class PreferenceListBottomSheet(
                     ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
                     ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
                     else -> {
-                            showGlobalError(GlobalError.SERVER_ERROR)
+                        showGlobalError(GlobalError.SERVER_ERROR)
 //                            Toaster.make(it, "Terjadi kesalahan pada server. Ulangi beberapa saat lagi", type = Toaster.TYPE_ERROR)
                     }
                 }
             }
             else -> {
-                    showGlobalError(GlobalError.SERVER_ERROR)
+                showGlobalError(GlobalError.SERVER_ERROR)
 //                    Toaster.make(it, throwable.message
 //                            ?: "Terjadi kesalahan pada server. Ulangi beberapa saat lagi", type = Toaster.TYPE_ERROR)
             }
@@ -164,11 +154,11 @@ class PreferenceListBottomSheet(
         btnAddPreference?.gone()
     }
 
-    private fun updateList(preferences: ArrayList<ProfilesItemModel>) {
-        adapter?.submitList(preferences)
+    private fun updateList(preferences: PreferenceListResponseModel) {
+        adapter?.submitList(preferences.profiles)
         progressBar?.gone()
         rvPreferenceList?.visible()
-        if (preferences.size >= 5) {
+        if (preferences.profiles?.size ?: 0 >= preferences.maxProfile) {
             btnAddPreference?.gone()
         } else {
             btnAddPreference?.visible()

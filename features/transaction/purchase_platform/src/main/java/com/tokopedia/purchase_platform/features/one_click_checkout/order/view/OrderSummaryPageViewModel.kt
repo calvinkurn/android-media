@@ -166,7 +166,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                     val curShip = value.preference.shipment
                                     var shipping = value.shipping
 
-                                    if (shippingRecommendationData.errorId.isNotEmpty() && shippingRecommendationData.errorMessage.isNotEmpty()) {
+                                    if (!shippingRecommendationData.errorId.isNullOrEmpty() && !shippingRecommendationData.errorMessage.isNullOrEmpty()) {
                                         shipping = Shipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = shippingRecommendationData.errorMessage, shippingRecommendationData = null)
                                     } else {
                                         if (shipping != null) {
