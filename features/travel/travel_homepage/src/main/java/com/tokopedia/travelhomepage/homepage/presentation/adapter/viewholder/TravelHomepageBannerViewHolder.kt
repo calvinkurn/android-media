@@ -39,17 +39,16 @@ class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener:
                 bannerList = element.travelCollectiveBannerModel.banners
                 bannerView.shouldShowSeeAllButton(bannerList.isNotEmpty())
 
-                val promoUrls = arrayListOf<String>()
-                showAllUrl = element.travelCollectiveBannerModel.meta.appUrl
-                for (slidesModel in bannerList) {
-                    promoUrls.add(slidesModel.attribute.imageUrl)
-                }
-                bannerView.setPromoList(promoUrls)
-                bannerView.buildView()
-
                 if (currentPosition != element.layoutData.position) {
+                    val promoUrls = arrayListOf<String>()
+                    showAllUrl = element.travelCollectiveBannerModel.meta.appUrl
+                    for (slidesModel in bannerList) {
+                        promoUrls.add(slidesModel.attribute.imageUrl)
+                    }
+                    bannerView.setPromoList(promoUrls)
+                    bannerView.buildView()
+
                     currentPosition = element.layoutData.position
-                    travelHomepageActionListener.onViewSliderBanner(bannerList[0], 0)
                 }
 
             } catch (e: Throwable) {
@@ -73,7 +72,7 @@ class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener:
     }
 
     override fun onPromoScrolled(position: Int) {
-        travelHomepageActionListener.onViewSliderBanner(bannerList[position], position + 1)
+        travelHomepageActionListener.onViewSliderBanner(bannerList[position], position)
     }
 
     override fun onPromoAllClick() {
