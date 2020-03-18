@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -247,7 +248,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun setupInsurance(it: OccState.Success<OrderPreference>) {
         val insuranceData = it.data.shipping?.insuranceData
-//        val productId
+        val productId = viewModel.orderProduct.productId
         if (insuranceData != null) {
             if (insuranceData.insurancePrice > 0) {
                 tv_insurance_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(insuranceData.insurancePrice, false)
@@ -262,10 +263,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         R.drawable.ic_pp_insurance)
             }
             cb_insurance.setOnCheckedChangeListener { _, isChecked ->
-                if(isChecked){
-//                    orderSummaryAnalytics.eventClickOnInsurance(productId.toString(),"check", insuranceData.insurancePrice.toString())
+                Log.d("checker_aaa", isChecked.toString())
+                if(!isChecked) {
+                    orderSummaryAnalytics.eventClickOnInsurance(productId.toString(),"uncheck", insuranceData.insurancePrice.toString())
                 } else {
-//                    orderSummaryAnalytics.eventClickOnInsurance(productId.toString(),"uncheck", insuranceData.insurancePrice.toString())
+                    orderSummaryAnalytics.eventClickOnInsurance(productId.toString(),"check", insuranceData.insurancePrice.toString())
                 }
                 viewModel.setInsuranceCheck(isChecked)
             }
