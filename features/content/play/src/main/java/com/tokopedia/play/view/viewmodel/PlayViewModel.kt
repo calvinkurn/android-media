@@ -340,11 +340,17 @@ class PlayViewModel @Inject constructor(
         return currentValue
     }
 
-    private fun getDefaultBottomInsetsMapState(): Map<BottomInsetsType, BottomInsetsState> = mapOf(
-            BottomInsetsType.Keyboard to BottomInsetsState.Hidden(false),
-            BottomInsetsType.ProductSheet to BottomInsetsState.Hidden(false),
-            BottomInsetsType.VariantSheet to BottomInsetsState.Hidden(false)
-    )
+    private fun getDefaultBottomInsetsMapState(): Map<BottomInsetsType, BottomInsetsState> {
+        val currentBottomInsetsMap = _observableBottomInsetsState.value
+        val defaultKeyboardState = currentBottomInsetsMap?.get(BottomInsetsType.Keyboard)?.isHidden ?: false
+        val defaultProductSheetState = currentBottomInsetsMap?.get(BottomInsetsType.ProductSheet)?.isHidden ?: false
+        val defaultVariantSheetState = currentBottomInsetsMap?.get(BottomInsetsType.VariantSheet)?.isHidden ?: false
+        return mapOf(
+                BottomInsetsType.Keyboard to BottomInsetsState.Hidden(defaultKeyboardState),
+                BottomInsetsType.ProductSheet to BottomInsetsState.Hidden(defaultProductSheetState),
+                BottomInsetsType.VariantSheet to BottomInsetsState.Hidden(defaultVariantSheetState)
+        )
+    }
     //endregion
 
     //region video player
