@@ -400,7 +400,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         btn_order_detail.setOnClickListener {
             if (orderTotal.orderCost.totalPrice > 0.0) {
-                orderSummaryAnalytics
+//                orderSummaryAnalytics
                 OrderPriceSummaryBottomSheet().show(this, orderTotal.orderCost)
             }
         }
@@ -479,6 +479,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         override fun onCourierChange(shippingCourierViewModel: ShippingCourierUiModel) {
+            orderSummaryAnalytics.eventChooseCourierSelectionOSP(viewModel._orderPreference?.shipping?.shipperId.toString())
             viewModel.chooseCourier(shippingCourierViewModel)
         }
 
@@ -487,6 +488,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         override fun chooseCourier() {
+            orderSummaryAnalytics.eventChangeCourierOSP(viewModel._orderPreference?.shipping?.shipperId.toString())
             if (viewModel.orderTotal.value?.buttonState != ButtonBayarState.LOADING) {
                 orderPreferenceCard.showCourierBottomSheet(this@OrderSummaryPageFragment)
             }
@@ -513,6 +515,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     listener = object : PreferenceListBottomSheet.PreferenceListBottomSheetListener {
                         override fun onChangePreference(preference: ProfilesItemModel) {
                             viewModel.updatePreference(preference)
+                            orderSummaryAnalytics.eventChangesProfile()
                         }
 
                         override fun onEditPreference(preference: ProfilesItemModel, adapterPosition: Int) {
