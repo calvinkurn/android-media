@@ -184,5 +184,7 @@
     <string name="banned_product_title">Barang ini dilarang</string>
     <string name="banned_product_description">Barang ini tidak diperjual belikan \nkarena melanggar syarat dan ketentuan Tokopedia</string>
 
+    //Variant section
+    <string name="add_to_cart_error_variant">Oops, kamu wajib pilih varian.</string>
 
 </resources>

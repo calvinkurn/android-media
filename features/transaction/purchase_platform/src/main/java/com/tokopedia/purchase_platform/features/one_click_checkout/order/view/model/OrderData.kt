@@ -74,7 +74,8 @@ data class OrderCost(
         val totalPrice: Double = 0.0,
 //        val totalWeight: Double,
         val shippingFee: Double = 0.0,
-        val insuranceFee: Double = 0.0
+        val insuranceFee: Double = 0.0,
+        val paymentFee: Double = 0.0
 //        val priorityFee: Double,
 //        val totalPurchaseProtectionItem: Int,
 //        val purchaseProtectionFee: Double,

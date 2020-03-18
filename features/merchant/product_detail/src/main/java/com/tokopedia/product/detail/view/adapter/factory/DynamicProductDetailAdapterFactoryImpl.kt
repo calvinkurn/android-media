@@ -5,10 +5,13 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.product.detail.data.model.variant.VariantDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.*
+import com.tokopedia.variant_common.view.ProductVariantListener
 
-class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProductDetailListener) : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
+class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProductDetailListener,
+                                             private val variantListener: ProductVariantListener) : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
     override fun type(data: ProductLastSeenDataModel): Int {
         return ProductLastSeenViewHolder.LAYOUT
     }
@@ -69,6 +72,10 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
         return PageErrorViewHolder.LAYOUT
     }
 
+    override fun type(data: VariantDataModel): Int {
+        return ProductVariantViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ProductLastSeenViewHolder.LAYOUT -> ProductLastSeenViewHolder(view)
@@ -86,6 +93,7 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
             ProductValuePropositionViewHolder.LAYOUT -> ProductValuePropositionViewHolder(view, listener)
             ProductShimmeringViewHolder.LAYOUT -> ProductShimmeringViewHolder(view)
             PageErrorViewHolder.LAYOUT -> PageErrorViewHolder(view, listener)
+            ProductVariantViewHolder.LAYOUT -> ProductVariantViewHolder(view, variantListener)
             else -> super.createViewHolder(view, type)
         }
     }

@@ -76,31 +76,46 @@ class CheckoutOccUseCase @Inject constructor(private val graphqlUseCase: Graphql
         val QUERY = """
             mutation one_click_checkout(${"$"}params: oneClickCheckoutParams) {
               one_click_checkout(params:${"$"}params) {
-                Header {
+                header {
                   process_time
                   reason
                   error_code
                   messages
                 }
-                Data {
-                  Success
-                  Error {
-                    Code
-                    ImageURL
-                    Message
+                data {
+                  success
+                  error {
+                    code
+                    image_url
+                    message
+                    additional_info {
+                        price_validation {
+                            is_updated
+                            message {
+                                title
+                                desc
+                                action
+                            }
+                            tracker_data {
+                                product_changes_type
+                                campaign_type
+                                product_ids
+                            }
+                        }
+                    }
                   }
-                  PaymentParameter {
-                    CallbackURL
-                    Payload
-                    RedirectParam {
-                      URL
-                      Gateway
-                      Method
-                      Form
+                  payment_parameter {
+                    callback_url
+                    payload
+                    redirect_param {
+                      url
+                      gateway
+                      method
+                      form
                     }
                   }
                 }
-                Status
+                status
               }
             }
         """.trimIndent()

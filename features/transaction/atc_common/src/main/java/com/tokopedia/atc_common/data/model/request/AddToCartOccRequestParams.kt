@@ -9,5 +9,6 @@ data class AddToCartOccRequestParams(
         var isScp: Boolean = false,
         var ucParam: String = "",
         var attribution: String = "",
-        var listTracker: String = ""
+        var listTracker: String = "",
+        var notes: String = ""
 )
