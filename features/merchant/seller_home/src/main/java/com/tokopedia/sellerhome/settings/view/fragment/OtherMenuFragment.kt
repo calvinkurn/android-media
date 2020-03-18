@@ -15,6 +15,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.layanan_finansial.view.acitivity.LayananAcitivity
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.R
@@ -144,7 +145,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                     context?.startActivity(intent)
                 },
                 DividerUiModel(),
-                MenuItemUiModel(LAYANAN_KEUANGAN, R.drawable.ic_finance),
+                MenuItemUiModel(LAYANAN_KEUANGAN, R.drawable.ic_finance){
+                    val intent = Intent(context,LayananAcitivity::class.java)
+                    startActivity(intent)
+                },
                 MenuItemUiModel(PUSAT_EDUKASI_SELLER, R.drawable.ic_seller_edu) {
                     val intent = RouteManager.getIntent(context, ApplinkConst.WEBVIEW)
                     intent.putExtra(URL_KEY, SellerBaseUrl.HOSTNAME + SellerBaseUrl.SELLER_EDU)
