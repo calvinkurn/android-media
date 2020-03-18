@@ -93,6 +93,7 @@ ext {
     unifyGlobalErrorVersion = '1.0.6'
     unifySortFilterVersion = '1.0.1'
     unifyIconNotificationVersion = '1.0.0'
+    unifyHeaderVersion = '1.0.0'
 
     gradlePlugin = [
             crashlytics   : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
@@ -316,6 +317,7 @@ ext {
             datepicker      : "com.tokopedia.unify.compositions:datepicker:${unifyDatePickerVersion}@aar",
             empty_state     : "com.tokopedia.unify.compositions:empty_state:${unifyEmptyStateVersion}@aar",
             global_error    : "com.tokopedia.unify.compositions:global_error:${unifyGlobalErrorVersion}@aar",
+            header          : "com.tokopedia.unify.compositions:header:${unifyHeaderVersion}@aar",
             iconNotification: "com.tokopedia.unify.compositions:icon_notification:${unifyIconNotificationVersion}@aar",
             sortFilter      : "com.tokopedia.unify.compositions:sort_filter:${unifySortFilterVersion}@aar"
     ]
