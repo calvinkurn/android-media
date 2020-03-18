@@ -9,8 +9,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.text.Layout;
 import android.text.Spannable;
-import android.text.method.LinkMovementMethod;
+import android.text.method.MovementMethod;
+import android.text.method.ScrollingMovementMethod;
+import android.text.style.ClickableSpan;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -21,6 +25,8 @@ import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.domain.model.Ticker;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerViewModel;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -69,18 +75,18 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
             textMessage.setLines(tickerContainerMaxLines);
         }
 
-        Ticker.Tickers ticker = element.getTickers().get(0);
-        textMessage.setText(ticker.getMessage());
-        textMessage.setMovementMethod(new TickerLinkMovementMethod(
-                ticker.getId()
-        ));
+        if (element.getTickers() != null && element.getTickers().size()>1) {
+            Ticker.Tickers ticker = element.getTickers().get(0);
+            textMessage.setText(ticker.getMessage());
+            textMessage.setMovementMethod(createMovementMethod(context, ticker.getId()));
 
-        StripedUnderlineUtil.stripUnderlines(textMessage);
-        ViewCompat.setBackgroundTintList(btnClose, ColorStateList.valueOf(Color.parseColor(ticker.getColor())));
-        if (!hasStarted && element.getTickers().size()>1) {
-            if (tickerTimerTask != null) tickerTimerTask.cancel();
-            tickerTimerTask = new SwitchTicker(element.getTickers());
-            timer.scheduleAtFixedRate(tickerTimerTask, 0, SLIDE_DELAY);
+            StripedUnderlineUtil.stripUnderlines(textMessage);
+            ViewCompat.setBackgroundTintList(btnClose, ColorStateList.valueOf(Color.parseColor(ticker.getColor())));
+            if (!hasStarted && element.getTickers().size()>1) {
+                if (tickerTimerTask != null) tickerTimerTask.cancel();
+                tickerTimerTask = new SwitchTicker(element.getTickers());
+                timer.scheduleAtFixedRate(tickerTimerTask, 0, SLIDE_DELAY);
+            }
         }
     }
 
@@ -151,20 +157,56 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
         }
     }
 
-    private class TickerLinkMovementMethod extends LinkMovementMethod {
-        String tickerId;
+    private MovementMethod createMovementMethod (Context context, String tickerId) {
+        final GestureDetector detector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onSingleTapUp ( MotionEvent e ) {
+                return true;
+            }
 
-        public TickerLinkMovementMethod(String tickerId) {
-            this.tickerId = tickerId;
-        }
+            @Override
+            public boolean onSingleTapConfirmed ( MotionEvent e ) {
+                return true;
+            }
+        });
+        return new ScrollingMovementMethod() {
+            @Override
+            public boolean onTouchEvent (@NotNull TextView widget, @NotNull Spannable buffer, @NotNull MotionEvent event ) {
+                HomePageTracking.eventClickTickerHomePage(
+                        context,
+                        tickerId
+                );
+                // check if event is a single tab
+                boolean isClickEvent = detector.onTouchEvent(event);
 
-        @Override
-        public boolean onTouchEvent(TextView widget, Spannable buffer, MotionEvent event) {
-            HomePageTracking.eventClickTickerHomePage(
-                    context,
-                    tickerId
-            );
-            return super.onTouchEvent(widget, buffer, event);
-        }
+                // detect span that was clicked
+                if (isClickEvent) {
+                    int x = (int) event.getX();
+                    int y = (int) event.getY();
+
+                    x -= widget.getTotalPaddingLeft();
+                    y -= widget.getTotalPaddingTop();
+
+                    x += widget.getScrollX();
+                    y += widget.getScrollY();
+
+                    Layout layout = widget.getLayout();
+                    int line = layout.getLineForVertical(y);
+                    int off = layout.getOffsetForHorizontal(line, x);
+
+                    ClickableSpan[] link = buffer.getSpans(off, off, ClickableSpan.class);
+
+                    if (link.length != 0) {
+                        // execute click only for first clickable span
+                        // can be a for each loop to execute every one
+                        link[0].onClick(widget);
+                        return true;
+                    }
+                }
+
+                // let scroll movement handle the touch
+                return super.onTouchEvent(widget, buffer, event);
+            }
+        };
     }
 }
