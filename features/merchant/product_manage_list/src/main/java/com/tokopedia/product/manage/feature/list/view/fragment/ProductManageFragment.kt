@@ -335,7 +335,11 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         } else {
             tabFilters.resetAllFilter(viewHolder)
             tabFilters.setSelectedFilter(filter)
-            filterProductByStatus(allProductList, selectedFilter)
+            if(selectedFilter == FEATURED) {
+                filterProductByFeatured(allProductList)
+            } else {
+                filterProductByStatus(allProductList, selectedFilter)
+            }
         }
     }
 
@@ -353,6 +357,13 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
         renderList(emptyList())
         renderList(productList, hasNextPage)
+    }
+
+    private fun filterProductByFeatured(products: List<ProductViewModel>){
+        val productList = products.filter {
+            it.isFeatured()
+        }
+        renderList(productList)
     }
 
     private fun renderCheckedView() {
@@ -455,7 +466,11 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private fun showProductList(productList: List<ProductViewModel>) {
         if(tabFilters.isActive()) {
             val selectedFilter = tabFilters.selectedFilter?.status
-            filterProductByStatus(allProductList, selectedFilter)
+            if(selectedFilter == FEATURED) {
+                filterProductByFeatured(allProductList)
+            } else {
+                filterProductByStatus(allProductList, selectedFilter)
+            }
         } else {
             val hasNextPage = productList.isNotEmpty()
             renderList(productList, hasNextPage)
@@ -779,6 +794,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             successMessage = getString(R.string.product_manage_success_add_featured_product)
             isFeaturedProduct = true
         }
+        val index = allProductList.indexOfFirst { it.id == productId }
+        if(index >= 0) allProductList[index] = allProductList[index].copy(status = FEATURED)
         productManageListAdapter.updateFeaturedProduct(productId, isFeaturedProduct)
         showMessageToastWithoutAction(successMessage)
     }
@@ -926,39 +943,41 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private fun onSetFeaturedProductClicked(productManageViewModel: ProductViewModel) {
         context?.let { context ->
             if(viewModel.isPowerMerchant() || isOfficialStore) {
-                productManageViewModel.isFeatured?.let {
-                    if(productListFeaturedOnlySize == 5 && !it) {
-                        setDialogFeaturedProduct(
-                                ProductManageUrl.ILLUSTRATION_MAX_FEATURED_PRODUCT_DOMAIN,
-                                getString(R.string.product_featured_max_dialog_title),
-                                getString(R.string.product_featured_max_dialog_desc),
-                                getString(R.string.product_featured_max_dialog_primary_cta),
-                                getString(R.string.product_featured_max_dialog_secondary_cta)
-                        )
-                        dialogFeaturedProduct?.setPrimaryCTAClickListener { dialogFeaturedProduct?.dismiss() }
-                        dialogFeaturedProduct?.setSecondaryCTAClickListener {
-                            dialogFeaturedProduct?.dismiss()
-                            RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_FEATURED_PRODUCT)
+                productManageViewModel.isFeatured?.let { isFeatured ->
+                    if(!isFeatured) {
+                        if(productListFeaturedOnlySize == 5) {
+                            setDialogFeaturedProduct(
+                                    ProductManageUrl.ILLUSTRATION_MAX_FEATURED_PRODUCT_DOMAIN,
+                                    getString(R.string.product_featured_max_dialog_title),
+                                    getString(R.string.product_featured_max_dialog_desc),
+                                    getString(R.string.product_featured_max_dialog_primary_cta),
+                                    getString(R.string.product_featured_max_dialog_secondary_cta)
+                            )
+                            dialogFeaturedProduct?.setPrimaryCTAClickListener { dialogFeaturedProduct?.dismiss() }
+                            tabFilters.resetSelectedFilter()
+                            tabFilters.setSelectedFilter(FilterViewModel.Featured(5))
+                            dialogFeaturedProduct?.setSecondaryCTAClickListener {
+                                dialogFeaturedProduct?.dismiss()
+                                viewModel.getProductList(userSession.shopId, listOf(FilterOption.FilterByCondition.FeaturedOnly), isRefresh = true)
+                            }
+                            dialogFeaturedProduct?.show()
+                        } else if(productListFeaturedOnlySize == 0) {
+                            setDialogFeaturedProduct(
+                                    ProductManageUrl.ILLUSTRATION_ADD_FEATURED_PRODUCT_DOMAIN,
+                                    getString(R.string.product_featured_add_dialog_title),
+                                    getString(R.string.product_featured_add_dialog_desc),
+                                    getString(R.string.product_featured_add_dialog_primary_cta),
+                                    getString(R.string.product_featured_add_dialog_secondary_cta)
+                            )
+                            dialogFeaturedProduct?.setPrimaryCTAClickListener {
+                                addFeaturedProduct(productManageViewModel.id)
+                                dialogFeaturedProduct?.dismiss()
+                            }
+                            dialogFeaturedProduct?.setSecondaryCTAClickListener { dialogFeaturedProduct?.dismiss() }
+                            dialogFeaturedProduct?.show()
+                        } else {
+                           addFeaturedProduct(productManageViewModel.id)
                         }
-                        dialogFeaturedProduct?.show()
-                    }
-                    else {
-                        setDialogFeaturedProduct(
-                                ProductManageUrl.ILLUSTRATION_ADD_FEATURED_PRODUCT_DOMAIN,
-                                getString(R.string.product_featured_add_dialog_title),
-                                getString(R.string.product_featured_add_dialog_desc),
-                                getString(R.string.product_featured_add_dialog_primary_cta),
-                                getString(R.string.product_featured_add_dialog_secondary_cta)
-                        )
-                        dialogFeaturedProduct?.setPrimaryCTAClickListener {
-                            productListFeaturedOnlySize += 1
-                            showLoadingProgress()
-                            setFeaturedProduct(productManageViewModel.id, ProductManageListConstant.FEATURED_PRODUCT_ADD_STATUS)
-                            dialogFeaturedProduct?.dismiss()
-                            ProductManageTracking.eventFeaturedProductPopUpSave()
-                        }
-                        dialogFeaturedProduct?.setSecondaryCTAClickListener { dialogFeaturedProduct?.dismiss() }
-                        dialogFeaturedProduct?.show()
                     }
                 }
             } else {
@@ -1041,6 +1060,13 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private fun goToEditProduct(productId: String) {
         val intent = ProductEditActivity.createInstance(activity, productId)
         startActivity(intent)
+    }
+
+    private fun addFeaturedProduct(productId: String) {
+        productListFeaturedOnlySize += 1
+        showLoadingProgress()
+        setFeaturedProduct(productId, ProductManageListConstant.FEATURED_PRODUCT_ADD_STATUS)
+        ProductManageTracking.eventFeaturedProductPopUpSave()
     }
 
     private fun setFeaturedProduct(id: String, type: Int) {

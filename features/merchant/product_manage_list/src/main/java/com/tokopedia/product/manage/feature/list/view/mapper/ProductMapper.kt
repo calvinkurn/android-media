@@ -45,6 +45,7 @@ object ProductMapper {
         val activeProductFilter = productList?.filter { it.isActive() }.orEmpty()
         val inActiveProductFilter = productList?.filter { it.isInactive()}.orEmpty()
         val violationProductFilter = productList?.filter { it.isViolation() }.orEmpty()
+        val featuredProductFilter = productList?.filter { it.isFeatured() }.orEmpty()
 
         if(activeProductFilter.isNotEmpty()) {
             val activeFilterCount = activeProductFilter.count()
@@ -62,6 +63,12 @@ object ProductMapper {
             val violationFilterCount = violationProductFilter.count()
             val violationFilter = Violation(violationFilterCount)
             productFilters.add(violationFilter)
+        }
+
+        if(featuredProductFilter.isNotEmpty()) {
+            val featuredFilterCount = featuredProductFilter.count()
+            val featuredFilter = Featured(featuredFilterCount)
+            productFilters.add(featuredFilter)
         }
 
         return productFilters

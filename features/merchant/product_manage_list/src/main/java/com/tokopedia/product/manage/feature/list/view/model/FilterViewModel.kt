@@ -17,6 +17,7 @@ sealed class FilterViewModel(
     data class Active(override val count: Int): FilterViewModel(R.string.product_manage_filter_active, count, ProductStatus.ACTIVE)
     data class InActive(override val count: Int): FilterViewModel(R.string.product_manage_filter_inactive, count, ProductStatus.INACTIVE)
     data class Violation(override val count: Int): FilterViewModel(R.string.product_manage_filter_banned, count, ProductStatus.VIOLATION)
+    data class Featured(override val count: Int): FilterViewModel(R.string.product_manage_filter_featured, count, ProductStatus.FEATURED)
 
     object MoreFilter: FilterViewModel(R.string.product_manage_filter, icon = R.drawable.unify_filter_ic)
 

@@ -6,6 +6,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -115,6 +118,15 @@ class StockReminderFragment: BaseDaggerFragment() {
 
         getStockReminder()
 
+        qeStock.apply {
+            (editText as EditText).setOnEditorActionListener { _, actionId, _ ->
+                if(actionId == EditorInfo.IME_ACTION_DONE) {
+                    hideSoftKeyboard()
+                }
+                true
+            }
+        }
+
         swStockReminder.setOnCheckedChangeListener { _, isChecked ->
             toggleStateChecked = isChecked
             toggleStateChecked?.let { state ->
@@ -136,11 +148,6 @@ class StockReminderFragment: BaseDaggerFragment() {
         }
 
         btnSaveReminder.setOnClickListener {
-            if(qeStock.getValue() == 0) {
-                qeStock.setValue(1)
-            } else if(qeStock.getValue() > 100) {
-                qeStock.setValue(100)
-            }
             if (swStockReminder.isChecked) {
                 if (threshold == 0) {
                     threshold = qeStock.getValue()
@@ -182,6 +189,12 @@ class StockReminderFragment: BaseDaggerFragment() {
         resultIntent.putExtra(EXTRA_THRESHOLD, threshold)
         activity?.setResult(Activity.RESULT_OK, resultIntent)
         activity?.finish()
+    }
+
+    private fun hideSoftKeyboard() {
+        qeStock.clearFocus()
+        val inputMethodManager = activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(qeStock.windowToken, 0)
     }
 
     private fun getStockReminder() {

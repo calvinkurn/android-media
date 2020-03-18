@@ -24,6 +24,7 @@ data class ProductViewModel(
 
     fun isVariant(): Boolean = isVariant == true
     fun isNotVariant(): Boolean = isVariant != true
+    fun isFeatured(): Boolean = isFeatured == true
 
     fun isActive(): Boolean = status == ProductStatus.ACTIVE
     fun isInactive(): Boolean = status == ProductStatus.INACTIVE
