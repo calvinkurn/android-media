@@ -227,7 +227,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                             priceValidationDialog.setPrimaryCTAText(messageData.action)
                             priceValidationDialog.setPrimaryCTAClickListener {
                                 priceValidationDialog.dismiss()
-                                refresh(true)
+                                refresh()
                             }
                             priceValidationDialog.show()
                             val eventLabelBuilder = StringBuilder()
