@@ -60,8 +60,10 @@ class ShopHomeViewModel @Inject constructor(
         get() = _checkWishlistData
     private val _checkWishlistData = MutableLiveData<Result<List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>>>>()
 
-    val userSessionShopId = userSession.shopId ?: ""
-    val isLogin = userSession.isLoggedIn
+    val userSessionShopId: String
+        get() = userSession.shopId ?: ""
+    val isLogin: Boolean
+        get() = userSession.isLoggedIn
     val userId: String
         get() = userSession.userId
 

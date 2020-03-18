@@ -1,17 +1,17 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
+import android.os.Handler
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carousel.CarouselUnify
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisibleOnTheScreen
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.setImage
 import kotlinx.android.synthetic.main.viewmodel_slider_banner.view.*
 import java.util.ArrayList
 
@@ -22,7 +22,7 @@ import java.util.ArrayList
 class ShopHomeSliderBannerViewHolder(
         view: View?,
         private val listener: ShopHomeDisplayWidgetListener
-) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view) {
+) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view), CarouselUnify.OnActiveIndexChangedListener {
 
     companion object {
         @LayoutRes
@@ -42,19 +42,11 @@ class ShopHomeSliderBannerViewHolder(
         val carouselItem = data as CarouselData
         val index = carouselData?.indexOf(carouselItem) ?: 0
         bannerData?.let { bannerData ->
-            bannerData.data?.let { bannerItemData ->
+            bannerData.data?.let {
                 img.setOnClickListener {
                     onClickBannerItem(
                             bannerData,
-                            bannerItemData[index],
-                            adapterPosition,
-                            index
-                    )
-                }
-                img.addOnImpressionListener(bannerItemData[index]) {
-                    listener.onDisplayItemImpression(
-                            bannerData,
-                            bannerItemData[index],
+                            bannerData.data.get(index),
                             adapterPosition,
                             index
                     )
@@ -71,18 +63,47 @@ class ShopHomeSliderBannerViewHolder(
 
     init {
         carouselShopPage = view?.findViewById(R.id.carousel_shop_page)
+        carouselShopPage?.apply {
+            autoplayDuration = 5000L
+            indicatorPosition = CarouselUnify.INDICATOR_BL
+            infinite = true
+            onActiveIndexChangedListener = this@ShopHomeSliderBannerViewHolder
+        }
+    }
+
+    override fun onActiveIndexChanged(prev: Int, current: Int) {
+        itemView.isVisibleOnTheScreen({
+            bannerData?.let { shopHomeDisplayWidgetUiModel ->
+                shopHomeDisplayWidgetUiModel.data?.let { listDisplayWidget ->
+                    if (current >= 0 && current < shopHomeDisplayWidgetUiModel.data.size) {
+                        val item = listDisplayWidget[current]
+                        if (!item.isInvoke) {
+                            listener.onDisplayItemImpression(
+                                    shopHomeDisplayWidgetUiModel,
+                                    listDisplayWidget[current],
+                                    adapterPosition,
+                                    current
+                            )
+                            item.invoke()
+                        }
+                    }
+                }
+            }
+        }, {})
     }
 
     override fun bind(shopHomeDisplayWidgetUiModel: ShopHomeDisplayWidgetUiModel) {
         bannerData = shopHomeDisplayWidgetUiModel
         carouselData = dataWidgetToCarouselData(shopHomeDisplayWidgetUiModel)
         carouselShopPage?.apply {
-            autoplayDuration = 5000L
-            autoplay = true
-            indicatorPosition = CarouselUnify.INDICATOR_BL
-            infinite = true
             carouselData?.let {
-                addItems(R.layout.widget_slider_banner_item, it, itmListener)
+                if (stage.childCount == 0) {
+                    addItems(R.layout.widget_slider_banner_item, it, itmListener)
+                    Handler().post {
+                        activeIndex = 0
+                        autoplay = true
+                    }
+                }
             }
         }
         itemView.textViewTitle?.apply {

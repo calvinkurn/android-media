@@ -36,11 +36,13 @@ public class ShopPageTrackingConstant {
     public static final String TOP_SECTION = "top section";
     public static final String INFO = "info";
     public static final String MERCHANT_VOUCHER_CODE = "merchant voucher code";
+    public static final String CLICK_DETAIL = "click detail";
     public static final String MERCHANT_VOUCHER = "merchant voucher";
     public static final String PROMO_BANNER = "promo banner";
     public static final String MANAGE_SHOP = "manage shop";
     public static final String MANAGE_PRODUCT = "manage product";
     public static final String CLICK = "click";
+    public static final String CLICK_SEE_ALL = "click see all";
     public static final String CLICK_CHAT_SELLER = "click chat seller";
     public static final String FOLLOW = "follow";
     public static final String UNFOLLOW = "unfollow";
@@ -89,7 +91,7 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_FOLLOW_FROM_ZERO_FOLLOWER = "click follow from zero follower";
     public static final String IMPRESSION_FOLLOW_FROM_ZERO_FOLLOWER = "impression of follow from zero follower";
     public static final String CLICK_MENU_FROM_MORE_MENU = "click menu from more menu";
-    public static final String CLICK_WISHLIST = "click wishlist";
+    public static final String CLICK_WISHLIST = "clickWishlist";
     public static final String ADD = "add";
     public static final String REMOVE = "remove";
     public static final String CLICK_SORT = "click sort";
@@ -209,7 +211,6 @@ public class ShopPageTrackingConstant {
 
     public static final String VERTICAL_POSITION = "p%1d";
     public static final String HOME_TAB = "home";
-    public static final String PROMO_SLOT_NAME = "promo slot name";
     public static final String HOME_FEATURED_PRODUCT = "featured product";
     public static final String ALL_PRODUCT = "all product";
     public static final String WITH_CART = "with cart";

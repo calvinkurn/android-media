@@ -31,6 +31,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
+import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.Util
@@ -55,7 +56,7 @@ import javax.inject.Inject
 
 class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeFactory>(),
         ShopHomeDisplayWidgetListener,
-        ShopHomeVoucherViewHolder.OnMerchantVoucherListWidgetListener,
+        ShopHomeVoucherViewHolder.ShopHomeVoucherViewHolderListener,
         ShopPageHomeProductClickListener {
 
     companion object {
@@ -64,8 +65,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         const val KEY_IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT"
         const val KEY_SHOP_NAME = "SHOP_NAME"
         const val KEY_SHOP_ATTRIBUTION = "SHOP_ATTRIBUTION"
-
-
+        const val KEY_SHOP_REF = "SHOP_REF"
         const val SPAN_COUNT = 2
 
         fun createInstance(
@@ -73,7 +73,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 isOfficialStore: Boolean,
                 isGoldMerchant: Boolean,
                 shopName: String,
-                shopAttribution: String
+                shopAttribution: String,
+                shopRef: String
         ): Fragment {
             val bundle = Bundle()
             bundle.putString(KEY_SHOP_ID, shopId)
@@ -81,6 +82,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             bundle.putBoolean(KEY_IS_GOLD_MERCHANT, isGoldMerchant)
             bundle.putString(KEY_SHOP_NAME, shopName)
             bundle.putString(KEY_SHOP_ATTRIBUTION, shopAttribution)
+            bundle.putString(KEY_SHOP_REF, shopRef)
+
             return ShopPageHomeFragment().apply {
                 arguments = bundle
             }
@@ -97,6 +100,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private var isGoldMerchant: Boolean = false
     private var shopName: String = ""
     private var shopAttribution: String = ""
+    private var shopRef: String = ""
+    val isLogin: Boolean
+        get() = viewModel.isLogin
+    val isOwner: Boolean
+        get() = Util.isMyShop(shopId, viewModel.userSessionShopId)
     private val shopPageHomeLayoutUiModel: ShopPageHomeLayoutUiModel?
         get() = (viewModel.shopHomeLayoutData.value as? Success)?.data
     private val customDimensionShopPage: CustomDimensionShopPage by lazy {
@@ -112,11 +120,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         getIntentData()
+        super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopHomeViewModel::class.java)
         customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -143,7 +150,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun loadInitialData() {
+        recycler_view.visible()
+        scrollView_globalError_shopPage.hide()
+        globalError_shopPage.hide()
         showLoading()
+        shopHomeAdapter.isOwner = isOwner
         viewModel.getShopPageHomeData(shopId)
     }
 
@@ -154,6 +165,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             isGoldMerchant = it.getBoolean(KEY_IS_GOLD_MERCHANT, false)
             shopName = it.getString(KEY_SHOP_NAME, "")
             shopAttribution = it.getString(KEY_SHOP_ATTRIBUTION, "")
+            shopRef = it.getString(KEY_SHOP_REF, "")
         }
     }
 
@@ -265,17 +277,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun onSuccessGetShopHomeLayoutData(data: ShopPageHomeLayoutUiModel) {
-        recycler_view.visible()
         shopHomeAdapter.hideLoading()
-        scrollView_globalError_shopPage.hide()
-        globalError_shopPage.hide()
         val listProductWidget = data.listWidget.filterIsInstance<ShopHomeCarousellProductUiModel>()
         viewModel.getWishlistStatus(listProductWidget)
         shopHomeAdapter.setHomeLayoutData(data.listWidget)
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, ShopHomeAdapterTypeFactory> {
-        return ShopHomeAdapter(shopHomeAdapterTypeFactory)
+        return ShopHomeAdapter(shopHomeAdapterTypeFactory).apply {
+            shopHomeAdapterTypeFactory.adapter = this
+        }
     }
 
     override fun getAdapterTypeFactory() = shopHomeAdapterTypeFactory
@@ -379,16 +390,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    override val isOwner: Boolean
-        get() = Util.isMyShop(shopId, viewModel.userSessionShopId)
-
-    val isLogin: Boolean
-        get() = viewModel.isLogin
-
-    override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {}
-
-    override fun onItemClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
-        shopPageHomeTracking.clickDetailMerchantVoucher(isOwner, customDimensionShopPage)
+    override fun onVoucherClicked(parentPosition: Int, position: Int, merchantVoucherViewModel: MerchantVoucherViewModel) {
+        shopPageHomeTracking.clickDetailMerchantVoucher(
+                isOwner,
+                shopId,
+                shopPageHomeLayoutUiModel?.layoutId ?: "",
+                parentPosition + 1,
+                position + 1,
+                merchantVoucherViewModel,
+                customDimensionShopPage
+        )
         context?.let {
             val intentMerchantVoucherDetail = MerchantVoucherDetailActivity.createIntent(
                     it,
@@ -399,8 +410,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    override fun onSeeAllClicked() {
-        shopPageHomeTracking.clickSeeAllMerchantVoucher(isOwner, customDimensionShopPage)
+    override fun onVoucherSeeAllClicked() {
+        shopPageHomeTracking.clickSeeAllMerchantVoucher(
+                isOwner,
+                shopId,
+                shopPageHomeLayoutUiModel?.layoutId ?: "",
+                customDimensionShopPage)
         context?.let {
             val intentMerchantVoucherList = MerchantVoucherListActivity.createIntent(
                     it,
@@ -411,8 +426,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    override fun onVoucherListImpression(listVoucher: List<MerchantVoucherViewModel>) {
-        shopPageHomeTracking.onImpressionVoucherList(isOwner, listVoucher, customDimensionShopPage)
+    override fun onVoucherListImpression(
+            parentPosition: Int,
+            listVoucher: List<MerchantVoucherViewModel>
+    ) {
+        shopPageHomeTracking.onImpressionVoucherList(isOwner, parentPosition + 1, listVoucher, customDimensionShopPage)
     }
 
     override fun onAllProductItemClicked(itemPosition: Int, shopHomeProductViewModel: ShopHomeProductViewModel?) {
@@ -564,6 +582,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopHomeProductViewModel: ShopHomeProductViewModel,
             isWishlist: Boolean
     ) {
+        val customDimensionShopPageProduct = CustomDimensionShopPageProduct.create(
+                shopId,
+                isOfficialStore,
+                isGoldMerchant,
+                shopHomeProductViewModel.id,
+                shopRef
+        )
         shopPageHomeTracking.clickWishlist(
                 isOwner,
                 isWishlist,
@@ -572,7 +597,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopHomeCarousellProductUiModel?.name ?: "",
                 shopHomeCarousellProductUiModel?.widgetId ?: "",
                 shopHomeProductViewModel.id ?: "",
-                customDimensionShopPage
+                customDimensionShopPageProduct
         )
     }
 
