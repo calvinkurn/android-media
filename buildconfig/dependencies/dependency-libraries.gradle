@@ -38,6 +38,7 @@ ext {
             datePickerRange         : ":libraries:date_picker_range",
             deviceInfo              : ":libraries:device_info",
             dynamicFeatures         : ":libraries:dynamic_features",
+            encryption              : ":libraries:encryption",
             fingerprint             : ":libraries:fingerprint",
             graphView               : ":libraries:graph_view",
             imagePicker             : ":libraries:image_picker",

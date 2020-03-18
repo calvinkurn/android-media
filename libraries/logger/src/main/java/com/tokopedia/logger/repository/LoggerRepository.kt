@@ -4,20 +4,22 @@ import com.tokopedia.logger.datasource.cloud.LoggerCloudDatasource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudScalyrDataSource
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.datasource.db.LoggerDao
+import com.tokopedia.logger.datasource.security.Encryptor
 import com.tokopedia.logger.model.ScalyrEvent
 import com.tokopedia.logger.model.ScalyrEventAttrs
 import com.tokopedia.logger.utils.Constants
-import com.tokopedia.logger.utils.decrypt
 import kotlinx.coroutines.coroutineScope
-import java.lang.Exception
 import javax.crypto.SecretKey
 
 class LoggerRepository(private val logDao: LoggerDao,
                        private val server: LoggerCloudDatasource,
-                       private val scalyrLogger: LoggerCloudScalyrDataSource) : LoggerRepositoryContract {
+                       private val scalyrLogger: LoggerCloudScalyrDataSource,
+                       private val encryptor: Encryptor,
+                       private val secretKey: SecretKey) : LoggerRepositoryContract {
 
     override suspend fun insert(logger: Logger) {
-        logDao.insert(logger)
+        val encryptedLogger = logger.copy(message = encryptor.encrypt(logger.message, secretKey))
+        logDao.insert(encryptedLogger)
     }
 
     override suspend fun getCount(): Int {
@@ -46,19 +48,12 @@ class LoggerRepository(private val logDao: LoggerDao,
 
     override suspend fun sendLogToServer(serverSeverity: Int,
                                          TOKEN: Array<String>,
-                                         logger: Logger,
-                                         secretKey: SecretKey): Int = coroutineScope {
-        val message = decrypt(logger.message, secretKey)
-        val truncatedMessage = if (message.length > Constants.MAX_BUFFER) {
-            message.substring(0, Constants.MAX_BUFFER)
-        } else {
-            message
-        }
-        server.sendLogToServer(serverSeverity, TOKEN, truncatedMessage)
+                                         logger: Logger): Int = coroutineScope {
+        val message = encryptor.decrypt(logger.message, secretKey)
+        server.sendLogToServer(serverSeverity, TOKEN, message)
     }
 
-    override suspend fun sendScalyrLogToServer(logs: List<Logger>,
-                                               secretKey: SecretKey) = coroutineScope {
+    override suspend fun sendScalyrLogToServer(logs: List<Logger>) = coroutineScope {
         val scalyrEventList = mutableListOf<ScalyrEvent>()
         //make the timestamp equals to timestamp when hit the api
         //covnert the milli to nano, based on scalyr requirement.
@@ -66,7 +61,7 @@ class LoggerRepository(private val logDao: LoggerDao,
         for (log in logs) {
             //to make sure each timestamp in each row is unique
             ts += 1000
-            val message = decrypt(log.message, secretKey)
+            val message = encryptor.decrypt(log.message, secretKey)
             val truncatedMessage = if (message.length > Constants.MAX_BUFFER) {
                 message.substring(0, Constants.MAX_BUFFER)
             } else {
