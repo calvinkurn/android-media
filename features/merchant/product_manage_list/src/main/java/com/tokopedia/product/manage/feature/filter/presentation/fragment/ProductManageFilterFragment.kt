@@ -219,6 +219,7 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
                 ProductManageTracking.eventFilter()
             }
         }
+        this.isFullpage = true
         adjustBottomSheetPadding()
         initBottomSheetReset()
     }

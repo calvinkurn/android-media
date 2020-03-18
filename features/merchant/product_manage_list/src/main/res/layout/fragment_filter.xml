@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -11,29 +11,26 @@
         android:layout_marginLeft="@dimen/dp_negative_8"
         android:layout_marginRight="@dimen/dp_negative_8"
         android:layout_height="@dimen/dp_1"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:layout_alignParentTop="true" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/filterRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/product_manage_white"
         android:paddingLeft="@dimen/layout_lvl2"
         android:paddingRight="@dimen/layout_lvl2"
-        android:background="@color/product_manage_white"
-        app:layout_constraintTop_toBottomOf="@id/bottomsheet_title_divider"
-        app:layout_constraintBottom_toTopOf="@id/bottomsheet_button_divider"/>
+        android:layout_alignTop="@id/bottomsheet_title_divider"
+        android:layout_alignBottom="@id/bottomsheet_button_divider" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/filterLoadingSpinner"
         android:layout_width="@dimen/layout_lvl4"
         android:layout_height="@dimen/layout_lvl4"
         android:layout_centerInParent="true"
-        android:background="@color/product_manage_white"
-        app:layout_constraintTop_toBottomOf="@id/bottomsheet_title_divider"
-        app:layout_constraintBottom_toTopOf="@id/bottomsheet_button_divider"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_loading_indeterminate"/>
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        app:srcCompat="@drawable/ic_loading_indeterminate" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/bottomsheet_button_divider"
@@ -41,7 +38,7 @@
         android:layout_height="@dimen/dp_1"
         android:layout_marginLeft="@dimen/dp_negative_8"
         android:layout_marginRight="@dimen/dp_negative_8"
-        app:layout_constraintBottom_toTopOf="@id/filter_bottom_sheet_button_layout" />
+        android:layout_alignBottom="@id/filter_bottom_sheet_button_layout" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/filter_bottom_sheet_button_layout"
@@ -50,7 +47,7 @@
         android:background="@color/product_manage_white"
         android:paddingTop="@dimen/layout_lvl2"
         android:paddingBottom="@dimen/layout_lvl2"
-        app:layout_constraintBottom_toBottomOf="parent">
+        android:layout_alignParentBottom="true">
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/buttonCloseBottomSheet"
@@ -64,4 +61,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>
