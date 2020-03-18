@@ -79,7 +79,7 @@ class LogManager(val application: Application) : CoroutineScope {
                 val logsDao = LoggerRoomDatabase.getDatabase(context).logDao()
                 val server = LoggerCloudDatasource()
                 val scalyrLogger = LoggerCloudScalyrDataSource(context)
-                val encryptor = Encryptor(Constants.ENCRYPTION_MODE)
+                val encryptor = Encryptor(Constants.ENCRYPTION_ALGORITHM, Constants.ENCRYPTION_MODE)
                 val secretKey = encryptor.generateKey(Constants.ENCRYPTION_KEY)
                 loggerRepository = LoggerRepository(logsDao, server, scalyrLogger, encryptor, secretKey)
             }

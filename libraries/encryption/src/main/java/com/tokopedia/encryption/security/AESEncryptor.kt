@@ -6,10 +6,10 @@ import javax.crypto.Cipher
 import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
 
-class AESEncryptor(private val algorithm: String = Constants.AES_ALGORITHM) : BaseEncryptor {
+class AESEncryptor(private val algorithm: String = Constants.AES_ALGORITHM, private val mode: String = "AES") : BaseEncryptor {
 
     override fun generateKey(key: String): SecretKey {
-        return SecretKeySpec(key.toByteArray(Charsets.UTF_8), algorithm)
+        return SecretKeySpec(key.toByteArray(Charsets.UTF_8), mode)
     }
 
     override fun encrypt(message: String, secretKey: SecretKey): String {

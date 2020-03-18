@@ -1,7 +1,7 @@
 package com.tokopedia.encryption.utils
 
 object Constants {
-    const val AES_ALGORITHM = "AES"
+    const val AES_ALGORITHM = "AES/ECB/PKCS5Padding"
     const val RSA_METHOD = "RSA"
     const val RSA_LENGTH = 2048
     const val RSA_ALGORITHM = "RSA"
