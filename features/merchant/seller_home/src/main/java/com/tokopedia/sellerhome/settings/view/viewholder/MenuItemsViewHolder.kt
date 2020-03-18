@@ -6,12 +6,14 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.settings.analytics.SettingTrackingListener
 import com.tokopedia.sellerhome.settings.analytics.sendSettingShopInfoClickTracking
 import com.tokopedia.sellerhome.settings.analytics.sendSettingShopInfoImpressionTracking
 import com.tokopedia.sellerhome.settings.view.uimodel.MenuItemUiModel
 import kotlinx.android.synthetic.main.setting_menu_list.view.*
 
-class MenuItemsViewHolder(itemView: View) : AbstractViewHolder<MenuItemUiModel>(itemView) {
+class MenuItemsViewHolder(itemView: View,
+                          private val trackingListener: SettingTrackingListener) : AbstractViewHolder<MenuItemUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -27,7 +29,7 @@ class MenuItemsViewHolder(itemView: View) : AbstractViewHolder<MenuItemUiModel>(
         with(itemView) {
             element.drawableReference?.let { settingMenuIcon.setImageDrawable(ContextCompat.getDrawable(context, it)) }
             settingMenuTitle.text = element.title
-            sendSettingShopInfoImpressionTracking(element, context)
+            sendSettingShopInfoImpressionTracking(element, trackingListener::sendImpressionDataIris)
             setOnClickListener {
                 element.sendSettingShopInfoClickTracking()
                 if (element.onClickApplink.isNullOrEmpty()) {

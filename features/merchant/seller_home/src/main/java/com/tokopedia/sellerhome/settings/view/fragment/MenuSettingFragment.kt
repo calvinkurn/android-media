@@ -21,6 +21,8 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant
+import com.tokopedia.sellerhome.settings.analytics.SettingTrackingListener
+import com.tokopedia.sellerhome.settings.analytics.sendShopInfoImpressionData
 import com.tokopedia.sellerhome.settings.data.constant.SellerBaseUrl
 import com.tokopedia.sellerhome.settings.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.sellerhome.settings.view.uimodel.DividerUiModel
@@ -28,6 +30,7 @@ import com.tokopedia.sellerhome.settings.view.uimodel.IndentedSettingTitleUiMode
 import com.tokopedia.sellerhome.settings.view.uimodel.MenuItemUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.SettingTitleMenuUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.base.DividerType
+import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingShopInfoImpressionTrackable
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiModel
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.user.session.UserSessionInterface
@@ -36,7 +39,7 @@ import kotlinx.android.synthetic.main.setting_logout.view.*
 import kotlinx.android.synthetic.main.setting_tc.view.*
 import javax.inject.Inject
 
-class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>() {
+class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), SettingTrackingListener {
 
     companion object {
         private const val REQUEST_CHANGE_PASSWORD = 123
@@ -70,7 +73,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         setupView()
     }
 
-    override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory = OtherMenuAdapterTypeFactory()
+    override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory = OtherMenuAdapterTypeFactory(this)
 
     override fun onItemClicked(t: SettingUiModel?) {
 
@@ -87,6 +90,10 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
     override fun loadData(page: Int) {
 
+    }
+
+    override fun sendImpressionDataIris(settingShopInfoImpressionTrackable: SettingShopInfoImpressionTrackable) {
+        context?.run { settingShopInfoImpressionTrackable.sendShopInfoImpressionData(this, userSession) }
     }
 
     private fun setupView() {

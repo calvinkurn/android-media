@@ -11,10 +11,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant
-import com.tokopedia.sellerhome.settings.analytics.sendSettingShopInfoClickTracking
-import com.tokopedia.sellerhome.settings.analytics.sendSettingShopInfoImpressionTracking
-import com.tokopedia.sellerhome.settings.analytics.sendTrackingManual
+import com.tokopedia.sellerhome.settings.analytics.*
 import com.tokopedia.sellerhome.settings.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.sellerhome.settings.view.uimodel.base.RegularMerchant
 import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
@@ -30,7 +27,8 @@ import kotlinx.android.synthetic.main.setting_shop_status_regular.view.*
 
 class OtherMenuViewHolder(private val itemView: View,
                           private val context: Context,
-                          private val listener: Listener) {
+                          private val listener: Listener,
+                          private val trackingListener: SettingTrackingListener) {
 
     companion object {
         private val GREEN_TIP = R.drawable.setting_tip_bar_enabled
@@ -125,7 +123,7 @@ class OtherMenuViewHolder(private val itemView: View,
     private fun setShopAvatar(shopAvatarUiModel: ShopAvatarUiModel) {
         itemView.shopInfoLayout.shopImage?.run {
             urlSrc = shopAvatarUiModel.shopAvatarUrl
-            sendSettingShopInfoImpressionTracking(shopAvatarUiModel, context)
+            sendSettingShopInfoImpressionTracking(shopAvatarUiModel, trackingListener::sendImpressionDataIris)
             setOnClickListener {
                 listener.onShopInfoClicked()
                 shopAvatarUiModel.sendSettingShopInfoClickTracking()
@@ -137,7 +135,7 @@ class OtherMenuViewHolder(private val itemView: View,
         itemView.saldoBalance.run {
             balanceTitle?.text = context.resources.getString(R.string.setting_balance)
             balanceValue?.text = saldoBalanceUiModel.balanceValue
-            sendSettingShopInfoImpressionTracking(saldoBalanceUiModel, context)
+            sendSettingShopInfoImpressionTracking(saldoBalanceUiModel, trackingListener::sendImpressionDataIris)
             saldoBalance.setOnClickListener {
                 listener.onSaldoClicked()
                 saldoBalanceUiModel.sendSettingShopInfoClickTracking()
@@ -149,7 +147,7 @@ class OtherMenuViewHolder(private val itemView: View,
         itemView.topAdsBalance.run {
             balanceTitle?.text = context.resources.getString(R.string.setting_topads_credits)
             balanceValue?.text = topadsBalanceUiModel.balanceValue
-            sendSettingShopInfoImpressionTracking(topadsBalanceUiModel, context)
+            sendSettingShopInfoImpressionTracking(topadsBalanceUiModel, trackingListener::sendImpressionDataIris)
             topAdsBalance.setOnClickListener {
                 listener.onKreditTopadsClicked()
                 topadsBalanceUiModel.sendSettingShopInfoClickTracking()
@@ -166,7 +164,7 @@ class OtherMenuViewHolder(private val itemView: View,
                 listener.onStatusBarNeedDarkColor(true)
                 layoutInflater.apply {
                     setRegularMerchantShopStatus(shopType)
-                    sendSettingShopInfoImpressionTracking(shopStatusUiModel, context)
+                    sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     rightRectangle.setOnClickListener {
                         RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
                         shopStatusUiModel.sendSettingShopInfoClickTracking()
@@ -177,7 +175,7 @@ class OtherMenuViewHolder(private val itemView: View,
                 listener.onStatusBarNeedDarkColor(false)
                 layoutInflater.apply {
                     setPowerMerchantShopStatus(shopType)
-                    sendSettingShopInfoImpressionTracking(shopStatusUiModel, context)
+                    sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
                         shopStatusUiModel.sendSettingShopInfoClickTracking()
@@ -187,7 +185,7 @@ class OtherMenuViewHolder(private val itemView: View,
             is ShopType.OfficialStore -> {
                 listener.onStatusBarNeedDarkColor(false)
                 layoutInflater.apply {
-                    sendSettingShopInfoImpressionTracking(shopStatusUiModel, context)
+                    sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                 }
             }
         }

@@ -4,10 +4,11 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.sellerhome.settings.analytics.SettingTrackingListener
 import com.tokopedia.sellerhome.settings.view.uimodel.*
 import com.tokopedia.sellerhome.settings.view.viewholder.*
 
-class OtherMenuAdapterTypeFactory : BaseAdapterTypeFactory(), OtherMenuTypeFactory {
+class OtherMenuAdapterTypeFactory(private val trackingListener: SettingTrackingListener) : BaseAdapterTypeFactory(), OtherMenuTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type){
@@ -17,8 +18,8 @@ class OtherMenuAdapterTypeFactory : BaseAdapterTypeFactory(), OtherMenuTypeFacto
             DividerViewHolder.THIN_LAYOUT_INDENTED -> DividerViewHolder(parent)
             SettingTitleViewHolder.LAYOUT -> SettingTitleViewHolder(parent)
             IndentedSettingTitleViewHolder.LAYOUT -> IndentedSettingTitleViewHolder(parent)
-            MenuItemsViewHolder.LAYOUT -> MenuItemsViewHolder(parent)
-            MenuItemsViewHolder.LAYOUT_NO_ICON -> MenuItemsViewHolder(parent)
+            MenuItemsViewHolder.LAYOUT -> MenuItemsViewHolder(parent, trackingListener)
+            MenuItemsViewHolder.LAYOUT_NO_ICON -> MenuItemsViewHolder(parent, trackingListener)
             SettingTitleMenuViewHolder.LAYOUT -> SettingTitleMenuViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }

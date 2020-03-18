@@ -3,20 +3,24 @@ package com.tokopedia.sellerhome.settings.analytics
 import android.content.Context
 import android.view.View
 import android.widget.ImageView
-import com.tokopedia.iris.IrisAnalytics
+import com.tokopedia.analyticsdebugger.debugger.IrisLogger
+import com.tokopedia.iris.data.db.mapper.TrackingMapper
+import com.tokopedia.iris.data.db.table.Tracking
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingShopInfoClickTrackable
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingShopInfoImpressionTrackable
 import com.tokopedia.track.TrackApp
+import com.tokopedia.user.session.UserSessionInterface
+import org.json.JSONObject
 
-fun <R, T : SettingShopInfoImpressionTrackable> R.sendSettingShopInfoImpressionTracking(uiModel: T, context: Context) {
+fun <R, T : SettingShopInfoImpressionTrackable> R.sendSettingShopInfoImpressionTracking(uiModel: T, action: (T) -> Unit) {
     when(this) {
         is ImageView -> {
-            addOnImpressionListener(uiModel.impressHolder) { uiModel.sendShopInfoImpressionData(context) }
+            addOnImpressionListener(uiModel.impressHolder) { action.invoke(uiModel) }
         }
         is View -> {
-            addOnImpressionListener(uiModel.impressHolder) { uiModel.sendShopInfoImpressionData(context) }
+            addOnImpressionListener(uiModel.impressHolder) { action.invoke(uiModel) }
         }
     }
 }
@@ -44,12 +48,20 @@ fun sendTrackingManual(eventName: String,
     TrackApp.getInstance().gtm.sendGeneralEvent(map)
 }
 
-private fun SettingShopInfoImpressionTrackable.sendShopInfoImpressionData(context: Context) {
-    val map = mapOf(
-            TrackingConstant.EVENT to impressionEventName,
-            TrackingConstant.EVENT_CATEGORY to impressionEventCategory,
-            TrackingConstant.EVENT_ACTION to impressionEventAction,
-            TrackingConstant.EVENT_LABEL to impressionEventLabel
+fun SettingShopInfoImpressionTrackable.sendShopInfoImpressionData(context: Context, userSession: UserSessionInterface) {
+    val dataSize = 1
+    val eventObject = JSONObject().apply {
+        put(TrackingConstant.EVENT, impressionEventName)
+        put(TrackingConstant.EVENT_CATEGORY, impressionEventCategory)
+        put(TrackingConstant.EVENT_ACTION, impressionEventAction)
+        put(TrackingConstant.EVENT_LABEL, impressionEventLabel)
+    }
+    val tracking = Tracking(
+            eventObject.toString(),
+            userSession.deviceId,
+            userSession.userId,
+            System.currentTimeMillis()
     )
-    IrisAnalytics.getInstance(context).sendEvent(map)
+    val request = TrackingMapper().transformListEvent(listOf(tracking))
+    IrisLogger.getInstance(context).putSendIrisEvent(request, dataSize)
 }

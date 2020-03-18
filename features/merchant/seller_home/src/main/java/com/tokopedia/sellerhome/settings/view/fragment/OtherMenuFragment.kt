@@ -30,16 +30,15 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant
+import com.tokopedia.sellerhome.settings.analytics.SettingTrackingListener
+import com.tokopedia.sellerhome.settings.analytics.sendShopInfoImpressionData
 import com.tokopedia.sellerhome.settings.data.constant.SellerBaseUrl
 import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
 import com.tokopedia.sellerhome.settings.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.sellerhome.settings.view.uimodel.DividerUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.MenuItemUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.SettingTitleUiModel
-import com.tokopedia.sellerhome.settings.view.uimodel.base.DividerType
-import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingResponseState
-import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingSuccess
-import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.base.*
 import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.sellerhome.settings.view.viewholder.OtherMenuViewHolder
 import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
@@ -52,7 +51,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_other_menu.*
 import javax.inject.Inject
 
-class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), OtherMenuViewHolder.Listener, StatusBarCallback{
+class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), OtherMenuViewHolder.Listener, StatusBarCallback, SettingTrackingListener{
 
     companion object {
         const val URL_KEY = "url"
@@ -105,7 +104,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         observeLiveData()
     }
 
-    override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory = OtherMenuAdapterTypeFactory()
+    override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory = OtherMenuAdapterTypeFactory(this)
 
     override fun onItemClicked(settingUiModel: SettingUiModel) {}
 
@@ -144,6 +143,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     override fun onRefreshShopInfo() {
         showAllLoadingShimmering()
         otherMenuViewModel.getAllSettingShopInfo()
+    }
+
+    override fun sendImpressionDataIris(settingShopInfoImpressionTrackable: SettingShopInfoImpressionTrackable) {
+        context?.run { settingShopInfoImpressionTrackable.sendShopInfoImpressionData(this, userSession) }
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -291,7 +294,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     private fun setupView(view: View) {
         populateAdapterData()
         recycler_view.layoutManager = LinearLayoutManager(context)
-        context?.let { otherMenuViewHolder = OtherMenuViewHolder(view, it, this)}
+        context?.let { otherMenuViewHolder = OtherMenuViewHolder(view, it, this, this)}
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (isDefaultDarkStatusBar) {
                 activity?.requestStatusBarDark()
