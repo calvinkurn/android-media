@@ -17,12 +17,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.session.baseFragment.BaseFragment;
 import com.tokopedia.core.util.AppWidgetUtil;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core2.R;
@@ -33,7 +33,6 @@ import com.tokopedia.seller.selling.presenter.NewOrderView;
 import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
 import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
 import com.tokopedia.seller.selling.view.viewHolder.OrderViewHolder;
-import com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService;
 import com.tokopedia.track.TrackApp;
 
 import java.util.List;
@@ -403,9 +402,6 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
         return new RefreshHandler.OnRefreshHandlerListener() {
             @Override
             public void onRefresh(View view) {
-                if (GlobalConfig.isSellerApp()) {
-                    SellerDrawerGetNotificationService.startService(MainApplication.getAppContext(), true, true);
-                }
                 presenter.onRefreshView();
             }
         };

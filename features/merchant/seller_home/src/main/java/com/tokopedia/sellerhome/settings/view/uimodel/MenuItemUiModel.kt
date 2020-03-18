@@ -9,6 +9,9 @@ class MenuItemUiModel(val title: String = "",
                       private val clickApplink: String? = null,
                       val clickAction: () -> Unit = {}) : SettingUiModel {
 
+    val isNoIcon: Boolean
+        get() = drawableReference == null
+
     override fun type(typeFactory: OtherMenuTypeFactory): Int =
             typeFactory.type(this)
 

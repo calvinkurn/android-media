@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageBannerModel
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageCategoryListModel
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageDestinationModel
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageSectionViewModel
+import com.tokopedia.travelhomepage.homepage.data.TravelHomepageSectionModel
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.viewholder.TravelHomepageBannerViewHolder
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.viewholder.TravelHomepageCategoryViewHolder
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.viewholder.TravelHomepageDestinationViewHolder
@@ -36,5 +36,5 @@ open class TravelHomepageAdapterTypeFactory (private val onBindListener: OnItemB
 
     override fun type(viewModel: TravelHomepageDestinationModel): Int = TravelHomepageDestinationViewHolder.LAYOUT
 
-    override fun type(viewModel: TravelHomepageSectionViewModel): Int = TravelHomepageSectionViewHolder.LAYOUT
+    override fun type(model: TravelHomepageSectionModel): Int = TravelHomepageSectionViewHolder.LAYOUT
 }

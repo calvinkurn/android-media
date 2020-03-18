@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:paddingTop="@dimen/setting_status_margin"
+    android:paddingTop="@dimen/setting_status_margin_top"
     android:paddingBottom="@dimen/setting_status_margin"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -27,7 +27,7 @@
                 android:id="@+id/powerMerchantText"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="@string/power_merchant"
+                android:text="@string/power_merchant_status"
                 android:gravity="center_vertical"
                 android:textColor="@color/black"
                 app:typographyType="heading_5"
@@ -46,21 +46,11 @@
                 app:layout_constraintStart_toEndOf="@id/powerMerchantText"/>
 
             <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="@id/leftGuideline"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:background="@drawable/setting_shop_pm_partial"/>
-
-            <View
                 android:id="@+id/powerMerchantLeftStatus"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="@id/leftGuideline"
-                android:background="@drawable/setting_pm_green_tip"/>
+                app:layout_constraintEnd_toEndOf="@id/leftGuideline"/>
 
             <View
                 android:id="@+id/badgeBorder"

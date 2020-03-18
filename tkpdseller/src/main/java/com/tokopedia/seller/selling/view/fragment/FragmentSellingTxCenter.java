@@ -11,6 +11,9 @@ import android.widget.ListView;
 import androidx.annotation.Nullable;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -19,13 +22,10 @@ import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.session.baseFragment.BaseFragment;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.core2.R;
 import com.tokopedia.seller.selling.presenter.PeopleTxCenter;
 import com.tokopedia.seller.selling.presenter.PeopleTxCenterImpl;
 import com.tokopedia.seller.selling.presenter.PeopleTxCenterView;
-import com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService;
 
 import java.util.ArrayList;
 
@@ -201,9 +201,6 @@ public class FragmentSellingTxCenter extends BaseFragment<PeopleTxCenter> implem
 
     @Override
     public void loadData() {
-        if (GlobalConfig.isSellerApp()) {
-            SellerDrawerGetNotificationService.startService(MainApplication.getAppContext(), true, true);
-        }
         try {
             MenuCount.clear();
             MenuCount.add(cache.getInt(DrawerNotification.CACHE_SELLING_NEW_ORDER, 0));

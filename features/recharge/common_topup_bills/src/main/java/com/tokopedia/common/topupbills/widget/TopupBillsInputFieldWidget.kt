@@ -219,7 +219,7 @@ open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context
     }
 
     companion object {
-        const val INPUT_ALPHANUMERIC = "input_alphanumeric"
+        const val INPUT_ALPHANUMERIC = "input_alpanumeric"
         const val INPUT_NUMERIC = "input_numeric"
         const val INPUT_TELCO = "input_tel"
 

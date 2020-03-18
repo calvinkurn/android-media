@@ -29,6 +29,21 @@ class FlightCurrencyFormatUtil {
 
             return result.replace(",", ".")
         }
+
+        fun convertToIdrPriceWithoutSymbol(price: Int): String {
+            val kursIndonesia = DecimalFormat.getCurrencyInstance(Locale("in", "ID")) as DecimalFormat
+            kursIndonesia.maximumFractionDigits = 0
+            val formatRp = DecimalFormatSymbols()
+
+            formatRp.currencySymbol = ""
+            formatRp.groupingSeparator = '.'
+            formatRp.monetaryDecimalSeparator = '.'
+            formatRp.decimalSeparator = '.'
+            kursIndonesia.decimalFormatSymbols = formatRp
+            val result = kursIndonesia.format(price.toLong())
+
+            return result.replace(",", ".")
+        }
     }
 
 }

@@ -5,6 +5,6 @@ import okhttp3.Interceptor
 
 interface SendablePreview {
     fun type(attachmentPreviewFactory: AttachmentPreviewFactory): Int
-    fun sendTo(messageId: String, opponentId: String, listInterceptor: List<Interceptor>)
+    fun sendTo(messageId: String, opponentId: String, message: String, listInterceptor: List<Interceptor>)
     fun notEnoughRequiredData(): Boolean
 }

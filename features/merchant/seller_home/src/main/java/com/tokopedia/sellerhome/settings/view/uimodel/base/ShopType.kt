@@ -25,6 +25,6 @@ sealed class PowerMerchantStatus : ShopType(POWER_MERCHANT_LAYOUT, POWER_MERCHAN
 }
 
 sealed class RegularMerchant : ShopType(REGULAR_MERCHANT_LAYOUT, REGULAR_MERCHANT_HEADER) {
-    object NeedUpdate: RegularMerchant()
-    object OnVerification: RegularMerchant()
+    object NeedUpgrade: RegularMerchant()
+    object NeedVerification: RegularMerchant()
 }

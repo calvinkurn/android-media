@@ -1,6 +1,6 @@
 package com.tokopedia.digital.home.presentation.Util
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common_digital.common.presentation.model.RecommendationItemEntity
 import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
 import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
@@ -188,7 +188,7 @@ class DigitalHomeTrackingUtil {
                         TrackAppUtils.EVENT_CATEGORY, DIGITAL_HOMEPAGE_CATEGORY,
                         TrackAppUtils.EVENT_ACTION, eventAction,
                         TrackAppUtils.EVENT_LABEL, "",
-                        ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, createSectionItem(data).toArray()))
+                        ECOMMERCE, DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS, createSectionItem(data).toArray()))
                 ))
     }
 

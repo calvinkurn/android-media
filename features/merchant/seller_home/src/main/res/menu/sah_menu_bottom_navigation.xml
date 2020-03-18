@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_sah_home"
+        android:enabled="true"
+        android:icon="@drawable/selector_sah_home"
+        android:title="@string/sah_home"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_sah_product"
+        android:enabled="true"
+        android:icon="@drawable/selector_sah_product"
+        android:title="@string/sah_product"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_sah_chat"
+        android:enabled="true"
+        android:icon="@drawable/selector_sah_chat"
+        android:title="@string/sah_chat"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_sah_order"
+        android:enabled="true"
+        android:icon="@drawable/selector_sah_order"
+        android:title="@string/sah_sale"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_sah_other"
+        android:enabled="true"
+        android:icon="@drawable/selector_sah_other"
+        android:title="@string/sah_others"
+        app:showAsAction="ifRoom" />
+</menu>

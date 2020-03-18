@@ -1,8 +1,6 @@
 package com.tokopedia.topchat.chatroom.di
 
-import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.topchat.chatroom.service.NotificationChatService
 import com.tokopedia.topchat.chatroom.view.fragment.ChatRoomSettingsFragment
 import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
@@ -14,7 +12,7 @@ import dagger.Component
 
 @ChatScope
 @Component(
-        modules = arrayOf(ChatModule::class),
+        modules = arrayOf(ChatModule::class, ChatRoomContextModule::class),
         dependencies = arrayOf(BaseAppComponent::class)
 )
 interface ChatComponent {
@@ -22,9 +20,5 @@ interface ChatComponent {
 
     fun inject(fragment: ChatRoomSettingsFragment)
 
-    @ApplicationContext
-    fun injectContext(): Context
-
     fun inject(service: NotificationChatService)
-
 }
