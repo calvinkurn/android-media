@@ -9,7 +9,6 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
-import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent
 import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity.Companion.EXTRA_PASS_DATA
 import com.tokopedia.flight.search.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_DEPARTURE_ID
@@ -177,7 +176,7 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
         if (returnFlightSearchViewModel != null) {
             onFlightSearchFragmentListener?.selectFlight(returnFlightSearchViewModel.id, returnFlightSearchViewModel.term, flightPriceViewModel, false, true)
         } else if (selectedFlightReturn != null && selectedFlightTerm != null) {
-            onFlightSearchFragmentListener?.selectFlight(selectedFlightReturn, selectedFlightTerm, flightPriceViewModel, false, true)
+            onFlightSearchFragmentListener?.selectFlight(selectedFlightReturn, selectedFlightTerm, flightPriceViewModel,false, true)
         }
     }
 
@@ -221,18 +220,6 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
         super.onShowBestPairingClicked()
 
         showSeeBestPairingDialog(priceViewModel.departurePrice.adultCombo)
-    }
-
-    override fun isReturnPage(): Boolean = true
-
-    override fun initializeToolbarData() {
-
-        dateString = FlightDateUtil.formatDate(
-                FlightDateUtil.DEFAULT_FORMAT,
-                FlightDateUtil.DEFAULT_VIEW_FORMAT,
-                flightSearchPassData.returnDate)
-        passengerString = buildPassengerTextFormatted(flightSearchPassData.flightPassengerViewModel)
-        classString = flightSearchPassData.flightClass.title
     }
 
     private fun showSeeAllResultDialog(normalPrice: String) {

@@ -8,6 +8,7 @@ import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
 import com.tokopedia.flight.bookingV3.presentation.activity.FlightBookingActivity
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
 import com.tokopedia.flight.common.util.FlightAnalytics
+import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightFlowUtil
 import com.tokopedia.flight.search.presentation.fragment.FlightSearchFragment
 import com.tokopedia.flight.search.presentation.fragment.FlightSearchReturnFragment
@@ -80,6 +81,18 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
                             selectedFlightID),
                     REQUEST_CODE_BOOKING)
         }
+    }
+
+    override fun isReturnPage(): Boolean = true
+
+    override fun initializeToolbarData() {
+
+        dateString = FlightDateUtil.formatDate(
+                FlightDateUtil.DEFAULT_FORMAT,
+                FlightDateUtil.DEFAULT_VIEW_FORMAT,
+                passDataViewModel.returnDate)
+        passengerString = buildPassengerTextFormatted(passDataViewModel.flightPassengerViewModel)
+        classString = passDataViewModel.flightClass.title
     }
 
     companion object {
