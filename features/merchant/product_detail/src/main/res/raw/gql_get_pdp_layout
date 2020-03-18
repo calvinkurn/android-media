@@ -22,6 +22,8 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
         transactionSuccess
         transactionReject
         countSold
+        paymentVerified
+        itemSoldPaymentVerified
        }
       stats{
         countView

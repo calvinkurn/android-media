@@ -62,7 +62,6 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.dialog.IAccessRequestListener
-import com.tokopedia.design.dialog.ProductAccessRequestDialogFragment
 import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.AdultManager
@@ -1385,11 +1384,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun onTradeinClicked() {
-        if (viewModel.getDynamicProductInfoP1?.basic?.status == ProductStatusTypeDef.WAREHOUSE) {
-            showToasterError(getString(R.string.tradein_error_label))
-        } else {
-            tradeinDialog?.show(childFragmentManager, "ACCESS REQUEST")
-        }
+        tradeinDialog?.show(childFragmentManager, "ACCESS REQUEST")
     }
 
     override fun onVariantGuideLineClicked(url: String) {
@@ -2036,6 +2031,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
             if (!viewModel.isUserSessionActive) {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), ProductDetailConstant.REQUEST_CODE_LOGIN)
+                return@let
+            }
+
+            if (viewModel.buttonAction == ProductDetailConstant.TRADEIN_BUTTON && viewModel.getDynamicProductInfoP1?.basic?.status == ProductStatusTypeDef.WAREHOUSE) {
+                showToasterError(getString(R.string.tradein_error_label))
                 return@let
             }
 

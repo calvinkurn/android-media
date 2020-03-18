@@ -6,6 +6,7 @@
     <string name="product_detail_courier">Pengiriman</string>
     <string name="delivery_label">Pengiriman</string>
     <string name="label_seen">Dilihat</string>
+    <string name="label_dibeli">Dibeli</string>
     <string name="label_success_transaction">Transaksi Berhasil</string>
     <string name="label_product_variant">Varian Produk</string>
     <string name="label_choose_product_variant"><![CDATA[Pilih warna & ukuran]]></string>
@@ -37,7 +38,7 @@
     <string name="rincian_topads">Rincian Iklan</string>
     <string name="no_stock">Stok Kosong</string>
     <string name="stock_habis">Stok Habis</string>
-    <string name="action_preorder">PREORDER</string>
+    <string name="action_preorder">Preorder</string>
     <string name="product_from">Produk dari</string>
     <string name="from_official_store_label">Official Store</string>
     <string name="from_power_badge_label">Power Merchant</string>

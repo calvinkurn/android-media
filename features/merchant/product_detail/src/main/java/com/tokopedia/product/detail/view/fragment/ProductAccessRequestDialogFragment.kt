@@ -1,7 +1,5 @@
-package com.tokopedia.design.dialog
-import android.app.Activity
+package com.tokopedia.product.detail.view.fragment
 import android.app.Dialog
-import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -12,8 +10,9 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
 import com.tokopedia.design.R
+import com.tokopedia.design.dialog.AccessRequestDialogFragment
+import com.tokopedia.design.dialog.IAccessRequestListener
 
 /**
  * Created by Yehezkiel on 11/03/20

@@ -52,6 +52,9 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.VARIANT -> {
                     listOfComponent.add(VariantDataModel(type = component.type, name = component.componentName))
                 }
+                ProductDetailConstant.SOCIAL_PROOF_PV -> {
+                    listOfComponent.add(ProductSocialProofPvDataModel(type = component.type, name = component.componentName))
+                }
             }
         }
         return listOfComponent

@@ -9,7 +9,11 @@ data class TxStatsDynamicPdp(
         @SerializedName("transactionReject")
         val txReject: String = "",
         @SerializedName("countSold")
-        val countSold: String = ""
+        val countSold: String = "",
+        @SerializedName("paymentVerified")
+        val paymentVerified: String = "",
+        @SerializedName("itemSoldPaymentVerified")
+        val itemSoldPaymentVerified: String = ""
 ) {
 
     private val getTxSuccessInt

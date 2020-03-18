@@ -188,8 +188,14 @@ class PartialButtonActionView private constructor(private val view: View,
     private fun showNoStockButton() {
         with(view) {
             changeTopChatLayoutParamsToHandleWarehouseButton()
-            btn_empty_stock.visible()
+            bindAbTestChatButton(btn_topchat)
+            btn_byme.hide()
+            btn_empty_stock.show()
             btn_topchat.show()
+            btn_add_to_cart.setOnClickListener {
+                if (hasComponentLoading) return@setOnClickListener
+                addToCartClick?.invoke()
+            }
         }
     }
 

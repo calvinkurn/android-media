@@ -105,6 +105,7 @@ object ProductDetailConstant {
     const val PRODUCT_LIST = "product_list"
     const val VARIANT_OPTIONS = "variant_options"
     const val VARIANT = "variant"
+    const val SOCIAL_PROOF_PV = "social_proof_pv"
     const val PDP_1 = "pdp_1"
     const val PDP_2 = "pdp_2"
     const val PDP_3 = "pdp_3"
