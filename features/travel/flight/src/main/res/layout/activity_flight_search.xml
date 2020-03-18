@@ -5,8 +5,6 @@
     android:clipToPadding="false"
     android:orientation="vertical">
 
-    <include layout="@layout/partial_base_toolbar" />
-
     <com.tokopedia.header.HeaderUnify
         android:id="@+id/flight_search_header"
         android:layout_width="match_parent"
