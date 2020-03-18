@@ -6,12 +6,12 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedplus.R
-import com.tokopedia.feedplus.view.listener.FeedPlusDetail
+import com.tokopedia.feedplus.view.listener.FeedPlusDetailListener
 
 /**
  * @author by nisie on 6/22/17.
  */
-class EmptyFeedDetailViewHolder(itemView: View, viewListener: FeedPlusDetail.View) : AbstractViewHolder<EmptyModel>(itemView) {
+class EmptyFeedDetailViewHolder(itemView: View, viewListener: FeedPlusDetailListener) : AbstractViewHolder<EmptyModel>(itemView) {
     private var buttonReturn: TextView = itemView.findViewById<View>(R.id.button_return) as TextView
     override fun bind(element: EmptyModel) {}
 

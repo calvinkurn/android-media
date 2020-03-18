@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedplus.R
-import com.tokopedia.feedplus.view.listener.FeedPlusDetail
+import com.tokopedia.feedplus.view.listener.FeedPlusDetailListener
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailItemModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.list_feed_detail.view.*
 private const val TYPE_DISCOUNT = "discount"
 private const val TYPE_CASHBACK = "cashback"
 
-class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDetail.View) : AbstractViewHolder<FeedDetailItemModel>(itemView) {
+class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDetailListener) : AbstractViewHolder<FeedDetailItemModel>(itemView) {
 
     override fun bind(feedDetailViewModel: FeedDetailItemModel) {
         itemView.run {

@@ -119,6 +119,8 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation project(rootProject.ext.features.basemvvm)
+    implementation rootProject.ext.miscDependencies.viewModelKtx
 }
 
 project.ext {

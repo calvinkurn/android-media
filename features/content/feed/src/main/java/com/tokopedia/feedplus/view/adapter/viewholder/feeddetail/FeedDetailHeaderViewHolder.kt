@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedplus.R
-import com.tokopedia.feedplus.view.listener.FeedPlusDetail
+import com.tokopedia.feedplus.view.listener.FeedPlusDetailListener
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderModel
 import com.tokopedia.kolcommon.util.TimeConverter
 import com.tokopedia.kotlin.extensions.view.hide
@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.feed_detail_header.view.*
 /**
  * @author by nisie on 5/19/17.
  */
-class FeedDetailHeaderViewHolder(itemView: View, private val viewListener: FeedPlusDetail.View) : AbstractViewHolder<FeedDetailHeaderModel>(itemView) {
+class FeedDetailHeaderViewHolder(itemView: View, private val viewListener: FeedPlusDetailListener) : AbstractViewHolder<FeedDetailHeaderModel>(itemView) {
 
 
     override fun bind(viewModel: FeedDetailHeaderModel) {

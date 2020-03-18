@@ -9,6 +9,9 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -18,7 +21,6 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -34,10 +36,14 @@ import com.tokopedia.feedplus.view.analytics.FeedDetailAnalytics.Companion.feedD
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel
 import com.tokopedia.feedplus.view.analytics.ProductEcommerce
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent
-import com.tokopedia.feedplus.view.listener.FeedPlusDetail
-import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel
-import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel
+import com.tokopedia.feedplus.view.listener.FeedPlusDetailListener
+import com.tokopedia.feedplus.view.presenter.FeedDetailViewModel
+import com.tokopedia.feedplus.view.subscriber.FeedDetailViewState
+import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderModel
+import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailItemModel
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -46,7 +52,6 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
 import kotlinx.android.synthetic.main.fragment_feed_plus_detail_nav.*
 import java.util.*
 import javax.inject.Inject
@@ -60,9 +65,8 @@ private const val REQUEST_OPEN_PDP = 111
 private const val TYPE = "text/plain"
 private const val PLACEHOLDER_LINK = "{{branchlink}}"
 private const val TITLE_OTHER = "Lainnya"
-const val KEY_OTHER = "lainnya"
 
-class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetail.View, WishListActionListener, ShareCallback {
+class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, ShareCallback {
     private lateinit var recyclerView: RecyclerView
     private lateinit var shareButton: ImageButton
     private lateinit var seeShopButon: Typography
@@ -74,8 +78,10 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetail.View, WishLi
     private var detailId: String = ""
     private lateinit var shareData: LinkerData
 
-    companion object{
-        fun createInstance(bundle:Bundle): FeedPlusDetailFragment {
+    companion object {
+        const val KEY_OTHER = "lainnya"
+
+        fun createInstance(bundle: Bundle): FeedPlusDetailFragment {
             val feedPlusDetailNavFragment = FeedPlusDetailFragment()
             feedPlusDetailNavFragment.arguments = bundle
             return feedPlusDetailNavFragment
@@ -83,7 +89,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetail.View, WishLi
     }
 
     @Inject
-    lateinit var presenter: FeedPlusDetail.Presenter
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private lateinit var presenter: FeedDetailViewModel
 
     @Inject
     lateinit var analytics: FeedAnalytics
@@ -94,9 +101,12 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetail.View, WishLi
     @Inject
     lateinit var userSession: UserSessionInterface
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        activity?.run {
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            presenter = viewModelProvider.get(FeedDetailViewModel::class.java)
+        }
         initVar(savedInstanceState)
     }
 
@@ -144,7 +154,6 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetail.View, WishLi
             progressBar = findViewById(R.id.progress_bar)
         }
         prepareView()
-        presenter.attachView(this, this)
         return view
     }
 
@@ -169,7 +178,48 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetail.View, WishLi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setUpObservers()
         presenter.getFeedDetail(detailId, pagingHandler.page)
+    }
+
+    private fun setUpObservers() {
+        presenter.run {
+            getFeedDetailLiveData().observe(viewLifecycleOwner, Observer {
+                when (it) {
+                    is FeedDetailViewState.LoadingState -> {
+                        if (it.loadingMore) {
+                            if (it.isLoading) {
+                                showLoadingMore()
+                            } else {
+                                dismissLoadingMore()
+                            }
+                        } else {
+                            if (it.isLoading) {
+                                showLoading()
+                            } else {
+                                dismissLoading()
+                            }
+                        }
+                    }
+
+                    is FeedDetailViewState.SuccessWithNoData -> {
+                        onEmptyFeedDetail()
+                    }
+
+                    is FeedDetailViewState.Success -> {
+                        onSuccessGetFeedDetail(it.headerModel, it.feedDetailList as ArrayList<Visitable<*>>, it.hasNextPage)
+                    }
+
+                    is FeedDetailViewState.Error -> {
+                        onErrorGetFeedDetail(it.errorMsg)
+                    }
+                }
+            })
+
+            getPagingLiveData().observe(viewLifecycleOwner, Observer {
+                setHasNextPage(it)
+            })
+        }
     }
 
     override fun onStart() {
@@ -181,8 +231,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetail.View, WishLi
                                title: String,
                                imageUrl: String,
                                description: String): View.OnClickListener? {
-        return View.OnClickListener { v: View? ->
-            if (activity != null) {
+        return View.OnClickListener {
+            activity?.let {
                 shareData = LinkerData.Builder.getLinkerBuilder().setId(detailId)
                         .setName(title)
                         .setDescription(description)
@@ -200,54 +250,34 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetail.View, WishLi
         }
     }
 
-    override fun onWishlistClicked(adapterPosition: Int, productId: Int, isWishlist: Boolean) {
-        if (arguments != null) {
-            if (!isWishlist) {
-                presenter.addToWishlist(adapterPosition, productId.toString())
-                analytics.eventFeedClickProduct(
-                        screenName, productId.toString(),
-                        arguments!!.getString(FeedPlusDetailActivity.EXTRA_ANALYTICS_PAGE_ROW_NUMBER, "")
-                                + FeedTrackingEventLabel.Click.ADD_TO_WISHLIST +
-                                FeedTrackingEventLabel.PAGE_PRODUCT_LIST)
-            } else {
-                presenter.removeFromWishlist(adapterPosition, productId.toString())
-                analytics.eventFeedClickProduct(
-                        screenName, productId.toString(),
-                        arguments!!.getString(FeedPlusDetailActivity.EXTRA_ANALYTICS_PAGE_ROW_NUMBER, "")
-                                + FeedTrackingEventLabel.Click.REMOVE_WISHLIST +
-                                FeedTrackingEventLabel.PAGE_PRODUCT_LIST)
-            }
-        }
-    }
-
     override fun onGoToShopDetail(activityId: String?, shopId: Int) {
-        if (arguments != null) {
+        arguments?.run {
             goToShopDetail(shopId)
             analytics.eventFeedViewShop(
-                    screenName, shopId.toString(), arguments!!.getString(FeedPlusDetailActivity.EXTRA_ANALYTICS_PAGE_ROW_NUMBER, "")
+                    screenName, shopId.toString(), getString(FeedPlusDetailActivity.EXTRA_ANALYTICS_PAGE_ROW_NUMBER, "")
                     + FeedTrackingEventLabel.View.PRODUCTLIST_SHOP)
             activityId?.let { feedAnalytics.eventClickFeedDetailAvatar(it, shopId.toString()) }
         }
     }
 
-    override fun onErrorGetFeedDetail(errorMessage: String?) {
+    private fun onErrorGetFeedDetail(errorMessage: String?) {
         dismissLoading()
-        footer.visibility = View.GONE
+        footer.hide()
         NetworkErrorHelper.showEmptyState(activity, view, errorMessage
         ) { presenter.getFeedDetail(detailId, pagingHandler.page) }
     }
 
-    override fun onEmptyFeedDetail() {
+    private fun onEmptyFeedDetail() {
         adapter.showEmpty()
-        footer.visibility = View.GONE
+        footer.hide()
     }
 
     override fun onBackPressed() {
-        if (activity != null) activity!!.onBackPressed()
+        activity?.onBackPressed()
     }
 
-    override fun onSuccessGetFeedDetail(
-            header: FeedDetailHeaderViewModel,
+    private fun onSuccessGetFeedDetail(
+            header: FeedDetailHeaderModel,
             listDetail: ArrayList<Visitable<*>>,
             hasNextPage: Boolean) {
         footer.visibility = View.VISIBLE
@@ -267,11 +297,11 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetail.View, WishLi
     }
 
     private fun onGoToShopDetailFromButton(shopId: Int): View.OnClickListener? {
-        return View.OnClickListener { v: View? ->
-            if (arguments != null) {
+        return View.OnClickListener {
+            arguments?.run {
                 goToShopDetail(shopId)
                 analytics.eventFeedClickShop(
-                        screenName, shopId.toString(), arguments!!.getString(
+                        screenName, shopId.toString(), getString(
                         FeedPlusDetailActivity.EXTRA_ANALYTICS_PAGE_ROW_NUMBER, "")
                         + FeedTrackingEventLabel.Click.VISIT_SHOP)
             }
@@ -280,78 +310,34 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetail.View, WishLi
 
 
     private fun goToShopDetail(shopId: Int) {
-        if (activity != null && activity!!.applicationContext != null) {
+        if (activity != null && activity?.applicationContext != null) {
             val intent = RouteManager.getIntent(activity,
                     ApplinkConst.SHOP, shopId.toString())
             startActivity(intent)
         }
     }
 
-    override fun showLoading() {
-        footer.visibility = View.GONE
+    private fun showLoading() {
+        footer.hide()
         adapter.showLoading()
     }
 
-    override fun dismissLoading() {
-        footer.visibility = View.VISIBLE
+    private fun dismissLoading() {
+        footer.show()
         adapter.dismissLoading()
     }
 
-    override fun showLoadingMore() {
+    private fun showLoadingMore() {
         adapter.showLoadingMore()
     }
 
-    override fun dismissLoadingMore() {
+    private fun dismissLoadingMore() {
         adapter.dismissLoadingMore()
     }
 
-    override fun showLoadingProgress() {
-        progressBar.visibility = View.VISIBLE
-    }
-
-    override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-        dismissLoadingProgress()
-        NetworkErrorHelper.showSnackbar(activity, errorMessage)
-    }
-
-    override fun onSuccessAddWishlist(productID: String) {
-        dismissLoadingProgress()
-        for (i in adapter.list.indices) {
-            if (adapter.list[i] is FeedDetailViewModel) {
-                val feedDetailViewModel = adapter.list[i] as FeedDetailViewModel
-                if (productID == feedDetailViewModel.productId.toString()) {
-                    feedDetailViewModel.isWishlist = true
-                    adapter.notifyItemChanged(i)
-                    break
-                }
-            }
-        }
-        NetworkErrorHelper.showSnackbar(activity, getString(R.string.feed_msg_add_wishlist))
-    }
-
-    override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-        dismissLoadingProgress()
-        NetworkErrorHelper.showSnackbar(activity, errorMessage)
-    }
-
-    override fun onSuccessRemoveWishlist(productID: String) {
-        dismissLoadingProgress()
-        for (i in adapter.list.indices) {
-            if (adapter.list[i] is FeedDetailViewModel) {
-                val feedDetailViewModel = adapter.list[i] as FeedDetailViewModel
-                if (productID == feedDetailViewModel.productId.toString()) {
-                    feedDetailViewModel.isWishlist = false
-                    adapter.notifyItemChanged(i)
-                    break
-                }
-            }
-        }
-        NetworkErrorHelper.showSnackbar(activity, getString(R.string.feed_msg_remove_wishlist))
-    }
-
-    override fun onGoToProductDetail(feedDetailViewModel: FeedDetailViewModel, adapterPosition: Int) {
-        if (activity != null && activity!!.applicationContext != null && arguments != null) {
-            activity!!.startActivityForResult(
+    override fun onGoToProductDetail(feedDetailViewModel: FeedDetailItemModel, adapterPosition: Int) {
+        if (activity != null && activity?.applicationContext != null && arguments != null) {
+            activity?.startActivityForResult(
                     getProductIntent(feedDetailViewModel.productId.toString()),
                     REQUEST_OPEN_PDP
             )
@@ -360,7 +346,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetail.View, WishLi
                             feedDetailViewModel.name,
                             feedDetailViewModel.price,
                             adapterPosition),
-                    getUserIdInt()
+                    userSession.userId?.toIntOrNull() ?: 0
             )
         }
     }
@@ -373,22 +359,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetail.View, WishLi
         }
     }
 
-    override fun getColor(resId: Int): Int {
-        return MethodChecker.getColor(activity, resId)
-    }
-
-    override fun setHasNextPage(hasNextPage: Boolean) {
+    private fun setHasNextPage(hasNextPage: Boolean) {
         pagingHandler.setHasNext(hasNextPage)
-    }
-
-    private fun dismissLoadingProgress() {
-        progressBar.visibility = View.GONE
-    }
-
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        presenter.detachView()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -399,8 +371,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetail.View, WishLi
     private fun trackImpression(listDetail: ArrayList<Visitable<*>>) {
         val productList = ArrayList<ProductEcommerce>()
         for (position in listDetail.indices) {
-            if (listDetail[position] is FeedDetailViewModel) {
-                val model = listDetail[position] as FeedDetailViewModel
+            if (listDetail[position] is FeedDetailItemModel) {
+                val model = listDetail[position] as FeedDetailItemModel
                 productList.add(ProductEcommerce(model.productId.toString(),
                         model.name,
                         model.price,
@@ -408,15 +380,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetail.View, WishLi
                 ))
             }
         }
-        analytics.eventDetailProductImpression(productList, getUserIdInt())
-    }
-
-    private fun getUserIdInt(): Int {
-        return try {
-            Integer.valueOf(userSession.getUserId())
-        } catch (ignored: NumberFormatException) {
-            0
-        }
+        analytics.eventDetailProductImpression(productList, userSession.userId?.toIntOrNull() ?: 0)
     }
 
     override fun urlCreated(linkerShareData: LinkerShareResult) {

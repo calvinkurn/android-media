@@ -7,14 +7,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.EmptyFeedDetailViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.FeedDetailHeaderViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.FeedDetailViewHolder
-import com.tokopedia.feedplus.view.listener.FeedPlusDetail
+import com.tokopedia.feedplus.view.listener.FeedPlusDetailListener
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderModel
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailItemModel
 
 /**
  * @author by nisie on 5/18/17.
  */
-class FeedPlusDetailTypeFactoryImpl(private val viewListener: FeedPlusDetail.View) : BaseAdapterTypeFactory(), FeedPlusDetailTypeFactory {
+class FeedPlusDetailTypeFactoryImpl(private val viewListener: FeedPlusDetailListener) : BaseAdapterTypeFactory(), FeedPlusDetailTypeFactory {
     override fun type(viewModel: FeedDetailItemModel): Int {
         return FeedDetailViewHolder.LAYOUT
     }
