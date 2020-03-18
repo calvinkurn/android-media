@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.flight.R
@@ -16,7 +17,6 @@ import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightFlowUtil
-import com.tokopedia.flight.common.view.BaseFlightActivity
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel
 import com.tokopedia.flight.search.presentation.fragment.FlightSearchFragment
 import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
@@ -26,7 +26,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
-open class FlightSearchActivity : BaseFlightActivity(),
+open class FlightSearchActivity : BaseSimpleActivity(),
         FlightSearchFragment.OnFlightSearchFragmentListener,
         FlightSearchUniversalBottomSheet.Listener {
 
@@ -41,7 +41,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
         initializeDataFromExtras()
         super.onCreate(savedInstanceState)
 
-        setupSearchToolbar()
+//        setupSearchToolbar()
 
         remoteConfig = FirebaseRemoteConfigImpl(this)
     }
@@ -58,7 +58,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
 
     private fun initializeDataFromExtras() {
         passDataViewModel = intent.extras.getParcelable(EXTRA_PASS_DATA)
-//        initializeToolbarData()
+        initializeToolbarData()
     }
 
     open fun initializeToolbarData() {
@@ -133,8 +133,8 @@ open class FlightSearchActivity : BaseFlightActivity(),
 
     override fun changeDate(flightSearchPassDataViewModel: FlightSearchPassDataViewModel) {
         passDataViewModel = flightSearchPassDataViewModel!!
-//        initializeToolbarData()
-        setupSearchToolbar()
+        initializeToolbarData()
+//        setupSearchToolbar()
     }
 
     override fun selectFlight(selectedFlightID: String, selectedTerm: String, flightPriceViewModel: FlightPriceViewModel,
