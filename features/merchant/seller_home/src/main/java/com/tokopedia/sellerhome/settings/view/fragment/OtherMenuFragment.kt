@@ -19,6 +19,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
@@ -182,7 +183,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         val settingList = mutableListOf(
                 SettingTitleUiModel(resources.getString(R.string.setting_menu_improve_sales)),
                 MenuItemUiModel(resources.getString(R.string.setting_menu_shop_statistic), R.drawable.ic_statistic_setting, ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD),
-                MenuItemUiModel(resources.getString(R.string.setting_menu_ads_and_shop_promotion), R.drawable.ic_ads_promotion, ApplinkConstInternalMarketplace.CENTRALIZED_PROMO),
+                MenuItemUiModel(resources.getString(R.string.setting_menu_ads_and_shop_promotion), R.drawable.ic_ads_promotion, ApplinkConstInternalSellerapp.CENTRALIZED_PROMO),
                 SettingTitleUiModel(resources.getString(R.string.setting_menu_buyer_info)),
                 MenuItemUiModel(resources.getString(R.string.setting_menu_review), R.drawable.ic_star_setting, ApplinkConst.REPUTATION),
                 MenuItemUiModel(resources.getString(R.string.setting_menu_discussion), R.drawable.ic_setting_discussion, ApplinkConst.TALK),

@@ -48,4 +48,8 @@ object ApplinkConstInternalSellerapp {
     @JvmField
     val WELCOME = "$INTERNAL_SELLERAPP/welcome"
 
+    //CentralizedPromoActivity
+    @JvmField
+    val CENTRALIZED_PROMO = "$INTERNAL_SELLERAPP/centralized-promo"
+
 }
