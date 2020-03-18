@@ -6,18 +6,20 @@ import dagger.Provides
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 
-@Module class MediaUploaderNetworkModule {
+@Module (includes = [NetworkModule::class])
+class MediaUploaderNetworkModule {
 
     @Provides
+    @MediaUploaderQualifier
     fun provideMediaUploaderRetrofit(
-            retrofit: Retrofit.Builder,
-            okHttpClient: OkHttpClient.Builder
+            @MediaUploaderQualifier retrofit: Retrofit.Builder,
+            @MediaUploaderQualifier okHttpClient: OkHttpClient.Builder
     ): Retrofit {
         return retrofit.client(okHttpClient.build()).build()
     }
 
     @Provides
-    fun provideMediaUploaderServices(retrofit: Retrofit): UploaderServices {
+    fun provideMediaUploaderServices(@MediaUploaderQualifier retrofit: Retrofit): UploaderServices {
         return retrofit.create(UploaderServices::class.java)
     }
 

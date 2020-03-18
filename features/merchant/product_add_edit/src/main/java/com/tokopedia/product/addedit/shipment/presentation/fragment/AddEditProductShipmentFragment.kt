@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
+import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentComponent
