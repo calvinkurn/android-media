@@ -43,7 +43,7 @@ data class Error(
         @SerializedName("message")
         val message: String = "",
         @SerializedName("additional_info")
-        val additionalInfo: AdditionalInfo = AdditionalInfo()
+        val additionalInfo: AdditionalInfo? = null
 )
 
 data class AdditionalInfo(

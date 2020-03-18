@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,10 +18,12 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.design.component.Tooltip
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
@@ -29,10 +32,14 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
 import com.tokopedia.logisticdata.data.constant.LogisticConstant
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
+import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
+import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.utils.Utils.convertDpToPixel
+import com.tokopedia.purchase_platform.features.cart.view.CartFragment
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.preference.Address
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccGlobalEvent
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
@@ -52,6 +59,9 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.mo
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderProduct
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderTotal
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
+import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest
+import com.tokopedia.purchase_platform.features.promo.domain.usecase.GetCouponListRecommendationUseCase.Companion.promoRequest
+import com.tokopedia.purchase_platform.features.promo.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.card_order_empty_preference.*
 import kotlinx.android.synthetic.main.fragment_order_summary_page.*
@@ -203,6 +213,33 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                 activity?.finish()
                             }
                         })
+                    }
+                }
+                is OccGlobalEvent.PriceChangeError -> {
+                    progressDialog?.dismiss()
+                    if (activity != null) {
+                        val messageData = it.priceValidation.message
+                        if (messageData != null) {
+                            val priceValidationDialog = DialogUnify(activity!!, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+                            priceValidationDialog.setTitle(messageData.title)
+                            priceValidationDialog.setDescription(messageData.desc)
+                            priceValidationDialog.setPrimaryCTAText(messageData.action)
+                            priceValidationDialog.setPrimaryCTAClickListener {
+                                priceValidationDialog.dismiss()
+                                refresh(true)
+                            }
+                            priceValidationDialog.show()
+                            val eventLabelBuilder = StringBuilder()
+                            val trackerData = it.priceValidation.trackerData
+                            if (trackerData != null) {
+                                eventLabelBuilder.append(trackerData.productChangesType)
+                                eventLabelBuilder.append(" - ")
+                                eventLabelBuilder.append(trackerData.campaignType)
+                                eventLabelBuilder.append(" - ")
+                                eventLabelBuilder.append(TextUtils.join(",", trackerData.productIds))
+                            }
+//                            checkoutAnalyticsCourierSelection.eventViewPopupPriceIncrease(eventLabelBuilder.toString())
+                        }
                     }
                 }
             }
@@ -387,7 +424,24 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
             }
         }
+
+        btn_promo_checkout.state = ButtonPromoCheckoutView.State.ACTIVE
+        btn_promo_checkout.title = getString(R.string.promo_funnel_label)
+        btn_promo_checkout.visible()
+
+        btn_promo_checkout.setOnClickListener {
+            viewModel.updateCartPromo { promoRequest, validateUsePromoRequest ->
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
+                intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.PAGE_CHECKOUT)
+                intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
+                intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUsePromoRequest)
+
+                startActivityForResult(intent, REQUEST_CODE_PROMO)
+            }
+        }
     }
+
+
 
     private fun showMessage(preference: ProfileResponse) {
         tv_header.text = "Barang yang dibeli"
@@ -551,6 +605,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         const val REQUEST_CREATE_PREFERENCE = 12
 
         const val REQUEST_CODE_COURIER_PINPOINT = 13
+
+        const val REQUEST_CODE_PROMO = 14
+
         private const val EMPTY_PROFILE_IMAGE = "https://ecs7.tokopedia.net/android/others/beli_langsung_intro.png"
         private const val BELI_LANGSUNG_CART_IMAGE = "https://ecs7.tokopedia.net/android/others/beli_langsung_keranjang.png"
     }

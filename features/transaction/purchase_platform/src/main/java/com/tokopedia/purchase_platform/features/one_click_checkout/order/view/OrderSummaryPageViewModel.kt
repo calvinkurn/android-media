@@ -13,8 +13,6 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorPr
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.purchase_platform.common.data.model.param.EditAddressParam
-import com.tokopedia.purchase_platform.common.data.model.request.checkout.*
-import com.tokopedia.purchase_platform.common.data.model.request.checkout.PromoRequest
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.EditAddressUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetPreferenceListUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccGlobalEvent
@@ -30,6 +28,12 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.order.domain.
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.domain.UpdateCartOccUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.ErrorCheckoutBottomSheet
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.*
+import com.tokopedia.purchase_platform.features.promo.data.request.Order
+import com.tokopedia.purchase_platform.features.promo.data.request.ProductDetail
+import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest
+import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.OrdersItem
+import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ProductDetailsItem
+import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
@@ -383,7 +387,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         orderTotal.value = orderTotal.value?.copy(orderCost = OrderCost(), buttonState = ButtonBayarState.DISABLE)
     }
 
-    fun generateCheckoutRequest() {
+    /*fun generateCheckoutRequest() {
         val dataRequest = DataCheckoutRequest.Builder()
                 .addressId(1)
                 .shopProducts(listOf(
@@ -498,7 +502,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 //        }
         result.ontimeDeliveryGuarantee = otdg
         return result
-    }
+    }*/
 
     override fun onCleared() {
         super.onCleared()
@@ -817,6 +821,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     val errorCode = checkoutOccGqlResponse.response.data.error.code
                     if (errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_STOCK_EMPTY || errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_SHOP_CLOSED) {
                         globalEvent.value = OccGlobalEvent.CheckoutError(checkoutOccGqlResponse.response.data.error)
+                    } else if (checkoutOccGqlResponse.response.data.error.additionalInfo?.priceValidation?.isUpdated == true && checkoutOccGqlResponse.response.data.error.additionalInfo.priceValidation.message != null) {
+                        globalEvent.value = OccGlobalEvent.PriceChangeError(checkoutOccGqlResponse.response.data.error.additionalInfo.priceValidation)
                     } else if (checkoutOccGqlResponse.response.data.error.message.isNotBlank()) {
                         globalEvent.value = OccGlobalEvent.Error(errorMessage = checkoutOccGqlResponse.response.data.error.message)
                     } else {
@@ -834,5 +840,51 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             throwable.printStackTrace()
             globalEvent.value = OccGlobalEvent.Error(throwable)
         })
+    }
+
+    fun updateCartPromo(onSuccess: (PromoRequest, ValidateUsePromoRequest) -> Unit) {
+        val param = generateUpdateCartParam()
+        if (param != null) {
+            globalEvent.value = OccGlobalEvent.Loading
+            updateCartOccUseCase.execute(param, { updateCartOccGqlResponse: UpdateCartOccGqlResponse ->
+                globalEvent.value = OccGlobalEvent.Normal
+                onSuccess(generatePromoRequest(), generateValidateUsePromoRequest())
+            }, { throwable: Throwable ->
+                throwable.printStackTrace()
+                if (throwable is MessageErrorException && throwable.message != null) {
+                    globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message
+                            ?: "Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
+                } else {
+                    globalEvent.value = OccGlobalEvent.Error(throwable)
+                }
+            })
+        } else {
+            globalEvent.value = OccGlobalEvent.Error(errorMessage = "Terjadi kesalahan. Ulangi beberapa saat lagi")
+        }
+    }
+
+    private fun generatePromoRequest(): PromoRequest {
+        val promoRequest = PromoRequest()
+        promoRequest.orders = listOf(
+                Order(orderShop.shopId.toLong(), orderShop.cartResponse.cartId.toString(), listOf(
+                        ProductDetail(orderProduct.productId.toLong(), orderProduct.quantity?.orderQuantity.toZeroIfNull())
+                ), ArrayList(), true)
+        )
+        return promoRequest
+    }
+
+    private fun generateValidateUsePromoRequest(): ValidateUsePromoRequest {
+        val validateUsePromoRequest = ValidateUsePromoRequest()
+        val ordersItem = OrdersItem()
+        ordersItem.shopId = orderShop.shopId
+        ordersItem.uniqueId = orderShop.cartResponse.cartId.toString()
+        ordersItem.productDetails = listOf(ProductDetailsItem(orderProduct.quantity?.orderQuantity.toZeroIfNull(), orderProduct.productId))
+        val shipping = _orderPreference?.shipping
+        if (shipping?.shipperProductId != null && shipping.shipperId != null) {
+            ordersItem.shippingId = shipping.shipperId
+            ordersItem.spId = shipping.shipperProductId
+        }
+        validateUsePromoRequest.orders = listOf(ordersItem)
+        return validateUsePromoRequest
     }
 }
