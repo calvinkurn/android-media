@@ -335,11 +335,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         } else {
             tabFilters.resetAllFilter(viewHolder)
             tabFilters.setSelectedFilter(filter)
-            if(selectedFilter == FEATURED) {
-                filterProductByFeatured(allProductList)
-            } else {
-                filterProductByStatus(allProductList, selectedFilter)
-            }
+            filterProductByStatus(allProductList, selectedFilter)
         }
     }
 
@@ -357,13 +353,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
         renderList(emptyList())
         renderList(productList, hasNextPage)
-    }
-
-    private fun filterProductByFeatured(products: List<ProductViewModel>){
-        val productList = products.filter {
-            it.isFeatured()
-        }
-        renderList(productList)
     }
 
     private fun renderCheckedView() {
@@ -466,11 +455,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private fun showProductList(productList: List<ProductViewModel>) {
         if(tabFilters.isActive()) {
             val selectedFilter = tabFilters.selectedFilter?.status
-            if(selectedFilter == FEATURED) {
-                filterProductByFeatured(allProductList)
-            } else {
-                filterProductByStatus(allProductList, selectedFilter)
-            }
+            filterProductByStatus(allProductList, selectedFilter)
         } else {
             val hasNextPage = productList.isNotEmpty()
             renderList(productList, hasNextPage)
@@ -794,8 +779,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             successMessage = getString(R.string.product_manage_success_add_featured_product)
             isFeaturedProduct = true
         }
-        val index = allProductList.indexOfFirst { it.id == productId }
-        if(index >= 0) allProductList[index] = allProductList[index].copy(status = FEATURED)
         productManageListAdapter.updateFeaturedProduct(productId, isFeaturedProduct)
         showMessageToastWithoutAction(successMessage)
     }
@@ -954,8 +937,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                                     getString(R.string.product_featured_max_dialog_secondary_cta)
                             )
                             dialogFeaturedProduct?.setPrimaryCTAClickListener { dialogFeaturedProduct?.dismiss() }
-                            tabFilters.resetSelectedFilter()
-                            tabFilters.setSelectedFilter(FilterViewModel.Featured(5))
                             dialogFeaturedProduct?.setSecondaryCTAClickListener {
                                 dialogFeaturedProduct?.dismiss()
                                 viewModel.getProductList(userSession.shopId, listOf(FilterOption.FilterByCondition.FeaturedOnly), isRefresh = true)
