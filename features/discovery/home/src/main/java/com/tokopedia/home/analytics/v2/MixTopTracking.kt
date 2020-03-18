@@ -65,7 +65,7 @@ object MixTopTracking : BaseTracking() {
             Label.KEY, headerName
     )
 
-    private fun mapGridToProductTracker(grid: DynamicHomeChannel.Grid, channelId: String, position: Int) = Product(
+    private fun mapGridToProductTracker(grid: DynamicHomeChannel.Grid, channelId: String, position: Int, persoType: String, categoryId: String) = Product(
             id = grid.id,
             name = grid.name,
             brand = "",
@@ -74,9 +74,11 @@ object MixTopTracking : BaseTracking() {
             isFreeOngkir = grid.freeOngkir.isActive,
             productPosition = position.toString(),
             productPrice = CurrencyFormatHelper.convertRupiahToInt(grid.price).toString(),
-            variant = ""
+            variant = "",
+            persoType = persoType,
+            categoryId = categoryId
     )
 
-    fun mapChannelToProductTracker(channels: DynamicHomeChannel.Channels) = channels.grids.withIndex().map { mapGridToProductTracker(it.value, channels.id,  it.index) }
+    fun mapChannelToProductTracker(channels: DynamicHomeChannel.Channels) = channels.grids.withIndex().map { mapGridToProductTracker(it.value, channels.id,  it.index, channels.persoType, channels.categoryID) }
 
 }
