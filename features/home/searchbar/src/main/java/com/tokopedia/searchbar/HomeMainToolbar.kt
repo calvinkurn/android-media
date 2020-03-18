@@ -144,7 +144,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
 
 
     fun switchToDarkToolbar() {
-        if (toolbarType != TOOLBAR_DARK_TYPE) {
+        if (toolbarType != TOOLBAR_DARK_TYPE && crossfaderIsInitialized()) {
             wishlistCrossfader.reverseTransition(200)
             notifCrossfader.reverseTransition(200)
             inboxCrossfader.reverseTransition(200)
@@ -152,6 +152,11 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             toolbarType = TOOLBAR_DARK_TYPE
         }
     }
+
+    private fun crossfaderIsInitialized() =
+            ::wishlistCrossfader.isInitialized
+                    && ::notifCrossfader.isInitialized
+                    && ::inboxCrossfader.isInitialized
 
     private fun getBitmapDrawableFromVectorDrawable(context: Context, drawableId: Int): Drawable {
         return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -175,7 +180,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
     }
 
     fun switchToLightToolbar() {
-        if (toolbarType != TOOLBAR_LIGHT_TYPE) {
+        if (toolbarType != TOOLBAR_LIGHT_TYPE && crossfaderIsInitialized()) {
             wishlistCrossfader.reverseTransition(200)
             notifCrossfader.reverseTransition(200)
             inboxCrossfader.reverseTransition(200)
@@ -188,7 +193,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         return shadowApplied
     }
 
-    fun setHint(placeholder: String, keyword: String){
+    fun setHint(placeholder: String, keyword: String, isFirstInstall: Boolean){
         val editTextSearch = findViewById<TextView>(R.id.et_search)
         editTextSearch.hint = if(placeholder.isEmpty()) context.getString(R.string.search_tokopedia) else placeholder
         editTextSearch.setSingleLine()
@@ -198,7 +203,11 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             if(placeholder.isEmpty()){
                 RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
             }else{
-                RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?navsource={source}&hint={hint}", HOME_SOURCE, safeEncodeUTF8(keyword))
+                RouteManager.route(context,
+                        ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE,
+                        HOME_SOURCE,
+                        safeEncodeUTF8(keyword),
+                        isFirstInstall.toString())
             }
         }
     }
@@ -216,5 +225,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         const val TOOLBAR_LIGHT_TYPE = 0
         const val TOOLBAR_DARK_TYPE = 1
         private const val HOME_SOURCE = "home"
+
+        private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
     }
 }

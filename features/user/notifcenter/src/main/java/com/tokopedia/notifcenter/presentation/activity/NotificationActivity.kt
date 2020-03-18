@@ -16,7 +16,6 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.notifcenter.R
@@ -24,7 +23,10 @@ import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.data.entity.NotifCenterSendNotifData
 import com.tokopedia.notifcenter.data.entity.NotificationTabItem
 import com.tokopedia.notifcenter.data.entity.NotificationUpdateUnread
-import com.tokopedia.notifcenter.di.DaggerNotificationUpdateComponent
+import com.tokopedia.notifcenter.di.DaggerNotificationComponent
+import com.tokopedia.notifcenter.di.NotificationComponent
+import com.tokopedia.notifcenter.di.module.CommonModule
+import com.tokopedia.notifcenter.listener.NotificationUpdateListener
 import com.tokopedia.notifcenter.presentation.adapter.NotificationFragmentAdapter
 import com.tokopedia.notifcenter.presentation.contract.NotificationActivityContract
 import com.tokopedia.notifcenter.presentation.fragment.NotificationTransactionFragment
@@ -41,7 +43,9 @@ import javax.inject.Inject
 
 class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
         NotificationActivityContract.View,
-        NotificationUpdateFragment.NotificationUpdateListener {
+        NotificationUpdateListener {
+
+    val notificationComponent by lazy { initInjector() }
 
     @Inject lateinit var presenter: NotificationActivityPresenter
     @Inject lateinit var analytics: NotificationUpdateAnalytics
@@ -61,9 +65,9 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initTabLayoutItem()
-
         super.onCreate(savedInstanceState)
-        initInjector()
+        notificationComponent.inject(this)
+        presenter.attachView(this)
         initView(savedInstanceState)
 
         baseContext?.let {
@@ -103,12 +107,6 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
         }
     }
 
-    private fun initInjector() {
-        DaggerNotificationUpdateComponent.builder()
-                .baseAppComponent(component).build().inject(this)
-        presenter.attachView(this)
-    }
-
     private fun initView(savedInstanceState: Bundle?) {
         val initialIndexPage = if (cacheManager.isExist(KEY_TAB_POSITION)) {
             cacheManager.read(KEY_TAB_POSITION)
@@ -133,7 +131,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
         }
     }
 
-    override fun onSuccessLoadNotifUpdate() {
+    override fun onSuccessLoadNotificationUpdate() {
         clearTabCounter(INDEX_NOTIFICATION_UPDATE)
     }
 
@@ -258,10 +256,19 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
         presenter.detachView()
     }
 
+    private fun initInjector(): NotificationComponent {
+        return DaggerNotificationComponent.builder()
+                .baseAppComponent(component)
+                .commonModule(CommonModule(this))
+                .build()
+    }
+
     override fun getPageLimit(): Int = tabList.size + 1
 
     override fun getViewPagerResourceId(): Int = R.id.pager
+
     override fun getTabLayoutResourceId(): Int = R.id.indicator
+
     override fun getToolbarResourceID(): Int = R.id.toolbar
 
     override fun getLayoutRes(): Int = R.layout.activity_notification_page

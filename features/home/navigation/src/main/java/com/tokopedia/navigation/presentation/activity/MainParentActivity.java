@@ -55,6 +55,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.analytics.performance.util.JankyFrameMonitoringUtil;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.DeeplinkDFMapper;
@@ -178,14 +179,13 @@ public class MainParentActivity extends BaseActivity implements
 
     private PerformanceMonitoring mainParentPerformanceMonitoring;
 
-    Window.OnFrameMetricsAvailableListener onFrameMetricAvailableListener = null;
-
     // animate icon OS
     private MenuItem osMenu;
     private LottieDrawable lottieOsDrawable;
     private float OS_STATE_SELECTED = 1f;
     private float OS_STATE_UNSELECTED = 0f;
     private float OS_STATE_ANIMATED = 0.7f;
+    private JankyFrameMonitoringUtil jankyFrameMonitoringUtil;
 
     @DeepLink({ApplinkConst.HOME, ApplinkConst.HOME_CATEGORY})
     public static Intent getApplinkIntent(Context context, Bundle bundle) {
@@ -251,7 +251,8 @@ public class MainParentActivity extends BaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         startHomePerformanceMonitoring();
         startMainParentPerformanceMonitoring();
-        startFrameMetrics(this);
+        startJankyFrameMonitoringUtil();
+
         super.onCreate(savedInstanceState);
         initInjector();
         presenter.setView(this);
@@ -274,6 +275,11 @@ public class MainParentActivity extends BaseActivity implements
             list.add(DFM_MERCHANT_SELLER_CUSTOMERAPP);
             new DFInstaller().installOnBackground(this.getApplication(), list, null, null, "Home");
         }
+    }
+
+    private void startJankyFrameMonitoringUtil() {
+        jankyFrameMonitoringUtil = new JankyFrameMonitoringUtil();
+        jankyFrameMonitoringUtil.init(this);
     }
 
     @NotNull
@@ -378,7 +384,7 @@ public class MainParentActivity extends BaseActivity implements
     @NotNull
     private boolean executeFirstTimeEvent(){
         if (isFirstTime()) {
-            globalNavAnalytics.trackFirstTime(this);
+            globalNavAnalytics.trackFirstTime(MainParentActivity.this);
         }
         return true;
     }
@@ -416,13 +422,6 @@ public class MainParentActivity extends BaseActivity implements
     protected void onPause() {
         super.onPause();
         unRegisterNewFeedClickedReceiver();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        stopFrameMetrics(this);
-        submitMainParentPerformanceMonitoring();
     }
 
     @Override
@@ -674,37 +673,6 @@ public class MainParentActivity extends BaseActivity implements
         super.onDestroy();
         if (presenter != null)
             presenter.onDestroy();
-    }
-
-    private void submitMainParentPerformanceMonitoring() {
-        if (fragmentPerformanceDatas.size() > 0) {
-            for(int i = 0; i < fragmentPerformanceDatas.size(); i++) {
-                int key = fragmentPerformanceDatas.keyAt(i);
-                // get the object by the key.
-                PerformanceData performanceData = fragmentPerformanceDatas.get(key);
-                if (performanceData instanceof HomePerformanceData) {
-                    Map<String, Integer> dynamicChannelList = ((HomePerformanceData) performanceData).getDynamicChannelList();
-                    if (dynamicChannelList != null) {
-                        for (Map.Entry<String,Integer> dynamicChannel : dynamicChannelList.entrySet()) {
-                            mainParentPerformanceMonitoring.putMetric(
-                                    dynamicChannel.getKey(), dynamicChannel.getValue()
-                            );
-                        }
-                    }
-                }
-                mainParentPerformanceMonitoring.putMetric(
-                        performanceData.getAllFramesTag(), performanceData.getAllFrames()
-                );
-                mainParentPerformanceMonitoring.putMetric(
-                        performanceData.getJankyFramesTag(), performanceData.getJankyFrames()
-                );
-                mainParentPerformanceMonitoring.putMetric(
-                        performanceData.getJankyFramesPercentageTag(), performanceData.getJankyFramePercentage()
-                );
-            }
-            mainParentPerformanceMonitoring.stopTrace();
-        }
-        fragmentPerformanceDatas.clear();
     }
 
     private void reloadPage() {
@@ -1018,46 +986,46 @@ public class MainParentActivity extends BaseActivity implements
                     args.putBoolean(GlobalNavConstant.EXTRA_APPLINK_FROM_PUSH, true);
                     args.putBoolean(GlobalNavConstant.FROM_APP_SHORTCUTS, true);
 
-                    Intent intentHome = MainParentActivity.start(this);
+                    Intent intentHome = MainParentActivity.start(MainParentActivity.this);
                     intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intentHome.setAction(Intent.ACTION_VIEW);
 
-                    Intent productIntent = RouteManager.getIntent(this, ApplinkConstInternalDiscovery.AUTOCOMPLETE);
+                    Intent productIntent = RouteManager.getIntent(MainParentActivity.this, ApplinkConstInternalDiscovery.AUTOCOMPLETE);
                     productIntent.setAction(Intent.ACTION_VIEW);
                     productIntent.putExtras(args);
 
-                    ShortcutInfo productShortcut = new ShortcutInfo.Builder(this, SHORTCUT_BELI_ID)
+                    ShortcutInfo productShortcut = new ShortcutInfo.Builder(MainParentActivity.this, SHORTCUT_BELI_ID)
                             .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
                             .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
-                            .setIcon(Icon.createWithResource(this, R.drawable.ic_search_shortcut))
+                            .setIcon(Icon.createWithResource(MainParentActivity.this, R.drawable.ic_search_shortcut))
                             .setIntents(new Intent[]{intentHome, productIntent})
                             .setRank(0)
                             .build();
                     shortcutInfos.add(productShortcut);
 
                     if (userSession.isLoggedIn()) {
-                        Intent wishlistIntent = ((GlobalNavRouter) getApplication()).gotoWishlistPage(this);
+                        Intent wishlistIntent = RouteManager.getIntent(MainParentActivity.this, ApplinkConst.NEW_WISHLIST);
                         wishlistIntent.setAction(Intent.ACTION_VIEW);
                         wishlistIntent.putExtras(args);
 
-                        ShortcutInfo wishlistShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHARE_ID)
+                        ShortcutInfo wishlistShortcut = new ShortcutInfo.Builder(MainParentActivity.this, SHORTCUT_SHARE_ID)
                                 .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
                                 .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
-                                .setIcon(Icon.createWithResource(this, R.drawable.ic_wishlist_shortcut))
+                                .setIcon(Icon.createWithResource(MainParentActivity.this, R.drawable.ic_wishlist_shortcut))
                                 .setIntents(new Intent[]{intentHome, wishlistIntent})
                                 .setRank(1)
                                 .build();
                         shortcutInfos.add(wishlistShortcut);
                     }
 
-                    Intent digitalIntent = RouteManager.getIntent(this, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME);
+                    Intent digitalIntent = RouteManager.getIntent(MainParentActivity.this, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME);
                     digitalIntent.setAction(Intent.ACTION_VIEW);
                     digitalIntent.putExtras(args);
 
-                    ShortcutInfo digitalShortcut = new ShortcutInfo.Builder(this, SHORTCUT_DIGITAL_ID)
+                    ShortcutInfo digitalShortcut = new ShortcutInfo.Builder(MainParentActivity.this, SHORTCUT_DIGITAL_ID)
                             .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_bayar))
                             .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_bayar))
-                            .setIcon(Icon.createWithResource(this, R.drawable.ic_pay_shortcut))
+                            .setIcon(Icon.createWithResource(MainParentActivity.this, R.drawable.ic_pay_shortcut))
                             .setIntents(new Intent[]{intentHome, digitalIntent})
                             .setRank(2)
                             .build();
@@ -1076,10 +1044,10 @@ public class MainParentActivity extends BaseActivity implements
                         shopIntent.setAction(Intent.ACTION_VIEW);
                         shopIntent.putExtras(args);
 
-                        ShortcutInfo shopShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHOP_ID)
+                        ShortcutInfo shopShortcut = new ShortcutInfo.Builder(MainParentActivity.this, SHORTCUT_SHOP_ID)
                                 .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_jual))
                                 .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_jual))
-                                .setIcon(Icon.createWithResource(this, R.drawable.ic_sell_shortcut))
+                                .setIcon(Icon.createWithResource(MainParentActivity.this, R.drawable.ic_sell_shortcut))
                                 .setIntents(new Intent[]{intentHome, shopIntent})
                                 .setRank(3)
                                 .build();
@@ -1166,24 +1134,6 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
-    public void submitDynamicChannelCount(Map<String, Integer> dynamicChannelList) {
-        PerformanceData performanceData = fragmentPerformanceDatas.get(HOME_MENU);
-        if (performanceData instanceof HomePerformanceData && !((HomePerformanceData) performanceData).isDataLocked()) {
-            ((HomePerformanceData) performanceData).setDynamicChannelList(dynamicChannelList);
-            ((HomePerformanceData) performanceData).lockData();
-        }
-    }
-
-    @Override
-    public Boolean needToSubmitDynamicChannelCount() {
-        PerformanceData performanceData = fragmentPerformanceDatas.get(HOME_MENU);
-        if (performanceData instanceof HomePerformanceData) {
-            return !((HomePerformanceData) performanceData).isDataLocked();
-        }
-        return false;
-    }
-
-    @Override
     public void stopHomePerformanceMonitoring() {
         if (homePerformanceMonitoring != null) {
             homePerformanceMonitoring.stopTrace();
@@ -1191,51 +1141,6 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.N)
-    public void startFrameMetrics(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            setupMetrics();
-            onFrameMetricAvailableListener = new Window.OnFrameMetricsAvailableListener() {
-                @Override
-                public void onFrameMetricsAvailable(Window window, FrameMetrics frameMetrics, int dropCountSinceLastInvocation) {
-                    FrameMetrics frameMetricsCopy = new FrameMetrics(frameMetrics);
-                    incrementAllFramesFragmentMetrics(frameMetricsCopy);
-                }
-            };
-            activity.getWindow().addOnFrameMetricsAvailableListener(onFrameMetricAvailableListener, new Handler());
-        }
-    }
-
-    private void incrementAllFramesFragmentMetrics(FrameMetrics frameMetricsCopy) {
-        PerformanceData performanceData = fragmentPerformanceDatas.get(currentSelectedFragmentPosition);
-        performanceData.incrementAllFrames();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            float totalDurationMs = (float) (0.000001 * frameMetricsCopy.getMetric(FrameMetrics.TOTAL_DURATION));
-            if (totalDurationMs > DEFAULT_WARNING_LEVEL_MS) {
-                performanceData.incremenetJankyFrames();
-            }
-        }
-        fragmentPerformanceDatas.setValueAt(currentSelectedFragmentPosition, performanceData);
-    }
-
-    private void setupMetrics() {
-        fragmentPerformanceDatas.put(HOME_MENU, new HomePerformanceData("home_all_frames", "home_janky_frames", "home_janky_frames_percentage"));
-        fragmentPerformanceDatas.put(FEED_MENU, new PerformanceData("feed_all_frames", "feed_janky_frames", "feed_janky_frames_percentage"));
-        fragmentPerformanceDatas.put(OS_MENU, new PerformanceData("os_all_frames", "os_janky_frames", "os_janky_frames_percentage"));
-        fragmentPerformanceDatas.put(CART_MENU, new PerformanceData("cart_all_frames", "cart_janky_frames", "cart_janky_frames_percentage"));
-        fragmentPerformanceDatas.put(ACCOUNT_MENU, new PerformanceData("account_all_frames", "account_janky_frames", "account_janky_frames_percentage"));
-    }
-
-    @TargetApi(Build.VERSION_CODES.N)
-    public void stopFrameMetrics(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            if (onFrameMetricAvailableListener != null) {
-                activity.getWindow().removeOnFrameMetricsAvailableListener(onFrameMetricAvailableListener);
-                onFrameMetricAvailableListener = null;
-            }
-        }
-    }
-         
     @Override
     public void requestStatusBarDark() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -1256,5 +1161,10 @@ public class MainParentActivity extends BaseActivity implements
             setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
             this.getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
+    }
+
+    @Override
+    public JankyFrameMonitoringUtil getMainJankyFrameMonitoringUtil() {
+        return jankyFrameMonitoringUtil;
     }
 }

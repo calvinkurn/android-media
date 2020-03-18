@@ -98,7 +98,8 @@ class TrackingHotelUtil {
     fun hotelViewHotelListImpression(destination: String,
                                      destinationType: String,
                                      searchParam: SearchParam,
-                                     products: List<Property>) {
+                                     products: List<Property>,
+                                     currentListDataSize: Int) {
         val roomCount = searchParam.room
         val guestCount = searchParam.guest.adult
         val duration = HotelUtils.countDayDifference(searchParam.checkIn, searchParam.checkOut)
@@ -110,18 +111,18 @@ class TrackingHotelUtil {
         map[EVENT_LABEL] = "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(searchParam.checkIn)} - $duration"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 CURRENCY_LABEL, IDR_LABEL,
-                IMPRESSIONS_LABEL, getViewHotelListProducts(products)
+                IMPRESSIONS_LABEL, getViewHotelListProducts(products, currentListDataSize)
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    private fun getViewHotelListProducts(listProduct: List<Property>): List<Any> {
+    private fun getViewHotelListProducts(listProduct: List<Property>, currentListDataSize: Int): List<Any> {
         val list = ArrayList<Map<String, Any>>()
         listProduct.forEachIndexed { index, product ->
             val map = HashMap<String, Any>()
             map[NAME_LABEL] = product.name
             map[ID_LABEL] = product.id
-            map[POSITION_LABEL] = positionTracker(index)
+            map[POSITION_LABEL] = currentListDataSize + positionTracker(index)
             map[LIST_LABEL] = SLASH_HOTEL_SLASH_LABEL
             map[VARIANT_LABEL] = "${product.isDirectPayment} - ${product.roomAvailability > 0}"
             map[CATEGORY_LABEL] = HOTEL_CONTENT_LABEL
@@ -490,10 +491,9 @@ class TrackingHotelUtil {
                 PROMOTIONS_LABEL, DataLayer.listOf(
                 DataLayer.mapOf(
                         ID_LABEL, position + 1,
-                        NAME_LABEL, lastSearchItems.title,
+                        NAME_LABEL, "$LAST_SEARCH_LABEL - ${lastSearchItems.title}",
                         CREATIVE_LABEL, lastSearchItems.appUrl,
-                        POSITION_LABEL, position + 1,
-                        CATEGORY_LABEL, HOTEL_CONTENT_LABEL
+                        POSITION_LABEL, position + 1
                 )))
     }
 

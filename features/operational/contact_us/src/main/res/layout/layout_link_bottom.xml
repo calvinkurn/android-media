@@ -15,7 +15,7 @@
         android:layout_marginLeft="87dp"
         android:layout_marginStart="@dimen/margin_default"
         android:layout_marginTop="@dimen/dp_16"
-        android:text="Butuh bantuan lain?"
+        android:text="@string/masih_butuh_bantuan"
         android:textColor="@color/black3_text"
         android:textSize="@dimen/sp_14" />
 

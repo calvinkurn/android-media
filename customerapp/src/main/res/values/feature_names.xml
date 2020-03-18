@@ -123,7 +123,7 @@
 
     <!--Contact Us-->
     <string name="title_module_contact_us">Pusat Bantuan</string>
-    <string name="contact_us_title_home">Pusat Bantuan</string>
+    <string name="contact_us_title_home">Tokopedia Care</string>
     <string name="invoice_list_title">Riwayat Transaksi</string>
     <string name="order_query_ticket_title">Kendala</string>
     <string name="submit_ticket_title">Form Bantuan</string>
@@ -212,6 +212,7 @@
     <string name="umrah_checkout_title_activity">Pemesanan Umrah</string>
     <string name="umrah_checkout_contact_title_activity">Informasi Kontak</string>
     <string name="umrah_checkout_installment_title_activity">Pilihan Cicilan</string>
+    <string name="umrah_travel_agent_title">Penyelenggara Umroh</string>
 
     <!-- Dynamic feature for user identification commmon-->
     <string name="title_upload_user_identification_common">Upload Foto</string>

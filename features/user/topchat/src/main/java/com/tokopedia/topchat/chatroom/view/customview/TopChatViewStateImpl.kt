@@ -85,9 +85,19 @@ class TopChatViewStateImpl(
     override fun getRootViewId() = R.id.main
     override fun getAttachmentMenuContainer() = R.id.rv_attachment_menu_container
 
+    override fun getInterlocutorName(headerName: CharSequence): CharSequence {
+        var name = headerName
+        if (name.length > 12) {
+            name = name.substring(0, 12) + "..."
+        }
+        return name
+    }
+
     init {
         initView()
     }
+
+    override fun getChatRoomHeaderModel(): ChatRoomHeaderViewModel = chatRoomViewModel.headerModel
 
     override fun initView() {
         super.initView()
@@ -97,11 +107,6 @@ class TopChatViewStateImpl(
             if (hasFocus) {
                 scrollDownWhenInBottom()
             }
-        }
-
-        sendButton.setOnClickListener {
-            sendListener.onSendClicked(replyEditText.text.toString(),
-                    SendableViewModel.generateStartTime())
         }
 
         templateAdapter = TemplateChatAdapter(TemplateChatTypeFactoryImpl(templateListener))
@@ -478,28 +483,4 @@ class TopChatViewStateImpl(
         replyEditText.requestFocus()
     }
 
-    override fun sendAnalyticsClickBuyNow(element: ProductAttachmentViewModel) {
-        analytics.eventClickBuyProductAttachment(
-                element.blastId.toString(),
-                element.productName,
-                element.productId.toString(),
-                element.productPrice,
-                1,
-                element.shopId.toString(),
-                chatRoomViewModel.headerModel.name
-        )
-    }
-
-    override fun sendAnalyticsClickATC(element: ProductAttachmentViewModel) {
-        analytics.eventClickAddToCartProductAttachment(
-                element.blastId.toString(),
-                element.productName,
-                element.productId.toString(),
-                element.productPrice,
-                1,
-                element.shopId.toString(),
-                chatRoomViewModel.headerModel.name
-        )
-    }
 }
-

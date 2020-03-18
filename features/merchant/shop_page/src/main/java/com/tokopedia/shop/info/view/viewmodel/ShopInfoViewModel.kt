@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_INFO_SOURCE
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.GetShopNotesByShopIdUseCase
@@ -40,7 +41,7 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
 
                     getShopInfoUseCase.isFromCacheFirst = false
                     getShopInfoUseCase.params = GQLGetShopInfoUseCase
-                            .createParams(shopIdParams)
+                            .createParams(shopIdParams, source = SHOP_INFO_SOURCE)
 
                     getShopInfoUseCase.executeOnBackground()
                 }

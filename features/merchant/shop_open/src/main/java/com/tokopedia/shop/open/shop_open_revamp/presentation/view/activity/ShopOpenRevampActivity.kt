@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.shop.open.R
@@ -20,7 +21,7 @@ import com.tokopedia.shop.open.shop_open_revamp.presentation.view.fragment.ShopO
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
-class ShopOpenRevampActivity : AppCompatActivity(), FragmentNavigationInterface {
+class ShopOpenRevampActivity : BaseActivity(), FragmentNavigationInterface {
 
     private val userSession: UserSessionInterface by lazy {
         UserSession(this)

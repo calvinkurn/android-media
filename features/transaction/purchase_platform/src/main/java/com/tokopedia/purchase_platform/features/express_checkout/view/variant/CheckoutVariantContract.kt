@@ -9,7 +9,7 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.Product
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.purchase_platform.features.express_checkout.domain.model.atc.AtcResponseModel
 import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
 
@@ -58,7 +58,7 @@ interface CheckoutVariantContract {
 
         fun setShippingCourierError(message: String)
 
-        fun updateShippingData(productData: ProductData, serviceData: ServiceData, shippingCourierViewModels: MutableList<ShippingCourierViewModel>?)
+        fun updateShippingData(productData: ProductData, serviceData: ServiceData, shippingCourierUiModels: MutableList<ShippingCourierUiModel>?)
 
         fun navigateAtcToOcs()
 
