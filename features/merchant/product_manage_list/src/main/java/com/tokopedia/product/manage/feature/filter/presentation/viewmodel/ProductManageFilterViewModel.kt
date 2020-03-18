@@ -27,9 +27,9 @@ class ProductManageFilterViewModel @Inject constructor(
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
-    private val _combinedResponse = MutableLiveData<Result<FilterOptionsResponse>>()
+    private val _filterOptionsResponse = MutableLiveData<Result<FilterOptionsResponse>>()
     val filterOptionsResponse: LiveData<Result<FilterOptionsResponse>>
-        get() = _combinedResponse
+        get() = _filterOptionsResponse
 
     private val _filterData = MutableLiveData<MutableList<FilterViewModel>>()
     val filterData: LiveData<MutableList<FilterViewModel>>
@@ -43,10 +43,10 @@ class ProductManageFilterViewModel @Inject constructor(
         launchCatchError(block = {
             val combinedResponse = getProductManageFilterOptionsUseCase.executeOnBackground()
             combinedResponse.let {
-                _combinedResponse.postValue(Success(it))
+                _filterOptionsResponse.postValue(Success(it))
             }
         }) {
-            _combinedResponse.postValue(Fail(it))
+            _filterOptionsResponse.postValue(Fail(it))
         }
     }
 
