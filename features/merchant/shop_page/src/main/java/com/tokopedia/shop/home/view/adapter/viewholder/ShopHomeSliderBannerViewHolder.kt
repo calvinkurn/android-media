@@ -62,9 +62,9 @@ class ShopHomeSliderBannerViewHolder(
             }
         }
 
-        val indexZero = getIndexRatio(0)
-        val indexOne = getIndexRatio(1)
-        heightRatio = (indexZero / indexOne).toFloat()
+        val indexZero = getIndexRatio(0).toFloat()
+        val indexOne = getIndexRatio(1).toFloat()
+        heightRatio = (indexOne / indexZero)
 
         img.setImageUrl(carouselItem.imageUrl, heightRatio = heightRatio)
     }
