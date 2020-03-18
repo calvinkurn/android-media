@@ -81,6 +81,15 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     }
 
     @ReactMethod
+    public void navigateV2(String appLinks, String extra) {
+        if (extra != null && !TextUtils.isEmpty(extra)) {
+            RouteManager.route(context.getApplicationContext(), ReactUtils.convertBundle(extra), appLinks);
+        } else {
+            RouteManager.route(context.getApplicationContext(), appLinks);
+        }
+    }
+
+    @ReactMethod
     public void navigateWithMobileUrl(String appLinks, String mobileUrl, String extra) {
         if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(appLinks)) {
             ((ApplinkRouter) context.getApplicationContext())
