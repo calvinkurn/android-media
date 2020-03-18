@@ -366,9 +366,7 @@ public interface ConstantTransactionAnalytics {
         String FIN_INSURANCE_CHECKOUT_IMPRESSION = "ins - impression insurance box in checkout page";
 
         // Promo checkout revamp
-        String VIEW_BLACKLIST_ERROR_AFTER_APPLY_PROMO = "view blacklist error after apply promo";
-        String VIEW_PHONE_VERIFICATION_MESSAGE = "view phone verification message";
-        String CLICK_BUTTON_VERIFIKASI_NOMOR_HP = "click button verifikasi nomor HP";
+        String CLICK_BUTTON_VERIFIKASI_NOMOR_HP = "click button verifikasi nomor HP promo page";
         String VIEW_AVAILABLE_PROMO_LIST = "view available promo list";
         String CLICK_PILIH_PROMO_RECOMMENDATION = "click pilih promo recommendation";
         String SELECT_KUPON = "select kupon";
@@ -439,10 +437,9 @@ public interface ConstantTransactionAnalytics {
         String INELIGIBLE_PRODUCT = "ineligible product";
         String NO_PROMO = "no promo";
         String INELIGIBLE_PROMO_LIST = "ineligible promo list";
-        String FAILED_EXPIRED_PROMO_CODES = "failed - expired promo codes";
-        String FAILED_OUT_OF_STOCK_PROMO_CODES = "failed - out of stock promo codes";
         String FAILED_TERJADI_KESALAHAN_SERVER = "failed - error terjadi kesalahan server";
-        String FAILED_USED_PROMO_CODES = "failed - used promo codes";
+        String BLACKLIST_ERROR = "blacklist error";
+        String PHONE_VERIFICATION_MESSAGE = "phone verification message";
     }
 
     interface ScreenName {

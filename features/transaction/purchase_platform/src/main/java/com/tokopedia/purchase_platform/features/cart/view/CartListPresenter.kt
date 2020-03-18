@@ -1102,6 +1102,23 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         )
     }
 
+    override fun doUpdateCartForPromo() {
+        view?.let {
+            it.showProgressLoading()
+
+            val updateCartRequestList = getUpdateCartRequest(it.getAllSelectedCartDataList()
+                    ?: emptyList())
+            val requestParams = RequestParams.create()
+            requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
+
+            compositeSubscription.add(
+                    updateCartUseCase?.createObservable(requestParams)
+                            ?.subscribe(UpdateCartForPromoSubscriber(view))
+            )
+        }
+
+    }
+
     override fun doValidateUse(promoRequestValidateUse: ValidateUsePromoRequest) {
         val requestParams = RequestParams.create()
         requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequestValidateUse)

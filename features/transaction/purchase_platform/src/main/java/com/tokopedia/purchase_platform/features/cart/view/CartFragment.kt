@@ -70,7 +70,6 @@ import com.tokopedia.purchase_platform.common.data.model.response.macro_insuranc
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartResponse
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShops
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel
-import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementActionListener
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.Utils
@@ -181,7 +180,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var cartUnavailableWishlistActionListener: WishListActionListener? = null
     private var lastSeenWishlistActionListener: WishListActionListener? = null
     private var wishlistsWishlistActionListener: WishListActionListener? = null
-    private var lastValidateUsePromoRequest: ValidateUsePromoRequest? = null
 
     private var hasTriedToLoadWishList: Boolean = false
     private var hasTriedToLoadRecentViewList: Boolean = false
@@ -1339,20 +1337,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         promoCheckoutBtn.setOnClickListener {
             if (cartAdapter.selectedCartItemData.isEmpty()) showToaster(getString(R.string.promo_choose_item_cart))
             else {
-                val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
-                val promoRequest = generateParamsCouponList()
-                var validateUseRequest: ValidateUsePromoRequest?
-                if (lastValidateUsePromoRequest != null) {
-                    validateUseRequest = lastValidateUsePromoRequest
-                } else {
-                    validateUseRequest = generateParamValidateUsePromoRevamp(false, -1, true)
-                }
-                intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.PAGE_CART)
-                intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
-                intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequest)
-
-                startActivityForResult(intent, NAVIGATION_PROMO)
-
+                dPresenter.doUpdateCartForPromo()
                 // analytics
                 PromoRevampAnalytics.eventCartClickPromoSection(getAllPromosApplied(lastApplyData), isApplied)
             }
@@ -2426,5 +2411,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onCartShopNameChecked(isCheckedAll: Boolean) {
         dPresenter.doUpdateCartAndValidateUse(generateParamValidateUsePromoRevamp(isCheckedAll, -1, false))
+    }
+
+    override fun navigateToPromoRecommendation() {
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
+        val promoRequest = generateParamsCouponList()
+        val validateUseRequest = generateParamValidateUsePromoRevamp(false, -1, true)
+        intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.PAGE_CART)
+        intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
+        intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequest)
+
+        startActivityForResult(intent, NAVIGATION_PROMO)
     }
 }

@@ -4,25 +4,23 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementActionListener
-import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartDigitalProduct
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShops
-import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener
-import com.tokopedia.purchase_platform.common.feature.promo_global.PromoGlobalViewHolder
 import com.tokopedia.purchase_platform.common.feature.seller_cashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.seller_cashback.ShipmentSellerCashbackViewHolder
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementActionListener
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementViewHolder
 import com.tokopedia.purchase_platform.common.insurance.utils.PAGE_TYPE_CART
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData
 import com.tokopedia.purchase_platform.features.cart.view.ActionListener
 import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener
-import com.tokopedia.purchase_platform.features.cart.view.viewholder.*
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.*
+import com.tokopedia.purchase_platform.features.cart.view.viewholder.*
 import rx.subscriptions.CompositeSubscription
 import java.util.*
 import javax.inject.Inject
@@ -286,7 +284,6 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         val data = cartDataList[position]
         return when (data) {
             is CartShopHolderData -> CartShopViewHolder.TYPE_VIEW_ITEM_SHOP
-            is PromoStackingData -> PromoGlobalViewHolder.TYPE_VIEW_PROMO
             is CartItemTickerErrorHolderData -> CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR
             is ShipmentSellerCashbackModel -> ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK
             is CartEmptyHolderData -> CartEmptyViewHolder.LAYOUT
@@ -393,10 +390,6 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             viewType == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP -> {
                 val data = cartDataList[position] as CartShopHolderData
                 (holder as CartShopViewHolder).bindData(data, position)
-            }
-            viewType == PromoGlobalViewHolder.TYPE_VIEW_PROMO -> {
-                val data = cartDataList[position] as PromoStackingData
-                (holder as PromoGlobalViewHolder).bindData(data, position)
             }
             viewType == CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR -> {
                 val data = cartDataList[position] as CartItemTickerErrorHolderData
