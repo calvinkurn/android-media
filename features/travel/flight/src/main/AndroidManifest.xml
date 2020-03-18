@@ -54,12 +54,12 @@
             android:name=".search.presentation.activity.FlightSearchActivity"
             android:label="@string/search_flight"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/Theme.White.Flight" />
         <activity
             android:name=".search.presentation.activity.FlightSearchReturnActivity"
             android:label="@string/search_flight"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/Theme.White.Flight" />
         <activity
             android:name=".dashboard.view.activity.FlightClassesActivity"
             android:label="@string/flight_classes_toolbar_title"

@@ -50,6 +50,12 @@ open class FlightSearchActivity : BaseFlightActivity(),
 
     override fun getScreenName(): String = FlightAnalytics.Screen.SEARCH
 
+    override fun getLayoutRes(): Int = R.layout.activity_flight_search
+
+    override fun getToolbarResourceID(): Int = R.id.flight_search_header
+
+    override fun getParentViewResourceID(): Int = R.id.flight_search_parent_view
+
     private fun initializeDataFromExtras() {
         passDataViewModel = intent.extras.getParcelable(EXTRA_PASS_DATA)
         initializeToolbarData()
