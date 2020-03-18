@@ -1337,22 +1337,25 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             promoCheckoutBtn.desc = lastApplyData.additionalInfo.messageInfo.detail
         }
         promoCheckoutBtn.setOnClickListener {
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
-            val promoRequest = generateParamsCouponList()
-            var validateUseRequest: ValidateUsePromoRequest?
-            if (lastValidateUsePromoRequest != null) {
-                validateUseRequest = lastValidateUsePromoRequest
-            } else {
-                validateUseRequest = generateParamValidateUsePromoRevamp(false, -1, true)
+            if (cartAdapter.selectedCartItemData.isEmpty()) showToaster(getString(R.string.promo_choose_item_cart))
+            else {
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
+                val promoRequest = generateParamsCouponList()
+                var validateUseRequest: ValidateUsePromoRequest?
+                if (lastValidateUsePromoRequest != null) {
+                    validateUseRequest = lastValidateUsePromoRequest
+                } else {
+                    validateUseRequest = generateParamValidateUsePromoRevamp(false, -1, true)
+                }
+                intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.PAGE_CART)
+                intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
+                intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequest)
+
+                startActivityForResult(intent, NAVIGATION_PROMO)
+
+                // analytics
+                PromoRevampAnalytics.eventCartClickPromoSection(getAllPromosApplied(lastApplyData), isApplied)
             }
-            intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.PAGE_CART)
-            intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
-            intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequest)
-
-            startActivityForResult(intent, NAVIGATION_PROMO)
-
-            // analytics
-            PromoRevampAnalytics.eventCartClickPromoSection(getAllPromosApplied(lastApplyData), isApplied)
         }
         if (isApplied) {
             PromoRevampAnalytics.eventCartViewPromoAlreadyApplied()
