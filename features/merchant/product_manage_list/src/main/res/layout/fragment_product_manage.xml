@@ -44,6 +44,7 @@
                 app:layout_scrollFlags="scroll|snap" />
 
             <LinearLayout
+                android:id="@+id/multiSelectContainer"
                 android:paddingRight="@dimen/product_manage_container_spacing"
                 android:paddingEnd="@dimen/product_manage_container_spacing"
                 android:paddingLeft="@dimen/product_manage_container_spacing"
@@ -52,6 +53,7 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 app:layout_anchor="@id/app_bar_layout"
                 app:layout_scrollFlags="scroll">
                 <com.tokopedia.unifyprinciples.Typography
@@ -78,6 +80,7 @@
             android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             tools:visibility="gone"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 

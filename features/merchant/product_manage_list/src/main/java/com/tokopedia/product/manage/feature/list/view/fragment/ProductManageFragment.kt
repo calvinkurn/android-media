@@ -27,6 +27,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Lifecycle
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
@@ -459,6 +460,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             val hasNextPage = productList.isNotEmpty()
             renderList(productList, hasNextPage)
         }
+
+        multiSelectContainer.showWithCondition(productList.isNotEmpty())
     }
 
     private fun showTabFilters() {
