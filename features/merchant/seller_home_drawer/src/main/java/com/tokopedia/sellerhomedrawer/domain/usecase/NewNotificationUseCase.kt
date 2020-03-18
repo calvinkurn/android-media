@@ -15,6 +15,10 @@ class NewNotificationUseCase @Inject constructor(val notificationUseCase: Notifi
                                                  val getInfoPenjualNotificationUseCase: GetInfoPenjualNotificationUseCase,
                                                  val drawerCache: LocalCacheHandler): UseCase<NotificationModel>() {
 
+    companion object {
+        const val SELLER_TYPE_ID = 2
+    }
+
     var isRefresh = false
 
     override fun createObservable(requestParams: RequestParams): Observable<NotificationModel> {
@@ -34,7 +38,7 @@ class NewNotificationUseCase @Inject constructor(val notificationUseCase: Notifi
         val notif = notificationUseCase.createObservable(requestParams).subscribeOn(Schedulers.io())
         val notifTopChat = getChatNotificationUseCase.createObservable(RequestParams.EMPTY).subscribeOn(Schedulers.io())
         val infoPenjualNotification = getInfoPenjualNotificationUseCase.createObservable(
-                GetInfoPenjualNotificationUseCase.createParams(2)
+                GetInfoPenjualNotificationUseCase.createParams(SELLER_TYPE_ID)
         ).subscribeOn(Schedulers.io())
 
         return Observable.zip(notif, notifTopChat, infoPenjualNotification) {
