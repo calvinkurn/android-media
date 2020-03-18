@@ -539,12 +539,12 @@ class SellerDrawerHelper @Inject constructor(val context: Activity,
                     label = context.getString(R.string.drawer_title_inbox_message),
                     id = SellerHomeState.DrawerPosition.INBOX_MESSAGE,
                     isExpanded = isExpanded,
-                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_INBOX_TALK)))
+                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_INBOX_MESSAGE)))
             add(SellerDrawerItem(
                     label = context.getString(R.string.drawer_title_inbox_discussion),
                     id = SellerHomeState.DrawerPosition.INBOX_TALK,
                     isExpanded = isExpanded,
-                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_INBOX_MESSAGE)))
+                    notif = drawerCache.getInt(SellerDrawerNotification.CACHE_INBOX_TALK)))
             add(SellerDrawerItem(
                     label = context.getString(R.string.drawer_title_inbox_review),
                     id = SellerHomeState.DrawerPosition.INBOX_REVIEW,

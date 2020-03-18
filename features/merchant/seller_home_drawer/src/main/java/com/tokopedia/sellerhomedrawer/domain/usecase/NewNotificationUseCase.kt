@@ -1,13 +1,12 @@
 package com.tokopedia.sellerhomedrawer.domain.usecase
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.sellerhomedrawer.data.drawernotification.InfoPenjualNotification
 import com.tokopedia.sellerhomedrawer.data.drawernotification.NotificationModel
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerNotification
-import com.tokopedia.sellerhomedrawer.data.header.TopChatNotificationModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
+import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 class NewNotificationUseCase @Inject constructor(val notificationUseCase: NotificationUseCase,
@@ -32,13 +31,13 @@ class NewNotificationUseCase @Inject constructor(val notificationUseCase: Notifi
     }
 
     private fun getNotification(requestParams: RequestParams): Observable<NotificationModel> {
-        val notif = notificationUseCase.createObservable(requestParams)
-        val notifTopChat = getChatNotificationUseCase.createObservable(RequestParams.EMPTY)
+        val notif = notificationUseCase.createObservable(requestParams).subscribeOn(Schedulers.io())
+        val notifTopChat = getChatNotificationUseCase.createObservable(RequestParams.EMPTY).subscribeOn(Schedulers.io())
         val infoPenjualNotification = getInfoPenjualNotificationUseCase.createObservable(
                 GetInfoPenjualNotificationUseCase.createParams(2)
-        )
+        ).subscribeOn(Schedulers.io())
 
-        return Observable.zip<NotificationModel, TopChatNotificationModel, InfoPenjualNotification, NotificationModel>(notif, notifTopChat, infoPenjualNotification) {
+        return Observable.zip(notif, notifTopChat, infoPenjualNotification) {
             notificationModel, chatNotificationModel, infoPenjualNotif ->
                 val data = notificationModel.notificationData
                 data.totalNotif = (data.totalNotif - data.inbox.inboxMessage +

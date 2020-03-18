@@ -2,7 +2,6 @@ package com.tokopedia.sellerhomedrawer.domain.service;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.JobIntentService;
@@ -88,11 +87,5 @@ public class SellerDrawerGetNotificationService extends JobIntentService {
         Intent intent = new Intent(BROADCAST_GET_NOTIFICATION);
         intent.putExtra(GET_NOTIFICATION_SUCCESS, true);
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-    }
-
-    public static void sendBroadcast(Context context) {
-        Intent intent = new Intent(BROADCAST_GET_NOTIFICATION);
-        intent.putExtra(GET_NOTIFICATION_SUCCESS, true);
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 }
