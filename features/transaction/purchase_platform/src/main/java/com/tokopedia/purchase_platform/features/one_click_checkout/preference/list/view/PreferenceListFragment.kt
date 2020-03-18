@@ -3,7 +3,6 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.preference.l
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +24,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ProfilesItemModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.analytics.PreferenceListAnalytics
@@ -102,7 +100,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                         rv_preference_list.gone()
                         btn_preference_list_action.visible()
                         btn_preference_list_action.setText(R.string.add_first_preference)
-                    } else if (profiles.isNotEmpty() && profiles.size > maxProfiles) {
+                    } else if (profiles.isNotEmpty() && profiles.size >= maxProfiles) {
                         group_empty_state.gone()
                         rv_preference_list.visible()
                         btn_preference_list_action.gone()
