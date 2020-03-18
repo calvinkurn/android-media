@@ -514,6 +514,11 @@ public class ShipmentMapper implements IShipmentMapper {
                                 productResult.setProductCatalogId(product.getProductCatalogId());
                                 productResult.setAnalyticsProductCheckoutData(analyticsProductCheckoutData);
 
+                                if (product.getProductTicker() != null) {
+                                    productResult.setShowTicker(product.getProductTicker().isShowTicker());
+                                    productResult.setTickerMessage(product.getProductTicker().getMessage());
+                                }
+
                                 if (product.getFreeShipping() != null && product.getFreeShipping().getEligible() &&
                                         !TextUtils.isEmpty(product.getFreeShipping().getBadgeUrl())) {
                                     productResult.setFreeShipping(true);

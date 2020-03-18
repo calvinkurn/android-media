@@ -54,7 +54,7 @@ public class Product implements Parcelable {
     private TradeInInfoData tradeInInfoData;
     private boolean freeShipping;
     private String freeShippingBadgeUrl;
-    private boolean productTicker;
+    private boolean showTicker;
     private String tickerMessage;
 
     private AnalyticsProductCheckoutData analyticsProductCheckoutData;
@@ -387,12 +387,12 @@ public class Product implements Parcelable {
         this.freeShippingBadgeUrl = freeShippingBadgeUrl;
     }
 
-    public boolean isProductTicker() {
-        return productTicker;
+    public boolean isShowTicker() {
+        return showTicker;
     }
 
-    public void setProductTicker(boolean productTicker) {
-        this.productTicker = productTicker;
+    public void setShowTicker(boolean showTicker) {
+        this.showTicker = showTicker;
     }
 
     public String getTickerMessage() {
@@ -453,7 +453,7 @@ public class Product implements Parcelable {
         dest.writeParcelable(this.tradeInInfoData, flags);
         dest.writeByte(this.freeShipping ? (byte) 1 : (byte) 0);
         dest.writeString(this.freeShippingBadgeUrl);
-        dest.writeByte(this.productTicker ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.showTicker ? (byte) 1 : (byte) 0);
         dest.writeString(this.tickerMessage);
     }
 
@@ -498,7 +498,7 @@ public class Product implements Parcelable {
         this.tradeInInfoData = in.readParcelable(TradeInInfoData.class.getClassLoader());
         this.freeShipping = in.readByte() != 0;
         this.freeShippingBadgeUrl = in.readString();
-        this.productTicker = in.readByte() != 0;
+        this.showTicker = in.readByte() != 0;
         this.tickerMessage = in.readString();
     }
 
