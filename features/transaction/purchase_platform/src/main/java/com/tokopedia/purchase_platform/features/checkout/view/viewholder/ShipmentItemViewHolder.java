@@ -606,6 +606,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         renderProductPropertiesPreOrder(cartItemModel);
         renderProductPropertiesCashback(cartItemModel);
         renderProductPropertiesFreeShipping(cartItemModel);
+        renderProductTicker(cartItemModel);
         renderProductPropertiesLayout(cartItemModel);
     }
 
@@ -691,6 +692,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         } else {
             imgFreeShipping.setVisibility(View.GONE);
         }
+    }
+
+    private void renderProductTicker(CartItemModel cartItemModel) {
+        if (cartItemModel.isShowTicker() && !TextUtils.isEmpty(cartItemModel.getTickerMessage())) {
+            productTicker.setVisibility(View.VISIBLE);
+            productTicker.setTextDescription(cartItemModel.getTickerMessage());
+        } else productTicker.setVisibility(View.GONE);
     }
 
     private void renderOtherCartItems(ShipmentCartItemModel shipmentItem, List<CartItemModel> cartItemModels) {
