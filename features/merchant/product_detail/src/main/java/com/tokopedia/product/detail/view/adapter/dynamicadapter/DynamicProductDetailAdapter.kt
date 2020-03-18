@@ -39,6 +39,17 @@ class DynamicProductDetailAdapter(
         }
     }
 
+    fun notifyGeneralInfo(generalInfo: ProductGeneralInfoDataModel?, payload: Int? = null) {
+        generalInfo?.let {
+            val indexOfGeneralInfo = list.indexOf(generalInfo)
+            if (payload != null) {
+                notifyItemChanged(indexOfGeneralInfo, payload)
+            } else {
+                notifyItemChanged(indexOfGeneralInfo)
+            }
+        }
+    }
+
     fun notifyShipingInfo(shipingInfo: ProductGeneralInfoDataModel?) {
         shipingInfo?.let {
             val indexOfShipingInfo = list.indexOf(it)

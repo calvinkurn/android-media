@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.data.model
 
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
-import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionResponse
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.data.model.checkouttype.CART_TYPE_DEFAULT
 import com.tokopedia.product.detail.data.model.checkouttype.CART_TYPE_EXPRESS
@@ -11,8 +10,7 @@ data class ProductInfoP2Login (
         var isWishlisted: Boolean = false,
         var pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate? = null,
         var cartType: String = CART_TYPE_DEFAULT,
-        var topAdsGetProductManage: TopAdsGetProductManage = TopAdsGetProductManage(),
-        var newCartTypeResponse: CartRedirectionResponse = CartRedirectionResponse()
+        var topAdsGetProductManage: TopAdsGetProductManage = TopAdsGetProductManage()
 ){
     val isExpressCheckoutType: Boolean
         get() {

@@ -7,11 +7,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
@@ -22,7 +20,6 @@ import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
@@ -35,7 +32,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductLastSeenDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductOpenShopDataModel
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
-import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.usecase.*
@@ -91,7 +87,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val updateCartCounterUseCase: UpdateCartCounterUseCase,
                                                              private val addToCartUseCase: AddToCartUseCase,
                                                              private val addToCartOcsUseCase: AddToCartOcsUseCase,
-                                                             private val addToCartOccUseCase: AddToCartOccUseCase,
                                                              private val getP3VariantUseCase: GetP3VariantUseCase,
                                                              val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.ui()) {
 
@@ -148,7 +143,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         get() = _onVariantClickedData
 
     var multiOrigin: Map<String, VariantMultiOriginWarehouse> = mapOf()
-    var cartTypeData: CartRedirection? = null
     var selectedMultiOrigin: VariantMultiOriginWarehouse = VariantMultiOriginWarehouse()
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
     var shopInfo: ShopInfo? = null
@@ -301,17 +295,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                         }
                     }
                 }
-                is AddToCartOccRequestParams -> {
-                    withContext(dispatcher.io()) {
-                        val result = addToCartOccUseCase.createObservable(requestParams).toBlocking().single()
-                        if (result.isDataError()) {
-                            _addToCartLiveData.postValue(Fail(Throwable(result.errorMessage.firstOrNull()
-                                    ?: "")))
-                        } else {
-                            _addToCartLiveData.postValue(Success(result))
-                        }
-                    }
-                }
             }
         }) {
             _addToCartLiveData.value = Fail(it)
@@ -386,7 +369,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     private suspend fun getProductInfoP3Variant(listOfProductIds: List<String>?, warehouseId: String?, forceRefresh: Boolean) {
         getP3VariantUseCase.requestParams = GetP3VariantUseCase.createParams(listOfProductIds
-                ?: listOf(), warehouseId, DynamicProductDetailMapper.generateCartTypeVariantParams(getDynamicProductInfoP1, variantData))
+                ?: listOf(), warehouseId)
         getP3VariantUseCase.forceRefresh = forceRefresh
 
         try {
@@ -397,7 +380,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 it
             }) ?: mapOf()
 
-            cartTypeData = p3VariantData.cartRedirectionResponse?.cartRedirection
             selectedMultiOrigin = multiOrigin[getDynamicProductInfoP1?.basic?.productID
                     ?: ""] ?: VariantMultiOriginWarehouse()
         } catch (e: Throwable) {
@@ -440,9 +422,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         val hasWholesale = getDynamicProductInfoP1?.data?.hasWholesale == true
         val isOfficialStore = getDynamicProductInfoP1?.data?.isOS == true
         val isVariant = getDynamicProductInfoP1?.data?.variant?.isVariant == true
+        val shopId = getDynamicProductInfoP1?.basic?.shopID.toIntOrZero()
 
         val removedData = initialLayoutData.map {
-            if (!isTradein && it.name() == ProductDetailConstant.TRADE_IN) {
+            if ((!isTradein || isShopOwner(shopId)) && it.name() == ProductDetailConstant.TRADE_IN) {
                 it
             } else if (!hasWholesale && it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO) {
                 it
@@ -689,7 +672,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     private fun getProductInfoP2LoginAsync(shopId: Int, productId: Int): Deferred<ProductInfoP2Login> {
         return async {
-            getProductInfoP2LoginUseCase.requestParams = GetProductInfoP2LoginUseCase.createParams(shopId, productId, DynamicProductDetailMapper.generateCartTypeParam(getDynamicProductInfoP1))
+            getProductInfoP2LoginUseCase.requestParams = GetProductInfoP2LoginUseCase.createParams(shopId, productId)
             getProductInfoP2LoginUseCase.executeOnBackground()
         }
     }

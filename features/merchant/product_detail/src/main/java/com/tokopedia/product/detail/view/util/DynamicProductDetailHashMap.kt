@@ -174,10 +174,6 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                 shopInfo = it.shopInfo
             }
 
-            productFullfilmentMap?.run {
-                data.first().subtitle = context.getString(R.string.multiorigin_desc)
-            }
-
             snapShotMap?.run {
                 isAllowManage = it.shopInfo?.isAllowManage ?: 0
                 statusTitle = it.shopInfo?.statusInfo?.statusTitle ?: ""
