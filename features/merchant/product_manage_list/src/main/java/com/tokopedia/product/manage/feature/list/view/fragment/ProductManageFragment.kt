@@ -339,6 +339,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun clickStatusFilterTab(filter: FilterViewModel, viewHolder: FilterViewHolder) {
         val selectedFilter = filter.status
         val currentFilter = tabFilters.selectedFilter?.status
+        adapter.clearAllElements()
 
         if (selectedFilter == currentFilter) {
             showAllProducts()
@@ -346,22 +347,18 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         } else {
             tabFilters.resetAllFilter(viewHolder)
             tabFilters.setSelectedFilter(filter)
-            filterProductByStatus(allProductList, selectedFilter)
+            filterProductByStatus(selectedFilter)
         }
     }
 
     private fun showAllProducts() {
         val hasNextPage = allProductList.isNotEmpty()
-        renderList(emptyList())
-        renderList(allProductList, hasNextPage)
+        renderProductList(allProductList, hasNextPage)
     }
 
-    private fun filterProductByStatus(products: List<ProductViewModel>, status: ProductStatus?) {
-        val productList = products.filter {
-            it.status == status
-        }
-
-        renderList(productList, hasNextPage)
+    private fun filterProductByStatus(status: ProductStatus?, hasNextPage: Boolean = true) {
+        val productList = allProductList.filter { it.status == status }
+        renderProductList(productList, hasNextPage)
     }
 
     private fun renderCheckedView() {
@@ -419,9 +416,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         getProductList(page, keyword)
     }
 
-    override fun renderList(list: List<ProductViewModel>, hasNextPage: Boolean) {
-        adapter.clearAllElements()
-        super.renderList(list, hasNextPage)
+    private fun renderProductList(list: List<ProductViewModel>, hasNextPage: Boolean) {
+        renderList(list, hasNextPage)
         renderCheckedView()
     }
 
@@ -459,12 +455,15 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun showProductList(productList: List<ProductViewModel>) {
+        val hasNextPage = productList.isNotEmpty()
+
         if(tabFilters.isActive()) {
-            val selectedFilter = tabFilters.selectedFilter?.status
-            filterProductByStatus(allProductList, selectedFilter)
+            tabFilters.selectedFilter?.status?.let { status ->
+                adapter.clearAllElements()
+                filterProductByStatus(status, hasNextPage)
+            }
         } else {
-            val hasNextPage = productList.isNotEmpty()
-            renderList(productList, hasNextPage)
+            renderProductList(productList, hasNextPage)
         }
 
         multiSelectContainer.showWithCondition(productList.isNotEmpty())
@@ -1407,7 +1406,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun clearProductList() {
-        renderList(emptyList())
+        adapter.clearAllElements()
         allProductList.clear()
     }
 

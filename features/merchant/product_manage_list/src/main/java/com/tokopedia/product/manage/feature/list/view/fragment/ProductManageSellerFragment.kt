@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.view.View
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -45,7 +46,9 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
 
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
 
-    override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_layout
+    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
+        return view?.findViewById(R.id.swipe_refresh_layout)
+    }
 
     override fun onDraftCountLoadError() {
         // delete all draft when error loading draft
