@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.suggestion.SuggestionClickListener
+import com.tokopedia.autocomplete.util.safeSetSpan
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.layout_autocomplete_double_line_item.view.*
@@ -91,7 +92,7 @@ class SuggestionDoubleLineViewHolder(
     }
 
     private fun highlightTitleBeforeKeyword(highlightedTitle: SpannableString) {
-        highlightedTitle.setSpan(
+        highlightedTitle.safeSetSpan(
                 TextAppearanceSpan(itemView.context, R.style.searchTextHiglight),
                 0, searchQueryStartIndexInKeyword, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
@@ -101,7 +102,7 @@ class SuggestionDoubleLineViewHolder(
         val highlightAfterKeywordStartIndex = searchQueryStartIndexInKeyword + (item.searchTerm.length)
         val highlightAfterKeywordEndIndex = item.title.length
 
-        highlightedTitle.setSpan(
+        highlightedTitle.safeSetSpan(
                 TextAppearanceSpan(itemView.context, R.style.searchTextHiglight),
                 highlightAfterKeywordStartIndex, highlightAfterKeywordEndIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )

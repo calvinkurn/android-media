@@ -136,6 +136,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     private var isAutoLogin: Boolean = false
     private var isShowTicker: Boolean = false
     private var isShowBanner: Boolean = false
+    private var isEnableFingerprint = true
 
     private lateinit var partialRegisterInputView: PartialRegisterInputView
     private lateinit var socmedButtonsContainer: LinearLayout
@@ -175,6 +176,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
         }
     }
 
+    override fun getFingerprintConfig(): Boolean = isEnableFingerprint
+
     override fun stopTrace() {
         if (!isTraceStopped) {
             performanceMonitoring.stopTrace()
@@ -183,7 +186,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu!!.add(Menu.NONE, ID_ACTION_REGISTER, 0, "")
+        menu.add(Menu.NONE, ID_ACTION_REGISTER, 0, "")
         val menuItem = menu.findItem(ID_ACTION_REGISTER)
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
         if (getDraw() != null) {
@@ -207,7 +210,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item!!.itemId
+        val id = item.itemId
         if (id == ID_ACTION_REGISTER) {
             registerAnalytics.trackClickTopSignUpButton()
             goToRegisterInitial(source)
@@ -297,6 +300,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
             val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
             isShowTicker = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_TICKER_FROM_ATC, false)
             isShowBanner = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_BANNER, false)
+            isEnableFingerprint = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_LOGIN_FP, true)
         }
     }
 
@@ -361,7 +365,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
             }
         }
 
-        if (ScanFingerprintDialog.isFingerprintAvailable(activity) && presenter.isLastUserRegistered()) {
+        if (isEnableFingerprint && ScanFingerprintDialog.isFingerprintAvailable(activity) && presenter.isLastUserRegistered()) {
             activity?.run {
                 val icon = VectorDrawableCompat.create(this.resources, R.drawable.ic_fingerprint_thumb, this.theme)
                 fingerprint_btn.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null)
@@ -1275,14 +1279,14 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     }
 
     private fun checkAdditionalLoginOptions() {
-        if (ScanFingerprintDialog.isFingerprintAvailable(activity))
-            presenter.checkStatusFingerprint()
+        if (isEnableFingerprint && ScanFingerprintDialog.isFingerprintAvailable(activity))
+                presenter.checkStatusFingerprint()
         else
             presenter.checkStatusPin(onSuccessCheckStatusPin(), onErrorCheckStatusPin())
     }
 
     private fun checkAdditionalLoginOptionsAfterSQ() {
-        if (ScanFingerprintDialog.isFingerprintAvailable(activity))
+        if (isEnableFingerprint && ScanFingerprintDialog.isFingerprintAvailable(activity))
             presenter.checkStatusFingerprint()
         else
             presenter.checkStatusPin(onSuccessCheckStatusPinAfterSQ(), onErrorCheckStatusPin())
@@ -1511,6 +1515,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
 
         private const val REMOTE_CONFIG_KEY_TICKER_FROM_ATC = "android_user_ticker_from_atc"
         private const val REMOTE_CONFIG_KEY_BANNER = "android_user_banner_login"
+        private const val REMOTE_CONFIG_KEY_LOGIN_FP = "android_user_fingerprint_login"
 
         private const val KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH"
         private const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"
