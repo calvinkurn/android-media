@@ -32,6 +32,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
 import com.tokopedia.logisticdata.data.constant.LogisticConstant
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.R
@@ -289,7 +290,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun setupInsurance(it: OccState.Success<OrderPreference>) {
         val insuranceData = it.data.shipping?.insuranceData
-//        val productId
+        val productId = viewModel.orderProduct.productId
         if (insuranceData != null) {
             if (insuranceData.insurancePrice > 0) {
                 tv_insurance_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(insuranceData.insurancePrice, false)
@@ -304,10 +305,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         R.drawable.ic_pp_insurance)
             }
             cb_insurance.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) {
-//                    orderSummaryAnalytics.eventClickOnInsurance(productId.toString(),"check", insuranceData.insurancePrice.toString())
+                if(!isChecked) {
+                    orderSummaryAnalytics.eventClickOnInsurance(productId.toString(),"uncheck", insuranceData.insurancePrice.toString())
                 } else {
-//                    orderSummaryAnalytics.eventClickOnInsurance(productId.toString(),"uncheck", insuranceData.insurancePrice.toString())
+                    orderSummaryAnalytics.eventClickOnInsurance(productId.toString(),"check", insuranceData.insurancePrice.toString())
                 }
                 viewModel.setInsuranceCheck(isChecked)
             }
@@ -466,7 +467,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun initViews(view: View) {
-        orderProductCard = OrderProductCard(view, this)
+        orderProductCard = OrderProductCard(view, this, orderSummaryAnalytics)
         orderPreferenceCard = OrderPreferenceCard(view, getOrderPreferenceCardListener())
     }
 
