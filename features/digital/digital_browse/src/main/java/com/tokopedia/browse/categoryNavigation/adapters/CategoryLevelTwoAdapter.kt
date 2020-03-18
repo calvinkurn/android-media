@@ -171,8 +171,12 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
     }
 
     private fun initTextHeaderViewHolderLayout(textHeaderViewHolder: TextHeaderViewHolder, position: Int) {
-        val item = list[position]
-        textHeaderViewHolder.headerTitle.text = item.name
+        list[position].name?.let {
+            textHeaderViewHolder.headerTitle.text = it
+            if (it.toLowerCase().contains("sering kamu lihat")) {
+                textHeaderViewHolder.headerTitle.setMargin(0, convertDpToPx(textHeaderViewHolder.itemView.context, 20), 0, 0)
+            }
+        }
     }
 
 
