@@ -71,7 +71,7 @@ object DynamicProductDetailTracking {
             mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = productInfo?.basic?.shopID
                     ?: ""
             mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_TYPE] = shopType
-            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = if (userId == "0") false else true
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = if (userId == "0") "false" else "true"
 
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.IMPRESSION_CHOOSE_VARIANT_NOTIFICATION)
@@ -111,7 +111,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Tracking.KEY_USER_ID, userId,
                     ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER, shopId,
                     ProductTrackingConstant.Tracking.KEY_SHOP_TYPE, shopType,
-                    ProductTrackingConstant.Tracking.KEY_ISLOGGIN, userId != "0",
+                    ProductTrackingConstant.Tracking.KEY_ISLOGGIN, if (userId == "0") "false" else "true",
 
                     ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
                     ProductTrackingConstant.Tracking.CURRENCY_CODE, ProductTrackingConstant.Tracking.CURRENCY_DEFAULT_VALUE,
