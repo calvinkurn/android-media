@@ -105,6 +105,7 @@ import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.valid
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoCheckoutVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoClashOptionUiModel;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoClashVoucherOrdersUiModel;
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoUiModel;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -1178,6 +1179,16 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             return null;
         }
 
+        if (validateUsePromoRevampUiModel != null) {
+            if (dataCheckoutRequestList != null) {
+                setCheckoutRequestPromoData(dataCheckoutRequestList);
+            }
+
+            if (analyticsDataCheckoutRequests != null) {
+                setCheckoutRequestPromoData(analyticsDataCheckoutRequests);
+            }
+        }
+
         TokopediaCornerData cornerData = null;
         if (getRecipientAddressModel() != null && getRecipientAddressModel().isCornerAddress()) {
             cornerData = new TokopediaCornerData(
@@ -1203,29 +1214,71 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             builder.cornerData(cornerData);
         }
 
-        // Todo : add promo global and promo merchant / logistic
+        if (validateUsePromoRevampUiModel != null) {
+            PromoUiModel promoUiModel = validateUsePromoRevampUiModel.getPromoUiModel();
+            if (promoUiModel.getCodes().size() > 0) {
+                ArrayList<String> codes = new ArrayList<>(promoUiModel.getCodes());
+                builder.promoCodes(codes);
 
-//        if (checkPromoParam != null && checkPromoParam.getPromo() != null) {
-//            if (checkPromoParam.getPromo().getCodes() != null && checkPromoParam.getPromo().getCodes().size() > 0) {
-//                builder.promoCodes(checkPromoParam.getPromo().getCodes());
-//                List<PromoRequest> promoRequests = new ArrayList<>();
-//                for (String promoCode : checkPromoParam.getPromo().getCodes()) {
-//                    PromoRequest promoRequest = new PromoRequest();
-//                    promoRequest.setCode(promoCode);
-//                    promoRequest.setType(PromoRequest.TYPE_GLOBAL);
-//
-//                    promoRequests.add(promoRequest);
-//                }
-//                builder.promos(promoRequests);
-//            }
-//            builder.hasPromoStacking(true);
-//        }
+                List<PromoRequest> promoRequests = new ArrayList<>();
+                for (String promoCode : promoUiModel.getCodes()) {
+                    PromoRequest promoRequest = new PromoRequest();
+                    promoRequest.setCode(promoCode);
+                    promoRequest.setType(PromoRequest.TYPE_GLOBAL);
+
+                    promoRequests.add(promoRequest);
+                }
+                builder.promos(promoRequests);
+
+            }
+
+            builder.hasPromoStacking(true);
+        }
 
         if (leasingId != null && !leasingId.isEmpty()) {
             builder.setLeasingId(Integer.parseInt(leasingId));
         }
 
         return builder.build();
+    }
+
+    private void setCheckoutRequestPromoData(List<DataCheckoutRequest> dataCheckoutRequestList) {
+        for (DataCheckoutRequest dataCheckoutRequest : dataCheckoutRequestList) {
+            if (dataCheckoutRequest.shopProducts != null && dataCheckoutRequest.shopProducts.size() > 0) {
+                for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
+                    for (PromoCheckoutVoucherOrdersItemUiModel voucherOrder : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
+                        if (shopProductCheckoutRequest.cartString.equals(voucherOrder.getUniqueId())) {
+                            if (shopProductCheckoutRequest.promoCodes != null && shopProductCheckoutRequest.promoCodes.size() > 0) {
+                                shopProductCheckoutRequest.promoCodes.add(voucherOrder.getCode());
+                            } else {
+                                ArrayList<String> codes = new ArrayList<>();
+                                codes.add(voucherOrder.getCode());
+                                shopProductCheckoutRequest.promoCodes = codes;
+                            }
+
+                            if (voucherOrder.getCode() != null && voucherOrder.getType() != null) {
+                                if (shopProductCheckoutRequest.promos != null && shopProductCheckoutRequest.promos.size() > 0) {
+                                    PromoRequest promoRequest = new PromoRequest();
+                                    promoRequest.setCode(voucherOrder.getCode());
+                                    promoRequest.setType(voucherOrder.getType());
+
+                                    List<PromoRequest> promoRequests = new ArrayList<>();
+                                    promoRequests.add(promoRequest);
+
+                                    shopProductCheckoutRequest.promos = promoRequests;
+                                } else {
+                                    PromoRequest promoRequest = new PromoRequest();
+                                    promoRequest.setCode(voucherOrder.getCode());
+                                    promoRequest.setType(voucherOrder.getType());
+
+                                    shopProductCheckoutRequest.promos.add(promoRequest);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Override
