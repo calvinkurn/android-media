@@ -14,6 +14,7 @@ import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.domain.*
+import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CoroutineDispatcherProvider
@@ -49,8 +50,13 @@ class PlayViewModel @Inject constructor(
 
     val observableVOD: LiveData<out ExoPlayer>
         get() = playVideoManager.getObservableVideoPlayer()
+
+    /**
+     * Not Used for Event to component
+     */
     val observableGetChannelInfo: LiveData<Result<ChannelInfoUiModel>>
         get() = _observableGetChannelInfo
+
     val observableSocketInfo: LiveData<PlaySocketInfo>
         get() = _observableSocketInfo
     val observableVideoStream: LiveData<VideoStreamUiModel>
@@ -120,6 +126,18 @@ class PlayViewModel @Inject constructor(
     val totalView: String?
         get() = _observableTotalViews.value?.totalView
 
+    val stateHelper: StateHelperUiModel
+        get() {
+            val pinned = _observablePinned.value
+            val videoStream = _observableVideoStream.value
+            val bottomInsets = _observableBottomInsetsState.value
+            return StateHelperUiModel(
+                    shouldShowPinnedMessage = pinned is PinnedMessageUiModel || pinned is PinnedProductUiModel,
+                    channelType = videoStream?.channelType ?: PlayChannelType.Unknown,
+                    isAnyBottomInsetsShown = bottomInsets?.isAnyShown ?: false
+            )
+        }
+
     private val isProductSheetInitialized: Boolean
         get() = _observableProductSheetContent.value != null
 
@@ -141,13 +159,8 @@ class PlayViewModel @Inject constructor(
     private val _observablePinned = MediatorLiveData<PinnedUiModel>()
     private val _observableBadgeCart = MutableLiveData<CartUiModel>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
-        addSource(observableVideoStream) {
-            _observableVideoProperty.value = VideoPropertyUiModel(it.channelType, _observableVideoProperty.value?.state
-                    ?: PlayVideoState.NotConfigured)
-        }
         addSource(playVideoManager.getObservablePlayVideoState()) {
-            _observableVideoProperty.value = VideoPropertyUiModel(_observableVideoProperty.value?.type
-                    ?: PlayChannelType.Unknown, it)
+            _observableVideoProperty.value = VideoPropertyUiModel(it)
         }
         addSource(observablePartnerInfo) {
             val currentMessageValue = _observablePinnedMessage.value
@@ -312,8 +325,13 @@ class PlayViewModel @Inject constructor(
         _observableBottomInsetsState.value = insetsMap
     }
 
-    fun hideAllInsets() {
-        _observableBottomInsetsState.value = getDefaultBottomInsetsMapState()
+    fun hideInsets(isKeyboardHandled: Boolean) {
+        val defaultBottomInsets = getDefaultBottomInsetsMapState()
+        _observableBottomInsetsState.value = if (isKeyboardHandled) {
+            defaultBottomInsets.toMutableMap().apply {
+                this[BottomInsetsType.Keyboard] = BottomInsetsState.Hidden(true)
+            }
+        } else defaultBottomInsets
     }
 
     private fun getLatestBottomInsetsMapState(): Map<BottomInsetsType, BottomInsetsState> {
@@ -327,11 +345,17 @@ class PlayViewModel @Inject constructor(
         return currentValue
     }
 
-    private fun getDefaultBottomInsetsMapState(): Map<BottomInsetsType, BottomInsetsState> = mapOf(
-            BottomInsetsType.Keyboard to BottomInsetsState.Hidden(false),
-            BottomInsetsType.ProductSheet to BottomInsetsState.Hidden(false),
-            BottomInsetsType.VariantSheet to BottomInsetsState.Hidden(false)
-    )
+    private fun getDefaultBottomInsetsMapState(): Map<BottomInsetsType, BottomInsetsState> {
+        val currentBottomInsetsMap = _observableBottomInsetsState.value
+        val defaultKeyboardState = currentBottomInsetsMap?.get(BottomInsetsType.Keyboard)?.isHidden ?: false
+        val defaultProductSheetState = currentBottomInsetsMap?.get(BottomInsetsType.ProductSheet)?.isHidden ?: false
+        val defaultVariantSheetState = currentBottomInsetsMap?.get(BottomInsetsType.VariantSheet)?.isHidden ?: false
+        return mapOf(
+                BottomInsetsType.Keyboard to BottomInsetsState.Hidden(defaultKeyboardState),
+                BottomInsetsType.ProductSheet to BottomInsetsState.Hidden(defaultProductSheetState),
+                BottomInsetsType.VariantSheet to BottomInsetsState.Hidden(defaultVariantSheetState)
+        )
+    }
     //endregion
 
     //region video player
@@ -632,7 +656,7 @@ class PlayViewModel @Inject constructor(
     private fun doOnFreezeBan() {
         destroy()
         stopPlayer()
-        hideAllInsets()
+        hideInsets(isKeyboardHandled = false)
     }
     //endregion
 

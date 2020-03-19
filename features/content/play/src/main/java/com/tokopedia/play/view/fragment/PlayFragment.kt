@@ -44,6 +44,7 @@ import javax.inject.Inject
 class PlayFragment : BaseDaggerFragment() {
 
     companion object {
+        const val ANIMATION_DURATION = 300L
 
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
 
@@ -54,7 +55,6 @@ class PlayFragment : BaseDaggerFragment() {
         private const val BOTTOM_SHEET_FRAGMENT_TAG = "FRAGMENT_INTERACTION"
         private const val ERROR_FRAGMENT_TAG = "FRAGMENT_ERROR"
 
-        private const val ANIMATION_DURATION = 300L
         private const val FULL_SCALE_FACTOR = 1.0f
 
         fun newInstance(channelId: String?): PlayFragment {
@@ -176,6 +176,7 @@ class PlayFragment : BaseDaggerFragment() {
         observeSocketInfo()
         observeEventUserInfo()
         observeVideoProperty()
+        observeVideoStream()
     }
 
     override fun onResume() {
@@ -265,12 +266,17 @@ class PlayFragment : BaseDaggerFragment() {
 
     private fun observeVideoProperty() {
         playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
-            setWindowSoftInputMode(it.type.isLive)
             if (it.state is PlayVideoState.Error) {
                 PlayAnalytics.errorState(channelId,
                         it.state.error.message?:getString(R.string.play_common_video_error_message),
                         playViewModel.channelType)
             }
+        })
+    }
+
+    private fun observeVideoStream() {
+        playViewModel.observableVideoStream.observe(viewLifecycleOwner, Observer {
+            setWindowSoftInputMode(it.channelType.isLive)
         })
     }
 
@@ -390,6 +396,7 @@ class PlayFragment : BaseDaggerFragment() {
             override fun onKeyboardHidden() {
                 playViewModel.onKeyboardHidden()
                 ivClose.invisible()
+                this@PlayFragment.onBottomInsetsViewHidden()
             }
         })
     }
@@ -400,6 +407,6 @@ class PlayFragment : BaseDaggerFragment() {
 
     private fun hideAllInsets() {
         hideKeyboard()
-        playViewModel.hideAllInsets()
+        playViewModel.hideInsets(isKeyboardHandled = true)
     }
 }

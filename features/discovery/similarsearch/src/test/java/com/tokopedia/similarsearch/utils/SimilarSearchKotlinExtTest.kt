@@ -88,7 +88,7 @@ internal class SimilarSearchKotlinExtTest: Spek({
                 ),
                 minOrder = 1
         )
-        val cartId = 12345
+        val cartId = "12345"
 
         val objectDataLayer = product.asObjectDataLayerAddToCart(cartId)
 

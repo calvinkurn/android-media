@@ -20,6 +20,8 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils.getStatusBarHei
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
@@ -69,10 +71,8 @@ import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -277,7 +277,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
                                 ScreenStateEvent::class.java,
-                                ScreenStateEvent.VideoPropertyChanged(it)
+                                ScreenStateEvent.VideoPropertyChanged(it, playViewModel.stateHelper)
                         )
             }
         })
@@ -355,17 +355,28 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun observeBottomInsetsState() {
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, Observer {
-            launch {
-                EventBusFactory.get(viewLifecycleOwner)
-                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden))
+            requireView().gone()
 
+            launch {
                 val keyboardState = it[BottomInsetsType.Keyboard]
                 if (keyboardState != null && !keyboardState.isPreviousStateSame) {
                     when (keyboardState) {
                         is BottomInsetsState.Hidden -> playFragment.onBottomInsetsViewHidden()
-                        is BottomInsetsState.Shown -> pushParentPlayByKeyboardHeight(keyboardState.estimatedInsetsHeight)
+                        is BottomInsetsState.Shown -> {
+                            pushParentPlayByKeyboardHeight(keyboardState.estimatedInsetsHeight)
+                        }
                     }
                 }
+
+                if (keyboardState?.isHidden == true) delay(PlayFragment.ANIMATION_DURATION)
+                EventBusFactory.get(viewLifecycleOwner)
+                        .emit(
+                                ScreenStateEvent::class.java,
+                                ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden, playViewModel.stateHelper)
+                        )
+
+            }.apply {
+                invokeOnCompletion { requireView().visible() }
             }
         })
     }
@@ -922,7 +933,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
           EventBusFactory.get(viewLifecycleOwner)
                   .emit(
                           ScreenStateEvent::class.java,
-                          ScreenStateEvent.SetPinned(pinnedMessage)
+                          ScreenStateEvent.SetPinned(pinnedMessage, playViewModel.stateHelper)
                   )
         }
     }
