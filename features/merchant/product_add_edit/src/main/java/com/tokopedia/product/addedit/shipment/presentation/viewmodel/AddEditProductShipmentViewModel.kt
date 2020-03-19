@@ -9,7 +9,7 @@ import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProdu
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
-class AddEditProductViewModel @Inject constructor(
+class AddEditProductShipmentViewModel @Inject constructor(
         coroutineDispatcher: CoroutineDispatcher,
         private val uploaderUseCase: UploaderUseCase
 ) : BaseViewModel(coroutineDispatcher) {

@@ -1,22 +1,18 @@
 package com.tokopedia.imagepicker.picker.gallery.widget;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
-import com.tokopedia.unifycomponents.Label;
 
 import java.util.ArrayList;
 
@@ -30,11 +26,9 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
     private TextView mVideoDuration;
 
     private MediaItem mMedia;
-    private String selectedUrl;
     private PreBindInfo mPreBindInfo;
     private OnMediaGridClickListener mListener;
     private View ivCheck;
-    private Label counterLabel;
 
     public MediaGrid(Context context) {
         super(context);
@@ -52,18 +46,14 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
         mThumbnail = (ImageView) findViewById(R.id.media_thumbnail);
         mVideoDuration = (TextView) findViewById(R.id.video_duration);
         ivCheck = findViewById(R.id.iv_check);
-        counterLabel = findViewById(R.id.label_counter);
+
         mThumbnail.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         if (mListener != null) {
-            if (mMedia != null) {
-                mListener.onThumbnailClicked(mThumbnail, mMedia, mPreBindInfo.mViewHolder);
-            } else if (!TextUtils.isEmpty(selectedUrl)) {
-                mListener.onThumbnailClicked(mThumbnail, selectedUrl, mPreBindInfo.mViewHolder);
-            }
+            mListener.onThumbnailClicked(mThumbnail, mMedia, mPreBindInfo.mViewHolder);
         }
     }
 
@@ -71,25 +61,11 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
         mPreBindInfo = info;
     }
 
-    public void bindMedia(MediaItem item, ArrayList<String> selectionIdList,
-                          boolean hasCounterLabel) {
+    public void bindMedia(MediaItem item, ArrayList<String> selectionIdList) {
         mMedia = item;
-        selectedUrl = null;
         setImage();
         setVideoDuration();
-        setSelectionCursor(selectionIdList, hasCounterLabel, mMedia.getRealPath());
-    }
-
-    public void bindMedia(String pathOrUrl, ArrayList<String> selectionIdList,
-                          boolean hasCounterLabel) {
-        selectedUrl = pathOrUrl;
-        mMedia = null;
-        if (URLUtil.isNetworkUrl(pathOrUrl)) {
-            ImageHandler.LoadImage(mThumbnail, pathOrUrl);
-        } else {
-            ImageHandler.loadImageFit2(getContext(), mThumbnail, pathOrUrl);
-        }
-        setSelectionCursor(selectionIdList, hasCounterLabel, pathOrUrl);
+        setSelection(selectionIdList);
     }
 
     private void setImage() {
@@ -111,23 +87,11 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
         }
     }
 
-    private void setSelectionCursor(ArrayList<String> selectionIdList,
-                                    boolean hasCounterLabel,
-                                    String path) {
-        int index = selectionIdList.indexOf(path);
-        if (index >= 0) {
+    private void setSelection(ArrayList<String> selectionIdList) {
+        if (selectionIdList.contains(mMedia.getRealPath())) {
             ivCheck.setVisibility(View.VISIBLE);
-            if (hasCounterLabel) {
-                counterLabel.setLabel(String.valueOf(index + 1));
-                counterLabel.setVisibility(View.VISIBLE);
-            } else {
-                counterLabel.setVisibility(View.GONE);
-            }
         } else {
             ivCheck.setVisibility(View.GONE);
-            if (hasCounterLabel) {
-                counterLabel.setVisibility(View.GONE);
-            }
         }
     }
 
@@ -138,7 +102,6 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
     public interface OnMediaGridClickListener {
 
         void onThumbnailClicked(ImageView thumbnail, MediaItem item, RecyclerView.ViewHolder holder);
-        void onThumbnailClicked(ImageView thumbnail, String imageUrl, RecyclerView.ViewHolder holder);
 
     }
 

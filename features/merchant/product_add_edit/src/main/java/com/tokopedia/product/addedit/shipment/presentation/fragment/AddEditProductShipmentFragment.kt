@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
-import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentComponent
@@ -18,7 +17,7 @@ import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProdu
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MIN_WEIGHT
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.UNIT_GRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.UNIT_KILOGRAM
-import com.tokopedia.product.addedit.shipment.presentation.viewmodel.AddEditProductViewModel
+import com.tokopedia.product.addedit.shipment.presentation.viewmodel.AddEditProductShipmentViewModel
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
@@ -28,7 +27,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     private var tfWeightUnit: TextFieldUnify? = null
     private var btnEnd: UnifyButton? = null
     private var selectedWeightPosition: Int = 0
-    private lateinit var viewModel: AddEditProductViewModel
+    private lateinit var shipmentViewModel: AddEditProductShipmentViewModel
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -80,8 +79,8 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
 
     private fun initViewModel() {
         activity?.run {
-            viewModel = ViewModelProviders.of(this, viewModelFactory)
-                    .get(AddEditProductViewModel::class.java)
+            shipmentViewModel = ViewModelProviders.of(this, viewModelFactory)
+                    .get(AddEditProductShipmentViewModel::class.java)
         }
     }
 
@@ -111,7 +110,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
 
     private fun validateInputWeight(inputText: String) {
         val errorMessage: String
-        val isValid = viewModel.isWeightValid(inputText, selectedWeightPosition, MIN_WEIGHT)
+        val isValid = shipmentViewModel.isWeightValid(inputText, selectedWeightPosition, MIN_WEIGHT)
         if (selectedWeightPosition == UNIT_GRAM) {
             errorMessage = getString(R.string.error_weight_not_valid, MIN_WEIGHT, MAX_WEIGHT_GRAM)
         } else {

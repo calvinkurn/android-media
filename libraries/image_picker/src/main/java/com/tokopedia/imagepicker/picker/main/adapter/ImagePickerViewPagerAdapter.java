@@ -27,7 +27,7 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
     protected Context context;
 
     public ImagePickerViewPagerAdapter(Context context, FragmentManager fm, ImagePickerBuilder imagePickerBuilder) {
-        super(fm,FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        super(fm);
         this.imagePickerBuilder = imagePickerBuilder;
         this.context = context;
     }
@@ -54,9 +54,7 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
         return ImagePickerGalleryFragment.newInstance(
                 imagePickerBuilder.getGalleryType(),
                 imagePickerBuilder.supportMultipleSelection() ,
-                imagePickerBuilder.getMinResolution(),
-                imagePickerBuilder.showCounterViewAtSelectedImage(),
-                imagePickerBuilder.showBiggerPreview());
+                imagePickerBuilder.getMinResolution());
     }
 
     @SuppressLint("MissingPermission")
