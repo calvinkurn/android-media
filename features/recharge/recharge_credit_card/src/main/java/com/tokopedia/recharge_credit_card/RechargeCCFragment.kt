@@ -17,9 +17,11 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.recharge_credit_card.analytics.CreditCardAnalytics
 import com.tokopedia.recharge_credit_card.bottomsheet.CCBankListBottomSheet
 import com.tokopedia.recharge_credit_card.di.RechargeCCInstance
 import com.tokopedia.recharge_credit_card.util.RechargeCCUtil
@@ -37,12 +39,15 @@ class RechargeCCFragment : BaseDaggerFragment() {
     private lateinit var rechargeCCViewModel: RechargeCCViewModel
     private lateinit var rechargeSubmitCCViewModel: RechargeSubmitCCViewModel
     private lateinit var catalogPrefixCCViewModel: CatalogPrefixCCViewModel
+    private lateinit var checkoutPassDataState: DigitalCheckoutPassData
+    private lateinit var saveInstanceManager: SaveInstanceCacheManager
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
     @Inject
     lateinit var userSession: UserSessionInterface
+    @Inject
+    lateinit var creditCardAnalytics: CreditCardAnalytics
 
     private var operatorIdSelected: String = ""
     private var productIdSelected: String = ""
@@ -58,8 +63,21 @@ class RechargeCCFragment : BaseDaggerFragment() {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        activity?.let {
+            saveInstanceManager = SaveInstanceCacheManager(it, savedInstanceState)
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        if (savedInstanceState != null) {
+            checkoutPassDataState = saveInstanceManager.get(EXTRA_STATE_CHECKOUT_PASS_DATA,
+                    DigitalCheckoutPassData::class.java, null)!!
+        }
 
         activity?.let {
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
@@ -67,6 +85,12 @@ class RechargeCCFragment : BaseDaggerFragment() {
             rechargeSubmitCCViewModel = viewModelProvider.get(RechargeSubmitCCViewModel::class.java)
             catalogPrefixCCViewModel = viewModelProvider.get(CatalogPrefixCCViewModel::class.java)
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        saveInstanceManager.put(EXTRA_STATE_CHECKOUT_PASS_DATA, checkoutPassDataState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -78,6 +102,8 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
         cc_widget_client_number.setListener(object : CCClientNumberWidget.ActionListener {
             override fun onClickNextButton(clientNumber: String) {
+                creditCardAnalytics.clickToConfirmationPage(
+                        CATEGORY_ID_CREDIT_CARD.toString(), operatorIdSelected)
                 dialogConfirmation()
             }
 
@@ -92,6 +118,8 @@ class RechargeCCFragment : BaseDaggerFragment() {
                 bottomSheetBankList.show(it.supportFragmentManager, "Bank list")
             }
         }
+
+        creditCardAnalytics.impressionInitialPage("","")
     }
 
     private fun checkPrefixCreditCardNumber(clientNumber: String) {
@@ -130,10 +158,14 @@ class RechargeCCFragment : BaseDaggerFragment() {
                 dialog.setSecondaryCTAText(getString(R.string.cc_cta_btn_secondary))
                 dialog.setPrimaryCTAClickListener {
                     dialog.dismiss()
+                    creditCardAnalytics.clickToContinueCheckout(
+                            CATEGORY_ID_CREDIT_CARD.toString(), operatorIdSelected)
                     submitCreditCard(CATEGORY_ID_CREDIT_CARD.toString(), operatorIdSelected,
                             productIdSelected, cc_widget_client_number.getClientNumber())
                 }
                 dialog.setSecondaryCTAClickListener {
+                    creditCardAnalytics.clickBackOnConfirmationPage(
+                            CATEGORY_ID_CREDIT_CARD.toString(), operatorIdSelected)
                     dialog.dismiss()
                 }
                 dialog.show()
@@ -171,10 +203,8 @@ class RechargeCCFragment : BaseDaggerFragment() {
                         .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
                         .needGetCart(true)
                         .build()
-
-                val intent = RouteManager.getIntent(activity, ApplinkConsInternalDigital.CART_DIGITAL)
-                intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, passData)
-                startActivityForResult(intent, REQUEST_CODE_CART)
+                checkoutPassDataState = passData
+                navigateToCart(passData)
             })
 
             rechargeSubmitCCViewModel.errorSubmitCreditCard.observe(viewLifecycleOwner, Observer {
@@ -200,6 +230,12 @@ class RechargeCCFragment : BaseDaggerFragment() {
         cc_progress_bar.visibility = View.VISIBLE
     }
 
+    private fun navigateToCart(passData: DigitalCheckoutPassData) {
+        val intent = RouteManager.getIntent(activity, ApplinkConsInternalDigital.CART_DIGITAL)
+        intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, passData)
+        startActivityForResult(intent, REQUEST_CODE_CART)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
@@ -214,16 +250,16 @@ class RechargeCCFragment : BaseDaggerFragment() {
                 }
             }
             REQUEST_CODE_LOGIN -> {
-                if (userSession.isLoggedIn) {
-//                    val intent = RouteManager.getIntent(activity, ApplinkConsInternalDigital.CART_DIGITAL)
-//                    intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, digitalCheckoutPassDataState)
-//                    startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
+                if (userSession.isLoggedIn && ::checkoutPassDataState.isInitialized) {
+                    navigateToCart(checkoutPassDataState)
                 }
             }
         }
     }
 
     companion object {
+
+        const val EXTRA_STATE_CHECKOUT_PASS_DATA = "EXTRA_STATE_CHECKOUT_PASS_DATA"
 
         const val CATEGORY_ID_CREDIT_CARD = 26
         const val REQUEST_CODE_CART = 1000
