@@ -10,7 +10,7 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
 object StatusbarHelper {
 
     fun getStatusBarHeight(context: Context): Int {
-        var height = context.dpToPx(56).toInt()
+        var height = context.dpToPx(48).toInt()
         val resId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
         if (resId > 0) {
             height = context.resources.getDimensionPixelSize(resId)

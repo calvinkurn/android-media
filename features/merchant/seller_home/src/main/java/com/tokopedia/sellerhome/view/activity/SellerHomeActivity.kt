@@ -207,7 +207,7 @@ class SellerHomeActivity : BaseActivity() {
     }
 
     private fun showChatNotificationCounter(chat: NotificationChatUiModel) {
-        sahBottomNav.setNotification(chat.unreads, FragmentType.CHAT)
+        sahBottomNav.setNotification(chat.unreadsSeller, FragmentType.CHAT)
     }
 
     private fun showOrderNotificationCounter(orderStatus: NotificationSellerOrderStatusUiModel) {
