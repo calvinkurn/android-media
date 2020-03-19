@@ -1,5 +1,5 @@
-query {
-   gamiLuckyHome(campaignSlug:"QR2020",page:"qrcode") {
+query GamiLuckyHome($campaignSlug:String!,$page:String!){
+   gamiLuckyHome(campaignSlug:$campaignSlug,page:$page) {
     resultStatus{
         code
         message

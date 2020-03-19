@@ -1,5 +1,5 @@
-mutation {
-  gamiCrack(campaignSlug: "SCANQR", uniqueCode:"") {
+mutation GamiCrack($campaignSlug:String!,uniqueCode:String!){
+  gamiCrack(campaignSlug:$campaignSlug,uniqueCode:uniqueCode) {
     resultStatus {
       code
       message

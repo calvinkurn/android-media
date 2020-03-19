@@ -21,8 +21,8 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
     : BaseViewModel(workerDispatcher) {
 
     //todo Rahul these below values must not be hardcoded
-    var campaignSlug: String = "qr2020"
-    var pageName: String = "giftbox"
+    var campaignSlug: String = "active"
+    var pageName: String = "daily"
     var uniqueCode: String = ""
 
     val giftBoxLiveData: MutableLiveData<LiveDataResult<GiftBoxEntity>> = MutableLiveData()
@@ -32,8 +32,9 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
         giftBoxLiveData.postValue(LiveDataResult.loading())
         launchCatchError(block = {
             val params = giftBoxDailyUseCase.getRequestParams(campaignSlug, pageName)
+//            val r = giftBoxDailyUseCase.getResponse(params)
 //            giftBoxLiveData.postValue(LiveDataResult.success(giftBoxDailyUseCase.getResponse(params)))
-            giftBoxLiveData.postValue(LiveDataResult.success(giftBoxDailyUseCase.getFakeResponse()))
+            giftBoxLiveData.postValue(LiveDataResult.success(giftBoxDailyUseCase.getFakeResponseActive()))
         }, onError = {
             giftBoxLiveData.postValue(LiveDataResult.error(it))
         })
@@ -42,7 +43,8 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
     fun getRewards() {
         launchCatchError(block = {
             val params = giftBoxDailyRewardUseCase.getRequestParams(campaignSlug, uniqueCode)
-            rewardLiveData.postValue(LiveDataResult.success(giftBoxDailyRewardUseCase.getResponse(params)))
+//            rewardLiveData.postValue(LiveDataResult.success(giftBoxDailyRewardUseCase.getResponse(params)))
+            rewardLiveData.postValue(LiveDataResult.success(giftBoxDailyRewardUseCase.getRandomResponse()))
         }, onError = {
             rewardLiveData.postValue(LiveDataResult.error(it))
         })

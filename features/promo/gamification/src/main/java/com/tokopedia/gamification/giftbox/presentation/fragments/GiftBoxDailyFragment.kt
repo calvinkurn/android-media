@@ -66,10 +66,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val v = super.onCreateView(inflater, container, savedInstanceState)
         viewModel.getGiftBox()
-//        v.postDelayed({
-//            hideLoader()
-////            dailyViewModel.renderActive()
-//        }, 1000L)
         return v
     }
 
@@ -162,7 +158,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             }
         })
         viewModel.rewardLiveData.observe(viewLifecycleOwner, Observer {
-
+            
         })
     }
 
