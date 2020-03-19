@@ -4,8 +4,10 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.gamification.giftbox.data.di.IO
 import com.tokopedia.gamification.giftbox.data.di.MAIN
+import com.tokopedia.gamification.giftbox.data.entities.CouponDetailResponse
 import com.tokopedia.gamification.giftbox.data.entities.GiftBoxEntity
 import com.tokopedia.gamification.giftbox.data.entities.GiftBoxRewardEntity
+import com.tokopedia.gamification.giftbox.domain.CouponDetailUseCase
 import com.tokopedia.gamification.giftbox.domain.GiftBoxDailyRewardUseCase
 import com.tokopedia.gamification.giftbox.domain.GiftBoxDailyUseCase
 import com.tokopedia.gamification.pdp.data.LiveDataResult
@@ -19,7 +21,8 @@ import javax.inject.Named
 class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: CoroutineDispatcher,
                                                 @Named(IO) workerDispatcher: CoroutineDispatcher,
                                                 val giftBoxDailyUseCase: GiftBoxDailyUseCase,
-                                                val giftBoxDailyRewardUseCase: GiftBoxDailyRewardUseCase)
+                                                val giftBoxDailyRewardUseCase: GiftBoxDailyRewardUseCase,
+                                                val couponDetailUseCase: CouponDetailUseCase)
     : BaseViewModel(workerDispatcher) {
 
     //todo Rahul these below values must not be hardcoded
@@ -35,7 +38,7 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
     fun getGiftBox() {
         giftBoxLiveData.postValue(LiveDataResult.loading())
         launchCatchError(block = {
-            delay(4000L)
+            delay(1000L)
             val params = giftBoxDailyUseCase.getRequestParams(campaignSlug, pageName)
 //            val r = giftBoxDailyUseCase.getResponse(params)
 //            giftBoxLiveData.postValue(LiveDataResult.success(giftBoxDailyUseCase.getResponse(params)))
@@ -50,10 +53,34 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
             rewardJob = launchCatchError(block = {
                 val params = giftBoxDailyRewardUseCase.getRequestParams(campaignSlug, uniqueCode)
 //            rewardLiveData.postValue(LiveDataResult.success(giftBoxDailyRewardUseCase.getResponse(params)))
-                rewardLiveData.postValue(LiveDataResult.success(giftBoxDailyRewardUseCase.getRandomResponse()))
+
+                val response = giftBoxDailyRewardUseCase.getCouponsWithOvoPoints()
+                val couponDetail = composeApi(response)
+                response.couponDetailResponse = couponDetail
+                rewardLiveData.postValue(LiveDataResult.success(response))
+
             }, onError = {
                 rewardLiveData.postValue(LiveDataResult.error(it))
             })
         }
+    }
+
+    suspend fun composeApi(giftBoxRewardEntity: GiftBoxRewardEntity): CouponDetailResponse {
+        val ids = mapperGratificationResponseToCouponIds(giftBoxRewardEntity)
+        return getCatalogDetail(ids)
+    }
+
+    private fun mapperGratificationResponseToCouponIds(response: GiftBoxRewardEntity): List<String> {
+        var ids = arrayListOf<String>()
+        response.crackResult.benefits?.forEach {
+            if (it.referenceID!=null){
+                ids.add(it.referenceID.toString())
+            }
+        }
+        return ids
+    }
+
+    private suspend fun getCatalogDetail(ids: List<String>): CouponDetailResponse {
+        return couponDetailUseCase.getResponse(ids)
     }
 }

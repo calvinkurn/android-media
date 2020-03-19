@@ -19,7 +19,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
 import com.tokopedia.gamification.giftbox.data.entities.GiftBoxEntity
-import com.tokopedia.gamification.giftbox.presentation.activities.GiftLauncherActivity
+import com.tokopedia.gamification.giftbox.data.entities.GiftBoxRewardEntity
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.ACTIVE
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.EMPTY
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.EXPIRED
@@ -30,6 +30,7 @@ import com.tokopedia.gamification.giftbox.presentation.viewmodels.GiftBoxDailyVi
 import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
 import com.tokopedia.gamification.giftbox.presentation.views.GiftPrizeLargeView
 import com.tokopedia.gamification.giftbox.presentation.views.GiftPrizeSmallView
+import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import javax.inject.Inject
 
@@ -45,6 +46,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: GiftBoxDailyViewModel
+    var giftBoxRewardEntity: GiftBoxRewardEntity? = null
 
     override fun getLayout() = R.layout.fragment_gift_box_daily
 
@@ -90,33 +92,52 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 rewardContainer.setFinalTranslationOfCircles(giftBoxDailyView.fmGiftBox.top)
                 val stageLightAnim = giftBoxDailyView.stageGlowAnimation()
 
-                when (GiftLauncherActivity.uiType) {
-                    GiftLauncherActivity.UiType.COUPON_POINTS -> {
-                        val rewardAnim = rewardContainer.showCouponAndRewardAnimation(giftBoxDailyView.fmGiftBox.top)
+                //new code===
+                giftBoxRewardEntity?.let {
+                    rewardContainer.setRewards(it, asyncCallback = { rewardState ->
+                        when (rewardState) {
+                            RewardContainer.RewardState.COUPON_WITH_POINTS -> {
+                                setPositionOfViewsAtBoxOpen()
 
+                                val rewardAnim = rewardContainer.showCouponAndRewardAnimation(giftBoxDailyView.fmGiftBox.top)
 
-                        val animatorSet = AnimatorSet()
-                        animatorSet.playTogether(rewardAnim, stageLightAnim)
-                        animatorSet.startDelay = startDelay
-                        animatorSet.start()
+                                val animatorSet = AnimatorSet()
+                                animatorSet.playTogether(rewardAnim, stageLightAnim)
+                                animatorSet.startDelay = startDelay
+                                animatorSet.start()
 
-                        val ovoPointsTextAnim = rewardContainer.ovoPointsTextAnimation()
-                        ovoPointsTextAnim.startDelay = startDelay + 100L
-                        ovoPointsTextAnim.start()
-                    }
-                    GiftLauncherActivity.UiType.POINTS -> {
-                        val rewardAnim = rewardContainer.showSingleLargeRewardAnimation(giftBoxDailyView.fmGiftBox.top)
+                                val ovoPointsTextAnim = rewardContainer.ovoPointsTextAnimation()
+                                ovoPointsTextAnim.startDelay = startDelay + 100L
+                                ovoPointsTextAnim.start()
+                            }
+                            RewardContainer.RewardState.POINTS_ONLY -> {
+                                val rewardAnim = rewardContainer.showSingleLargeRewardAnimation(giftBoxDailyView.fmGiftBox.top)
 
-                        val animatorSet = AnimatorSet()
-                        animatorSet.playTogether(stageLightAnim, rewardAnim)
-                        animatorSet.startDelay = startDelay
-                        animatorSet.start()
-                    }
+                                val animatorSet = AnimatorSet()
+                                animatorSet.playTogether(stageLightAnim, rewardAnim)
+                                animatorSet.startDelay = startDelay
+                                animatorSet.start()
+                            }
+
+                            RewardContainer.RewardState.COUPON_ONLY -> {
+                                val rewardAnim = rewardContainer.showCouponAndRewardAnimation(giftBoxDailyView.fmGiftBox.top)
+
+                                val animatorSet = AnimatorSet()
+                                animatorSet.playTogether(rewardAnim, stageLightAnim)
+                                animatorSet.startDelay = startDelay
+                                animatorSet.start()
+                            }
+                        }
+                    })
+
                 }
+                //new code ends===
+
+
             }
 
             override fun onBoxScaleDownAnimationStart() {
-                fadeOutViews()
+//                fadeOutViews()
             }
 
             override fun onBoxOpened() {
@@ -169,7 +190,17 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         viewModel.rewardLiveData.observe(viewLifecycleOwner, Observer {
             when (it.status) {
                 LiveDataResult.STATUS.SUCCESS -> {
-                    giftBoxDailyView.handleTapOnGiftBox()
+
+                    if (it.data == null) {
+                        //todo Rahul need to handle
+                    } else {
+                        //set data in rewards first and then animate
+
+                        giftBoxRewardEntity = it.data
+                        giftBoxDailyView.handleTapOnGiftBox()
+                        fadeOutViews()
+                    }
+
                 }
                 LiveDataResult.STATUS.ERROR -> {
                 }
@@ -179,6 +210,18 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         giftBoxDailyView.fmGiftBox.setOnClickListener {
             viewModel.getRewards()
         }
+    }
+
+    fun setPositionOfViewsAtBoxOpen() {
+        rewardContainer.setFinalTranslationOfCircles(giftBoxDailyView.fmGiftBox.top)
+
+        val array = IntArray(2)
+        giftBoxDailyView.imageBoxFront.getLocationInWindow(array)
+        val translationY = array[1].toFloat() - getStatusBarHeight(context) - dpToPx(40f)
+        starsContainer.setStartPositionOfStars(starsContainer.width / 2f, translationY)
+
+        rewardContainer.rvCoupons.translationY = array[1].toFloat() - (screenHeight * 0.15f) - dpToPx(148f) - statusBarHeight
+        rewardContainer.llRewardTextLayout.translationY = (screenHeight * 0.385f) - statusBarHeight
     }
 
     fun showRewardMessageDescription(): Animator {

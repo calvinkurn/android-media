@@ -78,7 +78,7 @@ open class GiftBoxDailyView : FrameLayout {
     open fun handleTapOnGiftBox() {
         //todo Rahul make api call first
         if (giftBoxState == GiftBoxState.CLOSED) {
-            boxCallback?.onBoxScaleDownAnimationStart()
+//            boxCallback?.onBoxScaleDownAnimationStart()
             giftBoxState = GiftBoxState.OPEN
             startBoxOpenAnimation()
         }

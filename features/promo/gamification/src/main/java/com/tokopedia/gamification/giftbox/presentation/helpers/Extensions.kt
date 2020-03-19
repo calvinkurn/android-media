@@ -1,6 +1,7 @@
 package com.tokopedia.gamification.giftbox.presentation.helpers
 
 import android.animation.Animator
+import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
@@ -55,4 +56,8 @@ inline fun <reified T : ViewGroup.LayoutParams> View.updateLayoutParams(block: T
     val params = layoutParams as T
     block(params)
     layoutParams = params
+}
+
+fun View.dpToPx(dp: Int): Float {
+    return dp * (context.resources.displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT).toFloat()
 }

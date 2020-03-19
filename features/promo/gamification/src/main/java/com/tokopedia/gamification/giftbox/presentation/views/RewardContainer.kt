@@ -2,23 +2,28 @@ package com.tokopedia.gamification.giftbox.presentation.views
 
 import android.animation.*
 import android.content.Context
+import android.graphics.Color
 import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
+import androidx.annotation.IntDef
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gamification.R
+import com.tokopedia.gamification.giftbox.data.entities.GetCouponDetail
+import com.tokopedia.gamification.giftbox.data.entities.GiftBoxRewardEntity
 import com.tokopedia.gamification.giftbox.presentation.adapter.CouponAdapter
-import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
-import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
-import com.tokopedia.gamification.giftbox.presentation.helpers.doOnLayout
-import com.tokopedia.gamification.giftbox.presentation.helpers.updateLayoutParams
+import com.tokopedia.gamification.giftbox.presentation.helpers.*
+import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardState.Companion.COUPON_ONLY
+import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardState.Companion.COUPON_WITH_POINTS
+import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardState.Companion.POINTS_ONLY
+import com.tokopedia.utils.image.ImageUtils
 
 class RewardContainer : FrameLayout {
 
@@ -33,7 +38,12 @@ class RewardContainer : FrameLayout {
 
     lateinit var couponAdapter: CouponAdapter
 
+    val couponList = ArrayList<GetCouponDetail>()
     val FADE_OUT_REWARDS_DURATION = 1000L
+
+
+    @RewardState
+    var rewardState: Int = RewardState.COUPON_ONLY
 
     companion object {
         const val NEGATIVE_DELAY_FOR_LARGE_REWARD_ANIM = 250L
@@ -44,9 +54,9 @@ class RewardContainer : FrameLayout {
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
+            context,
+            attrs,
+            defStyleAttr
     ) {
         init(attrs)
     }
@@ -82,13 +92,60 @@ class RewardContainer : FrameLayout {
                 startSmoothScroll(linearSmoothScroller)
             }
         }
-        couponAdapter = CouponAdapter()
+
+        rvCoupons.addItemDecoration(CouponItemDecoration())
+        couponAdapter = CouponAdapter(couponList)
         rvCoupons.adapter = couponAdapter
+
 
         doOnLayout {
             setGreenGlowImagePosition(imageGreenGlow)
             setImageGlowCircle(imageGlowCircleSmall, imageGlowCircleLarge, imageCircleReward)
         }
+    }
+
+    fun setRewards(rewardEntity: GiftBoxRewardEntity, asyncCallback: ((rewardState:  Int) -> Unit)) {
+        var hasPoints = false
+        var hasCoupons = false
+
+        //set coupons if available
+        val list = rewardEntity.couponDetailResponse?.couponList
+        if (list != null && list.isNotEmpty()) {
+            hasCoupons = true
+            couponList.clear()
+            couponList.addAll(list)
+            couponAdapter.notifyDataSetChanged()
+        }
+
+        //set coins
+        var iconUrl: String? = ""
+        rewardEntity.crackResult.benefits?.let {
+            it.forEach { benefit ->
+                if (benefit.benefitType != "coupons") {
+                    hasPoints = true
+                    tvSmallReward.text = benefit.text
+                    if (!benefit.color.isNullOrEmpty()) {
+                        tvSmallReward.setTextColor(Color.parseColor(benefit.color))
+                    }
+                    iconUrl = benefit.imageUrl
+                }
+            }
+        }
+
+        if (hasPoints && hasCoupons) {
+            rewardState = RewardState.COUPON_WITH_POINTS
+            ImageUtils.loadImage(imageSmallReward, iconUrl!!)
+        } else if (hasPoints) {
+            //only points
+            rewardState = RewardState.POINTS_ONLY
+            if(!iconUrl.isNullOrEmpty()){
+                ImageUtils.loadImage(imageSmallReward, iconUrl!!)
+                ImageUtils.loadImage(imageCircleReward, iconUrl!!)
+            }
+        } else if (hasCoupons) {
+            rewardState = RewardState.COUPON_ONLY
+        }
+        asyncCallback.invoke(rewardState)
     }
 
     fun setGreenGlowImagePosition(view: View) {
@@ -165,6 +222,7 @@ class RewardContainer : FrameLayout {
 
         val animatorSet = AnimatorSet()
         animatorSet.playTogether(anim1, anim2)
+        animatorSet.playTogether(anim1)
         return animatorSet
     }
 
@@ -314,5 +372,15 @@ class RewardContainer : FrameLayout {
 
     private fun dpToPx(dp: Float): Float {
         return dp * (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+    }
+
+    @Retention(AnnotationRetention.SOURCE)
+    @IntDef(COUPON_ONLY, POINTS_ONLY, COUPON_WITH_POINTS)
+    annotation class RewardState {
+        companion object {
+            const val COUPON_ONLY = 1
+            const val POINTS_ONLY = 2
+            const val COUPON_WITH_POINTS = 3
+        }
     }
 }

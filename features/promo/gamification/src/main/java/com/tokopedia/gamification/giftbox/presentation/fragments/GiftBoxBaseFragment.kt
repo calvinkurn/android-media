@@ -35,6 +35,7 @@ open class GiftBoxBaseFragment : Fragment() {
     var screenWidth = 0
 
     val FADE_IN_DURATION = 500L
+    var statusBarHeight:Int = 0
 
     open fun getLayout() = 0
 
@@ -55,6 +56,7 @@ open class GiftBoxBaseFragment : Fragment() {
         tvLoaderTitle = v.findViewById(R.id.tvLoaderTitle)
         tvLoaderMessage = v.findViewById(R.id.tvLoaderMessage)
 
+        statusBarHeight = getStatusBarHeight(context)
         setInitialPositionOfViews()
         initialViewSetup()
     }
@@ -76,22 +78,6 @@ open class GiftBoxBaseFragment : Fragment() {
 
     fun setInitialPositionOfViews() {
         tvTapHint.translationY = screenHeight * 0.2f
-
-        //todo Rahul later
-        starsContainer.postDelayed({
-            val array = IntArray(2)
-            giftBoxDailyView.imageBoxFront.getLocationInWindow(array)
-            val translationY = array[1].toFloat() - getStatusBarHeight(context) - dpToPx(40f)
-            val translationX = array[0].toFloat()
-            starsContainer.setStartPositionOfStars(starsContainer.width / 2f, translationY)
-
-            rewardContainer.rvCoupons.translationY = array[1].toFloat() - (screenHeight * 0.15f) - dpToPx(148f)
-        }, 300L)
-
-        rewardContainer.doOnLayout {
-            rewardContainer.setPositionOfViews(it.height.toFloat(), getStatusBarHeight(context).toFloat())
-        }
-
     }
 
     fun showLoader() {

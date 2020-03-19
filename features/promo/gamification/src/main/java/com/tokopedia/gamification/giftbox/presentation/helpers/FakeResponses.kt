@@ -27,7 +27,7 @@ object FakeResponses {
                 "        \"isAutoApply\": true,\n" +
                 "        \"autoApplyMsg\": \"Kupon Cashback udah terpasang ya. Ayo beli sekarang!\",\n" +
                 "        \"dummyCode\": \"qweqw\",\n" +
-                "        \"referenceID\": \"123\"\n" +
+                "        \"referenceID\": \"2463\"\n" +
                 "      },\n" +
                 "      {\n" +
                 "        \"text\": \"Kupon Cashback\",\n" +
@@ -36,7 +36,7 @@ object FakeResponses {
                 "        \"benefitType\": \"coupon\",\n" +
                 "        \"isBigPrize\": false,\n" +
                 "        \"dummyCode\": \"asdas\",\n" +
-                "        \"referenceID\": \"222\",\n" +
+                "        \"referenceID\": \"2463\",\n" +
                 "        \"isAutoApply\": false,\n" +
                 "        \"autoApplyMsg\": \"\"\n" +
                 "      }\n" +
@@ -77,7 +77,7 @@ object FakeResponses {
                 "        \"isAutoApply\": true,\n" +
                 "        \"autoApplyMsg\": \"Kupon Cashback udah terpasang ya. Ayo beli sekarang!\",\n" +
                 "        \"dummyCode\": \"qweqw\",\n" +
-                "        \"referenceID\": \"123\"\n" +
+                "        \"referenceID\": \"2463\"\n" +
                 "      },\n" +
                 "      {\n" +
                 "        \"text\": \"Kupon Cashback\",\n" +
@@ -86,7 +86,7 @@ object FakeResponses {
                 "        \"benefitType\": \"coupon\",\n" +
                 "        \"isBigPrize\": false,\n" +
                 "        \"dummyCode\": \"asdas\",\n" +
-                "        \"referenceID\": \"222\",\n" +
+                "        \"referenceID\": \"2463\",\n" +
                 "        \"isAutoApply\": false,\n" +
                 "        \"autoApplyMsg\": \"\"\n" +
                 "      },\n" +
