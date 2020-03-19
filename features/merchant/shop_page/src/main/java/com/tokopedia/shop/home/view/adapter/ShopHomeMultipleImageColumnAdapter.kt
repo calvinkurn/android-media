@@ -15,12 +15,13 @@ class ShopHomeMultipleImageColumnAdapter(
 
     private var displayWidgetUiModel: ShopHomeDisplayWidgetUiModel? = null
     private var parentPosition: Int = 0
+    private var heightRatio: Float = 0.0F
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopHomeItemImageColumnViewHolder {
         val view = LayoutInflater
                 .from(parent.context)
                 .inflate(R.layout.item_shop_home_page_image_column, parent, false)
-        return ShopHomeItemImageColumnViewHolder(view, listener)
+        return ShopHomeItemImageColumnViewHolder(view, listener, heightRatio)
     }
 
     override fun onBindViewHolder(holder: ShopHomeItemImageColumnViewHolder, position: Int) {
@@ -37,6 +38,10 @@ class ShopHomeMultipleImageColumnAdapter(
 
     fun setParentPosition(adapterPosition: Int) {
         this.parentPosition = adapterPosition
+    }
+
+    fun setHeightRatio(heightRatio: Float) {
+        this.heightRatio = heightRatio
     }
 
 }

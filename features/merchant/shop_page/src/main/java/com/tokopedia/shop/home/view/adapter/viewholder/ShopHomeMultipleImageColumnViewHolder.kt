@@ -63,8 +63,18 @@ class ShopHomeMultipleImageColumnViewHolder(
                 show()
             }
         }
+
+        val indexZero = getIndexRatio(element, 0).toFloat()
+        val indexOne = getIndexRatio(element,1).toFloat()
+        val heightRatio = (indexOne / indexZero)
+
         shopHomeMultipleImageColumnAdapter.setShopHomeDisplayWidgetUiModelData(element)
         shopHomeMultipleImageColumnAdapter.setParentPosition(adapterPosition)
+        shopHomeMultipleImageColumnAdapter.setHeightRatio(heightRatio)
         shopHomeMultipleImageColumnAdapter.submitList(element.data)
+    }
+
+    private fun getIndexRatio(data: ShopHomeDisplayWidgetUiModel, index: Int): Int {
+        return data.header.ratio.split(":")[index].toInt()
     }
 }

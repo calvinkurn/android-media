@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.setImage
 
 /**
@@ -15,15 +16,16 @@ import com.tokopedia.unifycomponents.setImage
 
 class ShopHomeItemImageColumnViewHolder(
         itemView: View,
-        val listener: ShopHomeDisplayWidgetListener
+        val listener: ShopHomeDisplayWidgetListener,
+        val heightRatio: Float
 ) : RecyclerView.ViewHolder(itemView) {
 
-    private val ivMultipleColumn: AppCompatImageView = itemView.findViewById(R.id.ivMultipleColumn)
+    private val ivMultipleColumn: ImageUnify = itemView.findViewById(R.id.ivMultipleColumn)
     var displayWidgetUiModel: ShopHomeDisplayWidgetUiModel? = null
     var parentPosition: Int = 0
 
     fun bind(data: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem) {
-        ivMultipleColumn.setImage(data.imageUrl, 0F)
+        ivMultipleColumn.setImageUrl(data.imageUrl, heightRatio = heightRatio)
 
         ivMultipleColumn.setOnClickListener {
             listener.onDisplayItemClicked(displayWidgetUiModel, data, parentPosition, adapterPosition)
