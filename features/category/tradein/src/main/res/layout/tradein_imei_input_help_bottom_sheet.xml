@@ -42,7 +42,7 @@
                 app:layout_constraintLeft_toRightOf="@id/close_button"
                 app:layout_constraintTop_toTopOf="@id/close_button"
                 app:layout_constraintBottom_toBottomOf="@id/close_button"
-                android:text="@string/tradein_terms_and_conditions"
+                android:text="@string/tradein_check_imei"
                 />
 
             <com.tokopedia.unifyprinciples.Typography
