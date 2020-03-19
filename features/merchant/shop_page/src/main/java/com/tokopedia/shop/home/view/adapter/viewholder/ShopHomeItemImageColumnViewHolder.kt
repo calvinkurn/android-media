@@ -17,7 +17,7 @@ import com.tokopedia.unifycomponents.setImage
 class ShopHomeItemImageColumnViewHolder(
         itemView: View,
         val listener: ShopHomeDisplayWidgetListener,
-        val heightRatio: Float
+        private val heightRatio: Float
 ) : RecyclerView.ViewHolder(itemView) {
 
     private val ivMultipleColumn: ImageUnify = itemView.findViewById(R.id.ivMultipleColumn)
