@@ -75,7 +75,7 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
         quickEditStockQuantityEditor.apply {
             maxValue = MAXIMUM_STOCK
             minValue = MINIMUM_STOCK
-            (editText as EditText).setOnEditorActionListener { _, actionId, _ ->
+            editText.setOnEditorActionListener { _, actionId, _ ->
                 if(actionId == EditorInfo.IME_ACTION_DONE){
                     quickEditStockQuantityEditor.clearFocus()
                     val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

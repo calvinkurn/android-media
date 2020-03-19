@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/product_manage_white">
+    android:background="@android:color/white">
 
     <com.tokopedia.header.HeaderUnify
         android:id="@+id/filterSearchHeader"
@@ -18,7 +18,7 @@
         android:layout_height="@dimen/dp_1"
         app:layout_constraintTop_toBottomOf="@id/filterSearchHeader"/>
 
-    <com.tokopedia.design.text.SearchInputView
+    <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/filterSearchBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,8 +30,6 @@
         android:textColorHint="@android:color/darker_gray"
         android:textSize="@dimen/sp_16"
         android:visibility="gone"
-        app:siv_search_hint="@string/filter_search_bar"
-        app:siv_search_icon="@drawable/ic_search_bar"
         app:layout_constraintTop_toBottomOf="@id/header_divider"/>
 
     <ImageView
@@ -40,10 +38,10 @@
         android:layout_height="wrap_content"
         android:src="@drawable/unify_globalerrors_404"
         android:visibility="gone"
+        android:layout_marginTop="@dimen/layout_lvl5"
         app:layout_constraintTop_toBottomOf="@id/filterSearchBar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/filterSearchErrorText"
@@ -74,7 +72,7 @@
         android:id="@+id/btn_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/product_manage_white"
+        android:background="@android:color/white"
         android:paddingTop="@dimen/layout_lvl2"
         android:paddingBottom="@dimen/layout_lvl2"
         app:layout_constraintBottom_toBottomOf="parent">

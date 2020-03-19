@@ -11,11 +11,11 @@ class FilterMapper {
         fun mapToRequestParam(filterOptions: List<FilterOption>): List<ProductListParam> {
             return filterOptions.map { filter ->
                 when (filter) {
-                    is FilterByCategory -> ProductListParam(filter.id, "${filter.categoryIds}")
-                    is FilterByMenu -> ProductListParam(filter.id, "${filter.menuIds}")
-                    is FilterByCondition -> ProductListParam(filter.id, VALUE_TRUE)
-                    is FilterByPage -> ProductListParam(filter.id, filter.page.toString())
-                    is FilterByKeyword -> ProductListParam(filter.id, filter.keyword)
+                    is FilterByCategory -> ProductListParam(filter.id, filter.categoryIds)
+                    is FilterByMenu -> ProductListParam(filter.id, filter.menuIds)
+                    is FilterByCondition -> ProductListParam(filter.id, listOf(VALUE_TRUE))
+                    is FilterByPage -> ProductListParam(filter.id, listOf(filter.page.toString()))
+                    is FilterByKeyword -> ProductListParam(filter.id, listOf(filter.keyword))
                 }
             }
         }

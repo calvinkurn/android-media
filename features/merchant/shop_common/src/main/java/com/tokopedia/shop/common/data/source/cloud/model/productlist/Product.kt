@@ -13,6 +13,8 @@ data class Product(
     val stock: Int?,
     @SerializedName("status")
     val status: ProductStatus?,
+    @SerializedName("cashback")
+    val cashback: Int,
     @SerializedName("featured")
     val featured: Int = 0,
     @SerializedName("isVariant")
