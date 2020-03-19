@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -16,6 +15,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
@@ -121,7 +121,8 @@ class StockReminderFragment: BaseDaggerFragment() {
         qeStock.apply {
             (editText as EditText).setOnEditorActionListener { _, actionId, _ ->
                 if(actionId == EditorInfo.IME_ACTION_DONE) {
-                    hideSoftKeyboard()
+                    qeStock.clearFocus()
+                    KeyboardHandler.DropKeyboard(activity, qeStock)
                 }
                 true
             }
@@ -190,12 +191,6 @@ class StockReminderFragment: BaseDaggerFragment() {
         resultIntent.putExtra(EXTRA_THRESHOLD, threshold)
         activity?.setResult(Activity.RESULT_OK, resultIntent)
         activity?.finish()
-    }
-
-    private fun hideSoftKeyboard() {
-        qeStock.clearFocus()
-        val inputMethodManager = activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(qeStock.windowToken, 0)
     }
 
     private fun getStockReminder() {
