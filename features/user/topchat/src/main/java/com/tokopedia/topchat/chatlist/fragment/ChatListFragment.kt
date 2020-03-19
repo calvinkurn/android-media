@@ -408,6 +408,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
             }
             val intent = RouteManager.getIntent(it, ApplinkConst.TOPCHAT, element.msgId)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+            intent.putExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, itemPosition)
             this@ChatListFragment.startActivityForResult(intent, OPEN_DETAIL_MESSAGE)
             it.overridePendingTransition(0, 0)
         }
@@ -538,6 +539,8 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
                 image = CHAT_BUYER_EMPTY
                 title = it.getString(R.string.empty_chat_read_all_title)
                 subtitle = ""
+                ctaText = ""
+                ctaApplink = ""
             }
         }
 
