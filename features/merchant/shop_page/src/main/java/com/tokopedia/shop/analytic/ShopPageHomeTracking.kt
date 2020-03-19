@@ -6,6 +6,11 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
+/*
+Shop Page Home Revamp
+Data layer docs
+https://docs.google.com/spreadsheets/d/1l91ritx5rj-RJzcTNVXnMTcOp3sWZz6O2v__nfV64Co/edit#gid=306885993
+ */
 
 class ShopPageHomeTracking(
         trackingQueue: TrackingQueue
