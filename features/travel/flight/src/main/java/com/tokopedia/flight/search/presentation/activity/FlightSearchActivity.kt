@@ -47,7 +47,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
 
     private lateinit var remoteConfig: RemoteConfig
 
-    private lateinit var coachMarkCache : FlightSearchCache
+    private lateinit var coachMarkCache: FlightSearchCache
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initializeDataFromExtras()
@@ -247,15 +247,14 @@ open class FlightSearchActivity : BaseFlightActivity(),
                 if (coachMark.isAdded && coachMark.isVisible) {
                     coachMark.dismiss()
                 }
+                coachMarkCache.setSearchCoachMarkIsShowed()
             }, DELAY_THREE_SECONDS)
-/*            coachMark.onDismiss(object : DialogInterface {
-                override fun dismiss() {
-                    coachMarkCache.setSearchCoachMarkIsShowed()
-                }
-
-                override fun cancel() {}
-
-            })*/
+            coachMark.onFinishListener = {
+                coachMarkCache.setSearchCoachMarkIsShowed()
+            }
+            coachMark.overlayOnClickListener = ({
+                coachMarkCache.setSearchCoachMarkIsShowed()
+            })
         }
     }
 
