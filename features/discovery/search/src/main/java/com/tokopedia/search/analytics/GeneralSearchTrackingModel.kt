@@ -1,9 +1,8 @@
 package com.tokopedia.search.analytics
 
 data class GeneralSearchTrackingModel(
-        val keyword: String = "",
-        val treatment: String = "",
-        val response: String = "",
+        val eventLabel: String = "",
         val isResultFound: Boolean = false,
-        val category: Map<String, String> = mapOf()
+        val categoryMapping: Map<String, String> = mapOf(),
+        val relatedKeyword: String = ""
 )

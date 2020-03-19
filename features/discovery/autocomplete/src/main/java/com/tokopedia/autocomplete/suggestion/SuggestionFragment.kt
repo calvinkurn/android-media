@@ -17,6 +17,7 @@ import com.tokopedia.autocomplete.analytics.AppScreen
 import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.suggestion.di.DaggerSuggestionComponent
 import com.tokopedia.autocomplete.suggestion.di.SuggestionComponent
+import com.tokopedia.autocomplete.util.getModifiedApplink
 import com.tokopedia.discovery.common.model.SearchParameter
 import kotlinx.android.synthetic.main.fragment_suggestion.*
 import javax.inject.Inject
@@ -134,7 +135,8 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, Sugges
 
     override fun route(applink: String) {
         activity?.let {
-            RouteManager.route(it, applink)
+            val modifiedApplink = getModifiedApplink(applink, searchParameter)
+            RouteManager.route(it, modifiedApplink)
         }
     }
 
