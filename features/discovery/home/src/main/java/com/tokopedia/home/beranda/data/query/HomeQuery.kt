@@ -73,6 +73,7 @@ object HomeQuery{
               header {
                 id
                 name
+                subtitle
                 url
                 applink
                 serverTime
