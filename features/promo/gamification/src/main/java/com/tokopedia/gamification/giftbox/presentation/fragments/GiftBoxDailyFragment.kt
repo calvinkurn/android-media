@@ -130,7 +130,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         viewModel.giftBoxLiveData.observe(viewLifecycleOwner, Observer {
             when (it.status) {
                 LiveDataResult.STATUS.SUCCESS -> {
-                    hideLoader()
                     if (it.data != null) {
                         val state = it.data.gamiLuckyHome.tokensUser.state
                         when (state) {
@@ -138,14 +137,19 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                 renderGiftBoxActive(it.data)
                             }
                             TokenUserState.EMPTY -> {
+                                hideLoader()
                             }
                             TokenUserState.INACTIVE -> {
+                                hideLoader()
                             }
                             TokenUserState.EXPIRED -> {
+                                hideLoader()
                             }
                             TokenUserState.NON_LOGIN -> {
+                                hideLoader()
                             }
                             else -> {
+                                hideLoader()
                                 renderGiftBoxError()
                             }
                         }
@@ -161,11 +165,12 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             }
         })
         viewModel.rewardLiveData.observe(viewLifecycleOwner, Observer {
-            when(it.status){
-                LiveDataResult.STATUS.SUCCESS->{
+            when (it.status) {
+                LiveDataResult.STATUS.SUCCESS -> {
                     giftBoxDailyView.handleTapOnGiftBox()
                 }
-                LiveDataResult.STATUS.ERROR->{}
+                LiveDataResult.STATUS.ERROR -> {
+                }
             }
         })
 
@@ -174,7 +179,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         }
     }
 
-    fun showRewardMessageDescription():Animator {
+    fun showRewardMessageDescription(): Animator {
         val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
         val alphaAnim = ObjectAnimator.ofPropertyValuesHolder(llRewardMessage, alphaProp)
         alphaAnim.duration = 200L
@@ -204,13 +209,13 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         //set prize list
         entity.gamiLuckyHome.prizeList?.forEach {
             if (it.isSpecial) {
-                prizeViewLarge.setData(it.imageURL,it.text)
+                prizeViewLarge.setData(it.imageURL, it.text)
                 prizeViewLarge.visibility = View.VISIBLE
             } else {
-                if(prizeViewSmallFirst.tvTitle.text.isNullOrEmpty()){
+                if (prizeViewSmallFirst.tvTitle.text.isNullOrEmpty()) {
                     prizeViewSmallFirst.setData(it.imageURL, it.text)
                     prizeViewSmallFirst.visibility = View.VISIBLE
-                }else {
+                } else {
                     prizeViewSmallSecond.setData(it.imageURL, it.text)
                     prizeViewSmallSecond.visibility = View.VISIBLE
                 }
@@ -233,20 +238,30 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
     fun fadeInActiveStateViews() {
-        val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
-        val tapHintAnim = ObjectAnimator.ofPropertyValuesHolder(tvTapHint, alphaProp)
-        val giftBoxAnim = ObjectAnimator.ofPropertyValuesHolder(giftBoxDailyView, alphaProp)
-        val prizeListContainerAnim = ObjectAnimator.ofPropertyValuesHolder(llBenefits, alphaProp)
+        giftBoxDailyView.loadFiles(imageCallback = {
+            if (it) {
+                hideLoader()
 
-        val animatorSet = AnimatorSet()
-        animatorSet.playTogether(tapHintAnim, giftBoxAnim, prizeListContainerAnim)
-        animatorSet.duration = FADE_IN_DURATION
+                val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
+                val tapHintAnim = ObjectAnimator.ofPropertyValuesHolder(tvTapHint, alphaProp)
+                val giftBoxAnim = ObjectAnimator.ofPropertyValuesHolder(giftBoxDailyView, alphaProp)
+                val prizeListContainerAnim = ObjectAnimator.ofPropertyValuesHolder(llBenefits, alphaProp)
+
+                val animatorSet = AnimatorSet()
+                animatorSet.playTogether(tapHintAnim, giftBoxAnim, prizeListContainerAnim)
+                animatorSet.duration = FADE_IN_DURATION
 
 
-        animatorSet.addListener(onEnd = {
-            giftBoxDailyView.startInitialAnimation()
+                animatorSet.addListener(onEnd = {
+                    giftBoxDailyView.startInitialAnimation()
+                })
+                animatorSet.start()
+            } else {
+                //todo Rahul Show some error because resources are not loaded
+            }
         })
-        animatorSet.start()
+
+
     }
 
     fun renderGiftBoxEmpty() {}

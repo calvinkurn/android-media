@@ -2,6 +2,7 @@ package com.tokopedia.gamification.giftbox.presentation.views
 
 import android.animation.*
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -10,10 +11,15 @@ import android.view.animation.AccelerateInterpolator
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.Companion.NEGATIVE_DELAY_FOR_LARGE_REWARD_ANIM
+import java.util.concurrent.atomic.AtomicInteger
 
 open class GiftBoxDailyView : FrameLayout {
 
@@ -26,6 +32,8 @@ open class GiftBoxDailyView : FrameLayout {
     var initialBounceAnimatorSet: AnimatorSet? = null
     var giftBoxState: GiftBoxState = GiftBoxState.CLOSED
 
+    val TOTAL_ASYNC_IMAGES = 2
+    var imagesLoaded = AtomicInteger(0)
     val GIFT_BOX_START_DELAY = 300L
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
@@ -96,9 +104,48 @@ open class GiftBoxDailyView : FrameLayout {
 
     }
 
-    open fun startInitialAnimation(): Animator? {
+    fun loadFiles(imageCallback: ((isLoaded: Boolean) -> Unit)) {
+        Glide.with(this)
+                .load(R.drawable.gf_ic_lid_frame_0)
+                .dontAnimate()
+                .addListener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                        imageCallback.invoke(false)
+                        return false
+                    }
 
-        loadGifFirstFrame(imageGiftBoxLid)
+                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        val count = imagesLoaded.incrementAndGet()
+                        if (count == TOTAL_ASYNC_IMAGES) {
+                            imageCallback.invoke(true)
+                        }
+                        return false
+                    }
+                })
+                .into(imageGiftBoxLid)
+
+        Glide.with(this)
+                .load(R.drawable.gf_ic_gift_box)
+                .dontAnimate()
+                .addListener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                        imageCallback.invoke(false)
+                        return false
+                    }
+
+                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        val count = imagesLoaded.incrementAndGet()
+                        if (count == TOTAL_ASYNC_IMAGES) {
+                            imageCallback.invoke(true)
+                        }
+                        return false
+                    }
+                })
+                .into(imageBoxFront)
+
+    }
+
+    open fun startInitialAnimation(): Animator? {
 
         val bounceAnimation = bouncingAnimation(fmGiftBox)
         val idleAnimation = idleAnimation(fmGiftBox)
