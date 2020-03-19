@@ -90,7 +90,8 @@ class ProductViewHolder(
     }
 
     private fun showStockHintImage(product: ProductViewModel) {
-        itemView.imageStockInformation.showWithCondition(product.isEmpty())
+        itemView.imageStockInformation
+            .showWithCondition(product.isEmpty() && product.isNotViolation())
     }
 
     private fun showProductImage(product: ProductViewModel) {

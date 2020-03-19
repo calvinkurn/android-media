@@ -29,5 +29,5 @@ data class ProductViewModel(
     fun isInactive(): Boolean = status == ProductStatus.INACTIVE
     fun isViolation(): Boolean = status == ProductStatus.VIOLATION
     fun isNotViolation(): Boolean = status != ProductStatus.VIOLATION
-    fun isEmpty(): Boolean = status == ProductStatus.EMPTY
+    fun isEmpty(): Boolean = status == ProductStatus.EMPTY || stock == 0
 }
