@@ -22,5 +22,19 @@ class OrderSummaryPageEnhanceECommerce {
         private const val KEY_ATTRIBUTION = "dimension38"
         private const val KEY_DISCOUNTED_PRICE = "dimension53"
         private const val KEY_WAREHOUSE_ID = "dimension56"
+        private const val KEY_PRODUCT_WEIGHT = "dimension48"
+        private const val KEY_PROMO_CODE = "dimension49"
+        private const val KEY_PROMO_DETAILS = "dimension59"
+        private const val KEY_CART_ID = "dimension45"
+        private const val KEY_BUYER_ADDRESS_ID = "dimension11"
+        private const val KEY_SP_ID = "dimension14"
+        private const val KEY_COD_FLAG = "dimension10"
+        private const val KEY_TOKOPEDIA_CORNER_FLAG = "dimension57"
+        private const val KEY_IS_FULFILLMENT = "dimension58"
+        private const val KEY_SHOP_ID = "dimension79"
+        private const val KEY_SHOP_NAME = "dimension80"
+        private const val KEY_SHOP_TYPE = "dimension81" //marketplace or official_store or gold_merchant
+        private const val KEY_CATEGORY_ID = "dimension82"
+        private const val KEY_PRODUCT_TYPE = "dimension83"
     }
 }
