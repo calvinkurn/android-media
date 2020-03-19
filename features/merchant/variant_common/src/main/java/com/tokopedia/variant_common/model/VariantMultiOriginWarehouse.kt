@@ -56,11 +56,11 @@ data class WarehouseInfo(
         @Expose
         val geoLocation: String = ""
 ) {
-    fun getOrigin(): String? {
-        return if (districtId.isNotBlank() && (postalCode.isNotBlank() || geoLocation.isNotBlank())) {
-            arrayOf(districtId, postalCode, geoLocation).joinToString("|")
-        } else null
-    }
+        fun getOrigin(): String? {
+                return if (districtId.isNotBlank() && (postalCode.isNotBlank() || geoLocation.isNotBlank())) {
+                        arrayOf(districtId, postalCode, geoLocation).joinToString("|")
+                } else null
+        }
 }
 
 data class MultiOriginData(
