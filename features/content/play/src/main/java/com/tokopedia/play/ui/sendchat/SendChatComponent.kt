@@ -35,7 +35,19 @@ open class SendChatComponent(
                             ScreenStateEvent.Init -> uiView.hide()
                             is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.channelType.isLive) uiView.show() else uiView.hide()
                             is ScreenStateEvent.ComposeChat -> uiView.focusChatForm(shouldFocus = true, forceChangeKeyboardState = true)
-                            is ScreenStateEvent.BottomInsetsChanged -> uiView.focusChatForm(it.insetsViewMap[BottomInsetsType.Keyboard] is BottomInsetsState.Shown)
+                            is ScreenStateEvent.BottomInsetsChanged -> {
+                                /**
+                                 * If channel is Live && NO BottomSheet is shown -> show()
+                                 * else -> hide()
+                                 */
+                                if (it.stateHelper.channelType.isLive &&
+                                        it.insetsViewMap[BottomInsetsType.ProductSheet]?.isShown == false &&
+                                        it.insetsViewMap[BottomInsetsType.VariantSheet]?.isShown == false) {
+                                    uiView.show()
+                                } else uiView.hide()
+
+                                uiView.focusChatForm(it.insetsViewMap[BottomInsetsType.Keyboard] is BottomInsetsState.Shown)
+                            }
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
                         }
                     }

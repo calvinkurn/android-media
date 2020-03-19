@@ -34,7 +34,18 @@ open class QuickReplyComponent(
                         when (it) {
                             ScreenStateEvent.Init -> uiView.hide()
                             is ScreenStateEvent.SetQuickReply -> uiView.setQuickReply(it.quickReply)
-                            is ScreenStateEvent.BottomInsetsChanged -> if (it.insetsViewMap[BottomInsetsType.Keyboard] is BottomInsetsState.Shown) uiView.show() else uiView.hide()
+                            is ScreenStateEvent.BottomInsetsChanged -> {
+                                /**
+                                 * If channel is Live && NO BottomSheet is shown && Keyboard is shown -> show()
+                                 * else -> hide()
+                                 */
+                                if (it.stateHelper.channelType.isLive &&
+                                        it.insetsViewMap[BottomInsetsType.ProductSheet]?.isShown == false &&
+                                        it.insetsViewMap[BottomInsetsType.VariantSheet]?.isShown == false &&
+                                        it.insetsViewMap[BottomInsetsType.Keyboard]?.isShown == true) {
+                                    uiView.show()
+                                } else uiView.hide()
+                            }
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
                         }
                     }

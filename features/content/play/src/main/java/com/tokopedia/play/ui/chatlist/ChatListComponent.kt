@@ -8,6 +8,7 @@ import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
+import com.tokopedia.play.view.type.BottomInsetsType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -38,6 +39,17 @@ open class ChatListComponent(
                             is ScreenStateEvent.IncomingChat -> uiView.showChat(it.chat)
                             is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.channelType.isLive) uiView.show() else uiView.hide()
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
+                            is ScreenStateEvent.BottomInsetsChanged -> {
+                                /**
+                                 * If channel is Live && NO BottomSheet is shown -> show()
+                                 * else -> hide()
+                                 */
+                                if (it.stateHelper.channelType.isLive &&
+                                        it.insetsViewMap[BottomInsetsType.ProductSheet]?.isShown == false &&
+                                        it.insetsViewMap[BottomInsetsType.VariantSheet]?.isShown == false) {
+                                    uiView.show()
+                                } else uiView.hide()
+                            }
                         }
                     }
         }
