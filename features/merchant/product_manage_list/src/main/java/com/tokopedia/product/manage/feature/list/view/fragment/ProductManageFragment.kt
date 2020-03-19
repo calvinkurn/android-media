@@ -130,7 +130,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_product_manage.*
-import okhttp3.Route
 import java.net.UnknownHostException
 import java.util.*
 import java.util.concurrent.TimeoutException
@@ -939,7 +938,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                             dialogFeaturedProduct?.setPrimaryCTAClickListener { dialogFeaturedProduct?.dismiss() }
                             dialogFeaturedProduct?.setSecondaryCTAClickListener {
                                 dialogFeaturedProduct?.dismiss()
-                                viewModel.getProductList(userSession.shopId, listOf(FilterOption.FilterByCondition.FeaturedOnly), isRefresh = true)
+                                val filterOptionWrapper = FilterOptionWrapper(null, listOf(FilterOption.FilterByCondition.FeaturedOnly))
+                                viewModel.setSelectedFilterAndSort(filterOptionWrapper)
                             }
                             dialogFeaturedProduct?.show()
                         } else if(productListFeaturedOnlySize == 0) {
