@@ -105,15 +105,11 @@ public interface ShipmentContract {
 
         void renderErrorCheckPromoShipmentData(String message);
 
-        void renderCheckPromoStackingShipmentDataSuccess(ResponseGetPromoStackUiModel responseGetPromoStackUiModel);
-
         void renderEditAddressSuccess(String latitude, String longitude);
 
         void renderChangeAddressSuccess();
 
         void renderChangeAddressFailed();
-
-        void renderCancelAutoApplyCouponSuccess(String variant);
 
         void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition, boolean isTradeInDropOff);
 
@@ -154,15 +150,11 @@ public interface ShipmentContract {
 
         void resetCourier(int position);
 
-        Promo generateCheckPromoFirstStepParam();
-
         ValidateUsePromoRequest generateValidateUsePromoRequest();
 
         PromoRequest generateCouponListRecommendationRequest();
 
         void onClashCheckPromo(ClashingInfoDetailUiModel clashingInfoDetailUiModel, String type);
-
-        void onSuccessCheckPromoFirstStepAfterClash(ResponseGetPromoStackUiModel responseGetPromoStackUiModel, String promoCode);
 
         void onSuccessCheckPromoFirstStep(ResponseGetPromoStackUiModel promoData);
 
@@ -281,20 +273,14 @@ public interface ShipmentContract {
 
         void processReloadCheckoutPageBecauseOfError(boolean isOneClickShipment, boolean isTradeIn, String deviceId);
 
-        void processCheckout(CheckPromoParam checkPromoParam, boolean hasInsurance,
+        void processCheckout(boolean hasInsurance,
                              boolean isOneClickShipment, boolean isTradeIn,
                              boolean isTradeInDropOff, String deviceId,
                              String cornerId, String leasingId);
 
-        void checkPromoFinalStackShipment(Promo promo);
-
         void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest);
 
-        void processCheckPromoStackingLogisticPromo(int cartPosition, String cartString, String code);
-
         void doValidateuseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest);
-
-        void processCheckPromoStackingCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast);
 
         void processCheckPromoCheckoutCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast);
 
@@ -369,7 +355,7 @@ public interface ShipmentContract {
 
         CodModel getCodData();
 
-        void proceedCodCheckout(CheckPromoParam checkPromoParam, boolean hasInsurance, boolean isOneClickShipment, boolean isTradeIn, String deviceId, String leasingId);
+        void proceedCodCheckout(boolean hasInsurance, boolean isOneClickShipment, boolean isTradeIn, String deviceId, String leasingId);
 
         Token getKeroToken();
 
@@ -382,13 +368,13 @@ public interface ShipmentContract {
 
         List<DataCheckoutRequest> updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(String cartString, String shippingDuration, String shippingPrice, String courierName);
 
-        List<DataCheckoutRequest> updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(PromoStackingData promoStackingData, List<ShipmentCartItemModel> shipmentCartItemModels);
+        List<DataCheckoutRequest> updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(List<ShipmentCartItemModel> shipmentCartItemModels);
 
         boolean isIneligbilePromoDialogEnabled();
 
         void processSubmitHelpTicket(CheckoutData checkoutData);
 
-        CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, boolean hasInsurance, CheckPromoParam checkPromoParam, int isDonation, String leasingId);
+        CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, boolean hasInsurance, int isDonation, String leasingId);
 
         void getInsuranceTechCartOnCheckout();
 

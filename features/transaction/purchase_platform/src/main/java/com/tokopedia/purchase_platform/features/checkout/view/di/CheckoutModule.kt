@@ -131,8 +131,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  getInsuranceCartUseCase: GetInsuranceCartUseCase,
                                  shipmentDataConverter: ShipmentDataConverter,
                                  validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase): ShipmentContract.Presenter {
-        return ShipmentPresenter(checkPromoStackingCodeFinalUseCase,
-                checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
+        return ShipmentPresenter(compositeSubscription,
                 checkoutUseCase, getShipmentAddressFormUseCase,
                 getShipmentAddressFormOneClickShipementUseCase,
                 editAddressUseCase, changeShippingAddressUseCase,

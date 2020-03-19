@@ -16,10 +16,6 @@ import java.util.List;
 
 public interface ShipmentAdapterActionListener {
 
-    void onVoucherMerchantPromoClicked(Object object);
-
-    void onCancelVoucherMerchantClicked(String promoMerchantCode, int position, boolean ignoreAPIResponse);
-
     void onCancelVoucherLogisticClicked(String pslCode, int position);
 
     void onDataEnableToCheckout();
@@ -50,8 +46,6 @@ public interface ShipmentAdapterActionListener {
     void onFinishChoosingShipment();
 
     void updateCheckoutRequest(List<DataCheckoutRequest> checkoutRequestData);
-
-    void onRemovePromoCode(String promoCode);
 
     void resetTotalPrice();
 
