@@ -21,6 +21,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
@@ -1167,7 +1168,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             height + marginLp.bottomMargin + marginLp.topMargin
         }
 
-        val statusBarHeight = view?.let { getStatusBarHeight(it.context) } ?: 0
+        val statusBarHeight = view?.let { getStatusBarHeight(it.context) }.orZero()
         val requiredMargin = offset16
 
         val interactionTopmostY = getScreenHeight() - (estimatedKeyboardHeight + sendChatViewTotalHeight + chatListViewTotalHeight + quickReplyViewTotalHeight + statusBarHeight + requiredMargin)
