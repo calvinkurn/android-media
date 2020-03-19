@@ -2960,6 +2960,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         onNeedUpdateViewItem(shipmentAdapter.getPromoCheckoutPosition());
     }
 
+    private void doResetButtonPromoCheckout() {
+        shipmentAdapter.resetPromoCheckoutData();
+        onNeedUpdateViewItem(shipmentAdapter.getPromoCheckoutPosition());
+    }
+
     @Override
     public void onSendAnalyticsClickPromoCheckout(Boolean isApplied, List<String> listAllPromoCodes) {
         PromoRevampAnalytics.INSTANCE.eventCheckoutClickPromoSection(listAllPromoCodes, isApplied);

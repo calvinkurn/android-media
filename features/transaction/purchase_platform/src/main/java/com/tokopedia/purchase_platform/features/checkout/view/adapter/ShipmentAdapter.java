@@ -1294,7 +1294,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void updatePromoCheckoutData(PromoUiModel promoUiModel) {
-        LastApplyUiMapper.Companion.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel);
-        notifyDataSetChanged();
+        lastApplyUiModel = LastApplyUiMapper.Companion.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel);
+    }
+
+    public void resetPromoCheckoutData() {
+        lastApplyUiModel = new LastApplyUiModel();
     }
 }
