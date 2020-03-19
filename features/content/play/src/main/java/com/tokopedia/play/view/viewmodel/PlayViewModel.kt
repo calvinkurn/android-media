@@ -253,15 +253,15 @@ class PlayViewModel @Inject constructor(
 
     //region bottom insets
     fun onKeyboardShown(estimatedKeyboardHeight: Int) {
-        val isLive = _observableVideoStream.value?.channelType?.isLive == true
+        val isLive = channelType.isLive
         val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
 
         insetsMap[BottomInsetsType.Keyboard] =
                 if (isLive) BottomInsetsState.Shown(
                         estimatedInsetsHeight = estimatedKeyboardHeight,
-                        isPreviousStateSame = insetsMap[BottomInsetsType.Keyboard]?.isHidden == false
+                        isPreviousStateSame = insetsMap[BottomInsetsType.Keyboard]?.isShown == true
                 ) else BottomInsetsState.Hidden(
-                        isPreviousStateSame = insetsMap[BottomInsetsType.Keyboard]?.isShown == false
+                        isPreviousStateSame = insetsMap[BottomInsetsType.Keyboard]?.isHidden == true
                 )
 
         _observableBottomInsetsState.value = insetsMap
@@ -272,7 +272,7 @@ class PlayViewModel @Inject constructor(
 
         insetsMap[BottomInsetsType.Keyboard] =
                 BottomInsetsState.Hidden(
-                        isPreviousStateSame = insetsMap[BottomInsetsType.Keyboard]?.isShown == false
+                        isPreviousStateSame = insetsMap[BottomInsetsType.Keyboard]?.isHidden == true
                 )
 
         _observableBottomInsetsState.value = insetsMap
@@ -284,7 +284,7 @@ class PlayViewModel @Inject constructor(
         insetsMap[BottomInsetsType.ProductSheet] =
                 BottomInsetsState.Shown(
                         estimatedInsetsHeight = estimatedProductSheetHeight,
-                        isPreviousStateSame = insetsMap[BottomInsetsType.ProductSheet]?.isHidden == false
+                        isPreviousStateSame = insetsMap[BottomInsetsType.ProductSheet]?.isShown == true
                 )
 
         _observableBottomInsetsState.value = insetsMap
@@ -295,7 +295,7 @@ class PlayViewModel @Inject constructor(
 
         insetsMap[BottomInsetsType.ProductSheet] =
                 BottomInsetsState.Hidden(
-                        isPreviousStateSame = insetsMap[BottomInsetsType.ProductSheet]?.isShown == false
+                        isPreviousStateSame = insetsMap[BottomInsetsType.ProductSheet]?.isHidden == true
                 )
 
         _observableBottomInsetsState.value = insetsMap
@@ -307,7 +307,7 @@ class PlayViewModel @Inject constructor(
         insetsMap[BottomInsetsType.VariantSheet] =
                 BottomInsetsState.Shown(
                         estimatedInsetsHeight = estimatedProductSheetHeight,
-                        isPreviousStateSame = insetsMap[BottomInsetsType.VariantSheet]?.isHidden == false
+                        isPreviousStateSame = insetsMap[BottomInsetsType.VariantSheet]?.isShown == true
                 )
 
         _observableBottomInsetsState.value = insetsMap
@@ -319,7 +319,7 @@ class PlayViewModel @Inject constructor(
 
         insetsMap[BottomInsetsType.VariantSheet] =
                 BottomInsetsState.Hidden(
-                        isPreviousStateSame = insetsMap[BottomInsetsType.VariantSheet]?.isShown == false
+                        isPreviousStateSame = insetsMap[BottomInsetsType.VariantSheet]?.isHidden == true
                 )
 
         _observableBottomInsetsState.value = insetsMap

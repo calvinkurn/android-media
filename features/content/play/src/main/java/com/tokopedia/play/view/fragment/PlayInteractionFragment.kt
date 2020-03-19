@@ -116,6 +116,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     
     private val offset24 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl5) }
     private val offset16 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl4) }
+    private val offset12 by lazy { resources.getDimensionPixelOffset(R.dimen.play_offset_12) }
     private val offset8 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl3) }
     private val offset4 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl2) }
 
@@ -783,7 +784,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
             constraintSet.apply {
                 connect(id, ConstraintSet.START, sizeContainerComponentId, ConstraintSet.START, offset16)
-                connect(id, ConstraintSet.TOP, toolbarComponentId, ConstraintSet.BOTTOM, offset16)
+                connect(id, ConstraintSet.TOP, toolbarComponentId, ConstraintSet.BOTTOM, offset12)
             }
 
             constraintSet.applyTo(container)
