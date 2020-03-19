@@ -93,7 +93,6 @@ object ProductDetailErrorHelper {
         val weblink = convertToWeblink(deeplinkUrl)
         if (!links.contains(weblink)) {
             Timber.w("P2#PDP_OPEN_DEEPLINK_ERROR#$weblink;errorCode=$errorCode")
-            Log.d("milhamj","\"P2#PDP_OPEN_DEEPLINK_ERROR#$weblink;errorCode=$errorCode\"")
             links.add(weblink)
 
             Handler().postDelayed({
