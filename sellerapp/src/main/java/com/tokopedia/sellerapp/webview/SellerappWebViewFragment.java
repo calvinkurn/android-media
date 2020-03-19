@@ -26,18 +26,9 @@ public class SellerappWebViewFragment extends BaseWebViewFragment {
     public static SellerappWebViewFragment newInstance(String url) {
         SellerappWebViewFragment sellerappWebViewFragment = new SellerappWebViewFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(PARAM_BUNDLE_URL, getEncodedUrl(url));
+        bundle.putString(PARAM_BUNDLE_URL, url);
         sellerappWebViewFragment.setArguments(bundle);
         return sellerappWebViewFragment;
-    }
-
-    private static String getEncodedUrl(String url) {
-        try {
-            return URLEncoder.encode(url, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return url;
-        }
     }
 
     @Override
@@ -56,10 +47,20 @@ public class SellerappWebViewFragment extends BaseWebViewFragment {
     protected String getUrl() {
         if (isTokopediaUrl) {
             UserSessionInterface usersession = new UserSession(getActivity());
-            return URLGenerator.generateURLSessionLogin(url,
+            return URLGenerator.generateURLSessionLogin(
+                    getEncodedUrl(url),
                     usersession.getDeviceId(),
                     usersession.getUserId());
         } else {
+            return url;
+        }
+    }
+
+    private String getEncodedUrl(String url) {
+        try {
+            return URLEncoder.encode(url, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
             return url;
         }
     }
