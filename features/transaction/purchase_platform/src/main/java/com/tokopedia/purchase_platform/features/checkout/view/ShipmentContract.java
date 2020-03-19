@@ -2,8 +2,6 @@ package com.tokopedia.purchase_platform.features.checkout.view;
 
 import android.app.Activity;
 
-import androidx.annotation.Nullable;
-
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
@@ -16,12 +14,6 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoParam;
-import com.tokopedia.promocheckout.common.data.entity.request.Promo;
-import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
-import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel;
-import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
-import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.CheckoutRequest;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCheckoutRequest;
@@ -40,7 +32,6 @@ import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldAttri
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDonationModel;
-import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRecommendationRequest;
 import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest;
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoUiModel;
@@ -97,11 +88,7 @@ public interface ShipmentContract {
 
         void renderSubmitHelpTicketSuccess(SubmitTicketResult submitTicketResult);
 
-        void renderCheckPromoStackCodeFromCourierSuccess(ResponseGetPromoStackUiModel responseGetPromoStackUiModel, int itemPosition, boolean noToast);
-
         void renderPromoCheckoutFromCourierSuccess(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel, int itemPosition, boolean noToast);
-
-        void renderCheckPromoStackLogisticSuccess(ResponseGetPromoStackUiModel responseGetPromoStackUiModel, String promoCode);
 
         void renderErrorCheckPromoShipmentData(String message);
 
@@ -153,12 +140,6 @@ public interface ShipmentContract {
         ValidateUsePromoRequest generateValidateUsePromoRequest();
 
         PromoRequest generateCouponListRecommendationRequest();
-
-        void onClashCheckPromo(ClashingInfoDetailUiModel clashingInfoDetailUiModel, String type);
-
-        void onSuccessCheckPromoFirstStep(ResponseGetPromoStackUiModel promoData);
-
-        void onSuccessClearPromoStackAfterClash();
 
         void clearTotalBenefitPromoStacking();
 

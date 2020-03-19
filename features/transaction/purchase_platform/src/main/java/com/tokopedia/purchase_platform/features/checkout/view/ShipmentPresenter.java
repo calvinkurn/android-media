@@ -32,7 +32,6 @@ import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.network.utils.TKPDMapParam;
-import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoParam;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse;
@@ -904,10 +903,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                    getView().cancelAllCourierPromo();
                                                }
                                            } else {
-                                               // Todo: waiting backend to set promo benefit
-//                                               getView().renderCheckPromoStackingShipmentDataSuccess(responseGetPromoStack);
-//                                               getView().resetPromoBenefit();
-//                                               getView().setPromoBenefit(responseGetPromoStack.getPromoUiModel().getData().getBenefit().getSummaries());
+                                               getView().updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel());
                                                if (validateUsePromoRevampUiModel.getPromoUiModel().getMessageUiModel().getState().equals("red")) {
                                                    getView().showToastError(validateUsePromoRevampUiModel.getPromoUiModel().getMessageUiModel().getText());
                                                } else {
