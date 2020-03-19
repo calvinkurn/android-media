@@ -11,6 +11,7 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
         isAdult
         detail{
           id
+          name
         }
       }
       menu{

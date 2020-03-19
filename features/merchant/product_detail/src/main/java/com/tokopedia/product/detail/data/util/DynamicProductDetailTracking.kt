@@ -65,8 +65,7 @@ object DynamicProductDetailTracking {
 
             val categoryName = productInfo?.basic?.category?.detail?.map {
                 it.name
-            }?.joinToString("/")
-            categoryName.plus("/").plus(productInfo?.basic?.category?.id)
+            }?.joinToString("/",postfix ="/ ${productInfo?.basic?.category?.id}" ) ?: ""
 
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
                     ProductTrackingConstant.Tracking.KEY_EVENT, "addToCart",
@@ -90,7 +89,7 @@ object DynamicProductDetailTracking {
                             ProductTrackingConstant.Tracking.PRICE, productPrice,
                             ProductTrackingConstant.Tracking.BRAND, ProductTrackingConstant.Tracking.VALUE_NONE_OTHER,
                             ProductTrackingConstant.Tracking.CATEGORY, categoryName,
-                            ProductTrackingConstant.Tracking.VARIANT, "TODO",
+                            ProductTrackingConstant.Tracking.VARIANT, variantString,
                             ProductTrackingConstant.Tracking.QUANTITY, quantity,
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_79, shopId,
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_80, shopName,
