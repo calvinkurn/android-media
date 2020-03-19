@@ -202,11 +202,11 @@ public abstract class SellerRouterApplication extends MainApplication
         initializeDagger();
         initializeRemoteConfig();
         initResourceDownloadManager();
+        initIris();
     }
 
     private void initResourceDownloadManager() {
         (new DeferredResourceInitializer()).initializeResourceDownloadManager(context);
-        initIris();
     }
 
     private void initIris() {
