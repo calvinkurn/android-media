@@ -878,23 +878,23 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                        }
 
                                        @Override
-                                       public void onNext(ValidateUsePromoRevampUiModel responseGetPromoStack) {
+                                       public void onNext(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
                                            setCouponStateChanged(true);
-                                           if (!TextUtils.isEmpty(responseGetPromoStack.getPromoUiModel().getTickerInfoUiModel().getMessage())) {
+                                           if (!TextUtils.isEmpty(validateUsePromoRevampUiModel.getPromoUiModel().getTickerInfoUiModel().getMessage())) {
                                                if (tickerAnnouncementHolderData == null) {
                                                    setTickerAnnouncementHolderData(
                                                            new TickerAnnouncementHolderData(
-                                                                   String.valueOf(responseGetPromoStack.getPromoUiModel().getTickerInfoUiModel().getStatusCode()),
-                                                                   responseGetPromoStack.getPromoUiModel().getTickerInfoUiModel().getMessage())
+                                                                   String.valueOf(validateUsePromoRevampUiModel.getPromoUiModel().getTickerInfoUiModel().getStatusCode()),
+                                                                   validateUsePromoRevampUiModel.getPromoUiModel().getTickerInfoUiModel().getMessage())
                                                    );
                                                }
                                                getView().updateTickerAnnouncementMessage();
                                                analyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(tickerAnnouncementHolderData.getId());
                                            }
-                                           if (responseGetPromoStack.getStatus().equalsIgnoreCase("ERROR")) {
+                                           if (validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase("ERROR")) {
                                                String message = "";
-                                               if (responseGetPromoStack.getMessage().size() > 0) {
-                                                   message = responseGetPromoStack.getMessage().get(0);
+                                               if (validateUsePromoRevampUiModel.getMessage().size() > 0) {
+                                                   message = validateUsePromoRevampUiModel.getMessage().get(0);
                                                }
                                                if (getView() != null) {
                                                    getView().renderErrorCheckPromoShipmentData(message);
@@ -906,10 +906,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 //                                               getView().renderCheckPromoStackingShipmentDataSuccess(responseGetPromoStack);
 //                                               getView().resetPromoBenefit();
 //                                               getView().setPromoBenefit(responseGetPromoStack.getPromoUiModel().getData().getBenefit().getSummaries());
-                                               if (responseGetPromoStack.getPromoUiModel().getMessageUiModel().getState().equals("red")) {
-                                                   getView().showToastError(responseGetPromoStack.getPromoUiModel().getMessageUiModel().getText());
+                                               if (validateUsePromoRevampUiModel.getPromoUiModel().getMessageUiModel().getState().equals("red")) {
+                                                   getView().showToastError(validateUsePromoRevampUiModel.getPromoUiModel().getMessageUiModel().getText());
                                                } else {
-                                                   for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : responseGetPromoStack.getPromoUiModel().getVoucherOrderUiModels()) {
+                                                   for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
                                                        if (voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
                                                            getView().showToastError(voucherOrdersItemUiModel.getMessageUiModel().getText());
                                                            break;
@@ -918,7 +918,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                }
                                            }
 
-                                           ClashingInfoDetailUiModel clashingInfoDetailUiModel = responseGetPromoStack.getPromoUiModel().getClashingInfoDetailUiModel();
+                                           ClashingInfoDetailUiModel clashingInfoDetailUiModel = validateUsePromoRevampUiModel.getPromoUiModel().getClashingInfoDetailUiModel();
                                            if (clashingInfoDetailUiModel.getClashMessage().length() > 0 ||
                                                    clashingInfoDetailUiModel.getClashReason().length() > 0 ||
                                                    clashingInfoDetailUiModel.getOptions().size() > 0) {
@@ -1150,6 +1150,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                             @Override
                             public void onNext(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
+                                ShipmentPresenter.this.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel;
                                 setCouponStateChanged(true);
                                 if (getView() != null) {
 

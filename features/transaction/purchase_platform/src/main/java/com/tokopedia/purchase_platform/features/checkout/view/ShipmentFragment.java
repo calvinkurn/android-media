@@ -464,13 +464,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             onNeedUpdateViewItem(shipmentAdapter.getItemCount() - 1);
         }
 
-        // shipmentAdapter.addPromoStackingVoucherData(promoStackingData);
-        /*if (promoStackingData != null) {
-            if (promoStackingData.getState() != TickerPromoStackingCheckoutView.State.FAILED) {
-                onPromoGlobalTrackingImpression(promoStackingData);
-            }
-        }*/
-
         if (recipientAddressModel != null) {
             shipmentAdapter.addAddressShipmentData(recipientAddressModel);
         }
