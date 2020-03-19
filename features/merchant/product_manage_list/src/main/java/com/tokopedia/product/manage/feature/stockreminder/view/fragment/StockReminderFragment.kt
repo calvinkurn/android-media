@@ -148,6 +148,7 @@ class StockReminderFragment: BaseDaggerFragment() {
         }
 
         btnSaveReminder.setOnClickListener {
+            qeStock.clearFocus()
             if (swStockReminder.isChecked) {
                 if (threshold == 0) {
                     threshold = qeStock.getValue()
