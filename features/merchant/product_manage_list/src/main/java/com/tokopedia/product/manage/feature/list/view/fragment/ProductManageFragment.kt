@@ -22,6 +22,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -30,7 +31,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
-import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -135,7 +136,7 @@ import java.util.*
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 
-open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, ProductManageAdapterFactory>(),
+open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductManageAdapterFactory>(),
     BaseListCheckableAdapter.OnCheckableAdapterListener<ProductViewModel>,
     MerchantCommonBottomSheet.BottomSheetListener,
     BaseCheckableViewHolder.CheckableInteractionListener,
@@ -237,12 +238,12 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             val addProductMenu = subMenu.findItem(R.id.label_view_add_image)
             val importFromInstagramMenu = subMenu.findItem(R.id.label_view_import_from_instagram)
 
-            addProductMenu.setOnMenuItemClickListener { menuItem ->
+            addProductMenu.setOnMenuItemClickListener { _ ->
                 startActivity(ProductAddNameCategoryActivity.createInstance(activity))
                 true
             }
 
-            importFromInstagramMenu.setOnMenuItemClickListener { menuItem ->
+            importFromInstagramMenu.setOnMenuItemClickListener { _ ->
                 val intent = AddProductImagePickerBuilder.createPickerIntentInstagramImport(context)
                 startActivityForResult(intent, INSTAGRAM_SELECT_REQUEST_CODE)
                 false
@@ -291,13 +292,24 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     private fun setupSearchBar() {
-        searchInputView.clearFocus()
-        searchInputView.closeImageButton.setOnClickListener {
+        searchBar.clearFocus()
+
+        searchBar.searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                val keyword = searchBar.searchBarTextField.text.toString()
+                onSearchSubmitted(keyword)
+                return@setOnEditorActionListener true
+            }
+            false
+        }
+
+        searchBar.searchBarIcon.setOnClickListener {
             clearSearchBarInput()
-            allProductList.clear()
+            clearProductList()
             loadInitialData()
         }
-        searchInputView.setSearchHint(getString(R.string.product_manage_search_hint))
+
+        searchBar.searchBarPlaceholder = getString(R.string.product_manage_search_hint)
     }
 
     private fun setupBottomSheet() {
@@ -327,6 +339,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private fun clickStatusFilterTab(filter: FilterViewModel, viewHolder: FilterViewHolder) {
         val selectedFilter = filter.status
         val currentFilter = tabFilters.selectedFilter?.status
+        adapter.clearAllElements()
 
         if (selectedFilter == currentFilter) {
             showAllProducts()
@@ -334,24 +347,18 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         } else {
             tabFilters.resetAllFilter(viewHolder)
             tabFilters.setSelectedFilter(filter)
-            filterProductByStatus(allProductList, selectedFilter)
+            filterProductByStatus(selectedFilter)
         }
     }
 
     private fun showAllProducts() {
         val hasNextPage = allProductList.isNotEmpty()
-        renderList(emptyList())
-        renderList(allProductList, hasNextPage)
+        renderProductList(allProductList, hasNextPage)
     }
 
-    private fun filterProductByStatus(products: List<ProductViewModel>, status: ProductStatus?) {
-        val productList = products.filter {
-            it.status == status
-        }
-        val hasNextPage = productList.isNotEmpty()
-
-        renderList(emptyList())
-        renderList(productList, hasNextPage)
+    private fun filterProductByStatus(status: ProductStatus?, hasNextPage: Boolean = true) {
+        val productList = allProductList.filter { it.status == status }
+        renderProductList(productList, hasNextPage)
     }
 
     private fun renderCheckedView() {
@@ -405,21 +412,17 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     override fun loadData(page: Int) {
-        val keyword = searchInputView.searchText
+        val keyword = searchBar.searchBarTextField.text.toString()
         getProductList(page, keyword)
     }
 
-    override fun renderList(list: List<ProductViewModel>, hasNextPage: Boolean) {
-        super.renderList(list, hasNextPage)
+    private fun renderProductList(list: List<ProductViewModel>, hasNextPage: Boolean) {
+        renderList(list, hasNextPage)
         renderCheckedView()
     }
 
-    override fun onSearchSubmitted(text: String) {
+    private fun onSearchSubmitted(text: String) {
         getProductList(keyword = text, isRefresh = true)
-    }
-
-    override fun onSearchTextChanged(text: String?) {
-        // NO OP
     }
 
     private fun getProductList(page: Int = 1, keyword: String? = null, isRefresh: Boolean = false) {
@@ -452,13 +455,18 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     private fun showProductList(productList: List<ProductViewModel>) {
+        val hasNextPage = productList.isNotEmpty()
+
         if(tabFilters.isActive()) {
-            val selectedFilter = tabFilters.selectedFilter?.status
-            filterProductByStatus(allProductList, selectedFilter)
+            tabFilters.selectedFilter?.status?.let { status ->
+                adapter.clearAllElements()
+                filterProductByStatus(status, hasNextPage)
+            }
         } else {
-            val hasNextPage = productList.isNotEmpty()
-            renderList(productList, hasNextPage)
+            renderProductList(productList, hasNextPage)
         }
+
+        multiSelectContainer.showWithCondition(productList.isNotEmpty())
     }
 
     private fun showTabFilters() {
@@ -740,15 +748,14 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     override fun onSwipeRefresh() {
-        allProductList.clear()
-        clearSearchBarInput()
+        clearProductList()
         clearSelectedProduct()
         renderCheckedView()
         super.onSwipeRefresh()
     }
 
     private fun clearSearchBarInput() {
-        searchInputView.searchText = ""
+        searchBar.searchBarTextField.text.clear()
     }
 
     override fun onItemChecked(data: ProductViewModel, isChecked: Boolean) {
@@ -864,7 +871,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         val product = menu.product
         val productId = product.id
         val productName = product.title ?: ""
-        val menuTitle = getString(menu.title)
 
         when(menu) {
             is Preview -> {
@@ -1399,7 +1405,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     private fun clearProductList() {
-        renderList(emptyList())
+        adapter.clearAllElements()
         allProductList.clear()
     }
 

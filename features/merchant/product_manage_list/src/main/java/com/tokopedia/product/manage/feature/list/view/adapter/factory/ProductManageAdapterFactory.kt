@@ -6,9 +6,9 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseListCheckableType
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.EmptyStateViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
-import com.tokopedia.product.manage.oldlist.view.adapter.ProductManageEmptyList
 
 class ProductManageAdapterFactory(
     val listener: BaseCheckableViewHolder.CheckableInteractionListener,
@@ -17,12 +17,12 @@ class ProductManageAdapterFactory(
 
     override fun type(productViewModel: ProductViewModel): Int = ProductViewHolder.LAYOUT
 
-    override fun type(viewModel: EmptyModel?): Int =  ProductManageEmptyList.LAYOUT
+    override fun type(viewModel: EmptyModel?): Int =  EmptyStateViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ProductViewHolder.LAYOUT -> ProductViewHolder(view, listener, viewHolderListener)
-            ProductManageEmptyList.LAYOUT -> ProductManageEmptyList(view)
+            EmptyStateViewHolder.LAYOUT -> EmptyStateViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }
