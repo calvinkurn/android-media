@@ -212,6 +212,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var isTopdasLoaded: Boolean = false
     private var shouldRenderSticky = true
     private var doActivityResult = true
+    private var shouldFireVariantTracker = true
     private var pdpHashMapUtil: DynamicProductDetailHashMap? = null
 
     //View
@@ -1071,7 +1072,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 cartId,
                 trackerAttributionPdp ?: "",
                 viewModel.selectedMultiOrigin.warehouseInfo.isFulfillment,
-                DynamicProductDetailTracking.generateVariantString(viewModel.variantData, viewModel.getDynamicProductInfoP1?.basic?.productID ?: ""),
+                DynamicProductDetailTracking.generateVariantString(viewModel.variantData, viewModel.getDynamicProductInfoP1?.basic?.productID
+                        ?: ""),
                 viewModel.getDynamicProductInfoP1)
 
         when (viewModel.buttonActionType) {
@@ -1426,8 +1428,17 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         val isPartialySelected = pdpHashMapUtil?.productNewVariantDataModel?.isPartialySelected()
                 ?: false
 
-        if (isPartialySelected && variantOptions.level == 0) {
-            DynamicProductDetailTracking.Click.onVariantLevel1Clicked(variantOptions,
+        if (isPartialySelected && variantOptions.level == 0 && shouldFireVariantTracker) {
+            shouldFireVariantTracker = false
+            DynamicProductDetailTracking.Click.onVariantLevel1Clicked(pdpHashMapUtil?.productNewVariantDataModel?.getFirstSelectedVariantId() ?: 0,
+                    viewModel.getDynamicProductInfoP1,
+                    pdpHashMapUtil?.productNewVariantDataModel,
+                    dynamicAdapter.getVariantPosition(pdpHashMapUtil?.productNewVariantDataModel))
+        }
+
+        if (!isPartialySelected && shouldFireVariantTracker) {
+            shouldFireVariantTracker = false
+            DynamicProductDetailTracking.Click.onVariantLevel1Clicked(pdpHashMapUtil?.productNewVariantDataModel?.getFirstSelectedVariantId() ?: 0,
                     viewModel.getDynamicProductInfoP1,
                     pdpHashMapUtil?.productNewVariantDataModel,
                     dynamicAdapter.getVariantPosition(pdpHashMapUtil?.productNewVariantDataModel))
@@ -2058,6 +2069,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     ?: false
 
             if (!viewModel.isUserSessionActive) {
+                if (viewModel.buttonActionType == ProductDetailConstant.ATC_BUTTON) {
+                    DynamicProductDetailTracking.Click.eventAtcButtonNonLogin(viewModel.getDynamicProductInfoP1, viewModel.userId, viewModel.shopInfo?.goldOS?.shopTypeString
+                            ?: "")
+                } else {
+                    DynamicProductDetailTracking.Click.eventBuyButtonNonLogin(viewModel.getDynamicProductInfoP1, viewModel.userId, viewModel.shopInfo?.goldOS?.shopTypeString
+                            ?: "", viewModel.buttonActionText)
+                }
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), ProductDetailConstant.REQUEST_CODE_LOGIN)
                 return@let
             }

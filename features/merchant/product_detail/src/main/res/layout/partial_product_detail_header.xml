@@ -96,7 +96,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_6"
         android:orientation="horizontal"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="@+id/product_name"
         app:layout_constraintTop_toBottomOf="@id/layout_official_store">
 

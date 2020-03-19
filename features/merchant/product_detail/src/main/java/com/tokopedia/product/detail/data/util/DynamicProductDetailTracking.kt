@@ -15,7 +15,6 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.variant_common.model.ProductVariantCommon
-import com.tokopedia.variant_common.model.VariantOptionWithAttribute
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -47,6 +46,37 @@ object DynamicProductDetailTracking {
 
     object Click {
 
+        fun eventAtcButtonNonLogin(productInfo: DynamicProductInfoP1?, userId: String, shopType: String) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.CLICK_ATC_NON_LOGIN,
+                    "")
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID] = userId
+            mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = productInfo?.basic?.shopID
+                    ?: ""
+            mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_TYPE] = shopType
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = userId != "0"
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.IMPRESSION_CHOOSE_VARIANT_NOTIFICATION)
+        }
+
+        fun eventBuyButtonNonLogin(productInfo: DynamicProductInfoP1?, userId: String, shopType: String, buttonActionText: String) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    "click $buttonActionText on pdp - non login",
+                    "")
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID] = userId
+            mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = productInfo?.basic?.shopID
+                    ?: ""
+            mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_TYPE] = shopType
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = if (userId == "0") false else true
+
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.IMPRESSION_CHOOSE_VARIANT_NOTIFICATION)
+        }
+
         fun eventEcommerceBuy(actionButton: Int, buttonText: String, userId: String,
                               shopType: String, shopName: String, cartId: String, trackerAttribution: String, multiOrigin: Boolean, variantString: String,
                               productInfo: DynamicProductInfoP1?) {
@@ -65,19 +95,23 @@ object DynamicProductDetailTracking {
 
             val categoryName = productInfo?.basic?.category?.detail?.map {
                 it.name
-            }?.joinToString("/",postfix ="/ ${productInfo?.basic?.category?.id}" ) ?: ""
+            }?.joinToString("/", postfix = "/ ${productInfo.basic.category.id}") ?: ""
+
+            val categoryId = productInfo?.basic?.category?.detail?.map {
+                it.id
+            }?.joinToString("/") ?: ""
 
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
                     ProductTrackingConstant.Tracking.KEY_EVENT, "addToCart",
                     ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Tracking.KEY_ACTION, "click - $buttonText on PDP",
-                    ProductTrackingConstant.Tracking.KEY_LABEL, "fitur : $generateButtonActionString",
+                    ProductTrackingConstant.Tracking.KEY_ACTION, if (actionButton == ProductDetailConstant.ATC_BUTTON) "click - tambah ke keranjang on pdp" else "click - $buttonText on PDP",
+                    ProductTrackingConstant.Tracking.KEY_LABEL, if (actionButton == ProductDetailConstant.ATC_BUTTON) "" else "fitur : $generateButtonActionString",
                     ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productId,
                     ProductTrackingConstant.Tracking.KEY_LAYOUT, "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};",
                     ProductTrackingConstant.Tracking.KEY_USER_ID, userId,
                     ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER, shopId,
                     ProductTrackingConstant.Tracking.KEY_SHOP_TYPE, shopType,
-                    ProductTrackingConstant.Tracking.KEY_ISLOGGIN, if (userId.isEmpty()) "false" else "true",
+                    ProductTrackingConstant.Tracking.KEY_ISLOGGIN, userId != "0",
 
                     ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
                     ProductTrackingConstant.Tracking.CURRENCY_CODE, ProductTrackingConstant.Tracking.CURRENCY_DEFAULT_VALUE,
@@ -95,8 +129,8 @@ object DynamicProductDetailTracking {
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_80, shopName,
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_81, shopType,
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_45, cartId,
-                            ProductTrackingConstant.Tracking.KEY_DIMENSION_82, categoryName,
-                            ProductTrackingConstant.Tracking.KEY_DIMENSION_40, "TODO",
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_82, categoryId,
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_40, "null",
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_54, TrackingUtil.getMultiOriginAttribution(multiOrigin),
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_83, if (isFreeOngkir) ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR else ProductTrackingConstant.Tracking.VALUE_NONE_OTHER,
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_38, trackerAttribution
@@ -132,15 +166,20 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, generateComponentTrackModel(variantData, variantPosition), ProductTrackingConstant.Action.CLICK_CHOOSE_PRODUCT_VARIANT)
         }
 
-        fun onVariantLevel1Clicked(variant: VariantOptionWithAttribute, productInfo: DynamicProductInfoP1?, variantData: VariantDataModel?, variantPosition: Int) {
+        fun onVariantLevel1Clicked(selectedVariantId: Int, productInfo: DynamicProductInfoP1?, variantData: VariantDataModel?, variantPosition: Int) {
+
+            val variantValue = variantData?.listOfVariantCategory?.firstOrNull()?.variantOptions?.firstOrNull {
+                it.variantId == selectedVariantId
+            }
+
             val mapEvent = TrackAppUtils.gtmData(
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Action.CLICK_CHOOSE_PRODUCT_VARIANT,
                     "1")
-            mapEvent["variant_title"] = variant.variantOptionIdentifier
-            mapEvent["variant_value"] = variant.variantName
-            mapEvent["variant"] = variant.variantId.toString()
+            mapEvent["variant_title"] = variantValue?.variantOptionIdentifier ?: ""
+            mapEvent["variant_value"] = variantValue?.variantName ?: ""
+            mapEvent["variant"] = variantValue?.variantId.toString()
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, generateComponentTrackModel(variantData, variantPosition), ProductTrackingConstant.Action.CLICK_CHOOSE_PRODUCT_VARIANT)
         }

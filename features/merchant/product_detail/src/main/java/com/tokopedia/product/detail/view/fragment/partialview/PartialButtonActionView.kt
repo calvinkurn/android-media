@@ -129,7 +129,7 @@ class PartialButtonActionView private constructor(private val view: View,
         if (variant == TOPCHAT_VARIANT_GREEN) {
             imageView.setBackgroundResource(R.drawable.variant_topchat_green)
         } else {
-            imageView.setBackgroundResource(R.drawable.white_button_rounded)
+            imageView.setBackgroundResource(R.drawable.white_topchat_button_rounded_pdp)
         }
     }
 

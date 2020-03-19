@@ -16,6 +16,13 @@ data class VariantDataModel(
         var mapOfSelectedVariant: MutableMap<String, Int> = mutableMapOf()
 ) : DynamicPdpDataModel {
 
+    fun getFirstSelectedVariantId(): Int {
+        return mapOfSelectedVariant.map {
+            //[Merah,S]
+            it.value
+        }.firstOrNull() ?: 0
+    }
+
     fun isPartialySelected(): Boolean = mapOfSelectedVariant.any {
         it.value == 0
     }

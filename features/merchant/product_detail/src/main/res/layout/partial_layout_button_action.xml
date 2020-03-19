@@ -37,7 +37,7 @@
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_8"
-        android:background="@drawable/white_button_rounded"
+        android:background="@drawable/white_topchat_button_rounded_pdp"
         android:padding="@dimen/dp_4"
         android:scaleType="center"
         android:visibility="gone"
