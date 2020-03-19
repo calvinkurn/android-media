@@ -89,7 +89,10 @@ class MainSliceProvider : SliceProvider() {
                     setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
                     header {
                         title = contextNonNull.resources.getString(R.string.slice_daftar_rekomendasi)
-                        subtitle = (contextNonNull.resources.getString(R.string.slice_pembelian_terakhir) + recommendationModel?.get(0)?.productName).capitalizeWords()
+                        if(recommendationModel?.get(0)?.productName.isNullOrEmpty())
+                            subtitle = contextNonNull.resources.getString(R.string.slice_loading)
+                        else
+                           subtitle = (contextNonNull.resources.getString(R.string.slice_pembelian_terakhir) + recommendationModel?.get(0)?.productName).capitalizeWords()
                         primaryAction = SliceAction.create(
                                 mainPendingIntent,
                                 createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
@@ -97,14 +100,6 @@ class MainSliceProvider : SliceProvider() {
                                 contextNonNull.resources.getString(R.string.slice_search_title)
                         )
                     }
-                    addAction(
-                            SliceAction.create(
-                                    mainPendingIntent,
-                                    createWithBitmap(recommendationModel?.get(0)?.iconUrl?.getBitmap()),
-                                    SMALL_IMAGE,
-                                    ""
-                            )
-                    )
                     recommendationModel?.indices?.let { recomRange ->
                         var listProduct: MutableList<Product> = mutableListOf()
                         for (i in recomRange) {
