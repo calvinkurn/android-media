@@ -49,6 +49,7 @@
     <dimen name="play_variant_sheet_header_separator_height_minus">-1dp</dimen>
 
     <dimen name="play_toolbar_back_button_margin">@dimen/play_offset_12</dimen>
+    <dimen name="play_product_pinned_lottie_bottom_margin">10dp</dimen>
 
     <!--General Dimension-->
     <dimen name="play_offset_12">12dp</dimen>
