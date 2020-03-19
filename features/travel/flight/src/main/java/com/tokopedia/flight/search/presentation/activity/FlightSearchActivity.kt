@@ -99,6 +99,10 @@ open class FlightSearchActivity : BaseSimpleActivity(),
                 .setOnClickListener {
                     showChangeSearchBottomSheet()
                 }
+        flight_search_header.addRightIcon(R.drawable.ic_flight_edit)
+                .setOnClickListener {
+                    showChangeSearchBottomSheet()
+                }
     }
 
     private fun setupSearchToolbarText() {

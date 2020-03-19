@@ -322,7 +322,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
     }
 
     private fun toggleOneWay(isChecked: Boolean) {
-        flightSearchData.isOneWay = isChecked
+        flightSearchData.isOneWay = !isChecked
         renderTripView()
     }
 
