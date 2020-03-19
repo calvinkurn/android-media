@@ -47,7 +47,8 @@ class PinnedComponentTest {
         val mockPinnedMessage = PinnedMessageUiModel(
                 applink = null,
                 partnerName = "My Shop",
-                title = "Dibeli dibeli"
+                title = "Dibeli dibeli",
+                shouldRemove = true
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetPinned(mockPinnedMessage))
@@ -60,7 +61,8 @@ class PinnedComponentTest {
         val mockPinnedMessage = PinnedMessageUiModel(
                 applink = null,
                 partnerName = "My Shop",
-                title = "Dibeli dibeli"
+                title = "Dibeli dibeli",
+                shouldRemove = false
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetPinned(mockPinnedMessage))
@@ -76,7 +78,8 @@ class PinnedComponentTest {
         val mockPinnedMessage = PinnedMessageUiModel(
                 applink = null,
                 partnerName = "My Shop",
-                title = "Dibeli dibeli"
+                title = "Dibeli dibeli",
+                shouldRemove = false
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(false))
@@ -95,7 +98,8 @@ class PinnedComponentTest {
         val mockPinnedMessage = PinnedMessageUiModel(
                 applink = null,
                 partnerName = "My Shop",
-                title = "Dibeli dibeli"
+                title = "Dibeli dibeli",
+                shouldRemove = false
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(true))
@@ -113,7 +117,8 @@ class PinnedComponentTest {
         val mockPinnedMessage = PinnedMessageUiModel(
                 applink = null,
                 partnerName = "My Shop",
-                title = "Dibeli dibeli"
+                title = "Dibeli dibeli",
+                shouldRemove = false
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetPinned(mockPinnedMessage))
@@ -132,7 +137,8 @@ class PinnedComponentTest {
         val mockPinnedMessage = PinnedMessageUiModel(
                 applink = null,
                 partnerName = "My Shop",
-                title = "Dibeli dibeli"
+                title = "Dibeli dibeli",
+                shouldRemove = false
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetPinned(mockPinnedMessage))
@@ -151,7 +157,8 @@ class PinnedComponentTest {
         val mockPinnedMessage = PinnedMessageUiModel(
                 applink = null,
                 partnerName = "My Shop",
-                title = "Dibeli dibeli"
+                title = "Dibeli dibeli",
+                shouldRemove = true
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetPinned(mockPinnedMessage))
@@ -169,7 +176,8 @@ class PinnedComponentTest {
         val mockPinnedMessage = PinnedMessageUiModel(
                 applink = null,
                 partnerName = "My Shop",
-                title = "Dibeli dibeli"
+                title = "Dibeli dibeli",
+                shouldRemove = true
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetPinned(mockPinnedMessage))
