@@ -22,7 +22,9 @@ object ProductHighlightTracking : BaseTracking() {
                         variant = Value.NONE_OTHER,
                         productPosition = (index + 1).toString(),
                         channelId = channel.id,
-                        isFreeOngkir = grid.freeOngkir.isActive
+                        isFreeOngkir = grid.freeOngkir.isActive,
+                        persoType = channel.persoType,
+                        categoryId = channel.categoryID
                 )
             },
             list = String.format(
@@ -46,7 +48,9 @@ object ProductHighlightTracking : BaseTracking() {
                             variant = Value.NONE_OTHER,
                             productPosition = (position + 1).toString(),
                             channelId = channel.id,
-                            isFreeOngkir = grid.freeOngkir.isActive
+                            isFreeOngkir = grid.freeOngkir.isActive,
+                            persoType = channel.persoType,
+                            categoryId = channel.categoryID
                     )
             ),
             list = String.format(
