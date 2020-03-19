@@ -9,4 +9,5 @@
     <string name="slice_search_title">SEARCH</string>
     <string name="slice_track_timber_impression">P2#ACTION_SLICE_RECHARGE_IMPRESSION#</string>
     <string name="slice_not_login">Anda Belum Login</string>
+    <string name="slice_not_access">Layanan sedang tidak tersedia</string>
 </resources>

@@ -14,6 +14,7 @@ import androidx.slice.builders.*
 import androidx.slice.builders.ListBuilder.*
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.recharge_slice.R
 import com.tokopedia.recharge_slice.data.Data
@@ -26,6 +27,8 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.recharge_slice.data.Product
 import com.tokopedia.recharge_slice.data.TrackingData
 import com.tokopedia.recharge_slice.di.DaggerRechargeSliceComponent
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -73,67 +76,78 @@ class MainSliceProvider : SliceProvider() {
             0
     )
 
+    private fun createPendingIntentNoAccess() = PendingIntent.getActivity(
+            contextNonNull,
+            0,
+            RouteManager.getIntent(contextNonNull, ApplinkConst.HOME),
+            0
+    )
+
     private fun createGetInvoiceSlice(sliceUri: Uri): Slice? {
-        val mainPendingIntent = PendingIntent.getActivity(
-                contextNonNull,
-                0,
-                RouteManager.getIntent(contextNonNull, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME)
-                        .putExtra(RECHARGE_HOME_PAGE_EXTRA, true),
-                0
-        )
-        try {
-            if (userSession.isLoggedIn) {
-                if (!alreadyLoadData)
-                    getData(sliceUri)
-                return list(contextNonNull, sliceUri, INFINITY) {
-                    setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
-                    header {
-                        title = contextNonNull.resources.getString(R.string.slice_daftar_rekomendasi)
-                        if(recommendationModel?.get(0)?.productName.isNullOrEmpty())
-                            subtitle = contextNonNull.resources.getString(R.string.slice_loading)
-                        else
-                           subtitle = (contextNonNull.resources.getString(R.string.slice_pembelian_terakhir) + recommendationModel?.get(0)?.productName).capitalizeWords()
-                        primaryAction = SliceAction.create(
-                                mainPendingIntent,
-                                createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
-                                ICON_IMAGE,
-                                contextNonNull.resources.getString(R.string.slice_search_title)
-                        )
-                    }
-                    recommendationModel?.indices?.let { recomRange ->
-                        var listProduct: MutableList<Product> = mutableListOf()
-                        for (i in recomRange) {
-                            var product = Product()
-                            row {
-                                setTitleItem(createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()), SMALL_IMAGE)
-                                recommendationModel.let {
-                                    it?.let {
-                                        product = Product(it.get(i).categoryId.toString(), it.get(i).productName, it.get(i).title)
-                                        listProduct.add(i, product)
+        if(getRemoteConfigRechargeSliceEnabler(contextNonNull)) {
+            val mainPendingIntent = PendingIntent.getActivity(
+                    contextNonNull,
+                    0,
+                    RouteManager.getIntent(contextNonNull, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME)
+                            .putExtra(RECHARGE_HOME_PAGE_EXTRA, true),
+                    0
+            )
+            try {
+                if (userSession.isLoggedIn) {
+                    if (!alreadyLoadData)
+                        getData(sliceUri)
+                    return list(contextNonNull, sliceUri, INFINITY) {
+                        setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
+                        header {
+                            title = contextNonNull.resources.getString(R.string.slice_daftar_rekomendasi)
+                            if (recommendationModel?.get(0)?.productName.isNullOrEmpty())
+                                subtitle = contextNonNull.resources.getString(R.string.slice_loading)
+                            else
+                                subtitle = (contextNonNull.resources.getString(R.string.slice_pembelian_terakhir) + recommendationModel?.get(0)?.productName).capitalizeWords()
+                            primaryAction = SliceAction.create(
+                                    mainPendingIntent,
+                                    createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
+                                    ICON_IMAGE,
+                                    contextNonNull.resources.getString(R.string.slice_search_title)
+                            )
+                        }
+                        recommendationModel?.indices?.let { recomRange ->
+                            var listProduct: MutableList<Product> = mutableListOf()
+                            for (i in recomRange) {
+                                var product = Product()
+                                row {
+                                    setTitleItem(createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()), SMALL_IMAGE)
+                                    recommendationModel.let {
+                                        it?.let {
+                                            product = Product(it.get(i).categoryId.toString(), it.get(i).productName, it.get(i).title)
+                                            listProduct.add(i, product)
+                                        }
+                                        it?.get(i)?.categoryName?.capitalizeWords()?.let { it1 -> setTitle(it1) }
+                                        it?.get(i)?.title?.capitalizeWords()?.let { it1 -> setSubtitle(it1) }
                                     }
-                                    it?.get(i)?.categoryName?.capitalizeWords()?.let { it1 -> setTitle(it1) }
-                                    it?.get(i)?.title?.capitalizeWords()?.let { it1 -> setSubtitle(it1) }
-                                }
-                                val trackingClick = TrackingData(listOf(product))
-                                primaryAction = createPendingIntent(recommendationModel?.get(i)?.position, recommendationModel?.get(i)?.appLink, trackingClick.toString())?.let {
-                                    SliceAction.create(
-                                            it,
-                                            createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()),
-                                            SMALL_IMAGE,
-                                            ""
-                                    )
+                                    val trackingClick = TrackingData(listOf(product))
+                                    primaryAction = createPendingIntent(recommendationModel?.get(i)?.position, recommendationModel?.get(i)?.appLink, trackingClick.toString())?.let {
+                                        SliceAction.create(
+                                                it,
+                                                createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()),
+                                                SMALL_IMAGE,
+                                                ""
+                                        )
+                                    }
                                 }
                             }
+                            val trackingImpression = TrackingData(listProduct)
+                            Timber.w(contextNonNull.resources.getString(R.string.slice_track_timber_impression) + trackingImpression)
                         }
-                        val trackingImpression = TrackingData(listProduct)
-                        Timber.w(contextNonNull.resources.getString(R.string.slice_track_timber_impression) + trackingImpression)
                     }
+                } else {
+                    return sliceNotLogin(sliceUri)
                 }
-            } else {
+            } catch (e: Exception) {
                 return sliceNotLogin(sliceUri)
             }
-        } catch (e: Exception) {
-          return sliceNotLogin(sliceUri)
+        }else{
+            return sliceNoAccess(sliceUri)
         }
     }
 
@@ -143,6 +157,23 @@ class MainSliceProvider : SliceProvider() {
             header {
                 title = contextNonNull.resources.getString(R.string.slice_not_login)
                 primaryAction = createPendingIntentLogin()?.let {
+                    SliceAction.create(
+                            it,
+                            createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
+                            SMALL_IMAGE,
+                            ""
+                    )
+                }
+            }
+        }
+    }
+
+    private fun sliceNoAccess(sliceUri: Uri): Slice{
+        return list(contextNonNull, sliceUri, INFINITY) {
+            setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
+            header {
+                title = contextNonNull.resources.getString(R.string.slice_not_access)
+                primaryAction = createPendingIntentNoAccess()?.let {
                     SliceAction.create(
                             it,
                             createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
@@ -190,14 +221,23 @@ class MainSliceProvider : SliceProvider() {
     fun String.capitalizeWords(): String = split(" ").joinToString(" ") { it.capitalize() }
 
     override fun onCreateSliceProvider(): Boolean {
-        contextNonNull = context ?: return false
+        contextNonNull = context.applicationContext ?: return false
+        LocalCacheHandler(context,APPLINK_DEBUGGER)
         loadString = contextNonNull.resources.getString(R.string.slice_loading)
         return true
+    }
+
+    fun getRemoteConfigRechargeSliceEnabler(context: Context): Boolean{
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        return (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_SALAM_UMRAH))
+         //return true
     }
 
     companion object {
         const val RECHARGE_SLICE_DEVICE_ID = "device_id"
         const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"
         const val RECHARGE_HOME_PAGE_EXTRA = "RECHARGE_HOME_PAGE_EXTRA"
+        private val APPLINK_DEBUGGER = "APPLINK_DEBUGGER"
+
     }
 }
