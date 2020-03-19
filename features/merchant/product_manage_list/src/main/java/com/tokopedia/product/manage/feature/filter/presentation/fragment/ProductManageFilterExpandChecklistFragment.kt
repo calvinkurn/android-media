@@ -24,6 +24,8 @@ import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmode
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment.Companion.CATEGORIES_CACHE_MANAGER_KEY
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment.Companion.OTHER_FILTER_CACHE_MANAGER_KEY
+import com.tokopedia.product.manage.feature.filter.presentation.textwatcher.SearchListener
+import com.tokopedia.product.manage.feature.filter.presentation.textwatcher.SearchTextWatcher
 import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterExpandChecklistViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChecklistClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
@@ -35,7 +37,7 @@ import javax.inject.Inject
 
 class ProductManageFilterExpandChecklistFragment :
         Fragment(), ChecklistClickListener, SelectClickListener,
-        HasComponent<ProductManageFilterComponent> {
+        SearchListener, HasComponent<ProductManageFilterComponent> {
 
     companion object {
         private const val TOGGLE_ACTIVE = "active"
@@ -114,6 +116,10 @@ class ProductManageFilterExpandChecklistFragment :
         }
     }
 
+    override fun onSearchTextChanged(text: String) {
+        processSearch(text)
+    }
+
     private fun initInjector() {
         component?.inject(this)
     }
@@ -146,31 +152,21 @@ class ProductManageFilterExpandChecklistFragment :
 
     private fun initSearchView() {
         filterSearchBar.clearFocus()
+        filterSearchBar.showIcon = false
+        val searchTextWatcher = SearchTextWatcher(filterSearchBar.searchBarTextField, 250, this)
+        filterSearchBar.searchBarTextField.addTextChangedListener(searchTextWatcher)
 
         filterSearchBar.searchBarTextField.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                val keyword = searchBar.searchBarTextField.text.toString()
-
-                if(keyword.isNotEmpty()) {
-                    search(keyword).let { result ->
-                        if(result.isNotEmpty()) {
-                            adapter?.updateChecklistData(result)
-                        } else {
-                            showError()
-                        }
-                    }
-                } else {
-                    productManageFilterExpandChecklistViewModel.checklistData.value?.toList()?.let {data ->
-                        adapter?.updateChecklistData(data)
-                    }
-                }
+                processSearch(searchBar.searchBarTextField.text.toString())
+                filterSearchBar.clearFocus()
                 return@setOnEditorActionListener true
             }
             false
         }
 
         filterSearchBar.visibility = View.VISIBLE
-        filterSearchBar.setOnFocusChangeListener { v, hasFocus ->
+        filterSearchBar.searchBarTextField.setOnFocusChangeListener { v, hasFocus ->
             if(hasFocus) {
                 filterSubmitButton.visibility = View.GONE
             } else {
@@ -251,8 +247,6 @@ class ProductManageFilterExpandChecklistFragment :
 
     private fun showError() {
         filterCheckListRecyclerView.visibility = View.GONE
-        filterSubmitButton.visibility = View.GONE
-        bottomsheet_button_divider.visibility = View.GONE
         filterSearchErrorImage.visibility = View.VISIBLE
         filterSearchErrorText.visibility = View.VISIBLE
     }
@@ -261,6 +255,23 @@ class ProductManageFilterExpandChecklistFragment :
         filterCheckListRecyclerView.visibility = View.VISIBLE
         filterSearchErrorImage?.visibility = View.GONE
         filterSearchErrorText.visibility = View.GONE
+    }
+
+    private fun processSearch(searchText: String) {
+        if(searchText.isNotEmpty()) {
+            search(searchText).let { result ->
+                if(result.isNotEmpty()) {
+                    hideError()
+                    adapter?.updateChecklistData(result)
+                } else {
+                    showError()
+                }
+            }
+        } else {
+            productManageFilterExpandChecklistViewModel.checklistData.value?.toList()?.let {data ->
+                adapter?.updateChecklistData(data)
+            }
+        }
     }
 
 

@@ -84,8 +84,11 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
                 true
             }
             setValueChangedListener { newValue, _, _ ->
-                quickEditStockActivateSwitch.isChecked = newValue > MINIMUM_STOCK
-                quickEditStockActivateSwitch.isEnabled = newValue != MINIMUM_STOCK
+                if(newValue > MINIMUM_STOCK) {
+                    setNormalBehavior()
+                } else {
+                    onZeroStock()
+                }
                 viewModel.updateStock(newValue)
             }
         }
@@ -135,6 +138,16 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
             quickEditStockActivateSwitch.isChecked = it == ProductStatus.ACTIVE
             product = product.copy(status = it)
         })
+    }
+    
+    private fun onZeroStock() {
+        zeroStockInfo.visibility = View.VISIBLE
+        quickEditStockActivateSwitch.isEnabled = false
+    }
+
+    private fun setNormalBehavior() {
+        zeroStockInfo.visibility = View.GONE
+        quickEditStockActivateSwitch.isEnabled = true
     }
 
     interface OnFinishedListener {
