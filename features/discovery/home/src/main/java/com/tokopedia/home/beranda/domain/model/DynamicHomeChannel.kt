@@ -296,7 +296,8 @@ data class DynamicHomeChannel(
                                     "list", "/ - p1 - lego product - " + header.name,
                                     "position", (i + 1).toString(),
                                     "dimension83", if (grid.freeOngkir.isActive) "bebas ongkir" else "none/other",
-                                    "dimension84", id
+                                    "dimension84", id,
+                                    "dimension96", persoType+ "_" + categoryID
                             )
                     )
                 }
