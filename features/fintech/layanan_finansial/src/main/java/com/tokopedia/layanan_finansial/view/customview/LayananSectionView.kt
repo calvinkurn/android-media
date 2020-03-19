@@ -35,7 +35,7 @@ class LayananSectionView : RelativeLayout {
     fun setData(it: LayananSectionModel) {
         title.text = it.title
         subTitle.text = it.subtitle
-        if (it.type.equals("verticle")) {
+        if (it.type.equals("vertical")) {
             recycler_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         } else {
             recycler_view.layoutManager = GridLayoutManager(context, 2, LinearLayoutManager.VERTICAL, false)

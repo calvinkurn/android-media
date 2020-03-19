@@ -7,52 +7,67 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.DaggerBaseAppComponent
 import com.tokopedia.layanan_finansial.R
 import com.tokopedia.layanan_finansial.di.LayananComponent
+import com.tokopedia.layanan_finansial.view.adapter.LayananViewHolderFactory
 import com.tokopedia.layanan_finansial.view.customview.LayananSectionView
 import com.tokopedia.layanan_finansial.view.models.LayananFinansialModel
+import com.tokopedia.layanan_finansial.view.models.LayananSectionModel
 import com.tokopedia.layanan_finansial.view.viewModel.LayananFinansialViewModel
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.layanan_fragment.*
 import javax.inject.Inject
 
-class LayananFragment : BaseDaggerFragment() {
+class LayananFragment : BaseListFragment<LayananSectionModel,LayananViewHolderFactory>() {
 
     @Inject
     lateinit var factory: ViewModelFactory
     val viewModel by lazy { ViewModelProviders.of(this,factory)[LayananFinansialViewModel::class.java] }
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.layanan_fragment,container,false)
-    }
+//    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+//        return inflater.inflate(R.layout.layanan_fragment,container,false)
+//    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         addObserver()
-        viewModel.getDetail()
     }
 
     private fun addObserver()  = viewModel.liveData.observe(this, Observer {
         it?.let {
             when(it){
                 is Success -> render(it.data)
+                is Fail -> showGetListError(it.throwable)
             }
         }
     })
 
     private fun render(data: LayananFinansialModel) {
-        data.sectionList?.forEach{
-            layanan_container.removeAllViews()
-            val section = LayananSectionView(context)
-            section.setData(it)
-            layanan_container.addView(section)
-        }
+        renderList(data.sectionList ?: mutableListOf())
     }
 
     override fun getScreenName(): String = this.javaClass.name
 
     override fun initInjector() {
      getComponent(LayananComponent::class.java).inject(this)
+    }
+
+    override fun onItemClicked(t: LayananSectionModel) {
+
+    }
+
+    override fun loadData(page: Int) {
+        viewModel.getDetail()
+    }
+
+    override fun getAdapterTypeFactory(): LayananViewHolderFactory {
+        return LayananViewHolderFactory()
+    }
+
+    override fun isLoadMoreEnabledByDefault(): Boolean {
+        return false
     }
 }

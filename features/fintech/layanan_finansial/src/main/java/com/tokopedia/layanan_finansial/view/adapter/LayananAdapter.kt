@@ -1,14 +1,21 @@
 package com.tokopedia.layanan_finansial.view.adapter
 
 import android.graphics.Color
+import android.graphics.ColorFilter
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.ShapeDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.layanan_finansial.R
 import com.tokopedia.layanan_finansial.view.models.LayananListItem
+import com.tokopedia.unifycomponents.ImageUrlLoader
 import kotlinx.android.synthetic.main.layanan_card_item.view.*
 
 class LayananAdapter(private val list: List<LayananListItem>) : RecyclerView.Adapter<LayananAdapter.LayananViewHolder>() {
@@ -17,6 +24,7 @@ class LayananAdapter(private val list: List<LayananListItem>) : RecyclerView.Ada
    inner class LayananViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
        fun setData(layananListItem: LayananListItem) {
            itemView.apply {
+               ImageLoader.LoadImage(icon,layananListItem.icon_url)
                name.text = layananListItem.name
                category.text = layananListItem.categrory
                desc_1.text = layananListItem.desc_1
@@ -40,11 +48,14 @@ class LayananAdapter(private val list: List<LayananListItem>) : RecyclerView.Ada
                }
                if(!layananListItem.status.isNullOrEmpty()){
                    status.text = layananListItem.status
-                   status.setBackgroundColor(Color.parseColor(layananListItem.status_background_color))
+                   (status.background as GradientDrawable).setColor(Color.parseColor(layananListItem.status_background_color))
                    status.setTextColor(Color.parseColor(layananListItem.status_text_color))
                    status.show()
                } else {
                    status.hide()
+               }
+               setOnClickListener{
+                   RouteManager.route(context, String.format("%s?url=%s",ApplinkConst.WEBVIEW,layananListItem.url))
                }
            }
        }

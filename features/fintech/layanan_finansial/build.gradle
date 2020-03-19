@@ -27,6 +27,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.dagger
+    implementation project(rootProject.ext.libraries.baseList)
 
 }
 
