@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.view.util
 
 import android.content.Context
 import android.os.Handler
-import android.util.Log
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.globalerror.GlobalError
