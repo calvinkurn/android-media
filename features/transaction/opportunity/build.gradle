@@ -38,7 +38,7 @@ dependencies {
 
     implementation rootProject.ext.tkpdLibDependencies.showcase
 
-    implementation rootProject.ext.playServicesDependencies.core
+    implementation project(rootProject.ext.libraries.playCore)
 }
 
 project.ext {
