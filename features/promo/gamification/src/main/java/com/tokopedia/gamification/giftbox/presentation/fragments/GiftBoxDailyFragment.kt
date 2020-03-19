@@ -85,6 +85,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         giftBoxDailyView.boxCallback = object : GiftBoxDailyView.BoxCallback {
 
             override fun onBoxOpenAnimationStart(startDelay: Long) {
+                giftBoxDailyView.adjustGlowImagePosition()
+                
                 rewardContainer.setFinalTranslationOfCircles(giftBoxDailyView.fmGiftBox.top)
                 val stageLightAnim = giftBoxDailyView.stageGlowAnimation()
 

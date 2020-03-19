@@ -68,11 +68,6 @@ open class GiftBoxDailyView : FrameLayout {
 
         imageFlatGlow.alpha = 0f
 
-        //todo Rahul need to do this when image is loaded via glide
-        imageBoxFront.postDelayed({
-            adjustGlowImagePosition(imageFlatGlow)
-        }, 300L)
-
         setClicks()
     }
 
@@ -185,10 +180,10 @@ open class GiftBoxDailyView : FrameLayout {
         return idleAnim
     }
 
-    fun adjustGlowImagePosition(imageGlow: AppCompatImageView) {
+    fun adjustGlowImagePosition() {
         val array = IntArray(2)
         imageBoxFront.getLocationInWindow(array)
-        imageGlow.y = array[1].toFloat() - imageGlow.height - getStatusBarHeight(context)
+        imageFlatGlow.y = array[1].toFloat() - imageFlatGlow.height - getStatusBarHeight(context)
     }
 
     fun stageGlowAnimation(): Animator {
