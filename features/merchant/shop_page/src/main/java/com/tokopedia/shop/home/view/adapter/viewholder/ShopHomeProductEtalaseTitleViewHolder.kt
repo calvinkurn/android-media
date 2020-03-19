@@ -18,16 +18,17 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
  */
 
 class ShopHomeProductEtalaseTitleViewHolder(itemView: View) : AbstractViewHolder<ShopHomeProductEtalaseTitleUiModel>(itemView) {
+
+    companion object {
+        @LayoutRes
+        val LAYOUT = R.layout.item_shop_page_home_product_etalase_title_view
+    }
+
     private var textView: TextView? = null
     private var ivBadge: ImageView? = null
 
     init {
         findViews(itemView)
-    }
-
-    companion object {
-        @LayoutRes
-        val LAYOUT = R.layout.item_shop_page_home_product_etalase_title_view
     }
 
     override fun bind(uiModel: ShopHomeProductEtalaseTitleUiModel) {
