@@ -535,7 +535,7 @@ open class DynamicPostViewHolder(v: View,
 
         fun onStatsClick(title: String, activityId: String, productIds: List<String>, likeCount: Int, commentCount: Int)
 
-        fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String, url: String, iamgeUrl: String)
+        fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String, url: String, imageUrl: String)
 
         fun onFooterActionClick(positionInFeed: Int, redirectUrl: String)
 

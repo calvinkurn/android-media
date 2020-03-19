@@ -7,17 +7,20 @@ import com.tokopedia.feedcomponent.data.pojo.common.ColorPojo
 /**
  * @author by yfsx on 22/03/19.
  */
-data class PostTagItemTag(
+data class TagsItem(
         @SerializedName("linkType")
         @Expose
-        val linkType:String = "",
+        val linkType: String = "",
         @SerializedName("text")
         @Expose
-        val text:String = "",
+        val text: String = "",
         @SerializedName("textColor")
         @Expose
-        var textColor:ColorPojo = ColorPojo(),
+        var textColor: ColorPojo = ColorPojo(),
         @SerializedName("bgColor")
         @Expose
-        var bgColor:ColorPojo = ColorPojo()
-) {}
+        var bgColor: ColorPojo = ColorPojo(),
+        @SerializedName("type")
+        @Expose
+        var type: String = ""
+)
