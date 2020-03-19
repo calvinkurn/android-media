@@ -15,7 +15,7 @@ data class AdditionalInfo(
 		@field:SerializedName("error_detail")
 	val errorDetail: ErrorDetail? = null,
 
-		@field:SerializedName("cart_empty_info")
+		@field:SerializedName("empty_cart_info")
 	val cartEmptyInfo: CartEmptyInfo? = null,
 
 		@field:SerializedName("usage_summaries")

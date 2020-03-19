@@ -143,6 +143,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
             if (response.couponListRecommendation.status == "OK") {
                 if (response.couponListRecommendation.data.couponSections.isNotEmpty()) {
+                    fragmentUiModel.value?.let {
+                        it.uiState.isLoading = false
+                        _fragmentUiModel.value = it
+                    }
+
                     if (getCouponRecommendationResponse.value == null) {
                         _getCouponRecommendationResponse.value = GetCouponRecommendationAction()
                     }
@@ -213,11 +218,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     }
 
                     calculateAndRenderTotalBenefit()
-
-                    fragmentUiModel.value?.let {
-                        it.uiState.isLoading = false
-                        _fragmentUiModel.value = it
-                    }
 
                 } else {
                     if (response.couponListRecommendation.data.emptyState.title.isEmpty() &&

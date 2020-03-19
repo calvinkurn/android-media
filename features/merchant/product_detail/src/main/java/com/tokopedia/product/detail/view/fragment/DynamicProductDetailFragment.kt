@@ -505,11 +505,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         updateCartNotification()
                     }
 
-                    val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT)
-                    intent.putExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, true)
-                    intent.putExtras(ShipmentFormRequest.BundleBuilder().deviceId("").build().bundle)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(intent)
                 }
             }
             ProductDetailConstant.REQUEST_CODE_ATC_EXPRESS -> {
