@@ -87,7 +87,7 @@ class BetaInterceptor(private val context: Context) : Interceptor {
                     mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build())
                 }
             } else {
-                saveBeta(context, true)
+                saveBeta(context, false)
                 mNotificationManager.cancel(NOTIFICATION_ID)
             }
         }
