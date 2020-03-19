@@ -388,8 +388,6 @@ object ApplinkConstInternalGlobal {
     val DYNAMIC_FEATURE_INSTALL= DYNAMIC_FEATURE_INSTALL_BASE + "{module}/?" +
         "dfname={moduleTranslate}&" +
         "dfapplink={encodedApplink}&" +
-        "dfauto={isAutoDownload}&" +
-        "dfimage={imageUrl}&" +
         "dffallbackurl={fallbackUrl}"
 
     /**

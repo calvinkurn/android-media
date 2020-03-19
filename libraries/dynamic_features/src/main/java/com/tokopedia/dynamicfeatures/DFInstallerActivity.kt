@@ -20,6 +20,7 @@ import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.dynamicfeatures.SplitInstallListener.moduleNameToDownload
 import com.tokopedia.dynamicfeatures.config.DFConfig
 import com.tokopedia.dynamicfeatures.config.DFRemoteConfig
 import com.tokopedia.dynamicfeatures.constant.CommonConstant
@@ -62,7 +63,6 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
     private lateinit var moduleName: String
     private lateinit var moduleNameTranslated: String
     private lateinit var applink: String
-    private var imageUrl: String? = null
     private var fallbackUrl: String = ""
     private var moduleSize = 0L
     private var freeInternalStorageBeforeDownload = 0L
@@ -77,10 +77,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
     companion object {
         private const val EXTRA_NAME = "dfname"
         private const val EXTRA_APPLINK = "dfapplink"
-        private const val EXTRA_AUTO = "dfauto"
-        private const val EXTRA_IMAGE = "dfimage"
         private const val EXTRA_FALLBACK_WEB = "dffallbackurl"
-        private const val defaultImageUrl = "https://ecs7.tokopedia.net/img/android/empty_profile/drawable-xxxhdpi/product_image_48_x_48.png"
         private const val CONFIRMATION_REQUEST_CODE = 1
         private const val SETTING_REQUEST_CODE = 2
         const val TAG_LOG = "Page"
@@ -92,11 +89,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
             moduleName = uri.lastPathSegment ?: ""
             moduleNameTranslated = uri.getQueryParameter(EXTRA_NAME) ?: ""
             applink = Uri.decode(uri.getQueryParameter(EXTRA_APPLINK)) ?: ""
-            isAutoDownload = uri.getQueryParameter(EXTRA_AUTO)?.toBoolean() ?: true
-            imageUrl = uri.getQueryParameter(EXTRA_IMAGE)
-            if (imageUrl.isNullOrEmpty()) {
-                imageUrl = defaultImageUrl
-            }
+            isAutoDownload = true
             fallbackUrl = uri.getQueryParameter(EXTRA_FALLBACK_WEB) ?: ""
         }
 
@@ -112,7 +105,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         }
         setContentView(R.layout.activity_dynamic_feature_installer)
         initializeViews()
-        if (manager.installedModules.contains(moduleName)) {
+        if (DFInstaller.isInstalled(this, moduleName)) {
             onSuccessfulLoad(moduleName, launch = true)
         } else if (isAutoDownload) {
             downloadFeature()
@@ -156,7 +149,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
                 moduleSize = 0
 
                 // Skip loading if the module already is installed. Perform success action directly.
-                if (manager.installedModules.contains(name)) {
+                if (DFInstaller.isInstalled(this@DFInstallerActivity, name)) {
                     onSuccessfulLoad(name, launch = true)
                     return@launch
                 }
@@ -175,7 +168,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
                 // Load and install the requested feature module.
                 manager.startInstall(request).addOnSuccessListener {
                     if (it == 0) {
-                        onInstalled()
+                        onInstalled(moduleNameToDownload.first())
                     } else {
                         sessionId = it
                     }
@@ -192,7 +185,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             SplitInstallHelper.updateAppInfo(this)
         }
-        successInstall = manager.installedModules.contains(moduleName)
+        successInstall = DFInstaller.isInstalled(this, moduleName)
         progressGroup.visibility = View.INVISIBLE
         if (launch && successInstall) {
             launchAndForwardIntent(applink)
@@ -229,7 +222,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
                 onRequireUserConfirmation(state)
             }
             SplitInstallSessionStatus.INSTALLED -> {
-                onInstalled()
+                onInstalled(moduleNameToDownload.first())
             }
 
             SplitInstallSessionStatus.INSTALLING -> {
@@ -436,8 +429,10 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         manager.startConfirmationDialogForResult(state, this, CONFIRMATION_REQUEST_CODE)
     }
 
-    override fun onInstalled() {
-        onSuccessfulLoad(moduleName, true)
+    override fun onInstalled(installedModule: String) {
+        if (installedModule == moduleName) {
+            onSuccessfulLoad(moduleName, true)
+        }
     }
 
     override fun onInstalling(state: SplitInstallSessionState) {

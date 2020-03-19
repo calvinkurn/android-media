@@ -50,14 +50,14 @@ object DFInstaller {
     interface DFInstallerView {
         fun onDownload(state: SplitInstallSessionState)
         fun onRequireUserConfirmation(state: SplitInstallSessionState)
-        fun onInstalled()
+        fun onInstalled(installedModule:String)
         fun onInstalling(state: SplitInstallSessionState)
         fun onFailed(errorString: String)
     }
 
     @JvmStatic
-    fun isInstalled(application: Application, moduleName: String): Boolean {
-        val manager = getManager(application) ?: return false
+    fun isInstalled(context: Context, moduleName: String): Boolean {
+        val manager = getManager(context.applicationContext) ?: return false
         return manager.installedModules.contains(moduleName)
     }
 
@@ -89,14 +89,14 @@ object DFInstaller {
             // SplitInstallManager only allow the installation from Main Thread.
             withContext(Dispatchers.Main) {
                 suspendCoroutine<Boolean> { continuation ->
-                    registerListener(context, moduleNameToDownload, onSuccessInstall, onFailedInstall, continuation)
+                    registerListener(applicationContext, moduleNameToDownload, onSuccessInstall, onFailedInstall, continuation)
                     getManager(applicationContext)?.startInstall(request)?.addOnSuccessListener {
                         if (it == 0) {
                             // success
                             val viewRef = viewRef
                             val view = viewRef?.get()
                             if (view != null) {
-                                view.onInstalled()
+                                view.onInstalled(moduleNameToDownload.first())
                             } else {
                                 logSuccessStatus(TAG_LOG_DFM_BG, applicationContext, moduleNameToDownload)
                             }
@@ -164,10 +164,10 @@ object DFInstaller {
         val moduleNameToDownload = mutableListOf<String>()
         val manager = getManager(context.applicationContext) ?: return moduleNameToDownload
         moduleNames.forEach { name ->
-            if (installed && !manager.installedModules.contains(name)) {
+            if (installed && !isInstalled(context, name)) {
                 moduleNameToDownload.add(name)
             }
-            if (!installed && manager.installedModules.contains(name)) {
+            if (!installed && isInstalled(context, name)) {
                 moduleNameToDownload.add(name)
             }
         }
@@ -230,19 +230,15 @@ object SplitInstallListener : SplitInstallStateUpdatedListener {
         }
         when (state.status()) {
             SplitInstallSessionStatus.DOWNLOADING -> {
-                val view = DFInstaller.getView()
-                if (view != null) {
-                    view.onDownload(state)
-                } else {
-                    if (DFInstaller.moduleSize == 0L) {
-                        DFInstaller.moduleSize = state.totalBytesToDownload()
-                    }
+                DFInstaller.getView()?.onDownload(state)
+                if (DFInstaller.moduleSize == 0L) {
+                    DFInstaller.moduleSize = state.totalBytesToDownload()
                 }
             }
             SplitInstallSessionStatus.INSTALLED -> {
                 val view = DFInstaller.getView()
                 if (view != null) {
-                    view.onInstalled()
+                    view.onInstalled(moduleNameToDownload.first())
                 } else {
                     context?.let { context ->
                         logSuccessStatus(DFInstaller.TAG_LOG_DFM_BG, context, moduleNameToDownload)

@@ -110,7 +110,7 @@ object DFDownloader {
 
                 // only download the first module in the list (that is not installed too)
                 val moduleToDownloadPair = DFQueue.getDFModuleList(applicationContext).asSequence()
-                    .filter { !splitInstallManager.installedModules.contains(it.first) }
+                    .filter { !DFInstaller.isInstalled(applicationContext, it.first) }
                     .take(1)
                     .firstOrNull()
                 val moduleToDownload = moduleToDownloadPair?.first ?: ""
@@ -127,11 +127,11 @@ object DFDownloader {
                     val successfulListAfterInstall = mutableListOf<String>()
                     val failedListAfterInstall = mutableListOf<Pair<String, Int>>()
 
-                    if (splitInstallManager.installedModules?.contains(moduleToDownload) != true) {
+                    if (DFInstaller.isInstalled(applicationContext, moduleToDownload)) {
+                        successfulListAfterInstall.add(moduleToDownload)
+                    } else {
                         failedListAfterInstall.add(Pair(moduleToDownload, (moduleToDownloadPair?.second
                             ?: 0) + 1))
-                    } else {
-                        successfulListAfterInstall.add(moduleToDownload)
                     }
 
                     if (DFRemoteConfig.getConfig(applicationContext).downloadInBackgroundAllowRetry) {

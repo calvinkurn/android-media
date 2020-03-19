@@ -291,8 +291,7 @@ object DeeplinkDFMapper {
         list?.forEach {
             if (it.logic(deeplink)) {
                 return getDFDeeplinkIfNotInstalled(context,
-                    deeplink, it.moduleId, context.getString(it.moduleNameResourceId),true,
-                    "", it.webviewFallback)
+                    deeplink, it.moduleId, context.getString(it.moduleNameResourceId), it.webviewFallback)
             }
         }
         return null
@@ -300,11 +299,10 @@ object DeeplinkDFMapper {
 
     private fun getDFDeeplinkIfNotInstalled(context: Context, deeplink: String,
                                             moduleId: String, moduleName: String,
-                                            isAuto: Boolean? = true,
-                                            imageUrl: String = "",
                                             fallbackUrl: String = ""): String? {
         getSplitManager(context)?.let {
-            if (it.installedModules.contains(moduleId)) {
+            val hasInstalled = it.installedModules.contains(moduleId)
+            if (hasInstalled) {
                 return null
             } else {
                 return UriUtil.buildUri(
@@ -312,8 +310,6 @@ object DeeplinkDFMapper {
                     moduleId,
                     moduleName,
                     Uri.encode(deeplink).toString(),
-                    isAuto.toString(),
-                    imageUrl,
                     fallbackUrl)
             }
         } ?: return null
