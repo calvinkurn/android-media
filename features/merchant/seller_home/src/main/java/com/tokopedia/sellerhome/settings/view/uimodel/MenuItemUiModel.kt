@@ -49,24 +49,21 @@ class MenuItemUiModel(val title: String = "",
     override val clickEventName: String =
             if(isNoIcon) {
                 SettingTrackingConstant.CLICK_SHOP_SETTING
-            }
-            else {
+            } else {
                 super.clickEventName
             }
 
     override val clickEventCategory: String =
             if (isNoIcon) {
                 SettingTrackingConstant.SETTINGS
-            }
-            else {
+            } else {
                 super.clickEventCategory
             }
 
     override val clickEventAction: String =
             if (isNoIcon) {
                 "${SettingTrackingConstant.CLICK} $settingTypeInfix - $title"
-            }
-            else {
+            } else {
                 "${SettingTrackingConstant.CLICK} $eventActionSuffix"
             }
 

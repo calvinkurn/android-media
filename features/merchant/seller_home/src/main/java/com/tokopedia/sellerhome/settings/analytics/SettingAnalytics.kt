@@ -14,6 +14,12 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import org.json.JSONObject
 
+/**
+ * Sellerapp Navigation Revamp
+ * Data layer docs
+ * https://docs.google.com/spreadsheets/d/1AZjuQ_dg25EvEEWmE8MPMo0f1_DT4IyZPaNpt4cxidA/edit#gid=0
+ */
+
 fun <R, T : SettingShopInfoImpressionTrackable> R.sendSettingShopInfoImpressionTracking(uiModel: T, action: (T) -> Unit) {
     when(this) {
         is ImageView -> {
@@ -35,19 +41,6 @@ fun <T : SettingShopInfoClickTrackable> T.sendSettingShopInfoClickTracking() {
     TrackApp.getInstance().gtm.sendGeneralEvent(map)
 }
 
-fun sendTrackingManual(eventName: String,
-                       eventCategory: String,
-                       eventAction: String,
-                       eventLabel: String) {
-    val map = mapOf(
-            TrackingConstant.EVENT to eventName,
-            TrackingConstant.EVENT_CATEGORY to eventCategory,
-            TrackingConstant.EVENT_ACTION to eventAction,
-            TrackingConstant.EVENT_LABEL to eventLabel
-    )
-    TrackApp.getInstance().gtm.sendGeneralEvent(map)
-}
-
 fun SettingShopInfoImpressionTrackable.sendShopInfoImpressionData(context: Context, userSession: UserSessionInterface) {
     val dataSize = 1
     val eventObject = JSONObject().apply {
@@ -64,4 +57,44 @@ fun SettingShopInfoImpressionTrackable.sendShopInfoImpressionData(context: Conte
     )
     val request = TrackingMapper().transformListEvent(listOf(tracking))
     IrisLogger.getInstance(context).putSendIrisEvent(request, dataSize)
+}
+
+fun sendSettingClickBackButtonTracking() {
+    sendTrackingManual(
+            eventName = SettingTrackingConstant.CLICK_SHOP_SETTING,
+            eventCategory = SettingTrackingConstant.SETTINGS,
+            eventAction = "${SettingTrackingConstant.CLICK} ${SettingTrackingConstant.BACK_ARROW}",
+            eventLabel = ""
+    )
+}
+
+fun sendShopInfoClickNextButtonTracking() {
+    sendTrackingManual(
+            eventName = SettingTrackingConstant.CLICK_NAVIGATION_DRAWER,
+            eventCategory = SettingTrackingConstant.OTHERS_TAB,
+            eventAction = "${SettingTrackingConstant.CLICK} ${SettingTrackingConstant.SHOP_ARROW}",
+            eventLabel = ""
+    )
+}
+
+fun sendClickShopNameTracking() {
+    sendTrackingManual(
+            eventName = SettingTrackingConstant.CLICK_NAVIGATION_DRAWER,
+            eventCategory = SettingTrackingConstant.OTHERS_TAB,
+            eventAction = "${SettingTrackingConstant.CLICK} ${SettingTrackingConstant.SHOP_NAME}",
+            eventLabel = ""
+    )
+}
+
+private fun sendTrackingManual(eventName: String,
+                       eventCategory: String,
+                       eventAction: String,
+                       eventLabel: String) {
+    val map = mapOf(
+            TrackingConstant.EVENT to eventName,
+            TrackingConstant.EVENT_CATEGORY to eventCategory,
+            TrackingConstant.EVENT_ACTION to eventAction,
+            TrackingConstant.EVENT_LABEL to eventLabel
+    )
+    TrackApp.getInstance().gtm.sendGeneralEvent(map)
 }

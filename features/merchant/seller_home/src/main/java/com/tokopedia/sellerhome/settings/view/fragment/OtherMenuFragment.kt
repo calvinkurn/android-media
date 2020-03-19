@@ -206,7 +206,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_ads_and_shop_promotion),
                         R.drawable.ic_ads_promotion,
-                        ApplinkConstInternalMarketplace.CENTRALIZED_PROMO,
+                        ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
                         eventActionSuffix = SettingTrackingConstant.SHOP_ADS_AND_PROMOTION),
                 SettingTitleUiModel(resources.getString(R.string.setting_menu_buyer_info)),
                 MenuItemUiModel(

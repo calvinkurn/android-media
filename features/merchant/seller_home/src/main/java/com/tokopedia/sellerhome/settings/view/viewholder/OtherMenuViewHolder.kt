@@ -109,12 +109,7 @@ class OtherMenuViewHolder(private val itemView: View,
                 text = shopName
                 setOnClickListener {
                     listener.onShopInfoClicked()
-                    sendTrackingManual(
-                            eventName = SettingTrackingConstant.CLICK_NAVIGATION_DRAWER,
-                            eventCategory = SettingTrackingConstant.OTHERS_TAB,
-                            eventAction = "${SettingTrackingConstant.CLICK} ${SettingTrackingConstant.SHOP_NAME}",
-                            eventLabel = ""
-                    )
+                    sendClickShopNameTracking()
                 }
             }
         }
@@ -239,12 +234,7 @@ class OtherMenuViewHolder(private val itemView: View,
         shopInfoLayout?.run {
             settingShopNext.setOnClickListener {
                 listener.onShopInfoClicked()
-                sendTrackingManual(
-                        eventName = SettingTrackingConstant.CLICK_NAVIGATION_DRAWER,
-                        eventCategory = SettingTrackingConstant.OTHERS_TAB,
-                        eventAction = "${SettingTrackingConstant.CLICK} ${SettingTrackingConstant.SHOP_ARROW}",
-                        eventLabel = ""
-                )
+                sendShopInfoClickNextButtonTracking()
             }
         }
     }
