@@ -11,6 +11,7 @@ class TravelHomepageProductCardModel (
         val title: String = "",
         val subtitle: String = "",
         val clickSeeAllUrl: String = "",
+        val seeAllText: String = "",
         val productItem: List<ProductGridCardItemModel> = listOf()
 ): TravelHomepageItemModel() {
     override fun type(typeFactory: TravelHomepageAdapterTypeFactory): Int = typeFactory.type(this)

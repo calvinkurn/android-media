@@ -57,10 +57,23 @@
         android:maxLines="2"
         android:textColor="@color/Neutral_N700_96"
         app:typographyType="body_2"
-        tools:text="Voucher Kintan Buffet Rp100.000 Voucher Kintan Buffet Rp100.000 Voucher Kintan Buffet Rp100.000 Voucher Kintan Buffet Rp100.000" />
+        tools:text="Voucher Kintan Buffet Rp100.000 Voucher Kintan Buffet Rp100.000 Voucher Kintan Buffet
+        Rp100.000 Voucher Kintan Buffet Rp100.000" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/travel_homepage_product_strikethrough_price"
+        android:id="@+id/travel_homepage_product_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/travel_homepage_dp_2"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/Neutral_N700_96"
+        app:typographyType="body_2"
+        tools:text="Voucher Kintan Buffet Rp100.000 Voucher Kintan Buffet Rp100.000 Voucher Kintan Buffet
+        Rp100.000 Voucher Kintan Buffet Rp100.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/travel_homepage_product_prefix"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/travel_homepage_dp_2"
@@ -69,7 +82,7 @@
         tools:text="Rp 150.000" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/travel_homepage_product_final_price"
+        android:id="@+id/travel_homepage_product_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/travel_homepage_dp_2"

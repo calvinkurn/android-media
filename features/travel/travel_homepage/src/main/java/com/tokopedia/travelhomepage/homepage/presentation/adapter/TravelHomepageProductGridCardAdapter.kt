@@ -39,18 +39,23 @@ class TravelHomepageProductGridCardAdapter(var list: List<ProductGridCardItemMod
                 travel_homepage_product_title.text = item.title
 
                 if (item.subtitle.isNotEmpty()) {
-                    travel_homepage_product_final_price.text = item.subtitle
-                    travel_homepage_product_final_price.show()
-                } else travel_homepage_product_final_price.hide()
+                    travel_homepage_product_subtitle.text = item.subtitle
+                    travel_homepage_product_subtitle.show()
+                } else travel_homepage_product_subtitle.hide()
 
                 if (item.prefix.isNotEmpty()) {
-                    travel_homepage_product_strikethrough_price.show()
-                    travel_homepage_product_strikethrough_price.text = when (item.prefixStyling) {
+                    travel_homepage_product_prefix.show()
+                    travel_homepage_product_prefix.text = when (item.prefixStyling) {
                         PREFIX_STYLE_STRIKETHROUGH -> TextHtmlUtils.getTextFromHtml(resources.getString(R.string.travel_prefix_strikethrough, item.prefix, ""))
                         PREFIX_STYLE_NORMAL -> TextHtmlUtils.getTextFromHtml(resources.getString(R.string.travel_prefix_normal, item.prefix, ""))
                         else -> item.prefix
                     }
-                } else travel_homepage_product_strikethrough_price.hide()
+                } else travel_homepage_product_prefix.hide()
+
+                if (item.value.isNotEmpty()) {
+                    travel_homepage_product_value.show()
+                    travel_homepage_product_value.text = item.value
+                } else travel_homepage_product_value.hide()
 
                 if (item.tag.isNotEmpty()) {
                     travel_homepage_product_discount_tag.show()

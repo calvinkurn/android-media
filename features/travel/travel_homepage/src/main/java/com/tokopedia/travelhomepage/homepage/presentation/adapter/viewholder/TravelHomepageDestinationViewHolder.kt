@@ -20,7 +20,7 @@ class TravelHomepageDestinationViewHolder(itemView: View, private val onItemBind
                                           private val travelHomepageActionListener: TravelHomepageActionListener)
     : AbstractViewHolder<TravelHomepageDestinationModel>(itemView) {
 
-    lateinit var recentSearchAdapter: TravelHomepageDestinationAdapter
+    lateinit var adapter: TravelHomepageDestinationAdapter
     private var currentPosition = -1
 
     override fun bind(element: TravelHomepageDestinationModel) {
@@ -35,9 +35,9 @@ class TravelHomepageDestinationViewHolder(itemView: View, private val onItemBind
                         section_title.text = element.meta.title
                     } else section_title.hide()
 
-                    if (!::recentSearchAdapter.isInitialized || currentPosition != element.layoutData.position) {
+                    if (!::adapter.isInitialized || currentPosition != element.layoutData.position) {
                         currentPosition = element.layoutData.position
-                        recentSearchAdapter = TravelHomepageDestinationAdapter(element.destination, travelHomepageActionListener,
+                        adapter = TravelHomepageDestinationAdapter(element.destination, travelHomepageActionListener,
                                 element.layoutData.position, element.layoutData.title)
                         travelHomepageActionListener.onViewDynamicBanners(element.destination, element.layoutData.position, element.layoutData.title)
                         val layoutManager = GridLayoutManager(this.context, 2, GridLayoutManager.VERTICAL, false)
@@ -51,7 +51,7 @@ class TravelHomepageDestinationViewHolder(itemView: View, private val onItemBind
                             }
                         }
                         list_recycler_view.layoutManager = layoutManager
-                        list_recycler_view.adapter = recentSearchAdapter
+                        list_recycler_view.adapter = adapter
 
                         while (list_recycler_view.itemDecorationCount > 0) {
                             list_recycler_view.removeItemDecorationAt(0)

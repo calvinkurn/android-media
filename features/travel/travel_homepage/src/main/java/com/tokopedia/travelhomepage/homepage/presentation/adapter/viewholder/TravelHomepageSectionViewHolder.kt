@@ -35,8 +35,9 @@ class TravelHomepageSectionViewHolder(itemView: View,
                         section_title.text = element.title
                     } else section_title.hide()
 
-                    if (element.seeAllUrl.isNotBlank()) {
+                    if (element.layoutData.metaText.isNotEmpty()) {
                         section_see_all.show()
+                        section_see_all.text = element.layoutData.metaText
                         section_see_all.setOnClickListener {
                             travelHomepageActionListener.onClickSeeAllProductSlider(element.layoutData.position, element.title)
                             travelHomepageActionListener.onItemClick(element.seeAllUrl)

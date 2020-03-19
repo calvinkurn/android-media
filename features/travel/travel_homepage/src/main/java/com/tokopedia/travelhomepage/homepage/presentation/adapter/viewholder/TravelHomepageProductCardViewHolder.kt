@@ -29,6 +29,7 @@ class TravelHomepageProductCardViewHolder(itemView: View, private val onItemBind
                     productCardWidget.titleText = element.title
                     productCardWidget.subtitleText = element.subtitle
                     productCardWidget.hasSeeAllButton = element.clickSeeAllUrl.isNotEmpty()
+                    productCardWidget.buttonText = element.layoutData.metaText
                     productCardWidget.listener = object: TravelHomepageProductGridCardWidget.ActionListener {
                         override fun onItemClickListener(item: ProductGridCardItemModel, position: Int) {
                             travelHomepageActionListener.onClickProductCard(item, position, element.layoutData.position, element.title)

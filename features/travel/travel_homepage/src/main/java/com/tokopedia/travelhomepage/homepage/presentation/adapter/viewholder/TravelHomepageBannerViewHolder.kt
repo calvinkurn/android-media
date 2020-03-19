@@ -45,6 +45,7 @@ class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener:
                     for (slidesModel in bannerList) {
                         promoUrls.add(slidesModel.attribute.imageUrl)
                     }
+                    if (element.layoutData.metaText.isNotEmpty()) bannerView.bannerSeeAll.text = element.layoutData.metaText
                     bannerView.setPromoList(promoUrls)
                     bannerView.buildView()
 

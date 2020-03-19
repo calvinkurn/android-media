@@ -22,6 +22,7 @@ class TravelHomepageProductGridCardWidget @JvmOverloads constructor(context: Con
     var listener: ActionListener? = null
     var titleText: String = ""
     var subtitleText: String = ""
+    var buttonText: String = ""
     lateinit var adapter: TravelHomepageProductGridCardAdapter
     var hasSeeAllButton = true
 
@@ -52,6 +53,7 @@ class TravelHomepageProductGridCardWidget @JvmOverloads constructor(context: Con
 
         if (hasSeeAllButton) {
             travel_homepage_product_widget_see_all.show()
+            travel_homepage_product_widget_see_all.text = buttonText
             travel_homepage_product_widget_see_all.setOnClickListener { listener?.onClickSeeAllListener() }
         } else travel_homepage_product_widget_see_all.hide()
     }
