@@ -2,9 +2,10 @@ package com.tokopedia.flight.common.view;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import androidx.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.ApplinkConst;
@@ -27,7 +28,7 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
 
 
     @Inject
-    FlightAnalytics flightAnalytics;
+    public FlightAnalytics flightAnalytics;
     @Inject
     UserSessionInterface userSession;
 
