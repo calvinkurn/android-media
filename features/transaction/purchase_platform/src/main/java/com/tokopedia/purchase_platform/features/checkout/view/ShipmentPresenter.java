@@ -1551,6 +1551,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         return requestParams;
     }
 
+    // Project ARMY
     @Override
     public void cancelAutoApplyPromoStack(int shopIndex, ArrayList<String> promoCodeList, boolean ignoreAPIResponse, String voucherType) {
         if (promoCodeList.size() > 0) {
@@ -1565,6 +1566,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
     }
 
+    // Clear promo red state before checkout
     @Override
     public void cancelNotEligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList, int checkoutType) {
         ArrayList<String> notEligiblePromoCodes = new ArrayList<>();
@@ -1582,6 +1584,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
     }
 
+    // Clear promo BBO after choose other / non BBO courier
     @Override
     public void cancelAutoApplyPromoStackLogistic(String promoCode) {
         ArrayList<String> promoCodeList = new ArrayList<>();
@@ -1614,6 +1617,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         );
     }
 
+    // Clear promo after clash (rare, almost zero probability)
     @Override
     public void cancelAutoApplyPromoStackAfterClash(ArrayList<String> promoCodesToBeCleared) {
         getView().showLoading();
