@@ -11,4 +11,6 @@ interface SellerHomeRouter {
     fun getSomListFragment(tabPage: String?): Fragment
 
     fun getProductManageFragment(): Fragment
+
+    fun getChatListFragment(): Fragment
 }

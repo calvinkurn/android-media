@@ -141,6 +141,7 @@ import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.topchat.attachproduct.view.activity.BroadcastMessageAttachProductActivity;
+import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
@@ -983,5 +984,11 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Fragment getProductManageFragment() {
         return ProductManageFragment.newInstance();
+    }
+
+    @NotNull
+    @Override
+    public Fragment getChatListFragment() {
+        return ChatTabListFragment.create();
     }
 }
