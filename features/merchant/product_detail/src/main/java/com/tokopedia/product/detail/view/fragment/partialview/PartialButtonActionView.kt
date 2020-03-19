@@ -24,8 +24,8 @@ class PartialButtonActionView private constructor(private val view: View,
     : View.OnClickListener by listener {
     var promoTopAdsClick: (() -> Unit)? = null
     var rincianTopAdsClick: (() -> Unit)? = null
-    var buyNowClick: (() -> Unit)? = null
-    var addToCartClick: (() -> Unit)? = null
+    var buyNowClick: ((String) -> Unit)? = null
+    var addToCartClick: ((String) -> Unit)? = null
     var byMeClick: ((TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate, Boolean) -> Unit)? = null
     var visibility: Boolean = false
         set(value) {
@@ -104,11 +104,11 @@ class PartialButtonActionView private constructor(private val view: View,
             }
             btn_buy_now.setOnClickListener {
                 if (hasComponentLoading) return@setOnClickListener
-                buyNowClick?.invoke()
+                buyNowClick?.invoke(btn_buy_now.text.toString())
             }
             btn_add_to_cart.setOnClickListener {
                 if (hasComponentLoading) return@setOnClickListener
-                addToCartClick?.invoke()
+                addToCartClick?.invoke(btn_add_to_cart.text.toString())
             }
             btn_topchat.setOnClickListener(this@PartialButtonActionView)
             btn_apply_leasing.setOnClickListener(this@PartialButtonActionView)
@@ -192,10 +192,7 @@ class PartialButtonActionView private constructor(private val view: View,
             btn_byme.hide()
             btn_empty_stock.show()
             btn_topchat.show()
-            btn_add_to_cart.setOnClickListener {
-                if (hasComponentLoading) return@setOnClickListener
-                addToCartClick?.invoke()
-            }
+            btn_topchat.setOnClickListener(this@PartialButtonActionView)
         }
     }
 

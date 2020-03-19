@@ -115,8 +115,7 @@
         app:unifyButtonVariant="filled"
         app:unifyButtonType="transaction"
         android:visibility="gone"
-        tools:visibility="visible"
-        />
+        tools:visibility="gone" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_top_ads"

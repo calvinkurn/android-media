@@ -867,6 +867,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             val productP3value = viewModel.productInfoP3resp.value
             if (shopInfo != null && shopInfo.isAllowManage == 1) {
                 if (productInfo?.basic?.status != ProductStatusTypeDef.PENDING) {
+                    DynamicProductDetailTracking.Click.onEditProductClicked(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
                     gotoEditProduct()
                 } else {
                     activity?.run {
@@ -1062,7 +1063,18 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun onSuccessAtc(cartId: String) {
-        when (viewModel.buttonAction) {
+        DynamicProductDetailTracking.Click.eventEcommerceBuy(viewModel.buttonActionType,
+                viewModel.buttonActionText,
+                viewModel.userId,
+                viewModel.shopInfo?.goldOS?.shopTypeString ?: "",
+                viewModel.shopInfo?.shopCore?.name ?: "",
+                cartId,
+                trackerAttributionPdp ?: "",
+                viewModel.selectedMultiOrigin.warehouseInfo.isFulfillment,
+                DynamicProductDetailTracking.generateVariantString(viewModel.variantData, viewModel.getDynamicProductInfoP1?.basic?.productID ?: ""),
+                viewModel.getDynamicProductInfoP1)
+
+        when (viewModel.buttonActionType) {
             ProductDetailConstant.OCS_BUTTON -> {
                 goToCheckout(ShipmentFormRequest
                         .BundleBuilder()
@@ -1389,6 +1401,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun onVariantGuideLineClicked(url: String) {
         activity?.let {
+            DynamicProductDetailTracking.Click.onVariantGuideLineClicked(viewModel.getDynamicProductInfoP1, pdpHashMapUtil?.productNewVariantDataModel,
+                    dynamicAdapter.getVariantPosition(pdpHashMapUtil?.productNewVariantDataModel))
             startActivity(ImagePreviewActivity.getCallingIntent(it, arrayListOf(url)))
         }
     }
@@ -1411,6 +1425,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
         val isPartialySelected = pdpHashMapUtil?.productNewVariantDataModel?.isPartialySelected()
                 ?: false
+
+        if (isPartialySelected && variantOptions.level == 0) {
+            DynamicProductDetailTracking.Click.onVariantLevel1Clicked(variantOptions,
+                    viewModel.getDynamicProductInfoP1,
+                    pdpHashMapUtil?.productNewVariantDataModel,
+                    dynamicAdapter.getVariantPosition(pdpHashMapUtil?.productNewVariantDataModel))
+        }
+
         viewModel.onVariantClicked(viewModel.variantData, pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant, isPartialySelected, variantOptions.level,
                 variantOptions.imageOriginal)
     }
@@ -2006,6 +2028,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
 
         actionButtonView.addToCartClick = {
+            viewModel.buttonActionText = it
             viewModel.getDynamicProductInfoP1?.let {
                 DynamicProductDetailTracking.Click.eventAddToCart(viewModel.isUserSessionActive, irisSessionId, viewModel.getDynamicProductInfoP1,
                         it.data.variant.isVariant)
@@ -2014,16 +2037,21 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
 
         actionButtonView.buyNowClick = {
+            viewModel.buttonActionText = it
             // buy now / buy / preorder
             viewModel.getDynamicProductInfoP1?.let {
                 DynamicProductDetailTracking.Click.eventClickBuy(viewModel.isUserSessionActive, viewModel.getDynamicProductInfoP1, it.data.variant.isVariant)
-                doAtc(ProductDetailConstant.BUY_BUTTON)
+                if (viewModel.p2Login.value?.isOcsCheckoutType == true) {
+                    doAtc(ProductDetailConstant.OCS_BUTTON)
+                } else {
+                    doAtc(ProductDetailConstant.BUY_BUTTON)
+                }
             }
         }
     }
 
     private fun doAtc(buttonAction: Int) {
-        viewModel.buttonAction = buttonAction
+        viewModel.buttonActionType = buttonAction
         context?.let {
             val isVariant = viewModel.getDynamicProductInfoP1?.data?.variant?.isVariant ?: false
             val isPartialySelected = pdpHashMapUtil?.productNewVariantDataModel?.isPartialySelected()
@@ -2034,18 +2062,19 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 return@let
             }
 
-            if (viewModel.buttonAction == ProductDetailConstant.TRADEIN_BUTTON && viewModel.getDynamicProductInfoP1?.basic?.status == ProductStatusTypeDef.WAREHOUSE) {
+            if (viewModel.buttonActionType == ProductDetailConstant.TRADEIN_BUTTON && viewModel.getDynamicProductInfoP1?.basic?.status == ProductStatusTypeDef.WAREHOUSE) {
                 showToasterError(getString(R.string.tradein_error_label))
                 return@let
             }
 
             if (isVariant && isPartialySelected) {
+                DynamicProductDetailTracking.Click.onVariantErrorPartialySelected(viewModel.getDynamicProductInfoP1, viewModel.buttonActionType)
                 scrollToPosition(dynamicAdapter.getVariantPosition(pdpHashMapUtil?.productNewVariantDataModel))
                 showToasterError(getString(R.string.add_to_cart_error_variant))
                 return@let
             }
 
-            when (viewModel.buttonAction) {
+            when (viewModel.buttonActionType) {
                 ProductDetailConstant.LEASING_BUTTON -> {
                     goToLeasing()
                     return@let
@@ -2061,7 +2090,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun buyAfterTradeinDiagnose(deviceId: String, phoneType: String, phonePrice: String) {
         //TODOTRACKTRADEIN
-        viewModel.buttonAction = ProductDetailConstant.TRADEIN_AFTER_DIAGNOSE
+        viewModel.buttonActionType = ProductDetailConstant.TRADEIN_AFTER_DIAGNOSE
         viewModel.tradeinDeviceId = deviceId
         hitAtc(ProductDetailConstant.OCS_BUTTON)
     }

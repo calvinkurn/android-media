@@ -151,7 +151,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var enableCaching: Boolean = true
     var variantData: ProductVariantCommon? = null
     var listOfParentMedia: MutableList<Media>? = null
-    var buttonAction: Int = 0
+    var buttonActionType: Int = 0
+    var buttonActionText: String = ""
     var tradeinDeviceId: String = ""
     private var submitTicketSubscription: Subscription? = null
     private var updateCartCounterSubscription: Subscription? = null
