@@ -77,11 +77,12 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             orderShop = orderData.cart.shop
             kero = orderData.cart.kero
             val preference = orderData.preference
-            _orderPreference = if (isFullRefresh || _orderPreference == null) {
-                OrderPreference(preference)
-            } else {
-                _orderPreference?.copy(preference = preference)
-            }
+//            _orderPreference = if (isFullRefresh || _orderPreference == null) {
+//                OrderPreference(preference)
+//            } else {
+//                _orderPreference?.copy(preference = preference)
+//            }
+            _orderPreference = OrderPreference(preference)
             orderPreference.value = OccState.FirstLoad(_orderPreference!!)
             if (orderProduct.productId > 0 && preference.shipment.serviceId > 0) {
                 orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.LOADING)

@@ -245,7 +245,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
             }
         })
-        if (viewModel.orderProduct.parentId == 0) {
+        if (viewModel.orderProduct.productId == 0) {
             refresh()
         }
     }
