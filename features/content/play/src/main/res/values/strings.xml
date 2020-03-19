@@ -26,6 +26,7 @@
     <string name="play_add_to_cart_message_success">Produk berhasil ditambahkan ke keranjang</string>
 
     <!--mock-->
+    <string name="play_mock_cart">99+</string>
     <string name="play_mock_view">2k</string>
     <string name="play_mock_like">0 Likes</string>
     <string name="play_mock_pinned_message">Yoenik Apparel Visit my collections here!</string>

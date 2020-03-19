@@ -8,7 +8,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.Group
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -134,7 +133,16 @@ class VariantSheetView(
                         title = selectedProduct.name,
                         stock = if (stock == null) OutOfStock else StockAvailable(stock.stock.orZero()),
                         isVariantAvailable = true,
-                        price = OriginalPrice(selectedProduct.priceFmt.toEmptyStringIfNull(), selectedProduct.price.toLong()),
+                        price = if (selectedProduct.campaign?.isActive == true) {
+                            DiscountedPrice(
+                                    originalPrice = selectedProduct.campaign?.originalPriceFmt.toEmptyStringIfNull(),
+                                    discountedPriceNumber = selectedProduct.campaign?.discountedPrice?.toLong()?:0L,
+                                    discountPercent = selectedProduct.campaign?.discountedPercentage?.toInt()?:0,
+                                    discountedPrice = selectedProduct.campaign?.discountedPriceFmt.toEmptyStringIfNull()
+                                    )
+                        } else {
+                            OriginalPrice(selectedProduct.priceFmt.toEmptyStringIfNull(), selectedProduct.price.toLong())
+                        },
                         minQty = variantSheetUiModel?.product?.minQty.orZero(),
                         applink = null
                 )
