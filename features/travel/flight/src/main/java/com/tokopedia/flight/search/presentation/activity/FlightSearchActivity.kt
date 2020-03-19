@@ -248,7 +248,7 @@ open class FlightSearchActivity : BaseSimpleActivity(),
 
         private const val DELAY_THREE_SECONDS: Long = 3000
         private val DIMEN_24_IN_PX = 24.toPx()
-        private val CORNER_RADIUS = 8f
+        private const val CORNER_RADIUS = 8f
 
         private const val REQUEST_CODE_BOOKING = 10
         private const val REQUEST_CODE_RETURN = 11
