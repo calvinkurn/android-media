@@ -16,6 +16,7 @@ object DeeplinkMapperMerchant {
     private const val PARAM_UTM_SOURCE = "utm_source"
     private const val DEFAULT_SHOP_ID = "0"
     private const val ACTION_REVIEW = "review"
+    private const val SHOP_PAGE_SEGMENT_SIZE = 1
     private const val SHOP_REVIEW_SEGMENT_SIZE = 2
 
     fun getRegisteredNavigationReputation(deeplink: String): String {
@@ -31,9 +32,25 @@ object DeeplinkMapperMerchant {
         return deeplink
     }
 
+    fun isShopPage(deeplink: String): Boolean {
+        val uri = Uri.parse(deeplink)
+        return deeplink.startsWithPattern(ApplinkConst.SHOP) && uri.pathSegments.size == SHOP_PAGE_SEGMENT_SIZE
+    }
+
     fun isShopReview(deeplink: String): Boolean {
         val uri = Uri.parse(deeplink)
         return deeplink.startsWithPattern(ApplinkConst.SHOP_REVIEW) && uri.lastPathSegment == ACTION_REVIEW
+    }
+
+    fun getRegisteredNavigationShopPage(deeplink: String): String {
+        if(deeplink.startsWithPattern(ApplinkConst.SHOP)) {
+            val segments = Uri.parse(deeplink).pathSegments
+            if (segments.size > 0) {
+                val shopId = segments[0]
+                return UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE, shopId)
+            }
+        }
+        return deeplink
     }
 
     fun getRegisteredNavigationShopReview(deeplink: String): String {

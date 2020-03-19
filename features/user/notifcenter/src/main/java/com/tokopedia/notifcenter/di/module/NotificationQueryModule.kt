@@ -1,15 +1,13 @@
 package com.tokopedia.notifcenter.di.module
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.consts.NotificationQueriesConstant
 import com.tokopedia.notifcenter.di.scope.NotificationContext
+import com.tokopedia.notifcenter.di.scope.NotificationScope
 import dagger.Module
 import dagger.Provides
-import dagger.multibindings.IntoMap
-import dagger.multibindings.StringKey
 import javax.inject.Named
 
 /**
@@ -20,27 +18,31 @@ import javax.inject.Named
 @Module class NotificationQueryModule {
 
     @Provides
-    @IntoMap
-    @StringKey(NotificationQueriesConstant.MUTATION_NOTIF_CENTER_PUSH_NOTIF)
+    @NotificationScope
+    @Named(NotificationQueriesConstant.MUTATION_NOTIF_CENTER_PUSH_NOTIF)
     fun provideRawQuerySendNotif(@NotificationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.mutation_notif_center_send_notif)
 
     @Provides
+    @NotificationScope
     @Named(NotificationQueriesConstant.DRAWER_PUSH_NOTIFICATION)
     fun provideRawQueryDrawerNotification(@NotificationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_drawer_notification)
 
     @Provides
+    @NotificationScope
     @Named(NotificationQueriesConstant.TRANSACTION_NOTIFICATION)
     fun provideNotificationViewBean(@NotificationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_notification_update)
 
     @Provides
+    @NotificationScope
     @Named(NotificationQueriesConstant.QUERY_IS_TAB_UPDATE)
     fun provideRawProductInfo(@NotificationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_get_is_tab_update)
 
     @Provides
+    @NotificationScope
     @Named(NotificationQueriesConstant.FILTER_NOTIFICATION)
     fun provideFilterNotification(@NotificationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_notification_update_filter)

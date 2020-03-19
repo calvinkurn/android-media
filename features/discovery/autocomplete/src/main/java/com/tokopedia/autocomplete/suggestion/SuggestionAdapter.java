@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.autocomplete.adapter.SearchTypeFactory;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -19,9 +18,9 @@ import java.util.List;
 public class SuggestionAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     private List<Visitable> list;
-    private final SearchTypeFactory typeFactory;
+    private final SuggestionTypeFactory typeFactory;
 
-    public SuggestionAdapter(SearchTypeFactory typeFactory) {
+    public SuggestionAdapter(SuggestionTypeFactory typeFactory) {
         this.typeFactory = typeFactory;
         this.list = new ArrayList<>();
     }
@@ -43,7 +42,6 @@ public class SuggestionAdapter extends RecyclerView.Adapter<AbstractViewHolder> 
     public int getItemViewType(int position) {
         return list.get(position).type(typeFactory);
     }
-
 
     @Override
     public int getItemCount() {

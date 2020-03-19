@@ -40,7 +40,7 @@
     <string name="path_qr_scanner" translatable="false">/qr-scanner/.*\\/</string>
     <string name="path_shop_open" translatable="false">/shop-open</string>
     <string name="path_onboarding" translatable="false">/onboarding</string>
-    <string name="path_shop_page" translatable="false">/shop-page</string>
+    <string name="path_shop_page" translatable="false">/shop-page/.*\\/</string>
     <string name="path_shop_info" translatable="false">/shop-info/.*\\/</string>
     <string name="path_shop_review" translatable="false">/shop/.*\\/review</string>
 
