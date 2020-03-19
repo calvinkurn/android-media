@@ -11,5 +11,4 @@ sealed class VariantSheetInteractionEvent : ComponentEvent {
     object OnCloseVariantSheet : VariantSheetInteractionEvent()
     data class OnBuyProduct(val product: ProductLineUiModel) : VariantSheetInteractionEvent()
     data class OnAddProductToCart(val product: ProductLineUiModel) : VariantSheetInteractionEvent()
-    data class OnClickVariantGuideline(val url: String) : VariantSheetInteractionEvent()
 }
