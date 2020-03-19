@@ -1857,7 +1857,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
             }
             NAVIGATION_PROMO -> {
-                dPresenter.doUpdateCartAndValidateUse(generateParamValidateUsePromoRevamp(false, -1,-1, true))
+                dPresenter.processInitialGetCartData(getCartId(), cartListData == null, false)
             }
         }
     }

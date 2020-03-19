@@ -1289,8 +1289,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void onResultFromPromo() {
-        ValidateUsePromoRequest validateUsePromoRequest = generateValidateUsePromoRequest();
-        shipmentPresenter.checkPromoCheckoutFinalShipment(validateUsePromoRequest);
+        shipmentPresenter.processInitialLoadCheckoutPage(
+                true, isOneClickShipment(), isTradeIn(), true,
+                false, null, getDeviceId(), getCheckoutLeasingId()
+        );
     }
 
     public void onResultFromEditAddress() {
