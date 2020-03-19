@@ -9,12 +9,12 @@ import rx.Subscriber
  */
 class ClearRedPromosBeforeGoToCheckoutSubscriber(val view: ICartListView?) : Subscriber<ClearCacheAutoApplyStackResponse>() {
     override fun onNext(t: ClearCacheAutoApplyStackResponse?) {
-
+        view?.onSuccessClearRedPromosThenGoToCheckout()
     }
 
     override fun onCompleted() {}
 
     override fun onError(e: Throwable?) {
-        // TODO: make sure onError still call checkout?
+        view?.onSuccessClearRedPromosThenGoToCheckout()
     }
 }
