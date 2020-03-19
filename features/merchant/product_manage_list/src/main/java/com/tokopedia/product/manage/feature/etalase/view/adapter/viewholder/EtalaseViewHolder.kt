@@ -30,7 +30,7 @@ class EtalaseViewHolder(
     }
 
     fun toggleEtalase(): Boolean {
-        radioButtonEtalase.toggle()
+        radioButtonEtalase.apply { isChecked = !isChecked }
         return radioButtonEtalase.isChecked
     }
 
