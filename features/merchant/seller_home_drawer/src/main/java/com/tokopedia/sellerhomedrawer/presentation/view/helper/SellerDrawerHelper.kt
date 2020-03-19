@@ -14,7 +14,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
@@ -22,6 +22,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -93,7 +94,7 @@ class SellerDrawerHelper @Inject constructor(val context: Activity,
             when(drawerItem.id) {
                 SellerHomeState.DrawerPosition.INDEX_HOME -> {
                     eventDrawerClick(EventLabel.SELLER_HOME)
-                    moveActivityApplink(ApplinkConstInternalMarketplace.SELLER_HOME)
+                    moveActivityApplink(ApplinkConstInternalSellerapp.SELLER_HOME)
                 }
                 SellerHomeState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND -> {
                     if (context.application is AbstractionRouter)
@@ -220,8 +221,11 @@ class SellerDrawerHelper @Inject constructor(val context: Activity,
                 }
             }
 
-            if (selectedPosition != SellerHomeState.DrawerPosition.INDEX_HOME && drawerItem.id != SellerHomeState.DrawerPosition.LOGOUT && isNeedToCloseActivity)
+            if (selectedPosition != SellerHomeState.DrawerPosition.INDEX_HOME
+                    && drawerItem.id != SellerHomeState.DrawerPosition.LOGOUT
+                    && isNeedToCloseActivity) {
                 context.finish()
+            }
 
             closeDrawer()
         }
@@ -399,7 +403,7 @@ class SellerDrawerHelper @Inject constructor(val context: Activity,
                     isSelected = selectedPosition == SellerHomeState.DrawerPosition.SETTINGS
             ))
             add(SellerDrawerItem(
-                    label = context.getString(R.string.title_activity_contact_us),
+                    label = context.getString(R.string.title_activity_contact_us_drawer),
                     iconId = R.drawable.sh_ic_contactus,
                     id = SellerHomeState.DrawerPosition.CONTACT_US,
                     isExpanded = true,
@@ -441,6 +445,7 @@ class SellerDrawerHelper @Inject constructor(val context: Activity,
         ImageHandler.LoadImage(context.findViewById(R.id.shop_icon), profile.shopAvatar)
         context.findViewById<FrameLayout>(R.id.drawer_shop).setOnClickListener {
             onGoToShop()
+            closeDrawer()
         }
     }
 

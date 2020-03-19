@@ -25,6 +25,10 @@ import com.tokopedia.digital.home.APPLINK_HOME_FAV_LIST
 import com.tokopedia.digital.home.APPLINK_HOME_MYBILLS
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.di.DigitalHomePageComponent
+import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.QUERY_BANNER
+import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.QUERY_CATEGORY
+import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.QUERY_RECOMMENDATION
+import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.QUERY_SECTIONS
 import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
 import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
 import com.tokopedia.digital.home.model.DigitalHomePageItemModel
@@ -43,9 +47,6 @@ import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageTypeFactor
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageTransactionViewHolder
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel
-import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel.Companion.FAVORITES_ORDER
-import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel.Companion.NEW_USER_ZONE_ORDER
-import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel.Companion.SPOTLIGHT_ORDER
 import kotlinx.android.synthetic.main.layout_digital_home.*
 import javax.inject.Inject
 
@@ -61,8 +62,6 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     @Inject
     lateinit var viewModel: DigitalHomePageViewModel
     private var searchBarTransitionRange = 0
-
-    private var initialImpressionTracking: MutableMap<String, Boolean> = initialImpressionTrackingConst.toMutableMap()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.layout_digital_home, container, false)
@@ -98,8 +97,6 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         digital_homepage_order_list.setOnClickListener {
             onClickOrderList()
         }
-
-        resetInitialImpressionTracking()
     }
 
     private fun hideStatusBar() {
@@ -178,7 +175,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         viewModel.digitalHomePageList.observe(this, Observer {
             clearAllData()
             it?.run {
-                DigitalHomePageCategoryDataMapper.mapCategoryData(this[DigitalHomePageViewModel.CATEGORY_ORDER])?.let { categoryData ->
+                DigitalHomePageCategoryDataMapper.mapCategoryData(this[DigitalHomePageViewModel.CATEGORY_SECTION_ORDER])?.let { categoryData ->
                     trackingUtil.eventCategoryImpression(categoryData)
                 }
                 val list = this.filter { item -> !item.isEmpty }
@@ -188,11 +185,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
 
         viewModel.isAllError.observe(this, Observer {
             it?.let { isAllError ->
-                if (isAllError) NetworkErrorHelper.showEmptyState(context, view?.rootView, object : NetworkErrorHelper.RetryClickedListener {
-                    override fun onRetryClicked() {
-                        loadInitialData()
-                    }
-                })
+                if (isAllError) NetworkErrorHelper.showEmptyState(context, view?.rootView) { loadInitialData() }
             }
         })
     }
@@ -205,52 +198,15 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         isLoadingInitialData = true
         adapter.clearAllElements()
         showLoading()
-        resetInitialImpressionTracking()
-        viewModel.getInitialList(swipeToRefresh?.isRefreshing ?: false)
-    }
 
-    override fun onBannerItemDigitalBind(loadFromCloud: Boolean?) {
-        viewModel.getBannerList(GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_banner), loadFromCloud
-                ?: true)
-    }
-
-    override fun onCategoryItemDigitalBind(loadFromCloud: Boolean?) {
-        viewModel.getCategoryList(GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_category), loadFromCloud
-                ?: true)
-    }
-
-    override fun onPromoItemDigitalBind() {
-        //nothing to do, api not ready yet
-    }
-
-    override fun onFavoritesItemDigitalBind(loadFromCloud: Boolean?) {
-        viewModel.getFavoritesList(GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_section), loadFromCloud
-                ?: true)
-    }
-
-    override fun onTrustMarkItemDigitalBind(loadFromCloud: Boolean?) {
-        viewModel.getTrustMarkList(GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_section), loadFromCloud
-                ?: true)
-    }
-
-    override fun onNewUserZoneItemDigitalBind(loadFromCloud: Boolean?) {
-        viewModel.getNewUserZoneList(GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_section), loadFromCloud
-                ?: true)
-    }
-
-    override fun onSpotlightItemDigitalBind(loadFromCloud: Boolean?) {
-        viewModel.getSpotlightList(GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_section), loadFromCloud
-                ?: true)
-    }
-
-    override fun onSubscriptionItemDigitalBind(loadFromCloud: Boolean?) {
-        viewModel.getSubscriptionList(GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_section), loadFromCloud
-                ?: true)
-    }
-
-    override fun onRecommendationItemDigitalBind(loadFromCloud: Boolean?) {
-        viewModel.getRecommendationList(GraphqlHelper.loadRawString(resources, com.tokopedia.common_digital.R.raw.digital_recommendation_list), loadFromCloud
-                ?: true)
+        val queryList = mapOf(
+                QUERY_BANNER to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_banner),
+                QUERY_CATEGORY to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_category),
+                QUERY_SECTIONS to GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_section),
+                QUERY_RECOMMENDATION to GraphqlHelper.loadRawString(resources, com.tokopedia.common_digital.R.raw.digital_recommendation_list)
+        )
+        viewModel.initialize(queryList)
+        viewModel.getData(swipeToRefresh?.isRefreshing ?: false)
     }
 
     override fun onCategoryItemClicked(element: DigitalHomePageCategoryModel.Submenu?, position: Int) {
@@ -268,11 +224,11 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         RouteManager.route(activity, ApplinkConst.PROMO_LIST)
     }
 
-    override fun onSectionItemClicked(element: DigitalHomePageSectionModel.Item, i: Int, sectionType: String) {
+    override fun onSectionItemClicked(element: DigitalHomePageSectionModel.Item, position: Int, sectionType: String) {
         if (sectionType == SUBSCRIPTION_GUIDE_CLICK) {
             trackingUtil.eventClickSubscriptionGuide()
         } else {
-            trackingUtil.eventSectionClick(element, i, sectionType)
+            trackingUtil.eventSectionClick(element, position, sectionType)
         }
         RouteManager.route(activity, element.applink)
     }
@@ -282,15 +238,8 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         RouteManager.route(activity, element.applink)
     }
 
-    override fun onSectionItemImpression(elements: List<DigitalHomePageSectionModel.Item>, sectionType: String, initial: Boolean) {
-        if (initial) {
-            if (initialImpressionTracking[sectionType] == true) {
-                initialImpressionTracking[sectionType] = false
-                trackingUtil.eventSectionImpression(elements, sectionType)
-            }
-        } else {
-            trackingUtil.eventSectionImpression(elements, sectionType)
-        }
+    override fun onSectionItemImpression(elements: List<DigitalHomePageSectionModel.Item>, sectionType: String) {
+        trackingUtil.eventSectionImpression(elements, sectionType)
     }
 
     override fun onBannerImpressionTrack(banner: DigitalHomePageBannerModel.Banner?, position: Int) {
@@ -301,15 +250,8 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         // do nothing
     }
 
-    override fun onRecommendationImpression(elements: List<RecommendationItemEntity>, initial: Boolean) {
-        if (initial) {
-            if (initialImpressionTracking[SUBHOME_WIDGET_IMPRESSION] == true) {
-                initialImpressionTracking[SUBHOME_WIDGET_IMPRESSION] = false
-                trackingUtil.eventRecommendationImpression(elements)
-            }
-        } else {
-            trackingUtil.eventRecommendationImpression(elements)
-        }
+    override fun onRecommendationImpression(elements: List<RecommendationItemEntity>) {
+        trackingUtil.eventRecommendationImpression(elements)
     }
 
     override fun getAdapterTypeFactory(): DigitalHomePageTypeFactory {
@@ -350,10 +292,6 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
 
     fun onBackPressed() {
         trackingUtil.eventClickBackButton()
-    }
-
-    private fun resetInitialImpressionTracking() {
-        initialImpressionTracking = initialImpressionTrackingConst.toMutableMap()
     }
 
     companion object {

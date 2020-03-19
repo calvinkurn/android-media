@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.di.DaggerProfileCompletionSettingComponent
+import com.tokopedia.profilecompletion.di.ProfileCompletionSettingModule
 import com.tokopedia.profilecompletion.settingprofile.view.fragment.SettingProfileFragment
 
 /**
@@ -17,8 +18,11 @@ import com.tokopedia.profilecompletion.settingprofile.view.fragment.SettingProfi
 
 class SettingProfileActivity: BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
 
-    override fun getComponent(): ProfileCompletionSettingComponent = DaggerProfileCompletionSettingComponent
-        .builder().baseAppComponent((application as BaseMainApplication).baseAppComponent).build()
+    override fun getComponent(): ProfileCompletionSettingComponent =
+            DaggerProfileCompletionSettingComponent.builder()
+                    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                    .profileCompletionSettingModule(ProfileCompletionSettingModule(this))
+                    .build()
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()

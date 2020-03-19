@@ -40,8 +40,11 @@ class HotelRoomDetailActivity : HotelBaseActivity(), HasComponent<HotelRoomDetai
 
     override fun shouldShowOptionMenu(): Boolean = false
 
+    override fun getScreenName() = ROOM_DETAIL_SCREEN_NAME
+
     companion object {
 
+        const val ROOM_DETAIL_SCREEN_NAME = "/hotel/roomdetails"
         const val EXTRA_SAVED_INSTANCE_ID = "EXTRA_SAVED_INSTANCE_ID"
         const val EXTRA_ROOM_INDEX = "EXTRA_ROOM_INDEX"
 

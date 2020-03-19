@@ -136,7 +136,7 @@ public class ImagePickerCatalogFragment extends BaseListFragment<CatalogModelVie
     @Override
     protected BaseListAdapter<CatalogModelView, CatalogAdapterTypeFactory> createAdapterInstance() {
         imageCatalogAdapter = new ImageCatalogAdapter(getAdapterTypeFactory(),
-                this, listenerImagePickerCatalog.getSelectedImagePath());
+                this, listenerImagePickerCatalog.getImagePath());
         return imageCatalogAdapter;
     }
 
@@ -185,6 +185,6 @@ public class ImagePickerCatalogFragment extends BaseListFragment<CatalogModelVie
     public interface ListenerImagePickerCatalog {
         void onClickImageCatalog(String url, boolean isChecked);
         boolean isMaxImageReached();
-        ArrayList<String> getSelectedImagePath();
+        ArrayList<String> getImagePath();
     }
 }

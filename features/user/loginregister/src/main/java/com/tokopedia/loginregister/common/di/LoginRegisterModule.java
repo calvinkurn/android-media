@@ -5,13 +5,14 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.data.LoginRegisterApi;
@@ -43,8 +44,10 @@ public class LoginRegisterModule {
 
     @LoginRegisterScope
     @Provides
-    LoginRegisterAnalytics provideLoginRegisterAnalytics(@Named(SessionModule.SESSION_MODULE) UserSessionInterface userSessionInterface) {
-        return new LoginRegisterAnalytics(userSessionInterface);
+    LoginRegisterAnalytics provideLoginRegisterAnalytics(
+            @Named(SessionModule.SESSION_MODULE) UserSessionInterface userSessionInterface,
+            IrisSession irisSession) {
+        return new LoginRegisterAnalytics(userSessionInterface, irisSession);
     }
 
     @LoginRegisterScope
@@ -57,7 +60,7 @@ public class LoginRegisterModule {
     @Provides
     OkHttpClient provideOkHttpClient(@ApplicationContext Context context,
                                      TkpdOldAuthInterceptor tkpdAuthInterceptor,
-                                     ChuckInterceptor chuckInterceptor,
+                                     ChuckerInterceptor chuckInterceptor,
                                      DebugInterceptor debugInterceptor,
                                      HttpLoggingInterceptor httpLoggingInterceptor,
                                      FingerprintInterceptor fingerprintInterceptor) {
@@ -102,5 +105,11 @@ public class LoginRegisterModule {
     @Provides
     PermissionCheckerHelper providePermissionCheckerHelper(){
         return new PermissionCheckerHelper();
+    }
+
+    @LoginRegisterScope
+    @Provides
+    IrisSession provideIrisSession(@ApplicationContext Context context) {
+        return new IrisSession(context);
     }
 }

@@ -21,10 +21,12 @@ android {
     }
 
     buildTypes {
-        debug{
-            testCoverageEnabled (project.hasProperty('coverage')? true : false)
+        debug {
+            ext.enableHansel = project.hasProperty('hanselEnableDebug')
+            testCoverageEnabled (project.hasProperty('coverage'))
         }
         release {
+            ext.enableHansel = !project.hasProperty('hanselDisableRelease')
             minifyEnabled false
             //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             proguardFiles 'proguard-rules.pro'
@@ -74,6 +76,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.miscDependencies.gson
+    implementation rootProject.ext.miscDependencies.robust
 
     androidTestImplementation(rootProject.ext.testDependencies.androidTestRunner) {
         exclude module: 'support-annotations'
@@ -93,4 +96,5 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.powerMockJUnitRule
     testImplementation rootProject.ext.testDependencies.powerMockito
     testImplementation rootProject.ext.testDependencies.powerMockXstream
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
 }

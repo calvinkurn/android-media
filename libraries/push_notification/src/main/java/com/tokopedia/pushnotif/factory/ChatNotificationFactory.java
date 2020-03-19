@@ -14,6 +14,7 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
+import com.tokopedia.user.session.UserSession;
 
 /**
  * @author ricoharisin .
@@ -27,6 +28,7 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
     private static String REPLY_LABEL = "Reply";
     private static String MESSAGE_ID = "message_chat_id";
     private static String NOTIFICATION_ID = "notification_id";
+    private static String USER_ID = "user_id";
 
     public ChatNotificationFactory(Context context) {
         super(context);
@@ -80,11 +82,13 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
     }
 
     private PendingIntent getReplyChatPendingIntent(String mMessageId, int notificationId) {
+        UserSession userSession = new UserSession(context);
 
         Intent intent = new Intent(INTENT_ACTION_REPLY);
         intent.setPackage(context.getPackageName());
         intent.putExtra(MESSAGE_ID, mMessageId);
         intent.putExtra(NOTIFICATION_ID, notificationId);
+        intent.putExtra(USER_ID, userSession.getUserId());
 
         return PendingIntent.getBroadcast(context, 100, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);

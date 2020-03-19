@@ -33,10 +33,9 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.drawer2.service.DrawerGetNotificationService;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.session.baseFragment.BaseFragment;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core2.R;
@@ -48,6 +47,7 @@ import com.tokopedia.seller.selling.presenter.ShippingView;
 import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
 import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
 import com.tokopedia.seller.selling.view.viewHolder.ShippingViewHolder;
+import com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -538,7 +538,7 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
             @Override
             public void onRefresh(View view) {
                 if (GlobalConfig.isSellerApp()) {
-                    DrawerGetNotificationService.startService(MainApplication.getAppContext(), true, true);
+                    SellerDrawerGetNotificationService.startService(MainApplication.getAppContext(), true, true);
                 }
                 presenter.onRefreshHandler();
             }

@@ -10,7 +10,6 @@ import com.tokopedia.core.fragment.shopstatistic.ShopStatisticTransaction;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.facade.FacadeShopStatistic;
 
-
 /**
  * A placeholder fragment containing a simple view.
  */

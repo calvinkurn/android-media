@@ -5,7 +5,7 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
-@Module
+@Module(includes = [AddEditProductShipmentModelModule::class])
 @AddEditProductShipmentScope
 class AddEditProductShipmentModule {
     @AddEditProductShipmentScope
