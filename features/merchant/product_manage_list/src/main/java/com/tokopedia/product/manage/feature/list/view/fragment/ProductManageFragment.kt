@@ -748,8 +748,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun onSwipeRefresh() {
-        allProductList.clear()
-        clearSearchBarInput()
+        clearProductList()
         clearSelectedProduct()
         renderCheckedView()
         super.onSwipeRefresh()
