@@ -41,7 +41,6 @@ class ShopHomeVideoViewHolder(
     private var videoUrl: String = ""
     private var youTubeThumbnailShopPage: YouTubeThumbnailView? = null
     private var loaderImageView: LoaderImageView? = null
-    private var errorVideoYoutube: ConstraintLayout? = null
     private var youtubVideoModel: ShopHomeDisplayWidgetUiModel? = null
 
     var btnYoutubePlayer: AppCompatImageView? = null
