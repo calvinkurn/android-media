@@ -435,7 +435,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_TAMBAH_PILIHAN_FROM_GANTI_PILIHAN_OSP  = "preference -  click tambah pilihan from ganti pilihan";
         String CLICK_BACK_FROM_OSP = "click back in order summary page";
 
-
+        String VIEW_ORDER_SUMMARY_PAGE = "view order summary page";
 
     }
 
