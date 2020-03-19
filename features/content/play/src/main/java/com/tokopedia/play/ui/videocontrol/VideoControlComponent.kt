@@ -41,9 +41,13 @@ open class VideoControlComponent(
                                 if (it.videoStream.channelType.isLive) uiView.hide()
                                 else if (it.videoStream.channelType.isVod) uiView.show()
                             }
-                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) {
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if (it.event.isFreeze) {
                                 uiView.hide()
                                 uiView.setPlayer(null)
+                            }
+                            is ScreenStateEvent.BottomInsetsChanged -> {
+                                if (!it.isAnyShown && it.stateHelper.channelType.isVod) uiView.show()
+                                else uiView.hide()
                             }
                         }
                     }
