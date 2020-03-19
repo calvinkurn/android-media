@@ -54,11 +54,7 @@ class ShopHomeSliderBannerViewHolder(
             }
         }
 
-        val indexZero = getIndexRatio(0).toFloat()
-        val indexOne = getIndexRatio(1).toFloat()
-        heightRatio = (indexOne / indexZero)
-
-        img.setImageUrl(carouselItem.imageUrl, heightRatio = heightRatio)
+        img.setImageUrl(carouselItem.imageUrl, heightRatio = getHeightRatio())
     }
 
     init {
@@ -135,6 +131,12 @@ class ShopHomeSliderBannerViewHolder(
 
     private fun getIndexRatio(index: Int): Int {
         return bannerData?.header?.ratio?.split(":")?.get(index)?.toInt() ?: 0
+    }
+
+    private fun getHeightRatio(): Float {
+        val indexZero = getIndexRatio(0).toFloat()
+        val indexOne = getIndexRatio(1).toFloat()
+        return (indexOne / indexZero)
     }
 
     private fun dataWidgetToCarouselData(element: ShopHomeDisplayWidgetUiModel): ArrayList<Any> {

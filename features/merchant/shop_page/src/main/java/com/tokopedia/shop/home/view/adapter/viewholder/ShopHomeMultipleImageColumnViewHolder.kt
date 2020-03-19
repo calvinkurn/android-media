@@ -7,6 +7,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
+import com.tokopedia.shop.home.WidgetName
+import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
+import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
+import com.tokopedia.shop.home.WidgetName.DISPLAY_TRIPLE_COLUMN
 import com.tokopedia.shop.home.view.adapter.PaddingItemDecorationShopPage
 import com.tokopedia.shop.home.view.adapter.ShopHomeMultipleImageColumnAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
@@ -48,6 +52,7 @@ class ShopHomeMultipleImageColumnViewHolder(
                 }
             }
         }
+
         itemView.rvShopHomeMultiple.apply {
             layoutManager = gridLayoutManager
             if (itemDecorationCount == 0) {
@@ -64,17 +69,19 @@ class ShopHomeMultipleImageColumnViewHolder(
             }
         }
 
-        val indexZero = getIndexRatio(element, 0).toFloat()
-        val indexOne = getIndexRatio(element,1).toFloat()
-        val heightRatio = (indexOne / indexZero)
-
         shopHomeMultipleImageColumnAdapter.setShopHomeDisplayWidgetUiModelData(element)
         shopHomeMultipleImageColumnAdapter.setParentPosition(adapterPosition)
-        shopHomeMultipleImageColumnAdapter.setHeightRatio(heightRatio)
+        shopHomeMultipleImageColumnAdapter.setHeightRatio(getHeightRatio(element))
         shopHomeMultipleImageColumnAdapter.submitList(element.data)
     }
 
     private fun getIndexRatio(data: ShopHomeDisplayWidgetUiModel, index: Int): Int {
         return data.header.ratio.split(":")[index].toInt()
+    }
+
+    private fun getHeightRatio(element: ShopHomeDisplayWidgetUiModel): Float {
+        val indexZero = getIndexRatio(element, 0).toFloat()
+        val indexOne = getIndexRatio(element, 1).toFloat()
+        return (indexOne / indexZero)
     }
 }
