@@ -25,7 +25,7 @@ data class VariantDataModel(
 
     fun isPartialySelected(): Boolean = mapOfSelectedVariant.any {
         it.value == 0
-    }
+    } || mapOfSelectedVariant.isEmpty()
 
     override fun type(): String = type
 

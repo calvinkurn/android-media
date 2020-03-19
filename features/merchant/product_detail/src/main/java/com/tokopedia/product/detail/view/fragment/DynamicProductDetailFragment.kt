@@ -266,6 +266,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun hasInitialSwipeRefresh(): Boolean = true
 
     override fun onSwipeRefresh() {
+        pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant = mutableMapOf()
         recommendationCarouselPositionSavedState.clear()
         isLoadingInitialData = true
         isTopdasLoaded = false
@@ -1423,7 +1424,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun onVariantClicked(variantOptions: VariantOptionWithAttribute) {
         pdpHashMapUtil?.productNewVariantDataModel?.let {
-            it.mapOfSelectedVariant[variantOptions.variantOptionIdentifier] = variantOptions.variantId
+            it.mapOfSelectedVariant[variantOptions.variantCategoryKey] = variantOptions.variantId
         }
         val isPartialySelected = pdpHashMapUtil?.productNewVariantDataModel?.isPartialySelected()
                 ?: false

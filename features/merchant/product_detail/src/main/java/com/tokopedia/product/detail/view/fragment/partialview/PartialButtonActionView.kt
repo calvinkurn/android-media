@@ -172,6 +172,7 @@ class PartialButtonActionView private constructor(private val view: View,
     private fun showShopManageButton() {
         with(view) {
             btn_empty_stock.hide()
+            btn_topchat.hide()
             btn_top_ads.show()
             if (hasTopAdsActive) {
                 btn_top_ads.setOnClickListener { rincianTopAdsClick?.invoke() }
