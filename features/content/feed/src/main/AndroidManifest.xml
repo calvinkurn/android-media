@@ -10,7 +10,18 @@
             android:name=".view.activity.FeedPlusDetailActivity"
             android:label="@string/title_detail_feed"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White" >
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_feed_detail_page"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".profilerecommendation.view.activity.FollowRecomActivity"
             android:label="@string/recommendation_for_you"
