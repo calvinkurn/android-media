@@ -42,4 +42,9 @@ class GetDistrictUseCase
     fun unsubscribe() {
         gql.unsubscribe()
     }
+
+    companion object {
+        const val FOREIGN_COUNTRY_MESSAGE = "Lokasi di luar Indonesia."
+        const val LOCATION_NOT_FOUND_MESSAGE = "Lokasi gagal ditemukan"
+    }
 }

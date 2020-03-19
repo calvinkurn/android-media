@@ -11,6 +11,8 @@ import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressScope
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.DistrictBoundaryUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
+import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase.Companion.FOREIGN_COUNTRY_MESSAGE
+import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase.Companion.LOCATION_NOT_FOUND_MESSAGE
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
@@ -24,9 +26,6 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2019-05-08.
  */
-const val FOREIGN_COUNTRY_MESSAGE = "Lokasi di luar Indonesia."
-const val LOCATION_NOT_FOUND_MESSAGE = "Lokasi gagal ditemukan"
-
 @AddNewAddressScope
 class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: GetDistrictUseCase,
                                                private val revGeocodeUseCase: RevGeocodeUseCase,
