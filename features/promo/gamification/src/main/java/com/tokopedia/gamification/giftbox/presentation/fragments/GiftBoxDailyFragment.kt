@@ -1,5 +1,6 @@
 package com.tokopedia.gamification.giftbox.presentation.fragments
 
+import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
@@ -39,6 +40,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     lateinit var prizeViewSmallFirst: GiftPrizeSmallView
     lateinit var prizeViewSmallSecond: GiftPrizeSmallView
     lateinit var prizeViewLarge: GiftPrizeLargeView
+    lateinit var llRewardMessage: LinearLayout
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -74,6 +76,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     override fun initViews(v: View) {
         tvBenefits = v.findViewById(R.id.tvBenefits)
         llBenefits = v.findViewById(R.id.ll_benefits)
+        llRewardMessage = v.findViewById(R.id.ll_reward_message)
         super.initViews(v)
 
         setListeners()
@@ -121,6 +124,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 startsAnimatorList.forEach {
                     it.start()
                 }
+                showRewardMessageDescription().start()
             }
         }
 
@@ -162,10 +166,18 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         })
     }
 
+    fun showRewardMessageDescription():Animator {
+        val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
+        val alphaAnim = ObjectAnimator.ofPropertyValuesHolder(llRewardMessage, alphaProp)
+        alphaAnim.duration = 200L
+        return alphaAnim
+    }
+
     override fun initialViewSetup() {
         super.initialViewSetup()
         llBenefits.alpha = 0f
         tvBenefits.alpha = 0f
+        llRewardMessage.alpha = 0f
     }
 
 //    fun renderGiftBoxState(giftBoxState: GiftBoxState) {

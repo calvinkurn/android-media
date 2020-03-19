@@ -27,4 +27,8 @@
     <color name="gf_grad_btn_inner_end_green">#42b549</color>
     <color name="gf_dim">#50000000</color>
     <color name="gf_black_transparent">#00000000</color>
+
+    <color name="gf_box_hint_color">#12883D</color>
+    <color name="gf_box_prize_color">#52565E</color>
+    <color name="gf_orange_color">#FA591D</color>
 </resources>

@@ -15,14 +15,15 @@
         android:layout_marginLeft="12dp"
         app:srcCompat="@drawable/gf_ic_ovo_small" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="7dp"
         android:layout_marginLeft="7dp"
         android:text="Ovo Points"
-        android:textColor="@android:color/white"
-        android:textSize="14sp" />
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        android:textColor="@android:color/white" />
 
 </LinearLayout>

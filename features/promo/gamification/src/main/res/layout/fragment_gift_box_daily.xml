@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -25,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTapHint"
         android:layout_width="240dp"
         android:layout_height="wrap_content"
@@ -39,8 +40,9 @@
         android:paddingEnd="30dp"
         android:paddingRight="30dp"
         android:paddingBottom="10dp"
-        android:textColor="#12883D"
-        android:textSize="18sp"
+        android:textColor="@color/gf_box_hint_color"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold"
         tools:alpha="1"
         tools:text="Tap kotaknya untuk \n dapetin hadiah" />
 
@@ -53,7 +55,7 @@
         android:orientation="vertical"
         tools:alpha="0">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvBenefits"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -64,7 +66,8 @@
             android:paddingEnd="10dp"
             android:paddingRight="10dp"
             android:textColor="@android:color/white"
-            android:textSize="14sp"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
             tools:text="Hadiah yang bisa kamu dapatkan:" />
 
         <LinearLayout
@@ -108,36 +111,39 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="32dp"
             android:layout_marginRight="32dp"
-            tools:background="@drawable/bg_large_benefit"
+            tools:background="@drawable/gf_bg_large_benefit"
             tools:layout_height="80dp" />
     </LinearLayout>
 
     <LinearLayout
-        android:alpha="0"
+        android:id="@+id/ll_reward_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        tools:alpha="1"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:paddingBottom="18dp">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:text="Yay, kamu dapat hadia"
             android:textColor="@android:color/white"
-            android:layout_marginBottom="10dp"
-            android:textSize="14sp" />
+            app:typographyType="body_2"
+            app:typographyWeight="bold" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="40dp"
             android:text="@string/gami_kupon_undian_100_ovo_points"
             android:textColor="@android:color/white"
-            android:textSize="18sp" />
+            app:typographyType="heading_3"
+            app:typographyWeight="bold" />
 
-        <androidx.appcompat.widget.AppCompatButton
+        <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="70dp"
@@ -150,7 +156,7 @@
             android:textColor="@android:color/white"
             android:textSize="16sp" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -166,20 +172,30 @@
             android:paddingEnd="10dp"
             android:paddingRight="10dp">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_centerVertical="true"
+                android:id="@+id/tvReminderText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="18dp"
                 android:layout_marginRight="18dp"
                 android:layout_marginBottom="8dp"
+                android:layout_toStartOf="@id/tvReminder"
+                android:layout_toLeftOf="@id/tvReminder"
                 android:text="Besok bisa dapet hadiah lagi lho. Mau diingetin?"
                 android:textColor="@android:color/white"
-                android:textSize="12sp" />
+                app:typographyType="body_3"
+                app:typographyWeight="reguler" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvReminder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:background="#00C17C"
@@ -193,7 +209,7 @@
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"
                 android:textSize="10sp" />
-        </LinearLayout>
+        </RelativeLayout>
     </LinearLayout>
 
 

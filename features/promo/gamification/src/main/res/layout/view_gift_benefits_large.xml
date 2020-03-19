@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/gf_bg_large_benefit"
@@ -21,44 +20,47 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/gf_ic_ovo_small" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:textColor="@android:color/black"
-        android:textSize="14sp"
+        android:text="Special Hari Ini"
+        android:textColor="@color/gf_orange_color"
         app:layout_constraintStart_toEndOf="@+id/image"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="Special Hari Ini" />
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvDesc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="4dp"
+        android:text="Kupon Diskon Bimoli"
         android:textColor="@android:color/black"
-        android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@+id/image"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle"
-        android:text="Kupon Diskon Bimoli" />
+        app:typographyType="body_3"
+        app:typographyWeight="reguler" />
 
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="2dp"
-        android:textColor="#52565E"
-        android:textSize="14sp"
+        android:text="Jadi Rp 100"
+        android:textColor="@color/gf_box_prize_color"
         app:layout_constraintStart_toEndOf="@+id/image"
         app:layout_constraintTop_toBottomOf="@+id/tvDesc"
-        android:text="Jadi Rp 100" />
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
