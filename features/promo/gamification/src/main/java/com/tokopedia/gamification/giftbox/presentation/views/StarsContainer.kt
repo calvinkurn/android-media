@@ -59,7 +59,7 @@ class StarsContainer : FrameLayout {
 
         val firstAnimationDuration = 1000L
         val finalAlpha = 1f
-        val finalScale = 2f
+        var finalScale = 1f
 
 
         val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, finalAlpha)
@@ -90,10 +90,10 @@ class StarsContainer : FrameLayout {
 
 
         val startEndPoints = arrayListOf<StarsCoord>()
-        val tlStarCoord = StarsCoord(-(images[0].width / 2f), height * 0.22f)
-        val trStarCoord = StarsCoord(width - images[1].width.toFloat() - dpToPx(13f), height * 0.3f)
-        val blStarCoord = StarsCoord(width * 0.07f, height * 0.55f)
-        val brStarCoord = StarsCoord(width - width * 0.10f, height * 0.56f)
+        var tlStarCoord = StarsCoord(-(images[0].width / 2f), height * 0.05f)
+        var trStarCoord = StarsCoord(width - images[1].width.toFloat() + dpToPx(20f), height * 0.18f)
+        var blStarCoord = StarsCoord(width * 0.04f, height * 0.54f)
+        var brStarCoord = StarsCoord(width - width * 0.20f, height * 0.56f)
 
         startEndPoints.add(tlStarCoord)
         startEndPoints.add(trStarCoord)
