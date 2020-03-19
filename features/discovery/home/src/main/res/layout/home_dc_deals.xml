@@ -34,7 +34,7 @@
         android:gravity="center_vertical"
         tools:text="Hypebeast Banget Pokoknya"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/deals_count_down"
+        app:layout_constraintEnd_toStartOf="@+id/deals_channel_subtitle"
         app:layout_constraintTop_toTopOf="@+id/deals_channel_subtitle"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -46,13 +46,13 @@
         android:maxEms="12"
         android:textSize="@dimen/sp_18"
         android:lines="1"
+        android:maxLength="15"
         android:ellipsize="end"
         android:gravity="center_vertical"
         tools:text="Berakhir dalam"
         android:textColor="@android:color/white"
         android:layout_marginTop="@dimen/dp_6"
         android:layout_marginEnd="@dimen/dp_12"
-        app:layout_constraintStart_toStartOf="@+id/deals_count_down"
         app:layout_constraintEnd_toEndOf="@+id/deals_count_down"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -205,7 +205,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/deals_product_image"
                 app:layout_constraintTop_toBottomOf="@id/deals_product_discount_label"
-                app:typographyType="heading_3"
+                app:typographyType="body_2"
                 app:typographyWeight="bold"
                 android:textStyle="bold"
                 tools:text="Rp 9999999999999999999999999999999999999999"

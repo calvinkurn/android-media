@@ -117,15 +117,7 @@ class ProductHighlightViewHolder(
     }
 
     private fun setDealsProductViewCount(productViewCount: String) {
-        if (productViewCount.isNotEmpty()) {
-            itemView.deals_product_view_count.text = productViewCount
-            itemView.deals_product_view_count.visibility = View.VISIBLE
-            itemView.deals_product_view_count_image.visibility = View.VISIBLE
-        }
-        else {
-            itemView.deals_product_view_count.visibility = View.GONE
-            itemView.deals_product_view_count_image.visibility = View.GONE
-        }
+        itemView.deals_product_view_count.displayTextOrHide(productViewCount)
     }
 
     private fun setDealsProductDiscountLabel(label: String) {
