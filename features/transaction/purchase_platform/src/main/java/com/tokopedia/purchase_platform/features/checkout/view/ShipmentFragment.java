@@ -145,6 +145,7 @@ import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.
 import com.tokopedia.purchase_platform.features.promo.presentation.analytics.PromoCheckoutAnalytics;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoCheckoutVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoUiModel;
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.TrackingDetailsItem;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -1346,15 +1347,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
-    private void updatePromoTrackingData(List<TrackingDetailUiModel> trackingDetailUiModels) {
+    private void updatePromoTrackingData(List<TrackingDetailsItem> trackingDetailsItems) {
         for (ShipmentCartItemModel shipmentCartItemModel : shipmentAdapter.getShipmentCartItemModelList()) {
             for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                if (trackingDetailUiModels.size() > 0) {
-                    for (TrackingDetailUiModel trackingDetailUiModel : trackingDetailUiModels) {
-                        if (trackingDetailUiModel.getProductId() == cartItemModel.getProductId() &&
+                if (trackingDetailsItems.size() > 0) {
+                    for (TrackingDetailsItem trackingDetailsItem : trackingDetailsItems) {
+                        if (trackingDetailsItem.getProductId() != null && trackingDetailsItem.getProductId() == cartItemModel.getProductId() &&
                                 cartItemModel.getAnalyticsProductCheckoutData() != null) {
-                            cartItemModel.getAnalyticsProductCheckoutData().setPromoCode(trackingDetailUiModel.getPromoCodesTracking());
-                            cartItemModel.getAnalyticsProductCheckoutData().setPromoDetails(trackingDetailUiModel.getPromoDetailsTracking());
+                            cartItemModel.getAnalyticsProductCheckoutData().setPromoCode(trackingDetailsItem.getPromoCodesTracking());
+                            cartItemModel.getAnalyticsProductCheckoutData().setPromoDetails(trackingDetailsItem.getPromoDetailsTracking());
                         }
                     }
                 }
@@ -2974,6 +2975,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void updateButtonPromoCheckout(PromoUiModel promoUiModel) {
         doUpdateButtonPromoCheckout(promoUiModel);
+        updatePromoTrackingData(promoUiModel.getTrackingDetails());
     }
 
     private void doUpdateButtonPromoCheckout(PromoUiModel promoUiModel) {

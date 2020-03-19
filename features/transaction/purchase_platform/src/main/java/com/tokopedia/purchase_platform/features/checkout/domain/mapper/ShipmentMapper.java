@@ -37,7 +37,9 @@ import com.tokopedia.purchase_platform.features.checkout.data.model.response.shi
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.ErrorDetail;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.LastApply;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.MessageInfo;
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.PromoSAFResponse;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.SummariesItem;
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.TrackingDetailsItem;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.UsageSummaries;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.AddressesData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
@@ -718,10 +720,12 @@ public class ShipmentMapper implements IShipmentMapper {
                                         productResult.setProductShipment(productShipmentListResult);
                                     }
 
-                                    AutoApplyStack autoapplyStack = shipmentAddressFormDataResponse.getAutoapplyStack();
-                                    if (autoapplyStack != null) {
-                                        if (autoapplyStack.getTrackingDetails() != null && autoapplyStack.getTrackingDetails().size() > 0) {
-                                            for (TrackingDetail trackingDetail : autoapplyStack.getTrackingDetails()) {
+                                    PromoSAFResponse promoSAFResponse = shipmentAddressFormDataResponse.getPromoSAFResponse();
+                                    if (promoSAFResponse != null && promoSAFResponse.getLastApply() != null && promoSAFResponse.getLastApply().getData() != null &&
+                                            promoSAFResponse.getLastApply().getData().getTrackingDetails() != null) {
+                                        List<TrackingDetailsItem> trackingDetailsItems = promoSAFResponse.getLastApply().getData().getTrackingDetails();
+                                        if (trackingDetailsItems.size() > 0) {
+                                            for (TrackingDetailsItem trackingDetail : trackingDetailsItems) {
                                                 if (trackingDetail.getProductId() == productResult.getProductId()) {
                                                     analyticsProductCheckoutData.setPromoCode(trackingDetail.getPromoCodesTracking());
                                                     analyticsProductCheckoutData.setPromoDetails(trackingDetail.getPromoDetailsTracking());

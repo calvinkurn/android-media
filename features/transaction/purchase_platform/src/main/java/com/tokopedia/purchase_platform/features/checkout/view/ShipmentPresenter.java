@@ -454,11 +454,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             StringBuilder promoCodes = new StringBuilder();
             StringBuilder promoDetails = new StringBuilder();
 
-            // Todo : Set value from last apply
-//            if (promoStackingGlobalData != null && !TextUtils.isEmpty(promoStackingGlobalData.getPromoCode())) {
-//                promoCodes.append(promoStackingGlobalData.getPromoCode());
-//                promoDetails.append(TickerCheckoutUtilKt.revertMapToStatePromoStackingCheckout(promoStackingGlobalData.getState()));
-//            }
+            if (validateUsePromoRevampUiModel != null) {
+                if (validateUsePromoRevampUiModel.getPromoUiModel().getCodes().size() > 0) {
+                    promoCodes.append(validateUsePromoRevampUiModel.getPromoUiModel().getCodes().get(0));
+                    promoDetails.append(validateUsePromoRevampUiModel.getPromoUiModel().getMessageUiModel().getState());
+                }
+            }
 
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
                 if (shipmentCartItemModel != null) {
@@ -1106,7 +1107,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 if (getView() != null) {
                                     if (validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK)) {
                                         getView().updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel());
-                                        // Todo : update summary benefit
                                     } else {
                                         if (validateUsePromoRevampUiModel.getMessage().size() > 0) {
                                             String errMessage = validateUsePromoRevampUiModel.getMessage().get(0);
