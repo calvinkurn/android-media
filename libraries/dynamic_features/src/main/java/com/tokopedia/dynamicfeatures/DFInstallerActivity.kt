@@ -168,7 +168,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
                 // Load and install the requested feature module.
                 manager.startInstall(request).addOnSuccessListener {
                     if (it == 0) {
-                        onInstalled(moduleNameToDownload.first())
+                        onInstalled()
                     } else {
                         sessionId = it
                     }
@@ -222,7 +222,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
                 onRequireUserConfirmation(state)
             }
             SplitInstallSessionStatus.INSTALLED -> {
-                onInstalled(moduleNameToDownload.first())
+                onInstalled()
             }
 
             SplitInstallSessionStatus.INSTALLING -> {
@@ -429,10 +429,8 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         manager.startConfirmationDialogForResult(state, this, CONFIRMATION_REQUEST_CODE)
     }
 
-    override fun onInstalled(installedModule: String) {
-        if (installedModule == moduleName) {
-            onSuccessfulLoad(moduleName, true)
-        }
+    override fun onInstalled() {
+        onSuccessfulLoad(moduleName, true)
     }
 
     override fun onInstalling(state: SplitInstallSessionState) {
@@ -441,5 +439,9 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
 
     override fun onFailed(errorString: String) {
         showFailedMessage(errorString)
+    }
+
+    override fun getModuleNameView(): String {
+        return moduleName
     }
 }

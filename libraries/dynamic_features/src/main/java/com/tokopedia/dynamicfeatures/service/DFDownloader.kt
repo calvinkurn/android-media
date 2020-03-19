@@ -102,11 +102,10 @@ object DFDownloader {
         }
         isServiceRunning = true
         return withContext(Dispatchers.Default) {
-            var startServiceImmediateFlag = false
-            var startScheduleService = false
+            var startService = false
+            var isImmediate = false
             try {
-                val splitInstallManager = DFInstaller.getManager(applicationContext)
-                    ?: return@withContext false
+                DFInstaller.getManager(applicationContext) ?: return@withContext false
 
                 // only download the first module in the list (that is not installed too)
                 val moduleToDownloadPair = DFQueue.getDFModuleList(applicationContext).asSequence()
@@ -118,7 +117,7 @@ object DFDownloader {
                     DFQueue.clear(applicationContext)
                     return@withContext true
                 }
-                val result = DFInstaller.startInstallInBackground(applicationContext, listOf(moduleToDownload), onSuccessInstall = {
+                val (result, immediate) = DFInstaller.startInstallInBackground(applicationContext, listOf(moduleToDownload), onSuccessInstall = {
                     DFQueue.removeModuleFromQueue(applicationContext, listOf(moduleToDownload))
                 }, onFailedInstall = {
                     // loop all combined list
@@ -150,8 +149,8 @@ object DFDownloader {
                     // if previous download is success, will schedule to run immediately
                     // the chance of successful download is bigger.
                     if (remainingList.isNotEmpty()) {
-                        // this is to run immediately
-                        startServiceImmediateFlag = true
+                        startService = true
+                        isImmediate = immediate
                     }
                     return@withContext true
                 } else {
@@ -163,7 +162,8 @@ object DFDownloader {
                         if (remainingListSorted[0].first != remainingList[0].first) {
                             DFQueue.putDFModuleList(applicationContext, remainingListSorted)
                         }
-                        startScheduleService = true
+                        startService = true
+                        isImmediate = immediate
                         return@withContext false
                     }
                 }
@@ -171,10 +171,8 @@ object DFDownloader {
 
             } finally {
                 setServiceFlagFalse()
-                if (startServiceImmediateFlag) {
-                    startSchedule(applicationContext, isImmediate = true)
-                } else if (startScheduleService) {
-                    startSchedule(applicationContext, isImmediate = false)
+                if (startService) {
+                    startSchedule(applicationContext, isImmediate = isImmediate)
                 }
             }
             return@withContext true
