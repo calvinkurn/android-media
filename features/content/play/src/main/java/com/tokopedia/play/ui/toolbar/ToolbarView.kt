@@ -108,7 +108,7 @@ class ToolbarView(
         if (cartUiModel.isShow) rlCart.visible() else rlCart.invisible()
         if (cartUiModel.count > 0) {
             tvBadgeCart.visible()
-            tvBadgeCart.text =  if (cartUiModel.count > 99) "99+" else cartUiModel.count.toString()
+            tvBadgeCart.text =  if (cartUiModel.count > 99) container.context.getString(R.string.play_mock_cart) else cartUiModel.count.toString()
         } else {
             tvBadgeCart.invisible()
         }
