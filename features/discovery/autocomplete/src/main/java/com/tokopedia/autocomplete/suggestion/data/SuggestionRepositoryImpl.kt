@@ -9,4 +9,8 @@ class SuggestionRepositoryImpl(private val suggestionDataSource: SuggestionDataS
     override fun getSuggestionResponse(parameters: HashMap<String, Any>): Observable<SuggestionData> {
         return suggestionDataSource.getSuggestionResponse(parameters)
     }
+
+    override fun hitSuggestionUrlTracker(url: String): Observable<Void?> {
+        return suggestionDataSource.hitSuggestionUrlTracker(url)
+    }
 }
