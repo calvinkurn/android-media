@@ -107,7 +107,6 @@ import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActi
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_FILTER_SELECTED
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_PRODUCT_NAME
-import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_SORT_SELECTED
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_THRESHOLD
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.INSTAGRAM_SELECT_REQUEST_CODE
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.REQUEST_CODE_FILTER
@@ -118,7 +117,6 @@ import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.S
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.URL_TIPS_TRICK
 import com.tokopedia.product.manage.oldlist.data.model.BulkBottomSheetType
 import com.tokopedia.product.manage.oldlist.data.model.ProductManageFilterModel
-import com.tokopedia.product.manage.oldlist.data.model.ProductManageSortModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
@@ -241,12 +239,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             val addProductMenu = subMenu.findItem(R.id.label_view_add_image)
             val importFromInstagramMenu = subMenu.findItem(R.id.label_view_import_from_instagram)
 
-            addProductMenu.setOnMenuItemClickListener { _ ->
+            addProductMenu.setOnMenuItemClickListener {
                 startActivity(ProductAddNameCategoryActivity.createInstance(activity))
                 true
             }
 
-            importFromInstagramMenu.setOnMenuItemClickListener { _ ->
+            importFromInstagramMenu.setOnMenuItemClickListener {
                 val intent = AddProductImagePickerBuilder.createPickerIntentInstagramImport(context)
                 startActivityForResult(intent, INSTAGRAM_SELECT_REQUEST_CODE)
                 false
@@ -309,8 +307,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
         searchBar.searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                val keyword = searchBar.searchBarTextField.text.toString()
-                onSearchSubmitted(keyword)
+                getProductList(isRefresh = true)
                 return@setOnEditorActionListener true
             }
             false
@@ -425,8 +422,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun loadData(page: Int) {
-        val keyword = searchBar.searchBarTextField.text.toString()
-        getProductList(page, keyword)
+        getProductList(page)
     }
 
     private fun renderProductList(list: List<ProductViewModel>, hasNextPage: Boolean) {
@@ -434,11 +430,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         renderCheckedView()
     }
 
-    private fun onSearchSubmitted(text: String) {
-        getProductList(keyword = text, isRefresh = true)
-    }
-
-    private fun getProductList(page: Int = 1, keyword: String? = null, isRefresh: Boolean = false) {
+    private fun getProductList(page: Int = 1, isRefresh: Boolean = false) {
+        val keyword = searchBar.searchBarTextField.text.toString()
         val selectedFilter = viewModel.selectedFilterAndSort.value
         val filterOptions = createFilterOptions(page, keyword)
         val sortOption = selectedFilter?.sortOption
@@ -1186,7 +1179,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     stockType.stockStatus = productStock
                 }
                 REQUEST_CODE_SORT -> if (resultCode == Activity.RESULT_OK) {
-                    val productManageSortModel: ProductManageSortModel = it.getParcelableExtra(EXTRA_SORT_SELECTED)
                     loadInitialData()
                 }
                 REQUEST_CODE_STOCK_REMINDER -> if(resultCode == Activity.RESULT_OK) {
@@ -1389,7 +1381,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun observeFilter() {
         observe(viewModel.selectedFilterAndSort) {
-            viewModel.getProductList(userSession.shopId, it.filterOptions, it.sortOption, true)
+            getProductList(isRefresh = true)
         }
     }
 
