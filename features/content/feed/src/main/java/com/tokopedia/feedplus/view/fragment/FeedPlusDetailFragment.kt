@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.view.fragment
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,8 +20,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -42,6 +45,7 @@ import com.tokopedia.feedplus.view.subscriber.FeedDetailViewState
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderModel
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailItemModel
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.kolcommon.util.TimeConverter
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.linker.LinkerManager
@@ -52,6 +56,7 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.feed_detail_header.view.*
 import kotlinx.android.synthetic.main.fragment_feed_plus_detail_nav.*
 import java.util.*
 import javax.inject.Inject
@@ -280,10 +285,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             header: FeedDetailHeaderModel,
             listDetail: ArrayList<Visitable<*>>,
             hasNextPage: Boolean) {
-        footer.visibility = View.VISIBLE
-        if (pagingHandler.page == 1) {
-            adapter.add(header)
-        }
+        footer.show()
+        setUpShopDataHeader(header)
         adapter.addList(listDetail)
         shareButton.setOnClickListener(onShareClicked(
                 header.shareLinkURL,
@@ -294,6 +297,39 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         pagingHandler.setHasNext(listDetail.size > 1 && hasNextPage)
         adapter.notifyDataSetChanged()
         trackImpression(listDetail)
+    }
+
+    private fun setUpShopDataHeader(header: FeedDetailHeaderModel) {
+        (activity as FeedPlusDetailActivity).getShopInfoLayout()?.run {
+            val shopNameString = MethodChecker.fromHtml(header.shopName).toString()
+            ImageHandler.LoadImage(shopAvatar, header.shopAvatar)
+            when {
+                header.isOfficialStore -> {
+                    goldMerchant.hide()
+                    officialStore.show()
+                }
+                header.isGoldMerchant -> {
+                    goldMerchant.show()
+                    officialStore.hide()
+                }
+                else -> {
+                    goldMerchant.hide()
+                    officialStore.hide()
+                }
+            }
+            shopName.text = shopNameString
+            shopName.movementMethod = LinkMovementMethod.getInstance()
+            if (header.actionText.isNotEmpty()) {
+                shopSlogan.text = String.format(
+                        getString(R.string.feed_header_time_format),
+                        TimeConverter.generateTime(shopSlogan.context, header.time),
+                        header.actionText)
+            } else {
+                shopSlogan.text = TimeConverter.generateTime(shopSlogan.context, header.time)
+            }
+            shopAvatar.setOnClickListener { onGoToShopDetail(header.activityId, header.shopId) }
+            this.setOnClickListener { onGoToShopDetail(header.activityId, header.shopId) }
+        }
     }
 
     private fun onGoToShopDetailFromButton(shopId: Int): View.OnClickListener? {

@@ -5,10 +5,8 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.EmptyFeedDetailViewHolder
-import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.FeedDetailHeaderViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.FeedDetailViewHolder
 import com.tokopedia.feedplus.view.listener.FeedPlusDetailListener
-import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderModel
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailItemModel
 
 /**
@@ -19,10 +17,6 @@ class FeedPlusDetailTypeFactoryImpl(private val viewListener: FeedPlusDetailList
         return FeedDetailViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: FeedDetailHeaderModel): Int {
-        return FeedDetailHeaderViewHolder.LAYOUT
-    }
-
     override fun type(emptyModel: EmptyModel): Int {
         return EmptyFeedDetailViewHolder.LAYOUT
     }
@@ -30,7 +24,6 @@ class FeedPlusDetailTypeFactoryImpl(private val viewListener: FeedPlusDetailList
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
         return when (viewType) {
             FeedDetailViewHolder.LAYOUT -> FeedDetailViewHolder(view, viewListener)
-            FeedDetailHeaderViewHolder.LAYOUT -> FeedDetailHeaderViewHolder(view, viewListener)
             EmptyFeedDetailViewHolder.LAYOUT -> EmptyFeedDetailViewHolder(view, viewListener)
             else -> super.createViewHolder(view, viewType)
         }
