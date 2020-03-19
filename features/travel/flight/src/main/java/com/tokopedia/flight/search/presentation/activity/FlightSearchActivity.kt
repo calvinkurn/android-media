@@ -1,10 +1,12 @@
 package com.tokopedia.flight.search.presentation.activity
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
+import android.view.Menu
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
@@ -24,6 +26,7 @@ import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerVie
 import com.tokopedia.flight.search.presentation.fragment.FlightSearchFragment
 import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
+import com.tokopedia.flight.search.util.FlightSearchCache
 import com.tokopedia.flight.search_universal.presentation.bottomsheet.FlightSearchUniversalBottomSheet
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -45,14 +48,17 @@ open class FlightSearchActivity : BaseFlightActivity(),
 
     private lateinit var remoteConfig: RemoteConfig
 
+    private lateinit var coachMarkCache : FlightSearchCache
+
     override fun onCreate(savedInstanceState: Bundle?) {
         initializeDataFromExtras()
         super.onCreate(savedInstanceState)
 
+        coachMarkCache = FlightSearchCache(this)
+        remoteConfig = FirebaseRemoteConfigImpl(this)
+
         setupSearchToolbarAction()
         setupSearchToolbarText()
-
-        remoteConfig = FirebaseRemoteConfigImpl(this)
     }
 
     override fun getNewFragment(): Fragment = FlightSearchFragment.newInstance(passDataViewModel)
@@ -127,6 +133,10 @@ open class FlightSearchActivity : BaseFlightActivity(),
 
         flight_search_header.title = title
         flight_search_header.subtitle = subtitle
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        return false
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -239,6 +249,14 @@ open class FlightSearchActivity : BaseFlightActivity(),
                     coachMark.dismiss()
                 }
             }, DELAY_THREE_SECONDS)
+            coachMark.onDismiss(object : DialogInterface {
+                override fun dismiss() {
+                    coachMarkCache.setSearchCoachMarkIsShowed()
+                }
+
+                override fun cancel() {}
+
+            })
         }
     }
 

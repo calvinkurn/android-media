@@ -42,6 +42,7 @@ import com.tokopedia.flight.search.presentation.model.*
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
 import com.tokopedia.flight.search.presentation.presenter.FlightSearchPresenter
+import com.tokopedia.flight.search.util.FlightSearchCache
 import com.tokopedia.flight.search.util.select
 import com.tokopedia.flight.search.util.unselect
 import com.tokopedia.kotlin.extensions.view.show
@@ -83,6 +84,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     private lateinit var performanceMonitoringP2: PerformanceMonitoring
 
     private val filterItems = arrayListOf<SortFilterItem>()
+    private lateinit var coachMarkCache: FlightSearchCache
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,6 +105,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                     savedInstanceState.getInt(SAVED_PRICE_MIN_STATISTIC),
                     savedInstanceState.getInt(SAVED_PRICE_MAX_STATISTIC))
         }
+
+        coachMarkCache = FlightSearchCache(requireContext())
 
         performanceMonitoringP1 = PerformanceMonitoring.start(FLIGHT_SEARCH_P1_TRACE)
         performanceMonitoringP2 = PerformanceMonitoring.start(FLIGHT_SEARCH_P2_TRACE)
@@ -236,7 +240,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
         if (flightSearchPresenter.isDoneLoadData()) {
             performanceMonitoringP2.stopTrace()
-            (activity as FlightSearchActivity).setupAndShowCoachMark()
+            if (!coachMarkCache.isSearchCoachMarkShowed()) {
+                (activity as FlightSearchActivity).setupAndShowCoachMark()
+            }
         }
 
         setUpProgress()
