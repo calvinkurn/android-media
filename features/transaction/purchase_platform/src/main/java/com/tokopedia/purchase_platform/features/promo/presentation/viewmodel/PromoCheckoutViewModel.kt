@@ -12,7 +12,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRecommendationRequest
 import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest
-import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.Params
+import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.features.promo.data.response.ClearPromoResponse
 import com.tokopedia.purchase_platform.features.promo.data.response.CouponListRecommendationResponse
 import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus.Companion.STATUS_COUPON_LIST_EMPTY
@@ -143,6 +143,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
             if (response.couponListRecommendation.status == "OK") {
                 if (response.couponListRecommendation.data.couponSections.isNotEmpty()) {
+                    fragmentUiModel.value?.let {
+                        it.uiState.isLoading = false
+                        _fragmentUiModel.value = it
+                    }
+
                     if (getCouponRecommendationResponse.value == null) {
                         _getCouponRecommendationResponse.value = GetCouponRecommendationAction()
                     }
@@ -214,11 +219,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
                     calculateAndRenderTotalBenefit()
 
-                    fragmentUiModel.value?.let {
-                        it.uiState.isLoading = false
-                        _fragmentUiModel.value = it
-                    }
-
                 } else {
                     if (response.couponListRecommendation.data.emptyState.title.isEmpty() &&
                             response.couponListRecommendation.data.emptyState.description.isEmpty() &&
@@ -265,11 +265,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    fun applyPromo(mutation: String, requestParam: PromoRequest) {
+    fun applyPromo(mutation: String, requestParam: ValidateUsePromoRequest) {
         launch { doApplyPromo(mutation, requestParam) }
     }
 
-    private suspend fun doApplyPromo(mutation: String, requestParam: PromoRequest) {
+    private suspend fun doApplyPromo(mutation: String, validateUsePromoRequest: ValidateUsePromoRequest) {
         launchCatchError(block = {
             // Initialize response action state
             if (applyPromoResponse.value == null) {
@@ -277,9 +277,12 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             }
 
             // Set param
-            val params = Params()
-            val promo = HashMap<String, Any>()
-            promo["params"] = params
+            val varPromo = mapOf(
+                    "promo" to validateUsePromoRequest
+            )
+            val varParams = mapOf(
+                    "params" to varPromo
+            )
 
             // Get all sellected promo for analytical purpose
             val promoList = ArrayList<String>()
@@ -297,7 +300,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
             // Get response
             val response = withContext(Dispatchers.IO) {
-                val request = GraphqlRequest(mutation, ValidateUseResponse::class.java, promo)
+                val request = GraphqlRequest(mutation, ValidateUseResponse::class.java, varParams)
                 graphqlRepository.getReseponse(listOf(request))
                         .getSuccessData<ValidateUseResponse>()
             }
@@ -324,7 +327,14 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                             }
                         }
                         if (successCount == responseValidatePromo.voucherOrders.size) {
-                            analytics.eventClickPakaiPromoSuccess(getPageSource(), "true", promoList)
+                            var selectedRecommendationCount = 0
+                            promoRecommendationUiModel.value?.uiData?.promoCodes?.forEach {
+                                if (promoList.contains(it)) selectedRecommendationCount++
+                            }
+                            val promoRecommendationCount = promoRecommendationUiModel.value?.uiData?.promoCodes?.size
+                                    ?: 0
+                            val status = if (promoList.size == promoRecommendationCount && selectedRecommendationCount == promoRecommendationCount) 1 else 0
+                            analytics.eventClickPakaiPromoSuccess(getPageSource(), status.toString(), promoList)
                             // If all promo merchant are success, then navigate to cart
                             applyPromoResponse.value?.let {
                                 it.state = ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CART
@@ -488,7 +498,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    private fun calculateClash(selectedItem: PromoListItemUiModel): Boolean {
+    private fun calculateClash(selectedItem: PromoListItemUiModel) {
         // Return clash result for analytics purpose
         var clashResult = false
         if (selectedItem.uiState.isSelected) {
@@ -531,7 +541,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             }
         }
 
-        return clashResult
+        if (clashResult) {
+            selectedItem.uiState.isCausingOtherPromoClash = true
+        }
     }
 
     private fun checkAndSetClashOnUnSelectionEvent(promoListItemUiModel: PromoListItemUiModel, selectedItem: PromoListItemUiModel) {
@@ -716,15 +728,15 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             // Update view
             _tmpUiModel.value = Update(promoItem)
 
-            // Perform clash calculation. ClashResult of deselection action should be always false
-            val clashResult = calculateClash(promoItem)
+            // Perform clash calculation
+            calculateClash(promoItem)
             if (promoItem.uiState.isSelected) {
-                analytics.eventClickSelectKupon(getPageSource(), promoItem.uiData.promoCode, clashResult)
+                analytics.eventClickSelectKupon(getPageSource(), promoItem.uiData.promoCode, promoItem.uiState.isCausingOtherPromoClash)
                 if (promoItem.uiState.isAttempted) {
                     analytics.eventClickSelectPromo(getPageSource(), promoItem.uiData.promoCode)
                 }
             } else {
-                analytics.eventClickDeselectKupon(getPageSource(), promoItem.uiData.promoCode, false)
+                analytics.eventClickDeselectKupon(getPageSource(), promoItem.uiData.promoCode, promoItem.uiState.isCausingOtherPromoClash)
                 if (promoItem.uiState.isAttempted) {
                     analytics.eventClickDeselectPromo(getPageSource(), promoItem.uiData.promoCode)
                 }

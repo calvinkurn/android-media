@@ -51,8 +51,8 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         sendEventByPage(
                 page,
                 EVENT_NAME_VIEW,
-                EventAction.VIEW_BLACKLIST_ERROR_AFTER_APPLY_PROMO,
-                ""
+                EventAction.VIEW_AVAILABLE_PROMO_LIST,
+                EventLabel.BLACKLIST_ERROR
         )
     }
 
@@ -60,8 +60,8 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         sendEventByPage(
                 page,
                 EVENT_NAME_VIEW,
-                EventAction.VIEW_PHONE_VERIFICATION_MESSAGE,
-                ""
+                EventAction.VIEW_AVAILABLE_PROMO_LIST,
+                EventLabel.PHONE_VERIFICATION_MESSAGE
         )
     }
 
@@ -245,7 +245,6 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         )
     }
 
-    // Todo FU : `status` meaning?
     fun eventClickPakaiPromoSuccess(page: Int, status: String, promoCodes: List<String>) {
         val data = hashMapOf<String, Any>()
         if (page == PAGE_CART) {
@@ -256,7 +255,7 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
             data["eventCategory"] = EventCategory.COURIER_SELECTION
         }
         data["eventAction"] = EventAction.CLICK_PAKAI_PROMO
-        data["eventLabel"] = "success $status"
+        data["eventLabel"] = "success - $status"
         data["promoCode"] = promoCodes.joinToString(", ", "[", "]")
 
         if (data.containsKey("event") && data.containsKey("eventCategory")) {

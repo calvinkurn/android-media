@@ -43,7 +43,7 @@ data class PromoListItemUiModel(
             // Store clashing info data from backend.
             // This should not be changed. Initialize once after get data response
             var clashingInfo: MutableMap<String, String> = mutableMapOf(),
-            // Store current clashed promo based on data from #clashingInfo
+            // Store current applied promo causing this promo clash and can't be selected, based on data from #clashingInfo
             var currentClashingPromo: MutableList<String> = mutableListOf()
     )
 
@@ -51,7 +51,8 @@ data class PromoListItemUiModel(
             var isParentEnabled: Boolean = false,
             var isSelected: Boolean = false,
             var isAttempted: Boolean = false,
-            var isAlreadyApplied: Boolean = false
+            var isAlreadyApplied: Boolean = false,
+            var isCausingOtherPromoClash: Boolean = false
     ) {
         companion object {
             const val STATE_IS_ENABLED = "enabled"
