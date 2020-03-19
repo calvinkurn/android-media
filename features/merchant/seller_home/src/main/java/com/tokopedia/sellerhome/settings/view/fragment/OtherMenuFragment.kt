@@ -301,7 +301,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private fun setupView(view: View) {
         view.run {
-            sahStatusBar?.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, statusBarHeight ?: HEIGHT_OFFSET)
+            statusBarBackground?.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, statusBarHeight ?: HEIGHT_OFFSET)
         }
         populateAdapterData()
         recycler_view.layoutManager = LinearLayoutManager(context)
