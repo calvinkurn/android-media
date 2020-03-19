@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -13,6 +15,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
@@ -115,6 +118,16 @@ class StockReminderFragment: BaseDaggerFragment() {
 
         getStockReminder()
 
+        qeStock.apply {
+            (editText as EditText).setOnEditorActionListener { _, actionId, _ ->
+                if(actionId == EditorInfo.IME_ACTION_DONE) {
+                    qeStock.clearFocus()
+                    KeyboardHandler.DropKeyboard(activity, qeStock)
+                }
+                true
+            }
+        }
+
         swStockReminder.setOnCheckedChangeListener { _, isChecked ->
             toggleStateChecked = isChecked
             toggleStateChecked?.let { state ->
@@ -136,11 +149,7 @@ class StockReminderFragment: BaseDaggerFragment() {
         }
 
         btnSaveReminder.setOnClickListener {
-            if(qeStock.getValue() == 0) {
-                qeStock.setValue(1)
-            } else if(qeStock.getValue() > 100) {
-                qeStock.setValue(100)
-            }
+            qeStock.clearFocus()
             if (swStockReminder.isChecked) {
                 if (threshold == 0) {
                     threshold = qeStock.getValue()

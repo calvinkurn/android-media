@@ -18,6 +18,7 @@ class ProductManageFilterMapper {
         const val ETALASE_HEADER = "Etalase"
         const val CATEGORY_HEADER = "Kategori"
         const val OTHER_FILTER_HEADER = "Filter Lainnya"
+        private const val ALL_PRODUCT_ETALASE_ID = "2"
         private const val EMPTY_STOCK_ETALASE_ID = "4"
         private const val PREORDER_ETALASE_ID = "6"
         private const val SHOW_CHIPS = true
@@ -189,7 +190,8 @@ class ProductManageFilterMapper {
 
         private fun mapMetaResponseToSortOptions(productListMetaData: ProductListMetaData): FilterViewModel {
             val data = mutableListOf<FilterDataViewModel>()
-            productListMetaData.sorts.filter { it.name.isNotEmpty() }.forEach {
+            productListMetaData.sorts.filter { it.name.isNotEmpty() &&
+                    (it.id != SortOption.SortByDefault(SortOrderOption.DESC).id.name)}.forEach {
                 data.add(FilterDataViewModel(it.id, it.name, it.value))
             }
             return FilterViewModel(SORT_HEADER, data, SHOW_CHIPS)
@@ -199,7 +201,8 @@ class ProductManageFilterMapper {
             val data = mutableListOf<FilterDataViewModel>()
             etalaseResponse.filter { it.name.isNotEmpty() &&
                     it.id != EMPTY_STOCK_ETALASE_ID &&
-                    it.id != PREORDER_ETALASE_ID }.forEach {
+                    it.id != PREORDER_ETALASE_ID &&
+                    it.id != ALL_PRODUCT_ETALASE_ID }.forEach {
                 data.add(FilterDataViewModel(it.id,it.name))
             }
             return FilterViewModel(ETALASE_HEADER, data, SHOW_CHIPS)

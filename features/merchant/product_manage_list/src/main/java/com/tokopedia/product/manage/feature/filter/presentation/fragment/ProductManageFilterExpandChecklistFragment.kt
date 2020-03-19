@@ -5,12 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
@@ -29,6 +29,7 @@ import com.tokopedia.product.manage.feature.filter.presentation.widget.Checklist
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
 import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
 import kotlinx.android.synthetic.main.fragment_product_manage_filter_search.*
+import kotlinx.android.synthetic.main.product_manage_etalase_picker.*
 import java.util.*
 import javax.inject.Inject
 
@@ -120,7 +121,6 @@ class ProductManageFilterExpandChecklistFragment :
     private fun initView() {
         configToolbar()
         filterCheckListRecyclerView.setOnTouchListener { _, _ ->
-            filterSearchBar?.hideKeyboard()
             filterSubmitButton.visibility = View.VISIBLE
             false
         }
@@ -145,33 +145,33 @@ class ProductManageFilterExpandChecklistFragment :
     }
 
     private fun initSearchView() {
-        filterSearchBar.setDelayTextChanged(250)
-        filterSearchBar.setListener(object : SearchInputView.Listener {
-            override fun onSearchSubmitted(text: String?) {
-                filterSearchBar.hideKeyboard()
-            }
-            override fun onSearchTextChanged(text: String?) {
-                hideError()
-                text?.let {
-                    if(it.isNotEmpty()) {
-                        search(it).let { result ->
-                            if(result.isNotEmpty()) {
-                                adapter?.updateChecklistData(result)
-                            } else {
-                                showError()
-                            }
-                        }
-                    } else {
-                        productManageFilterExpandChecklistViewModel.checklistData.value?.toList()?.let {data ->
-                            adapter?.updateChecklistData(data)
+        filterSearchBar.clearFocus()
+
+        filterSearchBar.searchBarTextField.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                val keyword = searchBar.searchBarTextField.text.toString()
+
+                if(keyword.isNotEmpty()) {
+                    search(keyword).let { result ->
+                        if(result.isNotEmpty()) {
+                            adapter?.updateChecklistData(result)
+                        } else {
+                            showError()
                         }
                     }
+                } else {
+                    productManageFilterExpandChecklistViewModel.checklistData.value?.toList()?.let {data ->
+                        adapter?.updateChecklistData(data)
+                    }
                 }
+                return@setOnEditorActionListener true
             }
-        })
+            false
+        }
+
         filterSearchBar.visibility = View.VISIBLE
-        filterSearchBar.setFocusChangeListener {
-            if(filterSubmitButton.visibility == View.VISIBLE) {
+        filterSearchBar.setOnFocusChangeListener { v, hasFocus ->
+            if(hasFocus) {
                 filterSubmitButton.visibility = View.GONE
             } else {
                 filterSubmitButton.visibility = View.VISIBLE
@@ -251,6 +251,8 @@ class ProductManageFilterExpandChecklistFragment :
 
     private fun showError() {
         filterCheckListRecyclerView.visibility = View.GONE
+        filterSubmitButton.visibility = View.GONE
+        bottomsheet_button_divider.visibility = View.GONE
         filterSearchErrorImage.visibility = View.VISIBLE
         filterSearchErrorText.visibility = View.VISIBLE
     }
