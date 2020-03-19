@@ -95,40 +95,53 @@ object DFInstaller {
                     getManager(applicationContext)?.startInstall(request)?.addOnSuccessListener {
                         if (it == 0) {
                             // success
-                            val viewRef = viewRef
-                            val view = viewRef?.get()
-                            if (view != null && view.getModuleNameView() == moduleNameToDownload.first()) {
-                                view.onInstalled()
-                            } else {
-                                logSuccessStatus(TAG_LOG_DFM_BG, applicationContext, moduleNameToDownload)
-                            }
-                            onSuccessInstall?.invoke()
-                            continuation.resume(true to false)
+                            onSuccessInstall(context, moduleNameToDownload.first(), onSuccessInstall, continuation)
                         } else {
                             sessionId = it
                         }
                     }?.addOnFailureListener {
                         val errorCode = (it as? SplitInstallException)?.errorCode
-                        sessionId = null
-                        val viewRef = viewRef
-                        val view = viewRef?.get()
-                        if (view != null && view.getModuleNameView() == moduleNameToDownload.first()) {
-                            view.onFailed(errorCode?.toString() ?: it.toString())
-                            // to stop download other DFs in queue
-                            DFQueue.clear(context)
-                        } else {
-                            logFailedStatus(TAG_LOG_DFM_BG, applicationContext, moduleNameToDownload,
-                                listOf(errorCode?.toString() ?: it.toString()))
-                        }
-                        onFailedInstall?.invoke()
-                        if (view != null && view.getModuleNameView() != moduleNameToDownload.first()) {
-                            continuation.resume(false to true)
-                        } else {
-                            continuation.resume(false to false)
-                        }
+                        val errorString = errorCode?.toString() ?: it.toString()
+                        onErrorInstall(context, errorString, moduleNameToDownload.first(), onFailedInstall, continuation)
                     }
                 }
             }
+        }
+    }
+
+    fun onSuccessInstall(context: Context, moduleName: String,
+                         onSuccessInstall: (() -> Unit)? = null,
+                         continuation: Continuation<Pair<Boolean, Boolean>>? = null) {
+        val viewRef = viewRef
+        val view = viewRef?.get()
+        if (view != null && view.getModuleNameView() == moduleName) {
+            view.onInstalled()
+        } else {
+            logSuccessStatus(TAG_LOG_DFM_BG, context, listOf(moduleName))
+        }
+        onSuccessInstall?.invoke()
+        continuation?.resume(true to true)
+    }
+
+    fun onErrorInstall(context: Context, errorString: String, moduleName: String,
+                       onFailedInstall: (() -> Unit)? = null,
+                       continuation: Continuation<Pair<Boolean, Boolean>>? = null) {
+        sessionId = null
+        val viewRef = viewRef
+        val view = viewRef?.get()
+        if (view != null && view.getModuleNameView() == moduleName) {
+            view.onFailed(errorString)
+            // to stop download other DFs in queue
+            DFQueue.clear(context)
+        } else {
+            logFailedStatus(TAG_LOG_DFM_BG, context.applicationContext, listOf(moduleName),
+                listOf(errorString))
+        }
+        onFailedInstall?.invoke()
+        if (view != null && view.getModuleNameView() != moduleName) {
+            continuation?.resume(false to true)
+        } else {
+            continuation?.resume(false to false)
         }
     }
 
@@ -244,35 +257,15 @@ object SplitInstallListener : SplitInstallStateUpdatedListener {
                 }
             }
             SplitInstallSessionStatus.INSTALLED -> {
-                val view = DFInstaller.getView()
-                if (view != null && view.getModuleNameView() == moduleNameToDownload.first()) {
-                    view.onInstalled()
-                } else {
-                    context?.let { context ->
-                        logSuccessStatus(DFInstaller.TAG_LOG_DFM_BG, context, moduleNameToDownload)
-                    }
+                context?.let { context ->
+                    DFInstaller.onSuccessInstall(context, moduleNameToDownload.first(),
+                        onSuccessInstall, continuation)
                 }
-                onSuccessInstall?.invoke()
-                continuation?.resume(true to false)
             }
             SplitInstallSessionStatus.FAILED -> {
-                val view = DFInstaller.getView()
-                if (view != null && view.getModuleNameView() == moduleNameToDownload.first()) {
-                    view.onFailed(state.errorCode().toString())
-                    // to stop download other DFs in queue
-                    context?.let { context ->
-                        DFQueue.clear(context)
-                    }
-                } else {
-                    context?.let { context ->
-                        logSuccessStatus(DFInstaller.TAG_LOG_DFM_BG, context, moduleNameToDownload)
-                    }
-                }
-                onSuccessInstall?.invoke()
-                if (view != null && view.getModuleNameView() != moduleNameToDownload.first()) {
-                    continuation?.resume(false to true)
-                } else {
-                    continuation?.resume(false to false)
+                context?.let { context ->
+                    DFInstaller.onErrorInstall(context, state.errorCode().toString(),
+                        moduleNameToDownload.first(), onFailedInstall, continuation)
                 }
             }
             SplitInstallSessionStatus.INSTALLING -> {
