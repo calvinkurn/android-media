@@ -343,7 +343,6 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                                 setDescriptionClickEvent(object : TickerCallback {
                                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
                                         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
-                                        SomAnalytics.eventClickSeeMoreOnTicker()
                                     }
 
                                     override fun onDismiss() {}

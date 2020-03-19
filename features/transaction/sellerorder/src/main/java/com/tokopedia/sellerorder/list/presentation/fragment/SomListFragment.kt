@@ -383,7 +383,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 var indexTicker = 0
                 tickerList.forEach {
                     if (it.isActive) {
-                        listTickerData.add(TickerData("", it.shortDesc + " ${getString(R.string.ticker_info_selengkapnya)}", Ticker.TYPE_ANNOUNCEMENT, true))
+                        listTickerData.add(TickerData("", it.shortDesc + " ${getString(R.string.ticker_info_selengkapnya)}", Ticker.TYPE_ANNOUNCEMENT, true, it.tickerId))
                         indexTicker++
                     }
                 }
@@ -393,14 +393,14 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                         override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
                             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
-                            SomAnalytics.eventClickSeeMoreOnTicker()
+                            SomAnalytics.eventClickSeeMoreOnTicker(itemData.toString())
                         }
                     })
                     ticker_info?.setDescriptionClickEvent(object: TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {}
 
                         override fun onDismiss() {
-                            SomAnalytics.eventClickXOnTicker()
+                            SomAnalytics.eventClickXOnTicker(listTickerData.first().itemData.toString())
                         }
 
                     })
@@ -408,22 +408,22 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 }
             } else {
                 tickerList.first().let {
+                    SomAnalytics.eventViewTicker("${it.tickerId}")
                     ticker_info?.setHtmlDescription(it.shortDesc + " ${getString(R.string.ticker_info_selengkapnya)}")
                     ticker_info?.tickerType = Ticker.TYPE_ANNOUNCEMENT
                     ticker_info?.setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
                             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
-                            SomAnalytics.eventClickSeeMoreOnTicker()
+                            SomAnalytics.eventClickSeeMoreOnTicker("${it.tickerId}")
                         }
 
                         override fun onDismiss() {
-                            SomAnalytics.eventClickXOnTicker()
+                            SomAnalytics.eventClickXOnTicker("${it.tickerId}")
                         }
 
                     })
                 }
             }
-            SomAnalytics.eventViewTicker()
         } else {
             ticker_info?.visibility = View.GONE
         }

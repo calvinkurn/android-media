@@ -85,19 +85,16 @@ object SomAnalytics {
         sendEventCategoryAction(CLICK_SOM, CATEGORY_SOM, CLICK_TERAPKAN_ON_FILTER_PAGE)
     }
 
-    fun eventViewTicker() {
-        // TODO : put ticker_id to label
-        sendEventCategoryActionLabel(VIEW_SOM_IRIS, CATEGORY_SOM, VIEW_TICKER, "")
+    fun eventViewTicker(tickerId: String) {
+        sendEventCategoryActionLabel(VIEW_SOM_IRIS, CATEGORY_SOM, VIEW_TICKER, tickerId)
     }
 
-    fun eventClickSeeMoreOnTicker() {
-        // TODO : put ticker_id to label
-        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_SEE_MORE_ON_TICKER, "")
+    fun eventClickSeeMoreOnTicker(tickerId: String) {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_SEE_MORE_ON_TICKER, tickerId)
     }
 
-    fun eventClickXOnTicker() {
-        // TODO : put ticker_id to label, ask unify team how to detect close button on view pager ticker?
-        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_X_ON_TICKER, "")
+    fun eventClickXOnTicker(tickerId: String) {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_X_ON_TICKER, tickerId)
     }
 
     fun eventClickFilterButtonOnOrderList() {
