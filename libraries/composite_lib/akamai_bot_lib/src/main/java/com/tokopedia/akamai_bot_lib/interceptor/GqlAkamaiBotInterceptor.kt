@@ -70,7 +70,7 @@ class GqlAkamaiBotInterceptor : Interceptor {
                                     registeredGqlFunctions.containsKey(it)
                                 }.take(1).map { it ->
                                     registeredGqlFunctions[it]
-                                }.first()
+                                }.firstOrNull()
 
                                 if (!xTkpdAkamai.isNullOrEmpty()) {
                                     newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()

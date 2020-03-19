@@ -143,4 +143,6 @@ public class ExampleInstrumentedTest {
             assertTrue(any.get(0).equalsIgnoreCase("mf_get_user_info"));
         }
     }
+
+
 }
