@@ -17,6 +17,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
+/**
+ * Main Logic for DF Service
+ * Function to download DF Module.
+ */
 object DFDownloader {
     const val SHARED_PREF_NAME = "df_job_srv"
     const val KEY_SHARED_PREF_MODULE = "module_list"
@@ -28,9 +32,6 @@ object DFDownloader {
 
     @SuppressLint("NewApi")
     fun startSchedule(context: Context, moduleList: List<String> = emptyList(), isImmediate: Boolean = false) {
-        if (!isImmediate && !DFRemoteConfig.getConfig(context).downloadInBackgroundAllowRetry) {
-            return
-        }
         val moduleListToDownload = DFInstaller.getFilteredModuleList(context, moduleList)
         // no changes in module list, so no need to update the queue
         if (moduleListToDownload.isNotEmpty()) {
@@ -99,9 +100,6 @@ object DFDownloader {
         if (isServiceRunning) {
             return true
         }
-        if (!DFRemoteConfig.getConfig(applicationContext).downloadInBackgroundAllowRetry) {
-            return true
-        }
         isServiceRunning = true
         return withContext(Dispatchers.Default) {
             var startServiceImmediateFlag = false
@@ -130,13 +128,21 @@ object DFDownloader {
                     val failedListAfterInstall = mutableListOf<Pair<String, Int>>()
 
                     if (splitInstallManager.installedModules?.contains(moduleToDownload) != true) {
-                        // the reason all failed is because this module is failed
                         failedListAfterInstall.add(Pair(moduleToDownload, (moduleToDownloadPair?.second
                             ?: 0) + 1))
                     } else {
                         successfulListAfterInstall.add(moduleToDownload)
                     }
-                    DFQueue.updateQueue(applicationContext, failedListAfterInstall, successfulListAfterInstall)
+
+                    if (DFRemoteConfig.getConfig(applicationContext).downloadInBackgroundAllowRetry) {
+                        //allowRetry will add failed list to queue again
+                        DFQueue.updateQueue(applicationContext, failedListAfterInstall, successfulListAfterInstall)
+                    } else {
+                        // not allow retry will remove both success and failed from queue
+                        DFQueue.updateQueue(applicationContext, null, successfulListAfterInstall)
+                        DFQueue.updateQueue(applicationContext, null, failedListAfterInstall.map { it.first })
+                    }
+
                 })
                 // retrieve the list again, and start the service to download the next DF in queue
                 val remainingList = DFQueue.getDFModuleList(applicationContext)

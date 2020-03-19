@@ -20,6 +20,8 @@ import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.dynamicfeatures.config.DFConfig
+import com.tokopedia.dynamicfeatures.config.DFRemoteConfig
 import com.tokopedia.dynamicfeatures.constant.CommonConstant
 import com.tokopedia.dynamicfeatures.constant.ErrorConstant
 import com.tokopedia.dynamicfeatures.track.DFTracking.Companion.trackDownloadDF
@@ -45,7 +47,7 @@ import kotlin.coroutines.CoroutineContext
  * This activity will install the "shop_settings_sellerapp" module with progress bar,
  * and after the module is successfully installed, it will bring the user to ShopNotesActivity
  */
-class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
+class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DFInstallerView {
 
     private lateinit var manager: SplitInstallManager
 
@@ -69,6 +71,8 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
     private var downloadTimes = 0
     private var successInstall = false
     private var job = Job()
+
+    private lateinit var dfConfig: DFConfig
 
     companion object {
         private const val EXTRA_NAME = "dfname"
@@ -97,7 +101,8 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
         }
 
         super.onCreate(savedInstanceState)
-        manager = SplitInstallManagerFactory.create(this)
+        dfConfig = DFRemoteConfig.getConfig(this)
+        manager = DFInstaller.getManager(this) ?: return
         if (moduleName.isEmpty()) {
             finish()
             return
@@ -143,37 +148,42 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
     }
 
     private fun loadAndLaunchModule(name: String) {
-        launch {
-            moduleSize = 0
+        if (dfConfig.allowRunningServiceFromActivity()) {
+            DFInstaller.installOnBackground(this, listOf(name), this::class.java.simpleName.toString())
+            DFInstaller.attachView(this)
+        } else {
+            launch {
+                moduleSize = 0
 
-            // Skip loading if the module already is installed. Perform success action directly.
-            if (manager.installedModules.contains(name)) {
-                onSuccessfulLoad(name, launch = true)
-                return@launch
-            }
-
-            // Create request to install a feature module by name.
-            val request = SplitInstallRequest.newBuilder()
-                .addModule(name)
-                .build()
-
-            if (freeInternalStorageBeforeDownload == 0L) {
-                freeInternalStorageBeforeDownload = withContext(Dispatchers.IO) {
-                    StorageUtils.getFreeSpaceBytes(applicationContext)
+                // Skip loading if the module already is installed. Perform success action directly.
+                if (manager.installedModules.contains(name)) {
+                    onSuccessfulLoad(name, launch = true)
+                    return@launch
                 }
-            }
 
-            // Load and install the requested feature module.
-            manager.startInstall(request).addOnSuccessListener {
-                if (it == 0) {
-                    onSuccessfulLoad(moduleName, true)
-                } else {
-                    sessionId = it
+                // Create request to install a feature module by name.
+                val request = SplitInstallRequest.newBuilder()
+                    .addModule(name)
+                    .build()
+
+                if (freeInternalStorageBeforeDownload == 0L) {
+                    freeInternalStorageBeforeDownload = withContext(Dispatchers.IO) {
+                        StorageUtils.getFreeSpaceBytes(applicationContext)
+                    }
                 }
-            }.addOnFailureListener { exception ->
-                val errorCode = (exception as? SplitInstallException)?.errorCode
-                sessionId = null
-                showFailedMessage(errorCode?.toString() ?: exception.toString())
+
+                // Load and install the requested feature module.
+                manager.startInstall(request).addOnSuccessListener {
+                    if (it == 0) {
+                        onInstalled()
+                    } else {
+                        sessionId = it
+                    }
+                }.addOnFailureListener { exception ->
+                    val errorCode = (exception as? SplitInstallException)?.errorCode
+                    sessionId = null
+                    onFailed(errorCode?.toString() ?: exception.toString())
+                }
             }
         }
     }
@@ -205,17 +215,9 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
         if (state.sessionId() != sessionId) {
             return@SplitInstallStateUpdatedListener
         }
-        val multiInstall = state.moduleNames().size > 1
-
-        val names = state.moduleNames().joinToString(" - ")
-
         when (state.status()) {
             SplitInstallSessionStatus.DOWNLOADING -> {
-                //  In order to see this, the application has to be uploaded to the Play Store.
-                displayLoadingState(state, getString(R.string.downloading_x, moduleNameTranslated))
-                if (moduleSize == 0L) {
-                    moduleSize = state.totalBytesToDownload()
-                }
+                onDownload(state)
             }
             SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
                 /*
@@ -224,18 +226,17 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
                   In order to see this, the application has to be uploaded to the Play Store.
                   Then features can be requested until the confirmation path is triggered.
                  */
-                manager.startConfirmationDialogForResult(state, this, CONFIRMATION_REQUEST_CODE)
+                onRequireUserConfirmation(state)
             }
             SplitInstallSessionStatus.INSTALLED -> {
-                onSuccessfulLoad(names, launch = !multiInstall)
+                onInstalled()
             }
 
             SplitInstallSessionStatus.INSTALLING -> {
-                updateProgressMessage(getString(R.string.installing_x, moduleNameTranslated)
-                )
+                onInstalling(state)
             }
             SplitInstallSessionStatus.FAILED -> {
-                showFailedMessage(state.errorCode().toString())
+                onFailed(state.errorCode().toString())
             }
         }
     }
@@ -325,7 +326,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
                                       buttonText: String = "",
                                       onDownloadButtonClicked: () -> (Unit) = {},
                                       ctaText: String = "",
-                                      onCtaClicked: ( ()-> (Unit))? = null) {
+                                      onCtaClicked: (() -> (Unit))? = null) {
         image.setImageResource(imageRes)
         progressGroup.visibility = View.INVISIBLE
         title_txt.text = title
@@ -384,14 +385,20 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
     }
 
     override fun onResume() {
+        // works for non singleton service
         // Listener can be registered even without directly triggering a download.
-        manager.registerListener(listener)
+        if (!dfConfig.allowRunningServiceFromActivity()) {
+            manager.registerListener(listener)
+        }
         super.onResume()
     }
 
     override fun onPause() {
+        // works for non singleton service
         // Make sure to dispose of the listener once it's no longer needed.
-        manager.unregisterListener(listener)
+        if (!dfConfig.allowRunningServiceFromActivity()) {
+            manager.unregisterListener(listener)
+        }
         super.onPause()
     }
 
@@ -402,15 +409,42 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
     override fun onDestroy() {
         super.onDestroy()
         val applicationContext = this.applicationContext
+        if (!dfConfig.allowRunningServiceFromActivity()) {
+            job.cancel()
+        }
         trackDownloadDF(listOf(moduleName),
             errorList,
             false)
         DFInstallerLogUtil.logStatus(applicationContext, TAG_LOG,
             moduleName, freeInternalStorageBeforeDownload, moduleSize,
             errorList, downloadTimes, successInstall)
-        job.cancel()
+        DFInstaller.clearRef()
     }
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job + CoroutineExceptionHandler { _, _ -> }
+
+    override fun onDownload(state: SplitInstallSessionState) {
+        //  In order to see this, the application has to be uploaded to the Play Store.
+        displayLoadingState(state, getString(R.string.downloading_x, moduleNameTranslated))
+        if (moduleSize == 0L) {
+            moduleSize = state.totalBytesToDownload()
+        }
+    }
+
+    override fun onRequireUserConfirmation(state: SplitInstallSessionState) {
+        manager.startConfirmationDialogForResult(state, this, CONFIRMATION_REQUEST_CODE)
+    }
+
+    override fun onInstalled() {
+        onSuccessfulLoad(moduleName, true)
+    }
+
+    override fun onInstalling(state: SplitInstallSessionState) {
+        updateProgressMessage(getString(R.string.installing_x, moduleNameTranslated))
+    }
+
+    override fun onFailed(errorString: String) {
+        showFailedMessage(errorString)
+    }
 }
