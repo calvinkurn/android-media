@@ -9,7 +9,7 @@ class ProductManageFilterExpandChecklistViewModelTest: ProductManageFilterExpand
     @Test
     fun `when_init_data_should_update_daa_and_number_of_selected_data_accordingly`() {
         val dataToInsert = listOf(
-                ChecklistViewModel(id ="1", name = "Some Etalase", value = "", isSelected = true),
+                ChecklistViewModel(id ="1", name = "Some Filter", value = "", isSelected = true),
                 ChecklistViewModel(id ="2", name = "Some Category", value = "", isSelected = false))
 
         viewModel.initData(dataToInsert)
@@ -35,7 +35,7 @@ class ProductManageFilterExpandChecklistViewModelTest: ProductManageFilterExpand
     @Test
     fun `when_update_select_should_update_actual_data_and_number_of_selected_data_accordingly`() {
         val dataToInsert = listOf(
-                ChecklistViewModel(id ="1", name = "Some Etalase", value = "", isSelected = false),
+                ChecklistViewModel(id ="1", name = "Some Filter", value = "", isSelected = false),
                 ChecklistViewModel(id ="2", name = "Some Category", value = "", isSelected = false))
 
         val selectedData = dataToInsert.first()
@@ -44,7 +44,7 @@ class ProductManageFilterExpandChecklistViewModelTest: ProductManageFilterExpand
         viewModel.updateSelectedItem(selectedData)
 
         val expectedCount = 1
-        val expectedData = ChecklistViewModel(id ="1", name = "Some Etalase", value = "", isSelected = true)
+        val expectedData = ChecklistViewModel(id ="1", name = "Some Filter", value = "", isSelected = true)
 
         verifySelectCountEquals(expectedCount)
         verifyChecklistDataSelected(expectedData)
