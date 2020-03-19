@@ -20,9 +20,9 @@ class GiftPrizeLargeView : FrameLayout {
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
+            context,
+            attrs,
+            defStyleAttr
     ) {
         init(attrs)
     }
@@ -42,8 +42,12 @@ class GiftPrizeLargeView : FrameLayout {
         tvMessage = findViewById(R.id.tvMessage)
     }
 
-    fun setData(imageURL: String, text: List<String>){
-
+    fun setData(imageURL: String, text: List<String>?) {
+        //todo Rahul load image
+        val tvList = arrayListOf<AppCompatTextView>(tvTitle, tvMessage, tvDescription)
+        text?.forEachIndexed { index, s ->
+            tvList[index].text = s
+        }
     }
 
 }

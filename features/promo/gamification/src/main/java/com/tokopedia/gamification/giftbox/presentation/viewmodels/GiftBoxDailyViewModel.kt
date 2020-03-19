@@ -11,6 +11,8 @@ import com.tokopedia.gamification.giftbox.domain.GiftBoxDailyUseCase
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -28,9 +30,12 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
     val giftBoxLiveData: MutableLiveData<LiveDataResult<GiftBoxEntity>> = MutableLiveData()
     val rewardLiveData: MutableLiveData<LiveDataResult<GiftBoxRewardEntity>> = MutableLiveData()
 
+    var rewardJob: Job? = null
+
     fun getGiftBox() {
         giftBoxLiveData.postValue(LiveDataResult.loading())
         launchCatchError(block = {
+            delay(4000L)
             val params = giftBoxDailyUseCase.getRequestParams(campaignSlug, pageName)
 //            val r = giftBoxDailyUseCase.getResponse(params)
 //            giftBoxLiveData.postValue(LiveDataResult.success(giftBoxDailyUseCase.getResponse(params)))
@@ -41,12 +46,14 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
     }
 
     fun getRewards() {
-        launchCatchError(block = {
-            val params = giftBoxDailyRewardUseCase.getRequestParams(campaignSlug, uniqueCode)
+        if (rewardJob == null || rewardJob!!.isCompleted) {
+            rewardJob = launchCatchError(block = {
+                val params = giftBoxDailyRewardUseCase.getRequestParams(campaignSlug, uniqueCode)
 //            rewardLiveData.postValue(LiveDataResult.success(giftBoxDailyRewardUseCase.getResponse(params)))
-            rewardLiveData.postValue(LiveDataResult.success(giftBoxDailyRewardUseCase.getRandomResponse()))
-        }, onError = {
-            rewardLiveData.postValue(LiveDataResult.error(it))
-        })
+                rewardLiveData.postValue(LiveDataResult.success(giftBoxDailyRewardUseCase.getRandomResponse()))
+            }, onError = {
+                rewardLiveData.postValue(LiveDataResult.error(it))
+            })
+        }
     }
 }

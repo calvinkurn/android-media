@@ -18,9 +18,9 @@ class GiftPrizeSmallView : FrameLayout {
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
+            context,
+            attrs,
+            defStyleAttr
     ) {
         init(attrs)
     }
@@ -35,5 +35,12 @@ class GiftPrizeSmallView : FrameLayout {
         LayoutInflater.from(context).inflate(getLayout(), this, true)
         image = findViewById(R.id.image)
         tvTitle = findViewById(R.id.tvTitle)
+    }
+
+    fun setData(image: String, textList: List<String>?) {
+        //todo Rahul load image later
+        if (!textList.isNullOrEmpty()) {
+            tvTitle.text = textList[0]
+        }
     }
 }

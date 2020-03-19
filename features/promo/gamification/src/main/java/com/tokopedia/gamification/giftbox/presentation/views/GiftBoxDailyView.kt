@@ -69,9 +69,7 @@ open class GiftBoxDailyView : FrameLayout {
     }
 
     fun setClicks() {
-        fmGiftBox.setOnClickListener {
-            handleTapOnGiftBox()
-        }
+
     }
 
     open fun handleTapOnGiftBox() {

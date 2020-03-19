@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.ViewFlipper
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import com.tokopedia.gamification.R
@@ -14,14 +15,21 @@ import com.tokopedia.gamification.giftbox.presentation.helpers.doOnLayout
 import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer
 import com.tokopedia.gamification.giftbox.presentation.views.StarsContainer
+import com.tokopedia.unifycomponents.LoaderUnify
 
 open class GiftBoxBaseFragment : Fragment() {
 
-    lateinit var progressBar: ProgressBar
+    lateinit var loader: LoaderUnify
+    lateinit var viewFlipper: ViewFlipper
     lateinit var tvTapHint: AppCompatTextView
     lateinit var starsContainer: StarsContainer
     lateinit var rewardContainer: RewardContainer
     lateinit var giftBoxDailyView: GiftBoxDailyView
+    lateinit var tvLoaderTitle: AppCompatTextView
+    lateinit var tvLoaderMessage: AppCompatTextView
+
+    val CONTAINER_LOADER = 0
+    val CONTAINER_GIFT_BOX = 1
 
     var screenHeight = 0
     var screenWidth = 0
@@ -39,17 +47,20 @@ open class GiftBoxBaseFragment : Fragment() {
 
     open fun initViews(v: View) {
         giftBoxDailyView = v.findViewById(R.id.gift_box_view)
-        progressBar = v.findViewById(R.id.progress_bar)
+        loader = v.findViewById(R.id.loader)
         tvTapHint = v.findViewById(R.id.tvTapHint)
         starsContainer = v.findViewById(R.id.starsContainer)
         rewardContainer = v.findViewById(R.id.reward_container)
+        viewFlipper = v.findViewById(R.id.viewFlipper)
+        tvLoaderTitle = v.findViewById(R.id.tvLoaderTitle)
+        tvLoaderMessage = v.findViewById(R.id.tvLoaderMessage)
 
         setInitialPositionOfViews()
         initialViewSetup()
     }
 
     open fun initialViewSetup() {
-        progressBar.visibility = View.GONE
+        loader.visibility = View.GONE
         giftBoxDailyView.alpha = 0f
         tvTapHint.alpha = 0f
     }
@@ -84,11 +95,13 @@ open class GiftBoxBaseFragment : Fragment() {
     }
 
     fun showLoader() {
-        progressBar.visibility = View.VISIBLE
+        viewFlipper.displayedChild = CONTAINER_LOADER
+        loader.visibility = View.VISIBLE
     }
 
     fun hideLoader() {
-        progressBar.visibility = View.GONE
+        viewFlipper.displayedChild = CONTAINER_GIFT_BOX
+        loader.visibility = View.GONE
     }
 
     //todo Rahul remove this method

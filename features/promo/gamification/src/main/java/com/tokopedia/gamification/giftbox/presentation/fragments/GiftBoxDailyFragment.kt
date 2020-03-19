@@ -73,6 +73,9 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         tvBenefits = v.findViewById(R.id.tvBenefits)
         llBenefits = v.findViewById(R.id.ll_benefits)
         llRewardMessage = v.findViewById(R.id.ll_reward_message)
+        prizeViewSmallFirst = v.findViewById(R.id.giftPrizeSmallViewFirst)
+        prizeViewSmallSecond = v.findViewById(R.id.giftPrizeSmallViewFirst)
+        prizeViewLarge = v.findViewById(R.id.giftPrizeLargeView)
         super.initViews(v)
 
         setListeners()
@@ -158,8 +161,17 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             }
         })
         viewModel.rewardLiveData.observe(viewLifecycleOwner, Observer {
-            
+            when(it.status){
+                LiveDataResult.STATUS.SUCCESS->{
+                    giftBoxDailyView.handleTapOnGiftBox()
+                }
+                LiveDataResult.STATUS.ERROR->{}
+            }
         })
+
+        giftBoxDailyView.fmGiftBox.setOnClickListener {
+            viewModel.getRewards()
+        }
     }
 
     fun showRewardMessageDescription():Animator {
@@ -192,9 +204,16 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         //set prize list
         entity.gamiLuckyHome.prizeList?.forEach {
             if (it.isSpecial) {
-
+                prizeViewLarge.setData(it.imageURL,it.text)
+                prizeViewLarge.visibility = View.VISIBLE
             } else {
-
+                if(prizeViewSmallFirst.tvTitle.text.isNullOrEmpty()){
+                    prizeViewSmallFirst.setData(it.imageURL, it.text)
+                    prizeViewSmallFirst.visibility = View.VISIBLE
+                }else {
+                    prizeViewSmallSecond.setData(it.imageURL, it.text)
+                    prizeViewSmallSecond.visibility = View.VISIBLE
+                }
             }
         }
 

@@ -31,4 +31,6 @@
     <color name="gf_box_hint_color">#12883D</color>
     <color name="gf_box_prize_color">#52565E</color>
     <color name="gf_orange_color">#FA591D</color>
+    <color name="gf_loader_message_color">#AD31353B</color>
+    <color name="gf_loader_title_color">#F531353B</color>
 </resources>
