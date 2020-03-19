@@ -43,7 +43,7 @@ data class DFConfig(
     @Expose
     val maxThresholdInsufficientStorage: Long = 0,
 
-    @SerializedName("dl_singleton_service")
+    @SerializedName("df_singleton_service")
     @Expose
     private val useSingletonService: Boolean = false
 
