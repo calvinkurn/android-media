@@ -31,6 +31,8 @@ abstract class DynamicChannelViewHolder(itemView: View,
     var seeAllButton: TextView? = null
     var channelTitle: Typography? = null
     var seeAllButtonUnify: UnifyButton? = null
+    var channelSubtitle: TextView? = null
+
     /**
      * List of possible layout from backend
      */
@@ -72,9 +74,11 @@ abstract class DynamicChannelViewHolder(itemView: View,
             val stubCountDownView: View? = itemView.findViewById(R.id.count_down)
             val stubSeeAllButton: View? = itemView.findViewById(R.id.see_all_button)
             val stubSeeAllButtonUnify: View? = itemView.findViewById(R.id.see_all_button_unify)
+            val stubChannelSubtitle: View? = itemView.findViewById(R.id.channel_subtitle)
 
             val channel = element.channel
             val channelHeaderName = element.channel?.header?.name
+            val channelSubtitleName = element.channel?.header?.subtitle
 
             channel?.let {
                 channelTitleContainer?.let {
@@ -99,6 +103,28 @@ abstract class DynamicChannelViewHolder(itemView: View,
                         )
                     } else {
                         channelTitleContainer.visibility = View.GONE
+                    }
+
+                    /**
+                     * Requirement:
+                     * Only show channel subtitle when it is exist
+                     */
+                    if (channelSubtitleName?.isNotEmpty() == true) {
+                        channelSubtitle = if (stubChannelSubtitle is ViewStub &&
+                                !isViewStubHasBeenInflated(stubChannelSubtitle)) {
+                            val stubChannelView = stubChannelSubtitle.inflate()
+                            stubChannelView?.findViewById(R.id.channel_subtitle)
+                        } else {
+                            itemView.findViewById(R.id.channel_subtitle)
+                        }
+                        channelSubtitle?.text = channelSubtitleName
+                        channelSubtitle?.visibility = View.VISIBLE
+                        channelSubtitle?.setTextColor(
+                                if(channel.header.textColor.isNotEmpty()) Color.parseColor(channel.header.textColor)
+                                else ContextCompat.getColor(context, R.color.Neutral_N700)
+                        )
+                    } else {
+                        channelSubtitle?.visibility = View.GONE
                     }
 
                     /**
