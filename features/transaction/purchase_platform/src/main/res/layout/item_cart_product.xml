@@ -177,14 +177,6 @@
 
     </RelativeLayout>
 
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/product_ticker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:closeButtonVisibility="gone"
-        app:tickerShapeType="loose"
-        app:tickerType="warning" />
-
     <LinearLayout
         android:id="@+id/ll_optional_note_to_seller_layout"
         android:layout_width="match_parent"
@@ -209,6 +201,14 @@
             tools:text="Saya pesan warna merah yah min.. jangan sampai salah kirim barangnya gan!" />
 
     </LinearLayout>
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/product_ticker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:closeButtonVisibility="gone"
+        app:tickerShapeType="loose"
+        app:tickerType="warning" />
 
     <RelativeLayout
         android:id="@+id/rlayout_purchase_protection"
