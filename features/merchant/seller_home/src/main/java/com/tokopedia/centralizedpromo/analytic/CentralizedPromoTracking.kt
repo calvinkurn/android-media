@@ -12,6 +12,7 @@ import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_NA
 import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.track.TrackApp
 
+// Doc : https://docs.google.com/spreadsheets/d/1d6OCqZyVOMsYrEChc-xwj1Ta_5G9bvCKIzOFw4kq4BA
 object CentralizedPromoTracking {
     @Suppress("SameParameterValue")
     private fun createMap(event: String, category: String, action: String, label: String): MutableMap<String, Any> {
