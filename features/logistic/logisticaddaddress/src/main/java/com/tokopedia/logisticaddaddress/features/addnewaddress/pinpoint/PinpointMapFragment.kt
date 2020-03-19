@@ -34,6 +34,7 @@ import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
 import com.tokopedia.logisticaddaddress.domain.mapper.SaveAddressMapper
+import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAddressActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
@@ -400,7 +401,11 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         continueWithLocation = true
         val savedModel = saveAddressMapper.map(getDistrictDataUiModel, zipCodes)
         presenter.setAddress(savedModel)
-        updateGetDistrictBottomSheet(savedModel)
+        with(getDistrictDataUiModel.errMessage) {
+            if (this != null && this.contains(GetDistrictUseCase.LOCATION_NOT_FOUND_MESSAGE)) {
+                showLocationNotFoundCTA()
+            } else updateGetDistrictBottomSheet(savedModel)
+        }
     }
 
     override fun onSuccessAutofill(autofillDataUiModel: Data) {
