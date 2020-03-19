@@ -21,7 +21,15 @@ buildscript {
 }
 
 android {
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+
     defaultConfig {
+        defaultConfig {
+            multiDexEnabled true
+            testInstrumentationRunner "com.tokopedia.test.application.InstrumentationTestRunner"
+        }
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ['targetModuleName': 'TkpdHome']
@@ -96,6 +104,8 @@ dependencies {
     // Room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     implementation rootProject.ext.dbDependencies.dbRoomKtx
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
 
     // Unify
@@ -114,16 +124,16 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation (rootProject.ext.miscDependencies.ucrop){
+    implementation(rootProject.ext.miscDependencies.ucrop) {
         exclude group: 'com.android.support'
     }
-    implementation (rootProject.ext.miscDependencies.viewPager2){
+    implementation(rootProject.ext.miscDependencies.viewPager2) {
         ['androidx.collection', 'androidx.fragment'].each {
             exclude group: it
         }
     }
 
-    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+    implementation(rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
     implementation rootProject.ext.miscDependencies.dagger
@@ -142,7 +152,7 @@ dependencies {
         exclude group: "com.android.support"
     }
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    kapt  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     debugImplementation rootProject.ext.debugToolsDependencies.stetho
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
@@ -161,13 +171,31 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.spek2Api
     testImplementation rootProject.ext.testDependencies.spek2Dsl
+
+    // instrumentation test - disabled for now
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:3.0.2'
+    implementation 'com.android.support:multidex:1.0.3'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
+    androidTestImplementation rootProject.ext.playServicesDependencies.core
+    androidTestImplementation rootProject.ext.firebase.core
+    androidTestImplementation project(rootProject.ext.libraries.core_legacy)
+    androidTestImplementation 'junit:junit:4.12'
+    androidTestImplementation project(rootProject.ext.libraries.commonNetwork)
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.network
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
 }
 
 project.ext {
     artifactId = 'home'
     groupId = 'com.tokopedia.discovery'
     versionName = "0.0.1"
-    artifactName ="home-release"
+    artifactName = "home-release"
 }
 
 apply from: '../../../publish_local.gradle'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'

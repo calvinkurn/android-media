@@ -16,7 +16,7 @@ import java.lang.StringBuilder
 /**
  * @author by yoasfs on 2020-03-03
  */
-class JankyFrameMonitoringUtil {
+open class JankyFrameMonitoringUtil {
 
     private var activity: Activity? = null
     private var performanceMonitoring: PerformanceMonitoring? = null
@@ -34,16 +34,22 @@ class JankyFrameMonitoringUtil {
     private val initPerformanceMonitoring = mutableMapOf<String, PerformanceMonitoring>()
     private val initPerformanceDatas = mutableMapOf<String, PerformanceData>()
 
-    fun init(activity: Activity) {
+    private var onFrameListener: OnFrameListener? = null
+
+    interface OnFrameListener {
+        fun onFrameRendered(performanceData: PerformanceData)
+    }
+
+    fun init(activity: Activity, onFrameListener: OnFrameListener? = null) {
         this.activity = activity
+        this.onFrameListener = onFrameListener
         startFrameMetrics()
     }
 
-    fun recordRecyclerViewScrollPerformance(recyclerView: RecyclerView,
+    open fun recordRecyclerViewScrollPerformance(recyclerView: RecyclerView,
                                             pageName: String,
                                             subPageName: String = "") {
-        var tag = if (subPageName.isEmpty()) String.format(PERF_JANKY_FRAMES_TAG, TYPE_SCROLL, pageName)
-        else String.format(PERF_JANKY_FRAMES_SUB_PAGE_TAG, TYPE_SCROLL, pageName, subPageName)
+        val tag = getPageTag(pageName, subPageName)
 
         val performanceMonitoring = PerformanceMonitoring()
         performanceMonitoring.startTrace(tag)
@@ -82,7 +88,9 @@ class JankyFrameMonitoringUtil {
                         performanceMonitoring.putMetric(performanceData.jankyFramesTag, performanceData.jankyFrames.toLong())
                         performanceMonitoring.putMetric(performanceData.jankyFramesPercentageTag, performanceData.jankyFramePercentage.toLong())
 
+                        onFrameListener?.onFrameRendered(performanceData)
                         performanceMonitoring.stopTrace()
+                        isScrolling = false
 
                         startAllFramesCount = mainPerformanceData.allFrames
                         startJankyFramesCount = mainPerformanceData.jankyFrames
@@ -90,6 +98,11 @@ class JankyFrameMonitoringUtil {
                 }
             }
         })
+    }
+
+    open fun getPageTag(pageName: String, subPageName: String): String {
+        return if (subPageName.isEmpty()) String.format(PERF_JANKY_FRAMES_TAG, TYPE_SCROLL, pageName)
+        else String.format(PERF_JANKY_FRAMES_SUB_PAGE_TAG, TYPE_SCROLL, pageName, subPageName)
     }
 
     fun startInitPerformanceMonitoring(pageName: String) {
