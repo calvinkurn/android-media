@@ -13,6 +13,7 @@ data class VariantOptionWithAttribute(
         val isBuyable: Boolean = false,
         val stock: Int = 0,
         val variantOptionIdentifier: String = "",
+        val variantCategoryKey: String = "",
         val selectedStockWording: String = "",
         val level: Int = -1,
         val hasCustomImages: Boolean = false // If one of all the child dont have image, it will return false. If all of the child have custom image then will return true

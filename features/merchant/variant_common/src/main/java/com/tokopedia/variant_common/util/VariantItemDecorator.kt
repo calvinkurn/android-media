@@ -1,9 +1,12 @@
 package com.tokopedia.variant_common.util
 
 import android.graphics.Canvas
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.R
+import com.tokopedia.unifycomponents.toPx
 
 /**
  * Created by Yehezkiel on 10/03/20
@@ -29,4 +32,11 @@ class VariantItemDecorator(
         }
     }
 
+    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+        super.getItemOffsets(outRect, view, parent, state)
+        val position = (view.layoutParams as RecyclerView.LayoutParams).viewLayoutPosition
+        if (position != 0 && parent.itemDecorationCount == 0) {
+            outRect.top = 16.toPx()
+        }
+    }
 }
