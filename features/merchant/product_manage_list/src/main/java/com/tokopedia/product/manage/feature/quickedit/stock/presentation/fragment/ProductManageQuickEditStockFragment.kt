@@ -84,6 +84,8 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
                 true
             }
             setValueChangedListener { newValue, _, _ ->
+                quickEditStockActivateSwitch.isChecked = newValue > MINIMUM_STOCK
+                quickEditStockActivateSwitch.isEnabled = newValue != MINIMUM_STOCK
                 viewModel.updateStock(newValue)
             }
         }
