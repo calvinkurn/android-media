@@ -1,247 +1,364 @@
 package com.tokopedia.sellerhome.view.viewmodel
 
-import androidx.arch.core.executor.ArchTaskExecutor
-import androidx.arch.core.executor.TaskExecutor
-import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.sellerhome.data.GetTickerRepository
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
+import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.*
-import com.tokopedia.sellerhome.view.model.*
+import com.tokopedia.sellerhome.view.model.BaseWidgetUiModel
+import com.tokopedia.sellerhome.view.model.CardDataUiModel
+import com.tokopedia.sellerhome.view.model.TickerUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.mockk
-import junit.framework.Assert.assertTrue
-import kotlinx.coroutines.CoroutineDispatcher
+import io.mockk.*
+import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.Dispatchers
-import org.junit.platform.runner.JUnitPlatform
-import org.junit.runner.RunWith
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.gherkin.Feature
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 
-@RunWith(JUnitPlatform::class)
-class SellerHomeViewModelTest : Spek({
+/**
+ * Created By @ilhamsuaib on 19/03/20
+ */
 
-    this.beforeGroup {
-        ArchTaskExecutor.getInstance().setDelegate(object : TaskExecutor() {
-            override fun executeOnDiskIO(runnable: Runnable) {
-                runnable.run()
-            }
+@ExperimentalCoroutinesApi
+class SellerHomeViewModelTest {
 
-            override fun isMainThread(): Boolean {
-                return true
-            }
+    @RelaxedMockK
+    lateinit var getShopStatusUseCase: GetStatusShopUseCase
 
-            override fun postToMainThread(runnable: Runnable) {
-                runnable.run()
-            }
-        })
+    @RelaxedMockK
+    lateinit var userSession: UserSessionInterface
+
+    @RelaxedMockK
+    lateinit var getTickerUseCase: GetTickerUseCase
+
+    @RelaxedMockK
+    lateinit var getLayoutUseCase: GetLayoutUseCase
+
+    @RelaxedMockK
+    lateinit var getShopLocationUseCase: GetShopLocationUseCase
+
+    @RelaxedMockK
+    lateinit var getCardDataUseCase: GetCardDataUseCase
+
+    @RelaxedMockK
+    lateinit var getLineGraphDataUseCase: GetLineGraphDataUseCase
+
+    @RelaxedMockK
+    lateinit var getProgressDataUseCase: GetProgressDataUseCase
+
+    @RelaxedMockK
+    lateinit var getPostDataUseCase: GetPostDataUseCase
+
+    @RelaxedMockK
+    lateinit var getCarouselDataUseCase: GetCarouselDataUseCase
+
+    @get:Rule
+    val rule = InstantTaskExecutorRule()
+
+    @Before
+    fun setup() {
+        MockKAnnotations.init(this)
     }
-    this.afterGroup {
-        ArchTaskExecutor.getInstance().setDelegate(null)
+
+    private val mViewModel: SellerHomeViewModel by lazy {
+        SellerHomeViewModel(getShopStatusUseCase, userSession, getTickerUseCase, getLayoutUseCase,
+                getShopLocationUseCase, getCardDataUseCase, getLineGraphDataUseCase, getProgressDataUseCase,
+                getPostDataUseCase, getCarouselDataUseCase, Dispatchers.Unconfined)
     }
 
-    Feature("SellerHomeViewModel") {
+    @Test
+    fun `should success when get ticker`() {
+        val tickerList = listOf(
+                TickerUiModel("", "", "", "", "", "",
+                        "", "", "", "", "", "", "")
+        )
 
-        val userSession: UserSessionInterface = mockk(relaxed = true)
+        coEvery {
+            getTickerUseCase.executeOnBackground()
+        } returns tickerList
 
-        val getTickerUseCase: GetTickerUseCase = mockk(relaxed = true)
-        val getLayoutUseCase: GetLayoutUseCase = mockk(relaxed = true)
-        val getCardDataUseCase: GetCardDataUseCase = mockk(relaxed = true)
-        val getLineGraphDataUseCase: GetLineGraphDataUseCase = mockk(relaxed = true)
-        val getProgressDataUseCase: GetProgressDataUseCase = mockk(relaxed = true)
-        val getPostDataUseCase: GetPostDataUseCase = mockk(relaxed = true)
-        val getCarouselDataUseCase: GetCarouselDataUseCase = mockk(relaxed = true)
+        mViewModel.getTicker()
 
-        val dispatcher: CoroutineDispatcher = Dispatchers.Unconfined
-
-        val sellerHomeViewModel: SellerHomeViewModel by lazy {
-            SellerHomeViewModel(userSession, getTickerUseCase, getLayoutUseCase, getCardDataUseCase,
-                    getLineGraphDataUseCase, getProgressDataUseCase, getPostDataUseCase, getCarouselDataUseCase, dispatcher)
+        coVerify {
+            getTickerUseCase.executeOnBackground()
         }
 
-        Scenario("success get ticker") {
+        assertEquals(Success(tickerList), mViewModel.homeTicker.value)
+    }
 
-            val tickerUiModel = TickerUiModel(
-                    "","","","","","","","","","","","",""
-            )
-            val tickerList: List<TickerUiModel> = listOf(tickerUiModel)
+    @Test
+    fun `should success when get shop status`() {
+        val shopStatus = GetShopStatusResponse()
+        val shopId = "123456"
 
-            Given("getTickerUseCase return empty list") {
-                coEvery {
-                    getTickerUseCase.executeOnBackground()
-                } returns tickerList
-            }
+        getShopStatusUseCase.params = GetStatusShopUseCase.createRequestParams(shopId)
 
-            When("get ticker") {
-                sellerHomeViewModel.getTicker()
-            }
+        every {
+            userSession.shopId
+        } returns shopId
 
-            Then("run usecase") {
-                coVerify {
-                    getTickerUseCase.executeOnBackground()
-                }
-            }
+        coEvery {
+            getShopStatusUseCase.executeOnBackground()
+        } returns shopStatus
 
-            Then("view model value is success") {
-                val result = sellerHomeViewModel.homeTicker.value
-                assertTrue(result == Success(tickerList))
-            }
+        mViewModel.getShopStatus()
 
+        verify {
+            userSession.shopId
         }
 
-        Scenario("error get ticker") {
-
-            Given("getTickerUseCase throw error") {
-                coEvery {
-                    getTickerUseCase.executeOnBackground()
-                } throws Throwable()
-            }
-
-            When("get ticker") {
-                sellerHomeViewModel.getTicker()
-            }
-
-            Then("run usecase") {
-                coVerify {
-                    getTickerUseCase.executeOnBackground()
-                }
-            }
-
-            Then("view model value is Fail") {
-                assertTrue(sellerHomeViewModel.homeTicker.value is Fail)
-            }
+        coVerify {
+            getShopStatusUseCase.executeOnBackground()
         }
 
-        Scenario("success get widget layout") {
+        assertEquals(Success(shopStatus), mViewModel.shopStatus.value)
+    }
 
-            getLayoutUseCase.params = GetLayoutUseCase.getRequestParams("12345678")
+    @Test
+    fun `should failed when get shop status`() {
+        val throwable = MessageErrorException("error")
+        val shopId = "123456"
 
-            val dummyTooltipUiModel = TooltipUiModel("", "", listOf(TooltipListItemUiModel("", "")))
-            val dummyCardDataUiModel = CardDataUiModel("","","","","")
-            val dummyImpressHolder = ImpressHolder()
-            val dummyBaseWidgetUiModel = CardWidgetUiModel(
-                    "", "","",dummyTooltipUiModel,"","","","", dummyCardDataUiModel,dummyImpressHolder
-            )
+        getShopStatusUseCase.params = GetStatusShopUseCase.createRequestParams("123456")
 
-            val dummySuccessWidgetLayout : List<BaseWidgetUiModel<*>> = listOf(dummyBaseWidgetUiModel)
+        every {
+            userSession.shopId
+        } returns shopId
 
-            Given("getLayoutUseCase return success") {
-                coEvery {
-                    getLayoutUseCase.executeOnBackground()
-                } returns dummySuccessWidgetLayout
-                coEvery {
-                    userSession.shopId
-                } returns "12345678"
-            }
+        coEvery {
+            getShopStatusUseCase.executeOnBackground()
+        } throws throwable
 
-            When("get layout") {
-                sellerHomeViewModel.getWidgetLayout()
-            }
+        mViewModel.getShopStatus()
 
-            Then("run usecase") {
-                coVerify { getLayoutUseCase.executeOnBackground() }
-            }
-
-            Then("view model value is Success") {
-                assertTrue(sellerHomeViewModel.widgetLayout.value == Success(dummySuccessWidgetLayout))
-            }
+        verify {
+            userSession.shopId
         }
 
-        Scenario("error get widget layout") {
-
-            getLayoutUseCase.params = GetLayoutUseCase.getRequestParams("12345678")
-
-            Given("getLayoutUseCase return error") {
-                coEvery {
-                    getLayoutUseCase.executeOnBackground()
-                } throws Throwable()
-            }
-
-            When("get layout") {
-                sellerHomeViewModel.getWidgetLayout()
-            }
-
-            Then("run usecase") {
-                coVerify { getLayoutUseCase.executeOnBackground() }
-            }
-
-            Then("view model value is Fail") {
-                assertTrue(sellerHomeViewModel.widgetLayout.value is Fail)
-            }
+        coEvery {
+            getShopStatusUseCase.executeOnBackground()
         }
 
-        Scenario("success get card widget") {
+        assertEquals(Fail(throwable), mViewModel.shopStatus.value)
+    }
 
-            val dummyCardDataUiModel = CardDataUiModel("","","","","")
+    @Test
+    fun `should success when get widget layout`() {
+        val layoutList: List<BaseWidgetUiModel<*>> = emptyList()
+        val shopId = "123456"
 
-            val dummyCardDataResult : List<CardDataUiModel> = listOf(dummyCardDataUiModel)
-            val stringList: List<String> = listOf("")
-            val shopId = "12345678"
+        getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId)
 
-            Given("getCardWidget return success") {
-                coEvery {
-                    getCardDataUseCase.executeOnBackground()
-                } returns dummyCardDataResult
-                coEvery {
-                    userSession.shopId
-                } returns shopId
-            }
+        every {
+            userSession.shopId
+        } returns shopId
 
-            When("get card data") {
-                sellerHomeViewModel.getCardWidgetData(stringList)
-            }
+        coEvery {
+            getLayoutUseCase.executeOnBackground()
+        } returns layoutList
 
-            Then("view model value is Success") {
-                assertTrue(sellerHomeViewModel.cardWidgetData.value == Success(dummyCardDataResult))
-            }
+        mViewModel.getWidgetLayout()
+
+        verify {
+            userSession.shopId
         }
 
-        Scenario("error get card widget") {
-            val stringList: List<String> = listOf("")
-            val shopId = "12345678"
-
-            Given("getCardWidget return success") {
-                coEvery {
-                    getCardDataUseCase.executeOnBackground()
-                } throws Throwable()
-                coEvery {
-                    userSession.shopId
-                } returns shopId
-            }
-
-            When("Get Card Data") {
-                sellerHomeViewModel.getCardWidgetData(stringList)
-            }
-
-            Then("view model value is Fail") {
-                assertTrue(sellerHomeViewModel.cardWidgetData.value is Fail)
-            }
+        coEvery {
+            getLayoutUseCase.executeOnBackground()
         }
 
-        Scenario("Success get line graph data") {
-            val dummyGraphList = listOf(XYAxisUiModel("", "", 0))
-            val dummyXYAxisUiModel = listOf(XYAxisUiModel("", "", 0))
-            val dummyLineGraphDataUiModel = LineGraphDataUiModel("","","","", dummyGraphList, dummyXYAxisUiModel)
-            val dummyList = listOf(dummyLineGraphDataUiModel)
-            val dummyDataKeys = listOf("")
+        assertEquals(Success(layoutList), mViewModel.widgetLayout.value)
+    }
 
-            Given("getLineGraphWidgetData returns success") {
-                coEvery {
-                    getLineGraphDataUseCase.executeOnBackground()
-                } returns dummyList
-            }
+    @Test
+    fun `should failed when get widget layout`() {
+        val throwable = MessageErrorException("error message")
+        val shopId = "123456"
 
-            When("get line graph widget data") {
-                sellerHomeViewModel.getLineGraphWidgetData(dummyDataKeys)
-            }
+        getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId)
 
-            Then("view model value is success") {
-                val result = sellerHomeViewModel.lineGraphWidgetData.value
-                assertTrue(result == Success(dummyList))
-            }
+        every {
+            userSession.shopId
+        } returns shopId
+
+        coEvery {
+            getLayoutUseCase.executeOnBackground()
+        } throws throwable
+
+        mViewModel.getWidgetLayout()
+
+        verify {
+            userSession.shopId
         }
+
+        coEvery {
+            getLayoutUseCase.executeOnBackground()
+        }
+
+        assertEquals(Fail(throwable), mViewModel.widgetLayout.value)
+    }
+
+    @Test
+    fun `should success when get shop location`() {
+        val shopId = "123456"
+        getShopLocationUseCase.params = GetShopLocationUseCase.getRequestParams(shopId)
+
+        val shopLocation = ShippingLoc(13)
+
+        every {
+            userSession.shopId
+        } returns shopId
+
+        coEvery {
+            getShopLocationUseCase.executeOnBackground()
+        } returns shopLocation
+
+        mViewModel.getShopLocation()
+
+        verify {
+            userSession.shopId
+        }
+
+        coVerify {
+            getShopLocationUseCase.executeOnBackground()
+        }
+
+        assertEquals(Success(shopLocation), mViewModel.shopLocation.value)
+    }
+
+    @Test
+    fun `should failed when get shop location`() {
+        val throwable = MessageErrorException("error message")
+        val shopId = "123456"
+
+        getShopLocationUseCase.params = GetShopLocationUseCase.getRequestParams(shopId)
+
+        every {
+            userSession.shopId
+        } returns shopId
+
+        coEvery {
+            getShopLocationUseCase.executeOnBackground()
+        } throws throwable
+
+        mViewModel.getShopLocation()
+
+        verify {
+            userSession.shopId
+        }
+
+        coVerify {
+            getShopLocationUseCase.executeOnBackground()
+        }
+
+        assertEquals(Fail(throwable), mViewModel.shopLocation.value)
+    }
+
+    @Test
+    fun `should success when get card widget data`() {
+        val shopId = 12345
+        val dataKeys = listOf("a", "b", "c")
+        val startDate = "02-03-20202"
+        val endDate = "09-03-20202"
+
+        val cardData = listOf(CardDataUiModel(), CardDataUiModel(), CardDataUiModel())
+        getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(shopId, dataKeys, startDate, endDate)
+
+        every {
+            userSession.shopId
+        } returns shopId.toString()
+
+        coEvery {
+            getCardDataUseCase.executeOnBackground()
+        } returns cardData
+
+        mViewModel.getCardWidgetData(dataKeys)
+
+        verify {
+            userSession.shopId
+        }
+
+        coVerify {
+            getCardDataUseCase.executeOnBackground()
+        }
+
+        assertEquals(Success(cardData), mViewModel.cardWidgetData.value)
+    }
+
+    @Test
+    fun `should failed when get card widget data`() {
+        val shopId = 12345
+        val dataKeys = listOf("a", "b", "c")
+        val startDate = "02-03-20202"
+        val endDate = "09-03-20202"
+
+        val throwable = Throwable()
+        getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(shopId, dataKeys, startDate, endDate)
+
+        every {
+            userSession.shopId
+        } returns shopId.toString()
+
+        coEvery {
+            getCardDataUseCase.executeOnBackground()
+        } throws throwable
+
+        mViewModel.getCardWidgetData(dataKeys)
+
+        verify {
+            userSession.shopId
+        }
+
+        coVerify {
+            getCardDataUseCase.executeOnBackground()
+        }
+
+        assertEquals(Fail(throwable), mViewModel.cardWidgetData.value)
+    }
+
+    /*@Test
+    fun `should success get line graph widget data`() {
 
     }
-})
+
+    @Test
+    fun `should failed get line graph widget data`() {
+
+    }
+
+    @Test
+    fun `should success get progress widget data`() {
+
+    }
+
+    @Test
+    fun `should failed get progress widget data`() {
+
+    }
+
+    @Test
+    fun `should success get post widget data`() {
+
+    }
+
+    @Test
+    fun `should failed get post widget data`() {
+
+    }
+
+    @Test
+    fun `should success get carousel widget data`() {
+
+    }
+
+    @Test
+    fun `should failed get carousel widget data`() {
+
+    }*/
+}
