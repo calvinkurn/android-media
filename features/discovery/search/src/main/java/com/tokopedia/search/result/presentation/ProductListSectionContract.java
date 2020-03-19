@@ -162,6 +162,8 @@ public interface ProductListSectionContract {
         void showMessageSuccessWishlistAction(boolean isWishlisted);
 
         void showMessageFailedWishlistAction(boolean isWishlisited);
+
+        String getPreviousKeyword();
     }
 
     interface Presenter extends CustomerPresenter<View> {

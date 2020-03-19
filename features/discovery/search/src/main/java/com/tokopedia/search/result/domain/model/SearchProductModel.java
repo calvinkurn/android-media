@@ -375,25 +375,25 @@ public class SearchProductModel {
 
         @SerializedName("currentKeyword")
         @Expose
-        private String currentKeyword;
+        private String currentKeyword = "";
         @SerializedName("suggestion")
         @Expose
-        private String suggestion;
+        private String suggestion = "";
         @SerializedName("suggestionCount")
         @Expose
-        private int suggestionCount;
+        private int suggestionCount = 0;
         @SerializedName("instead")
         @Expose
-        private String instead;
+        private String instead = "";
         @SerializedName("insteadCount")
         @Expose
-        private int insteadCount;
+        private int insteadCount = 0;
         @SerializedName("text")
         @Expose
-        private String text;
+        private String text = "";
         @SerializedName("query")
         @Expose
-        private String query;
+        private String query = "";
 
         public String getCurrentKeyword() {
             return currentKeyword;

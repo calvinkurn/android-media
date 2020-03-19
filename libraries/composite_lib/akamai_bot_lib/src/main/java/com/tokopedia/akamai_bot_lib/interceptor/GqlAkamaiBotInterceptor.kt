@@ -1,6 +1,5 @@
 package com.tokopedia.akamai_bot_lib.interceptor
 
-import android.util.Log
 import com.akamai.botman.CYFMonitor
 import com.tokopedia.akamai_bot_lib.getAny
 import okhttp3.Headers
@@ -11,11 +10,29 @@ import okio.Buffer
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import timber.log.Timber
 import java.io.EOFException
 import java.io.IOException
 import java.nio.charset.Charset
 import kotlin.system.measureTimeMillis
+
+val registeredGqlFunctions = mapOf(
+        "login_token" to "login",
+        "register" to "register",
+        "pdpGetLayout" to "pdpGetLayout",
+        "checkout_general" to "checkout",
+        "atcOCS" to "atconeclickshipment",
+        "getPDPInfo" to "product_info",
+        "shopInfoByID" to "shop_info",
+        "followShop" to "followshop",
+        "validate_use_promo_revamp" to	"promorevamp",
+        "crackResult" to	"crackresult",
+        "gamiCrack" to	"gamicrack",
+        "add_to_cart_occ" to	"atcocc",
+        "one_click_checkout" to	"checkoutocc",
+        "add_to_cart_transactional" to "atc"
+)
+
+
 
 class GqlAkamaiBotInterceptor : Interceptor {
     @Throws(IOException::class)
@@ -41,67 +58,30 @@ class GqlAkamaiBotInterceptor : Interceptor {
                     readFromBuffer(buffer, it).let {
 
                         // start time
-                        var functionNames: List<String> = mutableListOf();
                         try {
                             val time = measureTimeMillis {
                                 val jsonArray = JSONArray(it)
                                 val jsonObject: JSONObject = jsonArray.getJSONObject(0)
                                 val query = jsonObject.getString("query")
-                                functionNames = getAny(query)
+
+                                val xTkpdAkamai = getAny(query)
+                                        .asSequence()
+                                        .filter { it ->
+                                    registeredGqlFunctions.containsKey(it)
+                                }.take(1).map { it ->
+                                    registeredGqlFunctions[it]
+                                }.first()
+
+                                if (!xTkpdAkamai.isNullOrEmpty()) {
+                                    newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
+                                            ?: "")
+                                    newRequest.addHeader("X-TKPD-AKAMAI", xTkpdAkamai)
+                                }
+                                        
                             }
-                            println("P2#AKAMAI_REGEX_PERFORMANCE#query;function_name=$functionNames;read_time=$time")
-                            Timber.w("P2#AKAMAI_REGEX_PERFORMANCE#query;function_name=$functionNames;read_time=$time")
-                            Log.d("TIMBER", "P2#AKAMAI_REGEX_PERFORMANCE#query;function_name=$functionNames;read_time=$time")
                         } catch (e: JSONException) {
                             e.printStackTrace()
                         }
-                        // end time and elapse time
-
-                        for(functionName in functionNames){
-
-                            if (functionName.equals("login_token")) {
-                                newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                        ?: "")
-                                newRequest.addHeader("X-TKPD-AKAMAI","login")
-                            }else if (functionName.equals("register") ){
-                                newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                        ?: "")
-                                newRequest.addHeader("X-TKPD-AKAMAI","register")
-                            }else if (functionName.equals("pdpGetLayout") ){
-                                newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                        ?: "")
-                                newRequest.addHeader("X-TKPD-AKAMAI","pdpGetLayout")
-                            }else if (functionName.equals("checkout_general") ) {
-                                newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                        ?: "")
-                                newRequest.addHeader("X-TKPD-AKAMAI", "checkout")
-                            }else if (functionName.equals("atcOCS") ) {
-                                newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                        ?: "")
-                                newRequest.addHeader("X-TKPD-AKAMAI", "atconeclickshipment")
-                            }else if (functionName.equals("getPDPInfo") ) {
-                                newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                        ?: "")
-                                newRequest.addHeader("X-TKPD-AKAMAI", "product_info")
-                            }else if (functionName.equals("shopInfoByID") ) {
-                                newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                        ?: "")
-                                newRequest.addHeader("X-TKPD-AKAMAI", "shop_info")
-                            } else if(functionName.equals("followShop")){
-                                newRequest.addHeader("X-TKPD-AKAMAI", "followshop")
-                                newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                        ?: "")
-                            } else if (functionName.equals("add_to_cart_transactional")) {
-                                newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                        ?: "")
-                                newRequest.addHeader("X-TKPD-AKAMAI", "atc")
-                            } else {
-                                // none
-                            }
-                        }
-
-
-
                     }
                 }
             }

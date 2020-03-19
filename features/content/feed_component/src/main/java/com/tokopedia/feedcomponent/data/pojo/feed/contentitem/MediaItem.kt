@@ -20,6 +20,10 @@ data class MediaItem(
         @Expose
         var price: String = "",
 
+        @SerializedName("priceOriginal")
+        @Expose
+        var priceOriginal: String = "",
+
         @SerializedName("type")
         @Expose
         var type: String = "",
@@ -53,6 +57,10 @@ data class MediaItem(
         @SerializedName("videos")
         @Expose
         val videos: List<Video> = ArrayList(),
+
+        @SerializedName("tags")
+        @Expose
+        val tags: List<TagsItem> = ArrayList(),
 
         @SerializedName("isCanPlayVideo")
         @Expose
