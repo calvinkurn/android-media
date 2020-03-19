@@ -57,7 +57,7 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2019-05-08.
  */
-class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapReadyCallback,
+class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCallback,
         AutocompleteBottomSheetFragment.ActionListener, HasComponent<AddNewAddressComponent> {
 
     private var googleMap: GoogleMap? = null

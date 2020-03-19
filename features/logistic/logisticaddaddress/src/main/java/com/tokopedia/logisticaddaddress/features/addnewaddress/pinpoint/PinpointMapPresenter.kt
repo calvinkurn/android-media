@@ -30,7 +30,7 @@ import javax.inject.Inject
 class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: GetDistrictUseCase,
                                                private val revGeocodeUseCase: RevGeocodeUseCase,
                                                private val districtBoundaryUseCase: DistrictBoundaryUseCase,
-                                               private val districtBoundaryMapper: DistrictBoundaryMapper) : BaseDaggerPresenter<PinpointMapListener>() {
+                                               private val districtBoundaryMapper: DistrictBoundaryMapper) : BaseDaggerPresenter<PinpointMapView>() {
 
     private var saveAddressDataModel = SaveAddressDataModel()
     private var permissionCheckerHelper: PermissionCheckerHelper? = null

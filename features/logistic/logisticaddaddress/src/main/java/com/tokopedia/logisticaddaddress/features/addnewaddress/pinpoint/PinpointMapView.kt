@@ -8,7 +8,7 @@ import com.tokopedia.logisticdata.data.entity.response.Data
 /**
  * Created by fwidjaja on 2019-05-09.
  */
-interface PinpointMapListener : CustomerView {
+interface PinpointMapView : CustomerView {
     fun showLoading()
     fun onSuccessPlaceGetDistrict(getDistrictDataUiModel: GetDistrictDataUiModel)
     fun onSuccessAutofill(autofillDataUiModel: Data)

@@ -25,7 +25,7 @@ object PinpointMapPresenterTest : Spek({
     val revGeoCodeUseCase: RevGeocodeUseCase = mockk(relaxUnitFun = true)
     val districtBoundUseCase: DistrictBoundaryUseCase = mockk(relaxUnitFun = true)
     val districtBoundMapper: DistrictBoundaryMapper = mockk()
-    val view: PinpointMapListener = mockk(relaxed = true)
+    val view: PinpointMapView = mockk(relaxed = true)
     lateinit var presenter: PinpointMapPresenter
 
     beforeEachTest {
