@@ -8,14 +8,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.annotation.StringDef
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.gamification.R
+import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
 import com.tokopedia.gamification.giftbox.data.entities.GiftBoxEntity
 import com.tokopedia.gamification.giftbox.presentation.activities.GiftLauncherActivity
+import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.ACTIVE
+import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.EMPTY
+import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.EXPIRED
+import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.INACTIVE
+import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.NON_LOGIN
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
+import com.tokopedia.gamification.giftbox.presentation.viewmodels.GiftBoxDailyViewModel
 import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
 import com.tokopedia.gamification.giftbox.presentation.views.GiftPrizeLargeView
 import com.tokopedia.gamification.giftbox.presentation.views.GiftPrizeSmallView
+import com.tokopedia.gamification.pdp.data.LiveDataResult
+import javax.inject.Inject
 
 class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
@@ -25,18 +40,34 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     lateinit var prizeViewSmallSecond: GiftPrizeSmallView
     lateinit var prizeViewLarge: GiftPrizeLargeView
 
-
-//    lateinit var dailyViewModel: DailyViewModel
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModel: GiftBoxDailyViewModel
 
     override fun getLayout() = R.layout.fragment_gift_box_daily
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        context?.let {
+            val component = DaggerGiftBoxComponent.builder()
+                    .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
+                    .build()
+            component.inject(this)
+
+            if (it is AppCompatActivity) {
+                val viewModelProvider = ViewModelProviders.of(context as AppCompatActivity, viewModelFactory)
+                viewModel = viewModelProvider[GiftBoxDailyViewModel::class.java]
+            }
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val v = super.onCreateView(inflater, container, savedInstanceState)
-        showLoader()
-        v.postDelayed({
-            hideLoader()
-//            dailyViewModel.renderActive()
-        }, 1000L)
+        viewModel.getGiftBox()
+//        v.postDelayed({
+//            hideLoader()
+////            dailyViewModel.renderActive()
+//        }, 1000L)
         return v
     }
 
@@ -46,8 +77,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         super.initViews(v)
 
         setListeners()
-
-//        dailyViewModel = DailyViewModel(this)
     }
 
     private fun setListeners() {
@@ -79,8 +108,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                         animatorSet.startDelay = startDelay
                         animatorSet.start()
                     }
-
-
                 }
             }
 
@@ -96,6 +123,43 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 }
             }
         }
+
+        viewModel.giftBoxLiveData.observe(viewLifecycleOwner, Observer {
+            when (it.status) {
+                LiveDataResult.STATUS.SUCCESS -> {
+                    hideLoader()
+                    if (it.data != null) {
+                        val state = it.data.gamiLuckyHome.tokensUser.state
+                        when (state) {
+                            TokenUserState.ACTIVE -> {
+                                renderGiftBoxActive(it.data)
+                            }
+                            TokenUserState.EMPTY -> {
+                            }
+                            TokenUserState.INACTIVE -> {
+                            }
+                            TokenUserState.EXPIRED -> {
+                            }
+                            TokenUserState.NON_LOGIN -> {
+                            }
+                            else -> {
+                                renderGiftBoxError()
+                            }
+                        }
+                    }
+                }
+
+                LiveDataResult.STATUS.LOADING -> showLoader()
+
+                LiveDataResult.STATUS.ERROR -> {
+                    hideLoader()
+                    renderGiftBoxError()
+                }
+            }
+        })
+        viewModel.rewardLiveData.observe(viewLifecycleOwner, Observer {
+
+        })
     }
 
     override fun initialViewSetup() {
@@ -164,5 +228,21 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
     enum class GiftBoxState {
         ACTIVE, EMPTY, ERROR, NO_INTERNET
+    }
+
+    companion object {
+        val TOKEN_USER_STATE = arrayListOf<String>("active", "empty", "inactive", "expired", "nonlogin")
+    }
+}
+
+@Retention(AnnotationRetention.SOURCE)
+@StringDef(ACTIVE, EMPTY, INACTIVE, EXPIRED, NON_LOGIN)
+annotation class TokenUserState {
+    companion object {
+        const val ACTIVE = "active"
+        const val EMPTY = "empty"
+        const val INACTIVE = "inactive"
+        const val EXPIRED = "expired"
+        const val NON_LOGIN = "nonlogin"
     }
 }

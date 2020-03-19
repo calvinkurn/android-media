@@ -1,0 +1,50 @@
+{
+  "gamiLuckyHome": {
+    "resultStatus": {
+      "code": "200",
+      "message": [
+        "Success"
+      ],
+      "reason": ""
+    },
+    "tokensUser": {
+      "state": "active",
+      "campaignSlug": "DAILY2020",
+      "title": "Tap kotaknya untuk dapetin hadiah",
+      "text": "Hadiah yang bisa kamu dapatkan:",
+      "desc": ""
+    },
+    "liveFeedChannel": 1,
+    "tokenAsset": {
+      "backgroundImgURL": "https://ecs7.tokopedia.net/img/blog/promo/2020/03/lucky-bg.png",
+      "imageV2URLs": [
+        "https://ecs7.tokopedia.net/assets-tokopoints/prod/images/2019/02/emptyegg.png",
+        "https://ecs7.tokopedia.net/assets-tokopoints/prod/images/2019/02/emptyegg.gif"
+      ]
+    },
+    "actionButton": [],
+    "prizeList": [
+      {
+        "isSpecial": false,
+        "imageURL": "http://tokopedia.com/ovopoints.png",
+        "text": [
+          "OVO Points"
+        ]
+      },
+      {
+        "isSpecial": true,
+        "imageURL": "http://tokopedia.com/tokopoints.png",
+        "text": [
+          "Special Hari Ini",
+          "Kupon Diskon Bimoli",
+          "Jadi Rp100"
+        ]
+      }
+    ],
+    "reminder": {
+      "text": "Besok bisa dapet hadiah lagi lho. Mau diingetin?",
+      "enableText": "Ingatkan Besok",
+      "disableText": "Pengingat Nyala"
+    }
+  }
+}

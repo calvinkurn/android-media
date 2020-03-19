@@ -1,0 +1,36 @@
+{
+  "data": {
+    "gamiLuckyHome": {
+      "resultStatus": {
+        "code": "200",
+        "message": [
+          "Success"
+        ],
+        "reason": ""
+      },
+      "tokensUser": {
+        "state": "empty",
+        "campaignSlug": "",
+        "title": "",
+        "text": "Kamu udah ambil hadiahnya.\nCoba lagi besok ya!",
+        "desc": ""
+      },
+      "liveFeedChannel": 1,
+      "tokenAsset": {
+        "backgroundImgURL": "https://ecs7.tokopedia.net/img/blog/promo/2020/03/lucky-bg.png",
+        "seamlessImgURL": "https://ecs7.tokopedia.net/img/blog/promo/2020/03/lucky-bg.png",
+        "imageURL": "",
+        "imageV2URLs": [
+          "https://ecs7.tokopedia.net/assets-tokopoints/prod/images/2019/02/emptyegg.png"
+        ]
+      },
+      "actionButton": [],
+      "reminder": {
+        "text": "Besok bisa dapet hadiah lagi lho. Mau diingetin?",
+        "enableText": "Ingatkan Besok",
+        "disableText": "Pengingat Nyala"
+      },
+      "prizeList": []
+    }
+  }
+}

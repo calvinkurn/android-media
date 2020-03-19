@@ -1,6 +1,7 @@
 package com.tokopedia.gamification.giftbox.data.di.modules
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.data.di.GIFT_BOX_DAILY
@@ -26,11 +27,11 @@ class GiftBoxDailyModule {
 
     @Provides
     @Named(GIFT_BOX_DAILY)
-    fun provideGiftBoxDailyQuery(context: Context): String = GraphqlHelper.loadRawString(context.resources, R.raw.gf_gift_box_daily)
+    fun provideGiftBoxDailyQuery(@ApplicationContext context: Context): String = GraphqlHelper.loadRawString(context.resources, R.raw.gf_gift_box_daily)
 
     @Provides
     @Named(GIFT_BOX_DAILY_REWARD)
-    fun provideGiftBoxDailyRewardQuery(context: Context): String = GraphqlHelper.loadRawString(context.resources, R.raw.gf_gift_box_daily_reward)
+    fun provideGiftBoxDailyRewardQuery(@ApplicationContext context: Context): String = GraphqlHelper.loadRawString(context.resources, R.raw.gf_gift_box_daily_reward)
 
 
 }
