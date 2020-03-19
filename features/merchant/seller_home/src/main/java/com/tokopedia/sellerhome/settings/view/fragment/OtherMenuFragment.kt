@@ -2,11 +2,14 @@ package com.tokopedia.sellerhome.settings.view.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -27,18 +30,19 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.common.StatusbarHelper
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
+import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant
+import com.tokopedia.sellerhome.settings.analytics.SettingTrackingListener
+import com.tokopedia.sellerhome.settings.analytics.sendShopInfoImpressionData
 import com.tokopedia.sellerhome.settings.data.constant.SellerBaseUrl
 import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
 import com.tokopedia.sellerhome.settings.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.sellerhome.settings.view.uimodel.DividerUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.MenuItemUiModel
-import com.tokopedia.sellerhome.settings.view.uimodel.SettingShopInfoUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.SettingTitleUiModel
-import com.tokopedia.sellerhome.settings.view.uimodel.base.DividerType
-import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingResponseState
-import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingSuccess
-import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.base.*
+import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.sellerhome.settings.view.viewholder.OtherMenuViewHolder
 import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
 import com.tokopedia.sellerhome.view.StatusBarCallback
@@ -50,7 +54,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_other_menu.*
 import javax.inject.Inject
 
-class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), OtherMenuViewHolder.Listener, StatusBarCallback{
+class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), OtherMenuViewHolder.Listener, StatusBarCallback, SettingTrackingListener{
 
     companion object {
         const val URL_KEY = "url"
@@ -72,6 +76,9 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private var otherMenuViewHolder: OtherMenuViewHolder? = null
 
+    private val statusBarHeight by lazy {
+        context?.let { StatusbarHelper.getStatusBarHeight(it) }
+    }
     private var startToTransitionOffset = 0
     private var statusInfoTransitionOffset = 0
 
@@ -90,7 +97,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (activity as? SellerHomeActivity)?.attachCallback(this)
-        setupOffset()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -99,11 +105,12 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupOffset()
         setupView(view)
         observeLiveData()
     }
 
-    override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory = OtherMenuAdapterTypeFactory()
+    override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory = OtherMenuAdapterTypeFactory(this)
 
     override fun onItemClicked(settingUiModel: SettingUiModel) {}
 
@@ -144,6 +151,11 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         otherMenuViewModel.getAllSettingShopInfo()
     }
 
+    override fun sendImpressionDataIris(settingShopInfoImpressionTrackable: SettingShopInfoImpressionTrackable) {
+        context?.run { settingShopInfoImpressionTrackable.sendShopInfoImpressionData(this, userSession) }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun setStatusBar() {
         (activity as? Activity)?.run {
             if (isInitialStatusBar && !isDefaultDarkStatusBar) {
@@ -160,7 +172,9 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         if (otherMenuViewModel.isStatusBarInitialState.value == false && !isDefaultDark) {
             setStatusBarStateInitialIsLight(isDefaultDark)
         }
-        setStatusBar()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            setStatusBar()
+        }
     }
 
     private fun setStatusBarStateInitialIsLight(isLight: Boolean) {
@@ -184,24 +198,60 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 SettingTitleUiModel(resources.getString(R.string.setting_menu_improve_sales)),
                 MenuItemUiModel(resources.getString(R.string.setting_menu_shop_statistic), R.drawable.ic_statistic_setting, ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD),
                 MenuItemUiModel(resources.getString(R.string.setting_menu_ads_and_shop_promotion), R.drawable.ic_ads_promotion, ApplinkConstInternalSellerapp.CENTRALIZED_PROMO),
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_shop_statistic),
+                        R.drawable.ic_statistic_setting,
+                        ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD,
+                        eventActionSuffix = SettingTrackingConstant.SHOP_STATISTIC),
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_ads_and_shop_promotion),
+                        R.drawable.ic_ads_promotion,
+                        ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
+                        eventActionSuffix = SettingTrackingConstant.SHOP_ADS_AND_PROMOTION),
                 SettingTitleUiModel(resources.getString(R.string.setting_menu_buyer_info)),
-                MenuItemUiModel(resources.getString(R.string.setting_menu_review), R.drawable.ic_star_setting, ApplinkConst.REPUTATION),
-                MenuItemUiModel(resources.getString(R.string.setting_menu_discussion), R.drawable.ic_setting_discussion, ApplinkConst.TALK),
-                MenuItemUiModel(resources.getString(R.string.setting_menu_complaint), R.drawable.ic_complaint, null) {
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_review),
+                        R.drawable.ic_star_setting,
+                        ApplinkConst.REPUTATION,
+                        eventActionSuffix = SettingTrackingConstant.REVIEW),
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_discussion),
+                        R.drawable.ic_setting_discussion,
+                        ApplinkConst.TALK,
+                        eventActionSuffix = SettingTrackingConstant.DISCUSSION),
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_complaint),
+                        R.drawable.ic_complaint,
+                        null,
+                        eventActionSuffix = SettingTrackingConstant.COMPLAINT) {
                     val intent = RouteManager.getIntent(context, ApplinkConst.SellerApp.WEBVIEW)
                     intent.putExtra(URL_KEY, SellerBaseUrl.HOSTNAME + SellerBaseUrl.RESO_INBOX_SELLER)
                     context?.startActivity(intent)
                 },
                 DividerUiModel(),
-                MenuItemUiModel(resources.getString(R.string.setting_menu_finance_service), R.drawable.ic_finance),
-                MenuItemUiModel(resources.getString(R.string.setting_menu_seller_education_center), R.drawable.ic_seller_edu) {
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_finance_service),
+                        R.drawable.ic_finance,
+                        eventActionSuffix = SettingTrackingConstant.FINANCIAL_SERVICE),
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_seller_education_center),
+                        R.drawable.ic_seller_edu,
+                        eventActionSuffix = SettingTrackingConstant.SELLER_CENTER) {
                     val intent = RouteManager.getIntent(context, ApplinkConst.WEBVIEW)
                     intent.putExtra(URL_KEY, SellerBaseUrl.SELLER_HOSTNAME + SellerBaseUrl.SELLER_EDU)
                     context?.startActivity(intent)
                 },
-                MenuItemUiModel(resources.getString(R.string.setting_menu_tokopedia_care), R.drawable.ic_tokopedia_care, ApplinkConst.CONTACT_US_NATIVE),
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_tokopedia_care),
+                        R.drawable.ic_tokopedia_care,
+                        ApplinkConst.CONTACT_US_NATIVE,
+                        eventActionSuffix = SettingTrackingConstant.TOKOPEDIA_CARE),
                 DividerUiModel(DividerType.THIN_PARTIAL),
-                MenuItemUiModel(resources.getString(R.string.setting_menu_setting), R.drawable.ic_setting, null) {
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_setting),
+                        R.drawable.ic_setting,
+                        null,
+                        eventActionSuffix = SettingTrackingConstant.SETTINGS) {
                     startActivity(Intent(context, MenuSettingActivity::class.java))
                 }
         )
@@ -250,13 +300,18 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun setupView(view: View) {
+        view.run {
+            statusBarBackground?.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, statusBarHeight ?: HEIGHT_OFFSET)
+        }
         populateAdapterData()
         recycler_view.layoutManager = LinearLayoutManager(context)
-        context?.let { otherMenuViewHolder = OtherMenuViewHolder(view, it, this)}
-        if (isDefaultDarkStatusBar) {
-            activity?.requestStatusBarDark()
-        } else {
-            activity?.requestStatusBarLight()
+        context?.let { otherMenuViewHolder = OtherMenuViewHolder(view, it, this, this)}
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (isDefaultDarkStatusBar) {
+                activity?.requestStatusBarDark()
+            } else {
+                activity?.requestStatusBarLight()
+            }
         }
         observeRecyclerViewScrollListener()
     }
@@ -268,7 +323,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 startToTransitionOffset = START_OFFSET
             }
         }
-        statusInfoTransitionOffset = HEIGHT_OFFSET
+        statusInfoTransitionOffset = statusBarHeight ?: HEIGHT_OFFSET
     }
 
     private fun observeRecyclerViewScrollListener() {
@@ -299,7 +354,9 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private fun setLightStatusBar() {
         if (!isDefaultDarkStatusBar){
-            activity?.requestStatusBarLight()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                activity?.requestStatusBarLight()
+            }
         }
         setStatusBarStateInitialIsLight(true)
         statusBarBackground?.hide()
@@ -307,7 +364,9 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private fun setDarkStatusBar() {
         setStatusBarStateInitialIsLight(false)
-        activity?.requestStatusBarDark()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            activity?.requestStatusBarDark()
+        }
         statusBarBackground?.show()
     }
 

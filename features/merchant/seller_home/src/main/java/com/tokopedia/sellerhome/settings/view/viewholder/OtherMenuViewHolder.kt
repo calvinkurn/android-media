@@ -11,10 +11,11 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.settings.view.uimodel.SettingShopInfoUiModel
+import com.tokopedia.sellerhome.settings.analytics.*
 import com.tokopedia.sellerhome.settings.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.sellerhome.settings.view.uimodel.base.RegularMerchant
 import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
+import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.*
 import kotlinx.android.synthetic.main.fragment_other_menu.view.*
 import kotlinx.android.synthetic.main.fragment_other_menu.view.shopInfoLayout
 import kotlinx.android.synthetic.main.setting_balance.view.*
@@ -26,7 +27,8 @@ import kotlinx.android.synthetic.main.setting_shop_status_regular.view.*
 
 class OtherMenuViewHolder(private val itemView: View,
                           private val context: Context,
-                          private val listener: Listener) {
+                          private val listener: Listener,
+                          private val trackingListener: SettingTrackingListener) {
 
     companion object {
         private val GREEN_TIP = R.drawable.setting_tip_bar_enabled
@@ -48,15 +50,13 @@ class OtherMenuViewHolder(private val itemView: View,
         }
         uiModel.run {
             setShopName(shopName)
-            setShopAvatar(shopAvatar)
-            setShopStatusType(shopType)
-            setSaldoBalance(saldoBalance)
-            setKreditTopadsBalance(kreditTopAdsBalance)
-            onSuccessGetShopBadge(shopBadges)
-            onSuccessGetTotalFollowers(shopFollowers)
+            setShopAvatar(shopAvatarUiModel)
+            setShopStatusType(shopStatusUiModel)
+            setSaldoBalance(saldoBalanceUiModel)
+            setKreditTopadsBalance(topadsBalanceUiModel)
+            setShopBadge(shopBadgeUiModel)
+            setShopTotalFollowers(shopFollowersUiModel)
         }
-        itemView.shopInfoLayout.saldoBalance.balanceTitle.text = context.resources.getString(R.string.setting_balance)
-        itemView.shopInfoLayout.topAdsBalance.balanceTitle.text = context.resources.getString(R.string.setting_topads_credits)
     }
 
     fun onLoadingGetSettingShopInfoData() {
@@ -82,48 +82,106 @@ class OtherMenuViewHolder(private val itemView: View,
         }
     }
 
-    private fun onSuccessGetShopBadge(shopBadgeUrl: String) {
-        itemView.shopInfoLayout.shopBadges?.let {
-            ImageHandler.LoadImage(it, shopBadgeUrl)
+    private fun setShopBadge(shopBadgeUiModel: ShopBadgeUiModel) {
+        itemView.shopInfoLayout.shopBadges?.run {
+            ImageHandler.LoadImage(this, shopBadgeUiModel.shopBadgeUrl)
+            setOnClickListener {
+                shopBadgeUiModel.sendSettingShopInfoClickTracking()
+            }
+            // TODO : Add impression if PM agrees
         }
     }
 
     @SuppressLint("SetTextI18n")
-    fun onSuccessGetTotalFollowers(totalFollowing: Int) {
-        itemView.shopInfoLayout.shopFollowers?.text = "$totalFollowing ${context.resources.getString(R.string.setting_followers)}"
+    fun setShopTotalFollowers(shopTotalFollowersUiModel: ShopFollowersUiModel) {
+        itemView.shopInfoLayout.shopFollowers?.run {
+            text = "${shopTotalFollowersUiModel.shopFollowers} ${context.resources.getString(R.string.setting_followers)}"
+            setOnClickListener {
+                shopTotalFollowersUiModel.sendSettingShopInfoClickTracking()
+                listener.onFollowersCountClicked()
+            }
+        }
     }
 
     private fun setShopName(shopName: String) {
-        itemView.shopInfoLayout.shopName?.text = shopName
+        itemView.run {
+            shopInfoLayout.shopName?.run {
+                text = shopName
+                setOnClickListener {
+                    listener.onShopInfoClicked()
+                    sendClickShopNameTracking()
+                }
+            }
+        }
     }
 
-    private fun setShopAvatar(shopAvatarUrl: String) {
-        itemView.shopInfoLayout.shopImage?.urlSrc = shopAvatarUrl
+    private fun setShopAvatar(shopAvatarUiModel: ShopAvatarUiModel) {
+        itemView.shopInfoLayout.shopImage?.run {
+            urlSrc = shopAvatarUiModel.shopAvatarUrl
+            sendSettingShopInfoImpressionTracking(shopAvatarUiModel, trackingListener::sendImpressionDataIris)
+            setOnClickListener {
+                listener.onShopInfoClicked()
+                shopAvatarUiModel.sendSettingShopInfoClickTracking()
+            }
+        }
     }
 
-    private fun setSaldoBalance(balance: String) {
-        itemView.saldoBalance.balanceValue?.text = balance
+    private fun setSaldoBalance(saldoBalanceUiModel: BalanceUiModel) {
+        itemView.saldoBalance.run {
+            balanceTitle?.text = context.resources.getString(R.string.setting_balance)
+            balanceValue?.text = saldoBalanceUiModel.balanceValue
+            sendSettingShopInfoImpressionTracking(saldoBalanceUiModel, trackingListener::sendImpressionDataIris)
+            saldoBalance.setOnClickListener {
+                listener.onSaldoClicked()
+                saldoBalanceUiModel.sendSettingShopInfoClickTracking()
+            }
+        }
     }
 
-    private fun setKreditTopadsBalance(balance: String) {
-        itemView.topAdsBalance.balanceValue?.text = balance
+    private fun setKreditTopadsBalance(topadsBalanceUiModel: BalanceUiModel) {
+        itemView.topAdsBalance.run {
+            balanceTitle?.text = context.resources.getString(R.string.setting_topads_credits)
+            balanceValue?.text = topadsBalanceUiModel.balanceValue
+            sendSettingShopInfoImpressionTracking(topadsBalanceUiModel, trackingListener::sendImpressionDataIris)
+            topAdsBalance.setOnClickListener {
+                listener.onKreditTopadsClicked()
+                topadsBalanceUiModel.sendSettingShopInfoClickTracking()
+            }
+        }
     }
 
-    private fun setShopStatusType(shopType: ShopType) {
+    private fun setShopStatusType(shopStatusUiModel: ShopStatusUiModel) {
+        val shopType = shopStatusUiModel.shopType
         showShopStatusHeader(shopType)
         val layoutInflater = LayoutInflater.from(context).inflate(shopType.shopTypeLayoutRes, null, false)
         val shopStatusLayout: View = when(shopType) {
             is RegularMerchant -> {
                 listener.onStatusBarNeedDarkColor(true)
-                layoutInflater.setRegularMerchantShopStatus(shopType)
+                layoutInflater.apply {
+                    setRegularMerchantShopStatus(shopType)
+                    sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
+                    rightRectangle.setOnClickListener {
+                        RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
+                        shopStatusUiModel.sendSettingShopInfoClickTracking()
+                    }
+                }
             }
             is PowerMerchantStatus -> {
                 listener.onStatusBarNeedDarkColor(false)
-                layoutInflater.setPowerMerchantShopStatus(shopType)
+                layoutInflater.apply {
+                    setPowerMerchantShopStatus(shopType)
+                    sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
+                    setOnClickListener {
+                        RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
+                        shopStatusUiModel.sendSettingShopInfoClickTracking()
+                    }
+                }
             }
             is ShopType.OfficialStore -> {
                 listener.onStatusBarNeedDarkColor(false)
-                layoutInflater
+                layoutInflater.apply {
+                    sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
+                }
             }
         }
         (itemView.shopStatus as LinearLayout).run {
@@ -133,7 +191,7 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     private fun showShopStatusHeader(shopType: ShopType) {
-        itemView.shopStatusHeader?.background = ContextCompat.getDrawable(context, shopType.shopTypeHeaderRes)
+        itemView.shopStatusHeader?.setImageDrawable(ContextCompat.getDrawable(context, shopType.shopTypeHeaderRes))
     }
 
     private fun View.setRegularMerchantShopStatus(regularMerchant: RegularMerchant) : View {
@@ -143,9 +201,7 @@ class OtherMenuViewHolder(private val itemView: View,
                 is RegularMerchant.NeedVerification -> context.resources.getString(R.string.setting_verifikasi)
             }
         }
-        rightRectangle.setOnClickListener {
-            RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
-        }
+
         return this
     }
 
@@ -171,21 +227,16 @@ class OtherMenuViewHolder(private val itemView: View,
         powerMerchantStatusText?.setTextColor(ResourcesCompat.getColor(resources, textColor, null))
         powerMerchantLeftStatus?.background = ResourcesCompat.getDrawable(resources, statusDrawable, null)
         powerMerchantIcon?.setImageDrawable(ResourcesCompat.getDrawable(resources, powerMerchantDrawableIcon, null))
-        setOnClickListener {
-            RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
-        }
         return this
     }
 
     private fun View.setOnClickAction() {
         shopInfoLayout?.run {
-            shopImage.setOnClickListener { listener.onShopInfoClicked() }
-            shopName.setOnClickListener { listener.onShopInfoClicked() }
-            settingShopNext.setOnClickListener { listener.onShopInfoClicked() }
-            shopFollowers.setOnClickListener { listener.onFollowersCountClicked() }
+            settingShopNext.setOnClickListener {
+                listener.onShopInfoClicked()
+                sendShopInfoClickNextButtonTracking()
+            }
         }
-        saldoBalance.setOnClickListener { listener.onSaldoClicked() }
-        topAdsBalance.setOnClickListener { listener.onKreditTopadsClicked() }
     }
 
     interface Listener {

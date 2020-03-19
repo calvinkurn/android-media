@@ -45,8 +45,10 @@
     <dimen name="setting_shop_badge_border_pm_margin">4dp</dimen>
     <dimen name="setting_shop_badge_border_os_margin">5dp</dimen>
     <dimen name="setting_shop_badge_height">16dp</dimen>
-    <dimen name="setting_status_margin">20dp</dimen>
-    <dimen name="setting_status_margin_top">17dp</dimen>
+    <dimen name="setting_status_padding_top">15dp</dimen>
+    <dimen name="setting_status_padding_bottom">14dp</dimen>
+    <dimen name="setting_status_loading_padding_top">20dp</dimen>
+    <dimen name="setting_status_loading_padding_bottom">17dp</dimen>
     <dimen name="setting_title_padding_top">23dp</dimen>
     <dimen name="setting_title_padding_bottom">5dp</dimen>
     <dimen name="setting_title_letter_spacing">0.04</dimen>
@@ -63,6 +65,7 @@
     <dimen name="setting_shop_name_shimmer_height">20dp</dimen>
     <dimen name="setting_shop_badge_shimmer_height">10dp</dimen>
     <dimen name="setting_local_load_margin">16dp</dimen>
+    <dimen name="setting_next_button_padding">13dp</dimen>
 
     <dimen category="font-size" name="line_spacing_6">6sp</dimen>
 
