@@ -252,8 +252,10 @@
 /customerapp/                                       	@tokopedia/core-team
 /sellerapp/                                         	@tokopedia/core-team
 /testapp/                                               @tokopedia/core-team
-/tkpd/ConsumerMainApplication.java                      @varun0922
-/tkpd/ConsumerRouterApplication.java                    @varun0922
-/tkpd/ConsumerSplashScreen.java                         @varun0922
-/tokopedia/core/SplashScreen.java                       @varun0922
-/tokopedia/core/app/MainApplication.java                @varun0922
+
+
+/customerapp/src/main/java/com/tokopedia/tkpd/ConsumerMainApplication.java                      @varun0922
+/customerapp/src/main/java/com/tokopedia/tkpd/ConsumerRouterApplication.java                    @varun0922
+/customerapp/src/main/java/com/tokopedia/tkpd/ConsumerSplashScreen.java                         @varun0922
+/tkpdcore/src/main/java/com/tokopedia/core/SplashScreen.java                                    @varun0922
+/tkpdcore/src/main/java/com/tokopedia/core/app/MainApplication.java                             @varun0922
