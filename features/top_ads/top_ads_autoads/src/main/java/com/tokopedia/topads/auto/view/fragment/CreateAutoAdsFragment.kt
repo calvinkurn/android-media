@@ -144,7 +144,6 @@ class CreateAutoAdsFragment : BaseDaggerFragment() {
         }
         range_start.text = data.minDailyBudgetFmt
         range_end.text = data.maxDailyBudgetFmt
-        //  price_range.text = getPotentialReach()
         budgetEditText.setText(data.minDailyBudgetFmt.replace(".",",").replace("Rp",""))
         shopStatus = data.shopStatus
         seekbar.range = Range(data.minDailyBudget, data.maxDailyBudget, 1000)
@@ -166,7 +165,6 @@ class CreateAutoAdsFragment : BaseDaggerFragment() {
         budgetEditText.addTextChangedListener(object : NumberTextWatcher(budgetEditText, "0") {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
-                //    estimateImpression(budgetEditText.textWithoutPrefix.replace(",", "").toInt())
                 val error = budgetViewModel.checkBudget(number, data.minDailyBudget.toDouble(), data.maxDailyBudget.toDouble())
                 if (!TextUtils.isEmpty(error)) {
                     error_text.visibility = View.VISIBLE

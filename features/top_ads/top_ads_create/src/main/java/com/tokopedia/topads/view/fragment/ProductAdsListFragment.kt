@@ -177,11 +177,6 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     private fun getPromoted(): String {
         return ALL
-//        return when (promotedGroup.checkedRadioButtonId) {
-//            R.id.not_promoted -> NOT_PROMOTED
-//            R.id.promoted -> PROMOTED
-//            else -> ALL
-//        }
     }
 
     private fun onProductListSelected() {
