@@ -50,6 +50,11 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
     var status: Int = 0
     var wishList: Boolean = false
 
+    val hasDiscount: Boolean
+        get() {
+            return priceBefore.isNotEmpty() && dropPercentage.isNotEmpty()
+        }
+
     constructor(messageId: String, fromUid: String, from: String,
                 fromRole: String, attachmentId: String, attachmentType: String,
                 replyTime: String, startTime: String, isRead: Boolean, isDummy: Boolean,
@@ -249,6 +254,10 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
         return "click buy on bottom sheet"
     }
 
+    fun hasVariant(): Boolean {
+        return variants.isNotEmpty()
+    }
+
     fun doesNotHaveVariant(): Boolean {
         return variants.isEmpty()
     }
@@ -270,6 +279,10 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
     }
 
     fun getStringProductId(): String {
+        return productId.toString()
+    }
+
+    fun getIdString(): String {
         return productId.toString()
     }
 

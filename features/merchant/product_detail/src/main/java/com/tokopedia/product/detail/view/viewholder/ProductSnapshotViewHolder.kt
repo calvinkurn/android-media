@@ -33,7 +33,6 @@ class ProductSnapshotViewHolder(private val view: View,
         element.dynamicProductInfoP1?.let {
             view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(getComponentTrackData(element))
-
             }
 
             header.renderData(it)
@@ -48,8 +47,17 @@ class ProductSnapshotViewHolder(private val view: View,
 
         renderWishlist(element.isAllowManage, element.isWishlisted)
 
-        renderCod(element.shouldShowCod)
-        renderTradein(element.shouldShowTradein)
+        if (element.shouldShowTradein && element.dynamicProductInfoP1?.data?.campaign?.activeAndHasId == false) {
+            renderTradein(true)
+        } else {
+            renderTradein(false)
+        }
+
+        if (element.shouldShowCod && !element.shouldShowTradein && element.dynamicProductInfoP1?.data?.campaign?.activeAndHasId == false) {
+            renderCod(true)
+        } else {
+            renderCod(false)
+        }
 
         view.tv_trade_in_promo.setOnClickListener {
             listener.txtTradeinClicked(getComponentTrackData(element))
@@ -82,9 +90,13 @@ class ProductSnapshotViewHolder(private val view: View,
             ProductDetailConstant.PAYLOAD_WISHLIST -> renderWishlist(element.isAllowManage, element.isWishlisted)
             ProductDetailConstant.PAYLOAD_COD -> {
                 view.label_cod.visibility = if (element.shouldShowCod) View.VISIBLE else View.GONE
-                renderCod(element.shouldShowCod)
+                if (element.shouldShowCod && element.shouldShowTradein && element.dynamicProductInfoP1?.data?.campaign?.activeAndHasId == false) {
+                    renderCod(true)
+                } else {
+                    renderCod(false)
+                }
+
             }
-            ProductDetailConstant.PAYLOAD_TRADEIN -> renderTradein(element.shouldShowTradein)
             ProductDetailConstant.PAYLOAD_CONFIGURATION_CHANGED -> changeImageHeight(element.screenHeight)
         }
     }
@@ -124,12 +136,12 @@ class ProductSnapshotViewHolder(private val view: View,
             if (wishlisted) {
                 view.fab_detail.hide()
                 view.fab_detail.isActivated = true
-                view.fab_detail.setImageDrawable(MethodChecker.getDrawable(it, R.drawable.ic_wishlist_checked))
+                view.fab_detail.setImageDrawable(MethodChecker.getDrawable(it, R.drawable.ic_wishlist_selected_pdp))
                 view.fab_detail.show()
             } else {
                 view.fab_detail.hide()
                 view.fab_detail.isActivated = false
-                view.fab_detail.setImageDrawable(MethodChecker.getDrawable(it, R.drawable.ic_wishlist_unchecked))
+                view.fab_detail.setImageDrawable(MethodChecker.getDrawable(it, R.drawable.ic_wishlist_unselected_pdp))
                 view.fab_detail.show()
             }
         }

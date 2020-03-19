@@ -1,12 +1,15 @@
 package com.tokopedia.hotel.roomlist.presentation.fragment
 
+import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
@@ -15,7 +18,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -23,6 +25,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
@@ -39,6 +42,7 @@ import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
 import com.tokopedia.hotel.roomlist.presentation.adapter.RoomListTypeFactory
 import com.tokopedia.hotel.roomlist.presentation.adapter.viewholder.RoomListViewHolder
 import com.tokopedia.hotel.roomlist.presentation.viewmodel.HotelRoomListViewModel
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -144,12 +148,24 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                 is Fail -> {
                     if (ErrorHandlerHotel.isPhoneNotVerfiedError(it.throwable)) {
                         navigateToAddPhonePage()
+                    } else if (ErrorHandlerHotel.isGetFailedRoomError(it.throwable)) {
+                        showFailedGetRoomErrorDialog()
                     } else {
                         NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
                     }
                 }
             }
         })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            RESULT_ROOM_DETAIL -> if (resultCode == Activity.RESULT_OK) {
+                loadInitialData()
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -210,11 +226,11 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         hotel_date_layout.setOnClickListener { onDateClicked() }
     }
 
-    fun showFilterRecyclerView(show: Boolean) {
+    private fun showFilterRecyclerView(show: Boolean) {
         filter_recycler_view.visibility = if (show) View.VISIBLE else View.GONE
     }
 
-    fun onGuestInfoClicked() {
+    private fun onGuestInfoClicked() {
         val hotelRoomAndGuestBottomSheets = HotelRoomAndGuestBottomSheets()
         hotelRoomAndGuestBottomSheets.listener = this
         hotelRoomAndGuestBottomSheets.roomCount = hotelRoomListPageModel.room
@@ -224,7 +240,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         }
     }
 
-    fun onDateClicked() {
+    private fun onDateClicked() {
         configAndRenderCheckInDate()
     }
 
@@ -264,17 +280,19 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     override fun onItemClicked(room: HotelRoom) {
         val position = roomList.indexOf(room)
         trackingHotelUtil.hotelClickRoomDetails(room, hotelRoomListPageModel, position)
-        val objectId = System.currentTimeMillis().toString()
-        context?.run {
-            SaveInstanceCacheManager(this, objectId).apply {
-                val addCartParam = mapToAddCartParam(hotelRoomListPageModel, room)
-                put(HotelRoomDetailFragment.EXTRA_ROOM_DATA, HotelRoomDetailModel(room, addCartParam))
+        if (room.available) {
+            val objectId = System.currentTimeMillis().toString()
+            context?.run {
+                SaveInstanceCacheManager(this, objectId).apply {
+                    val addCartParam = mapToAddCartParam(hotelRoomListPageModel, room)
+                    put(HotelRoomDetailFragment.EXTRA_ROOM_DATA, HotelRoomDetailModel(room, addCartParam))
+                }
+                startActivityForResult(HotelRoomDetailActivity.getCallingIntent(this, objectId, position), RESULT_ROOM_DETAIL)
             }
-            startActivityForResult(HotelRoomDetailActivity.getCallingIntent(this, objectId, position), RESULT_ROOM_DETAIL)
         }
     }
 
-    fun mapToAddCartParam(hotelRoomListPageModel: HotelRoomListPageModel, room: HotelRoom): HotelAddCartParam {
+    private fun mapToAddCartParam(hotelRoomListPageModel: HotelRoomListPageModel, room: HotelRoom): HotelAddCartParam {
         return HotelAddCartParam("", hotelRoomListPageModel.checkIn,
                 hotelRoomListPageModel.checkOut, hotelRoomListPageModel.propertyId,
                 listOf(HotelAddCartParam.Room(roomId = room.roomId, numOfRooms = room.roomQtyReqiured)),
@@ -404,6 +422,21 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
     private fun navigateToAddPhonePage() {
         RouteManager.route(requireContext(), ApplinkConstInternalGlobal.ADD_PHONE)
+    }
+
+    private fun showFailedGetRoomErrorDialog() {
+        val dialog = DialogUnify(activity as AppCompatActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ICON)
+        dialog.setTitle(getString(R.string.hotel_room_list_failed_get_room_availability_error_title))
+        dialog.setDescription(getString(R.string.hotel_room_list_failed_get_room_availability_error_desc))
+        dialog.setImageDrawable(R.drawable.ic_hotel_room_error_refresh)
+        dialog.setPrimaryCTAText(getString(R.string.hotel_room_list_failed_get_room_availability_cta_title))
+        dialog.setPrimaryCTAClickListener {
+            dialog.dismiss()
+            loadInitialData()
+        }
+        dialog.setCancelable(false)
+        dialog.setOverlayClose(false)
+        dialog.show()
     }
 
     companion object {

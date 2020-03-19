@@ -18,7 +18,13 @@ import kotlinx.coroutines.Dispatchers
 
 @ProfileCompletionSettingScope
 @Module
-class ProfileCompletionSettingModule {
+class ProfileCompletionSettingModule(private val context: Context) {
+
+    @Provides
+    @ProfileCompletionContext
+    fun provideContext(): Context {
+        return context
+    }
 
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository

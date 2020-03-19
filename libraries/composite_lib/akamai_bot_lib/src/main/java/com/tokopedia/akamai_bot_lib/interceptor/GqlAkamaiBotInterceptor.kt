@@ -1,14 +1,38 @@
 package com.tokopedia.akamai_bot_lib.interceptor
 
 import com.akamai.botman.CYFMonitor
+import com.tokopedia.akamai_bot_lib.getAny
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import okio.Buffer
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.EOFException
 import java.io.IOException
 import java.nio.charset.Charset
+import kotlin.system.measureTimeMillis
+
+val registeredGqlFunctions = mapOf(
+        "login_token" to "login",
+        "register" to "register",
+        "pdpGetLayout" to "pdpGetLayout",
+        "checkout_general" to "checkout",
+        "atcOCS" to "atconeclickshipment",
+        "getPDPInfo" to "product_info",
+        "shopInfoByID" to "shop_info",
+        "followShop" to "followshop",
+        "validate_use_promo_revamp" to	"promorevamp",
+        "crackResult" to	"crackresult",
+        "gamiCrack" to	"gamicrack",
+        "add_to_cart_occ" to	"atcocc",
+        "one_click_checkout" to	"checkoutocc",
+        "add_to_cart_transactional" to "atc"
+)
+
+
 
 class GqlAkamaiBotInterceptor : Interceptor {
     @Throws(IOException::class)
@@ -32,34 +56,32 @@ class GqlAkamaiBotInterceptor : Interceptor {
             if (isPlaintext(buffer)) {
                 charset?.let {
                     readFromBuffer(buffer, it).let {
-                        if (it.contains("login")) {
-                            newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                    ?: "")
-                            newRequest.addHeader("X-TKPD-AKAMAI","login")
-                        }else if (it.contains("register") ){
-                            newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                    ?: "")
-                            newRequest.addHeader("X-TKPD-AKAMAI","register")
-                        }else if (it.contains("getPDPInfo") ) {
-                            newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                    ?: "")
-                            newRequest.addHeader("X-TKPD-AKAMAI", "product_info")
-                        }else if (it.contains("shopInfoByID") ) {
-                            newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                    ?: "")
-                            newRequest.addHeader("X-TKPD-AKAMAI", "shop_info")
-                        } else if(it.contains("followShop")){
-                            newRequest.addHeader("X-TKPD-AKAMAI", "followshop")
-                            newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                    ?: "")
-                        } else if (it.contains("add_to_cart") || it.contains("atcOCS") || it.contains("AddToCartTransactional")) {
-                            newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                    ?: "")
-                            newRequest.addHeader("X-TKPD-AKAMAI", "atc")
-                        } else {
-                            // none
-                        }
 
+                        // start time
+                        try {
+                            val time = measureTimeMillis {
+                                val jsonArray = JSONArray(it)
+                                val jsonObject: JSONObject = jsonArray.getJSONObject(0)
+                                val query = jsonObject.getString("query")
+
+                                val xTkpdAkamai = getAny(query)
+                                        .asSequence()
+                                        .filter { it ->
+                                    registeredGqlFunctions.containsKey(it)
+                                }.take(1).map { it ->
+                                    registeredGqlFunctions[it]
+                                }.first()
+
+                                if (!xTkpdAkamai.isNullOrEmpty()) {
+                                    newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
+                                            ?: "")
+                                    newRequest.addHeader("X-TKPD-AKAMAI", xTkpdAkamai)
+                                }
+                                        
+                            }
+                        } catch (e: JSONException) {
+                            e.printStackTrace()
+                        }
                     }
                 }
             }

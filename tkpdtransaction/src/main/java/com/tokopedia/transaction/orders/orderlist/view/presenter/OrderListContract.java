@@ -57,7 +57,7 @@ public class OrderListContract {
 
         void showFailureMessage(String message);
 
-        void addData(List<Visitable> data, Boolean isRecommendation);
+        void addData(List<Visitable> data, Boolean isRecommendation,boolean isInitial);
 
         void displayLoadMore(boolean isLoadMore);
 

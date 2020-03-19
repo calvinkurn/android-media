@@ -20,7 +20,7 @@ interface HomeTypeFactory {
 
     fun type(tickerViewModel: TickerViewModel): Int
 
-    fun type(businessUnitViewModel: BusinessUnitViewModel): Int
+    fun type(businessUnitWidgetDataModel: NewBusinessUnitWidgetDataModel): Int
 
     fun type(useCaseIconSectionViewModel: UseCaseIconSectionViewModel): Int
 
@@ -51,4 +51,6 @@ interface HomeTypeFactory {
     fun type(homeLoadingMoreModel: HomeLoadingMoreModel): Int
 
     fun type(homeRetryModel: HomeRetryModel): Int
+
+    fun type(popularKeywordListViewModel: PopularKeywordListViewModel): Int
 }

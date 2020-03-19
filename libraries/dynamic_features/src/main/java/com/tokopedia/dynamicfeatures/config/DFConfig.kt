@@ -33,6 +33,12 @@ data class DFConfig(
          */
         @SerializedName("dl_in_bg_max_retry")
         @Expose
-        val downloadInBackgroundMaxRetry: Int = 3
+        val downloadInBackgroundMaxRetry: Int = 3,
+        /**
+         * Maximum valid insufficient storage
+         * Default 1.5 * 1024KB
+         */
+        @SerializedName("max_thld_insuf_strg")
+        @Expose
+        val maxThresholdInsufficientStorage: Long = 0
 )
-

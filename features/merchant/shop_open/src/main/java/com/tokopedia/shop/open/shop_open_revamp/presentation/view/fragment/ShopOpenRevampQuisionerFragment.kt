@@ -26,6 +26,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.open.R
+import com.tokopedia.shop.open.shop_open_revamp.analytic.ShopOpenRevampTracking
 import com.tokopedia.shop.open.shop_open_revamp.common.ExitDialog
 import com.tokopedia.shop.open.shop_open_revamp.common.PageNameConstant.FINISH_SPLASH_SCREEN_PAGE
 import com.tokopedia.shop.open.shop_open_revamp.di.DaggerShopOpenRevampComponent
@@ -60,6 +61,7 @@ class ShopOpenRevampQuisionerFragment :
     private var recyclerView: RecyclerView? = null
     private var layoutManager: LinearLayoutManager? = null
     private var adapter: ShopOpenRevampQuisionerAdapter? = null
+    private var shopOpenRevampTracking: ShopOpenRevampTracking? = null
     private var isNeedLocation = false
     private lateinit var loading: LoaderUnify
     private lateinit var toolbar: Toolbar
@@ -81,6 +83,13 @@ class ShopOpenRevampQuisionerFragment :
     override fun onAttach(context: Context) {
         super.onAttach(context)
         fragmentNavigationInterface = context as FragmentNavigationInterface
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        context?.let {
+            shopOpenRevampTracking = ShopOpenRevampTracking(it)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -110,14 +119,17 @@ class ShopOpenRevampQuisionerFragment :
         observeSaveShipmentLocationData()
 
         btnBack.setOnClickListener {
+            shopOpenRevampTracking?.clickBackButtonFromSurveyPage()
             showExitDialog()
         }
 
         btnSkip.setOnClickListener {
+            shopOpenRevampTracking?.clickTextSkipFromSurveyPage()
             gotoPickLocation()
         }
 
         btnNext.setOnClickListener {
+            shopOpenRevampTracking?.clickButtonNextFromSurveyPage()
             viewModel.sendInputSurveyData(questionsAndAnswersId)
         }
     }
@@ -364,6 +376,8 @@ class ShopOpenRevampQuisionerFragment :
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 if (isNeedLocation)  {
                     activity?.finish()
+                } else {
+                    hideLoader()
                 }
             }
         }

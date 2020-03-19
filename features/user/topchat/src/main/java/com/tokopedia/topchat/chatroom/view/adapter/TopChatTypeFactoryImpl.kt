@@ -7,10 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
-import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
-import com.tokopedia.chat_common.data.FallbackAttachmentViewModel
-import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.MessageViewModel
+import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactoryImpl
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
@@ -28,19 +25,20 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.LeftCha
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.RightChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
-import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 
 open class TopChatTypeFactoryImpl(
         imageAnnouncementListener: ImageAnnouncementListener,
         private val chatLinkHandlerListener: ChatLinkHandlerListener,
         private val imageUploadListener: ImageUploadListener,
-        productAttachmentListener: ProductAttachmentListener,
+        private val productAttachmentListener: ProductAttachmentListener,
         private val imageDualAnnouncementListener: DualAnnouncementListener,
         private val voucherListener: TopChatVoucherListener,
         private val invoiceThumbnailListener: InvoiceThumbnailListener,
-        private val quotationListener: QuotationViewHolder.QuotationListener
+        private val quotationListener: QuotationViewHolder.QuotationListener,
+        private val useNewProductCard: Boolean
 ) : BaseChatTypeFactoryImpl(
         imageAnnouncementListener,
         chatLinkHandlerListener,
@@ -63,11 +61,11 @@ open class TopChatTypeFactoryImpl(
         }
     }
 
-    override fun type(imageDualAnnouncementViewModel: ImageDualAnnouncementViewModel): Int {
+    override fun type(imageDualAnnouncementViewModel: ImageDualAnnouncementUiModel): Int {
         return ImageDualAnnouncementViewHolder.LAYOUT
     }
 
-    override fun type(voucherViewModel: TopChatVoucherViewModel): Int {
+    override fun type(voucherViewModel: TopChatVoucherUiModel): Int {
         return TopChatVoucherViewHolder.LAYOUT
     }
 
@@ -87,12 +85,20 @@ open class TopChatTypeFactoryImpl(
         return RoomSettingFraudAlertViewHolder.LAYOUT
     }
 
-    override fun type(quotationViewModel: QuotationViewModel): Int {
+    override fun type(quotationViewModel: QuotationUiModel): Int {
         return QuotationViewHolder.LAYOUT
     }
 
     override fun type(viewModel: EmptyModel): Int {
         return TopchatEmptyViewHolder.LAYOUT
+    }
+
+    override fun type(productAttachmentViewModel: ProductAttachmentViewModel): Int {
+        return if (useNewProductCard) {
+            TopchatProductAttachmentViewHolder.LAYOUT
+        } else {
+            super.type(productAttachmentViewModel)
+        }
     }
 
     // Check if chat bubble first, if not return default ViewHolder
@@ -110,6 +116,7 @@ open class TopChatTypeFactoryImpl(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
+            TopchatProductAttachmentViewHolder.LAYOUT -> TopchatProductAttachmentViewHolder(parent, productAttachmentListener)
             TopchatEmptyViewHolder.LAYOUT -> TopchatEmptyViewHolder(parent)
             QuotationViewHolder.LAYOUT -> QuotationViewHolder(parent, chatLinkHandlerListener, quotationListener)
             RoomSettingBannerViewHolder.LAYOUT -> RoomSettingBannerViewHolder(parent)

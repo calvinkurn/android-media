@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.util
 
 import android.content.Context
+import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.joinToStringWithLast
@@ -12,7 +13,7 @@ import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationResponse
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import java.util.*
 import kotlin.collections.ArrayList
@@ -139,11 +140,13 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
         }
     }
 
-    fun updateDataTradein(tradeinResponse: ValidateTradeInPDP) {
+    fun updateDataTradein(tradeinResponse: ValidateTradeInResponse) {
         productTradeinMap?.run {
             snapShotMap?.shouldShowTradein = true
             data.first().subtitle = if (tradeinResponse.usedPrice > 0) {
                 context.getString(R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice, true))
+            } else if (!tradeinResponse.widgetString.isNullOrEmpty()) {
+                tradeinResponse.widgetString
             } else {
                 context.getString(R.string.trade_in_exchange)
             }
@@ -173,7 +176,7 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                 isAllowManage = it.shopInfo?.isAllowManage ?: 0
                 nearestWarehouse = it.nearestWarehouse
                 statusTitle = it.shopInfo?.statusInfo?.statusTitle ?: ""
-                statusTitle = it.shopInfo?.statusInfo?.statusMessage ?: ""
+                statusMessage = it.shopInfo?.statusInfo?.statusMessage ?: ""
                 shopStatus = it.shopInfo?.statusInfo?.shopStatus ?: 1
             }
 
@@ -288,24 +291,20 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                     isWishlistVisible = false,
                     isWishlisted = it.isWishlist,
                     shopBadgeList = it.badgesUrl.map {
-                        ProductCardModel.ShopBadge(imageUrl = it ?: "")
+                        ProductCardModel.ShopBadge(imageUrl = it
+                                ?: "")
                     },
                     freeOngkir = ProductCardModel.FreeOngkir(
                             isActive = it.isFreeOngkirActive,
                             imageUrl = it.freeOngkirImageUrl
                     ),
-                    labelPromo = ProductCardModel.Label(
-                            title = it.labelPromo.title,
-                            type = it.labelPromo.type
-                    ),
-                    labelCredibility = ProductCardModel.Label(
-                            title = it.labelCredibility.title,
-                            type = it.labelCredibility.type
-                    ),
-                    labelOffers = ProductCardModel.Label(
-                            title = it.labelOffers.title,
-                            type = it.labelOffers.type
-                    )
+                    labelGroupList = it.labelGroupList.map { recommendationLabel ->
+                        ProductCardModel.LabelGroup(
+                                position = recommendationLabel.position,
+                                title = recommendationLabel.title,
+                                type = recommendationLabel.type
+                        )
+                    }
             )
         }
     }

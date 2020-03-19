@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.uimodel
 
+import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.type.PlayChannelType
 
 /**
@@ -11,7 +12,7 @@ data class ChannelInfoUiModel(
         val description: String,
         val channelType: PlayChannelType,
         val partnerId: Long,
-        val partnerType: Int,
+        val partnerType: PartnerType,
         val moderatorName: String,
         val contentId: Int,
         val contentType: Int,

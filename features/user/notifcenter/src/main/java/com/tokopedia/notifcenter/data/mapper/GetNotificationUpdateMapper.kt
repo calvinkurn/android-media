@@ -35,7 +35,10 @@ open class GetNotificationUpdateMapper @Inject constructor(){
                     products = notificationUpdateItem.productData,
                     dataNotification = notificationUpdateItem.dataNotification,
                     isLongerContent = notificationUpdateItem.isLongerContent,
-                    options = item.options
+                    isShowBottomSheet = notificationUpdateItem.isShowBottomSheet,
+                    typeBottomSheet = notificationUpdateItem.typeBottomSheet,
+                    options = item.options,
+                    userInfo = item.userInfo
             )
             list.add(datum)
         }
