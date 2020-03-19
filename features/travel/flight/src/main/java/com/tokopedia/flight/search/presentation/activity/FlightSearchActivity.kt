@@ -46,7 +46,6 @@ open class FlightSearchActivity : BaseFlightActivity(),
     private lateinit var remoteConfig: RemoteConfig
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.Theme_AppCompat_Light_NoActionBar)
         initializeDataFromExtras()
         super.onCreate(savedInstanceState)
 
