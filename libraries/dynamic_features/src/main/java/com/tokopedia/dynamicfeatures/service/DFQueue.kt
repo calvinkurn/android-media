@@ -121,7 +121,7 @@ object DFQueue {
                 val indexAppendFind = moduleListToAppendList.indexOf(item.first)
                 if (indexAppendFind > -1) {
                     moduleListToAppend?.get(indexAppendFind)?.let {
-                        if (it.second < DFRemoteConfig.getConfig(context).downloadInBackgroundMaxRetry) {
+                        if (it.second <= DFRemoteConfig.getConfig(context).downloadInBackgroundMaxRetry) {
                             finalList.add(it)
                         }
                     }
