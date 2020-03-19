@@ -3,8 +3,6 @@ package com.tokopedia.travelcalendar.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.cachemanager.CacheManager
-import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -30,9 +28,6 @@ class TravelCalendarModule {
 
     @Provides
     fun provideCoroutineDispatcher(): CoroutineDispatcher = Dispatchers.Main
-
-    @Provides
-    fun provideCacheManager(@ApplicationContext context: Context): CacheManager = PersistentCacheManager(context)
 
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
