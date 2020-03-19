@@ -63,7 +63,7 @@ class UmrahHomepageViewModel @Inject constructor(private val getEmptyData: Umrah
                 is Fail -> {
                     homePageModel.value?.let {
                         val updatedList = it.toMutableList()
-                        updatedList[SEARCH_PARAM_ORDER].isLoaded = false
+                        updatedList[SEARCH_PARAM_ORDER].isLoaded = true
                         updatedList[SEARCH_PARAM_ORDER].isSuccess = false
                         homePageModelMutable.value = updatedList
                         isErrorMutable.value = true
@@ -196,7 +196,7 @@ class UmrahHomepageViewModel @Inject constructor(private val getEmptyData: Umrah
                 is Fail -> {
                     homePageModel.value?.let {
                         val updatedList = it.toMutableList()
-                        updatedList[PARTNER_TRAVEL_ORDER].isLoaded = false
+                        updatedList[PARTNER_TRAVEL_ORDER].isLoaded = true
                         updatedList[PARTNER_TRAVEL_ORDER].isSuccess = false
                         homePageModelMutable.value = updatedList
                         isErrorMutable.value = true

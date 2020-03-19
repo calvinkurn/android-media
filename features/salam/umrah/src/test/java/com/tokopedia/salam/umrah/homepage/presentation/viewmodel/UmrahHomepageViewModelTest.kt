@@ -98,7 +98,7 @@ class UmrahHomepageViewModelTest {
         umrahHomepageViewModel.getSearchParamData("",true)
 
         //then
-        assert(!(umrahHomepageViewModel.homePageModel.value as List<UmrahHomepageModel>)[UmrahHomepageViewModel.SEARCH_PARAM_ORDER].isLoaded)
+        assert((umrahHomepageViewModel.homePageModel.value as List<UmrahHomepageModel>)[UmrahHomepageViewModel.SEARCH_PARAM_ORDER].isLoaded)
         assert(!(umrahHomepageViewModel.homePageModel.value as List<UmrahHomepageModel>)[UmrahHomepageViewModel.SEARCH_PARAM_ORDER].isSuccess)
     }
 
@@ -264,7 +264,7 @@ class UmrahHomepageViewModelTest {
         umrahHomepageViewModel.getPartnerTravelData("",true)
 
         //then
-        assert(!(umrahHomepageViewModel.homePageModel.value as List<UmrahHomepageModel>)[UmrahHomepageViewModel.PARTNER_TRAVEL_ORDER].isLoaded)
+        assert((umrahHomepageViewModel.homePageModel.value as List<UmrahHomepageModel>)[UmrahHomepageViewModel.PARTNER_TRAVEL_ORDER].isLoaded)
         assert(!(umrahHomepageViewModel.homePageModel.value as List<UmrahHomepageModel>)[UmrahHomepageViewModel.PARTNER_TRAVEL_ORDER].isSuccess)
     }
 
