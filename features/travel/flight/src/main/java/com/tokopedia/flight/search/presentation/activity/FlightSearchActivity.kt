@@ -3,7 +3,6 @@ package com.tokopedia.flight.search.presentation.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -39,6 +38,7 @@ open class FlightSearchActivity : BaseSimpleActivity(),
     private lateinit var remoteConfig: RemoteConfig
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.Theme_AppCompat_Light_NoActionBar)
         initializeDataFromExtras()
         super.onCreate(savedInstanceState)
 
@@ -101,7 +101,6 @@ open class FlightSearchActivity : BaseSimpleActivity(),
     }
 
     private fun setupSearchToolbarText() {
-        toolbar.setSubtitleTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.grey_500))
         val title = "${getDepartureAirport().cityName} ➝ ${getArrivalAirport().cityName}"
         val subtitle = "$dateString | $passengerString | $classString"
 
