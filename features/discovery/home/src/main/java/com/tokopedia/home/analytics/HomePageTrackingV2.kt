@@ -85,13 +85,16 @@ object HomePageTrackingV2 : BaseTracking() {
                             variant = Value.NONE_OTHER,
                             productPosition = (index + 1).toString(),
                             channelId = channel.id,
-                            isFreeOngkir = grid.freeOngkir.isActive
+                            isFreeOngkir = grid.freeOngkir.isActive,
+                            persoType = channel.persoType,
+                            categoryId = channel.categoryID
                     )
                 },
                 list = String.format(
                         Value.LIST_WITH_HEADER, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.header.name
                 )
         )
+
         private fun getRecommendationListClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductChannelClick(
                 event = Event.PRODUCT_CLICK,
                 eventCategory = Category.HOMEPAGE,

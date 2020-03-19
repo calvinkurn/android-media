@@ -500,7 +500,7 @@ data class DynamicHomeChannel(
                         "promoView", DataLayer.mapOf(
                         "promotions", DataLayer.listOf(
                         DataLayer.mapOf(
-                                "id", id + "_" + banner.id,
+                                "id", id + "_" + banner.id + "_" + persoType + "_" + categoryID,
                                 "name", promoName,
                                 "creative", banner.attribution,
                                 "creative_url", banner.imageUrl,
