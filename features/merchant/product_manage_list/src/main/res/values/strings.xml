@@ -133,6 +133,7 @@
     <string name="product_manage_filter_active">Aktif (%d)</string>
     <string name="product_manage_filter_variant">Varian (%d)</string>
     <string name="product_manage_filter_banned">Pelanggaran (%d)</string>
+    <string name="product_manage_filter_featured">Produk Unggulan (%d)</string>
     <string name="product_manage_filter_draft">Draf (%d)</string>
     <string name="product_manage_filter_inactive">Nonaktif (%d)</string>
     <string name="product_manage_bottom_sheet_title">Atur</string>
@@ -157,7 +158,7 @@
     <string name="product_manage_edit_etalase">Pindah Etalase</string>
     <string name="product_manage_edit_product_non_active">Nonaktifkan Produk</string>
 
-    <string name="product_featured_add_dialog_title">Tambah Product Unggulan</string>
+    <string name="product_featured_add_dialog_title">Tambah Produk Unggulan</string>
     <string name="product_featured_add_dialog_desc">Produk Unggulan tampil di posisi teratas tokomu untuk lebih menarik perhatian pembeli.</string>
     <string name="product_featured_add_dialog_primary_cta">Simpan</string>
     <string name="product_featured_add_dialog_secondary_cta">Batalkan</string>
