@@ -55,6 +55,7 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
 
         const val FP_ERROR_NOT_RECOGNIZED = 100
         const val FP_ERROR_TOO_MANY_ATTEMPT = 101
+        const val FP_ERROR_KEY_NOT_INITIALIZED = 103
 
 
         const val MODE_LOGIN = "fpLogin"
@@ -75,7 +76,8 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var cryptography: Cryptography
+    @JvmField
+    var cryptography: Cryptography? = null
 
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
 
@@ -144,9 +146,7 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
         }
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        fingerprintManager = FingerprintManagerCompat.from(context)
-
+    override fun onCreate(savedInstanceState: Bundle?) {
         DaggerLoginFingerprintComponent
                 .builder()
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
@@ -154,6 +154,11 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
                 .loginFingerprintQueryModule(LoginFingerprintQueryModule())
                 .build()
                 .inject(this)
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        fingerprintManager = FingerprintManagerCompat.from(context)
 
         if (fingerprintManager?.isHardwareDetected == true) {
             if (fingerprintManager?.hasEnrolledFingerprints() == false) {
@@ -180,7 +185,16 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
 
     fun startListening() {
         cancellationSignal = CancellationSignal()
-        fingerprintManager?.authenticate(cryptography.getCryptoObject(), 0, cancellationSignal, getAuthenticationCallback(), null)
+        if(FP_MODE != MODE_VERIFY){
+            if(cryptography?.isInitialized() == true) {
+                fingerprintManager?.authenticate(cryptography?.getCryptoObject(), 0, cancellationSignal, getAuthenticationCallback(), null)
+            }else {
+                listener?.onFingerprintError(activity?.getString(R.string.error_fingerprint_use_other_method) ?: "", FP_ERROR_KEY_NOT_INITIALIZED)
+                dismiss()
+            }
+        }else {
+            fingerprintManager?.authenticate(cryptography?.getCryptoObject(), 0, cancellationSignal, getAuthenticationCallback(), null)
+        }
     }
 
     fun stopListening() {
@@ -206,7 +220,7 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
     }
 
     fun showWithMode(mode: String) {
-        if(mode == MODE_REGISTER || mode == MODE_LOGIN || mode == MODE_REGISTER){
+        if(mode == MODE_REGISTER || mode == MODE_LOGIN || mode == MODE_VERIFY){
             FP_MODE = mode
             context.supportFragmentManager.run {
                 show(this, TAG)
@@ -273,7 +287,7 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
                     var errorString = errString.toString()
                     viewState.postValue(STATE_ERROR)
                     if(errMsgId == FingerprintManager.FINGERPRINT_ERROR_LOCKOUT) {
-                        errorString = getString(R.string.error_too_many_attempts)
+                        errorString = activity?.getString(R.string.error_too_many_attempts) ?: ""
                         dismiss()
                     }
                     listener?.onFingerprintError(errorString, errMsgId)

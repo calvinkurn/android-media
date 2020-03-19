@@ -34,8 +34,8 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
-import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsComponent;
+import com.tokopedia.digital_deals.di.DealsComponentInstance;
 import com.tokopedia.digital_deals.view.adapter.BrandsFragmentPagerAdapter;
 import com.tokopedia.digital_deals.view.contractor.AllBrandsHomeContract;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
@@ -300,9 +300,7 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
 
     @Override
     public DealsComponent getComponent() {
-        return DaggerDealsComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
-                .build();
+        return DealsComponentInstance.getDealsComponent(getActivity().getApplication());
     }
 
     @Override

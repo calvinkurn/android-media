@@ -16,8 +16,6 @@ class BankNumberTextWatcherViewModel @Inject constructor(dispatcher: CoroutineDi
 
     val textWatcherState = MutableLiveData<TextWatcherState>()
 
-    private lateinit var textWatcher: TextWatcher
-
     private var job: Job? = Job()
 
     private var currentBank: Bank? = null
@@ -27,8 +25,6 @@ class BankNumberTextWatcherViewModel @Inject constructor(dispatcher: CoroutineDi
     }
 
     fun getTextWatcher(): TextWatcher {
-        if (::textWatcher.isInitialized)
-            return textWatcher
         return object : TextWatcher {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 currentBank?.let {

@@ -20,4 +20,30 @@ data class DynamicProductInfoP1(
     val getProductName: String
         get() = data.name
 
+    val finalPrice: Int
+        get() {
+            return if (data.campaign.isActive) {
+                data.campaign.discountedPrice
+            } else {
+                data.price.value
+            }
+        }
+
+    val priceBeforeInt: Int
+        get() {
+            return if (data.campaign.isActive) {
+                data.campaign.originalPrice
+            } else {
+                0
+            }
+        }
+
+    val dropPercentage: String?
+        get() {
+            return if (data.campaign.isActive) {
+                data.campaign.percentageAmount.toString()
+            } else {
+                ""
+            }
+        }
 }

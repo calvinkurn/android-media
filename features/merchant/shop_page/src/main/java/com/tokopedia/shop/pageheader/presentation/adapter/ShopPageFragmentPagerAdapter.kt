@@ -1,6 +1,5 @@
 package com.tokopedia.shop.pageheader.presentation.adapter
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater

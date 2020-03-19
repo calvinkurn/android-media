@@ -9,6 +9,7 @@ import com.tokopedia.remoteconfig.GraphqlHelper
 import com.tokopedia.remoteconfig.R
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.abtest.data.AbTestVariantPojo
+import com.tokopedia.remoteconfig.abtest.data.FeatureVariantAnalytics
 import com.tokopedia.remoteconfig.abtest.data.RolloutFeatureVariants
 import com.tokopedia.track.TrackApp
 import com.tokopedia.usecase.RequestParams
@@ -21,7 +22,13 @@ import java.util.*
 import kotlin.collections.HashMap
 
 class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteConfig {
+
+    private lateinit var userSession: UserSession
     private val graphqlUseCase: GraphqlUseCase = GraphqlUseCase()
+
+    init {
+        userSession = UserSession(context)
+    }
 
     private val sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCE_AB_TEST_PLATFORM, Context.MODE_PRIVATE)
     var editor = sharedPreferences.edit()
@@ -97,6 +104,11 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         val payloads = HashMap<String, Any>()
         payloads[REVISION] = revision
         payloads[CLIENTID] = ANDROID_CLIENTID
+        if (userSession.isLoggedIn) {
+            payloads[ID] = userSession.userId
+        } else {
+            payloads[ID] = userSession.deviceId
+        }
 
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
                 R.raw.gql_rollout_feature_variant), AbTestVariantPojo::class.java, payloads, false)
@@ -131,46 +143,41 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         val responseData: AbTestVariantPojo = graphqlResponse.getData(AbTestVariantPojo::class.java)
         val featureVariants = responseData?.dataRollout?.featureVariants
         val globalRevision = responseData.dataRollout.globalRev
-        val status = responseData.dataRollout.status
 
         val currentTimestamp = Date().time
-        editor.clear().commit()
-        editor.putLong(KEY_SP_TIMESTAMP_AB_TEST, currentTimestamp)
-        editor.commit()
-
         if (featureVariants != null) {
+            editor.clear()
             for (a in featureVariants) {
-                setString(a.feature, a.variant)
+                editor.putString(a.feature, a.variant)
             }
         }
-
-        if (globalRevision != null) {
-            editor.putInt(REVISION, globalRevision).commit()
-        }
+        editor.putLong(KEY_SP_TIMESTAMP_AB_TEST, currentTimestamp)
+        editor.putInt(REVISION, globalRevision)
+        editor.commit()
 
         return responseData.dataRollout
     }
 
     private fun sendTracking(featureVariants: RolloutFeatureVariants) {
-        val userSession : UserSessionInterface = UserSession(context)
+        featureVariants.featureVariants?.let { featureVariants ->
+            val userSession : UserSessionInterface = UserSession(context)
 
-        val dataLayerAbTest = mapOf(
+            val dataLayerAbTest = mapOf(
                 "event" to "abtesting",
                 "eventCategory" to "abtesting",
                 "user_id" to if (userSession.isLoggedIn) userSession.userId else null,
-                "feature" to featureVariants.featureVariants?.map {
-                    val jsonObject = JSONObject()
-                    jsonObject.put("name", it.feature)
-                    jsonObject.put("variant", it.variant)
-                    jsonObject
+                "feature" to featureVariants.map {
+                    FeatureVariantAnalytics(it.feature, it.variant)
                 }
-        )
-        TrackApp.getInstance().gtm.sendGeneralEvent(dataLayerAbTest)
+            )
+            TrackApp.getInstance().gtm.sendGeneralEvent(dataLayerAbTest)
+        }
     }
 
     companion object {
         val REVISION = "rev"
         val CLIENTID = "client_id"
+        val ID = "id"
         val ANDROID_CLIENTID = 1
         val KEY_SP_TIMESTAMP_AB_TEST = "key_sp_timestamp_ab_test"
         val SHARED_PREFERENCE_AB_TEST_PLATFORM = "tkpd-ab-test-platform"

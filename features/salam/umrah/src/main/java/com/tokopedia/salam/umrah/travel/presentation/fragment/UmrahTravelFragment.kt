@@ -207,7 +207,10 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
                                 umrahTrackingUtil.umrahTravelAgentClickGaleri(getEventCategoryTracking(POSITION_PRODUCT))
                             else if (positionBefore == POSITION_INFO)
                                 umrahTrackingUtil.umrahTravelAgentClickGaleri(getEventCategoryTracking(POSITION_GALLERY))
-
+                            vp_umrah_travel_agent.adapter?.let{
+                                val fragmentGallery = it.instantiateItem(vp_umrah_travel_agent,POSITION_GALLERY) as UmrahTravelAgentGalleryFragment
+                                fragmentGallery.firstTracking()
+                            }
                             setPositionBeforeChange(position)
                         }
                         POSITION_INFO -> {
