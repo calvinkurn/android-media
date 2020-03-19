@@ -28,4 +28,4 @@ project.ext {
     artifactName = "chucker-no-op-release"
 }
 
-apply from: '../../publish_local.gradle'
+apply from: '../publish_local.gradle'
