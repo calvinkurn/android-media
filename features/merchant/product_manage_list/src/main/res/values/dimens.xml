@@ -20,6 +20,7 @@
     <dimen name="product_manage_etalase_item_vertical_spacing">14dp</dimen>
     <dimen name="product_manage_etalase_search_bar_vertical_spacing">12dp</dimen>
     <dimen name="product_manage_item_label_horizontal_spacing">5dp</dimen>
-    <dimen name="product_manage_empty_state_image_size">180dp</dimen>
+    <dimen name="product_manage_empty_state_image_width">220dp</dimen>
+    <dimen name="product_manage_empty_state_image_height">180dp</dimen>
     <dimen name="product_manage_empty_state_title_width">272dp</dimen>
 </resources>

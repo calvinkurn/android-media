@@ -31,6 +31,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -76,11 +77,13 @@ import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.FilterV
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToTabFilters
+import com.tokopedia.product.manage.feature.list.view.model.SearchEmptyModel
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.MoreFilter
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
+import com.tokopedia.product.manage.feature.list.view.model.ProductEmptyModel
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.*
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
@@ -291,6 +294,16 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
     }
 
+    override fun getEmptyDataViewModel(): EmptyModel {
+        val searchKeyword = searchBar.searchBarTextField.text.toString()
+
+        return if(searchKeyword.isEmpty()) {
+            ProductEmptyModel
+        } else {
+            SearchEmptyModel
+        }
+    }
+
     private fun setupSearchBar() {
         searchBar.clearFocus()
 
@@ -473,7 +486,9 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         val filters = if(tabFilters.isActive()) {
             mapToTabFilters(allProductList)
         } else {
-            mapToTabFilters(adapter.data)
+            val productList = adapter.data
+                .filterIsInstance<ProductViewModel>()
+            mapToTabFilters(productList)
         }
         tabFilters.setData(filters)
     }
@@ -1322,6 +1337,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 is Success -> {
                     addProductList(it.data)
                     showProductList(it.data)
+                    initHeaderView(it.data)
                     showTabFilters()
                 }
                 is Fail -> loadEmptyList()
@@ -1397,6 +1413,13 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
     }
     // endregion
+
+    private fun initHeaderView(productList: List<ProductViewModel>) {
+        if(isLoadingInitialData) {
+            searchBar.showWithCondition(productList.isNotEmpty())
+            tabFilters.showWithCondition(productList.isNotEmpty())
+        }
+    }
 
     private fun clearSelectedProduct() {
         itemsChecked.clear()
