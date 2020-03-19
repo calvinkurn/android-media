@@ -2,8 +2,11 @@ package com.tokopedia.flight.search.presentation.activity
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -25,6 +28,8 @@ import com.tokopedia.flight.search_universal.presentation.bottomsheet.FlightSear
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.unifycomponents.setImage
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.activity_flight_search.*
 
 open class FlightSearchActivity : BaseSimpleActivity(),
@@ -35,6 +40,8 @@ open class FlightSearchActivity : BaseSimpleActivity(),
     protected lateinit var passengerString: String
     protected lateinit var classString: String
     protected lateinit var passDataViewModel: FlightSearchPassDataViewModel
+
+    private lateinit var wrapper: LinearLayout
 
     private lateinit var remoteConfig: RemoteConfig
 
@@ -95,14 +102,24 @@ open class FlightSearchActivity : BaseSimpleActivity(),
     open fun getArrivalAirport(): FlightAirportViewModel = passDataViewModel.arrivalAirport
 
     private fun setupSearchToolbarAction() {
-        flight_search_header.addRightIcon(R.drawable.ic_flight_edit)
-                .setOnClickListener {
-                    showChangeSearchBottomSheet()
-                }
-        flight_search_header.addRightIcon(R.drawable.ic_flight_edit)
-                .setOnClickListener {
-                    showChangeSearchBottomSheet()
-                }
+        wrapper = LinearLayout(this)
+        wrapper.apply {
+            val param = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            setBackgroundColor(Color.WHITE)
+            layoutParams = param
+        }
+
+        val imageView = ImageView(this)
+        val param = LinearLayout.LayoutParams(DIMEN_24_IN_PX, DIMEN_24_IN_PX)
+        imageView.layoutParams = param
+        imageView.setImage(R.drawable.ic_flight_edit, CORNER_RADIUS)
+
+        wrapper.addView(imageView)
+        wrapper.setOnClickListener {
+            showChangeSearchBottomSheet()
+        }
+
+        flight_search_header.addCustomRightContent(wrapper)
     }
 
     private fun setupSearchToolbarText() {
@@ -206,21 +223,22 @@ open class FlightSearchActivity : BaseSimpleActivity(),
     }
 
     fun setupAndShowCoachMark() {
-        val view = flight_search_header.rightIcons?.get(0)
-        val coachMarkItems = arrayListOf<CoachMarkItem>()
-        coachMarkItems.add(CoachMarkItem(
-                view,
-                getString(R.string.flight_search_coach_mark_change_title),
-                getString(R.string.flight_search_coach_mark_change_description)
-        ))
+        if (::wrapper.isInitialized) {
+            val coachMarkItems = arrayListOf<CoachMarkItem>()
+            coachMarkItems.add(CoachMarkItem(
+                    wrapper,
+                    getString(R.string.flight_search_coach_mark_change_title),
+                    getString(R.string.flight_search_coach_mark_change_description)
+            ))
 
-        val coachMark = CoachMarkBuilder().build()
-        coachMark.show(this, TAG_CHANGE_COACH_MARK, coachMarkItems)
-        Handler().postDelayed({
-            if (coachMark.isAdded && coachMark.isVisible) {
-                coachMark.dismiss()
-            }
-        }, DELAY_THREE_SECONDS)
+            val coachMark = CoachMarkBuilder().build()
+            coachMark.show(this, TAG_CHANGE_COACH_MARK, coachMarkItems)
+            Handler().postDelayed({
+                if (coachMark.isAdded && coachMark.isVisible) {
+                    coachMark.dismiss()
+                }
+            }, DELAY_THREE_SECONDS)
+        }
     }
 
     companion object {
@@ -229,6 +247,8 @@ open class FlightSearchActivity : BaseSimpleActivity(),
         const val EXTRA_PASS_DATA = "EXTRA_PASS_DATA"
 
         private const val DELAY_THREE_SECONDS: Long = 3000
+        private val DIMEN_24_IN_PX = 24.toPx()
+        private val CORNER_RADIUS = 8f
 
         private const val REQUEST_CODE_BOOKING = 10
         private const val REQUEST_CODE_RETURN = 11
