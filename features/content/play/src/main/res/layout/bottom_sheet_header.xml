@@ -5,19 +5,21 @@
 
     <LinearLayout
         android:id="@+id/ll_header"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        android:gravity="center_vertical|start"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:paddingStart="@dimen/spacing_lvl4"
-        android:paddingEnd="@dimen/spacing_lvl4"
+        tools:layout_width="match_parent"
         >
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
             app:srcCompat="@drawable/ic_system_close_default"
             />
 
