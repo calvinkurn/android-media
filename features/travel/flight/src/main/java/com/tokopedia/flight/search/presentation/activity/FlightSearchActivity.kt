@@ -124,6 +124,10 @@ open class FlightSearchActivity : BaseFlightActivity(),
         }
 
         flight_search_header.addCustomRightContent(wrapper)
+        flight_search_header.isShowBackButton = true
+        flight_search_header.setNavigationOnClickListener {
+            onBackPressed()
+        }
     }
 
     private fun setupSearchToolbarText() {
