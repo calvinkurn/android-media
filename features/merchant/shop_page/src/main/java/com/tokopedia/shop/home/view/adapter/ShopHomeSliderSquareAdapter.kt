@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeItemSliderSquareViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeSliderSquareViewHolder
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 
@@ -19,6 +18,7 @@ class ShopHomeSliderSquareAdapter(
 
     var displayWidgetUiModel: ShopHomeDisplayWidgetUiModel? = null
     var parentPosition: Int = 0
+    var heightRatio = 0.0F
 
     override fun onBindViewHolder(holderItem: ShopHomeItemSliderSquareViewHolder, position: Int) {
         getItem(position)?.let {
@@ -33,6 +33,6 @@ class ShopHomeSliderSquareAdapter(
                 .inflate(R.layout.item_shop_page_home_slider_square,
                         parent,
                         false)
-        return ShopHomeItemSliderSquareViewHolder(view, listener)
+        return ShopHomeItemSliderSquareViewHolder(view, listener, heightRatio)
     }
 }

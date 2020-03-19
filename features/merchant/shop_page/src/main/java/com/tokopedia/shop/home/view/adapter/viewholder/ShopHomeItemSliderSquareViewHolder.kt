@@ -15,7 +15,8 @@ import com.tokopedia.unifycomponents.ImageUnify
 
 class ShopHomeItemSliderSquareViewHolder(
         itemView: View,
-        private val listener: ShopHomeDisplayWidgetListener
+        private val listener: ShopHomeDisplayWidgetListener,
+        private val heightRatio: Float
 ): RecyclerView.ViewHolder(itemView) {
 
     companion object{
@@ -27,7 +28,7 @@ class ShopHomeItemSliderSquareViewHolder(
     var parentPosition: Int = 0
 
     fun bind(data: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem) {
-        ivSliderSquare.setImageUrl(data.imageUrl)
+        ivSliderSquare.setImageUrl(data.imageUrl, heightRatio = heightRatio)
 
         val deviceWidth = Resources.getSystem().displayMetrics.widthPixels;
         itemView.layoutParams.width = (deviceWidth / ITEM_WIDTH_RATIO_DIVIDER).toInt()
