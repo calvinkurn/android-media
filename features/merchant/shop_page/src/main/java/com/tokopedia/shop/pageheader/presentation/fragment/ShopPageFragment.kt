@@ -143,6 +143,7 @@ class ShopPageFragment :
     private val iconTabFeed = R.drawable.ic_shop_tab_feed_inactive
     private val iconTabReview = R.drawable.ic_shop_tab_review_inactive
     private val intentData: Intent = Intent()
+    private var isFirstLoading: Boolean = false
     private val customDimensionShopPage: CustomDimensionShopPage by lazy {
         CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
     }
@@ -204,11 +205,15 @@ class ShopPageFragment :
 
             override fun onTabSelected(tab: TabLayout.Tab) {
                 viewPagerAdapter.handleSelectedTab(tab, true)
-                (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
-                    shopPageTracking?.clickTab(shopViewModel.isMyShop(it.shopCore.shopID),
-                            titles[tab.position],
-                            CustomDimensionShopPage.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
-                                    it.goldOS.isGold == 1))
+                if (isFirstLoading) {
+                    isFirstLoading = false
+                } else {
+                    (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
+                        shopPageTracking?.clickTab(shopViewModel.isMyShop(it.shopCore.shopID),
+                                titles[tab.position],
+                                CustomDimensionShopPage.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
+                                        it.goldOS.isGold == 1))
+                    }
                 }
             }
         })
@@ -312,6 +317,7 @@ class ShopPageFragment :
     }
 
     private fun getShopInfo(isRefresh: Boolean = false) {
+        isFirstLoading = true
         if (!swipeToRefresh.isRefreshing)
             setViewState(VIEW_LOADING)
         shopViewModel.getShop(shopId, shopDomain, isRefresh)
@@ -570,7 +576,7 @@ class ShopPageFragment :
             }
         }
         setViewState(VIEW_CONTENT)
-        viewPager.currentItem = selectedPosition
+        viewPager.setCurrentItem(selectedPosition, false)
     }
 
     private fun isShowHomeTab(): Boolean {
@@ -617,7 +623,8 @@ class ShopPageFragment :
                         isOfficialStore,
                         isGoldMerchant,
                         shopName,
-                        shopAttribution ?: ""
+                        shopAttribution ?: "",
+                        shopRef
                 )
             } else {
                 HomeProductFragment.createInstance().apply {

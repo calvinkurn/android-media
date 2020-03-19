@@ -19,6 +19,17 @@ class GQLCheckWishlistUseCase @Inject constructor(
         private val gqlUseCase: MultiRequestGraphqlUseCase
 ) : UseCase<List<CheckWishlistResult>>() {
 
+    companion object {
+        private const val KEY_PRODUCT_ID = "productID"
+
+        @JvmStatic
+        fun createParams(
+                listProductIdString: String
+        ): RequestParams = RequestParams.create().apply {
+            putObject(KEY_PRODUCT_ID, listProductIdString)
+        }
+    }
+
     var params: RequestParams = RequestParams.EMPTY
     val request by lazy {
         GraphqlRequest(gqlQuery, CheckWishlistResult.Response::class.java, params.parameters)
@@ -34,17 +45,6 @@ class GQLCheckWishlistUseCase @Inject constructor(
             return gqlResponse.getData<CheckWishlistResult.Response>(CheckWishlistResult.Response::class.java).checkWishlist
         } else {
             throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
-        }
-    }
-
-    companion object {
-        private const val KEY_PRODUCT_ID = "productID"
-
-        @JvmStatic
-        fun createParams(
-                listProductIdString: String
-        ): RequestParams = RequestParams.create().apply {
-            putObject(KEY_PRODUCT_ID, listProductIdString)
         }
     }
 }

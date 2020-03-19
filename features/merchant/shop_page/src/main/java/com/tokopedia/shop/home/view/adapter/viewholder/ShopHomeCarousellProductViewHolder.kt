@@ -27,6 +27,12 @@ class ShopHomeCarousellProductViewHolder(
         itemView: View,
         val shopPageHomeProductClickListener: ShopPageHomeProductClickListener
 ) : AbstractViewHolder<ShopHomeCarousellProductUiModel>(itemView) {
+
+    companion object {
+        @LayoutRes
+        val LAYOUT = R.layout.item_shop_home_product_carousel
+    }
+
     private var textViewTitle: TextView? = null
     private var textViewCta: TextView? = null
     private var ivBadge: ImageView? = null
@@ -43,11 +49,6 @@ class ShopHomeCarousellProductViewHolder(
 
     init {
         initView(itemView)
-    }
-
-    companion object {
-        @LayoutRes
-        val LAYOUT = R.layout.item_shop_home_product_carousel
     }
 
     private fun initView(view: View) {

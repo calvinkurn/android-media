@@ -48,8 +48,6 @@ class ShopHomeVideoViewHolder(
     var ivVideoNotFound: AppCompatImageView? = null
     var groupVideoError: Group? = null
 
-    var videoNotFound = "_uzXPWFV1GE"
-
     init {
         youTubeThumbnailShopPage = view.findViewById(R.id.youtube_home_shop_page)
         btnYoutubePlayer = view.findViewById(R.id.btn_youtube_player)
@@ -100,7 +98,6 @@ class ShopHomeVideoViewHolder(
         youTubeThumbnailLoader?.setOnThumbnailLoadedListener(object : YouTubeThumbnailLoader.OnThumbnailLoadedListener {
             override fun onThumbnailLoaded(childYouTubeThumbnailView: YouTubeThumbnailView?, p1: String?) {
                 childYouTubeThumbnailView?.visible()
-                youTubeThumbnailShopPage?.visible()
                 btnYoutubePlayer?.visible()
                 groupVideoError?.gone()
                 loaderImageView?.gone()
@@ -110,7 +107,6 @@ class ShopHomeVideoViewHolder(
             override fun onThumbnailError(childYouTubeThumbnailView: YouTubeThumbnailView?, errorReason: YouTubeThumbnailLoader.ErrorReason?) {
                 childYouTubeThumbnailView?.visible()
                 groupVideoError?.visible()
-                youTubeThumbnailShopPage?.gone()
                 loaderImageView?.gone()
                 youTubeThumbnailLoader.release()
             }

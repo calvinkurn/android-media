@@ -76,7 +76,7 @@ open class ShopHomeProductViewHolder(
         }
     }
 
-    protected open fun getProductModel(
+    private fun getProductModel(
             shopHomeProductViewModel: ShopHomeProductViewModel
     ): ProductCardModel {
         val totalReview = try {
@@ -84,10 +84,9 @@ open class ShopHomeProductViewHolder(
         } catch (ignored: ParseException) {
             0
         }
-        val discountPercentage = if (shopHomeProductViewModel.discountPercentage == "0") {
+        val discountWithoutPercentageString = shopHomeProductViewModel.discountPercentage?.replace("%","") ?: ""
+        val discountPercentage = if (discountWithoutPercentageString == "0") {
             ""
-        } else if ((shopHomeProductViewModel.discountPercentage ?: "").contains("%")) {
-            shopHomeProductViewModel.discountPercentage ?: ""
         } else {
             "${shopHomeProductViewModel.discountPercentage}%"
         }
