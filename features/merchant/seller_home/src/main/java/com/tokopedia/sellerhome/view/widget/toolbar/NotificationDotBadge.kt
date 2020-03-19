@@ -6,6 +6,8 @@ import android.graphics.ColorFilter
 import android.graphics.Paint
 import android.graphics.PixelFormat
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.LayerDrawable
+import android.view.MenuItem
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.sellerhome.R
@@ -39,12 +41,34 @@ class NotificationDotBadge(private val context: Context) : Drawable() {
         canvas.drawCircle(centerX, centerY, radius, mBadgePaint)
     }
 
-    fun showBadge() {
+    fun showBadge(menuItem: MenuItem) {
+        val icon = getIcon(menuItem)
+
+        showBadge()
+        icon?.mutate()
+        icon?.setDrawableByLayerId(R.id.ic_dot, this)
+    }
+
+    fun removeBadge(menuItem: MenuItem) {
+        val icon = getIcon(menuItem)
+
+        removeBadge()
+        icon?.mutate()
+        icon?.setDrawableByLayerId(R.id.ic_dot, this)
+    }
+
+    private fun getIcon(menuItem: MenuItem): LayerDrawable? {
+        val menuIcon = menuItem.icon
+        val icon: LayerDrawable? = if (menuIcon is LayerDrawable) menuIcon else null
+        return icon
+    }
+
+    private fun showBadge() {
         willDraw = true
         invalidateSelf()
     }
 
-    fun removeBadge() {
+    private fun removeBadge() {
         willDraw = false
         invalidateSelf()
     }

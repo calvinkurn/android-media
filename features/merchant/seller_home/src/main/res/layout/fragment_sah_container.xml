@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <View
-        android:id="@+id/sahStatusBar"
+        android:id="@+id/statusBarBackground"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sah_status_bar_height"
         android:background="@color/white"
