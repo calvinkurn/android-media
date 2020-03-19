@@ -166,6 +166,9 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             RESULT_ROOM_DETAIL -> if (resultCode == Activity.RESULT_OK) {
                 loadInitialData()
             }
+            REQ_CODE_LOGIN -> if (resultCode == Activity.RESULT_OK) {
+                loadInitialData()
+            }
         }
     }
 
@@ -407,7 +410,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     private fun navigateToLoginPage() {
         if (activity != null) {
             progressDialog.dismiss()
-            RouteManager.route(context, ApplinkConst.LOGIN)
+            context?.let { startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), REQ_CODE_LOGIN) }
         }
     }
 
@@ -441,6 +444,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     companion object {
 
         const val RESULT_ROOM_DETAIL = 102
+        const val REQ_CODE_LOGIN = 1345
 
         const val ARG_PROPERTY_ID = "arg_property_id"
         const val ARG_PROPERTY_NAME = "arg_property_name"
