@@ -1,6 +1,5 @@
 package com.tokopedia.play.viewmodel
 
-import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.google.android.exoplayer2.ExoPlayer
@@ -14,10 +13,10 @@ import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.type.PlayChannelType
-import com.tokopedia.play.view.uimodel.ChannelInfoUiModel
-import com.tokopedia.play.view.uimodel.TotalLikeUiModel
-import com.tokopedia.play.view.uimodel.VideoStreamUiModel
+import com.tokopedia.play.view.uimodel.*
+import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -173,5 +172,67 @@ class PlayViewModelTest {
         Assertions
                 .assertThat(playViewModel.observableIsLikeContent.getOrAwaitValue())
                 .isEqualTo(expectedModel)
+    }
+
+    @Test
+    fun `test observe total views`() {
+        val expectedModel = TotalViewUiModel(
+                totalView = mockChannel.totalViews
+        )
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+
+        Assertions
+                .assertThat(playViewModel.observableTotalViews.getOrAwaitValue())
+                .isEqualTo(expectedModel)
+    }
+
+    @Test
+    fun `test observe partner info`() {
+        val expectedModel = PartnerInfoUiModel(
+                id = mockChannel.partnerId,
+                name = mockChannel.moderatorName,
+                type = PartnerType.ADMIN,
+                isFollowed = true,
+                isFollowable = false
+        )
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+
+        Assertions
+                .assertThat(playViewModel.observablePartnerInfo.getOrAwaitValue())
+                .isEqualTo(expectedModel)
+    }
+
+    @Test
+    fun `test observe badge cart`() {
+        val expectedModel = CartUiModel(
+                count = 1,
+                isShow = true
+        )
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+
+        Assertions
+                .assertThat(playViewModel.observableBadgeCart.getOrAwaitValue())
+                .isEqualTo(expectedModel)
+
+    }
+
+    @Test
+    fun `test observe product tagging`() {
+        val expectedModel = modelBuilder.buildProductTagging()
+        val expectedResult = PlayResult.Success(
+                PlayUiMapper.mapProductSheet(
+                        mockChannel.pinnedProduct.titleBottomSheet,
+                        expectedModel)
+        )
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+
+        Assertions
+                .assertThat(playViewModel.observableProductSheetContent.getOrAwaitValue())
+                .isEqualTo(expectedResult)
+
     }
 }
