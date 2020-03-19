@@ -777,6 +777,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     private fun buildQuickFilterView() {
         flight_sort_filter.filterType = SortFilter.TYPE_ADVANCED
         flight_sort_filter.parentListener = {
+            flightSearchPresenter.sendQuickFilterTrack(FLIGHT_QUICK_FILTER)
             showFilterSortBottomSheet()
         }
         flight_sort_filter.sortFilterHorizontalScrollView.scrollX = 0
@@ -792,6 +793,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                     flightFilterModel.transitTypeList.add(TransitEnum.DIRECT)
                     quickDirectFilter.select()
                 }
+
+                flightSearchPresenter.sendQuickFilterTrack(FLIGHT_QUICK_FILTER_DIRECT)
                 flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, false)
             }
 
@@ -804,6 +807,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                     flightFilterModel.facilityList.add(FlightFilterFacilityEnum.BAGGAGE)
                     quickBaggageFilter.select()
                 }
+                flightSearchPresenter.sendQuickFilterTrack(FLIGHT_QUICK_FILTER_BAGGAGE)
                 flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, false)
             }
 
@@ -816,6 +820,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                     flightFilterModel.facilityList.add(FlightFilterFacilityEnum.MEAL)
                     quickMealFilter.select()
                 }
+                flightSearchPresenter.sendQuickFilterTrack(FLIGHT_QUICK_FILTER_MEAL)
                 flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, false)
             }
 
@@ -828,6 +833,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                     flightFilterModel.transitTypeList.add(TransitEnum.ONE)
                     quickTransitFilter.select()
                 }
+                flightSearchPresenter.sendQuickFilterTrack(FLIGHT_QUICK_FILTER_TRANSIT)
                 flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, false)
             }
 
@@ -912,6 +918,12 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         private const val QUICK_FILTER_BAGGAGE_ORDER = 1
         private const val QUICK_FILTER_MEAL_ORDER = 2
         private const val QUICK_FILTER_TRANSIT_ORDER = 3
+
+        private const val FLIGHT_QUICK_FILTER = "Filter"
+        private const val FLIGHT_QUICK_FILTER_DIRECT = "Langsung"
+        private const val FLIGHT_QUICK_FILTER_BAGGAGE = "Gratis Bagasi"
+        private const val FLIGHT_QUICK_FILTER_MEAL = "In-flight Meal"
+        private const val FLIGHT_QUICK_FILTER_TRANSIT = "Transit"
 
         fun newInstance(passDataViewModel: FlightSearchPassDataViewModel): FlightSearchFragment {
             val bundle = Bundle()
