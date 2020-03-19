@@ -3,6 +3,7 @@ package com.tokopedia.flight.search.presentation.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -211,13 +212,19 @@ open class FlightSearchActivity : BaseSimpleActivity(),
 
         val coachMark = CoachMarkBuilder().build()
         coachMark.show(this, TAG_CHANGE_COACH_MARK, coachMarkItems)
+        Handler().postDelayed({
+            if (coachMark.isAdded && coachMark.isVisible) {
+                coachMark.dismiss()
+            }
+        }, DELAY_THREE_SECONDS)
     }
 
     companion object {
-
         const val TAG_CHANGE_COACH_MARK = "TagChangeSearchCoachMark"
 
         const val EXTRA_PASS_DATA = "EXTRA_PASS_DATA"
+
+        private const val DELAY_THREE_SECONDS: Long = 3000
 
         private const val REQUEST_CODE_BOOKING = 10
         private const val REQUEST_CODE_RETURN = 11
