@@ -51,7 +51,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
                 })
     }
 
-    fun autofill(lat: Double, long: Double, zoom: Float) {
+    fun autoFill(lat: Double, long: Double, zoom: Float) {
         Timber.d("Current zoom level : $zoom")
         if (AddNewAddressUtils.hasDefaultCoordinate(lat, long)) {
             view.showUndetectedDialog()

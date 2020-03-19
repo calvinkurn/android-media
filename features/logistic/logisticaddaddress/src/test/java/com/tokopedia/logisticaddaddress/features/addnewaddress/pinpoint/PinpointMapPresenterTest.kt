@@ -3,7 +3,6 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
-import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.DistrictBoundaryUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
@@ -72,7 +71,7 @@ object PinpointMapPresenterTest : Spek({
     Feature("auto fill") {
         Scenario("has default lat long") {
             When("executed with default lat long") {
-                presenter.autofill(-6.175794, 106.826457, 5.0f)
+                presenter.autoFill(-6.175794, 106.826457, 5.0f)
             }
             Then("view shows undetected dialog") {
                 verify {
@@ -87,7 +86,7 @@ object PinpointMapPresenterTest : Spek({
                 every { revGeoCodeUseCase.execute(any()) } returns Observable.just(keroMaps)
             }
             When("executed") {
-                presenter.autofill(0.1, 0.1, 0.0f)
+                presenter.autoFill(0.1, 0.1, 0.0f)
             }
             Then("on success is called") {
                 verify { view.onSuccessAutofill(keroMaps.data) }
@@ -100,7 +99,7 @@ object PinpointMapPresenterTest : Spek({
                 every { revGeoCodeUseCase.execute(any()) } returns Observable.just(keroMaps)
             }
             When("executed") {
-                presenter.autofill(0.1, 0.1, 0.0f)
+                presenter.autoFill(0.1, 0.1, 0.0f)
             }
             Then("view shows out of reach dialog") {
                 verify { view.showOutOfReachDialog() }

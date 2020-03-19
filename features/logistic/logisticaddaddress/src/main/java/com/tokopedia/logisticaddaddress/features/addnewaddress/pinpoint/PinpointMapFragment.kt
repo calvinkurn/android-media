@@ -159,7 +159,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         setViewListener()
 
         val zoom = googleMap?.cameraPosition?.zoom ?: 0f
-        presenter.autofill(currentLat, currentLong, zoom)
+        presenter.autoFill(currentLat, currentLong, zoom)
     }
 
     private fun prepareMap(savedInstanceState: Bundle?) {
@@ -284,7 +284,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             val latTarget = target?.latitude ?: 0.0
             val longTarget = target?.longitude ?: 0.0
 
-            presenter.autofill(latTarget, longTarget, zoomLevel)
+            presenter.autoFill(latTarget, longTarget, zoomLevel)
         } else {
             whole_loading_container?.visibility = View.GONE
             invalid_container?.visibility = View.GONE
