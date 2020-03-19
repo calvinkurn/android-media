@@ -173,7 +173,7 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
         } else {
             productManageFilterViewModel.updateSelect(element, title)
             if(title == ProductManageFilterMapper.ETALASE_HEADER) {
-                if(element.name == getString(R.string.product_manage_filter_all_products) || element.name == getString(R.string.product_manage_filter_product_sold)) {
+                if(element.name == getString(R.string.product_manage_filter_product_sold)) {
                     ProductManageTracking.eventEtalaseFilter(element.name)
                 }
             } else {
