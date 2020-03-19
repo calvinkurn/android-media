@@ -70,19 +70,18 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     private var debounceJob: Job? = null
 
-    fun getOccCart() {
+    fun getOccCart(isFullRefresh: Boolean = true) {
         globalEvent.value = OccGlobalEvent.Normal
         getOccCartUseCase.execute({ orderData: OrderData ->
             orderProduct = orderData.cart.product
             orderShop = orderData.cart.shop
             kero = orderData.cart.kero
             val preference = orderData.preference
-//            _orderPreference = if (_orderPreference == null) {
-//                OrderPreference(preference)
-//            } else {
-//                _orderPreference?.copy(preference = preference)
-//            }
-            _orderPreference = OrderPreference(preference)
+            _orderPreference = if (isFullRefresh || _orderPreference == null) {
+                OrderPreference(preference)
+            } else {
+                _orderPreference?.copy(preference = preference)
+            }
             orderPreference.value = OccState.FirstLoad(_orderPreference!!)
             if (orderProduct.productId > 0 && preference.shipment.serviceId > 0) {
                 orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.LOADING)
@@ -673,7 +672,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
                                     if (response != null && statusSuccess) {
                                         // trigger refresh
-                                        globalEvent.value = OccGlobalEvent.TriggerRefresh
+                                        globalEvent.value = OccGlobalEvent.TriggerRefresh(false)
                                     } else {
                                         //show error
                                         if (messageError.isNullOrBlank()) {
@@ -741,7 +740,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             ))
             globalEvent.value = OccGlobalEvent.Loading
             updateCartOccUseCase.execute(param, { updateCartOccGqlResponse: UpdateCartOccGqlResponse ->
-                globalEvent.value = OccGlobalEvent.TriggerRefresh
+                globalEvent.value = OccGlobalEvent.TriggerRefresh(true)
             }, { throwable: Throwable ->
                 throwable.printStackTrace()
                 if (throwable is MessageErrorException && throwable.message != null) {

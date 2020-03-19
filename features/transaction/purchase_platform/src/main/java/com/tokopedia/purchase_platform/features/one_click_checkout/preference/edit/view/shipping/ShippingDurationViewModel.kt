@@ -98,6 +98,7 @@ class ShippingDurationViewModel @Inject constructor(val useCase: GetShippingDura
             useCaseRates.execute(it)
                 .subscribe(object : Observer<ShippingRecommendationData> {
                     override fun onError(e: Throwable?) {
+                        _shippingDuration.value = OccState.Fail(false, e, "")
                     }
 
                     override fun onNext(shippingRecomendationData: ShippingRecommendationData) {

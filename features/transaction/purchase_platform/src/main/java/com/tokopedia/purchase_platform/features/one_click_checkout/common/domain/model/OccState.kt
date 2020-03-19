@@ -15,5 +15,5 @@ sealed class OccGlobalEvent {
     data class Error(val throwable: Throwable? = null, val errorMessage: String = "") : OccGlobalEvent()
     data class CheckoutError(val error: com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.Error) : OccGlobalEvent()
     data class PriceChangeError(val priceValidation: PriceValidation) : OccGlobalEvent()
-    object TriggerRefresh : OccGlobalEvent()
+    data class TriggerRefresh(val isFullRefresh: Boolean = true) : OccGlobalEvent()
 }
