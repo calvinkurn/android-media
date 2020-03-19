@@ -20,6 +20,8 @@ object GetDistrictQuery {
                 types
               }
             }
+            status
+            message_error
           }
         }
     """.trimIndent()
