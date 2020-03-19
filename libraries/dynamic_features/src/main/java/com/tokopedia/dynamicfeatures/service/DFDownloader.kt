@@ -31,7 +31,7 @@ object DFDownloader {
         if (!isImmediate && !DFRemoteConfig.getConfig(context).downloadInBackgroundAllowRetry) {
             return
         }
-        val moduleListToDownload = DFInstaller().getFilteredModuleList(context, moduleList)
+        val moduleListToDownload = DFInstaller.getFilteredModuleList(context, moduleList)
         // no changes in module list, so no need to update the queue
         if (moduleListToDownload.isNotEmpty()) {
             DFQueue.combineListAndPut(context, moduleListToDownload)
@@ -74,7 +74,7 @@ object DFDownloader {
             ?: return
         val bundle = PersistableBundle()
         val delay = if (isImmediate) {
-            TimeUnit.SECONDS.toMillis(5)
+            TimeUnit.SECONDS.toMillis(1)
         } else {
             getDefaultDelayFromConfigInMillis(context)
         }
@@ -120,7 +120,7 @@ object DFDownloader {
                     DFQueue.clear(applicationContext)
                     return@withContext true
                 }
-                val result = DFInstaller().startInstallInBackground(applicationContext, listOf(moduleToDownload), onSuccessInstall = {
+                val result = DFInstaller.startInstallInBackground(applicationContext, listOf(moduleToDownload), onSuccessInstall = {
                     DFQueue.removeModuleFromQueue(applicationContext, listOf(moduleToDownload))
                 }, onFailedInstall = {
                     // loop all combined list

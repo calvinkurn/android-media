@@ -273,7 +273,7 @@ public class MainParentActivity extends BaseActivity implements
         if (userSession.hasShop() && !DFInstaller.isInstalled(getApplication(), DFM_MERCHANT_SELLER_CUSTOMERAPP)) {
             ArrayList<String> list = new ArrayList<>();
             list.add(DFM_MERCHANT_SELLER_CUSTOMERAPP);
-            new DFInstaller().installOnBackground(this.getApplication(), list, "Home");
+            DFInstaller.installOnBackground(this.getApplication(), list, "Home");
         }
     }
 

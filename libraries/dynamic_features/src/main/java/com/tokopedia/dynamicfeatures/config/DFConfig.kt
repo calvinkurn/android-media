@@ -42,7 +42,7 @@ data class DFConfig(
         @Expose
         val maxThresholdInsufficientStorage: Long = 0,
 
-        @SerializedName("dl_use_bound_service")
+        @SerializedName("dl_singleton_service")
         @Expose
-        val useBoundService: Boolean = false
+        val useSingletonService: Boolean = false
 )
