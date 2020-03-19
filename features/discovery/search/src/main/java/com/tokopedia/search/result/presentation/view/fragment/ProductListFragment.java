@@ -37,6 +37,7 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsManager;
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
 import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
+import com.tokopedia.discovery.common.utils.URLParser;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
@@ -106,6 +107,7 @@ import javax.inject.Inject;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 
+import static com.tokopedia.discovery.common.constants.SearchApiConst.PREVIOUS_KEYWORD;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.BIG_GRID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.LIST;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.SMALL_GRID;
@@ -973,7 +975,19 @@ public class ProductListFragment
     }
 
     private void performNewProductSearch(String queryParams) {
-        redirectionListener.startActivityWithApplink(ApplinkConstInternalDiscovery.SEARCH_RESULT + "?" + queryParams);
+        String applinkToSearchResult = ApplinkConstInternalDiscovery.SEARCH_RESULT + "?" + queryParams;
+        String modifiedApplinkToSearchResult = modifyApplinkToSearchResult(applinkToSearchResult);
+
+        redirectionListener.startActivityWithApplink(modifiedApplinkToSearchResult);
+    }
+
+    private String modifyApplinkToSearchResult(String applink) {
+        URLParser urlParser = new URLParser(applink);
+
+        Map<String, String> params = urlParser.getParamKeyValueMap();
+        params.put(PREVIOUS_KEYWORD, getQueryKey());
+
+        return ApplinkConstInternalDiscovery.SEARCH_RESULT + "?" + UrlParamUtils.generateUrlParamString(params);
     }
 
     @Override
@@ -1184,6 +1198,11 @@ public class ProductListFragment
     @Override
     public String getQueryKey() {
         return searchParameter == null ? "" : searchParameter.getSearchQuery();
+    }
+
+    @Override
+    public String getPreviousKeyword() {
+        return searchParameter == null ? "" : searchParameter.get(PREVIOUS_KEYWORD);
     }
 
     @Override
