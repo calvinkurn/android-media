@@ -3,6 +3,7 @@ package com.tokopedia.shop.home.view.adapter
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.shop.R
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_TRIPLE_COLUMN
@@ -23,14 +24,14 @@ class PaddingItemDecorationShopPage(private val typeWidget: String): RecyclerVie
             DISPLAY_SINGLE_COLUMN, DISPLAY_DOUBLE_COLUMN, DISPLAY_TRIPLE_COLUMN -> {
                 if (position > 0) {
                     parent.adapter.also {
-                        outRect.left = 2.toPx()
+                        outRect.left = R.dimen.dp_2.toPx()
                     }
                 }
             }
             SLIDER_SQUARE_BANNER -> {
                 if (position > 0) {
                     parent.adapter.also {
-                        outRect.left = 8.toPx()
+                        outRect.left = R.dimen.dp_8.toPx()
                     }
                 }
             }

@@ -28,6 +28,34 @@ object ShopPageHomeMapper {
         )
     }
 
+    fun mapToHomeProductViewModelForAllProduct(
+            shopProduct: ShopProduct,
+            isMyOwnProduct: Boolean
+    ): ShopHomeProductViewModel =
+            ShopHomeProductViewModel().apply {
+                id = shopProduct.productId
+                name = shopProduct.name
+                displayedPrice = shopProduct.price.textIdr
+                originalPrice = shopProduct.campaign.originalPriceFmt
+                discountPercentage = shopProduct.campaign.discountedPercentage
+                imageUrl = shopProduct.primaryImage.original
+                imageUrl300 = shopProduct.primaryImage.resize300
+                totalReview = shopProduct.stats.reviewCount.toString()
+                rating = (shopProduct.stats.rating.toDouble() / 20).roundToInt().toDouble()
+                if (shopProduct.cashback.cashbackPercent > 0) {
+                    cashback = shopProduct.cashback.cashbackPercent.toDouble()
+                }
+                isWholesale = shopProduct.flags.isWholesale
+                isPo = shopProduct.flags.isPreorder
+                isFreeReturn = shopProduct.flags.isFreereturn
+                isWishList = shopProduct.flags.isWishlist
+                productUrl = shopProduct.productUrl
+                isSoldOut = shopProduct.flags.isSold
+                isShowWishList = !isMyOwnProduct
+                isShowFreeOngkir = shopProduct.freeOngkir.isActive
+                freeOngkirPromoIcon = shopProduct.freeOngkir.imgUrl
+            }
+
     private fun mapToListWidgetUiModel(
             shopLayoutWidgetResponse: List<ShopLayoutWidget.Widget>,
             isMyOwnProduct: Boolean
@@ -51,7 +79,7 @@ object ShopPageHomeMapper {
                 mapToDisplayWidget(widgetResponse)
             }
             PRODUCT.toLowerCase() -> {
-                mapToProductUiModel(widgetResponse, isMyOwnProduct)
+                mapToProductWidgetUiModel(widgetResponse, isMyOwnProduct)
             }
             VOUCHER.toLowerCase() -> {
                 mapToVoucherUiModel(widgetResponse)
@@ -78,12 +106,12 @@ object ShopPageHomeMapper {
     ): List<MerchantVoucherViewModel>? {
         return mutableListOf<MerchantVoucherViewModel>().apply {
             data.onEach {
-                add(mapToMerchantViewModel(it))
+                add(mapToVoucherItem(it))
             }
         }
     }
 
-    private fun mapToMerchantViewModel(data: ShopLayoutWidget.Widget.Data): MerchantVoucherViewModel {
+    private fun mapToVoucherItem(data: ShopLayoutWidget.Widget.Data): MerchantVoucherViewModel {
         return MerchantVoucherViewModel().apply {
             voucherId = data.voucherID
             voucherName = data.name
@@ -128,7 +156,7 @@ object ShopPageHomeMapper {
         )
     }
 
-    private fun mapToProductUiModel(
+    private fun mapToProductWidgetUiModel(
             widgetModel: ShopLayoutWidget.Widget,
             isMyOwnProduct: Boolean
     ): ShopHomeCarousellProductUiModel {
@@ -138,7 +166,7 @@ object ShopPageHomeMapper {
                 widgetModel.name,
                 widgetModel.type,
                 mapToHeaderModel(widgetModel.header),
-                mapToListHomeProductViewModel(widgetModel.data, isMyOwnProduct)
+                mapToWidgetProductListItemViewModel(widgetModel.data, isMyOwnProduct)
         )
     }
 
@@ -153,46 +181,18 @@ object ShopPageHomeMapper {
         )
     }
 
-    private fun mapToListHomeProductViewModel(
+    private fun mapToWidgetProductListItemViewModel(
             data: List<ShopLayoutWidget.Widget.Data>,
             isMyOwnProduct: Boolean
     ): List<ShopHomeProductViewModel> {
         return mutableListOf<ShopHomeProductViewModel>().apply {
             data.onEach {
-                add(mapToHomeProductViewModel(it, isMyOwnProduct))
+                add(mapToWidgetProductItem(it, isMyOwnProduct))
             }
         }.toList()
     }
 
-    fun mapToHomeProductViewModelForAllProduct(
-            shopProduct: ShopProduct,
-            isMyOwnProduct: Boolean
-    ): ShopHomeProductViewModel =
-            ShopHomeProductViewModel().apply {
-                id = shopProduct.productId
-                name = shopProduct.name
-                displayedPrice = shopProduct.price.textIdr
-                originalPrice = shopProduct.campaign.originalPriceFmt
-                discountPercentage = shopProduct.campaign.discountedPercentage
-                imageUrl = shopProduct.primaryImage.original
-                imageUrl300 = shopProduct.primaryImage.resize300
-                totalReview = shopProduct.stats.reviewCount.toString()
-                rating = (shopProduct.stats.rating.toDouble() / 20).roundToInt().toDouble()
-                if (shopProduct.cashback.cashbackPercent > 0) {
-                    cashback = shopProduct.cashback.cashbackPercent.toDouble()
-                }
-                isWholesale = shopProduct.flags.isWholesale
-                isPo = shopProduct.flags.isPreorder
-                isFreeReturn = shopProduct.flags.isFreereturn
-                isWishList = shopProduct.flags.isWishlist
-                productUrl = shopProduct.productUrl
-                isSoldOut = shopProduct.flags.isSold
-                isShowWishList = !isMyOwnProduct
-                isShowFreeOngkir = shopProduct.freeOngkir.isActive
-                freeOngkirPromoIcon = shopProduct.freeOngkir.imgUrl
-            }
-
-    private fun mapToHomeProductViewModel(
+    private fun mapToWidgetProductItem(
             response: ShopLayoutWidget.Widget.Data,
             isMyOwnProduct: Boolean
     ): ShopHomeProductViewModel =

@@ -270,7 +270,6 @@ class ShopPageFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let {
-            isFirstLoading = true
             remoteConfig = FirebaseRemoteConfigImpl(it)
             cartLocalCacheHandler = LocalCacheHandler(it, CART_LOCAL_CACHE_NAME)
             performanceMonitoring = PerformanceMonitoring.start(SHOP_TRACE)
@@ -318,6 +317,7 @@ class ShopPageFragment :
     }
 
     private fun getShopInfo(isRefresh: Boolean = false) {
+        isFirstLoading = true
         if (!swipeToRefresh.isRefreshing)
             setViewState(VIEW_LOADING)
         shopViewModel.getShop(shopId, shopDomain, isRefresh)
