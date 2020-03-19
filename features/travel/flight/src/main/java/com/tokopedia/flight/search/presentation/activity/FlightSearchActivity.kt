@@ -9,7 +9,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.flight.R
@@ -20,6 +19,7 @@ import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightFlowUtil
+import com.tokopedia.flight.common.view.BaseFlightActivity
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel
 import com.tokopedia.flight.search.presentation.fragment.FlightSearchFragment
 import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
@@ -32,7 +32,7 @@ import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.activity_flight_search.*
 
-open class FlightSearchActivity : BaseSimpleActivity(),
+open class FlightSearchActivity : BaseFlightActivity(),
         FlightSearchFragment.OnFlightSearchFragmentListener,
         FlightSearchUniversalBottomSheet.Listener {
 
@@ -216,6 +216,8 @@ open class FlightSearchActivity : BaseSimpleActivity(),
     open fun isReturnPage(): Boolean = false
 
     private fun showChangeSearchBottomSheet() {
+        flightAnalytics.eventChangeSearchClick()
+
         val flightChangeSearchBottomSheet = FlightSearchUniversalBottomSheet.getInstance()
         flightChangeSearchBottomSheet.listener = this
         flightChangeSearchBottomSheet.setShowListener { flightChangeSearchBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
