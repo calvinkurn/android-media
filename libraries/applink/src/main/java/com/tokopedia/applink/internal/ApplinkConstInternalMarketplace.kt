@@ -14,13 +14,7 @@ object ApplinkConstInternalMarketplace {
     val HOST_MARKETPLACE = "marketplace"
 
     @JvmField
-    val HOST_SELLERAPP = "sellerapp"
-
-    @JvmField
     val INTERNAL_MARKETPLACE = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_MARKETPLACE}"
-
-    @JvmField
-    val INTERNAL_SELLERAPP = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_SELLERAPP}"
 
     // StoreSettingActivity
     @JvmField
@@ -254,28 +248,6 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val SELLER_INFO = "$INTERNAL_MARKETPLACE/seller-info"
 
-    //SellerHomeActivity
-    @JvmField
-    val SELLER_HOME = "$INTERNAL_SELLERAPP/sellerhome"
-
-    @JvmField
-    val SELLER_HOME_PRODUCT = "$INTERNAL_SELLERAPP/sellerhome-product"
-
-    @JvmField
-    val SELLER_HOME_CHAT = "$INTERNAL_SELLERAPP/sellerhome-chat"
-
-    @JvmField
-    val SELLER_HOME_SOM_ALL = "$INTERNAL_SELLERAPP/sellerhome-som-allorder"
-
-    @JvmField
-    val SELLER_HOME_SOM_NEW_ORDER = "$INTERNAL_SELLERAPP/sellerhome-som-neworder"
-
-    @JvmField
-    val SELLER_HOME_SOM_READY_TO_SHIP = "$INTERNAL_SELLERAPP/sellerhome-som-readytoship"
-
-    //CentralizedPromoActivity
-    @JvmField
-    val CENTRALIZED_PROMO = "$INTERNAL_MARKETPLACE/centralized-promo"
     @JvmField
     val PARAM_IS_NEED_LOC = "IS_NEED_LOC"
 
