@@ -156,8 +156,8 @@ class VariantSheetView(
         }
     }
 
-    override fun onVariantGuideLineClicked(url: String) {
-        listener.onVariantGuideLinedClicked(url)
+    override fun onVariantGuideLineHide(): Boolean {
+        return true
     }
 
     override fun getStockWording(): String {
@@ -284,6 +284,5 @@ class VariantSheetView(
         fun onCloseButtonClicked(view: VariantSheetView)
         fun onAddToCartClicked(view: VariantSheetView, productModel: ProductLineUiModel)
         fun onBuyClicked(view: VariantSheetView, productModel: ProductLineUiModel)
-        fun onVariantGuideLinedClicked(url: String)
     }
 }

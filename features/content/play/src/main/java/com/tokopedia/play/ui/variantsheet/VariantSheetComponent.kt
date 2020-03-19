@@ -75,12 +75,6 @@ class VariantSheetComponent(
         }
     }
 
-    override fun onVariantGuideLinedClicked(url: String) {
-        launch {
-            bus.emit(VariantSheetInteractionEvent::class.java, VariantSheetInteractionEvent.OnClickVariantGuideline(url))
-        }
-    }
-
     private fun initView(container: ViewGroup) =
             VariantSheetView(container, this)
 

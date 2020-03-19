@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
@@ -310,9 +309,6 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
                             VariantSheetInteractionEvent.OnCloseVariantSheet -> closeVariantSheet()
                             is VariantSheetInteractionEvent.OnBuyProduct -> shouldDoActionProduct(it.product, ProductAction.Buy, BottomInsetsType.VariantSheet)
                             is VariantSheetInteractionEvent.OnAddProductToCart -> shouldDoActionProduct(it.product, ProductAction.AddToCart, BottomInsetsType.VariantSheet)
-                            is VariantSheetInteractionEvent.OnClickVariantGuideline -> {
-                                startActivity(ImagePreviewActivity.getCallingIntent(requireContext(), arrayListOf(it.url)))
-                            }
                         }
                     }
         }
