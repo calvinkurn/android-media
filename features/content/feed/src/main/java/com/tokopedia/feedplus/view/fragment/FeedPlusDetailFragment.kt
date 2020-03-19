@@ -385,10 +385,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
 
     override fun urlCreated(linkerShareData: LinkerShareResult) {
         val intent = getIntent(linkerShareData.shareContents, linkerShareData.url)
-        if (null != activity) {
-            activity!!.startActivity(Intent.createChooser(intent, TITLE_OTHER))
-            sendTracker()
-        }
+        activity?.startActivity(Intent.createChooser(intent, TITLE_OTHER))
+        sendTracker()
     }
 
     override fun onError(linkerError: LinkerError?) {}

@@ -9,7 +9,6 @@
     android:paddingTop="@dimen/dp_10"
     android:paddingEnd="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_10"
-    android:visibility="visible"
     tools:visibility="visible">
 
     <ImageView
@@ -17,7 +16,6 @@
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
         android:background="@drawable/bg_circle_gray_border"
-        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -43,7 +41,6 @@
         android:layout_height="@dimen/dp_14"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
-        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/shopName"
         app:layout_constraintStart_toEndOf="@+id/shopAvatar"
         app:layout_constraintTop_toTopOf="@+id/shopName"
@@ -64,7 +61,6 @@
         android:fontFamily="sans-serif"
         android:lines="1"
         android:textColor="@color/black_70"
-        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/shopSlogan"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -88,7 +84,6 @@
         android:fontFamily="sans-serif"
         android:maxLines="1"
         android:textColor="@color/black_38"
-        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

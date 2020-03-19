@@ -15,6 +15,7 @@ import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderModel
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailItemModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
+import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
@@ -67,15 +68,17 @@ class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: 
         }
 
         val feedList = feedQuery.feed.data
-        val feedDetail = feedList[0]
-        val headerViewModel = createFeedDetailHeaderModel(
-                feedDetail.createTime,
-                feedDetail.source.shop,
-                feedDetail.content.statusActivity,
-                feedDetail.id)
-        feedDetailLiveData.value = FeedDetailViewState.Success(headerViewModel,
-                convertToFeedDetailModel(feedDetail),
-                checkHasNextPage(feedQuery))
+        val feedDetail = feedList.firstOrNull()
+        feedDetail?.let {
+            val headerViewModel = createFeedDetailHeaderModel(
+                    it.createTime,
+                    it.source.shop,
+                    it.content.statusActivity,
+                    it.id)
+            feedDetailLiveData.value = FeedDetailViewState.Success(headerViewModel,
+                    convertToFeedDetailModel(it),
+                    checkHasNextPage(feedQuery))
+        }
     }
 
     private fun hasFeed(feedQuery: FeedQuery): Boolean {
@@ -86,7 +89,7 @@ class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: 
     private fun checkHasNextPage(feedQuery: FeedQuery): Boolean {
         return try {
             feedQuery.feed.data[0].meta.isHasNextPage
-        } catch (e: NullPointerException) {
+        } catch (e: Exception) {
             false
         }
     }
