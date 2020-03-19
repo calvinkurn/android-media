@@ -9,6 +9,7 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.recharge_credit_card.analytics.CreditCardAnalytics
 import com.tokopedia.recharge_credit_card.data.RechargeCCApi
 import com.tokopedia.recharge_credit_card.data.RechargeCCRepository
 import com.tokopedia.recharge_credit_card.data.RechargeCCRepositoryImpl
@@ -94,8 +95,14 @@ class RechargeCCModule {
         return RechargeCCRepositoryImpl(rechargeCCApi)
     }
 
+    @Provides
+    @RechargeCCScope
+    fun provideAnalytics(): CreditCardAnalytics {
+        return CreditCardAnalytics()
+    }
+
     companion object {
-        const val BASE_URL = "https://pay.tokopedia.id/"
+          const val BASE_URL = "https://pay.tokopedia.id/"
 //        const val BASE_URL = "https://pulsa-staging.tokopedia.id/"
     }
 }

@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.recharge_credit_card.viewmodel.CatalogPrefixCCViewModel
 import com.tokopedia.recharge_credit_card.viewmodel.RechargeCCViewModel
 import com.tokopedia.recharge_credit_card.viewmodel.RechargeSubmitCCViewModel
 import dagger.Binds
@@ -28,10 +27,4 @@ abstract class RechargeCCViewModelModule {
     @IntoMap
     @ViewModelKey(RechargeSubmitCCViewModel::class)
     internal abstract fun rechargeSubmitCCViewModel(customViewModel: RechargeSubmitCCViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(CatalogPrefixCCViewModel::class)
-    internal abstract fun catalogPrefixCCViewModel(customViewModel: CatalogPrefixCCViewModel): ViewModel
-
 }

@@ -23,13 +23,16 @@ import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.recharge_credit_card.analytics.CreditCardAnalytics
 import com.tokopedia.recharge_credit_card.bottomsheet.CCBankListBottomSheet
+import com.tokopedia.recharge_credit_card.datamodel.TickerCreditCard
 import com.tokopedia.recharge_credit_card.di.RechargeCCInstance
 import com.tokopedia.recharge_credit_card.util.RechargeCCUtil
-import com.tokopedia.recharge_credit_card.viewmodel.CatalogPrefixCCViewModel
 import com.tokopedia.recharge_credit_card.viewmodel.RechargeCCViewModel
 import com.tokopedia.recharge_credit_card.viewmodel.RechargeSubmitCCViewModel
 import com.tokopedia.recharge_credit_card.widget.CCClientNumberWidget
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_recharge_cc.*
 import javax.inject.Inject
@@ -38,7 +41,6 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
     private lateinit var rechargeCCViewModel: RechargeCCViewModel
     private lateinit var rechargeSubmitCCViewModel: RechargeSubmitCCViewModel
-    private lateinit var catalogPrefixCCViewModel: CatalogPrefixCCViewModel
     private lateinit var checkoutPassDataState: DigitalCheckoutPassData
     private lateinit var saveInstanceManager: SaveInstanceCacheManager
 
@@ -69,21 +71,10 @@ class RechargeCCFragment : BaseDaggerFragment() {
         activity?.let {
             saveInstanceManager = SaveInstanceCacheManager(it, savedInstanceState)
         }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
 
         if (savedInstanceState != null) {
             checkoutPassDataState = saveInstanceManager.get(EXTRA_STATE_CHECKOUT_PASS_DATA,
                     DigitalCheckoutPassData::class.java, null)!!
-        }
-
-        activity?.let {
-            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
-            rechargeCCViewModel = viewModelProvider.get(RechargeCCViewModel::class.java)
-            rechargeSubmitCCViewModel = viewModelProvider.get(RechargeSubmitCCViewModel::class.java)
-            catalogPrefixCCViewModel = viewModelProvider.get(CatalogPrefixCCViewModel::class.java)
         }
     }
 
@@ -99,6 +90,9 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        initializedViewModel()
+        getTickerData()
 
         cc_widget_client_number.setListener(object : CCClientNumberWidget.ActionListener {
             override fun onClickNextButton(clientNumber: String) {
@@ -118,26 +112,62 @@ class RechargeCCFragment : BaseDaggerFragment() {
                 bottomSheetBankList.show(it.supportFragmentManager, "Bank list")
             }
         }
+    }
 
-        creditCardAnalytics.impressionInitialPage("","")
+    private fun initializedViewModel() {
+        activity?.let {
+            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+            rechargeCCViewModel = viewModelProvider.get(RechargeCCViewModel::class.java)
+            rechargeSubmitCCViewModel = viewModelProvider.get(RechargeSubmitCCViewModel::class.java)
+        }
+    }
+
+    private fun getTickerData() {
+        rechargeCCViewModel.getMenuDetail(GraphqlHelper.loadRawString(resources, R.raw.query_cc_menu_detail))
+        rechargeCCViewModel.tickers.observe(this, Observer {
+            renderTicker(it)
+            creditCardAnalytics.impressionInitialPage("", "")
+        })
+    }
+
+    private fun renderTicker(tickers: List<TickerCreditCard>) {
+        if (tickers.isNotEmpty()) {
+            val messages = ArrayList<TickerData>()
+            for (item in tickers) {
+                messages.add(TickerData(item.name, item.content,
+                        when (item.type) {
+                            "warning" -> Ticker.TYPE_WARNING
+                            "info" -> Ticker.TYPE_INFORMATION
+                            "success" -> Ticker.TYPE_ANNOUNCEMENT
+                            "error" -> Ticker.TYPE_ERROR
+                            else -> Ticker.TYPE_INFORMATION
+                        }))
+            }
+            context?.run {
+                cc_ticker_view.addPagerView(TickerPagerAdapter(this, messages), messages)
+            }
+            cc_ticker_view.visibility = View.VISIBLE
+        } else {
+            cc_ticker_view.visibility = View.GONE
+        }
     }
 
     private fun checkPrefixCreditCardNumber(clientNumber: String) {
-        catalogPrefixCCViewModel.getPrefixes(
+        rechargeCCViewModel.getPrefixes(
                 GraphqlHelper.loadRawString(resources, R.raw.query_cc_prefix_operator),
                 clientNumber)
 
-        catalogPrefixCCViewModel.creditCardSelected.observe(viewLifecycleOwner, Observer {
+        rechargeCCViewModel.creditCardSelected.observe(viewLifecycleOwner, Observer {
             operatorIdSelected = it.operatorId.toString()
             productIdSelected = it.defaultProductId.toString()
             cc_widget_client_number.setImageIcon(it.imageUrl)
         })
 
-        catalogPrefixCCViewModel.errorPrefix.observe(viewLifecycleOwner, Observer {
+        rechargeCCViewModel.errorPrefix.observe(viewLifecycleOwner, Observer {
             showErrorToaster(it)
         })
 
-        catalogPrefixCCViewModel.bankNotSupported.observe(viewLifecycleOwner, Observer {
+        rechargeCCViewModel.bankNotSupported.observe(viewLifecycleOwner, Observer {
             cc_widget_client_number.setErrorTextField(getString(R.string.cc_bank_is_not_supported))
         })
     }
