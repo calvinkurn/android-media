@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.R
+import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
 
 /**
  * Created by jegul on 03/03/20
@@ -34,10 +35,21 @@ class ProductLineItemDecoration(context: Context) : RecyclerView.ItemDecoration(
             val child = parent.getChildAt(index)
 
             if (index != parent.childCount - 1) {
-                c.drawRect(
-                        Rect(startOffset, child.bottom, parent.width, child.bottom + dividerHeight),
-                        mPaint
-                )
+                val viewHolder = parent.getChildViewHolder(child)
+
+                if (viewHolder is ProductLineViewHolder) {
+                    val start = if (viewHolder.tvProductTitle.left <= 0) startOffset else viewHolder.tvProductTitle.left
+
+                    c.drawRect(
+                            Rect(start, child.bottom, parent.width, child.bottom + dividerHeight),
+                            mPaint
+                    )
+                } else {
+                    c.drawRect(
+                            Rect(startOffset, child.bottom, parent.width, child.bottom + dividerHeight),
+                            mPaint
+                    )
+                }
             }
         }
     }

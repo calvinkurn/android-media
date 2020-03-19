@@ -117,6 +117,11 @@ object PlayUiMapper {
                     title = it.title,
                     description = it.subtitle,
                     type = when(it.voucherType) {
+                        /**
+                         * 1 -> Free Ongkir
+                         * 2 -> **Not Used**
+                         * 3 -> Cashback
+                         */
                         1 -> MerchantVoucherType.Shipping
                         2,3 -> MerchantVoucherType.Discount
                         else -> MerchantVoucherType.Unknown
