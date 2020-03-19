@@ -238,5 +238,6 @@
     <string name="product_label_wholesale">Harga Grosir</string>
     <string name="product_label_po">PO</string>
     <string name="product_manage_label_supervision">Pengawasan</string>
-    <string name="product_manage_list_empty_state_description">Oops, produk yang kamu cari tidak ditemukan.</string>
+    <string name="product_manage_list_empty_search">Oops, produk yang kamu cari tidak ditemukan.</string>
+    <string name="product_manage_list_empty_product">Kata orang, jutaan mimpi berawal dari satu langkah kecil. Tambah produk pertamamu.</string>
 </resources>
