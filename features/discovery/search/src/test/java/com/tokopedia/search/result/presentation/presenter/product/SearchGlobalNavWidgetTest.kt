@@ -24,6 +24,8 @@ import rx.Subscriber
 internal class SearchGlobalNavWidgetTest: Spek({
 
     Feature("Search Product Success with Global Nav Widget and CPM") {
+        defaultTimeout = 9999999
+        
         createTestInstance()
 
         Scenario("Showing both Global Nav Widget and CPM") {
