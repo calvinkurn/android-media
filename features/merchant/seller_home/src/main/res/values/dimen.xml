@@ -71,8 +71,8 @@
     <dimen name="centralized_promo_dimen_minus_4dp">-4dp</dimen>
     <dimen name="centralized_promo_on_going_divider_height">1dp</dimen>
     <dimen name="centralized_promo_post_desc_top_margin">3dp</dimen>
-    <dimen name="centralized_promo_on_going_item_margin">4dp</dimen>
-    <dimen name="centralized_promo_promo_creation_card_horizontal_margin">4dp</dimen>
+    <dimen name="centralized_promo_on_going_item_margin">6dp</dimen>
+    <dimen name="centralized_promo_promo_creation_card_horizontal_margin">6dp</dimen>
     <dimen name="centralized_promo_dimen_4dp">4dp</dimen>
     <dimen name="centralized_promo_promo_creation_extra_icon_size">4dp</dimen>
     <dimen name="centralized_promo_promo_creation_icon_card_elevation">6dp</dimen>
@@ -84,6 +84,7 @@
     <dimen name="centralized_promo_post_widget_horizontal_margin">14dp</dimen>
     <dimen name="centralized_promo_on_going_caret_icon_size">18dp</dimen>
     <dimen name="centralized_promo_text_shimmer_height_18dp">18dp</dimen>
+    <dimen name="centralized_promo_promo_creation_icon_size">28dp</dimen>
     <dimen name="centralized_promo_promo_creation_card_top_margin">36dp</dimen>
     <dimen name="centralized_promo_post_item_image_size">50dp</dimen>
     <dimen name="centralized_promo_promo_creation_card_icon_size">56dp</dimen>
