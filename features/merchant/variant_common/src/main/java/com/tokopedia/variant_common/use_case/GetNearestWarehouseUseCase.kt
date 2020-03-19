@@ -6,7 +6,8 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.variant_common.constant.VariantConstant
-import com.tokopedia.variant_common.model.VariantMultiOriginWarehouse
+import com.tokopedia.variant_common.model.MultiOriginData
+import com.tokopedia.variant_common.model.VariantMultiOriginResponse
 import com.tokopedia.variant_common.util.VariantUtil
 import javax.inject.Inject
 
@@ -14,7 +15,7 @@ import javax.inject.Inject
  * Created by Yehezkiel on 08/03/20
  */
 class GetNearestWarehouseUseCase @Inject constructor(private val rawQueries: Map<String, String>,
-                                                     private val graphqlRepository: GraphqlRepository) : UseCase<VariantMultiOriginWarehouse.Data>() {
+                                                     private val graphqlRepository: GraphqlRepository) : UseCase<MultiOriginData>() {
 
     companion object {
         fun createParams(listOfProductId: List<String>,
@@ -29,13 +30,13 @@ class GetNearestWarehouseUseCase @Inject constructor(private val rawQueries: Map
     var requestParams: RequestParams = RequestParams.EMPTY
     var forceRefresh: Boolean = false
 
-    override suspend fun executeOnBackground(): VariantMultiOriginWarehouse.Data {
+    override suspend fun executeOnBackground(): MultiOriginData {
         val warehouseRequest = GraphqlRequest(rawQueries[VariantConstant.QUERY_MULTI_ORIGIN],
-                VariantMultiOriginWarehouse.Response::class.java, requestParams.parameters)
+                VariantMultiOriginResponse::class.java, requestParams.parameters)
 
         val gqlResponse = graphqlRepository.getReseponse(listOf(warehouseRequest), VariantUtil.getCacheStrategy(forceRefresh))
-        val data = gqlResponse.getData<VariantMultiOriginWarehouse.Response>(VariantMultiOriginWarehouse.Response::class.java)
-        val error = gqlResponse.getError(VariantMultiOriginWarehouse.Response::class.java) ?: listOf()
+        val data = gqlResponse.getData<VariantMultiOriginResponse>(VariantMultiOriginResponse::class.java)
+        val error = gqlResponse.getError(VariantMultiOriginResponse::class.java) ?: listOf()
 
         if (error.isNotEmpty() && error.firstOrNull()?.message?.isNotEmpty() == true) {
             throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
