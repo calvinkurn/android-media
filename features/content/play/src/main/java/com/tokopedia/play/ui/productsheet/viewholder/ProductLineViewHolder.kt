@@ -21,8 +21,8 @@ import com.tokopedia.unifycomponents.UnifyButton
  */
 class ProductLineViewHolder(itemView: View, private val listener: Listener) : BaseViewHolder(itemView) {
 
+    val tvProductTitle: TextView = itemView.findViewById(R.id.tv_product_title)
     private val ivProductImage: ImageView = itemView.findViewById(R.id.iv_product_image)
-    private val tvProductTitle: TextView = itemView.findViewById(R.id.tv_product_title)
     private val llProductDiscount: LinearLayout = itemView.findViewById(R.id.ll_product_discount)
     private val tvProductDiscount: TextView = itemView.findViewById(R.id.tv_product_discount)
     private val tvOriginalPrice: TextView = itemView.findViewById(R.id.tv_original_price)

@@ -1,10 +1,11 @@
 package com.tokopedia.play.data.mapper
 
 import com.google.gson.Gson
-import com.tokopedia.kotlin.extensions.view.toAmountString
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.play.data.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.websocket.WebSocketResponse
+import java.lang.reflect.Type
 
 /**
  * Created by mzennis on 2019-12-10.
@@ -13,6 +14,10 @@ import com.tokopedia.websocket.WebSocketResponse
 class PlaySocketMapper(
         private val webSocketResponse: WebSocketResponse
 ) {
+
+    private companion object {
+        val voucherListType: Type = object: TypeToken<List<Voucher>>(){}.type
+    }
 
     private val gson = Gson()
 
@@ -43,7 +48,7 @@ class PlaySocketMapper(
                 return mapToProductTag()
             }
             PlaySocketType.MerchantVoucher.value -> {
-                return mapToMerchantVoucher()
+                return MerchantVoucher(mapToMerchantVoucher())
             }
         }
         return null
@@ -81,7 +86,7 @@ class PlaySocketMapper(
         return gson.fromJson(webSocketResponse.jsonObject, ProductTag::class.java)
     }
 
-    private fun mapToMerchantVoucher(): MerchantVoucher {
-        return gson.fromJson(webSocketResponse.jsonObject, MerchantVoucher::class.java)
+    private fun mapToMerchantVoucher(): List<Voucher> {
+        return gson.fromJson(webSocketResponse.jsonArray, voucherListType)
     }
 }
