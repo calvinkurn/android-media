@@ -13,7 +13,7 @@ object VariantCommonMapper {
 
     fun mapVariantIdentifierToHashMap(variantData: ProductVariantCommon?): MutableMap<String, Int> {
         return variantData?.variant?.associateBy({
-            it.identifier ?: ""
+            it.pv.toString()
         }, {
             0
         })?.toMutableMap() ?: mutableMapOf()
@@ -152,7 +152,8 @@ object VariantCommonMapper {
                     stock = stock,
                     hasCustomImages = hasCustomImage,
                     level = level,
-                    variantOptionIdentifier = variant.identifier.orEmpty()
+                    variantOptionIdentifier = variant.identifier.orEmpty(),
+                    variantCategoryKey = variant.pv.toString()
             )
         }
 
