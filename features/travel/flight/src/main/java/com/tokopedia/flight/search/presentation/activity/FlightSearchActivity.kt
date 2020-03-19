@@ -1,7 +1,6 @@
 package com.tokopedia.flight.search.presentation.activity
 
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -249,14 +248,14 @@ open class FlightSearchActivity : BaseFlightActivity(),
                     coachMark.dismiss()
                 }
             }, DELAY_THREE_SECONDS)
-            coachMark.onDismiss(object : DialogInterface {
+/*            coachMark.onDismiss(object : DialogInterface {
                 override fun dismiss() {
                     coachMarkCache.setSearchCoachMarkIsShowed()
                 }
 
                 override fun cancel() {}
 
-            })
+            })*/
         }
     }
 
