@@ -199,20 +199,6 @@ class MerchantVoucherListWidget : FrameLayout, MerchantVoucherView.OnMerchantVou
         }
     }
 
-    fun setVoucherHeaderPadding(
-            leftPadding: Int,
-            topPadding: Int,
-            rightPadding: Int,
-            bottomPadding: Int
-    ){
-        voucherHeaderContainer?.setPadding(
-                leftPadding,
-                topPadding,
-                rightPadding,
-                bottomPadding
-        )
-    }
-
     fun getVoucherHeaderContainer(): ViewGroup?{
         return voucherHeaderContainer
     }

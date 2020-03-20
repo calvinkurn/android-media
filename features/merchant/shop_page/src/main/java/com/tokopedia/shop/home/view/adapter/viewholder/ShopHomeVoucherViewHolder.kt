@@ -67,7 +67,7 @@ class ShopHomeVoucherViewHolder(
                 val topPadding = it.paddingTop
                 val rightPadding = it.paddingRight
                 val bottomPadding = 0
-                setVoucherHeaderPadding(
+                it.setPadding(
                         leftPadding,
                         topPadding,
                         rightPadding,

@@ -34,7 +34,7 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
-import com.tokopedia.shop.common.util.Util
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
@@ -94,7 +94,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     lateinit var shopPageHomeTracking: ShopPageHomeTracking
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var viewModel: ShopHomeViewModel
+    private var viewModel: ShopHomeViewModel? = null
     private var shopId: String = ""
     private var isOfficialStore: Boolean = false
     private var isGoldMerchant: Boolean = false
@@ -103,11 +103,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private var shopRef: String = ""
 
     val isLogin: Boolean
-        get() = viewModel.isLogin
+        get() = viewModel?.isLogin ?: false
     val isOwner: Boolean
-        get() = Util.isMyShop(shopId, viewModel.userSessionShopId)
+        get() = ShopUtil.isMyShop(shopId, viewModel?.userSessionShopId ?: "")
     private val shopPageHomeLayoutUiModel: ShopPageHomeLayoutUiModel?
-        get() = (viewModel.shopHomeLayoutData.value as? Success)?.data
+        get() = (viewModel?.shopHomeLayoutData?.value as? Success)?.data
     private val customDimensionShopPage: CustomDimensionShopPage by lazy {
         CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
     }
@@ -151,10 +151,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onDestroy() {
-        viewModel.productListData.removeObservers(this)
-        viewModel.shopHomeLayoutData.removeObservers(this)
-        viewModel.checkWishlistData.removeObservers(this)
-        viewModel.flush()
+        viewModel?.productListData?.removeObservers(this)
+        viewModel?.shopHomeLayoutData?.removeObservers(this)
+        viewModel?.checkWishlistData?.removeObservers(this)
+        viewModel?.flush()
         super.onDestroy()
     }
 
@@ -165,7 +165,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         globalError_shopPage.hide()
         showLoading()
         shopHomeAdapter.isOwner = isOwner
-        viewModel.getShopPageHomeData(shopId)
+        viewModel?.getShopPageHomeData(shopId)
     }
 
     private fun getIntentData() {
@@ -180,7 +180,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun observeLiveData() {
-        viewModel.shopHomeLayoutData.observe(this, Observer {
+        viewModel?.shopHomeLayoutData?.observe(this, Observer {
             hideLoading()
             when (it) {
                 is Success -> {
@@ -192,7 +192,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             }
         })
 
-        viewModel.productListData.observe(this, Observer {
+        viewModel?.productListData?.observe(this, Observer {
             hideLoading()
             when (it) {
                 is Success -> {
@@ -201,7 +201,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             }
         })
 
-        viewModel.checkWishlistData.observe(this, Observer {
+        viewModel?.checkWishlistData?.observe(this, Observer {
             when (it) {
                 is Success -> {
                     onSuccessCheckWishlist(it.data)
@@ -289,7 +289,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun onSuccessGetShopHomeLayoutData(data: ShopPageHomeLayoutUiModel) {
         shopHomeAdapter.hideLoading()
         val listProductWidget = data.listWidget.filterIsInstance<ShopHomeCarousellProductUiModel>()
-        viewModel.getWishlistStatus(listProductWidget)
+        viewModel?.getWishlistStatus(listProductWidget)
         shopHomeAdapter.setHomeLayoutData(data.listWidget)
     }
 
@@ -334,7 +334,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     fun loadNextData(page: Int) {
         if (shopId.isNotEmpty()) {
-            viewModel.getNextProductList(shopId, page)
+            viewModel?.getNextProductList(shopId, page)
         }
     }
 
@@ -495,15 +495,15 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun onAllProductItemWishlist(itemPosition: Int, shopHomeProductViewModel: ShopHomeProductViewModel) {
         if (isLogin) {
-            viewModel.clearGetShopProductUseCase()
+            viewModel?.clearGetShopProductUseCase()
             if (shopHomeProductViewModel.isWishList) {
-                viewModel.removeWishList(
+                viewModel?.removeWishList(
                         shopHomeProductViewModel.id ?: "",
                         { onSuccessRemoveWishList(null, shopHomeProductViewModel) },
                         ::onErrorRemoveWishList
                 )
             } else {
-                viewModel.addWishList(
+                viewModel?.addWishList(
                         shopHomeProductViewModel.id ?: "",
                         { onSuccessAddWishlist(null, shopHomeProductViewModel) },
                         ::onErrorAddWishlist)
@@ -564,15 +564,15 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopHomeProductViewModel: ShopHomeProductViewModel?
     ) {
         if (isLogin) {
-            viewModel.clearGetShopProductUseCase()
+            viewModel?.clearGetShopProductUseCase()
             if (shopHomeProductViewModel?.isWishList == true) {
-                viewModel.removeWishList(
+                viewModel?.removeWishList(
                         shopHomeProductViewModel.id ?: "",
                         { onSuccessRemoveWishList(shopHomeCarousellProductUiModel, shopHomeProductViewModel) },
                         ::onErrorRemoveWishList
                 )
             } else {
-                viewModel.addWishList(
+                viewModel?.addWishList(
                         shopHomeProductViewModel?.id ?: "",
                         { onSuccessAddWishlist(shopHomeCarousellProductUiModel, shopHomeProductViewModel) },
                         ::onErrorAddWishlist
@@ -661,7 +661,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopHomeProductViewModel: ShopHomeProductViewModel?
     ) {
         if (isLogin) {
-            viewModel.addProductToCart(
+            viewModel?.addProductToCart(
                     shopHomeProductViewModel?.id ?: "",
                     shopId,
                     {
@@ -694,6 +694,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     fun clearCache() {
-        viewModel.clearCache()
+        viewModel?.clearCache()
     }
 }
