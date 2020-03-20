@@ -7,6 +7,7 @@
     <string name="cc_cta_btn_secondary">Kembali</string>
     <string name="cc_label_input_number">Masukkan Nomor Kartu Kredit</string>
     <string name="cc_error_invalid_number">Mohon Periksa kembali nomer CC Anda</string>
+    <string name="cc_error_default_message">Terjadi kesalahan, silakan ulangi beberapa saat lagi.</string>
     <string name="cc_placeholder_input_number">0123 4567 8901 2345</string>
     <string name="cc_label_list_bank">Lihat Daftar Bank</string>
     <string name="cc_bank_is_not_supported">Bank belum didukung</string>

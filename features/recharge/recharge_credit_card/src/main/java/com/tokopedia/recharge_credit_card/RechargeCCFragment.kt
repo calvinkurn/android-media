@@ -81,7 +81,9 @@ class RechargeCCFragment : BaseDaggerFragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        saveInstanceManager.put(EXTRA_STATE_CHECKOUT_PASS_DATA, checkoutPassDataState)
+        checkoutPassDataState?.let {
+            saveInstanceManager.put(EXTRA_STATE_CHECKOUT_PASS_DATA, checkoutPassDataState)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -201,7 +203,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
                 dialog.show()
             }
         } else {
-            showErrorToaster(getString(R.string.cc_error_invalid_number))
+            showErrorToaster(getString(R.string.cc_error_default_message))
         }
     }
 
