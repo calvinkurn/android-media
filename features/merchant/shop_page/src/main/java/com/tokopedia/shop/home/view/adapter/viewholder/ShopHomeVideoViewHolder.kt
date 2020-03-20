@@ -77,7 +77,7 @@ class ShopHomeVideoViewHolder(
                         model,
                         it,
                         adapterPosition,
-                        1
+                        0
                 )
             }
         }
