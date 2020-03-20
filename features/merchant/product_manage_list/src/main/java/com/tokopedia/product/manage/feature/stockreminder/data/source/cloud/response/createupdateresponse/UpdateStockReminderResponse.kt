@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 data class UpdateStockReminderResponse(
         @SerializedName("IMSUpdateStockAlertThreshold")
-        var createStockAlertThreshold: DataWrapper
+        var createStockAlertThreshold: CreateUpdateDataWrapper
 )

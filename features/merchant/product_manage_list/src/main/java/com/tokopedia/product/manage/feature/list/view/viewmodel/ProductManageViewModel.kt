@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
+import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToViewModels
 import com.tokopedia.product.manage.feature.list.view.model.GetPopUpResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult
@@ -29,7 +30,6 @@ import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPrice
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
 import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseCase
-import com.tokopedia.product.manage.oldlist.domain.EditFeaturedProductUseCase
 import com.tokopedia.product.manage.oldlist.domain.PopupManagerAddProductUseCase
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
@@ -57,7 +57,7 @@ class ProductManageViewModel @Inject constructor(
     private val topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase,
     private val popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
     private val getProductListUseCase: GQLGetProductListUseCase,
-    private val editFeaturedProductUseCase: EditFeaturedProductUseCase,
+    private val setFeaturedProductUseCase: SetFeaturedProductUseCase,
     private val editStockUseCase: EditStockUseCase,
     private val deleteProductUseCase: DeleteProductUseCase,
     private val multiEditProductUseCase: MultiEditProductUseCase,
@@ -309,23 +309,13 @@ class ProductManageViewModel @Inject constructor(
     }
 
     fun setFeaturedProduct(productId: String, status: Int) {
-        val requestParams = EditFeaturedProductUseCase.createRequestParams(productId.toInt(), status)
-
-        editFeaturedProductUseCase.execute(requestParams,
-            object : Subscriber<Unit>() {
-                override fun onNext(unit: Unit) {
-                    _setFeaturedProductResult.value = Success(SetFeaturedProductResult(productId, status))
-                }
-
-                override fun onCompleted() {
-                    //No OP
-                }
-
-                override fun onError(throwable: Throwable) {
-                    _setFeaturedProductResult.value = Fail(throwable)
-                }
-            })
-
+        launchCatchError( block = {
+            setFeaturedProductUseCase.params = SetFeaturedProductUseCase.createRequestParams(productId.toInt(), status)
+            setFeaturedProductUseCase.executeOnBackground()
+            _setFeaturedProductResult.value = Success(SetFeaturedProductResult(productId, status))
+        }, onError = { throwable ->
+            _setFeaturedProductResult.value = Fail(throwable)
+        })
     }
 
     fun setSelectedFilterAndSort(selectedFilter: FilterOptionWrapper) {
@@ -342,7 +332,7 @@ class ProductManageViewModel @Inject constructor(
         topAdsGetShopDepositGraphQLUseCase.unsubscribe()
         popupManagerAddProductUseCase.unsubscribe()
         getProductListUseCase.cancelJobs()
-        editFeaturedProductUseCase.unsubscribe()
+        setFeaturedProductUseCase.cancelJobs()
     }
 
     private fun showProductList(products: List<Product>?) {

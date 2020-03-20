@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 data class GetStockReminderResponse(
         @SerializedName("IMSGetByProductIDs")
-        var getByProductIds: DataWrapper
+        var getByProductIds: GetDataWrapper
 )
