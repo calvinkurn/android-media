@@ -8,6 +8,7 @@ import dagger.Component
 @SuggestionScope
 @Component(modules = [
     SuggestionUseCaseModule::class,
+    SuggestionTrackerUseCaseModule::class,
     SuggestionRepositoryModule::class,
     SuggestionMapperModule::class,
     SuggestionNetModule::class,

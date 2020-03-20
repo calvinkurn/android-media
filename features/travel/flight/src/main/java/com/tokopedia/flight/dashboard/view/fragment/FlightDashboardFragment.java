@@ -693,10 +693,12 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
             TravelCollectiveBannerModel.Banner banner = getBannerData(position);
             if (getContext() != null) {
                 presenter.onBannerItemClick(position, banner);
-                if (RouteManager.isSupportApplink(getContext(), banner.getAttribute().getAppUrl())) RouteManager.route(getContext(), banner.getAttribute().getAppUrl());
+                if (RouteManager.isSupportApplink(getContext(), banner.getAttribute().getAppUrl()))
+                    RouteManager.route(getContext(), banner.getAttribute().getAppUrl());
                 else if (!DeeplinkMapper.getRegisteredNavigation(getContext(), banner.getAttribute().getAppUrl()).isEmpty())
                     RouteManager.route(getContext(), DeeplinkMapper.getRegisteredNavigation(getContext(), banner.getAttribute().getAppUrl()));
-                else if (!banner.getAttribute().getWebUrl().isEmpty()) RouteManager.route(getContext(), banner.getAttribute().getWebUrl());
+                else if (!banner.getAttribute().getWebUrl().isEmpty())
+                    RouteManager.route(getContext(), banner.getAttribute().getWebUrl());
             }
         }
     }
@@ -709,5 +711,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     public void onResume() {
         super.onResume();
         KeyboardHandler.hideSoftKeyboard(getActivity());
+        presenter.initializeOnResume();
     }
 }

@@ -15,5 +15,6 @@ open class BaseSuggestionViewModel(
         var label: String = "",
         var labelType: String = "",
         var searchTerm: String = "",
-        var position: Int = -1
+        var position: Int = -1,
+        var urlTracker: String = ""
 )
