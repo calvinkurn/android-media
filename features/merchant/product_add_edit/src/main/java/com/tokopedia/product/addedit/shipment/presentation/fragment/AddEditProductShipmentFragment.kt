@@ -1,10 +1,12 @@
 package com.tokopedia.product.addedit.shipment.presentation.fragment
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -19,7 +21,10 @@ import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProdu
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.UNIT_KILOGRAM
 import com.tokopedia.product.addedit.shipment.presentation.viewmodel.AddEditProductShipmentViewModel
 import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class AddEditProductShipmentFragment : BaseDaggerFragment() {
@@ -52,7 +57,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
+        observeProductUpdateLiveData()
         return inflater.inflate(R.layout.fragment_add_edit_product_shipment, container, false)
     }
 
@@ -73,7 +78,6 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             validateInputWeight(it)
         }
         btnEnd?.setOnClickListener {
-            activity?.finish()
             shipmentViewModel.editPrice()
         }
     }
@@ -83,6 +87,32 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             shipmentViewModel = ViewModelProviders.of(this, viewModelFactory)
                     .get(AddEditProductShipmentViewModel::class.java)
         }
+    }
+
+    // TODO faisalramd redesign toast
+    private fun observeProductUpdateLiveData() {
+        shipmentViewModel._productUpdateResult.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Success -> {
+                    val isSuccess = result.data.productAddEditV3Data.isSuccess
+                    var toasterType = Toaster.TYPE_NORMAL
+                    var toasterMessage = "Success"
+
+                    if (isSuccess) {
+                        toasterMessage = result.data.productAddEditV3Data.header.reason
+                        toasterType = Toaster.TYPE_ERROR
+                    }
+
+                    Toaster.make(view!!, toasterMessage, Toaster.LENGTH_LONG, toasterType)
+                }
+                is Fail -> {
+                    result.throwable.printStackTrace()
+                }
+            }
+            Handler().postDelayed({
+                activity?.finish()
+            }, 2000)
+        })
     }
 
     private fun showUnitWeightOption() {

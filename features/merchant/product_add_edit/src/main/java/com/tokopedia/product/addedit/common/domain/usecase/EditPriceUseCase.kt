@@ -11,6 +11,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
+// TODO faisalramd remove testing usecase
 class EditPriceUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository) :
         UseCase<ProductAddEditV3Response>() {
 

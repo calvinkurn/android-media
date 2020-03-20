@@ -40,6 +40,7 @@ class ProductAddUseCase @Inject constructor(private val graphqlRepository: Graph
             return requestParams
         }
 
+        // TODO change to constant
         fun getQuery() = """
                     mutation ProductAddV3(${'$'}input: ProductInputV3!) {
                       ProductAddV3(input: ${'$'}input) {

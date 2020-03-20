@@ -31,7 +31,7 @@ class AddEditProductShipmentViewModel @Inject constructor(
         private val productAddUseCase: ProductAddUseCase
 ) : BaseViewModel(coroutineDispatcher) {
 
-    private val _productUpdateResult = MutableLiveData<Result<ProductAddEditV3Response>>()
+    val _productUpdateResult = MutableLiveData<Result<ProductAddEditV3Response>>()
 
     private fun getWeight(weight: String) = weight.replace(".", "").toIntOrZero()
 
@@ -46,6 +46,7 @@ class AddEditProductShipmentViewModel @Inject constructor(
     }
 
     fun editPrice() {
+        // TODO faisalramd make mapper
         val param = ProductAddParam(
                 "Baju polos yang terbaik di tookpedo",
                 20000,
@@ -90,7 +91,7 @@ class AddEditProductShipmentViewModel @Inject constructor(
 
     fun uploadImage() {
         val filePath = File("/sdcard/Download/test.jpg")
-        val sourceId = "VqbcmM"
+        val sourceId = "VqbcmM" // TODO faisalramd move to constant
         val params = uploaderUseCase.createParams(
                 sourceId = sourceId,
                 filePath = filePath

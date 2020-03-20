@@ -16,6 +16,7 @@ class ProductAddUseCaseModule {
     @Provides
     fun provideGraphqlRepository(): GraphqlRepository = Interactor.getInstance().graphqlRepository
 
+    // TODO faisalramd remove testing usecase
     @Provides
     @AddProductQualifier
     fun provideEditPriceUseCase(
