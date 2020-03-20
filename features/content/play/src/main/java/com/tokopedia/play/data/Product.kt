@@ -7,12 +7,12 @@ import com.google.gson.annotations.SerializedName
  */
 data class Product(
         @SerializedName("id")
-        val id: Int = 0,
+        val id: Long = 0,
         @SerializedName("name")
         val name: String = "",
         @SerializedName("image_url")
         val image: String = "",
-        @SerializedName("shopID")
+        @SerializedName("shop_id")
         val shopId: String = "",
         @SerializedName("original_price")
         val originalPrice: Long = 0,
@@ -34,7 +34,7 @@ data class Product(
         val quantity: Int = 0,
         @SerializedName("min_quantity")
         val minimumQuantity: Int = 0,
-        @SerializedName("applink")
+        @SerializedName("app_link")
         val appLink: String = "",
         @SerializedName("web_link")
         val webLink: String = ""
