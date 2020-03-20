@@ -8,8 +8,9 @@ import com.tokopedia.variant_common.model.VariantOptionWithAttribute
  */
 interface ProductVariantListener {
     fun onVariantClicked(variantOptions: VariantOptionWithAttribute)
-    fun onVariantGuideLineClicked(url: String)
     fun getStockWording(): String
 
+    fun onVariantGuideLineClicked(url: String) {}
     fun onSelectionChanged(view: View, position: Int) {}
+    fun onVariantGuideLineHide(): Boolean = false
 }
