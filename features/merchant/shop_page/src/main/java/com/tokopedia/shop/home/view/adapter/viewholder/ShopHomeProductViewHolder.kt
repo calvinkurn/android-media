@@ -79,29 +79,25 @@ open class ShopHomeProductViewHolder(
     private fun getProductModel(
             shopHomeProductViewModel: ShopHomeProductViewModel
     ): ProductCardModel {
-        val totalReview = try {
-            NumberFormat.getInstance().parse(shopHomeProductViewModel.totalReview).toInt()
-        } catch (ignored: ParseException) {
-            0
-        }
+        val totalReview = shopHomeProductViewModel.totalReview.toIntOrZero()
         val discountWithoutPercentageString = shopHomeProductViewModel.discountPercentage?.replace("%","") ?: ""
         val discountPercentage = if (discountWithoutPercentageString == "0") {
             ""
         } else {
             "$discountWithoutPercentageString%"
         }
-        val freeOngkirObject = ProductCardModel.FreeOngkir(shopHomeProductViewModel.isShowFreeOngkir, shopHomeProductViewModel.freeOngkirPromoIcon!!)
+        val freeOngkirObject = ProductCardModel.FreeOngkir(shopHomeProductViewModel.isShowFreeOngkir, shopHomeProductViewModel.freeOngkirPromoIcon  ?: "")
         return ProductCardModel(
-                shopHomeProductViewModel.imageUrl!!,
+                shopHomeProductViewModel.imageUrl ?: "",
                 shopHomeProductViewModel.isWishList,
                 shopHomeProductViewModel.isShowWishList,
                 ProductCardModel.Label(),
                 "",
                 "",
-                shopHomeProductViewModel.name!!,
+                shopHomeProductViewModel.name ?: "",
                 discountPercentage,
-                shopHomeProductViewModel.originalPrice!!,
-                shopHomeProductViewModel.displayedPrice!!,
+                shopHomeProductViewModel.originalPrice ?: "",
+                shopHomeProductViewModel.displayedPrice ?: "",
                 ArrayList(),
                 "",
                 shopHomeProductViewModel.rating.toInt(),

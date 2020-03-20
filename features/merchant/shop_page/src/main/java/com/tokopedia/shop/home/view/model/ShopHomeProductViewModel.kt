@@ -68,14 +68,7 @@ class ShopHomeProductViewModel : Visitable<BaseAdapterTypeFactory>, ImpressHolde
         isPo = TextApiUtils.isValueTrue(shopProduct.productPreorder)
         totalReview = shopProduct.productReviewCount
         isWholesale = TextApiUtils.isValueTrue(shopProduct.productWholesale)
-        if (shopProduct.badges != null && shopProduct.badges.size > 0) {
-            for (badge in shopProduct.badges) {
-                if (BADGE_FREE_RETURN.equals(badge.title, ignoreCase = true)) {
-                    isFreeReturn = true
-                    break
-                }
-            }
-        }
+        isFreeReturn = ((shopProduct.badges?.filter { BADGE_FREE_RETURN.equals(it.title, ignoreCase = true) }?.size ?: 0)  > 0)
         val shopProductLabelList = shopProduct.labels
         if (shopProductLabelList != null) {
             for (shopProductLabel in shopProductLabelList) {

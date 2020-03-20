@@ -12,13 +12,10 @@ import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.listener.ShopPageHomeProductClickListener
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel.Companion.IS_ATC
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 import java.text.NumberFormat
 import java.text.ParseException
-
-/**
- * @author by alvarisi on 12/12/17.
- */
 
 class ShopHomeProductItemCarouselViewHolder(
         itemView: View,
@@ -42,7 +39,7 @@ class ShopHomeProductItemCarouselViewHolder(
         itemView.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
         productCard.setCardHeight(ViewGroup.LayoutParams.MATCH_PARENT)
         val isAtcFlag = shopHomeCarousellProductUiModel?.header?.isATC ?: 0
-        productCard.setAddToCartVisible(isAtcFlag == 1)
+        productCard.setAddToCartVisible(isAtcFlag == IS_ATC)
     }
 
     override fun setListener() {

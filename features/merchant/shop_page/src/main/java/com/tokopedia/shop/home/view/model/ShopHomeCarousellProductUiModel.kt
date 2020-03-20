@@ -16,6 +16,10 @@ data class ShopHomeCarousellProductUiModel(
         val productList: List<ShopHomeProductViewModel> = listOf()
 ) : BaseShopHomeWidgetUiModel {
 
+    companion object{
+        const val IS_ATC = 1
+    }
+
     override fun type(typeFactory: ShopHomeAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
