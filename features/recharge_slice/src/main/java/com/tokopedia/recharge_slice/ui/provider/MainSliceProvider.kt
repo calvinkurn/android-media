@@ -232,7 +232,7 @@ class MainSliceProvider : SliceProvider() {
 
     fun getRemoteConfigRechargeSliceEnabler(context: Context): Boolean{
         remoteConfig = FirebaseRemoteConfigImpl(context)
-        return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_RECHARGE))
+        return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_RECHARGE,true))
     }
 
     companion object {
