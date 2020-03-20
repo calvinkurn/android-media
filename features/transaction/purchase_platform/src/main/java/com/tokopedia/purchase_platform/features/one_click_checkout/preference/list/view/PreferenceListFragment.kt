@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
@@ -96,6 +97,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                     adapter.submitList(profiles)
                     adapter.notifyDataSetChanged()
                     if (profiles.isEmpty()) {
+                        ImageHandler.LoadImage(iv_empty, EMPTY_STATE_PREFERENCE_PICT)
                         group_empty_state.visible()
                         rv_preference_list.gone()
                         btn_preference_list_action.isEnabled = true
@@ -253,5 +255,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
 
         const val REQUEST_EDIT_PREFERENCE = 11
         const val REQUEST_CREATE_PREFERENCE = 12
+
+        private const val EMPTY_STATE_PREFERENCE_PICT = "https://ecs7.tokopedia.net/android/others/beli_langsung_intro.png"
     }
 }
