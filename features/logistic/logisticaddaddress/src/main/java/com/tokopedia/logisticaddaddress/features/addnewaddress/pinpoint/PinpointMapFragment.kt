@@ -283,10 +283,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
             val longTarget = target?.longitude ?: 0.0
 
             presenter.autoFill(latTarget, longTarget, zoomLevel)
-        } else {
-            whole_loading_container?.visibility = View.GONE
-            invalid_container?.visibility = View.GONE
-            getdistrict_container?.visibility = View.VISIBLE
         }
         isGetDistrict = false
     }
