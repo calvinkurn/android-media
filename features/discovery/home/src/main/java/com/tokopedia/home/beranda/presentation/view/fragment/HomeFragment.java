@@ -531,7 +531,6 @@ public class HomeFragment extends BaseDaggerFragment implements
     public void onResume() {
         super.onResume();
         createAndCallSendScreen();
-        sendScreen();
         adapter.onResume();
         viewModel.refresh(isFirstInstall());
         if (activityStateListener != null) {
