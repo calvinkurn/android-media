@@ -8,7 +8,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home.beranda.helper.glide.FPM_SEE_ALL_CARD_BACKGROUND
 import com.tokopedia.home.beranda.helper.glide.loadImage
+import com.tokopedia.home.beranda.helper.glide.loadImageWithoutPlaceholder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.SeeMorePdpDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
 
@@ -24,7 +26,7 @@ class SeeMorePdpViewHolder(view: View,
         bannerBackgroundImage.setOnClickListener {
             listener.onBannerSeeMoreClicked(applink = element.applink, channel = channels)
         }
-        bannerBackgroundImage.loadImage(element.backgroundImage)
+        bannerBackgroundImage.loadImageWithoutPlaceholder(element.backgroundImage)
         container.setOnClickListener {
             listener.onBannerSeeMoreClicked(applink = element.applink, channel = channels)
         }
