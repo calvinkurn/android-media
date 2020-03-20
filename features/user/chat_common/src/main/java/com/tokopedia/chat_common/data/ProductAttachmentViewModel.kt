@@ -273,7 +273,7 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
     }
 
     fun hasEmptyStock(): Boolean {
-        return status == 0
+        return status == statusDeleted || status == statusWarehouse
     }
 
     fun isWishListed(): Boolean {
@@ -288,4 +288,9 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
         return productId.toString()
     }
 
+    companion object {
+        const val statusDeleted = 0
+        const val statusActive = 1
+        const val statusWarehouse = 3
+    }
 }
