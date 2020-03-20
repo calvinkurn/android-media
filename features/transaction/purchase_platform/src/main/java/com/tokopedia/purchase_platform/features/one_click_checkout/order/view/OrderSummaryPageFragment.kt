@@ -48,6 +48,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ProfilesItemModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.ProfileResponse
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.Data
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.PaymentParameter
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.di.OrderSummaryPageComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.ErrorCheckoutBottomSheet
@@ -407,9 +408,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         btn_pay.setOnClickListener {
-            viewModel.finalUpdate { paymentParameter: PaymentParameter ->
+            viewModel.finalUpdate { checkoutData: Data ->
                 view?.let { _ ->
                     activity?.let {
+                        val paymentParameter = checkoutData.paymentParameter
                         if (paymentParameter.callbackUrl.isNotEmpty() && paymentParameter.payload.isNotEmpty()) {
                             val paymentPassData = PaymentPassData()
                             paymentPassData.redirectUrl = paymentParameter.callbackUrl
@@ -417,11 +419,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
                             val intent = RouteManager.getIntent(activity, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
                             intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
-//                            intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE, "testing")
+                            intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE, checkoutData.error.message)
                             startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
                             it.finish()
                         } else {
-                            // redirect params?
+//                             redirect params?
                         }
                     }
                 }

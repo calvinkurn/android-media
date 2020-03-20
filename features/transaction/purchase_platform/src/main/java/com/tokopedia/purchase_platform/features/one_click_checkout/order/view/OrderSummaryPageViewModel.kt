@@ -407,9 +407,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 }
                 val subtotal = totalProductPrice + totalShippingPrice + insurancePrice
                 val minimumAmount = _orderPreference?.preference?.payment?.minimumAmount ?: 0
-//                val minimumAmount = 500000
                 val maximumAmount = _orderPreference?.preference?.payment?.maximumAmount ?: 0
-//                val maximumAmount = 700000
                 val fee = _orderPreference?.preference?.payment?.fee?.toDouble() ?: 0.0
                 val orderCost = OrderCost(totalProductPrice, subtotal, totalShippingPrice, insurancePrice, fee)
                 if (minimumAmount > subtotal) {
@@ -418,7 +416,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                             isButtonChoosePayment = true)
                 } else if (maximumAmount > 0 && maximumAmount < subtotal) {
                     orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
-                            paymentErrorMessage = "maximum pembayaran adalah ${CurrencyFormatUtil.convertPriceValueToIdrFormat(minimumAmount, false)}",
+                            paymentErrorMessage = "maximum pembayaran adalah ${CurrencyFormatUtil.convertPriceValueToIdrFormat(maximumAmount, false)}",
                             isButtonChoosePayment = true)
                 } else if (_orderPreference?.preference?.payment?.gatewayCode?.contains("OVO") == true && subtotal > _orderPreference?.preference?.payment?.walletAmount ?: 0) {
                     orderTotal.value = orderTotal.value?.copy(orderCost = orderCost, paymentErrorMessage = "OVO kamu tidak cukup", isButtonChoosePayment = true)
@@ -784,7 +782,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         }
     }
 
-    fun finalUpdate(onSuccessCheckout: (PaymentParameter) -> Unit) {
+    fun finalUpdate(onSuccessCheckout: (Data) -> Unit) {
         val product = orderProduct
         val shop = orderShop
         val pref = _orderPreference
@@ -792,7 +790,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             val param = generateUpdateCartParam()
             if (param != null) {
                 globalEvent.value = OccGlobalEvent.Loading
-                updateCartOccUseCase.execute(param, { updateCartOccGqlResponse: UpdateCartOccGqlResponse ->
+                updateCartOccUseCase.execute(param, {
                     doCheckout(product, shop, pref, onSuccessCheckout)
                 }, { throwable: Throwable ->
                     throwable.printStackTrace()
@@ -807,7 +805,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         }
     }
 
-    private fun doCheckout(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (PaymentParameter) -> Unit) {
+    private fun doCheckout(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (Data) -> Unit) {
         val param = CheckoutOccRequest(Profile(pref.preference.profileId), ParamCart(data = listOf(ParamData(
                 pref.preference.address.addressId,
                 listOf(
@@ -836,9 +834,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         checkoutOccUseCase.execute(param, { checkoutOccGqlResponse: CheckoutOccGqlResponse ->
             if (checkoutOccGqlResponse.response.status.equals("OK", true)) {
                 if (checkoutOccGqlResponse.response.data.success == 1) {
-                    val paymentParameter = checkoutOccGqlResponse.response.data.paymentParameter
                     globalEvent.value = OccGlobalEvent.Normal
-                    onSuccessCheckout(paymentParameter)
+                    onSuccessCheckout(checkoutOccGqlResponse.response.data)
                 } else {
                     val errorCode = checkoutOccGqlResponse.response.data.error.code
                     orderSummaryAnalytics.eventClickBayarNotSuccess(errorCode)
