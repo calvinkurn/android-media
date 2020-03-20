@@ -53,6 +53,8 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
     private var operatorIdSelected: String = ""
     private var productIdSelected: String = ""
+    private var categoryId: String = ""
+    private var menuId: String = ""
 
     override fun getScreenName(): String {
         return ""
@@ -94,12 +96,13 @@ class RechargeCCFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initializedViewModel()
+        getDataBundle()
         getTickerData()
 
         cc_widget_client_number.setListener(object : CCClientNumberWidget.ActionListener {
             override fun onClickNextButton(clientNumber: String) {
                 creditCardAnalytics.clickToConfirmationPage(
-                        CATEGORY_ID_CREDIT_CARD.toString(), operatorIdSelected)
+                        categoryId, operatorIdSelected)
                 dialogConfirmation()
             }
 
@@ -116,6 +119,13 @@ class RechargeCCFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun getDataBundle() {
+        arguments?.let {
+            categoryId = it.getString(CATEGORY_ID)
+            menuId = it.getString(MENU_ID)
+        }
+    }
+
     private fun initializedViewModel() {
         activity?.let {
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
@@ -125,7 +135,8 @@ class RechargeCCFragment : BaseDaggerFragment() {
     }
 
     private fun getTickerData() {
-        rechargeCCViewModel.getMenuDetail(GraphqlHelper.loadRawString(resources, R.raw.query_cc_menu_detail))
+        rechargeCCViewModel.getMenuDetail(
+                GraphqlHelper.loadRawString(resources, R.raw.query_cc_menu_detail), menuId)
         rechargeCCViewModel.tickers.observe(this, Observer {
             renderTicker(it)
             creditCardAnalytics.impressionInitialPage("", "")
@@ -157,7 +168,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
     private fun checkPrefixCreditCardNumber(clientNumber: String) {
         rechargeCCViewModel.getPrefixes(
                 GraphqlHelper.loadRawString(resources, R.raw.query_cc_prefix_operator),
-                clientNumber)
+                clientNumber, menuId)
 
         rechargeCCViewModel.creditCardSelected.observe(viewLifecycleOwner, Observer {
             operatorIdSelected = it.operatorId.toString()
@@ -191,13 +202,13 @@ class RechargeCCFragment : BaseDaggerFragment() {
                 dialog.setPrimaryCTAClickListener {
                     dialog.dismiss()
                     creditCardAnalytics.clickToContinueCheckout(
-                            CATEGORY_ID_CREDIT_CARD.toString(), operatorIdSelected)
-                    submitCreditCard(CATEGORY_ID_CREDIT_CARD.toString(), operatorIdSelected,
+                            categoryId.toString(), operatorIdSelected)
+                    submitCreditCard(categoryId, operatorIdSelected,
                             productIdSelected, cc_widget_client_number.getClientNumber())
                 }
                 dialog.setSecondaryCTAClickListener {
                     creditCardAnalytics.clickBackOnConfirmationPage(
-                            CATEGORY_ID_CREDIT_CARD.toString(), operatorIdSelected)
+                            categoryId, operatorIdSelected)
                     dialog.dismiss()
                 }
                 dialog.show()
@@ -214,7 +225,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
                     userSession.userId)
 
             rechargeSubmitCCViewModel.postCreditCard(GraphqlHelper.loadRawString(resources,
-                    R.raw.query_cc_signature), CATEGORY_ID_CREDIT_CARD, mapParam)
+                    R.raw.query_cc_signature), categoryId, mapParam)
 
             rechargeSubmitCCViewModel.errorSignature.observe(viewLifecycleOwner, Observer {
                 hideLoading()
@@ -293,12 +304,19 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
         const val EXTRA_STATE_CHECKOUT_PASS_DATA = "EXTRA_STATE_CHECKOUT_PASS_DATA"
 
-        const val CATEGORY_ID_CREDIT_CARD = 26
+        private const val CATEGORY_ID = "category_id"
+        private const val MENU_ID = "menu_id"
+
         const val REQUEST_CODE_CART = 1000
         const val REQUEST_CODE_LOGIN = 1001
 
-        fun newInstance(): Fragment {
-            return RechargeCCFragment()
+        fun newInstance(categoryId: String, menuId: String): Fragment {
+            val fragment = RechargeCCFragment()
+            val bundle = Bundle()
+            bundle.putString(CATEGORY_ID, categoryId)
+            bundle.putString(MENU_ID, menuId)
+            fragment.arguments = bundle
+            return fragment
         }
     }
 }

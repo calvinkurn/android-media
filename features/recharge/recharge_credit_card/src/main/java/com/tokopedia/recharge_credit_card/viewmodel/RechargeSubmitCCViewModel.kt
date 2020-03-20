@@ -26,10 +26,10 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
     val redirectUrl: LiveData<String> = _redirectUrl
     val errorSignature: LiveData<String> = _errorSignature
 
-    fun postCreditCard(rawQuery: String, categoryId: Int, paramSubmitCC: HashMap<String, String>) {
+    fun postCreditCard(rawQuery: String, categoryId: String, paramSubmitCC: HashMap<String, String>) {
         launchCatchError(block = {
             val mapParam = mutableMapOf<String, Any>()
-            mapParam[RechargeCCViewModel.CATEGORY_ID] = categoryId
+            mapParam[CATEGORY_ID] = categoryId.toInt()
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCSignatureReponse::class.java, mapParam)
@@ -74,10 +74,11 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
     }
 
     companion object {
-        const val PARAM_CLIENT_NUMBER = "client_number"
-        const val PARAM_OPERATOR_ID = "operator_id"
-        const val PARAM_PRODUCT_ID = "product_id"
-        const val PARAM_USER_ID = "user_id"
-        const val PARAM_PCIDSS = "pcidss_signature"
+        private const val CATEGORY_ID = "categoryId"
+        private const val PARAM_CLIENT_NUMBER = "client_number"
+        private const val PARAM_OPERATOR_ID = "operator_id"
+        private const val PARAM_PRODUCT_ID = "product_id"
+        private const val PARAM_USER_ID = "user_id"
+        private const val PARAM_PCIDSS = "pcidss_signature"
     }
 }

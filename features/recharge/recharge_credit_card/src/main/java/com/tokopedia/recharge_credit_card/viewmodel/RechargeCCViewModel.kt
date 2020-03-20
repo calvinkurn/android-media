@@ -33,10 +33,10 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
 
     private var foundPrefix: Boolean = false
 
-    fun getMenuDetail(rawQuery: String) {
+    fun getMenuDetail(rawQuery: String, menuId: String) {
         launchCatchError(block = {
             val mapParam = mutableMapOf<String, Any>()
-            mapParam[MENU_ID] = CC_MENU_ID
+            mapParam[MENU_ID] = menuId.toInt()
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCMenuDetailResponse::class.java, mapParam)
@@ -78,10 +78,10 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
         }
     }
 
-    fun getPrefixes(rawQuery: String, creditCard: String) {
+    fun getPrefixes(rawQuery: String, creditCard: String, menuId: String) {
         launchCatchError(block = {
             val mapParam = mutableMapOf<String, Any>()
-            mapParam[MENU_ID] = CC_MENU_ID
+            mapParam[MENU_ID] = menuId.toInt()
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCCatalogPrefix::class.java, mapParam)
@@ -114,11 +114,12 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
     }
 
     companion object {
-        const val CATEGORY_ID = "categoryId"
-        const val MENU_ID = "menuId"
-        const val CC_MENU_ID = 169
+        private const val CATEGORY_ID = "categoryId"
+        private const val MENU_ID = "menuId"
 
+        //production
+        //const val CC_MENU_ID = 169
         //staging
-//        const val CC_MENU_ID = 86
+        //const val CC_MENU_ID = 86
     }
 }

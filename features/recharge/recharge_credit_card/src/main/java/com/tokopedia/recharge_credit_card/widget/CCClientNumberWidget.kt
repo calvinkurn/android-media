@@ -34,6 +34,7 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
                     if (it.length <= TOTAL_SYMBOLS) {
                         cc_text_input.setError(false)
                         cc_text_input.setMessage("")
+
                         if (!RechargeCCUtil.isInputCorrect(it, TOTAL_SYMBOLS, DIVIDER_MODULO, DIVIDER)) {
                             it.replace(0, it.length, RechargeCCUtil.concatString(
                                     RechargeCCUtil.getDigitArray(input, TOTAL_DIGITS), DIVIDER_POSITION, DIVIDER))
@@ -125,10 +126,10 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
     }
 
     companion object {
-        const val TOTAL_SYMBOLS = 19
-        const val TOTAL_DIGITS = 16
-        const val DIVIDER_MODULO = 5
-        const val DIVIDER_POSITION = DIVIDER_MODULO - 1
-        const val DIVIDER = ' '
+        private const val TOTAL_SYMBOLS = 19
+        private const val TOTAL_DIGITS = 16
+        private const val DIVIDER_MODULO = 5
+        private const val DIVIDER_POSITION = DIVIDER_MODULO - 1
+        private const val DIVIDER = ' '
     }
 }

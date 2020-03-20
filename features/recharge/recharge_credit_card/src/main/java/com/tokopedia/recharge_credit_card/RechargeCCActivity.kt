@@ -10,7 +10,10 @@ import kotlinx.android.synthetic.main.activity_recharge_cc.*
 class RechargeCCActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment? {
-        return RechargeCCFragment.newInstance()
+        val bundle = intent.extras
+        val categoryId = bundle?.getString(PARAM_CATEGORY_ID, CATEGORY_ID_DEFAULT)?: CATEGORY_ID_DEFAULT
+        val menuId = bundle?.getString(PARAM_MENU_ID, MENU_ID_DEFAULT)?: MENU_ID_DEFAULT
+        return RechargeCCFragment.newInstance(categoryId, menuId)
     }
 
     override fun getLayoutRes(): Int {
@@ -30,5 +33,13 @@ class RechargeCCActivity : BaseSimpleActivity() {
                 RouteManager.route(this, ApplinkConst.DIGITAL_ORDER)
             }
         }
+    }
+
+    companion object {
+        private const val PARAM_MENU_ID = "menu_id"
+        private const val PARAM_CATEGORY_ID = "category_id"
+
+        private const val CATEGORY_ID_DEFAULT = "26"
+        private const val MENU_ID_DEFAULT = "169"
     }
 }
