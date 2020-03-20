@@ -439,6 +439,11 @@ public interface ApplinkConst {
         String HOST = "groupchat";
     }
 
+    interface Notification {
+        String BUYER_HOST = "notif-center";
+        String GENERAL_HOST = "notification";
+    }
+
     interface Profile {
         String PARAM_USER_ID = "{user_id}";
     }
