@@ -2,8 +2,10 @@ package com.tokopedia.notifcenter.presentation.activity
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -63,12 +65,25 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
         tabLayout.getTabAt(INDEX_NOTIFICATION_UPDATE)?.customView
     }
 
+    private val intentData by lazy { intent?.data }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         initTabLayoutItem()
         super.onCreate(savedInstanceState)
         notificationComponent.inject(this)
         presenter.attachView(this)
-        initView(savedInstanceState)
+
+        intentData?.path?.let {
+            when (it) {
+                PATH_BUYER_INFO -> {
+                    initViewTabLayout(INDEX_NOTIFICATION_UPDATE)
+                    Log.d("TAGGG", intentData?.pathSegments.toString())
+                    Log.d("TAGGG", intentData?.lastPathSegment)
+                    Log.d("TAGGG", Uri.parse(intent?.data?.toString()).lastPathSegment)
+                }
+                else -> initView(savedInstanceState)
+            }
+        }?:
 
         baseContext?.let {
             val remoteConfig = FirebaseRemoteConfigImpl(it)
@@ -116,7 +131,11 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
                     savedInstanceState,
                     INDEX_NOTIFICATION_ACTIVITY)
         }
-        initTabLayout(initialIndexPage)
+        initViewTabLayout(initialIndexPage)
+    }
+
+    private fun initViewTabLayout(page: Int) {
+        initTabLayout(page)
         presenter.getUpdateUnreadCounter(onSuccessGetUpdateUnreadCounter())
         presenter.getIsTabUpdate(this)
     }
@@ -275,6 +294,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
 
     companion object {
         private const val KEY_TAB_POSITION = "tab_position"
+        private const val PATH_BUYER_INFO = "/notif-center"
 
         var INDEX_NOTIFICATION_ACTIVITY = 0
         var INDEX_NOTIFICATION_UPDATE = 1
