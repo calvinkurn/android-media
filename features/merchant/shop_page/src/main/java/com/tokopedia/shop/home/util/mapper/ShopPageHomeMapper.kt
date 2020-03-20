@@ -205,7 +205,7 @@ object ShopPageHomeMapper {
                 imageUrl = response.imageUrl
                 imageUrl300 = ""
                 totalReview = response.totalReview
-                rating = response.rating
+                rating = (response.rating / 20).roundToInt().toDouble()
                 isPo = response.isPO
                 isWishList = false
                 productUrl = response.productUrl
