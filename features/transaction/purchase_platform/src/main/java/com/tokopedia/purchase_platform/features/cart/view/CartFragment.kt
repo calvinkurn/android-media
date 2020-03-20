@@ -52,10 +52,7 @@ import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnaly
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment
-import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
-import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
-import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
-import com.tokopedia.purchase_platform.common.constant.CartConstant
+import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.constant.CartConstant.ACTION_OK
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_EMPTY_DEFAULT_IMG_URL
@@ -1380,7 +1377,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     cartItemHolderData = it
                     var countListItem = 0
                     cartItemHolderData.cartItemDataList?.let { countListItem = it.size }
-                    if (i == (parentPosition-1)) {
+                    if (i == (parentPosition - 1)) {
                         val listProductDetail = arrayListOf<ProductDetailsItem>()
                         for (j in 0 until countListItem) {
                             if (position != -1 && j == position) {
@@ -1389,13 +1386,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                                 cartItemHolderData.cartItemDataList?.get(j)?.isSelected = !isChecked
                             }
                             cartItemHolderData.cartItemDataList?.get(j)?.isSelected?.let { it1 ->
-                                doLoopInOrders(cartItemHolderData, j, it1, listProductDetail, listOrder) }
+                                doLoopInOrders(cartItemHolderData, j, it1, listProductDetail, listOrder)
+                            }
                         }
                     } else {
                         val listProductDetail = arrayListOf<ProductDetailsItem>()
                         for (j in 0 until countListItem) {
                             cartItemHolderData.cartItemDataList?.get(j)?.isSelected?.let { it1 ->
-                                doLoopInOrders(cartItemHolderData, j, it1, listProductDetail, listOrder) }
+                                doLoopInOrders(cartItemHolderData, j, it1, listProductDetail, listOrder)
+                            }
                         }
                     }
                 }
@@ -1409,8 +1408,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
                 var countItemList: Int
                 println("++ count itemDataList = ${it.shopGroupAvailableData.cartItemDataList?.size}")
-                it.shopGroupAvailableData.cartItemDataList?.let {
-                    listCartItemHolderData -> countItemList = listCartItemHolderData.size
+                it.shopGroupAvailableData.cartItemDataList?.let { listCartItemHolderData ->
+                    countItemList = listCartItemHolderData.size
                     for (j in 0 until countItemList) {
                         doLoopInOrders(it.shopGroupAvailableData, j, listCartItemHolderData[j].isSelected, listProductDetail, listOrder)
                     }
@@ -1859,7 +1858,19 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
             }
             NAVIGATION_PROMO -> {
-                dPresenter.processInitialGetCartData(getCartId(), cartListData == null, false)
+                if (resultCode == Activity.RESULT_OK) {
+                    val valudateUseUiModel = data?.getParcelableExtra<ValidateUsePromoRevampUiModel>(ARGS_VALIDATE_USE_DATA_RESULT)
+                    if (valudateUseUiModel != null) {
+                        updatePromoCheckoutStickyButton(valudateUseUiModel.promoUiModel)
+                        return
+                    }
+
+                    val defaultTitlePromoButton = data?.getStringExtra(ARGS_CLEAR_PROMO_RESULT)
+                    if (defaultTitlePromoButton != null) {
+                        // Todo : reset promo button
+                        return
+                    }
+                }
             }
         }
     }
