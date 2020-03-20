@@ -88,8 +88,7 @@ object DeeplinkDFMapper {
 
     @JvmField
     val DFM_BASE = "df_base"
-    @JvmField
-    val DFM_ONBOARDING = DFM_BASE // "df_base_onboarding"
+    
     private val DFM_CATEGORY_TRADEIN = "df_category_tradein"
     @JvmField
     val DFM_MERCHANT_SELLER_CUSTOMERAPP = "df_merchant_seller"
