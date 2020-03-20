@@ -457,10 +457,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         if(!keyword.isNullOrEmpty()) add(FilterByKeyword(keyword))
     }
 
-    private fun loadEmptyList() {
-        renderList(ArrayList())
-    }
-
     private fun showProductList(productList: List<ProductViewModel>) {
         val hasNextPage = productList.isNotEmpty()
 
@@ -1338,7 +1334,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     initHeaderView(it.data)
                     showTabFilters()
                 }
-                is Fail -> loadEmptyList()
+                is Fail -> showErrorToast()
             }
         }
     }
