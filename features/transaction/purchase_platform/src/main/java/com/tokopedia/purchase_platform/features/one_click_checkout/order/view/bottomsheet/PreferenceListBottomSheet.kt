@@ -159,9 +159,11 @@ class PreferenceListBottomSheet(
         progressBar?.gone()
         rvPreferenceList?.visible()
         if (preferences.profiles?.size ?: 0 >= preferences.maxProfile) {
-            btnAddPreference?.gone()
+            btnAddPreference?.visible()
+            btnAddPreference?.isEnabled = false
         } else {
             btnAddPreference?.visible()
+            btnAddPreference?.isEnabled = true
         }
     }
 
