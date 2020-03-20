@@ -105,6 +105,19 @@ object PinpointMapPresenterTest : Spek({
                 verify { view.showOutOfReachDialog() }
             }
         }
+
+        Scenario("success with not found location") {
+            val keroMaps = KeroMapsAutofill(data = Data(title = "city test"), messageError = listOf("Lokasi gagal ditemukan"))
+            Given("response with location not found error") {
+                every { revGeoCodeUseCase.execute(any()) } returns Observable.just(keroMaps)
+            }
+            When("executed") {
+                presenter.autoFill(0.1, 0.1, 0.0f)
+            }
+            Then("view shows out of reach dialog") {
+                verify { view.showLocationNotFoundCTA() }
+            }
+        }
     }
 
     Feature("district boundary") {
