@@ -27,12 +27,14 @@ class SetFeaturedProductUseCase @Inject constructor(
         }
     }
 
-    var params = RequestParams.EMPTY
+    var params: RequestParams? = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): FeaturedProductResponseModel {
         val variables = HashMap<String, Any>()
-        variables[PARAM_PRODUCT_ID] = params.getObject(PARAM_PRODUCT_ID)
-        variables[PARAM_STATUS] = params.getObject(PARAM_STATUS)
+        params?.let {
+            variables[PARAM_PRODUCT_ID] = it.getObject(PARAM_PRODUCT_ID)
+            variables[PARAM_STATUS] = it.getObject(PARAM_STATUS)
+        }
         val graphqlRequest = GraphqlRequest(gqlMutation, FeaturedProductResponseModel::class.java, variables)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
