@@ -131,7 +131,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         }
         button_apply_no_promo.setOnClickListener {
             setButtonLoading(button_apply_no_promo, true)
-            viewModel.clearPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo))
+            val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) as ValidateUsePromoRequest
+            viewModel.clearPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo), validateUsePromoRequest)
         }
 
         val lastHeaderUiModel: PromoListHeaderUiModel? = null
@@ -334,6 +335,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     if (it.data != null) {
                         intent.putExtra(ARGS_VALIDATE_USE_DATA_RESULT, it.data)
                     }
+                    if (it.lastValidateUseRequest != null) {
+                        intent.putExtra(ARGS_LAST_VALIDATE_USE_REQUEST, it.lastValidateUseRequest)
+                    }
                     activity?.setResult(Activity.RESULT_OK, intent)
                     activity?.finish()
                 }
@@ -358,6 +362,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     val intent = Intent()
                     if (it.data != null) {
                         intent.putExtra(ARGS_CLEAR_PROMO_RESULT, it.data)
+                    }
+                    if (it.lastValidateUseRequest != null) {
+                        intent.putExtra(ARGS_LAST_VALIDATE_USE_REQUEST, it.lastValidateUseRequest)
                     }
                     activity?.setResult(Activity.RESULT_OK, intent)
                     activity?.finish()
@@ -516,7 +523,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                         val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) as ValidateUsePromoRequest
                         viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.mutation_validate_use_promo_revamp), validateUsePromoRequest)
                     } else {
-                        viewModel.clearPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo))
+                        val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) as ValidateUsePromoRequest
+                        viewModel.clearPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo), validateUsePromoRequest)
                     }
                 }
                 setSecondaryCTAClickListener {

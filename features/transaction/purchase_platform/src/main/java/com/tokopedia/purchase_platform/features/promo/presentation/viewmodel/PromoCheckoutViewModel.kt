@@ -277,6 +277,8 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 _applyPromoResponse.value = ApplyPromoResponseAction()
             }
 
+            // Todo : set promo to validate use param
+
             // Set param
             val varPromo = mapOf(
                     "promo" to validateUsePromoRequest
@@ -340,6 +342,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                             applyPromoResponse.value?.let {
                                 it.state = ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CART
                                 it.data = ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(response.validateUsePromoRevamp)
+                                it.lastValidateUseRequest = validateUsePromoRequest
                                 _applyPromoResponse.value = it
                             }
                         }
@@ -365,11 +368,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    fun clearPromo(mutation: String) {
-        launch { doClearPromo(mutation) }
+    fun clearPromo(mutation: String, validateUsePromoRequest: ValidateUsePromoRequest) {
+        launch { doClearPromo(mutation, validateUsePromoRequest) }
     }
 
-    private suspend fun doClearPromo(mutation: String) {
+    private suspend fun doClearPromo(mutation: String, validateUsePromoRequest: ValidateUsePromoRequest) {
         launchCatchError(block = {
             // Initialize response action state
             if (clearPromoResponse.value == null) {
@@ -401,9 +404,23 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             }
 
             if (response.successData.success) {
+                val tmpValidateUsePromoRequest = validateUsePromoRequest
+                promoCodes.forEach { promo ->
+                    if (tmpValidateUsePromoRequest.codes.contains(promo)) {
+                        tmpValidateUsePromoRequest.codes.remove(promo)
+                    }
+
+                    tmpValidateUsePromoRequest.orders.forEach {
+                        if (it?.codes?.contains(promo) == true) {
+                            it.codes.remove(promo)
+                        }
+                    }
+                }
                 clearPromoResponse.value?.let {
                     it.state = ClearPromoResponseAction.ACTION_STATE_SUCCESS
+                    // TODO : baca dari backend
                     it.data = "Ini nanti diganti data dari backend, dapat dari clear promo response"
+                    it.lastValidateUseRequest = tmpValidateUsePromoRequest
                     _clearPromoResponse.value = it
                 }
             } else {

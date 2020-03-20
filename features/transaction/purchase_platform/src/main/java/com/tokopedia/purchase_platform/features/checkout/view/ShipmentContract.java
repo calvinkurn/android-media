@@ -129,11 +129,9 @@ public interface ShipmentContract {
 
         void stopTrace();
 
-        void onSuccessClearPromoStack(boolean isLastAppliedPromo);
-
         void onFailedClearPromoStack(boolean ignoreAPIResponse);
 
-        void onSuccessClearPromoLogistic(boolean isLastAppliedPromo);
+        void onSuccessClearPromoLogistic(int position, boolean isLastAppliedPromo);
 
         void resetCourier(int position);
 
@@ -303,11 +301,9 @@ public interface ShipmentContract {
 
         void editAddressPinpoint(String latitude, String longitude, ShipmentCartItemModel shipmentCartItemModel, LocationPass locationPass);
 
-        void cancelAutoApplyPromoStack(int shopIndex, ArrayList<String> promoCodeList, boolean ignoreAPIResponse, String voucherType);
-
         void cancelNotEligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList, int checkoutType);
 
-        void cancelAutoApplyPromoStackLogistic(String promoCode);
+        void cancelAutoApplyPromoStackLogistic(int itemPosition, String promoCode);
 
         void cancelAutoApplyPromoStackAfterClash(ArrayList<String> promoCodesToBeCleared);
 
@@ -366,6 +362,10 @@ public interface ShipmentContract {
         LastApplyUiModel getLastApplyData();
 
         ValidateUsePromoRevampUiModel getValidateUsePromoRevampUiModel();
+
+        void setLatValidateUseRequest(ValidateUsePromoRequest latValidateUseRequest);
+
+        ValidateUsePromoRequest getLastValidateUseRequest();
     }
 
 }

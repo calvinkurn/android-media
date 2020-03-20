@@ -35,7 +35,6 @@ import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse;
-import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
@@ -61,11 +60,9 @@ import com.tokopedia.purchase_platform.common.data.model.response.macro_insuranc
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult;
 import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase;
-import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.DataChangeAddressRequest;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.saveshipmentstate.SaveShipmentStateRequest;
@@ -91,7 +88,6 @@ import com.tokopedia.purchase_platform.features.checkout.view.converter.Shipment
 import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataRequestConverter;
 import com.tokopedia.purchase_platform.features.checkout.view.subscriber.ClearNotEligiblePromoSubscriber;
 import com.tokopedia.purchase_platform.features.checkout.view.subscriber.ClearShipmentCacheAutoApplyAfterClashSubscriber;
-import com.tokopedia.purchase_platform.features.checkout.view.subscriber.ClearShipmentCacheAutoApplySubscriber;
 import com.tokopedia.purchase_platform.features.checkout.view.subscriber.GetCourierRecommendationSubscriber;
 import com.tokopedia.purchase_platform.features.checkout.view.subscriber.GetShipmentAddressFormReloadFromMultipleAddressSubscriber;
 import com.tokopedia.purchase_platform.features.checkout.view.subscriber.GetShipmentAddressFormSubscriber;
@@ -167,6 +163,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private CodModel codData;
     private Token token;
     private ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel;
+    private ValidateUsePromoRequest lastValidateUsePromoRequest;
 
     private List<DataCheckoutRequest> dataCheckoutRequestList;
     private List<DataChangeAddressRequest> changeAddressRequestList;
@@ -1547,24 +1544,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         return requestParams;
     }
 
-    // Project ARMY
-    @Override
-    public void cancelAutoApplyPromoStack(int shopIndex, ArrayList<String> promoCodeList, boolean ignoreAPIResponse, String voucherType) {
-        if (promoCodeList.size() > 0) {
-            if (!ignoreAPIResponse) {
-                getView().showLoading();
-            }
-            clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodeList);
-            compositeSubscription.add(
-                    clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
-                            .subscribe(new ClearShipmentCacheAutoApplySubscriber(getView(), this, voucherType, shopIndex, ignoreAPIResponse, isLastAppliedPromo(promoCodeList.get(0))))
-            );
-        }
-    }
-
     // Clear promo BBO after choose other / non BBO courier
     @Override
-    public void cancelAutoApplyPromoStackLogistic(String promoCode) {
+    public void cancelAutoApplyPromoStackLogistic(int itemPosition, String promoCode) {
         ArrayList<String> promoCodeList = new ArrayList<>();
         promoCodeList.add(promoCode);
 
@@ -1588,7 +1570,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 tickerAnnouncementHolderData.setMessage(responseData.getSuccessData().getTickerMessage());
                                 getView().updateTickerAnnouncementMessage();
                             }
-                            getView().onSuccessClearPromoLogistic(isLastAppliedPromo(promoCode));
+                            getView().onSuccessClearPromoLogistic(itemPosition, isLastAppliedPromo(promoCode));
                         }
                     }
                 })
@@ -1924,6 +1906,16 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public ValidateUsePromoRevampUiModel getValidateUsePromoRevampUiModel() {
         return validateUsePromoRevampUiModel;
+    }
+
+    @Override
+    public void setLatValidateUseRequest(ValidateUsePromoRequest latValidateUseRequest) {
+        this.lastValidateUsePromoRequest = latValidateUseRequest;
+    }
+
+    @Override
+    public ValidateUsePromoRequest getLastValidateUseRequest() {
+        return lastValidateUsePromoRequest;
     }
 
     @Override

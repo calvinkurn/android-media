@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 data class ValidateUsePromoRequest(
 
         @field:SerializedName("codes")
-        var codes: List<String?> = listOf(),
+        var codes: MutableList<String?> = mutableListOf(),
 
         @field:SerializedName("is_suggested")
         var isSuggested: Int = 1,
@@ -33,7 +33,7 @@ data class ValidateUsePromoRequest(
         var state: String = "" // cart & checkout & occ
 ) : Parcelable {
         constructor(parcel: Parcel) : this(
-                parcel.createStringArrayList() ?: emptyList(),
+                parcel.createStringArrayList() ?: mutableListOf(),
                 parcel.readInt(),
                 parcel.readInt(),
                 parcel.readInt(),

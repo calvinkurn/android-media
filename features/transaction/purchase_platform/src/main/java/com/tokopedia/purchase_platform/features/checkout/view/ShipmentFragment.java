@@ -157,6 +157,7 @@ import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.P
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_DEFAULT;
 import static com.tokopedia.purchase_platform.common.constant.Constant.EXTRA_CHECKOUT_REQUEST;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_CLEAR_PROMO_RESULT;
+import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_LAST_VALIDATE_USE_REQUEST;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PAGE_SOURCE;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_REQUEST;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_VALIDATE_USE_DATA_RESULT;
@@ -1251,6 +1252,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 return;
             }
 
+            ValidateUsePromoRequest validateUsePromoRequest = data.getParcelableExtra(ARGS_LAST_VALIDATE_USE_REQUEST);
+            if (validateUsePromoRequest != null) {
+                shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
+            }
+
             String defaultTitlePromoButton = data.getStringExtra(ARGS_CLEAR_PROMO_RESULT);
             if (defaultTitlePromoButton != null) {
                 // TODO : Check promo
@@ -1682,9 +1688,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onCancelVoucherLogisticClicked(String pslCode, int position) {
         checkoutAnalyticsCourierSelection.eventCancelPromoStackingLogistic();
-        ArrayList<String> codes = new ArrayList<>();
-        codes.add(pslCode);
-        shipmentPresenter.cancelAutoApplyPromoStack(position, codes, false, "logistic");
+        shipmentPresenter.cancelAutoApplyPromoStackLogistic(position, pslCode);
         if (isToogleYearEndPromoOn()) {
             shipmentAdapter.cancelAllCourierPromo();
         }
@@ -2031,8 +2035,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     // Clear logistic voucher data when any duration is selected and voucher is not null
                     if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null &&
                             !TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode()) && isClearPromo) {
-                        shipmentPresenter.cancelAutoApplyPromoStackLogistic(
-                                shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                        shipmentPresenter.cancelAutoApplyPromoStackLogistic(0, shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
                         shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
                         setBenefitSummaryInfoUiModel(null);
                         shipmentAdapter.clearTotalPromoStackAmount();
@@ -2511,16 +2514,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onSuccessClearPromoStack(boolean isLastAppliedPromo) {
-        if (isLastAppliedPromo) {
-            doResetButtonPromoCheckout();
+    public void onSuccessClearPromoLogistic(int position, boolean isLastAppliedPromo) {
+        if (position != 0) {
+            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position);
+            shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
+            onNeedUpdateViewItem(position);
         }
-    }
 
-    @Override
-    public void onSuccessClearPromoLogistic(boolean isLastAppliedPromo) {
         if (isLastAppliedPromo) {
             doResetButtonPromoCheckout();
+        } else {
+            shipmentAdapter.checkHasSelectAllCourier(false);
         }
     }
 
