@@ -436,13 +436,14 @@ class RegisterAnalytics @Inject constructor() {
 
     }
 
-    fun trackSuccessRegister(loginMethod: String, userId: Int, name: String, email: String) {
+    fun trackSuccessRegister(loginMethod: String, userId: Int, name: String, email: String, phoneNumber: String, isGoldMerchant: Boolean, shopId: String,shopName:String) {
         when (loginMethod) {
             UserSessionInterface.LOGIN_METHOD_EMAIL -> onSuccessRegisterEmail(userId, name, email)
             UserSessionInterface.LOGIN_METHOD_PHONE -> onSuccessRegisterPhone()
             UserSessionInterface.LOGIN_METHOD_GOOGLE -> onSuccessRegisterGoogle()
             UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onSuccessRegisterFacebook()
         }
+        sendSuccessRegisterToMoengage(userId, name, email, loginMethod, phoneNumber, isGoldMerchant, shopId,shopName)
     }
 
     //#R7
@@ -501,6 +502,10 @@ class RegisterAnalytics @Inject constructor() {
         TrackApp.getInstance().appsFlyer.sendAppsflyerRegisterEvent(userId.toString(), EMAIL_METHOD)
         TrackApp.getInstance().moEngage.sendMoengageRegisterEvent(name, "")
         sendBranchRegisterEvent(email)
+    }
+
+    private fun sendSuccessRegisterToMoengage(userId: Int, name: String, email: String, loginMethod: String, phoneNumber: String, isGoldMerchant: Boolean, shopId: String,shopName:String){
+        TrackApp.getInstance().moEngage.sendMoengageRegisterEvent(name, userId.toString(),email, loginMethod, phoneNumber,  isGoldMerchant, shopId,shopName)
     }
 
     private fun sendBranchRegisterEvent(email: String) {
