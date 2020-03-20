@@ -7,7 +7,6 @@ import android.view.View;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.purchase_platform.R;
-import com.tokopedia.purchase_platform.common.feature.promo_global.PromoGlobalViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.PromoCheckoutViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentButtonPaymentViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentDonationViewHolder;
@@ -35,8 +34,6 @@ public class ShipmentItemDecoration extends RecyclerView.ItemDecoration {
         RecyclerView.ViewHolder viewHolder = parent.getChildViewHolder(view);
         if (viewHolder instanceof ShipmentNotifierViewHolder) {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
-        } else if (viewHolder instanceof PromoGlobalViewHolder) {
-            outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_8);
         } else if (viewHolder instanceof ShipmentDonationViewHolder) {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_8);
         } else if (viewHolder instanceof PromoCheckoutViewHolder) {

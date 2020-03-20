@@ -72,14 +72,14 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     private var debounceJob: Job? = null
 
-    fun getOccCart() {
+    fun getOccCart(isFullRefresh: Boolean = true) {
         globalEvent.value = OccGlobalEvent.Normal
         getOccCartUseCase.execute({ orderData: OrderData ->
             orderProduct = orderData.cart.product
             orderShop = orderData.cart.shop
             kero = orderData.cart.kero
             val preference = orderData.preference
-//            _orderPreference = if (_orderPreference == null) {
+//            _orderPreference = if (isFullRefresh || _orderPreference == null) {
 //                OrderPreference(preference)
 //            } else {
 //                _orderPreference?.copy(preference = preference)
@@ -172,7 +172,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                     if (!shippingRecommendationData.errorId.isNullOrEmpty() && !shippingRecommendationData.errorMessage.isNullOrEmpty()) {
                                         shipping = Shipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = shippingRecommendationData.errorMessage, shippingRecommendationData = null)
                                     } else {
-                                        if (shipping != null) {
+                                        if (shipping?.serviceId != null && shipping.shipperProductId != null) {
                                             val shippingDurationViewModels = shippingRecommendationData.shippingDurationViewModels
                                             var selectedShippingDurationViewModel: ShippingDurationUiModel? = null
                                             for (shippingDurationViewModel in shippingDurationViewModels) {
@@ -675,7 +675,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
                                     if (response != null && statusSuccess) {
                                         // trigger refresh
-                                        globalEvent.value = OccGlobalEvent.TriggerRefresh
+                                        globalEvent.value = OccGlobalEvent.TriggerRefresh(false)
                                     } else {
                                         //show error
                                         if (messageError.isNullOrBlank()) {
@@ -743,7 +743,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             ))
             globalEvent.value = OccGlobalEvent.Loading
             updateCartOccUseCase.execute(param, { updateCartOccGqlResponse: UpdateCartOccGqlResponse ->
-                globalEvent.value = OccGlobalEvent.TriggerRefresh
+                globalEvent.value = OccGlobalEvent.TriggerRefresh(true)
             }, { throwable: Throwable ->
                 throwable.printStackTrace()
                 if (throwable is MessageErrorException && throwable.message != null) {

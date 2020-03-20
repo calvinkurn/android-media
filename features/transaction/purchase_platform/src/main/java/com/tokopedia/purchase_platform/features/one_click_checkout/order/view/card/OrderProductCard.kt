@@ -33,7 +33,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             ImageHandler.loadImageFitCenter(view.context, view.iv_product_image, product.productImageUrl)
             view.tv_product_name.text = product.productName
             showPrice()
-            view.et_note.filters = arrayOf(InputFilter.LengthFilter(100))
+            view.et_note.filters = arrayOf(InputFilter.LengthFilter(144))
             view.et_note.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     orderSummaryAnalytics.eventClickSellerNotes(product.productId.toString(), shop.shopId.toString())

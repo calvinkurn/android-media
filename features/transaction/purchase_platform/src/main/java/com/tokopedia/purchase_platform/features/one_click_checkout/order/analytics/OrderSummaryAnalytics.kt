@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.analytics
 
 import android.content.Context
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.*
 import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics
@@ -201,6 +202,17 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
                 EventCategory.ORDER_SUMMARY,
                 EventAction.CLICK_BACK_FROM_OSP
         )
+    }
+
+    fun eventViewOrderSummaryPage(ee: Map<String, Any>) {
+        val dataLayer = DataLayer.mapOf(
+                Key.EVENT, EventName.CHECKOUT,
+                Key.EVENT_CATEGORY, EventCategory.ORDER_SUMMARY,
+                Key.EVENT_ACTION, EventAction.VIEW_ORDER_SUMMARY_PAGE,
+                Key.EVENT_LABEL, "success",
+                Key.E_COMMERCE, ee
+        )
+        sendEnhancedEcommerce(dataLayer)
     }
 
     companion object {

@@ -193,7 +193,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
                 is OccGlobalEvent.TriggerRefresh -> {
                     progressDialog?.dismiss()
-                    refresh(false)
+                    refresh(false, isFullRefresh = it.isFullRefresh)
                 }
                 is OccGlobalEvent.Error -> {
                     progressDialog?.dismiss()
@@ -227,7 +227,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                             priceValidationDialog.setPrimaryCTAText(messageData.action)
                             priceValidationDialog.setPrimaryCTAClickListener {
                                 priceValidationDialog.dismiss()
-                                refresh()
+                                refresh(isFullRefresh = false)
                             }
                             priceValidationDialog.show()
                             val eventLabelBuilder = StringBuilder()
@@ -245,7 +245,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
             }
         })
-        if (viewModel.orderProduct.parentId == 0) {
+        if (viewModel.orderProduct.productId == 0) {
             refresh()
         }
     }
@@ -588,13 +588,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         global_error.visible()
     }
 
-    private fun refresh(shouldHideAll: Boolean = true) {
+    private fun refresh(shouldHideAll: Boolean = true, isFullRefresh: Boolean = true) {
         swipe_refresh_layout.isRefreshing = true
         if (shouldHideAll) {
             main_content.gone()
             global_error.gone()
         }
-        viewModel.getOccCart()
+        viewModel.getOccCart(isFullRefresh = isFullRefresh)
     }
 
     override fun onStop() {
