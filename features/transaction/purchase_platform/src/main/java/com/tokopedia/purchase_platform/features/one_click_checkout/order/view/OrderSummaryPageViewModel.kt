@@ -18,6 +18,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccGlobalEvent
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ProfilesItemModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.UpdateCartOccCartRequest
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.UpdateCartOccGqlResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.UpdateCartOccProfileRequest
@@ -53,7 +54,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                     private val ratesResponseStateConverter: RatesResponseStateConverter,
                                                     private val editAddressUseCase: EditAddressUseCase,
                                                     private val checkoutOccUseCase: CheckoutOccUseCase,
-                                                    private val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher) {
+                                                    private val userSessionInterface: UserSessionInterface,
+                                                    val orderSummaryAnalytics: OrderSummaryAnalytics) : BaseViewModel(dispatcher) {
 
     var orderProduct: OrderProduct = OrderProduct()
     var orderShop: OrderShop = OrderShop()
@@ -839,6 +841,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     onSuccessCheckout(paymentParameter)
                 } else {
                     val errorCode = checkoutOccGqlResponse.response.data.error.code
+                    orderSummaryAnalytics.eventClickBayarNotSuccess(errorCode)
                     if (errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_STOCK_EMPTY || errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_SHOP_CLOSED) {
                         globalEvent.value = OccGlobalEvent.CheckoutError(checkoutOccGqlResponse.response.data.error)
                     } else if (checkoutOccGqlResponse.response.data.error.additionalInfo?.priceValidation?.isUpdated == true && checkoutOccGqlResponse.response.data.error.additionalInfo.priceValidation.message != null) {
