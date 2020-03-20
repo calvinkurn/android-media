@@ -3,9 +3,8 @@ package com.tokopedia.topads.dashboard.view.listener
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.common.data.model.DataDeposit
-import com.tokopedia.topads.dashboard.data.model.DashboardPopulateResponse
-import com.tokopedia.topads.dashboard.data.model.DataStatistic
-import com.tokopedia.topads.dashboard.data.model.TotalAd
+import com.tokopedia.topads.dashboard.data.model.*
+import com.tokopedia.topads.data.response.AutoAdsResponse
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 
 /**
@@ -35,10 +34,14 @@ interface TopAdsDashboardView : CustomerView {
 
     fun onSuccessGetTicker(message: List<String>)
 
+    fun onSuccessAdsInfo(data: AutoAdsResponse.TopAdsGetAutoAds.Data)
+
     fun onErrorGetTicker(e: Throwable)
 
     fun onErrorGetAutoTopUpStatus(throwable: Throwable)
 
     fun onSuccessGetAutoTopUpStatus(data: AutoTopUpStatus)
+
+    fun onSuccessAdStatus(data: AdStatusResponse.TopAdsGetShopInfo.Data)
 
 }

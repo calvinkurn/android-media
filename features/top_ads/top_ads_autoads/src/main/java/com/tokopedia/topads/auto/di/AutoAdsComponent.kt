@@ -5,6 +5,7 @@ import com.tokopedia.topads.auto.di.module.AutoAdsModule
 import com.tokopedia.topads.auto.di.module.AutoAdsQueryModule
 import com.tokopedia.topads.auto.di.module.ViewModelModule
 import com.tokopedia.topads.auto.view.activity.AutoAdsRouteActivity
+import com.tokopedia.topads.auto.view.fragment.CreateAutoAdsFragment
 import com.tokopedia.topads.auto.view.fragment.DailyBudgetFragment
 import com.tokopedia.topads.auto.view.widget.AutoAdsWidgetView
 import dagger.Component
@@ -22,5 +23,7 @@ interface AutoAdsComponent {
     fun inject(dailyBudgetFragment: DailyBudgetFragment)
 
     fun inject(autoAdsWidgetView: AutoAdsWidgetView)
+
+    fun inject(createAutoAdsFragment: CreateAutoAdsFragment)
 
 }

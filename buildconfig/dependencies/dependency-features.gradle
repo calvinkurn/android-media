@@ -160,6 +160,7 @@ ext {
 
             topAdsDashboard                 : ":features:top_ads:top_ads_dashboard",
             topAdsFreeClaim                 : ":features:top_ads:top_ads_free_claim",
+            topAdsCreate                 : ":features:top_ads:top_ads_create",
             topAdsAutoAds                : ":features:top_ads:top_ads_autoads",
             topAdsDetailSheet               : ":features:top_ads:top_ads_detail_sheet",
             topAdsWidget                    : ":features:top_ads:top_ads_widget",
