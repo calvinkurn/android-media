@@ -224,13 +224,14 @@ class MainSliceProvider : SliceProvider() {
 
     override fun onCreateSliceProvider(): Boolean {
         contextNonNull = context.applicationContext ?: return false
-        LocalCacheHandler(context,APPLINK_DEBUGGER)
         remoteConfig = FirebaseRemoteConfigImpl(context)
+        LocalCacheHandler(context,APPLINK_DEBUGGER)
         loadString = contextNonNull.resources.getString(R.string.slice_loading)
         return true
     }
 
     fun getRemoteConfigRechargeSliceEnabler(context: Context): Boolean{
+        remoteConfig = FirebaseRemoteConfigImpl(context)
         return (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_OLD_PDP))
         ///return false
     }
