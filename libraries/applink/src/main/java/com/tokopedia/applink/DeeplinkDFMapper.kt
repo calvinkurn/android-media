@@ -61,6 +61,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_FLIGHT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PASSWORD
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DETAIL_TALK_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LIVENESS_DETECTION
+import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION_BUYER
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
 import java.io.BufferedReader
@@ -228,6 +229,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(SALAM_UMRAH_HOME_PAGE) }, DFM_BASE, R.string.title_salam))
             add(DFP({ it.startsWith(SALAM_ORDER_DETAIL) }, DFM_BASE, R.string.title_salam))
             add(DFP({ it.startsWith(NOTIFICATION) }, DFM_BASE, R.string.title_notification_center))
+            add(DFP({ it.startsWith(NOTIFICATION_BUYER) }, DFM_BASE, R.string.title_notification_center))
 
             add(DFP({ it.startsWith(HOME_WISHLIST) }, DFM_BASE, R.string.title_wishlist))
 
