@@ -51,7 +51,7 @@ class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener:
                     else bannerView.bannerSeeAll.text = ""
                     bannerView.setPromoList(promoUrls)
                     bannerView.buildView()
-                    bannerView.bannerSeeAll.setTextSize(TypedValue.COMPLEX_UNIT_SP,10f)
+                    bannerView.bannerSeeAll.setTextSize(TypedValue.COMPLEX_UNIT_SP,12f)
                     bannerView.bannerSeeAll.setTextColor(itemView.resources.getColor(R.color.Green_G500))
                     bannerView.bannerSeeAll.setTypeface(null, Typeface.BOLD)
 
