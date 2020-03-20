@@ -35,6 +35,11 @@ class TravelHomepageSectionViewHolder(itemView: View,
                         section_title.text = element.title
                     } else section_title.hide()
 
+                    if (element.subtitle.isNotEmpty()) {
+                        travel_homepage_section_subtitle.show()
+                        travel_homepage_section_subtitle.text = element.subtitle
+                    } else travel_homepage_section_subtitle.hide()
+
                     if (element.seeAllUrl.isNotEmpty()) {
                         section_see_all.show()
                         section_see_all.text = element.layoutData.metaText

@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/Neutral_N700_96"
-            app:typographyType="heading_3"
+            app:typographyType="heading_2"
             tools:text="Travel Activity" />
 
         <com.tokopedia.unifyprinciples.Typography

@@ -1,5 +1,7 @@
 package com.tokopedia.travelhomepage.homepage.presentation.adapter.viewholder
 
+import android.graphics.Typeface
+import android.util.TypedValue
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.banner.BannerView
@@ -49,6 +51,9 @@ class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener:
                     else bannerView.bannerSeeAll.text = ""
                     bannerView.setPromoList(promoUrls)
                     bannerView.buildView()
+                    bannerView.bannerSeeAll.setTextSize(TypedValue.COMPLEX_UNIT_SP,10f)
+                    bannerView.bannerSeeAll.setTextColor(itemView.resources.getColor(R.color.Green_G500))
+                    bannerView.bannerSeeAll.setTypeface(null, Typeface.BOLD)
 
                     currentPosition = element.layoutData.position
                 }

@@ -78,6 +78,7 @@ class TravelHomepageMapper {
             sectionItems.add(sectionItem)
         }
         val model = TravelHomepageSectionModel(title = layoutData.title,
+                subtitle = layoutData.subtitle,
                 seeAllUrl = layoutData.appUrl,
                 list = sectionItems)
         model.layoutData = layoutData

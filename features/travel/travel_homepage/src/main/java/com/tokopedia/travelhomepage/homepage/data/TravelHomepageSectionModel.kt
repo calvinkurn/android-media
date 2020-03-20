@@ -8,6 +8,7 @@ import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.Travel
 
 data class TravelHomepageSectionModel(
         var title: String = "",
+        var subtitle: String = "",
         var seeAllUrl: String = "",
         var list: List<Item> = listOf(),
         var type: Int = 0,

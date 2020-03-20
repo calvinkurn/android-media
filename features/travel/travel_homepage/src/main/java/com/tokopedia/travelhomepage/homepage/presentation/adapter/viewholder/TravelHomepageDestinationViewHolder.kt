@@ -35,6 +35,11 @@ class TravelHomepageDestinationViewHolder(itemView: View, private val onItemBind
                         section_title.text = element.meta.title
                     } else section_title.hide()
 
+                    if (element.layoutData.subtitle.isNotEmpty()) {
+                        travel_homepage_destination_subtitle.show()
+                        travel_homepage_destination_subtitle.text = element.layoutData.subtitle
+                    } else travel_homepage_destination_subtitle.hide()
+
                     if (!::adapter.isInitialized || currentPosition != element.layoutData.position) {
                         currentPosition = element.layoutData.position
                         adapter = TravelHomepageDestinationAdapter(element.destination, travelHomepageActionListener,
