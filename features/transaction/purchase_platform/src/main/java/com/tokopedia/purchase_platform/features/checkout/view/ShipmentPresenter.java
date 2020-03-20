@@ -1962,4 +1962,25 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     }
                 }));
     }
+
+    private boolean isLastAppliedPromo(String promoCode) {
+        if (validateUsePromoRevampUiModel != null) {
+            List<PromoCheckoutVoucherOrdersItemUiModel> voucherOrders = validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels();
+            if (voucherOrders.size() > 0) {
+                for (PromoCheckoutVoucherOrdersItemUiModel voucherOrder : voucherOrders) {
+                    if (voucherOrder.getCode() != null && !voucherOrder.getCode().equals(promoCode))
+                        return false;
+                }
+            }
+
+            List<String> codes = validateUsePromoRevampUiModel.getPromoUiModel().getCodes();
+            if (!codes.isEmpty()) {
+                for (String code : codes) {
+                    if (!code.equals(promoCode)) return false;
+                }
+            }
+        }
+
+        return true;
+    }
 }
