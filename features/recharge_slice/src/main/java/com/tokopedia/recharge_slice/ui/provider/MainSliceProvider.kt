@@ -232,8 +232,7 @@ class MainSliceProvider : SliceProvider() {
 
     fun getRemoteConfigRechargeSliceEnabler(context: Context): Boolean{
         remoteConfig = FirebaseRemoteConfigImpl(context)
-        return (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_OLD_PDP))
-        ///return false
+        return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_RECHARGE))
     }
 
     companion object {

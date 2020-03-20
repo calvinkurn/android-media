@@ -354,4 +354,8 @@
         <key>app_semua_category_enable</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>android_mainapp_enable_slice_recharge</key>
+        <value>false</value>
+    </entry>
 </defaultsMap>
