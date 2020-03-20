@@ -23,7 +23,6 @@ import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant
 import com.tokopedia.sellerhome.settings.analytics.SettingTrackingListener
 import com.tokopedia.sellerhome.settings.analytics.sendShopInfoImpressionData
-import com.tokopedia.sellerhome.settings.data.constant.SellerBaseUrl
 import com.tokopedia.sellerhome.settings.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.sellerhome.settings.view.uimodel.DividerUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.IndentedSettingTitleUiModel
@@ -123,19 +122,6 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                         resources.getString(R.string.setting_menu_set_shipment_method),
                         clickApplink = ApplinkConst.SELLER_SHIPPING_EDITOR,
                         settingTypeInfix = SettingTrackingConstant.SHOP_SETTING),
-                DividerUiModel(DividerType.THIN_INDENTED),
-                IndentedSettingTitleUiModel(resources.getString(R.string.setting_menu_exclusive_feature)),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_cash_on_delivery_service),
-                        clickApplink = ApplinkConstInternalMarketplace.COD,
-                        settingTypeInfix = SettingTrackingConstant.SHOP_SETTING),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_priority_order),
-                        settingTypeInfix = SettingTrackingConstant.SHOP_SETTING) {
-                    val intent = RouteManager.getIntent(context, ApplinkConst.WEBVIEW)
-                    intent.putExtra(OtherMenuFragment.URL_KEY, SellerBaseUrl.SELLER_HOSTNAME + SellerBaseUrl.SELLER_ORDER_PRIORITY)
-                    context?.startActivity(intent)
-                },
                 DividerUiModel(DividerType.THICK),
                 SettingTitleMenuUiModel(resources.getString(R.string.setting_menu_account_setting), R.drawable.ic_account),
                 MenuItemUiModel(
