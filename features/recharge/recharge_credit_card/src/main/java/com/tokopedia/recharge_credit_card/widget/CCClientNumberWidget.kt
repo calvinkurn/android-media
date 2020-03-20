@@ -2,6 +2,7 @@ package com.tokopedia.recharge_credit_card.widget
 
 import android.content.Context
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
@@ -23,10 +24,12 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
         View.inflate(context, R.layout.widget_cc_number, this)
 
         cc_text_input.textFieldInput.clearFocus()
-        cc_text_input.textFiedlLabelText.text = context.getString(R.string.cc_label_input_number)
 
+        cc_text_input.textFiedlLabelText.text = context.getString(R.string.cc_label_input_number)
         cc_text_input.setSecondIcon(R.drawable.unify_clear_ic)
         cc_text_input.textFieldIcon2.visibility = View.GONE
+
+        setLengthMaxTextField()
 
         cc_text_input.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(input: Editable?) {
@@ -85,6 +88,12 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
         cc_button_next.setOnClickListener {
             listener.onClickNextButton(cc_text_input.textFieldInput.text.toString())
         }
+    }
+
+    private fun setLengthMaxTextField() {
+        val filterArray = arrayOfNulls<InputFilter>(1)
+        filterArray[0] = InputFilter.LengthFilter(TOTAL_SYMBOLS)
+        cc_text_input.textFieldInput.filters = filterArray
     }
 
     fun setErrorTextField(message: String) {

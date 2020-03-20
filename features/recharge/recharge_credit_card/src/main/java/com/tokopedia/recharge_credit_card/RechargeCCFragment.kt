@@ -3,6 +3,7 @@ package com.tokopedia.recharge_credit_card
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputFilter
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -83,7 +84,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        checkoutPassDataState?.let {
+        if (::checkoutPassDataState.isInitialized) {
             saveInstanceManager.put(EXTRA_STATE_CHECKOUT_PASS_DATA, checkoutPassDataState)
         }
     }
@@ -98,7 +99,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
         initializedViewModel()
         getDataBundle()
         getTickerData()
-
+        
         cc_widget_client_number.setListener(object : CCClientNumberWidget.ActionListener {
             override fun onClickNextButton(clientNumber: String) {
                 creditCardAnalytics.clickToConfirmationPage(
