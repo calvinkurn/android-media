@@ -539,7 +539,13 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private void createAndCallSendScreen(){
-        WeaveInterface sendScrWeave = this::sendScreen;
+        WeaveInterface sendScrWeave =  new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return sendScreen();
+            }
+        };
         Weaver.Companion.executeWeaveCoRoutine(sendScrWeave,
                 new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, remoteConfig));
     }
