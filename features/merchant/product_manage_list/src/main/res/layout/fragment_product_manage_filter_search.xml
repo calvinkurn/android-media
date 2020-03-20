@@ -24,12 +24,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginRight="@dimen/layout_lvl2"
-        android:clickable="true"
-        android:focusable="true"
-        android:background="@drawable/bg_corner"
-        android:textColorHint="@android:color/darker_gray"
-        android:textSize="@dimen/sp_16"
         android:visibility="gone"
+        android:layout_marginTop="@dimen/dp_10"
         app:layout_constraintTop_toBottomOf="@id/header_divider"/>
 
     <ImageView
@@ -59,8 +55,11 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/filterCheckListRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/filterSearchBar"/>
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        app:layout_constraintTop_toBottomOf="@id/filterSearchBar"
+        app:layout_constraintBottom_toTopOf="@id/bottomsheet_button_divider"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/bottomsheet_button_divider"
