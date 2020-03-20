@@ -25,7 +25,6 @@ import android.view.Window
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Lifecycle
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -47,8 +46,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.gm.common.constant.IMG_URL_POWER_MERCHANT_IDLE_POPUP
-import com.tokopedia.gm.common.constant.IMG_URL_REGULAR_MERCHANT_POPUP
 import com.tokopedia.gm.common.constant.URL_POWER_MERCHANT_SCORE_TIPS
 import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
@@ -550,33 +547,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
     }
 
-    private fun showRegularMerchantBottomSheet(featureName: String) {
-        val title = getString(com.tokopedia.gm.common.R.string.bottom_sheet_regular_title, featureName)
-        val description = getString(com.tokopedia.gm.common.R.string.bottom_sheet_regular_desc, featureName)
-        val buttonName = getString(com.tokopedia.gm.common.R.string.bottom_sheet_regular_btn)
-        showBottomSheet(title, IMG_URL_REGULAR_MERCHANT_POPUP, description, buttonName)
-    }
-
-    private fun showIdlePowerMerchantBottomSheet(featureName: String) {
-        val title = getString(com.tokopedia.gm.common.R.string.bottom_sheet_idle_title, featureName)
-        val description = getString(com.tokopedia.gm.common.R.string.bottom_sheet_idle_desc, featureName)
-        val buttonName = getString(com.tokopedia.gm.common.R.string.bottom_sheet_idle_btn)
-        showBottomSheet(title, IMG_URL_POWER_MERCHANT_IDLE_POPUP, description, buttonName)
-    }
-
-    private fun showBottomSheet(title: String, imageUrl: String, description: String, buttonName: String) {
-        val model = MerchantCommonBottomSheet.BottomSheetModel(
-            title,
-            description,
-            imageUrl,
-            buttonName,
-            ""
-        )
-        val bottomSheet = MerchantCommonBottomSheet.newInstance(model)
-        bottomSheet.setListener(this)
-        bottomSheet.show(childFragmentManager, "merchant_warning_bottom_sheet")
-    }
-
     private fun onErrorDeleteProduct(deleteProductResult: DeleteProductResult) {
         Toaster.make(coordinatorLayout, getString(R.string.product_manage_delete_product_fail),
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
@@ -614,12 +584,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             val onClickActionLabel = View.OnClickListener { listener.invoke() }
             Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, actionLabel, onClickActionLabel)
         }
-    }
-
-    private fun showSnackBarWithAction(message: String, listener: () -> Unit) {
-        NetworkErrorHelper.createSnackbarWithAction(activity, message) { listener.invoke() }
-            .showRetrySnackbar()
-
     }
 
     private fun showLoadingProgress() {
@@ -1032,19 +996,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 .toString()
         val intent = RouteManager.getIntent(context, uri)
         startActivityForResult(intent, SET_CASHBACK_REQUEST_CODE)
-    }
-
-    private fun showDialogVariantPriceLocked() {
-        activity?.let {
-            val alertDialogBuilder = AlertDialog.Builder(it, com.tokopedia.design.R.style.AppCompatAlertDialogStyle)
-                .setTitle(getString(com.tokopedia.product.manage.item.R.string.product_price_locked))
-                .setMessage(getString(com.tokopedia.product.manage.item.R.string.product_price_locked_manage_desc))
-                .setPositiveButton(getString(com.tokopedia.design.R.string.close)) { _, _ ->
-                    // no op, just dismiss
-                }
-            val dialog = alertDialogBuilder.create()
-            dialog.show()
-        }
     }
 
     private fun goToDuplicateProduct(productId: String) {
