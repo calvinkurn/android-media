@@ -1432,7 +1432,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
 
         return ValidateUsePromoRequest(
-                codes = globalPromo,
+                codes = globalPromo.toMutableList(),
                 state = PARAM_CART,
                 cartType = PARAM_DEFAULT,
                 orders = listOrder)

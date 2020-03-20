@@ -1259,8 +1259,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
             String defaultTitlePromoButton = data.getStringExtra(ARGS_CLEAR_PROMO_RESULT);
             if (defaultTitlePromoButton != null) {
-                // TODO : Check promo
-                // TODO : Hit validate use after clear promo if still has BBO. Make sure only send BBO code as promo param
+                shipmentAdapter.checkHasSelectAllCourier(false);
             }
         }
     }
@@ -2404,6 +2403,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public ValidateUsePromoRequest generateValidateUsePromoRequest() {
+        // TODO : Add promo code from BBO
+        // TODO : Do param generation only once, then store on presenter
+        // TODO : Remove promo code on validate use request after evry clear promo (so far only BBO & courier promo case)
+        //  to make sure only latest state promo sent when hit checkout
         ValidateUsePromoRequest validateUsePromoRequest = new ValidateUsePromoRequest();
         ArrayList<OrdersItem> listOrderItem = new ArrayList<>();
 
@@ -2625,6 +2628,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void removeIneligiblePromo(int checkoutType, ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList) {
+        // TODO : remove promo code from validate use param
         doCheckout(checkoutType);
     }
 
