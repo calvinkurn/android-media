@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
@@ -76,7 +77,10 @@ class ShopHomeMultipleImageColumnViewHolder(
     }
 
     private fun getIndexRatio(data: ShopHomeDisplayWidgetUiModel, index: Int): Int {
-        return data.header.ratio.split(":")[index].toInt()
+        if(data.header.ratio.isNotEmpty()) {
+            return data.header.ratio.split(":")[index].toIntOrZero()
+        }
+        return 0
     }
 
     private fun getHeightRatio(element: ShopHomeDisplayWidgetUiModel): Float {

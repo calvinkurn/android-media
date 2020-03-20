@@ -2,13 +2,13 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.adapter.PaddingItemDecorationShopPage
 import com.tokopedia.shop.home.view.adapter.ShopHomeSliderSquareAdapter
@@ -70,12 +70,15 @@ class ShopHomeSliderSquareViewHolder(
     }
 
     private fun getIndexRatio(data: ShopHomeDisplayWidgetUiModel, index: Int): Int {
-        return data.header.ratio.split(":")[index].toInt()
+        if(data.header.ratio.isNotEmpty()) {
+            return data.header.ratio.split(":")[index].toIntOrZero()
+        }
+        return 0
     }
 
-    private fun getHeightRatio(element: ShopHomeDisplayWidgetUiModel): Float {
-        val indexZero = getIndexRatio(element, 0).toFloat()
-        val indexOne = getIndexRatio(element, 1).toFloat()
+    private fun getHeightRatio(data: ShopHomeDisplayWidgetUiModel): Float {
+        val indexZero = getIndexRatio(data, 0).toFloat()
+        val indexOne = getIndexRatio(data, 1).toFloat()
         return (indexOne / indexZero)
     }
 }
