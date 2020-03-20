@@ -4,6 +4,8 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.adapter.PaddingItemDecorationShopPage
 import com.tokopedia.shop.home.view.adapter.ShopHomeSliderSquareAdapter
@@ -45,7 +47,15 @@ class ShopHomeSliderSquareViewHolder(
         shopHomeSliderSquareAdapter.heightRatio = heightRatio
         shopHomeSliderSquareAdapter.parentPosition = adapterPosition
         shopHomeSliderSquareAdapter.submitList(element.data)
-        itemView.tgHeaderSliderSquare.text = element.header.title
+        itemView.tgHeaderSliderSquare?.apply {
+            val title = element.header.title
+            if(title.isEmpty()){
+                hide()
+            }else{
+                show()
+                text = title
+            }
+        }
     }
 
     private fun getIndexRatio(data: ShopHomeDisplayWidgetUiModel, index: Int): Int {

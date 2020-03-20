@@ -84,8 +84,9 @@ class ShopHomeCarousellProductViewHolder(
             textViewCta?.apply {
                 visibility = View.VISIBLE
                 text = MethodChecker.fromHtml(shopHomeCarousellProductUiModel.header.ctaText)
-
-                shopPageHomeProductClickListener.onCtaClicked(shopHomeCarousellProductUiModel)
+                setOnClickListener {
+                    shopPageHomeProductClickListener.onCtaClicked(shopHomeCarousellProductUiModel)
+                }
             }
         }
         adapterCarousell.shopHomeCarousellProductUiModel = shopHomeCarousellProductUiModel

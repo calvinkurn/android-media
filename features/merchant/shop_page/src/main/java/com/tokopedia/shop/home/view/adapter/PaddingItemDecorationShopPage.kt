@@ -24,14 +24,14 @@ class PaddingItemDecorationShopPage(private val typeWidget: String): RecyclerVie
             DISPLAY_SINGLE_COLUMN, DISPLAY_DOUBLE_COLUMN, DISPLAY_TRIPLE_COLUMN -> {
                 if (position > 0) {
                     parent.adapter.also {
-                        outRect.left = R.dimen.dp_2.toPx()
+                        outRect.left = 8.toPx()
                     }
                 }
             }
             SLIDER_SQUARE_BANNER -> {
                 if (position > 0) {
                     parent.adapter.also {
-                        outRect.left = R.dimen.dp_8.toPx()
+                        outRect.left = 8.toPx()
                     }
                 }
             }

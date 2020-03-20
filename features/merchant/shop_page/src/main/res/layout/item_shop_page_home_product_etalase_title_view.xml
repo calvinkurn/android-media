@@ -15,10 +15,12 @@
     <com.tokopedia.unifyprinciples.Typography
         app:typographyType="heading_4"
         android:id="@+id/text"
+        android:textColor="@color/clr_31353B"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:ellipsize="end"
         style="@style/TextView.Title.Bold"
-
         tools:text="Semua Etalase"/>
 
     <ImageView

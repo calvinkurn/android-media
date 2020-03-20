@@ -145,8 +145,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onPause() {
-        super.onPause()
         shopPageHomeTracking.sendAllTrackingQueue()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        viewModel.productListData.removeObservers(this)
+        viewModel.shopHomeLayoutData.removeObservers(this)
+        viewModel.checkWishlistData.removeObservers(this)
+        viewModel.flush()
+        super.onDestroy()
     }
 
     override fun loadInitialData() {
@@ -228,7 +236,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 dataModelAtc.cartId.toString(),
                 shopAttribution,
                 isLogin,
-                shopPageHomeLayoutUiModel?.layoutId ?: "",
+                shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
                 shopHomeProductViewModel?.name ?: "",
                 shopHomeProductViewModel?.id ?: "",
                 shopHomeProductViewModel?.displayedPrice ?: "",
@@ -346,7 +354,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         shopPageHomeTracking.impressionDisplayWidget(
                 false,
                 shopId,
-                shopPageHomeLayoutUiModel?.layoutId ?: "",
+                shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
                 displayWidgetUiModel?.name ?: "",
                 displayWidgetUiModel?.widgetId ?: "",
                 parentPosition + 1,
@@ -374,7 +382,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         shopPageHomeTracking.clickDisplayWidget(
                 false,
                 shopId,
-                shopPageHomeLayoutUiModel?.layoutId ?: "",
+                shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
                 displayWidgetUiModel?.name ?: "",
                 displayWidgetUiModel?.widgetId ?: "",
                 parentPosition + 1,
@@ -394,7 +402,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         shopPageHomeTracking.clickDetailMerchantVoucher(
                 isOwner,
                 shopId,
-                shopPageHomeLayoutUiModel?.layoutId ?: "",
+                shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
                 parentPosition + 1,
                 position + 1,
                 merchantVoucherViewModel,
@@ -414,7 +422,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         shopPageHomeTracking.clickSeeAllMerchantVoucher(
                 isOwner,
                 shopId,
-                shopPageHomeLayoutUiModel?.layoutId ?: "",
+                shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
                 customDimensionShopPage)
         context?.let {
             val intentMerchantVoucherList = MerchantVoucherListActivity.createIntent(
@@ -430,7 +438,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             parentPosition: Int,
             listVoucher: List<MerchantVoucherViewModel>
     ) {
-        shopPageHomeTracking.onImpressionVoucherList(isOwner, parentPosition + 1, listVoucher, customDimensionShopPage)
+        shopPageHomeTracking.onImpressionVoucherList(
+                isOwner,
+                shopId,
+                shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
+                parentPosition + 1,
+                listVoucher,
+                customDimensionShopPage
+        )
     }
 
     override fun onAllProductItemClicked(itemPosition: Int, shopHomeProductViewModel: ShopHomeProductViewModel?) {
@@ -439,7 +454,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopPageHomeTracking.clickProduct(
                     isOwner,
                     isLogin,
-                    shopPageHomeLayoutUiModel?.layoutId ?: "",
+                    shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
                     shopHomeProductViewModel.name ?: "",
                     shopHomeProductViewModel.id ?: "",
                     shopHomeProductViewModel.displayedPrice ?: "",
@@ -461,7 +476,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopPageHomeTracking.impressionProduct(
                     isOwner,
                     isLogin,
-                    shopPageHomeLayoutUiModel?.layoutId ?: "",
+                    shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
                     shopHomeProductViewModel.name ?: "",
                     shopHomeProductViewModel.id ?: "",
                     shopHomeProductViewModel.displayedPrice ?: "",
@@ -501,7 +516,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopPageHomeTracking.clickProduct(
                     isOwner,
                     isLogin,
-                    shopPageHomeLayoutUiModel?.layoutId ?: "",
+                    shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
                     shopHomeProductViewModel.name ?: "",
                     shopHomeProductViewModel.id ?: "",
                     shopHomeProductViewModel.displayedPrice ?: "",
@@ -526,7 +541,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         shopPageHomeTracking.impressionProduct(
                 isOwner,
                 isLogin,
-                shopPageHomeLayoutUiModel?.layoutId ?: "",
+                shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
                 shopHomeProductViewModel?.name ?: "",
                 shopHomeProductViewModel?.id ?: "",
                 shopHomeProductViewModel?.displayedPrice ?: "",
@@ -592,9 +607,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         shopPageHomeTracking.clickWishlist(
                 isOwner,
                 isWishlist,
-                shopPageHomeLayoutUiModel?.layoutId ?: "",
+                shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
                 isLogin,
-                shopHomeCarousellProductUiModel?.name ?: "",
+                shopHomeCarousellProductUiModel?.header?.title ?: "",
                 shopHomeCarousellProductUiModel?.widgetId ?: "",
                 shopHomeProductViewModel.id ?: "",
                 customDimensionShopPageProduct
@@ -604,7 +619,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     override fun onCtaClicked(shopHomeCarouselProductUiModel: ShopHomeCarousellProductUiModel?) {
 
         shopPageHomeTracking.clickCta(
-                layoutId = shopPageHomeLayoutUiModel?.layoutId.toString(),
+                layoutId = shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
                 widgetName = shopHomeCarouselProductUiModel?.name.toString(),
                 widgetId = shopHomeCarouselProductUiModel?.widgetId.toString(),
                 appLink = shopHomeCarouselProductUiModel?.header?.ctaLink.toString(),
@@ -614,7 +629,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
 
         context?.let {
-            RouteManager.route(it, shopHomeCarouselProductUiModel?.header?.ctaText)
+            RouteManager.route(it, shopHomeCarouselProductUiModel?.header?.ctaLink)
         }
     }
 
