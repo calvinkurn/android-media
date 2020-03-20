@@ -74,8 +74,8 @@ class ShopHomePageYoutubePlayerActivity : AppCompatActivity(), YouTubePlayer.OnI
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         youtubePlayerScreen?.release()
+        super.onDestroy()
     }
 
     private fun setupActionBar() {
