@@ -108,7 +108,7 @@ class VariantSheetView(
 
     override fun onVariantClicked(variantOptions: VariantOptionWithAttribute) {
         variantSheetUiModel?.let {
-            it.mapOfSelectedVariants[variantOptions.variantOptionIdentifier] = variantOptions.variantId
+            it.mapOfSelectedVariants[variantOptions.variantCategoryKey] = variantOptions.variantId
         }
 
         val isPartialSelected = variantSheetUiModel?.isPartialySelected() ?: false
