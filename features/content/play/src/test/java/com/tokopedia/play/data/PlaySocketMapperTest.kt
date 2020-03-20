@@ -21,7 +21,7 @@ class PlaySocketMapperTest {
         playSocketMapper = PlaySocketMapper(WebSocketResponse(
                 type = type,
                 code = 200,
-                jsonObject = jsonObject))
+                jsonElement = jsonObject))
         return playSocketMapper.mapping()
     }
 

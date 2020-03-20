@@ -4,7 +4,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
+import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.view.event.ScreenStateEvent
+import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.PlayChatUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
@@ -35,6 +37,8 @@ class ChatListComponentTest {
     private val testDispatcher = TestCoroutineDispatcher()
     private val coroutineScope = CoroutineScope(testDispatcher)
 
+    private val modelBuilder = ModelBuilder()
+
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
@@ -49,7 +53,73 @@ class ChatListComponentTest {
     }
 
     @Test
-    fun `test when new chat incoming`() = runBlockingTest(testDispatcher) {
+    fun `given keyboard is hidden, when channel is changed to live`() = runBlockingTest(testDispatcher) {
+        val mockVideoStream = modelBuilder.buildVideoStreamUiModel(
+                channelType = PlayChannelType.Live
+        )
+
+        val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                channelType = PlayChannelType.Live
+        )
+
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoStreamChanged(mockVideoStream, mockStateHelper))
+        verify { component.uiView.show() }
+        confirmVerified(component.uiView)
+    }
+
+    @Test
+    fun `given keyboard is hidden, when channel is changed to vod`() = runBlockingTest(testDispatcher) {
+        val mockVideoStream = modelBuilder.buildVideoStreamUiModel(
+                channelType = PlayChannelType.VOD
+        )
+
+        val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                channelType = PlayChannelType.VOD
+        )
+
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoStreamChanged(mockVideoStream, mockStateHelper))
+        verify { component.uiView.hide() }
+        confirmVerified(component.uiView)
+    }
+
+    @Test
+    fun `given keyboard is shown, when channel is changed to live`() = runBlockingTest(testDispatcher) {
+        val mockVideoStream = modelBuilder.buildVideoStreamUiModel(
+                channelType = PlayChannelType.Live
+        )
+
+        val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                channelType = PlayChannelType.Live,
+                bottomInsets = modelBuilder.buildBottomInsetsMap(
+                        keyboardState = modelBuilder.buildBottomInsetsState(isShown = true)
+                )
+        )
+
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoStreamChanged(mockVideoStream, mockStateHelper))
+        verify { component.uiView.show() }
+        confirmVerified(component.uiView)
+    }
+
+    @Test
+    fun `given keyboard is shown, when channel is changed to vod`() = runBlockingTest(testDispatcher) {
+        val mockVideoStream = modelBuilder.buildVideoStreamUiModel(
+                channelType = PlayChannelType.VOD
+        )
+
+        val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                channelType = PlayChannelType.VOD,
+                bottomInsets = modelBuilder.buildBottomInsetsMap(
+                        keyboardState = modelBuilder.buildBottomInsetsState(isShown = true)
+                )
+        )
+
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoStreamChanged(mockVideoStream, mockStateHelper))
+        verify { component.uiView.hide() }
+        confirmVerified(component.uiView)
+    }
+
+    @Test
+    fun `when there is new incoming chat`() = runBlockingTest(testDispatcher) {
         val mockChat = PlayChatUiModel(
                 messageId = "1",
                 userId = "1251",
@@ -60,56 +130,6 @@ class ChatListComponentTest {
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.IncomingChat(mockChat))
         verify { component.uiView.showChat(mockChat) }
-        confirmVerified(component.uiView)
-    }
-
-    @Test
-    fun `test when video property is live`() = runBlockingTest(testDispatcher) {
-        val mockVideoProp = VideoPropertyUiModel(
-                type = PlayChannelType.Live,
-                state = PlayVideoState.Playing
-        )
-
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
-        verify { component.uiView.show() }
-        confirmVerified(component.uiView)
-    }
-
-    @Test
-    fun `test when video property is VOD`() = runBlockingTest(testDispatcher) {
-        val mockVideoProp = VideoPropertyUiModel(
-                type = PlayChannelType.VOD,
-                state = PlayVideoState.Playing
-        )
-
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
-        verify { component.uiView.hide() }
-        confirmVerified(component.uiView)
-    }
-
-    @Test
-    fun `test when video stream is live`() = runBlockingTest(testDispatcher) {
-        val mockVideoStream = VideoStreamUiModel(
-                uriString = "",
-                channelType = PlayChannelType.Live,
-                isActive = true
-        )
-
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoStreamChanged(mockVideoStream))
-        verify { component.uiView.show() }
-        confirmVerified(component.uiView)
-    }
-
-    @Test
-    fun `test when video stream is VOD`() = runBlockingTest(testDispatcher) {
-        val mockVideoStream = VideoStreamUiModel(
-                uriString = "",
-                channelType = PlayChannelType.VOD,
-                isActive = true
-        )
-
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoStreamChanged(mockVideoStream))
-        verify { component.uiView.hide() }
         confirmVerified(component.uiView)
     }
 

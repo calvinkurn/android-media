@@ -11,3 +11,10 @@ val Map<BottomInsetsType, BottomInsetsState>.isAnyShown: Boolean
 
 val Map<BottomInsetsType, BottomInsetsState>.isAnyHidden: Boolean
     get() = values.any { it is BottomInsetsState.Hidden }
+
+val Map<BottomInsetsType, BottomInsetsState>.isKeyboardShown: Boolean
+    get() = this[BottomInsetsType.Keyboard]?.isShown == true
+
+val Map<BottomInsetsType, BottomInsetsState>.isAnyBottomSheetsShown: Boolean
+    get() = this[BottomInsetsType.VariantSheet]?.isShown == true ||
+            this[BottomInsetsType.ProductSheet]?.isShown == true
