@@ -119,7 +119,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         private const val KOL_COMMENT_CODE = 13
 
         private const val PARAM_CREATE_POST_URL: String = "PARAM_CREATE_POST_URL"
-        private const val PARAM_SHOP_ID: String= "PARAM_SHOP_ID"
+        private const val PARAM_SHOP_ID: String = "PARAM_SHOP_ID"
 
         //region Content Report Param
         private const val CONTENT_REPORT_RESULT_SUCCESS = "result_success"
@@ -163,6 +163,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         presenter.attachView(this)
         initVar()
+        userVisibleHint = false
         super.onViewCreated(view, savedInstanceState)
         isLoadingInitialData = true
     }
@@ -241,7 +242,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
-            when(requestCode) {
+            when (requestCode) {
                 OPEN_CONTENT_REPORT -> {
                     if (data!!.getBooleanExtra(CONTENT_REPORT_RESULT_SUCCESS, false)) {
                         onSuccessReportContent()
@@ -264,9 +265,16 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser && isResumed) {
+            onResume()
+        }
+    }
+
     override fun onResume() {
         super.onResume()
-        if (isLoadingInitialData) {
+        if (userVisibleHint && isLoadingInitialData) {
             loadInitialData()
         }
     }
@@ -527,7 +535,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 override fun onShareItemClicked(packageName: String) {
 
                 }
-            },"", iamgeUrl, url, description, title)
+            }, "", iamgeUrl, url, description, title)
         }.also {
             fragmentManager?.run {
                 it?.show(this)
@@ -602,7 +610,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onMediaGridClick(positionInFeed: Int, contentPosition: Int,
                                   redirectLink: String, isSingleItem: Boolean) {
         val model = adapter.data[positionInFeed] as? DynamicPostViewModel
-        if (!isSingleItem && model != null){
+        if (!isSingleItem && model != null) {
             RouteManager.route(
                     requireContext(),
                     UriUtil.buildUriAppendParam(
@@ -779,7 +787,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun getEmptyResultViewModel(): EmptyFeedShopViewModel {
-       return EmptyFeedShopViewModel()
+        return EmptyFeedShopViewModel()
     }
 
     private fun onSuccessReportContent() {
