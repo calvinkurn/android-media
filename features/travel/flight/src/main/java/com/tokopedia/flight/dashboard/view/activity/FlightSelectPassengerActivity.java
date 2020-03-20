@@ -1,8 +1,9 @@
 package com.tokopedia.flight.dashboard.view.activity;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -16,8 +17,8 @@ import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerVie
 public class FlightSelectPassengerActivity extends BaseSimpleActivity implements HasComponent<FlightDashboardComponent>, FlightSelectPassengerFragment.OnFragmentInteractionListener {
     public static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
 
-    public static Intent getCallingIntent(Activity activity, FlightPassengerViewModel viewModel) {
-        Intent intent = new Intent(activity, FlightSelectPassengerActivity.class);
+    public static Intent getCallingIntent(Context context, FlightPassengerViewModel viewModel) {
+        Intent intent = new Intent(context, FlightSelectPassengerActivity.class);
         intent.putExtra(EXTRA_PASS_DATA, viewModel);
         return intent;
     }
