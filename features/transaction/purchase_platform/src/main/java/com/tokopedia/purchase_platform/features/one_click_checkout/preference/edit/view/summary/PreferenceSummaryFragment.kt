@@ -29,9 +29,6 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.preference.ed
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.shipping.ShippingDurationFragment
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_preference_summary.*
-import kotlinx.android.synthetic.main.fragment_preference_summary.global_error
-import kotlinx.android.synthetic.main.fragment_preference_summary.main_content
-import kotlinx.android.synthetic.main.fragment_preference_summary.swipe_refresh_layout
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -174,9 +171,9 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         val phone = addressModel?.phone
         var receiverText = ""
         if (receiverName != null) {
-            receiverText = "- $receiverName"
+            receiverText = " - $receiverName"
             if (phone != null) {
-                receiverText = "$receiverText($phone)"
+                receiverText = "$receiverText ($phone)"
             }
         }
         if (receiverText.isNotEmpty()) {
