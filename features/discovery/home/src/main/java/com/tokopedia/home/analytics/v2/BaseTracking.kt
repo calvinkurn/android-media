@@ -173,7 +173,7 @@ abstract class BaseTracking {
     }
 
     class Promotion(val id: String, val name: String, val creative: String, val creativeUrl: String, val position: String, val promoIds: String = "", val promoCodes: String = "")
-    open class Product(
+    open class  Product(
             val name: String,
             val id: String,
             val productPrice: String,

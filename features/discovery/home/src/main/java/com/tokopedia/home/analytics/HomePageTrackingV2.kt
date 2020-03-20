@@ -145,6 +145,81 @@ object HomePageTrackingV2 : BaseTracking() {
         return Integer.parseInt(rupiah)
     }
 
+    object MixLeft {
+
+        private const val LIST_MIX_LEFT = "dynamic channel left carousel"
+        private const val IMPRESSION_MIX_LEFT = "impression on product dynamic channel left carousel"
+        private const val CLICK_MIX_LEFT = "click on product dynamic channel left carousel"
+
+        private const val CLICK_MIX_LEFT_LOADMORE = "click view all on dynamic channel left carousel"
+        fun getMixLeftClickLoadMore(channel: DynamicHomeChannel.Channels): HashMap<String, Any> {
+            return DataLayer.mapOf(
+                    Event.KEY, CustomEvent.CLICK_HOMEPAGE,
+                    Category.KEY, Category.HOMEPAGE,
+                    Action.KEY, CLICK_MIX_LEFT_LOADMORE,
+                    Label.KEY, channel.header.name,
+                    Label.CHANNEL_LABEL, channel.id
+            ) as HashMap<String, Any>
+        }
+
+        fun sendMixLeftClickLoadMore(channel: DynamicHomeChannel.Channels) {
+            getTracker().sendGeneralEvent(getMixLeftClickLoadMore(channel))
+        }
+
+        fun getMixLeftProductView(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductView(
+                event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = IMPRESSION_MIX_LEFT,
+                eventLabel = channel.header.name,
+                products = channel.grids.mapIndexed { index, grid ->
+                    Product(
+                            name = grid.name,
+                            id = grid.id,
+                            productPrice = convertRupiahToInt(
+                                    grid.price
+                            ).toString(),
+                            brand = Value.NONE_OTHER,
+                            category = Value.NONE_OTHER,
+                            variant = Value.NONE_OTHER,
+                            productPosition = (index + 1).toString(),
+                            channelId = channel.id,
+                            isFreeOngkir = grid.freeOngkir.isActive
+                    )
+                },
+                list = String.format(
+                        Value.LIST, "1", LIST_MIX_LEFT, channel.header.name
+                )
+        )
+
+        fun getMixLeftProductClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductChannelClick(
+                event = Event.PRODUCT_CLICK,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = CLICK_MIX_LEFT,
+                eventLabel = channel.header.name,
+                channelId = channel.id,
+                products = listOf(
+                        Product(
+                                name = grid.name,
+                                id = grid.id,
+                                productPrice = grid.price,
+                                brand = Value.NONE_OTHER,
+                                category = Value.NONE_OTHER,
+                                variant = Value.NONE_OTHER,
+                                productPosition = (position + 1).toString(),
+                                channelId = channel.id,
+                                isFreeOngkir = grid.freeOngkir.isActive
+                        )
+                ),
+                list = String.format(
+                        Value.LIST, "1", LIST_MIX_LEFT, channel.header.name
+                )
+        )
+
+        fun sendMixLeftProductClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) {
+            getTracker().sendEnhanceEcommerceEvent(getMixLeftProductClick(channel, grid, position))
+        }
+    }
+
     object PopularKeyword {
         private const val CLICK_POPULAR_KEYWORDS = "click on popular keyword banner"
         private const val CLICK_POPULAR_KEYWORDS_RELOAD = "click view all on popular keyword banner"
@@ -187,6 +262,9 @@ object HomePageTrackingV2 : BaseTracking() {
 
                 })
 
+        fun sendPopularKeywordClickItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String) {
+            getTracker().sendEnhanceEcommerceEvent(getPopularKeywordClickItem(channel, position, keyword))
+        }
 
         fun getPopularKeywordClickReload(channel: DynamicHomeChannel.Channels): HashMap<String, Any> {
             return DataLayer.mapOf(
@@ -196,6 +274,10 @@ object HomePageTrackingV2 : BaseTracking() {
                     Label.KEY, channel.header.name,
                     Label.CHANNEL_LABEL, channel.header.name
             ) as HashMap<String, Any>
+        }
+
+        fun sendPopularKeywordClickReload(channel: DynamicHomeChannel.Channels) {
+            getTracker().sendGeneralEvent(getPopularKeywordClickReload(channel))
         }
     }
 
