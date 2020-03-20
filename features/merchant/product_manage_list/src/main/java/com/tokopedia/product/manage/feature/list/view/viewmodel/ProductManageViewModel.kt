@@ -310,7 +310,7 @@ class ProductManageViewModel @Inject constructor(
 
     fun setFeaturedProduct(productId: String, status: Int) {
         launchCatchError( block = {
-            setFeaturedProductUseCase.params = SetFeaturedProductUseCase.createRequestParams(productId.toInt(), status)
+            setFeaturedProductUseCase.setParams(productId.toInt(), status)
             setFeaturedProductUseCase.executeOnBackground()
             _setFeaturedProductResult.value = Success(SetFeaturedProductResult(productId, status))
         }, onError = { throwable ->
