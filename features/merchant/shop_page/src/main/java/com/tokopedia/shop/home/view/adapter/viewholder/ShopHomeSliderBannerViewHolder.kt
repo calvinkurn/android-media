@@ -14,7 +14,6 @@ import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import kotlinx.android.synthetic.main.viewmodel_slider_banner.view.*
 import java.util.ArrayList
-import java.util.concurrent.TimeUnit
 
 /**
  * Created by rizqiaryansa on 2020-02-25.
