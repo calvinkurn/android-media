@@ -223,11 +223,6 @@ class MixTopBannerViewHolder(
 
     private fun mappingVisitablesFromChannel(channel: DynamicHomeChannel.Channels): MutableList<Visitable<*>> {
         val visitables: MutableList<Visitable<*>> = convertDataToProductData(channel)
-        if (isHasSeeMoreApplink(channel) && getLayoutType(channel) == TYPE_BANNER_CAROUSEL) {
-            visitables.add(SeeMorePdpDataModel(
-                    applink = channel.header.applink
-            ))
-        }
         return visitables
     }
 

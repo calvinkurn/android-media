@@ -76,6 +76,7 @@
             app:layout_constraintTop_toBottomOf="@+id/channel_title_container"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:itemCount="10"
             tools:spanCount="3"
             tools:orientation="horizontal"
