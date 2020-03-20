@@ -134,7 +134,9 @@ class RewardContainer : FrameLayout {
 
         if (hasPoints && hasCoupons) {
             rewardState = RewardState.COUPON_WITH_POINTS
-            ImageUtils.loadImage(imageSmallReward, iconUrl!!)
+            if(!iconUrl.isNullOrEmpty()) {
+                ImageUtils.loadImage(imageSmallReward, iconUrl!!)
+            }
         } else if (hasPoints) {
             //only points
             rewardState = RewardState.POINTS_ONLY

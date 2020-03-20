@@ -9,7 +9,7 @@ class GiftBoxRewardEntity(@SerializedName("gamiCrack") val gamiCrack: GamiCrack)
 data class GamiCrack(
 
         @SerializedName("resultStatus") val resultStatus: ResultStatus,
-        @SerializedName("imageURL") val imageUrl: String,
+        @SerializedName("imageUrl") val imageUrl: String,
         @SerializedName("benefitText") val benefitText: List<String>,
         @SerializedName("benefits") val benefits: List<Benefits>?,
         @SerializedName("actionButton") val actionButton: List<ActionButton>
@@ -19,7 +19,7 @@ data class Benefits(
 
         @SerializedName("text") val text: String,
         @SerializedName("color") val color: String?,
-        @SerializedName("imageUrl") val imageUrl: String?,
+        @SerializedName("imageURL") val imageUrl: String?,
         @SerializedName("benefitType") val benefitType: String,
         @SerializedName("isBigPrize") val isBigPrize: Boolean,
         @SerializedName("isAutoApply") val isAutoApply: Boolean,
