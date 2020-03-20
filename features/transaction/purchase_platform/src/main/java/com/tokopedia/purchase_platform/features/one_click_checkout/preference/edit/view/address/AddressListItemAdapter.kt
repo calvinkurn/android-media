@@ -1,9 +1,7 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.address
 
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -12,7 +10,6 @@ import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.card_address_list.view.*
-import kotlinx.android.synthetic.main.fragment_detail_product_page.view.*
 
 class AddressListItemAdapter(var listener: onSelectedListener) : RecyclerView.Adapter<AddressListItemAdapter.AddressListViewHolder>() {
 
@@ -68,7 +65,7 @@ class AddressListItemAdapter(var listener: onSelectedListener) : RecyclerView.Ad
             } else {
                 val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_pin_map_address)
                 imageLocation.setImageDrawable(icon)
-                pinpointText.setTextColor(ContextCompat.getColor(itemView.context, R.color.green_200))
+                pinpointText.setTextColor(ContextCompat.getColor(itemView.context, R.color.ic_disable_pinpoint))
                 pinpointText.setText(itemView.context.getString(R.string.pinpoint))
 
             }

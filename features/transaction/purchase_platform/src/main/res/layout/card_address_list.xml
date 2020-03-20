@@ -17,7 +17,7 @@
         <ImageView
             android:id="@+id/img_location_state"
             android:layout_width="@dimen/dp_20"
-            android:layout_height="@dimen/dp_20"
+            android:layout_height="@dimen/dp_14"
             android:layout_below="@+id/address_detail"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginLeft="@dimen/dp_12"
@@ -34,10 +34,10 @@
             android:layout_marginEnd="@dimen/dp_50"
             android:layout_marginRight="@dimen/dp_12"
             android:paddingTop="@dimen/dp_12"
-            android:paddingBottom="@dimen/dp_3"
+            android:paddingBottom="@dimen/dp_2"
             android:singleLine="true"
             android:text="@string/text_address_type"
-            app:typographyType="body_1"
+            android:textSize="@dimen/sp_15"
             android:textColor="@color/black"
             app:typographyWeight="bold"/>
 
@@ -96,13 +96,14 @@
             android:text="Sudah Pin Point"
             app:typographyType="body_3"
             android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8" />
+            android:layout_marginStart="@dimen/dp_4" />
 
 
         <RadioButton
             android:id="@+id/item_address_radio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dp_16"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:theme="@style/TransactionToggleButton"

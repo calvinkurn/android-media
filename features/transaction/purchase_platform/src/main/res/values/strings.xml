@@ -317,10 +317,10 @@
 
     <string name="one_click_checkout">Beli Langsung</string>
     <string name="pay">Bayar</string>
-    <string name="preference_number">pilihan %1d</string>
+    <string name="preference_number">Pilihan %1d</string>
 
     <string name="lbl_summary_preference_title">Pengaturan Beli Langsung</string>
-    <string name="lbl_summary_preference_with_number_title">Atur pilihan %1d</string>
+    <string name="lbl_summary_preference_with_number_title">Atur Pilihan %1d</string>
     <string name="lbl_summary_preference_subtitle">Cek ringkasan pengaturanmu</string>
 
     <string name="lbl_choose_payment">Pilih Metode Pembayaran</string>
