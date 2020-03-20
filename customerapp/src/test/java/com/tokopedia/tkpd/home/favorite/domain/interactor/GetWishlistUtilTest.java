@@ -15,7 +15,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 /**
  * @author madi on 3/23/17.
  */
-public class GetWishlistShopUtilTest {
+public class GetWishlistUtilTest {
 
     @Mock
     private FavoriteRepository favoriteRepository;
