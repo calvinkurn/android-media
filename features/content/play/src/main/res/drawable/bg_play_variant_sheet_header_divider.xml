@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/bg_play_bottom_sheet"/>
+    <item android:drawable="@color/Neutral_N0"/>
     <item
-        android:top="@dimen/play_variant_sheet_header_separator_height_minus"
+        android:bottom="@dimen/play_variant_sheet_header_separator_height_minus"
         android:left="@dimen/play_variant_sheet_header_separator_height_minus"
         android:right="@dimen/play_variant_sheet_header_separator_height_minus">
         <shape>
