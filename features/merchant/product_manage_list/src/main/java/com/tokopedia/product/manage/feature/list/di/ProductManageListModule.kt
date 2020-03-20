@@ -9,6 +9,7 @@ import com.tokopedia.gm.common.domain.repository.GMCommonRepository
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.product.manage.feature.filter.domain.GetProductListMetaUseCase
 import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
@@ -40,6 +41,11 @@ import javax.inject.Named
 @ProductManageListScope
 @Module(includes = [ProductManageNetworkModule::class, ViewModelModule::class])
 class ProductManageListModule {
+
+    @Provides
+    @ProductManageListScope
+    fun provideGetProductListMetaUseCase(multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase) =
+        GetProductListMetaUseCase(multiRequestGraphqlUseCase)
 
     @Provides
     @ProductManageListScope
