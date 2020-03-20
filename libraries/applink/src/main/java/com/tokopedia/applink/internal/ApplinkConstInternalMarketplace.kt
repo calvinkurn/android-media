@@ -188,6 +188,12 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val NOTIFICATION_CENTER = "$INTERNAL_MARKETPLACE/notification"
 
+    @JvmField
+    val NOTIFICATION_BUYER_INFO = "$INTERNAL_MARKETPLACE/notif-center"
+
+    @JvmField
+    val NOTIFICATION_BUYER_INFO_WITH_ID = "$INTERNAL_MARKETPLACE/notif-center/{id}/"
+
     // PowerMerchantSubscribeActivity
     @JvmField
     val POWER_MERCHANT_SUBSCRIBE = "$INTERNAL_MARKETPLACE/power-merchant-subscribe"
