@@ -33,7 +33,10 @@
     <com.google.android.youtube.player.YouTubeThumbnailView
         android:id="@+id/youtube_home_shop_page"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_180"
+        android:layout_height="@dimen/dp_0"
+        app:layout_constraintDimensionRatio="H,16:9"
+        android:layout_marginLeft="@dimen/dp_minus12"
+        android:layout_marginRight="@dimen/dp_minus12"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -44,7 +47,8 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image_video_error_placeholder"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_180"
+        android:layout_height="@dimen/dp_0"
+        app:layout_constraintDimensionRatio="H,16:9"
         android:adjustViewBounds="true"
         android:clickable="true"
         android:focusable="true"
@@ -57,7 +61,8 @@
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/loaderVideoYoutube"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_180"
+        android:layout_height="@dimen/dp_0"
+        app:layout_constraintDimensionRatio="H,16:9"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -67,20 +72,22 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/btn_youtube_player"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_0"
+        app:layout_constraintDimensionRatio="57:40"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="@id/youtube_home_shop_page"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/youtube_home_shop_page"
-        app:srcCompat="@drawable/ic_play_play_round" />
+        app:srcCompat="@drawable/ic_play_button" />
 
     <View
         android:id="@+id/bgVideoError"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_180"
+        android:layout_height="@dimen/dp_0"
+        app:layout_constraintDimensionRatio="H,16:9"
         android:background="@color/clr_31353B"
         app:layout_constraintBottom_toBottomOf="@id/youtube_home_shop_page"
         app:layout_constraintStart_toStartOf="parent"
@@ -111,10 +118,11 @@
         app:layout_constraintTop_toBottomOf="@id/ivVideoNotFound" />
 
     <androidx.constraintlayout.widget.Group
-        android:id="@+id/groupVideoError"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_180"
+        android:layout_height="@dimen/dp_0"
+        app:layout_constraintDimensionRatio="H,16:9"
         android:visibility="gone"
-        app:constraint_referenced_ids="bgVideoError,ivVideoNotFound,tvYoutubeNotFound" />
+        app:constraint_referenced_ids="bgVideoError,ivVideoNotFound,tvYoutubeNotFound"
+        android:id="@+id/groupVideoError" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -32,10 +32,6 @@ class ShopHomeSliderSquareViewHolder(
     override fun bind(element: ShopHomeDisplayWidgetUiModel) {
         val linearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
 
-        val indexZero = getIndexRatio(element, 0).toFloat()
-        val indexOne = getIndexRatio(element,1).toFloat()
-        val heightRatio = (indexOne / indexZero)
-
         itemView.rvCarouselShopPageHome.apply {
             layoutManager = linearLayoutManager
             if (itemDecorationCount == 0) {
@@ -44,7 +40,7 @@ class ShopHomeSliderSquareViewHolder(
             adapter = shopHomeSliderSquareAdapter
         }
         shopHomeSliderSquareAdapter.displayWidgetUiModel = element
-        shopHomeSliderSquareAdapter.heightRatio = heightRatio
+        shopHomeSliderSquareAdapter.heightRatio = getHeightRatio(element)
         shopHomeSliderSquareAdapter.parentPosition = adapterPosition
         shopHomeSliderSquareAdapter.submitList(element.data)
         itemView.tgHeaderSliderSquare?.apply {
@@ -60,5 +56,11 @@ class ShopHomeSliderSquareViewHolder(
 
     private fun getIndexRatio(data: ShopHomeDisplayWidgetUiModel, index: Int): Int {
         return data.header.ratio.split(":")[index].toInt()
+    }
+
+    private fun getHeightRatio(element: ShopHomeDisplayWidgetUiModel): Float {
+        val indexZero = getIndexRatio(element, 0).toFloat()
+        val indexOne = getIndexRatio(element, 1).toFloat()
+        return (indexOne / indexZero)
     }
 }

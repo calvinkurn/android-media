@@ -24,7 +24,7 @@ class PaddingItemDecorationShopPage(private val typeWidget: String): RecyclerVie
             DISPLAY_SINGLE_COLUMN, DISPLAY_DOUBLE_COLUMN, DISPLAY_TRIPLE_COLUMN -> {
                 if (position > 0) {
                     parent.adapter.also {
-                        outRect.left = 8.toPx()
+                        outRect.left = 2.toPx()
                     }
                 }
             }

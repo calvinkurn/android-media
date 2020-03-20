@@ -101,6 +101,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private var shopName: String = ""
     private var shopAttribution: String = ""
     private var shopRef: String = ""
+
     val isLogin: Boolean
         get() = viewModel.isLogin
     val isOwner: Boolean
@@ -158,6 +159,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun loadInitialData() {
+        shopHomeAdapter.clearAllElements()
         recycler_view.visible()
         scrollView_globalError_shopPage.hide()
         globalError_shopPage.hide()
