@@ -52,11 +52,14 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.common_tradein.model.ValidateTradeInResponse
+import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.drawable.CountDrawable
+import com.tokopedia.device.info.permission.ImeiPermissionAsker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.gallery.ImageReviewGalleryActivity
@@ -81,7 +84,6 @@ import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWareh
 import com.tokopedia.product.detail.data.model.ProductInfoP2General
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
-import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
@@ -102,10 +104,7 @@ import com.tokopedia.product.detail.view.util.DynamicProductDetailHashMap
 import com.tokopedia.product.detail.view.util.ErrorHelper
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
-import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
-import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet
-import com.tokopedia.product.detail.view.widget.SquareHFrameLayout
-import com.tokopedia.product.detail.view.widget.ValuePropositionBottomSheet
+import com.tokopedia.product.detail.view.widget.*
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.purchase_platform.common.constant.*
@@ -137,7 +136,6 @@ import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.*
 import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
-import com.tokopedia.common_tradein.utils.TradeInUtils
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -1788,34 +1786,35 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun goToNormalCheckout(@ProductAction action: Int = ATC_AND_BUY) {
         context?.let {
-            val shopInfo = viewModel.shopInfo
-            viewModel.getDynamicProductInfoP1?.let {
-                val isOcsCheckoutType = (viewModel.p2Login.value)?.isOcsCheckoutType
-                        ?: false
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
-                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, it.getProductName)
-                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, it.data.price.value)
-                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_CONDITION, it.basic.condition)
-                    putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, it.basic.category.id)
-                    putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_NAME, it.basic.category.name)
-                    putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, it.basic.shopID)
-                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, it.parentProductId)
-                    putExtra(ApplinkConst.Transaction.EXTRA_NOTES, userInputNotes)
-                    putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, userInputQuantity)
-                    putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, userInputVariant)
-                    putExtra(ApplinkConst.Transaction.EXTRA_ACTION, action)
-                    putExtra(ApplinkConst.Transaction.TRACKER_ATTRIBUTION, trackerAttribution)
-                    putExtra(ApplinkConst.Transaction.TRACKER_LIST_NAME, trackerListName)
-                    putExtra(ApplinkConst.Transaction.EXTRA_SHOP_TYPE, shopInfo?.goldOS?.shopTypeString)
-                    putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, shopInfo?.shopCore?.name)
-                    putExtra(ApplinkConst.Transaction.EXTRA_OCS, isOcsCheckoutType)
-                    putExtra(ApplinkConst.Transaction.EXTRA_IS_LEASING, it.basic.isLeasing)
-                    putExtra(ApplinkConst.Transaction.EXTRA_LAYOUT_NAME, it.layoutName)
-                }
-                intent.putExtra(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, viewModel.tradeInParams)
-                startActivityForResult(intent,
-                        ProductDetailConstant.REQUEST_CODE_NORMAL_CHECKOUT)
-            }
+            checkImei()
+//            val shopInfo = viewModel.shopInfo
+//            viewModel.getDynamicProductInfoP1?.let {
+//                val isOcsCheckoutType = (viewModel.p2Login.value)?.isOcsCheckoutType
+//                        ?: false
+//                val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
+//                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, it.getProductName)
+//                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, it.data.price.value)
+//                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_CONDITION, it.basic.condition)
+//                    putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, it.basic.category.id)
+//                    putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_NAME, it.basic.category.name)
+//                    putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, it.basic.shopID)
+//                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, it.parentProductId)
+//                    putExtra(ApplinkConst.Transaction.EXTRA_NOTES, userInputNotes)
+//                    putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, userInputQuantity)
+//                    putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, userInputVariant)
+//                    putExtra(ApplinkConst.Transaction.EXTRA_ACTION, action)
+//                    putExtra(ApplinkConst.Transaction.TRACKER_ATTRIBUTION, trackerAttribution)
+//                    putExtra(ApplinkConst.Transaction.TRACKER_LIST_NAME, trackerListName)
+//                    putExtra(ApplinkConst.Transaction.EXTRA_SHOP_TYPE, shopInfo?.goldOS?.shopTypeString)
+//                    putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, shopInfo?.shopCore?.name)
+//                    putExtra(ApplinkConst.Transaction.EXTRA_OCS, isOcsCheckoutType)
+//                    putExtra(ApplinkConst.Transaction.EXTRA_IS_LEASING, it.basic.isLeasing)
+//                    putExtra(ApplinkConst.Transaction.EXTRA_LAYOUT_NAME, it.layoutName)
+//                }
+//                intent.putExtra(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, viewModel.tradeInParams)
+//                startActivityForResult(intent,
+//                        ProductDetailConstant.REQUEST_CODE_NORMAL_CHECKOUT)
+//            }
         }
     }
 
@@ -2343,4 +2342,32 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun hasTopAds() =
             topAdsGetProductManage.data.adId.isNotEmpty() && !topAdsGetProductManage.data.adId.equals("0")
 
+    fun askImeiPermission(){
+        activity?.run {
+            ImeiPermissionAsker.askImeiPermission(this)
+        }
+    }
+
+    private fun showImeiPermissionDialog() {
+        activity?.run {
+            CheckImeiBottomSheet.showPermissionDialog(this, ::askImeiPermission)
+        }
+    }
+
+    override fun checkImei() {
+        activity?.run {
+            ImeiPermissionAsker.checkImeiPermission(this, {
+                // Need Ask Permission
+                showToastSuccess("Need Ask Permission")
+                showImeiPermissionDialog()
+            }, {
+                showToastSuccess("Already Granted")
+                // Already Granted
+            }, {
+                showToastSuccess("User Denied")
+//                ImeiPermissionAsker.askImeiPermission(this)
+                // User Denied
+            })
+        }
+    }
 }

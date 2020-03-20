@@ -103,4 +103,10 @@ interface DynamicProductDetailListener {
      * ImpressionComponent
      */
     fun onImpressComponent(componentTrackDataModel: ComponentTrackDataModel)
+
+    /**
+     * Imei Checker
+     */
+    fun checkImei()
+
 }

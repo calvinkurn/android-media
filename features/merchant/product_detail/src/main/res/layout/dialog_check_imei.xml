@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:layout_width="match_parent"
+    android:padding="@dimen/spacing_lvl4"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:padding="@dimen/spacing_lvl3"
+        android:id="@+id/dialog_check_imei_close_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/typography"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/typography"
+        app:srcCompat="@drawable/ic_close_imei" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typography"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Satu langkah lagi!"
+        android:textAlignment="center"
+        android:textColor="#f531353b"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/dialog_check_imei_close_btn"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typography2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:text="Untuk membeli produk ini, Tokopedia memerlukan akses perangkat untuk memastikan kamu adalah pengguna baru."
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="@+id/typography"
+        app:layout_constraintStart_toStartOf="@+id/typography"
+        app:layout_constraintTop_toBottomOf="@+id/typography"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:layout_marginTop="@dimen/spacing_lvl6"
+        android:id="@+id/dialog_check_imei_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Saya Mengerti"
+        app:layout_constraintEnd_toEndOf="@+id/typography"
+        app:layout_constraintStart_toStartOf="@+id/typography"
+        app:layout_constraintTop_toBottomOf="@+id/typography2" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

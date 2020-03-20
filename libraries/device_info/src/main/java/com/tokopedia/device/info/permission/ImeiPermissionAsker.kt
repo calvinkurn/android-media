@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.device.info.DeviceInfo.getImeiCache
 import com.tokopedia.device.info.cache.DeviceInfoCache
@@ -50,7 +51,7 @@ import com.tokopedia.device.info.cache.FingerprintCache
 object ImeiPermissionAsker {
     const val IMEI_PERMISION_REQ_CODE = 720
 
-    fun checkImeiPermission(activity: Activity,
+    fun checkImeiPermission(activity: FragmentActivity,
                             onNeedAskPermission: (() -> Unit),
                             onAlreadyGranted: (() -> Unit),
                             onUserAlreadyDeniedAndDontAskAgain: (() -> Unit)) {
@@ -74,7 +75,7 @@ object ImeiPermissionAsker {
             else {
                 val showRationale = ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.READ_PHONE_STATE)
                 if (!showRationale) {
-                    onUserAlreadyDeniedAndDontAskAgain.invoke()
+                    onNeedAskPermission.invoke()
                 } else {
                     onNeedAskPermission.invoke()
                 }
@@ -82,7 +83,7 @@ object ImeiPermissionAsker {
         }
     }
 
-    fun askImeiPermission(activity: Activity) {
+    fun askImeiPermission(activity: FragmentActivity) {
         ActivityCompat.requestPermissions(
             activity, arrayOf(Manifest.permission.READ_PHONE_STATE),
             IMEI_PERMISION_REQ_CODE
