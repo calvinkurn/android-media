@@ -5,6 +5,7 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.product.addedit.common.domain.model.params.add.ProductAddParam
 import com.tokopedia.product.addedit.common.domain.model.params.edit.ProductEditPriceParam
 import com.tokopedia.product.addedit.common.domain.model.responses.ProductAddEditV3Response
 import com.tokopedia.usecase.RequestParams
@@ -19,7 +20,7 @@ class ProductAddUseCase @Inject constructor(private val graphqlRepository: Graph
     override suspend fun executeOnBackground(): ProductAddEditV3Response {
         val variables = HashMap<String, Any>()
         variables[PARAM_INPUT] = params.getObject(PARAM_INPUT)
-        val gqlRequest = GraphqlRequest(getQuery(), ProductAddEditV3Response::class.java)
+        val gqlRequest = GraphqlRequest(getQuery(), ProductAddEditV3Response::class.java, variables)
         val gqlResponse: GraphqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest))
 
         val errors: List<GraphqlError>? = gqlResponse.getError(ProductAddEditV3Response::class.java)
@@ -33,62 +34,23 @@ class ProductAddUseCase @Inject constructor(private val graphqlRepository: Graph
     companion object {
         const val PARAM_INPUT = "input"
         @JvmStatic
-        fun createRequestParams(param: ProductEditPriceParam): RequestParams {
+        fun createRequestParams(param: ProductAddParam): RequestParams {
             val requestParams = RequestParams.create()
             requestParams.putObject(PARAM_INPUT, param)
             return requestParams
         }
 
         fun getQuery() = """
-                    mutation { ProductAddV3(input:{
-                      productName: "Baju polos yang terbaik di tokpedo",
-                      price: 20000,
-                      priceCurrency : "IDR",
-                      stock : 999999,
-                      status : "LIMITED",
-                      description : "Ini adalah baju polo terbaik ....",
-                      minOrder : 1,
-                      weightUnit : "GR",
-                      weight : 100,
-                      condition : "NEW",
-                      mustInsurance: false,
-                      sku : "SKU",
-                      catalog : {
-                        catalogID : "1"
-                      },
-                      category : {
-                        id : "1"
-                      },
-                      menu : {
-                        menuID : "0",
-                        name : ""
-                      },
-                      picture : {
-                        data : 
-                        [
-                          {
-                            picID : "111",
-                            description : "baju polos terbaik",
-                            filePath : "folder/product-1",
-                            fileName : "bajupolos.jpg", 
-                            width : 1000,
-                            height : 1500
-                          }]
-                      },
-                      preorder : {
-                        duration : 1,
-                        timeUnit : "1",
-                        isActive : true
+                    mutation ProductAddV3(${'$'}input: ProductInputV3!) {
+                      ProductAddV3(input: ${'$'}input) {
+                        header {
+                          messages
+                          reason
+                          errorCode
+                        }
+                        isSuccess
                       }
-                      
-                    }) {
-                      header{
-                        messages
-                        reason
-                        errorCode
-                      }
-                      isSuccess
-                    }}
+                    }
                     """.trimIndent()
 
     }

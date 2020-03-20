@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.domain.UploaderUseCase
+import com.tokopedia.product.addedit.common.domain.model.params.add.*
 import com.tokopedia.product.addedit.common.domain.model.params.edit.ProductEditPriceParam
 import com.tokopedia.product.addedit.common.domain.model.responses.ProductAddEditV3Response
 import com.tokopedia.product.addedit.common.domain.usecase.EditPriceUseCase
@@ -45,10 +46,37 @@ class AddEditProductShipmentViewModel @Inject constructor(
     }
 
     fun editPrice() {
-        val param = ProductEditPriceParam()
-        param.price = 2500F
-        param.productId = "690759708"
-        param.shop.shopId = "956167"
+        val param = ProductAddParam(
+                "Baju polos yang terbaik di tookpedo",
+                20000,
+                "IDR",
+                9999,
+                "LIMITED",
+                "desc",
+                1,
+                "GR",
+                20,
+                "NEW",
+                false,
+                "",
+                Catalog(
+                        "1"
+                ),
+                Category(
+                        "1"
+                ),
+                Menu(
+                        "0",
+                        ""
+                ),
+                Pictures(),
+                Preorder(
+                        1,
+                        "1",
+                        true
+                )
+
+        )
 
         launchCatchError(block = {
             _productUpdateResult.value = Success(withContext(Dispatchers.IO) {
