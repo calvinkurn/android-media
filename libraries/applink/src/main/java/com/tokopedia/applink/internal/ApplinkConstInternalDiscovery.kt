@@ -7,6 +7,8 @@ object ApplinkConstInternalDiscovery {
     @JvmField
     val HOST_DISCOVERY = "discovery"
 
+    const val HOST_MARKETPLACE = "marketplace"
+
     @JvmField
     val INTERNAL_DISCOVERY = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_DISCOVERY"
 
@@ -33,4 +35,6 @@ object ApplinkConstInternalDiscovery {
 
     @JvmField
     val PRODUCT_CARD_OPTIONS = "$INTERNAL_DISCOVERY/product-card-options"
+
+    const val DISCOVERY_CATEGORY_DETAIL_MARKETPLACE = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_MARKETPLACE}/category/{DEPARTMENT_ID}/"
 }

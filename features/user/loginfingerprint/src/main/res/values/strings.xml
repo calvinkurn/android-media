@@ -17,6 +17,6 @@
     <string name="title_choose_account">Silahkan pilih akun kamu</string>
 
     <string name="error_fingerprint_invalid_mode">Must pass valid mode</string>
-
+    <string name="error_fingerprint_use_other_method">Terjadi Kesalahan, silahkan coba sesaat lagi atau gunakan metode lain</string>
 
 </resources>

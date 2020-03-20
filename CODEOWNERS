@@ -21,7 +21,7 @@
 /features/discovery/image_search/                   	@tokopedia/minion-dave
 /features/discovery/similarsearch/                  	@tokopedia/minion-dave
 /features/discovery/autocomplete/                   	@tokopedia/minion-dave
-/features/digital/digital_browse/                   	@tokopedia/minion-dave
+/features/digital/digital_browse/                   	@tokopedia/minion-darth
 /features/discovery/global_nav_widget/              	@tokopedia/minion-dave
 /features/discovery/global_nav_widget_samples/      	@tokopedia/minion-dave
 /features/home/navigation/                          	@tokopedia/minion-dave
@@ -194,6 +194,7 @@
 /libraries/bottom_sheet_builder/						@tokopedia/core-team
 /libraries/cache_api/									@tokopedia/core-team
 /libraries/cameraview/									@tokopedia/core-team
+/libraries/circular_view_pager/				    		@lukaskris
 /libraries/cm_push_notifications/						@tokopedia/minion-yoda
 /libraries/collapsing_tab_layout/						@tokopedia/core-team
 /libraries/common_network/								@tokopedia/core-team

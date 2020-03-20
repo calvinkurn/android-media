@@ -26,6 +26,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.component.ToasterError
+import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
+import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
+import com.tokopedia.discovery.common.manager.showProductCardOptions
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
@@ -143,6 +147,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private var selectedEtalaseId = ""
     private var selectedEtalaseName = ""
     private var recyclerViewTopPadding = 0
+    private var threeDotsClickShopProductViewModel: ShopProductViewModel? = null
+    private var threeDotsClickShopTrackingType = -1
     private val customDimensionShopPage: CustomDimensionShopPage
         get() {
             return CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
@@ -291,53 +297,18 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         startActivityForResult(intent, REQUEST_CODE_MEMBERSHIP_STAMP)
     }
 
-    override fun onWishListClicked(shopProductViewModel: ShopProductViewModel, shopTrackType: Int) {
-        if (shopInfo != null) {
-            when (shopTrackType) {
-                ShopTrackProductTypeDef.FEATURED -> shopPageTracking?.clickWishlist(
-                        !shopProductViewModel.isWishList,
-                        isLogin,
-                        selectedEtalaseName, FEATURED_PRODUCT,
-                        CustomDimensionShopPageProduct.create(
-                                shopInfo?.shopCore?.shopID ?: "",
-                                (shopInfo?.goldOS?.isOfficial ?: -1) == 1,
-                                (shopInfo?.goldOS?.isGold ?: -1) == 1,
-                                shopProductViewModel.id, shopRef
-                        ))
-                ShopTrackProductTypeDef.PRODUCT -> shopPageTracking?.clickWishlist(
-                        !shopProductViewModel.isWishList,
-                        isLogin,
-                        selectedEtalaseName, shopProductAdapter.shopProductEtalaseListViewModel?.selectedEtalaseName
-                        ?: "",
-                        CustomDimensionShopPageProduct.create(
-                                shopInfo?.shopCore?.shopID ?: "",
-                                (shopInfo?.goldOS?.isOfficial ?: -1) == 1,
-                                (shopInfo?.goldOS?.isGold ?: -1) == 1,
-                                shopProductViewModel.id, shopRef))
-                else -> // highlight
-                    shopPageTracking?.clickWishlist(
-                            !shopProductViewModel.isWishList,
-                            isLogin,
-                            selectedEtalaseName,
-                            shopProductAdapter.getEtalaseNameHighLight(shopProductViewModel),
-                            CustomDimensionShopPageProduct.create(
-                                    shopInfo?.shopCore?.shopID ?: "",
-                                    (shopInfo?.goldOS?.isOfficial ?: -1) == 1,
-                                    (shopInfo?.goldOS?.isGold ?: -1) == 1,
-                                    shopProductViewModel.id, shopRef
-                            ))
-            }
-        }
-        if (!viewModel.isLogin) {
-            onErrorAddToWishList(UserNotLoginException())
-        } else {
-            viewModel.clearGetShopProductUseCase()
-            if (shopProductViewModel.isWishList) {
-                viewModel.removeWishList(shopProductViewModel.id ?: "", this)
-            } else {
-                viewModel.addWishList(shopProductViewModel.id ?: "", this)
-            }
-        }
+    override fun onThreeDotsClicked(shopProductViewModel: ShopProductViewModel, shopTrackType: Int) {
+        threeDotsClickShopProductViewModel = shopProductViewModel
+        threeDotsClickShopTrackingType = shopTrackType
+
+        showProductCardOptions(
+                this,
+                ProductCardOptionsModel(
+                        hasWishlist = true,
+                        isWishlisted = shopProductViewModel.isWishList,
+                        productId = shopProductViewModel.id ?: ""
+                )
+        )
     }
 
     override fun onProductClicked(shopProductViewModel: ShopProductViewModel, shopTrackType: Int, productPosition: Int) {
@@ -528,6 +499,13 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             else -> {
             }
         }
+
+        handleProductCardOptionsActivityResult(requestCode, resultCode, data, object: ProductCardOptionsWishlistCallback {
+            override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                handleWishlistAction(productCardOptionsModel)
+            }
+        })
+
         super.onActivityResult(requestCode, resultCode, data)
     }
 
@@ -540,6 +518,84 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private fun loadMerchantVoucher() {
         shopId?.let {
             viewModel.getNewMerchantVoucher(it)
+        }
+    }
+
+    private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
+        if (shopInfo != null) {
+            threeDotsClickShopProductViewModel?.let { shopProductViewModel ->
+                when (threeDotsClickShopTrackingType) {
+                    ShopTrackProductTypeDef.FEATURED -> shopPageTracking?.clickWishlist(
+                            !shopProductViewModel.isWishList,
+                            isLogin,
+                            selectedEtalaseName, FEATURED_PRODUCT,
+                            CustomDimensionShopPageProduct.create(
+                                    shopInfo?.shopCore?.shopID ?: "",
+                                    (shopInfo?.goldOS?.isOfficial ?: -1) == 1,
+                                    (shopInfo?.goldOS?.isGold ?: -1) == 1,
+                                    shopProductViewModel.id, shopRef
+                            ))
+                    ShopTrackProductTypeDef.PRODUCT -> shopPageTracking?.clickWishlist(
+                            !shopProductViewModel.isWishList,
+                            isLogin,
+                            selectedEtalaseName, shopProductAdapter.shopProductEtalaseListViewModel?.selectedEtalaseName
+                            ?: "",
+                            CustomDimensionShopPageProduct.create(
+                                    shopInfo?.shopCore?.shopID ?: "",
+                                    (shopInfo?.goldOS?.isOfficial ?: -1) == 1,
+                                    (shopInfo?.goldOS?.isGold ?: -1) == 1,
+                                    shopProductViewModel.id, shopRef))
+                    else -> // highlight
+                        shopPageTracking?.clickWishlist(
+                                !shopProductViewModel.isWishList,
+                                isLogin,
+                                selectedEtalaseName,
+                                shopProductAdapter.getEtalaseNameHighLight(shopProductViewModel),
+                                CustomDimensionShopPageProduct.create(
+                                        shopInfo?.shopCore?.shopID ?: "",
+                                        (shopInfo?.goldOS?.isOfficial ?: -1) == 1,
+                                        (shopInfo?.goldOS?.isGold ?: -1) == 1,
+                                        shopProductViewModel.id, shopRef
+                                ))
+                }
+            }
+        }
+
+        if (!productCardOptionsModel.wishlistResult.isUserLoggedIn) {
+            onErrorAddToWishList(UserNotLoginException())
+        } else {
+            handleWishlistActionForLoggedInUser(productCardOptionsModel)
+        }
+
+        threeDotsClickShopProductViewModel = null
+        threeDotsClickShopTrackingType = -1
+    }
+
+    private fun handleWishlistActionForLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
+        viewModel.clearGetShopProductUseCase()
+
+        if (productCardOptionsModel.wishlistResult.isAddWishlist) {
+            handleWishlistActionAddToWishlist(productCardOptionsModel)
+        } else {
+            handleWishlistActionRemoveFromWishlist(productCardOptionsModel)
+        }
+    }
+
+    private fun handleWishlistActionAddToWishlist(productCardOptionsModel: ProductCardOptionsModel) {
+        if (productCardOptionsModel.wishlistResult.isSuccess) {
+            onSuccessAddWishlist(productCardOptionsModel.productId)
+        }
+        else {
+            onErrorAddWishList(getString(com.tokopedia.wishlist.common.R.string.msg_error_add_wishlist), productCardOptionsModel.productId)
+        }
+    }
+
+    private fun handleWishlistActionRemoveFromWishlist(productCardOptionsModel: ProductCardOptionsModel) {
+        if (productCardOptionsModel.wishlistResult.isSuccess) {
+            onSuccessRemoveWishlist(productCardOptionsModel.productId)
+        }
+        else {
+            onErrorRemoveWishlist(getString(com.tokopedia.wishlist.common.R.string.msg_error_remove_wishlist), productCardOptionsModel.productId)
         }
     }
 

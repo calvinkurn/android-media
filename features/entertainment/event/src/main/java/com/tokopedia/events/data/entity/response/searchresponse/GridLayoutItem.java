@@ -223,6 +223,10 @@ public class GridLayoutItem {
     @Expose
     private boolean isLiked;
 
+    @SerializedName("web_url")
+    @Expose
+    private String webUrl;
+
     @SerializedName("forms")
     private Object forms;
 
@@ -244,6 +248,14 @@ public class GridLayoutItem {
 
     public boolean isLiked() {
         return isLiked;
+    }
+
+    public String getWebUrl() {
+        return webUrl;
+    }
+
+    public void setWebUrl(String webUrl) {
+        this.webUrl = webUrl;
     }
 
     public void setLiked(boolean liked) {

@@ -21,7 +21,7 @@ import java.lang.ref.WeakReference
 internal class ShopPageFragmentPagerAdapter(
         ctx: Context?,
         fragmentManager: FragmentManager
-) : FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+) : FragmentStatePagerAdapter(fragmentManager) {
     private val registeredFragments = SparseArrayCompat<Fragment>()
     private var listTitleIcon = listOf<Int>()
     private var listFragment = listOf<Fragment>()
