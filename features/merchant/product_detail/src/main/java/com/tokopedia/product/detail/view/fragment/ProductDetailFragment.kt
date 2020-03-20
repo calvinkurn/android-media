@@ -652,9 +652,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         valuePropositionView.hideBackgroundResource = {
             base_attribute.setBackgroundResource(0)
         }
-        headerView.onGuaranteeOsClicked = {
-            onValuePropositionClick(R.id.layout_guarantee)
-        }
 
         open_shop.setOnClickListener {
             activity?.let {

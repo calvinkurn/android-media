@@ -1176,6 +1176,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             if (::performanceMonitoringFull.isInitialized)
                 performanceMonitoringFull.stopTrace()
 
+            trackProductView(viewModel.tradeInParams.isEligible == 1)
             onSuccessGetDataP3Resp(it)
         })
     }
@@ -1277,7 +1278,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             pdpHashMapUtil?.updateDataTradein(tradeinResponse)
         }
 
-        trackProductView(viewModel.tradeInParams.isEligible == 1)
         pdpHashMapUtil?.updateDataP2Shop(it)
         adapter.notifyDataSetChanged()
     }
@@ -1430,21 +1430,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         val isPartialySelected = pdpHashMapUtil?.productNewVariantDataModel?.isPartialySelected()
                 ?: false
 
-        if (isPartialySelected && variantOptions.level == 0 && shouldFireVariantTracker) {
-            shouldFireVariantTracker = false
-            DynamicProductDetailTracking.Click.onVariantLevel1Clicked(pdpHashMapUtil?.productNewVariantDataModel?.getFirstSelectedVariantId()
-                    ?: 0,
-                    viewModel.getDynamicProductInfoP1,
-                    pdpHashMapUtil?.productNewVariantDataModel,
-                    dynamicAdapter.getVariantPosition(pdpHashMapUtil?.productNewVariantDataModel))
-        }
-
         if (!isPartialySelected && shouldFireVariantTracker) {
             shouldFireVariantTracker = false
-            DynamicProductDetailTracking.Click.onVariantLevel1Clicked(pdpHashMapUtil?.productNewVariantDataModel?.getFirstSelectedVariantId()
-                    ?: 0,
+            DynamicProductDetailTracking.Click.onVariantLevel1Clicked(
                     viewModel.getDynamicProductInfoP1,
                     pdpHashMapUtil?.productNewVariantDataModel,
+                    viewModel.variantData,
                     dynamicAdapter.getVariantPosition(pdpHashMapUtil?.productNewVariantDataModel))
         }
 
@@ -1826,7 +1817,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             viewModel.shopInfo?.let { shopInfo ->
                 DynamicProductDetailTracking.Impression.eventEnhanceEcommerceProductDetail(irisSessionId, trackerListNamePdp, productInfo, shopInfo, trackerAttributionPdp,
-                        isElligible, viewModel.tradeInParams.usedPrice > 0, viewModel.selectedMultiOrigin.warehouseInfo.isFulfillment, deeplinkUrl)
+                        isElligible, viewModel.tradeInParams.usedPrice > 0, viewModel.selectedMultiOrigin.warehouseInfo.isFulfillment, deeplinkUrl, viewModel.getDynamicProductInfoP1?.getFinalStock(viewModel.selectedMultiOrigin.stock.toString())
+                        ?: "0")
                 return
             }
         }
@@ -2045,8 +2037,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         actionButtonView.addToCartClick = {
             viewModel.buttonActionText = it
             viewModel.getDynamicProductInfoP1?.let {
-                DynamicProductDetailTracking.Click.eventAddToCart(viewModel.isUserSessionActive, irisSessionId, viewModel.getDynamicProductInfoP1,
-                        it.data.variant.isVariant)
                 doAtc(ProductDetailConstant.ATC_BUTTON)
             }
         }
@@ -2055,7 +2045,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             viewModel.buttonActionText = it
             // buy now / buy / preorder
             viewModel.getDynamicProductInfoP1?.let {
-                DynamicProductDetailTracking.Click.eventClickBuy(viewModel.isUserSessionActive, viewModel.getDynamicProductInfoP1, it.data.variant.isVariant)
                 if (viewModel.p2Login.value?.isOcsCheckoutType == true) {
                     doAtc(ProductDetailConstant.OCS_BUTTON)
                 } else {
