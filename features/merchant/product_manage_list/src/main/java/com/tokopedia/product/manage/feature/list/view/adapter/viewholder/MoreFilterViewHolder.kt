@@ -35,7 +35,7 @@ class MoreFilterViewHolder(
             filter.chipImageResource = ContextCompat.getDrawable(context, R.color.unify_G500)
         } else {
             filterCount.hide()
-            filter.chipImageResource = ContextCompat.getDrawable(context, R.drawable.unify_filter_ic)
+            filter.chipImageResource = ContextCompat.getDrawable(context, com.tokopedia.sortfilter.R.drawable.unify_filter_ic)
         }
 
         filter.setOnClickListener { listener.onClickMoreFilter(data, filter.chipText.toString()) }

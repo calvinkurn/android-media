@@ -10,8 +10,13 @@ import com.tokopedia.product.manage.feature.list.view.adapter.decoration.Product
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.TabFilterViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.TabFilterViewHolder.*
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
+import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.*
 
 class ProductManageTabFilter: RecyclerView {
+
+    companion object {
+        const val TAB_MORE_FILTER_POSITION = 0
+    }
 
     var selectedFilter: FilterViewModel? = null
         private set
@@ -39,6 +44,11 @@ class ProductManageTabFilter: RecyclerView {
     fun setData(filters: List<FilterViewModel>) {
         tabFilterAdapter?.clearAllElements()
         tabFilterAdapter?.addElement(filters)
+    }
+
+    fun setFilterCount(filterCount: Int) {
+        tabFilterAdapter?.list?.set(TAB_MORE_FILTER_POSITION, MoreFilter(filterCount))
+        tabFilterAdapter?.notifyItemChanged(TAB_MORE_FILTER_POSITION)
     }
 
     fun setSelectedFilter(selectedFilter: FilterViewModel) {

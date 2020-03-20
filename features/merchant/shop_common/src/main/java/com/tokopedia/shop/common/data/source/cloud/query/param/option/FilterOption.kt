@@ -1,5 +1,7 @@
 package com.tokopedia.shop.common.data.source.cloud.query.param.option
 
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+
 sealed class FilterOption(val id: String) {
 
     sealed class FilterByCondition(id: String): FilterOption(id) {
@@ -17,12 +19,14 @@ sealed class FilterOption(val id: String) {
     data class FilterByCategory(val categoryIds: List<String>): FilterOption(CATEGORY)
     data class FilterByPage(val page: Int): FilterOption(PAGE)
     data class FilterByKeyword(val keyword: String): FilterOption(KEYWORD)
+    data class FilterByStatus(val status: ProductStatus): FilterOption(STATUS)
 
     companion object FilterId {
         private const val MENU = "menu"
         private const val CATEGORY = "category"
         private const val PAGE = "page"
         private const val KEYWORD = "keyword"
+        private const val STATUS = "status"
 
         private const val NEW_ONLY = "isNewOnly"
         private const val USED_ONLY = "isUsedOnly"

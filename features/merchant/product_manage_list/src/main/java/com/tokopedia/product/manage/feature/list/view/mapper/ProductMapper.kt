@@ -1,6 +1,8 @@
 package com.tokopedia.product.manage.feature.list.view.mapper
 
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaResponse
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.*
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
@@ -39,27 +41,28 @@ object ProductMapper {
         }
     }
 
-    fun mapToTabFilters(productList: List<ProductViewModel>?, filterCount: Int): List<FilterViewModel> {
+    fun mapToTabFilters(response: ProductListMetaResponse, filterCount: Int = 0): List<FilterViewModel> {
+        val filterTabs = response.productListMetaWrapper.productListMetaData.tabs
         val productFilters = mutableListOf<FilterViewModel>(MoreFilter(filterCount))
 
-        val activeProductFilter = productList?.filter { it.isActive() }.orEmpty()
-        val inActiveProductFilter = productList?.filter { it.isInactive()}.orEmpty()
-        val violationProductFilter = productList?.filter { it.isViolation() }.orEmpty()
+        val activeProductFilter = filterTabs.firstOrNull { it.id == FilterId.ACTIVE.name }
+        val inActiveProductFilter = filterTabs.firstOrNull { it.id == FilterId.INACTIVE.name }
+        val violationProductFilter = filterTabs.firstOrNull { it.id == FilterId.VIOLATION.name }
 
-        if(activeProductFilter.isNotEmpty()) {
-            val activeFilterCount = activeProductFilter.count()
+        activeProductFilter?.let {
+            val activeFilterCount = activeProductFilter.value.toIntOrZero()
             val activeFilter = Active(activeFilterCount)
             productFilters.add(activeFilter)
         }
 
-        if(inActiveProductFilter.isNotEmpty()) {
-            val inActiveFilterCount = inActiveProductFilter.count()
+        inActiveProductFilter?.let {
+            val inActiveFilterCount = inActiveProductFilter.value.toIntOrZero()
             val inActiveFilter = InActive(inActiveFilterCount)
             productFilters.add(inActiveFilter)
         }
 
-        if(violationProductFilter.isNotEmpty()) {
-            val violationFilterCount = violationProductFilter.count()
+        violationProductFilter?.let {
+            val violationFilterCount = violationProductFilter.value.toIntOrZero()
             val violationFilter = Violation(violationFilterCount)
             productFilters.add(violationFilter)
         }
