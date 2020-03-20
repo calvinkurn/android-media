@@ -7,6 +7,7 @@ import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.*
 import com.tokopedia.sellerhome.view.model.BaseWidgetUiModel
 import com.tokopedia.sellerhome.view.model.CardDataUiModel
+import com.tokopedia.sellerhome.view.model.LineGraphDataUiModel
 import com.tokopedia.sellerhome.view.model.TickerUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -73,7 +74,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `should success when get ticker`() {
+    fun `get ticker should success`() {
         val tickerList = listOf(
                 TickerUiModel("", "", "", "", "", "",
                         "", "", "", "", "", "", "")
@@ -93,7 +94,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `should success when get shop status`() {
+    fun `get shop status should success`() {
         val shopStatus = GetShopStatusResponse()
         val shopId = "123456"
 
@@ -121,7 +122,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `should failed when get shop status`() {
+    fun `get shop status should failed`() {
         val throwable = MessageErrorException("error")
         val shopId = "123456"
 
@@ -149,7 +150,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `should success when get widget layout`() {
+    fun `get widget layout should success`() {
         val layoutList: List<BaseWidgetUiModel<*>> = emptyList()
         val shopId = "123456"
 
@@ -177,7 +178,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `should failed when get widget layout`() {
+    fun `get widget layout should failed`() {
         val throwable = MessageErrorException("error message")
         val shopId = "123456"
 
@@ -205,7 +206,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `should success when get shop location`() {
+    fun `get shop location should success`() {
         val shopId = "123456"
         getShopLocationUseCase.params = GetShopLocationUseCase.getRequestParams(shopId)
 
@@ -233,7 +234,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `should failed when get shop location`() {
+    fun `get shop location should failed`() {
         val throwable = MessageErrorException("error message")
         val shopId = "123456"
 
@@ -249,10 +250,6 @@ class SellerHomeViewModelTest {
 
         mViewModel.getShopLocation()
 
-        verify {
-            userSession.shopId
-        }
-
         coVerify {
             getShopLocationUseCase.executeOnBackground()
         }
@@ -267,7 +264,7 @@ class SellerHomeViewModelTest {
         val startDate = "02-03-20202"
         val endDate = "09-03-20202"
 
-        val cardData = listOf(CardDataUiModel(), CardDataUiModel(), CardDataUiModel())
+        val cardDataResult = listOf(CardDataUiModel(), CardDataUiModel(), CardDataUiModel())
         getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(shopId, dataKeys, startDate, endDate)
 
         every {
@@ -276,7 +273,7 @@ class SellerHomeViewModelTest {
 
         coEvery {
             getCardDataUseCase.executeOnBackground()
-        } returns cardData
+        } returns cardDataResult
 
         mViewModel.getCardWidgetData(dataKeys)
 
@@ -288,7 +285,9 @@ class SellerHomeViewModelTest {
             getCardDataUseCase.executeOnBackground()
         }
 
-        assertEquals(Success(cardData), mViewModel.cardWidgetData.value)
+        val expectedResult = Success(cardDataResult)
+        assertTrue(dataKeys.size == expectedResult.data.size)
+        assertEquals(expectedResult, mViewModel.cardWidgetData.value)
     }
 
     @Test
@@ -311,10 +310,6 @@ class SellerHomeViewModelTest {
 
         mViewModel.getCardWidgetData(dataKeys)
 
-        verify {
-            userSession.shopId
-        }
-
         coVerify {
             getCardDataUseCase.executeOnBackground()
         }
@@ -322,17 +317,67 @@ class SellerHomeViewModelTest {
         assertEquals(Fail(throwable), mViewModel.cardWidgetData.value)
     }
 
-    /*@Test
-    fun `should success get line graph widget data`() {
+    @Test
+    fun `should success when get line graph widget data`() {
+        val shopId = "12345"
+        val dataKeys = listOf("x", "y", "z")
+        val startDate = "02-03-20202"
+        val endDate = "09-03-20202"
 
+        val lineGraphDataResult = listOf(LineGraphDataUiModel(), LineGraphDataUiModel(), LineGraphDataUiModel())
+        getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(shopId, dataKeys, startDate, endDate)
+
+        every {
+            userSession.shopId
+        } returns shopId
+
+        coEvery {
+            getLineGraphDataUseCase.executeOnBackground()
+        } returns lineGraphDataResult
+
+        mViewModel.getLineGraphWidgetData(dataKeys)
+
+        verify {
+            userSession.shopId
+        }
+
+        coVerify {
+            getLineGraphDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Success(lineGraphDataResult)
+        assertTrue(dataKeys.size == expectedResult.data.size)
+        assertEquals(expectedResult, mViewModel.lineGraphWidgetData.value)
     }
 
     @Test
     fun `should failed get line graph widget data`() {
+        val shopId = "12345"
+        val dataKeys = listOf("x", "y", "z")
+        val startDate = "02-03-20202"
+        val endDate = "09-03-20202"
 
+        val throwable= Throwable()
+        getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(shopId, dataKeys, startDate, endDate)
+
+        every {
+            userSession.shopId
+        } returns shopId
+
+        coEvery {
+            getLineGraphDataUseCase.executeOnBackground()
+        } throws throwable
+
+        mViewModel.getLineGraphWidgetData(dataKeys)
+
+        coVerify {
+            getLineGraphDataUseCase.executeOnBackground()
+        }
+
+        assertEquals(Fail(throwable), mViewModel.lineGraphWidgetData.value)
     }
 
-    @Test
+    /*@Test
     fun `should success get progress widget data`() {
 
     }
