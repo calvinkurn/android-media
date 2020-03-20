@@ -48,7 +48,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
         private var MOBILE_DOMAIN = getInstance().MOBILEWEB
 
-        private const val DEVELOPER_OPTION_INDEX = 19
+        private const val DEVELOPER_OPTION_INDEX = 20
 
         @JvmStatic
         fun createInstance(): MenuSettingFragment = MenuSettingFragment()
