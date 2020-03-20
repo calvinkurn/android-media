@@ -36,6 +36,7 @@ class ShopHomeVideoViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT_RES = R.layout.widget_shop_page_video_youtube
+        const val KEY_YOUTUBE_VIDEO_ID = "v"
     }
 
     private var videoUrl: String = ""
@@ -60,15 +61,8 @@ class ShopHomeVideoViewHolder(
     override fun bind(model: ShopHomeDisplayWidgetUiModel) {
         this.youtubVideoModel = model
         val videoData = model.data?.first()
-        val regex = "v=([^\\s&#]*)"
-        videoUrl = videoData?.videoUrl ?: ""
-        val pattern = Pattern.compile(regex, Pattern.MULTILINE)
-        val matcher = pattern.matcher(videoUrl)
-        videoUrl = if (matcher.find()) {
-            matcher.group(1)
-        } else {
-            videoUrl
-        }
+        val uri = Uri.parse(videoData?.videoUrl ?: "")
+        videoUrl = uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID) ?: ""
         btnYoutubePlayer?.setOnClickListener(this)
         ivVideoNotFound?.setOnClickListener(this)
         videoData?.let {
