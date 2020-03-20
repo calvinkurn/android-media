@@ -2,6 +2,7 @@ package com.tokopedia.home.analytics.v2
 
 import android.annotation.SuppressLint
 import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.home.analytics.v2.BaseTracking.Value.FORMAT_2_ITEMS_UNDERSCORE
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.track.TrackApp
@@ -56,6 +57,7 @@ abstract class BaseTracking {
         const val LIST_WITH_HEADER = "/ - p%s - %s - %s"
         const val LIST = "/ - p%s - %s"
         const val EMPTY = ""
+        const val FORMAT_2_ITEMS_UNDERSCORE = "%s_%s"
 
         fun getFreeOngkirValue(grid: DynamicHomeChannel.Grid) = if (grid.freeOngkir.isActive)"bebas ongkir" else "none / other"
     }
@@ -94,6 +96,7 @@ abstract class BaseTracking {
         private const val KEY_ATTRIBUTION = "attribution"
         private const val KEY_DIMENSION_83 = "dimension83"
         private const val KEY_DIMENSION_84 = "dimension84"
+        private const val KEY_DIMENSION_96 = "dimension96"
 
         fun getEcommercePromoView(promotions: List<Promotion>): Map<String, Any> {
             return DataLayer.mapOf(
@@ -169,6 +172,7 @@ abstract class BaseTracking {
             map[KEY_POSITION] = product.productPosition
             map[KEY_DIMENSION_83] = if(product.isFreeOngkir) FREE_ONGKIR else NONE
             if (product.channelId.isNotEmpty()) map[KEY_DIMENSION_84] = product.channelId else NONE
+            if (product.categoryId.isNotEmpty() || product.persoType.isNotEmpty()) map[KEY_DIMENSION_96] = String.format(FORMAT_2_ITEMS_UNDERSCORE, product.persoType, product.categoryId) else NONE
             if (list.isNotEmpty()) map[KEY_LIST] = list
             return map
         }
@@ -184,7 +188,9 @@ abstract class BaseTracking {
             val variant: String,
             val productPosition: String,
             val isFreeOngkir: Boolean,
-            val channelId: String = ""): ImpressHolder()
+            val channelId: String = "",
+            val persoType: String = "",
+            val categoryId: String = ""): ImpressHolder()
 
     open fun getBasicPromotionView(
         event: String,

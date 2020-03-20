@@ -70,6 +70,8 @@ object HomeQuery{
               layout
               type
               showPromoBadge
+              categoryID
+              perso_type
               header {
                 id
                 name

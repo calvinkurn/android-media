@@ -6,6 +6,7 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 object HomePageTrackingV2 : BaseTracking() {
     private object CustomEvent{
         const val CLICK_HOMEPAGE = "clickHomepage"
+        const val FORMAT_4_VALUE_UNDERSCORE = "%s_%s_%s_%s";
     }
 
     object LegoBanner{
@@ -38,7 +39,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 shopId = channel.brandId,
                 promotions = channel.grids.map {
                     Promotion(
-                            id = "%s_%s".format(channel.id, it.id),
+                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.banner.id, channel.persoType, channel.categoryID),
                             creative = it.attribution,
                             creativeUrl = it.imageUrl,
                             name = Ecommerce.PROMOTION_NAME.format(position, LEGO_BANNER_4_IMAGE_NAME, channel.header.name),
@@ -79,13 +80,16 @@ object HomePageTrackingV2 : BaseTracking() {
                             variant = Value.NONE_OTHER,
                             productPosition = (index + 1).toString(),
                             channelId = channel.id,
-                            isFreeOngkir = grid.freeOngkir.isActive
+                            isFreeOngkir = grid.freeOngkir.isActive,
+                            persoType = channel.persoType,
+                            categoryId = channel.categoryID
                     )
                 },
                 list = String.format(
                         Value.LIST_WITH_HEADER, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.header.name
                 )
         )
+
         private fun getRecommendationListClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductChannelClick(
                 event = Event.PRODUCT_CLICK,
                 eventCategory = Category.HOMEPAGE,
@@ -102,7 +106,9 @@ object HomePageTrackingV2 : BaseTracking() {
                                 variant = Value.NONE_OTHER,
                                 productPosition = (position + 1).toString(),
                                 channelId = channel.id,
-                                isFreeOngkir = grid.freeOngkir.isActive
+                                isFreeOngkir = grid.freeOngkir.isActive,
+                                persoType = channel.persoType,
+                                categoryId = channel.categoryID
                         )
                 ),
                 list = String.format(
@@ -278,7 +284,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 products = channel.grids.mapIndexed { index, grid ->
                     Product(
                             name = grid.name,
-                            id = grid.id,
+                            id = channel.id + "_" + channel.banner.id+ "_" + channel.persoType+ "_" + channel.categoryID,
                             productPrice = convertRupiahToInt(grid.price).toString(),
                             brand = Value.NONE_OTHER,
                             category = Value.NONE_OTHER,
@@ -308,7 +314,9 @@ object HomePageTrackingV2 : BaseTracking() {
                                 variant = Value.NONE_OTHER,
                                 productPosition = (position + 1).toString(),
                                 channelId = channel.id,
-                                isFreeOngkir = grid.freeOngkir.isActive
+                                isFreeOngkir = grid.freeOngkir.isActive,
+                                persoType = channel.persoType,
+                                categoryId = channel.categoryID
                         )
                 ),
                 list = String.format(
