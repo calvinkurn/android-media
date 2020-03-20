@@ -127,7 +127,7 @@ class ProductManageFilterExpandChecklistFragment :
     private fun initView() {
         configToolbar()
         filterCheckListRecyclerView.setOnTouchListener { _, _ ->
-            filterSubmitButton.visibility = View.VISIBLE
+            filterSearchBar.clearFocus()
             false
         }
         initButtons()
@@ -166,13 +166,6 @@ class ProductManageFilterExpandChecklistFragment :
         }
 
         filterSearchBar.visibility = View.VISIBLE
-        filterSearchBar.searchBarTextField.setOnFocusChangeListener { v, hasFocus ->
-            if(hasFocus) {
-                filterSubmitButton.visibility = View.GONE
-            } else {
-                filterSubmitButton.visibility = View.VISIBLE
-            }
-        }
     }
 
     private fun observeDataLength() {
@@ -259,13 +252,12 @@ class ProductManageFilterExpandChecklistFragment :
 
     private fun processSearch(searchText: String) {
         if(searchText.isNotEmpty()) {
-            search(searchText).let { result ->
-                if(result.isNotEmpty()) {
-                    hideError()
-                    adapter?.updateChecklistData(result)
-                } else {
-                    showError()
-                }
+            val result = search(searchText)
+            if(result.isNotEmpty()) {
+                hideError()
+                adapter?.updateChecklistData(result)
+            } else {
+                showError()
             }
         } else {
             productManageFilterExpandChecklistViewModel.checklistData.value?.toList()?.let {data ->
@@ -273,6 +265,5 @@ class ProductManageFilterExpandChecklistFragment :
             }
         }
     }
-
 
 }
