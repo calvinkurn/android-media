@@ -259,7 +259,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onViewAttachedToWindow(@NonNull RecyclerView.ViewHolder holder) {
         super.onViewAttachedToWindow(holder);
-        if(holder instanceof InsuranceCartShopViewHolder && !sendInsuranceImpressionEvent) {
+        if (holder instanceof InsuranceCartShopViewHolder && !sendInsuranceImpressionEvent) {
             sendInsuranceImpressionEvent = true;
             insuranceItemActionlistener.sendEventInsuranceImpressionForShipment(((InsuranceCartShopViewHolder) holder).getProductTitle());
         }
@@ -1143,32 +1143,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return true;
     }
 
-    public boolean hasAppliedPromoStackCode() {
-        boolean hasApplied = false;
-        for (Object itemAdapter : shipmentDataList) {
-            if (itemAdapter instanceof PromoStackingData) {
-                if (((PromoStackingData) itemAdapter).getState() != TickerPromoStackingCheckoutView.State.EMPTY) {
-                    hasApplied = true;
-                }
-            }
-
-            if (itemAdapter instanceof ShipmentCartItemModel) {
-                if (((ShipmentCartItemModel) itemAdapter).getVoucherOrdersItemUiModel() != null) {
-                    if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(((ShipmentCartItemModel) itemAdapter).getVoucherOrdersItemUiModel().getMessage().getState()) != TickerPromoStackingCheckoutView.State.EMPTY) {
-                        hasApplied = true;
-                    }
-                }
-
-                if (((ShipmentCartItemModel) itemAdapter).getVoucherLogisticItemUiModel() != null) {
-                    if (TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(((ShipmentCartItemModel) itemAdapter).getVoucherLogisticItemUiModel().getMessage().getState()) != TickerPromoStackingCheckoutView.State.EMPTY) {
-                        hasApplied = true;
-                    }
-                }
-            }
-        }
-        return hasApplied;
-    }
-
     public void setCourierPromoApplied(int position) {
         if (shipmentDataList.get(position) instanceof ShipmentCartItemModel) {
             ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(position);
@@ -1291,6 +1265,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return shipmentCartItemModelList.get(index);
         }
         return null;
+    }
+
+    public int getShipmentCartItemModelPosition(ShipmentCartItemModel shipmentCartItemModel) {
+        return shipmentDataList.indexOf(shipmentCartItemModel);
     }
 
     public void updatePromoCheckoutData(PromoUiModel promoUiModel) {

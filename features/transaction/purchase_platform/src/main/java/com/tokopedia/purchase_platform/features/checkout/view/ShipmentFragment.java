@@ -156,8 +156,10 @@ import static com.tokopedia.logisticcart.cod.view.CodActivity.EXTRA_COD_DATA;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_CHECKOUT;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_DEFAULT;
 import static com.tokopedia.purchase_platform.common.constant.Constant.EXTRA_CHECKOUT_REQUEST;
+import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_CLEAR_PROMO_RESULT;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PAGE_SOURCE;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_REQUEST;
+import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_VALIDATE_USE_DATA_RESULT;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_VALIDATE_USE_REQUEST;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION;
 
@@ -907,7 +909,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
         }
         setCourierPromoApplied(itemPosition);
-        doUpdateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel());
+        updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel());
     }
 
     @Override
@@ -1237,15 +1239,24 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         } else if (requestCode == LogisticConstant.REQUEST_CODE_PICK_DROP_OFF_TRADE_IN) {
             onResultFromSetTradeInPinpoint(data);
         } else if (requestCode == REQUEST_CODE_PROMO) {
-            onResultFromPromo();
+            onResultFromPromo(resultCode, data);
         }
     }
 
-    private void onResultFromPromo() {
-        shipmentPresenter.processInitialLoadCheckoutPage(
-                true, isOneClickShipment(), isTradeIn(), true,
-                false, null, getDeviceId(), getCheckoutLeasingId()
-        );
+    private void onResultFromPromo(int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = data.getParcelableExtra(ARGS_VALIDATE_USE_DATA_RESULT);
+            if (validateUsePromoRevampUiModel != null) {
+                updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel());
+                return;
+            }
+
+            String defaultTitlePromoButton = data.getStringExtra(ARGS_CLEAR_PROMO_RESULT);
+            if (defaultTitlePromoButton != null) {
+                // TODO : Check promo
+                // TODO : Hit validate use after clear promo if still has BBO. Make sure only send BBO code as promo param
+            }
+        }
     }
 
     public void onResultFromEditAddress() {
@@ -1619,11 +1630,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onFinishChoosingShipment() {
-        if (shipmentAdapter.hasAppliedPromoStackCode()) {
-            shipmentPresenter.checkPromoCheckoutFinalShipment(generateValidateUsePromoRequest());
-        } else {
-            sendEEStep3();
-        }
+        // Todo : check is still has applied promo
+//        if (shipmentAdapter.hasAppliedPromoStackCode()) {
+        shipmentPresenter.checkPromoCheckoutFinalShipment(generateValidateUsePromoRequest());
+//        } else {
+        sendEEStep3();
+//        }
     }
 
     private void sendEEStep3() {
@@ -2754,6 +2766,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void updateButtonPromoCheckout(PromoUiModel promoUiModel) {
         doUpdateButtonPromoCheckout(promoUiModel);
         updatePromoTrackingData(promoUiModel.getTrackingDetails());
+        updateLogisticPromoData(promoUiModel);
     }
 
     private void doUpdateButtonPromoCheckout(PromoUiModel promoUiModel) {
@@ -2775,4 +2788,31 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onSendAnalyticsViewPromoCheckoutApplied() {
         PromoRevampAnalytics.INSTANCE.eventCheckoutViewPromoAlreadyApplied();
     }
+
+    private void updateLogisticPromoData(PromoUiModel promoUiModel) {
+        List<ShipmentCartItemModel> shipmentCartItemModels = shipmentAdapter.getShipmentCartItemModelList();
+        List<PromoCheckoutVoucherOrdersItemUiModel> voucherOrdersItemUiModels = promoUiModel.getVoucherOrderUiModels();
+        for (PromoCheckoutVoucherOrdersItemUiModel promoCheckoutVoucherOrdersItemUiModel : voucherOrdersItemUiModels) {
+            if (promoCheckoutVoucherOrdersItemUiModel.getType().equals("logistic")) {
+                for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
+                    if (shipmentCartItemModel.getCartString().equals(promoCheckoutVoucherOrdersItemUiModel.getUniqueId())) {
+                        VoucherLogisticItemUiModel log = new VoucherLogisticItemUiModel();
+                        log.setCode(promoCheckoutVoucherOrdersItemUiModel.getCode());
+                        log.setCouponDesc(promoCheckoutVoucherOrdersItemUiModel.getTitleDescription());
+                        log.setCouponAmount(Utils.getFormattedCurrency(promoCheckoutVoucherOrdersItemUiModel.getDiscountAmount()));
+                        log.setCouponAmountRaw(promoCheckoutVoucherOrdersItemUiModel.getDiscountAmount());
+                        MessageUiModel messageUiModel = new MessageUiModel();
+                        messageUiModel.setColor(promoCheckoutVoucherOrdersItemUiModel.getMessageUiModel().getColor());
+                        messageUiModel.setState(promoCheckoutVoucherOrdersItemUiModel.getMessageUiModel().getState());
+                        messageUiModel.setText(promoCheckoutVoucherOrdersItemUiModel.getMessageUiModel().getText());
+                        log.setMessage(messageUiModel);
+                        shipmentCartItemModel.setVoucherLogisticItemUiModel(log);
+
+                        onNeedUpdateViewItem(shipmentAdapter.getShipmentCartItemModelPosition(shipmentCartItemModel));
+                    }
+                }
+            }
+        }
+    }
+
 }

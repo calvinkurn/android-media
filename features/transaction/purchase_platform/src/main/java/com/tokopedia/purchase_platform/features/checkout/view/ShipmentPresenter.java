@@ -35,6 +35,7 @@ import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse;
+import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
@@ -60,9 +61,11 @@ import com.tokopedia.purchase_platform.common.data.model.response.macro_insuranc
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult;
 import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase;
+import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.DataChangeAddressRequest;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.saveshipmentstate.SaveShipmentStateRequest;
@@ -608,9 +611,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         } else {
             setShipmentDonationModel(null);
         }
-
-        // getView().setPromoStackingData(cartShipmentAddressFormData);
-        //getView().setLastApplyData(cartShipmentAddressFormData.getLastApplyData());
 
         if (cartShipmentAddressFormData.getLastApplyData() != null) {
             setLastApplyData(cartShipmentAddressFormData.getLastApplyData());
@@ -1562,24 +1562,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
     }
 
-    // Clear promo red state before checkout
-    @Override
-    public void cancelNotEligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList, int checkoutType) {
-        ArrayList<String> notEligiblePromoCodes = new ArrayList<>();
-        for (NotEligiblePromoHolderdata notEligiblePromoHolderdata : notEligiblePromoHolderdataArrayList) {
-            notEligiblePromoCodes.add(notEligiblePromoHolderdata.getPromoCode());
-        }
-
-        if (notEligiblePromoCodes.size() > 0) {
-            getView().showLoading();
-            clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), notEligiblePromoCodes);
-            compositeSubscription.add(
-                    clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
-                            .subscribe(new ClearNotEligiblePromoSubscriber(getView(), this, checkoutType, notEligiblePromoHolderdataArrayList))
-            );
-        }
-    }
-
     // Clear promo BBO after choose other / non BBO courier
     @Override
     public void cancelAutoApplyPromoStackLogistic(String promoCode) {
@@ -1611,6 +1593,24 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     }
                 })
         );
+    }
+
+    // Clear promo red state before checkout
+    @Override
+    public void cancelNotEligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList, int checkoutType) {
+        ArrayList<String> notEligiblePromoCodes = new ArrayList<>();
+        for (NotEligiblePromoHolderdata notEligiblePromoHolderdata : notEligiblePromoHolderdataArrayList) {
+            notEligiblePromoCodes.add(notEligiblePromoHolderdata.getPromoCode());
+        }
+
+        if (notEligiblePromoCodes.size() > 0) {
+            getView().showLoading();
+            clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), notEligiblePromoCodes);
+            compositeSubscription.add(
+                    clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
+                            .subscribe(new ClearNotEligiblePromoSubscriber(getView(), this, checkoutType, notEligiblePromoHolderdataArrayList))
+            );
+        }
     }
 
     // Clear promo after clash (rare, almost zero probability)
@@ -1982,5 +1982,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         return true;
+    }
+
+    private void validateUseIsStillHasAnyPromo(String lastDeletedPromoCode) {
+        if (validateUsePromoRevampUiModel != null) {
+
+        }
     }
 }

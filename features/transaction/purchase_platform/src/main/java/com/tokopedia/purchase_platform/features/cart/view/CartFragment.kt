@@ -1867,8 +1867,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
                     val defaultTitlePromoButton = data?.getStringExtra(ARGS_CLEAR_PROMO_RESULT)
                     if (defaultTitlePromoButton != null) {
-                        // Todo : reset promo button
-                        return
+                        updatePromoCheckoutStickyButton(PromoUiModel(titleDescription = defaultTitlePromoButton))
                     }
                 }
             }
