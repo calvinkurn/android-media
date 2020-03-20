@@ -14,11 +14,13 @@
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_4"
         android:layout_marginBottom="@dimen/dp_12"
-        android:textColor="@color/clr_f531353b"
         android:visibility="gone"
-        app:typographyType="body_1"
+        app:typographyType="heading_4"
+        android:textColor="@color/clr_31353B"
         app:typographyWeight="bold"
         tools:text="Title"
+        android:ellipsize="end"
+        android:singleLine="true"
         tools:visibility="visible" />
 
     <com.tokopedia.carousel.CarouselUnify

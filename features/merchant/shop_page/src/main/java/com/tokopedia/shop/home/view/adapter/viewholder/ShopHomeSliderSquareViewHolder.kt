@@ -1,14 +1,20 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.adapter.PaddingItemDecorationShopPage
 import com.tokopedia.shop.home.view.adapter.ShopHomeSliderSquareAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.widget_shop_page_home_slider_square.view.*
 
 /**
@@ -41,7 +47,26 @@ class ShopHomeSliderSquareViewHolder(
         shopHomeSliderSquareAdapter.heightRatio = getHeightRatio(element)
         shopHomeSliderSquareAdapter.parentPosition = adapterPosition
         shopHomeSliderSquareAdapter.submitList(element.data)
-        itemView.tgHeaderSliderSquare.text = element.header.title
+        itemView.tgHeaderSliderSquare?.apply {
+            val title = element.header.title
+            if (title.isEmpty()) {
+                hide()
+                itemView.rvCarouselShopPageHome?.apply {
+                    val layoutParams = layoutParams as ViewGroup.MarginLayoutParams
+                    val marginTop = 8.toPx().takeIf { adapterPosition == 0 }
+                            ?: layoutParams.topMargin
+                    setMargin(
+                            layoutParams.leftMargin,
+                            marginTop,
+                            layoutParams.rightMargin,
+                            layoutParams.bottomMargin
+                    )
+                }
+            } else {
+                show()
+                text = title
+            }
+        }
     }
 
     private fun getIndexRatio(data: ShopHomeDisplayWidgetUiModel, index: Int): Int {

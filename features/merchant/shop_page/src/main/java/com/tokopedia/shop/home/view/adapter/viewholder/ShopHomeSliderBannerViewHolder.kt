@@ -7,11 +7,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisibleOnTheScreen
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.viewmodel_slider_banner.view.*
 import java.util.ArrayList
 
@@ -64,6 +66,7 @@ class ShopHomeSliderBannerViewHolder(
             indicatorPosition = CarouselUnify.INDICATOR_BL
             infinite = true
             onActiveIndexChangedListener = this@ShopHomeSliderBannerViewHolder
+            indicatorWrapper.setMargin(0, 8.toPx(), 0, 0)
         }
     }
 

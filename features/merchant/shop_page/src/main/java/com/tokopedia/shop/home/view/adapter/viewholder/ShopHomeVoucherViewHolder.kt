@@ -1,6 +1,7 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
+import android.view.ViewGroup
 
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -56,8 +57,24 @@ class ShopHomeVoucherViewHolder(
                 shopHomeVoucherViewHolderListener.onVoucherListImpression(adapterPosition, it)
             }
         }
-        merchantVoucherListWidget?.setData(model.data as ArrayList<MerchantVoucherViewModel>?)
-        merchantVoucherListWidget?.setOnMerchantVoucherListWidgetListener(this@ShopHomeVoucherViewHolder)
+        merchantVoucherListWidget?.apply {
+            setData(model.data as ArrayList<MerchantVoucherViewModel>?)
+            setOnMerchantVoucherListWidgetListener(this@ShopHomeVoucherViewHolder)
+            setTitle(model.header.title)
+            setSeeAllText(model.header.ctaText)
+            getVoucherHeaderContainer()?.let {
+                val leftPadding = it.paddingLeft
+                val topPadding = it.paddingTop
+                val rightPadding = it.paddingRight
+                val bottomPadding = 0
+                setVoucherHeaderPadding(
+                        leftPadding,
+                        topPadding,
+                        rightPadding,
+                        bottomPadding
+                )
+            }
+        }
         recyclerViewState?.let {
             merchantVoucherListWidget?.recyclerView?.layoutManager?.onRestoreInstanceState(it)
         }
