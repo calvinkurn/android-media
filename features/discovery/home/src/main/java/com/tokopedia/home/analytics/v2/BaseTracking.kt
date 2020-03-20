@@ -221,7 +221,7 @@ abstract class BaseTracking {
                 Category.KEY, eventCategory,
                 Action.KEY, eventAction,
                 Label.KEY, eventLabel,
-                Ecommerce.KEY, Ecommerce.getEcommercePromoView(promotions)m,
+                Ecommerce.KEY, Ecommerce.getEcommercePromoView(promotions),
                 ChannelId.KEY, channelId
         )
     }
