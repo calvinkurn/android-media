@@ -343,8 +343,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun setTabFilterCount(filter: FilterOptionWrapper) {
-        val sortCount =  if(filter.sortOption == null) 0 else 1
-        val filterCount = filter.filterOptions.count() + sortCount
+        var filterCount = filter.filterOptions.count().orZero()
+        filter.sortOption?.let { filterCount++ }
         tabFilters.setFilterCount(filterCount)
     }
 

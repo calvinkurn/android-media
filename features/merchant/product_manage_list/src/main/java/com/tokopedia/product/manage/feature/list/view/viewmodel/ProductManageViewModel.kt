@@ -214,8 +214,8 @@ class ProductManageViewModel @Inject constructor(
     fun getFiltersTab(shopId: String) {
         launchCatchError(block = {
             val selectedFilter = selectedFilterAndSort.value
-            val sortCount =  if(selectedFilter?.sortOption == null) 0 else 1
-            val filterCount = selectedFilter?.filterOptions?.count().orZero() + sortCount
+            var filterCount = selectedFilter?.filterOptions?.count().orZero()
+            selectedFilter?.sortOption?.let { filterCount++ }
 
             val response = withContext(Dispatchers.IO) {
                 getProductListMetaUseCase.params = GetProductListMetaUseCase.createRequestParams(shopId)
