@@ -207,12 +207,12 @@ class PlayViewModel @Inject constructor(
         _observablePinned.addSource(_observablePinnedMessage) {
             if (_observablePinnedProduct.value == null) {
                 if (it == null) _observablePinned.value = PinnedRemoveUiModel
-                else _observablePinned.value = it
+                else if (_observablePinned.value != it) _observablePinned.value = it
             }
         }
         _observablePinned.addSource(_observablePinnedProduct) {
             val productSheet = _observableProductSheetContent.value
-            if (productSheet is PlayResult.Success && productSheet.data.productList.isNotEmpty() && it != null) {
+            if (productSheet is PlayResult.Success && productSheet.data.productList.isNotEmpty() && it != null && _observablePinned.value != it) {
                 _observablePinned.value = it
             } else {
                 val pinnedMessage = _observablePinnedMessage.value
@@ -751,7 +751,7 @@ class PlayViewModel @Inject constructor(
                         },
                         productList = List(5) {
                             ProductLineUiModel(
-                                    id = "689413405",
+                                    id = "697897875",
                                     shopId = "123",
                                     imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
                                     title = "Product $it",
