@@ -34,7 +34,7 @@ object DFInstaller {
 
     var sessionId: Int? = null
     internal var moduleSize = 0L
-    internal var previousState:SplitInstallSessionState? = null
+    internal var previousState: SplitInstallSessionState? = null
     internal var freeInternalSpaceBeforeDownload: Long = 0L
 
     private var viewRef: WeakReference<DFInstallerView?>? = null
@@ -92,6 +92,7 @@ object DFInstaller {
             // SplitInstallManager only allow the installation from Main Thread.
             withContext(Dispatchers.Main) {
                 suspendCoroutine<Pair<Boolean, Boolean>> { continuation ->
+                    registerListener(applicationContext, moduleNameToDownload, onSuccessInstall, onFailedInstall, continuation)
                     //if has view will continue from the last state download
                     getView()?.let { view ->
                         if (view.getModuleNameView() != SplitInstallListener.moduleNameToDownload.first()) {
@@ -105,7 +106,6 @@ object DFInstaller {
                             }
                         }
                     }
-                    registerListener(applicationContext, moduleNameToDownload, onSuccessInstall, onFailedInstall, continuation)
                     getManager(applicationContext)?.startInstall(request)?.addOnSuccessListener {
                         if (it == 0) {
                             // success

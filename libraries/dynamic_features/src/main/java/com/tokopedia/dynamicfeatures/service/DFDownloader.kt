@@ -104,9 +104,8 @@ object DFDownloader {
         return withContext(Dispatchers.Default) {
             var startService = false
             var isImmediate = false
+            var successResult: Boolean
             try {
-                DFInstaller.getManager(applicationContext) ?: return@withContext false
-
                 // only download the first module in the list (that is not installed too)
                 val moduleToDownloadPair = DFQueue.getDFModuleList(applicationContext).asSequence()
                     .filter { !DFInstaller.isInstalled(applicationContext, it.first) }
@@ -115,67 +114,68 @@ object DFDownloader {
                 val moduleToDownload = moduleToDownloadPair?.first ?: ""
                 if (moduleToDownload.isEmpty()) {
                     DFQueue.clear(applicationContext)
-                    return@withContext true
-                }
-                val (result, immediate) = DFInstaller.startInstallInBackground(applicationContext, listOf(moduleToDownload), onSuccessInstall = {
-                    DFQueue.removeModuleFromQueue(applicationContext, listOf(moduleToDownload))
-                }, onFailedInstall = {
-                    // loop all combined list
-                    // if not installed, flag++
-                    // if installed, it will be removed from queue list
-                    val successfulListAfterInstall = mutableListOf<String>()
-                    val failedListAfterInstall = mutableListOf<Pair<String, Int>>()
-
-                    if (DFInstaller.isInstalled(applicationContext, moduleToDownload)) {
-                        successfulListAfterInstall.add(moduleToDownload)
-                    } else {
-                        failedListAfterInstall.add(Pair(moduleToDownload, (moduleToDownloadPair?.second
-                            ?: 0) + 1))
-                    }
-
-                    if (DFRemoteConfig.getConfig(applicationContext).downloadInBackgroundAllowRetry) {
-                        //allowRetry will add failed list to queue again
-                        DFQueue.updateQueue(applicationContext, failedListAfterInstall, successfulListAfterInstall)
-                    } else {
-                        // not allow retry will remove both success and failed from queue
-                        DFQueue.updateQueue(applicationContext, null, successfulListAfterInstall)
-                        DFQueue.updateQueue(applicationContext, null, failedListAfterInstall.map { it.first })
-                    }
-
-                })
-                // retrieve the list again, and start the service to download the next DF in queue
-                val remainingList = DFQueue.getDFModuleList(applicationContext)
-                if (result) {
-                    // if previous download is success, will schedule to run immediately
-                    // the chance of successful download is bigger.
-                    if (remainingList.isNotEmpty()) {
-                        startService = true
-                        isImmediate = immediate
-                    }
-                    return@withContext true
+                    successResult = true
                 } else {
-                    if (remainingList.isEmpty()) {
-                        return@withContext true
-                    } else {
-                        //to sort the DF, so the most failed will be downloaded later.
-                        val remainingListSorted = DFQueue.getDFModuleListSorted(applicationContext)
-                        if (remainingListSorted[0].first != remainingList[0].first) {
-                            DFQueue.putDFModuleList(applicationContext, remainingListSorted)
+                    val (result, immediate) = DFInstaller.startInstallInBackground(applicationContext, listOf(moduleToDownload), onSuccessInstall = {
+                        DFQueue.removeModuleFromQueue(applicationContext, listOf(moduleToDownload))
+                    }, onFailedInstall = {
+                        // loop all combined list
+                        // if not installed, flag++
+                        // if installed, it will be removed from queue list
+                        val successfulListAfterInstall = mutableListOf<String>()
+                        val failedListAfterInstall = mutableListOf<Pair<String, Int>>()
+
+                        if (DFInstaller.isInstalled(applicationContext, moduleToDownload)) {
+                            successfulListAfterInstall.add(moduleToDownload)
+                        } else {
+                            failedListAfterInstall.add(Pair(moduleToDownload, (moduleToDownloadPair?.second
+                                ?: 0) + 1))
                         }
-                        startService = true
-                        isImmediate = immediate
-                        return@withContext false
+
+                        if (DFRemoteConfig.getConfig(applicationContext).downloadInBackgroundAllowRetry) {
+                            //allowRetry will add failed list to queue again
+                            DFQueue.updateQueue(applicationContext, failedListAfterInstall, successfulListAfterInstall)
+                        } else {
+                            // not allow retry will remove both success and failed from queue
+                            DFQueue.updateQueue(applicationContext, null, successfulListAfterInstall)
+                            DFQueue.updateQueue(applicationContext, null, failedListAfterInstall.map { it.first })
+                        }
+
+                    })
+                    // retrieve the list again, and start the service to download the next DF in queue
+                    val remainingList = DFQueue.getDFModuleList(applicationContext)
+                    if (result) {
+                        // if previous download is success, will schedule to run immediately
+                        // the chance of successful download is bigger.
+                        if (remainingList.isNotEmpty()) {
+                            startService = true
+                            isImmediate = immediate
+                        }
+                        successResult = true
+                    } else {
+                        if (remainingList.isEmpty()) {
+                            successResult = true
+                        } else {
+                            //to sort the DF, so the most failed will be downloaded later.
+                            val remainingListSorted = DFQueue.getDFModuleListSorted(applicationContext)
+                            if (remainingListSorted[0].first != remainingList[0].first) {
+                                DFQueue.putDFModuleList(applicationContext, remainingListSorted)
+                            }
+                            startService = true
+                            isImmediate = immediate
+                            successResult = false
+                        }
                     }
                 }
             } catch (e: Exception) {
-
+                successResult = false
             } finally {
                 setServiceFlagFalse()
                 if (startService) {
                     startSchedule(applicationContext, isImmediate = isImmediate)
                 }
             }
-            return@withContext true
+            return@withContext successResult
         }
     }
 }
