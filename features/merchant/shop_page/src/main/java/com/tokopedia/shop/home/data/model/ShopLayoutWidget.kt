@@ -27,6 +27,8 @@ data class ShopLayoutWidget(
     data class Widget(
             @SerializedName("widgetID")
             val widgetID: String = "",
+            @SerializedName("widgetMasterID")
+            val widgetMasterID: String = "",
             @SerializedName("layoutOrder")
             val layoutOrder: Int = -1,
             @SerializedName("name")
