@@ -30,7 +30,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
     val hotelReviewResult = MutableLiveData<Result<HotelReview.ReviewData>>()
     val roomListResult = MutableLiveData<Result<MutableList<HotelRoom>>>()
 
-    fun getHotelDetailData(hotelInfoQuery: String, roomListQuery: String, hotelReviewQuery: String, propertyId: Int, searchParam: HotelHomepageModel) {
+    fun getHotelDetailData(hotelInfoQuery: String, roomListQuery: String, hotelReviewQuery: String, propertyId: Long, searchParam: HotelHomepageModel) {
         launch {
             getHotelInfo(hotelInfoQuery, propertyId)
             getHotelReview(hotelReviewQuery, propertyId)
@@ -38,7 +38,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    fun getHotelDetailDataWithoutRoom(hotelInfoQuery: String, hotelReviewQuery: String, propertyId: Int) {
+    fun getHotelDetailDataWithoutRoom(hotelInfoQuery: String, hotelReviewQuery: String, propertyId: Long) {
         launch {
             getHotelInfo(hotelInfoQuery, propertyId)
             getHotelReview(hotelReviewQuery, propertyId)
@@ -51,7 +51,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    private suspend fun getHotelInfo(rawQuery: String, propertyId: Int) {
+    private suspend fun getHotelInfo(rawQuery: String, propertyId: Long) {
 
         val requestDetailParams = PropertyDataParam(propertyId)
         val detailParams = mapOf(PARAM_HOTEL_INFO_PROPERTY to requestDetailParams)
@@ -72,7 +72,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    private suspend fun getHotelReview(rawQuery: String, propertyId: Int) {
+    private suspend fun getHotelReview(rawQuery: String, propertyId: Long) {
 
         val requestReviewParams = HotelReviewParam(propertyId = propertyId,
                 page = DEFAULT_PAGE_REVIEW,

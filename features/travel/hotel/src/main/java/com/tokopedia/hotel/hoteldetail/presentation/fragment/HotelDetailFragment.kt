@@ -67,7 +67,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     private var hotelHomepageModel = HotelHomepageModel()
     private var isButtonEnabled: Boolean = true
     private var hotelName: String = ""
-    private var hotelId: Int = 0
+    private var hotelId: Long = 0
     private var roomPrice: String = "0"
     private var roomPriceAmount: String = ""
     private var isDirectPayment: Boolean = true
@@ -91,7 +91,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         }
 
         arguments?.let {
-            hotelHomepageModel.locId = it.getInt(HotelDetailActivity.EXTRA_PROPERTY_ID)
+            hotelHomepageModel.locId = it.getLong(HotelDetailActivity.EXTRA_PROPERTY_ID)
 
             if (it.getString(HotelDetailActivity.EXTRA_CHECK_IN_DATE).isNotEmpty()) {
                 hotelHomepageModel.checkInDate = it.getString(HotelDetailActivity.EXTRA_CHECK_IN_DATE,
@@ -610,13 +610,13 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         const val RESULT_ROOM_LIST = 101
         const val RESULT_REVIEW = 102
 
-        fun getInstance(checkInDate: String, checkOutDate: String, propertyId: Int, roomCount: Int,
+        fun getInstance(checkInDate: String, checkOutDate: String, propertyId: Long, roomCount: Int,
                         adultCount: Int, destinationType: String, destinationName: String, isDirectPayment: Boolean): HotelDetailFragment =
                 HotelDetailFragment().also {
                     it.arguments = Bundle().apply {
                         putString(HotelDetailActivity.EXTRA_CHECK_IN_DATE, checkInDate)
                         putString(HotelDetailActivity.EXTRA_CHECK_OUT_DATE, checkOutDate)
-                        putInt(HotelDetailActivity.EXTRA_PROPERTY_ID, propertyId)
+                        putLong(HotelDetailActivity.EXTRA_PROPERTY_ID, propertyId)
                         putInt(HotelDetailActivity.EXTRA_ROOM_COUNT, roomCount)
                         putInt(HotelDetailActivity.EXTRA_ADULT_COUNT, adultCount)
                         putString(HotelDetailActivity.EXTRA_DESTINATION_TYPE, destinationType)

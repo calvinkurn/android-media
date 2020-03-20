@@ -48,7 +48,7 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
         super.onCreate(savedInstanceState)
 
         arguments?.let {
-            param.propertyId = it.getInt(ARG_PROPERTY_ID, 0)
+            param.propertyId = it.getLong(ARG_PROPERTY_ID, 0)
         }
 
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)

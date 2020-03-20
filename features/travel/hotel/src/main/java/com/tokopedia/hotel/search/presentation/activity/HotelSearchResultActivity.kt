@@ -21,7 +21,7 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
     var checkOut = ""
     var checkInString = ""
     var checkOutString = ""
-    var id = 0
+    var id: Long = 0
     var name = ""
     var type = ""
     var room = 1
@@ -44,19 +44,19 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
         val uri = intent.data
         if (uri != null) {
             if (!uri.getQueryParameter(PARAM_HOTEL_ID).isNullOrEmpty()) {
-                id = uri.getQueryParameter(PARAM_HOTEL_ID).toInt()
+                id = uri.getQueryParameter(PARAM_HOTEL_ID).toLong()
                 name = uri.getQueryParameter(PARAM_HOTEL_NAME)
                 type = TYPE_PROPERTY
             } else if (!uri.getQueryParameter(PARAM_CITY_ID).isNullOrEmpty()) {
-                id = uri.getQueryParameter(PARAM_CITY_ID).toInt()
+                id = uri.getQueryParameter(PARAM_CITY_ID).toLong()
                 name = uri.getQueryParameter(PARAM_CITY_NAME)
                 type = TYPE_CITY
             } else if (!uri.getQueryParameter(PARAM_DISTRICT_ID).isNullOrEmpty()) {
-                id = uri.getQueryParameter(PARAM_DISTRICT_ID).toInt()
+                id = uri.getQueryParameter(PARAM_DISTRICT_ID).toLong()
                 name = uri.getQueryParameter(PARAM_DISTRICT_NAME)
                 type = TYPE_DISTRICT
             } else if (!uri.getQueryParameter(PARAM_REGION_ID).isNullOrEmpty()) {
-                id = uri.getQueryParameter(PARAM_REGION_ID).toInt()
+                id = uri.getQueryParameter(PARAM_REGION_ID).toLong()
                 name = uri.getQueryParameter(PARAM_REGION_NAME)
                 type = TYPE_REGION
             }
@@ -68,7 +68,7 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
 
         } else {
             name = intent.getStringExtra(HotelSearchResultFragment.ARG_DESTINATION_NAME)
-            id = intent.getIntExtra(HotelSearchResultFragment.ARG_DESTINATION_ID, 0)
+            id = intent.getLongExtra(HotelSearchResultFragment.ARG_DESTINATION_ID, 0)
             type = intent.getStringExtra(HotelSearchResultFragment.ARG_TYPE)
             lat = intent.getFloatExtra(HotelSearchResultFragment.ARG_LAT, 0f)
             long = intent.getFloatExtra(HotelSearchResultFragment.ARG_LONG, 0f)
@@ -133,7 +133,7 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
 
         const val SEARCH_SCREEN_NAME = "/hotel/searchresult"
 
-        fun createIntent(context: Context, destinationName: String = "", destinationID: Int = 0, type: String = "",
+        fun createIntent(context: Context, destinationName: String = "", destinationID: Long = 0, type: String = "",
                          latitude: Float = 0f, longitude: Float = 0f, checkIn: String = "",
                          checkOut: String = "", totalRoom: Int = 1, totalAdult: Int = 0,
                          totalChildren: Int = 0): Intent =

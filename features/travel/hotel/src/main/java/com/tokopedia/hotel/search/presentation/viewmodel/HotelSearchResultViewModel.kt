@@ -34,7 +34,7 @@ class HotelSearchResultViewModel @Inject constructor(
 
     var isFilter = false
 
-    fun initSearchParam(destinationID: Int, type: String, latitude: Float, longitude: Float,
+    fun initSearchParam(destinationID: Long, type: String, latitude: Float, longitude: Float,
                         checkIn: String, checkOut: String, totalRoom: Int, totalAdult: Int) {
         if (type == TYPE_CITY)
             searchParam.location.cityID = destinationID

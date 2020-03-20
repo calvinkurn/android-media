@@ -77,7 +77,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
             hotelHomepageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_MODEL)
                     ?: HotelHomepageModel()
         } else if (arguments != null && arguments?.containsKey(EXTRA_PARAM_TYPE) == true) {
-            hotelHomepageModel.locId = arguments?.getInt(EXTRA_PARAM_ID) ?: 4712
+            hotelHomepageModel.locId = arguments?.getLong(EXTRA_PARAM_ID) ?: 4712
             hotelHomepageModel.locName = arguments?.getString(EXTRA_PARAM_NAME) ?: "Bali"
             hotelHomepageModel.locType = arguments?.getString(EXTRA_PARAM_TYPE) ?: "region"
             hotelHomepageModel.adultCount = arguments?.getInt(EXTRA_ADULT, 1) ?: 1
@@ -188,7 +188,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
                             data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LAT, 0.0))
                 } else {
                     onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME),
-                            data.getIntExtra(HotelDestinationActivity.HOTEL_DESTINATION_ID, 0),
+                            data.getLongExtra(HotelDestinationActivity.HOTEL_DESTINATION_ID, 0),
                             data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_TYPE))
                 }
             }
@@ -305,7 +305,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         renderView()
     }
 
-    private fun onDestinationChanged(name: String, destinationId: Int, type: String) {
+    private fun onDestinationChanged(name: String, destinationId: Long, type: String) {
         trackingHotelUtil.hotelSelectDestination(type, name)
 
         hotelHomepageModel.locName = name

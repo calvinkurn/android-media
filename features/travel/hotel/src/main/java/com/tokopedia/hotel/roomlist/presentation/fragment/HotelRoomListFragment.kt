@@ -92,7 +92,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         }
 
         arguments?.let {
-            hotelRoomListPageModel.propertyId = it.getInt(ARG_PROPERTY_ID, 0)
+            hotelRoomListPageModel.propertyId = it.getLong(ARG_PROPERTY_ID, 0)
             hotelRoomListPageModel.propertyName = it.getString(ARG_PROPERTY_NAME, "")
             hotelRoomListPageModel.checkIn = it.getString(ARG_CHECK_IN, "")
             hotelRoomListPageModel.checkOut = it.getString(ARG_CHECK_OUT, "")
@@ -453,13 +453,13 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         const val TAG_GUEST_INFO = "guestHotelInfo"
         const val EXTRA_HOTEL_ROOM_LIST_MODEL = "extra_room_list_model"
 
-        fun createInstance(propertyId: Int = 0, propertyName: String = "", checkIn: String = "", checkOut: String = "",
+        fun createInstance(propertyId: Long = 0, propertyName: String = "", checkIn: String = "", checkOut: String = "",
                            totalAdult: Int = 0, totalChildren: Int = 0, totalRoom: Int = 0,
                            destinationType: String, destinationName: String): HotelRoomListFragment {
 
             return HotelRoomListFragment().also {
                 it.arguments = Bundle().apply {
-                    putInt(ARG_PROPERTY_ID, propertyId)
+                    putLong(ARG_PROPERTY_ID, propertyId)
                     putString(ARG_PROPERTY_NAME, propertyName)
                     putString(ARG_CHECK_IN, checkIn)
                     putString(ARG_CHECK_OUT, checkOut)

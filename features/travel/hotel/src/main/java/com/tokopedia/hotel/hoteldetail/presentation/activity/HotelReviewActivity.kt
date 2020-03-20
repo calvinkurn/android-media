@@ -36,7 +36,7 @@ class HotelReviewActivity: HotelBaseActivity(), HasComponent<HotelDetailComponen
     override fun getScreenName(): String = "Ulasan"
 
     companion object {
-        fun getCallingIntent(context: Context, propertyId: Int): Intent = Intent(context, HotelReviewActivity::class.java)
+        fun getCallingIntent(context: Context, propertyId: Long): Intent = Intent(context, HotelReviewActivity::class.java)
                 .putExtra(HotelReviewFragment.ARG_PROPERTY_ID,propertyId)
     }
 
