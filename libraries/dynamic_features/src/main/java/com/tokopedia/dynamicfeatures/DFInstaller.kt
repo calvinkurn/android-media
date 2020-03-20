@@ -34,6 +34,7 @@ object DFInstaller {
 
     var sessionId: Int? = null
     internal var moduleSize = 0L
+    internal var previousState:SplitInstallSessionState? = null
     internal var freeInternalSpaceBeforeDownload: Long = 0L
 
     private var viewRef: WeakReference<DFInstallerView?>? = null
@@ -91,6 +92,19 @@ object DFInstaller {
             // SplitInstallManager only allow the installation from Main Thread.
             withContext(Dispatchers.Main) {
                 suspendCoroutine<Pair<Boolean, Boolean>> { continuation ->
+                    //if has view will continue from the last state download
+                    getView()?.let { view ->
+                        if (view.getModuleNameView() != SplitInstallListener.moduleNameToDownload.first()) {
+                            return@let
+                        }
+                        previousState?.let { state ->
+                            if (state.status() == SplitInstallSessionStatus.DOWNLOADING) {
+                                view.onDownload(state)
+                            } else if (state.status() == SplitInstallSessionStatus.INSTALLING) {
+                                view.onInstalling(state)
+                            }
+                        }
+                    }
                     registerListener(applicationContext, moduleNameToDownload, onSuccessInstall, onFailedInstall, continuation)
                     getManager(applicationContext)?.startInstall(request)?.addOnSuccessListener {
                         if (it == 0) {
@@ -251,30 +265,35 @@ object SplitInstallListener : SplitInstallStateUpdatedListener {
         }
         when (state.status()) {
             SplitInstallSessionStatus.DOWNLOADING -> {
+                DFInstaller.previousState = state
                 DFInstaller.getView()?.onDownload(state)
                 if (DFInstaller.moduleSize == 0L) {
                     DFInstaller.moduleSize = state.totalBytesToDownload()
                 }
             }
             SplitInstallSessionStatus.INSTALLED -> {
+                DFInstaller.previousState = null
                 context?.let { context ->
                     DFInstaller.onSuccessInstall(context, moduleNameToDownload.first(),
                         onSuccessInstall, continuation)
                 }
             }
             SplitInstallSessionStatus.FAILED -> {
+                DFInstaller.previousState = null
                 context?.let { context ->
                     DFInstaller.onErrorInstall(context, state.errorCode().toString(),
                         moduleNameToDownload.first(), onFailedInstall, continuation)
                 }
             }
             SplitInstallSessionStatus.INSTALLING -> {
+                DFInstaller.previousState = state
                 val view = DFInstaller.getView()
                 if (view != null && view.getModuleNameView() == moduleNameToDownload.first()) {
                     view.onInstalling(state)
                 }
             }
             SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
+                DFInstaller.previousState = null
                 DFInstaller.getView()?.onRequireUserConfirmation(state)
             }
         }
