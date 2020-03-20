@@ -79,6 +79,6 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
         private const val PARAM_OPERATOR_ID = "operator_id"
         private const val PARAM_PRODUCT_ID = "product_id"
         private const val PARAM_USER_ID = "user_id"
-        private const val PARAM_PCIDSS = "pcidss_signature"
+        const val PARAM_PCIDSS = "pcidss_signature"
     }
 }
