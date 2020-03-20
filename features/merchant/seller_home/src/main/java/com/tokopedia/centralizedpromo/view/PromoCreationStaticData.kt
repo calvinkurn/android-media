@@ -11,14 +11,14 @@ object PromoCreationStaticData {
                     PromoCreationUiModel(
                             R.drawable.sh_ic_top_ads_color,
                             "TopAds",
-                            "Increase conversion and new buyers through review given",
-                            "100 kuota gratis",
+                            "Iklankan produkmu untuk menjangkau lebih banyak pembeli",
+                            "",
                             "tokopedia://topads/dashboard"
                     ),
                     PromoCreationUiModel(
                             R.drawable.ic_broadcast_chat,
                             "Broadcast Chat",
-                            "Increase conversion and new buyers through review given",
+                            "Tingkatkan penjualan dengan kirim pesan promosi ke pembeli",
                             "",
                             "tokopedia://webview?url=https://m.tokopedia.com/broadcast-chat/create"
                     )
