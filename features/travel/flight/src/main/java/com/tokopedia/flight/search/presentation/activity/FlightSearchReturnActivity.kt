@@ -28,6 +28,9 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         remoteConfig = FirebaseRemoteConfigImpl(this)
+
+        selectedDepartureID = intent.getStringExtra(EXTRA_DEPARTURE_ID)
+        selectedDepartureTerm = intent.getStringExtra(EXTRA_DEPARTURE_TERM)
     }
 
     override fun getNewFragment(): Fragment {
@@ -36,18 +39,6 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
                 intent.getBooleanExtra(EXTRA_IS_BEST_PAIRING, false),
                 priceViewModel,
                 intent.getBooleanExtra(EXTRA_IS_COMBINE_DONE, false))
-    }
-
-    override fun initializeToolbarData() {
-        selectedDepartureID = intent.getStringExtra(EXTRA_DEPARTURE_ID)
-        selectedDepartureTerm = intent.getStringExtra(EXTRA_DEPARTURE_TERM)
-
-        dateString = FlightDateUtil.formatDate(
-                FlightDateUtil.DEFAULT_FORMAT,
-                FlightDateUtil.DEFAULT_VIEW_FORMAT,
-                passDataViewModel.returnDate)
-        passengerString = buildPassengerTextFormatted(passDataViewModel.flightPassengerViewModel)
-        classString = passDataViewModel.flightClass.title
     }
 
     override fun getScreenName(): String = FlightAnalytics.Screen.SEARCH_RETURN
@@ -90,6 +81,18 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
                             selectedFlightID),
                     REQUEST_CODE_BOOKING)
         }
+    }
+
+    override fun isReturnPage(): Boolean = true
+
+    override fun initializeToolbarData() {
+
+        dateString = FlightDateUtil.formatDate(
+                FlightDateUtil.DEFAULT_FORMAT,
+                FlightDateUtil.DEFAULT_VIEW_FORMAT,
+                passDataViewModel.returnDate)
+        passengerString = buildPassengerTextFormatted(passDataViewModel.flightPassengerViewModel)
+        classString = passDataViewModel.flightClass.title
     }
 
     companion object {
