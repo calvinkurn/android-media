@@ -409,7 +409,7 @@ public class HomePageTracking {
                         PROMO_CLICK, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
                                         DataLayer.mapOf(
-                                                FIELD_ID, channel.getId() + "_" + channel.getBanner().getId()+ "_" + channel.getPersoType()+ "_" + channel.getCategoryID(),
+                                                FIELD_ID, channel.getId() + "_" + grid.getId()+ "_" + channel.getPersoType()+ "_" + channel.getCategoryID(),
                                                 FIELD_NAME, channel.getPromoName(),
                                                 FIELD_CREATIVE, grid.getAttribution(),
                                                 FIELD_CREATIVE_URL, grid.getImageUrl(),
@@ -441,7 +441,7 @@ public class HomePageTracking {
                                                 FIELD_ID, String.format(
                                                         FORMAT_4_VALUE_UNDERSCORE,
                                                         channel.getId(),
-                                                        channel.getBanner().getId(),
+                                                        grid.getId(),
                                                         channel.getPersoType(),
                                                         channel.getCategoryID()),
                                                 FIELD_NAME, channel.getPromoName(),
