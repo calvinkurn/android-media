@@ -7,10 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductFilterAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.decoration.ProductFilterItemDecoration
-import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.TabFilterViewHolder
-import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.TabFilterViewHolder.*
-import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
-import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.*
+import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.FilterTabViewHolder
+import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.FilterTabViewHolder.*
+import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
+import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel.*
 
 class ProductManageTabFilter: RecyclerView {
 
@@ -18,7 +18,7 @@ class ProductManageTabFilter: RecyclerView {
         const val TAB_MORE_FILTER_POSITION = 0
     }
 
-    var selectedFilter: FilterViewModel? = null
+    var selectedFilter: FilterTabViewModel? = null
         private set
 
     private val tabFilterAdapter by lazy { adapter as? ProductFilterAdapter }
@@ -34,14 +34,14 @@ class ProductManageTabFilter: RecyclerView {
         isNestedScrollingEnabled = false
     }
 
-    fun resetAllFilter(selectedFilter: TabFilterViewHolder) {
+    fun resetAllFilter(selectedFilter: FilterTabViewHolder) {
         for(i in 0..tabFilterAdapter?.itemCount.orZero()) {
-            val viewHolder = findViewHolderForAdapterPosition(i) as? TabFilterViewHolder
+            val viewHolder = findViewHolderForAdapterPosition(i) as? FilterTabViewHolder
             if(viewHolder != selectedFilter) viewHolder?.resetFilter()
         }
     }
 
-    fun setData(filters: List<FilterViewModel>) {
+    fun setData(filters: List<FilterTabViewModel>) {
         tabFilterAdapter?.clearAllElements()
         tabFilterAdapter?.addElement(filters)
     }
@@ -51,7 +51,7 @@ class ProductManageTabFilter: RecyclerView {
         tabFilterAdapter?.notifyItemChanged(TAB_MORE_FILTER_POSITION)
     }
 
-    fun setSelectedFilter(selectedFilter: FilterViewModel) {
+    fun setSelectedFilter(selectedFilter: FilterTabViewModel) {
         this.selectedFilter = selectedFilter
     }
 

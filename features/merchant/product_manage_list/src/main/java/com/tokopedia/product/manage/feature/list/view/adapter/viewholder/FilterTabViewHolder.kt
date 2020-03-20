@@ -4,14 +4,14 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
+import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.item_product_manage_filter.view.*
 
-class TabFilterViewHolder(
+class FilterTabViewHolder(
     itemView: View,
     private val listener: ProductFilterListener
-) : AbstractViewHolder<FilterViewModel>(itemView) {
+) : AbstractViewHolder<FilterTabViewModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -22,23 +22,23 @@ class TabFilterViewHolder(
     private val chipFilter by lazy { itemView.chipFilter }
     private val chipText by lazy { itemView.chipFilter.chip_text }
 
-    override fun bind(filter: FilterViewModel) {
+    override fun bind(filter: FilterTabViewModel) {
         setFilterTitle(filter)
         setOnClickListener(filter)
     }
 
-    private fun setFilterTitle(filter: FilterViewModel) {
+    private fun setFilterTitle(filter: FilterTabViewModel) {
         chipText.text = context.getString(filter.titleId, filter.count)
     }
 
-    private fun setOnClickListener(filter: FilterViewModel) {
+    private fun setOnClickListener(filter: FilterTabViewModel) {
         itemView.setOnClickListener {
             onClickProductFilter(filter)
             toggleSelectFilter()
         }
     }
 
-    private fun onClickProductFilter(filter: FilterViewModel) {
+    private fun onClickProductFilter(filter: FilterTabViewModel) {
         listener.onClickProductFilter(filter, this, chipText.text.toString())
     }
 
@@ -60,7 +60,7 @@ class TabFilterViewHolder(
     }
 
     interface ProductFilterListener {
-        fun onClickMoreFilter(filter: FilterViewModel, tabName: String)
-        fun onClickProductFilter(filter: FilterViewModel, viewHolder: TabFilterViewHolder, tabName: String)
+        fun onClickMoreFilter(filter: FilterTabViewModel, tabName: String)
+        fun onClickProductFilter(filter: FilterTabViewModel, viewHolder: FilterTabViewHolder, tabName: String)
     }
 }

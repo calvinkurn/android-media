@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.TabFilterViewHolder.*
-import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.*
+import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.FilterTabViewHolder.*
+import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel.*
 import com.tokopedia.unifycomponents.ImageUnify
 import kotlinx.android.synthetic.main.item_product_manage_more_filter.view.*
 

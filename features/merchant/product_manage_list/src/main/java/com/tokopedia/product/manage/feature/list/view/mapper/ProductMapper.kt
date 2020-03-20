@@ -3,8 +3,8 @@ package com.tokopedia.product.manage.feature.list.view.mapper
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaResponse
-import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
-import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.*
+import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
+import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel.*
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
@@ -41,9 +41,9 @@ object ProductMapper {
         }
     }
 
-    fun mapToTabFilters(response: ProductListMetaResponse, filterCount: Int = 0): List<FilterViewModel> {
+    fun mapToTabFilters(response: ProductListMetaResponse, filterCount: Int = 0): List<FilterTabViewModel> {
         val filterTabs = response.productListMetaWrapper.productListMetaData.tabs
-        val productFilters = mutableListOf<FilterViewModel>(MoreFilter(filterCount))
+        val productFilters = mutableListOf<FilterTabViewModel>(MoreFilter(filterCount))
 
         val activeProductFilter = filterTabs.firstOrNull { it.id == FilterId.ACTIVE.name }
         val inActiveProductFilter = filterTabs.firstOrNull { it.id == FilterId.INACTIVE.name }

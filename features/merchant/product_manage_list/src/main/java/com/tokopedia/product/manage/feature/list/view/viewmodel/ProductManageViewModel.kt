@@ -11,7 +11,7 @@ import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrappe
 import com.tokopedia.product.manage.feature.filter.domain.GetProductListMetaUseCase
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToTabFilters
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToViewModels
-import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
+import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
 import com.tokopedia.product.manage.feature.list.view.model.GetPopUpResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.*
@@ -96,7 +96,7 @@ class ProductManageViewModel @Inject constructor(
         get() = _multiEditProductResult
     val selectedFilterAndSort: LiveData<FilterOptionWrapper>
         get() = _selectedFilterAndSort
-    val productFiltersTab: LiveData<List<FilterViewModel>>
+    val productFiltersTab: LiveData<List<FilterTabViewModel>>
         get() = _productFiltersTab
 
     private val _viewState = MutableLiveData<ViewState>()
@@ -112,7 +112,7 @@ class ProductManageViewModel @Inject constructor(
     private val _toggleMultiSelect = MutableLiveData<Boolean>()
     private val _multiEditProductResult = MutableLiveData<Result<MultiEditResult>>()
     private val _selectedFilterAndSort = MutableLiveData<FilterOptionWrapper>()
-    private val _productFiltersTab = MutableLiveData<List<FilterViewModel>>()
+    private val _productFiltersTab = MutableLiveData<List<FilterTabViewModel>>()
 
     fun isIdlePowerMerchant(): Boolean = userSessionInterface.isPowerMerchantIdle
     fun isPowerMerchant(): Boolean = userSessionInterface.isGoldMerchant
