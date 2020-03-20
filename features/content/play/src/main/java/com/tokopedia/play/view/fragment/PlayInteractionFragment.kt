@@ -945,7 +945,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
-                            ScreenStateEvent.VideoStreamChanged(videoStream)
+                            ScreenStateEvent.VideoStreamChanged(videoStream, playViewModel.stateHelper)
                     )
         }
     }

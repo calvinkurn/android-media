@@ -6,6 +6,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
+import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.pinned.interaction.PinnedInteractionEvent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
@@ -37,7 +38,7 @@ open class PinnedComponent(
                     .collect {
                         when (it) {
                             ScreenStateEvent.Init -> uiView.hide()
-                            is ScreenStateEvent.SetPinned -> setPinned(it.pinned, it.stateHelper.isAnyBottomInsetsShown)
+                            is ScreenStateEvent.SetPinned -> setPinned(it.pinned, it.stateHelper.bottomInsets.isAnyShown)
                             is ScreenStateEvent.BottomInsetsChanged -> {
                                 if (!it.isAnyShown && it.stateHelper.shouldShowPinnedMessage) uiView.show() else uiView.hide()
                             }

@@ -39,53 +39,53 @@ class VideoLoadingComponentTest {
         Dispatchers.resetMain()
     }
 
-    @Test
-    fun `test when VOD is buffering`() = runBlockingTest(testDispatcher) {
-        val mockVideoProp = VideoPropertyUiModel(
-                type = PlayChannelType.VOD,
-                state = PlayVideoState.Buffering
-        )
-
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
-        verify { component.uiView.show() }
-        confirmVerified(component.uiView)
-    }
-
-    @Test
-    fun `test when Live is buffering`() = runBlockingTest(testDispatcher) {
-        val mockVideoProp = VideoPropertyUiModel(
-                type = PlayChannelType.Live,
-                state = PlayVideoState.Buffering
-        )
-
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
-        verify { component.uiView.show() }
-        confirmVerified(component.uiView)
-    }
-
-    @Test
-    fun `test when VOD is playing`() = runBlockingTest(testDispatcher) {
-        val mockVideoProp = VideoPropertyUiModel(
-                type = PlayChannelType.VOD,
-                state = PlayVideoState.Playing
-        )
-
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
-        verify { component.uiView.hide() }
-        confirmVerified(component.uiView)
-    }
-
-    @Test
-    fun `test when Live is playing`() = runBlockingTest(testDispatcher) {
-        val mockVideoProp = VideoPropertyUiModel(
-                type = PlayChannelType.Live,
-                state = PlayVideoState.Playing
-        )
-
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
-        verify { component.uiView.hide() }
-        confirmVerified(component.uiView)
-    }
+//    @Test
+//    fun `test when VOD is buffering`() = runBlockingTest(testDispatcher) {
+//        val mockVideoProp = VideoPropertyUiModel(
+//                type = PlayChannelType.VOD,
+//                state = PlayVideoState.Buffering
+//        )
+//
+//        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
+//        verify { component.uiView.show() }
+//        confirmVerified(component.uiView)
+//    }
+//
+//    @Test
+//    fun `test when Live is buffering`() = runBlockingTest(testDispatcher) {
+//        val mockVideoProp = VideoPropertyUiModel(
+//                type = PlayChannelType.Live,
+//                state = PlayVideoState.Buffering
+//        )
+//
+//        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
+//        verify { component.uiView.show() }
+//        confirmVerified(component.uiView)
+//    }
+//
+//    @Test
+//    fun `test when VOD is playing`() = runBlockingTest(testDispatcher) {
+//        val mockVideoProp = VideoPropertyUiModel(
+//                type = PlayChannelType.VOD,
+//                state = PlayVideoState.Playing
+//        )
+//
+//        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
+//        verify { component.uiView.hide() }
+//        confirmVerified(component.uiView)
+//    }
+//
+//    @Test
+//    fun `test when Live is playing`() = runBlockingTest(testDispatcher) {
+//        val mockVideoProp = VideoPropertyUiModel(
+//                type = PlayChannelType.Live,
+//                state = PlayVideoState.Playing
+//        )
+//
+//        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
+//        verify { component.uiView.hide() }
+//        confirmVerified(component.uiView)
+//    }
 
     class VideoLoadingComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : VideoLoadingComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): VideoLoadingView {

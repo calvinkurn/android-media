@@ -61,7 +61,7 @@ sealed class ScreenStateEvent : ComponentEvent {
      * Video
      */
     data class VideoPropertyChanged(val videoProp: VideoPropertyUiModel, val stateHelper: StateHelperUiModel) : ScreenStateEvent()
-    data class VideoStreamChanged(val videoStream: VideoStreamUiModel) : ScreenStateEvent()
+    data class VideoStreamChanged(val videoStream: VideoStreamUiModel, val stateHelper: StateHelperUiModel) : ScreenStateEvent()
     /**
      * Room Event
      */

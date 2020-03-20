@@ -4,8 +4,12 @@ import com.google.gson.Gson
 import com.tokopedia.play.data.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
+import com.tokopedia.play.view.type.BottomInsetsState
+import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayChannelType
-import com.tokopedia.play.view.uimodel.ChannelInfoUiModel
+import com.tokopedia.play.view.type.PlayRoomEvent
+import com.tokopedia.play.view.uimodel.*
+import com.tokopedia.play_common.state.PlayVideoState
 
 /**
  * Created by jegul on 20/02/20
@@ -221,6 +225,21 @@ class ModelBuilder {
 
     fun buildIsLike() = gson.fromJson(isLike, IsLikedContent.Data::class.java)
 
+    fun buildProductTagging() = gson.fromJson(channelTagItemsJson, ProductTagging::class.java)
+
+    /**
+     * UI Model
+     */
+    fun buildStateHelperUiModel(
+        shouldShowPinnedMessage: Boolean = true,
+        channelType: PlayChannelType = PlayChannelType.Live,
+        bottomInsets: Map<BottomInsetsType, BottomInsetsState> = buildBottomInsetsMap()
+    ) = StateHelperUiModel(
+            shouldShowPinnedMessage = shouldShowPinnedMessage,
+            channelType = channelType,
+            bottomInsets = bottomInsets
+    )
+
     fun buildChannelInfoUiModel(
             id: String = "1230",
             title: String = "Channel live",
@@ -231,9 +250,87 @@ class ModelBuilder {
             moderatorName: String = "Lisa",
             contentId: Int = 1412,
             contentType: Int = 2,
-            likeType: Int = 1
+            likeType: Int = 1,
+            isShowCart: Boolean = true
     ) = ChannelInfoUiModel(id, title, description, channelType, partnerId, partnerType,
-            moderatorName, contentId, contentType, likeType, isShowCart = true)
+            moderatorName, contentId, contentType, likeType, isShowCart)
 
-    fun buildProductTagging() = gson.fromJson(channelTagItemsJson, ProductTagging::class.java)
+    fun buildVideoPropertyUiModel(
+            state: PlayVideoState = PlayVideoState.Playing
+    ) = VideoPropertyUiModel(state = state)
+
+    fun buildVideoStreamUiModel(
+            uriString: String = "https://tkp.me",
+            channelType: PlayChannelType = PlayChannelType.Live,
+            isActive: Boolean = true
+    ) = VideoStreamUiModel(
+            uriString = uriString,
+            channelType = channelType,
+            isActive = isActive
+    )
+
+    fun buildPlayChatUiModel(
+            messageId: String = "1",
+            userId: String = "1251",
+            name: String = "mzennis",
+            message: String = "Keren banget fitur ini.",
+            isSelfMessage: Boolean = true
+    ) = PlayChatUiModel(
+            messageId = message,
+            userId = userId,
+            name = name,
+            message = message,
+            isSelfMessage = isSelfMessage
+    )
+
+    fun buildTotalLikeUiModel(
+            totalLike: Int = 1200,
+            totalLikeFormatted: String = "1.2k"
+    ) = TotalLikeUiModel(
+            totalLike = totalLike,
+            totalLikeFormatted = totalLikeFormatted
+    )
+
+    fun buildTotalViewUiModel(
+            totalView: String = "1.5k"
+    ) = TotalViewUiModel(
+            totalView = totalView
+    )
+
+    fun buildPlayRoomFreezeEvent(
+            title: String = "Freeze",
+            message: String = "Kamu kena freeze",
+            btnTitle: String = "Defroze",
+            btnUrl: String = "https://tkp.me"
+    ) = PlayRoomEvent.Freeze(
+            title = title,
+            message = message,
+            btnTitle = btnTitle,
+            btnUrl = btnUrl
+    )
+
+    fun buildPlayRoomBannedEvent(
+            title: String = "Banned",
+            message: String = "Kamu kena banned",
+            btnTitle: String = "Hiks"
+    ) = PlayRoomEvent.Banned(
+            title = title,
+            message = message,
+            btnTitle = btnTitle
+    )
+
+    fun buildBottomInsetsMap(
+            keyboardState: BottomInsetsState = buildBottomInsetsState(),
+            productSheetState: BottomInsetsState = buildBottomInsetsState(),
+            variantSheetState: BottomInsetsState = buildBottomInsetsState()
+    ) = mapOf(
+            BottomInsetsType.Keyboard to keyboardState,
+            BottomInsetsType.ProductSheet to productSheetState,
+            BottomInsetsType.VariantSheet to variantSheetState
+    )
+
+    fun buildBottomInsetsState(
+            isShown: Boolean = false,
+            isPreviousSameState: Boolean = false
+    ) = if (isShown) BottomInsetsState.Shown(250, isPreviousSameState) else BottomInsetsState.Hidden(isPreviousSameState)
 }

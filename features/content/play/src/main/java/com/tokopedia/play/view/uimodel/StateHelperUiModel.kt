@@ -1,5 +1,7 @@
 package com.tokopedia.play.view.uimodel
 
+import com.tokopedia.play.view.type.BottomInsetsState
+import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayChannelType
 
 /**
@@ -8,5 +10,5 @@ import com.tokopedia.play.view.type.PlayChannelType
 data class StateHelperUiModel(
         val shouldShowPinnedMessage: Boolean,
         val channelType: PlayChannelType,
-        val isAnyBottomInsetsShown: Boolean
+        val bottomInsets: Map<BottomInsetsType, BottomInsetsState>
 )

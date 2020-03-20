@@ -133,7 +133,7 @@ class PlayViewModel @Inject constructor(
             return StateHelperUiModel(
                     shouldShowPinnedMessage = pinned is PinnedMessageUiModel || pinned is PinnedProductUiModel,
                     channelType = videoStream?.channelType ?: PlayChannelType.Unknown,
-                    isAnyBottomInsetsShown = bottomInsets?.isAnyShown ?: false
+                    bottomInsets = bottomInsets ?: getDefaultBottomInsetsMapState()
             )
         }
 

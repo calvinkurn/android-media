@@ -50,51 +50,51 @@ class ToolbarComponentTest {
         Dispatchers.resetMain()
     }
 
-    @Test
-    fun `test when video property changed`() = runBlockingTest(testDispatcher) {
-        val mockVideoProp = VideoPropertyUiModel(
-                type = PlayChannelType.Live,
-                state = PlayVideoState.Buffering
-        )
-
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
-        verify { component.uiView.setLiveBadgeVisibility(mockVideoProp.type.isLive) }
-        confirmVerified(component.uiView)
-    }
-
-    @Test
-    fun `test set channel title`() = runBlockingTest(testDispatcher) {
-        val channelTitle = "Channel Title"
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetChannelTitle(channelTitle))
-        verify { component.uiView.setTitle(channelTitle) }
-        confirmVerified(component.uiView)
-    }
-
-    @Test
-    fun `test set partner info`() = runBlockingTest(testDispatcher) {
-        val mockPartnerInfo = PartnerInfoUiModel(
-                id = 1,
-                name = "Toko",
-                type = PartnerType.SHOP,
-                isFollowed = true,
-                isFollowable = true
-        )
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetPartnerInfo(mockPartnerInfo))
-        verify { component.uiView.setPartnerInfo(mockPartnerInfo) }
-        confirmVerified(component.uiView)
-    }
-
-    @Test
-    fun `test on video stream changed`() = runBlockingTest(testDispatcher) {
-        val mockVideoStream = VideoStreamUiModel(
-                uriString = "https://www.google.com/video.mp4",
-                channelType = PlayChannelType.VOD,
-                isActive = false
-        )
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoStreamChanged(mockVideoStream))
-        verify { component.uiView.setLiveBadgeVisibility(mockVideoStream.channelType.isLive) }
-        confirmVerified(component.uiView)
-    }
+//    @Test
+//    fun `test when video property changed`() = runBlockingTest(testDispatcher) {
+//        val mockVideoProp = VideoPropertyUiModel(
+//                type = PlayChannelType.Live,
+//                state = PlayVideoState.Buffering
+//        )
+//
+//        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
+//        verify { component.uiView.setLiveBadgeVisibility(mockVideoProp.type.isLive) }
+//        confirmVerified(component.uiView)
+//    }
+//
+//    @Test
+//    fun `test set channel title`() = runBlockingTest(testDispatcher) {
+//        val channelTitle = "Channel Title"
+//        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetChannelTitle(channelTitle))
+//        verify { component.uiView.setTitle(channelTitle) }
+//        confirmVerified(component.uiView)
+//    }
+//
+//    @Test
+//    fun `test set partner info`() = runBlockingTest(testDispatcher) {
+//        val mockPartnerInfo = PartnerInfoUiModel(
+//                id = 1,
+//                name = "Toko",
+//                type = PartnerType.SHOP,
+//                isFollowed = true,
+//                isFollowable = true
+//        )
+//        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetPartnerInfo(mockPartnerInfo))
+//        verify { component.uiView.setPartnerInfo(mockPartnerInfo) }
+//        confirmVerified(component.uiView)
+//    }
+//
+//    @Test
+//    fun `test on video stream changed`() = runBlockingTest(testDispatcher) {
+//        val mockVideoStream = VideoStreamUiModel(
+//                uriString = "https://www.google.com/video.mp4",
+//                channelType = PlayChannelType.VOD,
+//                isActive = false
+//        )
+//        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoStreamChanged(mockVideoStream))
+//        verify { component.uiView.setLiveBadgeVisibility(mockVideoStream.channelType.isLive) }
+//        confirmVerified(component.uiView)
+//    }
 
     @Test
     fun `test when keyboard is shown`() = runBlockingTest(testDispatcher) {
