@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.feature.filter.presentation.textwatcher
+package com.tokopedia.product.manage.feature.filter.presentation.util.textwatcher
 
 import android.os.Handler
 import android.text.Editable

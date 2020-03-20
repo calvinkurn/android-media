@@ -24,8 +24,8 @@ import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmode
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment.Companion.CATEGORIES_CACHE_MANAGER_KEY
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment.Companion.OTHER_FILTER_CACHE_MANAGER_KEY
-import com.tokopedia.product.manage.feature.filter.presentation.textwatcher.SearchListener
-import com.tokopedia.product.manage.feature.filter.presentation.textwatcher.SearchTextWatcher
+import com.tokopedia.product.manage.feature.filter.presentation.util.textwatcher.SearchListener
+import com.tokopedia.product.manage.feature.filter.presentation.util.textwatcher.SearchTextWatcher
 import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterExpandChecklistViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChecklistClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
@@ -42,6 +42,7 @@ class ProductManageFilterExpandChecklistFragment :
     companion object {
         private const val TOGGLE_ACTIVE = "active"
         private const val TOGGLE_NOT_ACTIVE = "not active"
+        private const val DELAY_TEXT_CHANGE = 250L
 
         fun createInstance(flag: String, cacheManagerId: String): ProductManageFilterExpandChecklistFragment {
             return ProductManageFilterExpandChecklistFragment().apply {
@@ -153,7 +154,7 @@ class ProductManageFilterExpandChecklistFragment :
     private fun initSearchView() {
         filterSearchBar.clearFocus()
         filterSearchBar.showIcon = false
-        val searchTextWatcher = SearchTextWatcher(filterSearchBar.searchBarTextField, 250, this)
+        val searchTextWatcher = SearchTextWatcher(filterSearchBar.searchBarTextField, DELAY_TEXT_CHANGE, this)
         filterSearchBar.searchBarTextField.addTextChangedListener(searchTextWatcher)
 
         filterSearchBar.searchBarTextField.setOnEditorActionListener { v, actionId, event ->
