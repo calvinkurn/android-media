@@ -19,7 +19,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 eventLabel = Label.NONE,
                 promotions = channel.grids.mapIndexed { index, grid ->
                     Promotion(
-                            id = "%s_%s".format(channel.id, grid.id),
+                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.persoType, channel.categoryID),
                             creative = grid.attribution,
                             creativeUrl = grid.imageUrl,
                             name = Ecommerce.PROMOTION_NAME.format(position, LEGO_BANNER_4_IMAGE_NAME, channel.header.name),
@@ -40,7 +40,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 shopId = channel.brandId,
                 promotions = channel.grids.map {
                     Promotion(
-                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, channel.banner.id, channel.persoType, channel.categoryID),
+                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.persoType, channel.categoryID),
                             creative = it.attribution,
                             creativeUrl = it.imageUrl,
                             name = Ecommerce.PROMOTION_NAME.format(position, LEGO_BANNER_4_IMAGE_NAME, channel.header.name),
@@ -291,14 +291,16 @@ object HomePageTrackingV2 : BaseTracking() {
                 products = channel.grids.mapIndexed { index, grid ->
                     Product(
                             name = grid.name,
-                            id = channel.id + "_" + channel.banner.id+ "_" + channel.persoType+ "_" + channel.categoryID,
+                            id =  grid.id,
                             productPrice = convertRupiahToInt(grid.price).toString(),
                             brand = Value.NONE_OTHER,
                             category = Value.NONE_OTHER,
                             variant = Value.NONE_OTHER,
                             productPosition = (index + 1).toString(),
                             channelId = channel.id,
-                            isFreeOngkir = grid.freeOngkir.isActive
+                            isFreeOngkir = grid.freeOngkir.isActive,
+                            persoType = channel.persoType,
+                            categoryId = channel.categoryID
                     )
                 },
                 list = String.format(

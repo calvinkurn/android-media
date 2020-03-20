@@ -200,7 +200,7 @@ data class DynamicHomeChannel(
                 val grid: Grid = grids[i]
                 list.add(
                         DataLayer.mapOf(
-                                "id", id + "_" + banner.id+ "_" + persoType+ "_" + categoryID,
+                                "id", id + "_" + grid.id+ "_" + persoType+ "_" + categoryID,
                                 "name", promoName,
                                 "creative", grid.attribution,
                                 "creative_url", grid.imageUrl,
@@ -377,7 +377,7 @@ data class DynamicHomeChannel(
                     "promoClick", DataLayer.mapOf(
                     "promotions", DataLayer.listOf(
                     DataLayer.mapOf(
-                            "id", id + "_" + banner.id+ "_" + persoType+ "_" + categoryID,
+                            "id", id + "_" + grid.id+ "_" + persoType+ "_" + categoryID,
                             "name", promoName,
                             "creative", grid.attribution,
                             "creative_url", grid.imageUrl,
