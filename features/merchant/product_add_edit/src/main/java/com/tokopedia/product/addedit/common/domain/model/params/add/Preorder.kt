@@ -1,10 +1,12 @@
-package com.tokopedia.product.addedit.common.domain.model
+package com.tokopedia.product.addedit.common.domain.model.params.add
 
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 class Preorder (
-
     
     @SerializedName("duration")
     @Expose
@@ -16,4 +18,4 @@ class Preorder (
     @Expose
     var isActive: Boolean? = null
 
-)
+) : Parcelable

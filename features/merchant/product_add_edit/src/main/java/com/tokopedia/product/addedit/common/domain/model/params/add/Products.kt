@@ -1,9 +1,12 @@
-package com.tokopedia.product.addedit.common.domain.model
+package com.tokopedia.product.addedit.common.domain.model.params.add
 
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
-data class Products (
+@Parcelize
+data class Product (
     
     @SerializedName("combination")
     @Expose
@@ -23,8 +26,15 @@ data class Products (
     @SerializedName("stock")
     @Expose
     var stock: Int? = null,
-    @SerializedName("pictures")
+    @SerializedName("picture")
     @Expose
-    var pictures: Pictures? = null
+    var picture: Picture? = null
 
-)
+) : Parcelable
+
+@Parcelize
+data class Products (
+        @SerializedName("data")
+        @Expose
+        var data: List<Product> = emptyList()
+) : Parcelable

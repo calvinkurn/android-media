@@ -74,6 +74,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         }
         btnEnd?.setOnClickListener {
             activity?.finish()
+            shipmentViewModel.editPrice()
         }
     }
 
