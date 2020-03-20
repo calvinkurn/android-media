@@ -196,8 +196,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     private fun populateAdapterData() {
         val settingList = mutableListOf(
                 SettingTitleUiModel(resources.getString(R.string.setting_menu_improve_sales)),
-                MenuItemUiModel(resources.getString(R.string.setting_menu_shop_statistic), R.drawable.ic_statistic_setting, ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD),
-                MenuItemUiModel(resources.getString(R.string.setting_menu_ads_and_shop_promotion), R.drawable.ic_ads_promotion, ApplinkConstInternalSellerapp.CENTRALIZED_PROMO),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_shop_statistic),
                         R.drawable.ic_statistic_setting,
