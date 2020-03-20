@@ -1,14 +1,16 @@
 package com.tokopedia.product.manage.feature.filter
 
 import com.tokopedia.core.common.category.domain.model.CategoriesResponse
+import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionsResponse
 import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaResponse
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterDataViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
+import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.mockkObject
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertFalse
 import org.junit.Test
@@ -49,17 +51,97 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
         verifyFilterViewModel(expectedData)
     }
 
+    @Test
+    fun `when_updateSpecific_should_update_element_at_a_given_index_accordingly`() {
+        val filterViewModel = FilterViewModel("Sort", mutableListOf(), false)
+        val dataToUpdate = FilterViewModel("New Data", mutableListOf(), true)
+
+        viewModel.updateData(listOf(filterViewModel))
+        viewModel.updateSpecificData(dataToUpdate, ProductManageFilterFragment.ITEM_SORT_INDEX)
+
+        val expectedIndex = ProductManageFilterFragment.ITEM_SORT_INDEX
+
+        verifyFilterDataAtIndex(dataToUpdate, expectedIndex)
+    }
+
+    @Test
+    fun `when_updateSelect_for_Sort_should_update_filter_data_model_accordingly`() {
+        val sortDataModel =  getSortDataModel()
+        val sortViewModel = getSortFilterViewModel(sortDataModel)
+        val etalaseViewModel = getEtalaseFilterViewModel(getEtalaseDataModel())
+        val categoryViewModel = getCategoryFilterViewModel(getCategoryDataModel())
+        val otherFilterViewModel = getOtherFilterFilterViewModel(getOtherFilterDataModel())
+
+        viewModel.updateData(listOf(sortViewModel, etalaseViewModel, categoryViewModel, otherFilterViewModel))
+        viewModel.updateSelect(sortDataModel, ProductManageFilterMapper.SORT_HEADER)
+
+        val selectedDataViewModel = FilterDataViewModel("312", "Some Sort", "DESC", true)
+        val expectedModel = getSortFilterViewModel(selectedDataViewModel)
+        val expectedIndex = ProductManageFilterFragment.ITEM_SORT_INDEX
+
+        verifyFilterDataAtIndex(expectedModel, expectedIndex)
+    }
+
+    @Test
+    fun `when_updateSelect_for_Etalase_should_update_filter_data_model_accordingly`() {
+        val sortViewModel = getSortFilterViewModel(getSortDataModel())
+        val etalaseDataModel = getEtalaseDataModel()
+        val etalaseViewModel = getEtalaseFilterViewModel(etalaseDataModel)
+        val categoryViewModel = getCategoryFilterViewModel(getCategoryDataModel())
+        val otherFilterViewModel = getOtherFilterFilterViewModel(getOtherFilterDataModel())
+
+        viewModel.updateData(listOf(sortViewModel, etalaseViewModel, categoryViewModel, otherFilterViewModel))
+        viewModel.updateSelect(etalaseDataModel, ProductManageFilterMapper.ETALASE_HEADER)
+
+        val selectedDataViewModel = FilterDataViewModel("342", "Some Etalase", "", true)
+        val expectedModel = getEtalaseFilterViewModel(selectedDataViewModel)
+        val expectedIndex = ProductManageFilterFragment.ITEM_ETALASE_INDEX
+
+        verifyFilterDataAtIndex(expectedModel, expectedIndex)
+    }
+
+    @Test
+    fun `when_updateSelect_for_Category_should_update_filter_data_model_accordingly`() {
+        val sortViewModel = getSortFilterViewModel(getSortDataModel())
+        val etalaseViewModel = getEtalaseFilterViewModel(getEtalaseDataModel())
+        val categoryDataModel = getCategoryDataModel()
+        val categoryViewModel = getCategoryFilterViewModel(categoryDataModel)
+        val otherFilterViewModel = getOtherFilterFilterViewModel(getOtherFilterDataModel())
+
+        viewModel.updateData(listOf(sortViewModel, etalaseViewModel, categoryViewModel, otherFilterViewModel))
+        viewModel.updateSelect(categoryDataModel)
+
+        val selectedDataViewModel = FilterDataViewModel("1293", "Some Category", "", true)
+        val expectedModel = getCategoryFilterViewModel(selectedDataViewModel)
+        val expectedIndex = ProductManageFilterFragment.ITEM_CATEGORIES_INDEX
+
+        verifyFilterDataAtIndex(expectedModel, expectedIndex)
+    }
+
+    @Test
+    fun `when_updateSelect_for_Other_Filter_should_update_filter_data_model_accordingly`() {
+        val sortViewModel = getSortFilterViewModel(getSortDataModel())
+        val etalaseViewModel = getEtalaseFilterViewModel(getEtalaseDataModel())
+        val categoryViewModel = getCategoryFilterViewModel(getCategoryDataModel())
+        val otherFilterDataModel = getOtherFilterDataModel()
+        val otherFilterViewModel = getOtherFilterFilterViewModel(otherFilterDataModel)
+
+        viewModel.updateData(listOf(sortViewModel, etalaseViewModel, categoryViewModel, otherFilterViewModel))
+        viewModel.updateSelect(otherFilterDataModel)
+
+        val selectedDataViewModel = FilterDataViewModel("4183", "Some Other Filter", "", true)
+        val expectedModel = getOtherFilterFilterViewModel(selectedDataViewModel)
+        val expectedIndex = ProductManageFilterFragment.ITEM_OTHER_FILTER_INDEX
+
+        verifyFilterDataAtIndex(expectedModel, expectedIndex)
+    }
+
     private fun onGetProductManageFilterOptions_thenReturn(filterOptionsResponse: FilterOptionsResponse) {
         coEvery { getProductManageFilterOptionsUseCase.executeOnBackground() } returns filterOptionsResponse
     }
 
     private fun verifyGetProductManageFilterOptionsUseCaseCalled() {
         coVerify { getProductManageFilterOptionsUseCase.executeOnBackground() }
-    }
-
-    private fun verifyFilterData(expectedData: MutableList<FilterViewModel>) {
-        val actualData = viewModel.filterData.value
-        assertEquals(expectedData, actualData)
     }
 
     private fun verifyAllFilterDataIsNotSelected() {
@@ -77,11 +159,88 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
     }
 
     private fun verifyFilterViewModel(expectedModel: FilterViewModel) {
-        val actualModel = viewModel.filterData.value
-        actualModel?.first()?.let {
+        val actualData = viewModel.filterData.value
+        actualData?.first()?.let {
             assertEquals(expectedModel.title, it.title)
             assertEquals(expectedModel.data, it.data)
             assertEquals(expectedModel.isChipsShown, it.isChipsShown)
         }
     }
+
+    private fun verifyFilterDataAtIndex(expectedModel: FilterViewModel, index: Int) {
+        val actualData = viewModel.filterData.value
+        actualData?.let {
+            val dataToVerify = it[index]
+            assertEquals(expectedModel.title, dataToVerify.title)
+            expectedModel.data.forEachIndexed { index, filterDataViewModel ->
+                assertEquals(filterDataViewModel, dataToVerify.data[index])
+            }
+            assertEquals(expectedModel.isChipsShown, dataToVerify.isChipsShown)
+        }
+    }
+
+    private fun getSortDataModel(): FilterDataViewModel {
+        return FilterDataViewModel("312", "Some Sort", "DESC", false)
+    }
+
+    private fun getSortFilterViewModel(sortDataModel: FilterDataViewModel): FilterViewModel {
+        return FilterViewModel(ProductManageFilterMapper.SORT_HEADER,
+                mutableListOf(
+                        sortDataModel,
+                        FilterDataViewModel(
+                                "706",
+                                "Some Other Sort",
+                                "ASC",
+                                false)
+                ), false)
+    }
+
+    private fun getEtalaseDataModel(): FilterDataViewModel {
+        return FilterDataViewModel("342", "Some Etalase", "", false)
+    }
+
+    private fun getEtalaseFilterViewModel(etalaseDataModel: FilterDataViewModel): FilterViewModel {
+        return FilterViewModel(ProductManageFilterMapper.ETALASE_HEADER,
+                mutableListOf(
+                        etalaseDataModel,
+                        FilterDataViewModel(
+                                "123",
+                                "Some Other Etalase",
+                                "",
+                                false)
+                ), false)
+    }
+
+    private fun getCategoryDataModel(): FilterDataViewModel {
+        return FilterDataViewModel("1293", "Some Category", "", false)
+    }
+
+    private fun getCategoryFilterViewModel(categoryDataModel: FilterDataViewModel): FilterViewModel {
+        return FilterViewModel(ProductManageFilterMapper.CATEGORY_HEADER,
+                mutableListOf(
+                        categoryDataModel,
+                        FilterDataViewModel(
+                                "4526",
+                                "Some Other Category",
+                                "",
+                                false)
+                ), false)
+    }
+
+    private fun getOtherFilterDataModel(): FilterDataViewModel {
+        return FilterDataViewModel("4183", "Some Other Filter", "", false)
+    }
+
+    private fun getOtherFilterFilterViewModel(otherFilterDataModel: FilterDataViewModel): FilterViewModel {
+        return FilterViewModel(ProductManageFilterMapper.OTHER_FILTER_HEADER,
+                mutableListOf(
+                        otherFilterDataModel,
+                        FilterDataViewModel(
+                                "6139",
+                                "Some Other Filter",
+                                "",
+                                false)
+                ), false)
+    }
+
 }
