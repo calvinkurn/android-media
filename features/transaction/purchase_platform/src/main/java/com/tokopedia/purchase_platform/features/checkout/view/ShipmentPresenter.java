@@ -1087,6 +1087,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     } else {
                         getView().renderCheckoutCartError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
                     }
+                    processInitialLoadCheckoutPage(true, isOneClickShipment, isTradeIn, true, false, cornerId, deviceId, leasingId);
                 }
             }
         };
