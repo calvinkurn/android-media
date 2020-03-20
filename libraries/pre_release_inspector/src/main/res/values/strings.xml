@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">TesGetView</string>
+    <string name="view_inspector_empty_result_text">No Result</string>
+    <string name="view_inspector_search_input_hint">Search…</string>
+    <string name="view_inspector_config_item_apply_button_text">Apply</string>
+    <string name="close_dialog_after_apply_checkbox_text">Close dialog after apply</string>
+</resources>

@@ -163,6 +163,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         NFCSubscriber nfcSubscriber = new NFCSubscriber();
         registerActivityLifecycleCallbacks(nfcSubscriber);
+
+        registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
     }
 
     private void createAndCallPreSeq(){

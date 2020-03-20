@@ -120,6 +120,7 @@ ext {
 
     supportLibDependencies = [
             recyclerViewV7    : "androidx.recyclerview:recyclerview:${supportLibraryVersion}",
+            mediaV7           : "androidx.media:media:${supportLibraryVersion}",
             supportV4         : "androidx.legacy:legacy-support-v4:${supportLegacyLibraryVersion}",
             appCompactV7      : "androidx.appcompat:appcompat:${supportLibraryVersion}",
             supportV13        : "androidx.legacy:legacy-support-v13:${supportLegacyLibraryVersion}",
