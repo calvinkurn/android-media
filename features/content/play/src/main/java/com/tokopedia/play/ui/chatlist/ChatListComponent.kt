@@ -41,7 +41,7 @@ open class ChatListComponent(
                             ScreenStateEvent.Init -> uiView.hide()
                             is ScreenStateEvent.IncomingChat -> uiView.showChat(it.chat)
                             is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.channelType.isLive && !it.stateHelper.bottomInsets.isAnyBottomSheetsShown) uiView.show() else uiView.hide()
-                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze || it.event.isBanned) uiView.hide()
                             is ScreenStateEvent.BottomInsetsChanged -> {
                                 /**
                                  * If channel is Live && NO BottomSheet is shown -> show()

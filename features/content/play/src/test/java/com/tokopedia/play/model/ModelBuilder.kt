@@ -7,10 +7,8 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayChannelType
-import com.tokopedia.play.view.uimodel.ChannelInfoUiModel
-import com.tokopedia.play.view.uimodel.StateHelperUiModel
-import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
-import com.tokopedia.play.view.uimodel.VideoStreamUiModel
+import com.tokopedia.play.view.type.PlayRoomEvent
+import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play_common.state.PlayVideoState
 
 /**
@@ -269,6 +267,42 @@ class ModelBuilder {
             uriString = uriString,
             channelType = channelType,
             isActive = isActive
+    )
+
+    fun buildPlayChatUiModel(
+            messageId: String = "1",
+            userId: String = "1251",
+            name: String = "mzennis",
+            message: String = "Keren banget fitur ini.",
+            isSelfMessage: Boolean = true
+    ) = PlayChatUiModel(
+            messageId = message,
+            userId = userId,
+            name = name,
+            message = message,
+            isSelfMessage = isSelfMessage
+    )
+
+    fun buildPlayRoomFreezeEvent(
+            title: String = "Freeze",
+            message: String = "Kamu kena freeze",
+            btnTitle: String = "Defroze",
+            btnUrl: String = "https://tkp.me"
+    ) = PlayRoomEvent.Freeze(
+            title = title,
+            message = message,
+            btnTitle = btnTitle,
+            btnUrl = btnUrl
+    )
+
+    fun buildPlayRoomBannedEvent(
+            title: String = "Banned",
+            message: String = "Kamu kena banned",
+            btnTitle: String = "Hiks"
+    ) = PlayRoomEvent.Banned(
+            title = title,
+            message = message,
+            btnTitle = btnTitle
     )
 
     fun buildBottomInsetsMap(
