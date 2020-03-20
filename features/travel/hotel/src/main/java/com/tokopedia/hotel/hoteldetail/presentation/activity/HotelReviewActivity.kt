@@ -26,7 +26,7 @@ class HotelReviewActivity: HotelBaseActivity(), HasComponent<HotelDetailComponen
     }
 
     override fun getNewFragment(): Fragment =
-            HotelReviewFragment.createInstance(intent.getIntExtra(HotelReviewFragment.ARG_PROPERTY_ID, 0))
+            HotelReviewFragment.createInstance(intent.getLongExtra(HotelReviewFragment.ARG_PROPERTY_ID, 0))
 
     override fun getComponent(): HotelDetailComponent =
             DaggerHotelDetailComponent.builder()

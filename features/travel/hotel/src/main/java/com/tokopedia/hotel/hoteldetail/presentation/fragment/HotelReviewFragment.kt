@@ -183,10 +183,10 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
         const val COUNTRY_ID = "id"
         const val COUNTRY_ALL = "all"
 
-        fun createInstance(propertyId: Int): HotelReviewFragment {
+        fun createInstance(propertyId: Long): HotelReviewFragment {
             return HotelReviewFragment().also {
                 it.arguments = Bundle().apply {
-                    putInt(ARG_PROPERTY_ID, propertyId)
+                    putLong(ARG_PROPERTY_ID, propertyId)
                 }
             }
         }
