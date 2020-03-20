@@ -40,7 +40,7 @@ data class ActionButton(
     @SerializedName("text") val text: String,
     @SerializedName("type") val type: String,
     @SerializedName("url") val url: String,
-    @SerializedName("applink") val applink: String,
+    @SerializedName("applink") val applink: String?,
     @SerializedName("backgroundColor") val backgroundColor: String
 )
 

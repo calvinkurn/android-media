@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.LinearLayout
 import androidx.annotation.StringDef
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +17,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
 import com.tokopedia.gamification.giftbox.data.entities.GiftBoxEntity
@@ -42,6 +44,9 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     lateinit var prizeViewSmallSecond: GiftPrizeSmallView
     lateinit var prizeViewLarge: GiftPrizeLargeView
     lateinit var llRewardMessage: LinearLayout
+    lateinit var tvRewardFirstLine: AppCompatTextView
+    lateinit var tvRewardSecondLine: AppCompatTextView
+    lateinit var btnAction: Button
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -78,6 +83,9 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         prizeViewSmallFirst = v.findViewById(R.id.giftPrizeSmallViewFirst)
         prizeViewSmallSecond = v.findViewById(R.id.giftPrizeSmallViewFirst)
         prizeViewLarge = v.findViewById(R.id.giftPrizeLargeView)
+        tvRewardFirstLine = v.findViewById(R.id.tvRewardFirstLine)
+        tvRewardSecondLine = v.findViewById(R.id.tvRewardSecondLine)
+        btnAction = v.findViewById(R.id.btnAction)
         super.initViews(v)
 
         setListeners()
@@ -199,8 +207,26 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                         giftBoxRewardEntity = it.data
                         giftBoxDailyView.handleTapOnGiftBox()
                         fadeOutViews()
-                    }
 
+                        val benefitText = giftBoxRewardEntity?.crackResult?.benefitText
+                        if (benefitText != null && benefitText.isNotEmpty()) {
+                            tvRewardFirstLine.text = benefitText[0]
+                            if (benefitText.size > 1) {
+                                tvRewardFirstLine.text = benefitText[1]
+                            }
+                        }
+
+                        val actionButtonList = giftBoxRewardEntity?.crackResult?.actionButton
+                        if (actionButtonList != null && actionButtonList.isNotEmpty()) {
+                            btnAction.text = actionButtonList[0].text
+                            btnAction.setOnClickListener {
+                                val applink = actionButtonList[0].applink
+                                if (!applink.isNullOrEmpty()) {
+                                    RouteManager.route(context, applink)
+                                }
+                            }
+                        }
+                    }
                 }
                 LiveDataResult.STATUS.ERROR -> {
                 }
