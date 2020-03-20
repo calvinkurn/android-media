@@ -237,7 +237,7 @@ class ChatListComponentTest {
     }
 
     @Test
-    fun `when there is new incoming chat`() = runBlockingTest(testDispatcher) {
+    fun `when there is new incoming chat, then chat list should show it`() = runBlockingTest(testDispatcher) {
         val mockChat = modelBuilder.buildPlayChatUiModel()
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.IncomingChat(mockChat))
@@ -246,7 +246,7 @@ class ChatListComponentTest {
     }
 
     @Test
-    fun `when channel is freeze`() = runBlockingTest(testDispatcher) {
+    fun `when channel is freeze, then chat list should be hidden`() = runBlockingTest(testDispatcher) {
         val mockFreeze = modelBuilder.buildPlayRoomFreezeEvent()
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockFreeze))
@@ -255,7 +255,7 @@ class ChatListComponentTest {
     }
 
     @Test
-    fun `when channel is banned`() = runBlockingTest(testDispatcher) {
+    fun `when channel is banned, then chat list should be hidden`() = runBlockingTest(testDispatcher) {
         val mockBanned = modelBuilder.buildPlayRoomBannedEvent()
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockBanned))

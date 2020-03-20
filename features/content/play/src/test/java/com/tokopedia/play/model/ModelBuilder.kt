@@ -283,6 +283,20 @@ class ModelBuilder {
             isSelfMessage = isSelfMessage
     )
 
+    fun buildTotalLikeUiModel(
+            totalLike: Int = 1200,
+            totalLikeFormatted: String = "1.2k"
+    ) = TotalLikeUiModel(
+            totalLike = totalLike,
+            totalLikeFormatted = totalLikeFormatted
+    )
+
+    fun buildTotalViewUiModel(
+            totalView: String = "1.5k"
+    ) = TotalViewUiModel(
+            totalView = totalView
+    )
+
     fun buildPlayRoomFreezeEvent(
             title: String = "Freeze",
             message: String = "Kamu kena freeze",
