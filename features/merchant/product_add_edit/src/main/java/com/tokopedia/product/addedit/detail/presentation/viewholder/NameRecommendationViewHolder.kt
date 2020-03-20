@@ -8,18 +8,28 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.detail.presentation.adapter.NameRecommendationAdapter
 import java.util.*
 
-class ProductNameRecViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class NameRecommendationViewHolder(itemView: View, clickListener: NameRecommendationAdapter.ProductNameItemClickListener)
+    : RecyclerView.ViewHolder(itemView) {
 
-    private var productNameRecommendationView: AppCompatTextView? = null
+    private var nameRecommendationView: AppCompatTextView? = null
 
     init {
-        productNameRecommendationView = itemView.findViewById(R.id.product_name_rec_view)
+        nameRecommendationView = itemView.findViewById(R.id.name_recommendation_view)
+        nameRecommendationView?.setOnClickListener {
+            val nameObj = it.getTag(R.id.name)
+            nameObj?.let { obj ->
+                val name = obj as String
+                clickListener.onNameItemClicked(name)
+            }
+        }
     }
 
-    fun bindData(productNameInput: String, productNameRecommendation: String) {
-        productNameRecommendationView?.text = highlightRecommendation(productNameInput, productNameRecommendation)
+    fun bindData(productNameInput: String, nameRecommendation: String) {
+        nameRecommendationView?.setTag(R.id.name, nameRecommendation)
+        nameRecommendationView?.text = highlightRecommendation(productNameInput, nameRecommendation)
     }
 
     private fun highlightRecommendation(productNameInput: String, productNameRecommendation: String): SpannableString {

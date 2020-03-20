@@ -24,36 +24,11 @@
         app:typographyType="heading_4"
         app:typographyWeight="bold" />
 
-    <RadioGroup
-        android:id="@+id/rg_product_category"
+    <com.tokopedia.unifycomponents.list.ListUnify
+        android:id="@+id/lvu_product_conditions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_14"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_product_condition_header">
-
-        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
-            android:id="@+id/rb_new"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/label_new" />
-
-        <com.tokopedia.unifycomponents.DividerUnify
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/spacing_lvl1"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            android:layout_marginBottom="@dimen/dp_12" />
-
-        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
-            android:id="@+id/rb_secondhand"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/label_secondhand" />
-
-        <com.tokopedia.unifycomponents.DividerUnify
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/spacing_lvl1"
-            android:layout_marginTop="@dimen/spacing_lvl4" />
-    </RadioGroup>
+        app:layout_constraintTop_toBottomOf="@id/tv_product_condition_header" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

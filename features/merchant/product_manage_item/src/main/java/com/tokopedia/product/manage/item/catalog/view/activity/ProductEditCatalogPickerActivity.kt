@@ -32,7 +32,7 @@ class ProductEditCatalogPickerActivity : BaseSimpleActivity(), HasComponent<Prod
     override fun onCreate(savedInstanceState: Bundle?) {
         productName = intent.getStringExtra(EXTRA_PRODUCT_NAME) ?: ""
         categoryId = intent.getLongExtra(EXTRA_CATEGORY_ID, -1L)
-        choosenCatalog = intent.getParcelableExtra(EXTRA_CATALOG)
+        choosenCatalog = intent.getParcelableExtra(EXTRA_CATALOG) ?: ProductCatalog()
         super.onCreate(savedInstanceState)
     }
 

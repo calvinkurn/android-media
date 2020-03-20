@@ -6,7 +6,7 @@
     android:layout_height="@dimen/dp_34">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/product_name_rec_view"
+        android:id="@+id/name_recommendation_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/dp_7"

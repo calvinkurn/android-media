@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.*
 import android.widget.TextView
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
 import com.tokopedia.core.common.category.di.module.CategoryPickerModule
@@ -20,6 +21,7 @@ import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddE
 import com.tokopedia.product.manage.item.catalog.view.listener.ProductEditCatalogPickerView
 import com.tokopedia.product.manage.item.catalog.view.presenter.ProductEditCatalogPickerPresenter
 import com.tokopedia.product.manage.item.category.di.DaggerProductEditCategoryCatalogComponent
+import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_JSON_CATALOG
 import kotlinx.android.synthetic.main.fragment_product_edit_catalog_picker.*
 import javax.inject.Inject
 
@@ -99,8 +101,13 @@ class ProductEditCatalogPickerFragment : BaseListFragment<ProductCatalog, Produc
     override fun getEndlessLayoutManagerListener() = EndlessLayoutManagerListener { recycler_view.layoutManager }
 
     private fun setResult(){
+
+        val jsonChosenCatalog = Gson().toJson(choosenCatalog)
+
         val intent = Intent()
+        intent.putExtra(EXTRA_JSON_CATALOG,jsonChosenCatalog)
         intent.putExtra(EXTRA_CATALOG, choosenCatalog)
+
         activity?.run {
             setResult(Activity.RESULT_OK, intent)
             finish()
