@@ -118,18 +118,6 @@
             app:typographyWeight="reguler"
             tools:text="tokopedia tower lantai asdfl jalan lasdfj lajsdf lkasjdf lj" />
 
-        <View
-            android:id="@+id/divider"
-            android:layout_width="0dp"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="@dimen/dp_18"
-            android:layout_marginLeft="@dimen/dp_18"
-            android:layout_marginTop="@dimen/dp_8"
-            android:background="@color/Neutral_N75"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_address_detail" />
-
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shipping_name"
             android:layout_width="wrap_content"
@@ -140,7 +128,7 @@
             android:lines="1"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider"
+            app:layout_constraintTop_toBottomOf="@+id/tv_address_detail"
             app:typographyType="body_3"
             app:typographyWeight="bold"
             tools:text="pengiriman instan" />
@@ -157,18 +145,6 @@
             app:typographyWeight="reguler"
             tools:text="durasi 3 jam" />
 
-        <View
-            android:id="@+id/divider2"
-            android:layout_width="0dp"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="@dimen/dp_18"
-            android:layout_marginLeft="@dimen/dp_18"
-            android:layout_marginTop="@dimen/dp_8"
-            android:background="@color/Neutral_N75"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_shipping_duration" />
-
         <ImageView
             android:id="@+id/iv_payment"
             android:layout_width="wrap_content"
@@ -180,7 +156,7 @@
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toTopOf="@+id/divider3"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider2"
+            app:layout_constraintTop_toBottomOf="@+id/tv_shipping_duration"
             tools:ignore="ContentDescription"
             tools:srcCompat="@drawable/ic_delete_cart" />
 
@@ -195,7 +171,7 @@
             android:paddingBottom="@dimen/dp_2"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintStart_toEndOf="@+id/iv_payment"
-            app:layout_constraintTop_toBottomOf="@+id/divider2"
+            app:layout_constraintTop_toBottomOf="@+id/tv_shipping_duration"
             app:typographyType="body_3"
             app:typographyWeight="bold"
             tools:text="Virtual Account" />
@@ -213,16 +189,15 @@
             tools:text="8098097230948209384" />
 
         <View
-            android:id="@+id/divider3"
-            android:layout_width="0dp"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="@dimen/dp_18"
-            android:layout_marginLeft="@dimen/dp_18"
+            android:id="@+id/diviver_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_1"
+            android:background="@color/Neutral_N100"
             android:layout_marginTop="@dimen/dp_8"
-            android:background="@color/Neutral_N75"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_payment_detail" />
+            app:layout_constraintTop_toBottomOf="@id/tv_payment_detail"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_choose_preference"
@@ -239,7 +214,7 @@
             android:textColor="@color/Green_G500"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider3"
+            app:layout_constraintTop_toBottomOf="@+id/diviver_bottom"
             app:typographyType="body_3"
             app:typographyWeight="bold"
             tools:visibility="visible" />
