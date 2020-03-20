@@ -182,4 +182,17 @@ class MerchantVoucherListWidget : FrameLayout, MerchantVoucherView.OnMerchantVou
             onMerchantVoucherListWidgetListener!!.onItemClicked(o)
         }
     }
+
+    fun setTitle(title: String){
+        titleString = title
+        tvTitle?.apply {
+            text = titleString ?: ""
+        }
+    }
+
+    fun setSeeAllText(seeAllText: String){
+        tvSeeAll?.apply {
+            text = seeAllText
+        }
+    }
 }

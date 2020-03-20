@@ -61,6 +61,8 @@ class ShopHomeVoucherViewHolder(
         recyclerViewState?.let {
             merchantVoucherListWidget?.recyclerView?.layoutManager?.onRestoreInstanceState(it)
         }
+        merchantVoucherListWidget?.setTitle(model.header.title)
+        merchantVoucherListWidget?.setSeeAllText(model.header.ctaText)
     }
 
     override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {}
