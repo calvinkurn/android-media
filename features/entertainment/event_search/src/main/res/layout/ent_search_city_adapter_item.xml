@@ -20,13 +20,14 @@
         android:id="@+id/loc_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxLines="1"
         android:layout_marginLeft="12dp"
-        app:typographyType="body_2"
-        tools:text="Sura"
+        android:maxLines="1"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imgCity"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintTop_toBottomOf="parent" />
+        app:typographyType="body_2"
+        tools:text="Sura" />
+
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/loc_type"

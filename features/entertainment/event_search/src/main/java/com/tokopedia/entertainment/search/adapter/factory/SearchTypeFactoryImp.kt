@@ -3,14 +3,8 @@ package com.tokopedia.entertainment.search.adapter.factory
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException
 import com.tokopedia.entertainment.search.adapter.SearchEventViewHolder
-import com.tokopedia.entertainment.search.adapter.viewholder.FirstTimeBackgroundItemViewHolder
-import com.tokopedia.entertainment.search.adapter.viewholder.HistoryBackgroundItemViewHolder
-import com.tokopedia.entertainment.search.adapter.viewholder.SearchEventListViewHolder
-import com.tokopedia.entertainment.search.adapter.viewholder.SearchLocationListViewHolder
-import com.tokopedia.entertainment.search.adapter.viewmodel.FirstTimeViewModel
-import com.tokopedia.entertainment.search.adapter.viewmodel.HistoryViewModel
-import com.tokopedia.entertainment.search.adapter.viewmodel.SearchEventViewModel
-import com.tokopedia.entertainment.search.adapter.viewmodel.SearchLocationViewModel
+import com.tokopedia.entertainment.search.adapter.viewholder.*
+import com.tokopedia.entertainment.search.adapter.viewmodel.*
 import kotlin.reflect.KFunction0
 
 class SearchTypeFactoryImp(val onClicked: (() -> Unit) = {}) : SearchTypeFactory {
@@ -31,6 +25,9 @@ class SearchTypeFactoryImp(val onClicked: (() -> Unit) = {}) : SearchTypeFactory
         return SearchEventListViewHolder.LAYOUT
     }
 
+    override fun type(viewModel: SearchEmptyStateViewModel): Int {
+        return SearchEmptyStateViewHolder.LAYOUT
+    }
 
     override fun createViewHolder(view: ViewGroup, type: Int): SearchEventViewHolder<*> {
         val creatEventViewHolder: SearchEventViewHolder<*>
@@ -42,7 +39,9 @@ class SearchTypeFactoryImp(val onClicked: (() -> Unit) = {}) : SearchTypeFactory
             SearchLocationListViewHolder(view, onClicked)
         } else if(type == SearchEventListViewHolder.LAYOUT){
             SearchEventListViewHolder(view)
-        }  else{
+        } else if(type == SearchEmptyStateViewHolder.LAYOUT){
+            SearchEmptyStateViewHolder(view)
+        } else{
             throw TypeNotSupportedException.create("Layout not supported")
         }
         return creatEventViewHolder

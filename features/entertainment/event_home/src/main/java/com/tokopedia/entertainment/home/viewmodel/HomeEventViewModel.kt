@@ -50,17 +50,17 @@ class HomeEventViewModel @Inject constructor(
                 block = {
                     if(userSession.isLoggedIn){
                         var data = fetchEventHomeData(v, cacheType)
-                        var likes = fetchEventLikes().await()
+//                        var likes = fetchEventLikes().await()
                         data?.let {
-                            it.eventHome.layout.forEach{
-                                it.items.forEach { item ->
-                                    likes.forEach { likes ->
-                                        if (likes.productId == item.id){
-                                            item.isLiked = likes.isLiked
-                                        }
-                                    }
-                                }
-                            }
+//                            it.eventHome.layout.forEach{
+//                                it.items.forEach { item ->
+//                                    likes.forEach { likes ->
+//                                        if (likes.productId == item.id){
+//                                            item.isLiked = likes.isLiked
+//                                        }
+//                                    }
+//                                }
+//                            }
                             onSuccess(mappingItem(it))
                         }
                     } else {

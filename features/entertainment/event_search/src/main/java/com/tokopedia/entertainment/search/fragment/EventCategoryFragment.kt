@@ -19,6 +19,7 @@ import com.tokopedia.entertainment.search.viewmodel.EventDetailViewModel
 import com.tokopedia.entertainment.search.viewmodel.factory.EventDetailViewModelFactory
 import kotlinx.android.synthetic.main.ent_search_category_text.*
 import kotlinx.android.synthetic.main.ent_search_detail_activity.*
+import kotlinx.android.synthetic.main.ent_search_detail_shimmer.*
 import kotlinx.android.synthetic.main.ent_search_fragment.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -94,6 +95,8 @@ class EventCategoryFragment : BaseDaggerFragment() {
 
         swipe_refresh_layout.apply {
             setOnRefreshListener {
+                activity?.shimering_layout?.visibility = View.VISIBLE
+                activity?.parent_view?.visibility = View.GONE
                 getEventData(QUERY_TEXT, CITY_ID)
             }
         }
@@ -125,6 +128,7 @@ class EventCategoryFragment : BaseDaggerFragment() {
     private fun observeSearchList(){
         viewModel.isItRefreshing.observe(this, Observer {
             swipe_refresh_layout.isRefreshing = it
+            showShimmerOrNot(it)
         })
 
         viewModel.catLiveData.observe(this, Observer {
@@ -136,7 +140,18 @@ class EventCategoryFragment : BaseDaggerFragment() {
         })
     }
 
+    private fun showShimmerOrNot(boolean: Boolean){
+        if(boolean){
+            activity?.shimering_layout?.visibility = View.VISIBLE
+            activity?.parent_view?.visibility = View.GONE
+        } else{
+            activity?.shimering_layout?.visibility = View.GONE
+            activity?.parent_view?.visibility = View.VISIBLE
+        }
+    }
+
     private fun getEventData(searchQuery: String, city_id: String){
+        showShimmerOrNot(true)
         viewModel.getData(city_id, searchQuery)
     }
 }

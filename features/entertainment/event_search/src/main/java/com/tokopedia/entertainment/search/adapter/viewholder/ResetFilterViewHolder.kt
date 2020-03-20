@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.entertainment.search.R
 import com.tokopedia.entertainment.search.adapter.DetailEventViewHolder
 import com.tokopedia.entertainment.search.adapter.viewmodel.ResetFilterViewModel
-import kotlinx.android.synthetic.main.ent_search_emptystate.view.*
+import kotlinx.android.synthetic.main.ent_search_category_emptystate.view.*
 
 class ResetFilterViewHolder(val view:View, val onClicked : ((Boolean) -> Unit)?) : DetailEventViewHolder<ResetFilterViewModel>(view) {
 
@@ -21,6 +21,6 @@ class ResetFilterViewHolder(val view:View, val onClicked : ((Boolean) -> Unit)?)
     }
 
     companion object{
-        val LAYOUT = R.layout.ent_search_emptystate
+        val LAYOUT = R.layout.ent_search_category_emptystate
     }
 }

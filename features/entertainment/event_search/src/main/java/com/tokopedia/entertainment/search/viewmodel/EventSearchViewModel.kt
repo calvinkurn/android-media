@@ -10,10 +10,7 @@ import com.tokopedia.entertainment.search.adapter.SearchEventItem
 import com.tokopedia.entertainment.search.adapter.viewholder.HistoryBackgroundItemViewHolder
 import com.tokopedia.entertainment.search.adapter.viewholder.SearchEventListViewHolder
 import com.tokopedia.entertainment.search.adapter.viewholder.SearchLocationListViewHolder
-import com.tokopedia.entertainment.search.adapter.viewmodel.FirstTimeViewModel
-import com.tokopedia.entertainment.search.adapter.viewmodel.HistoryViewModel
-import com.tokopedia.entertainment.search.adapter.viewmodel.SearchEventViewModel
-import com.tokopedia.entertainment.search.adapter.viewmodel.SearchLocationViewModel
+import com.tokopedia.entertainment.search.adapter.viewmodel.*
 import com.tokopedia.entertainment.search.data.EventSearchFullLocationResponse
 import com.tokopedia.entertainment.search.data.EventSearchHistoryResponse
 import com.tokopedia.entertainment.search.data.EventSearchLocationResponse
@@ -60,10 +57,14 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
                         val data = getHistorySearchData()
                         data.let {
                             it.travelCollectiveRecentSearches.let {
-                                it.items.forEach {
-                                    lists.add(SearchMapper.mappingRecentSearch(it))
+                                if(it.items.isNotEmpty()){
+                                    it.items.forEach {
+                                        lists.add(SearchMapper.mappingRecentSearch(it))
+                                    }
+                                    listViewHolder.add(HistoryViewModel(lists))
+                                } else{
+                                    listViewHolder.add(FirstTimeViewModel())
                                 }
-                                listViewHolder.add(HistoryViewModel(lists))
 
                                 searchList.postValue(listViewHolder)
                                 isItRefreshing.postValue(false)
@@ -106,6 +107,10 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
                                 }
                                 if(listsKegiatan.size > 0) listViewHolder.add(SearchEventViewModel(listsKegiatan, resources))
                             }
+                        }
+                        if(it.eventLocationSearch.locations.isEmpty() && it.eventSearch.products.isEmpty()) {
+                            listViewHolder.clear()
+                            listViewHolder.add(SearchEmptyStateViewModel())
                         }
                         searchList.postValue(listViewHolder)
                         isItRefreshing.value = false

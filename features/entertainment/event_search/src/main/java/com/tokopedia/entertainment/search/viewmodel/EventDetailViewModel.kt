@@ -61,14 +61,15 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
                  block = {
                      val eventData : MutableList<SearchEventGridViewHolder.EventGrid> = mutableListOf()
                      categoryList.clear()
-                     eventList.clear()
                      val data = getQueryData(this.searchQuery, this.cityID, category)
                      data.let {
                          it.eventChildCategory.let {
                              if(categoryIsDifferentOrEmpty(it)){
                                  categoryData.clear()
                                  it.categories.forEach {
-                                     categoryData.add(DetailMapper.mapToCategory(it))
+                                     if(it.title != "Trending Events" || it.id != "28"){ //Feedback #3 Remove Trending Events
+                                         categoryData.add(DetailMapper.mapToCategory(it))
+                                     }
                                  }
                                  categoryList.add(CategoryTextViewModel(categoryData, hashSet))
                                  catLiveData.value = categoryList
@@ -76,6 +77,7 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
                          }
 
                          it.eventSearch.let {
+                             eventList.clear()
                              if(it.products.size  > 0){
                                  it.products.forEach {
                                      eventData.add(DetailMapper.mapToGrid(it))
@@ -97,15 +99,15 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
         )
     }
 
-    private fun categoryIsDifferentOrEmpty(list: EventDetailResponse.Data.EventChildCategory): Boolean{
+    fun categoryIsDifferentOrEmpty(list: EventDetailResponse.Data.EventChildCategory): Boolean{
         //Case 1 Still empty or Data Category size and API Category Size is different
-        if(categoryData.size == 0 || categoryData.size != list.categories.size) return true
+        if(categoryData.size == 0 || hashSet.isEmpty() || categoryData.size != list.categories.size) return true
 
         //Add all id to hashset
         val listHashSet = HashSet<String>()
         list.categories.forEach{item -> listHashSet.add(item.id) }
 
-        //Case 2 Data Category Size is Different but the data is different then change the data
+        //Case 2 Data Category Size is Different but the data is different then reload the data
         categoryData.forEachIndexed{index, it -> if(!listHashSet.contains(categoryData.get(index).id)) return true }
 
         //Default no need to change the data

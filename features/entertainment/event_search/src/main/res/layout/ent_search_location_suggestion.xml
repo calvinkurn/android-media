@@ -22,6 +22,8 @@
         android:layout_height="wrap_content"
         android:text="@string/ent_lihat_semua"
         android:textColor="#03ac04"
+        android:visibility="gone"
+        android:clickable="false"
         app:typographyType="small"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

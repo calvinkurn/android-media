@@ -19,7 +19,7 @@ data class EventDetailResponse(
 		data class EventChildCategory(
 
 				@field:SerializedName("categories")
-				val categories: List<CategoriesItem> = listOf()
+                var categories: List<CategoriesItem> = listOf()
 		){
 			data class CategoriesItem(
 
