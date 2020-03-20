@@ -72,6 +72,7 @@ ext {
     crashlyticsGradleVersion = '1.28.0'
     googleServiceGradleVersion = '4.3.3'
     coroutineTestVersion = '1.3.2'
+    chuckerVersion = '3.0.1'
 
     debugToolsEnabled = true
 
@@ -284,8 +285,7 @@ ext {
     debugToolsDependencies = [
             stetho      : "com.facebook.stetho:stetho:1.4.2",
             stethoOkHttp: "com.facebook.stetho:stetho-okhttp3:1.4.2",
-            chuck       : "com.github.ChuckerTeam.Chucker:library:3.0.1",
-            chuckNoOp   : "com.github.ChuckerTeam.Chucker:library-no-op:3.0.1",
+            chuck       : "com.github.ChuckerTeam.Chucker:library:$chuckerVersion",
             toolargetool: "com.gu.android:toolargetool:0.1.3@aar",
             timber      : "com.jakewharton.timber:timber:4.7.1",
             blockCanary : "com.github.moduth:blockcanary:1.4.3@aar",
