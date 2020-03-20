@@ -2499,24 +2499,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onSuccessClearPromoStack(int shopIndex, String voucherType) {
-        setBenefitSummaryInfoUiModel(null);
-
-        // Todo : add flag isOnlyOnePromo to determine need to reset promo benefit or not
-//        if (!stillHasAppliedPromo()) {
-//            clearPromoTrackingData();
-//            resetPromoBenefit();
-//        }
-
+    public void onSuccessClearPromoStack(boolean isLastAppliedPromo) {
+        if (isLastAppliedPromo) {
+            doResetButtonPromoCheckout();
+        }
     }
 
     @Override
-    public void onSuccessClearPromoLogistic() {
-        // Todo : add flag isOnlyOnePromo to determine need to reset promo benefit or not
-//        if (!stillHasAppliedPromo()) {
-//            clearPromoTrackingData();
-//            resetPromoBenefit();
-//        }
+    public void onSuccessClearPromoLogistic(boolean isLastAppliedPromo) {
+        if (isLastAppliedPromo) {
+            doResetButtonPromoCheckout();
+        }
     }
 
     @Override

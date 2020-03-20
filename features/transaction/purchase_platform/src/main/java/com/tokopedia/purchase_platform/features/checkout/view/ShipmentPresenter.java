@@ -1557,7 +1557,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodeList);
             compositeSubscription.add(
                     clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
-                            .subscribe(new ClearShipmentCacheAutoApplySubscriber(getView(), this, voucherType, shopIndex, ignoreAPIResponse))
+                            .subscribe(new ClearShipmentCacheAutoApplySubscriber(getView(), this, voucherType, shopIndex, ignoreAPIResponse, isLastAppliedPromo(promoCodeList.get(0))))
             );
         }
     }
@@ -1606,7 +1606,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 tickerAnnouncementHolderData.setMessage(responseData.getSuccessData().getTickerMessage());
                                 getView().updateTickerAnnouncementMessage();
                             }
-                            getView().onSuccessClearPromoLogistic();
+                            getView().onSuccessClearPromoLogistic(isLastAppliedPromo(promoCode));
                         }
                     }
                 })

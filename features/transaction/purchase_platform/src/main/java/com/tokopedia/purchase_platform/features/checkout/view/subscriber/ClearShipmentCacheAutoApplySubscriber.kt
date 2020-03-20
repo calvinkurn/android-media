@@ -11,9 +11,8 @@ import rx.Subscriber
 
 class ClearShipmentCacheAutoApplySubscriber(val view: ShipmentContract.View?,
                                             val presenter: ShipmentContract.Presenter,
-                                            val voucherType: String,
-                                            val shopIndex: Int,
-                                            val ignoreAPIResponse: Boolean) : Subscriber<ClearCacheAutoApplyStackResponse>() {
+                                            val ignoreAPIResponse: Boolean,
+                                            val booleanIsLastAppliedPromo: Boolean) : Subscriber<ClearCacheAutoApplyStackResponse>() {
 
     override fun onCompleted() {
 
@@ -47,7 +46,7 @@ class ClearShipmentCacheAutoApplySubscriber(val view: ShipmentContract.View?,
             presenter.tickerAnnouncementHolderData.message = responseData.successData.tickerMessage
             view?.updateTickerAnnouncementMessage()
         }
-        view?.onSuccessClearPromoStack(shopIndex, voucherType)
+        view?.onSuccessClearPromoStack(booleanIsLastAppliedPromo)
     }
 
 }

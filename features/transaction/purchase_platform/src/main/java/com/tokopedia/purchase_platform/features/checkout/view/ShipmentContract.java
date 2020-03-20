@@ -129,11 +129,11 @@ public interface ShipmentContract {
 
         void stopTrace();
 
-        void onSuccessClearPromoStack(int shopIndex, String voucherType);
+        void onSuccessClearPromoStack(boolean isLastAppliedPromo);
 
         void onFailedClearPromoStack(boolean ignoreAPIResponse);
 
-        void onSuccessClearPromoLogistic();
+        void onSuccessClearPromoLogistic(boolean isLastAppliedPromo);
 
         void resetCourier(int position);
 
