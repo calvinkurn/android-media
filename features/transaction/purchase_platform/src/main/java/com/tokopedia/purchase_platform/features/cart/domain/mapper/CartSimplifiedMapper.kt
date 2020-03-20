@@ -543,6 +543,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
     private fun mapVoucherOrders(voucherOrders: VoucherOrders): LastApplyVoucherOrdersItemUiModel {
         return LastApplyVoucherOrdersItemUiModel(
                 code = voucherOrders.code,
+                uniqueId = voucherOrders.uniqueId,
                 message = mapMessage(voucherOrders.message)
         )
     }

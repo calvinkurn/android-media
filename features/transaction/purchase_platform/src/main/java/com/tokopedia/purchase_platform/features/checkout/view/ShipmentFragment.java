@@ -2728,8 +2728,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             order.setShopId(shipmentCartItemModel.getShopId());
             order.setUniqueId(shipmentCartItemModel.getCartString());
             order.setChecked(true);
-            //TODO:
-            // order.setCodes();
+
+            ArrayList<String> listOrderCodes = new ArrayList<>();
+            for (int x = 0; x < lastApplyUiModel.getVoucherOrders().size(); x++) {
+                if (shipmentCartItemModel.getCartString().equalsIgnoreCase(lastApplyUiModel.getVoucherOrders().get(x).getUniqueId())){
+                    listOrderCodes.add(lastApplyUiModel.getVoucherOrders().get(x).getCode());
+                    break;
+                }
+            }
+            order.setCodes(listOrderCodes);
 
             ArrayList<com.tokopedia.purchase_platform.features.promo.data.request.ProductDetail> listProduct = new ArrayList<>();
             for (int j = 0; j < shipmentCartItemModel.getCartItemModels().size(); j++) {

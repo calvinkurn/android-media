@@ -9,5 +9,8 @@ data class VoucherOrders (
         @SerializedName("code")
         var code: String = "",
 
+        @SerializedName("unique_id")
+        var uniqueId: String = "",
+
         @SerializedName("message")
         var message: MessageVoucherOrders = MessageVoucherOrders())

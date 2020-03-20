@@ -13,7 +13,6 @@ import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.mode
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.data.model.response.VoucherOrders;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PromoCheckoutErrorDefault;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyAdditionalInfoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyEmptyCartInfoUiModel;
@@ -309,6 +308,7 @@ public class ShipmentMapper implements IShipmentMapper {
                             LastApplyVoucherOrdersItemUiModel lastApplyVoucherOrdersItemUiModel = new LastApplyVoucherOrdersItemUiModel();
                             com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.VoucherOrdersItem voucherOrdersItem = lastApply.getData().getVoucherOrders().get(i);
                             lastApplyVoucherOrdersItemUiModel.setCode(voucherOrdersItem.getCode());
+                            lastApplyVoucherOrdersItemUiModel.setUniqueId(voucherOrdersItem.getUniqueId());
 
                             com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.Message message = voucherOrdersItem.getMessage();
                             LastApplyMessageUiModel lastApplyMessageInfoUiModel = new LastApplyMessageUiModel();
