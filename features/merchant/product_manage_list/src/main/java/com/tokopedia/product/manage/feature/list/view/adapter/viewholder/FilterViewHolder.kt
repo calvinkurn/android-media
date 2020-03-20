@@ -60,6 +60,7 @@ class FilterViewHolder(
     }
 
     interface ProductFilterListener {
+        fun onClickMoreFilter(filter: FilterViewModel, tabName: String)
         fun onClickProductFilter(filter: FilterViewModel, viewHolder: FilterViewHolder, tabName: String)
     }
 }

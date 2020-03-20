@@ -255,11 +255,13 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onClickMoreFilter(filter: FilterViewModel, tabName: String) {
+        showFilterBottomSheet()
+        ProductManageTracking.eventInventory(tabName)
+    }
+
     override fun onClickProductFilter(filter: FilterViewModel, viewHolder: FilterViewHolder, tabName: String) {
-        when(filter) {
-            is MoreFilter -> showFilterBottomSheet()
-            else -> clickStatusFilterTab(filter, viewHolder)
-        }
+        clickStatusFilterTab(filter, viewHolder)
         ProductManageTracking.eventInventory(tabName)
     }
 
@@ -476,13 +478,18 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun showTabFilters() {
+        val selectedFilter = viewModel.selectedFilterAndSort.value
+        val sortCount =  if(selectedFilter?.sortOption == null) 0 else 1
+        val filterCount = selectedFilter?.filterOptions?.count().orZero() + sortCount
+
         val filters = if(tabFilters.isActive()) {
-            mapToTabFilters(allProductList)
+            mapToTabFilters(allProductList, filterCount)
         } else {
             val productList = adapter.data
                 .filterIsInstance<ProductViewModel>()
-            mapToTabFilters(productList)
+            mapToTabFilters(productList, filterCount)
         }
+
         tabFilters.setData(filters)
     }
 
