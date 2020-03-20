@@ -48,7 +48,7 @@ class GetProductTagItemsUseCase @Inject constructor(private val graphqlRepositor
                   id: ID
                   name: Name
                   image_url: ImageUrl
-                  shopID: ShopID
+                  shop_id: ShopID
                   original_price: OriginalPrice
                   original_price_formatted: OriginalPriceFormatted
                   discount: Discount
@@ -58,7 +58,7 @@ class GetProductTagItemsUseCase @Inject constructor(private val graphqlRepositor
                   is_variant: IsVariant
                   is_available: IsAvailable
                   order: Order
-                  applink: AppLink
+                  app_link: AppLink
                   web_link: WebLink
                   min_quantity: MinQuantity
                 }
