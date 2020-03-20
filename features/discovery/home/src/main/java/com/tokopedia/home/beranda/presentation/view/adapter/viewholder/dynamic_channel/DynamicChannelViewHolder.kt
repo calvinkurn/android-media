@@ -53,6 +53,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
         const val TYPE_FOUR_GRID_LEGO = 9
         const val TYPE_MIX_TOP = 10
         const val TYPE_MIX_LEFT = 20
+        const val TYPE_RECOMMENDATION_LIST = 14
         const val TYPE_PRODUCT_HIGHLIGHT = 11
 
         fun getLayoutType(channels: DynamicHomeChannel.Channels): Int {
