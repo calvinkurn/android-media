@@ -2,11 +2,9 @@ package com.tokopedia.product.manage.feature.list.view.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
-import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.*
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.item_product_manage_filter.view.*
 
@@ -26,7 +24,6 @@ class FilterViewHolder(
 
     override fun bind(filter: FilterViewModel) {
         setFilterTitle(filter)
-        setFilterImage(filter)
         setOnClickListener(filter)
     }
 
@@ -34,16 +31,10 @@ class FilterViewHolder(
         chipText.text = context.getString(filter.titleId, filter.count)
     }
 
-    private fun setFilterImage(filter: FilterViewModel) {
-        filter.icon?.let {
-            chipFilter.chipImageResource = ContextCompat.getDrawable(context, it)
-        }
-    }
-
     private fun setOnClickListener(filter: FilterViewModel) {
         itemView.setOnClickListener {
             onClickProductFilter(filter)
-            toggleSelectFilter(filter)
+            toggleSelectFilter()
         }
     }
 
@@ -51,15 +42,13 @@ class FilterViewHolder(
         listener.onClickProductFilter(filter, this, chipText.text.toString())
     }
 
-    private fun toggleSelectFilter(filter: FilterViewModel) {
-        if(filter !is MoreFilter) {
-            val chipType = if(isFilterSelected()) {
-                ChipsUnify.TYPE_NORMAL
-            } else {
-                ChipsUnify.TYPE_SELECTED
-            }
-            chipFilter.chipType = chipType
+    private fun toggleSelectFilter() {
+        val chipType = if(isFilterSelected()) {
+            ChipsUnify.TYPE_NORMAL
+        } else {
+            ChipsUnify.TYPE_SELECTED
         }
+        chipFilter.chipType = chipType
     }
 
     private fun isFilterSelected(): Boolean {
