@@ -27,11 +27,6 @@ class ProductManageFilterExpandChecklistViewModelTest: ProductManageFilterExpand
         verifyAllValuesAreFalse()
     }
 
-    private fun verifySelectCountEquals(expectedCount: Int) {
-        val actualCount = viewModel.dataSize.value
-        assertEquals(expectedCount, actualCount)
-    }
-
     @Test
     fun `when_update_select_should_update_actual_data_and_number_of_selected_data_accordingly`() {
         val dataToInsert = listOf(
@@ -48,6 +43,11 @@ class ProductManageFilterExpandChecklistViewModelTest: ProductManageFilterExpand
 
         verifySelectCountEquals(expectedCount)
         verifyChecklistDataSelected(expectedData)
+    }
+
+    private fun verifySelectCountEquals(expectedCount: Int) {
+        val actualCount = viewModel.dataSize.value
+        assertEquals(expectedCount, actualCount)
     }
 
     private fun verifyAllValuesAreFalse() {

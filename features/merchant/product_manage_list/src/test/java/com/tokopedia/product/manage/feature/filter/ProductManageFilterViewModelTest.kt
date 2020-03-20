@@ -33,9 +33,20 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
     }
 
     @Test
-    fun `clearSelected_should_clear_all_selected_items`() {
+    fun `when_clearSelected_should_make_all_elements_unselected`() {
         viewModel.clearSelected()
         verifyAllFilterDataIsNotSelected()
+    }
+
+    @Test
+    fun `when_updateShow_should_update_element_isChipsShown_accordingly`() {
+        val filterViewModel = FilterViewModel("Sort", mutableListOf(), false)
+
+        viewModel.updateData(listOf(filterViewModel))
+        viewModel.updateShow(filterViewModel)
+
+        val expectedData = FilterViewModel("Sort", mutableListOf(), true)
+        verifyFilterViewModel(expectedData)
     }
 
     private fun onGetProductManageFilterOptions_thenReturn(filterOptionsResponse: FilterOptionsResponse) {
@@ -63,5 +74,14 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
     private fun verifyFilterOptionsResponse(expectedResponse: Success<FilterOptionsResponse>) {
         val actualResponse = viewModel.filterOptionsResponse.value as Success<FilterOptionsResponse>
         assertEquals(expectedResponse, actualResponse)
+    }
+
+    private fun verifyFilterViewModel(expectedModel: FilterViewModel) {
+        val actualModel = viewModel.filterData.value
+        actualModel?.first()?.let {
+            assertEquals(expectedModel.title, it.title)
+            assertEquals(expectedModel.data, it.data)
+            assertEquals(expectedModel.isChipsShown, it.isChipsShown)
+        }
     }
 }
