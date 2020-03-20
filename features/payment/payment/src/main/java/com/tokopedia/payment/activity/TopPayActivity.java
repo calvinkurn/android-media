@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient;
 import com.tokopedia.abstraction.base.view.webview.FilePickerInterface;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.webview.WebViewHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -73,6 +74,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.tokopedia.common.payment.PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA;
+import static com.tokopedia.common.payment.PaymentConstant.EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE;
 
 
 /**
@@ -176,6 +178,11 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
 
     private void setActionVar() {
         presenter.proccessUriPayment();
+
+        String message = getIntent().getStringExtra(EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE);
+        if (message != null && !message.isEmpty()) {
+            Toaster.INSTANCE.make(scroogeWebView, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> {});
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")

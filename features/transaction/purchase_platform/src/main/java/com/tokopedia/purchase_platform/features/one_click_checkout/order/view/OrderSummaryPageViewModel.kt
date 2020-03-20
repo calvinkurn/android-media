@@ -177,35 +177,62 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                 if (shippingDurationViewModel.serviceData.serviceId == shipping!!.serviceId) {
                                                     shippingDurationViewModel.isSelected = true
                                                     selectedShippingDurationViewModel = shippingDurationViewModel
-                                                    val shippingCourierViewModelList = shippingDurationViewModel.shippingCourierViewModelList
-                                                    var selectedShippingCourierUiModel: ShippingCourierUiModel? = null
-                                                    for (shippingCourierUiModel in shippingCourierViewModelList) {
-                                                        if (shippingCourierUiModel.productData.shipperProductId == shipping.shipperProductId) {
-                                                            shippingCourierUiModel.isSelected = true
-                                                            selectedShippingCourierUiModel = shippingCourierUiModel
-                                                        } else {
-                                                            shippingCourierUiModel.isSelected = false
-                                                        }
-                                                    }
-                                                    if (selectedShippingCourierUiModel != null) {
+                                                    val durationError = shippingDurationViewModel.serviceData.error
+                                                    if (durationError.errorId != null && durationError.errorId.isNotBlank() && durationError.errorMessage.isNotBlank()) {
                                                         val tempServiceDuration = shippingDurationViewModel.serviceData.serviceName
                                                         val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
                                                             tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
                                                         } else {
                                                             "Durasi tergantung kurir"
                                                         }
-                                                        shipping = shipping.copy(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
-                                                                shipperId = selectedShippingCourierUiModel.productData.shipperId,
-                                                                ratesId = selectedShippingCourierUiModel.ratesId,
-                                                                ut = selectedShippingCourierUiModel.productData.unixTime,
-                                                                checksum = selectedShippingCourierUiModel.productData.checkSum,
-                                                                shipperName = selectedShippingCourierUiModel.productData.shipperName,
-                                                                insuranceData = selectedShippingCourierUiModel.productData.insurance,
+                                                        shipping = Shipment(
                                                                 serviceId = shippingDurationViewModel.serviceData.serviceId,
                                                                 serviceDuration = serviceDur,
                                                                 serviceName = shippingDurationViewModel.serviceData.serviceName,
-                                                                shippingPrice = selectedShippingCourierUiModel.productData.price.price,
+                                                                needPinpoint = durationError.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED,
+                                                                serviceErrorMessage = durationError.errorMessage,
                                                                 shippingRecommendationData = shippingRecommendationData)
+                                                    } else {
+                                                        val shippingCourierViewModelList = shippingDurationViewModel.shippingCourierViewModelList
+                                                        var selectedShippingCourierUiModel: ShippingCourierUiModel? = null
+                                                        for (shippingCourierUiModel in shippingCourierViewModelList) {
+                                                            if (shippingCourierUiModel.productData.shipperProductId == shipping.shipperProductId) {
+                                                                shippingCourierUiModel.isSelected = true
+                                                                selectedShippingCourierUiModel = shippingCourierUiModel
+                                                            } else {
+                                                                shippingCourierUiModel.isSelected = false
+                                                            }
+                                                        }
+                                                        if (selectedShippingCourierUiModel != null) {
+                                                            var flagNeedToSetPinpoint = false
+                                                            var errorMessage: String? = null
+                                                            if (selectedShippingCourierUiModel.productData.error != null && selectedShippingCourierUiModel.productData.error.errorMessage != null && selectedShippingCourierUiModel.productData.error.errorId != null) {
+                                                                errorMessage = selectedShippingCourierUiModel.productData.error.errorMessage
+                                                                if (selectedShippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
+                                                                    flagNeedToSetPinpoint = true
+                                                                }
+                                                            }
+                                                            val tempServiceDuration = shippingDurationViewModel.serviceData.serviceName
+                                                            val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
+                                                                tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
+                                                            } else {
+                                                                "Durasi tergantung kurir"
+                                                            }
+                                                            shipping = shipping.copy(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
+                                                                    shipperId = selectedShippingCourierUiModel.productData.shipperId,
+                                                                    ratesId = selectedShippingCourierUiModel.ratesId,
+                                                                    ut = selectedShippingCourierUiModel.productData.unixTime,
+                                                                    checksum = selectedShippingCourierUiModel.productData.checkSum,
+                                                                    shipperName = selectedShippingCourierUiModel.productData.shipperName,
+                                                                    needPinpoint = flagNeedToSetPinpoint,
+                                                                    serviceErrorMessage = if (flagNeedToSetPinpoint) "Butuh pinpoint lokasi" else errorMessage,
+                                                                    insuranceData = selectedShippingCourierUiModel.productData.insurance,
+                                                                    serviceId = shippingDurationViewModel.serviceData.serviceId,
+                                                                    serviceDuration = serviceDur,
+                                                                    serviceName = shippingDurationViewModel.serviceData.serviceName,
+                                                                    shippingPrice = selectedShippingCourierUiModel.productData.price.price,
+                                                                    shippingRecommendationData = shippingRecommendationData)
+                                                        }
                                                     }
                                                 } else {
                                                     shippingDurationViewModel.isSelected = false
@@ -618,7 +645,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     fun changePinpoint() {
         val op = _orderPreference
         if (op?.shipping != null) {
-            orderPreference.value = OccState.Success(op.copy(shipping = op.shipping.copy(needPinpoint = false)))
+            _orderPreference = op.copy(shipping = op.shipping.copy(needPinpoint = false))
+            orderPreference.value = OccState.Success(_orderPreference!!)
         }
     }
 
