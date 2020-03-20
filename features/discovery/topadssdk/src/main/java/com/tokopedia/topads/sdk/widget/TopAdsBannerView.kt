@@ -67,9 +67,9 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private val NO_TEMPLATE = 0
     private val SHOP_TEMPLATE = 1
     private val DIGITAL_TEMPLATE = 2
-    private final val VARIANT_A = "Headline Ads A"
-    private final val VARIANT_B = "Headline Ads B"
-    private final val AB_TEST_KEY = "Headline Ads New Design"
+    private final val VARIANT_A = "Headline A"
+    private final val VARIANT_B = "Headline B"
+    private final val AB_TEST_KEY = "Headline Ads New Design 2"
 
     @Inject
     lateinit var bannerPresenter: BannerAdsPresenter
@@ -98,11 +98,13 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_b_product
                 BannerShopViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_b
                 BannerShowMoreViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_b_more
-            } else {
+            } else if (variant.equals(VARIANT_A)){
                 View.inflate(getContext(), R.layout.layout_ads_banner_shop_a_pager, this)
                 BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_product
                 BannerShopViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a
                 BannerShowMoreViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_more
+            } else {
+                return
             }
 
             findViewById<TextView>(R.id.shop_name)?.text = escapeHTML(cpmData.cpm.name)
