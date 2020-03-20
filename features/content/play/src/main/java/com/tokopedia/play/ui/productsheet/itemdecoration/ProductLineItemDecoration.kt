@@ -26,27 +26,28 @@ class ProductLineItemDecoration(context: Context) : RecyclerView.ItemDecoration(
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val position = parent.getChildAdapterPosition(view)
 
-        if (position != parent.adapter?.itemCount.orZero() - 1)
-            outRect.bottom = dividerHeight
+        if (position != 0) {
+            outRect.top = dividerHeight
+        } else super.getItemOffsets(outRect, view, parent, state)
     }
 
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         for (index in 0 until parent.childCount) {
             val child = parent.getChildAt(index)
 
-            if (index != parent.childCount - 1) {
+            if (index != 0) {
                 val viewHolder = parent.getChildViewHolder(child)
 
                 if (viewHolder is ProductLineViewHolder) {
                     val start = if (viewHolder.tvProductTitle.left <= 0) startOffset else viewHolder.tvProductTitle.left
 
                     c.drawRect(
-                            Rect(start, child.bottom, parent.width, child.bottom + dividerHeight),
+                            Rect(start, child.top - dividerHeight, parent.width, child.top),
                             mPaint
                     )
                 } else {
                     c.drawRect(
-                            Rect(startOffset, child.bottom, parent.width, child.bottom + dividerHeight),
+                            Rect(startOffset, child.top - dividerHeight, parent.width, child.top),
                             mPaint
                     )
                 }

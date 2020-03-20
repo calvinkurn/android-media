@@ -27,15 +27,16 @@ class VariantPlaceholderItemDecoration(context: Context) : RecyclerView.ItemDeco
         val position = parent.getChildAdapterPosition(view)
         val viewHolder = parent.getChildViewHolder(view)
 
-        if (position != parent.adapter?.itemCount.orZero() - 1 && viewHolder is VariantPlaceholderViewHolder)
-            outRect.bottom = dividerHeight
+        if (position != 0 && viewHolder is VariantPlaceholderViewHolder) {
+            outRect.top = dividerHeight
+        } else super.getItemOffsets(outRect, view, parent, state)
     }
 
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         for (index in 0 until parent.childCount) {
             val child = parent.getChildAt(index)
 
-            if (index != parent.childCount - 1) {
+            if (index != 0) {
                 val viewHolder = parent.getChildViewHolder(child)
                 if (viewHolder is VariantPlaceholderViewHolder) {
                     c.drawRect(
