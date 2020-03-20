@@ -142,13 +142,17 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
     }
     
     private fun onZeroStock() {
-        zeroStockInfo.visibility = View.VISIBLE
-        quickEditStockActivateSwitch.isEnabled = false
+        if(zeroStockInfo != null && quickEditStockActivateSwitch != null) {
+            zeroStockInfo.visibility = View.VISIBLE
+            quickEditStockActivateSwitch.isEnabled = false
+        }
     }
 
     private fun setNormalBehavior() {
-        zeroStockInfo.visibility = View.GONE
-        quickEditStockActivateSwitch.isEnabled = true
+        if(zeroStockInfo != null && quickEditStockActivateSwitch != null) {
+            zeroStockInfo.visibility = View.GONE
+            quickEditStockActivateSwitch.isEnabled = true
+        }
     }
 
     private fun removeObservers() {
