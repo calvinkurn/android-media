@@ -1,5 +1,6 @@
 package com.tokopedia.play.analytic
 
+import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.track.TrackApp
 
 
@@ -16,78 +17,71 @@ object PlayAnalytics {
     private const val KEY_TRACK_CLICK = "click"
     private const val KEY_TRACK_GROUP_CHAT_ROOM = "groupchat room"
 
-    private const val KEY_TRACK_LIVE = "live"
-    private const val KEY_TRACK_VOD = "vod"
-
-    private fun getLiveOrVod(isLive: Boolean): String {
-        return if(isLive) KEY_TRACK_LIVE else KEY_TRACK_VOD
+    fun sendScreen(channelId: String, channelType: PlayChannelType) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated("/group-chat-room/$channelId/${channelType.value}")
     }
 
-    fun sendScreen(channelId: String, isLive: Boolean) {
-        TrackApp.getInstance().gtm.sendScreenAuthenticated("/group-chat-room/$channelId/${getLiveOrVod(isLive)}")
-    }
-
-    fun clickLeaveRoom(channelId: String, duration: Long, isLive: Boolean) {
+    fun clickLeaveRoom(channelId: String, duration: Long, channelType: PlayChannelType) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_BACK,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "leave room",
-                "$channelId - $duration - ${getLiveOrVod(isLive)}"
+                "$channelId - $duration - ${channelType.value}"
         )
     }
 
-    fun clickShop(channelId: String, shopId: String, isLive: Boolean) {
+    fun clickShop(channelId: String, shopId: String, channelType: PlayChannelType) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK - shop",
-                "$shopId - $channelId - ${getLiveOrVod(isLive)}"
+                "$shopId - $channelId - ${channelType.value}"
         )
     }
 
-    fun clickFollowShop(channelId: String, shopId: String, action: String, isLive: Boolean) {
+    fun clickFollowShop(channelId: String, shopId: String, action: String, channelType: PlayChannelType) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK $action shop",
-                "$channelId - $shopId - ${getLiveOrVod(isLive)}"
+                "$channelId - $shopId - ${channelType.value}"
         )
     }
 
-    fun clickWatchArea(channelId: String, isLive: Boolean) {
+    fun clickWatchArea(channelId: String, channelType: PlayChannelType) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK watch area",
-                "$channelId - ${getLiveOrVod(isLive)}"
+                "$channelId - ${channelType.value}"
         )
     }
 
-    fun clickPinnedMessage(channelId: String, message: String, isLive: Boolean) {
+    fun clickPinnedMessage(channelId: String, message: String, channelType: PlayChannelType) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK on admin pinned message",
-                "$channelId - $message - ${getLiveOrVod(isLive)}"
+                "$channelId - $message - ${channelType.value}"
         )
     }
 
-    fun clickLike(channelId: String, isLike: Boolean, isLive: Boolean) {
+    fun clickLike(channelId: String, isLike: Boolean, channelType: PlayChannelType) {
         val action = if(isLike) "like" else "unlike"
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK $action",
-                "$channelId - ${getLiveOrVod(isLive)}"
+                "$channelId - ${channelType.value}"
         )
     }
 
-    fun errorState(channelId: String, errorMessage: String, isLive: Boolean) {
+    fun errorState(channelId: String, errorMessage: String, channelType: PlayChannelType) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_VIEW_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "error state",
-                "$channelId - $errorMessage - ${getLiveOrVod(isLive)}"
+                "$channelId - $errorMessage - ${channelType.value}"
         )
     }
 
@@ -109,21 +103,21 @@ object PlayAnalytics {
         )
     }
 
-    fun clickWatchMode(channelId: String, isLive: Boolean) {
+    fun clickWatchMode(channelId: String, channelType: PlayChannelType) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK watch mode option",
-                "$channelId - ${getLiveOrVod(isLive)}"
+                "$channelId - ${channelType.value}"
         )
     }
 
-    fun clickPlayVideo(channelId: String, isLive: Boolean) {
+    fun clickPlayVideo(channelId: String, channelType: PlayChannelType) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK on play button video",
-                "$channelId - ${getLiveOrVod(isLive)}"
+                "$channelId - ${channelType.value}"
         )
     }
 }

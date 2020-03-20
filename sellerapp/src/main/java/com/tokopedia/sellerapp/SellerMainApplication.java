@@ -1,6 +1,5 @@
 package com.tokopedia.sellerapp;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,7 +17,6 @@ import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
 import com.moengage.pushbase.push.MoEPushCallBacks;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -28,7 +26,7 @@ import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -38,8 +36,10 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
 import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
+import com.tokopedia.tokofix.TokoFix;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
+import com.newrelic.agent.android.NewRelic;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -52,6 +52,10 @@ import timber.log.Timber;
 
 public class SellerMainApplication extends SellerRouterApplication implements MoEPushCallBacks.OnMoEPushNavigationAction,
         InAppManager.InAppMessageListener {
+
+    public static final String ANDROID_ROBUST_ENABLE = "android_sellerapp_robust_enable";
+
+    private static final int[] RAW_NEWRELIC_TOKEN = {65, 65, 102, 54, 51, 101, 97, 49, 51, 56, 57, 98, 48, 101, 53, 55, 54, 50, 56, 53, 100, 49, 100, 55, 56, 50, 99, 100, 100, 101, 52, 56, 99, 57, 102, 99, 98, 51, 56, 53, 102, 48, 45, 78, 82, 77, 65};
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -125,7 +129,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME = DeepLinkActivity.class.getName();
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            com.tokopedia.core.util.GlobalConfig.VERSION_NAME = pInfo.versionName;
+            com.tokopedia.config.GlobalConfig.VERSION_NAME = pInfo.versionName;
             com.tokopedia.config.GlobalConfig.VERSION_NAME = pInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -148,13 +152,26 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         }
         TimberWrapper.init(this);
         super.onCreate();
-
+        if(remoteConfig.getBoolean(ANDROID_ROBUST_ENABLE, true)) {
+            TokoFix.init(this, BuildConfig.VERSION_NAME);
+        }
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
         initCacheApi();
         GraphqlClient.init(this);
         NetworkClient.init(this);
         initializeAbTestVariant();
+        NewRelic.withApplicationToken(
+                decodeKey(RAW_NEWRELIC_TOKEN)
+        ).start(this);
+    }
+
+    private String decodeKey(int[] keys) {
+        StringBuilder result = new StringBuilder("");
+        for (int key : keys) {
+            result.append((char) key);
+        }
+        return result.toString();
     }
 
     @Override

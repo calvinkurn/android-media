@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,7 +24,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.label.LabelView;
@@ -36,7 +37,6 @@ import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerInterface;
-import com.tokopedia.unifycomponents.Toaster;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -57,8 +57,6 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     public static final String ARGS_GALLERY_TYPE = "args_gallery_type";
     public static final String ARGS_SUPPORT_MULTIPLE = "args_support_multiple";
     public static final String ARGS_MIN_RESOLUTION = "args_min_resolution";
-    public static final String ARGS_HAS_COUNTER_LABEL = "args_has_counter_label";
-    public static final String ARGS_SHOW_BIGGER_PREVIEW = "args_show_bigger_preview";
 
     public static final String SAVED_ALBUM_TITLE_ID = "svd_album_title_id";
     public static final long MAX_VIDEO_DURATION_MS = 60000L;
@@ -68,7 +66,6 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     private static final int ALBUM_LOADER_ID = 1;
     private static final int MEDIA_LOADER_ID = 2;
     public static final int BYTES_IN_KB = 1024;
-    public static final int MIN_SPAN_GRID = 3;
 
     private OnImagePickerGalleryFragmentListener onImagePickerGalleryFragmentListener;
     private View loadingView;
@@ -79,20 +76,17 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     private int selectedAlbumPosition;
     private @GalleryType
     int galleryType;
-    private boolean showBiggerPreview;
+    private boolean supportMultipleSelection;
     private int minImageResolution;
 
     private LabelView labelViewAlbum;
 
     public interface OnImagePickerGalleryFragmentListener {
-        void onAlbumItemClicked(String realPath, boolean isChecked);
+        void onAlbumItemClicked(MediaItem item, boolean isChecked);
 
         boolean isMaxImageReached();
 
-        ArrayList<String> getSelectedImagePath();
-
-        // imagePath that appended at start of the list
-        ArrayList<String> getAppendedImagePath();
+        ArrayList<String> getImagePath();
 
         long getMaxFileSize();
     }
@@ -101,16 +95,12 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     @RequiresPermission("android.permission.CAMERA")
     public static ImagePickerGalleryFragment newInstance(@GalleryType int galleryType,
                                                          boolean supportMultipleSelection,
-                                                         int minImageResolution,
-                                                         boolean hasCounterLabel,
-                                                         boolean showBiggerPreview) {
+                                                         int minImageResolution) {
         ImagePickerGalleryFragment imagePickerGalleryFragment = new ImagePickerGalleryFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(ARGS_GALLERY_TYPE, galleryType);
         bundle.putBoolean(ARGS_SUPPORT_MULTIPLE, supportMultipleSelection);
         bundle.putInt(ARGS_MIN_RESOLUTION, minImageResolution);
-        bundle.putBoolean(ARGS_HAS_COUNTER_LABEL, hasCounterLabel);
-        bundle.putBoolean(ARGS_SHOW_BIGGER_PREVIEW, showBiggerPreview);
         imagePickerGalleryFragment.setArguments(bundle);
         return imagePickerGalleryFragment;
     }
@@ -121,17 +111,14 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
         galleryType = bundle.getInt(ARGS_GALLERY_TYPE);
+        supportMultipleSelection = bundle.getBoolean(ARGS_SUPPORT_MULTIPLE);
         minImageResolution = bundle.getInt(ARGS_MIN_RESOLUTION);
-        boolean supportMultipleSelection = bundle.getBoolean(ARGS_SUPPORT_MULTIPLE);
-        boolean hasCounterLabel = bundle.getBoolean(ARGS_HAS_COUNTER_LABEL);
-        showBiggerPreview = bundle.getBoolean(ARGS_SHOW_BIGGER_PREVIEW);
         if (savedInstanceState != null) {
             selectedAlbumPosition = savedInstanceState.getInt(SAVED_ALBUM_TITLE_ID);
         }
         albumMediaAdapter = new AlbumMediaAdapter(supportMultipleSelection,
-                onImagePickerGalleryFragmentListener.getSelectedImagePath(),
-                this, hasCounterLabel,
-                onImagePickerGalleryFragmentListener.getAppendedImagePath());
+                onImagePickerGalleryFragmentListener.getImagePath(),
+                this);
     }
 
     @Nullable
@@ -141,10 +128,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         loadingView = view.findViewById(R.id.loading);
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
-        int spanCount = getResources().getInteger(R.integer.gallery_span_count);
-        if (spanCount > MIN_SPAN_GRID && showBiggerPreview) {
-            spanCount--;
-        }
+        int spanCount = getContext().getResources().getInteger(R.integer.gallery_span_count);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), spanCount));
         int spacing = getResources().getDimensionPixelSize(R.dimen.image_picker_media_grid_spacing);
         recyclerView.addItemDecoration(new MediaGridInset(spanCount, spacing, false));
@@ -172,7 +156,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
             if (resultCode == Activity.RESULT_OK && data != null) {
                 selectedAlbumItem = data.getParcelableExtra(EXTRA_ALBUM_ITEM);
                 selectedAlbumPosition = data.getIntExtra(EXTRA_ALBUM_POSITION, 0);
-                LoaderManager.getInstance(this).restartLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
+                getLoaderManager().restartLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
             }
         }
     }
@@ -185,11 +169,11 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
             String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
             if (ActivityCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
                 showLoading();
-                LoaderManager.getInstance(this).initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
+                getLoaderManager().initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
             }
         } else {
             showLoading();
-            LoaderManager.getInstance(this).initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
+            getLoaderManager().initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
         }
     }
 
@@ -209,8 +193,8 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-        LoaderManager.getInstance(this).destroyLoader(ALBUM_LOADER_ID);
-        LoaderManager.getInstance(this).destroyLoader(MEDIA_LOADER_ID);
+        getLoaderManager().destroyLoader(ALBUM_LOADER_ID);
+        getLoaderManager().destroyLoader(MEDIA_LOADER_ID);
     }
 
     @Override
@@ -287,13 +271,13 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         if (albumItem.isAll() && albumItem.isEmpty()) {
             NetworkErrorHelper.showEmptyState(getContext(), getView(), getString(R.string.error_no_media_storage), null);
         } else {
-            LoaderManager.getInstance(this).restartLoader(MEDIA_LOADER_ID, null, this);
+            getLoaderManager().restartLoader(MEDIA_LOADER_ID, null, this);
         }
     }
 
     @Override
-    public void onMediaClick(String mediaPath, boolean isChecked, int adapterPosition) {
-        onImagePickerGalleryFragmentListener.onAlbumItemClicked(mediaPath, isChecked);
+    public void onMediaClick(MediaItem item, boolean isChecked, int adapterPosition) {
+        onImagePickerGalleryFragmentListener.onAlbumItemClicked(item, isChecked);
     }
 
     @Override
@@ -310,44 +294,33 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         // check if file exists
         File file = new File(item.getRealPath());
         if (!file.exists()) {
-            showToastError(galleryType == GalleryType.VIDEO_ONLY ? getString(R.string.video_not_found) :
+            NetworkErrorHelper.showRedCloseSnackbar(getView(),
+                    galleryType == GalleryType.VIDEO_ONLY ? getString(R.string.video_not_found) :
                             getString(R.string.image_not_found));
             return false;
         }
         //check image resolution
         if (item.isVideo() && item.getDuration() > 0) { // it is video
-            //Currently there is no requirement for min video resolution
-            //int minVideoResolution = item.getMinimumVideoResolution();
+            int minVideoResolution = item.getMinimumVideoResolution();
             if ((file.length() / BYTES_IN_KB) > onImagePickerGalleryFragmentListener.getMaxFileSize()) {
-                showToastError(getString(R.string.max_video_size_reached));
+                NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_video_size_reached));
                 return false;
             }
             if (item.getDuration() > MAX_VIDEO_DURATION_MS) {
-                showToastError(getString(R.string.max_video_duration_reached));
+                NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_video_duration_reached));
                 return false;
             }
         } else {
             if ((file.length() / BYTES_IN_KB) > onImagePickerGalleryFragmentListener.getMaxFileSize()) {
-                showToastError(getString(R.string.max_file_size_reached));
+                NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_file_size_reached));
                 return false;
             }
             if (item.getWidth() < minImageResolution || item.getHeight() < minImageResolution) {
-                showToastError(getString(R.string.image_under_x_resolution, minImageResolution));
+                NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.image_under_x_resolution, minImageResolution));
                 return false;
             }
         }
         return true;
-    }
-
-    private void showToastError(String message){
-        if (getView()!= null){
-            Toaster.INSTANCE.make(getView(),
-                    message, Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_ERROR,
-                    getString(R.string.close), v -> {
-                        // no-op
-                    });
-        }
     }
 
     @Override

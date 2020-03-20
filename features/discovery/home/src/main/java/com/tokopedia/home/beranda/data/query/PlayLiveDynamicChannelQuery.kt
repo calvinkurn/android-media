@@ -39,6 +39,7 @@ object PlayLiveDynamicChannelQuery {
                     livestream_id
                     stream_url
                     is_playback
+                    is_auto_play
                   }
                 }
               }      

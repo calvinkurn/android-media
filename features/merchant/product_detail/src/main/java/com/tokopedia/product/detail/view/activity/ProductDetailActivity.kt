@@ -185,6 +185,10 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             intent.getBooleanExtra(IS_FROM_EXPLORE_AFFILIATE, false)
         }
 
+        if (productKey?.isNotEmpty() == true && shopDomain?.isNotEmpty() == true) {
+            isFromDeeplink = true
+        }
+
         super.onCreate(savedInstanceState)
     }
 

@@ -184,8 +184,8 @@ public class ImagePickerMultipleSelectionBuilder implements Parcelable {
 
     public static final Creator<ImagePickerMultipleSelectionBuilder> CREATOR = new Creator<ImagePickerMultipleSelectionBuilder>() {
         @Override
-        public ImagePickerMultipleSelectionBuilder createFromParcel(Parcel in) {
-            return new ImagePickerMultipleSelectionBuilder(in);
+        public ImagePickerMultipleSelectionBuilder createFromParcel(Parcel source) {
+            return new ImagePickerMultipleSelectionBuilder(source);
         }
 
         @Override

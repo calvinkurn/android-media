@@ -6,6 +6,10 @@
 
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
+    <color name="charcoal_grey_96">#f531353b</color>
+    <color name="green_tokopedia">#03ac0e</color>
+    <color name="gray_line">#e5e7e9</color>
+
     <color name="transparent">#00000000</color>
 
     <color name="black_54">#8a000000</color>

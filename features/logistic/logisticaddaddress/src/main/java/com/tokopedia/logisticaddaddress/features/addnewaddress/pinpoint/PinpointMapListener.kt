@@ -1,22 +1,19 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
+import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.abstraction.base.view.listener.CustomerView
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
+import com.tokopedia.logisticdata.data.entity.response.Data
 
 /**
  * Created by fwidjaja on 2019-05-09.
  */
-interface PinpointMapListener: CustomerView {
+interface PinpointMapListener : CustomerView {
     fun showLoading()
     fun onSuccessPlaceGetDistrict(getDistrictDataUiModel: GetDistrictDataUiModel)
-    fun onSuccessAutofill(autofillDataUiModel: AutofillDataUiModel)
-    fun showFailedDialog()
-    fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean, isUnnamedRoad: Boolean, isZipCodeNull: Boolean)
-    fun onSuccessGetDistrictBoundary(districtBoundaryGeometryUiModel: DistrictBoundaryGeometryUiModel)
+    fun onSuccessAutofill(autofillDataUiModel: Data)
+    fun showBoundaries(boundaries: List<LatLng>)
     fun showAutoComplete(lat: Double, long: Double)
-    fun finishBackToAddEdit(isMismatch: Boolean, isMismatchSolved: Boolean)
     fun showOutOfReachDialog()
     fun showUndetectedDialog()
 }

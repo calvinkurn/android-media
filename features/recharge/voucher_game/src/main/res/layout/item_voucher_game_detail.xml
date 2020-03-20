@@ -12,20 +12,20 @@
         android:id="@+id/layout_product"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/digital_bg_product_item"
         android:orientation="vertical"
-        android:padding="@dimen/dp_10"
-        android:background="@drawable/digital_bg_product_item">
+        android:padding="@dimen/dp_10">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_4"
-            android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="2"
-            android:ellipsize="end"
             android:textColor="@color/black_70"
             app:typographyType="heading_5"
             tools:text="Data 40.000" />
@@ -41,7 +41,7 @@
             android:visibility="gone"
             app:labelType="general_dark_red"
             app:textAllCaps="true"
-            tools:labelTitle="test"/>
+            tools:labelTitle="test" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/product_promo_price"
@@ -62,7 +62,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/product_promo_price"
             android:layout_alignParentLeft="true"
-            android:layout_marginBottom="@dimen/dp_4"
             android:lines="1"
             android:textColor="@color/tkpd_main_orange"
             app:typographyType="body_2"
@@ -75,6 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/product_price"
             android:layout_alignParentLeft="true"
+            android:layout_marginTop="@dimen/dp_4"
             android:lines="1"
             android:text="@string/vg_product_view_detail"
             android:textColor="@color/tkpd_main_green"

@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
 import com.tokopedia.imagepicker.picker.gallery.widget.MediaGrid;
-import com.tokopedia.imagepicker.picker.main.adapter.RecyclerViewCursorCustomAppendAdapter;
+import com.tokopedia.imagepicker.picker.main.adapter.RecyclerViewCursorAdapter;
 
 import java.util.ArrayList;
 
@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * Created by hangnadi on 5/29/17.
  */
 
-public class AlbumMediaAdapter extends RecyclerViewCursorCustomAppendAdapter<AlbumMediaAdapter.MediaViewHolder>
+public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapter.MediaViewHolder>
         implements MediaGrid.OnMediaGridClickListener {
 
     private RecyclerView mRecyclerView;
@@ -28,18 +28,13 @@ public class AlbumMediaAdapter extends RecyclerViewCursorCustomAppendAdapter<Alb
     private int mImageResize;
 
     private boolean supportMultipleSelection;
-    private boolean hasCounterLabel;
     private ArrayList<String> selectionImagePathList;
 
-    public AlbumMediaAdapter(boolean supportMultipleSelection, ArrayList<String> selectionImagePathList,
-                             OnMediaClickListener listener,
-                             boolean hasCounterLabel,
-                             ArrayList<String> appendedImagePathList) {
-        super(null, appendedImagePathList);
+    public AlbumMediaAdapter(boolean supportMultipleSelection, ArrayList<String> selectionImagePathList, OnMediaClickListener listener) {
+        super(null);
         setSelectionIdList(selectionImagePathList);
         this.supportMultipleSelection = supportMultipleSelection;
         mOnMediaClickListener = listener;
-        this.hasCounterLabel = hasCounterLabel;
     }
 
     private void setSelectionIdList(ArrayList<String> selectionImagePathList) {
@@ -51,7 +46,7 @@ public class AlbumMediaAdapter extends RecyclerViewCursorCustomAppendAdapter<Alb
     }
 
     public interface OnMediaClickListener {
-        void onMediaClick(String realPath, boolean checked, int adapterPosition);
+        void onMediaClick(MediaItem item, boolean checked, int adapterPosition);
 
         boolean isMediaValid(MediaItem item);
 
@@ -62,11 +57,9 @@ public class AlbumMediaAdapter extends RecyclerViewCursorCustomAppendAdapter<Alb
     public void onThumbnailClicked(ImageView thumbnail, MediaItem item, RecyclerView.ViewHolder holder) {
         boolean isChecked = true;
         if (supportMultipleSelection) {
-            // if already selected, it will unselect the item
             isChecked = !selectionImagePathList.contains(item.getRealPath());
         }
 
-        // if attempt to check, but cannot add more media
         if (isChecked && !mOnMediaClickListener.canAddMoreMedia()) {
             return;
         }
@@ -79,30 +72,7 @@ public class AlbumMediaAdapter extends RecyclerViewCursorCustomAppendAdapter<Alb
 
         if (mOnMediaClickListener != null) {
             mOnMediaClickListener.onMediaClick(
-                    item.getRealPath(),
-                    isChecked,
-                    holder.getAdapterPosition());
-        }
-    }
-
-    @Override
-    public void onThumbnailClicked(ImageView thumbnail, String imageUrl, RecyclerView.ViewHolder holder) {
-        boolean isChecked = true;
-        if (supportMultipleSelection) {
-            // if already selected, it will unselect the item
-            isChecked = !selectionImagePathList.contains(imageUrl);
-        }
-
-        // if attempt to check, but cannot add more media
-        if (isChecked && !mOnMediaClickListener.canAddMoreMedia()) {
-            return;
-        }
-
-        notifyItemChanged(holder.getAdapterPosition());
-
-        if (mOnMediaClickListener != null) {
-            mOnMediaClickListener.onMediaClick(
-                    imageUrl,
+                    item,
                     isChecked,
                     holder.getAdapterPosition());
         }
@@ -128,18 +98,7 @@ public class AlbumMediaAdapter extends RecyclerViewCursorCustomAppendAdapter<Alb
                         0, R.drawable.error_drawable,
                         holder
                 ));
-        holder.mMediaGrid.bindMedia(item, selectionImagePathList, hasCounterLabel);
-        holder.mMediaGrid.setOnMediaGridClickListener(this);
-    }
-
-    @Override
-    protected void onBindViewHolder(MediaViewHolder holder, String appendedImagePathOrUrl) {
-        holder.mMediaGrid.preBindMedia(
-                new MediaGrid.PreBindInfo(getImageResize(holder.mMediaGrid.getContext()),
-                        0, R.drawable.error_drawable,
-                        holder
-                ));
-        holder.mMediaGrid.bindMedia(appendedImagePathOrUrl, selectionImagePathList, hasCounterLabel);
+        holder.mMediaGrid.bindMedia(item, selectionImagePathList);
         holder.mMediaGrid.setOnMediaGridClickListener(this);
     }
 

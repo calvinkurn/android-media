@@ -938,10 +938,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     fun downloadBitmap(productManageViewModel: ProductManageViewModel) {
         activity?.let {
             val productShare = ProductShare(it, ProductShare.MODE_IMAGE)
-
-            val price = if (productManageViewModel.productCurrencyId == CurrencyTypeDef.TYPE_USD) productManageViewModel.productPricePlain else productManageViewModel.productPrice
             val data = ProductData()
-            data.priceText = productManageViewModel.productCurrencySymbol + " " + price
+            data.priceText = productManageViewModel.productPrice
             data.cashbacktext = if (productManageViewModel.productCashback > 0) getString(com.tokopedia.product.manage.list.R.string.pml_sticker_cashback, productManageViewModel.productCashback) else ""
             data.currencySymbol = productManageViewModel.productCurrencySymbol
             data.productId = productManageViewModel.productId

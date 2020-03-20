@@ -3,6 +3,9 @@ package com.tokopedia.vouchergame.detail.view.adapter.viewholder
 import android.graphics.Paint
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.vouchergame.R
 import com.tokopedia.vouchergame.detail.data.VoucherGameProduct
 import com.tokopedia.vouchergame.detail.view.adapter.VoucherGameDetailAdapter
@@ -35,15 +38,20 @@ class VoucherGameProductViewHolder(val view: View, val listener: OnClickListener
                     product_promo_label.visibility = View.VISIBLE
                     product_promo_label.text = productLabels.joinToString(",", limit = 2)
                 } else {
-                    product_promo_label.visibility = View.INVISIBLE
+                    product_promo_label.visibility = View.GONE
                 }
 
-                if (detail.isNotEmpty()) {
-                    product_detail.visibility = View.VISIBLE
-                    if (detailCompact.isNotEmpty()) product_detail.text = detailCompact
-                    product_detail.setOnClickListener { listener.onDetailClicked(product) }
-                } else {
-                    product_detail.visibility = if (hasMoreDetails) View.INVISIBLE else View.GONE
+                when {
+                    detail.isNotEmpty() -> {
+                        product_detail.show()
+                        product_detail.setOnClickListener { listener.onDetailClicked(product) }
+                    }
+                    hasMoreDetails -> {
+                        product_detail.invisible()
+                    }
+                    else -> {
+                        product_detail.hide()
+                    }
                 }
             }
             if (::adapter.isInitialized) {
