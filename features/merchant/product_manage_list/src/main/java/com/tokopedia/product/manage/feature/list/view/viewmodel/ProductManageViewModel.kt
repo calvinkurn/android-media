@@ -19,9 +19,7 @@ import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgre
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.RefreshList
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgressDialog
 import com.tokopedia.product.manage.feature.multiedit.data.param.MenuParam
-import com.tokopedia.product.manage.feature.list.view.model.*
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
-import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.multiedit.data.param.ProductParam
 import com.tokopedia.product.manage.feature.multiedit.data.param.ShopParam
 import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
