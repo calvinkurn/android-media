@@ -20,7 +20,7 @@ class ShopHomeItemSliderSquareViewHolder(
 ): RecyclerView.ViewHolder(itemView) {
 
     companion object{
-        const val ITEM_WIDTH_RATIO_DIVIDER = 1.5
+        const val ITEM_WIDTH_RATIO_DIVIDER = 1.8
     }
 
     private val ivSliderSquare: ImageUnify = itemView.findViewById(R.id.ivSliderSquare)

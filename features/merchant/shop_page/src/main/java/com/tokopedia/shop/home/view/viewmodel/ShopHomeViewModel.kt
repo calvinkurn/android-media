@@ -4,20 +4,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel.Companion.STATUS_OK
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
-import com.tokopedia.shop.common.util.Util
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
-import com.tokopedia.shop.home.util.asyncCatchError
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -191,7 +190,7 @@ class ShopHomeViewModel @Inject constructor(
         getShopPageHomeLayoutUseCase.params = GetShopPageHomeLayoutUseCase.createParams(shopId)
         return ShopPageHomeMapper.mapToShopPageHomeLayoutUiModel(
                 getShopPageHomeLayoutUseCase.executeOnBackground(),
-                Util.isMyShop(shopId, userSessionShopId)
+                ShopUtil.isMyShop(shopId, userSessionShopId)
         )
     }
 
@@ -207,13 +206,13 @@ class ShopHomeViewModel @Inject constructor(
                 }
         )
         val productListResponse = getShopProductUseCase.executeOnBackground()
-        val isHasNextPage = Util.isHasNextPage(page, ShopPageConstant.DEFAULT_PER_PAGE, productListResponse.totalData)
+        val isHasNextPage = ShopUtil.isHasNextPage(page, ShopPageConstant.DEFAULT_PER_PAGE, productListResponse.totalData)
         return Pair(
                 isHasNextPage,
                 productListResponse.data.map {
                     ShopPageHomeMapper.mapToHomeProductViewModelForAllProduct(
                             it,
-                            Util.isMyShop(shopId, userSessionShopId)
+                            ShopUtil.isMyShop(shopId, userSessionShopId)
                     )
                 }
         )

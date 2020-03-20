@@ -10,6 +10,7 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 
@@ -31,6 +32,7 @@ import java.util.ArrayList
  */
 class MerchantVoucherListWidget : FrameLayout, MerchantVoucherView.OnMerchantVoucherViewListener, BaseListAdapter.OnAdapterInteractionListener<MerchantVoucherViewModel> {
 
+    private var voucherHeaderContainer: ViewGroup? = null
     private var titleString: String? = null
     private var titleTextSize: Int = 0
     private var textStyle: Int = 0
@@ -104,6 +106,7 @@ class MerchantVoucherListWidget : FrameLayout, MerchantVoucherView.OnMerchantVou
     private fun init() {
         rView = LayoutInflater.from(context).inflate(R.layout.merchant_voucher_list_widget,
                 this, true)
+        voucherHeaderContainer = rView!!.findViewById(R.id.voucherHeaderContainer)
         recyclerView = rView!!.findViewById(R.id.recycler_view)
         tvTitle = rView!!.findViewById(R.id.tvTitle)
         if (titleTextSize > 0) {
@@ -181,5 +184,22 @@ class MerchantVoucherListWidget : FrameLayout, MerchantVoucherView.OnMerchantVou
         if (onMerchantVoucherListWidgetListener != null) {
             onMerchantVoucherListWidgetListener!!.onItemClicked(o)
         }
+    }
+
+    fun setTitle(title: String){
+        titleString = title
+        tvTitle?.apply {
+            text = titleString ?: ""
+        }
+    }
+
+    fun setSeeAllText(seeAllText: String){
+        tvSeeAll?.apply {
+            text = seeAllText
+        }
+    }
+
+    fun getVoucherHeaderContainer(): ViewGroup?{
+        return voucherHeaderContainer
     }
 }

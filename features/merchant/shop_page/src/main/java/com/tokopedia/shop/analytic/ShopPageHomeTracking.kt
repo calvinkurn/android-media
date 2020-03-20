@@ -136,16 +136,19 @@ class ShopPageHomeTracking(
 
     fun onImpressionVoucherList(
             isOwner: Boolean,
+            shopId: String,
+            layoutId: String,
             parentPosition: Int,
             listVoucher: List<MerchantVoucherViewModel>,
             customDimensionShopPage: CustomDimensionShopPage
     ) {
         val eventAction = joinDash(HOME_TAB, MERCHANT_VOUCHER_CODE, IMPRESSION)
+        val eventLabel = "$shopId - $MERCHANT_VOUCHER - $layoutId"
         val eventMap = createMap(
                 PROMO_VIEW,
                 getShopPageCategory(isOwner),
                 eventAction,
-                IMPRESSION_OF_USE_VOUCHER,
+                eventLabel,
                 customDimensionShopPage
         )
         eventMap[ECOMMERCE] = mutableMapOf(

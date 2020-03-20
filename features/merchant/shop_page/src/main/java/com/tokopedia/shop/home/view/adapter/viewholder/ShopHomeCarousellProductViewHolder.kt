@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.adapter.ShopPageHomeCarousellAdapter
 import com.tokopedia.shop.home.view.adapter.ShopPageHomeCarousellAdapterTypeFactory
@@ -54,7 +55,7 @@ class ShopHomeCarousellProductViewHolder(
         textViewTitle = view.findViewById(R.id.tv_title)
         ivBadge = view.findViewById(R.id.image_view_etalase_badge)
         textViewCta = view.findViewById(R.id.tvSeeAll)
-        etalaseHeaderContainer= view.findViewById(R.id.etalase_header_container)
+        etalaseHeaderContainer = view.findViewById(R.id.etalase_header_container)
         recyclerView = view.findViewById(R.id.recycler_view)
         recyclerView?.apply {
             adapter = adapterCarousell
@@ -74,17 +75,20 @@ class ShopHomeCarousellProductViewHolder(
         val recyclerViewState = recyclerView?.layoutManager?.onSaveInstanceState()
         val title = shopHomeCarousellProductUiModel.header.title
         val ctaText = shopHomeCarousellProductUiModel.header.ctaText
-        if(title.isEmpty() && ctaText.isEmpty()){
+        if (title.isEmpty() && ctaText.isEmpty()) {
             etalaseHeaderContainer?.hide()
         }
         ivBadge?.visibility = View.GONE
         textViewTitle?.text = MethodChecker.fromHtml(title)
-        if(ctaText.isNotEmpty()){
-            textViewCta?.apply {
-                visibility = View.VISIBLE
+        textViewCta?.apply {
+            if (ctaText.isNotEmpty()) {
+                show()
                 text = MethodChecker.fromHtml(shopHomeCarousellProductUiModel.header.ctaText)
-
-                shopPageHomeProductClickListener.onCtaClicked(shopHomeCarousellProductUiModel)
+                setOnClickListener {
+                    shopPageHomeProductClickListener.onCtaClicked(shopHomeCarousellProductUiModel)
+                }
+            } else {
+                hide()
             }
         }
         adapterCarousell.shopHomeCarousellProductUiModel = shopHomeCarousellProductUiModel
