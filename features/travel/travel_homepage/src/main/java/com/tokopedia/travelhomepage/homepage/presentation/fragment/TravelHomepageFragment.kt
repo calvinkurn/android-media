@@ -163,7 +163,6 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
 
     override fun onItemClicked(t: TravelHomepageItemModel) {
         // do nothing
-        Toast.makeText(context, t.layoutData.widgetType, Toast.LENGTH_SHORT).show()
     }
 
     override fun loadData(page: Int) {

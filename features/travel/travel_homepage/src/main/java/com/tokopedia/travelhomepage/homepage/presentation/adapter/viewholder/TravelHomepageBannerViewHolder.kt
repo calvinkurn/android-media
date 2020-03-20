@@ -37,15 +37,16 @@ class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener:
         if (element.isLoaded) {
             try {
                 bannerList = element.travelCollectiveBannerModel.banners
-                bannerView.shouldShowSeeAllButton(bannerList.isNotEmpty())
 
                 if (currentPosition != element.layoutData.position) {
                     val promoUrls = arrayListOf<String>()
                     showAllUrl = element.travelCollectiveBannerModel.meta.appUrl
+
                     for (slidesModel in bannerList) {
                         promoUrls.add(slidesModel.attribute.imageUrl)
                     }
-                    if (element.layoutData.metaText.isNotEmpty()) bannerView.bannerSeeAll.text = element.layoutData.metaText
+                    if (element.layoutData.appUrl.isNotEmpty()) bannerView.bannerSeeAll.text = element.layoutData.metaText
+                    else bannerView.bannerSeeAll.text = ""
                     bannerView.setPromoList(promoUrls)
                     bannerView.buildView()
 
