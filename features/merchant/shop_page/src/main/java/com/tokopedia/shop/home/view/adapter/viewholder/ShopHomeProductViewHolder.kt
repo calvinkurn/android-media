@@ -88,7 +88,7 @@ open class ShopHomeProductViewHolder(
         val discountPercentage = if (discountWithoutPercentageString == "0") {
             ""
         } else {
-            "${shopHomeProductViewModel.discountPercentage}%"
+            "$discountWithoutPercentageString%"
         }
         val freeOngkirObject = ProductCardModel.FreeOngkir(shopHomeProductViewModel.isShowFreeOngkir, shopHomeProductViewModel.freeOngkirPromoIcon!!)
         return ProductCardModel(
