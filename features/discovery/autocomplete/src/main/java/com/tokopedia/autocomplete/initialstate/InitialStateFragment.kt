@@ -18,6 +18,7 @@ import com.tokopedia.autocomplete.analytics.AppScreen
 import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.initialstate.di.DaggerInitialStateComponent
 import com.tokopedia.autocomplete.initialstate.di.InitialStateComponent
+import com.tokopedia.autocomplete.util.getModifiedApplink
 import com.tokopedia.discovery.common.model.SearchParameter
 import kotlinx.android.synthetic.main.fragment_initial_state.*
 import javax.inject.Inject
@@ -139,7 +140,9 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
 
     override fun onItemClicked(applink: String, webUrl: String) {
         dropKeyBoard()
-        startActivityFromAutoComplete(applink)
+
+        val modifiedApplink = getModifiedApplink(applink, searchParameter)
+        startActivityFromAutoComplete(modifiedApplink)
     }
 
     private fun dropKeyBoard() {

@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.util
 
 import android.content.Context
+import android.os.Handler
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.globalerror.GlobalError
@@ -9,19 +10,24 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TobacoErrorData
 import com.tokopedia.product.detail.data.util.TobacoErrorException
+import com.tokopedia.url.TokopediaUrl
 import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.concurrent.TimeUnit
 
-object ErrorHelper {
+object ProductDetailErrorHelper {
 
     private const val CODE_PRODUCT_ERR_NOT_FOUND = "2001"
     private const val CODE_PRODUCT_ERR_NOT_FOUND_GENERAL = "400"
     private const val CODE_ERR_GENERAL = "1"
+    private const val DEEPLINK_PREFIX = "tokopedia://marketplace/product-detail/"
     const val CODE_PRODUCT_ERR_BANNED = "2998"
     const val CODE_PRODUCT_ERR_DELETED = "3000"
     const val CODE_PRODUCT_ERR_KELONTONG = "3005"
+
+    private val links: MutableList<String> = arrayListOf()
 
     fun getErrorType(context: Context, t: Throwable, fromDeeplink: Boolean, deeplinkUrl: String): PageErrorDataModel {
         var shouldShowTobacoError = false
@@ -83,6 +89,18 @@ object ErrorHelper {
     }
 
     private fun logDeeplinkError(deeplinkUrl: String = "", errorCode: Int) {
-        Timber.w("P2#PDP_OPEN_DEEPLINK_ERROR#$deeplinkUrl;errorCode=$errorCode")
+        val weblink = convertToWeblink(deeplinkUrl)
+        if (!links.contains(weblink)) {
+            Timber.w("P2#PDP_OPEN_DEEPLINK_ERROR#$weblink;errorCode=$errorCode")
+            links.add(weblink)
+
+            Handler().postDelayed({
+                links.remove(weblink)
+            }, TimeUnit.MINUTES.toMillis(5))
+        }
+    }
+
+    private fun convertToWeblink(deeplinkUrl: String): String {
+        return deeplinkUrl.replace(DEEPLINK_PREFIX, TokopediaUrl.getInstance().WEB)
     }
 }

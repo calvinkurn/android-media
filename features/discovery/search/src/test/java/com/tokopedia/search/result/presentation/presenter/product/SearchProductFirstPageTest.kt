@@ -3,13 +3,11 @@ package com.tokopedia.search.result.presentation.presenter.product
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.TestException
-import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.error
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.presenter.product.testinstance.searchProductModelCommon
-import com.tokopedia.search.result.presentation.presenter.product.testinstance.searchProductModelRedirection
 import com.tokopedia.search.shouldBe
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -193,15 +191,7 @@ internal class SearchProductFirstPageTest: Spek({
                     productListView.showBottomNavigation()
                     productListView.updateScrollListener()
 
-                    verifySendTrackingOnFirstTimeLoad(productListView, GeneralSearchTrackingModel(
-                            searchProductModelCommon.searchProduct.query,
-                            searchProductModelCommon.searchProduct.keywordProcess,
-                            searchProductModelCommon.searchProduct.responseCode,
-                            true,
-                            mutableMapOf<String, String>().also {
-                                it["65"] = "Handphone & Tablet"
-                            }
-                    ))
+                    verifySendTrackingOnFirstTimeLoad(productListView)
 
                     verifyHideLoading(productListView)
                 }
