@@ -3,7 +3,7 @@ package com.tokopedia.product.manage.feature.filter.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectViewModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectUiModel
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_select.view.*
 
@@ -27,7 +27,7 @@ class SelectWidget : BaseCustomView {
         View.inflate(context, com.tokopedia.product.manage.R.layout.widget_select, this)
     }
 
-    fun bind(element: SelectViewModel, selectClickListener: SelectClickListener) {
+    fun bind(element: SelectUiModel, selectClickListener: SelectClickListener) {
         this.title.text = element.name
         if(element.isSelected) {
             this.check.visibility = View.VISIBLE
@@ -42,5 +42,5 @@ class SelectWidget : BaseCustomView {
 }
 
 interface SelectClickListener {
-    fun onSelectClick(element: SelectViewModel)
+    fun onSelectClick(element: SelectUiModel)
 }

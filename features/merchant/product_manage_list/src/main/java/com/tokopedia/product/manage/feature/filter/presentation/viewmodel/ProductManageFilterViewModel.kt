@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionsResponse
 import com.tokopedia.product.manage.feature.filter.domain.GetProductManageFilterOptionsUseCase
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterDataViewModel
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterDataUiModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment.Companion.ITEM_CATEGORIES_INDEX
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment.Companion.ITEM_ETALASE_INDEX
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment.Companion.ITEM_OTHER_FILTER_INDEX
@@ -31,12 +31,12 @@ class ProductManageFilterViewModel @Inject constructor(
     val filterOptionsResponse: LiveData<Result<FilterOptionsResponse>>
         get() = _filterOptionsResponse
 
-    private val _filterData = MutableLiveData<MutableList<FilterViewModel>>()
-    val filterData: LiveData<MutableList<FilterViewModel>>
+    private val _filterData = MutableLiveData<MutableList<FilterUiModel>>()
+    val filterData: LiveData<MutableList<FilterUiModel>>
         get() = _filterData
 
-    private var selectedSort: FilterDataViewModel? = null
-    private var selectedEtalase: FilterDataViewModel? = null
+    private var selectedSort: FilterDataUiModel? = null
+    private var selectedEtalase: FilterDataUiModel? = null
 
     fun getData(shopId: String) {
         getProductManageFilterOptionsUseCase.params = GetProductManageFilterOptionsUseCase.createRequestParams(shopId, isMyShop(shopId))
@@ -50,19 +50,19 @@ class ProductManageFilterViewModel @Inject constructor(
         }
     }
 
-    fun updateData(filterData: List<FilterViewModel>) {
+    fun updateData(filterData: List<FilterUiModel>) {
         _filterData.value = (filterData.toMutableList())
     }
 
-    fun updateSpecificData(filterViewModel: FilterViewModel, index: Int) {
+    fun updateSpecificData(filterUiModel: FilterUiModel, index: Int) {
         val currentValue = _filterData.value?.toMutableList()
         currentValue?.let {
-            it[index] = filterViewModel
+            it[index] = filterUiModel
         }
         _filterData.value = currentValue
     }
 
-    fun updateSelect(filterData: FilterDataViewModel) {
+    fun updateSelect(filterData: FilterDataUiModel) {
         val currentData = _filterData.value?.toMutableList()
         val dataToSelect = getDataFromList(currentData?.slice(ITEM_CATEGORIES_INDEX..ITEM_OTHER_FILTER_INDEX), filterData)
         dataToSelect?.let {
@@ -74,7 +74,7 @@ class ProductManageFilterViewModel @Inject constructor(
         _filterData.value = currentData
     }
 
-    fun updateSelect(filterData: FilterDataViewModel, title: String) {
+    fun updateSelect(filterData: FilterDataUiModel, title: String) {
         val currentData = _filterData.value?.toMutableList()
         if (title == ProductManageFilterMapper.SORT_HEADER) {
             selectedSort?.let {
@@ -120,11 +120,11 @@ class ProductManageFilterViewModel @Inject constructor(
         _filterData.value = currentData
     }
 
-    fun updateShow(filterViewModel: FilterViewModel) {
+    fun updateShow(filterUiModel: FilterUiModel) {
         val currentData = _filterData.value?.toMutableList()
         currentData?.let {
-            val filterIndexOfData = it.indexOf(filterViewModel)
-            it[filterIndexOfData].isChipsShown = !filterViewModel.isChipsShown
+            val filterIndexOfData = it.indexOf(filterUiModel)
+            it[filterIndexOfData].isChipsShown = !filterUiModel.isChipsShown
             _filterData.value = it
         }
     }
@@ -143,7 +143,7 @@ class ProductManageFilterViewModel @Inject constructor(
 
     private fun isMyShop(shopId: String) = userSession.shopId == shopId
 
-    private fun getDataFromList(currentData: List<FilterViewModel>?, data: FilterDataViewModel): Triple<Boolean, Int, FilterDataViewModel>? {
+    private fun getDataFromList(currentData: List<FilterUiModel>?, data: FilterDataUiModel): Triple<Boolean, Int, FilterDataUiModel>? {
         currentData?.forEachIndexed { index, filterViewModel ->
             filterViewModel.data.forEach { filterData ->
                 if (filterData.id == data.id) {
@@ -155,7 +155,7 @@ class ProductManageFilterViewModel @Inject constructor(
         return null
     }
 
-    private fun getSortFromList(sortData: FilterViewModel?, data: FilterDataViewModel): Pair<Boolean, FilterDataViewModel>? {
+    private fun getSortFromList(sortData: FilterUiModel?, data: FilterDataUiModel): Pair<Boolean, FilterDataUiModel>? {
         sortData?.data?.forEach {
             if (it.id == data.id && it.value == data.value) {
                 val needSort = sortData.data.indexOf(it) > MAXIMUM_CHIPS - 1

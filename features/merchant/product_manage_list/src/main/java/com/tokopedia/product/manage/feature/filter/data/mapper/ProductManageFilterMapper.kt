@@ -24,8 +24,8 @@ class ProductManageFilterMapper {
         private const val SHOW_CHIPS = true
         private const val HIDE_CHIPS = false
 
-        fun mapCombinedResultToFilterViewModels(filterOptionsResponse: FilterOptionsResponse): List<FilterViewModel> {
-            val filterViewModels = mutableListOf<FilterViewModel>()
+        fun mapCombinedResultToFilterViewModels(filterOptionsResponse: FilterOptionsResponse): List<FilterUiModel> {
+            val filterViewModels = mutableListOf<FilterUiModel>()
             val metaData = filterOptionsResponse.productListMetaResponse.productListMetaWrapper.productListMetaData
             filterViewModels.add(mapMetaResponseToSortOptions(metaData))
             filterViewModels.add(mapEtalaseResponseToEtalaseOptions(filterOptionsResponse.shopEtalase))
@@ -34,96 +34,96 @@ class ProductManageFilterMapper {
             return filterViewModels
         }
 
-        fun mapFilterViewModelsToSelectViewModels(filterViewModel: FilterViewModel): List<SelectViewModel> {
-            val selectViewModels = mutableListOf<SelectViewModel>()
-            filterViewModel.data.forEach {
-                selectViewModels.add(SelectViewModel(it.id, it.name, it.value, it.select))
+        fun mapFilterViewModelsToSelectViewModels(filterUiModel: FilterUiModel): List<SelectUiModel> {
+            val selectViewModels = mutableListOf<SelectUiModel>()
+            filterUiModel.data.forEach {
+                selectViewModels.add(SelectUiModel(it.id, it.name, it.value, it.select))
             }
             return selectViewModels
         }
 
-        fun mapFilterViewModelsToChecklistViewModels(filterViewModel: FilterViewModel): List<ChecklistViewModel> {
-            val checklistViewModels = mutableListOf<ChecklistViewModel>()
-            filterViewModel.data.forEach {
-                checklistViewModels.add(ChecklistViewModel(it.id, it.name, it.value, it.select))
+        fun mapFilterViewModelsToChecklistViewModels(filterUiModel: FilterUiModel): List<ChecklistUiModel> {
+            val checklistViewModels = mutableListOf<ChecklistUiModel>()
+            filterUiModel.data.forEach {
+                checklistViewModels.add(ChecklistUiModel(it.id, it.name, it.value, it.select))
             }
             return checklistViewModels
         }
 
-        fun mapSelectViewModelsToFilterViewModel(key: String, selectViewModels: List<SelectViewModel>, isChipsShown: Boolean): FilterViewModel {
-            val data = mutableListOf<FilterDataViewModel>()
-            selectViewModels.forEach {
-                data.add(FilterDataViewModel(it.id, it.name, it.value, it.isSelected))
+        fun mapSelectViewModelsToFilterViewModel(key: String, selectUiModels: List<SelectUiModel>, isChipsShown: Boolean): FilterUiModel {
+            val data = mutableListOf<FilterDataUiModel>()
+            selectUiModels.forEach {
+                data.add(FilterDataUiModel(it.id, it.name, it.value, it.isSelected))
             }
             return if(key == ProductManageFilterFragment.SORT_CACHE_MANAGER_KEY) {
-                FilterViewModel(SORT_HEADER, data, isChipsShown)
+                FilterUiModel(SORT_HEADER, data, isChipsShown)
             } else {
-                FilterViewModel(ETALASE_HEADER, data, isChipsShown)
+                FilterUiModel(ETALASE_HEADER, data, isChipsShown)
             }
         }
 
-        fun mapChecklistViewModelsToFilterViewModel(key: String, checklistViewModels: List<ChecklistViewModel>, isChipsShown: Boolean): FilterViewModel {
-            val data = mutableListOf<FilterDataViewModel>()
-            checklistViewModels.forEach {
-                data.add(FilterDataViewModel(it.id, it.name, it.value, it.isSelected))
+        fun mapChecklistViewModelsToFilterViewModel(key: String, checklistUiModels: List<ChecklistUiModel>, isChipsShown: Boolean): FilterUiModel {
+            val data = mutableListOf<FilterDataUiModel>()
+            checklistUiModels.forEach {
+                data.add(FilterDataUiModel(it.id, it.name, it.value, it.isSelected))
             }
             return if(key == ProductManageFilterFragment.CATEGORIES_CACHE_MANAGER_KEY) {
-                FilterViewModel(CATEGORY_HEADER, data, isChipsShown)
+                FilterUiModel(CATEGORY_HEADER, data, isChipsShown)
             } else {
-                FilterViewModel(OTHER_FILTER_HEADER, data, isChipsShown)
+                FilterUiModel(OTHER_FILTER_HEADER, data, isChipsShown)
             }
         }
 
-        fun mapFiltersToFilterOptions(filterViewModel: List<FilterViewModel>): FilterOptionWrapper {
+        fun mapFiltersToFilterOptions(filterUiModel: List<FilterUiModel>): FilterOptionWrapper {
             val filterOptions = mutableListOf<FilterOption>()
-            val sortOption = mapSortToSortOptions(filterViewModel[ProductManageFilterFragment.ITEM_SORT_INDEX])
-            filterOptions.addAll(mapEtalaseToFilterOptions(filterViewModel[ProductManageFilterFragment.ITEM_ETALASE_INDEX]))
-            filterOptions.addAll(mapCategoriesToFilterOptions(filterViewModel[ProductManageFilterFragment.ITEM_CATEGORIES_INDEX]))
-            filterOptions.addAll(mapFiltersToFilterOptions(filterViewModel[ProductManageFilterFragment.ITEM_OTHER_FILTER_INDEX]))
+            val sortOption = mapSortToSortOptions(filterUiModel[ProductManageFilterFragment.ITEM_SORT_INDEX])
+            filterOptions.addAll(mapEtalaseToFilterOptions(filterUiModel[ProductManageFilterFragment.ITEM_ETALASE_INDEX]))
+            filterOptions.addAll(mapCategoriesToFilterOptions(filterUiModel[ProductManageFilterFragment.ITEM_CATEGORIES_INDEX]))
+            filterOptions.addAll(mapFiltersToFilterOptions(filterUiModel[ProductManageFilterFragment.ITEM_OTHER_FILTER_INDEX]))
             return FilterOptionWrapper(sortOption, filterOptions)
         }
 
-        fun mapFilterOptionWrapperToSelectedSort(filterOptionWrapper: FilterOptionWrapper): FilterDataViewModel? {
+        fun mapFilterOptionWrapperToSelectedSort(filterOptionWrapper: FilterOptionWrapper): FilterDataUiModel? {
             filterOptionWrapper.sortOption?.let {
-                return FilterDataViewModel(id = it.id.name,
+                return FilterDataUiModel(id = it.id.name,
                         value = it.option.name,
                         select = false)
             }
             return null
         }
 
-        fun mapFilterOptionWrapperToSelectedEtalase(filterOptionWrapper: FilterOptionWrapper): FilterDataViewModel? {
+        fun mapFilterOptionWrapperToSelectedEtalase(filterOptionWrapper: FilterOptionWrapper): FilterDataUiModel? {
             filterOptionWrapper.filterOptions.filterIsInstance(FilterOption.FilterByMenu::class.java).forEach {
-                    return FilterDataViewModel(it.menuIds.first(), select = false)
+                    return FilterDataUiModel(it.menuIds.first(), select = false)
             }
             return null
         }
 
-        fun mapFilterOptionWrapperToSelectedCategories(filterOptionWrapper: FilterOptionWrapper): List<FilterDataViewModel> {
-            val selectedCategories = mutableListOf<FilterDataViewModel>()
+        fun mapFilterOptionWrapperToSelectedCategories(filterOptionWrapper: FilterOptionWrapper): List<FilterDataUiModel> {
+            val selectedCategories = mutableListOf<FilterDataUiModel>()
             filterOptionWrapper.filterOptions.filterIsInstance(FilterOption.FilterByCategory::class.java).forEach {
                 it.categoryIds.forEach { category ->
                     selectedCategories.add(
-                            FilterDataViewModel(category, select = false)
+                            FilterDataUiModel(category, select = false)
                     )
                 }
             }
             return selectedCategories
         }
 
-        fun mapFilterOptionWrapperToSelectedOtherFilters(filterOptionWrapper: FilterOptionWrapper): List<FilterDataViewModel> {
-            val selectedOtherFilters = mutableListOf<FilterDataViewModel>()
+        fun mapFilterOptionWrapperToSelectedOtherFilters(filterOptionWrapper: FilterOptionWrapper): List<FilterDataUiModel> {
+            val selectedOtherFilters = mutableListOf<FilterDataUiModel>()
             filterOptionWrapper.filterOptions.filterIsInstance(FilterOption.FilterByCondition::class.java).forEach {
                 selectedOtherFilters.add(
-                        FilterDataViewModel(it.id, select = false)
+                        FilterDataUiModel(it.id, select = false)
                 )
             }
             return selectedOtherFilters
         }
 
-        private fun mapSortToSortOptions(filterViewModel: FilterViewModel): SortOption? {
-            var selectedData: FilterDataViewModel? = null
-            filterViewModel.data.forEach {
+        private fun mapSortToSortOptions(filterUiModel: FilterUiModel): SortOption? {
+            var selectedData: FilterDataUiModel? = null
+            filterUiModel.data.forEach {
                 if(it.select) {
                     selectedData = it
                 }
@@ -142,9 +142,9 @@ class ProductManageFilterMapper {
             }
         }
 
-        private fun mapEtalaseToFilterOptions(filterViewModel: FilterViewModel): List<FilterOption> {
-            var selectedData: FilterDataViewModel? = null
-            filterViewModel.data.forEach {
+        private fun mapEtalaseToFilterOptions(filterUiModel: FilterUiModel): List<FilterOption> {
+            var selectedData: FilterDataUiModel? = null
+            filterUiModel.data.forEach {
                 if(it.select) {
                     selectedData = it
                 }
@@ -155,9 +155,9 @@ class ProductManageFilterMapper {
             return listOf()
         }
 
-        private fun mapCategoriesToFilterOptions(filterViewModel: FilterViewModel): List<FilterOption> {
+        private fun mapCategoriesToFilterOptions(filterUiModel: FilterUiModel): List<FilterOption> {
             val selectedCategoryIds = mutableListOf<String>()
-            filterViewModel.data.forEach {
+            filterUiModel.data.forEach {
                 if(it.select) {
                     selectedCategoryIds.add(it.id)
                 }
@@ -168,9 +168,9 @@ class ProductManageFilterMapper {
             return listOf()
         }
 
-        private fun mapFiltersToFilterOptions(filterViewModel: FilterViewModel): List<FilterOption> {
+        private fun mapFiltersToFilterOptions(filterUiModel: FilterUiModel): List<FilterOption> {
             val selectedData = mutableListOf<FilterOption>()
-            filterViewModel.data.forEach {
+            filterUiModel.data.forEach {
                 if(it.select) {
                     val mappedData = when(it.id) {
                         FilterOption.FilterByCondition.NewOnly.id -> FilterOption.FilterByCondition.NewOnly
@@ -188,40 +188,40 @@ class ProductManageFilterMapper {
             return selectedData
         }
 
-        private fun mapMetaResponseToSortOptions(productListMetaData: ProductListMetaData): FilterViewModel {
-            val data = mutableListOf<FilterDataViewModel>()
+        private fun mapMetaResponseToSortOptions(productListMetaData: ProductListMetaData): FilterUiModel {
+            val data = mutableListOf<FilterDataUiModel>()
             productListMetaData.sorts.filter { it.name.isNotEmpty() &&
                     (it.id != SortOption.SortByDefault(SortOrderOption.DESC).id.name)}.forEach {
-                data.add(FilterDataViewModel(it.id, it.name, it.value))
+                data.add(FilterDataUiModel(it.id, it.name, it.value))
             }
-            return FilterViewModel(SORT_HEADER, data, SHOW_CHIPS)
+            return FilterUiModel(SORT_HEADER, data, SHOW_CHIPS)
         }
 
-        private fun mapEtalaseResponseToEtalaseOptions(etalaseResponse: ArrayList<ShopEtalaseModel>): FilterViewModel {
-            val data = mutableListOf<FilterDataViewModel>()
+        private fun mapEtalaseResponseToEtalaseOptions(etalaseResponse: ArrayList<ShopEtalaseModel>): FilterUiModel {
+            val data = mutableListOf<FilterDataUiModel>()
             etalaseResponse.filter { it.name.isNotEmpty() &&
                     it.id != EMPTY_STOCK_ETALASE_ID &&
                     it.id != PREORDER_ETALASE_ID &&
                     it.id != ALL_PRODUCT_ETALASE_ID }.forEach {
-                data.add(FilterDataViewModel(it.id,it.name))
+                data.add(FilterDataUiModel(it.id,it.name))
             }
-            return FilterViewModel(ETALASE_HEADER, data, SHOW_CHIPS)
+            return FilterUiModel(ETALASE_HEADER, data, SHOW_CHIPS)
         }
 
-        private fun mapCategoryResponseToCategoryOptions(categoriesResponse: CategoriesResponse): FilterViewModel {
-            val data = mutableListOf<FilterDataViewModel>()
+        private fun mapCategoryResponseToCategoryOptions(categoriesResponse: CategoriesResponse): FilterUiModel {
+            val data = mutableListOf<FilterDataUiModel>()
             categoriesResponse.categories.categories.filter { it.name.isNotEmpty() }.forEach {
-                data.add(FilterDataViewModel(it.id, it.name))
+                data.add(FilterDataUiModel(it.id, it.name))
             }
-            return FilterViewModel(CATEGORY_HEADER, data, HIDE_CHIPS)
+            return FilterUiModel(CATEGORY_HEADER, data, HIDE_CHIPS)
         }
 
-        private fun mapMetaResponseToFilterOptions(productListMetaData: ProductListMetaData): FilterViewModel {
-            val data = mutableListOf<FilterDataViewModel>()
+        private fun mapMetaResponseToFilterOptions(productListMetaData: ProductListMetaData): FilterUiModel {
+            val data = mutableListOf<FilterDataUiModel>()
             productListMetaData.filters.filter { it.name.isNotEmpty() }.forEach {
-                data.add(FilterDataViewModel(it.id, it.name, it.value.toString()))
+                data.add(FilterDataUiModel(it.id, it.name, it.value.toString()))
             }
-            return FilterViewModel(OTHER_FILTER_HEADER, data, HIDE_CHIPS)
+            return FilterUiModel(OTHER_FILTER_HEADER, data, HIDE_CHIPS)
         }
     }
 }

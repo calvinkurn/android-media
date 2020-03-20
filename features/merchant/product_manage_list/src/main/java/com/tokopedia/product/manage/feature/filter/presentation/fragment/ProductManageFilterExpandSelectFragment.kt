@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,9 +18,9 @@ import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterCompone
 import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterModule
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.SelectAdapter
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.factory.SelectAdapterTypeFactory
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistViewModel
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectViewModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistUiModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterUiModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment.Companion.ACTIVITY_EXPAND_FLAG
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment.Companion.CACHE_MANAGER_KEY
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment.Companion.ETALASE_CACHE_MANAGER_KEY
@@ -65,10 +64,10 @@ class ProductManageFilterExpandSelectFragment :
         }
         val manager = this.context?.let { SaveInstanceCacheManager(it, savedInstanceState) }
         val cacheManager = if (savedInstanceState == null) this.context?.let { SaveInstanceCacheManager(it, cacheManagerId) } else manager
-        val filterViewModel: FilterViewModel? = flag.let { cacheManager?.get(it, FilterViewModel::class.java) }
-        filterViewModel?.let {
+        val filterUiModel: FilterUiModel? = flag.let { cacheManager?.get(it, FilterUiModel::class.java) }
+        filterUiModel?.let {
             isChipsShown = it.isChipsShown
-            val dataToDisplay = ProductManageFilterMapper.mapFilterViewModelsToSelectViewModels(filterViewModel)
+            val dataToDisplay = ProductManageFilterMapper.mapFilterViewModelsToSelectViewModels(filterUiModel)
             productManageFilterExpandSelectViewModel.updateData(dataToDisplay)
         }
     }
@@ -87,7 +86,7 @@ class ProductManageFilterExpandSelectFragment :
         initView()
     }
 
-    override fun onSelectClick(element: SelectViewModel) {
+    override fun onSelectClick(element: SelectUiModel) {
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
         val cacheManagerId = cacheManager?.id
         val needSort = productManageFilterExpandSelectViewModel.updateSelectedItem(element)
@@ -112,7 +111,7 @@ class ProductManageFilterExpandSelectFragment :
         this.activity?.finish()
     }
 
-    override fun onChecklistClick(element: ChecklistViewModel) {
+    override fun onChecklistClick(element: ChecklistUiModel) {
         //No Op
     }
 

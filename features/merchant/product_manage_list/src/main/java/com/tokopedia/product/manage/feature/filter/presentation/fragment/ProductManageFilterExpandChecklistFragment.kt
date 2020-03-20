@@ -19,9 +19,9 @@ import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterCompone
 import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterModule
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.SelectAdapter
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.factory.SelectAdapterTypeFactory
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistViewModel
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectViewModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistUiModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterUiModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment.Companion.CATEGORIES_CACHE_MANAGER_KEY
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment.Companion.OTHER_FILTER_CACHE_MANAGER_KEY
 import com.tokopedia.product.manage.feature.filter.presentation.util.textwatcher.SearchListener
@@ -71,9 +71,9 @@ class ProductManageFilterExpandChecklistFragment :
         }
         val manager = this.context?.let { SaveInstanceCacheManager(it, savedInstanceState) }
         val cacheManager = if (savedInstanceState == null) this.context?.let { SaveInstanceCacheManager(it, cacheManagerId) } else manager
-        val filterViewModel: FilterViewModel? = flag.let { cacheManager?.get(it, FilterViewModel::class.java) }
-        filterViewModel?.let {
-            isChipsShown = filterViewModel.isChipsShown
+        val filterUiModel: FilterUiModel? = flag.let { cacheManager?.get(it, FilterUiModel::class.java) }
+        filterUiModel?.let {
+            isChipsShown = filterUiModel.isChipsShown
             productManageFilterExpandChecklistViewModel.initData(ProductManageFilterMapper.mapFilterViewModelsToChecklistViewModels(it))
         }
     }
@@ -94,7 +94,7 @@ class ProductManageFilterExpandChecklistFragment :
         initView()
     }
 
-    override fun onChecklistClick(element: ChecklistViewModel) {
+    override fun onChecklistClick(element: ChecklistUiModel) {
         productManageFilterExpandChecklistViewModel.updateSelectedItem(element)
         if(element.isSelected) {
             ProductManageTracking.eventMoreOthersFilter(element.name, TOGGLE_ACTIVE)
@@ -103,7 +103,7 @@ class ProductManageFilterExpandChecklistFragment :
         }
     }
 
-    override fun onSelectClick(element: SelectViewModel) {
+    override fun onSelectClick(element: SelectUiModel) {
         //No Op
     }
 
@@ -229,7 +229,7 @@ class ProductManageFilterExpandChecklistFragment :
         }
     }
 
-    private fun search(searchQuery: String): List<ChecklistViewModel> {
+    private fun search(searchQuery: String): List<ChecklistUiModel> {
         val result = productManageFilterExpandChecklistViewModel.checklistData.value?.filter { data ->
             data.name.toLowerCase(Locale.getDefault()) == searchQuery.toLowerCase(Locale.getDefault())
         }

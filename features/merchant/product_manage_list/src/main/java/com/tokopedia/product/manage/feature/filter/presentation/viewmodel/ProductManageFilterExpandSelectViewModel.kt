@@ -3,24 +3,24 @@ package com.tokopedia.product.manage.feature.filter.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectViewModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChipsAdapter.Companion.MAXIMUM_CHIPS
 import javax.inject.Inject
 
 class ProductManageFilterExpandSelectViewModel @Inject constructor(): ViewModel() {
 
-    private val _selectData = MutableLiveData<MutableList<SelectViewModel>>()
-    private var selectedElement: SelectViewModel? = null
+    private val _selectData = MutableLiveData<MutableList<SelectUiModel>>()
+    private var selectedElement: SelectUiModel? = null
 
-    val selectData: LiveData<MutableList<SelectViewModel>>
+    val selectData: LiveData<MutableList<SelectUiModel>>
         get() = _selectData
 
-    fun updateData(data: List<SelectViewModel>) {
+    fun updateData(data: List<SelectUiModel>) {
         _selectData.postValue(data.toMutableList())
         selectedElement = findSelectedData(data)
     }
 
-    fun updateSelectedItem(element: SelectViewModel): Boolean {
+    fun updateSelectedItem(element: SelectUiModel): Boolean {
         val currentData = _selectData.value
         var needSort = false
         if(selectedElement != null) {
@@ -43,8 +43,8 @@ class ProductManageFilterExpandSelectViewModel @Inject constructor(): ViewModel(
         return needSort
     }
 
-    private fun findSelectedData(selectViewModels: List<SelectViewModel>): SelectViewModel? {
-        val selectedData = selectViewModels.filter {
+    private fun findSelectedData(selectUiModels: List<SelectUiModel>): SelectUiModel? {
+        val selectedData = selectUiModels.filter {
             it.isSelected
         }
         return if(selectedData.isNotEmpty()) {

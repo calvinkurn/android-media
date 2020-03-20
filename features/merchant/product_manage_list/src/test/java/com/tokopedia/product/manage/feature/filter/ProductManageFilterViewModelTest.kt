@@ -4,8 +4,8 @@ import com.tokopedia.core.common.category.domain.model.CategoriesResponse
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionsResponse
 import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaResponse
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterDataViewModel
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterDataUiModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.usecase.coroutines.Success
@@ -42,19 +42,19 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
 
     @Test
     fun `when_updateShow_should_update_element_isChipsShown_accordingly`() {
-        val filterViewModel = FilterViewModel("Sort", mutableListOf(), false)
+        val filterViewModel = FilterUiModel("Sort", mutableListOf(), false)
 
         viewModel.updateData(listOf(filterViewModel))
         viewModel.updateShow(filterViewModel)
 
-        val expectedData = FilterViewModel("Sort", mutableListOf(), true)
+        val expectedData = FilterUiModel("Sort", mutableListOf(), true)
         verifyFilterViewModel(expectedData)
     }
 
     @Test
     fun `when_updateSpecific_should_update_element_at_a_given_index_accordingly`() {
-        val filterViewModel = FilterViewModel("Sort", mutableListOf(), false)
-        val dataToUpdate = FilterViewModel("New Data", mutableListOf(), true)
+        val filterViewModel = FilterUiModel("Sort", mutableListOf(), false)
+        val dataToUpdate = FilterUiModel("New Data", mutableListOf(), true)
 
         viewModel.updateData(listOf(filterViewModel))
         viewModel.updateSpecificData(dataToUpdate, ProductManageFilterFragment.ITEM_SORT_INDEX)
@@ -75,7 +75,7 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
         viewModel.updateData(listOf(sortViewModel, etalaseViewModel, categoryViewModel, otherFilterViewModel))
         viewModel.updateSelect(sortDataModel, ProductManageFilterMapper.SORT_HEADER)
 
-        val selectedDataViewModel = FilterDataViewModel("312", "Some Sort", "DESC", true)
+        val selectedDataViewModel = FilterDataUiModel("312", "Some Sort", "DESC", true)
         val expectedModel = getSortFilterViewModel(selectedDataViewModel)
         val expectedIndex = ProductManageFilterFragment.ITEM_SORT_INDEX
 
@@ -93,7 +93,7 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
         viewModel.updateData(listOf(sortViewModel, etalaseViewModel, categoryViewModel, otherFilterViewModel))
         viewModel.updateSelect(etalaseDataModel, ProductManageFilterMapper.ETALASE_HEADER)
 
-        val selectedDataViewModel = FilterDataViewModel("342", "Some Etalase", "", true)
+        val selectedDataViewModel = FilterDataUiModel("342", "Some Etalase", "", true)
         val expectedModel = getEtalaseFilterViewModel(selectedDataViewModel)
         val expectedIndex = ProductManageFilterFragment.ITEM_ETALASE_INDEX
 
@@ -111,7 +111,7 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
         viewModel.updateData(listOf(sortViewModel, etalaseViewModel, categoryViewModel, otherFilterViewModel))
         viewModel.updateSelect(categoryDataModel)
 
-        val selectedDataViewModel = FilterDataViewModel("1293", "Some Category", "", true)
+        val selectedDataViewModel = FilterDataUiModel("1293", "Some Category", "", true)
         val expectedModel = getCategoryFilterViewModel(selectedDataViewModel)
         val expectedIndex = ProductManageFilterFragment.ITEM_CATEGORIES_INDEX
 
@@ -129,7 +129,7 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
         viewModel.updateData(listOf(sortViewModel, etalaseViewModel, categoryViewModel, otherFilterViewModel))
         viewModel.updateSelect(otherFilterDataModel)
 
-        val selectedDataViewModel = FilterDataViewModel("4183", "Some Other Filter", "", true)
+        val selectedDataViewModel = FilterDataUiModel("4183", "Some Other Filter", "", true)
         val expectedModel = getOtherFilterFilterViewModel(selectedDataViewModel)
         val expectedIndex = ProductManageFilterFragment.ITEM_OTHER_FILTER_INDEX
 
@@ -158,7 +158,7 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
         assertEquals(expectedResponse, actualResponse)
     }
 
-    private fun verifyFilterViewModel(expectedModel: FilterViewModel) {
+    private fun verifyFilterViewModel(expectedModel: FilterUiModel) {
         val actualData = viewModel.filterData.value
         actualData?.first()?.let {
             assertEquals(expectedModel.title, it.title)
@@ -167,7 +167,7 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
         }
     }
 
-    private fun verifyFilterDataAtIndex(expectedModel: FilterViewModel, index: Int) {
+    private fun verifyFilterDataAtIndex(expectedModel: FilterUiModel, index: Int) {
         val actualData = viewModel.filterData.value
         actualData?.let {
             val dataToVerify = it[index]
@@ -179,15 +179,15 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
         }
     }
 
-    private fun getSortDataModel(): FilterDataViewModel {
-        return FilterDataViewModel("312", "Some Sort", "DESC", false)
+    private fun getSortDataModel(): FilterDataUiModel {
+        return FilterDataUiModel("312", "Some Sort", "DESC", false)
     }
 
-    private fun getSortFilterViewModel(sortDataModel: FilterDataViewModel): FilterViewModel {
-        return FilterViewModel(ProductManageFilterMapper.SORT_HEADER,
+    private fun getSortFilterViewModel(sortDataModel: FilterDataUiModel): FilterUiModel {
+        return FilterUiModel(ProductManageFilterMapper.SORT_HEADER,
                 mutableListOf(
                         sortDataModel,
-                        FilterDataViewModel(
+                        FilterDataUiModel(
                                 "706",
                                 "Some Other Sort",
                                 "ASC",
@@ -195,15 +195,15 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
                 ), false)
     }
 
-    private fun getEtalaseDataModel(): FilterDataViewModel {
-        return FilterDataViewModel("342", "Some Etalase", "", false)
+    private fun getEtalaseDataModel(): FilterDataUiModel {
+        return FilterDataUiModel("342", "Some Etalase", "", false)
     }
 
-    private fun getEtalaseFilterViewModel(etalaseDataModel: FilterDataViewModel): FilterViewModel {
-        return FilterViewModel(ProductManageFilterMapper.ETALASE_HEADER,
+    private fun getEtalaseFilterViewModel(etalaseDataModel: FilterDataUiModel): FilterUiModel {
+        return FilterUiModel(ProductManageFilterMapper.ETALASE_HEADER,
                 mutableListOf(
                         etalaseDataModel,
-                        FilterDataViewModel(
+                        FilterDataUiModel(
                                 "123",
                                 "Some Other Etalase",
                                 "",
@@ -211,15 +211,15 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
                 ), false)
     }
 
-    private fun getCategoryDataModel(): FilterDataViewModel {
-        return FilterDataViewModel("1293", "Some Category", "", false)
+    private fun getCategoryDataModel(): FilterDataUiModel {
+        return FilterDataUiModel("1293", "Some Category", "", false)
     }
 
-    private fun getCategoryFilterViewModel(categoryDataModel: FilterDataViewModel): FilterViewModel {
-        return FilterViewModel(ProductManageFilterMapper.CATEGORY_HEADER,
+    private fun getCategoryFilterViewModel(categoryDataModel: FilterDataUiModel): FilterUiModel {
+        return FilterUiModel(ProductManageFilterMapper.CATEGORY_HEADER,
                 mutableListOf(
                         categoryDataModel,
-                        FilterDataViewModel(
+                        FilterDataUiModel(
                                 "4526",
                                 "Some Other Category",
                                 "",
@@ -227,15 +227,15 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
                 ), false)
     }
 
-    private fun getOtherFilterDataModel(): FilterDataViewModel {
-        return FilterDataViewModel("4183", "Some Other Filter", "", false)
+    private fun getOtherFilterDataModel(): FilterDataUiModel {
+        return FilterDataUiModel("4183", "Some Other Filter", "", false)
     }
 
-    private fun getOtherFilterFilterViewModel(otherFilterDataModel: FilterDataViewModel): FilterViewModel {
-        return FilterViewModel(ProductManageFilterMapper.OTHER_FILTER_HEADER,
+    private fun getOtherFilterFilterViewModel(otherFilterDataModel: FilterDataUiModel): FilterUiModel {
+        return FilterUiModel(ProductManageFilterMapper.OTHER_FILTER_HEADER,
                 mutableListOf(
                         otherFilterDataModel,
-                        FilterDataViewModel(
+                        FilterDataUiModel(
                                 "6139",
                                 "Some Other Filter",
                                 "",

@@ -3,7 +3,7 @@ package com.tokopedia.product.manage.feature.filter.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistViewModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistUiModel
 import javax.inject.Inject
 
 class ProductManageFilterExpandChecklistViewModel @Inject constructor(): ViewModel() {
@@ -12,11 +12,11 @@ class ProductManageFilterExpandChecklistViewModel @Inject constructor(): ViewMod
     val dataSize: LiveData<Int>
     get() = _dataSize
 
-    private val _checklistData = MutableLiveData<MutableList<ChecklistViewModel>>()
-    val checklistData: LiveData<MutableList<ChecklistViewModel>>
+    private val _checklistData = MutableLiveData<MutableList<ChecklistUiModel>>()
+    val checklistData: LiveData<MutableList<ChecklistUiModel>>
         get() = _checklistData
 
-    fun initData(data: List<ChecklistViewModel>) {
+    fun initData(data: List<ChecklistUiModel>) {
         _checklistData.postValue(data.toMutableList())
         var numSelected = 0
         data.forEach {
@@ -25,7 +25,7 @@ class ProductManageFilterExpandChecklistViewModel @Inject constructor(): ViewMod
         _dataSize.postValue(numSelected)
     }
 
-    fun updateSelectedItem(element: ChecklistViewModel) {
+    fun updateSelectedItem(element: ChecklistUiModel) {
         val currentData = _checklistData.value
         val index = currentData?.indexOf(element)
         index?.let {

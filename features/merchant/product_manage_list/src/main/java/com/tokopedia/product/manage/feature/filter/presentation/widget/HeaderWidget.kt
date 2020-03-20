@@ -3,7 +3,7 @@ package com.tokopedia.product.manage.feature.filter.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterUiModel
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_header.view.*
 
@@ -31,5 +31,5 @@ class HeaderWidget : BaseCustomView {
 }
 
 interface ShowChipsListener {
-    fun onShowChips(element: FilterViewModel)
+    fun onShowChips(element: FilterUiModel)
 }

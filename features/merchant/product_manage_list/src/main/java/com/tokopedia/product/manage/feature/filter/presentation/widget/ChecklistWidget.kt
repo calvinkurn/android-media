@@ -3,7 +3,7 @@ package com.tokopedia.product.manage.feature.filter.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistViewModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistUiModel
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_checklist.view.*
 
@@ -25,7 +25,7 @@ class ChecklistWidget: BaseCustomView {
         View.inflate(context, com.tokopedia.product.manage.R.layout.widget_checklist, this)
     }
 
-    fun bind(element: ChecklistViewModel, checklistClickListener: ChecklistClickListener) {
+    fun bind(element: ChecklistUiModel, checklistClickListener: ChecklistClickListener) {
         this.checklist.text = element.name
         this.checklist.isChecked = element.isSelected
         checklist.setOnClickListener {
@@ -36,5 +36,5 @@ class ChecklistWidget: BaseCustomView {
 }
 
 interface ChecklistClickListener {
-    fun onChecklistClick(element: ChecklistViewModel)
+    fun onChecklistClick(element: ChecklistUiModel)
 }

@@ -19,8 +19,8 @@ import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterModule
 import com.tokopedia.product.manage.feature.filter.presentation.activity.ProductManageFilterExpandActivity
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.FilterAdapter
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.factory.FilterAdapterTypeFactory
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterDataViewModel
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterDataUiModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChipsAdapter
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SeeAllListener
@@ -103,7 +103,7 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
         }
     }
 
-    override fun onSeeAll(element: FilterViewModel) {
+    override fun onSeeAll(element: FilterUiModel) {
         val intent = Intent(this.activity,ProductManageFilterExpandActivity::class.java)
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
         when(element.title) {
@@ -137,25 +137,25 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
             val cacheManager = context?.let { SaveInstanceCacheManager(it, data?.getStringExtra(CACHE_MANAGER_KEY)) }
             when(resultCode) {
                 UPDATE_SORT_SUCCESS_RESPONSE -> {
-                    val dataToUpdate: FilterViewModel? = cacheManager?.get(SORT_CACHE_MANAGER_KEY, FilterViewModel::class.java)
+                    val dataToUpdate: FilterUiModel? = cacheManager?.get(SORT_CACHE_MANAGER_KEY, FilterUiModel::class.java)
                     dataToUpdate?.let {
                         productManageFilterViewModel.updateSpecificData(it, ITEM_SORT_INDEX)
                     }
                 }
                 UPDATE_ETALASE_SUCCESS_RESPONSE -> {
-                    val dataToUpdate: FilterViewModel? = cacheManager?.get(ETALASE_CACHE_MANAGER_KEY, FilterViewModel::class.java)
+                    val dataToUpdate: FilterUiModel? = cacheManager?.get(ETALASE_CACHE_MANAGER_KEY, FilterUiModel::class.java)
                     dataToUpdate?.let {
                         productManageFilterViewModel.updateSpecificData(it, ITEM_ETALASE_INDEX)
                     }
                 }
                 UPDATE_CATEGORIES_SUCCESS_RESPONSE -> {
-                    val dataToUpdate: FilterViewModel? = cacheManager?.get(CATEGORIES_CACHE_MANAGER_KEY, FilterViewModel::class.java)
+                    val dataToUpdate: FilterUiModel? = cacheManager?.get(CATEGORIES_CACHE_MANAGER_KEY, FilterUiModel::class.java)
                     dataToUpdate?.let {
                         productManageFilterViewModel.updateSpecificData(it, ITEM_CATEGORIES_INDEX)
                     }
                 }
                 UPDATE_OTHER_FILTER_SUCCESS_RESPONSE -> {
-                    val dataToUpdate: FilterViewModel? = cacheManager?.get(OTHER_FILTER_CACHE_MANAGER_KEY, FilterViewModel::class.java)
+                    val dataToUpdate: FilterUiModel? = cacheManager?.get(OTHER_FILTER_CACHE_MANAGER_KEY, FilterUiModel::class.java)
                     dataToUpdate?.let {
                         productManageFilterViewModel.updateSpecificData(it, ITEM_OTHER_FILTER_INDEX)
                     }
@@ -164,7 +164,7 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
         }
     }
 
-    override fun onChipClicked(element: FilterDataViewModel, canSelectMany: Boolean, title: String) {
+    override fun onChipClicked(element: FilterDataUiModel, canSelectMany: Boolean, title: String) {
         if(canSelectMany) {
             productManageFilterViewModel.updateSelect(element)
             if(title == ProductManageFilterMapper.OTHER_FILTER_HEADER) {
@@ -182,7 +182,7 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
         }
     }
 
-    override fun onShowChips(element: FilterViewModel) {
+    override fun onShowChips(element: FilterUiModel) {
         productManageFilterViewModel.updateShow(element)
     }
 
@@ -224,7 +224,7 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
         initBottomSheetReset()
     }
 
-    private fun checkSelected(filterData: List<FilterViewModel>): Boolean {
+    private fun checkSelected(filterData: List<FilterUiModel>): Boolean {
         filterData.forEach { filter ->
             filter.data.forEach {
                 if(it.select) return true

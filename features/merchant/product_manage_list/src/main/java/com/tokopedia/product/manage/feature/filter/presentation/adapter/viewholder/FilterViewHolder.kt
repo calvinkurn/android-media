@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.decorator.SpacingItemDecoration
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.*
 import kotlinx.android.synthetic.main.item_filter.view.*
 import kotlinx.android.synthetic.main.partial_layout_chips.view.*
@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.widget_header.view.*
 class FilterViewHolder(view: View,
                        private val seeAllListener: SeeAllListener,
                        private val chipClickListener: ChipsAdapter.ChipClickListener,
-                       private val showChipsListener: ShowChipsListener) : AbstractViewHolder<FilterViewModel>(view) {
+                       private val showChipsListener: ShowChipsListener) : AbstractViewHolder<FilterUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_filter
@@ -43,7 +43,7 @@ class FilterViewHolder(view: View,
         ViewCompat.setLayoutDirection(recyclerView, ViewCompat.LAYOUT_DIRECTION_LTR)
     }
 
-    override fun bind(element: FilterViewModel) {
+    override fun bind(element: FilterUiModel) {
         headerWidget.bind(element.title)
         if(!element.isChipsShown) {
             hideChips()

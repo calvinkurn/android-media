@@ -22,9 +22,9 @@ import com.tokopedia.product.manage.feature.cashback.di.ProductManageSetCashback
 import com.tokopedia.product.manage.feature.cashback.di.ProductManageSetCashbackModule
 import com.tokopedia.product.manage.feature.cashback.presentation.adapter.SetCashbackAdapter
 import com.tokopedia.product.manage.feature.cashback.presentation.adapter.SetCashbackAdapterTypeFactory
-import com.tokopedia.product.manage.feature.cashback.presentation.adapter.viewmodel.SetCashbackViewModel
+import com.tokopedia.product.manage.feature.cashback.presentation.adapter.viewmodel.SetCashbackUiModel
 import com.tokopedia.product.manage.feature.cashback.presentation.viewmodel.ProductManageSetCashbackViewModel
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectViewModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
 import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
 import com.tokopedia.unifycomponents.Toaster
@@ -106,7 +106,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
         observeSetCashback()
     }
 
-    override fun onSelectClick(element: SelectViewModel) {
+    override fun onSelectClick(element: SelectUiModel) {
         cashback = element.value.toIntOrZero()
         setCashbackList()
     }
@@ -141,25 +141,25 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
     }
 
     private fun setCashbackList() {
-        val setCashbackList = mutableListOf<SetCashbackViewModel>()
+        val setCashbackList = mutableListOf<SetCashbackUiModel>()
         context?.let {
             setCashbackList.addAll(
                     listOf(
-                            SetCashbackViewModel(
+                            SetCashbackUiModel(
                                     it.resources.getString(R.string.product_manage_set_cashback_no_cashback),
                                     ZERO_CASHBACK,
                                     cashback == ZERO_CASHBACK),
-                            SetCashbackViewModel(
+                            SetCashbackUiModel(
                                     it.resources.getString(R.string.product_manage_set_cashback_three_percent,
                                             getCashbackPrice(price, THREE_PERCENT_CASHBACK)),
                                     THREE_PERCENT_CASHBACK,
                                     cashback == THREE_PERCENT_CASHBACK),
-                            SetCashbackViewModel(
+                            SetCashbackUiModel(
                                     it.resources.getString(R.string.product_manage_set_cashback_four_percent,
                                             getCashbackPrice(price, FOUR_PERCENT_CASHBACK)),
                                     FOUR_PERCENT_CASHBACK,
                                     cashback == FOUR_PERCENT_CASHBACK),
-                            SetCashbackViewModel(
+                            SetCashbackUiModel(
                                     it.resources.getString(R.string.product_manage_set_cashback_five_percent,
                                             getCashbackPrice(price, FIVE_PERCENT_CASHBACK)),
                                     FIVE_PERCENT_CASHBACK,

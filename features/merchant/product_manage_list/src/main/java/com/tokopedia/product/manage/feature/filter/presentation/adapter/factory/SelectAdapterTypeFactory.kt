@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewholder.CheckListViewHolder
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewholder.SelectViewHolder
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistViewModel
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectViewModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistUiModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChecklistClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
 
@@ -15,11 +15,11 @@ class SelectAdapterTypeFactory(
         private val selectClickListener: SelectClickListener,
         private val checklistClickListener: ChecklistClickListener
 ) : BaseAdapterTypeFactory(), SelectTypeFactory {
-    override fun type(selectViewModel: SelectViewModel): Int {
+    override fun type(selectUiModel: SelectUiModel): Int {
         return SelectViewHolder.LAYOUT
     }
 
-    override fun type(checklistViewModel: ChecklistViewModel): Int {
+    override fun type(checklistUiModel: ChecklistUiModel): Int {
         return CheckListViewHolder.LAYOUT
     }
 
