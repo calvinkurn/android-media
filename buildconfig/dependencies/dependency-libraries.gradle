@@ -14,7 +14,7 @@ ext {
             akamaiBotLib            : "com.tokopedia.akamai:akamai_bot_lib:1.0.15",
             analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.3",
             williamchart            : "com.tokopedia.williamchart:williamchart:0.0.3",
-            betaNotif               : "com.tokopedia.graphql:beta.notif:0.0.6"
+            betaNotif               : "com.tokopedia.graphql:beta.notif:0.0.6",
             chuckNoOp               : "com.tokopedia.chuckernoop:chucker_no_op:0.0.1"
     ]
 
