@@ -24,7 +24,6 @@ import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.player.PlayVideoManager
-import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
