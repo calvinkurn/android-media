@@ -177,12 +177,15 @@ object PlayAnalytics {
                 ),
                 hashMapOf<String, Any>(
                         "ecommerce" to hashMapOf(
-                                "currencyCode" to "IDR",
-                                "impression" to convertProductsToListOfObject(listOf(product))
+                                "click" to hashMapOf(
+                                        "actionField" to hashMapOf( "list" to "/groupchat - bottom sheet" ),
+                                        "products" to convertProductsToListOfObject(listOf(product))
+                                )
                         )
                 )
         )
     }
+
 
     private fun convertProductsToListOfObject(listOfProducts: List<ProductLineUiModel>): MutableList<HashMap<String, Any>> {
         val products = mutableListOf<HashMap<String, Any>>()
@@ -200,6 +203,9 @@ object PlayAnalytics {
                     is DiscountedPrice -> product.price.discountedPriceNumber
                     is OriginalPrice -> product.price.priceNumber
                 },
+                "brand" to "",
+                "category" to "",
+                "variant" to "",
                 "list" to "/groupchat - bottom sheet",
                 "position" to position
         )
@@ -218,7 +224,6 @@ object PlayAnalytics {
         when(productAction) {
             ProductAction.AddToCart -> clickAtcButtonProductWithVariant(channelId, productId, channelType)
             ProductAction.Buy -> clickBeliButtonProductWithVariant(channelId, productId, channelType)
-            else -> return
         }
     }
 
@@ -226,7 +231,7 @@ object PlayAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
-                "$KEY_TRACK_CLICK buy in bottom sheet",
+                "$KEY_TRACK_CLICK buy in bottom sheet with variant",
                 "$channelId - $productId - ${channelType.value}"
         )
     }
@@ -235,7 +240,7 @@ object PlayAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
-                "$KEY_TRACK_CLICK atc in bottom sheet",
+                "$KEY_TRACK_CLICK atc in bottom sheet with variant",
                 "$channelId - $productId - ${channelType.value}"
         )
     }
@@ -271,7 +276,7 @@ object PlayAnalytics {
                 EventModel(
                         KEY_TRACK_ADD_TO_CART,
                         KEY_TRACK_GROUP_CHAT_ROOM,
-                        "$KEY_TRACK_CLICK buy in bottom sheet with variant",
+                        "$KEY_TRACK_CLICK buy in bottom sheet",
                         "$channelId - ${product.id} - ${channelType.value}"
                 ),
                 hashMapOf<String, Any>(
@@ -294,7 +299,7 @@ object PlayAnalytics {
                 EventModel(
                         KEY_TRACK_ADD_TO_CART,
                         KEY_TRACK_GROUP_CHAT_ROOM,
-                        "$KEY_TRACK_CLICK atc in bottom sheet with variant",
+                        "$KEY_TRACK_CLICK atc in bottom sheet",
                         "$channelId - ${product.id} - ${channelType.value}"
                 ),
                 hashMapOf<String, Any>(
@@ -363,6 +368,9 @@ object PlayAnalytics {
                             is DiscountedPrice -> product.price.discountedPriceNumber
                             is OriginalPrice -> product.price.priceNumber
                         },
+                        "brand" to "",
+                        "category" to "",
+                        "variant" to "",
                         "quantity" to product.minQty,
                         "dimension79" to product.shopId,
                         "dimension81" to "", // shop type
