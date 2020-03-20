@@ -17,8 +17,8 @@ class MerchantVoucherItemDecoration(context: Context) : RecyclerView.ItemDecorat
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val position = parent.getChildAdapterPosition(view)
 
-        if (position != parent.adapter?.itemCount.orZero() - 1) {
-            outRect.right = dividerWidth
-        }
+        if (position != 0) {
+            outRect.left = dividerWidth
+        } else super.getItemOffsets(outRect, view, parent, state)
     }
 }
