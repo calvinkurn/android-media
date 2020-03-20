@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName
 data class ParamData(
         @SerializedName("product")
         @Expose
-        val product: String = "SUBHOMEPAGE",
+        val product: String = "ALL",
 
         @SerializedName("countryID")
         @Expose
