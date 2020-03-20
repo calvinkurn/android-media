@@ -99,6 +99,7 @@ import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.mo
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult;
@@ -2411,6 +2412,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         ArrayList<OrdersItem> listOrderItem = new ArrayList<>();
 
         List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentAdapter.getShipmentCartItemModelList();
+        LastApplyUiModel lastApplyUiModel = shipmentPresenter.getLastApplyData();
         if (shipmentCartItemModelList != null) {
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                 OrdersItem ordersItem = new OrdersItem();
@@ -2424,12 +2426,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                 }
                 ordersItem.setProductDetails(productDetailsItems);
-                List<String> promoCodes = shipmentCartItemModel.getListPromoCodes();
-                if (promoCodes != null) {
-                    ordersItem.setCodes(shipmentCartItemModel.getListPromoCodes());
-                } else {
-                    ordersItem.setCodes(new ArrayList<>());
+
+                ArrayList<String> listOrderCodes = new ArrayList<>();
+                if (lastApplyUiModel != null) {
+                     for (LastApplyVoucherOrdersItemUiModel lastApplyVoucherOrdersItemUiModel : lastApplyUiModel.getVoucherOrders()) {
+                         if (shipmentCartItemModel.getCartString().equalsIgnoreCase(lastApplyVoucherOrdersItemUiModel.getUniqueId())) {
+                             listOrderCodes.add(lastApplyVoucherOrdersItemUiModel.getCode());
+                             break;
+                         }
+                     }
                 }
+                ordersItem.setCodes(listOrderCodes);
                 ordersItem.setUniqueId(shipmentCartItemModel.getCartString());
                 ordersItem.setShopId(shipmentCartItemModel.getShopId());
                 if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
@@ -2448,7 +2455,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             validateUsePromoRequest.setTradeInDropOff(isTradeInByDropOff() ? 1 : 0);
         }
 
-        LastApplyUiModel lastApplyUiModel = shipmentPresenter.getLastApplyData();
         if (lastApplyUiModel != null) {
             ArrayList<String> globalPromoCodes = new ArrayList<>();
             if (lastApplyUiModel.getCodes().size() > 0) {
@@ -2741,8 +2747,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             order.setShopId(shipmentCartItemModel.getShopId());
             order.setUniqueId(shipmentCartItemModel.getCartString());
             order.setChecked(true);
-            //TODO:
-            // order.setCodes();
+
+            ArrayList<String> listOrderCodes = new ArrayList<>();
+            for (int x = 0; x < lastApplyUiModel.getVoucherOrders().size(); x++) {
+                if (shipmentCartItemModel.getCartString().equalsIgnoreCase(lastApplyUiModel.getVoucherOrders().get(x).getUniqueId())){
+                    listOrderCodes.add(lastApplyUiModel.getVoucherOrders().get(x).getCode());
+                    break;
+                }
+            }
+            order.setCodes(listOrderCodes);
 
             ArrayList<com.tokopedia.purchase_platform.features.promo.data.request.ProductDetail> listProduct = new ArrayList<>();
             for (int j = 0; j < shipmentCartItemModel.getCartItemModels().size(); j++) {
