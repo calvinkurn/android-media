@@ -500,7 +500,6 @@ class RegisterAnalytics @Inject constructor() {
         ))
 
         TrackApp.getInstance().appsFlyer.sendAppsflyerRegisterEvent(userId.toString(), EMAIL_METHOD)
-        TrackApp.getInstance().moEngage.sendMoengageRegisterEvent(name, "")
         sendBranchRegisterEvent(email)
     }
 
