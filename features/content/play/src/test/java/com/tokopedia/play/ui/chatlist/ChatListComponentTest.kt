@@ -35,7 +35,7 @@ class ChatListComponentTest {
 
     private val modelBuilder = ModelBuilder()
 
-    @BeforeAll
+    @BeforeEach
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         every { owner.lifecycle } returns mockk(relaxed = true)
@@ -43,7 +43,7 @@ class ChatListComponentTest {
         component = ChatListComponentMock(mockk(relaxed = true), EventBusFactory.get(owner), coroutineScope)
     }
 
-    @AfterAll
+    @AfterEach
     fun tearDown() {
         Dispatchers.resetMain()
     }

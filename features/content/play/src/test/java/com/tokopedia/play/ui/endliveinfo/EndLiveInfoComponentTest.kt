@@ -5,13 +5,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.model.ModelBuilder
-import com.tokopedia.play.ui.chatlist.ChatListComponent
-import com.tokopedia.play.ui.chatlist.ChatListComponentTest
-import com.tokopedia.play.ui.chatlist.ChatListView
 import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play.view.type.PlayRoomEvent
-import com.tokopedia.play.view.uimodel.TotalLikeUiModel
-import com.tokopedia.play.view.uimodel.TotalViewUiModel
 import io.mockk.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,10 +13,7 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
-import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.*
 
 /**
  * Created by jegul on 30/01/20
@@ -38,7 +29,7 @@ class EndLiveInfoComponentTest {
 
     private val modelBuilder = ModelBuilder()
 
-    @Before
+    @BeforeEach
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         every { owner.lifecycle } returns mockk(relaxed = true)
@@ -46,7 +37,7 @@ class EndLiveInfoComponentTest {
         component = EndLiveInfoComponentMock(mockk(relaxed = true), EventBusFactory.get(owner), coroutineScope)
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         Dispatchers.resetMain()
     }
