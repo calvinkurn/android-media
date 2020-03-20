@@ -182,12 +182,14 @@ class TravelHomepageTrackingUtil {
 
     fun travelProductCardClick(item: ProductGridCardItemModel, position: Int, componentPosition: Int, sectionTitle: String) {
 
+        if (item.product.isEmpty()) item.product = SUBHOMEPAGE_CATEGORY_NAME
+
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, PRODUCT_CLICK,
                         TrackAppUtils.EVENT_CATEGORY, TRAVEL_HOMEPAGE_CATEGORY,
                         TrackAppUtils.EVENT_ACTION, SQUARE_PRODUCT_CARD_CLICK,
-                        TrackAppUtils.EVENT_LABEL, "square product card - $componentPosition - ${item.product} - $position - ${item.id}",
+                        TrackAppUtils.EVENT_LABEL, "square product card - $componentPosition - ${item.product} - ${position + 1} - ${item.id}",
                         CURRENT_SITE, TOKOPEDIA_DIGITAL_SUBHOMEPAGE,
                         BUSINESS_UNIT, TRAVEL_ENTERTAINMENT,
                         ECOMMERCE, DataLayer.mapOf(CLICK, DataLayer.mapOf(ACTION_FIELD, DataLayer.mapOf(LIST, "/${item.product}"),
@@ -237,6 +239,7 @@ class TravelHomepageTrackingUtil {
 
     fun travelHomepageLegoClick(item: LegoBannerItemModel, position:Int, componentPosition: Int, sectionTitle: String) {
 
+        if (item.product.isEmpty()) item.product = SUBHOMEPAGE_CATEGORY_NAME
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, PROMO_CLICK,
@@ -285,7 +288,7 @@ class TravelHomepageTrackingUtil {
                         TrackAppUtils.EVENT, PRODUCT_CLICK,
                         TrackAppUtils.EVENT_CATEGORY, TRAVEL_HOMEPAGE_CATEGORY,
                         TrackAppUtils.EVENT_ACTION, PRODUCT_CARD_CLICK,
-                        TrackAppUtils.EVENT_LABEL, "product card - $componentPosition - ${item.product} - $position - $sectionTitle",
+                        TrackAppUtils.EVENT_LABEL, "product card - $componentPosition - ${item.product} - ${position + 1} - $sectionTitle",
                         CURRENT_SITE, TOKOPEDIA_DIGITAL_SUBHOMEPAGE,
                         BUSINESS_UNIT, TRAVEL_ENTERTAINMENT,
                         ECOMMERCE, DataLayer.mapOf(CLICK, DataLayer.mapOf(ACTION_FIELD, DataLayer.mapOf(LIST, "/${item.product}"),

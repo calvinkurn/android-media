@@ -54,7 +54,7 @@
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginBottom="@dimen/travel_homepage_dp_2"
         android:ellipsize="end"
-        android:maxLines="2"
+        android:maxLines="1"
         android:textColor="@color/Neutral_N700_96"
         app:typographyType="body_2"
         tools:text="Voucher Kintan Buffet Rp100.000 Voucher Kintan Buffet Rp100.000 Voucher Kintan Buffet
