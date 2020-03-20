@@ -16,7 +16,7 @@ import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
  * Created by rizqiaryansa on 2020-03-02.
  */
 
-class ShopHomePageYoutubePlayerActivity: AppCompatActivity(), YouTubePlayer.OnInitializedListener {
+class ShopHomePageYoutubePlayerActivity : AppCompatActivity(), YouTubePlayer.OnInitializedListener {
 
     companion object {
         private const val EXTRA_YOUTUBE_VIDEO_ID_SHOP_PAGE = "EXTRA_YOUTUBE_VIDEO_ID_SHOP_PAGE"
@@ -30,7 +30,7 @@ class ShopHomePageYoutubePlayerActivity: AppCompatActivity(), YouTubePlayer.OnIn
     private var toolbar: Toolbar? = null
     private var isFullScreen = false
     private var videoUrl: String? = null
-    private lateinit var youtubePlayerScreen: YouTubePlayer
+    private var youtubePlayerScreen: YouTubePlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,12 +61,11 @@ class ShopHomePageYoutubePlayerActivity: AppCompatActivity(), YouTubePlayer.OnIn
 
     override fun onBackPressed() {
         super.onBackPressed()
-        if (::youtubePlayerScreen.isInitialized)
-            youtubePlayerScreen.release()
+        youtubePlayerScreen?.release()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when(item?.itemId) {
+        when (item?.itemId) {
             android.R.id.home -> {
                 onBackPressed()
             }
@@ -76,8 +75,7 @@ class ShopHomePageYoutubePlayerActivity: AppCompatActivity(), YouTubePlayer.OnIn
 
     override fun onDestroy() {
         super.onDestroy()
-        if (::youtubePlayerScreen.isInitialized)
-            youtubePlayerScreen.release()
+        youtubePlayerScreen?.release()
     }
 
     private fun setupActionBar() {
@@ -92,6 +90,6 @@ class ShopHomePageYoutubePlayerActivity: AppCompatActivity(), YouTubePlayer.OnIn
     }
 
     private fun playVideo() {
-        youtubePlayerScreen.cueVideo(videoUrl)
+        youtubePlayerScreen?.cueVideo(videoUrl)
     }
 }

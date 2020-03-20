@@ -43,9 +43,9 @@ class ShopHomeVideoViewHolder(
     private var loaderImageView: LoaderImageView? = null
     private var youtubVideoModel: ShopHomeDisplayWidgetUiModel? = null
 
-    var btnYoutubePlayer: AppCompatImageView? = null
-    var ivVideoNotFound: AppCompatImageView? = null
-    var groupVideoError: Group? = null
+    private var btnYoutubePlayer: AppCompatImageView? = null
+    private var ivVideoNotFound: AppCompatImageView? = null
+    private var groupVideoError: Group? = null
 
     init {
         youTubeThumbnailShopPage = view.findViewById(R.id.youtube_home_shop_page)

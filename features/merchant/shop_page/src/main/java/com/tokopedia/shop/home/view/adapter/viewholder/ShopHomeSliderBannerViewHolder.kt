@@ -14,6 +14,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import kotlinx.android.synthetic.main.viewmodel_slider_banner.view.*
 import java.util.ArrayList
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by rizqiaryansa on 2020-02-25.
@@ -27,15 +28,12 @@ class ShopHomeSliderBannerViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT_RES = R.layout.viewmodel_slider_banner
+        const val DURATION_SLIDER_BANNER = 5000L
     }
-
-    class CarouselData(val imageUrl: String)
 
     private var carouselShopPage: CarouselUnify? = null
     private var bannerData: ShopHomeDisplayWidgetUiModel? = null
     private var carouselData: ArrayList<Any>? = null
-
-    private var heightRatio = 0.0F
 
     private var itmListener = { view: View, data: Any ->
         val img: ImageUnify = view.findViewById(R.id.imageCarousel)
@@ -60,7 +58,7 @@ class ShopHomeSliderBannerViewHolder(
     init {
         carouselShopPage = view?.findViewById(R.id.carousel_shop_page)
         carouselShopPage?.apply {
-            autoplayDuration = 5000L
+            autoplayDuration = DURATION_SLIDER_BANNER
             indicatorPosition = CarouselUnify.INDICATOR_BL
             infinite = true
             onActiveIndexChangedListener = this@ShopHomeSliderBannerViewHolder
@@ -148,4 +146,6 @@ class ShopHomeSliderBannerViewHolder(
         }
         return mutableString
     }
+
+    class CarouselData(val imageUrl: String)
 }
