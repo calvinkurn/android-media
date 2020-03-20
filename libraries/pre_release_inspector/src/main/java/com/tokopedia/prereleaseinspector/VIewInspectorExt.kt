@@ -1,4 +1,4 @@
-package com.example.tesgetview
+package com.tokopedia.prereleaseinspector
 
 import android.view.View
 import android.view.ViewGroup
