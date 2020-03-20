@@ -275,26 +275,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
             when (atcParams) {
                 is AddToCartRequestParams -> {
-                    withContext(dispatcher.io()) {
-                        val result = addToCartUseCase.createObservable(requestParams).toBlocking().single()
-                        if (result.isDataError()) {
-                            _addToCartLiveData.postValue(Fail(Throwable(result.errorMessage.firstOrNull()
-                                    ?: "")))
-                        } else {
-                            _addToCartLiveData.postValue(Success(result))
-                        }
-                    }
+                    getAddToCartUseCase(requestParams)
                 }
                 is AddToCartOcsRequestParams -> {
-                    withContext(dispatcher.io()) {
-                        val result = addToCartOcsUseCase.createObservable(requestParams).toBlocking().single()
-                        if (result.isDataError()) {
-                            _addToCartLiveData.postValue(Fail(Throwable(result.errorMessage.firstOrNull()
-                                    ?: "")))
-                        } else {
-                            _addToCartLiveData.postValue(Success(result))
-                        }
-                    }
+                    getAddToCartOcsUseCase(requestParams)
                 }
             }
         }) {
@@ -326,6 +310,30 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             tradeInParams.isOnCampaign = it.data.campaign.isActive
         }
         return tradeInParams
+    }
+
+    private suspend fun getAddToCartUseCase(requestParams: RequestParams) {
+        withContext(dispatcher.io()) {
+            val result = addToCartUseCase.createObservable(requestParams).toBlocking().single()
+            if (result.isDataError()) {
+                _addToCartLiveData.postValue(Fail(Throwable(result.errorMessage.firstOrNull()
+                        ?: "")))
+            } else {
+                _addToCartLiveData.postValue(Success(result))
+            }
+        }
+    }
+
+    private suspend fun getAddToCartOcsUseCase(requestParams: RequestParams) {
+        withContext(dispatcher.io()) {
+            val result = addToCartOcsUseCase.createObservable(requestParams).toBlocking().single()
+            if (result.isDataError()) {
+                _addToCartLiveData.postValue(Fail(Throwable(result.errorMessage.firstOrNull()
+                        ?: "")))
+            } else {
+                _addToCartLiveData.postValue(Success(result))
+            }
+        }
     }
 
     private suspend fun getProductP2(forceRefresh: Boolean, warehouseId: String?) {

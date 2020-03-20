@@ -1058,6 +1058,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     }
                 }
                 is Fail -> {
+                    logException(it.throwable)
                     showToasterError(it.throwable.message ?: "")
                 }
             }
@@ -1431,7 +1432,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
         if (isPartialySelected && variantOptions.level == 0 && shouldFireVariantTracker) {
             shouldFireVariantTracker = false
-            DynamicProductDetailTracking.Click.onVariantLevel1Clicked(pdpHashMapUtil?.productNewVariantDataModel?.getFirstSelectedVariantId() ?: 0,
+            DynamicProductDetailTracking.Click.onVariantLevel1Clicked(pdpHashMapUtil?.productNewVariantDataModel?.getFirstSelectedVariantId()
+                    ?: 0,
                     viewModel.getDynamicProductInfoP1,
                     pdpHashMapUtil?.productNewVariantDataModel,
                     dynamicAdapter.getVariantPosition(pdpHashMapUtil?.productNewVariantDataModel))
@@ -1439,7 +1441,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
         if (!isPartialySelected && shouldFireVariantTracker) {
             shouldFireVariantTracker = false
-            DynamicProductDetailTracking.Click.onVariantLevel1Clicked(pdpHashMapUtil?.productNewVariantDataModel?.getFirstSelectedVariantId() ?: 0,
+            DynamicProductDetailTracking.Click.onVariantLevel1Clicked(pdpHashMapUtil?.productNewVariantDataModel?.getFirstSelectedVariantId()
+                    ?: 0,
                     viewModel.getDynamicProductInfoP1,
                     pdpHashMapUtil?.productNewVariantDataModel,
                     dynamicAdapter.getVariantPosition(pdpHashMapUtil?.productNewVariantDataModel))
@@ -1914,7 +1917,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun showToasterError(message: String) {
         view?.let {
-            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "Oke", clickListener = View.OnClickListener {})
+            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.label_oke_pdp), clickListener = View.OnClickListener {})
         }
     }
 

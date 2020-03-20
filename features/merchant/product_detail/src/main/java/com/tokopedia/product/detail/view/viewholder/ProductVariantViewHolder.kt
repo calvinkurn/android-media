@@ -21,6 +21,7 @@ class ProductVariantViewHolder(val view: View,
 
     companion object {
         val LAYOUT = R.layout.item_product_variant_view_holder
+        val PAYLOAD_VARIANT_CHILD = 1
     }
 
     override fun bind(element: VariantDataModel) {
@@ -29,7 +30,9 @@ class ProductVariantViewHolder(val view: View,
                 variant_separator.show()
                 containerAdapter = VariantContainerAdapter(listener)
                 rvContainerVariant.adapter = containerAdapter
-                rvContainerVariant.addItemDecoration(VariantItemDecorator(MethodChecker.getDrawable(view.context, R.drawable.bg_separator_variant)))
+                if (rvContainerVariant.itemDecorationCount == 0) {
+                    rvContainerVariant.addItemDecoration(VariantItemDecorator(MethodChecker.getDrawable(view.context, R.drawable.bg_separator_variant)))
+                }
                 rvContainerVariant.itemAnimator = null
                 containerAdapter?.setData(it)
             }
@@ -38,7 +41,9 @@ class ProductVariantViewHolder(val view: View,
 
     override fun bind(element: VariantDataModel, payloads: MutableList<Any>) {
         super.bind(element, payloads)
-        containerAdapter?.variantContainerData = element.listOfVariantCategory!!
-        containerAdapter?.notifyItemRangeChanged(0,element.listOfVariantCategory!!.size,1)
+        element.listOfVariantCategory?.let {
+            containerAdapter?.variantContainerData = it
+            containerAdapter?.notifyItemRangeChanged(0, it.size, PAYLOAD_VARIANT_CHILD)
+        }
     }
 }

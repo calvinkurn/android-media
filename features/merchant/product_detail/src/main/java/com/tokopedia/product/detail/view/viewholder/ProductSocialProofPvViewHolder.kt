@@ -25,17 +25,17 @@ class ProductSocialProofPvViewHolder(val view: View, private val listener: Dynam
         val LAYOUT = R.layout.item_dynamic_pdp_social_proof_pv
     }
 
-    private lateinit var productStatsView: PartialProductStatisticView
-    private lateinit var attributeInfoView: PartialAttributeInfoPvView
+    private var productStatsView: PartialProductStatisticView? = null
+    private var attributeInfoView: PartialAttributeInfoPvView? = null
 
     override fun bind(element: ProductSocialProofPvDataModel) {
         val stats = element.stats ?: Stats()
         val txStats = element.txStats ?: TxStatsDynamicPdp()
-        if (!::productStatsView.isInitialized) {
+        if (productStatsView == null) {
             productStatsView = PartialProductStatisticView.build(view.base_rating_talk_courier)
         }
 
-        if (!::attributeInfoView.isInitialized) {
+        if (attributeInfoView == null) {
             attributeInfoView = PartialAttributeInfoPvView.build(view.base_attribute_pv)
         }
 
@@ -44,14 +44,14 @@ class ProductSocialProofPvViewHolder(val view: View, private val listener: Dynam
         }
 
         element.rating?.run {
-            productStatsView.renderRatingNew(this.toString())
+            productStatsView?.renderRatingNew(this.toString())
         }
-        attributeInfoView.renderWishlistCount(element.wishListCount)
+        attributeInfoView?.renderWishlistCount(element.wishListCount)
 
-        productStatsView.renderData(stats.countReview, stats.countTalk, listener::onReviewClick, listener::onDiscussionClicked, getComponentTrackData(element))
-        attributeInfoView.renderDataDynamicPdp(stats.countView, txStats)
+        productStatsView?.renderData(stats.countReview, stats.countTalk, listener::onReviewClick, listener::onDiscussionClicked, getComponentTrackData(element))
+        attributeInfoView?.renderDataDynamicPdp(stats.countView, txStats)
 
-        productStatsView.renderClickShipping {
+        productStatsView?.renderClickShipping {
             listener.onShipmentSocialProofClicked(getComponentTrackData(element))
         }
     }
