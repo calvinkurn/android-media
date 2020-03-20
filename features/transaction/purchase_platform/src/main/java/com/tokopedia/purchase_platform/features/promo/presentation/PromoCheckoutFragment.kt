@@ -39,9 +39,7 @@ import com.tokopedia.promocheckout.common.data.EXTRA_KUPON_CODE
 import com.tokopedia.promocheckout.common.data.ONE_CLICK_SHIPMENT
 import com.tokopedia.promocheckout.common.data.PAGE_TRACKING
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
-import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
-import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
+import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus.Companion.STATUS_PHONE_NOT_VERIFIED
@@ -332,7 +330,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             setButtonLoading(button_apply_promo, false)
             when {
                 it.state == ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CART -> {
-                    activity?.setResult(Activity.RESULT_OK)
+                    val intent = Intent()
+                    if (it.data != null) {
+                        intent.putExtra(ARGS_VALIDATE_USE_DATA_RESULT, it.data)
+                    }
+                    activity?.setResult(Activity.RESULT_OK, intent)
                     activity?.finish()
                 }
                 it.state == ApplyPromoResponseAction.ACTION_RELOAD_PROMO -> {
@@ -352,7 +354,14 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         viewModel.clearPromoResponse.observe(this, Observer {
             setButtonLoading(button_apply_no_promo, false)
             when {
-                it.state == ClearPromoResponseAction.ACTION_STATE_SUCCESS -> activity?.finish()
+                it.state == ClearPromoResponseAction.ACTION_STATE_SUCCESS -> {
+                    val intent = Intent()
+                    if (it.data != null) {
+                        intent.putExtra(ARGS_CLEAR_PROMO_RESULT, it.data)
+                    }
+                    activity?.setResult(Activity.RESULT_OK, intent)
+                    activity?.finish()
+                }
                 it.state == ClearPromoResponseAction.ACTION_STATE_ERROR -> it.exception?.let {
                     showToastMessage(it)
                 }

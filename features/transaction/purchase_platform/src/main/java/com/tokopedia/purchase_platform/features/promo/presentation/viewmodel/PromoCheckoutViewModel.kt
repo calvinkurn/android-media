@@ -21,6 +21,7 @@ import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus
 import com.tokopedia.purchase_platform.features.promo.data.response.validate_use.ValidateUseResponse
 import com.tokopedia.purchase_platform.features.promo.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.purchase_platform.features.promo.presentation.mapper.PromoCheckoutUiModelMapper
+import com.tokopedia.purchase_platform.features.promo.presentation.mapper.ValidateUsePromoCheckoutMapper
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -338,6 +339,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                             // If all promo merchant are success, then navigate to cart
                             applyPromoResponse.value?.let {
                                 it.state = ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CART
+                                it.data = ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(response.validateUsePromoRevamp)
                                 _applyPromoResponse.value = it
                             }
                         }
@@ -401,6 +403,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             if (response.successData.success) {
                 clearPromoResponse.value?.let {
                     it.state = ClearPromoResponseAction.ACTION_STATE_SUCCESS
+                    it.data = "Ini nanti diganti data dari backend, dapat dari clear promo response"
                     _clearPromoResponse.value = it
                 }
             } else {
