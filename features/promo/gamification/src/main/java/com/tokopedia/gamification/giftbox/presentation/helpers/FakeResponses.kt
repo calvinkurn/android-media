@@ -4,7 +4,7 @@ object FakeResponses {
 
     object GamiCrackResponse {
         val COUPONS_ONLY = "{\n" +
-                "  \"crackResult\": {\n" +
+                "  \"gamiCrack\": {\n" +
                 "    \"resultStatus\": {\n" +
                 "      \"code\": \"200\",\n" +
                 "      \"message\": [\n" +
@@ -54,7 +54,7 @@ object FakeResponses {
                 "}"
 
         val COUPONS_WITH_POINTS = "{\n" +
-                "  \"crackResult\": {\n" +
+                "  \"gamiCrack\": {\n" +
                 "    \"resultStatus\": {\n" +
                 "      \"code\": \"200\",\n" +
                 "      \"message\": [\n" +
@@ -71,7 +71,7 @@ object FakeResponses {
                 "      {\n" +
                 "        \"text\": \"Kupon Cashback\",\n" +
                 "        \"color\": \"#FFFFFF\",\n" +
-                "        \"imageUrl\": \"https://ecs7.tokopedia.net/img/blog/promo/2020/03/icon-coupon.png\",\n" +
+                "        \"imageURL\": \"https://ecs7.tokopedia.net/img/blog/promo/2020/03/icon-coupon.png\",\n" +
                 "        \"benefitType\": \"coupon\",\n" +
                 "        \"isBigPrize\": false,\n" +
                 "        \"isAutoApply\": true,\n" +
@@ -82,7 +82,7 @@ object FakeResponses {
                 "      {\n" +
                 "        \"text\": \"Kupon Cashback\",\n" +
                 "        \"color\": \"#FFFFFF\",\n" +
-                "        \"imageUrl\": \"https://ecs7.tokopedia.net/img/blog/promo/2020/03/icon-coupon.png\",\n" +
+                "        \"imageURL\": \"https://ecs7.tokopedia.net/img/blog/promo/2020/03/icon-coupon.png\",\n" +
                 "        \"benefitType\": \"coupon\",\n" +
                 "        \"isBigPrize\": false,\n" +
                 "        \"dummyCode\": \"asdas\",\n" +
@@ -93,7 +93,7 @@ object FakeResponses {
                 "      {\n" +
                 "        \"text\": \"500 OVO Points\",\n" +
                 "        \"color\": \"#FFFFFF\",\n" +
-                "        \"imageUrl\": \"https://ecs7.tokopedia.net/img/blog/promo/2020/03/icon-ovo.png\",\n" +
+                "        \"imageURL\": \"https://ecs7.tokopedia.net/img/blog/promo/2020/03/icon-ovo.png\",\n" +
                 "        \"benefitType\": \"ovopoints\",\n" +
                 "        \"isBigPrize\": false,\n" +
                 "        \"dummyCode\": \"\",\n" +
@@ -115,7 +115,7 @@ object FakeResponses {
                 "}"
 
         val POINTS_ONLY = "{\n" +
-                "  \"crackResult\": {\n" +
+                "  \"gamiCrack\": {\n" +
                 "    \"resultStatus\": {\n" +
                 "      \"code\": \"200\",\n" +
                 "      \"message\": [\n" +
@@ -132,7 +132,7 @@ object FakeResponses {
                 "      {\n" +
                 "        \"text\": \"500 OVO Points\",\n" +
                 "        \"color\": \"#FFFFFF\",\n" +
-                "        \"imageUrl\": \"https://ecs7.tokopedia.net/img/blog/promo/2020/03/icon-ovo.png\",\n" +
+                "        \"imageURL\": \"https://ecs7.tokopedia.net/img/blog/promo/2020/03/icon-ovo.png\",\n" +
                 "        \"benefitType\": \"ovopoints\",\n" +
                 "        \"isBigPrize\": false,\n" +
                 "        \"dummyCode\": \"\",\n" +
@@ -154,7 +154,7 @@ object FakeResponses {
                 "}"
 
         val ERROR = "{\n" +
-                "  \"crackResult\": {\n" +
+                "  \"gamiCrack\": {\n" +
                 "    \"resultStatus\": {\n" +
                 "      \"code\": \"XXXXX\",\n" +
                 "      \"message\": [\n" +

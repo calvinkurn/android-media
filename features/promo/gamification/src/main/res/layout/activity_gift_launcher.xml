@@ -11,6 +11,13 @@
         android:textSize="24sp" />
 
     <Button
+        android:id="@+id/btnStaging"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="openWithStagingApi"
+        android:text="Staging api" />
+
+    <Button
         android:id="@+id/btnShowCouponAndPoints"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,9 +37,9 @@
         android:textSize="24sp" />
 
     <Button
-        android:onClick="openGiftBoxTapTapActivity"
-        android:text="Tap Tap"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:onClick="openGiftBoxTapTapActivity"
+        android:text="Tap Tap" />
 
 </LinearLayout>

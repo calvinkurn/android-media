@@ -2,14 +2,14 @@ package com.tokopedia.gamification.giftbox.data.entities
 
 import com.google.gson.annotations.SerializedName
 
-class GiftBoxRewardEntity(@SerializedName("crackResult") val crackResult: CrackResult) {
+class GiftBoxRewardEntity(@SerializedName("gamiCrack") val gamiCrack: GamiCrack) {
     var couponDetailResponse: CouponDetailResponse? = null
 }
 
-data class CrackResult(
+data class GamiCrack(
 
         @SerializedName("resultStatus") val resultStatus: ResultStatus,
-        @SerializedName("imageUrl") val imageUrl: String,
+        @SerializedName("imageURL") val imageUrl: String,
         @SerializedName("benefitText") val benefitText: List<String>,
         @SerializedName("benefits") val benefits: List<Benefits>?,
         @SerializedName("actionButton") val actionButton: List<ActionButton>

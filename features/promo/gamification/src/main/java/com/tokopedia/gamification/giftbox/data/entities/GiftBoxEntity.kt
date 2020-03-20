@@ -26,7 +26,8 @@ data class TokensUser(
     @SerializedName("state") val state: String,
     @SerializedName("title") val title: String,
     @SerializedName("text") val text: String,
-    @SerializedName("desc") val desc: String
+    @SerializedName("desc") val desc: String,
+    @SerializedName("campaignSlug") val campaignSlug: String?
 )
 
 data class TokenAsset(

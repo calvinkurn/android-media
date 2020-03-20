@@ -208,7 +208,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                         giftBoxDailyView.handleTapOnGiftBox()
                         fadeOutViews()
 
-                        val benefitText = giftBoxRewardEntity?.crackResult?.benefitText
+                        val benefitText = giftBoxRewardEntity?.gamiCrack?.benefitText
                         if (benefitText != null && benefitText.isNotEmpty()) {
                             tvRewardFirstLine.text = benefitText[0]
                             if (benefitText.size > 1) {
@@ -216,7 +216,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                             }
                         }
 
-                        val actionButtonList = giftBoxRewardEntity?.crackResult?.actionButton
+                        val actionButtonList = giftBoxRewardEntity?.gamiCrack?.actionButton
                         if (actionButtonList != null && actionButtonList.isNotEmpty()) {
                             btnAction.text = actionButtonList[0].text
                             btnAction.setOnClickListener {

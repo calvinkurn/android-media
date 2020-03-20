@@ -10,6 +10,7 @@ import com.tokopedia.gamification.giftbox.data.entities.GiftBoxRewardEntity
 import com.tokopedia.gamification.giftbox.domain.CouponDetailUseCase
 import com.tokopedia.gamification.giftbox.domain.GiftBoxDailyRewardUseCase
 import com.tokopedia.gamification.giftbox.domain.GiftBoxDailyUseCase
+import com.tokopedia.gamification.giftbox.presentation.activities.GiftLauncherActivity
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
@@ -26,8 +27,9 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
     : BaseViewModel(workerDispatcher) {
 
     //todo Rahul these below values must not be hardcoded
-    var campaignSlug: String = "active"
-    var pageName: String = "daily"
+    @Volatile
+    var campaignSlug: String? = ""
+    var pageName: String = "giftbox"
     var uniqueCode: String = ""
 
     val giftBoxLiveData: MutableLiveData<LiveDataResult<GiftBoxEntity>> = MutableLiveData()
@@ -39,22 +41,28 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
         giftBoxLiveData.postValue(LiveDataResult.loading())
         launchCatchError(block = {
             delay(1000L)
-            val params = giftBoxDailyUseCase.getRequestParams(campaignSlug, pageName)
-//            val r = giftBoxDailyUseCase.getResponse(params)
-//            giftBoxLiveData.postValue(LiveDataResult.success(giftBoxDailyUseCase.getResponse(params)))
-            giftBoxLiveData.postValue(LiveDataResult.success(giftBoxDailyUseCase.getFakeResponseActive()))
+            val params = giftBoxDailyUseCase.getRequestParams(pageName)
+            if (GiftLauncherActivity.iS_STAGING) {
+                val response = giftBoxDailyUseCase.getResponse(params)
+                campaignSlug = response?.gamiLuckyHome.tokensUser?.campaignSlug
+                giftBoxLiveData.postValue(LiveDataResult.success(response))
+            } else
+                giftBoxLiveData.postValue(LiveDataResult.success(giftBoxDailyUseCase.getFakeResponseActive()))
         }, onError = {
             giftBoxLiveData.postValue(LiveDataResult.error(it))
         })
     }
 
     fun getRewards() {
-        if (rewardJob == null || rewardJob!!.isCompleted) {
+        if (rewardJob == null || rewardJob!!.isCompleted && campaignSlug != null) {
             rewardJob = launchCatchError(block = {
-                val params = giftBoxDailyRewardUseCase.getRequestParams(campaignSlug, uniqueCode)
-//            rewardLiveData.postValue(LiveDataResult.success(giftBoxDailyRewardUseCase.getResponse(params)))
-
-                val response = giftBoxDailyRewardUseCase.getCouponsWithOvoPoints()
+                val response: GiftBoxRewardEntity
+                if (GiftLauncherActivity.iS_STAGING) {
+                    val params = giftBoxDailyRewardUseCase.getRequestParams(campaignSlug!!, uniqueCode)
+                    response = giftBoxDailyRewardUseCase.getResponse(params)
+                } else {
+                    response = giftBoxDailyRewardUseCase.getCouponsWithOvoPoints()
+                }
                 val couponDetail = composeApi(response)
                 response.couponDetailResponse = couponDetail
                 rewardLiveData.postValue(LiveDataResult.success(response))
@@ -65,16 +73,21 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
         }
     }
 
-    suspend fun composeApi(giftBoxRewardEntity: GiftBoxRewardEntity): CouponDetailResponse {
+    suspend fun composeApi(giftBoxRewardEntity: GiftBoxRewardEntity): CouponDetailResponse? {
         val ids = mapperGratificationResponseToCouponIds(giftBoxRewardEntity)
+        if (ids.isEmpty()) {
+            return null
+        }
         return getCatalogDetail(ids)
     }
 
     private fun mapperGratificationResponseToCouponIds(response: GiftBoxRewardEntity): List<String> {
         var ids = arrayListOf<String>()
-        response.crackResult.benefits?.forEach {
-            if (it.referenceID!=null){
-                ids.add(it.referenceID.toString())
+        response.gamiCrack.benefits?.forEach {
+            if (it.referenceID != null) {
+                if (it.referenceID != 0) {
+                    ids.add(it.referenceID.toString())
+                }
             }
         }
         return ids

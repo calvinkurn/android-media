@@ -16,10 +16,10 @@ class GiftBoxDailyUseCase @Inject constructor(@Named(GIFT_BOX_DAILY) val querySt
         return gqlWrapper.getResponse(GiftBoxEntity::class.java, queryString, map)
     }
 
-    fun getRequestParams(campaignSlug: String, pageName: String): HashMap<String, Any> {
+    fun getRequestParams(pageName: String): HashMap<String, Any> {
         val map = HashMap<String, Any>()
         map[Params.PAGE] = pageName
-        map[Params.CAMPAIGN_SLUG] = campaignSlug
+        map[Params.CAMPAIGN_SLUG] = ""
         return map
     }
 

@@ -119,7 +119,7 @@ class RewardContainer : FrameLayout {
 
         //set coins
         var iconUrl: String? = ""
-        rewardEntity.crackResult.benefits?.let {
+        rewardEntity.gamiCrack.benefits?.let {
             it.forEach { benefit ->
                 if (benefit.benefitType != "coupons") {
                     hasPoints = true

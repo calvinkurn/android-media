@@ -1,9 +1,9 @@
-mutation GamiCrack($campaignSlug:String!,uniqueCode:String!){
-  gamiCrack(campaignSlug:$campaignSlug,uniqueCode:uniqueCode) {
+mutation GamiCrack($campaignSlug:String!,$uniqueCode:String!){
+  gamiCrack(campaignSlug:$campaignSlug,uniqueCode:$uniqueCode) {
     resultStatus {
       code
       message
-      status
+      reason
     }
     imageUrl
     benefitText
@@ -12,7 +12,7 @@ mutation GamiCrack($campaignSlug:String!,uniqueCode:String!){
       color
       size
       benefitType
-      imageUrl
+      imageURL
       dummyCode
       referenceID
       isAutoApply
