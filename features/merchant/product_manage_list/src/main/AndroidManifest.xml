@@ -34,6 +34,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.product.manage.feature.filter.presentation.activity.ProductManageFilterExpandActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden"
             android:label="@string/filter_expand_activity"
             android:screenOrientation="portrait" />
         <activity

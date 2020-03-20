@@ -40,7 +40,6 @@ class ProductManageFilterExpandChecklistViewModel @Inject constructor(): ViewMod
             }
             currentData[it]
         }
-        _checklistData.postValue(currentData)
     }
 
     fun clearAllChecklist() {
