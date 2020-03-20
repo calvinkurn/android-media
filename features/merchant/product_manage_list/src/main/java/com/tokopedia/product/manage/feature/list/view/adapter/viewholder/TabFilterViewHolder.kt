@@ -8,7 +8,7 @@ import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.item_product_manage_filter.view.*
 
-class FilterViewHolder(
+class TabFilterViewHolder(
     itemView: View,
     private val listener: ProductFilterListener
 ) : AbstractViewHolder<FilterViewModel>(itemView) {
@@ -61,6 +61,6 @@ class FilterViewHolder(
 
     interface ProductFilterListener {
         fun onClickMoreFilter(filter: FilterViewModel, tabName: String)
-        fun onClickProductFilter(filter: FilterViewModel, viewHolder: FilterViewHolder, tabName: String)
+        fun onClickProductFilter(filter: FilterViewModel, viewHolder: TabFilterViewHolder, tabName: String)
     }
 }

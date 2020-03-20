@@ -73,13 +73,12 @@ import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.decoration.ProductListItemDecoration
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactory
-import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.FilterViewHolder
+import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.TabFilterViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToTabFilters
 import com.tokopedia.product.manage.feature.list.view.model.SearchEmptyModel
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
-import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.MoreFilter
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
@@ -142,7 +141,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     MerchantCommonBottomSheet.BottomSheetListener,
     BaseCheckableViewHolder.CheckableInteractionListener,
     ProductViewHolder.ProductViewHolderView,
-    FilterViewHolder.ProductFilterListener,
+    TabFilterViewHolder.ProductFilterListener,
     ProductMenuViewHolder.ProductMenuListener,
     ProductMultiEditBottomSheet.MultiEditListener,
     ProductManageFilterFragment.OnFinishedListener,
@@ -260,7 +259,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         ProductManageTracking.eventInventory(tabName)
     }
 
-    override fun onClickProductFilter(filter: FilterViewModel, viewHolder: FilterViewHolder, tabName: String) {
+    override fun onClickProductFilter(filter: FilterViewModel, viewHolder: TabFilterViewHolder, tabName: String) {
         clickStatusFilterTab(filter, viewHolder)
         ProductManageTracking.eventInventory(tabName)
     }
@@ -348,7 +347,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         this.childFragmentManager.let { filterProductBottomSheet?.show(it,"BottomSheetTag") }
     }
 
-    private fun clickStatusFilterTab(filter: FilterViewModel, viewHolder: FilterViewHolder) {
+    private fun clickStatusFilterTab(filter: FilterViewModel, viewHolder: TabFilterViewHolder) {
         val selectedFilter = filter.status
         val currentFilter = tabFilters.selectedFilter?.status
         adapter.clearAllElements()

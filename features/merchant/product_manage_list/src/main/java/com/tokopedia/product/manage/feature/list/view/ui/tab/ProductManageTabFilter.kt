@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductFilterAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.decoration.ProductFilterItemDecoration
-import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.FilterViewHolder
-import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.FilterViewHolder.*
+import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.TabFilterViewHolder
+import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.TabFilterViewHolder.*
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
 
 class ProductManageTabFilter: RecyclerView {
@@ -29,9 +29,9 @@ class ProductManageTabFilter: RecyclerView {
         isNestedScrollingEnabled = false
     }
 
-    fun resetAllFilter(selectedFilter: FilterViewHolder) {
+    fun resetAllFilter(selectedFilter: TabFilterViewHolder) {
         for(i in 0..tabFilterAdapter?.itemCount.orZero()) {
-            val viewHolder = findViewHolderForAdapterPosition(i) as? FilterViewHolder
+            val viewHolder = findViewHolderForAdapterPosition(i) as? TabFilterViewHolder
             if(viewHolder != selectedFilter) viewHolder?.resetFilter()
         }
     }
