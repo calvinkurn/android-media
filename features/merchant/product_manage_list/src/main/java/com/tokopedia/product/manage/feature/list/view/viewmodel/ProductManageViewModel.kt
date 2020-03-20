@@ -329,7 +329,7 @@ class ProductManageViewModel @Inject constructor(
     }
 
     fun setSelectedFilterAndSort(selectedFilter: FilterOptionWrapper) {
-        _selectedFilterAndSort.postValue(selectedFilter)
+        _selectedFilterAndSort.value = selectedFilter
     }
 
     fun toggleMultiSelect() {
