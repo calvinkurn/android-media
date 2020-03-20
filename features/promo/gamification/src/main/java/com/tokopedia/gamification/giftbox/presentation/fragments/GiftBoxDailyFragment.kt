@@ -28,6 +28,7 @@ import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.INACTIVE
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.NON_LOGIN
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
+import com.tokopedia.gamification.giftbox.presentation.helpers.doOnLayout
 import com.tokopedia.gamification.giftbox.presentation.viewmodels.GiftBoxDailyViewModel
 import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
 import com.tokopedia.gamification.giftbox.presentation.views.GiftPrizeLargeView
@@ -105,7 +106,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     rewardContainer.setRewards(it, asyncCallback = { rewardState ->
                         when (rewardState) {
                             RewardContainer.RewardState.COUPON_WITH_POINTS -> {
-                                setPositionOfViewsAtBoxOpen()
 
                                 val rewardAnim = rewardContainer.showCouponAndRewardAnimation(giftBoxDailyView.fmGiftBox.top)
 
@@ -241,13 +241,19 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     fun setPositionOfViewsAtBoxOpen() {
         rewardContainer.setFinalTranslationOfCircles(giftBoxDailyView.fmGiftBox.top)
 
-        val array = IntArray(2)
-        giftBoxDailyView.imageBoxFront.getLocationInWindow(array)
-        val translationY = array[1].toFloat() - getStatusBarHeight(context) - dpToPx(40f)
-        starsContainer.setStartPositionOfStars(starsContainer.width / 2f, translationY)
+        giftBoxDailyView.imageBoxFront.doOnLayout {imageBoxFront->
+            val array = IntArray(2)
+            imageBoxFront.getLocationInWindow(array)
+            val translationY = array[1].toFloat() - getStatusBarHeight(context) - dpToPx(40f)
+            starsContainer.setStartPositionOfStars(starsContainer.width / 2f, translationY)
 
-        rewardContainer.rvCoupons.translationY = array[1].toFloat() - (screenHeight * 0.15f) - dpToPx(148f) - statusBarHeight
-        rewardContainer.llRewardTextLayout.translationY = (screenHeight * 0.385f) - statusBarHeight
+            val tranY = (screenHeight * 0.385f) - statusBarHeight
+            rewardContainer.llRewardTextLayout.translationY = tranY
+            rewardContainer.rvCoupons.translationY = array[1].toFloat() - (screenHeight * 0.15f) - dpToPx(158f) - statusBarHeight
+//            rewardContainer.rvCoupons.translationY = tranY - dpToPx(20f)
+            println("Hello")
+
+        }
     }
 
     fun showRewardMessageDescription(): Animator {
@@ -311,6 +317,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     fun fadeInActiveStateViews() {
         giftBoxDailyView.loadFiles(imageCallback = {
             if (it) {
+                setPositionOfViewsAtBoxOpen()
                 hideLoader()
 
                 val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
