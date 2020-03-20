@@ -12,7 +12,7 @@ object HomePageTrackingV2 : BaseTracking() {
     object LegoBanner{
         private const val LEGO_BANNER_4_IMAGE_NAME = "lego banner 4 image"
 
-        fun getLegoBannerFourImageImpression(channel: DynamicHomeChannel.Channels, position: Int, isToIris: Boolean = false) = getBasicPromotionView(
+        fun getLegoBannerFourImageImpression(channel: DynamicHomeChannel.Channels, position: Int, isToIris: Boolean = false) = getBasicPromotionChannelView(
                 event = if(isToIris) Event.PROMO_VIEW_IRIS else Event.PROMO_VIEW,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = Action.IMPRESSION.format(LEGO_BANNER_4_IMAGE_NAME),
@@ -25,9 +25,10 @@ object HomePageTrackingV2 : BaseTracking() {
                             name = Ecommerce.PROMOTION_NAME.format(position, LEGO_BANNER_4_IMAGE_NAME, channel.header.name),
                             position = (index + 1).toString()
                     )
-                }
+                },
+                channelId = channel.id
         )
-        fun getLegoBannerFourImageClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicPromotionClick(
+        fun getLegoBannerFourImageClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicPromotionChannelClick(
                 event = Event.PROMO_CLICK,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = Action.CLICK.format(LEGO_BANNER_4_IMAGE_NAME),
@@ -65,7 +66,7 @@ object HomePageTrackingV2 : BaseTracking() {
         private const val RECOMMENDATION_LIST_CLICK_EVENT_ACTION = "click on dynamic channel list"
         private const val RECOMMENDATION_LIST_SEE_ALL_EVENT_ACTION = "click view all on dynamic channel list"
 
-        fun getRecommendationListImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductView(
+        fun getRecommendationListImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductChannelView(
                 event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = RECOMMENDATION_LIST_IMPRESSION_EVENT_ACTION,
@@ -87,7 +88,8 @@ object HomePageTrackingV2 : BaseTracking() {
                 },
                 list = String.format(
                         Value.LIST_WITH_HEADER, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.header.name
-                )
+                ),
+                channelId = channel.id
         )
 
         private fun getRecommendationListClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductChannelClick(
@@ -155,7 +157,7 @@ object HomePageTrackingV2 : BaseTracking() {
             getTracker().sendGeneralEvent(getMixLeftClickLoadMore(channel))
         }
 
-        fun getMixLeftProductView(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductView(
+        fun getMixLeftProductView(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductChannelView(
                 event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = IMPRESSION_MIX_LEFT,
@@ -179,7 +181,8 @@ object HomePageTrackingV2 : BaseTracking() {
                 },
                 list = String.format(
                         Value.LIST, "1", LIST_MIX_LEFT, channel.header.name
-                )
+                ),
+                channelId = channel.id
         )
 
         fun getMixLeftProductClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductChannelClick(

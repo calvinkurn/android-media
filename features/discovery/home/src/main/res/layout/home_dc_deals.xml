@@ -236,6 +236,8 @@
                 android:lines="1"
                 android:ellipsize="end"
                 tools:text="Terjual 122"
+                app:typographyWeight="bold"
+                android:textStyle="bold"
                 android:textColor="@color/grey_560"
                 app:layout_constraintStart_toStartOf="@+id/deals_stockbar"
                 app:layout_constraintBottom_toBottomOf="@+id/deals_product_image" />

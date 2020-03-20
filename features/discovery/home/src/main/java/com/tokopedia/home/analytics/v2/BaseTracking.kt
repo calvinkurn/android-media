@@ -208,6 +208,24 @@ abstract class BaseTracking {
         )
     }
 
+    open fun getBasicPromotionChannelView(
+            event: String,
+            eventCategory: String,
+            eventAction: String,
+            eventLabel: String,
+            promotions: List<Promotion>,
+            channelId: String
+    ): Map<String, Any>{
+        return DataLayer.mapOf(
+                Event.KEY, event,
+                Category.KEY, eventCategory,
+                Action.KEY, eventAction,
+                Label.KEY, eventLabel,
+                Ecommerce.KEY, Ecommerce.getEcommercePromoView(promotions)m,
+                ChannelId.KEY, channelId
+        )
+    }
+
     open fun getBasicPromotionClick(
         event: String,
         eventCategory: String,
@@ -231,6 +249,33 @@ abstract class BaseTracking {
                 Label.CATEGORY_LABEL, categoryId,
                 Label.SHOP_LABEL, shopId,
                 Ecommerce.KEY, Ecommerce.getEcommercePromoClick(promotions)
+        )
+    }
+
+    open fun getBasicPromotionChannelClick(
+            event: String,
+            eventCategory: String,
+            eventAction: String,
+            eventLabel: String,
+            channelId: String,
+            affinity: String,
+            attribution: String,
+            categoryId: String,
+            shopId: String,
+            promotions: List<Promotion>
+    ): Map<String, Any>{
+        return DataLayer.mapOf(
+                Event.KEY, event,
+                Category.KEY, eventCategory,
+                Action.KEY, eventAction,
+                Label.KEY, eventLabel,
+                Label.CHANNEL_LABEL, channelId,
+                Label.AFFINITY_LABEL, affinity,
+                Label.ATTRIBUTION_LABEL, attribution,
+                Label.CATEGORY_LABEL, categoryId,
+                Label.SHOP_LABEL, shopId,
+                Ecommerce.KEY, Ecommerce.getEcommercePromoClick(promotions),
+                ChannelId.KEY, channelId
         )
     }
 
@@ -287,22 +332,22 @@ abstract class BaseTracking {
         )
     }
 
-    open fun getBasicProductView(
+    open fun getBasicProductChannelView(
             event: String,
             eventCategory: String,
             eventAction: String,
             eventLabel: String,
-            channelId: String,
             list: String,
-            products: List<Product>
+            products: List<Product>,
+            channelId: String
     ): Map<String, Any>{
         return DataLayer.mapOf(
                 Event.KEY, event,
                 Category.KEY, eventCategory,
                 Action.KEY, eventAction,
                 Label.KEY, eventLabel,
-                Label.CHANNEL_LABEL, channelId,
-                Ecommerce.KEY, Ecommerce.getEcommerceProductView(products, list)
+                Ecommerce.KEY, Ecommerce.getEcommerceProductView(products, list),
+                ChannelId.KEY, channelId
         )
     }
 

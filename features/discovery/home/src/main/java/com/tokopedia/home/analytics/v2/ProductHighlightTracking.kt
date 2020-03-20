@@ -7,7 +7,7 @@ object ProductHighlightTracking : BaseTracking() {
     val PRODUCT_DYNAMIC_CHANNEL_HERO_IMPRESSION = Action.IMPRESSION_ON.format(PRODUCT_DYNAMIC_CHANNEL_HERO)
     val PRODUCT_DYNAMIC_CHANNEL_HERO_CLICK = Action.CLICK_ON.format(PRODUCT_DYNAMIC_CHANNEL_HERO)
 
-    fun getProductHighlightImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductView(
+    fun getProductHighlightImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductChannelView(
             event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
             eventCategory = Category.HOMEPAGE,
             eventAction = PRODUCT_DYNAMIC_CHANNEL_HERO_IMPRESSION,
@@ -29,7 +29,8 @@ object ProductHighlightTracking : BaseTracking() {
             },
             list = String.format(
                     Value.LIST_WITH_HEADER, "1", PRODUCT_DYNAMIC_CHANNEL_HERO, channel.header.name
-            )
+            ),
+            channelId = channel.id
     )
 
     private fun getProductHighlightClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductChannelClick(
