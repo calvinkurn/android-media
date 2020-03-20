@@ -433,7 +433,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
                         if (isProductWholeSaleActivated) {
                             if (editable.isNotEmpty()) {
                                 val productWholeSaleQuantity = editable.toString().toInt()
-                                if (productWholeSaleQuantity <= 1) {
+                                if (productWholeSaleQuantity < 1) {
                                     productWholeSaleQuantityField.textFieldInput.error = getString(R.string.error_wholesale_quantity_less_than_two)
                                     wholeSaleErrorCounter++
                                 }
