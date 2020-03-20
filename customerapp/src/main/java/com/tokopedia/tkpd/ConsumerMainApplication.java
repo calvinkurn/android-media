@@ -14,13 +14,14 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.bugsnag.android.Bugsnag;
 import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.crashlytics.android.Crashlytics;
@@ -71,6 +72,8 @@ import com.tokopedia.tkpd.utils.DeviceUtil;
 import com.tokopedia.tkpd.utils.UIBlockDebugger;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
@@ -85,6 +88,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
@@ -135,7 +139,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
         createAndCallPreSeq();
-
         super.onCreate();
 
         initGqlNWClient();
@@ -160,7 +163,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         NFCSubscriber nfcSubscriber = new NFCSubscriber();
         registerActivityLifecycleCallbacks(nfcSubscriber);
-        Bugsnag.init(this);
     }
 
     private void createAndCallPreSeq(){
@@ -355,7 +357,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             FirebaseApp.initializeApp(this);
             FacebookSdk.sdkInitialize(this);
         } catch (Exception e) {
-            e.printStackTrace();
+
         }
     }
 
@@ -364,7 +366,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         Long timestampAbTest = sharedPreferences.getLong(AbTestPlatform.Companion.getKEY_SP_TIMESTAMP_AB_TEST(), 0);
         RemoteConfigInstance.initAbTestPlatform(this);
         Long current = new Date().getTime();
-
         if (current >= timestampAbTest + TimeUnit.HOURS.toMillis(1)) {
             RemoteConfigInstance.getInstance().getABTestPlatform().fetch(getRemoteConfigListener());
         }
@@ -498,7 +499,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 }
             }
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
             return false;
         }
     }
@@ -543,7 +543,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
             sb.append("\n");
         } catch (CertificateException e) {
-            // e.printStackTrace();
+
         }
         return sb.toString();
     }

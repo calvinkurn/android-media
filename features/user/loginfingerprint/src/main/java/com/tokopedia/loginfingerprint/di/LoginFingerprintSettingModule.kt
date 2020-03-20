@@ -2,6 +2,7 @@ package com.tokopedia.loginfingerprint.di
 
 import android.content.Context
 import android.os.Build
+import androidx.annotation.Nullable
 import androidx.annotation.RequiresApi
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -51,7 +52,13 @@ class LoginFingerprintSettingModule(val context: Context) {
     @LoginFingerprintSettingScope
     @Provides
     @RequiresApi(api = Build.VERSION_CODES.M)
-    fun provideCryptographyUtils(): Cryptography = CryptographyUtils()
+    @Nullable
+    fun provideCryptography(): Cryptography?  {
+        return if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            CryptographyUtils()
+        }
+        else null
+    }
 
     @LoginFingerprintSettingScope
     @Provides

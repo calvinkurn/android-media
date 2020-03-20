@@ -619,9 +619,6 @@ data class DynamicHomeChannel(
             @SerializedName("name")
             val name: String = "",
             @Expose
-            @SerializedName("subtitle")
-            val subtitle: String = "",
-            @Expose
             @SerializedName("expiredTime")
             val expiredTime: String = "",
             @Expose

@@ -1,5 +1,4 @@
 query getProductVariant($productID:String!){
-    status
     getProductVariant(productID: $productID){
     parentID
     defaultChild

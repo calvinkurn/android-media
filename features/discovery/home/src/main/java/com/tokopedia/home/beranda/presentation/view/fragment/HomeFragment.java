@@ -239,7 +239,6 @@ public class HomeFragment extends BaseDaggerFragment implements
     private StickyLoginTickerPojo.TickerDetail tickerDetail;
     private HomePerformanceMonitoringListener homePerformanceMonitoringListener;
     private JankyFramesMonitoringListener jankyFramesMonitoringListener;
-    private JankyFrameMonitoringUtil homeScrollJankyMonitoringUtil;
 
     private boolean isLightThemeStatusBar = true;
     private static final String KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar";
@@ -288,7 +287,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         setGeolocationPermission();
         needToShowGeolocationComponent();
         getStickyContent();
-        jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil().startInitPerformanceMonitoring(PERFORMANCE_PAGE_NAME_HOME);
+        startHomeInitPerformanceMonitoring();
     }
 
     @Override
@@ -297,9 +296,15 @@ public class HomeFragment extends BaseDaggerFragment implements
         stopHomeInitPerformanceMonitoring();
     }
 
+    private void startHomeInitPerformanceMonitoring() {
+        if (getHomeJankyFramesUtil() != null) {
+            getHomeJankyFramesUtil().startInitPerformanceMonitoring(PERFORMANCE_PAGE_NAME_HOME);
+        }
+    }
+
     private void stopHomeInitPerformanceMonitoring() {
-        if (jankyFramesMonitoringListener != null && jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil() != null) {
-            jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil().stopInitPerformanceMonitoring(PERFORMANCE_PAGE_NAME_HOME);
+        if (getHomeJankyFramesUtil() != null) {
+            getHomeJankyFramesUtil().stopInitPerformanceMonitoring(PERFORMANCE_PAGE_NAME_HOME);
         }
     }
 
@@ -391,9 +396,11 @@ public class HomeFragment extends BaseDaggerFragment implements
                 }
             }
         });
-        jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil().recordRecyclerViewScrollPerformance(
-                homeRecyclerView,
-                PERFORMANCE_PAGE_NAME_HOME, "");
+        if (getHomeJankyFramesUtil() != null) {
+            getHomeJankyFramesUtil().recordRecyclerViewScrollPerformance(
+                    homeRecyclerView,
+                    PERFORMANCE_PAGE_NAME_HOME, "");
+        }
     }
 
     private void setupStatusBar() {
@@ -990,7 +997,7 @@ public class HomeFragment extends BaseDaggerFragment implements
                 }
                 break;
             case REQUEST_CODE_PLAY_ROOM:
-                viewModel.updateBannerTotalView(data.getStringExtra(EXTRA_TOTAL_VIEW));
+                if(data.hasExtra(EXTRA_TOTAL_VIEW)) viewModel.updateBannerTotalView(data.getStringExtra(EXTRA_TOTAL_VIEW));
                 break;
         }
     }
@@ -1895,7 +1902,7 @@ public class HomeFragment extends BaseDaggerFragment implements
                 );
                 break;
             case TYPE_MIX_TOP:
-                putEEToIris((HashMap<String, Object>) MixTopTracking.INSTANCE.getMixTopViewIris(MixTopTracking.INSTANCE.mapChannelToProductTracker(channel), channel.getHeader().getName(), String.valueOf(position)));
+                putEEToIris((HashMap<String, Object>) MixTopTracking.INSTANCE.getMixTopViewIris(MixTopTracking.INSTANCE.mapChannelToProductTracker(channel), channel.getHeader().getName(), channel.getId(), String.valueOf(position)));
         }
     }
 
@@ -1914,7 +1921,7 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     @Override
     public JankyFrameMonitoringUtil getHomeJankyFramesUtil() {
-        if (jankyFramesMonitoringListener != null) return jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil();
+        if (jankyFramesMonitoringListener != null && jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil() != null) return jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil();
         return null;
     }
 
