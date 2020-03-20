@@ -43,6 +43,8 @@ import timber.log.Timber
 class MainSliceProvider : SliceProvider() {
     private lateinit var contextNonNull: Context
     private lateinit var userSession: UserSession
+    private lateinit var remoteConfig: FirebaseRemoteConfigImpl
+
 
     @Inject
     lateinit var repository: GraphqlRepository
@@ -223,12 +225,12 @@ class MainSliceProvider : SliceProvider() {
     override fun onCreateSliceProvider(): Boolean {
         contextNonNull = context.applicationContext ?: return false
         LocalCacheHandler(context,APPLINK_DEBUGGER)
+        remoteConfig = FirebaseRemoteConfigImpl(context)
         loadString = contextNonNull.resources.getString(R.string.slice_loading)
         return true
     }
 
     fun getRemoteConfigRechargeSliceEnabler(context: Context): Boolean{
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
         return (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_OLD_PDP))
         ///return false
     }
