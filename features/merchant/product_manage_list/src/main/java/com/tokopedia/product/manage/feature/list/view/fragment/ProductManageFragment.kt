@@ -281,7 +281,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun onFinish(selectedData: FilterOptionWrapper) {
-        viewModel.setSelectedFilterAndSort(selectedData)
+        viewModel.setFilterOptionWrapper(selectedData)
     }
 
     override fun onFinishEditPrice(product: ProductViewModel) {
@@ -548,7 +548,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 }
                 setSecondaryCTAClickListener {
                     dismiss()
-                    viewModel.getProductList(shopId = userSession.shopId, filterOptions = listOf(FilterOption.FilterByCondition.CashBackOnly), isRefresh = true)
+                    viewModel.setSelectedFilter(selectedFilter = listOf(FilterOption.FilterByCondition.CashBackOnly))
                 }
                 setImageUrl(ProductManageUrl.ILLUSTRATION_SET_CASHBACK_LIMIT_REACHED)
             }.show()
@@ -959,8 +959,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                             dialogFeaturedProduct?.setPrimaryCTAClickListener { dialogFeaturedProduct?.dismiss() }
                             dialogFeaturedProduct?.setSecondaryCTAClickListener {
                                 dialogFeaturedProduct?.dismiss()
-                                val filterOptionWrapper = FilterOptionWrapper(null, listOf(FilterOption.FilterByCondition.FeaturedOnly))
-                                viewModel.setSelectedFilterAndSort(filterOptionWrapper)
+                                viewModel.setSelectedFilter(listOf(FilterOption.FilterByCondition.FeaturedOnly))
                             }
                             dialogFeaturedProduct?.show()
                         } else if(productListFeaturedOnlySize == 0) {

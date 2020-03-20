@@ -288,6 +288,7 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
             ProductManageFilterMapper.mapFilterOptionWrapperToSelectedOtherFilters(it).forEach { data ->
                 productManageFilterViewModel.updateSelect(data)
             }
+            productManageFilterViewModel.updateShow(it.filterShownState)
         }
     }
 

@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
+import com.tokopedia.product.manage.feature.filter.data.model.Sort
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToViewModels
 import com.tokopedia.product.manage.feature.list.view.model.GetPopUpResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult
@@ -328,8 +329,14 @@ class ProductManageViewModel @Inject constructor(
 
     }
 
-    fun setSelectedFilterAndSort(selectedFilter: FilterOptionWrapper) {
-        _selectedFilterAndSort.value = selectedFilter
+    fun setFilterOptionWrapper(filterOptionWrapper: FilterOptionWrapper) {
+        _selectedFilterAndSort.value = filterOptionWrapper
+    }
+
+    fun setSelectedFilter(selectedFilter: List<FilterOption>?) {
+        selectedFilter?.let {
+            _selectedFilterAndSort.value = _selectedFilterAndSort.value?.copy(filterOptions = selectedFilter)
+        }
     }
 
     fun toggleMultiSelect() {
