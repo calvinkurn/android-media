@@ -114,5 +114,7 @@ interface FlightSearchContract {
 
         fun recountFilterCounter(): Int
 
+        fun sendQuickFilterTrack(filterName: String)
+
     }
 }
