@@ -1,0 +1,47 @@
+package com.tokopedia.thankyou_native.presentation.adapter.viewholder
+
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.LinearLayout
+import android.widget.TextView
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.thankyou_native.R
+import com.tokopedia.thankyou_native.presentation.adapter.model.PaymentInfo
+import com.tokopedia.thankyou_native.presentation.adapter.model.PaymentModeMap
+
+class PaymentInfoViewHolder(val view: View) : AbstractViewHolder<PaymentInfo>(view) {
+
+    private lateinit var inflater: LayoutInflater
+
+    override fun bind(element: PaymentInfo?) {
+        element?.let {
+            view.findViewById<TextView>(R.id.tvTotalBillPaidValue)
+                    .text = getString(R.string.thankyou_rp, element.totalAmountPaidStr)
+            addPaymentMode(view.findViewById(R.id.llPaymentModeContainer), element)
+        }
+
+    }
+
+    private fun addPaymentMode(container: LinearLayout, paymentInfo: PaymentInfo) {
+        container.removeAllViews()
+        paymentInfo.paymentModeList?.forEach { paymentModeMap ->
+            val view = createPaymentModeView(context = view.context, paymentModeMap = paymentModeMap)
+            container.addView(view)
+        }
+    }
+
+    private fun createPaymentModeView(context: Context, paymentModeMap: PaymentModeMap): View {
+        if (!::inflater.isInitialized)
+            inflater = LayoutInflater.from(context)
+        val paymentModeItemView = inflater.inflate(R.layout.thank_payment_mode_item, null, false)
+        paymentModeItemView.findViewById<TextView>(R.id.tvInvoicePaymentModeName).text = paymentModeMap.paymentModeStr
+        paymentModeItemView.findViewById<TextView>(R.id.tvInvoicePaidWithModeValue)
+                .text = getString(R.string.thankyou_rp, paymentModeMap.paidAmountStr)
+        return paymentModeItemView
+    }
+
+    companion object {
+        val LAYOUT_ID = R.layout.thank_widget_payment_info
+    }
+}

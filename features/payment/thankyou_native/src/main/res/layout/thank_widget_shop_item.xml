@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingStart="@dimen/dp_16"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingEnd="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvInvoiceShopItemName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:text="@string/thank_invoice_item_discount"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvInvoiceShopItemNameTotalPrice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:gravity="end"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvInvoiceShopItemName"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        tools:text="Rp12345678" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvInvoiceShopItemNameCountPrice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvInvoiceShopItemName"
+        app:typographyType="body_3"
+        tools:text="1 X RP1000021" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

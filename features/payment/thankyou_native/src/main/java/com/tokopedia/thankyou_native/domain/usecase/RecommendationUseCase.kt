@@ -1,8 +1,10 @@
-package com.tokopedia.thankyou_native.domain
+package com.tokopedia.thankyou_native.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.thankyou_native.GQL_THANK_YOU_PAGE_DATA
+import com.tokopedia.thankyou_native.domain.model.ThanksPageData
+import com.tokopedia.thankyou_native.domain.model.ThanksPageResponse
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -12,7 +14,7 @@ class RecommendationUseCase @Inject constructor(
     : GraphqlUseCase<ThanksPageResponse>(graphqlRepository) {
 
     fun getRecommendation(onSuccess: (ThanksPageData) -> Unit,
-                         onError: (Throwable) -> Unit, paymentId: Int, merchant: String) {
+                          onError: (Throwable) -> Unit, paymentId: Int, merchant: String) {
         try {
             this.setTypeClass(ThanksPageResponse::class.java)
             this.setRequestParams(getRequestParams(paymentId, merchant))

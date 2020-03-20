@@ -2,8 +2,8 @@ package com.tokopedia.thankyou_native.presentation.viewModel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.thankyou_native.domain.ThanksPageData
-import com.tokopedia.thankyou_native.domain.ThanksPageDataUseCase
+import com.tokopedia.thankyou_native.domain.model.ThanksPageData
+import com.tokopedia.thankyou_native.domain.usecase.ThanksPageDataUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

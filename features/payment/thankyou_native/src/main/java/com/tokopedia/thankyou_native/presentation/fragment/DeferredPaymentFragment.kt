@@ -19,9 +19,10 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.di.ThankYouPageComponent
-import com.tokopedia.thankyou_native.domain.ThanksPageData
+import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.*
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
+import com.tokopedia.thankyou_native.presentation.dialog.PaymentMethodsBottomSheet
 import com.tokopedia.thankyou_native.presentation.helper.*
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
 import com.tokopedia.thankyou_native.presentation.views.ThankYouPageTimerView
@@ -32,6 +33,7 @@ import javax.inject.Inject
 
 class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.ThankTimerViewListener, OnDialogRedirectListener {
 
+    private lateinit var paymentMethodsBottomSheet: PaymentMethodsBottomSheet
     private lateinit var thanksPageDataViewModel: ThanksPageDataViewModel
 
     @Inject
@@ -129,11 +131,9 @@ class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.Than
             tvBankName.visible()
         }
         tvSeeDetail.setOnClickListener { openPaymentDetail() }
-        tvSeePaymentMethods.setOnClickListener { openPaymentMethodInfo() }
+        tvSeePaymentMethods.setOnClickListener { openHowTOPay() }
         tvDeadlineTime.text = thanksPageData.expireTimeStr
-        tvDeadlineTimer.setStartDuration(System.currentTimeMillis() / 1000L + 2 * 60 * 60, this)
-
-
+        tvDeadlineTimer.setExpireTimeUnix(thanksPageData.expireTimeUnix, this)
     }
 
     private fun initCheckPaymentWidgetData() {
@@ -205,7 +205,6 @@ class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.Than
         }
     }
 
-
     private fun isPaymentTimerExpired(): Boolean {
         if (thanksPageData.expireTimeUnix <= System.currentTimeMillis() / 1000L)
             return true
@@ -221,18 +220,20 @@ class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.Than
         return false
     }
 
-
-
-    private fun gotoShopAgain() {
-        gotoHomePage()
-    }
-
     private fun openPaymentDetail() {
         //todo open payment detail screen bottomsheet
     }
 
-    private fun openPaymentMethodInfo() {
-        //todo open payment methods screen bottomsheet
+    private fun openHowTOPay() {
+        context?.let { context ->
+            if (!::paymentMethodsBottomSheet.isInitialized)
+                paymentMethodsBottomSheet = PaymentMethodsBottomSheet(context)
+            paymentMethodsBottomSheet.show(thanksPageData.howToPay)
+        }
+    }
+
+    private fun gotoShopAgain() {
+        gotoHomePage()
     }
 
     override fun gotoHomePage() {
@@ -248,7 +249,7 @@ class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.Than
     }
 
     companion object {
-        const val SCREEN_NAME ="Selesaikan Pembayaran"
+        const val SCREEN_NAME = "Selesaikan Pembayaran"
         private const val ARG_THANK_PAGE_DATA = "arg_thank_page_data"
         fun getFragmentInstance(bundle: Bundle, thanksPageData: ThanksPageData):
                 DeferredPaymentFragment = DeferredPaymentFragment().apply {

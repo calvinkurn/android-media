@@ -1,4 +1,4 @@
-package com.tokopedia.thankyou_native.domain
+package com.tokopedia.thankyou_native.domain.model
 
 import android.os.Parcel
 import android.os.Parcelable

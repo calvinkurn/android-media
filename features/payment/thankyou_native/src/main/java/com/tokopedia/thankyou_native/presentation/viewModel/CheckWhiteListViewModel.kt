@@ -2,7 +2,7 @@ package com.tokopedia.thankyou_native.presentation.viewModel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.thankyou_native.domain.CheckWhiteListStatusUseCase
+import com.tokopedia.thankyou_native.domain.usecase.CheckWhiteListStatusUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

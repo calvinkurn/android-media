@@ -5,13 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/loading_layout"
-        layout="@layout/loading_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        tools:visibility="visible" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -142,13 +135,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_2"
                 android:textColor="@color/Neutral_N700_96"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="@+id/tvDeadlineTime"
                 app:layout_constraintTop_toBottomOf="@+id/tvAccountNumber"
                 app:typographyType="small"
-                android:visibility="gone"
-                tools:visibility="visible"
-                tools:text="Bank Name"/>
-
+                tools:text="Bank Name"
+                tools:visibility="visible" />
 
 
             <com.tokopedia.unifyprinciples.Typography
@@ -329,5 +321,24 @@
 
 
     </ScrollView>
+
+
+    <RelativeLayout
+        android:id="@+id/loading_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:padding="@dimen/dp_10"
+            android:visibility="visible" />
+
+    </RelativeLayout>
 
 </FrameLayout>

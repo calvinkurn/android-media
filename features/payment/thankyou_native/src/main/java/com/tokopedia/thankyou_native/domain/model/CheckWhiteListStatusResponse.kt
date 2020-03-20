@@ -1,4 +1,4 @@
-package com.tokopedia.thankyou_native.domain
+package com.tokopedia.thankyou_native.domain.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -15,7 +15,7 @@ data class CheckWhiteListStatus(
         @SerializedName("status_code")
         val statusCode: Int,
         @SerializedName("data")
-        val data: WhiteListData?)
+        val data: ArrayList<WhiteListData>?)
 
 data class WhiteListData(
         @SerializedName("user_email")

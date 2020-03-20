@@ -1,8 +1,9 @@
-package com.tokopedia.thankyou_native.domain
+package com.tokopedia.thankyou_native.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.thankyou_native.GQL_CHECK_WHITE_LIST
+import com.tokopedia.thankyou_native.domain.model.CheckWhiteListStatusResponse
 import javax.inject.Inject
 import javax.inject.Named
 

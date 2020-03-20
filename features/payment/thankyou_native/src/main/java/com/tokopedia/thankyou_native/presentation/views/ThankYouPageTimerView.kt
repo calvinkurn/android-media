@@ -41,7 +41,7 @@ class ThankYouPageTimerView @JvmOverloads constructor(
         mTvTimer = v.findViewById(R.id.tvTimer)
     }
 
-    fun setStartDuration(expireOnTimeUnix: Long, listener: ThankTimerViewListener) {
+    fun setExpireTimeUnix(expireOnTimeUnix: Long, listener: ThankTimerViewListener) {
         if (timerRunning) {
             return
         }

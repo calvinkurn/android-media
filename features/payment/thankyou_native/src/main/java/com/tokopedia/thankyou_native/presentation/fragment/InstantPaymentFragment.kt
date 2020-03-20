@@ -9,13 +9,15 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.di.ThankYouPageComponent
-import com.tokopedia.thankyou_native.domain.ThanksPageData
+import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.viewModel.CheckWhiteListViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -102,17 +104,18 @@ class InstantPaymentFragment : BaseDaggerFragment() {
         } else
             tv_instant_payment_method_name.text = thanksPageData.gatewayName
         tv_instant_payment_amount.text = getString(R.string.thankyou_rp, thanksPageData.amountStr)
-        btn_instant_see_transaction_list.setOnClickListener { seeTransactionList() }
+        btn_instant_see_transaction_list.setOnClickListener { gotoOrderList() }
     }
 
-    private fun seeTransactionList() {
-        //todo...
+    private fun gotoOrderList() {
+        RouteManager.route(context, ApplinkConst.PURCHASE_ORDER_DETAIL, "")//arrayOf(thanksPageData.orderList[0].orderId))
+
     }
 
     private fun checkCreditCardRegisteredForRBA(context: Context) {
         if (::dialogUnify.isInitialized)
             dialogUnify.cancel()
-        if (!thanksPageData.whitelistedRBA)
+        if (thanksPageData.whitelistedRBA)
             dialogUnify = DialogUnify(context = context, actionType = DialogUnify.HORIZONTAL_ACTION,
                     imageType = DialogUnify.NO_IMAGE).apply {
                 setTitle(getString(R.string.thank_single_authentication))

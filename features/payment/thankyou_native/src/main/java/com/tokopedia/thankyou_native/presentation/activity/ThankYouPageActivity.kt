@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.thankyou_native.di.DaggerThankYouPageComponent
 import com.tokopedia.thankyou_native.di.ThankYouPageComponent
-import com.tokopedia.thankyou_native.domain.ThanksPageData
+import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.*
 import com.tokopedia.thankyou_native.presentation.fragment.DeferredPaymentFragment
 import com.tokopedia.thankyou_native.presentation.fragment.InstantPaymentFragment
@@ -21,13 +21,13 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     //todo handle toolbar back-press button and toolbar icon
 
-    //processing
+    //processing 720644
     //instant credit card 720599
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
         intent.putExtra(ARG_MERCHANT, "tokopediatest")
-        intent.putExtra(ARG_PAYMENT_ID, 720599L)
+        intent.putExtra(ARG_PAYMENT_ID, 720598L)
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
         }
