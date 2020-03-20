@@ -17,5 +17,5 @@ class VariantSheetUiModel(
 ) {
     fun isPartialySelected(): Boolean = mapOfSelectedVariants.any {
         it.value == 0
-    }
+    } || mapOfSelectedVariants.isEmpty()
 }
