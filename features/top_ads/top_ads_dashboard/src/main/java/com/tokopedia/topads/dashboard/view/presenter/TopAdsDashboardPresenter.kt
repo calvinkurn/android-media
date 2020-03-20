@@ -18,12 +18,11 @@ import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositUseCase
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
-import com.tokopedia.topads.dashboard.data.model.DashboardPopulateResponse
-import com.tokopedia.topads.dashboard.data.model.DataStatistic
-import com.tokopedia.topads.dashboard.data.model.TotalAd
+import com.tokopedia.topads.dashboard.data.model.*
 import com.tokopedia.topads.dashboard.data.model.ticker.Data
 import com.tokopedia.topads.dashboard.domain.interactor.*
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
+import com.tokopedia.topads.data.response.AutoAdsResponse
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase
@@ -218,6 +217,29 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
         })
     }
 
+    fun getAutoAdsStatus(resources: Resources) {
+        val graphqlUseCase = GraphqlUseCase()
+        val shopId: Int = userSession.shopId.toIntOrZero()
+        val variables = mapOf<String, Any>(TopAdsDashboardConstant.SHOP_ID to shopId)
+        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
+                R.raw.query_auto_ads_status), AutoAdsResponse::class.java, variables, false)
+        graphqlUseCase.clearRequest()
+        graphqlUseCase.addRequest(graphqlRequest)
+        graphqlUseCase.execute(object : Subscriber<GraphqlResponse>() {
+            override fun onCompleted() {}
+
+            override fun onError(e: Throwable) {
+            }
+
+            override fun onNext(graphqlResponse: GraphqlResponse) {
+                val adsInfo = graphqlResponse.getData<AutoAdsResponse>(AutoAdsResponse::class.java)
+                view?.onSuccessAdsInfo(adsInfo.topAdsGetAutoAds.data)
+            }
+        })
+
+
+    }
+
     fun clearStatisticsCache() {
         deleteTopAdsStatisticsUseCase.executeSync()
     }
@@ -228,6 +250,27 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
 
     fun resetDate() {
         topAdsDatePickerInteractor.resetDate()
+    }
+    fun getAdsStatus(rawQuery: String){
+        val graphqlUseCase = GraphqlUseCase()
+        val shop_id: String = userSession.shopId
+        val variables = mapOf<String, Any>("shopId" to shop_id.toInt())
+        val graphqlRequest = GraphqlRequest(rawQuery, AdStatusResponse::class.java, variables, false)
+        graphqlUseCase.clearRequest()
+        graphqlUseCase.addRequest(graphqlRequest)
+        graphqlUseCase.execute(object : Subscriber<GraphqlResponse>() {
+            override fun onCompleted() {}
+            override fun onError(e: Throwable) {
+                Timber.e(e, "P1#TOPADS_DASHBOARD_PRESENTER_AUTO_TOPADS_STATUS#%s", e.localizedMessage)
+                view?.onErrorGetAutoTopUpStatus(e)
+            }
+
+            override fun onNext(graphqlResponse: GraphqlResponse) {
+                val data = graphqlResponse.getSuccessData<AdStatusResponse>()
+                view?.onSuccessAdStatus(data.topAdsGetShopInfo.data)
+            }
+        })
+
     }
 
     fun getAutoTopUpStatus(rawQuery: String) {

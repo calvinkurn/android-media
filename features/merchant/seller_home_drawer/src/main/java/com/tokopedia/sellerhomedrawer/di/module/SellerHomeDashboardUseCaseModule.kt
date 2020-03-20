@@ -15,7 +15,6 @@ import javax.inject.Named
 @Module
 class SellerHomeDashboardUseCaseModule {
 
-    @SellerHomeDashboardScope
     @Provides
     fun provideGraphQlUseCase(): GraphqlUseCase = GraphqlUseCase()
 

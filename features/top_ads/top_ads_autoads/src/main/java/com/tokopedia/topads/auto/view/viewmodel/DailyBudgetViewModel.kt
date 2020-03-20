@@ -15,16 +15,15 @@ import com.tokopedia.topads.auto.data.entity.BidInfoData
 import com.tokopedia.topads.auto.data.entity.TopAdsAutoAdsData
 import com.tokopedia.topads.auto.data.entity.TopAdsShopInfoData
 import com.tokopedia.topads.auto.data.network.param.AutoAdsParam
+import com.tokopedia.topads.auto.data.network.response.EstimationResponse
 import com.tokopedia.topads.auto.data.network.response.TopAdsAutoAds
 import com.tokopedia.topads.auto.data.network.response.TopAdsShopInfo
 import com.tokopedia.topads.auto.data.network.response.TopadsBidInfo
 import com.tokopedia.topads.auto.internal.RawQueryKeyObject
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.Fail
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import org.json.JSONException
 import javax.inject.Inject
@@ -37,7 +36,7 @@ class DailyBudgetViewModel @Inject constructor(
         private val dispatcher: CoroutineDispatcher,
         private val repository: GraphqlRepository,
         private val rawQueries: Map<String, String>
-        ) : BaseViewModel(dispatcher) {
+) : BaseViewModel(dispatcher) {
 
     val budgetInfoData = MutableLiveData<List<BidInfoData>>()
     val autoAdsData = MutableLiveData<TopAdsAutoAdsData>()
@@ -46,20 +45,19 @@ class DailyBudgetViewModel @Inject constructor(
     fun getBudgetInfo(shopId: Int, requestType: String, source: String) {
         launchCatchError(block = {
             val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-            val data = withContext(Dispatchers.IO){
+            val data = withContext(Dispatchers.IO) {
                 val request = GraphqlRequest(rawQueries[RawQueryKeyObject.QUERY_ADS_BID_INFO],
                         TopadsBidInfo.Response::class.java,
                         mapOf(SHOP_ID to shopId, REQUEST_TYPE to requestType, SOURCE to source))
                 repository.getReseponse(listOf(request), cacheStrategy)
             }
-
             val request = GraphqlRequest(rawQueries[RawQueryKeyObject.QUERY_ADS_SHOP_INFO],
                     TopAdsShopInfo.Response::class.java, mapOf(SHOP_ID to shopId))
             val shopInfo = repository.getReseponse(listOf(request), cacheStrategy)
                     .getSuccessData<TopAdsShopInfo.Response>().shopInfo
 
             data.getSuccessData<TopadsBidInfo.Response>().bidInfo.data.let {
-                it.forEach {it.shopStatus = shopInfo.data.category }
+                it.forEach { it.shopStatus = shopInfo.data.category }
                 budgetInfoData.postValue(it)
             }
         }) {
@@ -67,8 +65,30 @@ class DailyBudgetViewModel @Inject constructor(
         }
     }
 
+    fun getBudgetInfo(shopId: Int, requestType: String, source: String, onSuccess: (TopadsBidInfo.Response) -> Unit, onError: () -> Unit) {
+        launchCatchError(block = {
+            val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+            val data = withContext(Dispatchers.IO) {
+                val request = GraphqlRequest(rawQueries[RawQueryKeyObject.QUERY_ADS_BID_INFO],
+                        TopadsBidInfo.Response::class.java,
+                        mapOf(SHOP_ID to shopId, REQUEST_TYPE to requestType, SOURCE to source))
+                repository.getReseponse(listOf(request), cacheStrategy)
+            }
+            val request = GraphqlRequest(rawQueries[RawQueryKeyObject.QUERY_ADS_SHOP_INFO],
+                    TopAdsShopInfo.Response::class.java, mapOf(SHOP_ID to shopId))
+            val shopInfo = repository.getReseponse(listOf(request), cacheStrategy)
+                    .getSuccessData<TopAdsShopInfo.Response>().shopInfo
 
-    fun postAutoAds(param : AutoAdsParam){
+            data.getSuccessData<TopadsBidInfo.Response>().let {
+                onSuccess(it)
+            }
+        }) {
+            it.printStackTrace()
+        }
+    }
+
+
+    fun postAutoAds(param: AutoAdsParam) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.IO) {
                 val request = GraphqlRequest(rawQueries[RawQueryKeyObject.QUERY_POST_AUTO_ADS],
@@ -79,6 +99,23 @@ class DailyBudgetViewModel @Inject constructor(
             }
             data.getSuccessData<TopAdsAutoAds.Response>().autoAds.data.let {
                 autoAdsData.postValue(it)
+            }
+        }) {
+            it.printStackTrace()
+        }
+    }
+    fun topadsStatisticsEstimationPotentialReach(onSuccess: (EstimationResponse.TopadsStatisticsEstimationAttribute.DataItem) -> Unit, shopId: String, source: String) {
+        launchCatchError(block = {
+            val data = withContext(Dispatchers.IO) {
+                val request = GraphqlRequest(rawQueries[RawQueryKeyObject.QUERY_POTENTIAL_REACH_ESTIMATION],
+                        EstimationResponse::class.java, mapOf(SHOP_ID to shopId, TYPE to 1, SOURCE to source))
+                val cacheStrategy = GraphqlCacheStrategy
+                        .Builder(CacheType.ALWAYS_CLOUD).build()
+                repository.getReseponse(listOf(request), cacheStrategy)
+            }
+            data.getSuccessData<EstimationResponse>().topadsStatisticsEstimationAttribute.data[0].let {
+                // autoAdsData.postValue(it)
+                onSuccess(it)
             }
         }) {
             it.printStackTrace()
@@ -106,6 +143,10 @@ class DailyBudgetViewModel @Inject constructor(
         return 100 / 2.5 * (`val` / bid)
     }
 
+    fun getPotentialImpressionGQL(budget: Double, high: Double): String {
+        return String.format("%,.0f", budget * high)
+    }
+
     fun checkBudget(number: Double, minDailyBudget: Double, maxDailyBudget: Double): String? {
         return if (number <= 0) {
             context.getString(R.string.error_empty_budget)
@@ -125,5 +166,6 @@ class DailyBudgetViewModel @Inject constructor(
         val SHOP_ID = "shopId"
         val REQUEST_TYPE = "requestType"
         val SOURCE = "source"
+        val TYPE = "type"
     }
 }
