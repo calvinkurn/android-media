@@ -9,6 +9,7 @@ import android.widget.EditText
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
@@ -95,6 +96,7 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
 
         quickEditStockSaveButton.setOnClickListener {
             onFinishedListener.onFinishEditStock(product)
+            removeObservers()
             super.dismiss()
             ProductManageTracking.eventEditStockSave(product.id)
         }
@@ -135,7 +137,6 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
 
     private fun observeStatus() {
         viewModel.status.observe(this, Observer {
-            quickEditStockActivateSwitch.isChecked = it == ProductStatus.ACTIVE
             product = product.copy(status = it)
         })
     }
@@ -148,6 +149,11 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
     private fun setNormalBehavior() {
         zeroStockInfo.visibility = View.GONE
         quickEditStockActivateSwitch.isEnabled = true
+    }
+
+    private fun removeObservers() {
+        removeObservers(viewModel.status)
+        removeObservers(viewModel.stock)
     }
 
     interface OnFinishedListener {

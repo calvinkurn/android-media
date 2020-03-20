@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
@@ -220,6 +221,7 @@ class ProductManageFilterExpandChecklistFragment :
                 this.activity?.setResult(ProductManageFilterFragment.UPDATE_OTHER_FILTER_SUCCESS_RESPONSE,
                         Intent().putExtra(ProductManageFilterFragment.CACHE_MANAGER_KEY, cacheManagerId))
             }
+            removeObservers()
             this.activity?.finish()
             ProductManageTracking.eventMoreOthersFilterSave()
         }
@@ -265,6 +267,11 @@ class ProductManageFilterExpandChecklistFragment :
                 adapter?.updateChecklistData(data)
             }
         }
+    }
+
+    private fun removeObservers() {
+        removeObservers(productManageFilterExpandChecklistViewModel.checklistData)
+        removeObservers(productManageFilterExpandChecklistViewModel.dataSize)
     }
 
 }

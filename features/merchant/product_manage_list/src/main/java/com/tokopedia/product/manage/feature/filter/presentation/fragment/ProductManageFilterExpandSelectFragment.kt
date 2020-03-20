@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
@@ -109,6 +110,7 @@ class ProductManageFilterExpandSelectFragment :
             ))
             this.activity?.setResult(ProductManageFilterFragment.UPDATE_ETALASE_SUCCESS_RESPONSE, Intent().putExtra(CACHE_MANAGER_KEY, cacheManagerId))
         }
+        removeObserver()
         this.activity?.finish()
     }
 
@@ -154,5 +156,9 @@ class ProductManageFilterExpandSelectFragment :
         productManageFilterExpandSelectViewModel.selectData.observe(this, Observer {
             adapter?.updateSelectData(it)
         })
+    }
+
+    private fun removeObserver() {
+        removeObservers(productManageFilterExpandSelectViewModel.selectData)
     }
 }
