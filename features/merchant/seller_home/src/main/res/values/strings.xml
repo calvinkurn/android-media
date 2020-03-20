@@ -9,6 +9,7 @@
     <string name="sah_max_progress">/100</string>
     <string name="sah_failed_to_get_information">Informasi gagal dimuat</string>
     <string name="sah_reload">Muat ulang</string>
+    <string name="sah_exit_message">Tekan sekali lagi untuk keluar</string>
 
     <!--bottom nav-->
     <string name="sah_home">Home</string>

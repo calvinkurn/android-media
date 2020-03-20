@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
@@ -12,11 +14,11 @@ import com.google.android.material.bottomnavigation.LabelVisibilityMode
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
-import com.tokopedia.kotlin.extensions.view.setupStatusBarUnderMarshmallow
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
+import com.tokopedia.kotlin.extensions.view.setupStatusBarUnderMarshmallow
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
@@ -43,6 +45,8 @@ class SellerHomeActivity : BaseActivity() {
     companion object {
         @JvmStatic
         fun createIntent(context: Context) = Intent(context, SellerHomeActivity::class.java)
+
+        private const val DOUBLE_TAB_EXIT_DELAY = 2000L
     }
 
     @Inject
@@ -59,6 +63,8 @@ class SellerHomeActivity : BaseActivity() {
 
     private var currentSelectedMenu = 0
     private var currentFragment: Fragment? = null
+    private var canExitApp = false
+    private var hasAttachContainerFragment = false
     private var hasAttachSettingsFragment = false
     private var lastSomTab = PageFragment(FragmentType.ORDER) //by default show tab "Semua Pesanan"
 
@@ -99,8 +105,24 @@ class SellerHomeActivity : BaseActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        doubleTabToExit()
+    }
+
     fun attachCallback(callback: StatusBarCallback) {
         statusBarCallback = callback
+    }
+
+    private fun doubleTabToExit() {
+        if (canExitApp) {
+            finish()
+        } else {
+            canExitApp = true
+            Toast.makeText(this, R.string.sah_exit_message, Toast.LENGTH_SHORT).show()
+            Handler().postDelayed({
+                canExitApp = false
+            }, DOUBLE_TAB_EXIT_DELAY)
+        }
     }
 
     private fun initInjector() {
@@ -157,7 +179,10 @@ class SellerHomeActivity : BaseActivity() {
     }
 
     private fun setupDefaultFragment() {
-        addFragment(containerFragment)
+        if (!hasAttachContainerFragment) {
+            addFragment(containerFragment)
+            hasAttachContainerFragment = true
+        }
         currentFragment = containerFragment
         showFragment(containerFragment)
     }

@@ -7,6 +7,11 @@ import com.tokopedia.track.TrackApp
  * Created By @ilhamsuaib on 2020-02-11
  */
 
+/**
+ * Seller Home Revamp Tracker
+ * Data Layer : https://docs.google.com/spreadsheets/d/13WEeOReKimxp9ugeVMew6T-ma9gNQHaWJxYN6DK-1x0/edit?ts=5e395338#gid=389108416
+ * */
+
 object SellerHomeTracking {
 
     fun sendImpressionCardEvent(dataKey: String, state: String, cardValue: String) {
