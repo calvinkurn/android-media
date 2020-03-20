@@ -265,7 +265,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                 webUrl = TokopediaUrl.Companion.getInstance().WEB
             }
 
-            return getStartIntent(context, webUrl, showToolbar, needLogin, allowOverride)
+            return getStartIntent(context, webUrl, showToolbar, allowOverride, needLogin)
         }
     }
 

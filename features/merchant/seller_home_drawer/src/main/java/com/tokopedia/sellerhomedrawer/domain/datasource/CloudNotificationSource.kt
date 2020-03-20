@@ -9,7 +9,6 @@ import com.tokopedia.sellerhomedrawer.data.drawernotification.NotificationModel
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerNotification
 import com.tokopedia.sellerhomedrawer.domain.mapper.NotificationMapper
 import com.tokopedia.sellerhomedrawer.domain.service.NotificationService
-import com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService
 import com.tokopedia.user.session.UserSession
 import rx.Observable
 import rx.functions.Action1
@@ -63,9 +62,6 @@ class CloudNotificationSource @Inject constructor(@ApplicationContext val contex
                 drawerCache.putInt(SellerDrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_SELLER, notificationData.resolutionModel.resolutionSeller)
 
                 drawerCache.applyEditor()
-
-                //Temporary fix for login drawer notification
-                SellerDrawerGetNotificationService.sendBroadcast(context.applicationContext)
             }
         }
     }
