@@ -12,6 +12,7 @@ abstract class BaseBottomSheetDialog<T>(context: Context, fragmentManager: Fragm
 
     abstract fun resourceId(): Int
     abstract fun show(element: T)
+    abstract fun initInjector()
 
     init {
         onViewCreated(context, fragmentManager)
@@ -23,6 +24,8 @@ abstract class BaseBottomSheetDialog<T>(context: Context, fragmentManager: Fragm
     }
 
     private fun onViewCreated(context: Context, fragmentManager: FragmentManager) {
+        initInjector()
+
         with(bottomSheet) {
             showCloseIcon = true
             showHeader = true
