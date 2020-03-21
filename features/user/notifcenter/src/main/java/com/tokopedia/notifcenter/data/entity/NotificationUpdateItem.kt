@@ -53,7 +53,10 @@ data class ProductData(
         @Expose @SerializedName("labels") val labels: List<Label> = emptyList(),
         @Expose @SerializedName("campaign") val campaign: Campaign? = null,
         @Expose @SerializedName("variant") val variant: List<Variant> = emptyList(),
-        @Expose @SerializedName("shop") val shop: Shop? = null
+        @Expose @SerializedName("shop") val shop: Shop? = null,
+        @Expose @SerializedName("stock") var stock: Int = 0,
+        @Expose @SerializedName("type_button") var typeButton: Int = 0,
+        @Expose @SerializedName("is_show") var isShow: Boolean = false
 )
 
 data class Label (
