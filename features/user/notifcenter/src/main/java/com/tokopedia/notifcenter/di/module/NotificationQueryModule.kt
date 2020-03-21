@@ -53,4 +53,10 @@ import javax.inject.Named
     fun provideProductStockHandler(@NotificationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_product_stock_handler)
 
+    @Provides
+    @NotificationScope
+    @Named(NotificationQueriesConstant.PRODUCT_STOCK_REMINDER)
+    fun provideProductStockReminder(@NotificationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_product_stock_reminder)
+
 }
