@@ -100,20 +100,20 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
     }
 
     private fun initObservable() {
-        viewModel.errorMessage.observe(this, onViewError())
+        viewModel.errorMessage.observe(viewLifecycleOwner, onViewError())
 
-        viewModel.infoNotification.observe(this, Observer {
+        viewModel.infoNotification.observe(viewLifecycleOwner, Observer {
             if (NotificationMapper.isHasShop(it)) {
                 _adapter.addElement(sellerMenu())
             }
             _adapter.updateValue(it.notifications)
         })
 
-        viewModel.filterNotification.observe(this, Observer {
+        viewModel.filterNotification.observe(viewLifecycleOwner, Observer {
             _adapter.addElement(it)
         })
 
-        viewModel.notification.observe(this, Observer {
+        viewModel.notification.observe(viewLifecycleOwner, Observer {
             _adapter.removeEmptyState()
             if (it.list.isEmpty()) {
                 updateScrollListenerState(false)
@@ -125,15 +125,15 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
             }
         })
 
-        viewModel.lastNotificationId.observe(this, Observer {
+        viewModel.lastNotificationId.observe(viewLifecycleOwner, Observer {
             viewModel.getNotification(it)
         })
 
-        viewModel.markAllNotification.observe(this, Observer {
+        viewModel.markAllNotification.observe(viewLifecycleOwner, Observer {
             onSuccessMarkAllRead()
         })
 
-        viewModel.totalUnreadNotification.observe(this, Observer {
+        viewModel.totalUnreadNotification.observe(viewLifecycleOwner, Observer {
             markAllReadCounter = it
             notifyBottomActionView()
         })
