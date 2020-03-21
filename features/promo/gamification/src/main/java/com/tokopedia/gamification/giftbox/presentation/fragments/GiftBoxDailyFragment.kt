@@ -329,7 +329,16 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             }
         }
 
-        fadeInActiveStateViews()
+        val imageUrlList = entity.gamiLuckyHome.tokenAsset.imageV2URLs
+        var frontImageUrl = ""
+        if (!imageUrlList.isNullOrEmpty()) {
+            frontImageUrl = imageUrlList[0]
+            if (frontImageUrl.isEmpty()) {
+                frontImageUrl = ""
+            }
+        }
+
+        fadeInActiveStateViews(frontImageUrl)
     }
 
     fun fadeOutViews() {
@@ -345,8 +354,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         animatorSet.start()
     }
 
-    fun fadeInActiveStateViews() {
-        giftBoxDailyView.loadFiles(imageCallback = {
+    fun fadeInActiveStateViews(frontImageUrl: String) {
+        giftBoxDailyView.loadFiles(frontImageUrl, imageCallback = {
             if (it) {
                 setPositionOfViewsAtBoxOpen()
                 hideLoader()

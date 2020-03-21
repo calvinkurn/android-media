@@ -99,43 +99,31 @@ open class GiftBoxDailyView : FrameLayout {
 
     }
 
-    fun loadFiles(imageCallback: ((isLoaded: Boolean) -> Unit)) {
+    fun loadFiles(imageFrontUrl: String?, imageCallback: ((isLoaded: Boolean) -> Unit)) {
+        val listener = object : RequestListener<Drawable> {
+            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                imageCallback.invoke(false)
+                return false
+            }
+
+            override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                val count = imagesLoaded.incrementAndGet()
+                if (count == TOTAL_ASYNC_IMAGES) {
+                    imageCallback.invoke(true)
+                }
+                return false
+            }
+        }
         Glide.with(this)
                 .load(R.drawable.gf_ic_lid_frame_0)
                 .dontAnimate()
-                .addListener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                        imageCallback.invoke(false)
-                        return false
-                    }
-
-                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        val count = imagesLoaded.incrementAndGet()
-                        if (count == TOTAL_ASYNC_IMAGES) {
-                            imageCallback.invoke(true)
-                        }
-                        return false
-                    }
-                })
+                .addListener(listener)
                 .into(imageGiftBoxLid)
 
         Glide.with(this)
-                .load(R.drawable.gf_ic_gift_box)
+                .load(imageFrontUrl)
                 .dontAnimate()
-                .addListener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                        imageCallback.invoke(false)
-                        return false
-                    }
-
-                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        val count = imagesLoaded.incrementAndGet()
-                        if (count == TOTAL_ASYNC_IMAGES) {
-                            imageCallback.invoke(true)
-                        }
-                        return false
-                    }
-                })
+                .addListener(listener)
                 .into(imageBoxFront)
 
     }
