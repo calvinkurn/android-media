@@ -33,9 +33,14 @@ class RechargeRecommendationViewHolder(
                 home_recharge_recommendation_loading.show()
             } else {
                 home_recharge_recommendation_loading.hide()
+
                 val recommendation = element.rechargeRecommendation.recommendations[0]
+//                recharge_recommendation_widget_container.setBackgroundColor()
+                recharge_recommendation_title.text = recommendation.title
                 ic_recharge_recommendation_product.loadImage(recommendation.iconURL)
                 recharge_recommendation_description.text = recommendation.mainText
+
+                btn_recharge_recommendation.text = recommendation.buttonText
                 btn_recharge_recommendation.setOnClickListener {
                     HomePageTracking.homeRechargeRecommendationOnClickTracker(
                             categoryListener.trackingQueue, "", recommendation)

@@ -22,5 +22,14 @@ data class RechargeRecommendationData(
         val link: String = "",
         @Expose
         @SerializedName("iconURL")
-        val iconURL: String = ""
+        val iconURL: String = "",
+        @Expose
+        @SerializedName("title")
+        val title: String = "",
+        @Expose
+        @SerializedName("backgroundColor")
+        val backgroundColor: String = "",
+        @Expose
+        @SerializedName("buttonText")
+        val buttonText: String = ""
 )

@@ -471,7 +471,7 @@ open class HomeViewModel @Inject constructor(
                     val newFindRechargeRecommendationViewModel = findRechargeRecommendationViewModel.copy(
                             rechargeRecommendation = recommendations
                     )
-                    launch { channel.send(UpdateLiveDataModel(ACTION_UPDATE, newFindRechargeRecommendationViewModel, indexOfRechargeRecommendationViewModel)) }
+                    launch { channel?.send(UpdateLiveDataModel(ACTION_UPDATE, newFindRechargeRecommendationViewModel, indexOfRechargeRecommendationViewModel)) }
                 }
             }
         } else {
@@ -484,7 +484,7 @@ open class HomeViewModel @Inject constructor(
                 _homeLiveData.value?.list?.find { visitable -> visitable is RechargeRecommendationViewModel }
                         ?: return
         if (findRechargeRecommendationViewModel is RechargeRecommendationViewModel) {
-            launch { channel.send(UpdateLiveDataModel(ACTION_DELETE, findRechargeRecommendationViewModel)) }
+            launch { channel?.send(UpdateLiveDataModel(ACTION_DELETE, findRechargeRecommendationViewModel)) }
         }
     }
 

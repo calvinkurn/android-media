@@ -87,5 +87,6 @@
     <string name="discovery_home_action_error"> coba lagi</string>
 
     <string name="home_recharge_recommendation_button_label">Bayar Sekarang</string>
+    <string name="home_recharge_recommendation_title">Yuk, segara bayar tagihanmu!</string>
 
 </resources>
