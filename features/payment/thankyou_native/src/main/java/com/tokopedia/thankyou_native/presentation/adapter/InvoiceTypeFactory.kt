@@ -13,6 +13,11 @@ class InvoiceTypeFactory : BaseAdapterTypeFactory() {
         when (type) {
             InvoiceSummaryViewHolder.LAYOUT_ID -> return InvoiceSummaryViewHolder(parent!!)
             ShopInvoiceViewHolder.LAYOUT_ID -> return ShopInvoiceViewHolder(parent!!)
+            BillDetailViewHolder.LAYOUT_ID -> return BillDetailViewHolder(parent!!)
+            PaymentInfoViewHolder.LAYOUT_ID -> return PaymentInfoViewHolder(parent!!)
+            ObtainedBenefitViewHolder.LAYOUT_ID -> return ObtainedBenefitViewHolder(parent!!)
+            PaymentMethodViewHolder.LAYOUT_ID -> return PaymentMethodViewHolder(parent!!)
+            PurchasedProductTagViewHolder.LAYOUT_ID -> return PurchasedProductTagViewHolder(parent!!)
         }
         return super.createViewHolder(parent, type)
     }
@@ -21,13 +26,12 @@ class InvoiceTypeFactory : BaseAdapterTypeFactory() {
         return InvoiceSummaryViewHolder.LAYOUT_ID
     }
 
-    fun type(orderDataByShop: ShopInvoice): Int {
+    fun type(shopInvoice: ShopInvoice): Int {
         return ShopInvoiceViewHolder.LAYOUT_ID
     }
 
     fun type(billDetail: BillDetail): Int {
         return BillDetailViewHolder.LAYOUT_ID
-
     }
 
     fun type(paymentInfo: PaymentInfo): Int {
@@ -36,6 +40,14 @@ class InvoiceTypeFactory : BaseAdapterTypeFactory() {
 
     fun type(obtainedAfterTransaction: ObtainedAfterTransaction): Int {
         return ObtainedBenefitViewHolder.LAYOUT_ID
+    }
+
+    fun type(paymentMethodModel: PaymentMethodModel): Int {
+        return PaymentMethodViewHolder.LAYOUT_ID
+    }
+
+    fun type(purchasedProductTag: PurchasedProductTag): Int {
+        return PurchasedProductTagViewHolder.LAYOUT_ID
     }
 
 }

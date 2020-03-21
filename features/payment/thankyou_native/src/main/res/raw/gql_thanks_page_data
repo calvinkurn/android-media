@@ -1,35 +1,97 @@
-query ThanksPageData($paymentID : Int!,$merchant: String!){
-  thanksPageData(paymentID: $paymentID,merchant: $merchant){
+query ThanksPageData($paymentID : Int!, $merchant: String!){
+  thanksPageData(paymentID: $paymentID, merchant: $merchant){
+    merchant_code
+    profile_code
+    payment_id
     payment_status
-    page_type
     payment_type
     gateway_name
     gateway_image
     expire_time_unix
     expire_time_str
+    page_type
+    title
+    message
+    order_amount
+    order_amount_str
     amount
     amount_str
+    payment_items{
+        item_name
+        item_desc
+        amount
+        amount_str
+    }
+    payment_deduction {
+        item_name
+        item_desc
+        amount
+        amount_str
+    }
+    promo_data {
+        promo_code
+        promo_desc
+        total_cashback
+        total_cashback_str
+        total_discount
+        total_discount_str
+    }
     order_list{
-      order_id
-      store_name
-      item_list{
-        product_name
-        quantity
-        weight
-        thumbnail_product
-      }
+        order_id
+        store_id
+        store_type
+        logistic_type
+        store_name
+        item_list{
+            product_id
+            product_name
+            product_brand
+            price
+            price_str
+            quantity
+            weight
+            weight_unit
+            total_price
+            total_price_str
+            promo_code
+            category
+            variant
+            thumbnail_product
+        }
+        shipping_amount
+        shipping_amount_str
+        shipping_desc
+        insurance_amount
+        insurance_amount_str
+        address
+        promo_data{
+            promo_code
+            promo_desc
+            total_cashback
+            total_cashback_str
+            total_discount
+            total_discount_str
+        }
+        tax
+        coupon
     }
     additional_info{
-      account_number
-      account_dest
-      bank_name
-      payment_code
-      masked_number
-      installment_info
-      interest
+        account_number
+        account_dest
+        bank_name
+        bank_branch
+        payment_code
+        masked_number
+        installment_info
+        interest
     }
-    whitelisted_rba
     how_to_pay
+    event
+    event_category
+    event_action
+    event_label
+    currency_code
+    whitelisted_rba
   }
 }
 

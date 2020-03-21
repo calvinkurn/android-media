@@ -80,6 +80,7 @@
     <string name="thank_invoice_item_shipping_discount">Potongan Ongkos Kirim</string>
     <string name="thank_invoice_item_shipping_insurance">Asuransi Pengiriman</string>
     <string name="thank_invoice_item_shipping_address">Alamat Pengiriman</string>
+    <string name="thank_invoice_item_count_price">%1$d X Rp%2$s</string>
 
     <!--invoice bill detail-->
     <string name="thank_invoice_total_bill">Total Tagihan</string>
@@ -88,5 +89,7 @@
     <string name="thank_invoice_service_fee">Biaya Layanan</string>
     <string name="thank_bill_paid_with">Dibayar dengan</string>
     <string name="thank_obtained_after_transaction">Didapat setelah transaksi</string>
+    <string name="thank_payment_detail">Detail Pembayaran</string>
+    <string name="thank_item_purchased">Barang yang dibeli</string>
 
 </resources>

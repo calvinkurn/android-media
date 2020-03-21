@@ -15,12 +15,14 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
+import com.tokopedia.thankyou_native.data.mapper.DetailInvoiceMapper
 import com.tokopedia.thankyou_native.di.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.PaymentStatusMapper
 import com.tokopedia.thankyou_native.helper.PaymentType
 import com.tokopedia.thankyou_native.helper.PaymentTypeMapper
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
+import com.tokopedia.thankyou_native.presentation.dialog.InvoiceDetailBottomSheet
 import com.tokopedia.thankyou_native.presentation.helper.*
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -42,7 +44,6 @@ class ProcessingPaymentFragment : BaseDaggerFragment(), OnDialogRedirectListener
     private lateinit var dialogHelper: DialogHelper
 
     private lateinit var thanksPageData: ThanksPageData
-
 
     private var dialog: DialogUnify? = null
 
@@ -107,7 +108,10 @@ class ProcessingPaymentFragment : BaseDaggerFragment(), OnDialogRedirectListener
     }
 
     private fun openPaymentDetail() {
-        //TODO("not implemented")
+        context?.let {
+            val visitables = DetailInvoiceMapper(thanksPageData).getDetailedInvoice()
+            InvoiceDetailBottomSheet(it).show(visitables)
+        }
     }
 
     private fun initCheckPaymentWidgetData() {
@@ -153,17 +157,19 @@ class ProcessingPaymentFragment : BaseDaggerFragment(), OnDialogRedirectListener
         gotoHomePage()
     }
 
-
     override fun gotoHomePage() {
         RouteManager.route(context, ApplinkConst.HOME, "")
+        activity?.finish()
     }
 
     override fun gotoPaymentWaitingPage() {
         RouteManager.route(context, ApplinkConst.PMS, "")
+        activity?.finish()
     }
 
     override fun gotoOrderList() {
         RouteManager.route(context, ApplinkConst.PURCHASE_ORDER_DETAIL, "")//arrayOf(thanksPageData.orderList[0].orderId))
+        activity?.finish()
     }
 
     internal fun onBackPressed(): Boolean {

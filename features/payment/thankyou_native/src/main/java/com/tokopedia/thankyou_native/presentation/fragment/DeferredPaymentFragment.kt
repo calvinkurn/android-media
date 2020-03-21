@@ -18,10 +18,12 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
+import com.tokopedia.thankyou_native.data.mapper.DetailInvoiceMapper
 import com.tokopedia.thankyou_native.di.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.*
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
+import com.tokopedia.thankyou_native.presentation.dialog.InvoiceDetailBottomSheet
 import com.tokopedia.thankyou_native.presentation.dialog.PaymentMethodsBottomSheet
 import com.tokopedia.thankyou_native.presentation.helper.*
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
@@ -113,7 +115,7 @@ class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.Than
         tvPaymentGatewayName.text = thanksPageData.gatewayName
         ImageLoader.LoadImage(ivPaymentGatewayImage, thanksPageData.gatewayImage)
         tvAccountNumberTypeTag.text = numberTypeTitle
-        tvAccountNumber.text = thanksPageData.additionalInfo.accountDest
+        tvAccountNumber.text = thanksPageData.additionalInfo?.accountDest ?: ""
         tvTotalAmount.text = getString(R.string.thankyou_rp, thanksPageData.amountStr)
 
         if (isCopyVisible) {
@@ -221,7 +223,10 @@ class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.Than
     }
 
     private fun openPaymentDetail() {
-        //todo open payment detail screen bottomsheet
+        context?.let {
+            val visitables = DetailInvoiceMapper(thanksPageData).getDetailedInvoice()
+            InvoiceDetailBottomSheet(it).show(visitables)
+        }
     }
 
     private fun openHowTOPay() {
@@ -238,14 +243,17 @@ class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.Than
 
     override fun gotoHomePage() {
         RouteManager.route(context, ApplinkConst.HOME, "")
+        activity?.finish()
     }
 
     override fun gotoPaymentWaitingPage() {
         RouteManager.route(context, ApplinkConst.PMS, "")
+        activity?.finish()
     }
 
     override fun gotoOrderList() {
         RouteManager.route(context, ApplinkConst.PURCHASE_ORDER_DETAIL, "")//arrayOf(thanksPageData.orderList[0].orderId))
+        activity?.finish()
     }
 
     companion object {

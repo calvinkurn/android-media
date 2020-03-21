@@ -6,25 +6,110 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.presentation.adapter.model.OrderedItem
 import com.tokopedia.thankyou_native.presentation.adapter.model.ShopInvoice
+import kotlinx.android.synthetic.main.thank_widget_shop_invoice.view.*
 
 class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(view) {
 
     private lateinit var inflater: LayoutInflater
 
+    private val tvShopName: TextView = view.tvInvoiceShopName
+    private val llItemContainer = view.llShopItemContainer
+
+    private val tvInvoiceShopDiscountValue = view.tvInvoiceShopDiscountValue
+    private val tvInvoiceShopDiscount = view.tvInvoiceShopDiscount
+
+    private val tvInvoiceShopItemProtectionValue = view.tvInvoiceShopItemProtectionValue
+    private val tvInvoiceShopItemProtection = view.tvInvoiceShopItemProtection
+
+    private val tvInvoiceShopItemShippingValue = view.tvInvoiceShopItemShippingValue
+    private val tvInvoiceShopItemShipping = view.tvInvoiceShopItemShipping
+
+    private val tvInvoiceShopItemCourier = view.tvInvoiceShopItemCourier
+
+    private val tvInvoiceShopItemShippingDiscountValue = view.tvInvoiceShopItemShippingDiscountValue
+    private val tvInvoiceShopItemShippingDiscount = view.tvInvoiceShopItemShippingDiscount
+
+
+    private val tvInvoiceShopItemShippingInsuranceValue = view.tvInvoiceShopItemShippingInsuranceValue
+    private val tvInvoiceShopItemShippingInsurance = view.tvInvoiceShopItemShippingInsurance
+
+    private val tvInvoiceShopShippingAddressValue = view.tvInvoiceShopShippingAddressValue
+    private val tvInvoiceShopShippingAddress = view.tvInvoiceShopShippingAddress
+
+
     override fun bind(element: ShopInvoice?) {
         element?.let {
-            view.findViewById<TextView>(R.id.tvInvoiceShopName).text = element.shopName
-            addShopItems(view.findViewById(R.id.llShopItemContainer), shopInvoice = element)
-            view.findViewById<TextView>(R.id.tvInvoiceShopDiscountValue).text = getString(R.string.thankyou_discounted_rp, element.itemDiscountStr)
-            view.findViewById<TextView>(R.id.tvInvoiceShopItemProtection).text = getString(R.string.thankyou_rp, element.productProtectionStr)
-            view.findViewById<TextView>(R.id.tvInvoiceShopItemShippingValue).text = getString(R.string.thankyou_rp, element.shippingPriceStr)
-            view.findViewById<TextView>(R.id.tvInvoiceShopItemCourier).text = element.shippingTypeStr
-            view.findViewById<TextView>(R.id.tvInvoiceShopItemShippingDiscountValue).text = getString(R.string.thankyou_discounted_rp, element.discountOnShippingStr)
-            view.findViewById<TextView>(R.id.tvInvoiceShopItemShippingInsuranceValue).text = getString(R.string.thankyou_rp, element.shippingInsurancePriceStr)
-            view.findViewById<TextView>(R.id.tvInvoiceShopShippingAddressValue).text = element.shippingAddress
+            tvShopName.text = element.shopName
+
+            addShopItems(llItemContainer, shopInvoice = element)
+
+            element.itemDiscountStr?.let {
+                tvInvoiceShopDiscountValue.text = getString(R.string.thankyou_discounted_rp, element.itemDiscountStr)
+                tvInvoiceShopDiscountValue.visible()
+                tvInvoiceShopDiscount.visible()
+
+            } ?: run {
+                tvInvoiceShopDiscountValue.gone()
+                tvInvoiceShopDiscount.gone()
+            }
+
+            element.productProtectionStr?.let {
+                tvInvoiceShopItemProtectionValue.text = getString(R.string.thankyou_rp, element.productProtectionStr)
+                tvInvoiceShopItemProtectionValue.visible()
+                tvInvoiceShopItemProtection.visible()
+            } ?: run {
+                tvInvoiceShopItemProtection.gone()
+                tvInvoiceShopItemProtectionValue.gone()
+            }
+
+            element.shippingPriceStr?.let {
+                tvInvoiceShopItemShippingValue.text = getString(R.string.thankyou_rp, element.shippingPriceStr)
+                tvInvoiceShopItemShippingValue.visible()
+                tvInvoiceShopItemShipping.visible()
+            } ?: run {
+                tvInvoiceShopItemShippingValue.gone()
+                tvInvoiceShopItemShipping.gone()
+            }
+
+
+            element.shippingTypeStr?.let {
+                tvInvoiceShopItemCourier.text = element.shippingTypeStr
+                tvInvoiceShopItemCourier.visible()
+            } ?: run {
+                tvInvoiceShopItemCourier.gone()
+            }
+
+            element.discountOnShippingStr?.let {
+                tvInvoiceShopItemShippingDiscountValue.text = getString(R.string.thankyou_discounted_rp, element.discountOnShippingStr)
+                tvInvoiceShopItemShippingDiscountValue.visible()
+                tvInvoiceShopItemShippingDiscount.visible()
+            } ?: run {
+                tvInvoiceShopItemShippingDiscountValue.gone()
+                tvInvoiceShopItemShippingDiscount.gone()
+            }
+
+
+            element.shippingInsurancePriceStr?.let {
+                tvInvoiceShopItemShippingInsuranceValue.text = getString(R.string.thankyou_rp, element.shippingInsurancePriceStr)
+                tvInvoiceShopItemShippingInsuranceValue.visible()
+                tvInvoiceShopItemShippingInsurance.visible()
+            } ?: run {
+                tvInvoiceShopItemShippingInsuranceValue.gone()
+                tvInvoiceShopItemShippingInsurance.gone()
+            }
+            element.shippingAddress?.let {
+                tvInvoiceShopShippingAddressValue.text = element.shippingAddress
+                tvInvoiceShopShippingAddressValue.visible()
+                tvInvoiceShopShippingAddress.visible()
+            } ?: run {
+                tvInvoiceShopShippingAddressValue.gone()
+                tvInvoiceShopShippingAddress.gone()
+            }
         }
     }
 
@@ -41,8 +126,10 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
             inflater = LayoutInflater.from(context)
         val shopItemView = inflater.inflate(R.layout.thank_widget_shop_item, null, false)
         shopItemView.findViewById<TextView>(R.id.tvInvoiceShopItemName).text = orderedItem.itemName
-        shopItemView.findViewById<TextView>(R.id.tvInvoiceShopItemNameTotalPrice).text = getString(R.string.thankyou_rp, orderedItem.itemPriceStr)
-        shopItemView.findViewById<TextView>(R.id.tvInvoiceShopItemNameCountPrice).text = orderedItem.itemCountAndPriceStr
+        shopItemView.findViewById<TextView>(R.id.tvInvoiceShopItemNameTotalPrice).text = getString(R.string.thankyou_rp, orderedItem.itemTotalPriceStr)
+
+        shopItemView.findViewById<TextView>(R.id.tvInvoiceShopItemNameCountPrice)
+                .text = itemView.context.getString(R.string.thank_invoice_item_count_price, orderedItem.itemCount, orderedItem.itemTotalPriceStr!!)
         return shopItemView
     }
 

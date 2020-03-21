@@ -1,34 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/Neutral_N0"
     android:orientation="vertical">
 
-    <include
-        android:id="@+id/layoutPaymentGatewayName"
-        layout="@layout/thank_widget_invoice_pg" />
-
-    <View
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
-        android:background="@color/Neutral_N50"/>
-
-    <include
-        android:id="@+id/layoutInvoiceSummary"
-        layout="@layout/thank_widget_invoice_summary" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:background="@color/Neutral_N75"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"/>
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-    </androidx.core.widget.NestedScrollView>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

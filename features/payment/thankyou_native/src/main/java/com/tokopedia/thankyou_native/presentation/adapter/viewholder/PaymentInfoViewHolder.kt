@@ -6,9 +6,12 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.presentation.adapter.model.PaymentInfo
 import com.tokopedia.thankyou_native.presentation.adapter.model.PaymentModeMap
+import kotlinx.android.synthetic.main.thank_widget_payment_info.view.*
 
 class PaymentInfoViewHolder(val view: View) : AbstractViewHolder<PaymentInfo>(view) {
 
@@ -25,9 +28,11 @@ class PaymentInfoViewHolder(val view: View) : AbstractViewHolder<PaymentInfo>(vi
 
     private fun addPaymentMode(container: LinearLayout, paymentInfo: PaymentInfo) {
         container.removeAllViews()
+        view.tvTotalBillPaidWith.gone()
         paymentInfo.paymentModeList?.forEach { paymentModeMap ->
-            val view = createPaymentModeView(context = view.context, paymentModeMap = paymentModeMap)
-            container.addView(view)
+            view.tvTotalBillPaidWith.visible()
+            val modeView = createPaymentModeView(context = view.context, paymentModeMap = paymentModeMap)
+            container.addView(modeView)
         }
     }
 
