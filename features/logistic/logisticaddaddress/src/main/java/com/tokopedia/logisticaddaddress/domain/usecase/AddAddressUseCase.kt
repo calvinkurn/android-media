@@ -13,11 +13,11 @@ import javax.inject.Inject
 class AddAddressUseCase
 @Inject constructor(val gql: GraphqlUseCase, val scheduler: SchedulerProvider) {
 
-    fun execute(model: SaveAddressDataModel): Observable<AddAddressResponse> {
+    fun execute(model: SaveAddressDataModel, formType: String): Observable<AddAddressResponse> {
         val param = AddAddressParam(
                 model.addressName, model.receiverName, model.address1, model.address2,
                 model.postalCode, model.phone, model.provinceId.toString(), model.cityId.toString(),
-                model.districtId.toString(), model.latitude, model.longitude
+                model.districtId.toString(), model.latitude, model.longitude, formType
         )
         val gqlParam = mapOf("input" to param.toMap())
         val gqlRequest = GraphqlRequest(kero_add_address_query,

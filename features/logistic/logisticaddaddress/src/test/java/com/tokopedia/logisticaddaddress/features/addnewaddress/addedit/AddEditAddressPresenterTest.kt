@@ -50,7 +50,7 @@ object AddEditAddressPresenterTest : Spek({
                     Data(isSuccess = 1, addrId = 99)
             ))
             Given("success answer") {
-                every { saveUseCase.execute(any()) } returns Observable.just(successGql)
+                every { saveUseCase.execute(any(), "1") } returns Observable.just(successGql)
             }
             When("executed from positive form") {
                 presenter.saveAddress(model, AddressConstants.ANA_POSITIVE)
@@ -71,7 +71,7 @@ object AddEditAddressPresenterTest : Spek({
                     Data(isSuccess = 0)
             ))
             Given("not success answer") {
-                every { saveUseCase.execute(any()) } returns Observable.just(notSuccessResponse)
+                every { saveUseCase.execute(any(), "1") } returns Observable.just(notSuccessResponse)
             }
             When("executed from negative form ") {
                 presenter.saveAddress(model, AddressConstants.ANA_NEGATIVE)
@@ -89,7 +89,7 @@ object AddEditAddressPresenterTest : Spek({
         Scenario("error gql response") {
             val exception = MessageErrorException("hi")
             Given("error answer") {
-                every { saveUseCase.execute(any()) } returns Observable.error(exception)
+                every { saveUseCase.execute(any(), "1") } returns Observable.error(exception)
             }
             When("executed") {
                 presenter.saveAddress(model, AddressConstants.ANA_POSITIVE)
