@@ -8,7 +8,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -27,8 +26,6 @@ import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.data.consts.EmptyDataStateProvider
 import com.tokopedia.notifcenter.data.entity.NotificationUpdateTotalUnread
 import com.tokopedia.notifcenter.data.entity.ProductData
-import com.tokopedia.notifcenter.data.entity.ProductStockHandler
-import com.tokopedia.notifcenter.data.mapper.ProductStockHandlerMapper
 import com.tokopedia.notifcenter.data.model.NotificationViewData
 import com.tokopedia.notifcenter.data.state.BottomSheetType
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
@@ -44,7 +41,6 @@ import com.tokopedia.notifcenter.presentation.adapter.viewholder.base.BaseNotifi
 import com.tokopedia.notifcenter.presentation.contract.NotificationActivityContract
 import com.tokopedia.notifcenter.presentation.contract.NotificationUpdateContract
 import com.tokopedia.notifcenter.presentation.presenter.NotificationUpdatePresenter
-import com.tokopedia.notifcenter.presentation.subscriber.stockHandlerResponse
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationUpdateViewModel
 import com.tokopedia.notifcenter.util.isSingleItem
 import com.tokopedia.notifcenter.util.viewModelProvider
