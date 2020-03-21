@@ -15,7 +15,7 @@ import dagger.Component
             NotificationQueryModule::class,
             NotificationUpdateModule::class,
             NotificationTransactionModule::class,
-            NotificationTransactionViewModelModule::class
+            NotificationViewModelModule::class
         ],
         dependencies = [(BaseAppComponent::class)]
 )
