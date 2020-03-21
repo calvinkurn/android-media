@@ -11,16 +11,23 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
+import com.tokopedia.notifcenter.di.DaggerNotificationComponent
+import com.tokopedia.notifcenter.di.module.CommonModule
+import com.tokopedia.notifcenter.domain.ProductStockReminderUseCase
 import com.tokopedia.notifcenter.presentation.BaseBottomSheetDialog
 import com.tokopedia.notifcenter.widget.CampaignRedView
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import javax.inject.Inject
+import com.tokopedia.notifcenter.domain.ProductStockReminderUseCase.Companion.params as stockReminderParams
 
 class ProductStockReminderDialog(
         private val context: Context,
         fragmentManager: FragmentManager
 ): BaseBottomSheetDialog<NotificationItemViewBean>(context, fragmentManager) {
+
+    @Inject lateinit var useCase: ProductStockReminderUseCase
 
     private val txtTitle = container?.findViewById<Typography>(R.id.txt_title)
     private val txtDescription = container?.findViewById<Typography>(R.id.txt_description)
@@ -40,27 +47,34 @@ class ProductStockReminderDialog(
         txtTitle?.text = element.title
         txtDescription?.text = element.body
 
-        element.getAtcProduct()?.let {
+        element.getAtcProduct()?.let { product ->
             ImageHandler.loadImage2(
                     thumbnail,
-                    it.imageUrl,
+                    product.imageUrl,
                     R.drawable.ic_notifcenter_loading_toped
             )
 
-            productName?.text = it.name
-            productPrice?.text = it.priceFormat
-            productCampaign?.setCampaign(it.campaign)
+            productName?.text = product.name
+            productPrice?.text = product.priceFormat
+            productCampaign?.setCampaign(product.campaign)
 
-            if (it.shop?.freeShippingIcon != null &&
-                it.shop.freeShippingIcon.isNotEmpty()) {
-                campaignTag?.loadImage(it.shop.freeShippingIcon)
+            if (product.shop?.freeShippingIcon != null &&
+                product.shop.freeShippingIcon.isNotEmpty()) {
+                campaignTag?.loadImage(product.shop.freeShippingIcon)
                 campaignTag?.show()
             }
-        }
 
-        btnReminder?.setOnClickListener {
-            showToast()
+            btnReminder?.setOnClickListener {
+                setReminder(product.productId, element.notificationId)
+            }
         }
+    }
+
+    private fun setReminder(productId: String, notificationId: String) {
+        val params = stockReminderParams(notificationId, productId)
+        useCase.get(params, {
+            showToast()
+        }, {})
     }
 
     private fun showToast() {
@@ -74,6 +88,13 @@ class ProductStockReminderDialog(
                     View.OnClickListener {  }
             )
         }
+    }
+
+    override fun initInjector() {
+        DaggerNotificationComponent.builder()
+                .commonModule(CommonModule(context))
+                .build()
+                .inject(this)
     }
 
 }
