@@ -37,6 +37,8 @@ class NotificationProductCardDialog(
     }
 
     override fun show(element: NotificationItemViewBean) {
+        setFullPage(true)
+
         txtTitle?.text = element.title
         txtDescription?.text = element.body
 
