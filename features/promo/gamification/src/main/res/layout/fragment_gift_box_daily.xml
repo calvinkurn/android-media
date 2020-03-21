@@ -76,9 +76,13 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvTapHint"
-                android:layout_width="240dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginStart="@dimen/dp_60"
+                android:layout_marginLeft="@dimen/dp_60"
+                android:layout_marginEnd="@dimen/dp_60"
+                android:layout_marginRight="@dimen/dp_60"
                 android:alpha="0"
                 android:background="@drawable/gami_bg_text_hint"
                 android:gravity="center"
@@ -99,7 +103,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="@dimen/dp_32"
                 android:orientation="vertical"
                 tools:alpha="1">
 
@@ -121,10 +125,10 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginLeft="32dp"
-                    android:layout_marginEnd="32dp"
-                    android:layout_marginRight="32dp"
+                    android:layout_marginStart="@dimen/dp_32"
+                    android:layout_marginLeft="@dimen/dp_32"
+                    android:layout_marginEnd="@dimen/dp_32"
+                    android:layout_marginRight="@dimen/dp_32"
                     android:gravity="center_horizontal"
                     android:orientation="horizontal">
 

@@ -5,10 +5,12 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.annotation.StringDef
 import androidx.appcompat.app.AppCompatActivity
@@ -29,6 +31,7 @@ import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.NON_LOGIN
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
 import com.tokopedia.gamification.giftbox.presentation.helpers.doOnLayout
+import com.tokopedia.gamification.giftbox.presentation.helpers.updateLayoutParams
 import com.tokopedia.gamification.giftbox.presentation.viewmodels.GiftBoxDailyViewModel
 import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
 import com.tokopedia.gamification.giftbox.presentation.views.GiftPrizeLargeView
@@ -280,6 +283,21 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         super.initialViewSetup()
         llBenefits.alpha = 0f
         llRewardMessage.alpha = 0f
+        setDynamicMargin()
+    }
+
+    fun setDynamicMargin() {
+        val dpi = resources.displayMetrics.densityDpi
+        when (dpi) {
+            DisplayMetrics.DENSITY_MEDIUM, DisplayMetrics.DENSITY_HIGH -> {
+                tvTapHint.updateLayoutParams<FrameLayout.LayoutParams> {
+                    val margin = dpToPx(40f)
+                    setMargins(40, 0, 40, 0)
+                }
+            }
+            else -> {
+            }
+        }
     }
 
 //    fun renderGiftBoxState(giftBoxState: GiftBoxState) {
