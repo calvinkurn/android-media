@@ -14,6 +14,10 @@ class CouponView @JvmOverloads constructor(
     private var circleRadius = 30f
     private var circleColor = Color.TRANSPARENT
 
+    init {
+        setLayerType(LAYER_TYPE_HARDWARE, null)
+    }
+
     override fun readAttrs(attrs: AttributeSet?) {
         super.readAttrs(attrs)
         if (attrs != null) {
@@ -44,7 +48,6 @@ class CouponView @JvmOverloads constructor(
     }
 
     private fun cutTwoCircles(canvas: Canvas, heightFromTop: Float = -1f) {
-        canvas.save()
         clipPath.reset()
 
         clipRectF.top = 0f
@@ -60,13 +63,11 @@ class CouponView @JvmOverloads constructor(
         val p = Paint()
         p.style = Paint.Style.FILL
         p.color = circleColor
-        p.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP)
+        p.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
         p.isAntiAlias = true
 
         clipPath.addCircle(x, y, circleRadius, Path.Direction.CW)
         clipPath.addCircle(canvas.width.toFloat(), y, circleRadius, Path.Direction.CW)
         canvas.drawPath(clipPath, p)
-        canvas.clipPath(clipPath)
-        canvas.restore()
     }
 }

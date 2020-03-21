@@ -22,7 +22,7 @@ open class CardConstraintLayout : ConstraintLayout {
     private var rectBackgroundRectF = RectF()
     private var borderRectF = RectF()
 
-    private val porterDuffXfermode = PorterDuffXfermode(PorterDuff.Mode.SRC)
+    private var porterDuffXfermode = PorterDuffXfermode(PorterDuff.Mode.SRC)
 
     private var shadowColor = Color.BLACK
 
@@ -58,6 +58,7 @@ open class CardConstraintLayout : ConstraintLayout {
 
     fun init(attrs: AttributeSet?) {
         readAttrs(attrs)
+        setLayerType(LAYER_TYPE_HARDWARE, null)
         blurMaskFilter = BlurMaskFilter(blurRadius, BlurMaskFilter.Blur.NORMAL)
     }
 
@@ -133,9 +134,10 @@ open class CardConstraintLayout : ConstraintLayout {
 
 
     private fun drawRectBackground(canvas: Canvas) {
-
-        rectPaint.style = Paint.Style.FILL
-        rectPaint.color = Color.WHITE
+        porterDuffXfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+        rectPaint.style = Paint.Style.STROKE
+        rectPaint.strokeWidth = dpToPx(context, 1)
+        rectPaint.color = Color.TRANSPARENT
         rectPaint.xfermode = porterDuffXfermode
         rectBackgroundRectF.top = 0f
         rectBackgroundRectF.left = 0f
@@ -163,7 +165,7 @@ open class CardConstraintLayout : ConstraintLayout {
 
         shadowPath.reset()
         shadowPath.moveTo((width + (shadowEndOffset)), shadowStartY + shadowTopOffset)               //Top Right
-        shadowPath.lineTo((shadowStartOffset), shadowStartY+shadowTopOffset)                         // TR -> TL
+        shadowPath.lineTo((shadowStartOffset), shadowStartY + shadowTopOffset)                         // TR -> TL
         shadowPath.lineTo((shadowStartOffset), (height + shadowBottomOffset))                           // TL -> BL
         shadowPath.lineTo((width + shadowEndOffset), (height + shadowBottomOffset))                   // BL -> BR
         shadowPath.lineTo((width + shadowEndOffset), shadowStartY)                                      // BR -> TR
