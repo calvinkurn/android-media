@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:paddingTop="@dimen/dp_8"
+    android:paddingTop="@dimen/spacing_lvl3"
     android:paddingBottom="@dimen/dp_12"
     android:visibility="gone"
     tools:visibility="visible">
@@ -23,10 +23,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/recharge_checkout_promo_ticker"
-        android:lineHeight="@dimen/dp_18"
         android:lines="1"
         android:text="Total Pembayaran"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="?attr/N700_96"
         app:typographyType="heading_4" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -34,16 +33,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/txt_recharge_checkout_label"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:lines="1"
-        android:textColor="@color/tkpd_main_orange"
+        android:textColor="?attr/Y400"
         app:typographyType="body_1"
         app:typographyWeight="bold"
         tools:text="Rp 25.200" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_recharge_checkout_next"
-        android:layout_width="@dimen/dp_100"
+        android:layout_width="@dimen/layout_lvl8"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/txt_recharge_checkout_label"
         android:layout_alignBottom="@+id/txt_recharge_checkout_price"
