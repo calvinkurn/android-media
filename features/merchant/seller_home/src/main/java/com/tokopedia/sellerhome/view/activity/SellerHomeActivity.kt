@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.LabelVisibilityMode
@@ -51,21 +50,24 @@ class SellerHomeActivity : BaseActivity() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val homeViewModel by lazy { viewModelProvider.get(SellerHomeActivityViewModel::class.java) }
     private val sharedViewModel by lazy { viewModelProvider.get(SharedViewModel::class.java) }
-    private val containerFragment by lazy { ContainerFragment.newInstance() }
-    private val otherSettingsFragment by lazy { OtherMenuFragment.createInstance() }
-    private val fragmentManger: FragmentManager by lazy { supportFragmentManager }
+
+    private val handler = Handler() //create handler to make sure when showing fragment is on UI thread
+    private val containerFragment by lazy {
+        ContainerFragment.newInstance()
+    }
+    private val otherSettingsFragment by lazy {
+        OtherMenuFragment.createInstance()
+    }
 
     private var currentSelectedMenu = 0
-    private var currentFragment: Fragment? = null
     private var canExitApp = false
-    private var hasAttachContainerFragment = false
-    private var hasAttachSettingsFragment = false
     private var lastSomTab = PageFragment(FragmentType.ORDER) //by default show tab "Semua Pesanan"
 
     private var statusBarCallback: StatusBarCallback? = null
@@ -76,7 +78,7 @@ class SellerHomeActivity : BaseActivity() {
 
         initInjector()
         setupBottomNav()
-        setupDefaultFragment()
+        setupDefaultPage(savedInstanceState)
         UpdateCheckerHelper.checkAppUpdate(this)
         observeNotificationsLiveData()
         observeShopInfoLiveData()
@@ -99,10 +101,7 @@ class SellerHomeActivity : BaseActivity() {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        DeepLinkHandler.handleAppLink(intent) { page ->
-            lastSomTab = page
-            sharedViewModel.setCurrentSelectedPage(page)
-        }
+        handleAppLink(intent)
     }
 
     override fun onBackPressed() {
@@ -111,6 +110,23 @@ class SellerHomeActivity : BaseActivity() {
 
     fun attachCallback(callback: StatusBarCallback) {
         statusBarCallback = callback
+    }
+
+    private fun setupDefaultPage(savedInstanceState: Bundle?) {
+        if (null == savedInstanceState) {
+            val homePage = PageFragment(FragmentType.HOME)
+            sharedViewModel.setCurrentSelectedPage(homePage)
+            showFragment(containerFragment)
+        } else {
+            handleAppLink(intent)
+        }
+    }
+
+    private fun handleAppLink(intent: Intent?) {
+        DeepLinkHandler.handleAppLink(intent) { page ->
+            lastSomTab = page
+            sharedViewModel.setCurrentSelectedPage(page)
+        }
     }
 
     private fun doubleTabToExit() {
@@ -168,39 +184,31 @@ class SellerHomeActivity : BaseActivity() {
         if (currentSelectedMenu == type) return
         currentSelectedMenu = type
 
-        if (!hasAttachSettingsFragment) {
-            addFragment(otherSettingsFragment)
-            hasAttachSettingsFragment = true
-        }
         showFragment(otherSettingsFragment)
         sharedViewModel.setCurrentSelectedPage(PageFragment(type))
 
         NavigationTracking.sendClickBottomNavigationMenuEvent(TrackingConstant.CLICK_OTHERS)
     }
 
-    private fun setupDefaultFragment() {
-        if (!hasAttachContainerFragment) {
-            addFragment(containerFragment)
-            hasAttachContainerFragment = true
-        }
-        currentFragment = containerFragment
-        showFragment(containerFragment)
-    }
-
-    private fun <T : Fragment> addFragment(fragment: T) {
-        fragmentManger.beginTransaction()
-                .add(R.id.sahContainer, fragment, fragment.tag)
-                .hide(fragment)
-                .commit()
-    }
-
     private fun showFragment(fragment: Fragment) {
-        currentFragment?.let {
-            fragmentManger.beginTransaction()
-                    .hide(it)
-                    .show(fragment)
-                    .commit()
-            currentFragment = fragment
+        handler.post {
+            val fragmentName = fragment.javaClass.name
+            val manager = supportFragmentManager
+            val transaction = manager.beginTransaction()
+            val isFragmentHasAttached = null != manager.findFragmentByTag(fragmentName)
+
+            if (isFragmentHasAttached && manager.fragments.isNotEmpty()) {
+                manager.fragments.forEach { fmt ->
+                    if (fmt.javaClass.name == fragmentName) {
+                        transaction.show(fmt)
+                    } else {
+                        transaction.hide(fmt)
+                    }
+                }
+            } else {
+                transaction.add(R.id.sahContainer, fragment, fragmentName)
+            }
+            transaction.commitNowAllowingStateLoss()
         }
     }
 
@@ -245,8 +253,7 @@ class SellerHomeActivity : BaseActivity() {
     private fun setupStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             this.requestStatusBarDark()
-        }
-        else {
+        } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
                 sahContainer.requestApplyInsets()
             }
