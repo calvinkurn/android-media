@@ -1,13 +1,14 @@
 package com.tokopedia.sellerhome.view.fragment
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -21,7 +22,6 @@ import com.tokopedia.sellerhome.common.StatusbarHelper
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.view.model.NotificationCenterUnreadUiModel
 import com.tokopedia.sellerhome.view.viewmodel.SharedViewModel
-import com.tokopedia.sellerhome.view.widget.toolbar.NotificationDotBadge
 import kotlinx.android.synthetic.main.fragment_sah_container.view.*
 import javax.inject.Inject
 
@@ -46,7 +46,6 @@ class ContainerFragment : Fragment() {
         } else
             null
     }
-
     private val sellerHomeRouter: SellerHomeRouter? by lazy {
         val applicationContext = activity?.applicationContext
         return@lazy if (applicationContext is SellerHomeRouter)
@@ -54,28 +53,16 @@ class ContainerFragment : Fragment() {
         else
             null
     }
-    private val homeFragment by lazy { SellerHomeFragment.newInstance() }
-    private val productManageFragment: Fragment? by lazy {
-        sellerHomeRouter?.getProductManageFragment()
-    }
-    private val chatFragment: Fragment? by lazy {
-        sellerHomeRouter?.getChatListFragment()
-    }
-    private var somListFragment: Fragment? = null
-    private var currentFragment: Fragment? = null
-    private val fragmentManger: FragmentManager by lazy { childFragmentManager }
 
-    private val notificationBadge: NotificationDotBadge? by lazy {
-        NotificationDotBadge(context ?: return@lazy null)
-    }
+    private val handler = Handler()
+    private val homeFragment: SellerHomeFragment by lazy { SellerHomeFragment.newInstance() }
+    private val productManageFragment: Fragment? by lazy { sellerHomeRouter?.getProductManageFragment() }
+    private val chatFragment: Fragment? by lazy { sellerHomeRouter?.getChatListFragment() }
+    private val somListFragment: Fragment? by lazy { sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_ALL_ORDER) }
 
     @FragmentType
     private var currentFragmentType: Int = 0
     private var homeFragmentTitle = ""
-    private var hasAttachHomeFragment = false
-    private var hasAttachProductManagerFragment = false
-    private var hasAttachChatFragment = false
-    private var hasAttachSomFragment = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,7 +101,6 @@ class ContainerFragment : Fragment() {
     }
 
     private fun setupDefaultPage() {
-        currentFragment = homeFragment
         sharedViewModel?.setCurrentSelectedPage(PageFragment(FragmentType.HOME))
     }
 
@@ -122,75 +108,59 @@ class ContainerFragment : Fragment() {
         sharedViewModel?.currentSelectedPage?.observe(this, Observer { page ->
             currentFragmentType = page.type
             when (page.type) {
-                FragmentType.HOME -> setupSellerHomeFragment()
-                FragmentType.PRODUCT -> setupProductManagerFragment()
-                FragmentType.CHAT -> setupChatFragment()
-                FragmentType.ORDER -> setupSomListFragment(page)
+                FragmentType.HOME -> showFragment(homeFragment, page, homeFragmentTitle)
+                FragmentType.PRODUCT -> showFragment(productManageFragment, page, getString(R.string.sah_product_list))
+                FragmentType.CHAT -> showFragment(chatFragment, page, getString(R.string.sah_chat))
+                FragmentType.ORDER -> showFragment(somListFragment, page, getString(R.string.sah_sale))
             }
         })
     }
 
-    private fun setupSellerHomeFragment() {
-        if (!hasAttachHomeFragment) {
-            addFragment(homeFragment)
-            hasAttachHomeFragment = true
+    private fun showFragment(fragment: Fragment?, page: PageFragment, title: String) {
+        if (null == fragment) {
+            return
         }
-        showFragment(homeFragment, homeFragmentTitle)
 
-        homeFragment.showNotificationBadge()
-    }
+        handler.post {
+            val fragmentName = fragment.javaClass.name
+            val manager = childFragmentManager
+            val transaction = manager.beginTransaction()
+            val isFragmentAttached = null != manager.findFragmentByTag(fragmentName)
 
-    private fun setupProductManagerFragment() {
-        productManageFragment?.let { fragment ->
-            if (!hasAttachProductManagerFragment) {
-                addFragment(fragment)
-                hasAttachProductManagerFragment = true
+            if (isFragmentAttached && manager.fragments.isNotEmpty()) {
+                manager.fragments.forEach { fmt ->
+                    if (fragmentName == fmt.javaClass.name) {
+                        if (page.type == FragmentType.ORDER) {
+                            showSomPage(fmt, transaction, page, fragmentName)
+                        } else {
+                            transaction.show(fmt)
+                        }
+                    } else {
+                        transaction.hide(fmt)
+                    }
+                }
+            } else {
+                transaction.add(R.id.sahFragmentContainer, fragment, fragmentName)
             }
-            showFragment(fragment, getString(R.string.sah_product_list))
+
+            transaction.commitNowAllowingStateLoss()
+            view?.sahToolbar?.title = title
         }
     }
 
-    private fun setupChatFragment() {
-        chatFragment?.let { fragment ->
-            if (!hasAttachChatFragment) {
-                addFragment(fragment)
-                hasAttachChatFragment = true
+    private fun showSomPage(fmt: Fragment, transaction: FragmentTransaction, page: PageFragment, fragmentName: String) {
+        if (page.tabPage.isNotBlank() && SomTabConst.STATUS_ALL_ORDER != page.tabPage) {
+            val mSomListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage)
+            if (null != mSomListFragment) {
+                transaction.remove(fmt)
+                transaction.add(R.id.sahFragmentContainer, mSomListFragment, fragmentName)
+                transaction.show(mSomListFragment)
+            } else {
+                transaction.show(fmt)
             }
-            showFragment(fragment, getString(R.string.sah_chat))
+        } else {
+            transaction.show(fmt)
         }
-    }
-
-    private fun setupSomListFragment(page: PageFragment) {
-        if (null == somListFragment || (page.tabPage.isNotBlank() && SomTabConst.STATUS_ALL_ORDER != page.tabPage)) {
-            somListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage)
-            hasAttachSomFragment = false
-        }
-
-        somListFragment?.let {
-            if (!hasAttachSomFragment) {
-                addFragment(it)
-                hasAttachSomFragment = true
-            }
-            showFragment(it, getString(R.string.sah_sale))
-        }
-    }
-
-    private fun <T : Fragment> addFragment(fragment: T) {
-        fragmentManger.beginTransaction()
-                .add(R.id.sahFragmentContainer, fragment, fragment.tag)
-                .hide(fragment)
-                .commit()
-    }
-
-    private fun showFragment(fragment: Fragment, title: String) {
-        currentFragment?.let {
-            fragmentManger.beginTransaction()
-                    .hide(it)
-                    .show(fragment)
-                    .commit()
-            currentFragment = fragment
-        }
-        view?.sahToolbar?.title = title
     }
 
     fun showNotifCenterBadge(notif: NotificationCenterUnreadUiModel) {
