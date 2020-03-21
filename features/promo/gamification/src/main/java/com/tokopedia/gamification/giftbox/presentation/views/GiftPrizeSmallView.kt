@@ -7,6 +7,7 @@ import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import com.tokopedia.gamification.R
+import com.tokopedia.utils.image.ImageUtils
 
 
 class GiftPrizeSmallView : FrameLayout {
@@ -37,8 +38,8 @@ class GiftPrizeSmallView : FrameLayout {
         tvTitle = findViewById(R.id.tvTitle)
     }
 
-    fun setData(image: String, textList: List<String>?) {
-        //todo Rahul load image later
+    fun setData(imageUrl: String, textList: List<String>?) {
+        ImageUtils.loadImage(image, imageUrl)
         if (!textList.isNullOrEmpty()) {
             tvTitle.text = textList[0]
         }

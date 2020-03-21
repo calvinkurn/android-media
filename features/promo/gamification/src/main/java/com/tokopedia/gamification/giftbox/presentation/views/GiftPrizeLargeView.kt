@@ -7,6 +7,7 @@ import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import com.tokopedia.gamification.R
+import com.tokopedia.utils.image.ImageUtils
 
 class GiftPrizeLargeView : FrameLayout {
 
@@ -43,7 +44,7 @@ class GiftPrizeLargeView : FrameLayout {
     }
 
     fun setData(imageURL: String, text: List<String>?) {
-        //todo Rahul load image
+        ImageUtils.loadImage(image, imageURL)
         val tvList = arrayListOf<AppCompatTextView>(tvTitle, tvMessage, tvDescription)
         text?.forEachIndexed { index, s ->
             tvList[index].text = s

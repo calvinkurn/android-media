@@ -87,6 +87,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         tvRewardFirstLine = v.findViewById(R.id.tvRewardFirstLine)
         tvRewardSecondLine = v.findViewById(R.id.tvRewardSecondLine)
         btnAction = v.findViewById(R.id.btnAction)
+        tvLoaderMessage = v.findViewById(R.id.tvLoaderMessage)
         super.initViews(v)
 
         setListeners()
@@ -212,7 +213,19 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                         if (benefitText != null && benefitText.isNotEmpty()) {
                             tvRewardFirstLine.text = benefitText[0]
                             if (benefitText.size > 1) {
-                                tvRewardFirstLine.text = benefitText[1]
+                                val indexOfAnd = benefitText[1].indexOf("&")
+                                if (indexOfAnd > 0) {
+                                    val array = benefitText[1].split("&")
+                                    val sb = StringBuilder()
+                                    sb.append(array[0])
+                                    sb.append(" &")
+                                    sb.append("\n")
+                                    sb.append(array[1])
+                                    tvRewardSecondLine.text = sb.toString()
+                                } else {
+                                    tvRewardSecondLine.text = benefitText[1]
+                                }
+
                             }
                         }
 
@@ -241,7 +254,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     fun setPositionOfViewsAtBoxOpen() {
         rewardContainer.setFinalTranslationOfCircles(giftBoxDailyView.fmGiftBox.top)
 
-        giftBoxDailyView.imageBoxFront.doOnLayout {imageBoxFront->
+        giftBoxDailyView.imageBoxFront.doOnLayout { imageBoxFront ->
             val array = IntArray(2)
             imageBoxFront.getLocationInWindow(array)
             val translationY = array[1].toFloat() - getStatusBarHeight(context) - dpToPx(40f)
@@ -266,7 +279,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     override fun initialViewSetup() {
         super.initialViewSetup()
         llBenefits.alpha = 0f
-        tvBenefits.alpha = 0f
         llRewardMessage.alpha = 0f
     }
 
@@ -305,10 +317,11 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     fun fadeOutViews() {
         val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f)
         val tapHintAnim = ObjectAnimator.ofPropertyValuesHolder(tvTapHint, alphaProp)
+        val tvBenefitsAnim = ObjectAnimator.ofPropertyValuesHolder(tvBenefits, alphaProp)
         val prizeListContainerAnim = ObjectAnimator.ofPropertyValuesHolder(llBenefits, alphaProp)
 
         val animatorSet = AnimatorSet()
-        animatorSet.playTogether(tapHintAnim, prizeListContainerAnim)
+        animatorSet.playTogether(tapHintAnim, prizeListContainerAnim, tvBenefitsAnim)
         animatorSet.duration = 300L
 
         animatorSet.start()

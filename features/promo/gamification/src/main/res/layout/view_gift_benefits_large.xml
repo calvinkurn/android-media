@@ -9,7 +9,8 @@
     android:paddingTop="8dp"
     android:paddingBottom="8dp">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.gamification.giftbox.presentation.views.GamificationRoundImageView
+        app:gfRoundImageRadius="@dimen/dp_8"
         android:id="@+id/image"
         android:layout_width="64dp"
         android:layout_height="64dp"
@@ -17,8 +18,7 @@
         android:layout_marginLeft="8dp"
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/gf_ic_ovo_small" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTitle"
