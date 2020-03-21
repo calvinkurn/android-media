@@ -36,6 +36,7 @@ object SomAnalytics {
     private const val CLICK_BUTTON_TOLAK_PESANAN_POPUP = "click button tolak pesanan - popup"
     private const val CLICK_BUTTON_CHAT_PEMBELI_POPUP = "click button chat pembeli - popup"
     private const val CLICK_SEARCH_RECENT_SEARCH = "top nav - click search - search box"
+    private const val CLICK_BUTTON_DOWNLOAD_INVOICE = "click button download invoice"
 
     @JvmStatic
     fun sendScreenName(activity: Activity, screenName: String) {
@@ -81,8 +82,8 @@ object SomAnalytics {
         sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_BUTTON_PELUANG_IN_EMPTY_STATE, statusOrder)
     }
 
-    fun eventClickTerapkanOnFilterPage() {
-        sendEventCategoryAction(CLICK_SOM, CATEGORY_SOM, CLICK_TERAPKAN_ON_FILTER_PAGE)
+    fun eventClickTerapkanOnFilterPage(orderCode: String) {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_TERAPKAN_ON_FILTER_PAGE, orderCode)
     }
 
     fun eventViewTicker(tickerId: String) {
@@ -97,8 +98,8 @@ object SomAnalytics {
         sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_X_ON_TICKER, tickerId)
     }
 
-    fun eventClickFilterButtonOnOrderList() {
-        sendEventCategoryAction(CLICK_SOM, CATEGORY_SOM, CLICK_FILTER_BUTTON_ON_ORDER_LIST)
+    fun eventClickFilterButtonOnOrderList(orderCode: String) {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_FILTER_BUTTON_ON_ORDER_LIST, orderCode)
     }
 
     fun eventClickViewInvoice() {
@@ -109,12 +110,12 @@ object SomAnalytics {
         sendEventCategoryActionLabel(VIEW_SOM_IRIS, CATEGORY_SOM, VIEW_EMPTY_STATE, statusOrderName)
     }
 
-    fun eventClickBackButtonOnFilterPage() {
-        sendEventCategoryAction(CLICK_SOM, CATEGORY_SOM, CLICK_BACK_BUTTON_ON_FILTER_PAGE)
+    fun eventClickBackButtonOnFilterPage(orderCode: String) {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_BACK_BUTTON_ON_FILTER_PAGE, orderCode)
     }
 
-    fun eventClickResetButtonOnFilterPage() {
-        sendEventCategoryAction(CLICK_SOM, CATEGORY_SOM, CLICK_RESET_BUTTON_ON_FILTER_PAGE)
+    fun eventClickResetButtonOnFilterPage(orderCode: String) {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_RESET_BUTTON_ON_FILTER_PAGE, orderCode)
     }
 
     fun eventClickTolakPesanan(statusOrderName: String, reason: String) {
@@ -151,5 +152,9 @@ object SomAnalytics {
 
     fun eventClickSearchBar() {
         sendEventCategoryAction(CLICK_SOM, CATEGORY_SOM, CLICK_SEARCH_RECENT_SEARCH)
+    }
+
+    fun eventClickButtonDownloadInvoice(orderCode: String) {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_BUTTON_DOWNLOAD_INVOICE, orderCode)
     }
 }

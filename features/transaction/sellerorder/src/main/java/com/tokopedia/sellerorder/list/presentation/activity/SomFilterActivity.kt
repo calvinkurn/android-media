@@ -12,6 +12,7 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_LIST_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_TAB_ACTIVE
 import com.tokopedia.sellerorder.list.data.model.SomListOrderParam
 import com.tokopedia.sellerorder.list.di.DaggerSomListComponent
 import com.tokopedia.sellerorder.list.di.SomListComponent
@@ -23,12 +24,23 @@ import kotlinx.android.synthetic.main.partial_toolbar_reset_button.*
  */
 class SomFilterActivity: BaseSimpleActivity(), HasComponent<SomListComponent> {
     override fun getLayoutRes(): Int = R.layout.activity_filter
+    private var tabActive: String = ""
 
     companion object {
         @JvmStatic
-        fun createIntent(context: Context, currentFilterParams: SomListOrderParam): Intent =
+        fun createIntent(context: Context, currentFilterParams: SomListOrderParam, tabActive: String): Intent =
                 Intent(context, SomFilterActivity::class.java)
                         .putExtra(PARAM_LIST_ORDER, currentFilterParams)
+                        .putExtra(PARAM_TAB_ACTIVE, tabActive)
+    }
+
+    @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (intent.extras != null) {
+            val bundle = intent.extras
+            tabActive = bundle.get(PARAM_TAB_ACTIVE).toString()
+        }
     }
 
     override fun setupLayout(savedInstanceState: Bundle?) {
@@ -52,6 +64,7 @@ class SomFilterActivity: BaseSimpleActivity(), HasComponent<SomListComponent> {
             bundle = intent.extras
         } else {
             bundle.putString(PARAM_LIST_ORDER, "")
+            bundle.putString(PARAM_TAB_ACTIVE, "")
         }
         return SomFilterFragment.newInstance(bundle)
     }
@@ -70,6 +83,6 @@ class SomFilterActivity: BaseSimpleActivity(), HasComponent<SomListComponent> {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        SomAnalytics.eventClickBackButtonOnFilterPage()
+        SomAnalytics.eventClickBackButtonOnFilterPage(tabActive)
     }
 }

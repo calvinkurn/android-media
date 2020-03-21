@@ -38,6 +38,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.LIST_ORDER_SCREEN_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
@@ -295,8 +296,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
 
         filter_action_button?.setOnClickListener {
-            SomAnalytics.eventClickFilterButtonOnOrderList()
-            val intentFilter = context?.let { ctx -> SomFilterActivity.createIntent(ctx, paramOrder) }
+            SomAnalytics.eventClickFilterButtonOnOrderList(tabActive)
+            val intentFilter = context?.let { ctx -> SomFilterActivity.createIntent(ctx, paramOrder, tabActive) }
             startActivityForResult(intentFilter, REQUEST_FILTER)
         }
     }
@@ -405,6 +406,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
                     })
                     ticker_info?.addPagerView(adapter, listTickerData)
+                    SomAnalytics.eventViewTicker(listTickerData.first().itemData.toString())
                 }
             } else {
                 tickerList.first().let {
@@ -516,7 +518,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                                 renderFilterEmpty(getString(R.string.empty_filter_title), getString(R.string.empty_filter_desc))
                             }
                         } else {
-                            renderCekPeluang()
+                            renderEmptyOrderList()
                             showCoachMarkProductsEmpty()
                         }
                     }
@@ -579,7 +581,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
     }
 
-    private fun renderCekPeluang() {
+    private fun renderEmptyOrderList() {
         refreshHandler?.finishRefresh()
         order_list_rv.visibility = View.GONE
         empty_state_order_list.visibility = View.VISIBLE
@@ -588,6 +590,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         // Peluang Feature has been removed, thus we set text to empty and button is gone
         desc_empty?.text = ""
         btn_cek_peluang?.visibility = View.GONE
+        SomAnalytics.eventViewEmptyState(tabActive)
     }
 
     override fun onSearchReset() {}

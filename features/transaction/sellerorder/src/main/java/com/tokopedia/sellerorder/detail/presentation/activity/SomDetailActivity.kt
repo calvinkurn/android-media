@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
+import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.detail.di.DaggerSomDetailComponent
 import com.tokopedia.sellerorder.detail.di.SomDetailComponent
@@ -46,6 +47,7 @@ class SomDetailActivity: BaseSimpleActivity(), HasComponent<SomDetailComponent> 
     }
 
     private fun onChatClicked() {
+        SomAnalytics.eventClickChatOnHeaderDetail()
         (fragment as SomDetailFragment).goToAskBuyer()
     }
 
