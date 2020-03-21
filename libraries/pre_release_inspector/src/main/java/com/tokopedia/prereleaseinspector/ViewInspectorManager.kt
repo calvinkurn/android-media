@@ -80,7 +80,7 @@ object ViewInspectorManager {
     private fun showPopupDialog(activity : Activity) {
         (activity as? AppCompatActivity)?.let {
             val viewInspectorDialog = ViewInspectorDialogFragment()
-            viewInspectorDialog.setTitle("View Inspector")
+            viewInspectorDialog.setTitle("Pre-Release Inspector (PRI)")
             viewInspectorDialog.setViewList(gatherView(it))
             viewInspectorDialog.show(it.supportFragmentManager, TAG_OPTION_PICKER_DIALOG)
         }
