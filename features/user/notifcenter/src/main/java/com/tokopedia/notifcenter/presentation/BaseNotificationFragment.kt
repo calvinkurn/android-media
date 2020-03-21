@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -22,8 +23,10 @@ import com.tokopedia.notifcenter.listener.NotificationFilterListener
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.fragment.NotificationLongerTextDialog
 import com.tokopedia.notifcenter.presentation.fragment.NotificationProductCardDialog
+import com.tokopedia.notifcenter.presentation.fragment.ProductStockReminderDialog
 import com.tokopedia.notifcenter.util.endLess
 import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
+import com.tokopedia.unifycomponents.Toaster
 
 abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
         BaseAdapterTypeFactory>(),
@@ -127,6 +130,20 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
         when (bottomSheet) {
             is BottomSheetType.LongerContent -> showLongerContent(element)
             is BottomSheetType.ProductCheckout -> showProductCheckout(element)
+            is BottomSheetType.StockHandler -> showStockHandlerDialog(element)
+        }
+    }
+
+    private fun showStockHandlerDialog(element: NotificationItemViewBean) {
+        element.getAtcProduct()?.let {
+            if (it.stock < 1) {
+                context?.let { context ->
+                    ProductStockReminderDialog(
+                            context = context,
+                            fragmentManager = childFragmentManager
+                    ).show(element)
+                }
+            }
         }
     }
 
@@ -160,6 +177,10 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
         if (!longerTextDialog.isAdded) {
             longerTextDialog.show(childFragmentManager, "Longer Text Bottom Sheet")
         }
+    }
+
+    protected fun showToastMessageError(message: String) {
+        view?.let { Toaster.showError(it, message, Snackbar.LENGTH_LONG) }
     }
 
     override fun onPause() {
