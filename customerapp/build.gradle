@@ -451,7 +451,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.promotionsTarget)
     implementation project(rootProject.ext.features.promoGamificationCommon)
     implementation project(rootProject.ext.libraries.shakeDetect)
-    implementation project(rootProject.ext.libraries.preReleaseInspector)
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(rootProject.ext.libraries.preReleaseInspector)
+    } else {
+        implementation project(rootProject.ext.libraries.preReleaseInspectorNoop)
+    }
     implementation project(rootProject.ext.features.atc_variant)
     implementation project(rootProject.ext.libraries.deviceInfo)
     implementation rootProject.ext.unifyDependencies.components

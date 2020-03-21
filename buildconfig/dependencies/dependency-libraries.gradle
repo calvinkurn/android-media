@@ -63,6 +63,7 @@ ext {
             remoteResourceRequest   : ":libraries:remoteresourcerequest",
             shakeDetect             : ":libraries:shake_detect",
             preReleaseInspector     : ":libraries:pre_release_inspector",
+            preReleaseInspectorNoop : ":libraries:pre_release_inspector_no_op",
             sharedata               : ":libraries:sharedata",
             diffUtilRecycler        : ":libraries:smart_recycler_diffutil_helper",
             track                   : ":libraries:track",
