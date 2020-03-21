@@ -49,4 +49,6 @@ class NotificationProductCardDialog(
         )
     }
 
+    override fun initInjector() = Unit
+
 }
