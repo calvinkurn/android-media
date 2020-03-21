@@ -8,8 +8,10 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.consts.NotificationQueriesConstant
 import com.tokopedia.notifcenter.data.entity.ProductStockHandler
+import com.tokopedia.notifcenter.data.entity.ProductStockReminder
 import com.tokopedia.notifcenter.di.scope.NotificationScope
 import com.tokopedia.notifcenter.domain.ProductStockHandlerUseCase
+import com.tokopedia.notifcenter.domain.ProductStockReminderUseCase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -38,6 +40,23 @@ import javax.inject.Named
             useCase: GraphqlUseCase<ProductStockHandler>
     ): ProductStockHandlerUseCase {
         return ProductStockHandlerUseCase(query, useCase)
+    }
+
+    @Provides
+    @NotificationScope
+    fun provideGraphqlProductStockReminderUseCase(
+            repository: GraphqlRepository): GraphqlUseCase<ProductStockReminder> {
+        return GraphqlUseCase(repository)
+    }
+
+    @Provides
+    @NotificationScope
+    fun provideProductStockReminderUseCase(
+            @Named(NotificationQueriesConstant.PRODUCT_STOCK_REMINDER)
+            query: String,
+            useCase: GraphqlUseCase<ProductStockReminder>
+    ): ProductStockReminderUseCase {
+        return ProductStockReminderUseCase(query, useCase)
     }
 
 }
