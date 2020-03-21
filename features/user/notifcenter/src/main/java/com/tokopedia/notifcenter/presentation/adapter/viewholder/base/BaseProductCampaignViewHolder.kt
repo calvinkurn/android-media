@@ -52,13 +52,13 @@ abstract class BaseProductCampaignViewHolder(
 
         //common notification container
         container.setOnClickListener {
-            notificationItemMarkedClick(element)
-            trackProduct(element)
-            if (element.products.isSingleItem()) {
+            if (element.products.isSingleItem() && !element.isShowBottomSheet) {
                 getItemClickListener(product)
             } else {
                 onBindDetailProductClick(element)
             }
+            trackProduct(element)
+            notificationItemMarkedClick(element)
         }
     }
 
@@ -71,8 +71,8 @@ abstract class BaseProductCampaignViewHolder(
     }
 
     private fun onBindDetailProductClick(element: NotificationItemViewBean) {
-        if (element.isShowBottomSheet) {
-            val bottomSheetType = BottomSheetType.map(element.typeBottomSheet)
+        val bottomSheetType = BottomSheetType.map(element.typeBottomSheet)
+        if (element.isShowBottomSheet && bottomSheetType !== BottomSheetType.StockHandler) {
             listener.showNotificationDetail(bottomSheetType, element)
         }
     }
