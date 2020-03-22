@@ -163,7 +163,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     override fun onKreditTopadsClicked() {
-        topAdsBottomSheet.dismiss()
+        val bottomSheet = childFragmentManager.findFragmentByTag(TOPADS_BOTTOMSHEET_TAG)
+        if (bottomSheet is BottomSheetUnify) {
+            bottomSheet.dismiss()
+        }
         RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD)
     }
 
