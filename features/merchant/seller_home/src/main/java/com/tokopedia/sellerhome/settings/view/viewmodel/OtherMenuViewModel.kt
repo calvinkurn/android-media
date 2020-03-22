@@ -65,15 +65,19 @@ class OtherMenuViewModel @Inject constructor(
         })
     }
 
-    private fun mapToSettingShopInfo(shopInfo: ShopInfo, totalFollowers: Int, shopBadge: String): SettingShopInfoUiModel {
+    private fun mapToSettingShopInfo(shopInfo: ShopInfo,
+                                     topAdsBalance: Float,
+                                     isTopAdsAutoTopup: Boolean,
+                                     totalFollowers: Int,
+                                     shopBadge: String): SettingShopInfoUiModel {
         shopInfo.shopInfoMoengage?.run {
             return SettingShopInfoUiModel(
                     info?.shopName.toEmptyStringIfNull(),
                     info?.shopAvatar.toEmptyStringIfNull(),
                     owner?.getShopStatusType() ?: RegularMerchant.NeedUpgrade,
-                    shopInfo.balance?.sellerBalance.toDecimalRupiahCurrency(),
-                    shopInfo.topadsDeposit.topadsAmount.toDecimalRupiahCurrency(),
-                    shopInfo.topadsDeposit.isTopadsUser,
+                    shopInfo.balance?.sellerBalance ?: "",
+                    topAdsBalance.toDecimalRupiahCurrency(),
+                    isTopAdsAutoTopup,
                     shopBadge,
                     totalFollowers)
         }
