@@ -53,14 +53,9 @@ class ViewInspectorDialogFragment : DialogFragment(), DialogListener, CoroutineS
 
     private var viewList: MutableList<View> = ArrayList()
 
-    private var title: String? = null
     private var optionList: MutableList<View> = ArrayList()
 
     private var adapter: OptionPickerAdapter? = null
-
-    fun setTitle(title: String) {
-        this.title = title
-    }
 
     fun setViewList(viewList: List<View>) {
         this.viewList.clear()
@@ -95,14 +90,9 @@ class ViewInspectorDialogFragment : DialogFragment(), DialogListener, CoroutineS
     }
 
     override fun onViewCreated(rootView: View, savedInstanceState: Bundle?) {
-        initView()
         initListener()
         setupRecyclerView()
         loadData()
-    }
-
-    private fun initView() {
-        dialogTitle.text = title
     }
 
     override fun updateAllViewsWithId(id: Int, updater: (viewToUpdate: View) -> Unit) {
