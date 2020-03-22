@@ -4,15 +4,11 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.media.AudioManager
-import android.media.session.MediaSession
-import android.media.session.PlaybackState
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.media.AudioManagerCompat
 import androidx.media.VolumeProviderCompat
 import java.util.*
 
@@ -32,7 +28,7 @@ object ViewInspectorManager {
     val VIEW_INSPECTOR_TRIGGER_SEQUENCE = intArrayOf(VOLUME_UP, VOLUME_DOWN, VOLUME_UP, VOLUME_DOWN)
     var triggerSequenceStep = 0
 
-    var mMediaSession: MediaSessionCompat? = null
+    var mediaSession: MediaSessionCompat? = null
 
     fun register(activity: Activity) {
 
@@ -67,12 +63,12 @@ object ViewInspectorManager {
                 }
             }
         }
-        mMediaSession = MediaSessionCompat(activity, "AAA")
-        mMediaSession?.setPlaybackState(PlaybackStateCompat.Builder()
+        mediaSession = MediaSessionCompat(activity, "AAA")
+        mediaSession?.setPlaybackState(PlaybackStateCompat.Builder()
                 .setState(PlaybackStateCompat.STATE_PLAYING, 0, 0f)
                 .build())
-        mMediaSession?.setPlaybackToRemote(myVolumeProvider);
-        mMediaSession?.setActive(true)
+        mediaSession?.setPlaybackToRemote(myVolumeProvider);
+        mediaSession?.setActive(true)
     }
 
     private fun showPopupDialog(activity : Activity) {
@@ -101,8 +97,8 @@ object ViewInspectorManager {
     }
 
     fun unregister() {
-        mMediaSession?.setActive(false)
-        mMediaSession?.release()
-        mMediaSession = null
+        mediaSession?.setActive(false)
+        mediaSession?.release()
+        mediaSession = null
     }
 }
