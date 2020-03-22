@@ -230,6 +230,7 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
     }
 
     override fun bottomFilterView(): BottomActionView? = view?.findViewById(R.id.btnFilter)
+    override fun itemContainerClicked(notification: NotificationItemViewBean) {}
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipeRefresh
     override fun getRecyclerViewResourceId() = R.id.lstNotification
     override fun onItemClicked(t: Visitable<*>?) = Unit
