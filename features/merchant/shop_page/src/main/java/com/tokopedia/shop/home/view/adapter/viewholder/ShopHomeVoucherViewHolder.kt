@@ -1,7 +1,6 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
-import android.view.ViewGroup
 
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -24,7 +23,7 @@ class ShopHomeVoucherViewHolder(
 ) : AbstractViewHolder<ShopHomeVoucherUiModel>(itemView), MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener {
 
     interface ShopHomeVoucherViewHolderListener {
-        fun onVoucherListImpression(parentPosition: Int, listVoucher: List<MerchantVoucherViewModel>)
+        fun onVoucherItemImpressed(parentPosition: Int, itemPosition: Int, voucher: MerchantVoucherViewModel)
         fun onVoucherSeeAllClicked()
         fun onVoucherClicked(
                 parentPosition: Int,
@@ -52,14 +51,10 @@ class ShopHomeVoucherViewHolder(
     override fun bind(model: ShopHomeVoucherUiModel) {
         merchantVoucherUiModel = model
         val recyclerViewState = merchantVoucherListWidget?.recyclerView?.layoutManager?.onSaveInstanceState()
-        itemView.addOnImpressionListener(model) {
-            model.data?.let {
-                shopHomeVoucherViewHolderListener.onVoucherListImpression(adapterPosition, it)
-            }
-        }
+
         merchantVoucherListWidget?.apply {
-            setData(model.data as ArrayList<MerchantVoucherViewModel>?)
             setOnMerchantVoucherListWidgetListener(this@ShopHomeVoucherViewHolder)
+            setData(model.data as ArrayList<MerchantVoucherViewModel>?)
             setTitle(model.header.title)
             setSeeAllText(model.header.ctaText)
             getVoucherHeaderContainer()?.let {
@@ -93,5 +88,13 @@ class ShopHomeVoucherViewHolder(
 
     override fun onSeeAllClicked() {
         shopHomeVoucherViewHolderListener.onVoucherSeeAllClicked()
+    }
+
+    override fun onVoucherItemImpressed(merchantVoucherViewModel: MerchantVoucherViewModel, voucherPosition: Int) {
+        shopHomeVoucherViewHolderListener.onVoucherItemImpressed(
+                adapterPosition,
+                voucherPosition,
+                merchantVoucherViewModel
+        )
     }
 }

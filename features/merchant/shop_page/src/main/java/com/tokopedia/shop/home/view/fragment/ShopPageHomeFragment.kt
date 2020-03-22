@@ -452,16 +452,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    override fun onVoucherListImpression(
+    override fun onVoucherItemImpressed(
             parentPosition: Int,
-            listVoucher: List<MerchantVoucherViewModel>
+            itemPosition: Int,
+            voucher: MerchantVoucherViewModel
     ) {
-        shopPageHomeTracking.onImpressionVoucherList(
+        shopPageHomeTracking.onImpressionVoucherItem(
                 isOwner,
                 shopId,
                 shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
                 parentPosition + 1,
-                listVoucher,
+                itemPosition + 1,
+                voucher,
                 customDimensionShopPage
         )
     }
