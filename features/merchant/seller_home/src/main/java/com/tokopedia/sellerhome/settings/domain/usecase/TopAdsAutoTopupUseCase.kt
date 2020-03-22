@@ -23,6 +23,9 @@ class TopAdsAutoTopupUseCase @Inject constructor(private val graphqlRepository: 
 
         private const val SHOP_ID_KEY = "shopId"
 
+        private const val IS_NOT_AUTO_TOPADS = "0"
+        private const val IS_AUTO_TOPADS = "1"
+
         fun createRequestParams(shopId: String) = HashMap<String, Any>().apply {
             put(SHOP_ID_KEY, shopId)
         }
@@ -39,11 +42,21 @@ class TopAdsAutoTopupUseCase @Inject constructor(private val graphqlRepository: 
             val topAdsAutoTopupResponse : TopAdsAutoTopupDataModel = gqlResponse.getData(TopAdsAutoTopupDataModel::class.java)
             val responseError = topAdsAutoTopupResponse.topAdsAutoTopup?.error
             if (responseError.isNullOrEmpty()) {
-                topAdsAutoTopupResponse.topAdsAutoTopup?.autoTopupStatus?.let {
-                    return it.isAutoTopup
+                topAdsAutoTopupResponse.topAdsAutoTopup?.autoTopupStatus?.status?.mapToBooleanValue()?.let {
+                    return it
                 }
             }
         }
         throw ResponseErrorException()
+    }
+
+    private fun String?.mapToBooleanValue() : Boolean? {
+        return this?.let {
+            when(it) {
+                IS_NOT_AUTO_TOPADS -> false
+                IS_AUTO_TOPADS -> true
+                else -> throw ResponseErrorException()
+            }
+        }
     }
 }

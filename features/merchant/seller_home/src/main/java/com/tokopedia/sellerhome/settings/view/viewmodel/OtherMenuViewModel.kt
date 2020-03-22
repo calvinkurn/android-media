@@ -57,7 +57,7 @@ class OtherMenuViewModel @Inject constructor(
         val shopId = userSession.shopId
         launchCatchError(block = {
             val shopInfo = getSuspendSettingShopInfo(userId.toIntOrZero())
-            val topAdsDeposit = getSuspendTopAdsDeposit(userId.toIntOrZero())
+            val topAdsDeposit = getSuspendTopAdsDeposit(shopId.toIntOrZero())
             val isTopAdsAutoTopup = getSuspendTopAdsAutoTopup(shopId)
             val totalFollowers = getSuspendShopTotalFollowers(shopId.toIntOrZero())
             val shopBadge = getSuspendShopBadge(shopId.toIntOrZero())
