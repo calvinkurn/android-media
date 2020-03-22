@@ -29,7 +29,7 @@ dependencies {
 project.ext {
     artifactId = 'install_referral'
     groupId = 'com.tokopedia.im'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "install_referral-release"
 }
 
