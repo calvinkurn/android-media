@@ -893,7 +893,7 @@ object DynamicProductDetailTracking {
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_54, TrackingUtil.getMultiOriginAttribution(multiOrigin),
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_83, dimension83,
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_81, shopInfo?.goldOS?.shopTypeString,
-                            ProductTrackingConstant.Tracking.KEY_DIMENSION_93, if (isStockAvailable == "0") "not available" else "available"
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_98, if (isStockAvailable == "0") "not available" else "available"
 
                     ))).apply {
                 if (trackerListName?.isNotEmpty() == true) {
