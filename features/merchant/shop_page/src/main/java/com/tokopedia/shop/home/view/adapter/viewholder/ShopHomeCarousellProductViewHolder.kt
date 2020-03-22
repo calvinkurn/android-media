@@ -85,6 +85,19 @@ class ShopHomeCarousellProductViewHolder(
                             it
                     )
                 },
+                carouselProductCardOnItemAddToCartListener = object : CarouselProductCardListener.OnItemAddToCartListener{
+                    override fun onItemAddToCart(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
+                                ?: return
+                        shopPageHomeProductClickListener.onCarouselProductItemClickAddToCart(
+                                adapterPosition,
+                                carouselProductCardPosition,
+                                shopHomeCarousellProductUiModel,
+                                shopProductViewModel
+                        )
+                    }
+
+                },
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
                     override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
