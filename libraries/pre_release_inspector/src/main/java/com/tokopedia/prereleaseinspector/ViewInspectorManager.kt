@@ -32,11 +32,9 @@ object ViewInspectorManager {
     val VIEW_INSPECTOR_TRIGGER_SEQUENCE = intArrayOf(VOLUME_UP, VOLUME_DOWN, VOLUME_UP, VOLUME_DOWN)
     var triggerSequenceStep = 0
 
-    var activity: Activity? = null
     var mMediaSession: MediaSessionCompat? = null
 
     fun register(activity: Activity) {
-        this.activity = activity
 
         val audio = activity.getSystemService(Context.AUDIO_SERVICE) as? AudioManager
 
@@ -107,11 +105,5 @@ object ViewInspectorManager {
         mMediaSession?.setActive(false)
         mMediaSession?.release()
         mMediaSession = null
-    }
-
-    fun onDestroy(activity: Activity) {
-        if (activity == this.activity) {
-            this.activity = null
-        }
     }
 }

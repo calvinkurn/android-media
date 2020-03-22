@@ -7,7 +7,6 @@ import android.os.Bundle
 class ViewInspectorSubscriber() : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
-
     }
 
     override fun onActivityResumed(activity: Activity) {
@@ -19,11 +18,9 @@ class ViewInspectorSubscriber() : Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityDestroyed(activity: Activity) {
-        ViewInspectorManager.onDestroy(activity)
     }
 
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
-
     }
 
     override fun onActivityStarted(activity: Activity) {
