@@ -47,6 +47,11 @@ class CouponListVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun setData(data: GetCouponDetail) {
         tvTitle.text = data.minimumUsageLabel
         tvSubTitle.text = data.minimumUsage
+        if (tvSubTitle.text.isNullOrEmpty()) {
+            tvSubTitle.visibility = View.GONE
+        } else {
+            tvSubTitle.visibility = View.VISIBLE
+        }
 
         data.icon?.let {
             ImageUtils.loadImage(imageIcon, it)
