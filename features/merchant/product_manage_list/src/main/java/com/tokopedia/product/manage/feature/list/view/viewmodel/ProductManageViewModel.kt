@@ -358,10 +358,8 @@ class ProductManageViewModel @Inject constructor(
         _selectedFilterAndSort.value = filterOptionWrapper
     }
 
-    fun setSelectedFilter(selectedFilter: List<FilterOption>?) {
-        selectedFilter?.let {
-            _selectedFilterAndSort.value = _selectedFilterAndSort.value?.copy(filterOptions = selectedFilter)
-        }
+    fun setSelectedFilter(selectedFilter: List<FilterOption>) {
+        _selectedFilterAndSort.value = _selectedFilterAndSort.value?.copy(filterOptions = selectedFilter)
     }
 
     fun toggleMultiSelect() {

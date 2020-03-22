@@ -1,12 +1,16 @@
 package com.tokopedia.product.manage.feature.list
 
 import android.accounts.NetworkErrorException
+import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.quickedit.common.data.model.ProductUpdateV3Data
 import com.tokopedia.product.manage.feature.quickedit.common.data.model.ProductUpdateV3Response
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
 import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOrderOption
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -146,6 +150,33 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
         }
     }
 
+    @Test
+    fun `when_setFilter_should_update_filter_accordingly`() {
+        val selectedFilter = listOf(FilterOption.FilterByCondition.CashBackOnly, FilterOption.FilterByCondition.NewOnly)
+        val filterOptionWrapper = FilterOptionWrapper(
+                SortOption.SortByName(SortOrderOption.ASC),
+                listOf(FilterOption.FilterByCondition.CashBackOnly, FilterOption.FilterByCondition.NewOnly),
+                listOf(true, true, false, true))
+
+        viewModel.setFilterOptionWrapper(filterOptionWrapper)
+        viewModel.setSelectedFilter(selectedFilter)
+
+        verifySelectedFiltersEquals(selectedFilter)
+    }
+
+    @Test
+    fun `when_setFilterOptionWrapper_should_update_filterOptionWrapper_accordingly`() {
+        val filterOptionWrapper = FilterOptionWrapper(
+                SortOption.SortByName(SortOrderOption.ASC),
+                listOf(FilterOption.FilterByCondition.CashBackOnly, FilterOption.FilterByCondition.NewOnly),
+                listOf(true, true, false, true))
+
+        viewModel.setFilterOptionWrapper(filterOptionWrapper)
+
+        verifyFilterOptionWrapperEquals(filterOptionWrapper)
+    }
+
+
     private suspend fun onEditPrice_thenReturn(productUpdateV3Response: ProductUpdateV3Response) {
         coEvery { editPriceUseCase.executeOnBackground() } returns productUpdateV3Response
     }
@@ -201,5 +232,15 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
         var actualDeleteStockResult = (viewModel.deleteProductResult.value as Fail).throwable
         actualDeleteStockResult = (actualDeleteStockResult as DeleteProductResult).copy(error = networkErrorException)
         assertEquals(expectedResponse.throwable, actualDeleteStockResult)
+    }
+
+    private fun verifySelectedFiltersEquals(expectedSelectedFilters: List<FilterOption>) {
+        val actualSelectedFilters = viewModel.selectedFilterAndSort.value?.filterOptions
+        assertEquals(expectedSelectedFilters, actualSelectedFilters)
+    }
+
+    private fun verifyFilterOptionWrapperEquals(expectedFilterOptionWrapper: FilterOptionWrapper) {
+        val actualFilterOptionWrapper = viewModel.selectedFilterAndSort.value
+        assertEquals(expectedFilterOptionWrapper, actualFilterOptionWrapper)
     }
 }
