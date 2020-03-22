@@ -10,50 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/llLoader"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical">
-
-            <com.tokopedia.unifycomponents.LoaderUnify
-                android:id="@+id/loader"
-                android:layout_width="@dimen/dp_48"
-                android:layout_height="@dimen/dp_48"
-                android:layout_gravity="center" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tvLoaderTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_18"
-                android:layout_marginLeft="@dimen/dp_18"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_18"
-                android:layout_marginRight="@dimen/dp_18"
-                android:gravity="center"
-                android:text="Beli ketupat, beli pepaya"
-                android:textColor="@color/gf_loader_title_color"
-                app:typographyType="heading_3"
-                app:typographyWeight="bold" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tvLoaderMessage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_18"
-                android:layout_marginLeft="@dimen/dp_18"
-                android:layout_marginTop="@dimen/dp_4"
-                android:layout_marginEnd="@dimen/dp_18"
-                android:layout_marginRight="@dimen/dp_18"
-                android:gravity="center"
-                android:text="Penasaran bakal dapat hadiah apa, ya?"
-                android:textColor="@color/gf_loader_message_color"
-                app:typographyType="heading_5"
-                app:typographyWeight="reguler" />
-        </LinearLayout>
-
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -165,7 +121,52 @@
                 android:layout_height="match_parent"
                 android:alpha="0" />
         </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/llLoader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/loader"
+                android:layout_width="@dimen/dp_48"
+                android:layout_height="@dimen/dp_48"
+                android:layout_gravity="center" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvLoaderTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_18"
+                android:layout_marginLeft="@dimen/dp_18"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_18"
+                android:layout_marginRight="@dimen/dp_18"
+                android:gravity="center"
+                android:text="Beli ketupat, beli pepaya"
+                android:textColor="@color/gf_loader_title_color"
+                app:typographyType="heading_3"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvLoaderMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_18"
+                android:layout_marginLeft="@dimen/dp_18"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginEnd="@dimen/dp_18"
+                android:layout_marginRight="@dimen/dp_18"
+                android:gravity="center"
+                android:text="Penasaran bakal dapat hadiah apa, ya?"
+                android:textColor="@color/gf_loader_message_color"
+                app:typographyType="heading_5"
+                app:typographyWeight="reguler" />
+        </LinearLayout>
     </ViewFlipper>
 
+    <include layout="@layout/gami_gift_box_toolbar" />
 
 </FrameLayout>

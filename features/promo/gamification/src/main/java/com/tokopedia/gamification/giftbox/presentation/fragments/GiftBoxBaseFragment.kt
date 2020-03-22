@@ -1,21 +1,21 @@
 package com.tokopedia.gamification.giftbox.presentation.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ProgressBar
+import android.view.*
 import android.widget.ViewFlipper
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.tokopedia.gamification.R
-import com.tokopedia.gamification.giftbox.presentation.helpers.doOnLayout
 import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer
 import com.tokopedia.gamification.giftbox.presentation.views.StarsContainer
 import com.tokopedia.unifycomponents.LoaderUnify
+
 
 open class GiftBoxBaseFragment : Fragment() {
 
@@ -27,6 +27,9 @@ open class GiftBoxBaseFragment : Fragment() {
     lateinit var giftBoxDailyView: GiftBoxDailyView
     lateinit var tvLoaderTitle: AppCompatTextView
     lateinit var tvLoaderMessage: AppCompatTextView
+    lateinit var toolbar: Toolbar
+    lateinit var imageToolbarIcon: View
+    lateinit var tvToolbarTitle: AppCompatTextView
 
     val CONTAINER_LOADER = 1
     val CONTAINER_GIFT_BOX = 0
@@ -35,11 +38,12 @@ open class GiftBoxBaseFragment : Fragment() {
     var screenWidth = 0
 
     val FADE_IN_DURATION = 500L
-    var statusBarHeight:Int = 0
+    var statusBarHeight: Int = 0
 
     open fun getLayout() = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        setHasOptionsMenu(true)
         val v = LayoutInflater.from(context).inflate(getLayout(), container, false)
         getScreenDimens()
         initViews(v)
@@ -55,16 +59,29 @@ open class GiftBoxBaseFragment : Fragment() {
         viewFlipper = v.findViewById(R.id.viewFlipper)
         tvLoaderTitle = v.findViewById(R.id.tvLoaderTitle)
         tvLoaderMessage = v.findViewById(R.id.tvLoaderMessage)
+        toolbar = v.findViewById(R.id.toolbar)
+        tvToolbarTitle = v.findViewById(R.id.tvToolbarTitle)
+        imageToolbarIcon = v.findViewById(R.id.imageToolbarIcon)
 
         statusBarHeight = getStatusBarHeight(context)
         setInitialPositionOfViews()
         initialViewSetup()
+
+        imageToolbarIcon.setOnClickListener {
+            activity?.finish()
+        }
     }
 
     open fun initialViewSetup() {
         loader.visibility = View.GONE
         giftBoxDailyView.alpha = 0f
         tvTapHint.alpha = 0f
+
+        if (activity is AppCompatActivity) {
+            (activity as AppCompatActivity).setSupportActionBar(toolbar)
+            (activity as AppCompatActivity).supportActionBar?.title = ""
+            tvToolbarTitle.text = activity?.getString(R.string.gami_gift_box_toolbar_title)
+        }
     }
 
     fun getScreenDimens() {
@@ -109,6 +126,31 @@ open class GiftBoxBaseFragment : Fragment() {
             return dp * (it.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
         }
         return 0f
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.gami_menu_share, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_share -> {
+                try {
+                    val sendIntent: Intent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_TEXT, "This is my text to send.")
+                        type = "text/plain"
+                    }
+                    val shareIntent = Intent.createChooser(sendIntent, null)
+                    startActivity(shareIntent)
+                } catch (ex: Exception) {
+
+                }
+
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 }
