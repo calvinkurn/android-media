@@ -77,10 +77,18 @@ class ProductManageFilterMapper {
         fun mapFiltersToFilterOptions(filterViewModel: List<FilterViewModel>): FilterOptionWrapper {
             val filterOptions = mutableListOf<FilterOption>()
             val sortOption = mapSortToSortOptions(filterViewModel[ProductManageFilterFragment.ITEM_SORT_INDEX])
+            val isShown = mutableListOf<Boolean>()
             filterOptions.addAll(mapEtalaseToFilterOptions(filterViewModel[ProductManageFilterFragment.ITEM_ETALASE_INDEX]))
             filterOptions.addAll(mapCategoriesToFilterOptions(filterViewModel[ProductManageFilterFragment.ITEM_CATEGORIES_INDEX]))
             filterOptions.addAll(mapFiltersToFilterOptions(filterViewModel[ProductManageFilterFragment.ITEM_OTHER_FILTER_INDEX]))
-            return FilterOptionWrapper(sortOption, filterOptions)
+            filterViewModel.forEach {
+                if(it.isChipsShown) {
+                    isShown.add(SHOW_CHIPS)
+                } else {
+                    isShown.add(HIDE_CHIPS)
+                }
+            }
+            return FilterOptionWrapper(sortOption, filterOptions, isShown)
         }
 
         fun mapFilterOptionWrapperToSelectedSort(filterOptionWrapper: FilterOptionWrapper): FilterDataViewModel? {

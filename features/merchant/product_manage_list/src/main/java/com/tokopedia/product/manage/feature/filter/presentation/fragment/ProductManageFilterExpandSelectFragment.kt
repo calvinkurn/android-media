@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
@@ -126,6 +127,11 @@ class ProductManageFilterExpandSelectFragment :
         }
     }
 
+    override fun onDestroy() {
+        removeObservers()
+        super.onDestroy()
+    }
+
     private fun initInjector() {
         component?.inject(this)
     }
@@ -154,5 +160,9 @@ class ProductManageFilterExpandSelectFragment :
         productManageFilterExpandSelectViewModel.selectData.observe(this, Observer {
             adapter?.updateSelectData(it)
         })
+    }
+
+    private fun removeObservers() {
+        removeObservers(productManageFilterExpandSelectViewModel.selectData)
     }
 }

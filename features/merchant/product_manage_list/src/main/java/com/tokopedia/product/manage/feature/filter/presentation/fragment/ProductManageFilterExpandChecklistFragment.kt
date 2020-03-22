@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
@@ -119,6 +120,11 @@ class ProductManageFilterExpandChecklistFragment :
 
     override fun onSearchTextChanged(text: String) {
         processSearch(text)
+    }
+
+    override fun onDestroy() {
+        removeObservers()
+        super.onDestroy()
     }
 
     private fun initInjector() {
@@ -265,6 +271,11 @@ class ProductManageFilterExpandChecklistFragment :
                 adapter?.updateChecklistData(data)
             }
         }
+    }
+
+    private fun removeObservers() {
+        removeObservers(productManageFilterExpandChecklistViewModel.checklistData)
+        removeObservers(productManageFilterExpandChecklistViewModel.dataSize)
     }
 
 }
