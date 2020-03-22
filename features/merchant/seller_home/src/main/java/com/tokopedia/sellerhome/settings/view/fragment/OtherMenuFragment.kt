@@ -177,6 +177,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
     }
 
+    override fun onTopAdsTooltipClicked(isTopAdsActive: Boolean) {
+        //TODO : Add Bottomsheet logic
+    }
+
     private fun setStatusBarStateInitialIsLight(isLight: Boolean) {
         isInitialStatusBar = isLight
     }

@@ -254,6 +254,7 @@ class OtherMenuViewHolder(private val itemView: View,
         fun onKreditTopadsClicked()
         fun onRefreshShopInfo()
         fun onStatusBarNeedDarkColor(isDefaultDark: Boolean)
+        fun onTopAdsTooltipClicked(isTopAdsActive: Boolean)
     }
 
 }
