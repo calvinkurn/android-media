@@ -97,6 +97,7 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     fun updateDataP1(dataP1: DynamicProductInfoP1?) {
         dataP1?.let {
             snapShotMap?.run {
+                shouldRenderImageVariant = true
                 dynamicProductInfoP1 = it
                 media = DynamicProductDetailMapper.convertMediaToDataModel(it.data.media.toMutableList())
             }

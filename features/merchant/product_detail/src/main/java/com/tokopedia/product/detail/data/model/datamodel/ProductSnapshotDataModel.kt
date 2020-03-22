@@ -24,6 +24,7 @@ data class ProductSnapshotDataModel(
         var nearestWarehouseDataModel: NearestWarehouseDataModel? = null,
 
         var shouldRefreshViewPager: Boolean = true,
+        var shouldRenderImageVariant: Boolean = true,
         var statusTitle: String = "",
         var statusMessage: String = "",
         var shopStatus: Int = SHOP_STATUS_ACTIVE

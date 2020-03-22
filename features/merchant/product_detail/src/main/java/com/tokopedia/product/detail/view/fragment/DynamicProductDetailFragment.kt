@@ -1004,10 +1004,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             if (it.second.isNotEmpty()) {
                 pdpHashMapUtil?.updateImageAfterClickVariant(mediaList)
                 viewModel.getDynamicProductInfoP1 = VariantMapper.updateMediaToCurrentP1Data(viewModel.getDynamicProductInfoP1, mediaList)
-                dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, 1)
+                dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, ProductDetailConstant.PAYLOAD_VARIANT_COMPONENT)
                 dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap, ProductDetailConstant.PAYLOAD_VARIANT_SELECTED)
             } else {
-                dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, 1)
+                dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, ProductDetailConstant.PAYLOAD_VARIANT_COMPONENT)
             }
         })
     }

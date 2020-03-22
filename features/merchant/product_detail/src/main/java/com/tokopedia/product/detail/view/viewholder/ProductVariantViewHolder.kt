@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.variant_common.util.VariantItemDecorator
 import com.tokopedia.variant_common.view.ProductVariantListener
 import com.tokopedia.variant_common.view.adapter.VariantContainerAdapter
@@ -21,7 +22,6 @@ class ProductVariantViewHolder(val view: View,
 
     companion object {
         val LAYOUT = R.layout.item_product_variant_view_holder
-        val PAYLOAD_VARIANT_CHILD = 1
     }
 
     override fun bind(element: VariantDataModel) {
@@ -43,7 +43,7 @@ class ProductVariantViewHolder(val view: View,
         super.bind(element, payloads)
         element.listOfVariantCategory?.let {
             containerAdapter?.variantContainerData = it
-            containerAdapter?.notifyItemRangeChanged(0, it.size, PAYLOAD_VARIANT_CHILD)
+            containerAdapter?.notifyItemRangeChanged(0, it.size, ProductDetailConstant.PAYLOAD_VARIANT_COMPONENT)
         }
     }
 }

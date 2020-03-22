@@ -27,7 +27,6 @@ class PictureScrollingView @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     lateinit var pagerAdapter: VideoPicturePagerAdapter
-    private var listenerCallback: ViewPager2.OnPageChangeCallback? = null
 
     val position: Int
         get() = pdp_view_pager?.currentItem ?: 0
@@ -47,19 +46,21 @@ class PictureScrollingView @JvmOverloads constructor(
                    lifecycle: Lifecycle) {
         val mediaList = processMedia(media)
 
-        listenerCallback = object : ViewPager2.OnPageChangeCallback() {
-            var lastPosition = 0
-            override fun onPageSelected(position: Int) {
-                pdp_page_control.setCurrentIndicator(position)
-                val swipeDirection = if (lastPosition > position) SWIPE_LEFT_DIRECTION else SWIPE_RIGHT_DIRECTION
-                onSwipePictureListener.invoke(swipeDirection, position, componentTrackData)
-                (pagerAdapter.getRegisteredFragment(lastPosition) as? VideoPictureFragment)?.imInvisible()
-                (pagerAdapter.getRegisteredFragment(position) as? VideoPictureFragment)?.imVisible()
-                lastPosition = position
-            }
+        if (!::pagerAdapter.isInitialized) {
+            pdp_view_pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                var lastPosition = 0
+                override fun onPageSelected(position: Int) {
+                    pdp_page_control.setCurrentIndicator(position)
+                    val swipeDirection = if (lastPosition > position) SWIPE_LEFT_DIRECTION else SWIPE_RIGHT_DIRECTION
+                    onSwipePictureListener.invoke(swipeDirection, position, componentTrackData)
+                    (pagerAdapter.getRegisteredFragment(lastPosition) as? VideoPictureFragment)?.imInvisible()
+                    (pagerAdapter.getRegisteredFragment(position) as? VideoPictureFragment)?.imVisible()
+                    lastPosition = position
+                }
 
-            override fun onPageScrollStateChanged(b: Int) {}
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+                override fun onPageScrollStateChanged(b: Int) {}
+                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+            })
         }
 
         if (!::pagerAdapter.isInitialized || shouldRenderViewPager) {
@@ -69,9 +70,6 @@ class PictureScrollingView @JvmOverloads constructor(
             pdp_view_pager.adapter = pagerAdapter
             pdp_view_pager.setPageTransformer { page, position ->
                 //NO OP DONT DELETE THIS, DISABLE ITEM ANIMATOR
-            }
-            listenerCallback?.let {
-                pdp_view_pager.registerOnPageChangeCallback(it)
             }
         }
     }
@@ -113,12 +111,6 @@ class PictureScrollingView @JvmOverloads constructor(
                 error_product_descr.text = productStatusMessage
             }
             else -> error_product_container.gone()
-        }
-    }
-
-    fun removeListener() {
-        listenerCallback?.let {
-            pdp_view_pager.unregisterOnPageChangeCallback(it)
         }
     }
 
