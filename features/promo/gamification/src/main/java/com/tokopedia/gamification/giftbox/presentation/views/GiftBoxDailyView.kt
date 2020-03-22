@@ -33,7 +33,7 @@ open class GiftBoxDailyView : FrameLayout {
     var initialBounceAnimatorSet: AnimatorSet? = null
     var giftBoxState: GiftBoxState = GiftBoxState.CLOSED
 
-    val TOTAL_ASYNC_IMAGES = 3
+    val TOTAL_ASYNC_IMAGES = 2
     var imagesLoaded = AtomicInteger(0)
     val GIFT_BOX_START_DELAY = 300L
 
@@ -128,7 +128,7 @@ open class GiftBoxDailyView : FrameLayout {
                 .addListener(listener)
                 .into(imageBoxFront)
 
-                //todo Rahul change to imageBgUrl later
+                //todo Rahul change to imageBgUrl later & also update TOTAL_ASYNC_IMAGES
         Glide.with(this)
                 .load(R.drawable.gf_ic_gift_background)
                 .dontAnimate()

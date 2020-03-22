@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -336,7 +337,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
 
-    fun setPositionOfViewsAtBoxOpen() {
+    fun setPositionOfViewsAtBoxOpen(@TokenUserState state: String) {
         rewardContainer.setFinalTranslationOfCircles(giftBoxDailyView.fmGiftBox.top)
 
         giftBoxDailyView.imageBoxFront.doOnLayout { imageBoxFront ->
@@ -349,7 +350,10 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             rewardContainer.llRewardTextLayout.translationY = tranY
             rewardContainer.rvCoupons.translationY = array[1].toFloat() - (screenHeight * 0.15f) - dpToPx(158f) - statusBarHeight
 //            rewardContainer.rvCoupons.translationY = tranY - dpToPx(20f)
-            println("Hello")
+            if (state == TokenUserState.EMPTY) {
+                llBenefits.gravity = Gravity.NO_GRAVITY
+                llBenefits.translationY = array[1].toFloat() + imageBoxFront.height - getStatusBarHeight(context) + dpToPx(18f)
+            }
 
         }
     }
@@ -384,11 +388,11 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
 
-    fun renderGiftBoxActive(entity: GiftBoxEntity, @TokenUserState state:String) {
+    fun renderGiftBoxActive(entity: GiftBoxEntity, @TokenUserState state: String) {
         tvTapHint.text = entity.gamiLuckyHome.tokensUser.title
         tvBenefits.text = entity.gamiLuckyHome.tokensUser.text
 
-        if(state == TokenUserState.EMPTY){
+        if (state == TokenUserState.EMPTY) {
             tvBenefits.setType(Typography.HEADING_2)
             tvBenefits.setWeight(Typography.BOLD)
         }
@@ -436,9 +440,9 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
     fun fadeInActiveStateViews(frontImageUrl: String, imageBgUrl: String, @TokenUserState state: String) {
-        giftBoxDailyView.loadFiles(frontImageUrl,imageBgUrl, imageCallback = {
+        giftBoxDailyView.loadFiles(frontImageUrl, imageBgUrl, imageCallback = {
             if (it) {
-                setPositionOfViewsAtBoxOpen()
+                setPositionOfViewsAtBoxOpen(state)
                 hideLoader()
 
                 val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
