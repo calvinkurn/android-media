@@ -9,12 +9,12 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.annotation.StringDef
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -24,6 +24,7 @@ import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
 import com.tokopedia.gamification.giftbox.data.entities.GiftBoxEntity
 import com.tokopedia.gamification.giftbox.data.entities.GiftBoxRewardEntity
+import com.tokopedia.gamification.giftbox.data.entities.Reminder
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.ACTIVE
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.EMPTY
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.EXPIRED
@@ -38,6 +39,8 @@ import com.tokopedia.gamification.giftbox.presentation.views.GiftPrizeLargeView
 import com.tokopedia.gamification.giftbox.presentation.views.GiftPrizeSmallView
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer
 import com.tokopedia.gamification.pdp.data.LiveDataResult
+import com.tokopedia.unifycomponents.LoaderUnify
+import kotlinx.android.synthetic.main.fragment_gift_box_daily.*
 import javax.inject.Inject
 
 class GiftBoxDailyFragment : GiftBoxBaseFragment() {
@@ -50,12 +53,17 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     lateinit var llRewardMessage: LinearLayout
     lateinit var tvRewardFirstLine: AppCompatTextView
     lateinit var tvRewardSecondLine: AppCompatTextView
-    lateinit var btnAction: Button
+    lateinit var btnAction: AppCompatTextView
+    lateinit var tvReminderBtn: AppCompatTextView
+    lateinit var tvReminderMessage: AppCompatTextView
+    lateinit var loaderReminder: LoaderUnify
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: GiftBoxDailyViewModel
     var giftBoxRewardEntity: GiftBoxRewardEntity? = null
+    var isReminderSet = false
+    var reminder: Reminder? = null
 
     override fun getLayout() = R.layout.fragment_gift_box_daily
 
@@ -91,6 +99,9 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         tvRewardSecondLine = v.findViewById(R.id.tvRewardSecondLine)
         btnAction = v.findViewById(R.id.btnAction)
         tvLoaderMessage = v.findViewById(R.id.tvLoaderMessage)
+        tvReminderBtn = v.findViewById(R.id.tvReminderBtn)
+        tvReminderMessage = v.findViewById(R.id.tvReminderMessage)
+        loaderReminder = v.findViewById(R.id.loaderReminder)
         super.initViews(v)
 
         setListeners()
@@ -242,9 +253,63 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                 }
                             }
                         }
+
+                        //set reminder action
+                        tvReminderBtn.setOnClickListener {
+                            if (!isReminderSet) {
+                                viewModel.setReminder()
+                            }
+                        }
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {
+                }
+            }
+        })
+
+        viewModel.reminderLiveData.observe(viewLifecycleOwner, Observer {
+            when (it.status) {
+                LiveDataResult.STATUS.LOADING -> {
+                    loaderReminder.visibility = View.VISIBLE
+                    tvReminderBtn.visibility = View.INVISIBLE
+                }
+                LiveDataResult.STATUS.SUCCESS -> {
+                    loaderReminder.visibility = View.GONE
+                    tvReminderBtn.visibility = View.VISIBLE
+
+                    val code = it.data?.gameRemindMe?.resultStatus?.code
+                    val reason = it.data?.gameRemindMe?.resultStatus?.reason
+
+                    if (code == 200) {
+                        reminderSuccess(true)
+                    }
+                }
+                LiveDataResult.STATUS.ERROR -> {
+                    loaderReminder.visibility = View.GONE
+                    tvReminderBtn.visibility = View.VISIBLE
+                }
+            }
+        })
+
+
+        viewModel.reminderCheckLiveData.observe(viewLifecycleOwner, Observer {
+            when (it.status) {
+                LiveDataResult.STATUS.LOADING -> {
+
+                }
+                LiveDataResult.STATUS.SUCCESS -> {
+                    loaderReminder.visibility = View.GONE
+                    tvReminderBtn.visibility = View.VISIBLE
+
+                    val code = it.data?.gameRemindMeCheck?.resultStatus?.code
+                    val isRemindMe = it.data?.gameRemindMeCheck?.isRemindMe
+                    reminder = it.data?.reminder
+                    if (code == 200 && isRemindMe != null && isRemindMe) {
+                        reminderSuccess(isRemindMe)
+                    }
+                }
+                LiveDataResult.STATUS.ERROR -> {
+
                 }
             }
         })
@@ -253,6 +318,22 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             viewModel.getRewards()
         }
     }
+
+    fun reminderSuccess(isUserReminded: Boolean) {
+        context?.let {
+            if (isUserReminded) {
+                fmReminder.background = ContextCompat.getDrawable(it, R.drawable.gf_bg_disabled_3d)
+                tvReminderBtn.text = reminder?.disableText
+                isReminderSet = true
+            } else {
+                tvReminderBtn.text = reminder?.enableText
+                fmReminder.background = ContextCompat.getDrawable(it, R.drawable.gf_bg_green_3d)
+                isReminderSet = false
+            }
+            tvReminderMessage.text = reminder?.text
+        }
+    }
+
 
     fun setPositionOfViewsAtBoxOpen() {
         rewardContainer.setFinalTranslationOfCircles(giftBoxDailyView.fmGiftBox.top)
@@ -283,6 +364,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         super.initialViewSetup()
         llBenefits.alpha = 0f
         llRewardMessage.alpha = 0f
+        loaderReminder.visibility = View.GONE
         setDynamicMargin()
     }
 

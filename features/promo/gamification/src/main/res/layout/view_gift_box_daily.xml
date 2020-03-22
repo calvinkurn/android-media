@@ -23,6 +23,7 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="wrap_content"
+            android:visibility="invisible"
             android:layout_height="wrap_content"
             android:layout_marginTop="140dp"
             android:src="@drawable/gf_ic_box_shadow" />
@@ -41,13 +42,12 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/image_box_front"
-                android:layout_width="161dp"
-                android:layout_height="74dp"
+                android:layout_width="233dp"
+                android:layout_height="94dp"
                 android:layout_below="@id/image_gift_box_lid"
                 android:layout_centerHorizontal="true"
-                android:layout_gravity="center_horizontal"
                 android:scaleType="centerCrop"
-                app:srcCompat="@drawable/gf_ic_gift_box" />
+                tools:src="@drawable/keejutan_box" />
 
 
         </RelativeLayout>

@@ -31,6 +31,14 @@ class GiftBoxDailyModule {
     fun provideGiftBoxDailyRewardQuery(@ApplicationContext context: Context): String = GraphqlHelper.loadRawString(context.resources, R.raw.gf_gift_box_daily_reward)
 
     @Provides
+    @Named(GAMI_REMIND_ME)
+    fun provideGamiRemindMe(@ApplicationContext context: Context): String = GraphqlHelper.loadRawString(context.resources, R.raw.gf_gami_remind_me)
+
+    @Provides
+    @Named(GAMI_REMIND_ME_CHECK)
+    fun provideGamiRemindMeCheck(@ApplicationContext context: Context): String = GraphqlHelper.loadRawString(context.resources, R.raw.gf_gami_remind_me_check)
+
+    @Provides
     @Named(GET_COUPON_DETAIL)
     fun provideCouponDetailString(@ApplicationContext context: Context): String = context.resources.openRawResource(R.raw.gf_query_hachiko_catalog_detail)
             .bufferedReader()

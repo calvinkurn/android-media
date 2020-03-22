@@ -1,0 +1,10 @@
+query GameRemindMeCheck($about:String!){
+    gameRemindMeCheck(input:{about:$about}){
+        resultStatus {
+            code
+            message
+            reason
+        }
+       isRemindMe
+   }
+}

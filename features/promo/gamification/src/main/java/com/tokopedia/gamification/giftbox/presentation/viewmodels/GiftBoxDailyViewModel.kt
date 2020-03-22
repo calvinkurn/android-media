@@ -4,12 +4,11 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.gamification.giftbox.data.di.IO
 import com.tokopedia.gamification.giftbox.data.di.MAIN
-import com.tokopedia.gamification.giftbox.data.entities.CouponDetailResponse
-import com.tokopedia.gamification.giftbox.data.entities.GiftBoxEntity
-import com.tokopedia.gamification.giftbox.data.entities.GiftBoxRewardEntity
+import com.tokopedia.gamification.giftbox.data.entities.*
 import com.tokopedia.gamification.giftbox.domain.CouponDetailUseCase
 import com.tokopedia.gamification.giftbox.domain.GiftBoxDailyRewardUseCase
 import com.tokopedia.gamification.giftbox.domain.GiftBoxDailyUseCase
+import com.tokopedia.gamification.giftbox.domain.RemindMeUseCase
 import com.tokopedia.gamification.giftbox.presentation.activities.GiftLauncherActivity
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -23,7 +22,8 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
                                                 @Named(IO) workerDispatcher: CoroutineDispatcher,
                                                 val giftBoxDailyUseCase: GiftBoxDailyUseCase,
                                                 val giftBoxDailyRewardUseCase: GiftBoxDailyRewardUseCase,
-                                                val couponDetailUseCase: CouponDetailUseCase)
+                                                val couponDetailUseCase: CouponDetailUseCase,
+                                                val remindMeUseCase: RemindMeUseCase)
     : BaseViewModel(workerDispatcher) {
 
     //todo Rahul these below values must not be hardcoded
@@ -34,8 +34,11 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
 
     val giftBoxLiveData: MutableLiveData<LiveDataResult<GiftBoxEntity>> = MutableLiveData()
     val rewardLiveData: MutableLiveData<LiveDataResult<GiftBoxRewardEntity>> = MutableLiveData()
+    val reminderLiveData: MutableLiveData<LiveDataResult<RemindMeEntity>> = MutableLiveData()
+    val reminderCheckLiveData: MutableLiveData<LiveDataResult<RemindMeCheckEntity>> = MutableLiveData()
 
     var rewardJob: Job? = null
+    var remindMeJob: Job? = null
 
     fun getGiftBox() {
         giftBoxLiveData.postValue(LiveDataResult.loading())
@@ -45,9 +48,20 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
             if (GiftLauncherActivity.iS_STAGING) {
                 val response = giftBoxDailyUseCase.getResponse(params)
                 campaignSlug = response?.gamiLuckyHome.tokensUser?.campaignSlug
+                val remindMeCheckEntity = remindMeUseCase.getRemindMeCheckResponse(remindMeUseCase.getRequestParams(""))
                 giftBoxLiveData.postValue(LiveDataResult.success(response))
-            } else
-                giftBoxLiveData.postValue(LiveDataResult.success(giftBoxDailyUseCase.getFakeResponseActive()))
+
+                remindMeCheckEntity.reminder = response.gamiLuckyHome.reminder
+                reminderCheckLiveData.postValue(LiveDataResult.success(remindMeCheckEntity))
+
+            } else {
+                val response = giftBoxDailyUseCase.getFakeResponseActive()
+                giftBoxLiveData.postValue(LiveDataResult.success(response))
+                val remindMeCheckEntity = remindMeUseCase.getRemindMeCheckResponseFake()
+                remindMeCheckEntity.reminder = response.gamiLuckyHome.reminder
+                reminderCheckLiveData.postValue(LiveDataResult.success(remindMeCheckEntity))
+            }
+
         }, onError = {
             giftBoxLiveData.postValue(LiveDataResult.error(it))
         })
@@ -69,6 +83,18 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
 
             }, onError = {
                 rewardLiveData.postValue(LiveDataResult.error(it))
+            })
+        }
+    }
+
+    fun setReminder() {
+        if (remindMeJob == null || remindMeJob!!.isCompleted) {
+            reminderLiveData.postValue(LiveDataResult.loading())
+            remindMeJob = launchCatchError(block = {
+                val response = remindMeUseCase.getRemindMeResponse(remindMeUseCase.getRequestParams(""))
+                reminderLiveData.postValue(LiveDataResult.success(response))
+            }, onError = {
+                reminderLiveData.postValue(LiveDataResult.error(it))
             })
         }
     }

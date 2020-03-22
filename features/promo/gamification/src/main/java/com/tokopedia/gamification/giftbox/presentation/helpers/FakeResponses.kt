@@ -334,4 +334,21 @@ object FakeResponses {
                 "  }\n" +
                 "}"
     }
+
+    object RemindMeCheckResponse {
+        val SUCCESS = "{\"gameRemindMeCheck\": {\n" +
+                "      \"resultStatus\": {\n" +
+                "        \"code\": \"200\",\n" +
+                "        \"message\": [\n" +
+                "          \"Success\"\n" +
+                "        ],\n" +
+                "        \"reason\": \"OK\"\n" +
+                "      },\n" +
+                "      \"isRemindMe\": true\n" +
+                "    }\n" +
+                "  }"
+
+        val ERROR = "{\"gameRemindMeCheck\":{\"resultStatus\":{\"code\":\"403\",\"message\":[\"User ID not found\"],\"reason\":\"User ID not found\"},\"isRemindMe\":false}}"
+
+    }
 }
