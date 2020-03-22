@@ -25,6 +25,21 @@ import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.roundToInt
 
+const val HINT_CONFIG_WIDTH = "Width (dp)"
+const val HINT_CONFIG_HEIGHT = "Height (dp)"
+const val HINT_CONFIG_MARGIN_LEFT = "Margin Left (dp)"
+const val HINT_CONFIG_MARGIN_TOP = "Margin Top (dp)"
+const val HINT_CONFIG_MARGIN_RIGHT = "Margin Right (dp)"
+const val HINT_CONFIG_MARGIN_BOTTOM = "Margin Bottom (dp)"
+const val HINT_CONFIG_PADDING_LEFT = "Padding Left (dp)"
+const val HINT_CONFIG_PADDING_TOP = "Padding Top (dp)"
+const val HINT_CONFIG_PADDING_RIGHT = "Padding Right (dp)"
+const val HINT_CONFIG_PADDING_BOTTOM = "Padding Bottom (dp)"
+const val HINT_CONFIG_BACKGROUND_COLOR = "BackgroundColor (example: #FFFFFF)"
+const val HINT_CONFIG_TEXT = "Text"
+const val HINT_CONFIG_TEXT_COLOR = "TextColor (example: #FFFFFF)"
+const val HINT_CONFIG_TEXT_SIZE = "TextSize (sp)"
+
 class ViewInspectorDialogFragment : DialogFragment(), DialogListener, CoroutineScope {
 
     protected val masterJob = SupervisorJob()
@@ -259,7 +274,7 @@ class OptionPickerViewHolder(private val rootView: View, private val listener: D
 
         ViewInspectorConfigItem(propertyList.context).let {
             it.setup(
-                    hint = "Width (dp)",
+                    hint = HINT_CONFIG_WIDTH,
                     text = convertPixelsToDp(item.width, item.context).toString(),
                     listener = View.OnClickListener { v ->
                         listener.updateAllViewsWithId(item.id, {viewToUpdate ->
@@ -272,7 +287,7 @@ class OptionPickerViewHolder(private val rootView: View, private val listener: D
 
         ViewInspectorConfigItem(propertyList.context).let {
             it.setup(
-                    hint = "Height (dp)",
+                    hint = HINT_CONFIG_HEIGHT,
                     text = convertPixelsToDp(item.height, item.context).toString(),
                     listener = View.OnClickListener { v ->
                         listener.updateAllViewsWithId(item.id, {viewToUpdate ->
@@ -285,7 +300,7 @@ class OptionPickerViewHolder(private val rootView: View, private val listener: D
 
         ViewInspectorConfigItem(propertyList.context).let {
             it.setup(
-                    hint = "Margin Left (dp)",
+                    hint = HINT_CONFIG_MARGIN_LEFT,
                     text = convertPixelsToDp(item.marginLeft, item.context).toString(),
                     listener = View.OnClickListener { v ->
                         listener.updateAllViewsWithId(item.id, {viewToUpdate ->
@@ -297,7 +312,7 @@ class OptionPickerViewHolder(private val rootView: View, private val listener: D
         }
         ViewInspectorConfigItem(propertyList.context).let {
             it.setup(
-                    hint = "Margin Top (dp)",
+                    hint = HINT_CONFIG_MARGIN_TOP,
                     text = convertPixelsToDp(item.marginTop, item.context).toString(),
                     listener = View.OnClickListener { v ->
                         listener.updateAllViewsWithId(item.id, {viewToUpdate ->
@@ -309,7 +324,7 @@ class OptionPickerViewHolder(private val rootView: View, private val listener: D
         }
         ViewInspectorConfigItem(propertyList.context).let {
             it.setup(
-                    hint = "Margin Right (dp)",
+                    hint = HINT_CONFIG_MARGIN_RIGHT,
                     text = convertPixelsToDp(item.marginRight, item.context).toString(),
                     listener = View.OnClickListener { v ->
                         listener.updateAllViewsWithId(item.id, {viewToUpdate ->
@@ -321,7 +336,7 @@ class OptionPickerViewHolder(private val rootView: View, private val listener: D
         }
         ViewInspectorConfigItem(propertyList.context).let {
             it.setup(
-                    hint = "Margin Bottom (dp)",
+                    hint = HINT_CONFIG_MARGIN_BOTTOM,
                     text = convertPixelsToDp(item.marginBottom, item.context).toString(),
                     listener = View.OnClickListener { v ->
                         listener.updateAllViewsWithId(item.id, {viewToUpdate ->
@@ -334,7 +349,7 @@ class OptionPickerViewHolder(private val rootView: View, private val listener: D
 
         ViewInspectorConfigItem(propertyList.context).let {
             it.setup(
-                    hint = "Padding Left (dp)",
+                    hint = HINT_CONFIG_PADDING_LEFT,
                     text = convertPixelsToDp(item.paddingLeft, item.context).toString(),
                     listener = View.OnClickListener { v ->
                         listener.updateAllViewsWithId(item.id, { viewToUpdate ->
@@ -346,7 +361,7 @@ class OptionPickerViewHolder(private val rootView: View, private val listener: D
         }
         ViewInspectorConfigItem(propertyList.context).let {
             it.setup(
-                    hint = "Padding Top (dp)",
+                    hint = HINT_CONFIG_PADDING_TOP,
                     text = convertPixelsToDp(item.paddingTop, item.context).toString(),
                     listener = View.OnClickListener { v ->
                         listener.updateAllViewsWithId(item.id, { viewToUpdate ->
@@ -358,7 +373,7 @@ class OptionPickerViewHolder(private val rootView: View, private val listener: D
         }
         ViewInspectorConfigItem(propertyList.context).let {
             it.setup(
-                    hint = "Padding Right (dp)",
+                    hint = HINT_CONFIG_PADDING_RIGHT,
                     text = convertPixelsToDp(item.paddingRight, item.context).toString(),
                     listener = View.OnClickListener { v ->
                         listener.updateAllViewsWithId(item.id, { viewToUpdate ->
@@ -370,7 +385,7 @@ class OptionPickerViewHolder(private val rootView: View, private val listener: D
         }
         ViewInspectorConfigItem(propertyList.context).let {
             it.setup(
-                    hint = "Padding Bottom (dp)",
+                    hint = HINT_CONFIG_PADDING_BOTTOM,
                     text = convertPixelsToDp(item.paddingBottom, item.context).toString(),
                     listener = View.OnClickListener { v ->
                         listener.updateAllViewsWithId(item.id, { viewToUpdate ->
@@ -383,7 +398,7 @@ class OptionPickerViewHolder(private val rootView: View, private val listener: D
 
         ViewInspectorConfigItem(propertyList.context).let {
             it.setup(
-                    hint = "BackgroundColor (example: #FFFFFF)",
+                    hint = HINT_CONFIG_BACKGROUND_COLOR,
                     text = String.format("#%06X", 0xFFFFFF and ((item.background as? ColorDrawable)?.color ?: 0xFFFFFF)),
                     listener = View.OnClickListener { v ->
                         listener.updateAllViewsWithId(item.id, { viewToUpdate ->
@@ -399,7 +414,7 @@ class OptionPickerViewHolder(private val rootView: View, private val listener: D
 
         ViewInspectorConfigItem(propertyList.context).let {
             it.setup(
-                    hint = "Text",
+                    hint = HINT_CONFIG_TEXT,
                     text = item.text.toString(),
                     listener = View.OnClickListener { v ->
                         listener.updateAllViewsWithId(item.id, { viewToUpdate ->
@@ -411,7 +426,7 @@ class OptionPickerViewHolder(private val rootView: View, private val listener: D
 
         ViewInspectorConfigItem(propertyList.context).let {
             it.setup(
-                    hint = "TextColor (example: #FFFFFF)",
+                    hint = HINT_CONFIG_TEXT_COLOR,
                     text = String.format("#%06X", 0xFFFFFF and item.currentTextColor),
                     listener = View.OnClickListener { v ->
                         listener.updateAllViewsWithId(item.id, { viewToUpdate ->
@@ -423,7 +438,7 @@ class OptionPickerViewHolder(private val rootView: View, private val listener: D
 
         ViewInspectorConfigItem(propertyList.context).let {
             it.setup(
-                    hint = "TextSize (sp)",
+                    hint = HINT_CONFIG_TEXT_SIZE,
                     text = convertPixelsToSp(item.textSize, propertyList.context).toString(),
                     listener = View.OnClickListener { v ->
                         listener.updateAllViewsWithId(item.id, { viewToUpdate ->
