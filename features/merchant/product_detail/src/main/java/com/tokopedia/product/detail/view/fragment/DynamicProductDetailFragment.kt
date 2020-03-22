@@ -1052,6 +1052,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             when (it) {
                 is Success -> {
                     if (it.data.errorReporter.eligible) {
+                        logException(Throwable(it.data.errorReporter.texts.submitTitle))
                         showDialogErrorAtc(it.data)
                     } else {
                         onSuccessAtc(it.data.data.cartId.toString())
@@ -1167,7 +1168,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 performanceMonitoringP2General.stopTrace()
 
             onSuccessGetDataP2General(it)
-
         })
     }
 
@@ -1399,7 +1399,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun onTradeinClicked() {
+    private fun goToTradein() {
         tradeinDialog?.show(childFragmentManager, "ACCESS REQUEST")
     }
 
@@ -2062,14 +2062,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     ?: false
 
             if (!viewModel.isUserSessionActive) {
-                if (viewModel.buttonActionType == ProductDetailConstant.ATC_BUTTON) {
-                    DynamicProductDetailTracking.Click.eventAtcButtonNonLogin(viewModel.getDynamicProductInfoP1, viewModel.userId, viewModel.shopInfo?.goldOS?.shopTypeString
-                            ?: "")
-                } else {
-                    DynamicProductDetailTracking.Click.eventBuyButtonNonLogin(viewModel.getDynamicProductInfoP1, viewModel.userId, viewModel.shopInfo?.goldOS?.shopTypeString
-                            ?: "", viewModel.buttonActionText)
-                }
-                startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), ProductDetailConstant.REQUEST_CODE_LOGIN)
+                doLoginWhenUserClickButton()
                 return@let
             }
 
@@ -2079,9 +2072,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
 
             if (isVariant && isPartialySelected) {
-                DynamicProductDetailTracking.Click.onVariantErrorPartialySelected(viewModel.getDynamicProductInfoP1, viewModel.buttonActionType)
-                scrollToPosition(dynamicAdapter.getVariantPosition(pdpHashMapUtil?.productNewVariantDataModel))
-                showToasterError(getString(R.string.add_to_cart_error_variant))
+                showErrorVariantUnselected()
                 return@let
             }
 
@@ -2091,12 +2082,26 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     return@let
                 }
                 ProductDetailConstant.TRADEIN_BUTTON -> {
-                    onTradeinClicked()
+                    goToTradein()
                     return@let
                 }
             }
             hitAtc(buttonAction)
         }
+    }
+
+    private fun doLoginWhenUserClickButton() {
+        activity?.let {
+            DynamicProductDetailTracking.Click.eventClickButtonNonLogin(viewModel.buttonActionType, viewModel.getDynamicProductInfoP1, viewModel.userId, viewModel.shopInfo?.goldOS?.shopTypeString
+                    ?: "", viewModel.buttonActionText)
+            startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), ProductDetailConstant.REQUEST_CODE_LOGIN)
+        }
+    }
+
+    private fun showErrorVariantUnselected() {
+        DynamicProductDetailTracking.Click.onVariantErrorPartialySelected(viewModel.getDynamicProductInfoP1, viewModel.buttonActionType)
+        scrollToPosition(dynamicAdapter.getVariantPosition(pdpHashMapUtil?.productNewVariantDataModel))
+        showToasterError(getString(R.string.add_to_cart_error_variant))
     }
 
     private fun buyAfterTradeinDiagnose(deviceId: String, phoneType: String, phonePrice: String) {

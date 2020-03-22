@@ -46,7 +46,15 @@ object DynamicProductDetailTracking {
 
     object Click {
 
-        fun eventAtcButtonNonLogin(productInfo: DynamicProductInfoP1?, userId: String, shopType: String) {
+        fun eventClickButtonNonLogin(actionButton: Int, productInfo: DynamicProductInfoP1?, userId: String, shopType: String, buttonActionText: String) {
+            if (actionButton == ProductDetailConstant.ATC_BUTTON) {
+                eventAtcButtonNonLogin(productInfo, userId, shopType)
+            } else {
+                eventBuyButtonNonLogin(productInfo, userId, shopType, buttonActionText)
+            }
+        }
+
+        private fun eventAtcButtonNonLogin(productInfo: DynamicProductInfoP1?, userId: String, shopType: String) {
             val mapEvent = TrackAppUtils.gtmData(
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,
@@ -61,7 +69,7 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.IMPRESSION_CHOOSE_VARIANT_NOTIFICATION)
         }
 
-        fun eventBuyButtonNonLogin(productInfo: DynamicProductInfoP1?, userId: String, shopType: String, buttonActionText: String) {
+        private fun eventBuyButtonNonLogin(productInfo: DynamicProductInfoP1?, userId: String, shopType: String, buttonActionText: String) {
             val mapEvent = TrackAppUtils.gtmData(
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,
