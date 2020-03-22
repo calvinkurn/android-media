@@ -66,6 +66,9 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     var giftBoxRewardEntity: GiftBoxRewardEntity? = null
     var isReminderSet = false
     var reminder: Reminder? = null
+    @TokenUserState
+    var tokenUserState: String = TokenUserState.DEFAULT
+    var disableGiftBoxTap = false
 
     override fun getLayout() = R.layout.fragment_gift_box_daily
 
@@ -179,13 +182,24 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             when (it.status) {
                 LiveDataResult.STATUS.SUCCESS -> {
                     if (it.data != null) {
-                        val state = it.data.gamiLuckyHome.tokensUser.state
-                        when (state) {
+                        tokenUserState = it.data.gamiLuckyHome.tokensUser.state
+                        when (tokenUserState) {
                             TokenUserState.ACTIVE -> {
-                                renderGiftBoxActive(it.data, state)
+                                renderGiftBoxActive(it.data)
+
+                                giftBoxDailyView.fmGiftBox.setOnClickListener {
+                                    if (!disableGiftBoxTap) {
+                                        viewModel.getRewards()
+                                    }
+                                }
                             }
                             TokenUserState.EMPTY -> {
-                                renderGiftBoxActive(it.data, state)
+                                renderGiftBoxActive(it.data)
+                                tvRewardFirstLine.visibility = View.GONE
+                                tvRewardSecondLine.visibility = View.GONE
+                                btnAction.visibility = View.GONE
+
+
                             }
                             TokenUserState.INACTIVE -> {
                                 hideLoader()
@@ -220,7 +234,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                         //todo Rahul need to handle
                     } else {
                         //set data in rewards first and then animate
-
+                        disableGiftBoxTap = true
                         giftBoxRewardEntity = it.data
                         giftBoxDailyView.handleTapOnGiftBox()
                         fadeOutViews()
@@ -316,9 +330,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             }
         })
 
-        giftBoxDailyView.fmGiftBox.setOnClickListener {
-            viewModel.getRewards()
-        }
+
     }
 
     fun reminderSuccess(isUserReminded: Boolean) {
@@ -351,8 +363,12 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             rewardContainer.rvCoupons.translationY = array[1].toFloat() - (screenHeight * 0.15f) - dpToPx(158f) - statusBarHeight
 //            rewardContainer.rvCoupons.translationY = tranY - dpToPx(20f)
             if (state == TokenUserState.EMPTY) {
-                llBenefits.gravity = Gravity.NO_GRAVITY
+//                llBenefits.gravity = Gravity.TOP
                 llBenefits.translationY = array[1].toFloat() + imageBoxFront.height - getStatusBarHeight(context) + dpToPx(18f)
+            } else {
+                llBenefits.updateLayoutParams<FrameLayout.LayoutParams> {
+                    this.gravity = Gravity.BOTTOM
+                }
             }
 
         }
@@ -388,13 +404,17 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
 
-    fun renderGiftBoxActive(entity: GiftBoxEntity, @TokenUserState state: String) {
+    fun renderGiftBoxActive(entity: GiftBoxEntity) {
         tvTapHint.text = entity.gamiLuckyHome.tokensUser.title
         tvBenefits.text = entity.gamiLuckyHome.tokensUser.text
 
-        if (state == TokenUserState.EMPTY) {
+        if (tokenUserState == TokenUserState.EMPTY) {
             tvBenefits.setType(Typography.HEADING_2)
             tvBenefits.setWeight(Typography.BOLD)
+        }
+
+        if (tvTapHint.text.isNullOrEmpty()) {
+            tvTapHint.visibility = View.GONE
         }
 
         //set prize list
@@ -423,7 +443,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             }
         }
 
-        fadeInActiveStateViews(frontImageUrl, bgUrl, state)
+        fadeInActiveStateViews(frontImageUrl, bgUrl)
     }
 
     fun fadeOutViews() {
@@ -439,10 +459,10 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         animatorSet.start()
     }
 
-    fun fadeInActiveStateViews(frontImageUrl: String, imageBgUrl: String, @TokenUserState state: String) {
-        giftBoxDailyView.loadFiles(frontImageUrl, imageBgUrl, imageCallback = {
+    fun fadeInActiveStateViews(frontImageUrl: String, imageBgUrl: String) {
+        giftBoxDailyView.loadFiles(tokenUserState, frontImageUrl, imageBgUrl, imageCallback = {
             if (it) {
-                setPositionOfViewsAtBoxOpen(state)
+                setPositionOfViewsAtBoxOpen(tokenUserState)
                 hideLoader()
 
                 val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
@@ -451,12 +471,19 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 val prizeListContainerAnim = ObjectAnimator.ofPropertyValuesHolder(llBenefits, alphaProp)
 
                 val animatorSet = AnimatorSet()
-                animatorSet.playTogether(tapHintAnim, giftBoxAnim, prizeListContainerAnim)
+                if (tokenUserState == TokenUserState.EMPTY) {
+                    val rewardAlphaAnim = ObjectAnimator.ofPropertyValuesHolder(llRewardMessage, alphaProp)
+                    animatorSet.playTogether(tapHintAnim, giftBoxAnim, prizeListContainerAnim, rewardAlphaAnim)
+                } else {
+                    animatorSet.playTogether(tapHintAnim, giftBoxAnim, prizeListContainerAnim)
+                }
+
                 animatorSet.duration = FADE_IN_DURATION
 
-
                 animatorSet.addListener(onEnd = {
-                    giftBoxDailyView.startInitialAnimation()
+                    if (tokenUserState == TokenUserState.ACTIVE) {
+                        giftBoxDailyView.startInitialAnimation()
+                    }
                 })
                 animatorSet.start()
             } else {
@@ -489,5 +516,6 @@ annotation class TokenUserState {
         const val INACTIVE = "inactive"
         const val EXPIRED = "expired"
         const val NON_LOGIN = "nonlogin"
+        const val DEFAULT = "default"
     }
 }

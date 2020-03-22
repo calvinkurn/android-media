@@ -16,6 +16,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.gamification.R
+import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.Companion.NEGATIVE_DELAY_FOR_LARGE_REWARD_ANIM
@@ -101,7 +102,7 @@ open class GiftBoxDailyView : FrameLayout {
 
     }
 
-    fun loadFiles(imageFrontUrl: String?, imageBgUrl: String, imageCallback: ((isLoaded: Boolean) -> Unit)) {
+    fun loadFiles(@TokenUserState state: String, imageFrontUrl: String?, imageBgUrl: String, imageCallback: ((isLoaded: Boolean) -> Unit)) {
         val listener = object : RequestListener<Drawable> {
             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                 imageCallback.invoke(false)
@@ -116,8 +117,12 @@ open class GiftBoxDailyView : FrameLayout {
                 return false
             }
         }
+        var drawableRedForLid = R.drawable.gf_ic_lid_frame_7
+        if(state == TokenUserState.ACTIVE){
+            drawableRedForLid = R.drawable.gf_ic_lid_frame_0
+        }
         Glide.with(this)
-                .load(R.drawable.gf_ic_lid_frame_0)
+                .load(drawableRedForLid)
                 .dontAnimate()
                 .addListener(listener)
                 .into(imageGiftBoxLid)
@@ -128,7 +133,7 @@ open class GiftBoxDailyView : FrameLayout {
                 .addListener(listener)
                 .into(imageBoxFront)
 
-                //todo Rahul change to imageBgUrl later & also update TOTAL_ASYNC_IMAGES
+        //todo Rahul change to imageBgUrl later & also update TOTAL_ASYNC_IMAGES
         Glide.with(this)
                 .load(R.drawable.gf_ic_gift_background)
                 .dontAnimate()

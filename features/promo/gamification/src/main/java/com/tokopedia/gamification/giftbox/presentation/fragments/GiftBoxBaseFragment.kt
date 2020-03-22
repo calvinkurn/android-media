@@ -28,8 +28,8 @@ open class GiftBoxBaseFragment : Fragment() {
     lateinit var tvLoaderTitle: AppCompatTextView
     lateinit var tvLoaderMessage: AppCompatTextView
 
-    val CONTAINER_LOADER = 0
-    val CONTAINER_GIFT_BOX = 1
+    val CONTAINER_LOADER = 1
+    val CONTAINER_GIFT_BOX = 0
 
     var screenHeight = 0
     var screenWidth = 0
