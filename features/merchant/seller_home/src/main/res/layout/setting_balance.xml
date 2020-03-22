@@ -23,10 +23,11 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/balanceValue"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:gravity="center_vertical"
+            android:gravity="center_vertical|end"
             android:textColor="@color/setting_black_text"
+            app:layout_constraintWidth_percent="0.5"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             app:layout_constraintEnd_toEndOf="@id/guidelineVerticalRight"/>

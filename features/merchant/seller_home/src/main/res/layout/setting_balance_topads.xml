@@ -21,12 +21,22 @@
             app:layout_constraintStart_toStartOf="@id/guidelineVerticalLeft"
             tools:text="Saldo"/>
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginLeft="@dimen/setting_topads_icon_margin"
+            android:layout_marginStart="@dimen/setting_topads_icon_margin"
+            app:layout_constraintStart_toEndOf="@id/balanceTitle"
+            app:layout_constraintTop_toTopOf="@id/balanceTitle"
+            app:layout_constraintBottom_toBottomOf="@id/balanceTitle"/>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/balanceValue"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:gravity="center_vertical"
+            android:gravity="center_vertical|end"
             android:textColor="@color/setting_black_text"
+            app:layout_constraintWidth_percent="0.5"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             app:layout_constraintEnd_toEndOf="@id/guidelineVerticalRight"/>

@@ -66,6 +66,7 @@
     <dimen name="setting_shop_badge_shimmer_height">10dp</dimen>
     <dimen name="setting_local_load_margin">16dp</dimen>
     <dimen name="setting_next_button_padding">13dp</dimen>
+    <dimen name="setting_topads_icon_margin">5dp</dimen>
 
     <dimen category="font-size" name="line_spacing_6">6sp</dimen>
 
