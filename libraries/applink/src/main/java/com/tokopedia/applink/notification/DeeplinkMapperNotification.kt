@@ -7,7 +7,7 @@ import com.tokopedia.applink.startsWithPattern
 object DeeplinkMapperNotification {
 
     fun getRegisteredNotification(deeplink: String): String {
-        return if (deeplink.startsWithPattern(ApplinkConst.BUYER_INFO)) getRegisteredNavigation(deeplink)
+        return if (deeplink.startsWithPattern(ApplinkConst.BUYER_INFO_WITH_ID)) getRegisteredNavigation(deeplink)
         else deeplink
     }
 
