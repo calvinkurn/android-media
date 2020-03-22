@@ -21,7 +21,17 @@ class UmrahHomepageActivity : UmrahBaseActivity(), HasComponent<UmrahHomepageCom
     override fun shouldShowMenuWhite() = false
 
     override fun getMenuButton(): Int = R.menu.umrah_base_menu
-    override fun getShareLink(): String = getString(R.string.umrah_link)
+    override fun onClickShare() {
+
+    }
+
+    override fun onClickHelp() {
+
+    }
+
+    override fun onClickSalam() {
+
+    }
 
 
 }

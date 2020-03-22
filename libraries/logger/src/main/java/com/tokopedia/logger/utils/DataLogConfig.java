@@ -22,6 +22,10 @@ public class DataLogConfig {
     @Expose
     private List<String> tags;
 
+    @SerializedName("client_log")
+    @Expose
+    private List<String> clientLogs;
+
     public long getAppVersionMin() {
         return appVersionMin;
     }
@@ -32,4 +36,9 @@ public class DataLogConfig {
 
     @Nullable
     public List<String> getTags() { return tags; }
+
+    @Nullable
+    public List<String> getClientLogs() {
+        return clientLogs;
+    }
 }

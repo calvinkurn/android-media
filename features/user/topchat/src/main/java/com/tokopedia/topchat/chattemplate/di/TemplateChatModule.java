@@ -27,6 +27,7 @@ import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryImpl;
 import com.tokopedia.topchat.common.chat.api.ChatApi;
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier;
+import com.tokopedia.topchat.common.di.qualifier.TopchatContext;
 import com.tokopedia.topchat.common.network.XUserIdInterceptor;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -48,31 +49,42 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public class TemplateChatModule {
 
+    private Context mContext;
+
+    private TemplateChatModule() {}
+
+    public TemplateChatModule(Context context) {
+        mContext = context;
+    }
+
+    @Provides
+    @TemplateChatScope
+    @TopchatContext
+    Context provideContext() {
+        return mContext;
+    }
+
     @TemplateChatScope
     @Provides
-    UserSessionInterface provideUserSessionInterface(
-            @ApplicationContext Context context) {
+    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
     }
 
     @TemplateChatScope
     @Provides
-    UserSession provideUserSession(
-            @ApplicationContext Context context) {
+    UserSession provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
     }
 
     @TemplateChatScope
     @Provides
-    NetworkRouter provideNetworkRouter(
-            @ApplicationContext Context context) {
+    NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
         return (NetworkRouter) context;
     }
 
     @TemplateChatScope
     @Provides
-    ChuckerInterceptor provideChuckerInterceptor(
-            @ApplicationContext Context context) {
+    ChuckerInterceptor provideChuckerInterceptor(@ApplicationContext Context context) {
         return new ChuckerInterceptor(context);
     }
 

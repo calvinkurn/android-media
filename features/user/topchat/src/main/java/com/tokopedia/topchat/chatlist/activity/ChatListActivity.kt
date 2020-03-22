@@ -29,8 +29,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.adapter.ChatListPagerAdapter
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
-import com.tokopedia.topchat.chatlist.di.ChatListComponent
-import com.tokopedia.topchat.chatlist.di.DaggerChatListComponent
+import com.tokopedia.topchat.chatlist.di.*
 import com.tokopedia.topchat.chatlist.fragment.ChatListFragment
 import com.tokopedia.topchat.chatlist.listener.ChatListContract
 import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel.Companion.ROLE_BUYER
@@ -67,40 +66,34 @@ class ChatListActivity : BaseTabActivity()
 
     private var fragmentViewCreated = false
 
-    private fun initInjector() {
-        component.inject(this)
-    }
-
     override fun getLayoutRes() = R.layout.activity_chat_list
     override fun getScreenName() = "/${ChatListAnalytic.Category.CATEGORY_INBOX_CHAT}"
     override fun getPageLimit() = tabList.size
     override fun getViewPagerResourceId(): Int = R.id.pager
     override fun getTabLayoutResourceId(): Int = R.id.indicator
     override fun getToolbarResourceID(): Int = R.id.toolbar
-
-    override fun getViewPagerAdapter(): PagerAdapter? {
-        return ChatListPagerAdapter(supportFragmentManager).apply {
-            setItemList(tabList)
-        }
-    }
+    override fun getViewPagerAdapter(): PagerAdapter? = fragmentAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         initTabList()
+        initPageAdapter()
         super.onCreate(savedInstanceState)
         useLightNotificationBar()
         setupViewModel()
         initTabLayout()
-        setObserver()
         initData()
         initOnBoarding()
     }
 
-    private fun useLightNotificationBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            window.statusBarColor = Color.WHITE
-        }
+    override fun onStart() {
+        super.onStart()
+        setObserver()
+        webSocketViewModel.onStart()
+    }
+
+    private fun initInjector() {
+        component.inject(this)
     }
 
     private fun initTabList() {
@@ -110,6 +103,18 @@ class ChatListActivity : BaseTabActivity()
 
         if (!GlobalConfig.isSellerApp()) {
             addBuyerTabFragment()
+        }
+    }
+
+    private fun initPageAdapter() {
+        fragmentAdapter = ChatListPagerAdapter(supportFragmentManager)
+        fragmentAdapter.setItemList(tabList)
+    }
+
+    private fun useLightNotificationBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            window.statusBarColor = Color.WHITE
         }
     }
 
@@ -274,7 +279,7 @@ class ChatListActivity : BaseTabActivity()
     }
 
     private fun determineFragmentByTag(fromUid: String, tag: String): ChatListFragment? {
-        if (isBuyerOnly()) return getBuyerFragment()
+        if (isBuyerOnly() && isFromSeller(fromUid, tag)) return getBuyerFragment()
         if (isFromBuyer(fromUid, tag)) return getSellerFragment()
         if (isFromSeller(fromUid, tag)) return getBuyerFragment()
         return null
@@ -437,17 +442,38 @@ class ChatListActivity : BaseTabActivity()
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        stopLiveDataObserver()
+        clearLiveDataValue()
+        webSocketViewModel.onStop()
+    }
+
+    private fun stopLiveDataObserver() {
+        webSocketViewModel.itemChat.removeObservers(this)
+        chatNotifCounterViewModel.chatNotifCounter.removeObservers(this)
+    }
+
+    private fun clearLiveDataValue() {
+        webSocketViewModel.clearItemChatValue()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        webSocketViewModel.itemChat.removeObservers(this)
+        stopLiveDataObserver()
+        flushAllViewModel()
+    }
+
+    private fun flushAllViewModel() {
         webSocketViewModel.flush()
-        chatNotifCounterViewModel.chatNotifCounter.removeObservers(this)
         chatNotifCounterViewModel.flush()
     }
 
     override fun getComponent(): ChatListComponent {
-        return DaggerChatListComponent.builder().baseAppComponent(
-                (application as BaseMainApplication).baseAppComponent).build()
+        return DaggerChatListComponent.builder()
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .chatListContextModule(ChatListContextModule(this))
+                .build()
     }
 
     companion object {

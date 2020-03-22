@@ -11,6 +11,10 @@ object ProductTrackingConstant {
     }
 
     object Tracking {
+        const val KEY_SHOP_ID_SELLER = "shopId"
+        const val KEY_SHOP_TYPE = "shopType"
+        const val KEY_PAGE_TYPE = "pageType"
+        const val KEY_PRODUCT_ID_ = "productId"
         const val KEY_EVENT = "event"
         const val KEY_CATEGORY = "eventCategory"
         const val KEY_ACTION = "eventAction"

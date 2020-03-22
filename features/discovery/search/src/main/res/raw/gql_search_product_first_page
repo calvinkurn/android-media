@@ -84,6 +84,7 @@ query SearchProduct(
             }
             is_featured
             rating
+            rating_average
             count_review
             original_price
             discount_expired_time
@@ -191,6 +192,7 @@ query SearchProduct(
                 product_new_label
                 product_cashback_rate
                 product_rating
+                product_rating_format
               	free_ongkir {
                   is_active
                   img_url

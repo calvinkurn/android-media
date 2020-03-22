@@ -50,7 +50,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
@@ -160,7 +162,6 @@ import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_product_trade_in.*
 import kotlinx.android.synthetic.main.partial_value_proposition_os.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
-import tradein_common.TradeInUtils
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.roundToLong
@@ -1460,7 +1461,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                             productInfo.basic.weightUnit,
                             if (productInfoViewModel.multiOrigin.isFulfillment)
                                 productInfoViewModel.multiOrigin.origin else null,
-                            productInfo.freeOngkir.isFreeOngkirActive
+                            productInfo.freeOngkir.isFreeOngkirActive,
+                            shopInfo.shopCore.shopID,
+                            productInfo.basic.id.toString()
                     ))
                 }
             }
@@ -1490,11 +1493,12 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     shopInfo.goldOS.shopTypeString,
                     productId ?: "")
 
-            val tradeinResponse = p2ShopData.tradeinResponse?.validateTradeInPDP ?: ValidateTradeInPDP()
+            val tradeinResponse = p2ShopData.tradeinResponse?.validateTradeInPDP ?: ValidateTradeInResponse()
             productInfoViewModel.tradeInParams.isEligible = if (tradeinResponse.isEligible) 1 else 0
             productInfoViewModel.tradeInParams.usedPrice = tradeinResponse.usedPrice
             productInfoViewModel.tradeInParams.remainingPrice = tradeinResponse.remainingPrice
-            productInfoViewModel.tradeInParams.isUseKyc = if (tradeinResponse.useKyc) 1 else 0
+            productInfoViewModel.tradeInParams.isUseKyc = if (tradeinResponse.isUseKyc) 1 else 0
+            productInfoViewModel.tradeInParams.widgetString = tradeinResponse.widgetString
 
             if (tradeinResponse.isEligible) {
                 if (tv_trade_in_promo != null) {
@@ -1503,6 +1507,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
                 tv_text_price.text = if (tradeinResponse.usedPrice > 0) {
                     getString(R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice, true))
+                } else if (!tradeinResponse.widgetString.isNullOrEmpty()) {
+                    tradeinResponse.widgetString
                 } else {
                     getString(R.string.trade_in_exchange)
                 }
@@ -1910,10 +1916,11 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun discussionClicked(){
         activity?.let {
-            val intent = RouteManager.getIntent(it,
-                    ApplinkConstInternalGlobal.PRODUCT_TALK).apply {
-                putExtra(ApplinkConstInternalGlobal.PARAM_PRODUCT_ID, productInfo?.basic?.id.toString())
-            }
+            val intent = RouteManager.getIntent(
+                    it,
+                    ApplinkConstInternalGlobal.PRODUCT_TALK,
+                    productInfo?.basic?.id.toString()
+            )
             startActivityForResult(intent, REQUEST_CODE_TALK_PRODUCT)
         }
     }

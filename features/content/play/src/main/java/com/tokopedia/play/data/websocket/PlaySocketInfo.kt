@@ -2,9 +2,9 @@ package com.tokopedia.play.data.websocket
 
 
 /**
- * Created by mzennis on 2019-12-19.
+ * Created by mzennis on 2020-03-02.
  */
-enum class PlaySocketInfo {
-    RECONNECT,
-    ERROR
+sealed class PlaySocketInfo {
+    object Reconnect : PlaySocketInfo()
+    data class Error(val throwable: Throwable) : PlaySocketInfo()
 }

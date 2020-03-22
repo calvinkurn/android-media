@@ -1,7 +1,9 @@
 package com.tokopedia.applink.category
 
 import android.net.Uri
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 
 object DeeplinkMapperCategory {
@@ -22,5 +24,9 @@ object DeeplinkMapperCategory {
             UriUtil.buildUri(ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, identifier)
         }
         return url
+    }
+
+    fun getRegisteredNavigationExploreCategory(deeplink: String): String {
+        return deeplink.replace(ApplinkConst.Digital.DIGITAL_BROWSE, ApplinkConstInternalCategory.INTERNAL_EXPLORE_CATEGORY)
     }
 }

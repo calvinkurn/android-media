@@ -17,10 +17,12 @@ import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductListEmptyVi
 
 import com.tokopedia.shop.newproduct.view.datamodel.*
 import com.tokopedia.shop.newproduct.view.listener.ShopCarouselSeeAllClickedListener
+import com.tokopedia.shop.newproduct.view.listener.ShopProductImpressionListener
 import com.tokopedia.shop.newproduct.view.viewholder.*
 
 class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: MembershipStampAdapter.MembershipStampAdapterListener?,
                                     private val shopProductClickedListener: ShopProductClickedListener?,
+                                    private val shopProductImpressionListener: ShopProductImpressionListener?,
                                     private val shopCarouselSeeAllClickedListener: ShopCarouselSeeAllClickedListener?,
                                     private val emptyProductOnClickListener: BaseEmptyViewHolder.Callback?,
                                     private val shopProductEtalaseListViewHolderListener: ShopProductEtalaseListViewHolder.ShopProductEtalaseChipListViewHolderListener?,
@@ -108,10 +110,10 @@ class ShopProductAdapterTypeFactory(private val membershipStampAdapterListener: 
             ShopProductAddViewHolder.LAYOUT -> return ShopProductAddViewHolder(parent, shopProductAddViewHolderListener)
             ShopProductSellerAllEtalaseEmptyViewHolder.LAYOUT -> return ShopProductSellerAllEtalaseEmptyViewHolder(parent)
             ShopMerchantVoucherViewHolder.LAYOUT -> return ShopMerchantVoucherViewHolder(parent, onMerchantVoucherListWidgetListener)
-            ShopProductCarouselViewHolder.LAYOUT -> return ShopProductCarouselViewHolder(parent, deviceWidth, shopProductClickedListener,
+            ShopProductCarouselViewHolder.LAYOUT -> return ShopProductCarouselViewHolder(parent, deviceWidth, shopProductClickedListener, shopProductImpressionListener,
                     parent.context.getString(R.string.shop_page_label_featured_product), ShopTrackProductTypeDef.FEATURED, null)
-            ShopProductEtalaseHighlightViewHolder.LAYOUT -> return ShopProductEtalaseHighlightViewHolder(parent, deviceWidth, shopProductClickedListener, shopCarouselSeeAllClickedListener)
-            ShopProductViewHolder.GRID_LAYOUT -> return ShopProductViewHolder(parent, shopProductClickedListener, !isGridSquareLayout, deviceWidth, shopTrackType, type)
+            ShopProductEtalaseHighlightViewHolder.LAYOUT -> return ShopProductEtalaseHighlightViewHolder(parent, deviceWidth, shopProductClickedListener, shopProductImpressionListener, shopCarouselSeeAllClickedListener)
+            ShopProductViewHolder.GRID_LAYOUT -> return ShopProductViewHolder(parent, shopProductClickedListener, shopProductImpressionListener, !isGridSquareLayout, deviceWidth, shopTrackType, type)
             MembershipStampProgressViewHolder.LAYOUT -> return MembershipStampProgressViewHolder(parent, membershipStampAdapterListener)
             else -> return if (type == HideViewHolder.LAYOUT) {
                 HideViewHolder(parent)

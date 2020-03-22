@@ -43,6 +43,7 @@ import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
 import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_detail.*
@@ -226,7 +227,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         }
     }
 
-    private fun showErrorView(e : Throwable) {
+    private fun showErrorView(e: Throwable) {
         if (!isHotelDetailSuccess && !isHotelReviewSuccess && !isRoomListSuccess) {
             container_content.visibility = View.GONE
             container_error.visibility = View.VISIBLE
@@ -501,6 +502,12 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             roomPrice = data.first().roomPrice.roomPrice
             roomPriceAmount = round(data.first().roomPrice.priceAmount).toLong().toString()
             tv_hotel_price.text = roomPrice
+
+            var hotelDetailTag = data.first().additionalPropertyInfo.hotelTagging
+            if (hotelDetailTag.isNotEmpty()) {
+                hotel_detail_tag.show()
+                hotel_detail_tag.text = hotelDetailTag
+            } else hotel_detail_tag.hide()
 
             if (data[0].additionalPropertyInfo.isEnabled) {
                 isAvailable = true

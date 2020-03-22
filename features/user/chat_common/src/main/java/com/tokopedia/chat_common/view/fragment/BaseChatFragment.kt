@@ -245,8 +245,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         this.shopId = it.headerModel.shopId
     }
 
-    override fun trackSeenProduct(element: ProductAttachmentViewModel) {}
-
     override fun onDestroy() {
         super.onDestroy()
         viewState.clear()
@@ -277,6 +275,8 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     override fun onClickAttachVoucher(voucherMenu: VoucherMenu) {}
 
     override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) {}
+
+    override fun trackSeenProduct(element: ProductAttachmentViewModel) {}
 
     override fun trackSeenBannedProduct(viewModel: BannedProductAttachmentViewModel) {}
 

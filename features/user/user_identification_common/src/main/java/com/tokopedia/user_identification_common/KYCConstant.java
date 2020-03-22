@@ -40,4 +40,12 @@ public interface KYCConstant {
     String VALUE_KYC_SRC_SELLER = "seller";
     String EXTRA_IS_SOURCE_SELLER = "source_seller";
     String PARAM_PROJECT_ID = "projectId";
+
+    int KTP_RETAKE = 1;
+    int FACE_RETAKE = 2;
+
+    int USER_EXIT = -9;
+
+    String KYC_OVERLAY_COLOR = "#ae000000";
+    String KYC_AB_KEYWORD = "Liveness Detection 1";
 }

@@ -39,17 +39,22 @@ class GetPartnerInfoUseCase @Inject constructor(private val gqlUseCase: MultiReq
     companion object {
         private const val PARAM_SHOP_IDS = "shopIds"
         private const val PARAM_SHOP_FIELDS = "fields"
+        private const val PARAM_SOURCE = "source"
+        private const val SOURCE_VALUE = "gql-play"
 
         private val query = getQuery()
 
         private fun getQuery(): String {
             val shopId = "\$shopIds"
             val fields = "\$fields"
+            val source = "\$source"
 
-            return """query getShopInfo($shopId: [Int!]!, $fields: [String!]!){
+
+            return """query getShopInfo($shopId: [Int!]!, $fields: [String!]!, $source: String){
                  shopInfoByID(input: {
                      shopIDs: $shopId,
-                     fields: $fields}){
+                     fields: $fields,
+                     source: $source}){
                      result {
                          shopCore {
                             name,
@@ -76,6 +81,7 @@ class GetPartnerInfoUseCase @Inject constructor(private val gqlUseCase: MultiReq
                 RequestParams.create().apply {
             putObject(PARAM_SHOP_IDS, partnerId)
             putObject(PARAM_SHOP_FIELDS, fields)
+            putString(PARAM_SOURCE, SOURCE_VALUE)
         }
     }
 }

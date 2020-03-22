@@ -43,7 +43,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icon
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -61,4 +61,4 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
-apply from: '../../../jacoco_task.gradle'
+//apply from: '../../../jacoco_task.gradle'

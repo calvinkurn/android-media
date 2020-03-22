@@ -6,7 +6,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,6 +44,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_SET_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.SORT_ASCENDING
 import com.tokopedia.sellerorder.common.util.SomConsts.SORT_DESCENDING
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
@@ -332,7 +332,6 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     if (filterStatusId != 0) {
                         loadFilterStatusList()
                     } else {
-                        somListItemAdapter.removeAll()
                         nextOrderId = 0
                         loadOrderList(nextOrderId)
                     }
@@ -525,13 +524,11 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         order_list_rv?.visibility = View.VISIBLE
 
         if (!onLoadMore) {
-            somListItemAdapter.somItemList = orderList.orders.toMutableList()
+            somListItemAdapter.addList(orderList.orders)
         } else {
-            somListItemAdapter.addItems(orderList.orders)
+            somListItemAdapter.appendList(orderList.orders)
             scrollListener.updateStateAfterGetData()
         }
-        somListItemAdapter.notifyDataSetChanged()
-
     }
 
     private fun showCoachMarkProducts(){
@@ -577,12 +574,10 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         order_list_rv.visibility = View.GONE
         empty_state_order_list.visibility = View.VISIBLE
         title_empty?.text = getString(R.string.empty_peluang_title)
-        desc_empty?.text = getString(R.string.empty_peluang_desc)
-        btn_cek_peluang?.visibility = View.VISIBLE
-        btn_cek_peluang?.setOnClickListener {
-            eventClickButtonPeluangInEmptyState(tabActive)
-            startActivity(RouteManager.getIntent(context, ApplinkConstInternalOrder.OPPORTUNITY))
-        }
+
+        // Peluang Feature has been removed, thus we set text to empty and button is gone
+        desc_empty?.text = ""
+        btn_cek_peluang?.visibility = View.GONE
     }
 
     override fun onSearchReset() {}
@@ -605,7 +600,6 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     override fun onRefresh(view: View?) {
         addEndlessScrollListener()
         onLoadMore = false
-        somListItemAdapter.removeAll()
         nextOrderId = 0
         loadOrderList(nextOrderId)
         loadFilterList()
@@ -657,6 +651,10 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     data.hasExtra(RESULT_CONFIRM_SHIPPING) -> {
                         val resultConfirmShippingMsg = data.getStringExtra(RESULT_CONFIRM_SHIPPING)
                         refreshThenShowToasterOk(resultConfirmShippingMsg)
+                    }
+                    data.hasExtra(RESULT_SET_DELIVERED) -> {
+                        val msg = data.getStringExtra(RESULT_SET_DELIVERED)
+                        refreshThenShowToasterOk(msg)
                     }
                 }
             }

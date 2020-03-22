@@ -9,6 +9,7 @@ import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
+import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.search.di.DaggerHotelSearchPropertyComponent
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragment
@@ -35,6 +36,8 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
     override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple
 
     override fun shouldShowOptionMenu(): Boolean = false
+
+    override fun getScreenName(): String = SEARCH_SCREEN_NAME
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -91,33 +94,12 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
 
     }
 
-    fun checkParameter() {
-        val todayWithoutTime = TravelDateUtil.removeTime(TravelDateUtil.getCurrentCalendar().time)
-        val tomorrow = TravelDateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 1)
-        val dayAfterTomorrow = TravelDateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 2)
-
-        if (checkIn.isBlank() && checkOut.isBlank()) {
-            checkIn = TravelDateUtil.dateToString(
-                    TravelDateUtil.YYYY_MM_DD, tomorrow)
-            checkInString = TravelDateUtil.dateToString(
-                    TravelDateUtil.DEFAULT_VIEW_FORMAT, tomorrow)
-            checkOut = TravelDateUtil.dateToString(
-                    TravelDateUtil.YYYY_MM_DD, dayAfterTomorrow)
-            checkOutString = TravelDateUtil.dateToString(
-                    TravelDateUtil.DEFAULT_VIEW_FORMAT, dayAfterTomorrow)
-        } else if (checkIn.isBlank()) {
-            val checkout = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, checkOut)
-            val dayBeforeCheckOut = TravelDateUtil.addTimeToSpesificDate(checkout, Calendar.DATE, -1)
-            checkIn = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayBeforeCheckOut)
-            checkInString = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, dayBeforeCheckOut)
-
-        } else if (checkOut.isBlank()) {
-            val checkin = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, checkIn)
-            val dayAfterCheckIn = TravelDateUtil.addTimeToSpesificDate(checkin, Calendar.DATE, 1)
-            checkOut = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayAfterCheckIn)
-            checkOutString = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, dayAfterCheckIn)
-        }
-
+    private fun checkParameter() {
+        val updatedCheckInCheckOutDate = HotelUtils.validateCheckInAndCheckOutDate(checkIn, checkOut)
+        checkIn = updatedCheckInCheckOutDate.first
+        checkOut = updatedCheckInCheckOutDate.second
+        checkInString = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, checkIn))
+        checkOutString = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, checkOut))
     }
 
     override fun getNewFragment(): Fragment {
@@ -131,7 +113,6 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
 
 
     companion object {
-
         const val PARAM_HOTEL_ID = "hotel_id"
         const val PARAM_HOTEL_NAME = "hotel_name"
         const val PARAM_DISTRICT_ID = "district_id"
@@ -149,6 +130,8 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
         const val TYPE_DISTRICT = "district"
         const val TYPE_CITY = "city"
         const val TYPE_PROPERTY = "property"
+
+        const val SEARCH_SCREEN_NAME = "/hotel/searchresult"
 
         fun createIntent(context: Context, destinationName: String = "", destinationID: Int = 0, type: String = "",
                          latitude: Float = 0f, longitude: Float = 0f, checkIn: String = "",

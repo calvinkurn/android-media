@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
+import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.hoteldetail.di.DaggerHotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.fragment.HotelDetailFragment
@@ -59,9 +60,16 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
                 isDirectPayment =  getBooleanExtra(EXTRA_IS_DIRECT_PAYMENT, true)
             }
         }
+        checkParameter()
 
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
+    }
+
+    private fun checkParameter() {
+        val updatedCheckInCheckOutDate = HotelUtils.validateCheckInAndCheckOutDate(checkInDate, checkOutDate)
+        checkInDate = updatedCheckInCheckOutDate.first
+        checkOutDate = updatedCheckInCheckOutDate.second
     }
 
     override fun shouldShowOptionMenu(): Boolean = true
@@ -77,7 +85,7 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
                     .hotelComponent(HotelComponentInstance.getHotelComponent(application))
                     .build()
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = PDP_SCREEN_NAME
 
     companion object {
 
@@ -95,6 +103,8 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
         const val PARAM_SHOW_ROOM = "show_room"
         const val PARAM_ROOM_COUNT = "room"
         const val PARAM_ADULT_COUNT = "adult"
+
+        const val PDP_SCREEN_NAME = "/hotel/pdp"
 
         fun getCallingIntent(context: Context, checkInDate: String, checkOutDate: String, propertyId: Int, roomCount: Int,
                              adultCount: Int, destinationType: String, destinationName: String, isDirectPayment: Boolean = true): Intent =

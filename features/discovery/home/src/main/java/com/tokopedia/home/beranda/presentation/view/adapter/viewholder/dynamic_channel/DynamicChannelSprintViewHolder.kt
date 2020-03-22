@@ -4,34 +4,28 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewStub
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
-import com.tokopedia.home.analytics.HomePageTracking
+import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
-import com.tokopedia.home.beranda.helper.glide.CrossFadeFactory
+import com.tokopedia.home.beranda.helper.glide.loadImage
 import com.tokopedia.home.beranda.helper.glide.loadImageCenterCrop
+import com.tokopedia.home.beranda.helper.glide.loadImageWithoutPlaceholder
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.ThematicCardView
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.productcard.ProductCardFlashSaleModel
+import com.tokopedia.productcard.ProductCardFlashSaleView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -59,7 +53,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
     private val defaultSpanCount = 3
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
-        HomePageTracking.eventClickSeeAllProductSprint(context, channel.id)
+        HomePageTrackingV2.SprintSale.sendSprintSaleSeeAllClick(channel)
     }
 
     override fun getViewHolderClassName(): String {
@@ -71,13 +65,13 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         recyclerView.setHasFixedSize(true)
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
                 GridSpacingItemDecoration(defaultSpanCount,
-                        itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_8),
-                        true))
+                        itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_4),
+                        false))
         recyclerView.layoutManager = GridLayoutManager(
                 itemView.context,
                 defaultSpanCount,
                 GridLayoutManager.VERTICAL, false)
-        backgroundThematic.loadImageCenterCrop(channel.header.backImage)
+        backgroundThematic.loadImageWithoutPlaceholder(channel.header.backImage)
         mappingHeader(channel)
         mappingGrid(channel)
     }
@@ -89,7 +83,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
             payloads.forEach { payload->
                 if (payload == DynamicChannelViewModel.HOME_RV_SPRINT_BG_IMAGE_URL) {
                     channel?.let {
-                        backgroundThematic.loadImageCenterCrop(channel.header.backImage)
+                        backgroundThematic.loadImageWithoutPlaceholder(channel.header.backImage)
                     }
                 }
             }
@@ -167,10 +161,10 @@ class DynamicChannelSprintViewHolder(sprintView: View,
             try {
                 val grid = grids[position]
                 holder.thematicCardView.run {
-                    setItemWithWrapBlankSpaceConfig(grid, blankSpaceConfig)
+                    applyCarousel()
+                    setProductModel(convertData(grid))
                     setOnClickListener {
-                        HomePageTracking.eventEnhancedClickSprintSaleProduct(context,
-                                channels.getEnhanceClickSprintSaleHomePage(position, countDownView?.currentCountDown, grid.freeOngkir.isActive))
+                        HomePageTrackingV2.SprintSale.sendSprintSaleClick(channels, countDownView?.currentCountDown?:"", grid, position)
                         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid))
                     }
                 }
@@ -187,10 +181,23 @@ class DynamicChannelSprintViewHolder(sprintView: View,
             grids = channel.grids
             notifyDataSetChanged()
         }
+
+        fun convertData(element: DynamicHomeChannel.Grid): ProductCardFlashSaleModel {
+            return ProductCardFlashSaleModel(
+                    slashedPrice = element.slashedPrice,
+                    productName = element.name,
+                    formattedPrice = element.price,
+                    productImageUrl = element.imageUrl,
+                    discountPercentage = element.discount,
+                    pdpViewCount = element.productViewCountFormatted,
+                    stockBarLabel = element.label,
+                    stockBarPercentage = element.soldPercentage
+            )
+        }
     }
 
     class SprintViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val thematicCardView: ThematicCardView = view.findViewById(R.id.thematic_card)
+        val thematicCardView: ProductCardFlashSaleView = view.findViewById(R.id.thematic_card)
         val context: Context
             get() = itemView.context
     }

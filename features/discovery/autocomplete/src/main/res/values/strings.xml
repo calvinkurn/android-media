@@ -17,4 +17,8 @@
     <string name="search_cancel_text">Cancel</string>
     <string name="title_search_recent">PENCARIAN TERAKHIR</string>
     <string name="delete_all">Hapus Semua</string>
+    <string name="refresh">Refresh</string>
+    <string name="dummy_recent_search">pulsa xl 10rb</string>
+    <string name="dummy_recent_search_two_lines">Iced Matcha Latte Starbak Makin Enak Pakai Biskuit dan Mochi Kenyal Sekali</string>
+    <string name="dummy_recent_search_subtitle">Jakarta</string>
 </resources>

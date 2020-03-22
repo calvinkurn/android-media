@@ -24,26 +24,27 @@ class PlayConnectionMonitor(context: Context) {
 
     init {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val networkRequest =
-                NetworkRequest.Builder()
-                        .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                        .build()
-
-            networkCallback = object : ConnectivityManager.NetworkCallback() {
-                override fun onLost(network: Network?) {
-                    _observablePlayConnectionState.postValue(PlayConnectionState.UnAvailable)
+            try {
+                networkCallback = object : ConnectivityManager.NetworkCallback() {
+                    override fun onLost(network: Network?) {
+                        _observablePlayConnectionState.postValue(PlayConnectionState.UnAvailable)
+                    }
+                    override fun onUnavailable() {
+                        _observablePlayConnectionState.postValue(PlayConnectionState.UnAvailable)
+                    }
+                    override fun onLosing(network: Network?, maxMsToLive: Int) {
+                        _observablePlayConnectionState.postValue(PlayConnectionState.UnAvailable)
+                    }
+                    override fun onAvailable(network: Network?) {
+                        _observablePlayConnectionState.postValue(PlayConnectionState.Available)
+                    }
                 }
-                override fun onUnavailable() {
-                    _observablePlayConnectionState.postValue(PlayConnectionState.UnAvailable)
-                }
-                override fun onLosing(network: Network?, maxMsToLive: Int) {
-                    _observablePlayConnectionState.postValue(PlayConnectionState.UnAvailable)
-                }
-                override fun onAvailable(network: Network?) {
-                    _observablePlayConnectionState.postValue(PlayConnectionState.Available)
-                }
-            }
-            connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
+                val networkRequest =
+                        NetworkRequest.Builder()
+                                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                                .build()
+                connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
+            } catch (ignored: Throwable) {}
         }
     }
 

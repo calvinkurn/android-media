@@ -55,9 +55,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.multiDex
 
-    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.playServicesDependencies.tagManager
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
@@ -79,6 +78,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.dialog
 
+    implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.analytics)
@@ -145,9 +145,6 @@ project.ext {
     groupId = 'com.tokopedia.transaction'
     versionName = "0.0.2"
     artifactName = "purchase_platform-release"
-    unitTestKotlinIncludes = [
-            '**/CartListPresenter.*'
-    ]
 }
 
 apply from: "$rootProject.projectDir/publish_local.gradle"

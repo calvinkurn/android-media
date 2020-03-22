@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.checkout.data.ContactUser
 import com.tokopedia.salam.umrah.checkout.di.UmrahCheckoutComponent
-import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutContactDataActivity
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutContactDataActivity.Companion.EXTRA_INITIAL_CONTACT_DATA
 import com.tokopedia.salam.umrah.checkout.presentation.viewmodel.UmrahCheckoutPilgrimsViewModel
 import com.tokopedia.travel.country_code.presentation.activity.PhoneCodePickerActivity

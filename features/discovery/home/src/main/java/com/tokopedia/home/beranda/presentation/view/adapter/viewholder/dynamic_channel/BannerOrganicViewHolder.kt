@@ -3,22 +3,17 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context.CLIPBOARD_SERVICE
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.request.target.BitmapImageViewTarget
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.design.countdown.CountDownView
@@ -29,20 +24,17 @@ import com.tokopedia.home.beranda.helper.GravitySnapHelper
 import com.tokopedia.home.beranda.helper.glide.loadImageCenterCrop
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.BannerOrganicDecoration
+import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SimpleHorizontalLinearLayoutDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.BannerItemAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.datamodel.ProductBannerMixDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.datamodel.SeeMoreBannerMixDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.typefactory.BannerMixTypeFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.typefactory.BannerMixTypeFactoryImpl
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.viewholder.ProductItemViewHolder
-import com.tokopedia.home.beranda.presentation.view.customview.ThematicCardView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.home_dc_banner_recyclerview.view.*
 
 class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCategoryListener,
                               countDownListener: CountDownView.CountDownListener,
@@ -115,7 +107,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
                 recyclerView.layoutParams = param
             }
             DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL -> {
-                if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(BannerOrganicDecoration())
+                if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(SimpleHorizontalLinearLayoutDecoration())
                 recyclerView.layoutManager = LinearLayoutManager(
                         itemView.context,
                         LinearLayoutManager.HORIZONTAL,

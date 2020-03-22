@@ -126,7 +126,6 @@ public class FingerprintModelGenerator {
         String deviceDpi = DevicePerformanceInfo.INSTANCE.getDeviceDpi(context.getApplicationContext());
         String androidId = DeviceInfo.getAndroidId(context);
         boolean isx86 = DeviceInfo.isx86();
-        int appsCount = DeviceInfo.getInstalledAppsCount(context);
         String packageName = DeviceInfo.getPackageName(context);
 
         FingerPrint fp = new FingerPrint.FingerPrintBuilder()
@@ -153,7 +152,6 @@ public class FingerprintModelGenerator {
                 .deviceDpi(deviceDpi)
                 .androidId(androidId)
                 .isx86(isx86)
-                .appsCount(appsCount)
                 .packageName(packageName)
                 .build();
 

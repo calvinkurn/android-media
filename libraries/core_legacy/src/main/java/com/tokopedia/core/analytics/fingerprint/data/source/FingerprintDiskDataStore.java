@@ -55,7 +55,6 @@ public class FingerprintDiskDataStore implements FingerprintDataStore {
                         String adsId = getGoogleAdId(context);
                         String androidId = DeviceInfo.getAndroidId(context);
                         boolean isx86 = DeviceInfo.isx86();
-                        int appsCount = DeviceInfo.getInstalledAppsCount(context);
                         String packageName = DeviceInfo.getPackageName(context);
 
                         FingerPrint fp = new FingerPrint.FingerPrintBuilder()
@@ -78,7 +77,6 @@ public class FingerprintDiskDataStore implements FingerprintDataStore {
                                 .deviceLng(new LocationCache(context).getLongitudeCache())
                                 .androidId(androidId)
                                 .isx86(isx86)
-                                .appsCount(appsCount)
                                 .packageName(packageName)
                                 .build();
 

@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.discovery.common.DispatcherProvider
 import com.tokopedia.discovery.common.Event
@@ -14,7 +13,6 @@ import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.State.*
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_ID
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
@@ -22,11 +20,7 @@ import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
-import com.tokopedia.search.result.shop.presentation.model.ShopCpmViewModel
-import com.tokopedia.search.result.shop.presentation.model.ShopEmptySearchViewModel
-import com.tokopedia.search.result.shop.presentation.model.ShopRecommendationTitleViewModel
-import com.tokopedia.search.result.shop.presentation.model.ShopTotalCountViewModel
-import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
+import com.tokopedia.search.result.shop.presentation.model.*
 import com.tokopedia.search.utils.convertValuesToString
 import com.tokopedia.topads.sdk.domain.model.Cpm
 import com.tokopedia.usecase.RequestParams
@@ -43,8 +37,7 @@ internal class SearchShopViewModel(
         private val shopTotalCountViewModelMapper: Mapper<SearchShopModel, ShopTotalCountViewModel>,
         private val shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
         private val searchLocalCacheHandler: SearchLocalCacheHandler,
-        private val userSession: UserSessionInterface,
-        private val localCacheHandler: LocalCacheHandler
+        private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcher.ui()) {
 
     companion object {
@@ -97,7 +90,7 @@ internal class SearchShopViewModel(
     }
 
     fun getRegistrationId(): String {
-        return localCacheHandler.getString(GCM_ID, "")
+        return userSession.deviceId
     }
 
     private fun setSearchParameterUserId() {

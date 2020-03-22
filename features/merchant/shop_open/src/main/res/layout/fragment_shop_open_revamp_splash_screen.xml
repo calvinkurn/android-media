@@ -28,7 +28,6 @@
 
     <TextView
         android:id="@+id/txt_greeting"
-        android:text="@string/horay_name"
         android:textColor="@color/title_text"
         android:lineSpacingExtra="@dimen/sp_6"
         android:letterSpacing="0.01"

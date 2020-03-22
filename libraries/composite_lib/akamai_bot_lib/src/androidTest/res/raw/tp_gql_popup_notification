@@ -1,0 +1,24 @@
+query TokopointsNotification($type: String) {
+  tokopoints {
+    popupNotif(type: $type) {
+      title
+      text
+      imageURL
+      buttonText
+      buttonURL
+      appLink
+      notes
+      sender
+      catalog {
+        title
+        subtitle
+        points
+        thumbnailURL
+        thumbnailURLMobile
+        imageURL
+        imageURLMobile
+        expired
+      }
+    }
+  }
+}

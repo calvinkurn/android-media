@@ -12,14 +12,15 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.mapper.FeedTabMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeFeedMapper
+import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
 import com.tokopedia.home.beranda.data.repository.HomeRepository
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.domain.gql.ProductrevDismissSuggestion
+import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
-import com.tokopedia.home.beranda.presentation.view.viewmodel.ItemTabBusinessViewModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
@@ -64,16 +65,6 @@ class HomeUseCaseModule {
                                  graphqlUseCase: GraphqlUseCase?,
                                  feedTabMapper: FeedTabMapper?): GetFeedTabUseCase {
         return GetFeedTabUseCase(context, graphqlUseCase, feedTabMapper)
-    }
-
-    @Provides
-    fun provideAddWishlistUseCase(@ApplicationContext context: Context?): AddWishListUseCase {
-        return AddWishListUseCase(context)
-    }
-
-    @Provides
-    fun provideRemoveWishListUseCase(@ApplicationContext context: Context?): RemoveWishListUseCase {
-        return RemoveWishListUseCase(context)
     }
 
     @Provides
@@ -135,14 +126,44 @@ class HomeUseCaseModule {
 
     @HomeScope
     @Provides
-    fun getGetCoroutinePendingCashbackUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): GetCoroutinePendingCashbackUseCase {
+    fun getCoroutinePendingCashbackUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): GetCoroutinePendingCashbackUseCase {
         val query = GraphqlHelper.loadRawString(context.resources, com.tokopedia.common_wallet.R.raw.wallet_pending_cashback_query)
         val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ResponsePendingCashback>(graphqlRepository)
         usecase.setGraphqlQuery(query)
         return GetCoroutinePendingCashbackUseCase(usecase)
     }
 
+    @HomeScope
+    @Provides
+    fun getBusinessWidgetTab(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): GetBusinessWidgetTab {
+        val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_tab_business_widget)
+        val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeWidget.Data>(graphqlRepository)
+        usecase.setGraphqlQuery(query)
+        return GetBusinessWidgetTab(usecase)
+    }
+
+    @HomeScope
+    @Provides
+    fun getBusinessUnitDataTab(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): GetBusinessUnitDataUseCase {
+        val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_content_tab_business_widget)
+        val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeWidget.Data>(graphqlRepository)
+        usecase.setGraphqlQuery(query)
+        return GetBusinessUnitDataUseCase(usecase)
+    }
+
+    @HomeScope
+    @Provides
+    fun getRecommendationTabUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): GetRecommendationTabUseCase {
+        val query = GraphqlHelper.loadRawString(context.resources, R.raw.gql_home_feed_tab)
+        val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeFeedTabGqlResponse>(graphqlRepository)
+        usecase.setGraphqlQuery(query)
+        return GetRecommendationTabUseCase(usecase)
+    }
+
     @Provides
     @HomeScope
-    fun provideItemTabBusinessViewModel(graphqlUseCase: GraphqlUseCase?): ItemTabBusinessViewModel = ItemTabBusinessViewModel(graphqlUseCase!!)
+    fun providePopularKeywordUseCase(graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<Any>): GetPopularKeywordUseCase {
+        return GetPopularKeywordUseCase(graphqlUseCase as com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeWidget.PopularKeywordQuery>)
+
+    }
 }

@@ -35,7 +35,8 @@ object SendWebsocketParam {
             product: ResultProduct,
             startTime: String,
             toUid: String,
-            productPreview: ProductPreview
+            productPreview: ProductPreview,
+            message: String
     ): JsonObject {
         val json = JsonObject()
         json.addProperty("code", EVENT_TOPCHAT_REPLY_MESSAGE)
@@ -52,6 +53,7 @@ object SendWebsocketParam {
         productProfile.addProperty("price", product.price)
         productProfile.addProperty("image_url", product.productImageThumbnail)
         productProfile.addProperty("url", product.productUrl)
+        productProfile.addProperty("text", message)
         productProfile.add("variant", productPreview.generateVariantRequest())
 
         val freeShipping = JsonObject()

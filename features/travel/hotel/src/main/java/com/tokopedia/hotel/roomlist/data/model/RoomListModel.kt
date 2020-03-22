@@ -20,5 +20,7 @@ data class RoomListModel(
         var price: String = "",
         var images: List<String> = listOf(),
         var roomLeft: Int = 0,
-        var available: Boolean = true
+        var available: Boolean = true,
+        var tagging: String = "",
+        var slashPrice: String = ""
 )

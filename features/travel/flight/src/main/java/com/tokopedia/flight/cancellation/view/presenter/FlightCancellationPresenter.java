@@ -174,11 +174,7 @@ public class FlightCancellationPresenter extends BaseDaggerPresenter<FlightCance
 
                     FlightCancellationViewModel cancellationForSelectedViewModelList = new FlightCancellationViewModel();
                     cancellationForSelectedViewModelList.setFlightCancellationJourney(journeyItem);
-                    if (item.getPassengerViewModelList().size() == 1 && item.getPassengerViewModelList().get(0).getStatusString() == null) {
-                        cancellationForSelectedViewModelList.setPassengerViewModelList(transformPassengerList(item.getPassengerViewModelList()));
-                    }else {
-                        cancellationForSelectedViewModelList.setPassengerViewModelList(new ArrayList<FlightCancellationPassengerViewModel>());
-                    }
+                    cancellationForSelectedViewModelList.setPassengerViewModelList(new ArrayList<>());
                     selectedViewModel.add(cancellationForSelectedViewModelList);
 
                     passengerRelations.putAll(buildPassengerRelationsMap(flightCancellationViewModel.getPassengerViewModelList()));

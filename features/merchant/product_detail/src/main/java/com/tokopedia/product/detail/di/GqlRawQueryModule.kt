@@ -30,7 +30,7 @@ class GqlRawQueryModule {
     @IntoMap
     @StringKey(RawQueryKeyConstant.QUERY_TRADE_IN)
     fun provideRawTradeIn(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.gql_trade_in)
+            GraphqlHelper.loadRawString(context.resources, com.tokopedia.common_tradein.R.raw.gql_validate_tradein)
 
     @ProductDetailScope
     @Provides

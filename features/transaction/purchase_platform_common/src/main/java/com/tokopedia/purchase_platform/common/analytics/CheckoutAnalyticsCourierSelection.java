@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.common.analytics;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.track.TrackApp;
 
 import java.util.HashMap;
@@ -304,6 +304,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
     }
 
     public void sendEnhancedECommerceCheckout(Map<String, Object> cartMap,
+                                              String irisSessionId,
                                               String transactionId,
                                               boolean isTradeIn,
                                               String eventAction,

@@ -7,7 +7,7 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
@@ -27,12 +27,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.tokopedia.iris.util.IrisSession;
+import com.tokopedia.iris.util.ConstantKt;
 
 /**
  * Created by Akmal on 2/6/18.
  */
 
 public class HomePageTracking {
+
+
+    public static final String FORMAT_4_VALUE_UNDERSCORE = "%s_%s_%s_%s";
 
     public static final String BELI_INI_ITU_CLICK = "beli ini itu click";
     public static final String BAYAR_INI_ITU_CLICK = "bayar ini itu click";
@@ -277,7 +282,7 @@ public class HomePageTracking {
             if (tracker != null) {
                 HashMap<String, String> customDimensions = new HashMap<>();
                 customDimensions.put(SCREEN_DIMENSION_IS_LOGGED_IN_STATUS, String.valueOf(isUserLoggedIn));
-
+                customDimensions.put(ConstantKt.KEY_SESSION_IRIS, new IrisSession(activity).getSessionId());
                 tracker.sendScreenAuthenticated(
                         screenName, customDimensions);
             }
@@ -404,7 +409,7 @@ public class HomePageTracking {
                         PROMO_CLICK, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
                                         DataLayer.mapOf(
-                                                FIELD_ID, grid.getId(),
+                                                FIELD_ID, channel.getId() + "_" + grid.getId()+ "_" + channel.getPersoType()+ "_" + channel.getCategoryID(),
                                                 FIELD_NAME, channel.getPromoName(),
                                                 FIELD_CREATIVE, grid.getAttribution(),
                                                 FIELD_CREATIVE_URL, grid.getImageUrl(),
@@ -433,7 +438,12 @@ public class HomePageTracking {
                         PROMO_CLICK, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
                                         DataLayer.mapOf(
-                                                FIELD_ID, grid.getId(),
+                                                FIELD_ID, String.format(
+                                                        FORMAT_4_VALUE_UNDERSCORE,
+                                                        channel.getId(),
+                                                        grid.getId(),
+                                                        channel.getPersoType(),
+                                                        channel.getCategoryID()),
                                                 FIELD_NAME, channel.getPromoName(),
                                                 FIELD_CREATIVE, grid.getAttribution(),
                                                 FIELD_CREATIVE_URL, grid.getImageUrl(),
@@ -1142,7 +1152,7 @@ public class HomePageTracking {
                         PROMO_CLICK, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
                                         DataLayer.mapOf(
-                                                FIELD_ID, channel.getBanner().getId(),
+                                                FIELD_ID, channel.getId() + "_" + channel.getBanner().getId()+ "_" + channel.getPersoType()+ "_" + channel.getCategoryID(),
                                                 FIELD_NAME, VALUE_DYNAMIC_CHANNEL_MIX_BANNER_NAME+channel.getHeader().getName(),
                                                 FIELD_CREATIVE, channel.getBanner().getAttribution(),
                                                 FIELD_CREATIVE_URL, channel.getBanner().getImageUrl(),
@@ -1231,7 +1241,7 @@ public class HomePageTracking {
                                     PROMO_CLICK, DataLayer.mapOf(
                                             PROMOTIONS, DataLayer.listOf(
                                                     DataLayer.mapOf(
-                                                            FIELD_ID, bannerChannel.getBanner().getId(),
+                                                            FIELD_ID, bannerChannel.getId() + "_" + bannerChannel.getBanner().getId()+ "_" + bannerChannel.getPersoType()+ "_" + bannerChannel.getCategoryID(),
                                                             FIELD_NAME, String.format(PROMOTIONS_NAME, bannerChannel.getHeader().getName()),
                                                             FIELD_CREATIVE, bannerChannel.getBanner().getAttribution(),
                                                             FIELD_CREATIVE_URL, bannerChannel.getBanner().getImageUrl(),

@@ -70,7 +70,7 @@ class ShopPageProductListViewModel @Inject constructor(
         get() = userSession.isLoggedIn
     val userDeviceId: String
         get() = userSession.deviceId
-    private val listGetShopHighlightProductUseCase = mutableListOf<GqlGetShopProductUseCase>()
+    private val listGetShopHighlightProductUseCase = mutableListOf<GqlGetShopProductUseCase?>()
 
     fun getBuyerShopPageProductTabData(shopId: String, shopProductEtalaseListViewModel: ShopProductEtalaseListViewModel) {
         launchCatchError(coroutineContext, {
@@ -245,7 +245,7 @@ class ShopPageProductListViewModel @Inject constructor(
         val isHasNextPage = isHasNextPage(productFilter.page, ShopPageConstant.DEFAULT_PER_PAGE, productListResponse.totalData)
         return Pair(
                 isHasNextPage,
-                productListResponse.data.map { ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId)) }
+                productListResponse.data.map { ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId), productFilter.etalaseMenu) }
         )
     }
 
@@ -335,7 +335,7 @@ class ShopPageProductListViewModel @Inject constructor(
         getShopEtalaseByShopUseCase.clearCache()
         clearGetShopProductUseCase()
         listGetShopHighlightProductUseCase.forEach{
-            it.clearCache()
+            it?.clearCache()
         }
         listGetShopHighlightProductUseCase.clear()
         getShopFeaturedProductUseCase.clearCache()
@@ -357,6 +357,4 @@ class ShopPageProductListViewModel @Inject constructor(
     fun clearGetShopProductUseCase() {
         getShopProductUseCase.clearCache()
     }
-
-    fun isLoggedIn() = userSession.isLoggedIn
 }

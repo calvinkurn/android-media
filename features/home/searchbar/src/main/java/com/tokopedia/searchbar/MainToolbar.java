@@ -185,4 +185,8 @@ public class MainToolbar extends Toolbar {
     public ImageView getBtnWishlist() {
         return btnWishlist;
     }
+
+    public ImageView getBtnInbox() {
+        return btnInbox;
+    }
 }

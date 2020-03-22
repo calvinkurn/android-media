@@ -1,4 +1,4 @@
-package com.tokopedia.home_page_banner.presentation.widgets.pageIndicator
+package com.tokopedia.circular_view_pager.presentation.widgets.pageIndicator
 
 
 import android.view.Gravity
