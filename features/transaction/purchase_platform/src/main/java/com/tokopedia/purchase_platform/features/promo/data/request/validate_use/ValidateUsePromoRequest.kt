@@ -1,11 +1,12 @@
 package com.tokopedia.purchase_platform.features.promo.data.request.validate_use
 
-import android.os.Parcel
 import android.os.Parcelable
 import javax.annotation.Generated
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 @Generated("com.robohorse.robopojogenerator")
+@Parcelize
 data class ValidateUsePromoRequest(
 
         @field:SerializedName("codes")
@@ -31,41 +32,4 @@ data class ValidateUsePromoRequest(
 
         @field:SerializedName("state")
         var state: String = "" // cart & checkout & occ
-) : Parcelable {
-        constructor(parcel: Parcel) : this(
-                parcel.createStringArrayList() ?: mutableListOf(),
-                parcel.readInt(),
-                parcel.readInt(),
-                parcel.readInt(),
-                parcel.createTypedArrayList(OrdersItem) ?: emptyList(),
-                parcel.readInt(),
-                parcel.readString() ?: "",
-                parcel.readString() ?: "") {
-        }
-
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-                parcel.writeStringList(codes)
-                parcel.writeInt(isSuggested)
-                parcel.writeInt(isTradeIn)
-                parcel.writeInt(isTradeInDropOff)
-                parcel.writeTypedList(orders)
-                parcel.writeInt(skipApply)
-                parcel.writeString(cartType)
-                parcel.writeString(state)
-        }
-
-        override fun describeContents(): Int {
-                return 0
-        }
-
-        companion object CREATOR : Parcelable.Creator<ValidateUsePromoRequest> {
-                override fun createFromParcel(parcel: Parcel): ValidateUsePromoRequest {
-                        return ValidateUsePromoRequest(parcel)
-                }
-
-                override fun newArray(size: Int): Array<ValidateUsePromoRequest?> {
-                        return arrayOfNulls(size)
-                }
-        }
-
-}
+) : Parcelable

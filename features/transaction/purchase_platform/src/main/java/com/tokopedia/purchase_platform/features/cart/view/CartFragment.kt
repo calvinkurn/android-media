@@ -1395,7 +1395,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                                 }
                             }
                         }
-                        doAddtoOrderListRequest(cartItemHolderData, listProductDetail, listPromoCodes, listOrder)
+                        if (listProductDetail.isNotEmpty()) {
+                            doAddtoOrderListRequest(cartItemHolderData, listProductDetail, listPromoCodes, listOrder)
+                        }
                     } else {
                         val listProductDetail = arrayListOf<ProductDetailsItem>()
                         for (j in 0 until countListItem) {
@@ -1405,7 +1407,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                                 }
                             }
                         }
-                        doAddtoOrderListRequest(cartItemHolderData, listProductDetail, listPromoCodes, listOrder)
+                        if (listProductDetail.isNotEmpty()) {
+                            doAddtoOrderListRequest(cartItemHolderData, listProductDetail, listPromoCodes, listOrder)
+                        }
                     }
                 }
             }
@@ -1426,7 +1430,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                             doAddToListProducts(it.shopGroupAvailableData, j, listProductDetail)
                         }
                     }
-                    doAddtoOrderListRequest(it.shopGroupAvailableData, listProductDetail, listPromoCodes, listOrder)
+                    if (listProductDetail.isNotEmpty()) {
+                        doAddtoOrderListRequest(it.shopGroupAvailableData, listProductDetail, listPromoCodes, listOrder)
+                    }
                 }
             }
 
@@ -1449,7 +1455,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                                 doAddToListProducts(cartItemHolderData, j, listProductDetail) }
                             }
                     }
-                    doAddtoOrderListRequest(cartItemHolderData, listProductDetail, listPromoCodes, listOrder)
+                    if (listProductDetail.isNotEmpty()) {
+                        doAddtoOrderListRequest(cartItemHolderData, listProductDetail, listPromoCodes, listOrder)
+                    }
                 }
             }
         }
