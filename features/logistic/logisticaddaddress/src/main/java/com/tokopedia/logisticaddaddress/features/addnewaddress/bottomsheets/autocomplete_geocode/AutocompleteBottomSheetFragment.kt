@@ -124,7 +124,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
 
         etSearch.run {
             setOnClickListener {
-                AddNewAddressAnalytics.eventClickFieldCariLokasi(eventLabel = LOGISTIC_LABEL)
+                AddNewAddressAnalytics.eventClickFieldCariLokasi(true)
             }
             addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
