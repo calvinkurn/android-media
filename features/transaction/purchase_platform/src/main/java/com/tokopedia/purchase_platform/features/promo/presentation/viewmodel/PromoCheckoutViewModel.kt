@@ -979,6 +979,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         // Check if :
         // CASE 1 : has any promo item unchecked, but exist as pre applied promo item
         // CASE 2 : has any promo item checked but have not been applied, or
+        // CASE 3 : is manual apply
         val preAppliedPromoCodes = fragmentUiModel.value?.uiData?.preAppliedPromoCode ?: emptyList()
         if (preAppliedPromoCodes.isEmpty()) {
             return false
@@ -993,6 +994,10 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     if (!preAppliedPromoCodes.contains(it.uiData.promoCode) && it.uiState.isSelected) {
                         return true
                     }
+                    // CASE 3
+                    if (it.uiState.isSelected && it.uiState.isAttempted) {
+                        return true
+                    }
                 } else if (it is PromoListHeaderUiModel && it.uiData.tmpPromoItemList.isNotEmpty()) {
                     it.uiData.tmpPromoItemList.forEach {
                         // CASE 1
@@ -1001,6 +1006,10 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                         }
                         // CASE 2
                         if (!preAppliedPromoCodes.contains(it.uiData.promoCode) && it.uiState.isSelected) {
+                            return true
+                        }
+                        // CASE 3
+                        if (it.uiState.isSelected && it.uiState.isAttempted) {
                             return true
                         }
                     }
