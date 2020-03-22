@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -30,7 +31,10 @@ import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProdu
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tooltip.model.ImageTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class AddEditProductPreviewFragment : BaseDaggerFragment() {
@@ -59,6 +63,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        observeProductUpdateLiveData()
         return inflater.inflate(R.layout.fragment_add_edit_product_preview, container, false)
     }
 
@@ -97,6 +102,8 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
                         data.getParcelableExtra<DescriptionInputModel>(EXTRA_DESCRIPTION_INPUT)
                 val detailInputModel =
                         data.getParcelableExtra<DetailInputModel>(EXTRA_DETAIL_INPUT)
+
+                previewViewModel.addProduct()
             }
         }
     }
@@ -114,6 +121,29 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
             previewViewModel = ViewModelProviders.of(this, viewModelFactory)
                     .get(AddEditProductPreviewViewModel::class.java)
         }
+    }
+
+    // TODO faisalramd redesign toast
+    private fun observeProductUpdateLiveData() {
+        previewViewModel._productUpdateResult.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Success -> {
+                    val isSuccess = result.data.productAddEditV3Data.isSuccess
+                    var toasterType = Toaster.TYPE_NORMAL
+                    var toasterMessage = "Success"
+
+                    if (isSuccess) {
+                        toasterMessage = result.data.productAddEditV3Data.header.reason
+                        toasterType = Toaster.TYPE_ERROR
+                    }
+
+                    Toaster.make(view!!, toasterMessage, Toaster.LENGTH_LONG, toasterType)
+                }
+                is Fail -> {
+                    result.throwable.printStackTrace()
+                }
+            }
+        })
     }
 
     private fun showPhotoTips() {

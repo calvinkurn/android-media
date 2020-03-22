@@ -29,22 +29,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
         private val editPriceUseCase: EditPriceUseCase,
         private val productAddUseCase: ProductAddUseCase
 ) : BaseViewModel(coroutineDispatcher) {
-
     val _productUpdateResult = MutableLiveData<Result<ProductAddEditV3Response>>()
 
-    private fun getWeight(weight: String) = weight.replace(".", "").toIntOrZero()
-
-    fun isWeightValid(weight: String, unitWeight: Int, minWeight: Int): Boolean {
-        var isValid = false
-        val maxWeight = if (unitWeight == UNIT_KILOGRAM) MAX_WEIGHT_KILOGRAM else MAX_WEIGHT_GRAM
-        if (getWeight(weight) in minWeight until maxWeight + 1) {
-            isValid = true
-        }
-
-        return isValid
-    }
-
-    fun editPrice() {
+    fun addProduct() {
         // TODO faisalramd make mapper
         val param = ProductAddParam(
                 "Baju polos yang terbaik di tookpedo",

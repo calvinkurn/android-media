@@ -3,20 +3,16 @@ package com.tokopedia.product.addedit.shipment.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextIntOrZero
-import com.tokopedia.product.addedit.description.model.DescriptionInputModel
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentComponent
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_GRAM
@@ -27,12 +23,8 @@ import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProdu
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.shipment.presentation.viewmodel.AddEditProductShipmentViewModel
 import com.tokopedia.unifycomponents.TextFieldUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.add_edit_product_description_input_layout.*
 import javax.inject.Inject
 
 class AddEditProductShipmentFragment : BaseDaggerFragment() {
@@ -77,7 +69,6 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        observeProductUpdateLiveData()
         return inflater.inflate(R.layout.fragment_add_edit_product_shipment, container, false)
     }
 
@@ -99,7 +90,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             validateInputWeight(it)
         }
         btnEnd?.setOnClickListener {
-            shipmentViewModel.editPrice()
+            submitInput()
         }
     }
 
@@ -108,32 +99,6 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             shipmentViewModel = ViewModelProviders.of(this, viewModelFactory)
                     .get(AddEditProductShipmentViewModel::class.java)
         }
-    }
-
-    // TODO faisalramd redesign toast
-    private fun observeProductUpdateLiveData() {
-        shipmentViewModel._productUpdateResult.observe(viewLifecycleOwner, Observer { result ->
-            when (result) {
-                is Success -> {
-                    val isSuccess = result.data.productAddEditV3Data.isSuccess
-                    var toasterType = Toaster.TYPE_NORMAL
-                    var toasterMessage = "Success"
-
-                    if (isSuccess) {
-                        toasterMessage = result.data.productAddEditV3Data.header.reason
-                        toasterType = Toaster.TYPE_ERROR
-                    }
-
-                    Toaster.make(view!!, toasterMessage, Toaster.LENGTH_LONG, toasterType)
-                }
-                is Fail -> {
-                    result.throwable.printStackTrace()
-                }
-            }
-            Handler().postDelayed({
-                submitInput()
-            }, 2000)
-        })
     }
 
     private fun showUnitWeightOption() {
