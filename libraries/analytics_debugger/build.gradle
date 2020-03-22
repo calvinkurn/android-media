@@ -46,7 +46,7 @@ project.ext {
     artifactId = 'analytics-debugger'
     groupId = 'com.tokopedia.library'
     versionName = "0.0.1"
-    artifactName = "analytics-release"
+    artifactName = "analytics_debugger-release"
 }
 
 apply from: '../../publish_local.gradle'
