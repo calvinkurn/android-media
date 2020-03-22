@@ -12,6 +12,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.analytics.StockHandlerAnalytics
 import com.tokopedia.notifcenter.data.entity.ProductStockReminder
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.domain.ProductStockReminderUseCase
@@ -20,14 +21,16 @@ import com.tokopedia.notifcenter.widget.CampaignRedView
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.abstraction.common.utils.GraphqlHelper.loadRawString as raw
 import com.tokopedia.notifcenter.domain.ProductStockReminderUseCase.Companion.params as stockReminderParams
 
 typealias UseCase = GraphqlUseCase<ProductStockReminder>
 
 class ProductStockReminderDialog(
-        private val context: Context,
+        private val userSession: UserSessionInterface,
         fragmentManager: FragmentManager,
+        private val context: Context,
         val onSuccess: () -> Unit
 ): BaseBottomSheetDialog<NotificationItemViewBean>(context, fragmentManager) {
 
@@ -50,16 +53,23 @@ class ProductStockReminderDialog(
         ProductStockReminderUseCase(graphQuery, graphUseCase)
     }
 
+    private val analytics by lazy {
+        StockHandlerAnalytics()
+    }
+
     override fun resourceId(): Int {
         return R.layout.dialog_product_stock_handler
     }
 
     override fun show(element: NotificationItemViewBean) {
+        analytics.productCardImpression(element, userSession.userId)
+
         txtTitle?.text = element.title
         txtDescription?.text = element.body
 
         element.getAtcProduct()?.let { product ->
             productCard?.setOnClickListener {
+                analytics.productCardClicked(element, userSession.userId)
                 RouteManager.route(
                         context,
                         ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
@@ -84,6 +94,7 @@ class ProductStockReminderDialog(
             }
 
             btnReminder?.setOnClickListener {
+                analytics.stockReminderClicked(element, userSession.userId)
                 setReminder(product.productId, element.notificationId)
             }
         }
