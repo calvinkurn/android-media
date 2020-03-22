@@ -2,8 +2,10 @@ package com.tokopedia.product.addedit.preview.presentation.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.TaskStackBuilder
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,9 +16,19 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.description.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionActivity
+import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionFragment
+import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionFragment.Companion.EXTRA_DESCRIPTION_INPUT
 import com.tokopedia.product.addedit.detail.presentation.activity.AddEditProductDetailActivity
+import com.tokopedia.product.addedit.detail.presentation.fragment.AddEditProductDetailFragment
+import com.tokopedia.product.addedit.detail.presentation.fragment.AddEditProductDetailFragment.Companion.EXTRA_DETAIL_INPUT
+import com.tokopedia.product.addedit.detail.presentation.fragment.AddEditProductDetailFragment.Companion.REQUEST_CODE_DETAIL
+import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
+import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment
+import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment.Companion.EXTRA_SHIPMENT_INPUT
+import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tooltip.model.ImageTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
 import com.tokopedia.unifyprinciples.Typography
@@ -30,9 +42,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
             return AddEditProductPreviewFragment()
         }
 
-
         private const val MAX_PRODUCT_PHOTOS = 5
         private const val REQUEST_CODE_IMAGE = 0x01
+
         // TODO faisalramd
         const val TEST_IMAGE_URL = "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/9/16/36162992/36162992_778e5d1e-06fd-4e4a-b650-50c232815b24_1080_1080.jpg"
     }
@@ -67,10 +79,15 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
             if (requestCode == REQUEST_CODE_IMAGE) {
                 val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
                 if (imageUrlOrPathList != null && imageUrlOrPathList.size > 0) {
-                    val addEditProductDetailIntent = Intent(context, AddEditProductDetailActivity::class.java)
-                    addEditProductDetailIntent.putStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS, imageUrlOrPathList)
-                    startActivity(addEditProductDetailIntent)
+                    moveToAddEditProductActivity(imageUrlOrPathList)
                 }
+            } else if (requestCode == REQUEST_CODE_DETAIL) {
+                val shipmentInputModel =
+                        data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
+                val descriptionInputModel =
+                        data.getParcelableExtra<DescriptionInputModel>(EXTRA_DESCRIPTION_INPUT)
+                val detailInputModel =
+                        data.getParcelableExtra<DetailInputModel>(EXTRA_DETAIL_INPUT)
             }
         }
     }
@@ -98,10 +115,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
                 show(it, null)
             }
         }
-    }
-
-    private fun moveToDescriptionActivity() {
-        startActivity(AddEditProductDescriptionActivity.createInstance(context))
     }
 
     @SuppressLint("WrongConstant")
@@ -141,5 +154,15 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
                 true,
                 imagePickerEditorBuilder,
                 imagePickerMultipleSelectionBuilder)
+    }
+
+    private fun moveToDescriptionActivity() {
+        startActivity(AddEditProductDescriptionActivity.createInstance(context))
+    }
+
+    private fun moveToAddEditProductActivity(imageUrlOrPathList: ArrayList<String>) {
+        val addEditProductDetailIntent = Intent(context, AddEditProductDetailActivity::class.java)
+        addEditProductDetailIntent.putStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS, imageUrlOrPathList)
+        startActivityForResult(addEditProductDetailIntent, REQUEST_CODE_DETAIL)
     }
 }

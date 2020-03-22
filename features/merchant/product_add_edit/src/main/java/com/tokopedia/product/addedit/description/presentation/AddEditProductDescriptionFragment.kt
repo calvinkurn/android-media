@@ -1,5 +1,7 @@
 package com.tokopedia.product.addedit.description.presentation
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,9 +12,15 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.description.adapter.VideoLinkTypeFactory
+import com.tokopedia.product.addedit.description.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.model.VideoLinkModel
 import com.tokopedia.product.addedit.shipment.presentation.activity.AddEditProductShipmentActivity
+import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment
+import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment.Companion.EXTRA_SHIPMENT_INPUT
+import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment.Companion.REQUEST_CODE_SHIPMENT
+import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
 import kotlinx.android.synthetic.main.add_edit_product_description_input_layout.*
@@ -79,7 +87,18 @@ class AddEditProductDescriptionFragment : BaseListFragment<VideoLinkModel, Video
         }
 
         btnNext.setOnClickListener {
-            startActivity(AddEditProductShipmentActivity.createInstance(context))
+            moveToDescriptionActivity()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            if (requestCode == REQUEST_CODE_SHIPMENT) {
+                val shipmentInputModel =
+                        data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
+                submitInput(shipmentInputModel)
+            }
         }
     }
 
@@ -155,6 +174,23 @@ class AddEditProductDescriptionFragment : BaseListFragment<VideoLinkModel, Video
         }
     }
 
+    private fun moveToDescriptionActivity() {
+        val intent = Intent(context, AddEditProductShipmentActivity::class.java)
+        startActivityForResult(intent, REQUEST_CODE_SHIPMENT)
+    }
+
+    private fun submitInput(shipmentInputModel: ShipmentInputModel) {
+        val descriptionInputModel = DescriptionInputModel(
+                textFieldDescription.getText(),
+                adapter.data
+        )
+        val intent = Intent()
+        intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
+        intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
+    }
+
     companion object {
         const val MAX_VIDEOS = 3
         const val REQUEST_CODE_VARIANT = 0
@@ -179,6 +215,9 @@ class AddEditProductDescriptionFragment : BaseListFragment<VideoLinkModel, Video
 
         const val EXTRA_VARIANT_CACHE_ID = "variant_cache_id"
         const val EXTRA_IS_USING_CACHE_MANAGER = "is_using_cache_manager"
+
+        const val EXTRA_DESCRIPTION_INPUT = "extra_description_input"
+        const val REQUEST_CODE_DESCRIPTION = 0x03
 
         // TODO faisalramd
         const val TEST_VARIANT = "{\"variant_id\":1,\"name\":\"Warna\",\"identifier\":\"colour\",\"status\":2,\"has_unit\":0,\"units\":[{\"unit_id\":0,\"name\":\"\",\"short_name\":\"\",\"values\":[{\"value_id\":1,\"value\":\"Putih\",\"hex_code\":\"#ffffff\",\"icon\":\"\"},{\"value_id\":2,\"value\":\"Hitam\",\"hex_code\":\"#000000\",\"icon\":\"\"}]}]}"

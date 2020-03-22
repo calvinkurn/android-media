@@ -20,14 +20,23 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.util.getText
+import com.tokopedia.product.addedit.common.util.getTextFloatOrZero
+import com.tokopedia.product.addedit.common.util.getTextIntOrZero
+import com.tokopedia.product.addedit.description.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionActivity
+import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionFragment.Companion.EXTRA_DESCRIPTION_INPUT
+import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionFragment.Companion.REQUEST_CODE_DESCRIPTION
 import com.tokopedia.product.addedit.detail.presentation.adapter.ProductNameRecAdapter
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
+import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
+import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment.Companion.EXTRA_SHIPMENT_INPUT
+import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
 import com.tokopedia.product_photo_adapter.ProductPhotoViewHolder
@@ -50,9 +59,12 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
                     UNIT_WEEK -> R.string.label_week
                     else -> -1
                 }
+        const val EXTRA_DETAIL_INPUT = "extra_detail_input"
+        const val REQUEST_CODE_DETAIL = 0x02
     }
 
     private val productPhotoPaths = mutableListOf<String>()
+    private var imageUrlOrPathList: List<String> = emptyList()
 
     // TODO: remove dummy once the data layer is ready
     private val dummyProductNameRecs: List<String> = listOf(
@@ -469,8 +481,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
             }
 
             if (isInputValid) {
-                val intent = Intent(context, AddEditProductDescriptionActivity::class.java)
-                startActivity((intent))
+                moveToDescriptionActivity()
             }
         }
     }
@@ -479,12 +490,18 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && data != null) {
             if (requestCode == REQUEST_CODE_IMAGE) {
-                val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-                if (imageUrlOrPathList != null && imageUrlOrPathList.size > 0) {
+                imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
+                if (imageUrlOrPathList.isNotEmpty()) {
                     imageUrlOrPathList.forEach {
                         productPhotoAdapter?.addItem(it)
                     }
                 }
+            } else if (requestCode == REQUEST_CODE_DESCRIPTION) {
+                val shipmentInputModel =
+                        data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
+                val descriptionInputModel =
+                        data.getParcelableExtra<DescriptionInputModel>(EXTRA_DESCRIPTION_INPUT)
+                submitInput(shipmentInputModel, descriptionInputModel)
             }
         }
     }
@@ -543,7 +560,6 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
     }
 
     private fun showDurationUnitOption() {
-
         fragmentManager?.let {
             val optionPicker = OptionPicker()
             val title = getString(R.string.label_duration)
@@ -571,5 +587,32 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         preOrderDurationField?.apply {
             setError(false)
         }
+    }
+
+    private fun moveToDescriptionActivity() {
+        val intent = Intent(context, AddEditProductDescriptionActivity::class.java)
+        startActivityForResult(intent, REQUEST_CODE_DESCRIPTION)
+    }
+
+    private fun submitInput(shipmentInputModel: ShipmentInputModel,
+                            descriptionInputModel: DescriptionInputModel) {
+        val detailInputModel = DetailInputModel(
+                productNameField.getText(),
+                "1",
+                "1",
+                productPriceField.getTextFloatOrZero(),
+                productStockField.getTextIntOrZero(),
+                productMinOrderField.getTextIntOrZero(),
+                if (newRadioButton?.isChecked == true) "NEW" else "USED",
+                productSkuField.getText(),
+                imageUrlOrPathList
+        )
+
+        val intent = Intent()
+        intent.putExtra(EXTRA_DETAIL_INPUT, detailInputModel)
+        intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
+        intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
 }
