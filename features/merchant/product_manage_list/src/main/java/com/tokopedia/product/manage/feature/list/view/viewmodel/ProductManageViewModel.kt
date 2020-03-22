@@ -345,7 +345,16 @@ class ProductManageViewModel @Inject constructor(
 
     fun setSelectedFilter(selectedFilter: List<FilterOption>?) {
         selectedFilter?.let {
-            _selectedFilterAndSort.value = _selectedFilterAndSort.value?.copy(filterOptions = selectedFilter)
+            _selectedFilterAndSort.value = if(_selectedFilterAndSort.value != null) {
+                _selectedFilterAndSort.value?.let { filters ->
+                    val list = arrayListOf<Boolean>()
+                    list.addAll(filters.filterShownState)
+                    list[list.size - 1] = true
+                    filters.copy(filterOptions = selectedFilter, filterShownState = list)
+                }
+            } else {
+                FilterOptionWrapper(null, selectedFilter, listOf(true, true, false, true))
+            }
         }
     }
 
