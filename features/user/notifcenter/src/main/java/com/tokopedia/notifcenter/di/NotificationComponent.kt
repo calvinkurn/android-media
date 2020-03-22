@@ -21,13 +21,7 @@ import dagger.Component
         dependencies = [(BaseAppComponent::class)]
 )
 interface NotificationComponent {
-    //activity
-    fun inject(activity: NotificationActivity)
-
-    //fragment
     fun inject(fragment: NotificationTransactionFragment)
     fun inject(fragment: NotificationUpdateFragment)
-
-    //dialog
-    fun inject(dialog: ProductStockReminderDialog)
+    fun inject(activity: NotificationActivity)
 }
