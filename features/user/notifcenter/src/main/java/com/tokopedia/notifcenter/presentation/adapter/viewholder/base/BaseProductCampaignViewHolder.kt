@@ -58,6 +58,7 @@ abstract class BaseProductCampaignViewHolder(
                 onBindDetailProductClick(element)
             }
             trackProduct(element)
+            listener.itemContainerClicked(element)
             notificationItemMarkedClick(element)
         }
     }
