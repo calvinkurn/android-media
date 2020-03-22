@@ -27,12 +27,13 @@ open class GiftBoxDailyView : FrameLayout {
     lateinit var fmGiftBox: FrameLayout
     lateinit var imageFlatGlow: AppCompatImageView
     lateinit var imageBoxFront: AppCompatImageView
+    lateinit var imageBg: AppCompatImageView
 
     var boxCallback: BoxCallback? = null
     var initialBounceAnimatorSet: AnimatorSet? = null
     var giftBoxState: GiftBoxState = GiftBoxState.CLOSED
 
-    val TOTAL_ASYNC_IMAGES = 2
+    val TOTAL_ASYNC_IMAGES = 3
     var imagesLoaded = AtomicInteger(0)
     val GIFT_BOX_START_DELAY = 300L
 
@@ -65,6 +66,7 @@ open class GiftBoxDailyView : FrameLayout {
         imageGiftBoxLid = findViewById(R.id.image_gift_box_lid)
         imageFlatGlow = findViewById(R.id.image_flat_glow)
         imageBoxFront = findViewById(R.id.image_box_front)
+        imageBg = findViewById(R.id.imageBg)
 
         imageFlatGlow.alpha = 0f
 
@@ -99,7 +101,7 @@ open class GiftBoxDailyView : FrameLayout {
 
     }
 
-    fun loadFiles(imageFrontUrl: String?, imageCallback: ((isLoaded: Boolean) -> Unit)) {
+    fun loadFiles(imageFrontUrl: String?, imageBgUrl: String, imageCallback: ((isLoaded: Boolean) -> Unit)) {
         val listener = object : RequestListener<Drawable> {
             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                 imageCallback.invoke(false)
@@ -125,6 +127,13 @@ open class GiftBoxDailyView : FrameLayout {
                 .dontAnimate()
                 .addListener(listener)
                 .into(imageBoxFront)
+
+                //todo Rahul change to imageBgUrl later
+        Glide.with(this)
+                .load(R.drawable.gf_ic_gift_background)
+                .dontAnimate()
+                .addListener(listener)
+                .into(imageBg)
 
     }
 

@@ -6,10 +6,11 @@
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageBg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        app:srcCompat="@drawable/gf_ic_gift_background" />
+        tools:srcCompat="@drawable/gf_ic_gift_background" />
 
     <FrameLayout
         android:id="@+id/fm_gift_box"

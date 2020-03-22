@@ -413,6 +413,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
         val imageUrlList = entity.gamiLuckyHome.tokenAsset.imageV2URLs
         var frontImageUrl = ""
+        var bgUrl = entity.gamiLuckyHome.tokenAsset.backgroundImgURL
         if (!imageUrlList.isNullOrEmpty()) {
             frontImageUrl = imageUrlList[0]
             if (frontImageUrl.isEmpty()) {
@@ -420,7 +421,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             }
         }
 
-        fadeInActiveStateViews(frontImageUrl)
+        fadeInActiveStateViews(frontImageUrl, bgUrl)
     }
 
     fun fadeOutViews() {
@@ -436,8 +437,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         animatorSet.start()
     }
 
-    fun fadeInActiveStateViews(frontImageUrl: String) {
-        giftBoxDailyView.loadFiles(frontImageUrl, imageCallback = {
+    fun fadeInActiveStateViews(frontImageUrl: String, imageBgUrl: String) {
+        giftBoxDailyView.loadFiles(frontImageUrl,imageBgUrl, imageCallback = {
             if (it) {
                 setPositionOfViewsAtBoxOpen()
                 hideLoader()
