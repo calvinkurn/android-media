@@ -7,12 +7,21 @@ import com.google.gson.annotations.SerializedName
 //722246
 //
 
+
+//todo handle toolbar back-press button and toolbar icon
+
+//processing 720644
+//instant credit card 720599
+
+
 data class ThanksPageResponse(
         @SerializedName("thanksPageData")
         val thanksPageData: ThanksPageData
 )
 
 data class ThanksPageData(
+        @SerializedName("payment_id")
+        val paymentID: Long,
         @SerializedName("profile_code")
         val profileCode: String,
         @SerializedName("payment_status")
@@ -28,7 +37,7 @@ data class ThanksPageData(
         @SerializedName("amount_str")
         val amountStr: String,
         @SerializedName("order_list")
-        val orderList: ArrayList<OrderList>,
+        val shopOrder: ArrayList<ShopOrder>,
         @SerializedName("additional_info")
         val additionalInfo: AdditionalInfo,
         @SerializedName("how_to_pay")
@@ -47,6 +56,7 @@ data class ThanksPageData(
         val paymentDeductions: ArrayList<PaymentItem>?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
+            parcel.readLong(),
             parcel.readString() ?: "",
             parcel.readInt(),
             parcel.readString() ?: "",
@@ -54,7 +64,7 @@ data class ThanksPageData(
             parcel.readLong(),
             parcel.readLong(),
             parcel.readString() ?: "",
-            parcel.createTypedArrayList(OrderList) ?: arrayListOf(),
+            parcel.createTypedArrayList(ShopOrder) ?: arrayListOf(),
             parcel.readParcelable(AdditionalInfo::class.java.classLoader),
             parcel.readString() ?: "",
             parcel.readByte() != 0.toByte(),
@@ -65,6 +75,7 @@ data class ThanksPageData(
             parcel.createTypedArrayList(PaymentItem) ?: arrayListOf())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(paymentID)
         parcel.writeString(profileCode)
         parcel.writeInt(paymentStatus)
         parcel.writeString(gatewayName)
@@ -72,15 +83,15 @@ data class ThanksPageData(
         parcel.writeLong(expireTimeUnix)
         parcel.writeLong(amount)
         parcel.writeString(amountStr)
-        parcel.writeTypedList(orderList?.let { it }?: run { arrayListOf<OrderList>()})
+        parcel.writeTypedList(shopOrder)
         parcel.writeParcelable(additionalInfo, flags)
         parcel.writeString(howToPay)
         parcel.writeByte(if (whitelistedRBA) 1 else 0)
         parcel.writeString(paymentType)
         parcel.writeString(expireTimeStr)
         parcel.writeString(pageType)
-        parcel.writeTypedList(paymentItems?.let { it }?: run { arrayListOf<PaymentItem>()})
-        parcel.writeTypedList(paymentDeductions?.let { it }?: run { arrayListOf<PaymentItem>()})
+        parcel.writeTypedList(paymentItems?.let { it } ?: run { arrayListOf<PaymentItem>() })
+        parcel.writeTypedList(paymentDeductions?.let { it } ?: run { arrayListOf<PaymentItem>() })
 
 
     }
@@ -151,7 +162,7 @@ data class AdditionalInfo(
     }
 }
 
-data class OrderList(
+data class ShopOrder(
         @SerializedName("order_id")
         val orderId: String,
         @SerializedName("store_id")
@@ -206,14 +217,15 @@ data class OrderList(
         parcel.writeString(storeType)
         parcel.writeString(logisticType)
         parcel.writeString(storeName)
-        parcel.writeTypedList(purchaseItemList?.let { purchaseItemList }?:run { arrayListOf<PurchaseItem>() })
+        parcel.writeTypedList(purchaseItemList?.let { purchaseItemList }
+                ?: run { arrayListOf<PurchaseItem>() })
         parcel.writeFloat(shippingAmount)
         parcel.writeString(shippingAmountStr)
         parcel.writeString(shippingDesc)
         parcel.writeFloat(insuranceAmount)
         parcel.writeString(insuranceAmountStr)
         parcel.writeString(address)
-        parcel.writeTypedList(promoData?.let { promoData }?:run { arrayListOf<PromoData>() })
+        parcel.writeTypedList(promoData?.let { promoData } ?: run { arrayListOf<PromoData>() })
         parcel.writeLong(tax)
         parcel.writeString(coupon)
     }
@@ -222,12 +234,12 @@ data class OrderList(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<OrderList> {
-        override fun createFromParcel(parcel: Parcel): OrderList {
-            return OrderList(parcel)
+    companion object CREATOR : Parcelable.Creator<ShopOrder> {
+        override fun createFromParcel(parcel: Parcel): ShopOrder {
+            return ShopOrder(parcel)
         }
 
-        override fun newArray(size: Int): Array<OrderList?> {
+        override fun newArray(size: Int): Array<ShopOrder?> {
             return arrayOfNulls(size)
         }
     }

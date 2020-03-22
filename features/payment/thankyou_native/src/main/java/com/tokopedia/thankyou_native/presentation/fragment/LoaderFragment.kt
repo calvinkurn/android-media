@@ -13,6 +13,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
+import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.di.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
@@ -27,6 +28,9 @@ class LoaderFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var thankYouPageAnalytics: ThankYouPageAnalytics
 
     private lateinit var thanksPageDataViewModel: ThanksPageDataViewModel
 
@@ -90,8 +94,13 @@ class LoaderFragment : BaseDaggerFragment() {
     }
 
     private fun onThankYouPageDataLoaded(data: ThanksPageData) {
+        sendThankYouPageAnalytics(data)
         loading_layout.gone()
         callback?.onThankYouPageDataLoaded(data)
+    }
+
+    private fun sendThankYouPageAnalytics(thanksPageData: ThanksPageData) {
+        thankYouPageAnalytics.sendThankYouPageData(thanksPageData)
     }
 
     companion object {

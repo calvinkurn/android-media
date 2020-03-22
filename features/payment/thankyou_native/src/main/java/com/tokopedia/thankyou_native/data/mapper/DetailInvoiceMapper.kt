@@ -36,8 +36,8 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
         val paymentModeMapList = arrayListOf<PaymentModeMap>()
         val benefitMapList = arrayListOf<BenefitMap>()
 
-        thanksPageData.orderList.forEach { orderList ->
-            orderList.purchaseItemList.forEach {
+        thanksPageData.shopOrder.forEach { shopOrder ->
+            shopOrder.purchaseItemList.forEach {
                 totalPrice += it.totalPrice
                 totalItemCount += 1
             }
@@ -93,31 +93,31 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
     }
 
     private fun createShopsSummery(thanksPageData: ThanksPageData) {
-        thanksPageData.orderList.forEach { orderList ->
+        thanksPageData.shopOrder.forEach { shopOrder ->
             val orderedItemList = arrayListOf<OrderedItem>()
-            orderList.purchaseItemList.forEach { purchasedItem ->
+            shopOrder.purchaseItemList.forEach { purchasedItem ->
                 orderedItemList.add(OrderedItem(purchasedItem.productName, purchasedItem.quantity,
                         purchasedItem.priceStr, purchasedItem.totalPriceStr))
             }
 
             var logisticDiscountStr: String? = null
 
-            orderList.promoData?.forEach {
+            shopOrder.promoData?.forEach {
                 when (it.promoCode) {
                     PromoDataKey.LOGISTIC -> logisticDiscountStr = it.totalDiscountStr
                 }
             }
             visitableList.add(PurchasedProductTag())
             val shopInvoice = ShopInvoice(
-                    orderList.storeName,
+                    shopOrder.storeName,
                     orderedItemList,
                     null,//todo not available
-                    if (orderList.insuranceAmount > 0F) orderList.insuranceAmountStr else null,
-                    if (orderList.shippingAmount > 0F) orderList.shippingAmountStr else null,
-                    orderList.logisticType,
+                    if (shopOrder.insuranceAmount > 0F) shopOrder.insuranceAmountStr else null,
+                    if (shopOrder.shippingAmount > 0F) shopOrder.shippingAmountStr else null,
+                    shopOrder.logisticType,
                     logisticDiscountStr,
                     null,//todo no available
-                    orderList.address)
+                    shopOrder.address)
 
             visitableList.add(shopInvoice)
         }

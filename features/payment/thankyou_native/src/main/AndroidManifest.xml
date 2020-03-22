@@ -4,20 +4,24 @@
     <application>
         <activity
             android:name="com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity"
-            android:label="ThankYou"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
 
             <intent-filter android:autoVerify="true">
-
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="@string/host_payment"
+                    android:path="@string/path_thank_you_page"
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
     </application>

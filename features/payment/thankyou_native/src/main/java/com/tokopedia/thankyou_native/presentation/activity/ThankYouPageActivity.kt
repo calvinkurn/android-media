@@ -19,10 +19,14 @@ import com.tokopedia.thankyou_native.presentation.fragment.ProcessingPaymentFrag
 
 class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComponent>, ThankYouPageDataLoadCallback {
 
-    //todo handle toolbar back-press button and toolbar icon
 
-    //processing 720644
-    //instant credit card 720599
+    private fun setUpDataFromIntent() {
+        intent.data?.let {
+            val uri = it.pathSegments
+            //findSearchParam = uri[uri.lastIndex]
+            //getFindNavScreenName()
+        }
+    }
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
@@ -56,15 +60,15 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         }
         return when (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType)) {
             is ProcessingPaymentPage -> {
-                title = ProcessingPaymentFragment.SCREEN_NAME
+                updateTitle(ProcessingPaymentFragment.SCREEN_NAME)
                 ProcessingPaymentFragment.getFragmentInstance(bundle, thanksPageData)
             }
             is InstantPaymentPage -> {
-                title = InstantPaymentFragment.SCREEN_NAME
+                updateTitle(InstantPaymentFragment.SCREEN_NAME)
                 InstantPaymentFragment.getLoaderFragmentInstance(bundle, thanksPageData)
             }
             is WaitingPaymentPage -> {
-                title = DeferredPaymentFragment.SCREEN_NAME
+                updateTitle(DeferredPaymentFragment.SCREEN_NAME)
                 DeferredPaymentFragment.getFragmentInstance(bundle, thanksPageData)
             }
             else -> null
