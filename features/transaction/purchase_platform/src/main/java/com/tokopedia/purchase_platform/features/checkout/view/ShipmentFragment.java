@@ -2830,7 +2830,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         updatePromoTrackingData(promoUiModel.getTrackingDetails());
         updateLogisticPromoData(promoUiModel);
         if (shipmentAdapter.hasSetAllCourier()) {
-            // TODO : also update summary transaction for BBO case
             setPromoBenefit(promoUiModel.getBenefitSummaryInfoUiModel().getSummaries());
         }
     }
@@ -2843,6 +2842,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void doResetButtonPromoCheckout() {
         shipmentAdapter.resetPromoCheckoutData();
         onNeedUpdateViewItem(shipmentAdapter.getPromoCheckoutPosition());
+        resetPromoBenefit();
     }
 
     @Override
