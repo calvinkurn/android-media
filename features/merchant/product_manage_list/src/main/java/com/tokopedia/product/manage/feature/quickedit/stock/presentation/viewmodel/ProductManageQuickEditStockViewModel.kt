@@ -35,7 +35,7 @@ class ProductManageQuickEditStockViewModel @Inject constructor() : ViewModel() {
     }
 
     fun updateStatus(status: ProductStatus) {
-        _status.postValue(status)
+        _status.value = status
     }
 
     private fun isStockTooLow(stock: Int): Boolean {

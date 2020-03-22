@@ -14,7 +14,7 @@ class ProductManageFilterExpandSelectViewModel @Inject constructor(): ViewModel(
         get() = _selectData
 
     fun updateData(data: List<SelectViewModel>) {
-        _selectData.postValue(data.toMutableList())
+        _selectData.value = data.toMutableList()
         selectedElement = findSelectedData(data)
     }
 
@@ -37,7 +37,7 @@ class ProductManageFilterExpandSelectViewModel @Inject constructor(): ViewModel(
         index?.let {
             currentData[it].isSelected = !currentData[it].isSelected
             selectedElement = currentData[it]
-            _selectData.postValue(currentData)
+            _selectData.value = currentData
             needSort = it > (MAXIMUM_CHIPS - 1)
         }
         return needSort

@@ -129,6 +129,16 @@ class ProductManageFilterViewModel @Inject constructor(
         }
     }
 
+    fun updateShow(isShow: List<Boolean>) {
+        val currentData = _filterData.value?.toMutableList()
+        currentData?.let {
+            it.forEachIndexed { index, filterViewModel ->
+                filterViewModel.isChipsShown = isShow[index]
+            }
+            _filterData.value = it
+        }
+    }
+
     fun clearSelected() {
         val clearedData = _filterData.value
         clearedData?.forEach { filterViewModel ->

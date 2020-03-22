@@ -354,8 +354,14 @@ class ProductManageViewModel @Inject constructor(
 
     }
 
-    fun setSelectedFilterAndSort(selectedFilter: FilterOptionWrapper) {
-        _selectedFilterAndSort.postValue(selectedFilter)
+    fun setFilterOptionWrapper(filterOptionWrapper: FilterOptionWrapper) {
+        _selectedFilterAndSort.value = filterOptionWrapper
+    }
+
+    fun setSelectedFilter(selectedFilter: List<FilterOption>?) {
+        selectedFilter?.let {
+            _selectedFilterAndSort.value = _selectedFilterAndSort.value?.copy(filterOptions = selectedFilter)
+        }
     }
 
     fun toggleMultiSelect() {

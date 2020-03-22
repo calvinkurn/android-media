@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.feature.list.view.fragment
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -270,7 +271,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun onFinish(selectedData: FilterOptionWrapper) {
-        viewModel.setSelectedFilterAndSort(selectedData)
+        viewModel.setFilterOptionWrapper(selectedData)
     }
 
     override fun onFinishEditPrice(product: ProductViewModel) {
@@ -517,6 +518,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 setSecondaryCTAClickListener {
                     dismiss()
                     viewModel.getProductList(shopId = userSession.shopId, filterOptions = listOf(FilterByCondition.CashBackOnly), isRefresh = true)
+                    viewModel.setSelectedFilter(selectedFilter = listOf(FilterOption.FilterByCondition.CashBackOnly))
                 }
                 setImageUrl(ProductManageUrl.ILLUSTRATION_SET_CASHBACK_LIMIT_REACHED)
             }.show()
@@ -894,8 +896,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                             dialogFeaturedProduct?.setPrimaryCTAClickListener { dialogFeaturedProduct?.dismiss() }
                             dialogFeaturedProduct?.setSecondaryCTAClickListener {
                                 dialogFeaturedProduct?.dismiss()
-                                val filterOptionWrapper = FilterOptionWrapper(null, listOf(FilterByCondition.FeaturedOnly))
-                                viewModel.setSelectedFilterAndSort(filterOptionWrapper)
+                                viewModel.setSelectedFilter(listOf(FilterByCondition.FeaturedOnly))
                             }
                             dialogFeaturedProduct?.show()
                         } else if(productListFeaturedOnlySize == 0) {
