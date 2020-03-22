@@ -154,10 +154,12 @@ class ShopPageHomeTracking(
         )
         eventMap[ECOMMERCE] = mutableMapOf(
                 PROMO_VIEW to mutableMapOf(
-                        PROMOTIONS to createVoucherItemMap(
-                                parentPosition,
-                                itemPosition,
-                                voucherItem
+                        PROMOTIONS to mutableListOf(
+                                createVoucherItemMap(
+                                        parentPosition,
+                                        itemPosition,
+                                        voucherItem
+                                )
                         )))
         sendDataLayerEvent(eventMap)
     }
