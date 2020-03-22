@@ -1637,7 +1637,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onFinishChoosingShipment() {
-        if (shipmentPresenter.getValidateUsePromoRevampUiModel() != null) {
+        ValidateUsePromoRequest validateUsePromoRequest = shipmentPresenter.getLastValidateUseRequest();
+        boolean stillHasPromo = false;
+        if (validateUsePromoRequest.getCodes().size() > 0) stillHasPromo = true;
+        for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
+            if (ordersItem.getCodes().size() > 0) {
+                stillHasPromo = true;
+                break;
+            }
+        }
+
+        if (stillHasPromo) {
             shipmentPresenter.checkPromoCheckoutFinalShipment(generateValidateUsePromoRequest());
         } else {
             sendEEStep3();
