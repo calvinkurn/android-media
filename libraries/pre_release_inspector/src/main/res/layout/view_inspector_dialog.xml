@@ -27,7 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="@string/close_dialog_after_apply_checkbox_text"/>
+            android:text="@string/view_inspector_close_dialog_after_apply_checkbox_text"/>
 
         <EditText
             android:id="@+id/searchInput"
