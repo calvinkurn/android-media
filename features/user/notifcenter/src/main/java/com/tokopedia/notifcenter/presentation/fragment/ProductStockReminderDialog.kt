@@ -5,6 +5,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -15,6 +17,7 @@ import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.domain.ProductStockReminderUseCase
 import com.tokopedia.notifcenter.presentation.BaseBottomSheetDialog
 import com.tokopedia.notifcenter.widget.CampaignRedView
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.abstraction.common.utils.GraphqlHelper.loadRawString as raw
@@ -27,6 +30,8 @@ class ProductStockReminderDialog(
         fragmentManager: FragmentManager,
         val onSuccess: () -> Unit
 ): BaseBottomSheetDialog<NotificationItemViewBean>(context, fragmentManager) {
+
+    private val productCard = container?.findViewById<CardUnify>(R.id.productCard)
 
     private val txtTitle = container?.findViewById<Typography>(R.id.txtTitle)
     private val txtDescription = container?.findViewById<Typography>(R.id.txtDescription)
@@ -54,6 +59,14 @@ class ProductStockReminderDialog(
         txtDescription?.text = element.body
 
         element.getAtcProduct()?.let { product ->
+            productCard?.setOnClickListener {
+                RouteManager.route(
+                        context,
+                        ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                        product.productId
+                )
+            }
+
             ImageHandler.loadImage2(
                     thumbnail,
                     product.imageUrl,
