@@ -131,6 +131,7 @@ import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.
 import com.tokopedia.purchase_platform.features.promo.presentation.analytics.PromoCheckoutAnalytics;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoCheckoutVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoUiModel;
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.SummariesItemUiModel;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.TrackingDetailsItem;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -2728,7 +2729,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void setPromoBenefit(List<SummariesUiModel> summariesUiModels) {
+    public void setPromoBenefit(List<SummariesItemUiModel> summariesUiModels) {
         shipmentAdapter.setPromoBenefit(summariesUiModels);
         onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
     }
@@ -2830,6 +2831,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         updateLogisticPromoData(promoUiModel);
         if (shipmentAdapter.hasSetAllCourier()) {
             // TODO : also update summary transaction for BBO case
+            setPromoBenefit(promoUiModel.getBenefitSummaryInfoUiModel().getSummaries());
         }
     }
 

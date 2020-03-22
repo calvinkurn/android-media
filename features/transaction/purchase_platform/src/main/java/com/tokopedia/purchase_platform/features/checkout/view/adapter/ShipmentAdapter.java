@@ -60,7 +60,9 @@ import com.tokopedia.purchase_platform.features.checkout.view.viewholder.Shipmen
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentItemViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentNotifierViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentRecipientAddressViewHolder;
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.DetailsItemUiModel;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoUiModel;
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.SummariesItemUiModel;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -1042,13 +1044,13 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public void setPromoBenefit(List<SummariesUiModel> benefitSummaries) {
+    public void setPromoBenefit(List<SummariesItemUiModel> benefitSummaries) {
         if (shipmentCostModel != null) {
-            for (SummariesUiModel summariesUiModel : benefitSummaries) {
+            for (SummariesItemUiModel summariesUiModel : benefitSummaries) {
                 if (summariesUiModel.getType().equals(SummariesUiModel.getTYPE_DISCOUNT())) {
                     if (summariesUiModel.getDetails().size() > 0) {
                         shipmentCostModel.setHasDiscountDetails(true);
-                        for (DetailUiModel detailUiModel : summariesUiModel.getDetails()) {
+                        for (DetailsItemUiModel detailUiModel : summariesUiModel.getDetails()) {
                             if (detailUiModel.getType().equals(SummariesUiModel.getTYPE_SHIPPING_DISCOUNT())) {
                                 shipmentCostModel.setShippingDiscountAmount(detailUiModel.getAmount());
                                 shipmentCostModel.setShippingDiscountLabel(detailUiModel.getDescription());
