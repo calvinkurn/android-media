@@ -30,6 +30,7 @@ import com.tokopedia.home_recom.viewmodel.PrimaryProductViewModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
@@ -135,6 +136,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                 container_product?.hide()
                 when(response.status){
                     Status.LOADING -> {
+                        container_unify?.show()
                         container_loading?.fadeShow()
                         container_error?.hide()
                         container_empty?.hide()
@@ -150,10 +152,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                         }
                     }
                     Status.EMPTY -> {
-                        container_loading?.hide()
-                        container_error?.hide()
-                        container_product?.hide()
-                        container_empty?.fadeShow()
+                        container_unify?.hide()
                     }
                     else -> {
                         container_loading?.hide()
@@ -219,18 +218,6 @@ class ProductInfoFragment : BaseDaggerFragment() {
      */
     private fun configureContentView(isShow: Boolean){
         val show = if(isShow) View.VISIBLE else View.GONE
-//        product_image.startFade(isShow)
-//        fab_detail.startFade(isShow)
-//        product_name.startFade(isShow)
-//        product_discount.startFade(isShow)
-//        product_slashed_price.startFade(isShow)
-//        product_price.startFade(isShow)
-//        badge.startFade(isShow)
-//        location.startFade(isShow)
-//        rating.startFade(isShow)
-//        review_count.startFade(isShow)
-//        buy_now.startFade(isShow)
-//        add_to_cart.startFade(isShow)
         product_image?.visibility = show
         fab_detail?.visibility = show
         product_name?.visibility = show
@@ -581,9 +568,6 @@ class ProductInfoFragment : BaseDaggerFragment() {
             isFreeOngkirActive = false,
             freeOngkirImageUrl = "",
             discountPercentage = "",
-            labelOffers = RecommendationLabel(),
-            labelCredibility = RecommendationLabel(),
-            labelPromo = RecommendationLabel(),
             isGold = false
     )
 

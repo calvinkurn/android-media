@@ -376,6 +376,8 @@ class ShopOpenRevampQuisionerFragment :
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 if (isNeedLocation)  {
                     activity?.finish()
+                } else {
+                    hideLoader()
                 }
             }
         }

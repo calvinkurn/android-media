@@ -22,6 +22,7 @@ public class RulesUtil {
             String END_TIME = "et";
             String FREQUENCY = "freq";
             String CANCELLABLE = "d";
+            String IS_TEST = "isTest";
             String SCREEN_NAME = "s";
             String UI = "ui";
         }

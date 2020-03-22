@@ -29,3 +29,11 @@ data class FeatureVariant (
         @Expose
         var variant: String = ""
 )
+
+data class FeatureVariantAnalytics (
+    @SerializedName("name")
+    @Expose
+    val name: String,
+    @SerializedName("variant")
+    @Expose
+    var variant: String)

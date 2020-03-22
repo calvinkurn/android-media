@@ -1,7 +1,6 @@
 package com.tokopedia.shop.home.view.listener;
 
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 
 interface ShopPageHomeProductClickListener {
@@ -13,11 +12,6 @@ interface ShopPageHomeProductClickListener {
     fun onAllProductItemImpression(
             itemPosition: Int,
             shopHomeProductViewModel: ShopHomeProductViewModel?
-    )
-
-    fun onAllProductItemWishlist(
-            itemPosition: Int,
-            shopHomeProductViewModel: ShopHomeProductViewModel
     )
 
     fun onCarouselProductItemClicked(
@@ -34,16 +28,21 @@ interface ShopPageHomeProductClickListener {
             shopHomeProductViewModel: ShopHomeProductViewModel?
     )
 
-    fun onCarouselProductItemWishlist(
+    fun onCtaClicked(shopHomeCarouselProductUiModel: ShopHomeCarousellProductUiModel?)
+
+    fun onCarouselProductItemClickAddToCart(
             parentPosition: Int,
             itemPosition: Int,
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
             shopHomeProductViewModel: ShopHomeProductViewModel?
     )
 
-    fun onCtaClicked(shopHomeCarouselProductUiModel: ShopHomeCarousellProductUiModel?)
+    fun onThreeDotsAllProductClicked(
+            itemPosition: Int,
+            shopHomeProductViewModel: ShopHomeProductViewModel
+    )
 
-    fun onCarouselProductItemClickAddToCart(
+    fun onThreeDotsCarouselProductItemClicked(
             parentPosition: Int,
             itemPosition: Int,
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,

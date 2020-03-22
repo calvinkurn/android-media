@@ -115,6 +115,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.backgroundViewModel = null;
         this.freezeViewModel = null;
         this.videoStreamViewModel = null;
+        this.chatPermitViewModel = null;
     }
 
     public ChannelInfoViewModel(String channelId, String title, String channelUrl, String bannerUrl,
@@ -166,7 +167,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.overlayViewModel = overlayViewModel;
         this.backgroundViewModel = backgroundViewModel;
         this.freezeViewModel = freezeViewModel;
-        this.chatPermitViewModel = this.chatPermitViewModel;
+        this.chatPermitViewModel = chatPermitViewModel;
     }
 
     protected ChannelInfoViewModel(Parcel in) {

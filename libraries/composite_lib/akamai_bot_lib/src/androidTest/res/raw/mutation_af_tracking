@@ -1,0 +1,11 @@
+mutation AffiliateTracker($trackerID: String!, $uniqueString: String!) {
+  topadsAffiliateTracker(input: {trackerID: $trackerID, uniqueString: $uniqueString}) {
+    success
+    message
+    errors {
+      Code
+      Title
+      Detail
+    }
+  }
+}

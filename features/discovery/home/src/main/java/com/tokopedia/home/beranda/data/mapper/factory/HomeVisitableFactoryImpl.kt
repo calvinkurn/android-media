@@ -3,9 +3,10 @@ package com.tokopedia.home.beranda.data.mapper.factory
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2
+import com.tokopedia.home.analytics.v2.MixTopTracking
+import com.tokopedia.home.analytics.v2.ProductHighlightTracking
 import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
@@ -24,8 +25,7 @@ import com.tokopedia.topads.sdk.domain.model.ProductImage
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChannelViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 
 class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) : HomeVisitableFactory {
     private var context: Context? = null
@@ -185,10 +185,16 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                             trackingDataForCombination = channel.convertProductEnhanceSprintSaleCarouselDataLayerForCombination(),
                             isCombined = true)
                 }
-                DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO, DynamicHomeChannel.Channels.LAYOUT_ORGANIC -> {
+                DynamicHomeChannel.Channels.LAYOUT_ORGANIC -> {
                     createDynamicChannel(
                             channel = channel,
                             trackingData = channel.enhanceImpressionDynamicSprintLegoHomePage
+                    )
+                }
+                DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO -> {
+                    createDynamicChannel(
+                            channel = channel,
+                            trackingData = HomePageTrackingV2.SprintSale.getSprintSaleImpression(channel)
                     )
                 }
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC, DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL -> {
@@ -205,17 +211,29 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                     )
                     if(!isCache) trackingQueue?.putEETracking(HomePageTracking.getEventEnhanceImpressionBannerGif(channel))
                 }
-                DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL-> {
+                DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> {
                     createDynamicChannel(
                             channel = channel,
-                            trackingData = HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel),
-                            isCombined = false
+                            trackingData = HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel)
                     )
                 }
+                DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {createDynamicChannel(
+                        channel = channel,
+                        trackingData = HomePageTrackingV2.MixLeft.getMixLeftProductView(channel)
+                )}
+                DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> {
+                    createDynamicChannel(
+                            channel = channel,
+                            trackingData = ProductHighlightTracking.getProductHighlightImpression(channel)) }
                 DynamicHomeChannel.Channels.LAYOUT_POPULAR_KEYWORD -> {createPopularKeywordChannel(channel = channel)}
                 DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> { createDynamicChannel(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget() }
                 DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> { createPlayWidget(channel) }
+                DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> { createDynamicChannel(
+                        channel,
+                        trackingData = MixTopTracking.getMixTopView(MixTopTracking.mapChannelToProductTracker(channel), headerName = channel.header.name, positionOnWidgetHome = position.toString()),
+                        isCombined = false
+                ) }
             }
         }
 
@@ -223,6 +241,13 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
     }
 
     private fun createPlayWidget(channel: DynamicHomeChannel.Channels) {
+        if (!isCache) {
+            val playBanner = mappingPlayChannel(channel, HashMap(), isCache)
+            if (!visitableList.contains(playBanner)) visitableList.add(playBanner)
+        }
+    }
+
+    private fun createMixTopWidget(channel: DynamicHomeChannel.Channels) {
         if (!isCache) {
             val playBanner = mappingPlayChannel(channel, HashMap(), isCache)
             if (!visitableList.contains(playBanner)) visitableList.add(playBanner)
@@ -245,16 +270,17 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
 
     private fun createBusinessUnitWidget(position: Int) {
         if (!isCache) {
-            visitableList.add(BusinessUnitViewModel(
-                    context?.getString(R.string.digital_widget_title),
-                    position,
-                    false))}
+            visitableList.add(NewBusinessUnitWidgetDataModel(
+                    position = position,
+                    isCache = false))
+        }
     }
 
     private fun setDynamicChannelPromoName(position: Int, channel: DynamicHomeChannel.Channels) {
         val PROMO_NAME_LEGO_6_IMAGE = "/ - p%s - lego banner - %s"
         val PROMO_NAME_LEGO_3_IMAGE = "/ - p%s - lego banner 3 image - %s"
         val PROMO_NAME_LEGO_4_IMAGE = "/ - p%s - lego banner 4 image - %s"
+        val PROMO_NAME_MIX_LEFT = "/ - p%s - mix left - %s"
         val PROMO_NAME_SPRINT = "/ - p%s - %s"
         val PROMO_NAME_SPOTLIGHT_BANNER = "/ - p%s - spotlight banner"
         val PROMO_NAME_GIF_BANNER = "/ - p%s - lego banner gif - %s"
@@ -289,6 +315,9 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                 channel.setPosition(position)
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF) {
                 channel.promoName = String.format(PROMO_NAME_GIF_BANNER, position.toString(), channel.header.name)
+                channel.setPosition(position)
+            } else if(channel.layout == DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT) {
+                channel.promoName = String.format(PROMO_NAME_MIX_LEFT, position.toString(), channel.header.name)
                 channel.setPosition(position)
             } else {
                 val headerName = if (channel.header.name.isEmpty()) VALUE_BANNER_UNKNOWN else channel.header.name

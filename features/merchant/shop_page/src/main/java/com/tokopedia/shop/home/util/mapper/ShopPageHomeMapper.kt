@@ -1,13 +1,16 @@
 package com.tokopedia.shop.home.util.mapper
 
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherAmountTypeDef
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.home.WidgetName.PRODUCT
 import com.tokopedia.shop.home.WidgetType.DISPLAY
 import com.tokopedia.shop.home.WidgetType.VOUCHER
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.view.model.*
+import com.tokopedia.shop.newproduct.view.datamodel.LabelGroupViewModel
 import com.tokopedia.shop.product.data.model.ShopProduct
 import kotlin.math.roundToInt
 
@@ -55,6 +58,42 @@ object ShopPageHomeMapper {
                 isShowFreeOngkir = shopProduct.freeOngkir.isActive
                 freeOngkirPromoIcon = shopProduct.freeOngkir.imgUrl
             }
+
+    fun mapToProductCardModel(isHasAddToCartButton: Boolean,shopHomeProductViewModel: ShopHomeProductViewModel): ProductCardModel {
+        val totalReview = shopHomeProductViewModel.totalReview.toIntOrZero()
+        val discountWithoutPercentageString = shopHomeProductViewModel.discountPercentage?.replace("%","") ?: ""
+        val discountPercentage = if (discountWithoutPercentageString == "0") {
+            ""
+        } else {
+            "$discountWithoutPercentageString%"
+        }
+
+        val freeOngkirObject = ProductCardModel.FreeOngkir(shopHomeProductViewModel.isShowFreeOngkir, shopHomeProductViewModel.freeOngkirPromoIcon ?: "")
+
+        return ProductCardModel(
+                productImageUrl = shopHomeProductViewModel.imageUrl ?: "",
+                productName = shopHomeProductViewModel.name ?: "",
+                discountPercentage = discountPercentage,
+                slashedPrice = shopHomeProductViewModel.originalPrice ?: "",
+                formattedPrice = shopHomeProductViewModel.displayedPrice ?: "",
+                ratingCount = shopHomeProductViewModel.rating.toInt(),
+                reviewCount = totalReview,
+                freeOngkir = freeOngkirObject,
+                labelGroupList = shopHomeProductViewModel.labelGroupList.map {
+                    mapToProductCardLabelGroup(it)
+                },
+                hasThreeDots = true,
+                hasAddToCartButton = isHasAddToCartButton
+        )
+    }
+
+    private fun mapToProductCardLabelGroup(labelGroupViewModel: LabelGroupViewModel): ProductCardModel.LabelGroup {
+        return ProductCardModel.LabelGroup(
+                position = labelGroupViewModel.position,
+                title = labelGroupViewModel.title,
+                type = labelGroupViewModel.type
+        )
+    }
 
     private fun mapToListWidgetUiModel(
             shopLayoutWidgetResponse: List<ShopLayoutWidget.Widget>,
