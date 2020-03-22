@@ -1,5 +1,5 @@
-query product_stock_handler($notifId: String!) {
-    notifcenter_productStock(notif_id: $notifId) {
+query notifcenter_productStock($notif_id: String!) {
+    notifcenter_productStock(notif_id: $notif_id) {
         list {
             notif_id
             template_key
