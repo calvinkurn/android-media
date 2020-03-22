@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhome.settings.domain.entity
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 
 data class TopAdsAutoTopupDataModel (
         @SerializedName("topAdsAutoTopup")
@@ -14,10 +15,17 @@ data class TopAdsAutoTopup (
         var error: List<TopAdsAutoTopErrorCode>? = listOf()
 )
 
-data class AutoTopupStatus (
+class AutoTopupStatus (
         @SerializedName("status")
-        var status: String? = ""
-)
+        var status: String? = "") {
+
+        val isAutoTopup: Boolean =
+                when(status) {
+                        "0" -> false
+                        "1" -> true
+                        else -> throw ResponseErrorException()
+                }
+}
 
 data class TopAdsAutoTopErrorCode (
         @SerializedName("Code")

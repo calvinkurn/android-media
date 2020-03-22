@@ -7,7 +7,7 @@ import com.tokopedia.sellerhome.settings.domain.entity.TopAdsAutoTopupDataModel
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class TopAdsAutoTopupUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository) : UseCase<String>() {
+class TopAdsAutoTopupUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository) : UseCase<Boolean>() {
 
     companion object {
         const val QUERY = "query GetTopAdsAutoTopup(\$shopId: String!) {\n" +
@@ -30,7 +30,7 @@ class TopAdsAutoTopupUseCase @Inject constructor(private val graphqlRepository: 
 
     var params = HashMap<String, Any>()
 
-    override suspend fun executeOnBackground(): String {
+    override suspend fun executeOnBackground(): Boolean {
         val gqlRequest = GraphqlRequest(QUERY, TopAdsAutoTopupDataModel::class.java, params)
         val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest))
 
@@ -39,8 +39,8 @@ class TopAdsAutoTopupUseCase @Inject constructor(private val graphqlRepository: 
             val topAdsAutoTopupResponse : TopAdsAutoTopupDataModel = gqlResponse.getData(TopAdsAutoTopupDataModel::class.java)
             val responseError = topAdsAutoTopupResponse.topAdsAutoTopup?.error
             if (responseError.isNullOrEmpty()) {
-                topAdsAutoTopupResponse.topAdsAutoTopup?.autoTopupStatus?.status?.let {
-                    return it
+                topAdsAutoTopupResponse.topAdsAutoTopup?.autoTopupStatus?.let {
+                    return it.isAutoTopup
                 }
             }
         }
