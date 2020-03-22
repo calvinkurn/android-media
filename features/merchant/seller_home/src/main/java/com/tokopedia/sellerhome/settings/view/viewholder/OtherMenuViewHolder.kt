@@ -131,7 +131,7 @@ class OtherMenuViewHolder(private val itemView: View,
             balanceTitle?.text = context.resources.getString(R.string.setting_balance)
             balanceValue?.text = saldoBalanceUiModel.balanceValue
             sendSettingShopInfoImpressionTracking(saldoBalanceUiModel, trackingListener::sendImpressionDataIris)
-            saldoBalance.setOnClickListener {
+            balanceValue.setOnClickListener {
                 listener.onSaldoClicked()
                 saldoBalanceUiModel.sendSettingShopInfoClickTracking()
             }
@@ -143,7 +143,7 @@ class OtherMenuViewHolder(private val itemView: View,
             balanceTitle?.text = context.resources.getString(R.string.setting_topads_credits)
             balanceValue?.text = topadsBalanceUiModel.balanceValue
             sendSettingShopInfoImpressionTracking(topadsBalanceUiModel, trackingListener::sendImpressionDataIris)
-            topAdsBalance.setOnClickListener {
+            balanceValue.setOnClickListener {
                 listener.onKreditTopadsClicked()
                 topadsBalanceUiModel.sendSettingShopInfoClickTracking()
             }
