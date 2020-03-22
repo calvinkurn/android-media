@@ -198,6 +198,11 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         }
     }
 
+    fun doClickChat() {
+        SomAnalytics.eventClickChatOnHeaderDetail(detailResponse.statusText)
+        goToAskBuyer()
+    }
+
     fun goToAskBuyer() {
         val urlInvoice = detailResponse.invoiceUrl
         val invoiceUri = Uri.parse(urlInvoice)

@@ -3,14 +3,11 @@ package com.tokopedia.sellerorder.list.presentation.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
-import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_LIST_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_TAB_ACTIVE
 import com.tokopedia.sellerorder.list.data.model.SomListOrderParam
@@ -24,7 +21,6 @@ import kotlinx.android.synthetic.main.partial_toolbar_reset_button.*
  */
 class SomFilterActivity: BaseSimpleActivity(), HasComponent<SomListComponent> {
     override fun getLayoutRes(): Int = R.layout.activity_filter
-    private var tabActive: String = ""
 
     companion object {
         @JvmStatic
@@ -32,15 +28,6 @@ class SomFilterActivity: BaseSimpleActivity(), HasComponent<SomListComponent> {
                 Intent(context, SomFilterActivity::class.java)
                         .putExtra(PARAM_LIST_ORDER, currentFilterParams)
                         .putExtra(PARAM_TAB_ACTIVE, tabActive)
-    }
-
-    @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (intent.extras != null) {
-            val bundle = intent.extras
-            tabActive = bundle.get(PARAM_TAB_ACTIVE).toString()
-        }
     }
 
     override fun setupLayout(savedInstanceState: Bundle?) {
@@ -82,7 +69,7 @@ class SomFilterActivity: BaseSimpleActivity(), HasComponent<SomListComponent> {
                 .build()
 
     override fun onBackPressed() {
+        (fragment as SomFilterFragment).onBackClicked()
         super.onBackPressed()
-        SomAnalytics.eventClickBackButtonOnFilterPage(tabActive)
     }
 }

@@ -342,10 +342,14 @@ class SomFilterFragment : BaseDaggerFragment() {
     }
 
     fun onResetClicked() {
+        SomAnalytics.eventClickResetButtonOnFilterPage(tabActive)
         resetFilters()
         renderCourierList()
         renderOrderType()
-        SomAnalytics.eventClickResetButtonOnFilterPage(tabActive)
+    }
+
+    fun onBackClicked() {
+        SomAnalytics.eventClickBackButtonOnFilterPage(tabActive)
     }
 
     @SuppressLint("SetTextI18n")

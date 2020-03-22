@@ -47,8 +47,7 @@ class SomDetailActivity: BaseSimpleActivity(), HasComponent<SomDetailComponent> 
     }
 
     private fun onChatClicked() {
-        SomAnalytics.eventClickChatOnHeaderDetail()
-        (fragment as SomDetailFragment).goToAskBuyer()
+        (fragment as SomDetailFragment).doClickChat()
     }
 
     override fun getComponent(): SomDetailComponent =

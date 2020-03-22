@@ -20,9 +20,6 @@ import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment
 
 // SOM = Seller Order Management
 class SomListActivity: BaseSimpleActivity(), HasComponent<SomListComponent> {
-    private var tabActive = ""
-    private var actionListener: ActionListener? = null
-
     override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view
 
     override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple
@@ -32,7 +29,6 @@ class SomListActivity: BaseSimpleActivity(), HasComponent<SomListComponent> {
         var bundle = Bundle()
         if (intent.extras != null) {
             bundle = intent.extras
-            tabActive = intent.getStringExtra(TAB_ACTIVE)
         } else {
             bundle.putString(TAB_ACTIVE, "")
         }
@@ -56,16 +52,8 @@ class SomListActivity: BaseSimpleActivity(), HasComponent<SomListComponent> {
     }
 
     private fun onChatClicked() {
+        (fragment as SomListFragment).onChatIconClicked()
         RouteManager.route(this, ApplinkConst.TOPCHAT_IDLESS)
-        actionListener?.onChatIconClicked()
-    }
-
-    fun setActionListener(fragment: SomListFragment) {
-        this.actionListener = fragment
-    }
-
-    interface ActionListener {
-        fun onChatIconClicked()
     }
 
     override fun getComponent(): SomListComponent =

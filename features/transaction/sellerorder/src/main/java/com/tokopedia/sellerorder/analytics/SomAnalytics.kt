@@ -67,8 +67,8 @@ object SomAnalytics {
         sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, SUBMIT_SEARCH, keyword)
     }
 
-    fun eventClickChatOnHeaderDetail() {
-        sendEventCategoryAction(CLICK_SOM, CATEGORY_SOM, CLICK_CHAT_ICON_ON_HEADER_ORDER_DETAIL)
+    fun eventClickChatOnHeaderDetail(statusOrder: String) {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_CHAT_ICON_ON_HEADER_ORDER_DETAIL, statusOrder)
     }
 
     fun eventClickMainActionInOrderDetail(labelBtn: String, statusOrder: String) {

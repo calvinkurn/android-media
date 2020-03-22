@@ -82,7 +82,7 @@ import kotlin.collections.HashMap
  * Created by fwidjaja on 2019-08-23.
  */
 class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener,
-        SearchInputView.Listener, SearchInputView.ResetListener, SomListItemAdapter.ActionListener, SomListActivity.ActionListener {
+        SearchInputView.Listener, SearchInputView.ResetListener, SomListItemAdapter.ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -162,12 +162,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
         loadTicker()
         loadFilterList()
-        activity?.let {
-            SomAnalytics.sendScreenName(it, LIST_ORDER_SCREEN_NAME)
-            with(it as SomListActivity) {
-                it.setActionListener(this@SomListFragment)
-            }
-        }
+        activity?.let { SomAnalytics.sendScreenName(it, LIST_ORDER_SCREEN_NAME) }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -703,7 +698,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
     }
 
-    override fun onChatIconClicked() {
+    fun onChatIconClicked() {
         var orderStatusName = tabActive
         if (orderStatusName.isEmpty()) orderStatusName = STATUS_ALL_ORDER
         SomAnalytics.eventClickChatIconOnOrderList(orderStatusName)
