@@ -118,10 +118,7 @@ class ShopHomeCarousellProductViewHolder(
                     override fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
                                 ?: return
-
                         shopPageHomeProductClickListener.onThreeDotsCarouselProductItemClicked(
-                                adapterPosition,
-                                carouselProductCardPosition,
                                 shopHomeCarousellProductUiModel,
                                 shopProductViewModel
                         )
