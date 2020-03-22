@@ -42,7 +42,6 @@ import javax.inject.Inject
 class NotificationTransactionFragment : BaseNotificationFragment(), TransactionMenuListener {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject lateinit var userSession: UserSessionInterface
 
     private lateinit var viewModel: NotificationTransactionViewModel
 
