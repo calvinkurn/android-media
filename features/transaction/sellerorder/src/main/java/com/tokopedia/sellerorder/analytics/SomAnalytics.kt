@@ -15,6 +15,7 @@ object SomAnalytics {
     private const val CLICK_ORDER_CARD_ORDER_LIST = "click order card order list"
     private const val SUBMIT_SEARCH = "submit search"
     private const val CLICK_CHAT_ICON_ON_HEADER_ORDER_DETAIL = "click chat icon on header order detail"
+    private const val CLICK_CHAT_ICON_ON_HEADER_ORDER_LIST = "click chat icon on header order list"
     private const val CLICK_MAIN_ACTION_IN_ORDER_DETAIL = "click main action in order detail"
     private const val CLICK_SECONDARY_ACTION_IN_ORDER_DETAIL = "click secondary action in order detail"
     private const val CLICK_BUTTON_PELUANG_IN_EMPTY_STATE = "click button peluang in empty state"
@@ -156,5 +157,9 @@ object SomAnalytics {
 
     fun eventClickButtonDownloadInvoice(orderCode: String) {
         sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_BUTTON_DOWNLOAD_INVOICE, orderCode)
+    }
+
+    fun eventClickChatIconOnOrderList(orderName: String) {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_CHAT_ICON_ON_HEADER_ORDER_LIST, orderName)
     }
 }

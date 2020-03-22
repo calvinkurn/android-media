@@ -63,6 +63,7 @@ import com.tokopedia.sellerorder.list.data.model.SomListOrderParam
 import com.tokopedia.sellerorder.list.data.model.SomListTicker
 import com.tokopedia.sellerorder.list.di.SomListComponent
 import com.tokopedia.sellerorder.list.presentation.activity.SomFilterActivity
+import com.tokopedia.sellerorder.list.presentation.activity.SomListActivity
 import com.tokopedia.sellerorder.list.presentation.adapter.SomListItemAdapter
 import com.tokopedia.sellerorder.list.presentation.viewmodel.SomListViewModel
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
@@ -81,7 +82,7 @@ import kotlin.collections.HashMap
  * Created by fwidjaja on 2019-08-23.
  */
 class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener,
-        SearchInputView.Listener, SearchInputView.ResetListener, SomListItemAdapter.ActionListener {
+        SearchInputView.Listener, SearchInputView.ResetListener, SomListItemAdapter.ActionListener, SomListActivity.ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -161,6 +162,12 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
         loadTicker()
         loadFilterList()
+        activity?.let {
+            SomAnalytics.sendScreenName(it, LIST_ORDER_SCREEN_NAME)
+            with(it as SomListActivity) {
+                it.setActionListener(this@SomListFragment)
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -283,7 +290,6 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     }
                 }
             })
-
         }
     }
 
@@ -310,7 +316,6 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun loadTicker() {
-        activity?.let { SomAnalytics.sendScreenName(it, LIST_ORDER_SCREEN_NAME) }
         somListViewModel.loadTickerList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_ticker))
     }
 
@@ -623,6 +628,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 filter_action_button?.rightIconDrawable = resources.getDrawable(R.drawable.ic_som_check)
             }
         } else filter_action_button?.rightIconDrawable = null
+        activity?.let { SomAnalytics.sendScreenName(it, LIST_ORDER_SCREEN_NAME) }
     }
 
     private fun checkFilterApplied(paramOrder: SomListOrderParam): Boolean {
@@ -695,5 +701,11 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             putExtra(PARAM_ORDER_ID, orderId)
             startActivityForResult(this, FLAG_DETAIL)
         }
+    }
+
+    override fun onChatIconClicked() {
+        var orderStatusName = tabActive
+        if (orderStatusName.isEmpty()) orderStatusName = STATUS_ALL_ORDER
+        SomAnalytics.eventClickChatIconOnOrderList(orderStatusName)
     }
 }
