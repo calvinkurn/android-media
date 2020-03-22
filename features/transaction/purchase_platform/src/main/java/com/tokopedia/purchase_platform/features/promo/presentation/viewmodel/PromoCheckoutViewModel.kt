@@ -333,7 +333,13 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                         _applyPromoResponse.value = it
                     }
                 } else {
-                    if (responseValidatePromo.voucherOrders.isNotEmpty()) {
+                    if (responseValidatePromo.globalSuccess) {
+                        // Check promo global is success
+                        var isGlobalSuccess = false
+                        if (responseValidatePromo.message.state != "red") {
+                            isGlobalSuccess = true
+                        }
+
                         // Check all promo merchant is success
                         var successCount = 0
                         responseValidatePromo.voucherOrders.forEach { voucherOrder ->
@@ -344,7 +350,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                                 throw MessageErrorException(voucherOrder.message.text)
                             }
                         }
-                        if (successCount == responseValidatePromo.voucherOrders.size) {
+                        if (isGlobalSuccess || successCount == responseValidatePromo.voucherOrders.size) {
                             var selectedRecommendationCount = 0
                             promoRecommendationUiModel.value?.uiData?.promoCodes?.forEach {
                                 if (promoList.contains(it)) selectedRecommendationCount++
