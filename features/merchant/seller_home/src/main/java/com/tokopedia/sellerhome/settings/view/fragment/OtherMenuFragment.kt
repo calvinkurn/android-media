@@ -163,6 +163,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     override fun onKreditTopadsClicked() {
+        topAdsBottomSheet.dismiss()
         RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD)
     }
 

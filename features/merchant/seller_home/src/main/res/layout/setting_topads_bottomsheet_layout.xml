@@ -2,15 +2,15 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/setting_topads_bottomsheet_padding"
+    android:paddingBottom="@dimen/setting_topads_padding_bottom"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/topAdsBottomSheetTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/setting_topads_status_active"
         android:maxLines="2"
+        android:textColor="@color/setting_black_text"
         app:typographyType="heading_2"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -20,8 +20,15 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/setting_topads_bottomsheet_padding"
         android:maxLines="3"
-        android:text="@string/setting_topads_description_active"
         android:textSize="@dimen/top_ads_description_size"
+        android:textColor="@color/setting_grey_text"
+        android:paddingLeft="@dimen/setting_topads_description_padding_horizontal"
+        android:paddingStart="@dimen/setting_topads_description_padding_horizontal"
+        android:paddingRight="@dimen/setting_topads_description_padding_horizontal"
+        android:paddingEnd="@dimen/setting_topads_description_padding_horizontal"
+        android:lineSpacingExtra="2sp"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
         app:layout_constraintTop_toBottomOf="@id/topAdsBottomSheetTitle"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
