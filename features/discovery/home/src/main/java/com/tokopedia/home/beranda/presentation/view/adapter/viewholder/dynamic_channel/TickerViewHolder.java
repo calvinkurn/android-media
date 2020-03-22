@@ -75,7 +75,7 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
             textMessage.setLines(tickerContainerMaxLines);
         }
 
-        if (element.getTickers() != null && element.getTickers().size()>1) {
+        if (element.getTickers() != null && element.getTickers().size()>0) {
             Ticker.Tickers ticker = element.getTickers().get(0);
             textMessage.setText(ticker.getMessage());
             textMessage.setMovementMethod(createMovementMethod(context, ticker.getId()));
