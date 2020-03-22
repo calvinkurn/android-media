@@ -72,7 +72,7 @@ object VariantCommonMapper {
 
     private fun updateSelectedOptionsIds(variantData: ProductVariantCommon, updatedSelectedOptionsId: List<Int>, mapOfSelectedVariant: MutableMap<String, Int>?) {
         variantData.variant.forEachIndexed { index, variant ->
-            mapOfSelectedVariant?.set(variant.identifier ?: "", updatedSelectedOptionsId[index])
+            mapOfSelectedVariant?.set(variant.pv.toString(), updatedSelectedOptionsId[index])
         }
     }
 
