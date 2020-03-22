@@ -13,6 +13,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.button.BottomActionView
+import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationTracker
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.data.entity.ProductData
@@ -140,7 +141,8 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
                 context?.let { context ->
                     ProductStockReminderDialog(
                             context = context,
-                            fragmentManager = childFragmentManager
+                            fragmentManager = childFragmentManager,
+                            onSuccess = ::onSuccessToast
                     ).show(element)
                 }
             }
@@ -176,6 +178,21 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
 
         if (!longerTextDialog.isAdded) {
             longerTextDialog.show(childFragmentManager, "Longer Text Bottom Sheet")
+        }
+    }
+
+    private fun onSuccessToast() {
+        view?.let { view ->
+            context?.let {
+                Toaster.make(
+                        view,
+                        it.getString(R.string.product_reminder_success),
+                        Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL,
+                        it.getString(R.string.notifcenter_btn_title_ok),
+                        View.OnClickListener {  }
+                )
+            }
         }
     }
 
