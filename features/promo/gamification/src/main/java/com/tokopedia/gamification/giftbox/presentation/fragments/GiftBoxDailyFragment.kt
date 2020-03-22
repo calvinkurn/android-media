@@ -40,12 +40,13 @@ import com.tokopedia.gamification.giftbox.presentation.views.GiftPrizeSmallView
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.fragment_gift_box_daily.*
 import javax.inject.Inject
 
 class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
-    lateinit var tvBenefits: AppCompatTextView
+    lateinit var tvBenefits: Typography
     lateinit var llBenefits: LinearLayout
     lateinit var prizeViewSmallFirst: GiftPrizeSmallView
     lateinit var prizeViewSmallSecond: GiftPrizeSmallView
@@ -180,10 +181,10 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                         val state = it.data.gamiLuckyHome.tokensUser.state
                         when (state) {
                             TokenUserState.ACTIVE -> {
-                                renderGiftBoxActive(it.data)
+                                renderGiftBoxActive(it.data, state)
                             }
                             TokenUserState.EMPTY -> {
-                                hideLoader()
+                                renderGiftBoxActive(it.data, state)
                             }
                             TokenUserState.INACTIVE -> {
                                 hideLoader()
@@ -382,18 +383,15 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         }
     }
 
-//    fun renderGiftBoxState(giftBoxState: GiftBoxState) {
-//        when (giftBoxState) {
-//            GiftBoxState.ACTIVE -> renderGiftBoxActive()
-//            GiftBoxState.EMPTY -> renderGiftBoxEmpty()
-//            GiftBoxState.ERROR -> renderGiftBoxError()
-//            GiftBoxState.NO_INTERNET -> renderGiftBoxNoInternet()
-//        }
-//    }
 
-    fun renderGiftBoxActive(entity: GiftBoxEntity) {
+    fun renderGiftBoxActive(entity: GiftBoxEntity, @TokenUserState state:String) {
         tvTapHint.text = entity.gamiLuckyHome.tokensUser.title
         tvBenefits.text = entity.gamiLuckyHome.tokensUser.text
+
+        if(state == TokenUserState.EMPTY){
+            tvBenefits.setType(Typography.HEADING_2)
+            tvBenefits.setWeight(Typography.BOLD)
+        }
 
         //set prize list
         entity.gamiLuckyHome.prizeList?.forEach {
@@ -421,7 +419,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             }
         }
 
-        fadeInActiveStateViews(frontImageUrl, bgUrl)
+        fadeInActiveStateViews(frontImageUrl, bgUrl, state)
     }
 
     fun fadeOutViews() {
@@ -437,7 +435,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         animatorSet.start()
     }
 
-    fun fadeInActiveStateViews(frontImageUrl: String, imageBgUrl: String) {
+    fun fadeInActiveStateViews(frontImageUrl: String, imageBgUrl: String, @TokenUserState state: String) {
         giftBoxDailyView.loadFiles(frontImageUrl,imageBgUrl, imageCallback = {
             if (it) {
                 setPositionOfViewsAtBoxOpen()
