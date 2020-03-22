@@ -122,6 +122,11 @@ class ProductManageFilterExpandChecklistFragment :
         processSearch(text)
     }
 
+    override fun onDestroy() {
+        removeObservers()
+        super.onDestroy()
+    }
+
     private fun initInjector() {
         component?.inject(this)
     }
@@ -221,7 +226,6 @@ class ProductManageFilterExpandChecklistFragment :
                 this.activity?.setResult(ProductManageFilterFragment.UPDATE_OTHER_FILTER_SUCCESS_RESPONSE,
                         Intent().putExtra(ProductManageFilterFragment.CACHE_MANAGER_KEY, cacheManagerId))
             }
-            removeObservers()
             this.activity?.finish()
             ProductManageTracking.eventMoreOthersFilterSave()
         }

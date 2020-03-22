@@ -110,7 +110,6 @@ class ProductManageFilterExpandSelectFragment :
             ))
             this.activity?.setResult(ProductManageFilterFragment.UPDATE_ETALASE_SUCCESS_RESPONSE, Intent().putExtra(CACHE_MANAGER_KEY, cacheManagerId))
         }
-        removeObserver()
         this.activity?.finish()
     }
 
@@ -126,6 +125,11 @@ class ProductManageFilterExpandSelectFragment :
                     .productManageComponent(ProductManageInstance.getComponent(application))
                     .build()
         }
+    }
+
+    override fun onDestroy() {
+        removeObservers()
+        super.onDestroy()
     }
 
     private fun initInjector() {
@@ -158,7 +162,7 @@ class ProductManageFilterExpandSelectFragment :
         })
     }
 
-    private fun removeObserver() {
+    private fun removeObservers() {
         removeObservers(productManageFilterExpandSelectViewModel.selectData)
     }
 }
