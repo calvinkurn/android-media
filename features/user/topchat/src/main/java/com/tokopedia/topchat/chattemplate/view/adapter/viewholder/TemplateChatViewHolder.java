@@ -30,7 +30,7 @@ public class TemplateChatViewHolder extends AbstractViewHolder<TemplateChatModel
 
     @Override
     public void bind(final TemplateChatModel element) {
-        textHolder.setChipText(element.getMessage());
+        textHolder.setChipText(element.getEllipsizedMessage());
         textHolder.setOnClickListener(view ->
                 viewListener.addTemplateString(element.getMessage())
         );

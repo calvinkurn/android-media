@@ -18,6 +18,7 @@ import com.tokopedia.autocomplete.analytics.AppScreen
 import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.initialstate.di.DaggerInitialStateComponent
 import com.tokopedia.autocomplete.initialstate.di.InitialStateComponent
+import com.tokopedia.autocomplete.util.getModifiedApplink
 import com.tokopedia.discovery.common.model.SearchParameter
 import kotlinx.android.synthetic.main.fragment_initial_state.*
 import javax.inject.Inject
@@ -95,9 +96,13 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
     }
 
     override fun showInitialStateResult(initialStateVisitableList: List<Visitable<*>>) {
+        notifyAdapter(initialStateVisitableList)
+    }
+
+    private fun notifyAdapter(list: List<Visitable<*>>){
         stopTracePerformanceMonitoring()
         adapter.clearData()
-        adapter.addAll(initialStateVisitableList)
+        adapter.addAll(list)
 
         initialStateViewUpdateListener?.showInitialStateView()
     }
@@ -107,11 +112,11 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
     }
 
     override fun refreshPopularSearch(list: List<Visitable<*>>) {
-        stopTracePerformanceMonitoring()
-        adapter.clearData()
-        adapter.addAll(list)
+        notifyAdapter(list)
+    }
 
-        initialStateViewUpdateListener?.showInitialStateView()
+    override fun deleteRecentSearch(list: List<Visitable<*>>) {
+        notifyAdapter(list)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -135,7 +140,9 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
 
     override fun onItemClicked(applink: String, webUrl: String) {
         dropKeyBoard()
-        startActivityFromAutoComplete(applink)
+
+        val modifiedApplink = getModifiedApplink(applink, searchParameter)
+        startActivityFromAutoComplete(modifiedApplink)
     }
 
     private fun dropKeyBoard() {

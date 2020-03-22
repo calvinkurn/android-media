@@ -36,8 +36,8 @@ dependencies {
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.dynamicFeatures)
-    implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
+    implementation project(rootProject.ext.features.discoveryCommon)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.coach_mark

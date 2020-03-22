@@ -34,8 +34,9 @@ class AddEditAddressPresenter
     }
 
     fun saveAddress(model: SaveAddressDataModel, typeForm: String) {
+        val formType = if (typeForm == AddressConstants.ANA_POSITIVE) "1" else "0"
         addAddressUseCase
-                .execute(model)
+                .execute(model, formType)
                 .subscribe(object : Subscriber<AddAddressResponse>() {
                     override fun onNext(response: AddAddressResponse) {
                         if (typeForm.equals(AddressConstants.ANA_POSITIVE, true)) {
@@ -46,9 +47,9 @@ class AddEditAddressPresenter
                         response.keroAddAddress.data.run {
                             if (isSuccess == 1) {
                                 model.id = this.addrId
-                                view.onSuccessAddAddress(model)
+                                view?.onSuccessAddAddress(model)
                             } else {
-                                view.showError(null)
+                                view?.showError(null)
                             }
                         }
                     }
@@ -61,7 +62,7 @@ class AddEditAddressPresenter
                         } else {
                             AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(e.printStackTrace().toString(), eventLabel = LOGISTIC_LABEL)
                         }
-                        view.showError(e)
+                        view?.showError(e)
                     }
                 })
 
@@ -74,9 +75,9 @@ class AddEditAddressPresenter
                             if (response.keroDistrictDetails.district.isNotEmpty()) {
                                 response.keroDistrictDetails.district[0].let {
                                     if (it.zipCode.isNotEmpty()) {
-                                        view.showZipCodes(it.zipCode)
+                                        view?.showZipCodes(it.zipCode)
                                     } else {
-                                        view.showManualZipCodes()
+                                        view?.showManualZipCodes()
                                     }
                                 }
                             }
@@ -98,7 +99,7 @@ class AddEditAddressPresenter
                         { model ->
                             val lat = model.latitude.toDouble()
                             val long = model.longitude.toDouble()
-                            view.moveMap(lat, long)
+                            view?.moveMap(lat, long)
                         },
                         {
                             Timber.d(it)

@@ -22,8 +22,8 @@ class AnalyticsDebuggerModule {
 
     @Provides
     @Named(NAMED_GTM_ANALYTICS)
-    fun providePresenter(getGtmLogUseCase: GetGtmLogUseCase?,
-                         deleteGtmLogUseCase: DeleteGtmLogUseCase?): AnalyticsDebugger.Presenter {
+    fun providePresenter(getGtmLogUseCase: GetGtmLogUseCase,
+                         deleteGtmLogUseCase: DeleteGtmLogUseCase): AnalyticsDebugger.Presenter {
         return AnalyticsDebuggerPresenter(getGtmLogUseCase, deleteGtmLogUseCase)
     }
 
@@ -33,6 +33,13 @@ class AnalyticsDebuggerModule {
                             deleteFpmLogUseCase: DeleteFpmLogUseCase,
                             getFpmAllDataUseCase: GetFpmAllDataUseCase): FpmDebugger.Presenter {
         return FpmDebuggerPresenter(getFpmLogUseCase, deleteFpmLogUseCase, getFpmAllDataUseCase)
+    }
+
+    @Provides
+    @Named(NAMED_APPLINK)
+    fun provideApplinkPresenter(getApplinkLogUseCase: GetApplinkLogUseCase,
+                            deleteApplinkLogUseCase: DeleteApplinkLogUseCase): ApplinkDebugger.Presenter {
+        return ApplinkDebuggerPresenter(getApplinkLogUseCase, deleteApplinkLogUseCase)
     }
 
     @Provides

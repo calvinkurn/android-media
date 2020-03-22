@@ -7,10 +7,12 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.v2.BlankSpaceConfig
-import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
 import com.tokopedia.shop.R
+import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopPageHomeProductClickListener
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 
@@ -26,7 +28,7 @@ open class ShopHomeProductViewHolder(
         itemView: View,
         private val shopPageHomeProductClickListener: ShopPageHomeProductClickListener?
 ) : AbstractViewHolder<ShopHomeProductViewModel>(itemView) {
-    lateinit var productCard: ProductCardViewSmallGrid
+    lateinit var productCard: ProductCardGridView
     protected var shopHomeProductViewModel: ShopHomeProductViewModel? = null
 
     init {
@@ -44,7 +46,10 @@ open class ShopHomeProductViewHolder(
 
     override fun bind(shopHomeProductViewModel: ShopHomeProductViewModel) {
         this.shopHomeProductViewModel = shopHomeProductViewModel
-        productCard.setProductModel(getProductModel(shopHomeProductViewModel), BlankSpaceConfig())
+        productCard.setProductModel(ShopPageHomeMapper.mapToProductCardModel(
+                false,
+                shopHomeProductViewModel
+        ))
         setListener()
     }
 
@@ -65,51 +70,14 @@ open class ShopHomeProductViewHolder(
                 }
             })
         }
-        productCard.setButtonWishlistOnClickListener {
+
+        productCard.setThreeDotsOnClickListener {
             shopHomeProductViewModel?.let {
-                shopPageHomeProductClickListener?.onAllProductItemWishlist(
+                shopPageHomeProductClickListener?.onThreeDotsAllProductClicked(
                         adapterPosition,
                         it
                 )
             }
-
-        }
-    }
-
-    private fun getProductModel(
-            shopHomeProductViewModel: ShopHomeProductViewModel
-    ): ProductCardModel {
-        val totalReview = shopHomeProductViewModel.totalReview.toIntOrZero()
-        val discountWithoutPercentageString = shopHomeProductViewModel.discountPercentage?.replace("%","") ?: ""
-        val discountPercentage = if (discountWithoutPercentageString == "0") {
-            ""
-        } else {
-            "$discountWithoutPercentageString%"
-        }
-        val freeOngkirObject = ProductCardModel.FreeOngkir(shopHomeProductViewModel.isShowFreeOngkir, shopHomeProductViewModel.freeOngkirPromoIcon  ?: "")
-        return ProductCardModel(
-                shopHomeProductViewModel.imageUrl ?: "",
-                shopHomeProductViewModel.isWishList,
-                shopHomeProductViewModel.isShowWishList,
-                ProductCardModel.Label(),
-                "",
-                "",
-                shopHomeProductViewModel.name ?: "",
-                discountPercentage,
-                shopHomeProductViewModel.originalPrice ?: "",
-                shopHomeProductViewModel.displayedPrice ?: "",
-                ArrayList(),
-                "",
-                shopHomeProductViewModel.rating.toInt(),
-                totalReview,
-                ProductCardModel.Label(),
-                ProductCardModel.Label(),
-                freeOngkirObject,
-                false
-        ).apply {
-            isProductSoldOut = shopHomeProductViewModel.isSoldOut
-            isProductPreOrder = shopHomeProductViewModel.isPo
-            isProductWholesale = shopHomeProductViewModel.isWholesale
         }
     }
 }

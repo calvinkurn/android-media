@@ -180,11 +180,6 @@
                 android:value="true"/>
         </activity>
         <activity
-            android:name=".home.SimpleHomeActivity"
-            android:label="@string/title_activity_simple_home"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
-        <activity
             android:name=".goldmerchant.GoldMerchantRedirectActivity"
             android:label="@string/label_gold_merchant"
             android:screenOrientation="portrait" >

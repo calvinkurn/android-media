@@ -20,6 +20,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.discovery.common.manager.showProductCardOptions
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
@@ -493,24 +495,24 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    override fun onAllProductItemWishlist(itemPosition: Int, shopHomeProductViewModel: ShopHomeProductViewModel) {
-        if (isLogin) {
-            viewModel?.clearGetShopProductUseCase()
-            if (shopHomeProductViewModel.isWishList) {
-                viewModel?.removeWishList(
-                        shopHomeProductViewModel.id ?: "",
-                        { onSuccessRemoveWishList(null, shopHomeProductViewModel) },
-                        ::onErrorRemoveWishList
-                )
-            } else {
-                viewModel?.addWishList(
-                        shopHomeProductViewModel.id ?: "",
-                        { onSuccessAddWishlist(null, shopHomeProductViewModel) },
-                        ::onErrorAddWishlist)
-            }
-        } else {
-            redirectToLoginPage()
-        }
+    override fun onThreeDotsAllProductClicked(itemPosition: Int, shopHomeProductViewModel: ShopHomeProductViewModel) {
+//        if (isLogin) {
+//            viewModel?.clearGetShopProductUseCase()
+//            if (shopHomeProductViewModel.isWishList) {
+//                viewModel?.removeWishList(
+//                        shopHomeProductViewModel.id ?: "",
+//                        { onSuccessRemoveWishList(null, shopHomeProductViewModel) },
+//                        ::onErrorRemoveWishList
+//                )
+//            } else {
+//                viewModel?.addWishList(
+//                        shopHomeProductViewModel.id ?: "",
+//                        { onSuccessAddWishlist(null, shopHomeProductViewModel) },
+//                        ::onErrorAddWishlist)
+//            }
+//        } else {
+//            redirectToLoginPage()
+//        }
     }
 
     override fun onCarouselProductItemClicked(parentPosition: Int, itemPosition: Int, shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?, shopHomeProductViewModel: ShopHomeProductViewModel?) {
@@ -557,30 +559,39 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
     }
 
-    override fun onCarouselProductItemWishlist(
+    override fun onThreeDotsCarouselProductItemClicked(
             parentPosition: Int,
             itemPosition: Int,
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
             shopHomeProductViewModel: ShopHomeProductViewModel?
     ) {
-        if (isLogin) {
-            viewModel?.clearGetShopProductUseCase()
-            if (shopHomeProductViewModel?.isWishList == true) {
-                viewModel?.removeWishList(
-                        shopHomeProductViewModel.id ?: "",
-                        { onSuccessRemoveWishList(shopHomeCarousellProductUiModel, shopHomeProductViewModel) },
-                        ::onErrorRemoveWishList
+//        if (isLogin) {
+//            viewModel?.clearGetShopProductUseCase()
+//            if (shopHomeProductViewModel?.isWishList == true) {
+//                viewModel?.removeWishList(
+//                        shopHomeProductViewModel.id ?: "",
+//                        { onSuccessRemoveWishList(shopHomeCarousellProductUiModel, shopHomeProductViewModel) },
+//                        ::onErrorRemoveWishList
+//                )
+//            } else {
+//                viewModel?.addWishList(
+//                        shopHomeProductViewModel?.id ?: "",
+//                        { onSuccessAddWishlist(shopHomeCarousellProductUiModel, shopHomeProductViewModel) },
+//                        ::onErrorAddWishlist
+//                )
+//            }
+//        } else {
+//            redirectToLoginPage()
+//        }
+
+        showProductCardOptions(
+                this,
+                ProductCardOptionsModel(
+                        hasWishlist = true,
+                        isWishlisted = shopHomeProductViewModel?.isWishList ?: false,
+                        productId = shopHomeProductViewModel?.id ?: ""
                 )
-            } else {
-                viewModel?.addWishList(
-                        shopHomeProductViewModel?.id ?: "",
-                        { onSuccessAddWishlist(shopHomeCarousellProductUiModel, shopHomeProductViewModel) },
-                        ::onErrorAddWishlist
-                )
-            }
-        } else {
-            redirectToLoginPage()
-        }
+        )
     }
 
     private fun onSuccessRemoveWishList(

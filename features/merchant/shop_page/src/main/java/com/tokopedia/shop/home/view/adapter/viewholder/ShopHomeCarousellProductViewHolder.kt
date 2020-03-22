@@ -5,19 +5,21 @@ import android.widget.ImageView
 import android.widget.TextView
 
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.carouselproductcard.CarouselProductCardListener
+import com.tokopedia.carouselproductcard.CarouselProductCardView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
-import com.tokopedia.shop.home.view.adapter.ShopPageHomeCarousellAdapter
-import com.tokopedia.shop.home.view.adapter.ShopPageHomeCarousellAdapterTypeFactory
+import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopPageHomeProductClickListener
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel.Companion.IS_ATC
+import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 
 /**
  * Created by normansyahputa on 2/22/18.
@@ -37,15 +39,8 @@ class ShopHomeCarousellProductViewHolder(
     private var textViewCta: TextView? = null
     private var ivBadge: ImageView? = null
     private var etalaseHeaderContainer: View? = null
-    private var recyclerView: RecyclerView? = null
-    private val adapterTypeFactory: ShopPageHomeCarousellAdapterTypeFactory by lazy {
-        ShopPageHomeCarousellAdapterTypeFactory(shopPageHomeProductClickListener)
-    }
-    private val adapterCarousell: ShopPageHomeCarousellAdapter by lazy {
-        ShopPageHomeCarousellAdapter(adapterTypeFactory).apply {
-            adapterTypeFactory.shopPageHomeCarAdapter = this
-        }
-    }
+    private var recyclerView: CarouselProductCardView? = null
+    private var shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel? = null
 
     init {
         initView(itemView)
@@ -56,23 +51,12 @@ class ShopHomeCarousellProductViewHolder(
         ivBadge = view.findViewById(R.id.image_view_etalase_badge)
         textViewCta = view.findViewById(R.id.tvSeeAll)
         etalaseHeaderContainer = view.findViewById(R.id.etalase_header_container)
-        recyclerView = view.findViewById(R.id.recycler_view)
-        recyclerView?.apply {
-            adapter = adapterCarousell
-            layoutManager = LinearLayoutManager(
-                    view.context,
-                    LinearLayoutManager.HORIZONTAL,
-                    false
-            )
-            val animator = recyclerView?.itemAnimator
-            if (animator is SimpleItemAnimator) {
-                animator.supportsChangeAnimations = false
-            }
-        }
+        recyclerView = view.findViewById(R.id.recyclerViewCarousel)
     }
 
     override fun bind(shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel) {
-        val recyclerViewState = recyclerView?.layoutManager?.onSaveInstanceState()
+        this.shopHomeCarousellProductUiModel = shopHomeCarousellProductUiModel
+        bindShopProductCarousel(shopHomeCarousellProductUiModel.productList)
         val title = shopHomeCarousellProductUiModel.header.title
         val ctaText = shopHomeCarousellProductUiModel.header.ctaText
         if (title.isEmpty() && ctaText.isEmpty()) {
@@ -91,12 +75,62 @@ class ShopHomeCarousellProductViewHolder(
                 hide()
             }
         }
-        adapterCarousell.shopHomeCarousellProductUiModel = shopHomeCarousellProductUiModel
-        adapterCarousell.parentIndex = adapterPosition
-        adapterCarousell.clearAllElements()
-        adapterCarousell.setProductListData(shopHomeCarousellProductUiModel.productList)
-        if (recyclerViewState != null) {
-            recyclerView?.layoutManager?.onRestoreInstanceState(recyclerViewState)
-        }
+    }
+
+    private fun bindShopProductCarousel(shopHomeProductViewModelList: List<ShopHomeProductViewModel>) {
+        recyclerView?.bindCarouselProductCardViewGrid(
+                productCardModelList = shopHomeProductViewModelList.map {
+                    ShopPageHomeMapper.mapToProductCardModel(
+                            isHasAtc(),
+                            it
+                    )
+                },
+                carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
+                    override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
+                                ?: return
+                        shopPageHomeProductClickListener.onCarouselProductItemClicked(
+                                adapterPosition,
+                                carouselProductCardPosition,
+                                shopHomeCarousellProductUiModel,
+                                shopProductViewModel
+                        )
+                    }
+                },
+                carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {
+                    override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
+                                ?: return
+
+                        shopPageHomeProductClickListener.onCarouselProductItemImpression(
+                                adapterPosition,
+                                carouselProductCardPosition,
+                                shopHomeCarousellProductUiModel,
+                                shopProductViewModel
+                        )
+                    }
+
+                    override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
+                        return shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
+                    }
+                },
+                carouselProductCardOnItemThreeDotsClickListener = object : CarouselProductCardListener.OnItemThreeDotsClickListener {
+                    override fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
+                                ?: return
+
+                        shopPageHomeProductClickListener.onThreeDotsCarouselProductItemClicked(
+                                adapterPosition,
+                                carouselProductCardPosition,
+                                shopHomeCarousellProductUiModel,
+                                shopProductViewModel
+                        )
+                    }
+                }
+        )
+    }
+
+    private fun isHasAtc(): Boolean {
+        return (shopHomeCarousellProductUiModel?.header?.isATC ?: 0) == IS_ATC
     }
 }

@@ -5,9 +5,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.attachvoucher.data.Voucher
+import com.tokopedia.attachvoucher.data.EmptyVoucherUiModel
+import com.tokopedia.attachvoucher.data.VoucherUiModel
 import com.tokopedia.attachvoucher.view.adapter.viewholder.AttachVoucherViewHolder
 import com.tokopedia.attachvoucher.view.adapter.viewholder.EmptyAttachVoucherViewHolder
+import com.tokopedia.attachvoucher.view.adapter.viewholder.EmptyVoucherViewHolder
 
 class AttachVoucherTypeFactoryImpl : BaseAdapterTypeFactory(), AttachVoucherTypeFactory {
 
@@ -15,8 +17,12 @@ class AttachVoucherTypeFactoryImpl : BaseAdapterTypeFactory(), AttachVoucherType
         return EmptyAttachVoucherViewHolder.LAYOUT
     }
 
-    override fun type(voucher: Voucher): Int {
+    override fun type(voucher: VoucherUiModel): Int {
         return AttachVoucherViewHolder.LAYOUT
+    }
+
+    override fun type(emptyVoucher: EmptyVoucherUiModel): Int {
+        return EmptyVoucherViewHolder.LAYOUT
     }
 
     override fun createViewHolder(
@@ -27,6 +33,7 @@ class AttachVoucherTypeFactoryImpl : BaseAdapterTypeFactory(), AttachVoucherType
         return when (viewType) {
             AttachVoucherViewHolder.LAYOUT -> AttachVoucherViewHolder(view, listener)
             EmptyAttachVoucherViewHolder.LAYOUT -> EmptyAttachVoucherViewHolder(view)
+            EmptyVoucherViewHolder.LAYOUT -> EmptyVoucherViewHolder(view)
             else -> createViewHolder(view, viewType)
         }
     }
