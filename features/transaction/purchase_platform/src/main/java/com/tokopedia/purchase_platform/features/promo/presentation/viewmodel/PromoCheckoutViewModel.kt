@@ -277,7 +277,36 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 _applyPromoResponse.value = ApplyPromoResponseAction()
             }
 
-            // Todo : set promo to validate use param
+            // Get all selected promo. Store to map where unique id as key and promo code as value
+            val promoList = HashMap<String, String>()
+            promoListUiModel.value?.forEach {
+                if (it is PromoListItemUiModel && it.uiState.isSelected) {
+                    promoList[it.uiData.uniqueId] = it.uiData.promoCode
+                } else if (it is PromoListHeaderUiModel && it.uiData.tmpPromoItemList.isNotEmpty()) {
+                    it.uiData.tmpPromoItemList.forEach {
+                        if (it.uiState.isSelected) {
+                            promoList[it.uiData.uniqueId] = it.uiData.promoCode
+                        }
+                    }
+                }
+            }
+
+            // Set selected promo code to current params
+            promoList.forEach { promoItemMap ->
+                if (promoItemMap.key == "") {
+                    // Add selected promo global=
+                    if (!validateUsePromoRequest.codes.contains(promoItemMap.value)) {
+                        validateUsePromoRequest.codes.add(promoItemMap.value)
+                    }
+                } else {
+                    // Add selected promo merchant
+                    validateUsePromoRequest.orders.forEach {
+                        if (promoItemMap.key == it?.uniqueId && !it.codes.contains(promoItemMap.value)) {
+                            it.codes.add(promoItemMap.value)
+                        }
+                    }
+                }
+            }
 
             // Set param
             val varPromo = mapOf(
@@ -286,20 +315,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             val varParams = mapOf(
                     "params" to varPromo
             )
-
-            // Get all sellected promo for analytical purpose
-            val promoList = ArrayList<String>()
-            promoListUiModel.value?.forEach {
-                if (it is PromoListItemUiModel && it.uiState.isSelected) {
-                    promoList.add(it.uiData.promoCode)
-                } else if (it is PromoListHeaderUiModel && it.uiData.tmpPromoItemList.isNotEmpty()) {
-                    it.uiData.tmpPromoItemList.forEach {
-                        if (it.uiState.isSelected) {
-                            promoList.add(it.uiData.promoCode)
-                        }
-                    }
-                }
-            }
 
             // Get response
             val response = withContext(Dispatchers.IO) {
@@ -337,7 +352,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                             val promoRecommendationCount = promoRecommendationUiModel.value?.uiData?.promoCodes?.size
                                     ?: 0
                             val status = if (promoList.size == promoRecommendationCount && selectedRecommendationCount == promoRecommendationCount) 1 else 0
-                            analytics.eventClickPakaiPromoSuccess(getPageSource(), status.toString(), promoList)
+                            analytics.eventClickPakaiPromoSuccess(getPageSource(), status.toString(), promoList.values.toList())
                             // If all promo merchant are success, then navigate to cart
                             applyPromoResponse.value?.let {
                                 it.state = ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CART
