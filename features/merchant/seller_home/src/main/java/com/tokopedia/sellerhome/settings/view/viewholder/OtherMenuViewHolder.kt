@@ -148,13 +148,19 @@ class OtherMenuViewHolder(private val itemView: View,
                 listener.onKreditTopadsClicked()
                 topadsBalanceUiModel.sendSettingShopInfoClickTracking()
             }
+            val isTopAdsUser = topadsBalanceUiModel.isTopAdsUser
             val topAdsTooltipDrawable =
-                    if (topadsBalanceUiModel.isTopAdsUser) {
+                    if (isTopAdsUser) {
                         ContextCompat.getDrawable(context, R.drawable.ic_topads_active)
                     } else {
                         ContextCompat.getDrawable(context, R.drawable.ic_topads_inactive)
                     }
-            topAdsStatusTooltip.setImageDrawable(topAdsTooltipDrawable)
+            topAdsStatusTooltip.run {
+                setImageDrawable(topAdsTooltipDrawable)
+                setOnClickListener {
+                    listener.onTopAdsTooltipClicked(isTopAdsUser)
+                }
+            }
         }
     }
 
