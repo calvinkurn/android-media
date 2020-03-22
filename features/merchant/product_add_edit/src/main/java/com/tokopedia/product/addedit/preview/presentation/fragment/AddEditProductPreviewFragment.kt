@@ -2,15 +2,15 @@ package com.tokopedia.product.addedit.preview.presentation.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.TaskStackBuilder
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
@@ -18,24 +18,28 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.description.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionActivity
-import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionFragment
 import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionFragment.Companion.EXTRA_DESCRIPTION_INPUT
 import com.tokopedia.product.addedit.detail.presentation.activity.AddEditProductDetailActivity
-import com.tokopedia.product.addedit.detail.presentation.fragment.AddEditProductDetailFragment
 import com.tokopedia.product.addedit.detail.presentation.fragment.AddEditProductDetailFragment.Companion.EXTRA_DETAIL_INPUT
 import com.tokopedia.product.addedit.detail.presentation.fragment.AddEditProductDetailFragment.Companion.REQUEST_CODE_DETAIL
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
-import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment
+import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewComponent
+import com.tokopedia.product.addedit.preview.presentation.viewmodel.AddEditProductPreviewViewModel
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment.Companion.EXTRA_SHIPMENT_INPUT
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tooltip.model.ImageTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
 import com.tokopedia.unifyprinciples.Typography
+import javax.inject.Inject
 
 class AddEditProductPreviewFragment : BaseDaggerFragment() {
 
     private var addEditProductPhotoButton: AppCompatTextView? = null
+    private lateinit var previewViewModel: AddEditProductPreviewViewModel
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     companion object {
         fun createInstance(): Fragment {
@@ -47,6 +51,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
 
         // TODO faisalramd
         const val TEST_IMAGE_URL = "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/9/16/36162992/36162992_778e5d1e-06fd-4e4a-b650-50c232815b24_1080_1080.jpg"
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initViewModel()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -97,7 +106,14 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
+        getComponent(AddEditProductPreviewComponent::class.java).inject(this)
+    }
 
+    private fun initViewModel() {
+        activity?.run {
+            previewViewModel = ViewModelProviders.of(this, viewModelFactory)
+                    .get(AddEditProductPreviewViewModel::class.java)
+        }
     }
 
     private fun showPhotoTips() {
