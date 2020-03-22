@@ -4,27 +4,7 @@ import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.track.TrackApp
 
-object StockHandlerAnalytics {
-
-    //common key event
-    private const val KEY_EVENT_NAME = "event"
-    private const val KEY_EVENT_CATEGORY = "eventCategory"
-    private const val KEY_EVENT_ACTION = "eventAction"
-    private const val KEY_EVENT_LABEL = "eventLabel"
-
-    //key event
-    private const val KEY_USER_ID = "userId"
-    private const val KEY_ECOMMERCE = "ecommerce"
-    private const val KEY_CURRENCY_CODE = "currencyCode"
-    private const val KEY_IMPRESSIONS = "impressions"
-    private const val KEY_CLICK = "click"
-    private const val KEY_ACTION_FIELD = "actionField"
-    private const val KEY_LIST = "list"
-    private const val KEY_PRODUCTS = "products"
-    private const val KEY_SHOP_ID = "shopId"
-
-    //const value
-    private const val VALUE_CURRENCY_CODE = "IDR"
+class StockHandlerAnalytics {
 
     fun productCardImpression(element: NotificationItemViewBean, userId: String) {
         val eventName = "productView"
@@ -116,6 +96,28 @@ object StockHandlerAnalytics {
                         KEY_SHOP_ID, element.userInfo.shopId
                 )
         )
+    }
+
+    companion object {
+        //common key event
+        private const val KEY_EVENT_NAME = "event"
+        private const val KEY_EVENT_CATEGORY = "eventCategory"
+        private const val KEY_EVENT_ACTION = "eventAction"
+        private const val KEY_EVENT_LABEL = "eventLabel"
+
+        //key event
+        private const val KEY_USER_ID = "userId"
+        private const val KEY_ECOMMERCE = "ecommerce"
+        private const val KEY_CURRENCY_CODE = "currencyCode"
+        private const val KEY_IMPRESSIONS = "impressions"
+        private const val KEY_CLICK = "click"
+        private const val KEY_ACTION_FIELD = "actionField"
+        private const val KEY_LIST = "list"
+        private const val KEY_PRODUCTS = "products"
+        private const val KEY_SHOP_ID = "shopId"
+
+        //const value
+        private const val VALUE_CURRENCY_CODE = "IDR"
     }
 
 }
