@@ -154,7 +154,7 @@
         app:layout_constraintStart_toEndOf="@+id/solusiku_image"
         app:layout_constraintTop_toTopOf="@+id/solusiku_image" />
 
-    <ImageView
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/tunaikita_image"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_56"
@@ -163,7 +163,7 @@
         android:layout_marginLeft="@dimen/dp_8"
         android:background="@drawable/il_card_background"
         android:padding="@dimen/dp_8"
-        android:src="@drawable/il_tunaikita_logo"
+        app:remoteFileName="tunaikita_image.png"
         app:layout_constraintEnd_toEndOf="@+id/text_form_description"
         app:layout_constraintStart_toEndOf="@id/kredit_image"
         app:layout_constraintTop_toTopOf="@id/solusiku_image" />
