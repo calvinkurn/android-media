@@ -22,12 +22,15 @@ import com.tokopedia.notifcenter.data.state.BottomSheetType
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.listener.NotificationFilterListener
 import com.tokopedia.notifcenter.listener.NotificationItemListener
+import com.tokopedia.notifcenter.presentation.activity.NotificationActivity
 import com.tokopedia.notifcenter.presentation.fragment.NotificationLongerTextDialog
 import com.tokopedia.notifcenter.presentation.fragment.NotificationProductCardDialog
 import com.tokopedia.notifcenter.presentation.fragment.ProductStockReminderDialog
 import com.tokopedia.notifcenter.util.endLess
 import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
         BaseAdapterTypeFactory>(),
@@ -35,6 +38,8 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
         NotificationFilterListener {
 
     private lateinit var longerTextDialog: BottomSheetDialogFragment
+
+    @Inject lateinit var userSession: UserSessionInterface
 
     abstract fun bottomFilterView(): BottomActionView?
     abstract fun analytics(): NotificationTracker
@@ -142,6 +147,7 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
                     ProductStockReminderDialog(
                             context = context,
                             fragmentManager = childFragmentManager,
+                            userSession = userSession,
                             onSuccess = ::onSuccessToast
                     ).show(element)
                 }
@@ -230,6 +236,12 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
     override fun onItemClicked(t: Visitable<*>?) = Unit
     override fun getScreenName(): String = ""
     override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {}
+
+    override fun initInjector() {
+        (activity as NotificationActivity)
+                .notificationComponent
+                .inject(this)
+    }
 
     companion object {
         const val PARAM_CONTENT_TITLE = "content title"
