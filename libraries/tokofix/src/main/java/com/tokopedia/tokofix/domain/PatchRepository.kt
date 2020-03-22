@@ -44,7 +44,7 @@ class PatchRepository {
                         if(writtenToDisk){
                             PatchExecutor(context, PatchManipulatedImp(), robustCallBack).start()
                         }
-                        Timber.d(TAG, "file download was a success? " + writtenToDisk);
+                        Timber.w("P2#ROBUST#file download was a success written to disk? " + writtenToDisk);
                     }
                 }
             }

@@ -19,7 +19,7 @@ class TokoFix private constructor(private val app: Application, val version: Str
     private val repository: PatchRepository = PatchRepository()
 
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     private fun onForegroud() {
         repository.getPatch(version, this::onSuccessGetPatch)
     }
