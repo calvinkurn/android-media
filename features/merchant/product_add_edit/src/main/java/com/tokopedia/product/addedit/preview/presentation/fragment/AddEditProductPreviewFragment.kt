@@ -102,8 +102,8 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
                         data.getParcelableExtra<DescriptionInputModel>(EXTRA_DESCRIPTION_INPUT)
                 val detailInputModel =
                         data.getParcelableExtra<DetailInputModel>(EXTRA_DETAIL_INPUT)
-
-                previewViewModel.addProduct()
+                previewViewModel.addProduct(detailInputModel, descriptionInputModel,
+                        shipmentInputModel)
             }
         }
     }

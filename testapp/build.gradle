@@ -226,7 +226,12 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
-
+	implementation project(rootProject.ext.libraries.imagePicker)
+	implementation project(rootProject.ext.libraries.productPhotoAdapter)
+	implementation project(rootProject.ext.features.productAddEdit)
+	implementation project(rootProject.ext.features.shopCommon)
+	implementation project(rootProject.ext.libraries.mediauploader)
+	implementation project(rootProject.ext.libraries.baseList)
 }
 
 repositories {

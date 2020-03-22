@@ -3,16 +3,14 @@ package com.tokopedia.product.addedit.preview.presentation.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.domain.UploaderUseCase
-import com.tokopedia.product.addedit.common.domain.model.params.add.*
+import com.tokopedia.product.addedit.common.domain.mapper.AddProductInputMapper
 import com.tokopedia.product.addedit.common.domain.model.responses.ProductAddEditV3Response
-import com.tokopedia.product.addedit.common.domain.usecase.EditPriceUseCase
 import com.tokopedia.product.addedit.common.domain.usecase.ProductAddUseCase
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_GRAM
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_KILOGRAM
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.UNIT_KILOGRAM
+import com.tokopedia.product.addedit.description.model.DescriptionInputModel
+import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
+import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -26,44 +24,16 @@ import javax.inject.Inject
 class AddEditProductPreviewViewModel @Inject constructor(
         coroutineDispatcher: CoroutineDispatcher,
         private val uploaderUseCase: UploaderUseCase,
-        private val editPriceUseCase: EditPriceUseCase,
+        private val addProductInputMapper: AddProductInputMapper,
         private val productAddUseCase: ProductAddUseCase
 ) : BaseViewModel(coroutineDispatcher) {
     val _productUpdateResult = MutableLiveData<Result<ProductAddEditV3Response>>()
 
-    fun addProduct() {
-        // TODO faisalramd make mapper
-        val param = ProductAddParam(
-                "Baju polos yang terbaik di tookpedo",
-                20000,
-                "IDR",
-                9999,
-                "LIMITED",
-                "desc",
-                1,
-                "GR",
-                20,
-                "NEW",
-                false,
-                "",
-                Catalog(
-                        "1"
-                ),
-                Category(
-                        "1"
-                ),
-                Menu(
-                        "0",
-                        ""
-                ),
-                Pictures(),
-                Preorder(
-                        1,
-                        "1",
-                        true
-                )
-
-        )
+    fun addProduct(detailInputModel: DetailInputModel,
+                   descriptionInputModel: DescriptionInputModel,
+                   shipmentInputModel: ShipmentInputModel) {
+        val param = addProductInputMapper
+                .mapInputToRemoteModel(detailInputModel, descriptionInputModel, shipmentInputModel)
 
         launchCatchError(block = {
             _productUpdateResult.value = Success(withContext(Dispatchers.IO) {

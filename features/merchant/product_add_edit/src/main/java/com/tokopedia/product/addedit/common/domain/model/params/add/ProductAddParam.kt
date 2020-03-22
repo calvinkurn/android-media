@@ -12,7 +12,7 @@ data class ProductAddParam (
         var productName: String? = null,
         @SerializedName("price")
         @Expose
-        var price: Int? = null,
+        var price: Float? = null,
         @SerializedName("priceCurrency")
         @Expose
         var priceCurrency: String? = null,

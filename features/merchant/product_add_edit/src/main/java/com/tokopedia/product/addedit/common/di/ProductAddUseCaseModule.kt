@@ -2,6 +2,7 @@ package com.tokopedia.product.addedit.common.di
 
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.product.addedit.common.domain.mapper.AddProductInputMapper
 import com.tokopedia.product.addedit.common.domain.usecase.EditPriceUseCase
 import com.tokopedia.product.addedit.common.domain.usecase.ProductAddUseCase
 import dagger.Module
@@ -33,4 +34,9 @@ class ProductAddUseCaseModule {
         return ProductAddUseCase(graphqlRepository)
     }
 
+    @Provides
+    @AddProductQualifier
+    fun provideAddProductInputMapper(): AddProductInputMapper {
+        return AddProductInputMapper()
+    }
 }
