@@ -5,7 +5,6 @@
     android:background="@android:color/white"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dp_4"
     app:cardCornerRadius="@dimen/dp_8"
     app:cardElevation="@dimen/dp_2">
 
@@ -16,7 +15,7 @@
         android:padding="@dimen/dp_12">
 
         <com.tokopedia.notifcenter.widget.RoundedImageView
-            android:id="@+id/iv_thumbnail"
+            android:id="@+id/imgThumbnail"
             android:layout_width="@dimen/dp_96"
             android:layout_height="@dimen/dp_96"
             android:scaleType="fitCenter"
@@ -38,7 +37,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tv_product_name"
+            android:id="@+id/txtProductName"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_10"
@@ -49,13 +48,13 @@
             android:maxLines="1"
             android:textColor="@color/Neutral_N700_96"
             android:textSize="@dimen/sp_12"
-            app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+            app:layout_constraintStart_toEndOf="@+id/imgThumbnail"
             app:layout_constraintTop_toBottomOf="@+id/pvl_variant"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="This is really long product name that appear on the screen" />
 
         <com.tokopedia.notifcenter.widget.CampaignRedView
-            android:id="@+id/cl_campaign"
+            android:id="@+id/txtProductCampaign"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_4"
@@ -65,11 +64,11 @@
             android:layout_marginRight="@dimen/dp_8"
             android:orientation="horizontal"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
-            app:layout_constraintTop_toBottomOf="@+id/tv_product_name" />
+            app:layout_constraintStart_toEndOf="@+id/imgThumbnail"
+            app:layout_constraintTop_toBottomOf="@+id/txtProductName" />
 
         <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/tv_product_price"
+            android:id="@+id/txtProductPrice"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_10"
@@ -83,12 +82,12 @@
             android:textSize="@dimen/sp_14"
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
-            app:layout_constraintTop_toBottomOf="@+id/cl_campaign"
+            app:layout_constraintStart_toEndOf="@+id/imgThumbnail"
+            app:layout_constraintTop_toBottomOf="@+id/txtProductCampaign"
             tools:text="Rp 500.000" />
 
         <ImageView
-            android:id="@+id/img_campaign"
+            android:id="@+id/viewCampaignTag"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
             android:layout_marginStart="@dimen/dp_10"
@@ -102,11 +101,11 @@
             tools:src="@mipmap/ic_launcher"
             tools:scaleType="fitXY"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
-            app:layout_constraintTop_toBottomOf="@+id/tv_product_price"/>
+            app:layout_constraintStart_toEndOf="@+id/imgThumbnail"
+            app:layout_constraintTop_toBottomOf="@+id/txtProductPrice"/>
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_reminder"
+            android:id="@+id/btnReminder"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_32"
             android:text="@string/notifcenter_btn_reminder"
@@ -114,7 +113,7 @@
             android:layout_marginTop="@dimen/dp_8"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_thumbnail"
+            app:layout_constraintTop_toBottomOf="@+id/imgThumbnail"
             app:unifyButtonType="main" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
