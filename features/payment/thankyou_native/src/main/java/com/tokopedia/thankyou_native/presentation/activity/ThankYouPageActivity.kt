@@ -20,20 +20,15 @@ import com.tokopedia.thankyou_native.presentation.fragment.ProcessingPaymentFrag
 class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComponent>, ThankYouPageDataLoadCallback {
 
 
-    private fun setUpDataFromIntent() {
-        intent.data?.let {
-            val uri = it.pathSegments
-            //findSearchParam = uri[uri.lastIndex]
-            //getFindNavScreenName()
-        }
-    }
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
-        intent.putExtra(ARG_MERCHANT, "tokopediatest")
-        intent.putExtra(ARG_PAYMENT_ID, 720598L)
-        if (intent.extras != null) {
-            bundle.putAll(intent.extras)
+        intent.data?.getQueryParameter("payment_id")?.let {
+            intent.putExtra(ARG_MERCHANT, intent.data?.getQueryParameter("merchant"))
+            intent.putExtra(ARG_PAYMENT_ID, it.toLong())
+            if (intent.extras != null) {
+                bundle.putAll(intent.extras)
+            }
         }
         return LoaderFragment.getLoaderFragmentInstance(bundle)
     }
