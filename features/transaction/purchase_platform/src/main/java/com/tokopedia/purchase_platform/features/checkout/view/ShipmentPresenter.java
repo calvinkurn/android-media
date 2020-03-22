@@ -97,6 +97,7 @@ import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldTieri
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.OrdersItem;
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest;
 import com.tokopedia.purchase_platform.features.promo.domain.usecase.ValidateUsePromoRevampUseCase;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ClashingInfoDetailUiModel;
@@ -1101,7 +1102,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 if (getView() != null) {
                                     if (validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK)) {
                                         getView().updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel());
-                                        // TODO : also update summary transaction for BBO case
                                     } else {
                                         if (validateUsePromoRevampUiModel.getMessage().size() > 0) {
                                             String errMessage = validateUsePromoRevampUiModel.getMessage().get(0);
@@ -1210,7 +1210,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         if (validateUsePromoRevampUiModel != null) {
             PromoUiModel promoUiModel = validateUsePromoRevampUiModel.getPromoUiModel();
-            if (promoUiModel.getCodes().size() > 0) {
+            if (promoUiModel.getCodes().size() > 0 && !promoUiModel.getMessageUiModel().getState().equals("red")) {
                 ArrayList<String> codes = new ArrayList<>(promoUiModel.getCodes());
                 builder.promoCodes(codes);
 
@@ -1241,7 +1241,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             if (dataCheckoutRequest.shopProducts != null && dataCheckoutRequest.shopProducts.size() > 0) {
                 for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
                     for (PromoCheckoutVoucherOrdersItemUiModel voucherOrder : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
-                        if (shopProductCheckoutRequest.cartString.equals(voucherOrder.getUniqueId())) {
+                        if (!voucherOrder.getMessageUiModel().getState().equals("red") && shopProductCheckoutRequest.cartString.equals(voucherOrder.getUniqueId())) {
                             if (shopProductCheckoutRequest.promoCodes != null && shopProductCheckoutRequest.promoCodes.size() > 0) {
                                 shopProductCheckoutRequest.promoCodes.add(voucherOrder.getCode());
                             } else {
@@ -1250,7 +1250,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 shopProductCheckoutRequest.promoCodes = codes;
                             }
 
-                            if (voucherOrder.getCode() != null && voucherOrder.getType() != null) {
+                            if (voucherOrder.getCode().length() > 0 && voucherOrder.getType().length() > 0) {
                                 if (shopProductCheckoutRequest.promos != null && shopProductCheckoutRequest.promos.size() > 0) {
                                     PromoRequest promoRequest = new PromoRequest();
                                     promoRequest.setCode(voucherOrder.getCode());
@@ -1571,7 +1571,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 tickerAnnouncementHolderData.setMessage(responseData.getSuccessData().getTickerMessage());
                                 getView().updateTickerAnnouncementMessage();
                             }
-                            getView().onSuccessClearPromoLogistic(itemPosition, isLastAppliedPromo(promoCode));
+                            boolean isLastAppliedPromo = isLastAppliedPromo(promoCode);
+                            if (isLastAppliedPromo) {
+                                validateUsePromoRevampUiModel = null;
+                            }
+                            getView().onSuccessClearPromoLogistic(itemPosition, isLastAppliedPromo);
                         }
                     }
                 })
@@ -1905,6 +1909,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
+    public void setValidateUsePromoRevampUiModel(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
+        this.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel;
+    }
+
+    @Override
     public ValidateUsePromoRevampUiModel getValidateUsePromoRevampUiModel() {
         return validateUsePromoRevampUiModel;
     }
@@ -1961,7 +1970,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             List<PromoCheckoutVoucherOrdersItemUiModel> voucherOrders = validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels();
             if (voucherOrders.size() > 0) {
                 for (PromoCheckoutVoucherOrdersItemUiModel voucherOrder : voucherOrders) {
-                    if (voucherOrder.getCode() != null && !voucherOrder.getCode().equals(promoCode))
+                    if (!voucherOrder.getCode().equals(promoCode))
                         return false;
                 }
             }
@@ -1977,9 +1986,4 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         return true;
     }
 
-    private void validateUseIsStillHasAnyPromo(String lastDeletedPromoCode) {
-        if (validateUsePromoRevampUiModel != null) {
-
-        }
-    }
 }

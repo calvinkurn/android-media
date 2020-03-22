@@ -1891,9 +1891,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
             NAVIGATION_PROMO -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    val valudateUseUiModel = data?.getParcelableExtra<ValidateUsePromoRevampUiModel>(ARGS_VALIDATE_USE_DATA_RESULT)
-                    if (valudateUseUiModel != null) {
-                        updatePromoCheckoutStickyButton(valudateUseUiModel.promoUiModel)
+                    val validateUseUiModel = data?.getParcelableExtra<ValidateUsePromoRevampUiModel>(ARGS_VALIDATE_USE_DATA_RESULT)
+                    if (validateUseUiModel != null) {
+                        updatePromoCheckoutStickyButton(validateUseUiModel.promoUiModel)
                         return
                     }
 

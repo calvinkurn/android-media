@@ -35,6 +35,7 @@ import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDo
 import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest;
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoUiModel;
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.SummariesItemUiModel;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel;
 
 import java.util.ArrayList;
@@ -151,7 +152,7 @@ public interface ShipmentContract {
 
         void resetPromoBenefit();
 
-        void setPromoBenefit(List<SummariesUiModel> summariesUiModels);
+        void setPromoBenefit(List<SummariesItemUiModel> summariesUiModels);
 
         boolean isTradeInByDropOff();
 
@@ -360,6 +361,8 @@ public interface ShipmentContract {
         void setLastApplyData(LastApplyUiModel lastApplyData);
 
         LastApplyUiModel getLastApplyData();
+
+        void setValidateUsePromoRevampUiModel(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel);
 
         ValidateUsePromoRevampUiModel getValidateUsePromoRevampUiModel();
 
