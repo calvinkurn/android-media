@@ -13,7 +13,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/balanceTitle"
+            android:id="@+id/topadsBalanceTitle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
@@ -22,17 +22,17 @@
             tools:text="Saldo"/>
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/topadsStatus"
+            android:id="@+id/topAdsStatusTooltip"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginLeft="@dimen/setting_topads_icon_margin"
             android:layout_marginStart="@dimen/setting_topads_icon_margin"
-            app:layout_constraintStart_toEndOf="@id/balanceTitle"
-            app:layout_constraintTop_toTopOf="@id/balanceTitle"
-            app:layout_constraintBottom_toBottomOf="@id/balanceTitle"/>
+            app:layout_constraintStart_toEndOf="@id/topadsBalanceTitle"
+            app:layout_constraintTop_toTopOf="@id/topadsBalanceTitle"
+            app:layout_constraintBottom_toBottomOf="@id/topadsBalanceTitle"/>
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/balanceValue"
+            android:id="@+id/topadsBalanceValue"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:gravity="center_vertical|end"

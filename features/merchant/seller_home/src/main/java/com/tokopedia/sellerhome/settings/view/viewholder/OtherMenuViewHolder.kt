@@ -19,6 +19,7 @@ import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.*
 import kotlinx.android.synthetic.main.fragment_other_menu.view.*
 import kotlinx.android.synthetic.main.fragment_other_menu.view.shopInfoLayout
 import kotlinx.android.synthetic.main.setting_balance.view.*
+import kotlinx.android.synthetic.main.setting_balance_topads.view.*
 import kotlinx.android.synthetic.main.setting_partial_main_info_success.view.*
 import kotlinx.android.synthetic.main.setting_partial_shop_info_error.view.*
 import kotlinx.android.synthetic.main.setting_partial_shop_info_success.view.*
@@ -138,15 +139,22 @@ class OtherMenuViewHolder(private val itemView: View,
         }
     }
 
-    private fun setKreditTopadsBalance(topadsBalanceUiModel: BalanceUiModel) {
+    private fun setKreditTopadsBalance(topadsBalanceUiModel: TopadsBalanceUiModel) {
         itemView.topAdsBalance.run {
-            balanceTitle?.text = context.resources.getString(R.string.setting_topads_credits)
-            balanceValue?.text = topadsBalanceUiModel.balanceValue
+            topadsBalanceTitle?.text = context.resources.getString(R.string.setting_topads_credits)
+            topadsBalanceValue?.text = topadsBalanceUiModel.balanceValue
             sendSettingShopInfoImpressionTracking(topadsBalanceUiModel, trackingListener::sendImpressionDataIris)
-            balanceValue.setOnClickListener {
+            topadsBalanceValue.setOnClickListener {
                 listener.onKreditTopadsClicked()
                 topadsBalanceUiModel.sendSettingShopInfoClickTracking()
             }
+            val topAdsTooltipDrawable =
+                    if (topadsBalanceUiModel.isTopAdsUser) {
+                        ContextCompat.getDrawable(context, R.drawable.ic_topads_active)
+                    } else {
+                        ContextCompat.getDrawable(context, R.drawable.ic_topads_inactive)
+                    }
+            topAdsStatusTooltip.setImageDrawable(topAdsTooltipDrawable)
         }
     }
 

@@ -73,6 +73,7 @@ class OtherMenuViewModel @Inject constructor(
                     owner?.getShopStatusType() ?: RegularMerchant.NeedUpgrade,
                     shopInfo.balance?.sellerBalance.toDecimalRupiahCurrency(),
                     shopInfo.topadsDeposit.topadsAmount.toDecimalRupiahCurrency(),
+                    shopInfo.topadsDeposit.isTopadsUser,
                     shopBadge,
                     totalFollowers)
         }
