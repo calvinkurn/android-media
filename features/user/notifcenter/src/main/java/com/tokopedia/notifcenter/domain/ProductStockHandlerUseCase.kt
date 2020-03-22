@@ -28,7 +28,7 @@ class ProductStockHandlerUseCase @Inject constructor(
     }
 
     companion object {
-        private const val PARAM_NOTIF_ID  = "notifId"
+        private const val PARAM_NOTIF_ID  = "notif_id"
 
         fun params(notifId: String): HashMap<String, Any> {
             val variables = hashMapOf<String, Any>()
