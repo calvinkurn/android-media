@@ -404,6 +404,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             }
 
             if (response.successData.success) {
+                // Remove promo code on validate use params after clear promo success
                 val tmpValidateUsePromoRequest = validateUsePromoRequest
                 promoCodes.forEach { promo ->
                     if (tmpValidateUsePromoRequest.codes.contains(promo)) {

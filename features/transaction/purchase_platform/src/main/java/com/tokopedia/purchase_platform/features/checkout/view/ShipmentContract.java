@@ -361,6 +361,8 @@ public interface ShipmentContract {
 
         LastApplyUiModel getLastApplyData();
 
+        void setValidateUsePromoRevampUiModel(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel);
+
         ValidateUsePromoRevampUiModel getValidateUsePromoRevampUiModel();
 
         void setLatValidateUseRequest(ValidateUsePromoRequest latValidateUseRequest);
