@@ -46,7 +46,6 @@ import com.tokopedia.notifcenter.util.isSingleItem
 import com.tokopedia.notifcenter.util.viewModelProvider
 import com.tokopedia.notifcenter.widget.ChipFilterItemDivider
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_notification_update.*
 import javax.inject.Inject
 import com.tokopedia.notifcenter.data.mapper.ProductStockHandlerMapper.map as stockHandlerMapper
@@ -58,7 +57,6 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var presenter: NotificationUpdatePresenter
     @Inject lateinit var analytics: NotificationUpdateAnalytics
-    @Inject lateinit var userSession: UserSessionInterface
 
     private lateinit var viewModel: NotificationUpdateViewModel
 
@@ -216,15 +214,17 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
         adapter.notifyItemChanged(adapterPosition, payloadBackground)
         presenter.markReadNotif(notification.notificationId)
 
-        //if product data only one, check product stock
-        if (notification.products.isSingleItem()) {
-            viewModel.isProductStockHandler(notification.notificationId)
-        }
-
         //if need to reset the counter
         if (!notification.isRead) {
             updateMarkAllReadCounter()
             notifyBottomActionView()
+        }
+    }
+
+    override fun itemContainerClicked(notification: NotificationItemViewBean) {
+        //if product data only one, check product stock
+        if (notification.products.isSingleItem()) {
+            viewModel.isProductStockHandler(notification.notificationId)
         }
     }
 
