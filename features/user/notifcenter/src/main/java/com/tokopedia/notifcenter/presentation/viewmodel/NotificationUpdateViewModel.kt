@@ -36,7 +36,7 @@ class NotificationUpdateViewModel @Inject constructor(
     override fun isProductStockHandler(notificationId: String) {
         val params = stockHandlerParam(notificationId)
         productStockHandlerUseCase.get(params, {
-            _productStockHandler.value = it
+            _productStockHandler.postValue(it)
         }, ::onErrorMessage)
     }
 
