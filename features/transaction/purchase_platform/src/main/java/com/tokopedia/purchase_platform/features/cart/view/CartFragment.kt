@@ -188,8 +188,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var prevCbSelectAllIsSelected: Boolean = false
     private var cbChangeJob: Job? = null
 
-    private var listPromoCodes = arrayListOf<String>()
-
     companion object {
 
         private const val LOYALTY_ACTIVITY_REQUEST_CODE = 12345
@@ -1373,8 +1371,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         if (!ignoreIsChecked && parentPosition != -1) {
             for (i in 0 until countListShop) {
-                cartListData?.shopGroupAvailableDataList?.get(i)?.let {
+                val listPromoCodes = arrayListOf<String>()
+                cartListData?.shopGroupAvailableDataList?.get(i)?.let { it ->
                     cartItemHolderData = it
+
+                    cartItemHolderData.promoCodes?.forEach { code ->
+                        listPromoCodes.add(code)
+                    }
+
                     var countListItem = 0
                     cartItemHolderData.cartItemDataList?.let { countListItem = it.size }
                     if (i == (parentPosition - 1)) {
@@ -1385,34 +1389,44 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                             } else {
                                 cartItemHolderData.cartItemDataList?.get(j)?.isSelected = !isChecked
                             }
-                            cartItemHolderData.cartItemDataList?.get(j)?.isSelected?.let { it1 ->
-                                doLoopInOrders(cartItemHolderData, j, it1, listProductDetail, listOrder)
+                            cartItemHolderData.cartItemDataList?.get(j)?.isSelected?.let { isItemSelected ->
+                                if (isItemSelected) {
+                                    doAddToListProducts(cartItemHolderData, j, listProductDetail)
+                                }
                             }
                         }
+                        doAddtoOrderListRequest(cartItemHolderData, listProductDetail, listPromoCodes, listOrder)
                     } else {
                         val listProductDetail = arrayListOf<ProductDetailsItem>()
                         for (j in 0 until countListItem) {
-                            cartItemHolderData.cartItemDataList?.get(j)?.isSelected?.let { it1 ->
-                                doLoopInOrders(cartItemHolderData, j, it1, listProductDetail, listOrder)
+                            cartItemHolderData.cartItemDataList?.get(j)?.isSelected?.let { isItemSelected ->
+                                if (isItemSelected) {
+                                    doAddToListProducts(cartItemHolderData, j, listProductDetail)
+                                }
                             }
                         }
+                        doAddtoOrderListRequest(cartItemHolderData, listProductDetail, listPromoCodes, listOrder)
                     }
                 }
             }
         } else if (!ignoreIsChecked && parentPosition == -1) {
-            // shop yg dicentang --> loop by selectedCartShopHolderData
-            println("++ count selected shop = ${cartAdapter.selectedCartShopHolderData.size}")
-
             cartAdapter.selectedCartShopHolderData.forEach {
                 val listProductDetail = arrayListOf<ProductDetailsItem>()
 
+                val listPromoCodes = arrayListOf<String>()
+                it.shopGroupAvailableData.promoCodes?.forEach { code ->
+                    listPromoCodes.add(code)
+                }
+
                 var countItemList: Int
-                println("++ count itemDataList = ${it.shopGroupAvailableData.cartItemDataList?.size}")
                 it.shopGroupAvailableData.cartItemDataList?.let { listCartItemHolderData ->
                     countItemList = listCartItemHolderData.size
                     for (j in 0 until countItemList) {
-                        doLoopInOrders(it.shopGroupAvailableData, j, listCartItemHolderData[j].isSelected, listProductDetail, listOrder)
+                        if (listCartItemHolderData[j].isSelected) {
+                            doAddToListProducts(it.shopGroupAvailableData, j, listProductDetail)
+                        }
                     }
+                    doAddtoOrderListRequest(it.shopGroupAvailableData, listProductDetail, listPromoCodes, listOrder)
                 }
             }
 
@@ -1420,12 +1434,22 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             for (i in 0 until countListShop) {
                 cartListData?.shopGroupAvailableDataList?.get(i)?.let {
                     cartItemHolderData = it
+
+                    val listPromoCodes = arrayListOf<String>()
+                    cartItemHolderData.promoCodes?.forEach { code ->
+                        listPromoCodes.add(code)
+                    }
+
                     var countListItem = 0
                     cartItemHolderData.cartItemDataList?.let { countListItem = it.size }
                     val listProductDetail = arrayListOf<ProductDetailsItem>()
                     for (j in 0 until countListItem) {
-                        cartItemHolderData.cartItemDataList?.get(j)?.isSelected?.let { it1 -> doLoopInOrders(cartItemHolderData, j, it1, listProductDetail, listOrder) }
+                        cartItemHolderData.cartItemDataList?.get(j)?.isSelected?.let { isItemSelected ->
+                            if (isItemSelected) {
+                                doAddToListProducts(cartItemHolderData, j, listProductDetail) }
+                            }
                     }
+                    doAddtoOrderListRequest(cartItemHolderData, listProductDetail, listPromoCodes, listOrder)
                 }
             }
         }
@@ -1438,7 +1462,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 orders = listOrder)
     }
 
-    private fun doLoopInOrders(cartItemHolderData: ShopGroupAvailableData, j: Int, isCheckedItem: Boolean, listProductDetail: ArrayList<ProductDetailsItem>, listOrder: ArrayList<OrdersItem>) {
+    private fun doAddToListProducts(cartItemHolderData: ShopGroupAvailableData, j: Int, listProductDetail: ArrayList<ProductDetailsItem>) {
         cartItemHolderData.cartItemDataList?.get(j)?.let { cartItemData ->
             if (cartItemData.isSelected) {
                 val productDetail = cartItemData.cartItemData?.originData?.productId?.toInt()?.let {
@@ -1450,22 +1474,22 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     }
                 }
                 productDetail?.let { listProductDetail.add(it) }
+            }
+        }
+    }
 
-                cartItemData.cartItemData?.originData?.listPromoCheckout?.let {
-                    listPromoCodes = it as ArrayList<String>
-                }
-
-                cartItemHolderData.shopId?.toLong()?.let { shopId ->
-                    cartItemHolderData.cartString?.let { cartString ->
-                        val order = OrdersItem(
-                                shopId = shopId.toInt(),
-                                uniqueId = cartString,
-                                productDetails = listProductDetail,
-                                codes = listPromoCodes,
-                                isChecked = isCheckedItem)
-                        listOrder.add(order)
-                    }
-                }
+    private fun doAddtoOrderListRequest(cartItemHolderData: ShopGroupAvailableData,
+                                        listProductDetail: ArrayList<ProductDetailsItem>,
+                                        listPromoCodes: ArrayList<String>,
+                                        listOrder: ArrayList<OrdersItem>) {
+        cartItemHolderData.shopId?.toLong()?.let { shopId ->
+            cartItemHolderData.cartString?.let { cartString ->
+                val order = OrdersItem(
+                        shopId = shopId.toInt(),
+                        uniqueId = cartString,
+                        productDetails = listProductDetail,
+                        codes = listPromoCodes)
+                listOrder.add(order)
             }
         }
     }
