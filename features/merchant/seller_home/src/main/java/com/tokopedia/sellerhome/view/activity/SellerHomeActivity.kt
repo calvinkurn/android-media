@@ -105,7 +105,7 @@ class SellerHomeActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        doubleTabToExit()
+        doubleTapToExit()
     }
 
     fun attachCallback(callback: StatusBarCallback) {
@@ -129,7 +129,7 @@ class SellerHomeActivity : BaseActivity() {
         }
     }
 
-    private fun doubleTabToExit() {
+    private fun doubleTapToExit() {
         if (canExitApp) {
             finish()
         } else {
