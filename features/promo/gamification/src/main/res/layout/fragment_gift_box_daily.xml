@@ -133,15 +133,15 @@
                 android:layout_gravity="bottom"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
-                android:paddingBottom="18dp"
+                android:paddingBottom="@dimen/dp_16"
                 tools:alpha="1">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tvRewardFirstLine"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:text="Yay, kamu dapat hadia"
+                    android:layout_marginBottom="@dimen/dp_4"
+                    tools:text="Yay, kamu dapat hadia"
                     android:textColor="@android:color/white"
                     app:typographyType="heading_5"
                     app:typographyWeight="bold" />
@@ -150,7 +150,7 @@
                     android:id="@+id/tvRewardSecondLine"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="40dp"
+                    android:layout_marginBottom="15dp"
                     android:gravity="center_horizontal"
                     android:text="@string/gami_kupon_undian_100_ovo_points"
                     android:textColor="@android:color/white"

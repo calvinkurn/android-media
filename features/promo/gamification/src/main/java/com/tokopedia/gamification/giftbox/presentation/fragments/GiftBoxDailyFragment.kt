@@ -5,6 +5,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.Gravity
@@ -111,8 +112,17 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         tvReminderMessage = v.findViewById(R.id.tvReminderMessage)
         loaderReminder = v.findViewById(R.id.loaderReminder)
         super.initViews(v)
-
+        setShadows()
         setListeners()
+    }
+
+    fun setShadows() {
+        val shadowColor = Color.parseColor("#4A000000")
+        val shadowRadius = dpToPx(5f)
+        val shadowOffset = dpToPx(4f)
+        tvRewardFirstLine.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
+        tvRewardSecondLine.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
+        tvBenefits.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
     }
 
     private fun setListeners() {

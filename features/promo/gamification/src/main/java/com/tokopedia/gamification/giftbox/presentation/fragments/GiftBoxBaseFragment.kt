@@ -2,6 +2,7 @@ package com.tokopedia.gamification.giftbox.presentation.fragments
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.*
