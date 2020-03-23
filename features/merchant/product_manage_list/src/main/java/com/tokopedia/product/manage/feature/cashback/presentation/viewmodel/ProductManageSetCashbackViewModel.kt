@@ -23,8 +23,8 @@ class ProductManageSetCashbackViewModel @Inject constructor(private val setCashb
     private val _setCashbackResult = MutableLiveData<Result<SetCashbackResult>>()
 
     fun setCashback(productId: String, productName: String, cashback: Int) {
-        setCashbackUseCase.params = SetCashbackUseCase.createRequestParams(productId.toIntOrZero(), cashback, false)
         launchCatchError(block = {
+            setCashbackUseCase.setParams(productId.toIntOrZero(), cashback, false)
             val result = setCashbackUseCase.executeOnBackground()
             when(result.goldSetProductCashback.header.errorCode) {
                 CASHBACK_SUCCESS_CODE -> _setCashbackResult.postValue(Success(SetCashbackResult(productId = productId, cashback = cashback, productName = productName)))

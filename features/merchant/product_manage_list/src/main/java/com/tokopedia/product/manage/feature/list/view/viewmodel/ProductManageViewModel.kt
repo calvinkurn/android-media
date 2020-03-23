@@ -213,7 +213,7 @@ class ProductManageViewModel @Inject constructor(
             selectedFilter?.sortOption?.let { filterCount++ }
 
             val response = withContext(Dispatchers.IO) {
-                getProductListMetaUseCase.params = GetProductListMetaUseCase.createRequestParams(shopId)
+                getProductListMetaUseCase.setParams(shopId)
                 getProductListMetaUseCase.executeOnBackground()
             }
 
@@ -240,8 +240,8 @@ class ProductManageViewModel @Inject constructor(
 
     fun editPrice(productId: String, price: String, productName: String) {
         showProgressDialog()
-        editPriceUseCase.params = EditPriceUseCase.createRequestParams(userSessionInterface.shopId, productId, price.toFloatOrZero())
         launchCatchError(block = {
+            editPriceUseCase.setParams(userSessionInterface.shopId, productId, price.toFloatOrZero())
             val result = withContext(Dispatchers.IO) {
                 editPriceUseCase.executeOnBackground()
             }
@@ -258,8 +258,8 @@ class ProductManageViewModel @Inject constructor(
 
     fun editStock(productId: String, stock: Int, productName: String, status: ProductStatus) {
         showProgressDialog()
-        editStockUseCase.params = EditStockUseCase.createRequestParams(userSessionInterface.shopId, productId, stock, status)
         launchCatchError(block =  {
+            editStockUseCase.setParams(userSessionInterface.shopId, productId, stock, status)
             val result = withContext(Dispatchers.IO) {
                 editStockUseCase.executeOnBackground()
             }
@@ -313,8 +313,8 @@ class ProductManageViewModel @Inject constructor(
 
     fun deleteSingleProduct(productName: String, productId: String) {
         showProgressDialog()
-        deleteProductUseCase.params = DeleteProductUseCase.createParams(userSessionInterface.shopId, productId)
         launchCatchError( block = {
+            deleteProductUseCase.setParams(userSessionInterface.shopId, productId)
             val result = withContext(Dispatchers.IO) {
                 deleteProductUseCase.executeOnBackground()
             }
