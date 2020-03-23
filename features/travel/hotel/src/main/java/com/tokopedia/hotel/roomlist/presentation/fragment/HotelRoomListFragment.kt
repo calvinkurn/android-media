@@ -29,6 +29,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
+import com.tokopedia.hotel.common.data.HotelErrorException
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
 import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity
@@ -92,7 +93,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         }
 
         arguments?.let {
-            hotelRoomListPageModel.propertyId = it.getInt(ARG_PROPERTY_ID, 0)
+            hotelRoomListPageModel.propertyId = it.getLong(ARG_PROPERTY_ID, 0)
             hotelRoomListPageModel.propertyName = it.getString(ARG_PROPERTY_NAME, "")
             hotelRoomListPageModel.checkIn = it.getString(ARG_CHECK_IN, "")
             hotelRoomListPageModel.checkOut = it.getString(ARG_CHECK_OUT, "")
@@ -149,7 +150,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
                     if (ErrorHandlerHotel.isPhoneNotVerfiedError(it.throwable)) {
                         navigateToAddPhonePage()
                     } else if (ErrorHandlerHotel.isGetFailedRoomError(it.throwable)) {
-                        showFailedGetRoomErrorDialog()
+                        showFailedGetRoomErrorDialog((it.throwable as HotelErrorException).message)
                     } else {
                         NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
                     }
@@ -163,6 +164,9 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
         when (requestCode) {
             RESULT_ROOM_DETAIL -> if (resultCode == Activity.RESULT_OK) {
+                loadInitialData()
+            }
+            REQ_CODE_LOGIN -> if (resultCode == Activity.RESULT_OK) {
                 loadInitialData()
             }
         }
@@ -408,7 +412,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     private fun navigateToLoginPage() {
         if (activity != null) {
             progressDialog.dismiss()
-            RouteManager.route(context, ApplinkConst.LOGIN)
+            context?.let { startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), REQ_CODE_LOGIN) }
         }
     }
 
@@ -424,10 +428,10 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         RouteManager.route(requireContext(), ApplinkConstInternalGlobal.ADD_PHONE)
     }
 
-    private fun showFailedGetRoomErrorDialog() {
+    private fun showFailedGetRoomErrorDialog(message: String) {
         val dialog = DialogUnify(activity as AppCompatActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ICON)
         dialog.setTitle(getString(R.string.hotel_room_list_failed_get_room_availability_error_title))
-        dialog.setDescription(getString(R.string.hotel_room_list_failed_get_room_availability_error_desc))
+        dialog.setDescription(message)
         dialog.setImageDrawable(R.drawable.ic_hotel_room_error_refresh)
         dialog.setPrimaryCTAText(getString(R.string.hotel_room_list_failed_get_room_availability_cta_title))
         dialog.setPrimaryCTAClickListener {
@@ -442,6 +446,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     companion object {
 
         const val RESULT_ROOM_DETAIL = 102
+        const val REQ_CODE_LOGIN = 1345
 
         const val ARG_PROPERTY_ID = "arg_property_id"
         const val ARG_PROPERTY_NAME = "arg_property_name"
@@ -455,13 +460,13 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         const val TAG_GUEST_INFO = "guestHotelInfo"
         const val EXTRA_HOTEL_ROOM_LIST_MODEL = "extra_room_list_model"
 
-        fun createInstance(propertyId: Int = 0, propertyName: String = "", checkIn: String = "", checkOut: String = "",
+        fun createInstance(propertyId: Long = 0, propertyName: String = "", checkIn: String = "", checkOut: String = "",
                            totalAdult: Int = 0, totalChildren: Int = 0, totalRoom: Int = 0,
                            destinationType: String, destinationName: String): HotelRoomListFragment {
 
             return HotelRoomListFragment().also {
                 it.arguments = Bundle().apply {
-                    putInt(ARG_PROPERTY_ID, propertyId)
+                    putLong(ARG_PROPERTY_ID, propertyId)
                     putString(ARG_PROPERTY_NAME, propertyName)
                     putString(ARG_CHECK_IN, checkIn)
                     putString(ARG_CHECK_OUT, checkOut)

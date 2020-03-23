@@ -71,7 +71,15 @@ data class Stock(
         @SerializedName("stockWording")
         @Expose
         val stockWording: String = ""
-)
+) {
+    fun getFinalStockWording(nearestWarehouseStockWording: String): String {
+        return if (nearestWarehouseStockWording.isEmpty()) {
+            stockWording
+        } else {
+            nearestWarehouseStockWording
+        }
+    }
+}
 
 data class Media(
         @SerializedName("type")

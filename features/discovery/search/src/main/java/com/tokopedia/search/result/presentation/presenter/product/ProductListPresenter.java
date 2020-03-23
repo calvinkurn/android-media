@@ -18,6 +18,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase;
 import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
+import com.tokopedia.search.analytics.SearchEventTracking;
 import com.tokopedia.search.di.module.SearchContextModule;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
@@ -955,12 +956,71 @@ final class ProductListPresenter
 
     private GeneralSearchTrackingModel createGeneralSearchTrackingModel(ProductViewModel productViewModel, Map<String, String> category) {
         return new GeneralSearchTrackingModel(
+                createGeneralSearchTrackingEventLabel(productViewModel),
+                !productViewModel.getProductList().isEmpty(),
+                category,
+                createGeneralSearchTrackingRelatedKeyword(productViewModel)
+        );
+    }
+
+    private String createGeneralSearchTrackingEventLabel(ProductViewModel productViewModel) {
+        return String.format(
+                SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                 productViewModel.getQuery(),
                 productViewModel.getKeywordProcess(),
-                productViewModel.getResponseCode(),
-                !productViewModel.getProductList().isEmpty(),
-                category
+                productViewModel.getResponseCode()
         );
+    }
+
+    private String createGeneralSearchTrackingRelatedKeyword(ProductViewModel productViewModel) {
+        String previousKeyword = getPreviousKeywordForGeneralSearchTracking();
+        String alternativeKeyword = getAlternativeKeywordForGeneralSearchTracking(productViewModel);
+
+        return previousKeyword + " - " + alternativeKeyword;
+    }
+
+    private String getPreviousKeywordForGeneralSearchTracking() {
+        if (getView() == null) return SearchEventTracking.NONE;
+
+        String previousKeyword = getView().getPreviousKeyword();
+        if (previousKeyword.isEmpty()) return SearchEventTracking.NONE;
+
+        return previousKeyword;
+    }
+
+    private String getAlternativeKeywordForGeneralSearchTracking(ProductViewModel productViewModel) {
+        String alternativeKeyword = SearchEventTracking.NONE;
+
+        if (isAlternativeKeywordFromRelated(productViewModel)) {
+            alternativeKeyword = productViewModel.getRelatedSearchModel().getRelatedKeyword();
+        }
+        else if (isAlternativeKeywordFromSuggestion(productViewModel)) {
+            alternativeKeyword = productViewModel.getSuggestionModel().getSuggestion();
+        }
+
+        return alternativeKeyword;
+    }
+
+    private boolean isAlternativeKeywordFromRelated(ProductViewModel productViewModel) {
+        String responseCode = productViewModel.getResponseCode();
+
+        boolean isResponseCodeForRelatedKeyword = responseCode.equals("3") || responseCode.equals("6");
+        boolean relatedKeywordIsNotEmpty =
+                productViewModel.getRelatedSearchModel() != null
+                && !productViewModel.getRelatedSearchModel().getRelatedKeyword().isEmpty();
+
+        return isResponseCodeForRelatedKeyword && relatedKeywordIsNotEmpty;
+    }
+
+    private boolean isAlternativeKeywordFromSuggestion(ProductViewModel productViewModel) {
+        String responseCode = productViewModel.getResponseCode();
+
+        boolean isResponseCodeForSuggestion = responseCode.equals("7");
+        boolean suggestionIsNotEmpty =
+                productViewModel.getSuggestionModel() != null
+                && !productViewModel.getSuggestionModel().getSuggestion().isEmpty();
+
+        return isResponseCodeForSuggestion && suggestionIsNotEmpty;
     }
 
     private void enrichWithRelatedSearchParam(RequestParams requestParams) {

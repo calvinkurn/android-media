@@ -69,6 +69,7 @@
 /features/merchant/shop_open/                           @tokopedia/minion-stuart
 /features/merchant/shop_page/                           @tokopedia/minion-stuart
 /features/merchant/shop_settings/                       @tokopedia/minion-stuart
+/features/merchant/variant_common/                      @tokopedia/minion-stuart
 
 /libraries/kotlin_extensions/                           @tokopedia/minion-stuart
 
@@ -250,5 +251,12 @@
 /tkpdabstraction/                                   	@nathaniel09 @hendrysetiadi89
 
 /customerapp/                                       	@tokopedia/core-team
-/sellerapp/                                         	@tokopedia/core-team
+/sellerapp/                                         	@tokopedia/minion-stuart
 /testapp/                                               @tokopedia/core-team
+
+
+/customerapp/src/main/java/com/tokopedia/tkpd/ConsumerMainApplication.java                      @varun0922
+/customerapp/src/main/java/com/tokopedia/tkpd/ConsumerRouterApplication.java                    @varun0922
+/customerapp/src/main/java/com/tokopedia/tkpd/ConsumerSplashScreen.java                         @varun0922
+/tkpdcore/src/main/java/com/tokopedia/core/SplashScreen.java                                    @varun0922
+/tkpdcore/src/main/java/com/tokopedia/core/app/MainApplication.java                             @varun0922

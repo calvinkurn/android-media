@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         app:unifyEmptyStateCTAFullWidth="true"
         app:unifyEmptyStateDescription="@string/af_no_connection_detail"
-        app:unifyEmptyStateImageDrawable="@drawable/ic_tokopedia_no_connection"
+        app:unifyEmptyStateImageDrawable="@drawable/unify_globalerrors_connection"
         app:unifyEmptyStateOrientation="vertical"
         app:unifyEmptyStatePrimaryCTAText="@string/af_try_again"
         app:unifyEmptyStateTitle="@string/af_no_connection_title"

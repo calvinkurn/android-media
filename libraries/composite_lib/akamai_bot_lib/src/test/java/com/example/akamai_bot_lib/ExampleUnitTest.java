@@ -1,7 +1,6 @@
 package com.example.akamai_bot_lib;
 
 import com.tokopedia.akamai_bot_lib.UtilsKt;
-import com.tokopedia.akamai_bot_lib.interceptor.RegexUtil;
 
 import org.junit.Test;
 
@@ -54,4 +53,6 @@ public class ExampleUnitTest {
             System.out.println(m.group(0));
         }
     }
+
+
 }

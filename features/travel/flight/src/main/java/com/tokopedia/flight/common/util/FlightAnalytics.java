@@ -43,6 +43,7 @@ public class FlightAnalytics {
     private String CHECKOUT_EVENT = "checkout";
     private String PROMO_VIEW_EVENT = "promoView";
     private String PROMO_CLICK_EVENT = "promoClick";
+    private String FLIGHT_CLICK_EVENT = "clickFlight";
     private String PRODUCT_CLICK_EVENT = "productClick";
     private String PRODUCT_VIEW_EVENT = "productView";
     private String SEARCH_RESULT_EVENT = "searchResult";
@@ -69,7 +70,7 @@ public class FlightAnalytics {
     public void eventOpenScreen(String screenName, boolean isLoginStatus) {
         Map<String, String> mapOpenScreen = new HashMap<>();
         mapOpenScreen.put(EVENT_NAME, OPEN_SCREEN_EVENT);
-        mapOpenScreen.put(IS_LOGIN_STATUS, isLoginStatus? "true" : "false");
+        mapOpenScreen.put(IS_LOGIN_STATUS, isLoginStatus ? "true" : "false");
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(
                 screenName, mapOpenScreen);
     }
@@ -170,6 +171,24 @@ public class FlightAnalytics {
                 )));
     }
 
+    public void eventQuickFilterClick(String filterName) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                FLIGHT_CLICK_EVENT,
+                GENERIC_CATEGORY,
+                Action.WIDGET_CLICK_FILTER,
+                String.format(Label.WIDGET_FLIGHT_FILTER, filterName)
+        );
+    }
+
+    public void eventChangeSearchClick() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                FLIGHT_CLICK_EVENT,
+                GENERIC_CATEGORY,
+                Action.CLICK_CHANGE_SEARCH,
+                Label.FLIGHT_CHANGE_SEARCH
+        );
+    }
+
     public void eventSearchView(FlightSearchPassDataViewModel passDataViewModel, boolean searchFound) {
         Map<String, Object> mapModel = new HashMap<>();
         mapModel.put(EVENT, VIEW_SEARCH_EVENT);
@@ -195,7 +214,7 @@ public class FlightAnalytics {
                 passDataViewModel.getArrivalAirport().getCityCode() : passDataViewModel.getArrivalAirport().getAirportCode());
         mapModel.put("departureDate", FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, passDataViewModel.getDepartureDate()));
         mapModel.put("returnDateFormatted", passDataViewModel.isOneWay() ? "" : String.format(" - %s", FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, passDataViewModel.getReturnDate())));
-        mapModel.put("returnTicket", passDataViewModel.isOneWay()? "false": "true");
+        mapModel.put("returnTicket", passDataViewModel.isOneWay() ? "false" : "true");
         mapModel.put("passenger", passDataViewModel.getFlightPassengerViewModel().getAdult() + passDataViewModel.getFlightPassengerViewModel().getChildren() +
                 passDataViewModel.getFlightPassengerViewModel().getInfant());
         mapModel.put("travelWithKids", passDataViewModel.getFlightPassengerViewModel().getChildren() > 0 ||
@@ -963,7 +982,7 @@ public class FlightAnalytics {
     }
 
     public void eventBranchCheckoutFlight(String productName, String journeyId, String invoiceId,
-                                    String paymentId, String userId, String totalPrice) {
+                                          String paymentId, String userId, String totalPrice) {
         LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_PURCHASE_FLIGHT,
                 createLinkerData(productName, journeyId, invoiceId, paymentId, userId, totalPrice)));
     }
@@ -1031,6 +1050,8 @@ public class FlightAnalytics {
         static String PRODUCT_CLICK_SEARCH_LIST = "product click";
         static String PRODUCT_CLICK_SEARCH_DETAIL = "click pilih on flight detail";
         static String PRODUCT_VIEW_ACTION = "product impressions";
+        static String WIDGET_CLICK_FILTER = "click widget filter";
+        static String CLICK_CHANGE_SEARCH = "click change search";
     }
 
     private static class Label {
@@ -1049,6 +1070,8 @@ public class FlightAnalytics {
         static String FLIGHT = "Flight";
         static String FLIGHT_SMALL = "flight";
         static String PRODUCT_VIEW = "flight - %s-%s";
+        static String WIDGET_FLIGHT_FILTER = "flight - %s";
+        static String FLIGHT_CHANGE_SEARCH = "flight - change search";
     }
 
     private static class EnhanceEccomerce {
