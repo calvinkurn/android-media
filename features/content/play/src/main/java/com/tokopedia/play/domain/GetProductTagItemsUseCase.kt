@@ -42,7 +42,7 @@ class GetProductTagItemsUseCase @Inject constructor(private val graphqlRepositor
             val playTagsItemReq = "\$playTagsItemReq"
 
             /**
-             * Add
+             * TODO: Add below
              * is_free_shipping: IsFreeShipping
              */
             return """
