@@ -95,6 +95,12 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
         }
 
         quickEditStockSaveButton.setOnClickListener {
+            viewModel.updateStock(quickEditStockQuantityEditor.getValue())
+            if (quickEditStockActivateSwitch.isChecked) {
+                viewModel.updateStatus(ProductStatus.ACTIVE)
+            } else {
+                viewModel.updateStatus(ProductStatus.INACTIVE)
+            }
             onFinishedListener.onFinishEditStock(product)
             removeObservers()
             super.dismiss()
