@@ -91,7 +91,7 @@ class ProductManageViewModel @Inject constructor(
         get() = _multiEditProductResult
     val selectedFilterAndSort: LiveData<FilterOptionWrapper>
         get() = _selectedFilterAndSort
-    val productFiltersTab: LiveData<List<FilterTabViewModel>>
+    val productFiltersTab: LiveData<Result<List<FilterTabViewModel>>>
         get() = _productFiltersTab
 
     private val _viewState = MutableLiveData<ViewState>()
@@ -107,7 +107,7 @@ class ProductManageViewModel @Inject constructor(
     private val _toggleMultiSelect = MutableLiveData<Boolean>()
     private val _multiEditProductResult = MutableLiveData<Result<MultiEditResult>>()
     private val _selectedFilterAndSort = MutableLiveData<FilterOptionWrapper>()
-    private val _productFiltersTab = MutableLiveData<List<FilterTabViewModel>>()
+    private val _productFiltersTab = MutableLiveData<Result<List<FilterTabViewModel>>>()
 
     fun isIdlePowerMerchant(): Boolean = userSessionInterface.isPowerMerchantIdle
     fun isPowerMerchant(): Boolean = userSessionInterface.isGoldMerchant
@@ -214,12 +214,12 @@ class ProductManageViewModel @Inject constructor(
 
             val response = withContext(Dispatchers.IO) {
                 getProductListMetaUseCase.params = GetProductListMetaUseCase.createRequestParams(shopId)
-                async { getProductListMetaUseCase.executeOnBackground() }
-            }.await()
+                getProductListMetaUseCase.executeOnBackground()
+            }
 
-            _productFiltersTab.value = mapToTabFilters(response, filterCount)
+            _productFiltersTab.value = Success(mapToTabFilters(response, filterCount))
         }, onError = {
-            _productFiltersTab.value = emptyList()
+            _productFiltersTab.value = Fail(it)
         })
     }
 

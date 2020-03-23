@@ -35,6 +35,7 @@
                 android:layout_marginRight="@dimen/spacing_lvl4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 app:search_bar_clearable="true"
                 app:search_bar_show_icon="false"
                 app:layout_scrollFlags="scroll|snap"/>
@@ -47,6 +48,7 @@
                 android:paddingRight="@dimen/product_manage_horizontal_spacing"
                 android:layout_marginTop="@dimen/product_manage_vertical_spacing"
                 android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
+                android:visibility="gone"
                 app:layout_scrollFlags="scroll|snap" />
 
             <LinearLayout
