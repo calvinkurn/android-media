@@ -606,7 +606,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void onLogout(AppComponent appComponent) {
         PersistentCacheManager.instance.delete(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV);
         new CacheApiClearAllUseCase(this).executeSync();
-        TkpdSellerLogout.onLogOut(appComponent);
+        TkpdSellerLogout.onLogOut(appComponent, this);
     }
 
     public Intent getLoginIntent(Context context) {

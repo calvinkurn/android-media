@@ -10,6 +10,9 @@ import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.user.session.UserSession;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import static com.tokopedia.sellerapp.webview.SellerappWebViewActivity.PARAM_BUNDLE_URL;
 
 public class SellerappWebViewFragment extends BaseWebViewFragment {
@@ -44,10 +47,20 @@ public class SellerappWebViewFragment extends BaseWebViewFragment {
     protected String getUrl() {
         if (isTokopediaUrl) {
             UserSessionInterface usersession = new UserSession(getActivity());
-            return URLGenerator.generateURLSessionLogin(url,
+            return URLGenerator.generateURLSessionLogin(
+                    getEncodedUrl(url),
                     usersession.getDeviceId(),
                     usersession.getUserId());
         } else {
+            return url;
+        }
+    }
+
+    private String getEncodedUrl(String url) {
+        try {
+            return URLEncoder.encode(url, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
             return url;
         }
     }
