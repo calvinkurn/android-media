@@ -1452,7 +1452,15 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             dynamicAdapter.clearElement(pdpHashMapUtil?.productNewVariantDataModel)
             return
         }
-        pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierToHashMap(data)
+
+        val isOnlyHaveOneVariantLeftData = data.autoSelectedOptionIds()
+
+        if (isOnlyHaveOneVariantLeftData.isEmpty()) {
+            pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierToHashMap(data)
+        } else {
+            pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(data, isOnlyHaveOneVariantLeftData)
+        }
+
         viewModel.processVariant(data, pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant)
     }
 
