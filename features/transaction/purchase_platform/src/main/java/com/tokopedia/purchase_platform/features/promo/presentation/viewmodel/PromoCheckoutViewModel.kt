@@ -483,14 +483,20 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             couponList.add(eligibilityHeader)
 
             // Initialize promo list header
+            val tmpIneligiblePromoList = ArrayList<Visitable<*>>()
             val tmpPromoHeaderList = ArrayList<Visitable<*>>()
             couponSectionItem.subSections.forEach { couponSubSection ->
                 val promoHeader = uiModelMapper.mapPromoListHeaderUiModel(couponSubSection, headerIdentifierId, couponSectionItem.isEnabled)
-                if (eligibilityHeader.uiState.isEnabled) {
+                if (!hasAnyEnabledPromo && eligibilityHeader.uiState.isEnabled) {
                     hasAnyEnabledPromo = true
+                }
+
+                if (eligibilityHeader.uiState.isEnabled) {
                     if (!eligibilityHeader.uiState.isCollapsed) {
                         couponList.add(promoHeader)
                     }
+                } else {
+                    tmpIneligiblePromoList.add(promoHeader)
                 }
                 headerIdentifierId++
 
@@ -500,19 +506,22 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     val promoItem = uiModelMapper.mapPromoListItemUiModel(
                             couponItem, promoHeader.uiData.identifierId, couponSubSection.isEnabled, selectedPromoList
                     )
-                    if (promoHeader.uiState.isCollapsed) {
-                        tmpCouponList.add(promoItem)
+                    if (eligibilityHeader.uiState.isEnabled) {
+                        if (promoHeader.uiState.isCollapsed) {
+                            tmpCouponList.add(promoItem)
+                        } else {
+                            couponList.add(promoItem)
+                        }
                     } else {
-                        couponList.add(promoItem)
+                        tmpIneligiblePromoList.add(promoItem)
                     }
                 }
-                if (tmpCouponList.isNotEmpty()) {
-                    promoHeader.uiData.tmpPromoItemList = tmpCouponList
-                }
 
-                if (!eligibilityHeader.uiState.isEnabled) {
-                    tmpPromoHeaderList.add(promoHeader)
-                } else {
+                if (eligibilityHeader.uiState.isEnabled) {
+                    if (tmpCouponList.isNotEmpty()) {
+                        promoHeader.uiData.tmpPromoItemList = tmpCouponList
+                    }
+
                     if (promoHeader.uiState.isCollapsed) {
                         tmpPromoHeaderList.add(promoHeader)
                     }
@@ -521,6 +530,14 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
             if (tmpPromoHeaderList.isNotEmpty()) {
                 eligibilityHeader.uiData.tmpPromo = tmpPromoHeaderList
+            }
+
+            if (tmpIneligiblePromoList.isNotEmpty()) {
+                if (eligibilityHeader.uiState.isCollapsed) {
+                    eligibilityHeader.uiData.tmpPromo = tmpIneligiblePromoList
+                } else {
+                    couponList.addAll(tmpIneligiblePromoList)
+                }
             }
         }
         _promoListUiModel.value = couponList

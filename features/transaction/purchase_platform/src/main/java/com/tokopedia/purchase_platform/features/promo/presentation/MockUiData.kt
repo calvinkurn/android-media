@@ -354,7 +354,7 @@ val MOCK_RESPONSE = """
                 "sub_title": "Promo dipilih",
                 "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
                 "is_enabled": true,
-                "is_collapsed": true,
+                "is_collapsed": false,
                 "tags": [],
                 "coupons": [
                   {
@@ -418,7 +418,7 @@ val MOCK_RESPONSE = """
                 "sub_title": "Toko Apel",
                 "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
                 "is_enabled": true,
-                "is_collapsed": false,
+                "is_collapsed": true,
                 "tags": [
                   "Promo dipilih"
                 ],
@@ -455,7 +455,7 @@ val MOCK_RESPONSE = """
                 "sub_title": "Toko Pisang",
                 "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
                 "is_enabled": true,
-                "is_collapsed": true,
+                "is_collapsed": false,
                 "tags": [],
                 "coupons": [
                   {
