@@ -36,6 +36,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
+import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.common.payment.PaymentConstant;
@@ -243,6 +244,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private boolean isInsuranceEnabled = false;
 
     private Subscription delayScrollToFirstShopSubscription;
+    private CountDownView cdView;
 
     public static ShipmentFragment newInstance(String defaultSelectedTabPromo,
                                                boolean isAutoApplyPromoCodeApplied,
@@ -337,6 +339,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         rvShipment = view.findViewById(R.id.rv_shipment);
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
+        cdView = view.findViewById(R.id.count_down);
 
         snackbarError = Snackbar.make(view, "", BaseToaster.LENGTH_SHORT);
 
@@ -347,6 +350,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         ((SimpleItemAnimator) rvShipment.getItemAnimator()).setSupportsChangeAnimations(false);
         rvShipment.addItemDecoration(new ShipmentItemDecoration());
+        cdView.setupTimerFromRemianingMillis(160 * 1000, new CountDownView.CountDownListener() {
+            @Override
+            public void onCountDownFinished() {
+                Toast.makeText(getContext(), "Finisheeeeed!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
