@@ -119,7 +119,7 @@ class StockReminderFragment: BaseDaggerFragment() {
         getStockReminder()
 
         qeStock.apply {
-            (editText as EditText).setOnEditorActionListener { _, actionId, _ ->
+            editText.setOnEditorActionListener { _, actionId, _ ->
                 if(actionId == EditorInfo.IME_ACTION_DONE) {
                     qeStock.clearFocus()
                     KeyboardHandler.DropKeyboard(activity, qeStock)

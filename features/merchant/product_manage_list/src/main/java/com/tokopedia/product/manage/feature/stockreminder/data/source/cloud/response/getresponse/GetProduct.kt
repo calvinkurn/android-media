@@ -2,7 +2,7 @@ package com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.res
 
 import com.google.gson.annotations.SerializedName
 
-data class Product(
+data class GetProduct(
     @SerializedName("product_id")
     val productId: String,
     @SerializedName("products_warehouse")

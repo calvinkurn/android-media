@@ -394,6 +394,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                             ?: ""
                         viewModel.getPopupsInfo(productId)
                         clearProductList()
+                        getFiltersTab()
                         loadInitialData()
                     }
                 }
@@ -538,6 +539,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 R.string.product_manage_delete_product_success, productName),
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
         productManageListAdapter.deleteProduct(productId)
+        renderMultiSelectProduct()
+        getFiltersTab()
     }
 
     private fun showMessageToast(message: String) {
@@ -645,8 +648,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun onSuccessMultiEditProducts(result: MultiEditResult) {
         showMultiEditToast(result)
         updateEditProductList(result)
-        clearSelectedProduct()
-        renderCheckedView()
     }
 
     private fun showMultiEditToast(result: MultiEditResult) {
@@ -659,6 +660,9 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             } else {
                 val message = getSuccessMessage(context, result)
                 showMessageToast(message)
+
+                clearSelectedProduct()
+                renderCheckedView()
             }
         }
     }
@@ -679,6 +683,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             is EditByStatus -> updateProductListStatus(productIds, result.status)
             is EditByMenu -> viewModel.toggleMultiSelect()
         }
+
+        getFiltersTab()
     }
 
     private fun updateProductListStatus(productIds: List<String>, status: ProductStatus) {
@@ -694,6 +700,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             if(status == DELETED) {
                 adapter.data.removeFirst { it.id == productId }
                 productManageListAdapter.deleteProduct(productId)
+                renderMultiSelectProduct()
             }
         }
     }
@@ -1261,8 +1268,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         observe(viewModel.productListResult) {
             when (it) {
                 is Success -> {
-                    showProductList(it.data)
                     initHeaderView(it.data)
+                    showProductList(it.data)
                 }
                 is Fail -> showErrorToast()
             }
@@ -1271,7 +1278,9 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun observeFilterTabs() {
         observe(viewModel.productFiltersTab) {
-            tabFilters.setData(it)
+            when(it) {
+                is Success -> tabFilters.setData(it.data)
+            }
         }
     }
 

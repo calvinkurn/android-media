@@ -1,10 +1,14 @@
 package com.tokopedia.product.manage.feature.list
 
+import com.tokopedia.product.manage.feature.list.view.model.SetFeaturedProductResult
 import com.tokopedia.product.manage.feature.quickedit.common.data.model.ProductUpdateV3Data
 import com.tokopedia.product.manage.feature.quickedit.common.data.model.ProductUpdateV3Response
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
 import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStockResult
+import com.tokopedia.product.manage.oldlist.data.model.featuredproductresponse.FeaturedProductResponseModel
+import com.tokopedia.product.manage.oldlist.data.model.featuredproductresponse.GoldManageFeaturedProductV2
+import com.tokopedia.product.manage.oldlist.data.model.featuredproductresponse.Header
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -78,6 +82,28 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
         }
     }
 
+    @Test
+    fun `setFeaturedProduct should execute expected use case`() {
+        runBlocking {
+            val productId = "123"
+            val status = 1
+            val errorCode = "none"
+            val message = listOf("test", "test")
+            val header = Header(errorCode, message)
+            val goldManageFeaturedProductV2 = GoldManageFeaturedProductV2(header)
+            val featuredProductResponseModel = FeaturedProductResponseModel(goldManageFeaturedProductV2)
+
+            onSetFeaturedProduct_thenReturn(featuredProductResponseModel)
+
+            viewModel.setFeaturedProduct(productId, status)
+
+            val expectedFeaturedProductResult = Success(SetFeaturedProductResult(productId, status))
+
+            verifySetFeaturedProductUseCaseCalled()
+            verifySetFeaturedProductResponseEquals(expectedFeaturedProductResult)
+        }
+    }
+
     private suspend fun onEditPrice_thenReturn(productUpdateV3Response: ProductUpdateV3Response) {
         coEvery { editPriceUseCase.executeOnBackground() } returns productUpdateV3Response
     }
@@ -90,6 +116,10 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
         coEvery { deleteProductUseCase.executeOnBackground() } returns productUpdateV3Response
     }
 
+    private suspend fun onSetFeaturedProduct_thenReturn(featuredProductResponseModel: FeaturedProductResponseModel) {
+        coEvery { setFeaturedProductUseCase.executeOnBackground() } returns featuredProductResponseModel
+    }
+
     private fun verifyEditPriceUseCaseCalled() {
         coVerify { editPriceUseCase.executeOnBackground() }
     }
@@ -100,6 +130,10 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
 
     private fun verifyDeleteProductUseCaseCalled() {
         coVerify { deleteProductUseCase.executeOnBackground() }
+    }
+
+    private fun verifySetFeaturedProductUseCaseCalled() {
+        coVerify { setFeaturedProductUseCase.executeOnBackground() }
     }
 
     private fun verifyEditPriceResponseEquals(expectedResponse: Success<EditPriceResult>) {
@@ -115,5 +149,10 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     private fun verifyDeleteProductResponseEquals(expectedResponse: Success<DeleteProductResult>) {
         val actualDeleteStockResult = (viewModel.deleteProductResult.value as Success<DeleteProductResult>)
         assertEquals(expectedResponse, actualDeleteStockResult)
+    }
+
+    private fun verifySetFeaturedProductResponseEquals(expectedResponse: Success<SetFeaturedProductResult>) {
+        val actualSetFeaturedProductResult = viewModel.setFeaturedProductResult.value as Success<SetFeaturedProductResult>
+        assertEquals(expectedResponse, actualSetFeaturedProductResult)
     }
 }
