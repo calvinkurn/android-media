@@ -19,6 +19,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ProfilesItemModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.analytics.OrderSummaryAnalytics
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.analytics.OrderSummaryPageEnhanceECommerce
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.UpdateCartOccCartRequest
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.UpdateCartOccGqlResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.UpdateCartOccProfileRequest
@@ -87,6 +88,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             }
 //            _orderPreference = OrderPreference(preference)
             orderPreference.value = OccState.FirstLoad(_orderPreference!!)
+//            orderSummaryAnalytics.eventViewOrderSummaryPage(generateViewOspEe())
             orderPromo = orderData.promo
             if (orderProduct.productId > 0 && preference.shipment.serviceId > 0) {
                 orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.LOADING)
@@ -99,6 +101,31 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             orderPreference.value = OccState.Fail(false, throwable, "")
             throwable.printStackTrace()
         })
+    }
+
+    private fun generateViewOspEe(): Map<String, Any> {
+        val orderSummaryPageEnhanceECommerce = OrderSummaryPageEnhanceECommerce()
+        orderSummaryPageEnhanceECommerce.setName(orderProduct.productName)
+        orderSummaryPageEnhanceECommerce.setId(orderProduct.productId)
+        orderSummaryPageEnhanceECommerce.setPrice(orderProduct.productPrice)
+        orderSummaryPageEnhanceECommerce.setBrand(null)
+        orderSummaryPageEnhanceECommerce.setCategory(null)
+        orderSummaryPageEnhanceECommerce.setVariant(null)
+        orderSummaryPageEnhanceECommerce.setQuantity(orderProduct.quantity?.orderQuantity ?: orderProduct.minOrderQuantity)
+        orderSummaryPageEnhanceECommerce.setListName(orderProduct.productResponse.productTrackerData.trackerListName)
+        orderSummaryPageEnhanceECommerce.setAttribution(orderProduct.productResponse.productTrackerData.attribution)
+        orderSummaryPageEnhanceECommerce.setDiscountedPrice(orderProduct.productResponse.isSlashPrice)
+        orderSummaryPageEnhanceECommerce.setWarehouseId(orderProduct.productResponse.wareHouseId)
+        orderSummaryPageEnhanceECommerce.setWarehouseId(orderProduct.weight)
+        orderSummaryPageEnhanceECommerce.setPromoCode("")
+        orderSummaryPageEnhanceECommerce.setPromoDetails("")
+        orderSummaryPageEnhanceECommerce.setCartId(orderShop.cartResponse.cartId)
+        orderSummaryPageEnhanceECommerce.setBuyerAddressId(_orderPreference?.preference?.address?.addressId ?: 0)
+        orderSummaryPageEnhanceECommerce.setSpid(_orderPreference?.shipping?.shipperProductId ?: 0)
+        orderSummaryPageEnhanceECommerce.setCodFlag(false)
+        orderSummaryPageEnhanceECommerce.setCornerFlag(false)
+        orderSummaryPageEnhanceECommerce.setIsFullfilment(false)
+        return orderSummaryPageEnhanceECommerce.build(1, "order summary page loaded")
     }
 
     fun updateProduct(product: OrderProduct, shouldReloadRates: Boolean = true) {

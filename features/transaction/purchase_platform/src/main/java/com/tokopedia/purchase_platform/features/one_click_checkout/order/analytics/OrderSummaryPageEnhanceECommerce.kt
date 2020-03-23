@@ -8,7 +8,7 @@ class OrderSummaryPageEnhanceECommerce {
         data[KEY_NAME] = name
     }
 
-    fun setId(id: String) {
+    fun setId(id: Int) {
         data[KEY_ID] = id
     }
 
@@ -20,12 +20,12 @@ class OrderSummaryPageEnhanceECommerce {
         data[KEY_BRAND] = brand ?: "none/other"
     }
 
-    fun setCategory(category: String) {
-        data[KEY_CATEGORY] = category
+    fun setCategory(category: String?) {
+        data[KEY_CATEGORY] = category ?: "none/other"
     }
 
-    fun setVariant(variant: String) {
-        data[KEY_VARIANT] = variant
+    fun setVariant(variant: String? ) {
+        data[KEY_VARIANT] = variant ?: "none/other"
     }
 
     fun setQuantity(quantity: Int) {
@@ -40,7 +40,7 @@ class OrderSummaryPageEnhanceECommerce {
         data[KEY_ATTRIBUTION] = attribution
     }
 
-    fun setDiscountedPrice(discountedPrice: Int) {
+    fun setDiscountedPrice(discountedPrice: Boolean) {
         data[KEY_DISCOUNTED_PRICE] = discountedPrice
     }
 
@@ -60,15 +60,15 @@ class OrderSummaryPageEnhanceECommerce {
         data[KEY_PROMO_DETAILS] = promoDetails
     }
 
-    fun setCartId(cartId: String) {
+    fun setCartId(cartId: Int) {
         data[KEY_CART_ID] = cartId
     }
 
-    fun setBuyerAddressId(buyerAddressId: String) {
+    fun setBuyerAddressId(buyerAddressId: Int) {
         data[KEY_BUYER_ADDRESS_ID] = buyerAddressId
     }
 
-    fun setSpid(spid: String) {
+    fun setSpid(spid: Int) {
         data[KEY_SP_ID] = spid
     }
 
