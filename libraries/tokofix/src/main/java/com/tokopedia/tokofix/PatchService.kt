@@ -20,10 +20,11 @@ class PatchService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        logger = PatchLogger(this)
         Timber.w("P1#ROBUST#PatchService created")
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent != null) {
             repository.getPatch(intent.getStringExtra("version"), this::onSuccessGetPatch)
         } else {
