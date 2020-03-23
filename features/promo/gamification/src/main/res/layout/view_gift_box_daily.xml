@@ -39,18 +39,16 @@
                 android:id="@+id/image_gift_box_lid"
                 android:layout_width="250dp"
                 android:layout_height="100dp"
-                android:layout_marginEnd="@dimen/dp_4"
-                android:layout_marginRight="@dimen/dp_4"
                 tools:srcCompat="@drawable/gf_ic_lid_frame_7" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/image_box_front"
-                android:layout_width="233dp"
-                android:layout_height="94dp"
+                android:layout_width="161dp"
+                android:layout_height="74dp"
                 android:layout_below="@id/image_gift_box_lid"
                 android:layout_centerHorizontal="true"
                 android:scaleType="centerCrop"
-                tools:src="@drawable/keejutan_box" />
+                tools:src="@drawable/kejutan_box" />
 
 
         </RelativeLayout>
@@ -62,8 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginEnd="@dimen/dp_4"
-        android:layout_marginRight="@dimen/dp_4"
+
         app:srcCompat="@drawable/gf_ic_box_stage_glow"
         tools:visibility="visible" />
 

@@ -44,7 +44,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal"
                 android:scaleType="centerCrop"
-                app:srcCompat="@drawable/gf_ic_gift_box" />
+                app:srcCompat="@drawable/kejutan_box" />
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/lottie_particles"
