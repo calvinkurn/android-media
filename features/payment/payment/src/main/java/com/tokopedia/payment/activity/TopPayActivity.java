@@ -242,8 +242,12 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     }
 
     @Override
-    public void renderWebViewPostUrl(String url, byte[] postData) {
-        scroogeWebView.postUrl(WebViewHelper.appendGAClientIdAsQueryParam(url, this), postData);
+    public void renderWebViewPostUrl(String url, byte[] postData, boolean isGet) {
+        if (isGet) {
+            scroogeWebView.loadUrl(url);
+        } else {
+            scroogeWebView.postUrl(WebViewHelper.appendGAClientIdAsQueryParam(url, this), postData);
+        }
     }
 
     @Override
