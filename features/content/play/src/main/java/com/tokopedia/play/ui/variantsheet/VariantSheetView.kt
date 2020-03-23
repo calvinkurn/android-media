@@ -56,6 +56,7 @@ class VariantSheetView(
     private val tvProductDiscount: TextView = view.findViewById(R.id.tv_product_discount)
     private val tvOriginalPrice: TextView = view.findViewById(R.id.tv_original_price)
     private val tvCurrentPrice: TextView = view.findViewById(R.id.tv_current_price)
+    private val ivFreeShipping: ImageView = view.findViewById(R.id.iv_free_shipping)
 
     private val globalError: GlobalError = view.findViewById(R.id.global_error_variant)
 
@@ -144,6 +145,7 @@ class VariantSheetView(
                             OriginalPrice(selectedProduct.priceFmt.toEmptyStringIfNull(), selectedProduct.price.toLong())
                         },
                         minQty = variantSheetUiModel?.product?.minQty.orZero(),
+                        isFreeShipping = variantSheetUiModel?.product?.isFreeShipping ?: false,
                         applink = null
                 )
                 variantSheetUiModel?.stockWording = stock?.stockWordingHTML
@@ -238,6 +240,8 @@ class VariantSheetView(
             }
         }
 
+        if (product.isFreeShipping) ivFreeShipping.visible()
+        else ivFreeShipping.gone()
     }
 
     private fun showContent(shouldShow: Boolean, withPlaceholder: Boolean) {

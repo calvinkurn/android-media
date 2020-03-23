@@ -220,6 +220,8 @@ ext {
             tkpdseller                      : ":tkpdseller",
             tkpdsession                     : ":tkpdsession",
             tkpdtransaction                 : ":tkpdtransaction",
-            tkpdtransactioncommon           : ":tkpdtransaction-common"
+            tkpdtransactioncommon           : ":tkpdtransaction-common",
+
+            recharge_slice                  : ":features:recharge_slice"
     ]
 }

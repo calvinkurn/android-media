@@ -14,8 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.bugsnag.android.BreadcrumbType;
-import com.bugsnag.android.Bugsnag;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.google.android.gms.tagmanager.DataLayer;
@@ -614,9 +612,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         PersistentCacheManager.instance.delete(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV);
         new CacheApiClearAllUseCase(this).executeSync();
         TkpdSellerLogout.onLogOut(appComponent);
-        Bugsnag.leaveBreadcrumb("user_state", BreadcrumbType.STATE, new HashMap<String, String>() {{
-            put("init", "logout");
-        }});
     }
 
     public Intent getLoginIntent(Context context) {
@@ -745,9 +740,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = CustomerRouter.getSplashScreenIntent(getBaseContext());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
-        Bugsnag.leaveBreadcrumb("user_state", BreadcrumbType.STATE, new HashMap<String, String>() {{
-            put("init", "force_logout");
-        }});
     }
 
     @Override
@@ -928,9 +920,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void logInvalidGrant(Response response) {
         AnalyticsLog.logInvalidGrant(this, legacyGCMHandler(), legacySessionHandler(), response.request().url().toString());
-        Bugsnag.leaveBreadcrumb("user_state", BreadcrumbType.STATE, new HashMap<String, String>() {{
-            put("init", "log_invalid");
-        }});
     }
 
     public boolean isIndicatorVisible() {
@@ -1079,7 +1068,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             try {
                 return DeeplinkHandlerActivity.getApplinkDelegateInstance().getIntent((Activity) context, applink);
             } catch (Exception e) {
-                Bugsnag.notify(e);
+
             }
         }
 
@@ -1120,9 +1109,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Bugsnag.leaveBreadcrumb("user_state", BreadcrumbType.STATE, new HashMap<String, String>() {{
-            put("init", "re_login");
-        }});
     }
 
     @Override
@@ -1257,9 +1243,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
         mIris.setUserId("");
         setTetraUserId("");
-        Bugsnag.leaveBreadcrumb("user_state", BreadcrumbType.STATE, new HashMap<String, String>() {{
-            put("init", "logout_account");
-        }});
     }
 
     @Override

@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.travelcalendar.R
 import com.tokopedia.travelcalendar.TRAVEL_CAL_YYYY_MM_DD
 import com.tokopedia.travelcalendar.TravelCalendarComponentInstance
@@ -136,15 +135,10 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
         setLayoutMargin()
     }
 
-    private fun setLayoutMargin() {
-        var dimension16 = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2).toInt()
-        var dimension8 = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1).toInt()
-
-        val ll = view?.findViewById(R.id.bottom_sheet_wrapper) as View
-        ll.setPadding(0, dimension16, 0, dimension16)
-
-        val header = view?.findViewById(R.id.bottom_sheet_header) as View
-        header.setMargin(dimension16, dimension8, dimension16, dimension16)
+    fun setLayoutMargin() {
+        var padding = resources.getDimension(R.dimen.layout_lvl2).toInt()
+        bottomSheetWrapper.setPadding(0, padding, 0, 0)
+        bottomSheetHeader.setPadding(padding, 0, padding, 0)
     }
 
 

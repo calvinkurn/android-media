@@ -4,14 +4,14 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.salam.umrah.orderdetail.presentation.adapter.viewholder.UmrahOrderDetailButtonViewHolder
-import com.tokopedia.salam.umrah.orderdetail.presentation.viewmodel.UmrahOrderDetailButtonViewModel
+import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailButtonModel
 
 /**
  * @author by furqan on 15/10/2019
  */
 class UmrahOrderDetailButtonAdapter(val listener: Listener) : RecyclerView.Adapter<UmrahOrderDetailButtonViewHolder>() {
 
-    private val buttonViewModel = arrayListOf<UmrahOrderDetailButtonViewModel>()
+    private val buttonViewModel = arrayListOf<UmrahOrderDetailButtonModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UmrahOrderDetailButtonViewHolder {
         val linearLayout = LinearLayout(parent.context)
@@ -34,18 +34,18 @@ class UmrahOrderDetailButtonAdapter(val listener: Listener) : RecyclerView.Adapt
         }
     }
 
-    fun setData(buttonViewModel: List<UmrahOrderDetailButtonViewModel>) {
+    fun setData(buttonModel: List<UmrahOrderDetailButtonModel>) {
         this.buttonViewModel.clear()
-        this.buttonViewModel.addAll(buttonViewModel)
+        this.buttonViewModel.addAll(buttonModel)
         notifyDataSetChanged()
     }
 
-    fun addData(buttonViewModel: UmrahOrderDetailButtonViewModel) {
-        this.buttonViewModel.add(buttonViewModel)
+    fun addData(buttonModel: UmrahOrderDetailButtonModel) {
+        this.buttonViewModel.add(buttonModel)
         notifyDataSetChanged()
     }
 
     interface Listener {
-        fun onItemClicked(buttonViewModel: UmrahOrderDetailButtonViewModel, position: Int)
+        fun onItemClicked(buttonModel: UmrahOrderDetailButtonModel, position: Int)
     }
 }
