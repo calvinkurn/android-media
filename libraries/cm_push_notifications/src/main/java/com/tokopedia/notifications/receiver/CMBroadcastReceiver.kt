@@ -2,20 +2,24 @@ package com.tokopedia.notifications.receiver
 
 import android.app.Activity
 import android.content.*
-import androidx.core.app.NotificationManagerCompat
 import android.text.TextUtils
 import android.widget.Toast
+import androidx.core.app.NotificationManagerCompat
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.*
+import com.tokopedia.notifications.data.AttributionManager
+import com.tokopedia.notifications.di.DaggerCMNotificationComponent
+import com.tokopedia.notifications.di.module.NotificationModule
 import com.tokopedia.notifications.factory.CarouselNotification
 import com.tokopedia.notifications.factory.ProductNotification
 import com.tokopedia.notifications.model.*
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 
@@ -24,19 +28,28 @@ import kotlin.coroutines.CoroutineContext
  */
 class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
 
+    @Inject lateinit var attributionManager: AttributionManager
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
 
+    private fun initInjector(context: Context) {
+        DaggerCMNotificationComponent.builder()
+                .notificationModule(NotificationModule(context))
+                .build()
+                .inject(this)
+    }
+
     override fun onReceive(context: Context, intent: Intent) {
+        initInjector(context)
+
         try {
             val action = intent.action
-            if (!intent.hasExtra(CMConstant.EXTRA_NOTIFICATION_ID))
-                return
+            if (!intent.hasExtra(CMConstant.EXTRA_NOTIFICATION_ID)) return
             val notificationId = intent.getIntExtra(CMConstant.EXTRA_NOTIFICATION_ID, 0)
-            val baseNotificationModel: BaseNotificationModel? = intent.getParcelableExtra<BaseNotificationModel>(CMConstant.EXTRA_BASE_MODEL)
-            if (null != action) {
+            val baseNotificationModel: BaseNotificationModel? = intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL)
+            if (action != null) {
                 when (action) {
-
                     CMConstant.ReceiverAction.ACTION_ON_NOTIFICATION_DISMISS -> {
                         NotificationManagerCompat.from(context).cancel(notificationId)
                         sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_DISMISSED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
@@ -50,6 +63,9 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                     CMConstant.ReceiverAction.ACTION_NOTIFICATION_CLICK -> {
                         handleNotificationClick(context, intent, notificationId)
                         sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
+
+                        //post notification attribution
+                        attributionManager.post(baseNotificationModel)
                     }
 
                     CMConstant.ReceiverAction.ACTION_BUTTON -> {
@@ -124,9 +140,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                     CMConstant.ReceiverAction.ACTION_PRODUCT_NOTIFICATION_DISMISS -> {
                         clearProductImages(context.applicationContext)
                         sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_DISMISSED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
-
                     }
-
                 }
             }
         } catch (e: Exception) {
@@ -137,7 +151,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     private fun handleMainClick(context: Context, intent: Intent, notificationId: Int) {
         val baseNotificationModel: BaseNotificationModel = intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL)
         val appLinkIntent = RouteManager.getIntent(context.applicationContext, baseNotificationModel.appLink?:ApplinkConst.HOME)
-        intent.extras?.let { bundle->
+        intent.extras?.let { bundle ->
             appLinkIntent.putExtras(bundle)
         }
         startActivity(context, appLinkIntent)

@@ -213,7 +213,8 @@ open class GetExistingChatMapper @Inject constructor() {
                     pojoAttribute.productProfile.minOrder,
                     pojoAttribute.productProfile.remainingStock,
                     pojoAttribute.productProfile.status,
-                    pojoAttribute.productProfile.wishList
+                    pojoAttribute.productProfile.wishList,
+                    pojoAttribute.productProfile.images
             )
         }
 
@@ -248,7 +249,8 @@ open class GetExistingChatMapper @Inject constructor() {
                 pojoAttribute.productProfile.minOrder,
                 pojoAttribute.productProfile.remainingStock,
                 pojoAttribute.productProfile.status,
-                pojoAttribute.productProfile.wishList
+                pojoAttribute.productProfile.wishList,
+                pojoAttribute.productProfile.images
         )
     }
 
