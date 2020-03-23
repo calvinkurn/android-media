@@ -648,8 +648,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun onSuccessMultiEditProducts(result: MultiEditResult) {
         showMultiEditToast(result)
         updateEditProductList(result)
-        clearSelectedProduct()
-        renderCheckedView()
     }
 
     private fun showMultiEditToast(result: MultiEditResult) {
@@ -662,6 +660,9 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             } else {
                 val message = getSuccessMessage(context, result)
                 showMessageToast(message)
+
+                clearSelectedProduct()
+                renderCheckedView()
             }
         }
     }
