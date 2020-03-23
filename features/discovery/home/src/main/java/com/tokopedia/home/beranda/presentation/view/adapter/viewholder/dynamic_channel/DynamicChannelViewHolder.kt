@@ -17,10 +17,12 @@ import com.tokopedia.home.beranda.helper.DynamicLinkHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
+import com.tokopedia.unifyprinciples.Typography
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifyprinciples.Typography
+import androidx.constraintlayout.widget.ConstraintSet
 
 abstract class DynamicChannelViewHolder(itemView: View,
                                         private val listener: HomeCategoryListener) : AbstractViewHolder<DynamicChannelViewModel>(itemView) {
@@ -29,8 +31,8 @@ abstract class DynamicChannelViewHolder(itemView: View,
     var countDownView: CountDownView? = null
     var seeAllButton: TextView? = null
     var channelTitle: Typography? = null
-    var channelSubtitle: TextView? = null
     var seeAllButtonUnify: UnifyButton? = null
+    var channelSubtitle: TextView? = null
 
     /**
      * List of possible layout from backend
@@ -47,6 +49,9 @@ abstract class DynamicChannelViewHolder(itemView: View,
         const val TYPE_GIF_BANNER = 8
         const val TYPE_FOUR_GRID_LEGO = 9
         const val TYPE_MIX_TOP = 10
+        const val TYPE_MIX_LEFT = 20
+        const val TYPE_RECOMMENDATION_LIST = 14
+        const val TYPE_PRODUCT_HIGHLIGHT = 11
 
         fun getLayoutType(channels: DynamicHomeChannel.Channels): Int {
             when(channels.layout) {
@@ -60,6 +65,8 @@ abstract class DynamicChannelViewHolder(itemView: View,
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC -> return TYPE_BANNER
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF -> return TYPE_GIF_BANNER
                 DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> return TYPE_MIX_TOP
+                DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> return TYPE_PRODUCT_HIGHLIGHT
+                DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> return TYPE_MIX_LEFT
 
             }
             return TYPE_CURATED
@@ -68,12 +75,12 @@ abstract class DynamicChannelViewHolder(itemView: View,
 
     override fun bind(element: DynamicChannelViewModel) {
         try {
-            val channelTitleContainer: View? = itemView.findViewById(R.id.channel_title_container)
+            val channelTitleContainer: ConstraintLayout? = itemView.findViewById(R.id.channel_title_container)
             val stubChannelTitle: View? = itemView.findViewById(R.id.channel_title)
-            val stubChannelSubtitle: View? = itemView.findViewById(R.id.channel_subtitle)
             val stubCountDownView: View? = itemView.findViewById(R.id.count_down)
             val stubSeeAllButton: View? = itemView.findViewById(R.id.see_all_button)
             val stubSeeAllButtonUnify: View? = itemView.findViewById(R.id.see_all_button_unify)
+            val stubChannelSubtitle: View? = itemView.findViewById(R.id.channel_subtitle)
 
             val channel = element.channel
             val channelHeaderName = element.channel?.header?.name
@@ -141,6 +148,24 @@ abstract class DynamicChannelViewHolder(itemView: View,
                             itemView.findViewById(R.id.see_all_button)
                         }
 
+                        /**
+                         * Requirement:
+                         * `see all` button align to subtitle and countdown timer
+                         */
+                        if (channelSubtitleName?.isEmpty() != false && !hasExpiredTime(channel)) {
+                            val constraintSet = ConstraintSet()
+                            constraintSet.clone(channelTitleContainer)
+                            constraintSet.connect(R.id.see_all_button, ConstraintSet.TOP, R.id.channel_title, ConstraintSet.TOP, 0)
+                            constraintSet.connect(R.id.see_all_button, ConstraintSet.BOTTOM, R.id.channel_title, ConstraintSet.BOTTOM, 0)
+                            constraintSet.applyTo(channelTitleContainer)
+                        } else {
+                            val constraintSet = ConstraintSet()
+                            constraintSet.clone(channelTitleContainer)
+                            constraintSet.connect(R.id.see_all_button, ConstraintSet.TOP, R.id.count_down, ConstraintSet.TOP, 0)
+                            constraintSet.connect(R.id.see_all_button, ConstraintSet.BOTTOM, R.id.count_down, ConstraintSet.BOTTOM, 0)
+                            constraintSet.applyTo(channelTitleContainer)
+                        }
+
                         seeAllButton?.show()
                         seeAllButton?.setOnClickListener {
                             listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header))
@@ -161,6 +186,24 @@ abstract class DynamicChannelViewHolder(itemView: View,
                             stubSeeAllButtonView?.findViewById(R.id.see_all_button_unify)
                         } else {
                             itemView.findViewById(R.id.see_all_button_unify)
+                        }
+
+                        /**
+                         * Requirement:
+                         * `see all unify` button align to subtitle and countdown timer
+                         */
+                        if (channelSubtitleName?.isEmpty() != false && !hasExpiredTime(channel)) {
+                            val constraintSet = ConstraintSet()
+                            constraintSet.clone(channelTitleContainer)
+                            constraintSet.connect(R.id.see_all_button_unify, ConstraintSet.TOP, R.id.channel_title, ConstraintSet.TOP, 0)
+                            constraintSet.connect(R.id.see_all_button_unify, ConstraintSet.BOTTOM, R.id.channel_title, ConstraintSet.BOTTOM, 0)
+                            constraintSet.applyTo(channelTitleContainer)
+                        } else {
+                            val constraintSet = ConstraintSet()
+                            constraintSet.clone(channelTitleContainer)
+                            constraintSet.connect(R.id.see_all_button_unify, ConstraintSet.TOP, R.id.count_down, ConstraintSet.TOP, 0)
+                            constraintSet.connect(R.id.see_all_button_unify, ConstraintSet.BOTTOM, R.id.count_down, ConstraintSet.BOTTOM, 0)
+                            constraintSet.applyTo(channelTitleContainer)
                         }
 
                         seeAllButtonUnify?.show()

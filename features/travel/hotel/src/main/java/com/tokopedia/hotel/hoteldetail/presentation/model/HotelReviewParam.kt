@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName
 data class HotelReviewParam(
         @SerializedName("propertyId")
         @Expose
-        var propertyId: Int = 0,
+        var propertyId: Long = 0,
 
         @SerializedName("page")
         @Expose

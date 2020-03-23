@@ -20,6 +20,7 @@ class HomeDataMapper(
         val list: List<Visitable<*>> = homeVisitableFactory.buildVisitableList(
                 homeData, isCache, trackingQueue, context)
                 .addBannerVisitable()
+                .addTickerVisitable()
                 .addUserWalletVisitable()
                 .addGeolocationVisitable()
                 .addDynamicIconVisitable()

@@ -25,6 +25,7 @@ import com.tokopedia.dynamicfeatures.constant.ErrorConstant
 import com.tokopedia.dynamicfeatures.track.DFTracking.Companion.trackDownloadDF
 import com.tokopedia.dynamicfeatures.utils.DFInstallerLogUtil
 import com.tokopedia.dynamicfeatures.utils.ErrorUtils
+import com.tokopedia.dynamicfeatures.utils.StorageUtils
 import com.tokopedia.dynamicfeatures.utils.Utils
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.activity_dynamic_feature_installer.*
@@ -158,7 +159,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
 
             if (freeInternalStorageBeforeDownload == 0L) {
                 freeInternalStorageBeforeDownload = withContext(Dispatchers.IO) {
-                    DFInstallerLogUtil.getFreeSpaceBytes(applicationContext)
+                    StorageUtils.getFreeSpaceBytes(applicationContext)
                 }
             }
 
@@ -262,7 +263,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
         }
         when (errorCodeTemp) {
             ErrorConstant.ERROR_PLAY_SERVICE_NOT_CONNECTED -> {
-                updateInformationView(R.drawable.ic_ill_general_error,
+                updateInformationView(R.drawable.unify_globalerrors_500,
                     getString(R.string.download_error_playservice_title),
                     getString(R.string.download_error_playservice_subtitle),
                     getString(R.string.start_download), {
@@ -275,7 +276,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
                     ctaAction)
                 Utils.showPlayServiceErrorDialog(this)
             }
-            ErrorConstant.ERROR_PLAY_STORE_NOT_AVAILABLE -> updateInformationView(R.drawable.ic_ill_general_error,
+            ErrorConstant.ERROR_PLAY_STORE_NOT_AVAILABLE -> updateInformationView(R.drawable.unify_globalerrors_500,
                 getString(R.string.download_error_play_store_title),
                 getString(R.string.download_error_play_store_subtitle),
                 getString(R.string.goto_playstore),
@@ -283,7 +284,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
                 getString(R.string.continue_without_install),
                 ctaAction
             )
-            ErrorConstant.ERROR_INVALID_INSUFFICIENT_STORAGE -> updateInformationView(R.drawable.ic_ill_general_error,
+            ErrorConstant.ERROR_INVALID_INSUFFICIENT_STORAGE -> updateInformationView(R.drawable.unify_globalerrors_500,
                 getString(R.string.download_error_os_and_play_store_title),
                 getString(R.string.download_error_os_and_play_store_subtitle),
                 getString(R.string.goto_seting), {
@@ -297,7 +298,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
                 startActivityForResult(Intent(android.provider.Settings.ACTION_SETTINGS), SETTING_REQUEST_CODE)
             }, getString(R.string.continue_without_install),
                 ctaAction)
-            SplitInstallErrorCode.NETWORK_ERROR.toString() -> updateInformationView(R.drawable.ic_ill_no_connection,
+            SplitInstallErrorCode.NETWORK_ERROR.toString() -> updateInformationView(R.drawable.unify_globalerrors_connection,
                 getString(R.string.download_error_connection_title),
                 getString(R.string.download_error_connection_subtitle),
                 getString(R.string.df_installer_try_again), ::downloadFeature,
@@ -310,7 +311,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
                 ::gotoPlayStore,
                 getString(R.string.continue_without_install),
                 ctaAction)
-            else -> updateInformationView(R.drawable.ic_ill_general_error,
+            else -> updateInformationView(R.drawable.unify_globalerrors_500,
                 getString(R.string.download_error_general_title),
                 getString(R.string.download_error_general_subtitle),
                 getString(R.string.df_installer_try_again),

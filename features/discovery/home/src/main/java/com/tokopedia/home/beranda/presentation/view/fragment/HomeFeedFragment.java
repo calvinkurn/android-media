@@ -41,6 +41,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeF
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeFeedViewHolder;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
+import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
@@ -63,6 +64,9 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
     private static final String PDP_EXTRA_PRODUCT_ID = "product_id";
     private static final String WIHSLIST_STATUS_IS_WISHLIST = "isWishlist";
     private static final String WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition";
+    private static final String HOME_JANKY_FRAMES_MONITORING_PAGE_NAME = "home";
+    private static final String HOME_JANKY_FRAMES_MONITORING_SUB_PAGE_NAME = "feed";
+
     private static final int REQUEST_FROM_PDP = 349;
 
     private static final int DEFAULT_TOTAL_ITEM_PER_PAGE = 12;
@@ -106,6 +110,15 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
         this.homeTabFeedListener = homeTabFeedListener;
     }
 
+    private void setJankyFramesRecyclerViewMonitoring(HomeCategoryListener homeCategoryListener) {
+        if (homeCategoryListener != null && homeCategoryListener.getHomeJankyFramesUtil() != null && getView() != null) {
+            homeCategoryListener.getHomeJankyFramesUtil().recordRecyclerViewScrollPerformance(
+                    getRecyclerView(getView()),
+                    HOME_JANKY_FRAMES_MONITORING_PAGE_NAME,
+                    HOME_JANKY_FRAMES_MONITORING_SUB_PAGE_NAME);
+        }
+    }
+
     public void setParentPool(RecyclerView.RecycledViewPool parentPool) {
         this.parentPool = parentPool;
     }
@@ -137,11 +150,6 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
         getRecyclerView(getView()).addItemDecoration(
                 new HomeFeedItemDecoration(getResources().getDimensionPixelSize(R.dimen.dp_4))
         );
-        if (homeCategoryListener.getHomeJankyFramesUtil() != null) {
-            homeCategoryListener.getHomeJankyFramesUtil().recordRecyclerViewScrollPerformance(
-                    getRecyclerView(getView()),
-                    "home", "feed");
-        }
         if (parentPool != null) {
             parentPool.setMaxRecycledViews(
                     HomeFeedViewHolder.Companion.getLAYOUT(),
@@ -149,6 +157,7 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
             );
             getRecyclerView(getView()).setRecycledViewPool(parentPool);
         }
+        setJankyFramesRecyclerViewMonitoring(homeCategoryListener);
     }
     @Override
     public void loadData(int page) {
@@ -335,6 +344,7 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
     @Override
     public void onProductImpression(HomeFeedViewModel model, int position) {
         if (model.isTopAds()) {
+            new ImpresionTask().execute(model.getClickUrl());
             if(userSession.isLoggedIn()){
                 homeTrackingQueue.putEETracking((HashMap<String, Object>) HomeRecommendationTracking.INSTANCE.getRecommendationProductViewLoginTopAds(
                         tabName.toLowerCase(),
@@ -391,6 +401,7 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
                         homeFeedViewModel
                 ));
             } else {
+                new ImpresionTask().execute(homeFeedViewModel.getClickUrl());
                 TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationProductClickLoginTopAds(
                         tabName.toLowerCase(),
                         homeFeedViewModel
@@ -403,6 +414,7 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
                         homeFeedViewModel
                 ));
             } else {
+                new ImpresionTask().execute(homeFeedViewModel.getClickUrl());
                 TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationProductClickNonLoginTopAds(
                         tabName.toLowerCase(),
                         homeFeedViewModel

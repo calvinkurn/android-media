@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.loginfingerprint.R
 import com.tokopedia.loginfingerprint.di.LoginFingerprintComponent
 import com.tokopedia.loginfingerprint.listener.ScanFingerprintInterface
-import com.tokopedia.loginfingerprint.utils.crypto.CryptographyUtils
+import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginfingerprint.view.ScanFingerprintDialog
 import com.tokopedia.loginfingerprint.viewmodel.RegisterOnboardingViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -27,12 +27,15 @@ import javax.inject.Inject
 class RegisterFingerprintOnboardingFragment : BaseDaggerFragment() {
 
     val TAG = "RegisterFingerprintFragment"
-    private var cryptographyUtils: CryptographyUtils? = null
 
     private var scanFingerprintDialog: ScanFingerprintDialog? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    @JvmField
+    var cryptographyUtils: Cryptography? = null
 
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
 
@@ -49,11 +52,6 @@ class RegisterFingerprintOnboardingFragment : BaseDaggerFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_register_fingerprint_onboarding, container, false)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        cryptographyUtils = CryptographyUtils()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

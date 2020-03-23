@@ -32,37 +32,30 @@
         app:tckv_indicator_on_color="@color/tkpd_main_green"
         tools:visibility="visible" />
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/background_apps">
+        android:layout_height="wrap_content"
+        android:background="@color/background_apps"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <include layout="@layout/include_flight_search_title_route" />
+
+        <include layout="@layout/include_flight_quick_filter" />
+
+        <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+            android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <include layout="@layout/include_flight_search_title_route" />
-
-            <include layout="@layout/include_flight_quick_filter" />
-
-            <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-                android:id="@+id/swipe_refresh_layout"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clipToPadding="false"
-                    android:fitsSystemWindows="true"
-                    android:paddingBottom="@dimen/dp_10"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-            </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
-        </LinearLayout>
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:fitsSystemWindows="true"
+                android:paddingBottom="@dimen/dp_10"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+    </LinearLayout>
 
 </LinearLayout>
