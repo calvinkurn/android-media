@@ -248,7 +248,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
     }
 
     override fun getUserInfoFingerprint() {
-        if(view.getFingerprintConfig()) {
+        if(cryptographyUtils?.isInitialized() == true && view.getFingerprintConfig()) {
             view?.let { view ->
                 getProfileUseCase.execute(GetProfileSubscriber(userSession,
                         { checkStatusFingerprint() },
@@ -270,13 +270,17 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
     }
 
     override fun checkStatusFingerprint() {
-        val signature = cryptographyUtils?.generateFingerprintSignature(userId = userSession.userId, deviceId = userSession.deviceId)
-        signature?.run {
-            statusFingerprintUseCase.executeCoroutines({
-                onCheckStatusFingerprintSuccess(it)
-            }, {
-                view.onSuccessLogin()
-            }, this)
+        if(cryptographyUtils?.isInitialized() == true) {
+            val signature = cryptographyUtils?.generateFingerprintSignature(userId = userSession.userId, deviceId = userSession.deviceId)
+            signature?.run {
+                statusFingerprintUseCase.executeCoroutines({
+                    onCheckStatusFingerprintSuccess(it)
+                }, {
+                    view.onSuccessLogin()
+                }, this)
+            }
+        }else {
+            view.onSuccessLogin()
         }
     }
 
