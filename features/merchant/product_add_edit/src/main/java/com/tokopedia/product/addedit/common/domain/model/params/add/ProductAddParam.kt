@@ -43,6 +43,9 @@ data class ProductAddParam (
         @SerializedName("sku")
         @Expose
         var sku: String? = null,
+        @SerializedName("shop")
+        @Expose
+        var shop: ShopParam = ShopParam(),
         @SerializedName("catalog")
         @Expose
         var catalog: Catalog = Catalog(),
@@ -51,7 +54,7 @@ data class ProductAddParam (
         var category: Category? = null,
         @SerializedName("menu")
         @Expose
-        var menu: Menu? = null,
+        var productEtalase: ProductEtalase? = null,
         @SerializedName("picture")
         @Expose
         var picture: Pictures = Pictures(),
@@ -69,3 +72,9 @@ data class ProductAddParam (
         var variant: Variant? = null
 ) : Parcelable
 
+@Parcelize
+data class ShopParam(
+        @SerializedName("id")
+        @Expose
+        var shopId: String = ""
+) : Parcelable

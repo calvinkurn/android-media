@@ -10,12 +10,12 @@ class Preorder (
     
     @SerializedName("duration")
     @Expose
-    var duration: Int? = null,
+    var duration: Int? = 0,
     @SerializedName("timeUnit")
     @Expose
-    var timeUnit: String? = null,
+    var timeUnit: String? = "DAY",
     @SerializedName("isActive")
     @Expose
-    var isActive: Boolean? = null
+    var isActive: Boolean? = false
 
 ) : Parcelable

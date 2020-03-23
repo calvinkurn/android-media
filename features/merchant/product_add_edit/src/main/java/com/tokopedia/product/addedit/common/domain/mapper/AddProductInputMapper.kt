@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.common.domain.mapper
 import com.tokopedia.product.addedit.common.domain.model.params.add.*
 import com.tokopedia.product.addedit.description.model.DescriptionInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
+import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import javax.inject.Inject
 
@@ -11,9 +12,11 @@ import javax.inject.Inject
  */
 
 class AddProductInputMapper @Inject constructor() {
-    fun mapInputToRemoteModel(detailInputModel: DetailInputModel,
-                              descriptionInputModel: DescriptionInputModel,
-                              shipmentInputModel: ShipmentInputModel): ProductAddParam {
+    fun mapInputToParam(shopId:String,
+                        detailInputModel: DetailInputModel,
+                        descriptionInputModel: DescriptionInputModel,
+                        shipmentInputModel: ShipmentInputModel): ProductAddParam {
+
         return ProductAddParam(
                 detailInputModel.productName,
                 detailInputModel.price,
@@ -27,23 +30,35 @@ class AddProductInputMapper @Inject constructor() {
                 detailInputModel.condition,
                 shipmentInputModel.isMustInsurance,
                 detailInputModel.sku,
+                ShopParam(
+                        shopId
+                ),
                 Catalog(
                         detailInputModel.catalogId
                 ),
                 Category(
                         detailInputModel.categoryId
                 ),
-                Menu(
+                ProductEtalase(
                         "0",
                         ""
                 ),
                 Pictures(),
-                Preorder(
-                        1,
-                        "1",
-                        true
-                )
+                mapPreorderParam(detailInputModel.preorder)
 
+        )
+    }
+
+    private fun mapPreorderParam(preorder: PreorderInputModel): Preorder {
+        if (preorder.duration == 0) return Preorder()
+        return Preorder(
+                preorder.duration,
+                when (preorder.timeUnit) {
+                    0 -> "DAY"
+                    1 -> "WEEK"
+                    else -> "Month"
+                },
+                preorder.isActive
         )
     }
 }

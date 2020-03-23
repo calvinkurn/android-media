@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
@@ -25,7 +26,9 @@ import com.tokopedia.product.addedit.detail.presentation.fragment.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.fragment.AddEditProductDetailFragment.Companion.REQUEST_CODE_DETAIL
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
-import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewComponent
+import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
+import com.tokopedia.product.addedit.preview.di.DaggerAddEditProductPreviewComponent
+import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductUploadService
 import com.tokopedia.product.addedit.preview.presentation.viewmodel.AddEditProductPreviewViewModel
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment.Companion.EXTRA_SHIPMENT_INPUT
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
@@ -102,8 +105,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
                         data.getParcelableExtra<DescriptionInputModel>(EXTRA_DESCRIPTION_INPUT)
                 val detailInputModel =
                         data.getParcelableExtra<DetailInputModel>(EXTRA_DETAIL_INPUT)
-                previewViewModel.addProduct(detailInputModel, descriptionInputModel,
-                        shipmentInputModel)
+                AddEditProductUploadService.startService(context!!, detailInputModel, descriptionInputModel, shipmentInputModel)
             }
         }
     }
@@ -113,7 +115,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        getComponent(AddEditProductPreviewComponent::class.java).inject(this)
+        DaggerAddEditProductPreviewComponent.builder()
+                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+                .addEditProductPreviewModule(AddEditProductPreviewModule())
+                .build()
+                .inject(this)
     }
 
     private fun initViewModel() {

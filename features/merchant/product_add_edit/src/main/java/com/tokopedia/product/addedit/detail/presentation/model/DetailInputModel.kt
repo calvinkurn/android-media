@@ -18,8 +18,8 @@ data class DetailInputModel(
         var condition: String = "NEW",
         var sku: String = "",
         var imageUrlOrPathList: List<String> = emptyList(),
-        var wholesaleList: List<WholesaleInputModel> = emptyList(),
-        var preorderList: List<PreorderInputModel> = emptyList()
+        var preorder: PreorderInputModel = PreorderInputModel(),
+        var wholesaleList: List<WholesaleInputModel> = emptyList()
 ) : Parcelable
 
 @Parcelize
@@ -31,5 +31,6 @@ data class WholesaleInputModel(
 @Parcelize
 data class PreorderInputModel(
         var duration: Int = 0,
-        var timeUnit: Float = 0F
+        var timeUnit: Int = 0,
+        var isActive: Boolean = false
 ) : Parcelable

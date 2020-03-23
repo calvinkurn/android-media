@@ -14,6 +14,7 @@ import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputMo
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,6 +24,7 @@ import javax.inject.Inject
 
 class AddEditProductPreviewViewModel @Inject constructor(
         coroutineDispatcher: CoroutineDispatcher,
+        private val userSessionInterface: UserSessionInterface,
         private val uploaderUseCase: UploaderUseCase,
         private val addProductInputMapper: AddProductInputMapper,
         private val productAddUseCase: ProductAddUseCase
@@ -32,9 +34,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
     fun addProduct(detailInputModel: DetailInputModel,
                    descriptionInputModel: DescriptionInputModel,
                    shipmentInputModel: ShipmentInputModel) {
-        val param = addProductInputMapper
-                .mapInputToRemoteModel(detailInputModel, descriptionInputModel, shipmentInputModel)
-
+        val shopId = userSessionInterface.shopId
+        val param = addProductInputMapper.mapInputToParam(shopId,
+                detailInputModel, descriptionInputModel, shipmentInputModel)
         launchCatchError(block = {
             _productUpdateResult.value = Success(withContext(Dispatchers.IO) {
                 productAddUseCase.params = ProductAddUseCase.createRequestParams(param)

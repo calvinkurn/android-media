@@ -33,6 +33,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
+import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment.Companion.EXTRA_SHIPMENT_INPUT
@@ -605,7 +606,12 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
                 productMinOrderField.getTextIntOrZero(),
                 if (newRadioButton?.isChecked == true) "NEW" else "USED",
                 productSkuField.getText(),
-                imageUrlOrPathList
+                imageUrlOrPathList,
+                PreorderInputModel(
+                        preOrderDurationField.getTextIntOrZero(),
+                        selectedDurationPosition,
+                        preOrderSwitch?.isChecked ?: false
+                )
         )
 
         val intent = Intent()
