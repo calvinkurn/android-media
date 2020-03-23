@@ -11,26 +11,23 @@ import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.util.InstantTaskExecutorRuleSpek
 import com.tokopedia.util.TestCoroutineDispatcherProviderImpl
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.gherkin.Feature
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.*
-import org.mockito.internal.matchers.Null
 import javax.inject.Provider
 
+@ExperimentalCoroutinesApi
 class ShopHomeViewModelTest {
 
     @get:Rule
@@ -46,15 +43,16 @@ class ShopHomeViewModelTest {
     private val addWishListUseCase: AddWishListUseCase = mockk(relaxed = true)
     private val removeWishListUseCase: RemoveWishListUseCase = mockk(relaxed = true)
     private val userSessionInterface: UserSessionInterface = mockk(relaxed = true)
-    private val gqlCheckWishlistUseCaseProvider: Provider<GQLCheckWishlistUseCase> = mockk(relaxed = true)
-    private lateinit var gqlCheckWishlistUseCase: GQLCheckWishlistUseCase
+    @RelaxedMockK
+    lateinit var gqlCheckWishlistUseCaseProvider: Provider<GQLCheckWishlistUseCase>
+    @RelaxedMockK
+    lateinit var gqlCheckWishlistUseCase: GQLCheckWishlistUseCase
 
     private lateinit var viewModel: ShopHomeViewModel
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        gqlCheckWishlistUseCase = mockk(relaxed = true)
         viewModel = ShopHomeViewModel(
                 userSessionInterface,
                 getShopPageHomeLayoutUseCase,
@@ -136,32 +134,6 @@ class ShopHomeViewModelTest {
         }
 
         assertTrue(viewModel.productListData.value is Fail)
-    }
-
-    @Test
-    fun `check whether response get wish list status success is not null`() {
-
-        coEvery { gqlCheckWishlistUseCase.executeOnBackground() } returns CheckWishlistResult.Response().checkWishlist
-
-        viewModel.getWishlistStatus(anyList())
-
-        coVerify { gqlCheckWishlistUseCase.executeOnBackground() }
-
-        assertTrue(viewModel.checkWishlistData.value is Success)
-        assertNotNull(viewModel.checkWishlistData.value)
-
-    }
-
-    @Test
-    fun `check whether response get wish list status error is null`() {
-
-        coEvery { gqlCheckWishlistUseCase.executeOnBackground() } throws Exception()
-
-        viewModel.getWishlistStatus(anyList())
-
-        coVerify { gqlCheckWishlistUseCase.executeOnBackground() }
-
-        assertTrue(viewModel.checkWishlistData.value is Fail)
     }
 
 }

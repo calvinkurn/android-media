@@ -6,6 +6,10 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisibleOnTheScreen
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
@@ -50,7 +54,7 @@ class ShopHomeSliderBannerViewHolder(
             }
         }
 
-        img.setImageUrl(carouselItem.imageUrl, heightRatio = getHeightRatio())
+        img.setImageUrl(carouselItem.imageUrl, heightRatio = bannerData?.let { getHeightRatio(it) })
     }
 
     init {
@@ -126,13 +130,13 @@ class ShopHomeSliderBannerViewHolder(
         }
     }
 
-    private fun getIndexRatio(index: Int): Int {
-        return bannerData?.header?.ratio?.split(":")?.getOrNull(index).toIntOrZero()
+    private fun getIndexRatio(data: ShopHomeDisplayWidgetUiModel, index: Int): Int {
+        return data.header.ratio.split(":").getOrNull(index).toIntOrZero()
     }
 
-    private fun getHeightRatio(): Float {
-        val indexZero = getIndexRatio(0).toFloat()
-        val indexOne = getIndexRatio(1).toFloat()
+    private fun getHeightRatio(data: ShopHomeDisplayWidgetUiModel): Float {
+        val indexZero = getIndexRatio(data, 0).toFloat()
+        val indexOne = getIndexRatio(data, 1).toFloat()
         return (indexOne / indexZero)
     }
 

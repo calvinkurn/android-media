@@ -74,9 +74,9 @@ class ShopHomeSliderSquareViewHolder(
         return data.header.ratio.split(":").getOrNull(index).toIntOrZero()
     }
 
-    private fun getHeightRatio(element: ShopHomeDisplayWidgetUiModel): Float {
-        val indexZero = getIndexRatio(element, 0).toFloat()
-        val indexOne = getIndexRatio(element, 1).toFloat()
+    private fun getHeightRatio(data: ShopHomeDisplayWidgetUiModel): Float {
+        val indexZero = getIndexRatio(data, 0).toFloat()
+        val indexOne = getIndexRatio(data, 1).toFloat()
         return (indexOne / indexZero)
     }
 }

@@ -8,10 +8,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.R
-import com.tokopedia.shop.home.WidgetName
-import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
-import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
-import com.tokopedia.shop.home.WidgetName.DISPLAY_TRIPLE_COLUMN
 import com.tokopedia.shop.home.view.adapter.PaddingItemDecorationShopPage
 import com.tokopedia.shop.home.view.adapter.ShopHomeMultipleImageColumnAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
