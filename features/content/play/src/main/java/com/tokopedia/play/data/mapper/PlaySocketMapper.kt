@@ -19,7 +19,7 @@ class PlaySocketMapper(
 ) {
 
     private companion object {
-        const val TAG = "Play"
+        const val TAG = "PlaySocketMapper"
         val voucherListType: Type = object: TypeToken<List<Voucher>>(){}.type
     }
 
