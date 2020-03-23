@@ -421,9 +421,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     productInfoP3.addressModel = p3Temp.addressModel
                     productInfoP3.rateEstSummarizeText = p3Temp.rateEstSummarizeText
                     productInfoP3.userCod = p3Temp.userCod
-                    shippingMinimumPrice = p3Temp.ratesModel?.services?.map {
-                        it.rangePrice.minPrice
-                    }?.min() ?: 30000
+                    shippingMinimumPrice = p3Temp.ratesModel?.getMinimumShippingPrice() ?: 30000
                 }
             }
 
