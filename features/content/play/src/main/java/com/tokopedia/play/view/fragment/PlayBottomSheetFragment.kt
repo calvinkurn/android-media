@@ -85,7 +85,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     @Inject
     lateinit var trackingQueue: TrackingQueue
 
-    private val offset16 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl4) }
+    private val offset16 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayBottomSheetViewModel
