@@ -7,10 +7,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhome.settings.domain.entity.ShopInfo
-import com.tokopedia.sellerhome.settings.domain.getShopStatusType
 import com.tokopedia.sellerhome.settings.domain.toDecimalRupiahCurrency
 import com.tokopedia.sellerhome.settings.domain.usecase.*
-import com.tokopedia.sellerhome.settings.view.uimodel.base.RegularMerchant
+import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
 import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -24,6 +23,7 @@ class OtherMenuViewModel @Inject constructor(
         @Named("Main") dispatcher: CoroutineDispatcher,
         private val userSession: UserSessionInterface,
         private val getSettingShopInfoUseCase: GetSettingShopInfoUseCase,
+        private val shopStatusTypeUseCase: ShopStatusTypeUseCase,
         private val topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase,
         private val topAdsAutoTopupUseCase: TopAdsAutoTopupUseCase,
         private val getShopBadgeUseCase: GetShopBadgeUseCase,
@@ -57,17 +57,19 @@ class OtherMenuViewModel @Inject constructor(
         val shopId = userSession.shopId
         launchCatchError(block = {
             val shopInfo = getSuspendSettingShopInfo(userId.toIntOrZero())
+            val shopStatus = getSuspendShopType(shopId.toIntOrZero())
             val topAdsDeposit = getSuspendTopAdsDeposit(shopId.toIntOrZero())
             val isTopAdsAutoTopup = getSuspendTopAdsAutoTopup(shopId)
             val totalFollowers = getSuspendShopTotalFollowers(shopId.toIntOrZero())
             val shopBadge = getSuspendShopBadge(shopId.toIntOrZero())
-            _settingShopInfoLiveData.value = Success(mapToSettingShopInfo(shopInfo, topAdsDeposit, isTopAdsAutoTopup, totalFollowers, shopBadge))
+            _settingShopInfoLiveData.value = Success(mapToSettingShopInfo(shopInfo, shopStatus, topAdsDeposit, isTopAdsAutoTopup, totalFollowers, shopBadge))
         }, onError = {
             _settingShopInfoLiveData.value = Fail(it)
         })
     }
 
     private fun mapToSettingShopInfo(shopInfo: ShopInfo,
+                                     shopStatusType: ShopType,
                                      topAdsBalance: Float,
                                      isTopAdsAutoTopup: Boolean,
                                      totalFollowers: Int,
@@ -76,7 +78,7 @@ class OtherMenuViewModel @Inject constructor(
             return SettingShopInfoUiModel(
                     info?.shopName.toEmptyStringIfNull(),
                     info?.shopAvatar.toEmptyStringIfNull(),
-                    owner?.getShopStatusType() ?: RegularMerchant.NeedUpgrade,
+                    shopStatusType,
                     shopInfo.balance?.sellerBalance ?: "",
                     topAdsBalance.toDecimalRupiahCurrency(),
                     isTopAdsAutoTopup,
@@ -89,6 +91,11 @@ class OtherMenuViewModel @Inject constructor(
     private suspend fun getSuspendSettingShopInfo(userId: Int): ShopInfo {
         getSettingShopInfoUseCase.params = GetSettingShopInfoUseCase.createRequestParams(userId)
         return getSettingShopInfoUseCase.executeOnBackground()
+    }
+
+    private suspend fun getSuspendShopType(shopId: Int): ShopType {
+        shopStatusTypeUseCase.params = ShopStatusTypeUseCase.createRequestParams(shopId)
+        return shopStatusTypeUseCase.executeOnBackground()
     }
 
     private suspend fun getSuspendShopTotalFollowers(shopId: Int): Int {
