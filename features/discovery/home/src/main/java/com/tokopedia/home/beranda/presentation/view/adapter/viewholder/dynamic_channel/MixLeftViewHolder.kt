@@ -98,6 +98,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
 
     private fun setupList(channel: DynamicHomeChannel.Channels) {
         image.alpha = 1f
+        recyclerView.resetLayout()
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
         val typeFactoryImpl = FlashSaleCardViewTypeFactoryImpl(this, channel)
@@ -108,7 +109,6 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
 
         adapter = MixLeftAdapter(listData,typeFactoryImpl)
         recyclerView.adapter = adapter
-//        recyclerView.setHasFixedSize(true)
         launch {
             try {
                 recyclerView.setHeightBasedOnProductCardMaxHeight(productDataList.map {it.productModel})
@@ -168,6 +168,12 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
             ))
         }
         return list
+    }
+
+    private fun RecyclerView.resetLayout() {
+        val carouselLayoutParams = this.layoutParams
+        carouselLayoutParams?.height = RecyclerView.LayoutParams.WRAP_CONTENT
+        this.layoutParams = carouselLayoutParams
     }
 
     private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
