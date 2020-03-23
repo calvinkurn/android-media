@@ -30,10 +30,11 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
     var campaignSlug: String? = ""
     var pageName: String = "giftbox"
     var uniqueCode: String = ""
+    var about: String = "dailybox"
 
     val giftBoxLiveData: MutableLiveData<LiveDataResult<GiftBoxEntity>> = MutableLiveData()
     val rewardLiveData: MutableLiveData<LiveDataResult<GiftBoxRewardEntity>> = MutableLiveData()
-    val reminderLiveData: MutableLiveData<LiveDataResult<RemindMeEntity>> = MutableLiveData()
+    val reminderSetLiveData: MutableLiveData<LiveDataResult<RemindMeEntity>> = MutableLiveData()
     val reminderCheckLiveData: MutableLiveData<LiveDataResult<RemindMeCheckEntity>> = MutableLiveData()
 
     var rewardJob: Job? = null
@@ -48,15 +49,9 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
                 campaignSlug = response?.gamiLuckyHome.tokensUser?.campaignSlug
                 giftBoxLiveData.postValue(LiveDataResult.success(response))
 
-//                remindMeCheckEntity.reminder = response.gamiLuckyHome.reminder
-//                reminderCheckLiveData.postValue(LiveDataResult.success(remindMeCheckEntity))
-
             } else {
                 val response = giftBoxDailyUseCase.getFakeResponseActive()
                 giftBoxLiveData.postValue(LiveDataResult.success(response))
-                val remindMeCheckEntity = remindMeUseCase.getRemindMeCheckResponseFake()
-//                remindMeCheckEntity.reminder = response.gamiLuckyHome.reminder
-//                reminderCheckLiveData.postValue(LiveDataResult.success(remindMeCheckEntity))
             }
 
         }, onError = {
@@ -66,7 +61,7 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
 
     fun getRemindMeCheck() {
         launchCatchError(block = {
-            val remindMeCheckEntity = remindMeUseCase.getRemindMeCheckResponse(remindMeUseCase.getRequestParams(""))
+            val remindMeCheckEntity = remindMeUseCase.getRemindMeCheckResponse(remindMeUseCase.getRequestParams(about))
             reminderCheckLiveData.postValue(LiveDataResult.success(remindMeCheckEntity))
         }, onError = {
             reminderCheckLiveData.postValue(LiveDataResult.error(it))
@@ -96,12 +91,12 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
 
     fun setReminder() {
         if (remindMeJob == null || remindMeJob!!.isCompleted) {
-            reminderLiveData.postValue(LiveDataResult.loading())
+            reminderSetLiveData.postValue(LiveDataResult.loading())
             remindMeJob = launchCatchError(block = {
-                val response = remindMeUseCase.getRemindMeResponse(remindMeUseCase.getRequestParams(""))
-                reminderLiveData.postValue(LiveDataResult.success(response))
+                val response = remindMeUseCase.getRemindMeResponse(remindMeUseCase.getRequestParams(about))
+                reminderSetLiveData.postValue(LiveDataResult.success(response))
             }, onError = {
-                reminderLiveData.postValue(LiveDataResult.error(it))
+                reminderSetLiveData.postValue(LiveDataResult.error(it))
             })
         }
     }

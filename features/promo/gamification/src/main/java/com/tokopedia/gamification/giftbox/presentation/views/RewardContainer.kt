@@ -18,7 +18,10 @@ import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.data.entities.GetCouponDetail
 import com.tokopedia.gamification.giftbox.data.entities.GiftBoxRewardEntity
 import com.tokopedia.gamification.giftbox.presentation.adapter.CouponAdapter
-import com.tokopedia.gamification.giftbox.presentation.helpers.*
+import com.tokopedia.gamification.giftbox.presentation.helpers.CouponItemDecoration
+import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
+import com.tokopedia.gamification.giftbox.presentation.helpers.doOnLayout
+import com.tokopedia.gamification.giftbox.presentation.helpers.updateLayoutParams
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardState.Companion.COUPON_ONLY
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardState.Companion.COUPON_WITH_POINTS
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardState.Companion.POINTS_ONLY
@@ -293,9 +296,6 @@ class RewardContainer : FrameLayout {
 
     private fun rvCouponsAnimations(): Animator {
         val couponAnimator = scaleAndAlphaAnimation(rvCoupons)
-        couponAnimator.addListener(onEnd = {
-            rvCoupons.smoothScrollToPosition(couponAdapter.itemCount - 1)
-        })
         return couponAnimator
     }
 

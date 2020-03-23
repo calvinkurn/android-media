@@ -190,12 +190,14 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                         when (tokenUserState) {
                             TokenUserState.ACTIVE -> {
                                 renderGiftBoxActive(it.data)
-                                renderReminderForReminderMeCheck()
                                 giftBoxDailyView.fmGiftBox.setOnClickListener {
                                     if (!disableGiftBoxTap) {
                                         viewModel.getRewards()
                                     }
                                 }
+
+                                tvReminderMessage.text = reminder?.text
+                                setInitialUiForReminder()
                             }
                             TokenUserState.EMPTY -> {
                                 renderGiftBoxActive(it.data)
@@ -230,59 +232,68 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 LiveDataResult.STATUS.SUCCESS -> {
 
                     if (it.data == null) {
-                        //todo Rahul need to handle
+                        renderOpenBoxError("Oops, terjadi kendala. Coba beberapa saat lagi, ya!", "Oke")
                     } else {
-                        //set data in rewards first and then animate
-                        disableGiftBoxTap = true
-                        giftBoxRewardEntity = it.data
-                        giftBoxDailyView.handleTapOnGiftBox()
-                        fadeOutViews()
+                        val code = it.data?.gamiCrack.resultStatus.code
+                        if (code == 200) {
+                            //set data in rewards first and then animate
+                            disableGiftBoxTap = true
+                            giftBoxRewardEntity = it.data
+                            giftBoxDailyView.handleTapOnGiftBox()
+                            fadeOutViews()
 
-                        val benefitText = giftBoxRewardEntity?.gamiCrack?.benefitText
-                        if (benefitText != null && benefitText.isNotEmpty()) {
-                            tvRewardFirstLine.text = benefitText[0]
-                            if (benefitText.size > 1) {
-                                val indexOfAnd = benefitText[1].indexOf("&")
-                                if (indexOfAnd > 0) {
-                                    val array = benefitText[1].split("&")
-                                    val sb = StringBuilder()
-                                    sb.append(array[0])
-                                    sb.append(" &")
-                                    sb.append("\n")
-                                    sb.append(array[1])
-                                    tvRewardSecondLine.text = sb.toString()
-                                } else {
-                                    tvRewardSecondLine.text = benefitText[1]
-                                }
+                            val benefitText = giftBoxRewardEntity?.gamiCrack?.benefitText
+                            if (benefitText != null && benefitText.isNotEmpty()) {
+                                tvRewardFirstLine.text = benefitText[0]
+                                if (benefitText.size > 1) {
+                                    val indexOfAnd = benefitText[1].indexOf("&")
+                                    if (indexOfAnd > 0) {
+                                        val array = benefitText[1].split("&")
+                                        val sb = StringBuilder()
+                                        sb.append(array[0])
+                                        sb.append(" &")
+                                        sb.append("\n")
+                                        sb.append(array[1])
+                                        tvRewardSecondLine.text = sb.toString()
+                                    } else {
+                                        tvRewardSecondLine.text = benefitText[1]
+                                    }
 
-                            }
-                        }
-
-                        val actionButtonList = giftBoxRewardEntity?.gamiCrack?.actionButton
-                        if (actionButtonList != null && actionButtonList.isNotEmpty()) {
-                            btnAction.text = actionButtonList[0].text
-                            btnAction.setOnClickListener {
-                                val applink = actionButtonList[0].applink
-                                if (!applink.isNullOrEmpty()) {
-                                    RouteManager.route(context, applink)
                                 }
                             }
-                        }
 
-                        //set reminder action
-                        tvReminderBtn.setOnClickListener {
-                            if (!isReminderSet) {
-                                viewModel.setReminder()
+                            val actionButtonList = giftBoxRewardEntity?.gamiCrack?.actionButton
+                            if (actionButtonList != null && actionButtonList.isNotEmpty()) {
+                                btnAction.text = actionButtonList[0].text
+                                btnAction.setOnClickListener {
+                                    val applink = actionButtonList[0].applink
+                                    if (!applink.isNullOrEmpty()) {
+                                        RouteManager.route(context, applink)
+                                    }
+                                }
+                            }
+
+                            //set reminder action
+                            tvReminderBtn.setOnClickListener {
+                                if (!isReminderSet) {
+                                    viewModel.setReminder()
+                                }
+                            }
+                        } else {
+                            val messageList = it.data?.gamiCrack?.resultStatus?.message
+                            if (!messageList.isNullOrEmpty()) {
+                                renderOpenBoxError(messageList[0], "Oke")
                             }
                         }
                     }
                 }
-                LiveDataResult.STATUS.ERROR -> { //todo Rahul later
+                LiveDataResult.STATUS.ERROR -> {
+                    renderOpenBoxError("Oops, terjadi kendala. Coba beberapa saat lagi, ya!", "Oke")
                 }
             }
         })
 
-        viewModel.reminderLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.reminderSetLiveData.observe(viewLifecycleOwner, Observer {
             when (it.status) {
                 LiveDataResult.STATUS.LOADING -> {
                     loaderReminder.visibility = View.VISIBLE
@@ -296,7 +307,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     val reason = it.data?.gameRemindMe?.resultStatus?.reason
 
                     if (code == 200) {
-                        reminderSuccess(true)
+                        renderReminderButton(true)
                     } else {
                         val messageList = it.data?.gameRemindMe?.resultStatus?.message
                         if (!messageList.isNullOrEmpty()) {
@@ -322,22 +333,61 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     this.gameRemindMeCheck = it.data?.gameRemindMeCheck
                     loaderReminder.visibility = View.GONE
                     tvReminderBtn.visibility = View.VISIBLE
-                    renderReminderForReminderMeCheck()
+                    val code = gameRemindMeCheck?.resultStatus?.code
+                    val isRemindMe = gameRemindMeCheck?.isRemindMe
+                    if (code == 200 && isRemindMe != null) {
+                        renderReminderButton(isRemindMe)
+                    } else {
+                        val messageList = it.data?.gameRemindMeCheck?.resultStatus?.message
+                        if (!messageList.isNullOrEmpty()) {
+                            showRemindCheckError(messageList[0], "Oke")
+                        }
+                    }
                 }
                 LiveDataResult.STATUS.ERROR -> {
-
+                    showRemindCheckError("Oops, terjadi kendala. Coba beberapa saat lagi, ya!", "Oke")
                 }
             }
         })
+    }
+
+    fun setInitialUiForReminder() {
+        if (gameRemindMeCheck != null) {
+            val isRemindMe = gameRemindMeCheck?.isRemindMe
+            if (isRemindMe != null)
+                renderReminderButton(isRemindMe)
+        }
+    }
+
+    fun showRemindCheckError(message: String, actionText: String) {
+        if (context != null) {
+            val internetAvailable = DeviceConnectionInfo.isInternetAvailable(context!!, checkWifi = true, checkCellular = true)
+            if (!internetAvailable) {
+                showNoInterNetDialog(viewModel::getRemindMeCheck, context!!)
+            } else {
+                showRedError(fmParent, message, actionText, viewModel::getRemindMeCheck)
+            }
+        }
+    }
+
+    fun renderOpenBoxError(message: String, actionText: String) {
+        if (context != null) {
+            val internetAvailable = DeviceConnectionInfo.isInternetAvailable(context!!, checkWifi = true, checkCellular = true)
+            if (!internetAvailable) {
+                showNoInterNetDialog(viewModel::getRewards, context!!)
+            } else {
+                showRedError(fmParent, message, actionText, viewModel::getRewards)
+            }
+        }
     }
 
     fun showRemindMeError(message: String, actionText: String) {
         if (context != null) {
             val internetAvailable = DeviceConnectionInfo.isInternetAvailable(context!!, checkWifi = true, checkCellular = true)
             if (!internetAvailable) {
-                showNoInterNetDialog(viewModel::getGiftBox, context!!)
+                showNoInterNetDialog(viewModel::setReminder, context!!)
             } else {
-                showRedError(fmParent, message, actionText, viewModel::getRemindMeCheck)
+                showRedError(fmParent, message, actionText, viewModel::setReminder)
             }
         }
     }
@@ -346,7 +396,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         val code = gameRemindMeCheck?.resultStatus?.code
         val isRemindMe = gameRemindMeCheck?.isRemindMe
         if (code == 200 && isRemindMe != null && isRemindMe) {
-            reminderSuccess(isRemindMe)
+            renderReminderButton(isRemindMe)
         }
     }
 
@@ -359,7 +409,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         }
     }
 
-    fun reminderSuccess(isUserReminded: Boolean) {
+    fun renderReminderButton(isUserReminded: Boolean) {
         context?.let {
             if (isUserReminded) {
                 fmReminder.background = ContextCompat.getDrawable(it, R.drawable.gf_bg_disabled_3d)

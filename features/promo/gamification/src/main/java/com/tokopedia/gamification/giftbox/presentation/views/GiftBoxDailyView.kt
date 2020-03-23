@@ -219,8 +219,9 @@ open class GiftBoxDailyView : FrameLayout {
         bounceAnimUp.duration = duration
 
         val animatorSet = AnimatorSet()
-        animatorSet.playSequentially(bounceAnimDown, lidAnimator)
-        val totalDuration = bounceAnimDown.duration + bounceAnimUp.duration
+        animatorSet.playTogether(bounceAnimUp, lidAnimator)
+        animatorSet.playSequentially(bounceAnimDown, bounceAnimUp)
+        val totalDuration = bounceAnimDown.duration + bounceAnimUp.duration + 500L
         return Pair(animatorSet, totalDuration)
     }
 
