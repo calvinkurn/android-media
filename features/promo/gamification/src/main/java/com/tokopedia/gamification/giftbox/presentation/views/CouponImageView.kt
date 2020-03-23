@@ -24,7 +24,7 @@ class CouponImageView @JvmOverloads constructor(
         paint.color = Color.TRANSPARENT
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
         paint.isAntiAlias = true
-        circleRadius = dpToPx(14)
+        circleRadius = dpToPx(12)
     }
 
     override fun onDraw(canvas: Canvas?) {
