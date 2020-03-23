@@ -7,7 +7,6 @@ import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
-import android.view.animation.AccelerateInterpolator
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import com.bumptech.glide.Glide
@@ -118,7 +117,7 @@ open class GiftBoxDailyView : FrameLayout {
             }
         }
         var drawableRedForLid = R.drawable.gf_ic_lid_frame_7
-        if(state == TokenUserState.ACTIVE){
+        if (state == TokenUserState.ACTIVE) {
             drawableRedForLid = R.drawable.gf_ic_lid_frame_0
         }
         Glide.with(this)
@@ -201,7 +200,7 @@ open class GiftBoxDailyView : FrameLayout {
     }
 
     fun openGiftBox(view: View): Pair<AnimatorSet, Long> {
-        val duration = 500L
+        val duration = 250L
 
         view.pivotY = view.height.toFloat()
 
@@ -212,57 +211,17 @@ open class GiftBoxDailyView : FrameLayout {
         bounceAnimDown.duration = duration
         bounceAnimDown.interpolator = CubicBezierInterpolator(.645, 0.045, .355, 1.0)
 
-//        post { finalLoadGif(lidView) }
-        loadLidFrames()
+        val lidAnimator = loadLidFrames()
 
-        //up
         val scaleYAnimUp = PropertyValuesHolder.ofFloat(View.SCALE_Y, 0.5f, 1f)
         val bounceAnimUp: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(view, scaleYAnimUp)
         bounceAnimUp.interpolator = CubicBezierInterpolator(.56, 1.59, .49, 1.02)
         bounceAnimUp.duration = duration
 
-        //translate
-        val transYProp = PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0f, -dpToPx(10f), 0f)
-        val transYAnim: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(view, transYProp)
-        transYAnim.duration = duration
-
-
         val animatorSet = AnimatorSet()
-        animatorSet.playTogether(bounceAnimUp, transYAnim)
-        animatorSet.playSequentially(bounceAnimDown, bounceAnimUp)
+        animatorSet.playSequentially(bounceAnimDown, lidAnimator)
         val totalDuration = bounceAnimDown.duration + bounceAnimUp.duration
         return Pair(animatorSet, totalDuration)
-    }
-
-    fun boxScaleDownAnimation(view: View): DurationAnimation {
-        val duration = 1000L
-        val startDelay = 300L
-        view.pivotY = view.height.toFloat()
-        val scaleYAnim = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 0.3f, 1.2f, 1f)
-        val bounceAnim: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(view, scaleYAnim)
-        bounceAnim.startDelay = startDelay
-        bounceAnim.duration = duration
-        return DurationAnimation(duration, bounceAnim, startDelay)
-    }
-
-    fun boxTranslateAnimation(view: View, delay: Long, startDelay: Long): Animator {
-        val duration = 600L
-        val transYProp = PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0f, -50f, 0f)
-        val transYAnim: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(view, transYProp)
-        transYAnim.interpolator = AccelerateInterpolator()
-        transYAnim.startDelay = delay + 500L
-        transYAnim.duration = duration
-        return transYAnim
-    }
-
-    fun boxScaleUpAnimation(view: View): Animator {
-        val duration = 1200L
-        view.pivotY = view.height.toFloat()
-        val scaleYAnim = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 1.3f, 1f)
-        val scaleXAnim = PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 1.1f, 1f)
-        val bounceAnim: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(view, scaleYAnim, scaleXAnim)
-        bounceAnim.duration = duration
-        return bounceAnim
     }
 
     fun loadGifFirstFrame(imageView: AppCompatImageView) {
@@ -271,7 +230,7 @@ open class GiftBoxDailyView : FrameLayout {
                 .into(imageView)
     }
 
-    fun loadLidFrames() {
+    fun loadLidFrames(): Animator {
         val drawableArray = arrayOf(
                 R.drawable.gf_ic_lid_frame_0,
                 R.drawable.gf_ic_lid_frame_1,
@@ -286,9 +245,8 @@ open class GiftBoxDailyView : FrameLayout {
         valueAnimator.addUpdateListener {
             imageGiftBoxLid.setImageResource(drawableArray[it.animatedValue as Int])
         }
-        valueAnimator.duration = 500L
-        valueAnimator.startDelay = 500L
-        valueAnimator.start()
+        valueAnimator.duration = 250L
+        return valueAnimator
     }
 
     fun getStatusBarHeight(context: Context): Int {

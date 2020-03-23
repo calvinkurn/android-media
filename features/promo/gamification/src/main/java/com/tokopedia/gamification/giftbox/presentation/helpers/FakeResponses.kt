@@ -4,7 +4,7 @@ object FakeResponses {
 
     object GamiCrackResponse {
         val COUPONS_ONLY = "{\n" +
-                "  \"gamiCrack\": {\n" +
+                "  \"   gamiCrack\": {\n" +
                 "    \"resultStatus\": {\n" +
                 "      \"code\": \"200\",\n" +
                 "      \"message\": [\n" +
@@ -191,7 +191,7 @@ object FakeResponses {
                 "    \"tokenAsset\": {\n" +
                 "      \"backgroundImgURL\": \"https://ecs7.tokopedia.net/img/blog/promo/2020/03/kejutan-bg.png\",\n" +
                 "      \"imageV2URLs\": [\n" +
-                "        \"https://ecs7.tokopedia.net/img/blog/promo/2020/03/keejutan-box.png\",\n" +
+                "        \"https://ecs7.tokopedia.net/img/blog/promo/2020/03/kejutan-box3x.png\",\n" +
                 "        \"https://ecs7.tokopedia.net/img/blog/promo/2020/03/kejutan-box.gif\"\n" +
                 "      ]\n" +
                 "    },\n" +
@@ -243,7 +243,7 @@ object FakeResponses {
                 "      \"backgroundImgURL\": \"https://ecs7.tokopedia.net/img/blog/promo/2020/03/kejutan-bg.png\",\n" +
                 "      \"imageURL\": \"\",\n" +
                 "      \"imageV2URLs\": [\n" +
-                "        \"https://ecs7.tokopedia.net/img/blog/promo/2020/03/keejutan-box.png\",\n" +
+                "        \"https://ecs7.tokopedia.net/img/blog/promo/2020/03/kejutan-box3x.png\",\n" +
                 "        \"https://ecs7.tokopedia.net/img/blog/promo/2020/03/kejutan-box.gif\"\n" +
                 "      ]\n" +
                 "    },\n" +
