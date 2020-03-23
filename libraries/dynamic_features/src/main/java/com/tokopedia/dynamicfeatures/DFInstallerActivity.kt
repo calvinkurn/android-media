@@ -20,13 +20,13 @@ import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.dynamicfeatures.SplitInstallListener.moduleNameToDownload
 import com.tokopedia.dynamicfeatures.config.DFConfig
 import com.tokopedia.dynamicfeatures.config.DFRemoteConfig
 import com.tokopedia.dynamicfeatures.constant.CommonConstant
 import com.tokopedia.dynamicfeatures.constant.ErrorConstant
 import com.tokopedia.dynamicfeatures.track.DFTracking.Companion.trackDownloadDF
 import com.tokopedia.dynamicfeatures.utils.DFInstallerLogUtil
+import com.tokopedia.dynamicfeatures.utils.DFInstallerLogUtil.DFM_TAG
 import com.tokopedia.dynamicfeatures.utils.ErrorUtils
 import com.tokopedia.dynamicfeatures.utils.StorageUtils
 import com.tokopedia.dynamicfeatures.utils.Utils
@@ -66,6 +66,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
     private var fallbackUrl: String = ""
     private var moduleSize = 0L
     private var freeInternalStorageBeforeDownload = 0L
+    private var startDownloadTimeStamp = 0L
 
     private var errorList: MutableList<String> = mutableListOf()
     private var downloadTimes = 0
@@ -81,6 +82,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         private const val CONFIRMATION_REQUEST_CODE = 1
         private const val SETTING_REQUEST_CODE = 2
         const val TAG_LOG = "Page"
+        const val START_TS = "start_ts"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,6 +95,11 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
             fallbackUrl = uri.getQueryParameter(EXTRA_FALLBACK_WEB) ?: ""
         }
 
+        if (savedInstanceState == null) {
+            startDownloadTimeStamp = System.currentTimeMillis()
+        } else {
+            startDownloadTimeStamp = savedInstanceState.getLong(START_TS)
+        }
         super.onCreate(savedInstanceState)
         dfConfig = DFRemoteConfig.getConfig(this)
         manager = DFInstaller.getManager(this) ?: return
@@ -403,14 +410,15 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         super.onDestroy()
         val applicationContext = this.applicationContext
         if (!dfConfig.allowRunningServiceFromActivity()) {
+            trackDownloadDF(listOf(moduleName),
+                errorList,
+                false)
+            DFInstallerLogUtil.logStatus(applicationContext, TAG_LOG,
+                moduleName, freeInternalStorageBeforeDownload, moduleSize,
+                errorList, downloadTimes, successInstall, DFM_TAG,
+                (System.currentTimeMillis() - startDownloadTimeStamp) / 1000)
             job.cancel()
         }
-        trackDownloadDF(listOf(moduleName),
-            errorList,
-            false)
-        DFInstallerLogUtil.logStatus(applicationContext, TAG_LOG,
-            moduleName, freeInternalStorageBeforeDownload, moduleSize,
-            errorList, downloadTimes, successInstall)
         DFInstaller.clearRef()
     }
 
@@ -443,5 +451,10 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
 
     override fun getModuleNameView(): String {
         return moduleName
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putLong(START_TS, startDownloadTimeStamp)
     }
 }

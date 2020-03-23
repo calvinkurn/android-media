@@ -5,7 +5,7 @@ import android.content.Context
 import android.os.Build
 import com.google.android.play.core.splitinstall.*
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
-import com.tokopedia.dynamicfeatures.DFInstaller.logSuccessStatus
+import com.tokopedia.dynamicfeatures.DFInstallerActivity.Companion.TAG_LOG
 import com.tokopedia.dynamicfeatures.config.DFRemoteConfig
 import com.tokopedia.dynamicfeatures.service.DFDownloader
 import com.tokopedia.dynamicfeatures.service.DFQueue
@@ -38,6 +38,7 @@ object DFInstaller {
     internal var freeInternalSpaceBeforeDownload: Long = 0L
 
     private var viewRef: WeakReference<DFInstallerView?>? = null
+    var startTimestamp: Long = 0L
 
     fun attachView(view: DFInstallerView) {
         viewRef = WeakReference(view)
@@ -106,6 +107,7 @@ object DFInstaller {
                             }
                         }
                     }
+                    startTimestamp = System.currentTimeMillis()
                     getManager(applicationContext)?.startInstall(request)?.addOnSuccessListener {
                         if (it == 0) {
                             // success
@@ -128,11 +130,14 @@ object DFInstaller {
                          continuation: Continuation<Pair<Boolean, Boolean>>? = null) {
         val viewRef = viewRef
         val view = viewRef?.get()
+        var tag: String
         if (view != null && view.getModuleNameView() == moduleName) {
             view.onInstalled()
+            tag = TAG_LOG
         } else {
-            logSuccessStatus(TAG_LOG_DFM_BG, context, listOf(moduleName))
+            tag = TAG_LOG_DFM_BG
         }
+        logSuccessStatus(tag, context, listOf(moduleName))
         onSuccessInstall?.invoke()
         continuation?.resume(true to true)
     }
@@ -143,14 +148,17 @@ object DFInstaller {
         sessionId = null
         val viewRef = viewRef
         val view = viewRef?.get()
+        var tag: String
         if (view != null && view.getModuleNameView() == moduleName) {
             view.onFailed(errorString)
             // to stop download other DFs in queue
             DFQueue.clear(context)
+            tag = TAG_LOG
         } else {
-            logFailedStatus(TAG_LOG_DFM_BG, context.applicationContext, listOf(moduleName),
-                listOf(errorString))
+            tag = TAG_LOG_DFM_BG
         }
+        logFailedStatus(tag, context.applicationContext, listOf(moduleName),
+            listOf(errorString))
         onFailedInstall?.invoke()
         if (view != null && view.getModuleNameView() != moduleName) {
             continuation?.resume(false to true)
@@ -228,7 +236,8 @@ object DFInstaller {
     fun logSuccessStatus(tag: String, context: Context, moduleNameToDownload: List<String>) {
         DFTracking.trackDownloadDF(moduleNameToDownload, null, tag == TAG_LOG_DFM_BG)
         DFInstallerLogUtil.logStatus(context, tag, moduleNameToDownload.joinToString(),
-            freeInternalSpaceBeforeDownload, moduleSize, emptyList(), 1, true)
+            freeInternalSpaceBeforeDownload, moduleSize, emptyList(), 1, true,
+            DFInstallerLogUtil.DFM_TAG, getDuration())
     }
 
     fun logFailedStatus(tag: String, context: Context, moduleNameToDownload: List<String>,
@@ -236,7 +245,16 @@ object DFInstaller {
         val errorCodeTemp = ErrorUtils.getValidatedErrorCode(context, errorCode, freeInternalSpaceBeforeDownload)
         DFTracking.trackDownloadDF(moduleNameToDownload, errorCodeTemp, tag == TAG_LOG_DFM_BG)
         DFInstallerLogUtil.logStatus(context, tag, moduleNameToDownload.joinToString(),
-            freeInternalSpaceBeforeDownload, moduleSize, errorCodeTemp, 0, false)
+            freeInternalSpaceBeforeDownload, moduleSize, errorCodeTemp, 0, false,
+            DFInstallerLogUtil.DFM_TAG, getDuration())
+    }
+
+    fun getDuration(): Long {
+        return if (startTimestamp > 0) {
+            (System.currentTimeMillis() - startTimestamp) / 1000
+        } else {
+            0
+        }
     }
 
     private fun registerListener(context: Context, moduleNameToDownload: List<String>,
