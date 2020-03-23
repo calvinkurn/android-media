@@ -64,7 +64,8 @@
             android:visibility="gone"
             app:unifyButtonType="alternate"
             app:unifyButtonVariant="ghost"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            app:unifyButtonSize="medium"/>
     </LinearLayout>
 
     <include

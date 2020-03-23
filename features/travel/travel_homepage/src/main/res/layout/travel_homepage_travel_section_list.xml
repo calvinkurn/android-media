@@ -38,7 +38,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/section_title"
             android:layout_marginBottom="@dimen/dp_4"
             app:layout_constraintEnd_toEndOf="parent"
-            app:typographyType="body_2"
+            app:typographyType="body_3"
             app:typographyWeight="bold"
             android:visibility="gone"
             tools:visibility="visible"/>
