@@ -1,6 +1,8 @@
 package com.tokopedia.product.manage.feature.quickedit.delete.domain
 
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.product.manage.feature.quickedit.common.data.model.ProductUpdateV3Response
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductParam
@@ -8,22 +10,11 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class DeleteProductUseCase @Inject constructor(private val graphqlUseCase: MultiRequestGraphqlUseCase) : UseCase<ProductUpdateV3Response>() {
+class DeleteProductUseCase @Inject constructor(repository: GraphqlRepository)
+    : GraphqlUseCase<ProductUpdateV3Response>(repository) {
 
     companion object {
-
-        const val PARAM_DELETE_PRODUCT = "param_delete_product"
         const val PARAM_INPUT = "input"
-
-        fun createParams(shopId: String, productId: String): RequestParams {
-            val requestParams = RequestParams.create()
-            val deleteProductParam = DeleteProductParam()
-            deleteProductParam.productId = productId
-            deleteProductParam.shop.shopId = shopId
-            requestParams.putObject(PARAM_DELETE_PRODUCT, deleteProductParam)
-            return requestParams
-        }
-
         private val query = """
             mutation productUpdateV3(${'$'}input: ProductInputV3!){
                 ProductUpdateV3(input:${'$'}input) {
@@ -38,17 +29,16 @@ class DeleteProductUseCase @Inject constructor(private val graphqlUseCase: Multi
         """.trimIndent()
     }
 
-    var params: RequestParams = RequestParams.EMPTY
+    init {
+        setGraphqlQuery(query)
+        setTypeClass(ProductUpdateV3Response::class.java)
+    }
 
-    override suspend fun executeOnBackground(): ProductUpdateV3Response {
-        val variables = HashMap<String, Any>()
-        variables[PARAM_INPUT] = params.getObject(PARAM_DELETE_PRODUCT)
-        val gqlRequest = GraphqlRequest(query, ProductUpdateV3Response::class.java, variables)
-        graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(gqlRequest)
-        val graphqlResponse = graphqlUseCase.executeOnBackground()
-        return graphqlResponse.run {
-            getData<ProductUpdateV3Response>(ProductUpdateV3Response::class.java)
-        }
+    fun setParams(shopId: String, productId: String) {
+        val requestParams = RequestParams.create()
+        val deleteProductParam = DeleteProductParam()
+        deleteProductParam.productId = productId
+        deleteProductParam.shop.shopId = shopId
+        requestParams.putObject(PARAM_INPUT, deleteProductParam)
     }
 }

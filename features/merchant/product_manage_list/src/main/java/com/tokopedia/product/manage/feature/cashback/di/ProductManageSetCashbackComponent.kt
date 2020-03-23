@@ -5,7 +5,7 @@ import com.tokopedia.product.manage.feature.cashback.presentation.fragment.Produ
 import dagger.Component
 
 @ProductManageSetCashbackScope
-@Component(modules = [ProductManageSetCashbackModule::class], dependencies = [ProductManageComponent::class])
+@Component(dependencies = [ProductManageComponent::class])
 interface ProductManageSetCashbackComponent {
     fun inject(view: ProductManageSetCashbackFragment)
 }

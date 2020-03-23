@@ -29,7 +29,6 @@ class ProductManageQuickEditStockViewModel @Inject constructor() : ViewModel() {
             }
             else -> {
                 _stock.value = stock
-                _status.value = ProductStatus.ACTIVE
             }
         }
     }

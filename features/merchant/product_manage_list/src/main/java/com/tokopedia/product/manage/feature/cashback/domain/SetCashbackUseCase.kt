@@ -1,6 +1,8 @@
 package com.tokopedia.product.manage.feature.cashback.domain
 
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResponse
 import com.tokopedia.usecase.RequestParams
@@ -8,7 +10,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class SetCashbackUseCase @Inject constructor(
-        private val graphqlUseCase: MultiRequestGraphqlUseCase) : UseCase<SetCashbackResponse>() {
+        repository: GraphqlRepository) : GraphqlUseCase<SetCashbackResponse>(repository) {
 
     companion object {
         const val CASHBACK_SUCCESS_CODE = "200"
@@ -16,16 +18,6 @@ class SetCashbackUseCase @Inject constructor(
         private const val PARAM_PRODUCT_ID = "ProductID"
         private const val PARAM_CASHBACK = "Cashback"
         private const val PARAM_IS_BY_SYSTEM = "IsBySystem"
-
-        @JvmStatic
-        fun createRequestParams(productId: Int, cashBack: Int, isBySystem: Boolean): RequestParams {
-            val requestParams = RequestParams.create()
-            requestParams.putInt(PARAM_PRODUCT_ID, productId)
-            requestParams.putInt(PARAM_CASHBACK, cashBack)
-            requestParams.putBoolean(PARAM_IS_BY_SYSTEM, isBySystem)
-            return requestParams
-        }
-
         private val query =
             """
             mutation GoldSetProductCashback(${'$'}ProductID : Int!, ${'$'}Cashback : Int!, ${'$'}IsBySystem : Boolean!){
@@ -39,19 +31,18 @@ class SetCashbackUseCase @Inject constructor(
                 }
             }
             """.trimIndent()
-
-
     }
 
-    var params: RequestParams = RequestParams.EMPTY
+    init {
+        setGraphqlQuery(query)
+        setTypeClass(SetCashbackResponse::class.java)
+    }
 
-    override suspend fun executeOnBackground(): SetCashbackResponse {
-        val gqlRequest = GraphqlRequest(query, SetCashbackResponse::class.java, params.parameters)
-        graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(gqlRequest)
-        val graphqlResponse = graphqlUseCase.executeOnBackground()
-        return graphqlResponse.run {
-            getData<SetCashbackResponse>(SetCashbackResponse::class.java)
-        }
+    fun setParams(productId: Int, cashBack: Int, isBySystem: Boolean) {
+        val requestParams = RequestParams.create()
+        requestParams.putInt(PARAM_PRODUCT_ID, productId)
+        requestParams.putInt(PARAM_CASHBACK, cashBack)
+        requestParams.putBoolean(PARAM_IS_BY_SYSTEM, isBySystem)
+        setRequestParams(requestParams.parameters)
     }
 }
