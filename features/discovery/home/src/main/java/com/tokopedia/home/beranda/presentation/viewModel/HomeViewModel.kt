@@ -595,7 +595,7 @@ open class HomeViewModel @Inject constructor(
         channel = Channel()
         if(channel != null) {
             jobChannel?.cancelChildren()
-            jobChannel = launch {
+            jobChannel = launch(coroutineContext) {
                 updateChannel(channel!!)
             }
         }
@@ -670,7 +670,8 @@ open class HomeViewModel @Inject constructor(
                 updateWidget(UpdateLiveDataModel(ACTION_DELETE, dynamicChannelDataModel, position))
             } else {
                 var lastIndex = position
-                if(_homeLiveData.value?.list?.getOrNull(lastIndex) !is DynamicChannelViewModel){
+                val dynamicData = _homeLiveData.value?.list?.getOrNull(lastIndex)
+                if(dynamicData !is DynamicChannelViewModel && dynamicData != dynamicChannelDataModel){
                     lastIndex = _homeLiveData.value?.list?.indexOf(dynamicChannelDataModel) ?: -1
                 }
                 updateWidget(UpdateLiveDataModel(ACTION_DELETE, dynamicChannelDataModel, lastIndex))
