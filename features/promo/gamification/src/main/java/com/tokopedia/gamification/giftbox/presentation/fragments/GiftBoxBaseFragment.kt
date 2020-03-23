@@ -5,16 +5,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.*
+import android.widget.FrameLayout
 import android.widget.ViewFlipper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer
 import com.tokopedia.gamification.giftbox.presentation.views.StarsContainer
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.Toaster
 
 
 open class GiftBoxBaseFragment : Fragment() {
@@ -30,6 +33,7 @@ open class GiftBoxBaseFragment : Fragment() {
     lateinit var toolbar: Toolbar
     lateinit var imageToolbarIcon: View
     lateinit var tvToolbarTitle: AppCompatTextView
+    lateinit var fmParent: FrameLayout
 
     val CONTAINER_LOADER = 1
     val CONTAINER_GIFT_BOX = 0
@@ -62,6 +66,7 @@ open class GiftBoxBaseFragment : Fragment() {
         toolbar = v.findViewById(R.id.toolbar)
         tvToolbarTitle = v.findViewById(R.id.tvToolbarTitle)
         imageToolbarIcon = v.findViewById(R.id.imageToolbarIcon)
+        fmParent = v.findViewById(R.id.fmParent)
 
         statusBarHeight = getStatusBarHeight(context)
         setInitialPositionOfViews()
@@ -151,6 +156,17 @@ open class GiftBoxBaseFragment : Fragment() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    fun showRedError(view: View, message: String, actionText: String, method: (() -> Unit)?) {
+        Toaster.make(view,
+                message,
+                Snackbar.LENGTH_LONG,
+                actionText = actionText,
+                clickListener = View.OnClickListener {
+                    method?.invoke()
+                },
+                type = Toaster.TYPE_ERROR)
     }
 
 }

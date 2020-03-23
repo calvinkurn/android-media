@@ -51,4 +51,9 @@
     <string name="gami_kupon_undian_100_ovo_points"><![CDATA[Kupon Undian & 100 OVO Points]]></string>
     <string name="gami_palai_kupon_ovo_points"><![CDATA[Palai Kupon & Ovo Points]]></string>
     <string name="gami_gift_box_toolbar_title">Kotak Kejutan</string>
+
+    <string name="gami_no_internet_title">Koneksi internetmu terganggu!</string>
+    <string name="gami_no_internet_message">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
+    <string name="gami_coba_lagi_refresh">Coba Laogi Refresh</string>
+    <string name="gami_ke_pengaturan">Ke Pengaturan</string>
 </resources>

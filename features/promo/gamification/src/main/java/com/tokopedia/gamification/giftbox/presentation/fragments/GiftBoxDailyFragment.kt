@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
+import android.content.Context
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.Gravity
@@ -21,16 +22,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
+import com.tokopedia.gamification.giftbox.data.entities.GameRemindMeCheck
 import com.tokopedia.gamification.giftbox.data.entities.GiftBoxEntity
 import com.tokopedia.gamification.giftbox.data.entities.GiftBoxRewardEntity
 import com.tokopedia.gamification.giftbox.data.entities.Reminder
+import com.tokopedia.gamification.giftbox.presentation.dialogs.NoInternetDialog
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.ACTIVE
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.EMPTY
-import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.EXPIRED
-import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.INACTIVE
-import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.NON_LOGIN
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
 import com.tokopedia.gamification.giftbox.presentation.helpers.doOnLayout
 import com.tokopedia.gamification.giftbox.presentation.helpers.updateLayoutParams
@@ -66,6 +67,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     var giftBoxRewardEntity: GiftBoxRewardEntity? = null
     var isReminderSet = false
     var reminder: Reminder? = null
+    var gameRemindMeCheck: GameRemindMeCheck? = null
     @TokenUserState
     var tokenUserState: String = TokenUserState.DEFAULT
     var disableGiftBoxTap = false
@@ -90,6 +92,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val v = super.onCreateView(inflater, container, savedInstanceState)
         viewModel.getGiftBox()
+        viewModel.getRemindMeCheck()
         return v
     }
 
@@ -183,10 +186,11 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 LiveDataResult.STATUS.SUCCESS -> {
                     if (it.data != null) {
                         tokenUserState = it.data.gamiLuckyHome.tokensUser.state
+                        reminder = it.data.gamiLuckyHome.reminder
                         when (tokenUserState) {
                             TokenUserState.ACTIVE -> {
                                 renderGiftBoxActive(it.data)
-
+                                renderReminderForReminderMeCheck()
                                 giftBoxDailyView.fmGiftBox.setOnClickListener {
                                     if (!disableGiftBoxTap) {
                                         viewModel.getRewards()
@@ -201,18 +205,13 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
 
                             }
-                            TokenUserState.INACTIVE -> {
-                                hideLoader()
-                            }
-                            TokenUserState.EXPIRED -> {
-                                hideLoader()
-                            }
-                            TokenUserState.NON_LOGIN -> {
-                                hideLoader()
-                            }
                             else -> {
                                 hideLoader()
-                                renderGiftBoxError()
+                                val messageList = it.data.gamiLuckyHome.resultStatus.message
+                                if (!messageList.isNullOrEmpty()) {
+                                    renderGiftBoxError(messageList[0], "Oke")
+                                }
+
                             }
                         }
                     }
@@ -222,7 +221,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
                 LiveDataResult.STATUS.ERROR -> {
                     hideLoader()
-                    renderGiftBoxError()
+                    renderGiftBoxError("Yaah, ada gangguan koneksi. Refresh lagi untuk buka hadiahmu.", "Oke")
                 }
             }
         })
@@ -298,11 +297,17 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
                     if (code == 200) {
                         reminderSuccess(true)
+                    } else {
+                        val messageList = it.data?.gameRemindMe?.resultStatus?.message
+                        if (!messageList.isNullOrEmpty()) {
+                            showRemindMeError(messageList[0], "Oke")
+                        }
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {
                     loaderReminder.visibility = View.GONE
                     tvReminderBtn.visibility = View.VISIBLE
+                    showRemindMeError("Oops, terjadi kendala. Coba beberapa saat lagi, ya!", "Oke")
                 }
             }
         })
@@ -314,23 +319,44 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
                 }
                 LiveDataResult.STATUS.SUCCESS -> {
+                    this.gameRemindMeCheck = it.data?.gameRemindMeCheck
                     loaderReminder.visibility = View.GONE
                     tvReminderBtn.visibility = View.VISIBLE
-
-                    val code = it.data?.gameRemindMeCheck?.resultStatus?.code
-                    val isRemindMe = it.data?.gameRemindMeCheck?.isRemindMe
-                    reminder = it.data?.reminder
-                    if (code == 200 && isRemindMe != null && isRemindMe) {
-                        reminderSuccess(isRemindMe)
-                    }
+                    renderReminderForReminderMeCheck()
                 }
                 LiveDataResult.STATUS.ERROR -> {
 
                 }
             }
         })
+    }
 
+    fun showRemindMeError(message: String, actionText: String) {
+        if (context != null) {
+            val internetAvailable = DeviceConnectionInfo.isInternetAvailable(context!!, checkWifi = true, checkCellular = true)
+            if (!internetAvailable) {
+                showNoInterNetDialog(viewModel::getGiftBox, context!!)
+            } else {
+                showRedError(fmParent, message, actionText, viewModel::getRemindMeCheck)
+            }
+        }
+    }
 
+    fun renderReminderForReminderMeCheck() {
+        val code = gameRemindMeCheck?.resultStatus?.code
+        val isRemindMe = gameRemindMeCheck?.isRemindMe
+        if (code == 200 && isRemindMe != null && isRemindMe) {
+            reminderSuccess(isRemindMe)
+        }
+    }
+
+    fun showNoInterNetDialog(method: (() -> Unit), context: Context) {
+        val dialog = NoInternetDialog()
+        dialog.showDialog(context)
+        dialog.btnRetry.setOnClickListener {
+            dialog.closeAbleDialog.dismiss()
+            method.invoke()
+        }
     }
 
     fun reminderSuccess(isUserReminded: Boolean) {
@@ -495,7 +521,17 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
     fun renderGiftBoxEmpty() {}
-    fun renderGiftBoxError() {}
+    fun renderGiftBoxError(message: String, actionText: String) {
+        if (context != null) {
+            val internetAvailable = DeviceConnectionInfo.isInternetAvailable(context!!, checkWifi = true, checkCellular = true)
+            if (!internetAvailable) {
+                showNoInterNetDialog(viewModel::getGiftBox, context!!)
+            } else {
+                showRedError(fmParent, message, actionText, viewModel::getGiftBox)
+            }
+        }
+    }
+
     fun renderGiftBoxNoInternet() {}
 
     enum class GiftBoxState {
@@ -508,14 +544,11 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 }
 
 @Retention(AnnotationRetention.SOURCE)
-@StringDef(ACTIVE, EMPTY, INACTIVE, EXPIRED, NON_LOGIN)
+@StringDef(ACTIVE, EMPTY)
 annotation class TokenUserState {
     companion object {
         const val ACTIVE = "active"
         const val EMPTY = "empty"
-        const val INACTIVE = "inactive"
-        const val EXPIRED = "expired"
-        const val NON_LOGIN = "nonlogin"
         const val DEFAULT = "default"
     }
 }

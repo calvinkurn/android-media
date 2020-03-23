@@ -54,6 +54,8 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.promoGamificationCommon)
+    implementation project(rootProject.ext.libraries.deviceInfo)
+
     // Room components
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler

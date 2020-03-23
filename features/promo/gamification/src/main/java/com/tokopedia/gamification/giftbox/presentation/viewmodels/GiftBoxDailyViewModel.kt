@@ -48,23 +48,32 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
             if (GiftLauncherActivity.iS_STAGING) {
                 val response = giftBoxDailyUseCase.getResponse(params)
                 campaignSlug = response?.gamiLuckyHome.tokensUser?.campaignSlug
-                val remindMeCheckEntity = remindMeUseCase.getRemindMeCheckResponse(remindMeUseCase.getRequestParams(""))
                 giftBoxLiveData.postValue(LiveDataResult.success(response))
 
-                remindMeCheckEntity.reminder = response.gamiLuckyHome.reminder
-                reminderCheckLiveData.postValue(LiveDataResult.success(remindMeCheckEntity))
+//                remindMeCheckEntity.reminder = response.gamiLuckyHome.reminder
+//                reminderCheckLiveData.postValue(LiveDataResult.success(remindMeCheckEntity))
 
             } else {
                 val response = giftBoxDailyUseCase.getFakeResponseActive()
                 giftBoxLiveData.postValue(LiveDataResult.success(response))
                 val remindMeCheckEntity = remindMeUseCase.getRemindMeCheckResponseFake()
-                remindMeCheckEntity.reminder = response.gamiLuckyHome.reminder
-                reminderCheckLiveData.postValue(LiveDataResult.success(remindMeCheckEntity))
+//                remindMeCheckEntity.reminder = response.gamiLuckyHome.reminder
+//                reminderCheckLiveData.postValue(LiveDataResult.success(remindMeCheckEntity))
             }
 
         }, onError = {
             giftBoxLiveData.postValue(LiveDataResult.error(it))
         })
+    }
+
+    fun getRemindMeCheck() {
+        launchCatchError(block = {
+            val remindMeCheckEntity = remindMeUseCase.getRemindMeCheckResponse(remindMeUseCase.getRequestParams(""))
+            reminderCheckLiveData.postValue(LiveDataResult.success(remindMeCheckEntity))
+        }, onError = {
+            reminderCheckLiveData.postValue(LiveDataResult.error(it))
+        })
+
     }
 
     fun getRewards() {
