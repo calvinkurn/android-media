@@ -113,12 +113,12 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
-    
-    private val offset24 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl5) }
-    private val offset16 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl4) }
-    private val offset12 by lazy { resources.getDimensionPixelOffset(R.dimen.play_offset_12) }
-    private val offset8 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl3) }
-    private val offset4 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl2) }
+
+    private val offset24 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5) }
+    private val offset16 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) }
+    private val offset12 by lazy { resources.getDimensionPixelOffset(com.tokopedia.play.R.dimen.play_offset_12) }
+    private val offset8 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
+    private val offset4 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel

@@ -103,7 +103,7 @@ class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
         container = view.findViewById(R.id.container_global_error)
         globalError = view.findViewById(R.id.global_error)
         context?.let {
-            globalError.errorTitle.setTextColor(ContextCompat.getColor(it, R.color.Neutral_N0))
+            globalError.errorTitle.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
             globalError.errorDescription.setTextColor(ContextCompat.getColor(it, R.color.play_error_text_color))
         }
 
