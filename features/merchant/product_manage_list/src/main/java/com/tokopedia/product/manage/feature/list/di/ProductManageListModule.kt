@@ -44,11 +44,6 @@ class ProductManageListModule {
 
     @Provides
     @ProductManageListScope
-    fun provideGetProductListMetaUseCase(multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase) =
-        GetProductListMetaUseCase(multiRequestGraphqlUseCase)
-
-    @Provides
-    @ProductManageListScope
     fun providePresenterDraft(
         fetchAllDraftProductCountUseCase: FetchAllDraftProductCountUseCase,
         clearAllDraftProductUseCase: ClearAllDraftProductUseCase,
@@ -112,21 +107,6 @@ class ProductManageListModule {
     internal fun provideProductDraftDao(productDraftDB: ProductDraftDB): ProductDraftDao {
         return productDraftDB.getProductDraftDao()
     }
-
-    @ProductManageListScope
-    @Provides
-    fun provideEditStockUseCase(multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase) =
-            EditStockUseCase(multiRequestGraphqlUseCase)
-
-    @ProductManageListScope
-    @Provides
-    fun provideDeleteProductkUseCase(multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase) =
-            DeleteProductUseCase(multiRequestGraphqlUseCase)
-
-    @ProductManageListScope
-    @Provides
-    fun provideEditPriceUseCase(multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase) =
-            EditPriceUseCase(multiRequestGraphqlUseCase)
 
     @ProductManageListScope
     @Provides

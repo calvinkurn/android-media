@@ -19,7 +19,6 @@ import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
 import com.tokopedia.product.manage.feature.cashback.di.DaggerProductManageSetCashbackComponent
 import com.tokopedia.product.manage.feature.cashback.di.ProductManageSetCashbackComponent
-import com.tokopedia.product.manage.feature.cashback.di.ProductManageSetCashbackModule
 import com.tokopedia.product.manage.feature.cashback.presentation.adapter.SetCashbackAdapter
 import com.tokopedia.product.manage.feature.cashback.presentation.adapter.SetCashbackAdapterTypeFactory
 import com.tokopedia.product.manage.feature.cashback.presentation.adapter.viewmodel.SetCashbackViewModel
@@ -74,7 +73,6 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
         return activity?.run {
             DaggerProductManageSetCashbackComponent
                     .builder()
-                    .productManageSetCashbackModule(ProductManageSetCashbackModule())
                     .productManageComponent(ProductManageInstance.getComponent(application))
                     .build()
         }
