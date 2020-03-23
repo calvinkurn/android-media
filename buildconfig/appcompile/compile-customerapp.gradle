@@ -117,6 +117,7 @@ include "features:merchant:shop_etalase_picker"
 include "features:merchant:official_store"
 include "features:merchant:brandlist"
 include "features:merchant:atc_variant"
+include ':features:merchant:variant_common'
 
 include "features:operational:contact_us"
 include "features:operational:csat_rating"
