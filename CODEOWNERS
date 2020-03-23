@@ -69,6 +69,7 @@
 /features/merchant/shop_open/                           @tokopedia/minion-stuart
 /features/merchant/shop_page/                           @tokopedia/minion-stuart
 /features/merchant/shop_settings/                       @tokopedia/minion-stuart
+/features/merchant/variant_common/                      @tokopedia/minion-stuart
 
 /libraries/kotlin_extensions/                           @tokopedia/minion-stuart
 
@@ -250,7 +251,7 @@
 /tkpdabstraction/                                   	@nathaniel09 @hendrysetiadi89
 
 /customerapp/                                       	@tokopedia/core-team
-/sellerapp/                                         	@tokopedia/core-team
+/sellerapp/                                         	@tokopedia/minion-stuart
 /testapp/                                               @tokopedia/core-team
 
 

@@ -28,4 +28,16 @@ data class DynamicProductInfoP1(
                 data.price.value
             }
         }
+
+    fun getFinalStock(multiOriginStock: String): String {
+        return if (multiOriginStock.isEmpty()) {
+            if (data.campaign.isActive) {
+                data.campaign.stock.toString()
+            } else {
+                data.stock.value.toString()
+            }
+        } else {
+            multiOriginStock
+        }
+    }
 }
