@@ -56,8 +56,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         @JvmStatic
         fun newInstance() = SellerHomeFragment()
 
-        private val NOTIFICATION_MENU_ID = R.id.menu_sah_notification
-        private const val NOTIFICATION_BADGE_DELAY = 3000L
+        val NOTIFICATION_MENU_ID = R.id.menu_sah_notification
+        private const val NOTIFICATION_BADGE_DELAY = 2000L
         private const val TAG_TOOLTIP = "seller_home_tooltip"
         private const val TOAST_DURATION = 5000L
     }
@@ -128,6 +128,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.sah_menu_toolbar_notification, menu)
         this.menu = menu
+        showNotificationBadge()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -162,6 +163,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
         swipeRefreshLayout.setOnRefreshListener {
             reloadPage()
+            showNotificationBadge()
         }
 
         sahGlobalError.setActionClickListener {
@@ -266,14 +268,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         showNotificationBadge()
     }
 
-    fun showNotificationBadge() {
+    private fun showNotificationBadge() {
         Handler().postDelayed({
             context?.let {
-                val menuItem = menu?.findItem(NOTIFICATION_MENU_ID) ?: return@let
+                val menuItem = menu?.findItem(NOTIFICATION_MENU_ID)
                 if (notifCenterCount > 0) {
-                    notificationDotBadge?.showBadge(menuItem)
+                    notificationDotBadge?.showBadge(menuItem ?: return@let)
                 } else {
-                    notificationDotBadge?.removeBadge(menuItem)
+                    notificationDotBadge?.removeBadge(menuItem ?: return@let)
                 }
             }
         }, NOTIFICATION_BADGE_DELAY)

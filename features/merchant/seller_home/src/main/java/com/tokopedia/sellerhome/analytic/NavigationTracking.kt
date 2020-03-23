@@ -3,6 +3,11 @@ package com.tokopedia.sellerhome.analytic
 /**
  * Created By @ilhamsuaib on 11/03/20
  */
+
+/**
+ * Seller App Home Navigation Revamp Tracker
+ * Data Layer : https://docs.google.com/spreadsheets/d/1AZjuQ_dg25EvEEWmE8MPMo0f1_DT4IyZPaNpt4cxidA/edit#gid=0
+ * */
  
 object NavigationTracking {
 
