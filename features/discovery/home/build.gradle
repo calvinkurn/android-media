@@ -101,8 +101,9 @@ dependencies {
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
 
     // Unify
-    implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
 
     // Tkpd internal
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi

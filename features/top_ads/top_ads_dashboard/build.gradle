@@ -31,8 +31,8 @@ dependencies {
     implementation project(rootProject.ext.features.tkpdseller)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 
-    implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
