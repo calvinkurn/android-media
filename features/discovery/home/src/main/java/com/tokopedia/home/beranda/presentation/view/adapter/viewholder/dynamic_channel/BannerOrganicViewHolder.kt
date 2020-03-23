@@ -88,6 +88,25 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
         mappingView(channel)
     }
 
+    override fun setupContent(channel: DynamicHomeChannel.Channels, payloads: MutableList<Any>) {
+        val blankSpaceConfig = computeBlankSpaceConfig(channel)
+
+        if (payloads.isNotEmpty()) {
+            payloads.forEach { payload->
+                if (payload == DynamicChannelViewModel.HOME_RV_BANNER_IMAGE_URL) {
+                    channel.let {
+                        mappingBanner(it.banner, it, it.banner.cta)
+                        mappingCtaButton(it.banner.cta)
+                    }
+                }
+            }
+        }
+        channel.let {channel->
+            val visitables = mappingVisitablesFromChannel(channel, blankSpaceConfig)
+            mappingGrid(channel, visitables)
+        }
+    }
+
     private fun valuateRecyclerViewDecoration(channel: DynamicHomeChannel.Channels) {
         when(channel.layout) {
             DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC -> {
@@ -179,29 +198,6 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
         itemView.setOnClickListener {
             HomePageTracking.eventClickBannerChannelMix(channel)
             homeCategoryListener.onSectionItemClicked(channel.banner.applink)
-        }
-    }
-
-    override fun bind(element: DynamicChannelViewModel, payloads: MutableList<Any>) {
-        super.bind(element, payloads)
-        val channel = element?.channel
-        val blankSpaceConfig = computeBlankSpaceConfig(channel)
-
-        if (payloads.isNotEmpty()) {
-            payloads.forEach { payload->
-                if (payload == DynamicChannelViewModel.HOME_RV_BANNER_IMAGE_URL) {
-                    channel?.let {
-                        mappingBanner(it.banner, it, it.banner.cta)
-                        mappingCtaButton(it.banner.cta)
-                    }
-                }
-            }
-        }
-        element?.let {
-            channel?.let {channel->
-                val visitables = mappingVisitablesFromChannel(channel, blankSpaceConfig)
-                mappingGrid(channel, visitables)
-            }
         }
     }
 

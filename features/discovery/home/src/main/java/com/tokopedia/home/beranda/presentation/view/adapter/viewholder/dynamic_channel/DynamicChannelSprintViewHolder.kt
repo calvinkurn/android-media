@@ -76,9 +76,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         mappingGrid(channel)
     }
 
-    override fun bind(element: DynamicChannelViewModel, payloads: MutableList<Any>) {
-        val channel = element?.channel
-
+    override fun setupContent(channel: DynamicHomeChannel.Channels, payloads: MutableList<Any>) {
         if (payloads.isNotEmpty()) {
             payloads.forEach { payload->
                 if (payload == DynamicChannelViewModel.HOME_RV_SPRINT_BG_IMAGE_URL) {
@@ -89,7 +87,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
             }
         }
 
-        channel?.let {
+        channel.let {
             mappingHeader(it)
             mappingGrid(it)
         }
