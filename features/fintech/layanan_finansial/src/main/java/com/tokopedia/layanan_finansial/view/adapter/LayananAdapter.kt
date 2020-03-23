@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.ShapeDrawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,9 @@ import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.layanan_finansial.R
+import com.tokopedia.layanan_finansial.view.Analytics
+import com.tokopedia.layanan_finansial.view.Analytics.LAYANAN_FINANSIAL_CATEGORY
+import com.tokopedia.layanan_finansial.view.Analytics.LAYANAN_FINANSILA_click_ACTION
 import com.tokopedia.layanan_finansial.view.models.LayananListItem
 import com.tokopedia.unifycomponents.ImageUrlLoader
 import kotlinx.android.synthetic.main.layanan_card_item.view.*
@@ -56,6 +60,8 @@ class LayananAdapter(private val list: List<LayananListItem>) : RecyclerView.Ada
                }
                setOnClickListener{
                    RouteManager.route(context, String.format("%s?url=%s",ApplinkConst.WEBVIEW,layananListItem.url))
+                   val label = "product: ${layananListItem.name}, status: ${layananListItem.datalayer_status}"
+                   Analytics.sendEvent("",LAYANAN_FINANSIAL_CATEGORY, LAYANAN_FINANSILA_click_ACTION,label)
                }
            }
        }
@@ -70,5 +76,10 @@ class LayananAdapter(private val list: List<LayananListItem>) : RecyclerView.Ada
 
     override fun onBindViewHolder(holder: LayananViewHolder, position: Int) {
         holder.setData(list[position])
+    }
+
+    override fun onViewAttachedToWindow(holder: LayananViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        Log.e("onViewAttached   ", holder.toString())
     }
 }

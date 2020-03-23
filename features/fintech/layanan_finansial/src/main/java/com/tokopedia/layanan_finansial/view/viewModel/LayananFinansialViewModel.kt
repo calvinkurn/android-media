@@ -133,6 +133,188 @@ class LayananFinansialViewModel @Inject constructor(private val useCase: Layanan
                 "              \"desc_2\": \"\",\n" +
                 "              \"cta\": \"Lihat Detail\",\n" +
                 "              \"url\": \"https://38.staging-feature.tokopedia.com/login?ld=/payment/open-bank-account/dashboard\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "              \"datalayer_status\": \"\",\n" +
+                "              \"status\": \"\",\n" +
+                "              \"status_text_color\": \"\",\n" +
+                "              \"status_bg_color\": \"\",\n" +
+                "              \"image_url\": \"https://ecs7.tokopedia.net/img/toppay/banner/bri-oba-banner2.jpg\",\n" +
+                "              \"category\": \"PERBANKAN\",\n" +
+                "              \"name\": \"Buka Rekening\",\n" +
+                "              \"desc_1\": \"Anti ribet! Buka rekening tabungan bisa langsung dari HP kamu.\",\n" +
+                "              \"desc_2\": \"\",\n" +
+                "              \"cta\": \"Lihat Detail\",\n" +
+                "              \"url\": \"https://38.staging-feature.tokopedia.com/login?ld=/payment/open-bank-account/dashboard\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "              \"datalayer_status\": \"\",\n" +
+                "              \"status\": \"\",\n" +
+                "              \"status_text_color\": \"\",\n" +
+                "              \"status_bg_color\": \"\",\n" +
+                "              \"image_url\": \"https://ecs7.tokopedia.net/img/toppay/banner/bri-oba-banner2.jpg\",\n" +
+                "              \"category\": \"PERBANKAN\",\n" +
+                "              \"name\": \"Buka Rekening\",\n" +
+                "              \"desc_1\": \"Anti ribet! Buka rekening tabungan bisa langsung dari HP kamu.\",\n" +
+                "              \"desc_2\": \"\",\n" +
+                "              \"cta\": \"Lihat Detail\",\n" +
+                "              \"url\": \"https://38.staging-feature.tokopedia.com/login?ld=/payment/open-bank-account/dashboard\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "              \"datalayer_status\": \"\",\n" +
+                "              \"status\": \"\",\n" +
+                "              \"status_text_color\": \"\",\n" +
+                "              \"status_bg_color\": \"\",\n" +
+                "              \"image_url\": \"https://ecs7.tokopedia.net/img/toppay/banner/bri-oba-banner2.jpg\",\n" +
+                "              \"category\": \"PERBANKAN\",\n" +
+                "              \"name\": \"Buka Rekening\",\n" +
+                "              \"desc_1\": \"Anti ribet! Buka rekening tabungan bisa langsung dari HP kamu.\",\n" +
+                "              \"desc_2\": \"\",\n" +
+                "              \"cta\": \"Lihat Detail\",\n" +
+                "              \"url\": \"https://38.staging-feature.tokopedia.com/login?ld=/payment/open-bank-account/dashboard\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "              \"datalayer_status\": \"\",\n" +
+                "              \"status\": \"\",\n" +
+                "              \"status_text_color\": \"\",\n" +
+                "              \"status_bg_color\": \"\",\n" +
+                "              \"image_url\": \"https://ecs7.tokopedia.net/img/toppay/banner/bri-oba-banner2.jpg\",\n" +
+                "              \"category\": \"PERBANKAN\",\n" +
+                "              \"name\": \"Buka Rekening\",\n" +
+                "              \"desc_1\": \"Anti ribet! Buka rekening tabungan bisa langsung dari HP kamu.\",\n" +
+                "              \"desc_2\": \"\",\n" +
+                "              \"cta\": \"Lihat Detail\",\n" +
+                "              \"url\": \"https://38.staging-feature.tokopedia.com/login?ld=/payment/open-bank-account/dashboard\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "              \"datalayer_status\": \"\",\n" +
+                "              \"status\": \"\",\n" +
+                "              \"status_text_color\": \"\",\n" +
+                "              \"status_bg_color\": \"\",\n" +
+                "              \"image_url\": \"https://ecs7.tokopedia.net/img/toppay/banner/bri-oba-banner2.jpg\",\n" +
+                "              \"category\": \"PERBANKAN\",\n" +
+                "              \"name\": \"Buka Rekening\",\n" +
+                "              \"desc_1\": \"Anti ribet! Buka rekening tabungan bisa langsung dari HP kamu.\",\n" +
+                "              \"desc_2\": \"\",\n" +
+                "              \"cta\": \"Lihat Detail\",\n" +
+                "              \"url\": \"https://38.staging-feature.tokopedia.com/login?ld=/payment/open-bank-account/dashboard\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "              \"datalayer_status\": \"\",\n" +
+                "              \"status\": \"\",\n" +
+                "              \"status_text_color\": \"\",\n" +
+                "              \"status_bg_color\": \"\",\n" +
+                "              \"image_url\": \"https://ecs7.tokopedia.net/img/toppay/banner/bri-oba-banner2.jpg\",\n" +
+                "              \"category\": \"PERBANKAN\",\n" +
+                "              \"name\": \"Buka Rekening\",\n" +
+                "              \"desc_1\": \"Anti ribet! Buka rekening tabungan bisa langsung dari HP kamu.\",\n" +
+                "              \"desc_2\": \"\",\n" +
+                "              \"cta\": \"Lihat Detail\",\n" +
+                "              \"url\": \"https://38.staging-feature.tokopedia.com/login?ld=/payment/open-bank-account/dashboard\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "              \"datalayer_status\": \"\",\n" +
+                "              \"status\": \"\",\n" +
+                "              \"status_text_color\": \"\",\n" +
+                "              \"status_bg_color\": \"\",\n" +
+                "              \"image_url\": \"https://ecs7.tokopedia.net/img/toppay/banner/bri-oba-banner2.jpg\",\n" +
+                "              \"category\": \"PERBANKAN\",\n" +
+                "              \"name\": \"Buka Rekening\",\n" +
+                "              \"desc_1\": \"Anti ribet! Buka rekening tabungan bisa langsung dari HP kamu.\",\n" +
+                "              \"desc_2\": \"\",\n" +
+                "              \"cta\": \"Lihat Detail\",\n" +
+                "              \"url\": \"https://38.staging-feature.tokopedia.com/login?ld=/payment/open-bank-account/dashboard\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "              \"datalayer_status\": \"\",\n" +
+                "              \"status\": \"\",\n" +
+                "              \"status_text_color\": \"\",\n" +
+                "              \"status_bg_color\": \"\",\n" +
+                "              \"image_url\": \"https://ecs7.tokopedia.net/img/toppay/banner/bri-oba-banner2.jpg\",\n" +
+                "              \"category\": \"PERBANKAN\",\n" +
+                "              \"name\": \"Buka Rekening\",\n" +
+                "              \"desc_1\": \"Anti ribet! Buka rekening tabungan bisa langsung dari HP kamu.\",\n" +
+                "              \"desc_2\": \"\",\n" +
+                "              \"cta\": \"Lihat Detail\",\n" +
+                "              \"url\": \"https://38.staging-feature.tokopedia.com/login?ld=/payment/open-bank-account/dashboard\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "              \"datalayer_status\": \"\",\n" +
+                "              \"status\": \"\",\n" +
+                "              \"status_text_color\": \"\",\n" +
+                "              \"status_bg_color\": \"\",\n" +
+                "              \"image_url\": \"https://ecs7.tokopedia.net/img/toppay/banner/bri-oba-banner2.jpg\",\n" +
+                "              \"category\": \"PERBANKAN\",\n" +
+                "              \"name\": \"Buka Rekening\",\n" +
+                "              \"desc_1\": \"Anti ribet! Buka rekening tabungan bisa langsung dari HP kamu.\",\n" +
+                "              \"desc_2\": \"\",\n" +
+                "              \"cta\": \"Lihat Detail\",\n" +
+                "              \"url\": \"https://38.staging-feature.tokopedia.com/login?ld=/payment/open-bank-account/dashboard\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "              \"datalayer_status\": \"\",\n" +
+                "              \"status\": \"\",\n" +
+                "              \"status_text_color\": \"\",\n" +
+                "              \"status_bg_color\": \"\",\n" +
+                "              \"image_url\": \"https://ecs7.tokopedia.net/img/toppay/banner/bri-oba-banner2.jpg\",\n" +
+                "              \"category\": \"PERBANKAN\",\n" +
+                "              \"name\": \"Buka Rekening\",\n" +
+                "              \"desc_1\": \"Anti ribet! Buka rekening tabungan bisa langsung dari HP kamu.\",\n" +
+                "              \"desc_2\": \"\",\n" +
+                "              \"cta\": \"Lihat Detail\",\n" +
+                "              \"url\": \"https://38.staging-feature.tokopedia.com/login?ld=/payment/open-bank-account/dashboard\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "              \"datalayer_status\": \"\",\n" +
+                "              \"status\": \"\",\n" +
+                "              \"status_text_color\": \"\",\n" +
+                "              \"status_bg_color\": \"\",\n" +
+                "              \"image_url\": \"https://ecs7.tokopedia.net/img/toppay/banner/bri-oba-banner2.jpg\",\n" +
+                "              \"category\": \"PERBANKAN\",\n" +
+                "              \"name\": \"Buka Rekening\",\n" +
+                "              \"desc_1\": \"Anti ribet! Buka rekening tabungan bisa langsung dari HP kamu.\",\n" +
+                "              \"desc_2\": \"\",\n" +
+                "              \"cta\": \"Lihat Detail\",\n" +
+                "              \"url\": \"https://38.staging-feature.tokopedia.com/login?ld=/payment/open-bank-account/dashboard\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "              \"datalayer_status\": \"\",\n" +
+                "              \"status\": \"\",\n" +
+                "              \"status_text_color\": \"\",\n" +
+                "              \"status_bg_color\": \"\",\n" +
+                "              \"image_url\": \"https://ecs7.tokopedia.net/img/toppay/banner/bri-oba-banner2.jpg\",\n" +
+                "              \"category\": \"PERBANKAN\",\n" +
+                "              \"name\": \"Buka Rekening\",\n" +
+                "              \"desc_1\": \"Anti ribet! Buka rekening tabungan bisa langsung dari HP kamu.\",\n" +
+                "              \"desc_2\": \"\",\n" +
+                "              \"cta\": \"Lihat Detail\",\n" +
+                "              \"url\": \"https://38.staging-feature.tokopedia.com/login?ld=/payment/open-bank-account/dashboard\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "              \"datalayer_status\": \"\",\n" +
+                "              \"status\": \"\",\n" +
+                "              \"status_text_color\": \"\",\n" +
+                "              \"status_bg_color\": \"\",\n" +
+                "              \"image_url\": \"https://ecs7.tokopedia.net/img/toppay/banner/bri-oba-banner2.jpg\",\n" +
+                "              \"category\": \"PERBANKAN\",\n" +
+                "              \"name\": \"Buka Rekening\",\n" +
+                "              \"desc_1\": \"Anti ribet! Buka rekening tabungan bisa langsung dari HP kamu.\",\n" +
+                "              \"desc_2\": \"\",\n" +
+                "              \"cta\": \"Lihat Detail\",\n" +
+                "              \"url\": \"https://38.staging-feature.tokopedia.com/login?ld=/payment/open-bank-account/dashboard\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "              \"datalayer_status\": \"\",\n" +
+                "              \"status\": \"\",\n" +
+                "              \"status_text_color\": \"\",\n" +
+                "              \"status_bg_color\": \"\",\n" +
+                "              \"image_url\": \"https://ecs7.tokopedia.net/img/toppay/banner/bri-oba-banner2.jpg\",\n" +
+                "              \"category\": \"PERBANKAN\",\n" +
+                "              \"name\": \"Buka Rekening\",\n" +
+                "              \"desc_1\": \"Anti ribet! Buka rekening tabungan bisa langsung dari HP kamu.\",\n" +
+                "              \"desc_2\": \"\",\n" +
+                "              \"cta\": \"Lihat Detail\",\n" +
+                "              \"url\": \"https://38.staging-feature.tokopedia.com/login?ld=/payment/open-bank-account/dashboard\"\n" +
                 "            }\n" +
                 "          ]\n" +
                 "        },\n" +
