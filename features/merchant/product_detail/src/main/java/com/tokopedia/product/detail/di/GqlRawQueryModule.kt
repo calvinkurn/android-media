@@ -246,6 +246,14 @@ class GqlRawQueryModule {
 
     @ProductDetailScope
     @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_GET_CART_TYPE)
+    fun provideGetCartType(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_cart_type)
+
+
+    @ProductDetailScope
+    @Provides
     @Named(SubmitHelpTicketUseCase.QUERY_NAME)
     fun provideSubmitHelpTicket(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, com.tokopedia.purchase_platform.common.R.raw.submit_help_ticket)
