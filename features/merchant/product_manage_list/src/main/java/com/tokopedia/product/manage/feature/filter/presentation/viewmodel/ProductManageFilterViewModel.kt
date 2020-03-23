@@ -52,6 +52,7 @@ class ProductManageFilterViewModel @Inject constructor(
 
     fun updateData(filterData: List<FilterViewModel>) {
         _filterData.value = (filterData.toMutableList())
+        findSelectedData(filterData.subList(ITEM_SORT_INDEX, ITEM_CATEGORIES_INDEX))
     }
 
     fun updateSpecificData(filterViewModel: FilterViewModel, index: Int) {
@@ -59,6 +60,7 @@ class ProductManageFilterViewModel @Inject constructor(
         currentValue?.let {
             it[index] = filterViewModel
         }
+        findSelectedData(listOf(filterViewModel))
         _filterData.value = currentValue
     }
 
@@ -173,5 +175,23 @@ class ProductManageFilterViewModel @Inject constructor(
             }
         }
         return null
+    }
+
+    private fun findSelectedData(filterViewModels: List<FilterViewModel>) {
+        filterViewModels.forEach {
+            if(it.title == ProductManageFilterMapper.SORT_HEADER) {
+                it.data.forEach { filterDataModel ->
+                    if(filterDataModel.select) {
+                        selectedSort = filterDataModel
+                    }
+                }
+            } else {
+                it.data.forEach { filterDataModel ->
+                    if(filterDataModel.select) {
+                        selectedEtalase = filterDataModel
+                    }
+                }
+            }
+        }
     }
 }
