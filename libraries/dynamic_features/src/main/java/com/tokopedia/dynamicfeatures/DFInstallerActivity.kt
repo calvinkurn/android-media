@@ -83,7 +83,6 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         private const val CONFIRMATION_REQUEST_CODE = 1
         private const val SETTING_REQUEST_CODE = 2
         const val TAG_LOG = "Page"
-        const val START_TS = "start_ts"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,11 +95,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
             fallbackUrl = uri.getQueryParameter(EXTRA_FALLBACK_WEB) ?: ""
         }
 
-        if (savedInstanceState == null) {
-            startDownloadTimeStamp = System.currentTimeMillis()
-        } else {
-            startDownloadTimeStamp = savedInstanceState.getLong(START_TS)
-        }
+        startDownloadTimeStamp = System.currentTimeMillis()
         super.onCreate(savedInstanceState)
         dfConfig = DFRemoteConfig.getConfig(this)
         manager = DFInstaller.getManager(this) ?: return
@@ -457,10 +452,5 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
 
     override fun getModuleNameView(): String {
         return moduleName
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putLong(START_TS, startDownloadTimeStamp)
     }
 }
