@@ -33,6 +33,7 @@ import com.tokopedia.dynamicfeatures.utils.Utils
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.activity_dynamic_feature_installer.*
 import kotlinx.coroutines.*
+import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
 
@@ -241,9 +242,9 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         updateInformationView(R.drawable.ic_ill_onboarding,
             String.format(getString(R.string.feature_download_title), moduleNameTranslated),
             String.format(getString(R.string.feature_download_subtitle), moduleNameTranslated),
-            getString(R.string.start_download)) {
-            downloadFeature()
-        }
+            getString(R.string.start_download),
+            { downloadFeature() }
+        )
     }
 
     private fun showFailedMessage(errorCode: String = "") {
@@ -254,6 +255,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
             val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.WEBVIEW, fallbackUrl)
             intent?.let { it ->
                 ctaAction = { ->
+                    Timber.w("P1#DFM_FALLBACK#click;mod_name=$moduleName;url='$fallbackUrl'")
                     startActivity(it)
                 }
             }

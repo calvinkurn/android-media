@@ -7,14 +7,15 @@ import androidx.collection.ArrayMap
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.common_tradein.model.TradeInParams
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -32,8 +33,6 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRO
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_KEY
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_SHOP_DOMAIN
 import com.tokopedia.product.detail.common.data.model.product.*
-import com.tokopedia.product.detail.common.data.model.variant.ProductDetailVariantResponse
-import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.data.model.*
@@ -56,7 +55,6 @@ import com.tokopedia.product.detail.data.util.origin
 import com.tokopedia.product.detail.data.util.weightInKg
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
-import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.purchase_platform.common.data.model.request.helpticket.SubmitHelpTicketRequest
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult
 import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase
@@ -75,6 +73,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.variant_common.model.ProductDetailVariantCommonResponse
+import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
@@ -296,7 +296,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
             val paramsVariant = mapOf(PARAM_PRODUCT_ID to productId.toString())
             val variantRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_VARIANT],
-                    ProductDetailVariantResponse::class.java, paramsVariant)
+                    ProductDetailVariantCommonResponse::class.java, paramsVariant)
 
             val shopBadgeParams = mapOf(PARAM_SHOP_IDS to listOf(shopId))
             val shopBadgeRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_BADGE],
@@ -403,8 +403,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             try {
                 val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
 
-                if (gqlResponse.getError(ProductDetailVariantResponse::class.java)?.isNotEmpty() != true) {
-                    productInfoP2.variantResp = gqlResponse.getData<ProductDetailVariantResponse>(ProductDetailVariantResponse::class.java).data
+                if (gqlResponse.getError(ProductDetailVariantCommonResponse::class.java)?.isNotEmpty() != true) {
+                    productInfoP2.variantResp = gqlResponse.getData<ProductDetailVariantCommonResponse>(ProductDetailVariantCommonResponse::class.java).data
                 }
 
                 if (gqlResponse.getError(ShopBadge.Response::class.java)?.isNotEmpty() != true) {
@@ -868,7 +868,7 @@ fun hitAffiliateTracker(affiliateUniqueString: String, deviceId: String) {
         return getProductVariant()?.mapSelectedProductVariants(userInputVariant)
     }
 
-    private fun getProductVariant(): ProductVariant? {
+    private fun getProductVariant(): ProductVariantCommon? {
         return p2General.value?.variantResp
     }
 

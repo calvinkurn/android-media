@@ -11,6 +11,8 @@ import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressScope
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.DistrictBoundaryUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
+import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase.Companion.FOREIGN_COUNTRY_MESSAGE
+import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase.Companion.LOCATION_NOT_FOUND_MESSAGE
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
@@ -24,13 +26,11 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2019-05-08.
  */
-const val FOREIGN_COUNTRY_MESSAGE = "Lokasi di luar Indonesia."
-
 @AddNewAddressScope
 class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: GetDistrictUseCase,
                                                private val revGeocodeUseCase: RevGeocodeUseCase,
                                                private val districtBoundaryUseCase: DistrictBoundaryUseCase,
-                                               private val districtBoundaryMapper: DistrictBoundaryMapper) : BaseDaggerPresenter<PinpointMapListener>() {
+                                               private val districtBoundaryMapper: DistrictBoundaryMapper) : BaseDaggerPresenter<PinpointMapView>() {
 
     private var saveAddressDataModel = SaveAddressDataModel()
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
@@ -51,7 +51,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
                 })
     }
 
-    fun autofill(lat: Double, long: Double, zoom: Float) {
+    fun autoFill(lat: Double, long: Double, zoom: Float) {
         Timber.d("Current zoom level : $zoom")
         if (AddNewAddressUtils.hasDefaultCoordinate(lat, long)) {
             view.showUndetectedDialog()
@@ -63,10 +63,17 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         revGeocodeUseCase.execute(param)
                 .subscribe(
                         {
-                            if (it.messageError.isNotEmpty() && it.messageError[0].equals(FOREIGN_COUNTRY_MESSAGE, true)) {
-                                view.showOutOfReachDialog()
-                            } else {
+                            if (it.messageError.isEmpty()) {
                                 view?.onSuccessAutofill(it.data)
+                            } else {
+                                val msg = it.messageError[0]
+                                when {
+                                    msg.contains(FOREIGN_COUNTRY_MESSAGE) -> view?.showOutOfReachDialog()
+                                    msg.contains(LOCATION_NOT_FOUND_MESSAGE) -> {
+                                        saveAddressDataModel = SaveAddressDataModel()
+                                        view?.showLocationNotFoundCTA()
+                                    }
+                                }
                             }
                         },
                         {
