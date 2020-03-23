@@ -22,6 +22,7 @@ import com.tokopedia.sellerhome.common.StatusbarHelper
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.view.model.NotificationCenterUnreadUiModel
 import com.tokopedia.sellerhome.view.viewmodel.SharedViewModel
+import com.tokopedia.sellerhome.view.widget.toolbar.NotificationDotBadge
 import kotlinx.android.synthetic.main.fragment_sah_container.view.*
 import javax.inject.Inject
 
@@ -140,11 +141,21 @@ class ContainerFragment : Fragment() {
                     }
                 }
             } else {
-                transaction.add(R.id.sahFragmentContainer, fragment, fragmentName)
+                manager.fragments.forEach {
+                    transaction.hide(it)
+                }
+                transaction.add(R.id.sahFragmentContainer, fragment, fragmentName).show(fragment)
             }
 
             transaction.commitNowAllowingStateLoss()
+
             view?.sahToolbar?.title = title
+            if (fragment == homeFragment) {
+                context?.let {
+                    val menuItem = view?.sahToolbar?.menu?.findItem(SellerHomeFragment.NOTIFICATION_MENU_ID) ?: return@let
+                    NotificationDotBadge(it).showBadge(menuItem)
+                }
+            }
         }
     }
 
