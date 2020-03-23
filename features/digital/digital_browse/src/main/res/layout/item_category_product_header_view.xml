@@ -5,17 +5,20 @@
     android:id="@+id/product_header_parent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp_12"
     tools:background="@color/black">
 
     <ImageView
         android:id="@+id/product_image"
         android:layout_width="@dimen/dp_85"
         android:layout_height="@dimen/dp_85"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:srcCompat="@drawable/category_ic_broken_image"
+        tools:ignore="ContentDescription" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_name"
@@ -23,10 +26,11 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="2"
-        android:padding="@dimen/dp_12"
+        android:paddingStart="@dimen/dp_12"
+        android:paddingLeft="@dimen/dp_12"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/arrow_icon"
         app:layout_constraintRight_toRightOf="@+id/arrow_icon"
         app:layout_constraintStart_toEndOf="@+id/product_image"
         app:layout_constraintTop_toTopOf="parent"
@@ -36,13 +40,12 @@
 
     <ImageView
         android:id="@+id/arrow_icon"
-        android:layout_width="@dimen/dp_30"
-        android:layout_height="@dimen/dp_30"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
         android:layout_marginStart="@dimen/dp_6"
         android:layout_marginLeft="@dimen/dp_6"
-        android:layout_marginEnd="@dimen/dp_24"
-        android:layout_marginRight="@dimen/dp_24"
-        android:padding="@dimen/dp_5"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="@+id/product_name"

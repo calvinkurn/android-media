@@ -538,7 +538,6 @@ public class HomeFragment extends BaseDaggerFragment implements
     public void onResume() {
         super.onResume();
         createAndCallSendScreen();
-        sendScreen();
         adapter.onResume();
         viewModel.refresh(isFirstInstall());
         if (activityStateListener != null) {
@@ -547,7 +546,13 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private void createAndCallSendScreen(){
-        WeaveInterface sendScrWeave = this::sendScreen;
+        WeaveInterface sendScrWeave =  new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return sendScreen();
+            }
+        };
         Weaver.Companion.executeWeaveCoRoutine(sendScrWeave,
                 new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, remoteConfig));
     }

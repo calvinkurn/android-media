@@ -127,9 +127,8 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
 
         @Override
         public void run() {
-            view.post(new Runnable() {
-                @Override
-                public void run() {
+            if (view != null) {
+                view.post(() -> {
                     hasStarted = true;
                     if (i < tickers.size() - 1)
                         i++;
@@ -140,8 +139,8 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
                     textMessage.setText(ticker.getMessage());
                     StripedUnderlineUtil.stripUnderlines(textMessage);
                     ViewCompat.setBackgroundTintList(btnClose, ColorStateList.valueOf(Color.parseColor(ticker.getColor())));
-                }
-            });
+                });
+            }
         }
     }
 

@@ -3,7 +3,7 @@ package com.tokopedia.home.analytics.v2
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 
 object ProductHighlightTracking : BaseTracking() {
-    val PRODUCT_DYNAMIC_CHANNEL_HERO = "product dynamic channel hero"
+    val PRODUCT_DYNAMIC_CHANNEL_HERO = "dynamic channel hero"
     val PRODUCT_DYNAMIC_CHANNEL_HERO_IMPRESSION = Action.IMPRESSION_ON.format(PRODUCT_DYNAMIC_CHANNEL_HERO)
     val PRODUCT_DYNAMIC_CHANNEL_HERO_CLICK = Action.CLICK_ON.format(PRODUCT_DYNAMIC_CHANNEL_HERO)
 
