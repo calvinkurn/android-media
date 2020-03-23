@@ -319,6 +319,12 @@ class ModelBuilder {
 
     fun buildPinnedRemoveUiModel() = PinnedRemoveUiModel
 
+    fun buildQuickReplyUiModel(
+            quickReplyList: List<String> = listOf("Keren", "UwU")
+    ) = QuickReplyUiModel(
+            quickReplyList = quickReplyList
+    )
+
     fun buildPlayRoomFreezeEvent(
             title: String = "Freeze",
             message: String = "Kamu kena freeze",
