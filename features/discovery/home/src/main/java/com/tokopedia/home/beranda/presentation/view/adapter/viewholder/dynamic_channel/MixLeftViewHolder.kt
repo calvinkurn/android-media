@@ -108,7 +108,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
 
         adapter = MixLeftAdapter(listData,typeFactoryImpl)
         recyclerView.adapter = adapter
-        recyclerView.setHasFixedSize(true)
+//        recyclerView.setHasFixedSize(true)
         launch {
             try {
                 recyclerView.setHeightBasedOnProductCardMaxHeight(productDataList.map {it.productModel})
