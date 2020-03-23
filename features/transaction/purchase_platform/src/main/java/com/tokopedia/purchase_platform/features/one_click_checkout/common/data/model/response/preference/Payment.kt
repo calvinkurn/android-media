@@ -20,5 +20,7 @@ data class Payment(
         @SerializedName("fee")
         val fee: Int = 0,
         @SerializedName("wallet_amount")
-        val walletAmount: Int = 0
+        val walletAmount: Int = 0,
+        @SerializedName("metadata")
+        val metadata: String = ""
 )

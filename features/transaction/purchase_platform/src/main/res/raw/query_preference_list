@@ -34,6 +34,7 @@ query get_preference_list {
                             image
                             description
                             url
+                            metadata
                     }
                     shipment {
                             service_id

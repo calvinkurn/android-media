@@ -805,7 +805,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     profileId = preference.profileId.toString(),
                     addressId = preference.addressModel?.addressId.toString(),
                     serviceId = preference.shipmentModel?.serviceId ?: 0,
-                    gatewayCode = preference.paymentModel?.gatewayCode ?: ""
+                    gatewayCode = preference.paymentModel?.gatewayCode ?: "",
+                    metadata = preference.paymentModel?.metadata ?: ""
             ))
             globalEvent.value = OccGlobalEvent.Loading
             updateCartOccUseCase.execute(param, { updateCartOccGqlResponse: UpdateCartOccGqlResponse ->

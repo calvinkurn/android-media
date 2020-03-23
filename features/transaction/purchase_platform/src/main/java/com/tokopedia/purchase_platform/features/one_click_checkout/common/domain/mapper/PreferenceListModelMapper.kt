@@ -94,6 +94,7 @@ class PreferenceListModelMapper @Inject constructor() : PreferenceDataMapper {
         paymentModel.gatewayName = payment.gatewayName
         paymentModel.image = payment.image
         paymentModel.url = payment.url
+        paymentModel.metadata = payment.metadata
 
         return paymentModel
     }
