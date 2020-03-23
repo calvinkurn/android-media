@@ -74,7 +74,7 @@ class VideoComponentTest {
 
     @Test
     fun `when user is banned, then video should be hidden and released`() = runBlockingTest(testDispatcher) {
-        val mockFreeze = modelBuilder.buildPlayRoomFreezeEvent()
+        val mockFreeze = modelBuilder.buildPlayRoomBannedEvent()
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockFreeze))
         verify {

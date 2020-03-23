@@ -35,7 +35,7 @@ open class VideoComponent(
                         when (it) {
                             ScreenStateEvent.Init -> uiView.show()
                             is ScreenStateEvent.SetVideo -> uiView.setPlayer(it.videoPlayer)
-                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) {
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze || it.event.isBanned) {
                                 uiView.hide()
                                 uiView.setPlayer(null)
                             }
