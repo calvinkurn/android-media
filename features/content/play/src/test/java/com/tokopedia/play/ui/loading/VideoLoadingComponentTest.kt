@@ -4,20 +4,21 @@ import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
+import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play.view.type.PlayChannelType
-import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play_common.state.PlayVideoState
 import io.mockk.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.*
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 
 /**
  * Created by jegul on 22/01/20
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class VideoLoadingComponentTest {
 
     private lateinit var component: VideoLoadingComponent
@@ -26,7 +27,9 @@ class VideoLoadingComponentTest {
     private val testDispatcher = TestCoroutineDispatcher()
     private val coroutineScope = CoroutineScope(testDispatcher)
 
-    @Before
+    private val modelBuilder = ModelBuilder()
+
+    @BeforeEach
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         every { owner.lifecycle } returns mockk(relaxed = true)
@@ -34,58 +37,36 @@ class VideoLoadingComponentTest {
         component = VideoLoadingComponentMock(mockk(relaxed = true), EventBusFactory.get(owner), coroutineScope)
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         Dispatchers.resetMain()
     }
 
-//    @Test
-//    fun `test when VOD is buffering`() = runBlockingTest(testDispatcher) {
-//        val mockVideoProp = VideoPropertyUiModel(
-//                type = PlayChannelType.VOD,
-//                state = PlayVideoState.Buffering
-//        )
-//
-//        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
-//        verify { component.uiView.show() }
-//        confirmVerified(component.uiView)
-//    }
-//
-//    @Test
-//    fun `test when Live is buffering`() = runBlockingTest(testDispatcher) {
-//        val mockVideoProp = VideoPropertyUiModel(
-//                type = PlayChannelType.Live,
-//                state = PlayVideoState.Buffering
-//        )
-//
-//        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
-//        verify { component.uiView.show() }
-//        confirmVerified(component.uiView)
-//    }
-//
-//    @Test
-//    fun `test when VOD is playing`() = runBlockingTest(testDispatcher) {
-//        val mockVideoProp = VideoPropertyUiModel(
-//                type = PlayChannelType.VOD,
-//                state = PlayVideoState.Playing
-//        )
-//
-//        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
-//        verify { component.uiView.hide() }
-//        confirmVerified(component.uiView)
-//    }
-//
-//    @Test
-//    fun `test when Live is playing`() = runBlockingTest(testDispatcher) {
-//        val mockVideoProp = VideoPropertyUiModel(
-//                type = PlayChannelType.Live,
-//                state = PlayVideoState.Playing
-//        )
-//
-//        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
-//        verify { component.uiView.hide() }
-//        confirmVerified(component.uiView)
-//    }
+    @Test
+    fun `when video is buffering, then loading should be shown`() = runBlockingTest(testDispatcher) {
+        val mockVideoProp = modelBuilder.buildVideoPropertyUiModel(
+                state = PlayVideoState.Buffering
+        )
+
+        val mockStateHelper = modelBuilder.buildStateHelperUiModel()
+
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp, mockStateHelper))
+        verify { component.uiView.show() }
+        confirmVerified(component.uiView)
+    }
+
+    @Test
+    fun `when video is not buffering, then loading should be hidden`() = runBlockingTest(testDispatcher) {
+        val mockVideoProp = modelBuilder.buildVideoPropertyUiModel(
+                state = PlayVideoState.Playing
+        )
+
+        val mockStateHelper = modelBuilder.buildStateHelperUiModel()
+
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp, mockStateHelper))
+        verify { component.uiView.hide() }
+        confirmVerified(component.uiView)
+    }
 
     class VideoLoadingComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : VideoLoadingComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): VideoLoadingView {
