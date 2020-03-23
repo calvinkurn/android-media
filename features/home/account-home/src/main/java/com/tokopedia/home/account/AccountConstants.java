@@ -10,6 +10,7 @@ public class AccountConstants {
     public static final String VARIABLES = "variables";
     public static final String RC_GIFTCARD_ENABLE = "enable_gift_card_transaction_history_entry";
     public static final String RC_LOCALSERVICE_ENABLE = "enable_local_service_transaction_history_entry";
+    public static final String RC_FOOD_AND_VOUCHER_ICON_ENABLE = "enable_food_and_voucher_icon";
     public static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
     public static final String SALDO_QUERY = "saldo_query";
     public static final String SHOP_LOCATION_QUERY = "query_shop_location";

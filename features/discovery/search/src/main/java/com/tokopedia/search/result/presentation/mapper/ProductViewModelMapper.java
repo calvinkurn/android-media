@@ -272,6 +272,7 @@ public class ProductViewModelMapper {
         suggestionViewModel.setSuggestedQuery(suggestionModel.getQuery());
         suggestionViewModel.setSuggestionCurrentKeyword(suggestionModel.getCurrentKeyword());
         suggestionViewModel.setFormattedResultCount(searchProduct.getCountText());
+        suggestionViewModel.setSuggestion(suggestionModel.getSuggestion());
         return suggestionViewModel;
     }
 
