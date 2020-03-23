@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.feature.list
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.product.manage.feature.filter.domain.GetProductListMetaUseCase
 import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
 import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
@@ -43,6 +44,8 @@ abstract class ProductManageViewModelTestFixture {
     lateinit var deleteProductUseCase: DeleteProductUseCase
     @RelaxedMockK
     lateinit var multiEditProductUseCase: MultiEditProductUseCase
+    @RelaxedMockK
+    lateinit var getProductListMetaUseCase: GetProductListMetaUseCase
 
     protected lateinit var viewModel: ProductManageViewModel
 
@@ -61,6 +64,7 @@ abstract class ProductManageViewModelTestFixture {
                 editStockUseCase,
                 deleteProductUseCase,
                 multiEditProductUseCase,
+                getProductListMetaUseCase,
                 Dispatchers.Unconfined
         )
     }
