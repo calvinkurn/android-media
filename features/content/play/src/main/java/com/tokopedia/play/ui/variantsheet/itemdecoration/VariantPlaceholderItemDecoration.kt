@@ -16,8 +16,8 @@ import com.tokopedia.play.ui.variantsheet.adapter.viewholder.VariantPlaceholderV
  */
 class VariantPlaceholderItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
 
-    private val dividerHeight = context.resources.getDimensionPixelOffset(R.dimen.play_placeholder_variant_divider_height)
-    private val startOffset = context.resources.getDimensionPixelOffset(R.dimen.spacing_lvl4)
+    private val dividerHeight = context.resources.getDimensionPixelOffset(com.tokopedia.play_common.R.dimen.play_placeholder_variant_divider_height)
+    private val startOffset = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
 
     private val mPaint = Paint().apply {
         color = MethodChecker.getColor(context, R.color.play_variant_placeholder_divider)

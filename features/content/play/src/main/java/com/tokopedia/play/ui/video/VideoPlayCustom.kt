@@ -39,7 +39,7 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
         descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
 
         // Content frame.
-        contentFrame = findViewById(com.google.android.exoplayer2.R.id.exo_content_frame)
+        contentFrame = findViewById(com.google.android.exoplayer2.ui.R.id.exo_content_frame)
         contentFrame?.let { setResizeModeRaw(it, resizeMode) }
 
         surfaceView = TextureView(context)
@@ -54,7 +54,7 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
         player?.addListener(componentListener)
 
         // Buffering view.
-        bufferingView = findViewById(com.google.android.exoplayer2.R.id.exo_buffering)
+        bufferingView = findViewById(com.google.android.exoplayer2.ui.R.id.exo_buffering)
         bufferingView?.visibility = View.GONE
     }
 
