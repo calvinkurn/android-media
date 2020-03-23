@@ -126,18 +126,6 @@
         tools:visibility="visible">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/label_tokopoints"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawablePadding="@dimen/dp_4"
-            android:paddingBottom="@dimen/dp_16"
-            app:drawableRightCompat="@drawable/info_icon"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_3"
-            tools:text="Transaksi ini tidak mendapatkan TokoPoints" />
-
-        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_total_promo_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

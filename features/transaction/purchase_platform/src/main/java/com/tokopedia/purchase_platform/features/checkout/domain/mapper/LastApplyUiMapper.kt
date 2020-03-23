@@ -21,7 +21,7 @@ class LastApplyUiMapper {
         private fun mapVoucherOrders(voucherOrderUiModels: List<PromoCheckoutVoucherOrdersItemUiModel?>): List<LastApplyVoucherOrdersItemUiModel> {
             val listLastApplyVoucherOrders = arrayListOf<LastApplyVoucherOrdersItemUiModel>()
             voucherOrderUiModels.forEach {
-                it?.let { it1 -> mapVoucherOrdersItem(it1) }
+                it?.let { it1 -> listLastApplyVoucherOrders.add(mapVoucherOrdersItem(it1)) }
             }
             return listLastApplyVoucherOrders
         }
@@ -45,12 +45,20 @@ class LastApplyUiMapper {
         }
 
         private fun mapAdditionalInfo(additionalInfoUiModel: AdditionalInfoUiModel): LastApplyAdditionalInfoUiModel {
-            val listUsageSummariesUiModel = arrayListOf<UsageSummariesUiModel>()
             return LastApplyAdditionalInfoUiModel(
                     messageInfo = mapMessageInfo(additionalInfoUiModel.messageInfoUiModel),
                     errorDetail = mapErrorInfo(additionalInfoUiModel.errorDetailUiModel),
-                    emptyCartInfo = mapEmptyCartInfo(additionalInfoUiModel.emptyCartInfoUiModel)
+                    emptyCartInfo = mapEmptyCartInfo(additionalInfoUiModel.emptyCartInfoUiModel),
+                    usageSummaries = mapUsageSummaries(additionalInfoUiModel.usageSummariesUiModel)
             )
+        }
+
+        private fun mapUsageSummaries(usageSummariesList: List<UsageSummariesUiModel>): List<LastApplyUsageSummariesUiModel> {
+            val listLastAppyUsageSummariesUiModel = arrayListOf<LastApplyUsageSummariesUiModel>()
+            usageSummariesList.forEach {
+                listLastAppyUsageSummariesUiModel.add(mapUsageSummariesUiModel(it))
+            }
+            return listLastAppyUsageSummariesUiModel
         }
 
         private fun mapMessageInfo(messageInfoUiModel: MessageInfoUiModel): LastApplyMessageInfoUiModel {

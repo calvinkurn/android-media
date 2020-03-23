@@ -531,60 +531,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvShopName.setText(builder, TextView.BufferType.SPANNABLE);
     }
 
-    private void renderPromoMerchant(ShipmentCartItemModel shipmentCartItemModel) {
-        if (getAdapterPosition() != RecyclerView.NO_POSITION) {
-            if (shipmentCartItemModel.isError()) {
-                tickerPromoStackingCheckoutView.setVisibility(View.VISIBLE);
-                tickerPromoStackingCheckoutView.setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
-                tickerPromoStackingCheckoutView.disableView();
-                if (shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
-                    mActionListener.onCancelVoucherMerchantClicked(shipmentCartItemModel.getVoucherOrdersItemUiModel().getCode(), getAdapterPosition(), true);
-                    shipmentCartItemModel.setVoucherOrdersItemUiModel(null);
-                }
-            } else {
-                if (shipmentCartItemModel.getHasPromoList()) {
-                    tickerPromoStackingCheckoutView.setVisibility(View.VISIBLE);
-                    tickerPromoStackingCheckoutView.setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
-                    if (shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
-                        tickerPromoStackingCheckoutView.setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(shipmentCartItemModel.getVoucherOrdersItemUiModel().getMessage().getState()));
-                        tickerPromoStackingCheckoutView.setDesc(shipmentCartItemModel.getVoucherOrdersItemUiModel().getInvoiceDescription());
-                        tickerPromoStackingCheckoutView.setTitle(shipmentCartItemModel.getVoucherOrdersItemUiModel().getMessage().getText());
-                    } else {
-                        tickerPromoStackingCheckoutView.enableView();
-                        tickerPromoStackingCheckoutView.setState(TickerPromoStackingCheckoutView.State.EMPTY);
-                    }
-                    tickerPromoStackingCheckoutView.setActionListener(new TickerPromoStackingCheckoutView.ActionListener() {
-                        @Override
-                        public void onClickUsePromo() {
-                            mActionListener.onVoucherMerchantPromoClicked(shipmentCartItemModel);
-                        }
-
-                        @Override
-                        public void onResetPromoDiscount() {
-                            if (shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
-                                mActionListener.onCancelVoucherMerchantClicked(shipmentCartItemModel.getVoucherOrdersItemUiModel().getCode(), getAdapterPosition(), false);
-                            }
-                        }
-
-                        @Override
-                        public void onClickDetailPromo() {
-
-                        }
-
-                        @Override
-                        public void onDisablePromoDiscount() {
-                            if (shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
-                                mActionListener.onCancelVoucherMerchantClicked(shipmentCartItemModel.getVoucherOrdersItemUiModel().getCode(), getAdapterPosition(), false);
-                            }
-                        }
-                    });
-                } else {
-                    tickerPromoStackingCheckoutView.setVisibility(View.GONE);
-                }
-            }
-        }
-    }
-
     private void renderFirstCartItem(CartItemModel cartItemModel) {
         if (cartItemModel.isError()) {
             showShipmentWarning(cartItemModel);

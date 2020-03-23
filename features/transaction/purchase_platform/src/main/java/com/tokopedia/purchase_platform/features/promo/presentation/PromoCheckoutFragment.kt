@@ -4,7 +4,10 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
@@ -36,10 +39,7 @@ import com.tokopedia.promocheckout.common.data.EXTRA_KUPON_CODE
 import com.tokopedia.promocheckout.common.data.ONE_CLICK_SHIPMENT
 import com.tokopedia.promocheckout.common.data.PAGE_TRACKING
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
-import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
-import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
-import com.tokopedia.purchase_platform.common.feature.tokopointstnc.TokoPointsTncBottomsheet
+import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus.Companion.STATUS_PHONE_NOT_VERIFIED
@@ -131,7 +131,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         }
         button_apply_no_promo.setOnClickListener {
             setButtonLoading(button_apply_no_promo, true)
-            viewModel.clearPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo))
+            val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) as ValidateUsePromoRequest
+            viewModel.clearPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo), validateUsePromoRequest)
         }
 
         val lastHeaderUiModel: PromoListHeaderUiModel? = null
@@ -330,7 +331,14 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             setButtonLoading(button_apply_promo, false)
             when {
                 it.state == ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CART -> {
-                    activity?.setResult(Activity.RESULT_OK)
+                    val intent = Intent()
+                    if (it.data != null) {
+                        intent.putExtra(ARGS_VALIDATE_USE_DATA_RESULT, it.data)
+                    }
+                    if (it.lastValidateUseRequest != null) {
+                        intent.putExtra(ARGS_LAST_VALIDATE_USE_REQUEST, it.lastValidateUseRequest)
+                    }
+                    activity?.setResult(Activity.RESULT_OK, intent)
                     activity?.finish()
                 }
                 it.state == ApplyPromoResponseAction.ACTION_RELOAD_PROMO -> {
@@ -350,7 +358,17 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         viewModel.clearPromoResponse.observe(this, Observer {
             setButtonLoading(button_apply_no_promo, false)
             when {
-                it.state == ClearPromoResponseAction.ACTION_STATE_SUCCESS -> activity?.finish()
+                it.state == ClearPromoResponseAction.ACTION_STATE_SUCCESS -> {
+                    val intent = Intent()
+                    if (it.data != null) {
+                        intent.putExtra(ARGS_CLEAR_PROMO_RESULT, it.data)
+                    }
+                    if (it.lastValidateUseRequest != null) {
+                        intent.putExtra(ARGS_LAST_VALIDATE_USE_REQUEST, it.lastValidateUseRequest)
+                    }
+                    activity?.setResult(Activity.RESULT_OK, intent)
+                    activity?.finish()
+                }
                 it.state == ClearPromoResponseAction.ACTION_STATE_ERROR -> it.exception?.let {
                     showToastMessage(it)
                 }
@@ -372,25 +390,6 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     label_total_promo_info.show()
                     label_total_promo_amount.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentUiModel.uiData.totalBenefit, false)
                     label_total_promo_amount.show()
-                    if (fragmentUiModel.uiData.tokopointsTncLabel.isNotBlank()) {
-                        label_tokopoints.text = fragmentUiModel.uiData.tokopointsTncLabel
-                        label_tokopoints.setOnTouchListener { v, event ->
-                            if (event.action == MotionEvent.ACTION_UP) {
-                                val textLocation = IntArray(2)
-                                label_tokopoints.getLocationOnScreen(textLocation)
-                                if (event.rawX >= textLocation[0] + label_tokopoints.width - label_tokopoints.totalPaddingRight) {
-                                    activity?.let {
-                                        TokoPointsTncBottomsheet().apply {
-                                            setBottomsheetData(fragmentUiModel.uiData.tokopointsTncTitle, fragmentUiModel.uiData.tokopointsTncDetails)
-                                            show(it.supportFragmentManager, hashCode().toString())
-                                        }
-                                    }
-                                }
-                            }
-                            true
-                        }
-                        label_tokopoints.show()
-                    }
                     button_apply_promo.text = String.format(it.resources.getString(R.string.promo_checkout_label_button_apply_promo), fragmentUiModel.uiData.usedPromoCount)
                     button_apply_promo.show()
                     button_apply_no_promo.gone()
@@ -403,7 +402,6 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     label_total_promo_amount.gone()
                     button_apply_promo.gone()
                     button_apply_no_promo.show()
-                    label_tokopoints.gone()
                     container_action_bottom.show()
                 } else {
                     container_action_bottom.gone()
@@ -525,7 +523,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                         val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) as ValidateUsePromoRequest
                         viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.mutation_validate_use_promo_revamp), validateUsePromoRequest)
                     } else {
-                        viewModel.clearPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo))
+                        val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) as ValidateUsePromoRequest
+                        viewModel.clearPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo), validateUsePromoRequest)
                     }
                 }
                 setSecondaryCTAClickListener {

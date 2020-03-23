@@ -21,6 +21,7 @@ import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus
 import com.tokopedia.purchase_platform.features.promo.data.response.validate_use.ValidateUseResponse
 import com.tokopedia.purchase_platform.features.promo.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.purchase_platform.features.promo.presentation.mapper.PromoCheckoutUiModelMapper
+import com.tokopedia.purchase_platform.features.promo.presentation.mapper.ValidateUsePromoCheckoutMapper
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -276,6 +277,37 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 _applyPromoResponse.value = ApplyPromoResponseAction()
             }
 
+            // Get all selected promo. Store to map where unique id as key and promo code as value
+            val promoList = HashMap<String, String>()
+            promoListUiModel.value?.forEach {
+                if (it is PromoListItemUiModel && it.uiState.isSelected) {
+                    promoList[it.uiData.uniqueId] = it.uiData.promoCode
+                } else if (it is PromoListHeaderUiModel && it.uiData.tmpPromoItemList.isNotEmpty()) {
+                    it.uiData.tmpPromoItemList.forEach {
+                        if (it.uiState.isSelected) {
+                            promoList[it.uiData.uniqueId] = it.uiData.promoCode
+                        }
+                    }
+                }
+            }
+
+            // Set selected promo code to current params
+            promoList.forEach { promoItemMap ->
+                if (promoItemMap.key == "") {
+                    // Add selected promo global=
+                    if (!validateUsePromoRequest.codes.contains(promoItemMap.value)) {
+                        validateUsePromoRequest.codes.add(promoItemMap.value)
+                    }
+                } else {
+                    // Add selected promo merchant
+                    validateUsePromoRequest.orders.forEach {
+                        if (promoItemMap.key == it?.uniqueId && !it.codes.contains(promoItemMap.value)) {
+                            it.codes.add(promoItemMap.value)
+                        }
+                    }
+                }
+            }
+
             // Set param
             val varPromo = mapOf(
                     "promo" to validateUsePromoRequest
@@ -283,20 +315,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             val varParams = mapOf(
                     "params" to varPromo
             )
-
-            // Get all sellected promo for analytical purpose
-            val promoList = ArrayList<String>()
-            promoListUiModel.value?.forEach {
-                if (it is PromoListItemUiModel && it.uiState.isSelected) {
-                    promoList.add(it.uiData.promoCode)
-                } else if (it is PromoListHeaderUiModel && it.uiData.tmpPromoItemList.isNotEmpty()) {
-                    it.uiData.tmpPromoItemList.forEach {
-                        if (it.uiState.isSelected) {
-                            promoList.add(it.uiData.promoCode)
-                        }
-                    }
-                }
-            }
 
             // Get response
             val response = withContext(Dispatchers.IO) {
@@ -315,7 +333,13 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                         _applyPromoResponse.value = it
                     }
                 } else {
-                    if (responseValidatePromo.voucherOrders.isNotEmpty()) {
+                    if (responseValidatePromo.globalSuccess) {
+                        // Check promo global is success
+                        var isGlobalSuccess = false
+                        if (responseValidatePromo.message.state != "red") {
+                            isGlobalSuccess = true
+                        }
+
                         // Check all promo merchant is success
                         var successCount = 0
                         responseValidatePromo.voucherOrders.forEach { voucherOrder ->
@@ -326,7 +350,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                                 throw MessageErrorException(voucherOrder.message.text)
                             }
                         }
-                        if (successCount == responseValidatePromo.voucherOrders.size) {
+                        if (isGlobalSuccess || successCount == responseValidatePromo.voucherOrders.size) {
                             var selectedRecommendationCount = 0
                             promoRecommendationUiModel.value?.uiData?.promoCodes?.forEach {
                                 if (promoList.contains(it)) selectedRecommendationCount++
@@ -334,10 +358,12 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                             val promoRecommendationCount = promoRecommendationUiModel.value?.uiData?.promoCodes?.size
                                     ?: 0
                             val status = if (promoList.size == promoRecommendationCount && selectedRecommendationCount == promoRecommendationCount) 1 else 0
-                            analytics.eventClickPakaiPromoSuccess(getPageSource(), status.toString(), promoList)
+                            analytics.eventClickPakaiPromoSuccess(getPageSource(), status.toString(), promoList.values.toList())
                             // If all promo merchant are success, then navigate to cart
                             applyPromoResponse.value?.let {
                                 it.state = ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CART
+                                it.data = ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(response.validateUsePromoRevamp)
+                                it.lastValidateUseRequest = validateUsePromoRequest
                                 _applyPromoResponse.value = it
                             }
                         }
@@ -363,11 +389,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    fun clearPromo(mutation: String) {
-        launch { doClearPromo(mutation) }
+    fun clearPromo(mutation: String, validateUsePromoRequest: ValidateUsePromoRequest) {
+        launch { doClearPromo(mutation, validateUsePromoRequest) }
     }
 
-    private suspend fun doClearPromo(mutation: String) {
+    private suspend fun doClearPromo(mutation: String, validateUsePromoRequest: ValidateUsePromoRequest) {
         launchCatchError(block = {
             // Initialize response action state
             if (clearPromoResponse.value == null) {
@@ -399,8 +425,24 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             }
 
             if (response.successData.success) {
+                // Remove promo code on validate use params after clear promo success
+                val tmpValidateUsePromoRequest = validateUsePromoRequest
+                promoCodes.forEach { promo ->
+                    if (tmpValidateUsePromoRequest.codes.contains(promo)) {
+                        tmpValidateUsePromoRequest.codes.remove(promo)
+                    }
+
+                    tmpValidateUsePromoRequest.orders.forEach {
+                        if (it?.codes?.contains(promo) == true) {
+                            it.codes.remove(promo)
+                        }
+                    }
+                }
                 clearPromoResponse.value?.let {
                     it.state = ClearPromoResponseAction.ACTION_STATE_SUCCESS
+                    // TODO : baca dari backend
+                    it.data = "Ini nanti diganti data dari backend, dapat dari clear promo response"
+                    it.lastValidateUseRequest = tmpValidateUsePromoRequest
                     _clearPromoResponse.value = it
                 }
             } else {
@@ -937,6 +979,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         // Check if :
         // CASE 1 : has any promo item unchecked, but exist as pre applied promo item
         // CASE 2 : has any promo item checked but have not been applied, or
+        // CASE 3 : is manual apply
         val preAppliedPromoCodes = fragmentUiModel.value?.uiData?.preAppliedPromoCode ?: emptyList()
         if (preAppliedPromoCodes.isEmpty()) {
             return false
@@ -951,6 +994,10 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     if (!preAppliedPromoCodes.contains(it.uiData.promoCode) && it.uiState.isSelected) {
                         return true
                     }
+                    // CASE 3
+                    if (it.uiState.isSelected && it.uiState.isAttempted) {
+                        return true
+                    }
                 } else if (it is PromoListHeaderUiModel && it.uiData.tmpPromoItemList.isNotEmpty()) {
                     it.uiData.tmpPromoItemList.forEach {
                         // CASE 1
@@ -959,6 +1006,10 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                         }
                         // CASE 2
                         if (!preAppliedPromoCodes.contains(it.uiData.promoCode) && it.uiState.isSelected) {
+                            return true
+                        }
+                        // CASE 3
+                        if (it.uiState.isSelected && it.uiState.isAttempted) {
                             return true
                         }
                     }
