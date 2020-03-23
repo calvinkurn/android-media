@@ -22,7 +22,7 @@ class PlaySocketMapper(
     private val gson = Gson()
 
     fun mapping(): Any? {
-        if (webSocketResponse.type.isEmpty()) return null
+        if (webSocketResponse.type.isEmpty() || webSocketResponse.jsonElement == null) return null
 
         when(webSocketResponse.type) {
             PlaySocketType.TotalLike.value -> {
