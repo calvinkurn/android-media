@@ -1,12 +1,13 @@
 package com.tokopedia.product.manage.feature.list
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.product.manage.feature.filter.domain.GetProductListMetaUseCase
+import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
 import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
 import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseCase
-import com.tokopedia.product.manage.oldlist.domain.EditFeaturedProductUseCase
 import com.tokopedia.product.manage.oldlist.domain.PopupManagerAddProductUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetProductListUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
@@ -38,11 +39,13 @@ abstract class ProductManageViewModelTestFixture {
     @RelaxedMockK
     lateinit var getProductListUseCase: GQLGetProductListUseCase
     @RelaxedMockK
-    lateinit var editFeaturedProductUseCase: EditFeaturedProductUseCase
+    lateinit var setFeaturedProductUseCase: SetFeaturedProductUseCase
     @RelaxedMockK
     lateinit var deleteProductUseCase: DeleteProductUseCase
     @RelaxedMockK
     lateinit var multiEditProductUseCase: MultiEditProductUseCase
+    @RelaxedMockK
+    lateinit var getProductListMetaUseCase: GetProductListMetaUseCase
 
     protected lateinit var viewModel: ProductManageViewModel
 
@@ -57,10 +60,11 @@ abstract class ProductManageViewModelTestFixture {
                 topAdsGetShopDepositGraphQLUseCase,
                 popupManagerAddProductUseCase,
                 getProductListUseCase,
-                editFeaturedProductUseCase,
+                setFeaturedProductUseCase,
                 editStockUseCase,
                 deleteProductUseCase,
                 multiEditProductUseCase,
+                getProductListMetaUseCase,
                 Dispatchers.Unconfined
         )
     }
