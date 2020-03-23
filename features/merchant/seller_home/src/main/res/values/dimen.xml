@@ -45,8 +45,10 @@
     <dimen name="setting_shop_badge_border_pm_margin">4dp</dimen>
     <dimen name="setting_shop_badge_border_os_margin">5dp</dimen>
     <dimen name="setting_shop_badge_height">16dp</dimen>
-    <dimen name="setting_status_margin">20dp</dimen>
-    <dimen name="setting_status_margin_top">17dp</dimen>
+    <dimen name="setting_status_padding_top">15dp</dimen>
+    <dimen name="setting_status_padding_bottom">14dp</dimen>
+    <dimen name="setting_status_loading_padding_top">20dp</dimen>
+    <dimen name="setting_status_loading_padding_bottom">17dp</dimen>
     <dimen name="setting_title_padding_top">23dp</dimen>
     <dimen name="setting_title_padding_bottom">5dp</dimen>
     <dimen name="setting_title_letter_spacing">0.04</dimen>
@@ -63,16 +65,23 @@
     <dimen name="setting_shop_name_shimmer_height">20dp</dimen>
     <dimen name="setting_shop_badge_shimmer_height">10dp</dimen>
     <dimen name="setting_local_load_margin">16dp</dimen>
+    <dimen name="setting_next_button_padding">13dp</dimen>
+    <dimen name="setting_topads_icon_margin">5dp</dimen>
+    <dimen name="setting_topads_bottomsheet_padding">16dp</dimen>
+    <dimen name="setting_topads_description_padding_horizontal">3dp</dimen>
+    <dimen name="setting_topads_button_margin">20dp</dimen>
+    <dimen name="setting_topads_padding_bottom">30dp</dimen>
 
     <dimen category="font-size" name="line_spacing_6">6sp</dimen>
+    <dimen category="font-size" name="top_ads_description_size">14sp</dimen>
 
     // centralized promo
     <dimen name="centralized_promo_dimen_minus_2dp">-2dp</dimen>
     <dimen name="centralized_promo_dimen_minus_4dp">-4dp</dimen>
     <dimen name="centralized_promo_on_going_divider_height">1dp</dimen>
     <dimen name="centralized_promo_post_desc_top_margin">3dp</dimen>
-    <dimen name="centralized_promo_on_going_item_margin">4dp</dimen>
-    <dimen name="centralized_promo_promo_creation_card_horizontal_margin">4dp</dimen>
+    <dimen name="centralized_promo_on_going_item_margin">6dp</dimen>
+    <dimen name="centralized_promo_promo_creation_card_horizontal_margin">6dp</dimen>
     <dimen name="centralized_promo_dimen_4dp">4dp</dimen>
     <dimen name="centralized_promo_promo_creation_extra_icon_size">4dp</dimen>
     <dimen name="centralized_promo_promo_creation_icon_card_elevation">6dp</dimen>
@@ -84,6 +93,7 @@
     <dimen name="centralized_promo_post_widget_horizontal_margin">14dp</dimen>
     <dimen name="centralized_promo_on_going_caret_icon_size">18dp</dimen>
     <dimen name="centralized_promo_text_shimmer_height_18dp">18dp</dimen>
+    <dimen name="centralized_promo_promo_creation_icon_size">28dp</dimen>
     <dimen name="centralized_promo_promo_creation_card_top_margin">36dp</dimen>
     <dimen name="centralized_promo_post_item_image_size">50dp</dimen>
     <dimen name="centralized_promo_promo_creation_card_icon_size">56dp</dimen>

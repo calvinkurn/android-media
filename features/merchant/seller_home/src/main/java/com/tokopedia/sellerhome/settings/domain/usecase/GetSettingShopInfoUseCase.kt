@@ -23,11 +23,7 @@ class GetSettingShopInfoUseCase @Inject constructor(private val gqlUseCase: Mult
                 "    }\n" +
                 "  }\n" +
                 "  balance {\n" +
-                "    seller_usable\n" +
-                "  }\n" +
-                "  topadsDeposit(userID: \$userId) {\n" +
-                "    topads_amount\n" +
-                "    is_topads_user\n" +
+                "    seller_usable_fmt\n" +
                 "  }\n" +
                 "}"
 
