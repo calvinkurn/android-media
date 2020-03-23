@@ -952,7 +952,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun onSetStockReminderClicked(productManageViewModel: ProductViewModel) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.STOCK_REMINDER, productManageViewModel.id, productManageViewModel.title)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.STOCK_REMINDER, productManageViewModel.id, productManageViewModel.title, productManageViewModel.stock.toString())
         startActivityForResult(intent, REQUEST_CODE_STOCK_REMINDER)
     }
 
