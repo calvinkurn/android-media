@@ -42,7 +42,7 @@ class PatchRepository {
                     response.body()?.let{
                         val writtenToDisk: Boolean = writeResponseBodyToDisk(context, it)
                         if(writtenToDisk){
-                            PatchExecutor(context, PatchManipulatedImp(), robustCallBack).start()
+                            PatchExecutor(context, PatchManipulatedImp(robustCallBack), robustCallBack).start()
                         }
                         Timber.w("P2#ROBUST#file download was a success written to disk? " + writtenToDisk);
                     }
