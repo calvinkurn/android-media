@@ -52,6 +52,10 @@ class ChatListComponentTest {
     @DisplayName("Given keyboard is hidden")
     inner class GivenKeyboardHidden {
 
+        private val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
+                keyboardState = modelBuilder.buildBottomInsetsState(isShown = false)
+        )
+
         @Test
         fun `when channel is changed to live, then chat list should be shown`() = runBlockingTest(testDispatcher) {
             val mockVideoStream = modelBuilder.buildVideoStreamUiModel(
@@ -60,9 +64,7 @@ class ChatListComponentTest {
 
             val mockStateHelper = modelBuilder.buildStateHelperUiModel(
                     channelType = mockVideoStream.channelType,
-                    bottomInsets = modelBuilder.buildBottomInsetsMap(
-                            keyboardState = modelBuilder.buildBottomInsetsState(isShown = false)
-                    )
+                    bottomInsets = mockBottomInsets
             )
 
             EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoStreamChanged(mockVideoStream, mockStateHelper))
@@ -78,9 +80,7 @@ class ChatListComponentTest {
 
             val mockStateHelper = modelBuilder.buildStateHelperUiModel(
                     channelType = mockVideoStream.channelType,
-                    bottomInsets = modelBuilder.buildBottomInsetsMap(
-                            keyboardState = modelBuilder.buildBottomInsetsState(isShown = false)
-                    )
+                    bottomInsets = mockBottomInsets
             )
 
             EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoStreamChanged(mockVideoStream, mockStateHelper))
@@ -93,6 +93,10 @@ class ChatListComponentTest {
     @DisplayName("Given keyboard is shown")
     inner class GivenKeyboardShown {
 
+        private val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
+                keyboardState = modelBuilder.buildBottomInsetsState(isShown = true)
+        )
+
         @Test
         fun `when channel is changed to live, then chat list should be shown`() = runBlockingTest(testDispatcher) {
             val mockVideoStream = modelBuilder.buildVideoStreamUiModel(
@@ -101,9 +105,7 @@ class ChatListComponentTest {
 
             val mockStateHelper = modelBuilder.buildStateHelperUiModel(
                     channelType = mockVideoStream.channelType,
-                    bottomInsets = modelBuilder.buildBottomInsetsMap(
-                            keyboardState = modelBuilder.buildBottomInsetsState(isShown = true)
-                    )
+                    bottomInsets = mockBottomInsets
             )
 
             EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoStreamChanged(mockVideoStream, mockStateHelper))
@@ -119,9 +121,7 @@ class ChatListComponentTest {
 
             val mockStateHelper = modelBuilder.buildStateHelperUiModel(
                     channelType = mockVideoStream.channelType,
-                    bottomInsets = modelBuilder.buildBottomInsetsMap(
-                            keyboardState = modelBuilder.buildBottomInsetsState(isShown = true)
-                    )
+                    bottomInsets = mockBottomInsets
             )
 
             EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoStreamChanged(mockVideoStream, mockStateHelper))
@@ -134,6 +134,8 @@ class ChatListComponentTest {
     @DisplayName("Given channel is live")
     inner class GivenLiveChannel {
 
+        private val mockChannelType = PlayChannelType.Live
+
         @Test
         fun `when keyboard is shown, then chat list should be shown`() = runBlockingTest(testDispatcher) {
             val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
@@ -141,7 +143,7 @@ class ChatListComponentTest {
             )
 
             val mockStateHelper = modelBuilder.buildStateHelperUiModel(
-                    channelType = PlayChannelType.Live,
+                    channelType = mockChannelType,
                     bottomInsets = mockBottomInsets
             )
 
@@ -165,7 +167,7 @@ class ChatListComponentTest {
             )
 
             val mockStateHelper = modelBuilder.buildStateHelperUiModel(
-                    channelType = PlayChannelType.Live,
+                    channelType = mockChannelType,
                     bottomInsets = mockBottomInsets
             )
 
@@ -187,6 +189,8 @@ class ChatListComponentTest {
     @DisplayName("Given channel is vod")
     inner class GivenVODChannel {
 
+        private val mockChannelType = PlayChannelType.VOD
+
         @Test
         fun `when keyboard is shown, then chat list should be hidden`() = runBlockingTest(testDispatcher) {
             val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
@@ -194,7 +198,7 @@ class ChatListComponentTest {
             )
 
             val mockStateHelper = modelBuilder.buildStateHelperUiModel(
-                    channelType = PlayChannelType.VOD,
+                    channelType = mockChannelType,
                     bottomInsets = mockBottomInsets
             )
 
@@ -218,7 +222,7 @@ class ChatListComponentTest {
             )
 
             val mockStateHelper = modelBuilder.buildStateHelperUiModel(
-                    channelType = PlayChannelType.VOD,
+                    channelType = mockChannelType,
                     bottomInsets = mockBottomInsets
             )
 
@@ -255,7 +259,7 @@ class ChatListComponentTest {
     }
 
     @Test
-    fun `when channel is banned, then chat list should be hidden`() = runBlockingTest(testDispatcher) {
+    fun `when user is banned, then chat list should be hidden`() = runBlockingTest(testDispatcher) {
         val mockBanned = modelBuilder.buildPlayRoomBannedEvent()
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockBanned))

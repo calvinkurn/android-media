@@ -231,11 +231,11 @@ class ModelBuilder {
      * UI Model
      */
     fun buildStateHelperUiModel(
-        shouldShowPinnedMessage: Boolean = true,
+        shouldShowPinned: Boolean = true,
         channelType: PlayChannelType = PlayChannelType.Live,
         bottomInsets: Map<BottomInsetsType, BottomInsetsState> = buildBottomInsetsMap()
     ) = StateHelperUiModel(
-            shouldShowPinnedMessage = shouldShowPinnedMessage,
+            shouldShowPinned = shouldShowPinned,
             channelType = channelType,
             bottomInsets = bottomInsets
     )
@@ -295,6 +295,56 @@ class ModelBuilder {
             totalView: String = "1.5k"
     ) = TotalViewUiModel(
             totalView = totalView
+    )
+
+    fun buildPartnerInfoUiModel(
+            id: Long = 10213,
+            name: String = "Partner",
+            type: PartnerType = PartnerType.SHOP,
+            isFollowed: Boolean = false,
+            isFollowable: Boolean = true
+    ) = PartnerInfoUiModel(
+            id = id,
+            name = name,
+            type = type,
+            isFollowed = isFollowed,
+            isFollowable = isFollowable
+    )
+
+    fun buildPinnedMessageUiModel(
+            applink: String? = "https://tkp.me",
+            partnerName: String = "Admin",
+            title: String = "message"
+    ) = PinnedMessageUiModel(
+            applink = applink,
+            partnerName = partnerName,
+            title = title
+    )
+
+    fun buildPinnedProductUiModel(
+            partnerName: String = "Admin",
+            title: String = "message",
+            isPromo: Boolean = false
+    ) = PinnedProductUiModel(
+            partnerName = partnerName,
+            title = title,
+            isPromo = isPromo
+    )
+
+    fun buildPinnedRemoveUiModel() = PinnedRemoveUiModel
+
+    fun buildQuickReplyUiModel(
+            quickReplyList: List<String> = listOf("Keren", "UwU")
+    ) = QuickReplyUiModel(
+            quickReplyList = quickReplyList
+    )
+
+    fun buildCartUiModel(
+            isShow: Boolean = true,
+            count: Int = 1
+    ) = CartUiModel(
+            isShow = isShow,
+            count = count
     )
 
     fun buildPlayRoomFreezeEvent(

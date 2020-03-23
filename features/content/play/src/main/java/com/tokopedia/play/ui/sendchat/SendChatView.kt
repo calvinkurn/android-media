@@ -108,7 +108,7 @@ class SendChatView(container: ViewGroup, val listener: Listener) : UIView(contai
         }
     }
 
-    fun showKeyboard(shouldShow: Boolean) {
+    private fun showKeyboard(shouldShow: Boolean) {
         val imm = etChat.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         if (shouldShow) imm.showSoftInput(etChat, InputMethodManager.SHOW_IMPLICIT)
         else imm.hideSoftInputFromWindow(etChat.windowToken, 0)

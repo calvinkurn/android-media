@@ -14,7 +14,6 @@ import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.domain.*
-import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CoroutineDispatcherProvider
@@ -131,7 +130,7 @@ class PlayViewModel @Inject constructor(
             val videoStream = _observableVideoStream.value
             val bottomInsets = _observableBottomInsetsState.value
             return StateHelperUiModel(
-                    shouldShowPinnedMessage = pinned is PinnedMessageUiModel || pinned is PinnedProductUiModel,
+                    shouldShowPinned = pinned is PinnedMessageUiModel || pinned is PinnedProductUiModel,
                     channelType = videoStream?.channelType ?: PlayChannelType.Unknown,
                     bottomInsets = bottomInsets ?: getDefaultBottomInsetsMapState()
             )

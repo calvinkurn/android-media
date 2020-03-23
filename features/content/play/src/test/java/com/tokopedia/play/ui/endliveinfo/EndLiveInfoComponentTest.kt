@@ -61,7 +61,7 @@ class EndLiveInfoComponentTest {
     }
 
     @Test
-    fun `when channel is freeze, then info should be shown`() = runBlockingTest(testDispatcher) {
+    fun `when channel is frozen, then info should be shown`() = runBlockingTest(testDispatcher) {
         val mockPlayRoomEvent = modelBuilder.buildPlayRoomFreezeEvent()
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockPlayRoomEvent))
@@ -78,7 +78,7 @@ class EndLiveInfoComponentTest {
     }
 
     @Test
-    fun `when channel is banned, then info should be shown`() = runBlockingTest(testDispatcher) {
+    fun `when user is banned, then info should be shown`() = runBlockingTest(testDispatcher) {
         val mockPlayRoomEvent = modelBuilder.buildPlayRoomBannedEvent()
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockPlayRoomEvent))
