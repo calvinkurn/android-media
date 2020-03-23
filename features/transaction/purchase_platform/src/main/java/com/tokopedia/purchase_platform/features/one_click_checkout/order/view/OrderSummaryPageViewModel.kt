@@ -12,6 +12,7 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.TKPDMapParam
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.data.model.param.EditAddressParam
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.EditAddressUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetPreferenceListUseCase
@@ -948,7 +949,20 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             ordersItem.shippingId = shipping.shipperId
             ordersItem.spId = shipping.shipperProductId
         }
+        val codes = ArrayList<String>()
+        val voucherOrders = orderPromo.lastApply?.voucherOrders ?: emptyList()
+        for (voucherOrder in voucherOrders) {
+            if (voucherOrder.uniqueId.equals(ordersItem.uniqueId, true)) {
+                codes.add(voucherOrder.code)
+                break
+            }
+        }
+        ordersItem.codes = codes
         validateUsePromoRequest.orders = listOf(ordersItem)
+        validateUsePromoRequest.state = CheckoutConstant.PARAM_CHECKOUT
+        validateUsePromoRequest.cartType = CheckoutConstant.PARAM_DEFAULT
+        val globalCodes = orderPromo.lastApply?.codes ?: emptyList()
+        validateUsePromoRequest.codes = globalCodes.toMutableList()
         return validateUsePromoRequest
     }
 }
