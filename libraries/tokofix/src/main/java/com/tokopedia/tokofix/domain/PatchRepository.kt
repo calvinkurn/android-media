@@ -44,7 +44,6 @@ class PatchRepository {
                         if(writtenToDisk){
                             PatchExecutor(context, PatchManipulatedImp(robustCallBack), robustCallBack).start()
                         }
-                        Timber.w("P2#ROBUST#file download was a success written to disk? " + writtenToDisk);
                     }
                 }
             }
@@ -77,6 +76,7 @@ class PatchRepository {
                     Log.d(TAG, "file download: $fileSizeDownloaded of $fileSize")
                 }
                 outputStream?.flush()
+                Timber.w("P2#ROBUST#patch file download was success written to disk: " + file.absolutePath);
                 true
             } catch (e: IOException) {
                 false
