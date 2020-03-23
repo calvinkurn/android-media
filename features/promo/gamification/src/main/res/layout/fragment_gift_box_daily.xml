@@ -175,6 +175,8 @@
                     tools:text="@string/gami_palai_kupon_ovo_points" />
 
                 <RelativeLayout
+                    android:visibility="gone"
+                    android:id="@+id/reminderLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"

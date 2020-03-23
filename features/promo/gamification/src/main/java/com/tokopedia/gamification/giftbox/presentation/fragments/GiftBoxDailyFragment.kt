@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import androidx.annotation.StringDef
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
@@ -61,6 +62,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     lateinit var tvReminderBtn: AppCompatTextView
     lateinit var tvReminderMessage: AppCompatTextView
     lateinit var loaderReminder: LoaderUnify
+    lateinit var reminderLayout: RelativeLayout
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -111,6 +113,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         tvReminderBtn = v.findViewById(R.id.tvReminderBtn)
         tvReminderMessage = v.findViewById(R.id.tvReminderMessage)
         loaderReminder = v.findViewById(R.id.loaderReminder)
+        reminderLayout = v.findViewById(R.id.reminderLayout)
         super.initViews(v)
         setShadows()
         setListeners()
@@ -346,8 +349,10 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     val code = gameRemindMeCheck?.resultStatus?.code
                     val isRemindMe = gameRemindMeCheck?.isRemindMe
                     if (code == 200 && isRemindMe != null) {
+                        reminderLayout.visibility = View.VISIBLE
                         renderReminderButton(isRemindMe)
                     } else {
+                        reminderLayout.visibility = View.GONE
                         val messageList = it.data?.gameRemindMeCheck?.resultStatus?.message
                         if (!messageList.isNullOrEmpty()) {
                             showRemindCheckError(messageList[0], "Oke")
@@ -355,6 +360,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {
+                    reminderLayout.visibility = View.GONE
                     showRemindCheckError("Oops, terjadi kendala. Coba beberapa saat lagi, ya!", "Oke")
                 }
             }

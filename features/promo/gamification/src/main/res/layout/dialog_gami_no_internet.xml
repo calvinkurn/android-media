@@ -1,21 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/llParent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/llParent"
     android:orientation="vertical">
-
-<!--    <androidx.appcompat.widget.AppCompatImageView-->
-<!--        android:id="@+id/imageClose"-->
-<!--        android:layout_width="@dimen/dp_36"-->
-<!--        android:layout_height="@dimen/dp_36"-->
-<!--        android:layout_marginStart="@dimen/dp_10"-->
-<!--        android:layout_marginLeft="@dimen/dp_10"-->
-<!--        android:layout_marginTop="@dimen/dp_16"-->
-<!--        android:layout_marginBottom="@dimen/dp_16"-->
-<!--        android:padding="@dimen/dp_6"-->
-<!--        app:srcCompat="@drawable/ic_close_default" />-->
 
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"
@@ -43,7 +32,11 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_25"
+        android:layout_marginLeft="@dimen/dp_25"
         android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_25"
+        android:layout_marginRight="@dimen/dp_25"
         android:gravity="center"
         android:text="@string/gami_no_internet_message"
         android:textColor="@color/gf_loader_message_color"
