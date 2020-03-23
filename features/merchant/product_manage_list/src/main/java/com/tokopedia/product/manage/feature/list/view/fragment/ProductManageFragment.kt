@@ -917,6 +917,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                             dialogFeaturedProduct?.setPrimaryCTAClickListener {
                                 addFeaturedProduct(productManageViewModel.id)
                                 dialogFeaturedProduct?.dismiss()
+                                ProductManageTracking.eventFeaturedProductPopUpSave()
                             }
                             dialogFeaturedProduct?.setSecondaryCTAClickListener { dialogFeaturedProduct?.dismiss() }
                             dialogFeaturedProduct?.show()
@@ -998,7 +999,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         productListFeaturedOnlySize += 1
         showLoadingProgress()
         setFeaturedProduct(productId, ProductManageListConstant.FEATURED_PRODUCT_ADD_STATUS)
-        ProductManageTracking.eventFeaturedProductPopUpSave()
     }
 
     private fun setFeaturedProduct(id: String, type: Int) {
