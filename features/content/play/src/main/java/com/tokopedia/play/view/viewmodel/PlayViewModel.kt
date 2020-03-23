@@ -212,8 +212,8 @@ class PlayViewModel @Inject constructor(
         }
         _observablePinned.addSource(_observablePinnedProduct) {
             val productSheet = _observableProductSheetContent.value
-            if (productSheet is PlayResult.Success && productSheet.data.productList.isNotEmpty() && it != null && _observablePinned.value != it) {
-                _observablePinned.value = it
+            if (productSheet is PlayResult.Success && productSheet.data.productList.isNotEmpty() && it != null) {
+                if (_observablePinned.value != it) _observablePinned.value = it
             } else {
                 val pinnedMessage = _observablePinnedMessage.value
                 if (pinnedMessage != null) _observablePinnedMessage.value = _observablePinnedMessage.value
