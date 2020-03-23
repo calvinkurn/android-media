@@ -4,28 +4,29 @@ import android.animation.*
 import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.presentation.activities.GiftLauncherActivity
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
-
 import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
 import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxTapTapView
 import com.tokopedia.gamification.giftbox.presentation.views.RewardSummaryView
+import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.Typography
 
 class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
-    lateinit var tvTimer: AppCompatTextView
+    lateinit var tvTimer: Typography
     lateinit var progressBarTimer: ProgressBar
-    lateinit var tvProgressCount: AppCompatTextView
+    lateinit var tvProgressCount: Typography
     lateinit var imageWaktu: AppCompatImageView
     lateinit var imageHabis: AppCompatImageView
     lateinit var fmWaktuHabis: FrameLayout
@@ -160,6 +161,9 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         rewardSummary = v.findViewById(R.id.rewardSummary)
         super.initViews(v)
         setListeners()
+
+        tvProgressCount.setTextSize(TypedValue.COMPLEX_UNIT_PX, 40.toPx().toFloat())
+        tvTimer.setTextSize(TypedValue.COMPLEX_UNIT_PX, 24.toPx().toFloat())
     }
 
     fun showRewardSummary() {

@@ -30,13 +30,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvTapHint"
-                android:layout_width="240dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginStart="@dimen/dp_60"
+                android:layout_marginLeft="@dimen/dp_60"
+                android:layout_marginEnd="@dimen/dp_60"
+                android:layout_marginRight="@dimen/dp_60"
                 android:alpha="0"
-                android:background="@drawable/gf_bg_text_hint"
+                android:background="@drawable/gami_bg_text_hint"
                 android:gravity="center"
                 android:paddingStart="30dp"
                 android:paddingLeft="30dp"
@@ -44,13 +48,14 @@
                 android:paddingEnd="30dp"
                 android:paddingRight="30dp"
                 android:paddingBottom="10dp"
-                android:textColor="#12883D"
-                android:textSize="18sp"
+                android:textColor="@color/gf_box_hint_color"
+                app:typographyType="heading_2"
+                app:typographyWeight="bold"
                 tools:alpha="1"
                 tools:text="Tap kotaknya untuk \n dapetin hadiah" />
 
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_timer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -64,9 +69,11 @@
                 android:paddingEnd="16dp"
                 android:paddingRight="16dp"
                 android:paddingBottom="8dp"
-                android:text="00:00:04"
                 android:textColor="@android:color/white"
-                android:textSize="30sp" />
+                android:textSize="@dimen/sp_24"
+                app:typographyType="heading_1"
+                app:typographyWeight="bold"
+                tools:text="00:00:04" />
 
             <ProgressBar
                 android:id="@+id/progress_bar_timer"
@@ -81,7 +88,7 @@
                 android:progress="0"
                 android:progressDrawable="@drawable/gf_cp_timer_1" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_progress_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -90,7 +97,9 @@
                 android:alpha="0"
                 android:text="60"
                 android:textColor="@android:color/white"
-                android:textSize="44sp"
+                android:textSize="40sp"
+                app:typographyType="heading_1"
+                app:typographyWeight="bold"
                 tools:alpha="1" />
 
             <FrameLayout
