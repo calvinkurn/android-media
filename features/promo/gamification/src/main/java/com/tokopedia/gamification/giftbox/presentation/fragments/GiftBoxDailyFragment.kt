@@ -277,7 +277,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                         }
                     }
                 }
-                LiveDataResult.STATUS.ERROR -> {
+                LiveDataResult.STATUS.ERROR -> { //todo Rahul later
                 }
             }
         })

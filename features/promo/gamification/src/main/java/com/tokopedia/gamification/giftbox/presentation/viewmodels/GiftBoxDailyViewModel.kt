@@ -14,7 +14,6 @@ import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -43,7 +42,6 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
     fun getGiftBox() {
         giftBoxLiveData.postValue(LiveDataResult.loading())
         launchCatchError(block = {
-            delay(1000L)
             val params = giftBoxDailyUseCase.getRequestParams(pageName)
             if (GiftLauncherActivity.iS_STAGING) {
                 val response = giftBoxDailyUseCase.getResponse(params)

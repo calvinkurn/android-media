@@ -24,10 +24,10 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="wrap_content"
-            android:visibility="invisible"
             android:layout_height="wrap_content"
             android:layout_marginTop="140dp"
-            android:src="@drawable/gf_ic_box_shadow" />
+            android:src="@drawable/gf_ic_box_shadow"
+            android:visibility="invisible" />
 
         <RelativeLayout
             android:id="@+id/ll_gift_box"
@@ -62,6 +62,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginRight="@dimen/dp_4"
         app:srcCompat="@drawable/gf_ic_box_stage_glow"
         tools:visibility="visible" />
 
