@@ -104,6 +104,7 @@
 
 /features/salam/umrah                                   @tokopedia/minion-mark
 /libraries/travel_calendar                              @tokopedia/minion-mark
+/features/recharge_slice                                @tokopedia/minion-mark
 
 /features/payment/payment/                      		@tokopedia/minion-bob
 /features/payment/payment_setting/              		@tokopedia/minion-bob
