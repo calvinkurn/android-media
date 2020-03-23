@@ -16,7 +16,6 @@ import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.di.DaggerProductManageFilterComponent
 import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterComponent
-import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterModule
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.SelectAdapter
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.factory.SelectAdapterTypeFactory
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistUiModel
@@ -120,7 +119,6 @@ class ProductManageFilterExpandSelectFragment :
         return activity?.run {
             DaggerProductManageFilterComponent
                     .builder()
-                    .productManageFilterModule(ProductManageFilterModule())
                     .productManageComponent(ProductManageInstance.getComponent(application))
                     .build()
         }

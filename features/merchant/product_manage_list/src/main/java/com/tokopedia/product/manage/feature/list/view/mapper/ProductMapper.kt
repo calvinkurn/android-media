@@ -49,20 +49,21 @@ object ProductMapper {
         val inActiveProductFilter = filterTabs.firstOrNull { it.id == FilterId.INACTIVE.name }
         val violationProductFilter = filterTabs.firstOrNull { it.id == FilterId.VIOLATION.name }
 
-        activeProductFilter?.let {
-            val activeFilterCount = activeProductFilter.value.toIntOrZero()
+        val activeFilterCount = activeProductFilter?.value.toIntOrZero()
+        val inActiveFilterCount = inActiveProductFilter?.value.toIntOrZero()
+        val violationFilterCount = violationProductFilter?.value.toIntOrZero()
+
+        if(activeFilterCount > 0) {
             val activeFilter = Active(activeFilterCount)
             productFilters.add(activeFilter)
         }
 
-        inActiveProductFilter?.let {
-            val inActiveFilterCount = inActiveProductFilter.value.toIntOrZero()
+        if(inActiveFilterCount > 0) {
             val inActiveFilter = InActive(inActiveFilterCount)
             productFilters.add(inActiveFilter)
         }
 
-        violationProductFilter?.let {
-            val violationFilterCount = violationProductFilter.value.toIntOrZero()
+        if(violationFilterCount > 0) {
             val violationFilter = Violation(violationFilterCount)
             productFilters.add(violationFilter)
         }

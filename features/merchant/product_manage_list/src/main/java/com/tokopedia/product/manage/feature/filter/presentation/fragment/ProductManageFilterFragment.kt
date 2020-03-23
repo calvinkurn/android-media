@@ -9,14 +9,12 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.di.DaggerProductManageFilterComponent
 import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterComponent
-import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterModule
 import com.tokopedia.product.manage.feature.filter.presentation.activity.ProductManageFilterExpandActivity
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.FilterAdapter
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.factory.FilterAdapterTypeFactory
@@ -98,7 +96,6 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
         return activity?.run {
             DaggerProductManageFilterComponent
                     .builder()
-                    .productManageFilterModule(ProductManageFilterModule())
                     .productManageComponent(ProductManageInstance.getComponent(application))
                     .build()
         }
@@ -218,6 +215,13 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
                 onFinishedListener.onFinish(dataToSave)
                 super.dismiss()
                 ProductManageTracking.eventFilter()
+            }
+        }
+        this.setCloseClickListener {
+            productManageFilterViewModel.filterData.value?.let { data ->
+                val dataToSave = ProductManageFilterMapper.mapFiltersToFilterOptions(data)
+                onFinishedListener.onFinish(dataToSave)
+                super.dismiss()
             }
         }
         this.isFullpage = true
