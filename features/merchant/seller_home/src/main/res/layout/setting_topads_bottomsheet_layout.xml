@@ -14,7 +14,7 @@
         app:typographyType="heading_2"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <com.tokopedia.unifyprinciples.Typography
+    <TextView
         android:id="@+id/topAdsBottomSheetDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,9 +26,7 @@
         android:paddingStart="@dimen/setting_topads_description_padding_horizontal"
         android:paddingRight="@dimen/setting_topads_description_padding_horizontal"
         android:paddingEnd="@dimen/setting_topads_description_padding_horizontal"
-        android:lineSpacingExtra="2sp"
-        app:typographyType="body_2"
-        app:typographyWeight="reguler"
+        android:lineSpacingExtra="@dimen/line_spacing_6"
         app:layout_constraintTop_toBottomOf="@id/topAdsBottomSheetTitle"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
