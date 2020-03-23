@@ -85,9 +85,6 @@ subprojects {
                 if (!rootProject.ext.debugToolsEnabled) {
                     substitute module(rootProject.ext.debugToolsDependencies.chuck) with module(rootProject.ext.tkpdInternalLibDependencies.chuckNoOp)
                 }
-                if (!rootProject.ext.debugToolsEnabled) {
-                    substitute module(rootProject.ext.libraries.preReleaseInspector) with module(rootProject.ext.libraries.preReleaseInspectorNoop)
-                }
             }
         }
     }
