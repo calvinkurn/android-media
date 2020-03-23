@@ -39,6 +39,7 @@ import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.model.SearchParameter;
+import com.tokopedia.discovery.common.utils.URLParser;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData;
@@ -60,6 +61,7 @@ import com.tokopedia.search.result.presentation.viewmodel.SearchViewModel;
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel;
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModelFactoryModule;
 import com.tokopedia.search.utils.CountDrawable;
+import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.Nullable;
@@ -243,13 +245,19 @@ public class SearchActivity extends BaseActivity
     }
 
     private void moveToAutoCompleteActivity() {
-        String query = URLEncoder.encode(searchParameter.getSearchQuery());
+        String query = URLEncoder.encode(searchParameter.getSearchQuery()).replace("+", " ");
 
-        if (!TextUtils.isEmpty(autocompleteApplink)) {
-            startActivityWithApplink(autocompleteApplink);
-        } else {
-            startActivityWithApplink(ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?q=" + query);
-        }
+        String currentAutoCompleteApplink = !TextUtils.isEmpty(autocompleteApplink) ?
+                autocompleteApplink : ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?q=" + query;
+
+        Map<String, String> autoCompleteParams = new URLParser(currentAutoCompleteApplink).getParamKeyValueMap();
+        autoCompleteParams.put(SearchApiConst.PREVIOUS_KEYWORD, query);
+
+        startActivityWithApplink(
+                ApplinkConstInternalDiscovery.AUTOCOMPLETE
+                        + "?"
+                        + UrlParamUtils.generateUrlParamString(autoCompleteParams)
+        );
     }
 
     private void onCartButtonClicked() {
