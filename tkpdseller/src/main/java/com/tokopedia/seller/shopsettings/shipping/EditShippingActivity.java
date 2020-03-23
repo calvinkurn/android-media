@@ -1,9 +1,6 @@
 package com.tokopedia.seller.shopsettings.shipping;
 
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
@@ -12,7 +9,6 @@ import androidx.fragment.app.Fragment;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shopsettings.shipping.fragment.FragmentEditShipping;
@@ -52,14 +48,4 @@ public class EditShippingActivity extends BaseSimpleActivity {
         return R.id.shipping_shop_editor_toolbar;
     }
 
-    @Override
-    protected void setupStatusBar() {
-        if (GlobalConfig.isSellerApp()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-                getWindow().setStatusBarColor(Color.WHITE);
-            }
-        }
-    }
 }
