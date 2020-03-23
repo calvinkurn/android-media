@@ -21,7 +21,7 @@ import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
-import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickButtonPeluangInEmptyState
+import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickTerapkanOnFilterPage
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_COURIER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_ORDER_STATUS
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_ORDER_TYPE
@@ -30,6 +30,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_CHECKBOX
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_RADIO
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_SEPARATOR
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_LIST_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.START_DATE
 import com.tokopedia.sellerorder.list.data.model.SomListAllFilter
 import com.tokopedia.sellerorder.list.data.model.SomListOrderParam
@@ -59,6 +60,7 @@ class SomFilterFragment : BaseDaggerFragment() {
     private var courierList: List<SomListAllFilter.Data.ShippingList> = listOf()
     private var statusList: List<SomListAllFilter.Data.OrderFilterSomSingle.StatusList> = listOf()
     private var currentFilterParams: SomListOrderParam? = SomListOrderParam()
+    private var tabActive: String = ""
     private val somFilterViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomFilterViewModel::class.java]
     }
@@ -73,6 +75,7 @@ class SomFilterFragment : BaseDaggerFragment() {
             return SomFilterFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(PARAM_LIST_ORDER, bundle.getParcelable(PARAM_LIST_ORDER))
+                    putString(PARAM_TAB_ACTIVE, bundle.getString(PARAM_TAB_ACTIVE))
                 }
             }
         }
@@ -88,6 +91,7 @@ class SomFilterFragment : BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
             currentFilterParams = arguments?.getParcelable(PARAM_LIST_ORDER)
+            tabActive = arguments?.getString(PARAM_TAB_ACTIVE).toString()
         }
         loadAllFilter()
     }
@@ -108,7 +112,7 @@ class SomFilterFragment : BaseDaggerFragment() {
 
     private fun setListeners() {
         btn_terapkan?.setOnClickListener {
-            eventClickButtonPeluangInEmptyState()
+            eventClickTerapkanOnFilterPage(tabActive)
             activity?.setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(PARAM_LIST_ORDER, currentFilterParams)
             })
@@ -338,10 +342,14 @@ class SomFilterFragment : BaseDaggerFragment() {
     }
 
     fun onResetClicked() {
+        SomAnalytics.eventClickResetButtonOnFilterPage(tabActive)
         resetFilters()
         renderCourierList()
         renderOrderType()
-        SomAnalytics.eventClickResetButtonOnFilterPage()
+    }
+
+    fun onBackClicked() {
+        SomAnalytics.eventClickBackButtonOnFilterPage(tabActive)
     }
 
     @SuppressLint("SetTextI18n")
