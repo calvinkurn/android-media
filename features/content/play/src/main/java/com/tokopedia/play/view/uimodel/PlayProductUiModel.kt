@@ -17,6 +17,7 @@ data class ProductLineUiModel(
         val isVariantAvailable: Boolean,
         val price: ProductPrice,
         val minQty: Int,
+        val isFreeShipping: Boolean,
         val applink: String?
 ) : PlayProductUiModel()
 

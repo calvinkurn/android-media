@@ -41,6 +41,10 @@ class GetProductTagItemsUseCase @Inject constructor(private val graphqlRepositor
         private fun getQuery() : String {
             val playTagsItemReq = "\$playTagsItemReq"
 
+            /**
+             * Add
+             * is_free_shipping: IsFreeShipping
+             */
             return """
            query($playTagsItemReq: PlayGetTagsItemReq!){
               playGetTagsItem(req: $playTagsItemReq){

@@ -34,6 +34,8 @@ data class Product(
         val quantity: Int = 0,
         @SerializedName("min_quantity")
         val minimumQuantity: Int = 0,
+        @SerializedName("is_free_shipping")
+        val isFreeShipping: Boolean = false,
         @SerializedName("app_link")
         val appLink: String = "",
         @SerializedName("web_link")

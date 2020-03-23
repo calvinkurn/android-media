@@ -87,14 +87,26 @@
             android:id="@+id/tv_current_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl1"
+            android:layout_marginBottom="@dimen/spacing_lvl1"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintStart_toStartOf="@id/ll_product_discount"
             app:layout_constraintTop_toBottomOf="@id/ll_product_discount"
-            android:layout_marginBottom="@dimen/spacing_lvl1"
-            android:layout_marginTop="@dimen/spacing_lvl1"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="Rp150.000"
+            />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_free_shipping"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/ll_product_discount"
+            app:layout_constraintTop_toBottomOf="@id/tv_current_price"
+            app:srcCompat="@drawable/ic_play_free_shipping"
+            tools:visibility="visible"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
