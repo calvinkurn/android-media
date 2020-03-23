@@ -7,6 +7,7 @@ import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
+import com.tokopedia.common.topupbills.utils.TopupBillsDispatchersProvider
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -33,8 +34,8 @@ import javax.inject.Inject
  */
 class TopupBillsViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                               private val digitalCheckVoucherUseCase: DigitalCheckVoucherUseCase,
-                                              val dispatcher: CoroutineDispatcher)
-    : BaseViewModel(dispatcher) {
+                                              val dispatcher: TopupBillsDispatchersProvider)
+    : BaseViewModel(dispatcher.Main) {
 
     private val _enquiryData = MutableLiveData<Result<TopupBillsEnquiryData>>()
     val enquiryData: LiveData<Result<TopupBillsEnquiryData>>
@@ -68,7 +69,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
             val graphqlRequest = GraphqlRequest(rawQuery, TopupBillsEnquiryData::class.java, params)
             var data: TopupBillsEnquiryData
             do {
-                data = withContext(Dispatchers.IO) {
+                data = withContext(dispatcher.IO) {
                     graphqlRepository.getReseponse(listOf(graphqlRequest))
                 }.getSuccessData()
 
@@ -105,7 +106,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
 
     fun getCatalogPluginData(rawQuery: String, mapParam: Map<String, Any>) {
         launchCatchError(block = {
-            val data = withContext(Dispatchers.IO) {
+            val data = withContext(dispatcher.IO) {
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeCatalogPlugin.Response::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<RechargeCatalogPlugin.Response>().response

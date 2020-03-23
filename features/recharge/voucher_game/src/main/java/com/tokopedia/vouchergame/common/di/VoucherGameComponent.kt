@@ -2,6 +2,7 @@ package com.tokopedia.vouchergame.common.di
 
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
+import com.tokopedia.common.topupbills.utils.TopupBillsDispatchersProvider
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
@@ -22,7 +23,7 @@ interface VoucherGameComponent {
 
     fun userSessionInterface(): UserSessionInterface
 
-    fun coroutineDispatcher(): CoroutineDispatcher
+    fun topupBillsDispatchersProvider(): TopupBillsDispatchersProvider
 
     fun voucherGameDispatchersProvider(): VoucherGameDispatchersProvider
 

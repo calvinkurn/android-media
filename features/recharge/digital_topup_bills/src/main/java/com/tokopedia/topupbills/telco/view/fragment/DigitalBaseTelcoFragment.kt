@@ -88,24 +88,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     protected abstract fun setupCheckoutData()
 
-//    open fun onSuccessCatalogMenuDetail(catalogMenuDetailData: TelcoCatalogMenuDetailData) {
-//        renderPromoList(catalogMenuDetailData.catalogMenuDetailData.promos)
-//        renderRecentTransactions(catalogMenuDetailData.catalogMenuDetailData.recommendations)
-//        renderTicker(catalogMenuDetailData.catalogMenuDetailData.tickers)
-//    }
-//
-//    fun onErrorCatalogMenuDetail(error: Throwable) {
-//        Toast.makeText(activity, "catalog menu detail " + error.message, Toast.LENGTH_SHORT).show()
-//    }
-//
-//    fun onSuccessFavNumbers(data: TopupBillsFavNumberData) {
-//        setFavNumbers(data)
-//    }
-//
-//    fun onErrorFavNumbers(error: Throwable) {
-//        Toast.makeText(activity, error.message, Toast.LENGTH_SHORT).show()
-//    }
-
     abstract fun setFavNumbers(data: TopupBillsFavNumber)
 
     fun renderTicker(tickers: List<TopupBillsTicker>) {
@@ -166,28 +148,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                     getString(R.string.error_message_contact_not_found))
         }
     }
-
-//    fun navigateToLoginPage() {
-//        val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
-//        startActivityForResult(intent, REQUEST_CODE_LOGIN)
-//    }
-//
-//    fun processToCart() {
-//        if (userSession.isLoggedIn) {
-//            navigateToCart()
-//        } else {
-//            navigateToLoginPage()
-//        }
-//    }
-//
-//    private fun navigateToCart() {
-//        if (::checkoutPassData.isInitialized) {
-//            checkoutPassData.idemPotencyKey = userSession.userId.generateRechargeCheckoutToken()
-//            val intent = RouteManager.getIntent(activity, ApplinkConsInternalDigital.CART_DIGITAL)
-//            intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, checkoutPassData)
-//            startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
-//        }
-//    }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -325,7 +285,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     override fun onMenuDetailError(error: Throwable) {
-        Toast.makeText(activity, "catalog menu detail " + error.message, Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity, error.message, Toast.LENGTH_SHORT).show()
     }
 
     override fun onCatalogPluginDataError(error: Throwable) {

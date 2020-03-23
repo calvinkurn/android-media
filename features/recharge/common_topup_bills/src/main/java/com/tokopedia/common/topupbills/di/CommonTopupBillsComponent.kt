@@ -3,6 +3,7 @@ package com.tokopedia.common.topupbills.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
+import com.tokopedia.common.topupbills.utils.TopupBillsDispatchersProvider
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.di.DigitalCommonComponent
@@ -25,6 +26,8 @@ interface CommonTopupBillsComponent {
     fun userSessionInterface(): UserSessionInterface
 
     fun coroutineDispatcher(): CoroutineDispatcher
+
+    fun topupBillsDispatchersProvider(): TopupBillsDispatchersProvider
 
     fun graphqlRepository(): GraphqlRepository
 
