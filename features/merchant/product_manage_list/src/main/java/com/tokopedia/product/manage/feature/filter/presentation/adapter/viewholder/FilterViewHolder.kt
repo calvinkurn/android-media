@@ -50,7 +50,7 @@ class FilterViewHolder(view: View,
         } else {
             showChips()
         }
-        headerWidget.arrow.setOnClickListener {
+        headerWidget.setOnClickListener {
             showChipsListener.onShowChips(element)
         }
         adapter = when(element.title) {
