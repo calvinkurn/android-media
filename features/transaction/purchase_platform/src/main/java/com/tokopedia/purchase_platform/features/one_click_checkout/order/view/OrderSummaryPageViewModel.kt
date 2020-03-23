@@ -61,6 +61,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     var orderShop: OrderShop = OrderShop()
     var kero: Kero = Kero()
     var _orderPreference: OrderPreference? = null
+    var orderPromo: OrderPromo = OrderPromo()
 
     var orderPreference: MutableLiveData<OccState<OrderPreference>> = MutableLiveData(OccState.Loading)
 
@@ -79,13 +80,14 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             orderShop = orderData.cart.shop
             kero = orderData.cart.kero
             val preference = orderData.preference
-//            _orderPreference = if (isFullRefresh || _orderPreference == null) {
-//                OrderPreference(preference)
-//            } else {
-//                _orderPreference?.copy(preference = preference)
-//            }
-            _orderPreference = OrderPreference(preference)
+            _orderPreference = if (isFullRefresh || _orderPreference == null) {
+                OrderPreference(preference)
+            } else {
+                _orderPreference?.copy(preference = preference)
+            }
+//            _orderPreference = OrderPreference(preference)
             orderPreference.value = OccState.FirstLoad(_orderPreference!!)
+            orderPromo = orderData.promo
             if (orderProduct.productId > 0 && preference.shipment.serviceId > 0) {
                 orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.LOADING)
                 getRates()

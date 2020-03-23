@@ -3,11 +3,19 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.m
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.InsuranceData
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PromoCheckoutErrorDefault
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.ProfileResponse
 
 data class OrderData(
         var cart: OrderCart = OrderCart(),
-        var preference: ProfileResponse = ProfileResponse()
+        var preference: ProfileResponse = ProfileResponse(),
+        var promo: OrderPromo = OrderPromo()
+)
+
+data class OrderPromo(
+        var lastApply: LastApplyUiModel? = null,
+        var promoErrorDefault: PromoCheckoutErrorDefault? = null
 )
 
 data class Shipment(

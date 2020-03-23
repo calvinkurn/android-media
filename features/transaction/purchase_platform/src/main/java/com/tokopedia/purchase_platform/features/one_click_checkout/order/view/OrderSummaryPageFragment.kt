@@ -21,7 +21,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.Tooltip
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.dialog.DialogUnify
@@ -33,7 +32,6 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
 import com.tokopedia.logisticdata.data.constant.LogisticConstant
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.R
@@ -41,7 +39,6 @@ import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
 import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
 import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.utils.Utils.convertDpToPixel
-import com.tokopedia.purchase_platform.features.cart.view.CartFragment
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.preference.Address
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccGlobalEvent
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
@@ -49,7 +46,6 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.ProfileResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.Data
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.PaymentParameter
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.di.OrderSummaryPageComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.ErrorCheckoutBottomSheet
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.OccInfoBottomSheet
@@ -62,8 +58,6 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.mo
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderProduct
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderTotal
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
-import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest
-import com.tokopedia.purchase_platform.features.promo.domain.usecase.GetCouponListRecommendationUseCase.Companion.promoRequest
 import com.tokopedia.purchase_platform.features.promo.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.card_order_empty_preference.*
@@ -259,6 +253,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         tv_total_payment_value.visible()
         btn_order_detail.visible()
         btn_pay.visible()
+        btn_promo_checkout.visible()
     }
 
     private fun showEmptyPreferenceCard() {
@@ -269,6 +264,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         tv_total_payment_value.gone()
         btn_order_detail.gone()
         btn_pay.gone()
+        btn_promo_checkout.gone()
 
         button_atur_pilihan.setOnClickListener {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
@@ -307,10 +303,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         R.drawable.ic_pp_insurance)
             }
             cb_insurance.setOnCheckedChangeListener { _, isChecked ->
-                if(!isChecked) {
-                    orderSummaryAnalytics.eventClickOnInsurance(productId.toString(),"uncheck", insuranceData.insurancePrice.toString())
+                if (!isChecked) {
+                    orderSummaryAnalytics.eventClickOnInsurance(productId.toString(), "uncheck", insuranceData.insurancePrice.toString())
                 } else {
-                    orderSummaryAnalytics.eventClickOnInsurance(productId.toString(),"check", insuranceData.insurancePrice.toString())
+                    orderSummaryAnalytics.eventClickOnInsurance(productId.toString(), "check", insuranceData.insurancePrice.toString())
                 }
                 viewModel.setInsuranceCheck(isChecked)
             }
@@ -408,6 +404,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         btn_pay.setOnClickListener {
+            //            refresh(false, false)
             viewModel.finalUpdate { checkoutData: Data ->
                 view?.let { _ ->
                     activity?.let {
@@ -430,9 +427,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
         }
 
+        val lastApply = viewModel.orderPromo.lastApply
+        var title = getString(R.string.promo_funnel_label)
+        if (lastApply?.additionalInfo?.messageInfo?.message?.isNotEmpty() == true) {
+            title = lastApply.additionalInfo.messageInfo.message
+            btn_promo_checkout.desc = lastApply.additionalInfo.messageInfo.detail
+        }
         btn_promo_checkout.state = ButtonPromoCheckoutView.State.ACTIVE
-        btn_promo_checkout.title = getString(R.string.promo_funnel_label)
-        btn_promo_checkout.visible()
+        btn_promo_checkout.title = title
 
         btn_promo_checkout.setOnClickListener {
             viewModel.updateCartPromo { promoRequest, validateUsePromoRequest ->
@@ -445,7 +447,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
         }
     }
-
 
 
     private fun showMessage(preference: ProfileResponse) {
