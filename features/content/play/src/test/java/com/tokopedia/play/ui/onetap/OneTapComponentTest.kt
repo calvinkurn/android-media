@@ -57,7 +57,7 @@ class OneTapComponentTest {
     }
 
     @Test
-    fun `when channel is freeze, then one tap should be hidden`() = runBlockingTest(testDispatcher) {
+    fun `when channel is frozen, then one tap should be hidden`() = runBlockingTest(testDispatcher) {
         val mockPlayRoomEvent = modelBuilder.buildPlayRoomFreezeEvent()
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockPlayRoomEvent))
 
@@ -66,7 +66,7 @@ class OneTapComponentTest {
     }
 
     @Test
-    fun `when channel is banned, then one tap should be hidden`() = runBlockingTest(testDispatcher) {
+    fun `when user is banned, then one tap should be hidden`() = runBlockingTest(testDispatcher) {
         val mockPlayRoomEvent = modelBuilder.buildPlayRoomBannedEvent()
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockPlayRoomEvent))
 

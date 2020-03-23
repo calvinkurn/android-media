@@ -120,7 +120,7 @@ class SendChatComponentTest {
     }
 
     @Test
-    fun `test when channel is freeze`() = runBlockingTest(testDispatcher) {
+    fun `test when channel is frozen`() = runBlockingTest(testDispatcher) {
         val mockPlayRoomEvent = PlayRoomEvent.Freeze("", "", "", "")
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockPlayRoomEvent))
 

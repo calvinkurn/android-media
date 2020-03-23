@@ -159,7 +159,7 @@ class ImmersiveBoxComponentTest {
     }
 
     @Test
-    fun `when channel is freeze, then immersive box should be hidden`() = runBlockingTest(testDispatcher) {
+    fun `when channel is frozen, then immersive box should be hidden`() = runBlockingTest(testDispatcher) {
         val mockPlayRoomEvent = modelBuilder.buildPlayRoomFreezeEvent()
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockPlayRoomEvent))
 
@@ -168,7 +168,7 @@ class ImmersiveBoxComponentTest {
     }
 
     @Test
-    fun `when channel is banned, then immersive box should be hidden`() = runBlockingTest(testDispatcher) {
+    fun `when user is banned, then immersive box should be hidden`() = runBlockingTest(testDispatcher) {
         val mockPlayRoomEvent = modelBuilder.buildPlayRoomBannedEvent()
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockPlayRoomEvent))
 

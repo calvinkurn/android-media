@@ -8,7 +8,7 @@ import com.tokopedia.play.view.type.PlayChannelType
  * Created by jegul on 18/03/20
  */
 data class StateHelperUiModel(
-        val shouldShowPinnedMessage: Boolean,
+        val shouldShowPinned: Boolean,
         val channelType: PlayChannelType,
         val bottomInsets: Map<BottomInsetsType, BottomInsetsState>
 )

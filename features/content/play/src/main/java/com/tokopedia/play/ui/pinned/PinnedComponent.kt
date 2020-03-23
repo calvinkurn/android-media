@@ -40,9 +40,9 @@ open class PinnedComponent(
                             ScreenStateEvent.Init -> uiView.hide()
                             is ScreenStateEvent.SetPinned -> setPinned(it.pinned, it.stateHelper.bottomInsets.isAnyShown)
                             is ScreenStateEvent.BottomInsetsChanged -> {
-                                if (!it.isAnyShown && it.stateHelper.shouldShowPinnedMessage) uiView.show() else uiView.hide()
+                                if (!it.isAnyShown && it.stateHelper.shouldShowPinned) uiView.show() else uiView.hide()
                             }
-                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze || it.event.isBanned) uiView.hide()
                         }
                     }
         }
@@ -77,11 +77,15 @@ open class PinnedComponent(
         when (pinnedUiModel) {
             is PinnedMessageUiModel -> {
                 uiView.setPinnedMessage(pinnedUiModel)
+
                 if (!isBottomInsetsShown) uiView.show()
+                else uiView.hide()
             }
             is PinnedProductUiModel -> {
                 uiView.setPinnedProduct(pinnedUiModel)
+
                 if (!isBottomInsetsShown) uiView.show()
+                else uiView.hide()
             }
             is PinnedRemoveUiModel -> {
                 uiView.hide()

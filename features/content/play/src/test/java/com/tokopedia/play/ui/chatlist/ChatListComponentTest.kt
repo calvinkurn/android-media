@@ -259,7 +259,7 @@ class ChatListComponentTest {
     }
 
     @Test
-    fun `when channel is banned, then chat list should be hidden`() = runBlockingTest(testDispatcher) {
+    fun `when user is banned, then chat list should be hidden`() = runBlockingTest(testDispatcher) {
         val mockBanned = modelBuilder.buildPlayRoomBannedEvent()
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockBanned))
