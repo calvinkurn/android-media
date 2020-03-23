@@ -67,6 +67,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
     private var moduleSize = 0L
     private var freeInternalStorageBeforeDownload = 0L
     private var startDownloadTimeStamp = 0L
+    private var progressTextPercentStringFirstTime = ""
 
     private var errorList: MutableList<String> = mutableListOf()
     private var downloadTimes = 0
@@ -380,7 +381,11 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         val progressText = String.format("%.2f KB / %.2f KB",
             (bytesDownloaded.toFloat() / CommonConstant.ONE_KB), totalBytesToDowload.toFloat() / CommonConstant.ONE_KB)
         Log.i(TAG_LOG, progressText)
-        progressTextPercent.text = String.format("%.0f%%", bytesDownloaded.toFloat() * 100 / totalBytesToDowload)
+        val progressTextPercentString = String.format("%.0f%%", bytesDownloaded.toFloat() * 100 / totalBytesToDowload)
+        progressTextPercent.text = progressTextPercentString
+        if (progressTextPercentStringFirstTime.isEmpty()) {
+            progressTextPercentStringFirstTime = progressTextPercentString
+        }
         button_download.visibility = View.INVISIBLE
     }
 
@@ -416,7 +421,8 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
             DFInstallerLogUtil.logStatus(applicationContext, TAG_LOG,
                 moduleName, freeInternalStorageBeforeDownload, moduleSize,
                 errorList, downloadTimes, successInstall, DFM_TAG,
-                (System.currentTimeMillis() - startDownloadTimeStamp) / 1000)
+                (System.currentTimeMillis() - startDownloadTimeStamp) / 1000,
+                progressTextPercentStringFirstTime)
             job.cancel()
         }
         DFInstaller.clearRef()

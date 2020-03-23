@@ -23,7 +23,8 @@ object DFInstallerLogUtil {
                            downloadTimes: Int = 1,
                            isSuccess: Boolean = false,
                            tag: String = DFM_TAG,
-                           duration: Long = 0L) {
+                           duration: Long = 0L,
+                           progressPercentFirstTime:String = "") {
 
         GlobalScope.launch(Dispatchers.IO + CoroutineExceptionHandler { _, _ -> }) {
             val messageBuilder = StringBuilder()
@@ -67,6 +68,13 @@ object DFInstallerLogUtil {
             }
             messageBuilder.append(";cache_size='${getSizeInMB(StorageUtils.getInternalCacheSize(context))}'")
             messageBuilder.append(";duration=${duration}")
+
+            messageBuilder.append(";firstProgress=")
+            if (progressPercentFirstTime.isEmpty()) {
+                messageBuilder.append("0")
+            } else {
+                messageBuilder.append(progressPercentFirstTime)
+            }
 
             messageBuilder.append(";play_str='${Utils.getPlayStoreVersionName(context)}'")
             messageBuilder.append(";play_str_l=${Utils.getPlayStoreLongVersionCode(context)}")
