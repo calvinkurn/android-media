@@ -158,7 +158,7 @@ object PlayAnalytics {
                 hashMapOf<String, Any>(
                         "ecommerce" to hashMapOf(
                                 "currencyCode" to "IDR",
-                                "impression" to convertProductsToListOfObject(listOfProducts)
+                                "impressions" to convertProductsToListOfObject(listOfProducts)
                         )
                 )
         )
@@ -386,7 +386,7 @@ object PlayAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
-                "$KEY_TRACK_CLICK lihat in message ticket",
+                "$KEY_TRACK_CLICK lihat in message ticker",
                 "$channelId - ${channelType.value}"
         )
     }
