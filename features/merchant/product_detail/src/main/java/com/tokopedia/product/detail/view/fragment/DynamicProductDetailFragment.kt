@@ -106,7 +106,6 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.DynamicProductDetailHashMap
-import com.tokopedia.product.detail.view.util.ErrorHelper
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
@@ -1369,7 +1368,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun renderPageError(t: Throwable) {
         context?.let { ctx ->
             dynamicAdapter.clearAllElements()
-            dynamicAdapter.addElement(ErrorHelper.getErrorType(ctx, t, isFromDeeplink, deeplinkUrl))
+//            dynamicAdapter.addElement(ErrorHelper.getErrorType(ctx, t, isFromDeeplink, deeplinkUrl))
             if (swipeToRefresh != null) {
                 swipeToRefresh.isEnabled = false
             }

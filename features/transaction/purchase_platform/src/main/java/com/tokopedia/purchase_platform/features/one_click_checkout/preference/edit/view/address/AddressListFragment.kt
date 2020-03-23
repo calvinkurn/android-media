@@ -237,7 +237,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_FIRST_CREATE) {
-            val saveAddressDataModel = data?.getParcelableExtra<SaveAddressDataModel>("EXTRA_ADDRESS_MODEL")
+            val saveAddressDataModel = data?.getParcelableExtra<SaveAddressDataModel>("EXTRA_ADDRESS_NEW")
             if (saveAddressDataModel != null) {
                 viewModel.selectedId = saveAddressDataModel.id.toString()
                 performSearch("")
@@ -277,7 +277,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
     }
 
     private fun openSoftKeyboard() {
-        (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).showSoftInput(
+        (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(
                 searchAddress.searchTextView, InputMethodManager.SHOW_IMPLICIT)
     }
 

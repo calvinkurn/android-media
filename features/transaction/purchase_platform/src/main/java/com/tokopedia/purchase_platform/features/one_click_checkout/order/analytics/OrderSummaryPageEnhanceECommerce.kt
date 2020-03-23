@@ -8,7 +8,7 @@ class OrderSummaryPageEnhanceECommerce {
         data[KEY_NAME] = name
     }
 
-    fun setId(id: String) {
+    fun setId(id: Int) {
         data[KEY_ID] = id
     }
 
@@ -20,12 +20,12 @@ class OrderSummaryPageEnhanceECommerce {
         data[KEY_BRAND] = brand ?: "none/other"
     }
 
-    fun setCategory(category: String) {
-        data[KEY_CATEGORY] = category
+    fun setCategory(category: String?) {
+        data[KEY_CATEGORY] = category ?: "none/other"
     }
 
-    fun setVariant(variant: String) {
-        data[KEY_VARIANT] = variant
+    fun setVariant(variant: String? ) {
+        data[KEY_VARIANT] = variant ?: "none/other"
     }
 
     fun setQuantity(quantity: Int) {
@@ -38,6 +38,70 @@ class OrderSummaryPageEnhanceECommerce {
 
     fun setAttribution(attribution: String) {
         data[KEY_ATTRIBUTION] = attribution
+    }
+
+    fun setDiscountedPrice(discountedPrice: Boolean) {
+        data[KEY_DISCOUNTED_PRICE] = discountedPrice
+    }
+
+    fun setWarehouseId(warehouseId: Int) {
+        data[KEY_WAREHOUSE_ID] = warehouseId
+    }
+
+    fun setProductWeight(productWeight: Int) {
+        data[KEY_PRODUCT_WEIGHT] = productWeight
+    }
+
+    fun setPromoCode(promoCode: String) {
+        data[KEY_PROMO_CODE] = promoCode
+    }
+
+    fun setPromoDetails(promoDetails: String) {
+        data[KEY_PROMO_DETAILS] = promoDetails
+    }
+
+    fun setCartId(cartId: Int) {
+        data[KEY_CART_ID] = cartId
+    }
+
+    fun setBuyerAddressId(buyerAddressId: Int) {
+        data[KEY_BUYER_ADDRESS_ID] = buyerAddressId
+    }
+
+    fun setSpid(spid: Int) {
+        data[KEY_SP_ID] = spid
+    }
+
+    fun setCodFlag(codFlag: Boolean) {
+        data[KEY_COD_FLAG] = codFlag
+    }
+
+    fun setCornerFlag(cornerFlag: Boolean) {
+        data[KEY_TOKOPEDIA_CORNER_FLAG] = cornerFlag
+    }
+
+    fun setIsFullfilment(isFullfilment: Boolean) {
+        data[KEY_IS_FULFILLMENT] = isFullfilment
+    }
+
+    fun setShopId(shopId: Int) {
+        data[KEY_SHOP_ID] = shopId
+    }
+
+    fun setShopName(shopName: String) {
+        data[KEY_SHOP_NAME] = shopName
+    }
+
+    fun setShopType(shopType: String) {
+        data[KEY_SHOP_TYPE] = shopType
+    }
+
+    fun setCategoryId(categoryId: Int) {
+        data[KEY_CATEGORY_ID] = categoryId
+    }
+
+    fun setProductType(productType: String) {
+        data[KEY_PRODUCT_TYPE] = productType
     }
 
     fun setKeyValue(key: String, value: Any) {

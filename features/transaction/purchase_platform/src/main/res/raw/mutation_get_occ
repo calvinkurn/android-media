@@ -312,6 +312,154 @@ query get_occ_cart_page {
           service_name
         }
       }
+      promo {
+        last_apply {
+          code
+          data {
+            global_success
+            success
+            message {
+              state
+              color
+              text
+            }
+            promo_code_id
+            title_description
+            discount_amount
+            cashback_wallet_amount
+            cashback_advocate_referral_amount
+            cashback_voucher_description
+            invoice_description
+            is_coupon
+            gateway_id
+            is_tokopedia_gerai
+            clashing_info_detail {
+              clash_message
+              clash_reason
+              is_clashed_promos
+              options {
+                voucher_orders {
+                  cart_id
+                  code
+                  shop_name
+                  potential_benefit
+                  promo_name
+                  unique_id
+                }
+              }
+            }
+            tokopoints_detail {
+              conversion_rate {
+                rate
+                points_coefficient
+                external_currency_coefficient
+              }
+            }
+            voucher_orders {
+              code
+              success
+              cart_id
+              unique_id
+              order_id
+              shop_id
+              is_po
+              duration
+              warehouse_id
+              address_id
+              type
+              cashback_wallet_amount
+              discount_amount
+              title_description
+              invoice_description
+              benefit_details {
+                code
+                type
+                order_id
+                unique_id
+                discount_amount
+                discount_details {
+                  amount
+                  data_type
+                }
+                cashback_amount
+                cashback_details {
+                  amount_idr
+                  amount_points
+                  benefit_type
+                }
+                promo_type {
+                  is_exclusive_shipping
+                  is_bebas_ongkir
+                }
+                benefit_product_details {
+                  product_id
+                  cashback_amount
+                  cashback_amount_idr
+                  discount_amount
+                  is_bebas_ongkir
+                }
+              }
+            }
+            benefit_summary_info {
+              final_benefit_text
+              final_benefit_amount
+              final_benefit_amount_str
+              summaries {
+                section_name
+                section_description
+                description
+                type
+                amount_str
+                amount
+                details {
+                  section_name
+                  description
+                  type
+                  amount_str
+                  amount
+                  points
+                  points_str
+                }
+              }
+            }
+            tracking_details {
+              product_id
+              promo_codes_tracking
+              promo_details_tracking
+            }
+            ticker_info {
+              unique_id
+              status_code
+              message
+            }
+            additional_info {
+              message_info {
+                message
+                detail
+              }
+              error_detail {
+                message
+              }
+              empty_cart_info {
+                image_url
+                message
+                detail
+              }
+              usage_summaries {
+                description
+                type
+                amount_str
+                amount
+              }
+              sp_ids
+            }
+          }
+        }
+        error_default {
+          title
+          description
+        }
+      }
     }
   }
 }

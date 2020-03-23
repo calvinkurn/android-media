@@ -70,9 +70,12 @@ object HomeQuery{
               layout
               type
               showPromoBadge
+              categoryID
+              perso_type
               header {
                 id
                 name
+                subtitle
                 url
                 applink
                 serverTime
@@ -107,6 +110,7 @@ object HomeQuery{
                   isActive
                   imageUrl
                 }
+                productViewCountFormatted
               }
               banner {
                 id

@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.suggestion.SuggestionClickListener
+import com.tokopedia.autocomplete.util.safeSetSpan
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import kotlinx.android.synthetic.main.layout_autocomplete_single_line_item.view.*
 import java.util.*
@@ -43,9 +44,9 @@ class SuggestionSingleLineViewHolder(
             itemView.singleLineTitle?.text = item.title.toLowerCase()
         } else {
             val highlightedTitle = SpannableString(item.title)
-            highlightedTitle.setSpan(TextAppearanceSpan(itemView.context, R.style.searchTextHiglight),
+            highlightedTitle.safeSetSpan(TextAppearanceSpan(itemView.context, R.style.searchTextHiglight),
                     0, startIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            highlightedTitle.setSpan(TextAppearanceSpan(itemView.context, R.style.searchTextHiglight),
+            highlightedTitle.safeSetSpan(TextAppearanceSpan(itemView.context, R.style.searchTextHiglight),
                     startIndex + item.searchTerm.length,
                     item.title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             itemView.singleLineTitle?.text = highlightedTitle

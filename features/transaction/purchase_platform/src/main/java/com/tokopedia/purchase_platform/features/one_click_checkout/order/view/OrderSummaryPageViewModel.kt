@@ -19,6 +19,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ProfilesItemModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.analytics.OrderSummaryAnalytics
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.analytics.OrderSummaryPageEnhanceECommerce
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.UpdateCartOccCartRequest
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.UpdateCartOccGqlResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.UpdateCartOccProfileRequest
@@ -61,6 +62,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     var orderShop: OrderShop = OrderShop()
     var kero: Kero = Kero()
     var _orderPreference: OrderPreference? = null
+    var orderPromo: OrderPromo = OrderPromo()
 
     var orderPreference: MutableLiveData<OccState<OrderPreference>> = MutableLiveData(OccState.Loading)
 
@@ -79,13 +81,15 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             orderShop = orderData.cart.shop
             kero = orderData.cart.kero
             val preference = orderData.preference
-//            _orderPreference = if (isFullRefresh || _orderPreference == null) {
-//                OrderPreference(preference)
-//            } else {
-//                _orderPreference?.copy(preference = preference)
-//            }
-            _orderPreference = OrderPreference(preference)
+            _orderPreference = if (isFullRefresh || _orderPreference == null) {
+                OrderPreference(preference)
+            } else {
+                _orderPreference?.copy(preference = preference)
+            }
+//            _orderPreference = OrderPreference(preference)
             orderPreference.value = OccState.FirstLoad(_orderPreference!!)
+//            orderSummaryAnalytics.eventViewOrderSummaryPage(generateViewOspEe())
+            orderPromo = orderData.promo
             if (orderProduct.productId > 0 && preference.shipment.serviceId > 0) {
                 orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.LOADING)
                 getRates()
@@ -97,6 +101,31 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             orderPreference.value = OccState.Fail(false, throwable, "")
             throwable.printStackTrace()
         })
+    }
+
+    private fun generateViewOspEe(): Map<String, Any> {
+        val orderSummaryPageEnhanceECommerce = OrderSummaryPageEnhanceECommerce()
+        orderSummaryPageEnhanceECommerce.setName(orderProduct.productName)
+        orderSummaryPageEnhanceECommerce.setId(orderProduct.productId)
+        orderSummaryPageEnhanceECommerce.setPrice(orderProduct.productPrice)
+        orderSummaryPageEnhanceECommerce.setBrand(null)
+        orderSummaryPageEnhanceECommerce.setCategory(null)
+        orderSummaryPageEnhanceECommerce.setVariant(null)
+        orderSummaryPageEnhanceECommerce.setQuantity(orderProduct.quantity?.orderQuantity ?: orderProduct.minOrderQuantity)
+        orderSummaryPageEnhanceECommerce.setListName(orderProduct.productResponse.productTrackerData.trackerListName)
+        orderSummaryPageEnhanceECommerce.setAttribution(orderProduct.productResponse.productTrackerData.attribution)
+        orderSummaryPageEnhanceECommerce.setDiscountedPrice(orderProduct.productResponse.isSlashPrice)
+        orderSummaryPageEnhanceECommerce.setWarehouseId(orderProduct.productResponse.wareHouseId)
+        orderSummaryPageEnhanceECommerce.setWarehouseId(orderProduct.weight)
+        orderSummaryPageEnhanceECommerce.setPromoCode("")
+        orderSummaryPageEnhanceECommerce.setPromoDetails("")
+        orderSummaryPageEnhanceECommerce.setCartId(orderShop.cartResponse.cartId)
+        orderSummaryPageEnhanceECommerce.setBuyerAddressId(_orderPreference?.preference?.address?.addressId ?: 0)
+        orderSummaryPageEnhanceECommerce.setSpid(_orderPreference?.shipping?.shipperProductId ?: 0)
+        orderSummaryPageEnhanceECommerce.setCodFlag(false)
+        orderSummaryPageEnhanceECommerce.setCornerFlag(false)
+        orderSummaryPageEnhanceECommerce.setIsFullfilment(false)
+        return orderSummaryPageEnhanceECommerce.build(1, "order summary page loaded")
     }
 
     fun updateProduct(product: OrderProduct, shouldReloadRates: Boolean = true) {
@@ -179,35 +208,62 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                 if (shippingDurationViewModel.serviceData.serviceId == shipping!!.serviceId) {
                                                     shippingDurationViewModel.isSelected = true
                                                     selectedShippingDurationViewModel = shippingDurationViewModel
-                                                    val shippingCourierViewModelList = shippingDurationViewModel.shippingCourierViewModelList
-                                                    var selectedShippingCourierUiModel: ShippingCourierUiModel? = null
-                                                    for (shippingCourierUiModel in shippingCourierViewModelList) {
-                                                        if (shippingCourierUiModel.productData.shipperProductId == shipping.shipperProductId) {
-                                                            shippingCourierUiModel.isSelected = true
-                                                            selectedShippingCourierUiModel = shippingCourierUiModel
-                                                        } else {
-                                                            shippingCourierUiModel.isSelected = false
-                                                        }
-                                                    }
-                                                    if (selectedShippingCourierUiModel != null) {
+                                                    val durationError = shippingDurationViewModel.serviceData.error
+                                                    if (durationError.errorId != null && durationError.errorId.isNotBlank() && durationError.errorMessage.isNotBlank()) {
                                                         val tempServiceDuration = shippingDurationViewModel.serviceData.serviceName
                                                         val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
                                                             tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
                                                         } else {
                                                             "Durasi tergantung kurir"
                                                         }
-                                                        shipping = shipping.copy(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
-                                                                shipperId = selectedShippingCourierUiModel.productData.shipperId,
-                                                                ratesId = selectedShippingCourierUiModel.ratesId,
-                                                                ut = selectedShippingCourierUiModel.productData.unixTime,
-                                                                checksum = selectedShippingCourierUiModel.productData.checkSum,
-                                                                shipperName = selectedShippingCourierUiModel.productData.shipperName,
-                                                                insuranceData = selectedShippingCourierUiModel.productData.insurance,
+                                                        shipping = Shipment(
                                                                 serviceId = shippingDurationViewModel.serviceData.serviceId,
                                                                 serviceDuration = serviceDur,
                                                                 serviceName = shippingDurationViewModel.serviceData.serviceName,
-                                                                shippingPrice = selectedShippingCourierUiModel.productData.price.price,
+                                                                needPinpoint = durationError.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED,
+                                                                serviceErrorMessage = durationError.errorMessage,
                                                                 shippingRecommendationData = shippingRecommendationData)
+                                                    } else {
+                                                        val shippingCourierViewModelList = shippingDurationViewModel.shippingCourierViewModelList
+                                                        var selectedShippingCourierUiModel: ShippingCourierUiModel? = null
+                                                        for (shippingCourierUiModel in shippingCourierViewModelList) {
+                                                            if (shippingCourierUiModel.productData.shipperProductId == shipping.shipperProductId) {
+                                                                shippingCourierUiModel.isSelected = true
+                                                                selectedShippingCourierUiModel = shippingCourierUiModel
+                                                            } else {
+                                                                shippingCourierUiModel.isSelected = false
+                                                            }
+                                                        }
+                                                        if (selectedShippingCourierUiModel != null) {
+                                                            var flagNeedToSetPinpoint = false
+                                                            var errorMessage: String? = null
+                                                            if (selectedShippingCourierUiModel.productData.error != null && selectedShippingCourierUiModel.productData.error.errorMessage != null && selectedShippingCourierUiModel.productData.error.errorId != null) {
+                                                                errorMessage = selectedShippingCourierUiModel.productData.error.errorMessage
+                                                                if (selectedShippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
+                                                                    flagNeedToSetPinpoint = true
+                                                                }
+                                                            }
+                                                            val tempServiceDuration = shippingDurationViewModel.serviceData.serviceName
+                                                            val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
+                                                                tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
+                                                            } else {
+                                                                "Durasi tergantung kurir"
+                                                            }
+                                                            shipping = shipping.copy(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
+                                                                    shipperId = selectedShippingCourierUiModel.productData.shipperId,
+                                                                    ratesId = selectedShippingCourierUiModel.ratesId,
+                                                                    ut = selectedShippingCourierUiModel.productData.unixTime,
+                                                                    checksum = selectedShippingCourierUiModel.productData.checkSum,
+                                                                    shipperName = selectedShippingCourierUiModel.productData.shipperName,
+                                                                    needPinpoint = flagNeedToSetPinpoint,
+                                                                    serviceErrorMessage = if (flagNeedToSetPinpoint) "Butuh pinpoint lokasi" else errorMessage,
+                                                                    insuranceData = selectedShippingCourierUiModel.productData.insurance,
+                                                                    serviceId = shippingDurationViewModel.serviceData.serviceId,
+                                                                    serviceDuration = serviceDur,
+                                                                    serviceName = shippingDurationViewModel.serviceData.serviceName,
+                                                                    shippingPrice = selectedShippingCourierUiModel.productData.price.price,
+                                                                    shippingRecommendationData = shippingRecommendationData)
+                                                        }
                                                     }
                                                 } else {
                                                     shippingDurationViewModel.isSelected = false
@@ -380,9 +436,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 }
                 val subtotal = totalProductPrice + totalShippingPrice + insurancePrice
                 val minimumAmount = _orderPreference?.preference?.payment?.minimumAmount ?: 0
-//                val minimumAmount = 500000
                 val maximumAmount = _orderPreference?.preference?.payment?.maximumAmount ?: 0
-//                val maximumAmount = 700000
                 val fee = _orderPreference?.preference?.payment?.fee?.toDouble() ?: 0.0
                 val orderCost = OrderCost(totalProductPrice, subtotal, totalShippingPrice, insurancePrice, fee)
                 if (minimumAmount > subtotal) {
@@ -391,7 +445,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                             isButtonChoosePayment = true)
                 } else if (maximumAmount > 0 && maximumAmount < subtotal) {
                     orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
-                            paymentErrorMessage = "maximum pembayaran adalah ${CurrencyFormatUtil.convertPriceValueToIdrFormat(minimumAmount, false)}",
+                            paymentErrorMessage = "maximum pembayaran adalah ${CurrencyFormatUtil.convertPriceValueToIdrFormat(maximumAmount, false)}",
                             isButtonChoosePayment = true)
                 } else if (_orderPreference?.preference?.payment?.gatewayCode?.contains("OVO") == true && subtotal > _orderPreference?.preference?.payment?.walletAmount ?: 0) {
                     orderTotal.value = orderTotal.value?.copy(orderCost = orderCost, paymentErrorMessage = "OVO kamu tidak cukup", isButtonChoosePayment = true)
@@ -620,7 +674,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     fun changePinpoint() {
         val op = _orderPreference
         if (op?.shipping != null) {
-            orderPreference.value = OccState.Success(op.copy(shipping = op.shipping.copy(needPinpoint = false)))
+            _orderPreference = op.copy(shipping = op.shipping.copy(needPinpoint = false))
+            orderPreference.value = OccState.Success(_orderPreference!!)
         }
     }
 
@@ -756,7 +811,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         }
     }
 
-    fun finalUpdate(onSuccessCheckout: (PaymentParameter) -> Unit) {
+    fun finalUpdate(onSuccessCheckout: (Data) -> Unit) {
         val product = orderProduct
         val shop = orderShop
         val pref = _orderPreference
@@ -764,7 +819,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             val param = generateUpdateCartParam()
             if (param != null) {
                 globalEvent.value = OccGlobalEvent.Loading
-                updateCartOccUseCase.execute(param, { updateCartOccGqlResponse: UpdateCartOccGqlResponse ->
+                updateCartOccUseCase.execute(param, {
                     doCheckout(product, shop, pref, onSuccessCheckout)
                 }, { throwable: Throwable ->
                     throwable.printStackTrace()
@@ -779,7 +834,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         }
     }
 
-    private fun doCheckout(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (PaymentParameter) -> Unit) {
+    private fun doCheckout(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (Data) -> Unit) {
         val param = CheckoutOccRequest(Profile(pref.preference.profileId), ParamCart(data = listOf(ParamData(
                 pref.preference.address.addressId,
                 listOf(
@@ -808,9 +863,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         checkoutOccUseCase.execute(param, { checkoutOccGqlResponse: CheckoutOccGqlResponse ->
             if (checkoutOccGqlResponse.response.status.equals("OK", true)) {
                 if (checkoutOccGqlResponse.response.data.success == 1) {
-                    val paymentParameter = checkoutOccGqlResponse.response.data.paymentParameter
                     globalEvent.value = OccGlobalEvent.Normal
-                    onSuccessCheckout(paymentParameter)
+                    onSuccessCheckout(checkoutOccGqlResponse.response.data)
                 } else {
                     val errorCode = checkoutOccGqlResponse.response.data.error.code
                     orderSummaryAnalytics.eventClickBayarNotSuccess(errorCode)

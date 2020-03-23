@@ -45,7 +45,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ProfilesItemModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.ProfileResponse
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.PaymentParameter
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.Data
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.di.OrderSummaryPageComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.ErrorCheckoutBottomSheet
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.OccInfoBottomSheet
@@ -253,6 +253,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         tv_total_payment_value.visible()
         btn_order_detail.visible()
         btn_pay.visible()
+        btn_promo_checkout.visible()
     }
 
     private fun showEmptyPreferenceCard() {
@@ -263,6 +264,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         tv_total_payment_value.gone()
         btn_order_detail.gone()
         btn_pay.gone()
+        btn_promo_checkout.gone()
 
         button_atur_pilihan.setOnClickListener {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
@@ -301,10 +303,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         R.drawable.ic_pp_insurance)
             }
             cb_insurance.setOnCheckedChangeListener { _, isChecked ->
-                if(!isChecked) {
-                    orderSummaryAnalytics.eventClickOnInsurance(productId.toString(),"uncheck", insuranceData.insurancePrice.toString())
+                if (!isChecked) {
+                    orderSummaryAnalytics.eventClickOnInsurance(productId.toString(), "uncheck", insuranceData.insurancePrice.toString())
                 } else {
-                    orderSummaryAnalytics.eventClickOnInsurance(productId.toString(),"check", insuranceData.insurancePrice.toString())
+                    orderSummaryAnalytics.eventClickOnInsurance(productId.toString(), "check", insuranceData.insurancePrice.toString())
                 }
                 viewModel.setInsuranceCheck(isChecked)
             }
@@ -402,9 +404,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         btn_pay.setOnClickListener {
-            viewModel.finalUpdate { paymentParameter: PaymentParameter ->
+            //            refresh(false, false)
+            viewModel.finalUpdate { checkoutData: Data ->
                 view?.let { _ ->
                     activity?.let {
+                        val paymentParameter = checkoutData.paymentParameter
                         if (paymentParameter.callbackUrl.isNotEmpty() && paymentParameter.payload.isNotEmpty()) {
                             val paymentPassData = PaymentPassData()
                             paymentPassData.redirectUrl = paymentParameter.callbackUrl
@@ -412,19 +416,25 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
                             val intent = RouteManager.getIntent(activity, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
                             intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
+                            intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE, checkoutData.error.message)
                             startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
                             it.finish()
                         } else {
-                            // redirect params?
+//                             redirect params?
                         }
                     }
                 }
             }
         }
 
+        val lastApply = viewModel.orderPromo.lastApply
+        var title = getString(R.string.promo_funnel_label)
+        if (lastApply?.additionalInfo?.messageInfo?.message?.isNotEmpty() == true) {
+            title = lastApply.additionalInfo.messageInfo.message
+            btn_promo_checkout.desc = lastApply.additionalInfo.messageInfo.detail
+        }
         btn_promo_checkout.state = ButtonPromoCheckoutView.State.ACTIVE
-        btn_promo_checkout.title = getString(R.string.promo_funnel_label)
-        btn_promo_checkout.visible()
+        btn_promo_checkout.title = title
 
         btn_promo_checkout.setOnClickListener {
             viewModel.updateCartPromo { promoRequest, validateUsePromoRequest ->
@@ -437,7 +447,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
         }
     }
-
 
 
     private fun showMessage(preference: ProfileResponse) {
