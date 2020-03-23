@@ -139,7 +139,9 @@ public class DealDetailsAllRedeemLocationsFragment extends BaseDaggerFragment im
             noContentLayout.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
             outlets.clear();
-            outlets.addAll(fragmentCallbacks.getOutlets());
+            if(fragmentCallbacks.getOutlets() != null) {
+                outlets.addAll(fragmentCallbacks.getOutlets());
+            }
             adapter.notifyDataSetChanged();
         }
     }

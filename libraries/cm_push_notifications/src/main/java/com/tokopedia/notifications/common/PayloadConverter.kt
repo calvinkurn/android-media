@@ -58,6 +58,7 @@ object PayloadConverter {
         }
         model.isVibration = data.getBoolean(CMConstant.PayloadKeys.VIBRATE, true)
         model.isUpdateExisting = data.getBoolean(CMConstant.PayloadKeys.UPDATE_NOTIFICATION, false)
+        model.isTest = data.getBoolean(CMConstant.PayloadKeys.IS_TEST, false)
         val gridList = getGridList(data)
         if (gridList != null)
             model.gridList = gridList

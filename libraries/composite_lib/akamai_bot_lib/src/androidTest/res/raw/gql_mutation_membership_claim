@@ -1,0 +1,11 @@
+mutation membershipClaimBenefit($questUserId:Int!){
+  membershipClaimBenefit(questUserID:$questUserId){
+    title
+    subTitle
+    resultStatus{
+      code
+      message
+      reason
+    }
+  }
+}

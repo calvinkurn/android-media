@@ -1,9 +1,14 @@
 package com.tokopedia.home.analytics.v2
 
+import android.annotation.SuppressLint
 import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.home.analytics.v2.BaseTracking.Value.FORMAT_2_ITEMS_UNDERSCORE
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.track.TrackApp
+import com.tokopedia.track.interfaces.ContextAnalytics
 
+@SuppressLint("VisibleForTests")
 abstract class BaseTracking {
     protected object Event{
         const val NONE = ""
@@ -12,6 +17,7 @@ abstract class BaseTracking {
         const val IMPRESSION = "impression"
         const val PROMO_VIEW = "promoView"
         const val PRODUCT_VIEW = "productView"
+        const val PRODUCT_VIEW_IRIS = "productViewIris"
         const val PROMO_CLICK = "promoClick"
         const val PRODUCT_CLICK = "productClick"
         const val PROMO_VIEW_IRIS = "promoViewIris"
@@ -26,9 +32,9 @@ abstract class BaseTracking {
     protected object Action{
         const val KEY = "eventAction"
         const val IMPRESSION = "%s impression"
-        const val IMPRESSION_ON = "impression on \"%s"
+        const val IMPRESSION_ON = "impression on %s"
         const val CLICK = "%s click"
-        const val CLICK_ON = "click on \"%s"
+        const val CLICK_ON = "click on %s"
     }
 
     protected object Label{
@@ -42,13 +48,21 @@ abstract class BaseTracking {
         const val FORMAT_2_ITEMS = "%s - %s"
     }
 
+    protected object ChannelId{
+        const val KEY = "channelId"
+    }
+
     protected object Value{
         const val NONE_OTHER = "none / other"
-        const val LIST = "/ - p%s - %s - %s"
+        const val LIST_WITH_HEADER = "/ - p%s - %s - %s"
+        const val LIST = "/ - p%s - %s"
+        const val EMPTY = ""
+        const val FORMAT_2_ITEMS_UNDERSCORE = "%s_%s"
+
         fun getFreeOngkirValue(grid: DynamicHomeChannel.Grid) = if (grid.freeOngkir.isActive)"bebas ongkir" else "none / other"
     }
 
-    protected object Ecommerce {
+    object Ecommerce {
         const val KEY = "ecommerce"
         const val PROMOTION_NAME = "/ - p%s - %s - %s"
         private const val PRODUCT_VIEW = "productView"
@@ -82,6 +96,7 @@ abstract class BaseTracking {
         private const val KEY_ATTRIBUTION = "attribution"
         private const val KEY_DIMENSION_83 = "dimension83"
         private const val KEY_DIMENSION_84 = "dimension84"
+        private const val KEY_DIMENSION_96 = "dimension96"
 
         fun getEcommercePromoView(promotions: List<Promotion>): Map<String, Any> {
             return DataLayer.mapOf(
@@ -140,7 +155,7 @@ abstract class BaseTracking {
             map[KEY_NAME] = promotion.name
             map[KEY_CREATIVE] = promotion.creative
             map[KEY_CREATIVE_URL] = promotion.creativeUrl
-            map[KEY_POSITION] = promotion.position.toString()
+            map[KEY_POSITION] = promotion.position
             map[KEY_PROMO_ID] = promotion.promoIds
             map[KEY_PROMO_CODE] = promotion.promoCodes
             return map
@@ -150,20 +165,21 @@ abstract class BaseTracking {
             val map = HashMap<String, String>()
             map[KEY_ID] = product.id
             map[KEY_NAME] = product.name
-            map[KEY_BRAND] = product.brand
-            map[KEY_VARIANT] = product.variant
-            map[KEY_PRICE] = product.productPrice.toString()
-            map[KEY_CATEGORY] = product.category
-            map[KEY_POSITION] = product.productPosition.toString()
+            map[KEY_BRAND] = if(product.brand.isNotBlank()) product.brand else NONE
+            map[KEY_VARIANT] = if(product.variant.isNotBlank()) product.variant else NONE
+            map[KEY_PRICE] = product.productPrice
+            map[KEY_CATEGORY] = if(product.category.isNotBlank()) product.category else NONE
+            map[KEY_POSITION] = product.productPosition
             map[KEY_DIMENSION_83] = if(product.isFreeOngkir) FREE_ONGKIR else NONE
             if (product.channelId.isNotEmpty()) map[KEY_DIMENSION_84] = product.channelId else NONE
+            if (product.categoryId.isNotEmpty() || product.persoType.isNotEmpty()) map[KEY_DIMENSION_96] = String.format(FORMAT_2_ITEMS_UNDERSCORE, product.persoType, product.categoryId) else NONE
             if (list.isNotEmpty()) map[KEY_LIST] = list
             return map
         }
     }
 
     class Promotion(val id: String, val name: String, val creative: String, val creativeUrl: String, val position: String, val promoIds: String = "", val promoCodes: String = "")
-    open class Product(
+    open class  Product(
             val name: String,
             val id: String,
             val productPrice: String,
@@ -172,7 +188,9 @@ abstract class BaseTracking {
             val variant: String,
             val productPosition: String,
             val isFreeOngkir: Boolean,
-            val channelId: String = ""): ImpressHolder()
+            val channelId: String = "",
+            val persoType: String = "",
+            val categoryId: String = ""): ImpressHolder()
 
     open fun getBasicPromotionView(
         event: String,
@@ -187,6 +205,24 @@ abstract class BaseTracking {
                 Action.KEY, eventAction,
                 Label.KEY, eventLabel,
                 Ecommerce.KEY, Ecommerce.getEcommercePromoView(promotions)
+        )
+    }
+
+    open fun getBasicPromotionChannelView(
+            event: String,
+            eventCategory: String,
+            eventAction: String,
+            eventLabel: String,
+            promotions: List<Promotion>,
+            channelId: String
+    ): Map<String, Any>{
+        return DataLayer.mapOf(
+                Event.KEY, event,
+                Category.KEY, eventCategory,
+                Action.KEY, eventAction,
+                Label.KEY, eventLabel,
+                Ecommerce.KEY, Ecommerce.getEcommercePromoView(promotions),
+                ChannelId.KEY, channelId
         )
     }
 
@@ -213,6 +249,33 @@ abstract class BaseTracking {
                 Label.CATEGORY_LABEL, categoryId,
                 Label.SHOP_LABEL, shopId,
                 Ecommerce.KEY, Ecommerce.getEcommercePromoClick(promotions)
+        )
+    }
+
+    open fun getBasicPromotionChannelClick(
+            event: String,
+            eventCategory: String,
+            eventAction: String,
+            eventLabel: String,
+            channelId: String,
+            affinity: String,
+            attribution: String,
+            categoryId: String,
+            shopId: String,
+            promotions: List<Promotion>
+    ): Map<String, Any>{
+        return DataLayer.mapOf(
+                Event.KEY, event,
+                Category.KEY, eventCategory,
+                Action.KEY, eventAction,
+                Label.KEY, eventLabel,
+                Label.CHANNEL_LABEL, channelId,
+                Label.AFFINITY_LABEL, affinity,
+                Label.ATTRIBUTION_LABEL, attribution,
+                Label.CATEGORY_LABEL, categoryId,
+                Label.SHOP_LABEL, shopId,
+                Ecommerce.KEY, Ecommerce.getEcommercePromoClick(promotions),
+                ChannelId.KEY, channelId
         )
     }
 
@@ -267,5 +330,36 @@ abstract class BaseTracking {
                 Label.KEY, eventLabel,
                 Ecommerce.KEY, Ecommerce.getEcommerceProductView(products, list)
         )
+    }
+
+    open fun getBasicProductChannelView(
+            event: String,
+            eventCategory: String,
+            eventAction: String,
+            eventLabel: String,
+            list: String,
+            products: List<Product>,
+            channelId: String
+    ): Map<String, Any>{
+        return DataLayer.mapOf(
+                Event.KEY, event,
+                Category.KEY, eventCategory,
+                Action.KEY, eventAction,
+                Label.KEY, eventLabel,
+                Ecommerce.KEY, Ecommerce.getEcommerceProductView(products, list),
+                ChannelId.KEY, channelId
+        )
+    }
+
+    protected fun convertRupiahToInt(rupiah: String): Int {
+        var rupiah = rupiah
+        rupiah = rupiah.replace("Rp", "")
+        rupiah = rupiah.replace(".", "")
+        rupiah = rupiah.replace(" ", "")
+        return Integer.parseInt(rupiah)
+    }
+
+    protected fun getTracker(): ContextAnalytics {
+        return TrackApp.getInstance().gtm
     }
 }

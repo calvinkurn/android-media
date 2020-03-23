@@ -29,6 +29,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics;
 import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent;
+import com.tokopedia.topchat.chattemplate.di.TemplateChatModule;
 import com.tokopedia.topchat.chattemplate.view.listener.EditTemplateChatContract;
 import com.tokopedia.topchat.chattemplate.view.presenter.EditTemplateChatPresenter;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateUiModel;
@@ -257,7 +258,9 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
                     .getBaseAppComponent();
             DaggerTemplateChatComponent daggerTemplateChatComponent =
                     (DaggerTemplateChatComponent) DaggerTemplateChatComponent.builder()
-                            .baseAppComponent(appComponent).build();
+                            .baseAppComponent(appComponent)
+                            .templateChatModule(new TemplateChatModule(getContext()))
+                            .build();
             daggerTemplateChatComponent.inject(this);
         }
     }

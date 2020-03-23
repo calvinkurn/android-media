@@ -554,6 +554,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     }
                 }
             }
+
+            override fun onVoucherItemImpressed(merchantVoucherViewModel: MerchantVoucherViewModel, voucherPosition: Int) {}
         })
         fab_detail.setOnClickListener {
             if (productInfoViewModel.isUserSessionActive()) {
@@ -1461,7 +1463,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                             productInfo.basic.weightUnit,
                             if (productInfoViewModel.multiOrigin.isFulfillment)
                                 productInfoViewModel.multiOrigin.origin else null,
-                            productInfo.freeOngkir.isFreeOngkirActive
+                            productInfo.freeOngkir.isFreeOngkirActive,
+                            shopInfo.shopCore.shopID,
+                            productInfo.basic.id.toString()
                     ))
                 }
             }

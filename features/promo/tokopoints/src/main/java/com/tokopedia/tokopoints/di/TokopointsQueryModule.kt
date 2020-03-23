@@ -1,5 +1,6 @@
 package com.tokopedia.tokopoints.di
 
+import android.app.Activity
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -13,10 +14,10 @@ import dagger.multibindings.StringKey
 import javax.inject.Named
 
 @Module
-class TokopointsQueryModule {
+class TokopointsQueryModule(val activity: Activity) {
 
     @Provides
-    fun getContext(@ApplicationContext context: Context) = context
+    fun getContext(): Context = activity
 
     @Provides
     fun getRepository() = Interactor.getInstance().graphqlRepository
@@ -38,105 +39,106 @@ class TokopointsQueryModule {
     @Provides
     @IntoMap
     @StringKey(CommonConstant.GQLQuery.TP_GQL_TOKOPOINT_APPLY_COUPON)
-    fun getGQLTokopointApplyCoupon(context: Context) : String{
+    fun getGQLTokopointApplyCoupon(context: Context): String {
         return GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.tp_gql_tokopoint_apply_coupon)
+            R.raw.tp_gql_tokopoint_apply_coupon)
     }
 
     @Provides
     @IntoMap
     @StringKey(CommonConstant.GQLQuery.TP_GQL_COUPON_DETAIL)
-    fun getGQLCouponDetail(context: Context) : String {
+    fun getGQLCouponDetail(context: Context): String {
         return GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.tp_gql_coupon_detail)
+            R.raw.tp_gql_coupon_detail)
     }
 
     @Provides
     @IntoMap
     @StringKey(CommonConstant.GQLQuery.TP_GQL_REFETCH_REAL_CODE)
-    fun getGQLRefetchRealCode(context: Context) : String {
+    fun getGQLRefetchRealCode(context: Context): String {
         return GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.tp_gql_refetch_real_code)
+            R.raw.tp_gql_refetch_real_code)
     }
 
     @Provides
     @IntoMap
     @StringKey(CommonConstant.GQLQuery.TP_GQL_SWIPE_COUPON)
-    fun getGQLSwipeCoupon(context: Context) : String {
+    fun getGQLSwipeCoupon(context: Context): String {
         return GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.tp_gql_swipe_coupon)
+            R.raw.tp_gql_swipe_coupon)
     }
 
     @Provides
     @IntoMap
     @StringKey(CommonConstant.GQLQuery.TP_GQL_COUPON_FILTER)
-    fun getGQLCouponFilter(context: Context) : String {
+    fun getGQLCouponFilter(context: Context): String {
         return GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.tp_gql_coupon_filter)
+            R.raw.tp_gql_coupon_filter)
     }
+
     @Provides
     @IntoMap
     @StringKey(CommonConstant.GQLQuery.TP_GQL_COUPON_LISTING_STACK)
-    fun getGQLCouponListingStack(context: Context) : String {
+    fun getGQLCouponListingStack(context: Context): String {
         return GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.tp_gql_coupon_listing_stack)
+            R.raw.tp_gql_coupon_listing_stack)
     }
 
 
     @Provides
     @IntoMap
     @StringKey(CommonConstant.GQLQuery.TP_GQL_COUPON_IN_STACK)
-    fun getGQLCouponInStack(context: Context) : String {
+    fun getGQLCouponInStack(context: Context): String {
         return GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.tp_gql_coupon_in_stack)
+            R.raw.tp_gql_coupon_in_stack)
     }
 
     @Provides
     @IntoMap
     @StringKey(CommonConstant.GQLQuery.TP_GQL_USER_INFO)
-    fun isPhoneVerified(context: Context) : String {
+    fun isPhoneVerified(context: Context): String {
         return GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.tp_gql_user_info)
+            R.raw.tp_gql_user_info)
     }
 
     @Provides
     @IntoMap
     @StringKey(CommonConstant.GQLQuery.TP_GQL_TOKOPOINT_REDEEM_COUPON)
-    fun getGQLRedeemCoupon(context: Context) : String {
+    fun getGQLRedeemCoupon(context: Context): String {
         return GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.tp_gql_tokopoint_redeem_coupon)
+            R.raw.tp_gql_tokopoint_redeem_coupon)
     }
 
     @Provides
     @IntoMap
     @StringKey(CommonConstant.GQLQuery.TP_GQL_CATLOG_STATUS)
-    fun getGQLCatalogStatus(context: Context) : String {
+    fun getGQLCatalogStatus(context: Context): String {
         return GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.tp_gql_catalog_status)
+            R.raw.tp_gql_catalog_status)
     }
 
     @Provides
     @IntoMap
     @StringKey(CommonConstant.GQLQuery.TP_GQL_TOKOPOINT_VALIDATE_REDEEM)
-    fun getGQLTokopointValidateRedeem(context: Context) : String {
+    fun getGQLTokopointValidateRedeem(context: Context): String {
         return GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.tp_gql_tokopoint_validate_redeem)
+            R.raw.tp_gql_tokopoint_validate_redeem)
     }
 
     @Provides
     @IntoMap
     @StringKey(CommonConstant.GQLQuery.TP_GQL_PRE_VALIDATE_REDEEM)
-    fun getGQLPreValidateREdeem(context: Context) : String {
+    fun getGQLPreValidateREdeem(context: Context): String {
         return GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.tp_gql_pre_validate_redeem)
+            R.raw.tp_gql_pre_validate_redeem)
     }
 
     @Provides
     @IntoMap
     @StringKey(CommonConstant.GQLQuery.TP_GQL_CATALOG_DETAIL)
-    fun getGQLCatalogDetail(context: Context) : String {
+    fun getGQLCatalogDetail(context: Context): String {
         return GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.tp_gql_catalog_detail)
+            R.raw.tp_gql_catalog_detail)
     }
 
     @Provides
@@ -185,6 +187,6 @@ class TokopointsQueryModule {
     @TokoPointScope
     @Named(CommonConstant.GQLQuery.TP_GQL_SUM_COUPON)
     fun getGQLSumCoupon(context: Context) : String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_homepage_section)
+        return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_sum_coupon)
     }
 }

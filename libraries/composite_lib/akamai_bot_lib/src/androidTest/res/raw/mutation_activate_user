@@ -1,0 +1,13 @@
+mutation activateUser($email: String!, $validateToken: String!){
+    activate_user(input: {
+        email: $email
+        validate_token: $validateToken
+    }) {
+        is_success
+        message
+        sid
+        access_token
+        refresh_token
+        token_type
+    }
+}

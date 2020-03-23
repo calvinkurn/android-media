@@ -1,0 +1,21 @@
+query userProfileCompletion(){
+  userProfileCompletion {
+    isActive,
+    fullName,
+    birthDate,
+    birthDay,
+    birthMonth,
+    birthYear,
+    gender,
+    email,
+    msisdn,
+    isMsisdnVerified,
+    isCreatedPassword,
+    isBiodataDone,
+    isEmailDone,
+    isPasswordDone,
+    isMsisdnDone,
+    completionDone,
+    completionScore
+  }
+}

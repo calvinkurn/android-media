@@ -44,6 +44,7 @@ class MerchantVoucherListWidget : FrameLayout, MerchantVoucherView.OnMerchantVou
         private set
 
     private var adapter: BaseListAdapter<MerchantVoucherViewModel, MerchantVoucherAdapterTypeFactory>? = null
+    private var merchantVoucherAdapterTypeFactory: MerchantVoucherAdapterTypeFactory? = null
 
     private var onMerchantVoucherListWidgetListener: OnMerchantVoucherListWidgetListener? = null
     private var rView: View? = null
@@ -61,10 +62,12 @@ class MerchantVoucherListWidget : FrameLayout, MerchantVoucherView.OnMerchantVou
         fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position:Int)
         fun onItemClicked(merchantVoucherViewModel: MerchantVoucherViewModel)
         fun onSeeAllClicked()
+        fun onVoucherItemImpressed(merchantVoucherViewModel: MerchantVoucherViewModel, voucherPosition: Int)
     }
 
     fun setOnMerchantVoucherListWidgetListener(onMerchantVoucherListWidgetListener: OnMerchantVoucherListWidgetListener) {
         this.onMerchantVoucherListWidgetListener = onMerchantVoucherListWidgetListener
+        merchantVoucherAdapterTypeFactory?.onMerchantVoucherListWidgetListener = onMerchantVoucherListWidgetListener
     }
 
     constructor(context: Context) : super(context) {
@@ -130,9 +133,10 @@ class MerchantVoucherListWidget : FrameLayout, MerchantVoucherView.OnMerchantVou
         }
 
         recyclerView!!.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        adapter = BaseListAdapter(
-                MerchantVoucherAdapterTypeFactory(this, true),
-                this)
+        merchantVoucherAdapterTypeFactory = MerchantVoucherAdapterTypeFactory(this, true)
+        merchantVoucherAdapterTypeFactory?.let {
+            adapter = BaseListAdapter(it, this)
+        }
         recyclerView!!.adapter = adapter
 
         rView!!.visibility = View.GONE

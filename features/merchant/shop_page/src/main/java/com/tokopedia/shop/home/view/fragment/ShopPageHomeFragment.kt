@@ -1,5 +1,6 @@
 package com.tokopedia.shop.home.view.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +21,10 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
+import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
+import com.tokopedia.discovery.common.manager.showProductCardOptions
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
@@ -90,6 +95,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
+    private var threeDotsClickShopProductViewModel: ShopHomeProductViewModel? = null
+    private var threeDotsClickShopCarouselProductUiModel: ShopHomeCarousellProductUiModel? = null
     @Inject
     lateinit var shopPageHomeTracking: ShopPageHomeTracking
     @Inject
@@ -340,6 +347,15 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun loadData(page: Int) {}
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        handleProductCardOptionsActivityResult(requestCode, resultCode, data, object : ProductCardOptionsWishlistCallback {
+            override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                handleWishlistAction(productCardOptionsModel)
+            }
+        })
+    }
+
     override fun onDisplayItemImpression(displayWidgetUiModel: ShopHomeDisplayWidgetUiModel?, displayWidgetItem: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem, parentPosition: Int, adapterPosition: Int) {
         val destinationLink: String
         val creativeUrl: String
@@ -436,16 +452,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    override fun onVoucherListImpression(
+    override fun onVoucherItemImpressed(
             parentPosition: Int,
-            listVoucher: List<MerchantVoucherViewModel>
+            itemPosition: Int,
+            voucher: MerchantVoucherViewModel
     ) {
-        shopPageHomeTracking.onImpressionVoucherList(
+        shopPageHomeTracking.onImpressionVoucherItem(
                 isOwner,
                 shopId,
                 shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
                 parentPosition + 1,
-                listVoucher,
+                itemPosition + 1,
+                voucher,
                 customDimensionShopPage
         )
     }
@@ -493,24 +511,17 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    override fun onAllProductItemWishlist(itemPosition: Int, shopHomeProductViewModel: ShopHomeProductViewModel) {
-        if (isLogin) {
-            viewModel?.clearGetShopProductUseCase()
-            if (shopHomeProductViewModel.isWishList) {
-                viewModel?.removeWishList(
-                        shopHomeProductViewModel.id ?: "",
-                        { onSuccessRemoveWishList(null, shopHomeProductViewModel) },
-                        ::onErrorRemoveWishList
+    override fun onThreeDotsAllProductClicked(shopHomeProductViewModel: ShopHomeProductViewModel) {
+        threeDotsClickShopCarouselProductUiModel = null
+        threeDotsClickShopProductViewModel = shopHomeProductViewModel
+        showProductCardOptions(
+                this,
+                ProductCardOptionsModel(
+                        hasWishlist = true,
+                        isWishlisted = shopHomeProductViewModel.isWishList,
+                        productId = shopHomeProductViewModel.id ?: ""
                 )
-            } else {
-                viewModel?.addWishList(
-                        shopHomeProductViewModel.id ?: "",
-                        { onSuccessAddWishlist(null, shopHomeProductViewModel) },
-                        ::onErrorAddWishlist)
-            }
-        } else {
-            redirectToLoginPage()
-        }
+        )
     }
 
     override fun onCarouselProductItemClicked(parentPosition: Int, itemPosition: Int, shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?, shopHomeProductViewModel: ShopHomeProductViewModel?) {
@@ -557,30 +568,20 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
     }
 
-    override fun onCarouselProductItemWishlist(
-            parentPosition: Int,
-            itemPosition: Int,
+    override fun onThreeDotsCarouselProductItemClicked(
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
             shopHomeProductViewModel: ShopHomeProductViewModel?
     ) {
-        if (isLogin) {
-            viewModel?.clearGetShopProductUseCase()
-            if (shopHomeProductViewModel?.isWishList == true) {
-                viewModel?.removeWishList(
-                        shopHomeProductViewModel.id ?: "",
-                        { onSuccessRemoveWishList(shopHomeCarousellProductUiModel, shopHomeProductViewModel) },
-                        ::onErrorRemoveWishList
+        threeDotsClickShopCarouselProductUiModel = shopHomeCarousellProductUiModel
+        threeDotsClickShopProductViewModel = shopHomeProductViewModel
+        showProductCardOptions(
+                this,
+                ProductCardOptionsModel(
+                        hasWishlist = true,
+                        isWishlisted = shopHomeProductViewModel?.isWishList ?: false,
+                        productId = shopHomeProductViewModel?.id ?: ""
                 )
-            } else {
-                viewModel?.addWishList(
-                        shopHomeProductViewModel?.id ?: "",
-                        { onSuccessAddWishlist(shopHomeCarousellProductUiModel, shopHomeProductViewModel) },
-                        ::onErrorAddWishlist
-                )
-            }
-        } else {
-            redirectToLoginPage()
-        }
+        )
     }
 
     private fun onSuccessRemoveWishList(
@@ -690,6 +691,49 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun showToastSuccess(message: String) {
         activity?.run {
             Toaster.make(findViewById(android.R.id.content), message)
+        }
+    }
+
+    private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
+        if (!productCardOptionsModel.wishlistResult.isUserLoggedIn) {
+            redirectToLoginPage()
+        } else {
+            handleWishlistActionForLoggedInUser(productCardOptionsModel)
+        }
+    }
+
+    private fun handleWishlistActionForLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
+        viewModel?.clearGetShopProductUseCase()
+        if (productCardOptionsModel.wishlistResult.isAddWishlist) {
+            handleWishlistActionAddToWishlist(productCardOptionsModel)
+        } else {
+            handleWishlistActionRemoveFromWishlist(productCardOptionsModel)
+        }
+    }
+
+    private fun handleWishlistActionAddToWishlist(productCardOptionsModel: ProductCardOptionsModel) {
+        if (productCardOptionsModel.wishlistResult.isSuccess) {
+            onSuccessAddWishlist(
+                    threeDotsClickShopCarouselProductUiModel,
+                    threeDotsClickShopProductViewModel
+            )
+        } else {
+            onErrorAddWishlist(
+                    getString(com.tokopedia.wishlist.common.R.string.msg_error_add_wishlist)
+            )
+        }
+    }
+
+    private fun handleWishlistActionRemoveFromWishlist(productCardOptionsModel: ProductCardOptionsModel) {
+        if (productCardOptionsModel.wishlistResult.isSuccess) {
+            onSuccessRemoveWishList(
+                    threeDotsClickShopCarouselProductUiModel,
+                    threeDotsClickShopProductViewModel
+            )
+        } else {
+            onErrorRemoveWishList(
+                    getString(com.tokopedia.wishlist.common.R.string.msg_error_remove_wishlist)
+            )
         }
     }
 

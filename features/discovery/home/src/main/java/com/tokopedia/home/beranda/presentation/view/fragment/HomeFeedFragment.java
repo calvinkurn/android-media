@@ -20,6 +20,9 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.discovery.common.manager.ProductCardOptionsManager;
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel.WishlistResult;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking;
@@ -36,7 +39,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedTypeFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeFeedViewHolder;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
+import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
@@ -49,9 +54,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import kotlin.Unit;
-import kotlin.jvm.functions.Function2;
-
 public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFactory>, HomeFeedTypeFactory>
         implements HomeFeedContract.View {
 
@@ -62,6 +64,9 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
     private static final String PDP_EXTRA_PRODUCT_ID = "product_id";
     private static final String WIHSLIST_STATUS_IS_WISHLIST = "isWishlist";
     private static final String WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition";
+    private static final String HOME_JANKY_FRAMES_MONITORING_PAGE_NAME = "home";
+    private static final String HOME_JANKY_FRAMES_MONITORING_SUB_PAGE_NAME = "feed";
+
     private static final int REQUEST_FROM_PDP = 349;
 
     private static final int DEFAULT_TOTAL_ITEM_PER_PAGE = 12;
@@ -105,6 +110,15 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
         this.homeTabFeedListener = homeTabFeedListener;
     }
 
+    private void setJankyFramesRecyclerViewMonitoring(HomeCategoryListener homeCategoryListener) {
+        if (homeCategoryListener != null && homeCategoryListener.getHomeJankyFramesUtil() != null && getView() != null) {
+            homeCategoryListener.getHomeJankyFramesUtil().recordRecyclerViewScrollPerformance(
+                    getRecyclerView(getView()),
+                    HOME_JANKY_FRAMES_MONITORING_PAGE_NAME,
+                    HOME_JANKY_FRAMES_MONITORING_SUB_PAGE_NAME);
+        }
+    }
+
     public void setParentPool(RecyclerView.RecycledViewPool parentPool) {
         this.parentPool = parentPool;
     }
@@ -143,6 +157,7 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
             );
             getRecyclerView(getView()).setRecycledViewPool(parentPool);
         }
+        setJankyFramesRecyclerViewMonitoring(homeCategoryListener);
     }
     @Override
     public void loadData(int page) {
@@ -275,7 +290,7 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
             HomeFeedViewModel model = (HomeFeedViewModel) getAdapter().getData().get(position);
             if (model.getProductId().equals(id)) {
                 model.setWishList(isWishlist);
-                getAdapter().notifyItemChanged(position);
+                getAdapter().notifyItemChanged(position, isWishlist);
             }
         }
     }
@@ -329,6 +344,7 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
     @Override
     public void onProductImpression(HomeFeedViewModel model, int position) {
         if (model.isTopAds()) {
+            new ImpresionTask().execute(model.getClickUrl());
             if(userSession.isLoggedIn()){
                 homeTrackingQueue.putEETracking((HashMap<String, Object>) HomeRecommendationTracking.INSTANCE.getRecommendationProductViewLoginTopAds(
                         tabName.toLowerCase(),
@@ -356,23 +372,24 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
     }
 
     @Override
-    public void onWishlistClick(@NotNull HomeFeedViewModel homeFeedViewModel,
-                                int position,
-                                boolean isAddWishlist,
-                                @NotNull Function2<? super Boolean, ? super Throwable, Unit> responseWishlist) {
-        if(presenter.isLogin()) {
-            if (isAddWishlist) {
-                TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationAddWishlistLogin(homeFeedViewModel.getProductId(), tabName));
-                presenter.addWishlist(homeFeedViewModel, responseWishlist);
-            } else {
-                HomePageTracking.eventClickRemoveWishlistOnProductRecommendation(getActivity(), tabName);
-                TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationRemoveWishlistLogin(homeFeedViewModel.getProductId(), tabName));
-                presenter.removeWishlist(homeFeedViewModel, responseWishlist);
-            }
-        }else {
-            TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationAddWishlistNonLogin(homeFeedViewModel.getProductId(), tabName));
-            RouteManager.route(getContext(), ApplinkConst.LOGIN);
-        }
+    public void onProductThreeDotsClick(@NotNull HomeFeedViewModel homeFeedViewModel, int position) {
+        ProductCardOptionsManager.showProductCardOptions(
+                this,
+                createProductCardOptionsModel(homeFeedViewModel, position)
+        );
+    }
+
+    private ProductCardOptionsModel createProductCardOptionsModel(@NotNull HomeFeedViewModel homeFeedViewModel, int position) {
+        ProductCardOptionsModel productCardOptionsModel = new ProductCardOptionsModel();
+
+        productCardOptionsModel.setHasWishlist(true);
+        productCardOptionsModel.setWishlisted(homeFeedViewModel.isWishList());
+        productCardOptionsModel.setProductId(homeFeedViewModel.getProductId());
+        productCardOptionsModel.setTopAds(homeFeedViewModel.isTopAds());
+        productCardOptionsModel.setTopAdsWishlistUrl(homeFeedViewModel.getWishlistUrl());
+        productCardOptionsModel.setProductPosition(position);
+
+        return productCardOptionsModel;
     }
 
     @Override
@@ -384,6 +401,7 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
                         homeFeedViewModel
                 ));
             } else {
+                new ImpresionTask().execute(homeFeedViewModel.getClickUrl());
                 TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationProductClickLoginTopAds(
                         tabName.toLowerCase(),
                         homeFeedViewModel
@@ -396,6 +414,7 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
                         homeFeedViewModel
                 ));
             } else {
+                new ImpresionTask().execute(homeFeedViewModel.getClickUrl());
                 TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationProductClickNonLoginTopAds(
                         tabName.toLowerCase(),
                         homeFeedViewModel
@@ -424,6 +443,77 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
             int position = data.getIntExtra(WISHLIST_STATUS_UPDATED_POSITION, -1);
             updateWishlist(id, wishlistStatusFromPdp, position);
         }
+
+        ProductCardOptionsManager.handleProductCardOptionsActivityResult(requestCode, resultCode, data, this::handleWishlistAction);
+    }
+
+    private void handleWishlistAction(ProductCardOptionsModel productCardOptionsModel) {
+        if (productCardOptionsModel == null) return;
+
+        WishlistResult wishlistResult = productCardOptionsModel.getWishlistResult();
+
+        if (wishlistResult.isUserLoggedIn()) {
+            if (wishlistResult.isSuccess()) {
+                if (wishlistResult.isAddWishlist()) {
+                    TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationAddWishlistLogin(productCardOptionsModel.getProductId(), tabName));
+                    showMessageSuccessAddWishlist();
+                } else {
+                    TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationRemoveWishlistLogin(productCardOptionsModel.getProductId(), tabName));
+                    showMessageSuccessRemoveWishlist();
+                }
+
+                updateWishlist(productCardOptionsModel.getProductId(), wishlistResult.isAddWishlist(), productCardOptionsModel.getProductPosition());
+            }
+            else {
+                showMessageFailedWishlistAction();
+            }
+        }
+        else {
+            TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationAddWishlistNonLogin(productCardOptionsModel.getProductId(), tabName));
+            RouteManager.route(getContext(), ApplinkConst.LOGIN);
+        }
+    }
+
+    private void showMessageSuccessAddWishlist(){
+        if (getActivity() == null) return;
+
+        View view = getActivity().findViewById(android.R.id.content);
+        String message = getString(R.string.msg_success_add_wishlist);
+
+        Snackbar.make(view, message, Snackbar.LENGTH_LONG)
+                .setAction(R.string.go_to_wishlist, this::goToWishlist)
+                .show();
+    }
+
+    private void goToWishlist(View view) {
+        if (getActivity() == null) return;
+
+        RouteManager.route(getActivity(), ApplinkConst.NEW_WISHLIST);
+    }
+
+    private void showMessageSuccessRemoveWishlist() {
+        if (getActivity() == null) return;
+
+        View view = getActivity().findViewById(android.R.id.content);
+        String message = getString(R.string.msg_success_remove_wishlist);
+
+        Snackbar.make(view, message, Snackbar.LENGTH_LONG).show();
+    }
+
+    private void showMessageFailedWishlistAction() {
+        if (getActivity() == null) return;
+
+        View view = getActivity().findViewById(android.R.id.content);
+
+        Toaster.INSTANCE.make(
+                view,
+                ErrorHandler.getErrorMessage(getActivity(), null),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                "",
+                v -> {
+
+                });
     }
 
     @Override

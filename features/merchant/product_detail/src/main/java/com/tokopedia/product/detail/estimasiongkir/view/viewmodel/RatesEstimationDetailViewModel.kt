@@ -26,9 +26,14 @@ class RatesEstimationDetailViewModel @Inject constructor(
 
     val rateEstResp =  MutableLiveData<Result<RatesEstimationModel>>()
 
-    fun getCostEstimation(productWeight: Float, shopDomain: String = "", origin: String?){
-        val params = mapOf(PARAM_PRODUCT_WEIGHT to productWeight,
-                PARAM_SHOP_DOMAIN to shopDomain, "origin" to origin)
+    fun getCostEstimation(productWeight: Float, shopDomain: String = "", origin: String?,
+                          shopId: String, productId: String){
+        val params = mapOf(
+                PARAM_PRODUCT_WEIGHT to productWeight,
+                PARAM_SHOP_DOMAIN to shopDomain,
+                "origin" to origin,
+                "shop_id" to shopId,
+                "product_id" to productId)
         val request = GraphqlRequest(rawQuery, RatesEstimationModel.Response::class.java, params)
 
         launchCatchError(block = {

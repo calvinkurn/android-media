@@ -76,9 +76,7 @@ class FpmDebuggerPresenter(private val getFpmLogUseCase: GetFpmLogUseCase,
         })
     }
 
-    override fun writeAllDataToFile(fileUri: Uri?) {
-        if (fileUri == null) return
-
+    override fun writeAllDataToFile(fileUri: Uri) {
         getFpmAllDataUseCase.execute(requestParams, object : Subscriber<List<Visitable<*>>>() {
             override fun onCompleted() {
 
@@ -151,7 +149,7 @@ class FpmDebuggerPresenter(private val getFpmLogUseCase: GetFpmLogUseCase,
         override fun doInBackground(vararg params: Pair<Uri, List<FpmDebuggerViewModel>>): Boolean {
             val (uri, modelList) = params[0]
             try {
-                val context = view?.context ?: return false
+                val context = view?.getViewContext() ?: return false
                 context.contentResolver.openFileDescriptor(uri, "w")?.use {
                     FileOutputStream(it.fileDescriptor).use { fos ->
                         for (model in modelList) {
@@ -180,7 +178,7 @@ class FpmDebuggerPresenter(private val getFpmLogUseCase: GetFpmLogUseCase,
             } else {
                 R.string.fpm_file_not_saved
             }
-            Toast.makeText(view?.context, toastMessageId, Toast.LENGTH_SHORT).show()
+            Toast.makeText(view?.getViewContext(), toastMessageId, Toast.LENGTH_SHORT).show()
         }
     }
 }

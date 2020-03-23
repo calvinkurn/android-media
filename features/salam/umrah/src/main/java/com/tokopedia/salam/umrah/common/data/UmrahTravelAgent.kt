@@ -2,6 +2,8 @@ package com.tokopedia.salam.umrah.common.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.salam.umrah.travel.presentation.adapter.UmrahTravelListAdapterTypeFactory
 
 /**
  * @author by firman on 20/01/19
@@ -40,9 +42,13 @@ data class TravelAgent(
         val products : List<UmrahProductModel.UmrahProduct> = emptyList(),
         @SerializedName("ui")
         @Expose
-        val ui: UmrahTravelAgentUI = UmrahTravelAgentUI()
+        val ui: UmrahTravelAgentUI = UmrahTravelAgentUI(),
+        var isViewed : Boolean = false
 
-)
+): Visitable<UmrahTravelListAdapterTypeFactory> {
+        override fun type(typeFactory: UmrahTravelListAdapterTypeFactory?): Int =
+                typeFactory?.type(this) ?: 0
+}
 
 data class  UmrahTravelAgentUI(
         @SerializedName("establishedSince")

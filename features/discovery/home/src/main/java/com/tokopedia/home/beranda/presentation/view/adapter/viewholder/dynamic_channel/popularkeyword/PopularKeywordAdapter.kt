@@ -47,7 +47,7 @@ class PopularKeywordAdapter(val dataList: List<PopularKeywordViewModel>,
 
         fun bind(data : PopularKeywordViewModel, popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener, channel: DynamicHomeChannel.Channels, position: Int) {
             ivImage.loadImage(data.imageUrl)
-            tvProduct.text = data.title
+            tvProduct.text = data.title.capitalize()
             if (data.productCount.isNotEmpty()) {
                 tvCount.show()
                 tvCount.text = data.productCount

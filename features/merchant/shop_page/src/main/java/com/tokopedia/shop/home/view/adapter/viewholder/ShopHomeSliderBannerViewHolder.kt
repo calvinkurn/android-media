@@ -131,10 +131,7 @@ class ShopHomeSliderBannerViewHolder(
     }
 
     private fun getIndexRatio(data: ShopHomeDisplayWidgetUiModel, index: Int): Int {
-        if(data.header.ratio.isNotEmpty()) {
-            return data.header.ratio.split(":")[index].toIntOrZero()
-        }
-        return 0
+        return data.header.ratio.split(":").getOrNull(index).toIntOrZero()
     }
 
     private fun getHeightRatio(data: ShopHomeDisplayWidgetUiModel): Float {
