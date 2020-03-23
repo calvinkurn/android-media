@@ -33,10 +33,10 @@ data class ShopStatus(
             ShopType.OfficialStore
         } else {
             when(powerMerchantStatus?.status) {
+                STATUS_ACTIVE -> PowerMerchantStatus.Active
                 STATUS_INACTIVE -> RegularMerchant.NeedUpgrade
                 STATUS_IDLE -> PowerMerchantStatus.NotActive
                 STATUS_PENDING -> PowerMerchantStatus.OnVerification
-                STATUS_ON -> PowerMerchantStatus.Active
                 else -> RegularMerchant.NeedVerification
             }
         }
