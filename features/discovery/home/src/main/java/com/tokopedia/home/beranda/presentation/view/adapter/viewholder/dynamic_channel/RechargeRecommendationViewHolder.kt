@@ -1,8 +1,10 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
+import android.graphics.Color
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.interactor.DeclineRechargeRecommendationUseCase.Companion.PARAM_CONTENT_ID
@@ -35,15 +37,24 @@ class RechargeRecommendationViewHolder(
                 home_recharge_recommendation_loading.hide()
 
                 val recommendation = element.rechargeRecommendation.recommendations[0]
-//                recharge_recommendation_widget_container.setBackgroundColor()
-                recharge_recommendation_title.text = recommendation.title
+                if (recommendation.backgroundColor.isNotEmpty()) {
+                    try {
+                        recharge_recommendation_widget_container.setBackgroundColor(Color.parseColor(recommendation.backgroundColor))
+                    } catch (e: Exception) {
+                    }
+                }
+                if (recommendation.title.isNotEmpty()) {
+                    recharge_recommendation_title.text = recommendation.title
+                }
                 ic_recharge_recommendation_product.loadImage(recommendation.iconURL)
-                recharge_recommendation_description.text = recommendation.mainText
+                recharge_recommendation_description.text = MethodChecker.fromHtml(recommendation.mainText)
 
-                btn_recharge_recommendation.text = recommendation.buttonText
+                if (recommendation.buttonText.isNotEmpty()) {
+                    btn_recharge_recommendation.text = recommendation.buttonText
+                }
                 btn_recharge_recommendation.setOnClickListener {
                     HomePageTracking.homeRechargeRecommendationOnClickTracker(
-                            categoryListener.trackingQueue, "", recommendation)
+                            categoryListener.trackingQueue, recommendation.applink, recommendation)
 
                     listener.onContentClickListener(recommendation.applink)
                 }
@@ -51,7 +62,7 @@ class RechargeRecommendationViewHolder(
                 addOnImpressionListener(element, object : ViewHintListener {
                     override fun onViewHint() {
                         HomePageTracking.homeRechargeRecommendationImpressionTracker(
-                                categoryListener.trackingQueue, "", recommendation
+                                categoryListener.trackingQueue, recommendation.applink, recommendation
                         )
                     }
                 })
