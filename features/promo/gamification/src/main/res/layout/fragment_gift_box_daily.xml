@@ -99,14 +99,12 @@
                         tools:background="@drawable/gf_bg_benefit_small"
                         tools:layout_height="46dp" />
 
-                    <View
-                        android:layout_width="8dp"
-                        android:layout_height="0dp" />
-
                     <com.tokopedia.gamification.giftbox.presentation.views.GiftPrizeSmallView
                         android:id="@+id/giftPrizeSmallViewSecond"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_8"
+                        android:layout_marginLeft="@dimen/dp_8"
                         android:layout_weight="1"
                         android:visibility="gone"
                         tools:background="@drawable/gf_bg_benefit_small"
@@ -145,7 +143,7 @@
                     android:layout_marginBottom="10dp"
                     android:text="Yay, kamu dapat hadia"
                     android:textColor="@android:color/white"
-                    app:typographyType="body_2"
+                    app:typographyType="heading_5"
                     app:typographyWeight="bold" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -156,7 +154,7 @@
                     android:gravity="center_horizontal"
                     android:text="@string/gami_kupon_undian_100_ovo_points"
                     android:textColor="@android:color/white"
-                    app:typographyType="heading_3"
+                    app:typographyType="heading_2"
                     app:typographyWeight="bold" />
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -292,5 +290,6 @@
                 app:typographyWeight="reguler" />
         </LinearLayout>
     </ViewFlipper>
+
     <include layout="@layout/gami_gift_box_toolbar" />
 </FrameLayout>

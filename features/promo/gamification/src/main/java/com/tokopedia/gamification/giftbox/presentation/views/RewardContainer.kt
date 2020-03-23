@@ -13,7 +13,6 @@ import androidx.annotation.IntDef
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.data.entities.GetCouponDetail
@@ -80,18 +79,7 @@ class RewardContainer : FrameLayout {
         llRewardTextLayout.alpha = 0f
         rvCoupons.alpha = 0f
 
-        rvCoupons.layoutManager = object : LinearLayoutManager(context, HORIZONTAL, false) {
-            val millsPerInch = 150f
-            override fun smoothScrollToPosition(recyclerView: RecyclerView?, state: RecyclerView.State?, position: Int) {
-                val linearSmoothScroller = object : LinearSmoothScroller(context) {
-                    override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
-                        return millsPerInch / displayMetrics.densityDpi
-                    }
-                }
-                linearSmoothScroller.targetPosition = position
-                startSmoothScroll(linearSmoothScroller)
-            }
-        }
+        rvCoupons.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
         rvCoupons.addItemDecoration(CouponItemDecoration())
         couponAdapter = CouponAdapter(couponList)
@@ -104,7 +92,7 @@ class RewardContainer : FrameLayout {
         }
     }
 
-    fun setRewards(rewardEntity: GiftBoxRewardEntity, asyncCallback: ((rewardState:  Int) -> Unit)) {
+    fun setRewards(rewardEntity: GiftBoxRewardEntity, asyncCallback: ((rewardState: Int) -> Unit)) {
         var hasPoints = false
         var hasCoupons = false
 
@@ -136,13 +124,13 @@ class RewardContainer : FrameLayout {
 
         if (hasPoints && hasCoupons) {
             rewardState = RewardState.COUPON_WITH_POINTS
-            if(!iconUrl.isNullOrEmpty()) {
+            if (!iconUrl.isNullOrEmpty()) {
                 ImageUtils.loadImage(imageSmallReward, iconUrl!!)
             }
         } else if (hasPoints) {
             //only points
             rewardState = RewardState.POINTS_ONLY
-            if(!iconUrl.isNullOrEmpty()){
+            if (!iconUrl.isNullOrEmpty()) {
                 ImageUtils.loadImage(imageSmallReward, iconUrl!!)
                 ImageUtils.loadImage(imageCircleReward, iconUrl!!)
             }
