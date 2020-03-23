@@ -68,6 +68,8 @@ class ProductStockReminderDialog(
         txtDescription?.text = element.body
 
         element.getAtcProduct()?.let { product ->
+            buttonReminderValidation(product.typeButton)
+
             productCard?.setOnClickListener {
                 analytics.productCardClicked(element, userSession.userId)
                 RouteManager.route(
@@ -100,6 +102,23 @@ class ProductStockReminderDialog(
         }
     }
 
+    private fun buttonReminderValidation(type: Int) {
+        when(type) {
+            TYPE_BUY_BUTTON -> {
+                btnReminder?.text = context.getString(R.string.notifcenter_btn_buy)
+                btnReminder?.buttonType = UnifyButton.Type.TRANSACTION
+            }
+            TYPE_REMINDER_BUTTON -> {
+                btnReminder?.text = context.getString(R.string.notifcenter_btn_reminder)
+                btnReminder?.buttonType = UnifyButton.Type.MAIN
+            }
+            TYPE_OUT_OF_STOCK_BUTTON -> {
+                btnReminder?.text = context.getString(R.string.notifcenter_btn_out_of_stock)
+                btnReminder?.isEnabled = false
+            }
+        }
+    }
+
     private fun setReminder(productId: String, notificationId: String) {
         val params = stockReminderParams(notificationId, productId)
         useCase.get(params, {
@@ -110,6 +129,12 @@ class ProductStockReminderDialog(
     private fun showToast() {
         bottomSheet.dismiss()
         onSuccess()
+    }
+
+    companion object {
+        private const val TYPE_BUY_BUTTON = 0
+        private const val TYPE_REMINDER_BUTTON = 1
+        private const val TYPE_OUT_OF_STOCK_BUTTON = 2
     }
 
 }

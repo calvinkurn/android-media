@@ -102,6 +102,7 @@
 
     <string name="notifcenter_btn_buy">Beli</string>
     <string name="notifcenter_btn_reminder">Ingatkan Saya</string>
+    <string name="notifcenter_btn_out_of_stock">Stock Habis</string>
 
     <string name="product_reminder_success">Kami akan mengabarkan bila barang sudah di stok kembali</string>
 </resources>
