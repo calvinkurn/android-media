@@ -10,12 +10,15 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingC
 import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheetListener
 import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.ShippingDurationOccBottomSheet
 import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.ShippingDurationOccBottomSheetListener
-import com.tokopedia.logisticcart.shipping.model.*
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
+import com.tokopedia.logisticcart.shipping.model.NotifierModel
+import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticdata.data.constant.CourierConstant
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderPreference
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderSummaryPageFragment
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderPreference
 import kotlinx.android.synthetic.main.card_order_preference.view.*
 
 class OrderPreferenceCard(private val view: View, private val listener: OrderPreferenceCardListener) {
@@ -127,9 +130,9 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         val phone = addressModel.phone
         var receiverText = ""
         if (receiverName.isNotBlank()) {
-            receiverText = "- $receiverName"
+            receiverText = " - $receiverName"
             if (phone.isNotBlank()) {
-                receiverText = "$receiverText($phone)"
+                receiverText = "$receiverText ($phone)"
             }
         }
         if (receiverText.isNotEmpty()) {
