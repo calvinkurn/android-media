@@ -6,7 +6,7 @@ import com.tokopedia.sellerhome.settings.view.uimodel.base.BalanceType
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingShopInfoClickTrackable
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingShopInfoImpressionTrackable
 
-class BalanceUiModel(val balanceType: BalanceType,
+open class BalanceUiModel(balanceType: BalanceType,
                      val balanceValue: String = "",
                      override val impressionEventName: String = "",
                      override val impressionEventCategory: String = "",

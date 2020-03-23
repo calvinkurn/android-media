@@ -47,11 +47,13 @@ import com.tokopedia.sellerhome.settings.view.viewholder.OtherMenuViewHolder
 import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
 import com.tokopedia.sellerhome.view.StatusBarCallback
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_other_menu.*
+import kotlinx.android.synthetic.main.setting_topads_bottomsheet_layout.view.*
 import javax.inject.Inject
 
 class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), OtherMenuViewHolder.Listener, StatusBarCallback, SettingTrackingListener{
@@ -63,6 +65,9 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         private const val HEIGHT_OFFSET = 24 // Pixels of status bar height, the view that could be affected by scroll change
         private const val MAXIMUM_ALPHA = 255f
         private const val ALPHA_CHANGE_THRESHOLD = 150
+
+        private const val TOPADS_BOTTOMSHEET_TAG = "topads_bottomsheet"
+
         @JvmStatic
         fun createInstance(): OtherMenuFragment = OtherMenuFragment()
     }
@@ -76,9 +81,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private var otherMenuViewHolder: OtherMenuViewHolder? = null
 
-    private val statusBarHeight by lazy {
-        context?.let { StatusbarHelper.getStatusBarHeight(it) }
-    }
     private var startToTransitionOffset = 0
     private var statusInfoTransitionOffset = 0
 
@@ -87,6 +89,24 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private val otherMenuViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(OtherMenuViewModel::class.java)
+    }
+
+    private val statusBarHeight by lazy {
+        context?.let { StatusbarHelper.getStatusBarHeight(it) }
+    }
+
+    private val topAdsBottomSheet by lazy {
+        BottomSheetUnify().apply {
+            setCloseClickListener {
+                this.dismiss()
+            }
+        }
+    }
+
+    private val topAdsBottomSheetView by lazy {
+        context?.let {
+            View.inflate(it, R.layout.setting_topads_bottomsheet_layout, null)
+        }
     }
 
     override fun onResume() {
@@ -143,6 +163,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     override fun onKreditTopadsClicked() {
+        val bottomSheet = childFragmentManager.findFragmentByTag(TOPADS_BOTTOMSHEET_TAG)
+        if (bottomSheet is BottomSheetUnify) {
+            bottomSheet.dismiss()
+        }
         RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD)
     }
 
@@ -174,6 +198,36 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setStatusBar()
+        }
+    }
+
+    override fun onTopAdsTooltipClicked(isTopAdsActive: Boolean) {
+        val bottomSheetChildView = setupBottomSheetLayout(isTopAdsActive)
+        bottomSheetChildView?.run {
+            with(topAdsBottomSheet) {
+                setChild(this@run)
+                show(this@OtherMenuFragment.childFragmentManager, TOPADS_BOTTOMSHEET_TAG)
+            }
+        }
+    }
+
+    private fun setupBottomSheetLayout(isTopAdsActive: Boolean) : View? {
+        var bottomSheetInfix = ""
+        var bottomSheetDescription = ""
+        if (isTopAdsActive) {
+            bottomSheetInfix = resources.getString(R.string.setting_topads_status_active)
+            bottomSheetDescription = resources.getString(R.string.setting_topads_description_active)
+        } else {
+            bottomSheetInfix = resources.getString(R.string.setting_topads_status_inactive)
+            bottomSheetDescription = resources.getString(R.string.setting_topads_description_inactive)
+        }
+        val bottomSheetTitle = resources.getString(R.string.setting_topads_status, bottomSheetInfix)
+        return topAdsBottomSheetView?.apply {
+            topAdsBottomSheetTitle.text = bottomSheetTitle
+            topAdsBottomSheetDescription.text = bottomSheetDescription
+            topAdsNextButton.setOnClickListener{
+                onKreditTopadsClicked()
+            }
         }
     }
 

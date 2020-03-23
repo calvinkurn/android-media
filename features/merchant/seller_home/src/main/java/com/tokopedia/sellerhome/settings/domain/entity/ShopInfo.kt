@@ -6,9 +6,7 @@ data class ShopInfo(
         @SerializedName("shopInfoMoengage")
         var shopInfoMoengage: ShopInfoMoengage? = ShopInfoMoengage(),
         @SerializedName("balance")
-        var balance: Balance? = Balance(),
-        @SerializedName("topadsDeposit")
-        val topadsDeposit: TopadsDeposit = TopadsDeposit()
+        var balance: Balance? = Balance()
 )
 
 data class ShopInfoMoengage (
@@ -44,13 +42,6 @@ data class Owner (
 }
 
 data class Balance (
-        @SerializedName("seller_usable")
-        var sellerBalance: Long = 0) {
+        @SerializedName("seller_usable_fmt")
+        var sellerBalance: String = "") {
 }
-
-data class TopadsDeposit(
-        @SerializedName("topads_amount")
-        val topadsAmount : Int = 0,
-        @SerializedName("is_topads_user")
-        val isTopadsUser : Boolean = false
-)
