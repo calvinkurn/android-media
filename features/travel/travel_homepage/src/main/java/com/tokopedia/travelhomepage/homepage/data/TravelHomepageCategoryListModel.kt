@@ -15,23 +15,23 @@ class TravelHomepageCategoryListModel(@SerializedName("category")
 
     data class Category(@SerializedName("product")
                         @Expose
-                        val product: String = "",
+                        var product: String = "",
                         @SerializedName("attributes")
                         @Expose
-                        val attributes: Attribute = Attribute())
+                        var attributes: Attribute = Attribute())
 
     data class Attribute(@SerializedName("title")
                          @Expose
-                         val title: String = "",
+                         var title: String = "",
                          @SerializedName("webURL")
                          @Expose
-                         val webUrl: String = "",
+                         var webUrl: String = "",
                          @SerializedName("appURL")
                          @Expose
-                         val appUrl: String = "",
+                         var appUrl: String = "",
                          @SerializedName("imageURL")
                          @Expose
-                         val imageUrl: String = "")
+                         var imageUrl: String = "")
 
     data class Response(@SerializedName("travelCategoryList")
                         @Expose

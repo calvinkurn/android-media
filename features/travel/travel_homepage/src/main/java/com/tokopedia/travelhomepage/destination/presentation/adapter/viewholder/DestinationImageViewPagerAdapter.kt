@@ -1,4 +1,4 @@
-package com.tokopedia.travelhomepage.destination.widget
+package com.tokopedia.travelhomepage.destination.presentation.adapter.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.travelhomepage.R
+import com.tokopedia.travelhomepage.destination.widget.DestinationImageViewPager
 
 /**
  * @author by jessica on 16/04/19
