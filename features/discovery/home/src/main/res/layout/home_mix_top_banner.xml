@@ -11,15 +11,15 @@
         android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="160dp"
-        android:background="@color/red_30"
         android:layout_marginTop="@dimen/dp_8"
+        android:background="@color/red_30"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/channel_title_container" />
 
     <include
-        layout="@layout/home_master_dynamic_channel"
         android:id="@+id/channel_title_container"
+        layout="@layout/home_master_dynamic_channel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_12"
@@ -33,16 +33,18 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
+        android:textSize="@dimen/sp_18"
         app:layout_constraintBottom_toTopOf="@+id/banner_description"
         app:layout_constraintEnd_toStartOf="@+id/banner_button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/channel_title_container"
-        app:layout_constraintVertical_chainStyle="packed"
-        app:typographyType="heading_5"
-        tools:visibility="visible"
-        tools:text="Gratis Ongkir" />
+        app:layout_constraintTop_toTopOf="@+id/background"
+        app:layout_constraintVertical_chainStyle="spread"
+        app:typographyType="heading_3"
+        tools:text="Gratis Ongkir"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/banner_description"
@@ -50,6 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_4"
         android:layout_marginEnd="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
         android:ellipsize="end"
@@ -68,30 +71,31 @@
         android:id="@+id/banner_button"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_32"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_8"
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
         app:layout_constraintBottom_toTopOf="@+id/dc_banner_rv"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/channel_title_container"
+        app:layout_constraintTop_toTopOf="@+id/background"
         app:unifyButtonSize="small"
         tools:text="Cek Sekarang" />
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/dc_banner_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginTop="@dimen/dp_10"
+        android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/banner_button"
+        app:layout_constraintTop_toBottomOf="@+id/banner_description"
+        app:layout_goneMarginTop="@dimen/dp_10"
         tools:listitem="@layout/home_banner_item_carousel" />
 
 

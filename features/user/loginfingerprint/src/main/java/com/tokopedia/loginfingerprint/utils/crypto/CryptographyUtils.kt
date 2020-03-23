@@ -6,7 +6,6 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyPermanentlyInvalidatedException
 import android.security.keystore.KeyProperties
 import android.util.Base64
-import androidx.annotation.RequiresApi
 import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 import com.tokopedia.loginfingerprint.constant.BiometricConstant
 import com.tokopedia.loginfingerprint.data.model.FingerprintSignature
@@ -31,6 +30,9 @@ class CryptographyUtils: Cryptography {
 
     override fun getCryptoObject(): FingerprintManagerCompat.CryptoObject? = _cryptoObject
 
+    private val PUBLIC_KEY_PREFIX = "-----BEGIN PUBLIC KEY-----\n"
+    private val PUBLIC_KEY_SUFFIX = "\n-----END PUBLIC KEY-----"
+
     init {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             initKeyStore()
@@ -46,47 +48,51 @@ class CryptographyUtils: Cryptography {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun generatePublicKey(): PublicKey? {
-        var publicKey: PublicKey? = null
-        try {
-            val keyStore = KeyStore.getInstance(BiometricConstant.ANDROID_KEY_STORE)
-            keyStore.load(null)
-            generateKeyPair(keyStore)
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            var publicKey: PublicKey? = null
+            try {
+                val keyStore = KeyStore.getInstance(BiometricConstant.ANDROID_KEY_STORE)
+                keyStore.load(null)
+                generateKeyPair(keyStore)
 
-            publicKey = keyStore.getCertificate(BiometricConstant.FINGERPRINT).publicKey
-            val factory = KeyFactory.getInstance(publicKey.algorithm)
-            val spec = X509EncodedKeySpec(publicKey.encoded)
-            return factory.generatePublic(spec)
-        } catch (e: NoSuchAlgorithmException) {
-            e.printStackTrace()
-        } catch (e: InvalidAlgorithmParameterException) {
-            e.printStackTrace()
-        } catch (e: NoSuchProviderException) {
-            e.printStackTrace()
-        } catch (e: CertificateException) {
-            e.printStackTrace()
-        } catch (e: KeyStoreException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: InvalidKeySpecException) {
-            e.printStackTrace()
+                publicKey = keyStore.getCertificate(BiometricConstant.FINGERPRINT).publicKey
+                val factory = KeyFactory.getInstance(publicKey.algorithm)
+                val spec = X509EncodedKeySpec(publicKey.encoded)
+                return factory.generatePublic(spec)
+            } catch (e: NoSuchAlgorithmException) {
+                e.printStackTrace()
+            } catch (e: InvalidAlgorithmParameterException) {
+                e.printStackTrace()
+            } catch (e: NoSuchProviderException) {
+                e.printStackTrace()
+            } catch (e: CertificateException) {
+                e.printStackTrace()
+            } catch (e: KeyStoreException) {
+                e.printStackTrace()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            } catch (e: InvalidKeySpecException) {
+                e.printStackTrace()
+            }
+            return publicKey
         }
-        return publicKey
+        return null
     }
 
     @Throws(KeyStoreException::class, NoSuchAlgorithmException::class, NoSuchProviderException::class, InvalidAlgorithmParameterException::class)
     override fun generateKeyPair(keyStore: KeyStore?) {
         //check if key is stored already, if null, create new key
-        if (keyStore?.getCertificate(BiometricConstant.FINGERPRINT) == null || keyStore.getCertificate(BiometricConstant.FINGERPRINT).publicKey == null) {
-            val keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, BiometricConstant.ANDROID_KEY_STORE)
-            val builder = KeyGenParameterSpec.Builder(BiometricConstant.FINGERPRINT,
-                    KeyProperties.PURPOSE_SIGN)
-                    .setDigests(KeyProperties.DIGEST_SHA1)
-                    .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
-            keyPairGenerator.initialize(builder.build())
-            keyPairGenerator.generateKeyPair()
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (keyStore?.getCertificate(BiometricConstant.FINGERPRINT) == null || keyStore.getCertificate(BiometricConstant.FINGERPRINT).publicKey == null) {
+                val keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, BiometricConstant.ANDROID_KEY_STORE)
+                val builder = KeyGenParameterSpec.Builder(BiometricConstant.FINGERPRINT,
+                        KeyProperties.PURPOSE_SIGN)
+                        .setDigests(KeyProperties.DIGEST_SHA1)
+                        .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
+                keyPairGenerator.initialize(builder.build())
+                keyPairGenerator.generateKeyPair()
+            }
         }
     }
 
@@ -96,17 +102,7 @@ class CryptographyUtils: Cryptography {
             keyStore?.load(null)
 
             generateKeyPair(keyStore)
-        } catch (e: NoSuchAlgorithmException) {
-            e.printStackTrace()
-        } catch (e: InvalidAlgorithmParameterException) {
-            e.printStackTrace()
-        } catch (e: NoSuchProviderException) {
-            e.printStackTrace()
-        } catch (e: CertificateException) {
-            e.printStackTrace()
-        } catch (e: KeyStoreException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
@@ -136,9 +132,12 @@ class CryptographyUtils: Cryptography {
     }
 
     override fun getPublicKey(): String {
-        val encoded = Base64.encodeToString(generatePublicKey()?.encoded, Base64.NO_WRAP)
-        val publicKeyString = "-----BEGIN PUBLIC KEY-----\n$encoded\n-----END PUBLIC KEY-----"
-        return publicKeyString
+        val pubKey = generatePublicKey()
+        pubKey?.run {
+            val encoded = Base64.encodeToString(this.encoded, Base64.NO_WRAP)
+            return "$PUBLIC_KEY_PREFIX$encoded$PUBLIC_KEY_SUFFIX"
+        }
+        return ""
     }
 
     override fun generateFingerprintSignature(userId: String, deviceId: String): FingerprintSignature {
@@ -147,32 +146,35 @@ class CryptographyUtils: Cryptography {
     }
 
     override fun getSignature(textToEncrypt: String): String {
-        var signText = ""
-        try {
-            keyStore?.load(null)
-            val privateKey = keyStore?.getKey(BiometricConstant.FINGERPRINT, null) as PrivateKey
-            val signature = Signature.getInstance(BiometricConstant.SHA_1_WITH_RSA)
-            signature.initSign(privateKey)
-            signature.update(textToEncrypt.toByteArray())
-            signText = Base64.encodeToString(signature.sign(),
-                    Base64.NO_WRAP)
-        } catch (e: SignatureException) {
-            e.printStackTrace()
-        } catch (e: UnrecoverableKeyException) {
-            e.printStackTrace()
-        } catch (e: NoSuchAlgorithmException) {
-            e.printStackTrace()
-        } catch (e: KeyStoreException) {
-            e.printStackTrace()
-        } catch (e: InvalidKeyException) {
-            e.printStackTrace()
-        } catch (e: CertificateException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            var signText = ""
+            try {
+                keyStore?.load(null)
+                val privateKey = keyStore?.getKey(BiometricConstant.FINGERPRINT, null) as PrivateKey
+                val signature = Signature.getInstance(BiometricConstant.SHA_1_WITH_RSA)
+                signature.initSign(privateKey)
+                signature.update(textToEncrypt.toByteArray())
+                signText = Base64.encodeToString(signature.sign(),
+                        Base64.NO_WRAP)
+            } catch (e: SignatureException) {
+                e.printStackTrace()
+            } catch (e: UnrecoverableKeyException) {
+                e.printStackTrace()
+            } catch (e: NoSuchAlgorithmException) {
+                e.printStackTrace()
+            } catch (e: KeyStoreException) {
+                e.printStackTrace()
+            } catch (e: InvalidKeyException) {
+                e.printStackTrace()
+            } catch (e: CertificateException) {
+                e.printStackTrace()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
 
-        return signText
+            return signText
+        }
+        return ""
     }
 
 }

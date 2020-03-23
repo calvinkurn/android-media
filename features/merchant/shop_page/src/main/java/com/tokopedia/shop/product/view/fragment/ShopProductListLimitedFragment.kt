@@ -1001,6 +1001,8 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         }
     }
 
+    override fun onVoucherItemImpressed(merchantVoucherViewModel: MerchantVoucherViewModel, voucherPosition: Int) {}
+
     override fun onErrorGetShopInfo(e: Throwable) {
         // no op, shop info is got from activity
     }

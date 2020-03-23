@@ -13,7 +13,7 @@ data class PopularSearch(
 
         @SerializedName("destinationID")
         @Expose
-        val destinationId: Int = 0,
+        val destinationId: Long = 0,
 
         @SerializedName("type")
         @Expose

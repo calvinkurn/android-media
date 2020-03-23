@@ -26,6 +26,10 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
+import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
+import com.tokopedia.discovery.common.manager.showProductCardOptions
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -631,26 +635,15 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         return true
     }
 
-    override fun onWishListClicked(shopProductViewModel: ShopProductViewModel, @ShopTrackProductTypeDef shopTrackType: Int) {
-        shopInfo?.let {
-            //shopTrackType is always from Product
-            shopPageTracking?.clickWishlistProductResultPage(
-                    !shopProductViewModel.isWishList,
-                    isLogin,
-                    selectedEtalaseName,
-                    CustomDimensionShopPageProduct.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
-                            it.goldOS.isGold == 1, shopProductViewModel.id, shopRef))
-        }
-        if (!viewModel.isLogin) {
-            onErrorAddToWishList(UserNotLoginException())
-        } else {
-            viewModel.clearGetShopProductUseCase()
-            if (shopProductViewModel.isWishList) {
-                viewModel.removeWishList(shopProductViewModel.id ?: "", this)
-            } else {
-                viewModel.addWishList(shopProductViewModel.id ?: "", this)
-            }
-        }
+    override fun onThreeDotsClicked(shopProductViewModel: ShopProductViewModel, @ShopTrackProductTypeDef shopTrackType: Int) {
+        showProductCardOptions(
+                this,
+                ProductCardOptionsModel(
+                        hasWishlist = true,
+                        isWishlisted = shopProductViewModel.isWishList,
+                        productId = shopProductViewModel.id ?: ""
+                )
+        )
     }
 
     private fun onErrorGetEtalaseList(e: Throwable) {
@@ -764,7 +757,62 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             else -> {
             }
         }
+
+        handleProductCardOptionsActivityResult(requestCode, resultCode, data, object: ProductCardOptionsWishlistCallback {
+            override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                handleWishlistAction(productCardOptionsModel)
+            }
+        })
+
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
+        shopInfo?.let {
+            //shopTrackType is always from Product
+            shopPageTracking?.clickWishlistProductResultPage(
+                    !productCardOptionsModel.isWishlisted,
+                    isLogin,
+                    selectedEtalaseName,
+                    CustomDimensionShopPageProduct.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
+                            it.goldOS.isGold == 1, productCardOptionsModel.productId, shopRef))
+        }
+
+        if (!productCardOptionsModel.wishlistResult.isUserLoggedIn) {
+            onErrorAddToWishList(UserNotLoginException())
+        }
+        else {
+            handleWishlistActionForLoggedInUser(productCardOptionsModel)
+        }
+    }
+
+    private fun handleWishlistActionForLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
+        viewModel.clearGetShopProductUseCase()
+
+        if (productCardOptionsModel.wishlistResult.isAddWishlist) {
+            handleWishlistActionAddToWishlist(productCardOptionsModel)
+        }
+        else {
+            handleWishlistActionRemoveFromWishlist(productCardOptionsModel)
+        }
+    }
+
+    private fun handleWishlistActionAddToWishlist(productCardOptionsModel: ProductCardOptionsModel) {
+        if (productCardOptionsModel.wishlistResult.isSuccess) {
+            onSuccessAddWishlist(productCardOptionsModel.productId)
+        }
+        else {
+            onErrorAddWishList(getString(com.tokopedia.wishlist.common.R.string.msg_error_add_wishlist), productCardOptionsModel.productId)
+        }
+    }
+
+    private fun handleWishlistActionRemoveFromWishlist(productCardOptionsModel: ProductCardOptionsModel) {
+        if (productCardOptionsModel.wishlistResult.isSuccess) {
+            onSuccessRemoveWishlist(productCardOptionsModel.productId)
+        }
+        else {
+            onErrorRemoveWishlist(getString(com.tokopedia.wishlist.common.R.string.msg_error_remove_wishlist), productCardOptionsModel.productId)
+        }
     }
 
     override fun onResume() {

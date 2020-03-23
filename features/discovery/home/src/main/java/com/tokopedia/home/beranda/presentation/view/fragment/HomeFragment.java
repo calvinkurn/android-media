@@ -62,6 +62,7 @@ import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.analytics.HomePageTrackingV2;
 import com.tokopedia.home.analytics.v2.MixTopTracking;
+import com.tokopedia.home.analytics.v2.ProductHighlightTracking;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
@@ -77,6 +78,9 @@ import com.tokopedia.home.beranda.listener.HomeFeedsListener;
 import com.tokopedia.home.beranda.listener.HomeInspirationListener;
 import com.tokopedia.home.beranda.listener.HomeReviewListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener;
+import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil;
@@ -132,6 +136,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -147,8 +152,11 @@ import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dy
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_BANNER_CAROUSEL;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_FOUR_GRID_LEGO;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_GIF_BANNER;
+import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_MIX_LEFT;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_MIX_TOP;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_ORGANIC;
+import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_PRODUCT_HIGHLIGHT;
+import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_RECOMMENDATION_LIST;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_SIX_GRID_LEGO;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_SPRINT_LEGO;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_SPRINT_SALE;
@@ -211,6 +219,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     private StickyLoginView stickyLoginView;
     private boolean showRecomendation;
     private boolean mShowTokopointNative;
+    private boolean isShowFirstInstallSearch;
     private RecyclerView.OnScrollListener onEggScrollListener;
     private boolean scrollToRecommendList;
 
@@ -236,7 +245,6 @@ public class HomeFragment extends BaseDaggerFragment implements
     private StickyLoginTickerPojo.TickerDetail tickerDetail;
     private HomePerformanceMonitoringListener homePerformanceMonitoringListener;
     private JankyFramesMonitoringListener jankyFramesMonitoringListener;
-    private JankyFrameMonitoringUtil homeScrollJankyMonitoringUtil;
 
     private boolean isLightThemeStatusBar = true;
     private static final String KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar";
@@ -285,7 +293,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         setGeolocationPermission();
         needToShowGeolocationComponent();
         getStickyContent();
-        jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil().startInitPerformanceMonitoring(PERFORMANCE_PAGE_NAME_HOME);
+        startHomeInitPerformanceMonitoring();
     }
 
     @Override
@@ -294,9 +302,15 @@ public class HomeFragment extends BaseDaggerFragment implements
         stopHomeInitPerformanceMonitoring();
     }
 
+    private void startHomeInitPerformanceMonitoring() {
+        if (getHomeJankyFramesUtil() != null) {
+            getHomeJankyFramesUtil().startInitPerformanceMonitoring(PERFORMANCE_PAGE_NAME_HOME);
+        }
+    }
+
     private void stopHomeInitPerformanceMonitoring() {
-        if (jankyFramesMonitoringListener != null && jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil() != null) {
-            jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil().stopInitPerformanceMonitoring(PERFORMANCE_PAGE_NAME_HOME);
+        if (getHomeJankyFramesUtil() != null) {
+            getHomeJankyFramesUtil().stopInitPerformanceMonitoring(PERFORMANCE_PAGE_NAME_HOME);
         }
     }
 
@@ -318,6 +332,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         showRecomendation = firebaseRemoteConfig.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, false);
         mShowTokopointNative = firebaseRemoteConfig.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, true);
+        isShowFirstInstallSearch = firebaseRemoteConfig.getBoolean(ConstantKey.RemoteConfigKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH, false);
     }
 
     private HomePerformanceMonitoringListener castContextToHomePerformanceMonitoring(Context context) {
@@ -350,6 +365,7 @@ public class HomeFragment extends BaseDaggerFragment implements
             scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
         }
 
+        fetchRemoteConfig();
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
         setupStatusBar();
         calculateSearchbarView(0);
@@ -386,9 +402,11 @@ public class HomeFragment extends BaseDaggerFragment implements
                 }
             }
         });
-        jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil().recordRecyclerViewScrollPerformance(
-                homeRecyclerView,
-                PERFORMANCE_PAGE_NAME_HOME, "");
+        if (getHomeJankyFramesUtil() != null) {
+            getHomeJankyFramesUtil().recordRecyclerViewScrollPerformance(
+                    homeRecyclerView,
+                    PERFORMANCE_PAGE_NAME_HOME, "");
+        }
     }
 
     private void setupStatusBar() {
@@ -464,7 +482,6 @@ public class HomeFragment extends BaseDaggerFragment implements
         subscribeHome();
         initEggTokenScrollListener();
         registerBroadcastReceiverTokoCash();
-        fetchRemoteConfig();
         floatingTextButton.setOnClickListener(view -> {
             scrollToRecommendList();
             HomePageTracking.eventClickJumpRecomendation(getActivity());
@@ -523,7 +540,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         createAndCallSendScreen();
         sendScreen();
         adapter.onResume();
-        viewModel.refresh();
+        viewModel.refresh(isFirstInstall());
         if (activityStateListener != null) {
             activityStateListener.onResume();
         }
@@ -558,7 +575,7 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     private void initRefreshLayout() {
         refreshLayout.post(() -> {
-            viewModel.searchHint();
+            viewModel.searchHint(isFirstInstall());
             viewModel.refreshHomeData();
             /*
              * set notification gimmick
@@ -985,7 +1002,7 @@ public class HomeFragment extends BaseDaggerFragment implements
                 }
                 break;
             case REQUEST_CODE_PLAY_ROOM:
-                viewModel.updateBannerTotalView(data.getStringExtra(EXTRA_TOTAL_VIEW));
+                if(data.hasExtra(EXTRA_TOTAL_VIEW)) viewModel.updateBannerTotalView(data.getStringExtra(EXTRA_TOTAL_VIEW));
                 break;
         }
     }
@@ -999,7 +1016,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         resetFeedState();
         removeNetworkError();
         if (viewModel != null) {
-            viewModel.searchHint();
+            viewModel.searchHint(isFirstInstall());
             viewModel.refreshHomeData();
             getStickyContent();
         }
@@ -1020,7 +1037,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         removeNetworkError();
         homeRecyclerView.setEnabled(false);
         if (viewModel != null) {
-            viewModel.refresh();
+            viewModel.refresh(isFirstInstall());
             getStickyContent();
         }
 
@@ -1166,6 +1183,42 @@ public class HomeFragment extends BaseDaggerFragment implements
         editor.apply();
     }
 
+    private void saveFirstInstallTime() {
+        if (getContext() != null) {
+            sharedPrefs = getContext().getSharedPreferences(
+                    ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE);
+            sharedPrefs.edit().putLong(
+                    ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_TIME_SEARCH, 0).apply();
+        }
+    }
+
+    private boolean isFirstInstall() {
+        if (getContext() != null &&
+                !userSession.isLoggedIn() &&
+                isShowFirstInstallSearch) {
+            sharedPrefs = getContext().getSharedPreferences(
+                    ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE);
+            long firstInstallCacheValue = sharedPrefs.getLong(
+                    ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_TIME_SEARCH, 0);
+
+            if (firstInstallCacheValue == 0) return false;
+
+            firstInstallCacheValue += (30 * 60000);
+
+            Date now = new Date();
+            Date firstInstallTime = new Date(firstInstallCacheValue);
+
+            if (now.compareTo(firstInstallTime) <= 0) {
+                return true;
+            } else {
+                saveFirstInstallTime();
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -1174,7 +1227,10 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     private void setHint(SearchPlaceholder searchPlaceholder) {
         if (searchPlaceholder.getData() != null && searchPlaceholder.getData().getPlaceholder() != null && searchPlaceholder.getData().getKeyword() != null) {
-            homeMainToolbar.setHint(searchPlaceholder.getData().getPlaceholder(), searchPlaceholder.getData().getKeyword());
+            homeMainToolbar.setHint(
+                    searchPlaceholder.getData().getPlaceholder(),
+                    searchPlaceholder.getData().getKeyword(),
+                    isFirstInstall());
         }
     }
 
@@ -1295,6 +1351,11 @@ public class HomeFragment extends BaseDaggerFragment implements
         viewModel.getBusinessUnitData(tabId, position);
     }
 
+    @Override
+    public void getPlayChannel(int position) {
+        viewModel.getPlayBanner(position);
+    }
+
     public void openWebViewURL(String url) {
         openWebViewURL(url, getActivity());
     }
@@ -1392,7 +1453,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     @Override
     public void onPopularKeywordSectionReloadClicked(int position, @NotNull DynamicHomeChannel.Channels channel) {
         viewModel.getPopularKeywordData();
-        TrackApp.getInstance().getGTM().sendGeneralEvent(HomePageTrackingV2.PopularKeyword.INSTANCE.getPopularKeywordClickReload(channel));
+        HomePageTrackingV2.PopularKeyword.INSTANCE.sendPopularKeywordClickReload(channel);
     }
 
     @Override
@@ -1403,7 +1464,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     @Override
     public void onPopularKeywordItemClicked(@NotNull String applink, @NotNull DynamicHomeChannel.Channels channel, int position, @NotNull String keyword) {
         RouteManager.route(getContext(),applink);
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomePageTrackingV2.PopularKeyword.INSTANCE.getPopularKeywordClickItem(channel, position, keyword));
+        HomePageTrackingV2.PopularKeyword.INSTANCE.sendPopularKeywordClickItem(channel, position, keyword);
     }
 
     protected void registerBroadcastReceiverTokoCash() {
@@ -1800,11 +1861,15 @@ public class HomeFragment extends BaseDaggerFragment implements
                 );
                 break;
             case TYPE_ORGANIC :
-            case TYPE_SPRINT_LEGO :
                 putEEToIris(
                         HomePageTracking.getIrisEnhanceImpressionDynamicSprintLegoHomePage(
                                 channel.getId(), channel.getGrids(), channel.getHeader().getName()
                         )
+                );
+                break;
+            case TYPE_SPRINT_LEGO :
+                putEEToIris(
+                        (HashMap<String, Object>) HomePageTrackingV2.SprintSale.INSTANCE.getSprintSaleImpression(channel, true)
                 );
                 break;
             case TYPE_SIX_GRID_LEGO :
@@ -1824,7 +1889,7 @@ public class HomeFragment extends BaseDaggerFragment implements
             case TYPE_FOUR_GRID_LEGO :
                 putEEToIris(
                         (HashMap<String, Object>) HomePageTrackingV2.LegoBanner.INSTANCE.getLegoBannerFourImageImpression(
-                                channel, position, false
+                                channel, position, true
                         )
                 );
                 break;
@@ -1846,7 +1911,19 @@ public class HomeFragment extends BaseDaggerFragment implements
                 );
                 break;
             case TYPE_MIX_TOP:
-                putEEToIris((HashMap<String, Object>) MixTopTracking.INSTANCE.getMixTopViewIris(MixTopTracking.INSTANCE.mapChannelToProductTracker(channel), channel.getHeader().getName(), String.valueOf(position)));
+                putEEToIris((HashMap<String, Object>) MixTopTracking.INSTANCE.getMixTopViewIris(MixTopTracking.INSTANCE.mapChannelToProductTracker(channel), channel.getHeader().getName(), channel.getId(), String.valueOf(position)));
+                break;
+            case TYPE_MIX_LEFT:
+                putEEToIris((HashMap<String, Object>) HomePageTrackingV2.MixLeft.INSTANCE.getMixLeftProductView(channel, true));
+                break;
+            case TYPE_RECOMMENDATION_LIST:
+                putEEToIris((HashMap<String, Object>) HomePageTrackingV2.RecommendationList.INSTANCE.getRecommendationListImpression(channel, true));
+                break;
+            case TYPE_PRODUCT_HIGHLIGHT:
+                putEEToIris((HashMap<String, Object>) ProductHighlightTracking.INSTANCE.getProductHighlightImpression(
+                        channel, true
+                ));
+                break;
         }
     }
 
@@ -1865,7 +1942,7 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     @Override
     public JankyFrameMonitoringUtil getHomeJankyFramesUtil() {
-        if (jankyFramesMonitoringListener != null) return jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil();
+        if (jankyFramesMonitoringListener != null && jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil() != null) return jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil();
         return null;
     }
 }

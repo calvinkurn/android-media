@@ -40,5 +40,5 @@ data class DFConfig(
          */
         @SerializedName("max_thld_insuf_strg")
         @Expose
-        val maxThresholdInsufficientStorage: Long = 1536
+        val maxThresholdInsufficientStorage: Long = 0
 )

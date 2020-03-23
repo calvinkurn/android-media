@@ -10,16 +10,13 @@ import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.webview.BaseSimpleWebViewActivity
+import com.tokopedia.webview.KEY_TITLEBAR
+import com.tokopedia.webview.KEY_URL
 
 open class BaseDownloadAppLinkActivity : BaseSimpleWebViewActivity() {
     protected var extensions: String = "";
     protected var web_url: String = ""
     companion object {
-        const val KEY_APP_LINK_QUERY_URL = "url"
-        const val KEY_APP_LINK_QUERY_EXTENSIONS = "ext"
-        const val KEY_APP_LINK_QUERY_TITLEBAR = "titlebar"
-        val ARGS_URL = "KEY_URL"
-        const val KEY_SHOW_TOOLBAR = "KEY_SHOW_TOOLBAR"
         const val KEY_EXT = "EXT"
 
         @JvmStatic
@@ -27,16 +24,16 @@ open class BaseDownloadAppLinkActivity : BaseSimpleWebViewActivity() {
         fun newIntent(context: Context, url: String, showToolbar: Boolean,
                       extensions: String = "[pdf]"): Intent {
             return Intent(context, BaseDownloadAppLinkActivity::class.java)
-                    .putExtra(ARGS_URL, url)
-                    .putExtra(KEY_SHOW_TOOLBAR, showToolbar)
+                    .putExtra(KEY_URL, url)
+                    .putExtra(KEY_TITLEBAR, showToolbar)
                     .putExtra(KEY_EXT, extensions)
         }
     }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        web_url = intent.extras.getString(ARGS_URL)
-        extensions = intent.extras.getString(KEY_EXT)
+        web_url = intent.extras?.getString(KEY_URL) ?: ""
+        extensions = intent.extras?.getString(KEY_EXT) ?: ""
         super.onCreate(savedInstanceState)
     }
 
@@ -52,14 +49,13 @@ open class BaseDownloadAppLinkActivity : BaseSimpleWebViewActivity() {
         fun getOrderListIntent(context: Context, extras: Bundle): Intent {
 
             var webUrl = extras.getString(
-                    KEY_APP_LINK_QUERY_URL, TokopediaUrl.getInstance().WEB
+                    KEY_URL, TokopediaUrl.getInstance().WEB
             )
             var extensionsList = extras.getString(
-                    KEY_APP_LINK_QUERY_EXTENSIONS, "")
+                    KEY_EXT, "")
 
             val showToolbar: Boolean = try {
-                java.lang.Boolean.parseBoolean(extras.getString(KEY_APP_LINK_QUERY_TITLEBAR,
-                        "true"))
+                extras.getBoolean(KEY_TITLEBAR, true)
             } catch (e: ParseException) {
                 true
             }

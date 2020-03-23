@@ -10,6 +10,7 @@ import com.tokopedia.dynamicfeatures.service.DFDownloader
 import com.tokopedia.dynamicfeatures.track.DFTracking
 import com.tokopedia.dynamicfeatures.utils.DFInstallerLogUtil
 import com.tokopedia.dynamicfeatures.utils.ErrorUtils
+import com.tokopedia.dynamicfeatures.utils.StorageUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.Continuation
@@ -63,7 +64,7 @@ class DFInstaller {
                 requestBuilder.addModule(name)
             }
             val request = requestBuilder.build()
-            freeInternalSpaceBeforeDownload = DFInstallerLogUtil.getFreeSpaceBytes(applicationContext)
+            freeInternalSpaceBeforeDownload = StorageUtils.getFreeSpaceBytes(applicationContext)
 
             // SplitInstallManager only allow the installation from Main Thread.
             withContext(Dispatchers.Main) { suspendCoroutine<Boolean> { continuation ->

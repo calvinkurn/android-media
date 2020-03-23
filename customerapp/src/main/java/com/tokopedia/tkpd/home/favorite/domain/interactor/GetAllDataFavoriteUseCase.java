@@ -91,12 +91,6 @@ public class GetAllDataFavoriteUseCase extends UseCase<DataFavorite> {
         return getTopAdsShopUseCase.createObservable(requestParams);
     }
 
-    private Observable<DomainWishlist> getWishlist() {
-        RequestParams defaultParams = GetWishlistUtil.getDefaultParams();
-        defaultParams.putBoolean(GetWishlistUtil.KEY_IS_FORCE_REFRESH, true);
-        return getWishlistUtil.getWishListData(defaultParams);
-    }
-
     private Observable<FavoriteShop> getFavoriteShopList(){
         RequestParams defaultParams = GetFavoriteShopUsecase.getDefaultParams();
         defaultParams.putBoolean(GetFavoriteShopUsecase.KEY_IS_FIRST_PAGE, true);

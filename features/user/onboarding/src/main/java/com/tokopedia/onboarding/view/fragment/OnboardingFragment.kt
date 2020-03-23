@@ -1,5 +1,7 @@
 package com.tokopedia.onboarding.view.fragment
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -34,6 +36,7 @@ import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.WeaverFirebaseConditionCheck
 import org.jetbrains.annotations.NotNull
+import java.util.*
 import javax.inject.Inject
 
 
@@ -60,6 +63,7 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
     lateinit var remoteConfig: RemoteConfig
 
     private lateinit var onboardingViewPagerAdapter: OnboardingViewPagerAdapter
+    private lateinit var sharedPrefs: SharedPreferences
 
     override fun getScreenName(): String = OnboardingAnalytics.SCREEN_ONBOARDING
 
@@ -270,8 +274,19 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
 
     private fun finishOnBoarding() {
         activity?.let {
+            saveFirstInstallTime()
             userSession.setFirstTimeUserOnboarding(false)
             it.finish()
+        }
+    }
+
+    private fun saveFirstInstallTime() {
+        context?.let {
+            val date = Date()
+            sharedPrefs = it.getSharedPreferences(
+                    KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
+            sharedPrefs.edit().putLong(
+                    KEY_FIRST_INSTALL_TIME_SEARCH, date.time).apply()
         }
     }
 
@@ -292,6 +307,9 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
         const val ONBOARD_IMAGE_PAGE_1_URL = "https://ecs7.tokopedia.net/android/others/onboarding_image_page_1.png"
         const val ONBOARD_IMAGE_PAGE_2_URL = "https://ecs7.tokopedia.net/android/others/onboarding_image_page_2.png"
         const val ONBOARD_IMAGE_PAGE_3_URL = "https://ecs7.tokopedia.net/android/others/onboarding_image_page_3.png"
+
+        private const val KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH"
+        private const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"
 
         fun createInstance(bundle: Bundle): OnboardingFragment {
             val fragment = OnboardingFragment()

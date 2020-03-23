@@ -1004,7 +1004,7 @@ public class MainParentActivity extends BaseActivity implements
                     shortcutInfos.add(productShortcut);
 
                     if (userSession.isLoggedIn()) {
-                        Intent wishlistIntent = ((GlobalNavRouter) getApplication()).gotoWishlistPage(MainParentActivity.this);
+                        Intent wishlistIntent = RouteManager.getIntent(MainParentActivity.this, ApplinkConst.NEW_WISHLIST);
                         wishlistIntent.setAction(Intent.ACTION_VIEW);
                         wishlistIntent.putExtras(args);
 
