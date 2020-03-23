@@ -452,7 +452,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private fun showMessage(preference: ProfileResponse) {
         tv_header.text = "Barang yang dibeli"
         if (preference.hasPreference) {
-            tv_header_2.text = "Pengiriman dan Pembayaran"
+            tv_header_2.text = "Pengiriman dan pembayaran"
             tv_header_2.visible()
             tv_subheader.gone()
             tv_subheader_action.gone()

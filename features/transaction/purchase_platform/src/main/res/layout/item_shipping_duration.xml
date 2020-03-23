@@ -6,7 +6,6 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/dp_16"
     android:layout_marginRight="@dimen/dp_16"
     android:layout_marginLeft="@dimen/dp_16">
 
@@ -14,12 +13,14 @@
         android:id="@+id/text_shipping_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="@string/text_shipping_duration"
+        android:textColor="#31353B"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyWeight="bold"
-        android:textColor="@color/black"
+        app:layout_constraintVertical_bias="0.287"
         app:typographyType="body_1"
-        android:text="@string/text_shipping_duration"
+        app:typographyWeight="bold"
         tools:text="@string/text_shipping_duration" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -31,12 +32,14 @@
         app:typographyType="body_3"
         android:layout_marginTop="@dimen/dp_4"
         android:text="@string/text_shipping_price"
+        android:visibility="visible"
         tools:text="@string/text_shipping_price" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/item_shipping_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/item_shipping_price"
         app:typographyType="small"
@@ -56,7 +59,7 @@
         android:id="@+id/item_shipping_radio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:layout_marginRight="@dimen/dp_12"
         android:clickable="false"
         android:theme="@style/TransactionToggleButton"
         app:layout_constraintRight_toRightOf="parent"
