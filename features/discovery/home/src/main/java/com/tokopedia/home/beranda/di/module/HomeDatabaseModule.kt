@@ -8,7 +8,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class HomeDatabaseModule{
+open class HomeDatabaseModule{
     @HomeScope
     @Provides
     fun provideHomeDatabase(@ApplicationContext context: Context): HomeDatabase = HomeDatabase.buildDatabase(context)
