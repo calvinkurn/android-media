@@ -411,8 +411,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         val paymentParameter = checkoutData.paymentParameter
                         if (paymentParameter.callbackUrl.isNotEmpty() && paymentParameter.payload.isNotEmpty()) {
                             val paymentPassData = PaymentPassData()
-                            paymentPassData.redirectUrl = paymentParameter.callbackUrl
-                            paymentPassData.queryString = paymentParameter.payload
+                            paymentPassData.redirectUrl = paymentParameter.redirectParam.url
+                            paymentPassData.queryString = paymentParameter.redirectParam.form
+                            paymentPassData.method = paymentParameter.redirectParam.method
 
                             val intent = RouteManager.getIntent(activity, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
                             intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)

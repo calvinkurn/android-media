@@ -1,6 +1,5 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.view
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.authentication.AuthHelper
@@ -12,6 +11,7 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.TKPDMapParam
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.data.model.param.EditAddressParam
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.EditAddressUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetPreferenceListUseCase
@@ -21,7 +21,6 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.analytics.OrderSummaryPageEnhanceECommerce
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.UpdateCartOccCartRequest
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.UpdateCartOccGqlResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.UpdateCartOccProfileRequest
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.UpdateCartOccRequest
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.*
@@ -36,6 +35,7 @@ import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.OrdersItem
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ProductDetailsItem
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.features.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
@@ -51,10 +51,11 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                     private val getOccCartUseCase: GetOccCartUseCase,
                                                     private val ratesUseCase: GetRatesUseCase,
                                                     val getPreferenceListUseCase: GetPreferenceListUseCase,
-                                                    val updateCartOccUseCase: UpdateCartOccUseCase,
+                                                    private val updateCartOccUseCase: UpdateCartOccUseCase,
                                                     private val ratesResponseStateConverter: RatesResponseStateConverter,
                                                     private val editAddressUseCase: EditAddressUseCase,
                                                     private val checkoutOccUseCase: CheckoutOccUseCase,
+                                                    private val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
                                                     private val userSessionInterface: UserSessionInterface,
                                                     val orderSummaryAnalytics: OrderSummaryAnalytics) : BaseViewModel(dispatcher) {
 
@@ -146,12 +147,12 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     private fun debounce() {
         debounceJob?.cancel()
-        Log.i("OSP DEBOUNCE", "CANCEL")
+//        Log.i("OSP DEBOUNCE", "CANCEL")
         debounceJob = launch {
             delay(1000)
-            Log.i("OSP DEBOUNCE", "delay FINISH")
+//            Log.i("OSP DEBOUNCE", "delay FINISH")
             if (isActive) {
-                Log.i("OSP DEBOUNCE", "ACTIVE")
+//                Log.i("OSP DEBOUNCE", "ACTIVE")
                 getRates()
             }
         }
@@ -166,7 +167,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         compositeSubscription.add(
                 ratesUseCase.execute(ratesParam)
                         .map {
-                            Log.i("OSP", Thread.currentThread().name)
+//                            Log.i("OSP", Thread.currentThread().name)
                             val value = _orderPreference
                             val data = ratesResponseStateConverter.fillState(it, generateListShopShipment(), value?.shipping?.shipperProductId
                                     ?: 0, value?.shipping?.serviceId ?: 0)
@@ -469,123 +470,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         orderTotal.value = orderTotal.value?.copy(orderCost = OrderCost(), buttonState = ButtonBayarState.DISABLE)
     }
 
-    /*fun generateCheckoutRequest() {
-        val dataRequest = DataCheckoutRequest.Builder()
-                .addressId(1)
-                .shopProducts(listOf(
-                        generateShopProductRequest()
-                ))
-    }
-
-    private fun generateShopProductRequest(): ShopProductCheckoutRequest {
-        val shopProductCheckoutBuilder = ShopProductCheckoutRequest.Builder()
-                .shippingInfo(ShippingInfoCheckoutRequest.Builder()
-                        .shippingId(1)
-                        .spId(2)
-                        .ratesId("")
-                        .checksum("")
-                        .ut("")
-                        .analyticsDataShippingCourierPrice("")
-                        .ratesFeature(generateRatesFeature())
-                        .build())
-//                                .fcancelPartial(shipmentDetailData.getUsePartialOrder() ? 1 : 0)
-//                .finsurance((shipmentDetailData.getUseInsurance() != null && shipmentDetailData.getUseInsurance()) ? 1 : 0)
-//        .isOrderPriority((shipmentDetailData.isOrderPriority() != null && shipmentDetailData.isOrderPriority() ? 1 : 0))
-//        .isPreorder(shipmentCartItemModel.isProductIsPreorder() ? 1 : 0)
-//        .shopId(shipmentCartItemModel.getShopId())
-//                .warehouseId(shipmentCartItemModel.getFulfillmentId())
-//                .cartString(shipmentCartItemModel.getCartString())
-                .productData(listOf(generateProductDataCheckout()))
-//                .build()
-
-        val promoCodes = ArrayList<String>()
-        val promoRequests = ArrayList<PromoRequest>()
-//        if (shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
-//            promoCodes.add(shipmentCartItemModel.getVoucherOrdersItemUiModel().code)
-//            val promoRequest = PromoRequest()
-//            promoRequest.code = shipmentCartItemModel.getVoucherOrdersItemUiModel().code
-//            promoRequest.type = PromoRequest.TYPE_MERCHANT
-//            promoRequests.add(promoRequest)
-//        }
-
-//        if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
-//            promoCodes.add(shipmentCartItemModel.getVoucherLogisticItemUiModel().code)
-//            val promoRequest = PromoRequest()
-//            promoRequest.code = shipmentCartItemModel.getVoucherLogisticItemUiModel().code
-//            promoRequest.type = PromoRequest.TYPE_LOGISTIC
-//            promoRequests.add(promoRequest)
-//        }
-//        shopProductCheckoutBuilder.promos(promoRequests)
-
-//        if (promoCodes.size > 0) {
-//            shopProductCheckoutBuilder.promoCodes(promoCodes)
-//        }
-
-//        if (shipmentDetailData.getUseDropshipper() != null && shipmentDetailData.getUseDropshipper()) {
-//            shopProductCheckoutBuilder.isDropship(1)
-//                    .dropshipData(DropshipDataCheckoutRequest.Builder()
-//                            .name(shipmentDetailData.getDropshipperName())
-//                            .telpNo(shipmentDetailData.getDropshipperPhone())
-//                            .build())
-//        } else {
-//            shopProductCheckoutBuilder.isDropship(0)
-//        }
-
-        return shopProductCheckoutBuilder.build()
-    }
-
-    private fun generateProductDataCheckout(): ProductDataCheckoutRequest {
-//        var courierId = ""
-//        var serviceId = ""
-//        var shippingPrice = ""
-//        if (shipmentDetailData != null && shipmentDetailData.selectedCourier != null) {
-//            courierId = shipmentDetailData.selectedCourier.shipperProductId.toString()
-//            serviceId = shipmentDetailData.selectedCourier.serviceId.toString()
-//            shippingPrice = shipmentDetailData.selectedCourier.shipperPrice.toString()
-//        }
-        return ProductDataCheckoutRequest.Builder()
-//                .productId(cartItem.productId)
-//                .purchaseProtection(cartItem.isProtectionOptIn)
-//                .productName(cartItem.analyticsProductCheckoutData.productName)
-//                .productPrice(cartItem.analyticsProductCheckoutData.productPrice)
-//                .productBrand(cartItem.analyticsProductCheckoutData.productBrand)
-//                .productCategory(cartItem.analyticsProductCheckoutData.productCategory)
-//                .productVariant(cartItem.analyticsProductCheckoutData.productVariant)
-//                .productQuantity(cartItem.analyticsProductCheckoutData.productQuantity)
-//                .productShopId(cartItem.analyticsProductCheckoutData.productShopId)
-//                .productShopType(cartItem.analyticsProductCheckoutData.productShopType)
-//                .productShopName(cartItem.analyticsProductCheckoutData.productShopName)
-//                .productCategoryId(cartItem.analyticsProductCheckoutData.productCategoryId)
-//                .productListName(cartItem.analyticsProductCheckoutData.productListName)
-//                .productAttribution(cartItem.analyticsProductCheckoutData.productAttribution)
-//                .cartId(cartItem.cartId)
-//                .warehouseId(cartItem.analyticsProductCheckoutData.warehouseId)
-//                .productWeight(cartItem.analyticsProductCheckoutData.productWeight)
-//                .promoCode(cartItem.analyticsProductCheckoutData.promoCode)
-//                .promoDetails(cartItem.analyticsProductCheckoutData.promoDetails)
-//                .buyerAddressId(cartItem.analyticsProductCheckoutData.buyerAddressId)
-//                .shippingDuration(serviceId)
-//                .courier(courierId)
-//                .shippingPrice(shippingPrice)
-//                .codFlag(cartItem.analyticsProductCheckoutData.codFlag)
-//                .tokopediaCornerFlag(cartItem.analyticsProductCheckoutData.tokopediaCornerFlag)
-//                .isFulfillment(cartItem.analyticsProductCheckoutData.isFulfillment)
-//                .setDiscountedPrice(cartItem.analyticsProductCheckoutData.isDiscountedPrice)
-//                .isFreeShipping(cartItem.isFreeShipping)
-                .build()
-    }
-
-    private fun generateRatesFeature(): RatesFeature {
-        val result = RatesFeature()
-        val otdg = OntimeDeliveryGuarantee()
-//        if (courierItemData.getOntimeDelivery() != null) {
-//            otdg.setAvailable(courierItemData.getOntimeDelivery().available)
-//            otdg.setDuration(courierItemData.getOntimeDelivery().value)
-//        }
-        result.ontimeDeliveryGuarantee = otdg
-        return result
-    }*/
-
     override fun onCleared() {
         super.onCleared()
         compositeSubscription.clear()
@@ -765,7 +649,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     fun updateCart() {
         val param = generateUpdateCartParam()
         if (param != null) {
-            updateCartOccUseCase.execute(param, { updateCartOccGqlResponse: UpdateCartOccGqlResponse ->
+            updateCartOccUseCase.execute(param, {
                 //do nothing
             }, { throwable: Throwable ->
                 throwable.printStackTrace()
@@ -809,7 +693,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     metadata = preference.paymentModel?.metadata ?: ""
             ))
             globalEvent.value = OccGlobalEvent.Loading
-            updateCartOccUseCase.execute(param, { updateCartOccGqlResponse: UpdateCartOccGqlResponse ->
+            updateCartOccUseCase.execute(param, {
                 globalEvent.value = OccGlobalEvent.TriggerRefresh(true)
             }, { throwable: Throwable ->
                 throwable.printStackTrace()
@@ -908,7 +792,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         val param = generateUpdateCartParam()
         if (param != null) {
             globalEvent.value = OccGlobalEvent.Loading
-            updateCartOccUseCase.execute(param, { updateCartOccGqlResponse: UpdateCartOccGqlResponse ->
+            updateCartOccUseCase.execute(param, {
                 globalEvent.value = OccGlobalEvent.Normal
                 onSuccess(generatePromoRequest(), generateValidateUsePromoRequest())
             }, { throwable: Throwable ->
@@ -946,7 +830,20 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             ordersItem.shippingId = shipping.shipperId
             ordersItem.spId = shipping.shipperProductId
         }
+        val codes = ArrayList<String>()
+        val voucherOrders = orderPromo.lastApply?.voucherOrders ?: emptyList()
+        for (voucherOrder in voucherOrders) {
+            if (voucherOrder.uniqueId.equals(ordersItem.uniqueId, true)) {
+                codes.add(voucherOrder.code)
+                break
+            }
+        }
+        ordersItem.codes = codes
         validateUsePromoRequest.orders = listOf(ordersItem)
+        validateUsePromoRequest.state = CheckoutConstant.PARAM_CHECKOUT
+        validateUsePromoRequest.cartType = CheckoutConstant.PARAM_DEFAULT
+        val globalCodes = orderPromo.lastApply?.codes ?: emptyList()
+        validateUsePromoRequest.codes = globalCodes.toMutableList()
         return validateUsePromoRequest
     }
 }
