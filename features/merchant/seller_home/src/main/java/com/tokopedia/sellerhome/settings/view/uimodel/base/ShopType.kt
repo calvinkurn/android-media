@@ -16,8 +16,8 @@ sealed class ShopType(val shopTypeLayoutRes: Int,
         val POWER_MERCHANT_HEADER = R.drawable.setting_pm_header_background
         val OFFICIAL_STORE_HEADER = R.drawable.setting_os_header_background
 
-        val POWER_MERCHANT_HEADER_ICON = R.drawable.ic_icon_header_pm
-        val OFFICIAL_STORE_HEADER_ICON = R.drawable.ic_icon_header_os
+        val POWER_MERCHANT_HEADER_ICON = R.drawable.ic_pm_icon_header
+        val OFFICIAL_STORE_HEADER_ICON = R.drawable.ic_os_icon_header
     }
     object OfficialStore : ShopType(OFFICIAL_STORE_LAYOUT, OFFICIAL_STORE_HEADER, OFFICIAL_STORE_HEADER_ICON)
 }

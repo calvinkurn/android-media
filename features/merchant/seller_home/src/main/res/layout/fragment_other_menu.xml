@@ -9,7 +9,7 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/shopStatusHeader"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/setting_header_height"
+        android:layout_height="@dimen/setting_header_height_extra"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:scaleType="fitXY"
@@ -22,10 +22,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintWidth_percent="0.117"
-        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintHorizontal_bias="0.867"
         app:layout_constraintBottom_toBottomOf="@id/shopStatusHeader"
         app:layout_constraintStart_toStartOf="@id/shopStatusHeader"
-        app:layout_constraintEnd_toEndOf="@id/shopStatusHeader"/>
+        app:layout_constraintEnd_toEndOf="@id/shopStatusHeader"
+        tools:src="@drawable/ic_pm_icon_header"/>
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/otherMenuScrollView"
