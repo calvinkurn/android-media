@@ -217,6 +217,13 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
                 ProductManageTracking.eventFilter()
             }
         }
+        this.setCloseClickListener {
+            productManageFilterViewModel.filterData.value?.let { data ->
+                val dataToSave = ProductManageFilterMapper.mapFiltersToFilterOptions(data)
+                onFinishedListener.onFinish(dataToSave)
+                super.dismiss()
+            }
+        }
         this.isFullpage = true
         adjustBottomSheetPadding()
         initBottomSheetReset()

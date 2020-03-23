@@ -353,7 +353,7 @@ class ProductManageViewModel @Inject constructor(
                     filters.copy(filterOptions = selectedFilter, filterShownState = list)
                 }
             } else {
-                FilterOptionWrapper(null, selectedFilter, listOf(true, true, false, true))
+                FilterOptionWrapper(null, selectedFilter, listOf(true, true, false, false))
             }
         }
     }
