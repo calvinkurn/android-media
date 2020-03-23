@@ -7,7 +7,7 @@ import com.tokopedia.product.manage.feature.filter.presentation.fragment.Product
 import dagger.Component
 
 @ProductManageFilterScope
-@Component(modules = [ProductManageFilterModule::class], dependencies = [ProductManageComponent::class])
+@Component(dependencies = [ProductManageComponent::class])
 interface ProductManageFilterComponent {
     fun inject(view: ProductManageFilterFragment)
     fun inject(view: ProductManageFilterExpandChecklistFragment)
