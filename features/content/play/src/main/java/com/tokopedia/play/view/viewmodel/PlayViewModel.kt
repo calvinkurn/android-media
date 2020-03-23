@@ -708,6 +708,7 @@ class PlayViewModel @Inject constructor(
                                         StockAvailable(it * 10)
                                     },
                                     minQty = 2,
+                                    isFreeShipping = true,
                                     applink = null
                             )
                         }
@@ -772,6 +773,7 @@ class PlayViewModel @Inject constructor(
                                         StockAvailable(it * 10)
                                     },
                                     minQty = 2,
+                                    isFreeShipping = true,
                                     applink = "tokopedia://login"
                             )
 //                            ProductPlaceholderUiModel
