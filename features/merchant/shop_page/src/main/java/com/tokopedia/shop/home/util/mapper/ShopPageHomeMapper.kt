@@ -69,7 +69,7 @@ object ShopPageHomeMapper {
         }
 
         val freeOngkirObject = ProductCardModel.FreeOngkir(shopHomeProductViewModel.isShowFreeOngkir, shopHomeProductViewModel.freeOngkirPromoIcon ?: "")
-
+        val hasThreeDots = !isHasAddToCartButton
         return ProductCardModel(
                 productImageUrl = shopHomeProductViewModel.imageUrl ?: "",
                 productName = shopHomeProductViewModel.name ?: "",
@@ -82,7 +82,7 @@ object ShopPageHomeMapper {
                 labelGroupList = shopHomeProductViewModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
                 },
-                hasThreeDots = true,
+                hasThreeDots = hasThreeDots,
                 hasAddToCartButton = isHasAddToCartButton
         )
     }

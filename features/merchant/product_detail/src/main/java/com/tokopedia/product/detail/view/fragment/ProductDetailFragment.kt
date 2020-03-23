@@ -554,6 +554,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     }
                 }
             }
+
+            override fun onVoucherItemImpressed(merchantVoucherViewModel: MerchantVoucherViewModel, voucherPosition: Int) {}
         })
         fab_detail.setOnClickListener {
             if (productInfoViewModel.isUserSessionActive()) {

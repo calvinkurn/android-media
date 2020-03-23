@@ -73,10 +73,7 @@ open class ShopHomeProductViewHolder(
 
         productCard.setThreeDotsOnClickListener {
             shopHomeProductViewModel?.let {
-                shopPageHomeProductClickListener?.onThreeDotsAllProductClicked(
-                        adapterPosition,
-                        it
-                )
+                shopPageHomeProductClickListener?.onThreeDotsAllProductClicked(it)
             }
         }
     }

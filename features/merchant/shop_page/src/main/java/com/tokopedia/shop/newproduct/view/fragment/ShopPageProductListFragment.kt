@@ -621,6 +621,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
     }
 
+    override fun onVoucherItemImpressed(merchantVoucherViewModel: MerchantVoucherViewModel, voucherPosition: Int) {}
+
     override fun onEmptyContentItemTextClicked() {
     }
 

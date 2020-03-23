@@ -37,14 +37,9 @@ interface ShopPageHomeProductClickListener {
             shopHomeProductViewModel: ShopHomeProductViewModel?
     )
 
-    fun onThreeDotsAllProductClicked(
-            itemPosition: Int,
-            shopHomeProductViewModel: ShopHomeProductViewModel
-    )
+    fun onThreeDotsAllProductClicked(shopHomeProductViewModel: ShopHomeProductViewModel)
 
     fun onThreeDotsCarouselProductItemClicked(
-            parentPosition: Int,
-            itemPosition: Int,
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
             shopHomeProductViewModel: ShopHomeProductViewModel?
     )
