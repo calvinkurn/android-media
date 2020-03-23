@@ -46,7 +46,7 @@ open class QuickReplyComponent(
                                     uiView.show()
                                 } else uiView.hide()
                             }
-                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze || it.event.isBanned) uiView.hide()
                         }
                     }
         }

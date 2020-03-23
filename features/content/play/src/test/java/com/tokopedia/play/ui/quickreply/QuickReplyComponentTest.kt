@@ -8,6 +8,7 @@ import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.view.event.ScreenStateEvent
+import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.uimodel.QuickReplyUiModel
 import io.mockk.confirmVerified
@@ -57,34 +58,82 @@ class QuickReplyComponentTest {
         verify { component.uiView.setQuickReply(mockQuickReply) }
     }
 
-    @Test
-    fun `when keyboard is shown, then quick reply should be shown`() = runBlockingTest(testDispatcher) {
-        val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
-                keyboardState = modelBuilder.buildBottomInsetsState(isShown = true)
-        )
+    @Nested
+    @DisplayName("Given channel is VOD")
+    inner class GivenChannelVOD {
 
-        val mockStateHelper = modelBuilder.buildStateHelperUiModel(
-                bottomInsets = mockBottomInsets
-        )
+        private val mockChannelType = PlayChannelType.VOD
 
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(mockBottomInsets, mockBottomInsets.isAnyShown, mockBottomInsets.isAnyHidden, mockStateHelper))
-        verify { component.uiView.show() }
-        confirmVerified(component.uiView)
+        @Test
+        fun `when keyboard is shown, then quick reply should be shown`() = runBlockingTest(testDispatcher) {
+            val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
+                    keyboardState = modelBuilder.buildBottomInsetsState(isShown = true)
+            )
+
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    bottomInsets = mockBottomInsets,
+                    channelType = mockChannelType
+            )
+
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(mockBottomInsets, mockBottomInsets.isAnyShown, mockBottomInsets.isAnyHidden, mockStateHelper))
+            verify { component.uiView.hide() }
+            confirmVerified(component.uiView)
+        }
+
+        @Test
+        fun `when keyboard is hidden, then quick reply should be hidden`() = runBlockingTest(testDispatcher) {
+            val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
+                    keyboardState = modelBuilder.buildBottomInsetsState(isShown = false)
+            )
+
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    bottomInsets = mockBottomInsets,
+                    channelType = mockChannelType
+            )
+
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(mockBottomInsets, mockBottomInsets.isAnyShown, mockBottomInsets.isAnyHidden, mockStateHelper))
+            verify { component.uiView.hide() }
+            confirmVerified(component.uiView)
+        }
     }
 
-    @Test
-    fun `when keyboard is hidden, then quick reply should be hidden`() = runBlockingTest(testDispatcher) {
-        val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
-                keyboardState = modelBuilder.buildBottomInsetsState(isShown = false)
-        )
+    @Nested
+    @DisplayName("Given channel is Live")
+    inner class GivenChannelLive {
 
-        val mockStateHelper = modelBuilder.buildStateHelperUiModel(
-                bottomInsets = mockBottomInsets
-        )
+        private val mockChannelType = PlayChannelType.Live
 
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(mockBottomInsets, mockBottomInsets.isAnyShown, mockBottomInsets.isAnyHidden, mockStateHelper))
-        verify { component.uiView.hide() }
-        confirmVerified(component.uiView)
+        @Test
+        fun `when keyboard is shown, then quick reply should be shown`() = runBlockingTest(testDispatcher) {
+            val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
+                    keyboardState = modelBuilder.buildBottomInsetsState(isShown = true)
+            )
+
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    bottomInsets = mockBottomInsets,
+                    channelType = mockChannelType
+            )
+
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(mockBottomInsets, mockBottomInsets.isAnyShown, mockBottomInsets.isAnyHidden, mockStateHelper))
+            verify { component.uiView.show() }
+            confirmVerified(component.uiView)
+        }
+
+        @Test
+        fun `when keyboard is hidden, then quick reply should be hidden`() = runBlockingTest(testDispatcher) {
+            val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
+                    keyboardState = modelBuilder.buildBottomInsetsState(isShown = false)
+            )
+
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    bottomInsets = mockBottomInsets,
+                    channelType = mockChannelType
+            )
+
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(mockBottomInsets, mockBottomInsets.isAnyShown, mockBottomInsets.isAnyHidden, mockStateHelper))
+            verify { component.uiView.hide() }
+            confirmVerified(component.uiView)
+        }
     }
 
     @Test
@@ -98,7 +147,7 @@ class QuickReplyComponentTest {
 
     @Test
     fun `when user is banned, then quick reply should be hidden`() = runBlockingTest(testDispatcher) {
-        val mockFreeze = modelBuilder.buildPlayRoomFreezeEvent()
+        val mockFreeze = modelBuilder.buildPlayRoomBannedEvent()
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockFreeze))
         verify { component.uiView.hide() }
