@@ -4,6 +4,7 @@ import android.os.Parcelable
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.topchat.R
@@ -40,6 +41,16 @@ class ProductListAttachmentViewHolder(
             layoutManager = this@ProductListAttachmentViewHolder.layoutManager
             adapter = this@ProductListAttachmentViewHolder.adapter
             PagerSnapHelper().attachToRecyclerView(this)
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        listener.saveProductCarouselState(
+                                adapterPosition,
+                                this@ProductListAttachmentViewHolder.layoutManager.onSaveInstanceState()
+                        )
+                    }
+                }
+            })
         }
     }
 
@@ -58,11 +69,6 @@ class ProductListAttachmentViewHolder(
         listener.getSavedCarouselState(adapterPosition)?.let {
             layoutManager.onRestoreInstanceState(it)
         }
-    }
-
-    override fun onViewRecycled() {
-        listener.saveProductCarouselState(adapterPosition, layoutManager.onSaveInstanceState())
-        super.onViewRecycled()
     }
 
     companion object {
