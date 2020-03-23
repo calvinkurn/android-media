@@ -219,6 +219,7 @@ public class SearchActivity extends BaseActivity
     private void initToolbar() {
         configureSupportActionBar();
         configureToolbarOnClickListener();
+        configureToolbarVisibility();
     }
 
     private void configureSupportActionBar() {
@@ -274,6 +275,16 @@ public class SearchActivity extends BaseActivity
     private void moveToHomeActivity() {
         SearchTracking.eventActionClickHomeButton(searchParameter.getSearchQuery());
         RouteManager.route(this, ApplinkConst.HOME);
+    }
+
+    private void configureToolbarVisibility() {
+        if (isLandingPage()) {
+            tabLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private boolean isLandingPage() {
+        return searchParameter.getBoolean(SearchApiConst.LANDING_PAGE);
     }
 
     private void initViewPager() {
@@ -555,8 +566,11 @@ public class SearchActivity extends BaseActivity
 
     private void addFragmentTitlesToList(List<String> searchSectionItemList) {
         searchSectionItemList.add(productTabTitle);
-        searchSectionItemList.add(shopTabTitle);
-        searchSectionItemList.add(profileTabTitle);
+
+        if (!isLandingPage()) {
+            searchSectionItemList.add(shopTabTitle);
+            searchSectionItemList.add(profileTabTitle);
+        }
     }
 
     private void initTabLayout() {

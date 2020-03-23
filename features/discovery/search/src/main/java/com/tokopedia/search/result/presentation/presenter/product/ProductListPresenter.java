@@ -675,6 +675,8 @@ final class ProductListPresenter
     }
 
     private void getViewToProcessSearchResult(SearchProductModel searchProductModel) {
+        updateValueEnableGlobalNavWidget();
+
         ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
 
         sendTrackingNoSearchResult(productViewModel);
@@ -697,6 +699,10 @@ final class ProductListPresenter
         if (isFirstTimeLoad) {
             getViewToSendTrackingOnFirstTimeLoad(productViewModel);
         }
+    }
+
+    private void updateValueEnableGlobalNavWidget() {
+        enableGlobalNavWidget = enableGlobalNavWidget && !getView().isLandingPage();
     }
 
     private void sendTrackingNoSearchResult(ProductViewModel productViewModel) {
