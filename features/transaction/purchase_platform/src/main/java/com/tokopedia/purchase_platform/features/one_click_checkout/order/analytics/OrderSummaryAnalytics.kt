@@ -215,6 +215,17 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         sendEnhancedEcommerce(dataLayer)
     }
 
+    fun eventClickBayarSuccess(ee: Map<String, Any>) {
+        val dataLayer = DataLayer.mapOf(
+                Key.EVENT, EventName.CHECKOUT,
+                Key.EVENT_CATEGORY, EventCategory.ORDER_SUMMARY,
+                Key.EVENT_ACTION, EventAction.CLICK_BAYAR,
+                Key.EVENT_LABEL, "success",
+                Key.E_COMMERCE, ee
+        )
+        sendEnhancedEcommerce(dataLayer)
+    }
+
     companion object {
         private const val NOT_SUCCESS = "not success"
     }

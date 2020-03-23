@@ -74,6 +74,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     private var debounceJob: Job? = null
 
+    private var hasSentViewOspEe = false
+
     fun getOccCart(isFullRefresh: Boolean = true) {
         globalEvent.value = OccGlobalEvent.Normal
         getOccCartUseCase.execute({ orderData: OrderData ->
@@ -88,7 +90,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             }
 //            _orderPreference = OrderPreference(preference)
             orderPreference.value = OccState.FirstLoad(_orderPreference!!)
-//            orderSummaryAnalytics.eventViewOrderSummaryPage(generateViewOspEe())
             orderPromo = orderData.promo
             if (orderProduct.productId > 0 && preference.shipment.serviceId > 0) {
                 orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.LOADING)
@@ -103,7 +104,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         })
     }
 
-    private fun generateViewOspEe(): Map<String, Any> {
+    private fun generateOspEe(step: Int, option: String): Map<String, Any> {
         val orderSummaryPageEnhanceECommerce = OrderSummaryPageEnhanceECommerce()
         orderSummaryPageEnhanceECommerce.setName(orderProduct.productName)
         orderSummaryPageEnhanceECommerce.setId(orderProduct.productId)
@@ -111,7 +112,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         orderSummaryPageEnhanceECommerce.setBrand(null)
         orderSummaryPageEnhanceECommerce.setCategory(null)
         orderSummaryPageEnhanceECommerce.setVariant(null)
-        orderSummaryPageEnhanceECommerce.setQuantity(orderProduct.quantity?.orderQuantity ?: orderProduct.minOrderQuantity)
+        orderSummaryPageEnhanceECommerce.setQuantity(orderProduct.quantity?.orderQuantity
+                ?: orderProduct.minOrderQuantity)
         orderSummaryPageEnhanceECommerce.setListName(orderProduct.productResponse.productTrackerData.trackerListName)
         orderSummaryPageEnhanceECommerce.setAttribution(orderProduct.productResponse.productTrackerData.attribution)
         orderSummaryPageEnhanceECommerce.setDiscountedPrice(orderProduct.productResponse.isSlashPrice)
@@ -120,12 +122,17 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         orderSummaryPageEnhanceECommerce.setPromoCode("")
         orderSummaryPageEnhanceECommerce.setPromoDetails("")
         orderSummaryPageEnhanceECommerce.setCartId(orderShop.cartResponse.cartId)
-        orderSummaryPageEnhanceECommerce.setBuyerAddressId(_orderPreference?.preference?.address?.addressId ?: 0)
+        orderSummaryPageEnhanceECommerce.setBuyerAddressId(_orderPreference?.preference?.address?.addressId
+                ?: 0)
         orderSummaryPageEnhanceECommerce.setSpid(_orderPreference?.shipping?.shipperProductId ?: 0)
         orderSummaryPageEnhanceECommerce.setCodFlag(false)
         orderSummaryPageEnhanceECommerce.setCornerFlag(false)
         orderSummaryPageEnhanceECommerce.setIsFullfilment(false)
-        return orderSummaryPageEnhanceECommerce.build(1, "order summary page loaded")
+        orderSummaryPageEnhanceECommerce.setShopId(orderShop.shopId)
+        orderSummaryPageEnhanceECommerce.setShopName(orderShop.shopName)
+        orderSummaryPageEnhanceECommerce.setShopType(orderShop.isOfficial, orderShop.isGold)
+        orderSummaryPageEnhanceECommerce.setCategoryId(orderProduct.productResponse.categoryId)
+        return orderSummaryPageEnhanceECommerce.build(step, option)
     }
 
     fun updateProduct(product: OrderProduct, shouldReloadRates: Boolean = true) {
@@ -353,6 +360,10 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                     _orderPreference = value.copy(shipping = shipping)
                                     orderPreference.value = OccState.Success(_orderPreference!!)
                                     orderTotal.value = orderTotal.value?.copy(buttonState = if (shipping?.serviceErrorMessage.isNullOrEmpty()) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
+                                    if (!hasSentViewOspEe) {
+                                        orderSummaryAnalytics.eventViewOrderSummaryPage(generateOspEe(1, "order summary page loaded"))
+                                        hasSentViewOspEe = true
+                                    }
                                     calculateTotal()
                                 }
                             }
@@ -865,6 +876,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 if (checkoutOccGqlResponse.response.data.success == 1) {
                     globalEvent.value = OccGlobalEvent.Normal
                     onSuccessCheckout(checkoutOccGqlResponse.response.data)
+                    orderSummaryAnalytics.eventClickBayarSuccess(generateOspEe(2, "click bayar success"))
                 } else {
                     val errorCode = checkoutOccGqlResponse.response.data.error.code
                     orderSummaryAnalytics.eventClickBayarNotSuccess(errorCode)

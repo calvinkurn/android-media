@@ -92,8 +92,8 @@ class OrderSummaryPageEnhanceECommerce {
         data[KEY_SHOP_NAME] = shopName
     }
 
-    fun setShopType(shopType: String) {
-        data[KEY_SHOP_TYPE] = shopType
+    fun setShopType(isOfficial: Int, isGold: Int) {
+        data[KEY_SHOP_TYPE] = if (isOfficial == 1) "official_store" else if (isGold == 1) "gold_merchant" else "marketplace"
     }
 
     fun setCategoryId(categoryId: Int) {
