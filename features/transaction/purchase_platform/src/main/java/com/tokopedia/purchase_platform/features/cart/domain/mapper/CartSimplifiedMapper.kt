@@ -566,7 +566,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
     private fun mapAdditionalInfo(promoAdditionalInfo: PromoAdditionalInfo): LastApplyAdditionalInfoUiModel {
         return LastApplyAdditionalInfoUiModel(
                 messageInfo = mapMessageInfo(promoAdditionalInfo.messageInfo),
-                errorDetail = mapErrorDetail(promoAdditionalInfo.errorDetail)
+                errorDetail = mapErrorDetail(promoAdditionalInfo.errorDetail),
+                emptyCartInfo = mapEmptyCartInfo(promoAdditionalInfo.emptyCartInfo)
         )
     }
 
@@ -579,6 +580,14 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
     private fun mapErrorDetail(promoErrorDetail: PromoErrorDetail): LastApplyErrorDetailUiModel {
         return LastApplyErrorDetailUiModel(
                 message = promoErrorDetail.message)
+    }
+
+    private fun mapEmptyCartInfo(promoEmptyCartInfo: PromoEmptyCartInfo) : LastApplyEmptyCartInfoUiModel {
+        return LastApplyEmptyCartInfoUiModel(
+                imgUrl = promoEmptyCartInfo.imageUrl,
+                message = promoEmptyCartInfo.message,
+                detail = promoEmptyCartInfo.detail
+        )
     }
 
     private fun mapPromoCheckoutErrorDefault(errorDefault: ErrorDefault): PromoCheckoutErrorDefault {
