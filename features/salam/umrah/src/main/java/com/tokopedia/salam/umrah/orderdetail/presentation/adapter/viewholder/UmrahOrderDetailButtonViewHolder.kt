@@ -4,7 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.salam.umrah.orderdetail.presentation.viewmodel.UmrahOrderDetailButtonViewModel
+import com.tokopedia.salam.umrah.orderdetail.data.UmrahOrderDetailButtonModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.UnifyButton.Size.MEDIUM
 import com.tokopedia.unifycomponents.UnifyButton.Type.ALTERNATE
@@ -18,7 +18,7 @@ import com.tokopedia.unifycomponents.UnifyButton.Variant.GHOST
  */
 class UmrahOrderDetailButtonViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    fun bind(data: UmrahOrderDetailButtonViewModel) {
+    fun bind(data: UmrahOrderDetailButtonModel) {
         val button = UnifyButton(itemView.context)
         button.layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,

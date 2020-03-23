@@ -2,7 +2,6 @@ package com.tokopedia.sellerorder.detail.presentation.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.ProgressDialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -54,6 +53,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_URL_UPLOAD
 import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_SHIPPING_REF
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ACCEPT_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ASK_BUYER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_BATALKAN_PESANAN
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CHANGE_COURIER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
@@ -67,6 +67,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_VIEW_COMPLAINT_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BARCODE_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BOOKING_CODE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CURR_IS_CHANGE_SHIPPING
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_CODE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SHOP_ID
@@ -197,6 +198,11 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         }
     }
 
+    fun doClickChat() {
+        SomAnalytics.eventClickChatOnHeaderDetail(detailResponse.statusText)
+        goToAskBuyer()
+    }
+
     fun goToAskBuyer() {
         val urlInvoice = detailResponse.invoiceUrl
         val invoiceUri = Uri.parse(urlInvoice)
@@ -305,6 +311,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         somDetailViewModel.acceptOrderResult.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    SomAnalytics.eventClickAcceptOrderPopup(true)
                     acceptOrderResponse = it.data.acceptOrder
                     if (acceptOrderResponse.success == 1) {
                         activity?.setResult(Activity.RESULT_OK, Intent().apply {
@@ -317,6 +324,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     }
                 }
                 is Fail -> {
+                    SomAnalytics.eventClickAcceptOrderPopup(false)
                 }
             }
         })
@@ -341,7 +349,6 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                                 setDescriptionClickEvent(object : TickerCallback {
                                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
                                         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
-                                        SomAnalytics.eventClickSeeMoreOnTicker()
                                     }
 
                                     override fun onDismiss() {}
@@ -515,6 +522,8 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                             buttonResp.key.equals(KEY_CONFIRM_SHIPPING, true) -> setActionConfirmShipping()
                             buttonResp.key.equals(KEY_VIEW_COMPLAINT_SELLER, true) -> setActionSeeComplaint(buttonResp.url)
                             buttonResp.key.equals(KEY_BATALKAN_PESANAN, true) -> setActionRejectOrder()
+                            buttonResp.key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
+                            buttonResp.key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
                         }
                     }
                 }
@@ -696,8 +705,11 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
         secondaryBottomSheet = BottomSheetUnify().apply {
             setChild(viewBottomSheet)
-            clearClose(true)
-            clearHeader(true)
+            showCloseIcon = false
+            showHeader = false
+            showKnob = true
+            isFullpage = false
+            isDragable = true
             setCloseClickListener { dismiss() }
         }
 
@@ -716,6 +728,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
                     key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(it)
                     key.equals(KEY_SET_DELIVERED, true) -> showSetDeliveredDialog()
+                    key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
                 }
             }
         }
@@ -890,6 +903,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         showBuyerRequestCancelBottomSheet()
     }
 
+    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     private fun showBuyerRequestCancelBottomSheet() {
         val bottomSheetReqCancel = BottomSheetUnify()
         val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_buyer_request_cancel_order, null).apply {
@@ -902,14 +916,18 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             tv_buyer_request_cancel?.text = spanned
 
             val reasonBuyer = detailResponse.buyerRequestCancel.reason
-            buyer_request_cancel_notes?.text = reasonBuyer
+            buyer_request_cancel_notes?.text = reasonBuyer.replace("\\n", System.getProperty("line.separator"))
 
             if (detailResponse.statusId != 220 && detailResponse.statusId != 400) {
                 ll_buyer_req_cancel_buttons?.visibility = View.GONE
             } else {
                 ll_buyer_req_cancel_buttons?.visibility = View.VISIBLE
-                btn_chat_buyer?.setOnClickListener { goToAskBuyer() }
+                btn_chat_buyer?.setOnClickListener {
+                    SomAnalytics.eventClickButtonChatPembeliPopup("${detailResponse.statusId}")
+                    goToAskBuyer()
+                }
                 btn_tolak_pesanan?.setOnClickListener {
+                    SomAnalytics.eventClickButtonTolakPesananPopup("${detailResponse.statusId}")
                     bottomSheetReqCancel.dismiss()
                     val orderRejectRequest = SomRejectRequest(
                             orderId = detailResponse.orderId.toString(),
@@ -956,9 +974,11 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     override fun onSeeInvoice(url: String) {
+        SomAnalytics.eventClickViewInvoice()
         Intent(activity, SomSeeInvoiceActivity::class.java).apply {
             putExtra(KEY_URL, url)
             putExtra(KEY_TITLE, resources.getString(R.string.title_som_invoice))
+            putExtra(PARAM_ORDER_CODE, detailResponse.statusId.toString())
             startActivity(this)
         }
     }
