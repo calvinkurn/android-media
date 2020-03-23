@@ -85,7 +85,7 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '1.1.1'
-    unifyComponentsVersion = '1.1.19'
+    unifyComponentsVersion = '1.1.26'
     unifyCoachMarkVersion = '1.2.3'
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.4'
@@ -96,6 +96,7 @@ ext {
     unifyHeaderVersion = '1.1.1'
     unifySortFilterVersion = '1.0.1'
     unifyIconNotificationVersion = '1.0.0'
+    unifyCarouselVersion = '1.0.0'
 
     gradlePlugin = [
             crashlytics   : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
@@ -320,6 +321,7 @@ ext {
             global_error    : "com.tokopedia.unify.compositions:global_error:${unifyGlobalErrorVersion}@aar",
             header          : "com.tokopedia.unify.compositions:header:${unifyHeaderVersion}@aar",
             iconNotification: "com.tokopedia.unify.compositions:icon_notification:${unifyIconNotificationVersion}@aar",
-            sortFilter      : "com.tokopedia.unify.compositions:sort_filter:${unifySortFilterVersion}@aar"
+            sortFilter      : "com.tokopedia.unify.compositions:sort_filter:${unifySortFilterVersion}@aar",
+            carousel        : "com.tokopedia.unify.compositions:carousel:${unifyCarouselVersion}@aar"
     ]
 }

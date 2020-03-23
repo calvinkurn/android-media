@@ -201,15 +201,6 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
         return eventMap;
     }
 
-    private String formatPrice(String displayedPrice) {
-        if (!TextUtils.isEmpty(displayedPrice)) {
-            displayedPrice = displayedPrice.replaceAll("[^\\d]", "");
-            return displayedPrice;
-        } else {
-            return "";
-        }
-    }
-
     @NonNull
     public String getListNameOfProduct(String tabName, String etalaseName) {
         etalaseName = TextUtils.isEmpty(etalaseName) ? ALL_ETALASE : etalaseName;

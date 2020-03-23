@@ -116,5 +116,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".home.view.activity.ShopHomePageYoutubePlayerActivity"
+            android:theme="@style/Theme.White"/>
+
     </application>
 </manifest>
