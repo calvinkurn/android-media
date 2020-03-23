@@ -83,9 +83,9 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     @ReactMethod
     public void navigateV2(String appLinks, String extra) {
         if (extra != null && !TextUtils.isEmpty(extra)) {
-            RouteManager.route(context.getApplicationContext(), ReactUtils.convertBundle(extra), appLinks);
+            RouteManager.route(this.getCurrentActivity(), ReactUtils.convertBundle(extra), appLinks);
         } else {
-            RouteManager.route(context.getApplicationContext(), appLinks);
+            RouteManager.route(this.getCurrentActivity(), appLinks);
         }
     }
 
