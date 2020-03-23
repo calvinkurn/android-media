@@ -53,6 +53,9 @@ class FilterViewHolder(view: View,
         headerWidget.setOnClickListener {
             showChipsListener.onShowChips(element)
         }
+        headerWidget.arrow.setOnClickListener {
+            showChipsListener.onShowChips(element)
+        }
         adapter = when(element.title) {
             ProductManageFilterMapper.SORT_HEADER -> {
                 ChipsAdapter(chipClickListener, false, element.title)
