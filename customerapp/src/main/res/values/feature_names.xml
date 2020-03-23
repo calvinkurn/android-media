@@ -229,4 +229,8 @@
     <string name="topchat_title">Chat</string>
     <string name="title_inbox_chat">Chat</string>
     <string name="chat_incoming_settings">Atur Penerimaan Chat</string>
+
+    <!--Play-->
+    <string name="title_play_df">Play</string>
+
 </resources>

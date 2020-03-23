@@ -119,6 +119,7 @@ object DeeplinkDFMapper {
             // Content
             add(DFP({ it.startsWithPattern(PROFILE) }, DFM_BASE, R.string.applink_title_profile))
             add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE) }, DFM_BASE, R.string.applink_title_affiliate))
+            add(DFP({ it.startsWithPattern(PLAY_DETAIL) }, DFM_BASE, R.string.applink_title_play))
 
             // Digital
             add(DFP({ it.startsWith(DIGITAL_RECHARGE) || it.startsWith(DIGITAL) }, DFM_BASE, R.string.title_digital_subhomepage))
