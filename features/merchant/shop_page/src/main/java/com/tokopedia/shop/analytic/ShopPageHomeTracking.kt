@@ -114,7 +114,7 @@ class ShopPageHomeTracking(
             customDimensionShopPage: CustomDimensionShopPage
     ) {
         val eventAction = joinDash(HOME_TAB, MERCHANT_VOUCHER_CODE, CLICK_DETAIL)
-        val eventLabel = "$shopId - $MERCHANT_VOUCHER - $layoutId -${voucherData.voucherId}"
+        val eventLabel = "$shopId - $MERCHANT_VOUCHER - $layoutId - ${voucherData.voucherId}"
         val eventMap = createMap(
                 PROMO_CLICK,
                 getShopPageCategory(isOwner),

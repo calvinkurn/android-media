@@ -130,7 +130,7 @@ class ShopHomeSliderBannerViewHolder(
     }
 
     private fun getIndexRatio(index: Int): Int {
-        return bannerData?.header?.ratio?.split(":")?.get(index)?.toInt() ?: 0
+        return bannerData?.header?.ratio?.split(":")?.getOrNull(index).toIntOrZero()
     }
 
     private fun getHeightRatio(): Float {
