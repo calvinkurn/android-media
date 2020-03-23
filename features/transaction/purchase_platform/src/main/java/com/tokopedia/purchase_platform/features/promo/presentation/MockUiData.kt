@@ -35,7 +35,7 @@ fun mockEligibleHeader(): PromoEligibilityHeaderUiModel {
             },
             uiState = PromoEligibilityHeaderUiModel.UiState().apply {
                 isEnabled = true
-                isExpanded = false
+                isCollapsed = false
             }
     )
 }
@@ -50,7 +50,7 @@ fun mockEligiblePromoGlobalSection(): List<Visitable<*>> {
                 identifierId = 1
             },
             uiState = PromoListHeaderUiModel.UiState().apply {
-                isExpanded = false
+                isCollapsed = false
                 isEnabled = true
             }
     )
@@ -119,7 +119,7 @@ fun mockEligiblePromoGoldMerchantSection(): List<Visitable<*>> {
                 tmpPromoItemList = arrayListOf(promoListItemUiModel3)
             },
             uiState = PromoListHeaderUiModel.UiState().apply {
-                isExpanded = true
+                isCollapsed = true
                 isEnabled = true
             }
     )
@@ -150,7 +150,7 @@ fun mockEligiblePromoOfficialStoreSection(): List<Visitable<*>> {
                 tmpPromoItemList = arrayListOf(promoListItemUiModel4)
             },
             uiState = PromoListHeaderUiModel.UiState().apply {
-                isExpanded = true
+                isCollapsed = true
                 isEnabled = true
             }
     )
@@ -166,7 +166,7 @@ fun mockIneligibleHeader(): PromoEligibilityHeaderUiModel {
             },
             uiState = PromoEligibilityHeaderUiModel.UiState().apply {
                 isEnabled = false
-                isExpanded = false
+                isCollapsed = false
             }
     )
 }
@@ -181,7 +181,7 @@ fun mockIneligiblePromoGlobalSection(): List<Visitable<*>> {
                 identifierId = 11
             },
             uiState = PromoListHeaderUiModel.UiState().apply {
-                isExpanded = false
+                isCollapsed = false
                 isEnabled = false
             }
     )
@@ -241,7 +241,7 @@ fun mockIneligiblePromoGoldMerchantSection(): List<Visitable<*>> {
                 tmpPromoItemList = emptyList()
             },
             uiState = PromoListHeaderUiModel.UiState().apply {
-                isExpanded = false
+                isCollapsed = false
                 isEnabled = false
             }
     )
@@ -274,7 +274,7 @@ fun mockIneligiblePromoOfficialStoreSection(): List<Visitable<*>> {
                 tmpPromoItemList = emptyList()
             },
             uiState = PromoListHeaderUiModel.UiState().apply {
-                isExpanded = false
+                isCollapsed = false
                 isEnabled = false
             }
     )
@@ -345,7 +345,7 @@ val MOCK_RESPONSE = """
             "sub_title": "Kamu bisa gabungkan promo biar makin hemat!",
             "icon_url": "",
             "is_enabled": true,
-            "is_collapsed": true,
+            "is_collapsed": false,
             "tags": [],
             "coupons": [],
             "sub_sections": [
