@@ -297,6 +297,20 @@ class ModelBuilder {
             totalView = totalView
     )
 
+    fun buildPartnerInfoUiModel(
+            id: Long = 10213,
+            name: String = "Partner",
+            type: PartnerType = PartnerType.SHOP,
+            isFollowed: Boolean = false,
+            isFollowable: Boolean = true
+    ) = PartnerInfoUiModel(
+            id = id,
+            name = name,
+            type = type,
+            isFollowed = isFollowed,
+            isFollowable = isFollowable
+    )
+
     fun buildPinnedMessageUiModel(
             applink: String? = "https://tkp.me",
             partnerName: String = "Admin",
@@ -323,6 +337,14 @@ class ModelBuilder {
             quickReplyList: List<String> = listOf("Keren", "UwU")
     ) = QuickReplyUiModel(
             quickReplyList = quickReplyList
+    )
+
+    fun buildCartUiModel(
+            isShow: Boolean = true,
+            count: Int = 1
+    ) = CartUiModel(
+            isShow = isShow,
+            count = count
     )
 
     fun buildPlayRoomFreezeEvent(
