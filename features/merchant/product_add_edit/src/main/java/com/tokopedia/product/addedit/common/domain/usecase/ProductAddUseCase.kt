@@ -22,7 +22,6 @@ class ProductAddUseCase @Inject constructor(private val graphqlRepository: Graph
         variables[PARAM_INPUT] = params.getObject(PARAM_INPUT)
         val gqlRequest = GraphqlRequest(getQuery(), ProductAddEditV3Response::class.java, variables)
         val gqlResponse: GraphqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest))
-
         val errors: List<GraphqlError>? = gqlResponse.getError(ProductAddEditV3Response::class.java)
         if (errors.isNullOrEmpty()) {
             return gqlResponse.getData(ProductAddEditV3Response::class.java)
@@ -40,7 +39,6 @@ class ProductAddUseCase @Inject constructor(private val graphqlRepository: Graph
             return requestParams
         }
 
-        // TODO change to constant
         fun getQuery() = """
                     mutation ProductAddV3(${'$'}input: ProductInputV3!) {
                       ProductAddV3(input: ${'$'}input) {
