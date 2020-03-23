@@ -535,7 +535,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 override fun onShareItemClicked(packageName: String) {
 
                 }
-            }, "", iamgeUrl, url, description, title)
+            }, "", imageUrl, url, description, title)
         }.also {
             fragmentManager?.run {
                 it?.show(this)
