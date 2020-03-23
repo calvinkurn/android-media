@@ -7,6 +7,8 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.ClaimBenefitMembershipUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCaseNew
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
+import com.tokopedia.shop.newproduct.utils.mapper.ShopPageProductListMapper
+import com.tokopedia.shop.newproduct.view.datamodel.ShopProductFeaturedViewModel
 import com.tokopedia.shop.product.di.ShopProductGetHighlightProductQualifier
 import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
@@ -15,6 +17,7 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockkObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
@@ -62,6 +65,11 @@ abstract class ShopPageProductListViewModelTestFixture {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+
+        mockkObject(GetMembershipUseCaseNew)
+        mockkObject(GQLGetShopInfoUseCase)
+        mockkObject(GqlGetShopProductUseCase)
+        mockkObject(GetShopFeaturedProductUseCase)
 
         viewModelShopPageProductListViewModel = ShopPageProductListViewModel(
                 claimBenefitMembershipUseCase,
