@@ -21,7 +21,6 @@ class ProductMerchantVoucherViewHolder(val view: View, val listener: DynamicProd
 
     override fun bind(element: ProductMerchantVoucherDataModel?) {
         if (element?.shouldRenderInitialData != false) {
-            element?.shouldRenderInitialData = false
             view.loading_voucher.show()
             element?.let {
 
@@ -51,6 +50,7 @@ class ProductMerchantVoucherViewHolder(val view: View, val listener: DynamicProd
                 })
 
                 view.merchantVoucherListWidget.setData(it.voucherData)
+                element.shouldRenderInitialData = false
             }
         }
     }

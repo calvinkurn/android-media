@@ -18,7 +18,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: Map<String, String>,
-                                                       private val graphqlRepository: GraphqlRepository) : UseCase<ProductInfoP2Login>() {
+                                                       private val graphqlRepository: GraphqlRepository
+) : UseCase<ProductInfoP2Login>() {
 
     companion object {
         fun createParams(shopId: Int, productId: Int): RequestParams = RequestParams.create().apply {

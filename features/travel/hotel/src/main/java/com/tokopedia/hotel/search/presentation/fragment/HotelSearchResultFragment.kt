@@ -74,7 +74,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
         const val ARG_DESTINATION_NAME = "arg_destination_name"
 
-        fun createInstance(destinationName: String = "", destinationID: Int = 0, type: String = "",
+        fun createInstance(destinationName: String = "", destinationID: Long = 0, type: String = "",
                            latitude: Float = 0f, longitude: Float = 0f, checkIn: String = "",
                            checkOut: String = "", totalRoom: Int = 1, totalAdult: Int = 0,
                            totalChildren: Int = 0): HotelSearchResultFragment {
@@ -82,7 +82,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             return HotelSearchResultFragment().also {
                 it.arguments = Bundle().apply {
                     putString(ARG_DESTINATION_NAME, destinationName)
-                    putInt(ARG_DESTINATION_ID, destinationID)
+                    putLong(ARG_DESTINATION_ID, destinationID)
                     putString(ARG_TYPE, type)
                     putFloat(ARG_LAT, latitude)
                     putFloat(ARG_LONG, longitude)
@@ -101,7 +101,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
         searchResultviewModel = viewModelProvider.get(HotelSearchResultViewModel::class.java)
         arguments?.let {
-            searchResultviewModel.initSearchParam(it.getInt(ARG_DESTINATION_ID),
+            searchResultviewModel.initSearchParam(it.getLong(ARG_DESTINATION_ID),
                     it.getString(ARG_TYPE, ""),
                     it.getFloat(ARG_LAT, 0f),
                     it.getFloat(ARG_LONG, 0f),
