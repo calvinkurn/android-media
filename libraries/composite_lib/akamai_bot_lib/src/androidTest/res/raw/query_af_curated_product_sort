@@ -1,0 +1,8 @@
+query affiliateSortOption() {
+  affiliatedProductSort {
+    sorts {
+      sortVal
+      text
+    }
+  }
+}

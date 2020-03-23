@@ -60,6 +60,7 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
             setMinValue(dateAdapter.getMinIndex())
             setWrapSelectorWheel(false)
             setWheelItemCount(3)
+            setTextSize(30)
         }
 
         timeSpinner?.setAdapter(timeAdapter)
@@ -107,6 +108,7 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
         timeSpinner?.setMinValue(timeAdapter.getMinIndex())
         timeSpinner?.setWrapSelectorWheel(false)
         timeSpinner?.setWheelItemCount(3)
+        timeSpinner?.setTextSize(30)
         timeAdapter.notifyDataSetChanged()
     }
 

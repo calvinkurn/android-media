@@ -2,9 +2,10 @@
 
 package com.tokopedia.search.result.presentation.presenter.product
 
-import com.tokopedia.search.analytics.GeneralSearchTrackingModel
+import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.presenter.product.testinstance.searchProductModelCommon
+import com.tokopedia.search.shouldBe
 import io.mockk.MockKVerificationScope
 
 fun MockKVerificationScope.verifyShowLoading(productListView: ProductListSectionContract.View) {
@@ -44,10 +45,11 @@ fun MockKVerificationScope.verifyShowLoadMoreError(productListView: ProductListS
     productListView.showNetworkError(startRow)
 }
 
-fun MockKVerificationScope.verifySendTrackingOnFirstTimeLoad(productListView: ProductListSectionContract.View, generalSearchTrackingModel: GeneralSearchTrackingModel) {
+fun MockKVerificationScope.verifySendTrackingOnFirstTimeLoad(productListView: ProductListSectionContract.View) {
     productListView.sendTrackingEventAppsFlyerViewListingSearch(any(), any(), any())
     productListView.sendTrackingEventMoEngageSearchAttempt(any(), any(), any())
-    productListView.sendTrackingGTMEventSearchAttempt(generalSearchTrackingModel)
+    productListView.previousKeyword
+    productListView.sendTrackingGTMEventSearchAttempt(any())
 }
 
 fun MockKVerificationScope.verifyProcessingNextPage(productListView: ProductListSectionContract.View) {
@@ -68,4 +70,19 @@ fun MockKVerificationScope.verifyIsVisible(productListView: ProductListSectionCo
 
 fun MockKVerificationScope.verifyIsAdded(productListView: ProductListSectionContract.View) {
     productListView.reloadData()
+}
+
+internal fun WishlistTrackingModel.assert(
+        expectedWishlistTrackingModel: WishlistTrackingModel
+) {
+
+    isAddWishlist.shouldBe(expectedWishlistTrackingModel.isAddWishlist,
+            "Wishlist tracking model isAddWishlist should be ${expectedWishlistTrackingModel.isAddWishlist}")
+
+    productId shouldBe expectedWishlistTrackingModel.productId
+    isTopAds.shouldBe(expectedWishlistTrackingModel.isTopAds,
+            "Wishlist tracking model isTopAds should be ${expectedWishlistTrackingModel.isTopAds}")
+    isUserLoggedIn.shouldBe(expectedWishlistTrackingModel.isUserLoggedIn,
+            "Wishlist tracking model isUserLoggedIn should be ${expectedWishlistTrackingModel.isUserLoggedIn}")
+    keyword shouldBe keyword
 }

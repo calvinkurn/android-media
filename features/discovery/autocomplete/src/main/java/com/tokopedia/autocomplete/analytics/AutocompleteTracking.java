@@ -56,6 +56,8 @@ public class AutocompleteTracking {
     public static final String CLICK_PROFILE_SUGGESTION = "click - profile autocomplete on suggestion list";
     public static final String CLICK_TOP_PROFILE_SUGGESTION = "click - profile autocomplete on top suggestion";
     public static final String CLICK_REFRESH_POPULAR_SEARCH = "click refresh on popular search";
+    public static final String CLICK_SHOP_SUGGESTION = "click - shop autocomplete";
+    public static final String CLICK_KEYWORD_SUGGESTION = "click - product autocomplete";
 
     public static final String ECOMMERCE = "ecommerce";
     public static final String PRODUCT_CLICK = "productClick";
@@ -95,78 +97,16 @@ public class AutocompleteTracking {
         );
     }
 
-    public static void eventClickAutoCompleteSearch(Context context, String label, String tabName) {
+    public static void eventClickShop(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_SEARCH_RESULT,
                 EVENTCATEGORY_TOP_NAV,
-                String.format("click - product autocomplete - tab: %s", tabName),
+                CLICK_SHOP_SUGGESTION,
                 label
         );
     }
 
-    public static void eventClickShopSearch(Context context,
-                                            String label,
-                                            String tabName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                EVENT_CLICK_SEARCH_RESULT,
-                EVENTCATEGORY_TOP_NAV,
-                String.format("click - shop autocomplete - tab: %s", tabName),
-                label
-        );
-    }
-
-    public static void eventClickInCategory(Context context,
-                                            String label,
-                                            String tabName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                EVENT_CLICK_SEARCH_RESULT,
-                EVENTCATEGORY_TOP_NAV,
-                String.format("click - category autocomplete - tab: %s", tabName),
-                label
-        );
-    }
-
-    public static void eventClickInHotlist(Context context,
-                                           String keyword,
-                                           String hotlistName,
-                                           String id,
-                                           int position,
-                                           String applink) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                EVENT_CLICK_TOP_NAV,
-                EVENTCATEGORY_TOP_NAV,
-                ACTION_CLICK_HOTLIST_SUGGESTION,
-                String.format(
-                        LABEL_HOTLIST_CLICK,
-                        keyword,
-                        hotlistName,
-                        id,
-                        String.valueOf(position),
-                        applink
-                )
-        );
-    }
-
-    public static void eventClickCategory(Context context,
-                                          String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                EVENT_CLICK_SEARCH_RESULT,
-                EVENTCATEGORY_TOP_NAV,
-                CLICK_CATEGORY_SUGGESTION,
-                label
-        );
-    }
-
-    public static void eventClickDigital(Context context, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                EVENT_CLICK_SEARCH_RESULT,
-                EVENTCATEGORY_TOP_NAV,
-                CLICK_DIGITAL_PRODUCT_SUGGESTION,
-                label
-        );
-    }
-
-    public static void eventClickProfile(Context context, String label) {
+    public static void eventClickProfile(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_TOP_NAV,
                 EVENTCATEGORY_TOP_NAV,
@@ -175,11 +115,20 @@ public class AutocompleteTracking {
         );
     }
 
-    public static void eventClickTopProfile(Context context, String label) {
+    public static void eventClickKeyword(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                EVENT_CLICK_TOP_NAV,
+                EVENT_CLICK_SEARCH_RESULT,
                 EVENTCATEGORY_TOP_NAV,
-                CLICK_TOP_PROFILE_SUGGESTION,
+                CLICK_KEYWORD_SUGGESTION,
+                label
+        );
+    }
+
+    public static void eventClickCurated(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                EVENT_CLICK_SEARCH_RESULT,
+                EVENTCATEGORY_TOP_NAV,
+                CLICK_DIGITAL_PRODUCT_SUGGESTION,
                 label
         );
     }

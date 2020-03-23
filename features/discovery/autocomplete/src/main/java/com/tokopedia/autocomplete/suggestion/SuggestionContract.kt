@@ -7,10 +7,26 @@ import com.tokopedia.discovery.common.model.SearchParameter
 
 interface SuggestionContract {
     interface View : CustomerView {
-        fun showSuggestionResult(allFragmentList: MutableList<Visitable<*>>, productFragmentList: MutableList<Visitable<*>>, shopFragmentList: MutableList<Visitable<*>>)
+        fun showSuggestionResult(list: MutableList<Visitable<*>>)
+
+        fun trackEventClickKeyword(eventLabel: String)
+
+        fun trackEventClickCurated(eventLabel: String)
+
+        fun trackEventClickShop(eventLabel: String)
+
+        fun trackEventClickProfile(eventLabel: String)
+
+        fun dropKeyBoard()
+
+        fun route(applink: String)
+
+        fun finish()
     }
 
     interface Presenter : CustomerPresenter<View> {
         fun search(searchParameter: SearchParameter)
+
+        fun onSuggestionItemClicked(item: BaseSuggestionViewModel)
     }
 }

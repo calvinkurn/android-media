@@ -1,0 +1,10 @@
+query chatReplies($msgId : Int!){
+  chatReplies(msgId: $msgId) {
+		block{
+			isBlocked
+			isPromoBlocked
+			blockedUntil
+		}
+
+	}
+}

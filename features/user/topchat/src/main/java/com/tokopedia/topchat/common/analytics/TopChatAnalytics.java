@@ -294,15 +294,17 @@ public class TopChatAnalytics {
                         USER_ID, user.getUserId(),
                         ECOMMERCE, DataLayer.mapOf(
                                 "currencyCode", "IDR",
-                                "impressions", DataLayer.mapOf(
-                                        "name", product.getProductName(),
-                                        "id", product.getProductId(),
-                                        "price", product.getProductPrice(),
-                                        "brand", "none",
-                                        "category", product.getCategory(),
-                                        "variant", product.getVariants().toString(),
-                                        "list", getField(String.valueOf(product.getBlastId())),
-                                        "position", 0
+                                "impressions", DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                "name", product.getProductName(),
+                                                "id", product.getProductId(),
+                                                "price", product.getProductPrice(),
+                                                "brand", "none",
+                                                "category", product.getCategory(),
+                                                "variant", product.getVariants().toString(),
+                                                "list", getField(String.valueOf(product.getBlastId())),
+                                                "position", 0
+                                        )
                                 )
                         )
                 )

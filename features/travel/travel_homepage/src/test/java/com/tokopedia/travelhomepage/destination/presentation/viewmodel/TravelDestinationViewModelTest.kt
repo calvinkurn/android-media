@@ -1,65 +1,68 @@
 package com.tokopedia.travelhomepage.destination.presentation.viewmodel
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.travelhomepage.InstantTaskExecutorRuleSpek
 import com.tokopedia.travelhomepage.destination.usecase.GetEmptyModelsUseCase
-import com.tokopedia.travelhomepage.shouldBeEquals
+import com.tokopedia.travelhomepage.shouldBe
 import com.tokopedia.usecase.coroutines.Fail
 import io.mockk.coEvery
 import io.mockk.mockk
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.gherkin.Feature
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 
 /**
  * @author by furqan on 15/02/2020
  */
-class TravelDestinationViewModelTest : Spek({
+class TravelDestinationViewModelTest {
 
-    InstantTaskExecutorRuleSpek(this)
+    @get:Rule
+    val rule = InstantTaskExecutorRule()
 
-    Feature("Create Travel Destination View Model") {
-        Scenario("Create Travel Destination View Model with Initial List") {
-            val viewModel = TravelDestinationViewModel(mockk(), GetEmptyModelsUseCase(), TravelTestDispatcherProvider())
+    private val graphqlRepository = mockk<GraphqlRepository>()
 
-            When("Create Travel Destination and Create Initial Items") {
-                viewModel.getInitialList()
-            }
+    private lateinit var viewModel: TravelDestinationViewModel
 
-            Then("Verify initial item have 6 items") {
-                viewModel.travelDestinationItemList.value!!.size shouldBeEquals 6
-                viewModel.isAllError.value shouldBeEquals null
-            }
-        }
-
-        Scenario("Create Travel Homepage View Model without Initial List") {
-            val viewModel = TravelDestinationViewModel(mockk(), mockk(), TravelTestDispatcherProvider())
-
-            Then("all value should be null") {
-                viewModel.travelDestinationItemList.value shouldBeEquals null
-                viewModel.travelDestinationCityModel.value shouldBeEquals null
-                viewModel.isAllError.value shouldBeEquals null
-            }
-        }
+    @Before
+    fun setup() {
+        viewModel = TravelDestinationViewModel(graphqlRepository, GetEmptyModelsUseCase(), TravelTestDispatcherProvider())
     }
 
-    Feature("Handle Fetch Destination City Data") {
-        Scenario("Fetch Destination City Failed") {
-            val graphqlRepository = mockk<GraphqlRepository>()
-            val viewModel = TravelDestinationViewModel(graphqlRepository, GetEmptyModelsUseCase(), TravelTestDispatcherProvider())
+    @Test
+    fun onCreateViewModelWithInitialList_InitialItemShouldHave6Items() {
+        // given
 
-            Given("Fetch Destination City throw Error") {
-                coEvery { graphqlRepository.getReseponse(any()) } coAnswers { throw Throwable() }
-            }
+        // when
+        viewModel.getInitialList()
 
-            When("Fetch Destination City Data") {
-                viewModel.getDestinationCityData("", "")
-            }
-
-            Then("City Model should be instance of Fail") {
-                viewModel.travelDestinationCityModel.value is Fail
-            }
-        }
-
+        // then
+        viewModel.travelDestinationItemList.value!!.size shouldBe 6
+        viewModel.isAllError.value shouldBe null
     }
-})
+
+    @Test
+    fun onCreateViewModelWithoutInitialList_InitialItemShouldHave6Items() {
+        // given
+
+        // when
+
+        // then
+        viewModel.travelDestinationItemList.value shouldBe null
+        viewModel.travelDestinationCityModel.value shouldBe null
+        viewModel.isAllError.value shouldBe null
+    }
+
+    @Test
+    fun onGetDestinationCityData_CityModelShouldRepresentFailedFetch() {
+        // given
+        coEvery { graphqlRepository.getReseponse(any()) } coAnswers { throw Throwable() }
+
+        // when
+        viewModel.getDestinationCityData("", "")
+
+        // then
+        viewModel.travelDestinationCityModel.value is Fail
+    }
+
+}

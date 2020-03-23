@@ -7,7 +7,10 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-import com.tokopedia.home.beranda.listener.*
+import com.tokopedia.home.beranda.listener.HomeCategoryListener
+import com.tokopedia.home.beranda.listener.HomeFeedsListener
+import com.tokopedia.home.beranda.listener.HomeInspirationListener
+import com.tokopedia.home.beranda.listener.HomeReviewListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightViewModel
@@ -17,7 +20,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.*
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.default_home_dc.ErrorPromptViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.BusinessUnitViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.MixTopBannerViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.NewBusinessViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.EmptyBlankViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.GeolocationPromptViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.OvoViewHolder
@@ -62,8 +67,8 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
         return TickerViewHolder.LAYOUT
     }
 
-    override fun type(businessUnitViewModel: BusinessUnitViewModel): Int {
-        return BusinessUnitViewHolder.LAYOUT
+    override fun type(businessUnitWidgetDataModel: NewBusinessUnitWidgetDataModel): Int {
+        return NewBusinessViewHolder.LAYOUT
     }
 
     override fun type(useCaseIconSectionViewModel: UseCaseIconSectionViewModel): Int {
@@ -166,6 +171,12 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE -> DynamicLegoBannerViewHolder.LAYOUT
 
             /**
+             * refer to 1 grid item layout {@link com.tokopedia.home.R.layout#home_dc_deals}
+             * used by deals widget to show 1 product item
+             */
+            DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> ProductHighlightViewHolder.LAYOUT
+
+            /**
              * refer to sprint product item layout {@link com.tokopedia.home.R.layout#layout_sprint_product_item}
              * no further development for this viewholder
              * backend possibly return this layout for android version  >= 2.19
@@ -183,6 +194,11 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             DynamicHomeChannel.Channels.LAYOUT_POPULAR_KEYWORD -> PopularKeywordViewHolder.LAYOUT
 
             /**
+             * refer to mix left carousel com.tokopedia.home.R.layout#home_dc_mix_left
+             */
+            DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> MixLeftViewHolder.LAYOUT
+
+            /**
              * refer to gif banner layout com.tokopedia.home.R.layout#home_dc_default_error_prompt
              */
             DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> ErrorPromptViewHolder.LAYOUT
@@ -191,6 +207,10 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
              * refer to recommendation list carousel com.tokopedia.home.R.layout#home_dc_list_carousel
              */
             DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> RecommendationListCarouselViewHolder.LAYOUT
+            /**
+             * refer to mix top carousel com.tokopedia.home.R.layout#home_mix_top_banner
+             */
+            DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> MixTopBannerViewHolder.LAYOUT
             else -> EmptyBlankViewHolder.LAYOUT
         }
     }
@@ -203,7 +223,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             DynamicLegoBannerViewHolder.LAYOUT -> viewHolder = DynamicLegoBannerViewHolder(view, listener, countDownListener, parentRecycledViewPool)
             BannerViewHolder.LAYOUT -> viewHolder = BannerViewHolder(view, listener)
             TickerViewHolder.LAYOUT -> viewHolder = TickerViewHolder(view, listener)
-            BusinessUnitViewHolder.LAYOUT -> viewHolder = BusinessUnitViewHolder(listener, view)
+            NewBusinessViewHolder.LAYOUT -> viewHolder = NewBusinessViewHolder(view, listener)
             UseCaseIconSectionViewHolder.LAYOUT -> viewHolder = UseCaseIconSectionViewHolder(view, listener)
             DynamicIconSectionViewHolder.LAYOUT -> viewHolder = DynamicIconSectionViewHolder(view, listener)
             DynamicIconTwoRowsSectionViewHolder.LAYOUT -> viewHolder = DynamicIconTwoRowsSectionViewHolder(view, listener)
@@ -225,7 +245,10 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             HomeLoadingMoreViewHolder.LAYOUT -> viewHolder = HomeLoadingMoreViewHolder(view)
             ErrorPromptViewHolder.LAYOUT -> viewHolder = ErrorPromptViewHolder(view, listener, countDownListener)
             PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener)
+            MixLeftViewHolder.LAYOUT -> viewHolder = MixLeftViewHolder(view, listener, countDownListener, parentRecycledViewPool)
             RecommendationListCarouselViewHolder.LAYOUT -> viewHolder = RecommendationListCarouselViewHolder(view, listener, countDownListener, parentRecycledViewPool)
+            MixTopBannerViewHolder.LAYOUT -> viewHolder = MixTopBannerViewHolder(view, listener, countDownListener, parentRecycledViewPool)
+            ProductHighlightViewHolder.LAYOUT -> viewHolder = ProductHighlightViewHolder(view, listener, countDownListener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

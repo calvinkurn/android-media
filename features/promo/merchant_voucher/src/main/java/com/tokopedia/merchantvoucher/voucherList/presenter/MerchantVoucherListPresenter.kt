@@ -9,6 +9,7 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.MERCHANT_VOUCHER_SOURCE
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import java.util.*
@@ -31,7 +32,7 @@ constructor(private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
     fun isMyShop(shopId: String) = (userSessionInterface.shopId == shopId)
 
     fun getShopInfo(shopId: String) {
-        gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(listOf(shopId.toIntOrZero()))
+        gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(listOf(shopId.toIntOrZero()),source = MERCHANT_VOUCHER_SOURCE)
         gqlGetShopInfoUseCase.execute(
             {
                 if (isViewAttached) {

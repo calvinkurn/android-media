@@ -1,13 +1,13 @@
-package com.tokopedia.home_page_banner.presentation.widgets.circularViewPager
+package com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.core.view.ViewCompat
 import androidx.viewpager2.widget.ViewPager2
-import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
-import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_SETTLING
+import androidx.viewpager2.widget.ViewPager2.*
 import com.tokopedia.home_page_banner.R
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -22,7 +22,10 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
 
     var isInfinite = true
     var isAutoScroll = false
+    var isPageTransformer = false
     var aspectRatio = 0f
+    var pageMargin = 0
+    var offset = 0
     open var itemAspectRatio = 0f
     private var listener: CircularPageChangeListener? = null
     private var adapter: CircularViewPagerAdapter? = null
@@ -69,6 +72,9 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
         try {
             isInfinite = a.getBoolean(R.styleable.CircularViewPager_isInfinite, false)
             isAutoScroll = a.getBoolean(R.styleable.CircularViewPager_autoScroll, false)
+            isPageTransformer = a.getBoolean(R.styleable.CircularViewPager_activePageTransformer, false)
+            pageMargin = a.getDimensionPixelOffset(R.styleable.CircularViewPager_pageMargin, 0)
+            offset = a.getDimensionPixelOffset(R.styleable.CircularViewPager_offset, 0)
             interval = a.getInt(R.styleable.CircularViewPager_scrollInterval, 5000)
             isAutoScrollResumed = isAutoScroll
         } finally {
@@ -80,7 +86,7 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
     protected fun init() {
         viewPager.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         viewPager.animation = null
-        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
             var currentPosition = 0f
             override fun onPageSelected(position: Int) {
                 previousPosition = currentPagePosition
@@ -145,12 +151,34 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
                 }
             }
         })
+        if(isPageTransformer){
+            with(viewPager) {
+                clipToPadding = false
+                clipChildren = false
+                offscreenPageLimit = 3
+            }
+
+            viewPager.setPageTransformer { page, position ->
+                val viewPager = page.parent.parent as ViewPager2
+                val offset = position * -(2 * pageMargin + offset)
+                if (viewPager.orientation == ORIENTATION_HORIZONTAL) {
+                    if (ViewCompat.getLayoutDirection(viewPager) == ViewCompat.LAYOUT_DIRECTION_RTL) {
+                        page.translationX = -offset
+                    } else {
+                        page.translationX = offset
+                    }
+                } else {
+                    page.translationY = offset
+                }
+            }
+        }
         addView(viewPager)
         if (isInfinite) viewPager.setCurrentItem(1, false)
     }
 
     fun setAdapter(adapter: CircularViewPagerAdapter) {
         this.adapter = adapter
+        this.adapter?.setIsInfinite(this.isInfinite)
         viewPager.adapter = this.adapter
         if (isInfinite && adapter.listCount > 0) viewPager.setCurrentItem(1, false)
     }
@@ -257,7 +285,7 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
 
     private fun setImpression(position: Int){
         val realCount = adapter?.listCount ?: 0
-        if (position != -1 && realCount != 0 && position < realCount && !impressionStatusList[position]) {
+        if (position != -1 && realCount != 0 && position < realCount && impressionStatusList.size > position && !impressionStatusList[position]) {
             impressionStatusList[position] = true
             listener?.onPageScrolled(position)
         }

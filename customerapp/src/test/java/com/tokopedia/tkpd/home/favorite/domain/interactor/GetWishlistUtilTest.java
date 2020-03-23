@@ -31,14 +31,6 @@ public class GetWishlistUtilTest {
     }
 
     @Test
-    public void testCreateObservable() throws Exception {
-        getWishlistUtil.getWishListData(mockRequestParams);
-        verify(favoriteRepository).getWishlist(mockRequestParams.getParameters());
-
-        verifyNoMoreInteractions(favoriteRepository);
-    }
-
-    @Test
     public void testGetDefaultParamsNotEmpty() throws Exception {
         RequestParams defaultParams = GetWishlistUtil.getDefaultParams();
         assertTrue(defaultParams != null);

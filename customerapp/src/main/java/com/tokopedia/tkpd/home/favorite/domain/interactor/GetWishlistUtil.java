@@ -30,19 +30,6 @@ public class GetWishlistUtil {
         this.favoriteRepository = favoriteRepository;
     }
 
-    public Observable<DomainWishlist> getWishListData(RequestParams requestParams) {
-        boolean isForceRefresh = requestParams.getBoolean(KEY_IS_FORCE_REFRESH, false);
-        requestParams.clearValue(KEY_IS_FORCE_REFRESH);
-        TKPDMapParam<String, Object> parameters = requestParams.getParameters();
-
-
-        if (isForceRefresh) {
-            return favoriteRepository.getFreshWishlist(parameters);
-        } else {
-            return favoriteRepository.getWishlist(parameters);
-        }
-    }
-
     public static RequestParams getDefaultParams() {
         RequestParams param = RequestParams.create();
         param.putInt(KEY_PAGE, DEFAULT_PAGE_VALUE);

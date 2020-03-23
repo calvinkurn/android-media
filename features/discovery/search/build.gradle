@@ -122,14 +122,6 @@ project.ext {
     groupId = 'com.tokopedia.discovery'
     versionName = "0.0.1"
     artifactName ="search-release"
-    unitTestJavaIncludes = [
-            '**/UrlParamUtils.*'
-    ]
-    unitTestKotlinIncludes = [
-            '**/SearchShopViewModel.*',
-            '**/SearchViewModel.*',
-            '**/SearchKotlinExtKt.*',
-    ]
 }
 
 apply from: '../../../publish_local.gradle'
