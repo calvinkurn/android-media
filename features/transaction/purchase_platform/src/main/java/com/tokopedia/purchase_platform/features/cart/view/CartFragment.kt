@@ -1320,12 +1320,19 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         var title = getString(R.string.promo_funnel_label)
         promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
 
-        if (lastApplyData.additionalInfo.messageInfo.message.isNotEmpty()) title = lastApplyData.additionalInfo.messageInfo.message
-        promoCheckoutBtn.title = title
+        if (lastApplyData.additionalInfo.messageInfo.message.isNotEmpty()) {
+            title = lastApplyData.additionalInfo.messageInfo.message
+        }
+
         if (lastApplyData.additionalInfo.messageInfo.detail.isNotEmpty()) {
             isApplied = true
             promoCheckoutBtn.desc = lastApplyData.additionalInfo.messageInfo.detail
+        } else {
+            isApplied = false
+            promoCheckoutBtn.desc = ""
         }
+
+        promoCheckoutBtn.title = title
         promoCheckoutBtn.setOnClickListener {
             if (cartAdapter.selectedCartItemData.isEmpty()) showToaster(getString(R.string.promo_choose_item_cart), isShowOk = false)
             else {
