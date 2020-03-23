@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.adapter.PaddingItemDecorationShopPage
 import com.tokopedia.shop.home.view.adapter.ShopHomeSliderSquareAdapter
@@ -70,7 +71,7 @@ class ShopHomeSliderSquareViewHolder(
     }
 
     private fun getIndexRatio(data: ShopHomeDisplayWidgetUiModel, index: Int): Int {
-        return data.header.ratio.split(":")[index].toInt()
+        return data.header.ratio.split(":").getOrNull(index).toIntOrZero()
     }
 
     private fun getHeightRatio(element: ShopHomeDisplayWidgetUiModel): Float {
