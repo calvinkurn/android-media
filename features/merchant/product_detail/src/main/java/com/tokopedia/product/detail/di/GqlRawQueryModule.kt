@@ -23,7 +23,6 @@ class GqlRawQueryModule {
     fun provideRawProductInfo(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_product_info)
 
-
     @ProductDetailScope
     @Provides
     @IntoMap
