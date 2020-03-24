@@ -406,22 +406,22 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         btn_pay.setOnClickListener {
             //            refresh(false, false)
             viewModel.finalUpdate { checkoutData: Data ->
-                view?.let { _ ->
+                view?.let { v ->
                     activity?.let {
-                        val paymentParameter = checkoutData.paymentParameter
-                        if (paymentParameter.callbackUrl.isNotEmpty() && paymentParameter.payload.isNotEmpty()) {
+                        val redirectParam = checkoutData.paymentParameter.redirectParam
+                        if (redirectParam.url.isNotEmpty() && redirectParam.method.isNotEmpty()) {
                             val paymentPassData = PaymentPassData()
-                            paymentPassData.redirectUrl = paymentParameter.redirectParam.url
-                            paymentPassData.queryString = paymentParameter.redirectParam.form
-                            paymentPassData.method = paymentParameter.redirectParam.method
+                            paymentPassData.redirectUrl = redirectParam.url
+                            paymentPassData.queryString = redirectParam.form
+                            paymentPassData.method = redirectParam.method
 
                             val intent = RouteManager.getIntent(activity, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
                             intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
                             intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE, checkoutData.error.message)
                             startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
-                            it.finish()
+//                            it.finish()
                         } else {
-//                             redirect params?
+                            Toaster.make(v, "Terjadi kesalahan", type = Toaster.TYPE_ERROR)
                         }
                     }
                 }
