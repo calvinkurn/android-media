@@ -28,6 +28,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.typeFactory.FlashSaleCardViewTypeFactoryImpl
 import com.tokopedia.productcard.ProductCardFlashSaleModel
 import com.tokopedia.productcard.v2.BlankSpaceConfig
+import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -88,6 +89,11 @@ class MixTopBannerViewHolder(
     }
 
     override fun onFlashSaleCardImpressed(position: Int, channel: DynamicHomeChannel.Channels) {
+        channel.grids.forEach { grid ->
+            if(grid.isTopads){
+                ImpresionTask().execute(grid.impression)
+            }
+        }
         homeCategoryListener.putEEToTrackingQueue(MixTopTracking.getMixTopView(
                 MixTopTracking.mapChannelToProductTracker(channel),
                 channel.header.name,
@@ -96,8 +102,11 @@ class MixTopBannerViewHolder(
     }
 
     override fun onFlashSaleCardClicked(position: Int, channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, applink: String) {
+        if(grid.isTopads){
+            ImpresionTask().execute(grid.productClickUrl)
+        }
         homeCategoryListener.sendEETracking(MixTopTracking.getMixTopClick(
-                MixTopTracking.mapChannelToProductTracker(channel),
+                listOf(MixTopTracking.mapGridToProductTracker(grid, channel.id, position, channel.persoType, channel.categoryID)),
                 channel.header.name,
                 channel.id,
                 adapterPosition.toString()

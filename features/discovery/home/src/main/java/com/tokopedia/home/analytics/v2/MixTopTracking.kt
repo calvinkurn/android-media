@@ -65,7 +65,7 @@ object MixTopTracking : BaseTracking() {
             Label.KEY, headerName
     )
 
-    private fun mapGridToProductTracker(grid: DynamicHomeChannel.Grid, channelId: String, position: Int, persoType: String, categoryId: String) = Product(
+    fun mapGridToProductTracker(grid: DynamicHomeChannel.Grid, channelId: String, position: Int, persoType: String, categoryId: String) = Product(
             id = grid.id,
             name = grid.name,
             brand = "",
