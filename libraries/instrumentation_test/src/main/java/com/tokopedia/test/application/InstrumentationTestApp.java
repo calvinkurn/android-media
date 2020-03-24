@@ -22,8 +22,6 @@ import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
-import com.tokopedia.device.info.DeviceConnectionInfo;
-import com.tokopedia.device.info.DeviceScreenInfo;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.instrumentation.test.R;
 import com.tokopedia.network.NetworkRouter;

@@ -1,8 +1,9 @@
-package com.tokopedia.device.info
+package com.tokopedia.test.application
 
 import android.content.Context
 import android.util.DisplayMetrics
 import android.view.WindowManager
+import com.tokopedia.instrumentation.test.R
 import java.lang.Exception
 
 object DeviceScreenInfo {

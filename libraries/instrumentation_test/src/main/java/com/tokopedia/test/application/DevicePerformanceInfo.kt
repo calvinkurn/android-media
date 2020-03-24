@@ -1,4 +1,4 @@
-package com.tokopedia.device.info
+package com.tokopedia.test.application
 
 import android.app.ActivityManager
 import android.content.Context
