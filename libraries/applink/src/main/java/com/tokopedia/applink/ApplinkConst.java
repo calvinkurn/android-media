@@ -148,7 +148,6 @@ public interface ApplinkConst {
     String TRAVEL_SUBHOMEPAGE = "tokopedia://travelentertainment";
     String DIGITAL_RECHARGE = "tokopedia://recharge";
     String DIGITAL_SUBHOMEPAGE_HOME = "tokopedia://recharge/home";
-    String DIGITAL_RECHARGE_CC = "tokopedia://recharge/cc";
 
     String MARKETPLACE_ORDER = "tokopedia://belanja/order";
     String MARKETPLACE_ORDER_FILTER = "tokopedia://order/marketplace/filter/{filter_id}";
