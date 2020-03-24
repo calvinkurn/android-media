@@ -5,7 +5,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.unifyprinciples.Typography
@@ -40,6 +42,7 @@ class AddressListItemAdapter(var listener: onSelectedListener) : RecyclerView.Ad
         fun bind(data: RecipientAddressModel) {
             with(itemView){
                 setVisibility(data)
+                setPrimary(data)
                 address_type.text = data.addressName
                 address_name.text = data.recipientName
                 address_number.text = data.recipientPhoneNumber
@@ -54,20 +57,27 @@ class AddressListItemAdapter(var listener: onSelectedListener) : RecyclerView.Ad
             }
         }
 
+        private fun setPrimary(data: RecipientAddressModel) {
+            if (data.addressStatus == 2) {
+                itemView.lbl_main_address.visible()
+            } else {
+                itemView.lbl_main_address.gone()
+            }
+        }
+
         private fun setVisibility(recipientAddressModel: RecipientAddressModel) {
             //null
             if((recipientAddressModel.latitude == null || recipientAddressModel.latitude.isEmpty())
                     || recipientAddressModel.longitude == null || recipientAddressModel.longitude.isEmpty()) {
                 val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_no_pin_map_address)
                 imageLocation.setImageDrawable(icon)
-                pinpointText.setTextColor(ContextCompat.getColor(itemView.context, R.color.ic_disable_pinpoint))
-                pinpointText.setText(itemView.context.getString(R.string.no_pinpoint))
+//                pinpointText.setTextColor(ContextCompat.getColor(itemView.context, R.color.ic_disable_pinpoint))
+                pinpointText.text = itemView.context.getString(R.string.no_pinpoint)
             } else {
                 val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_pin_map_address)
                 imageLocation.setImageDrawable(icon)
-                pinpointText.setTextColor(ContextCompat.getColor(itemView.context, R.color.ic_disable_pinpoint))
-                pinpointText.setText(itemView.context.getString(R.string.pinpoint))
-
+//                pinpointText.setTextColor(ContextCompat.getColor(itemView.context, R.color.ic_disable_pinpoint))
+                pinpointText.text = itemView.context.getString(R.string.pinpoint)
             }
         }
     }
