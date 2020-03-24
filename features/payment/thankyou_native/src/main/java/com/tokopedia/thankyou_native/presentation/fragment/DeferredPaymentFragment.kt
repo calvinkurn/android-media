@@ -10,33 +10,32 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
-import com.tokopedia.thankyou_native.data.mapper.DetailInvoiceMapper
 import com.tokopedia.thankyou_native.di.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.*
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
-import com.tokopedia.thankyou_native.presentation.dialog.InvoiceDetailBottomSheet
-import com.tokopedia.thankyou_native.presentation.dialog.PaymentMethodsBottomSheet
-import com.tokopedia.thankyou_native.presentation.helper.*
+import com.tokopedia.thankyou_native.presentation.helper.DialogOrigin
+import com.tokopedia.thankyou_native.presentation.helper.OriginCheckStatusButton
+import com.tokopedia.thankyou_native.presentation.helper.OriginOnBackPress
+import com.tokopedia.thankyou_native.presentation.helper.OriginTimerFinished
+import com.tokopedia.thankyou_native.presentation.viewModel.DetailInvoiceViewModel
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
+import com.tokopedia.thankyou_native.presentation.views.PDPThankYouPageView
 import com.tokopedia.thankyou_native.presentation.views.ThankYouPageTimerView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_deferred.*
 import javax.inject.Inject
 
-class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.ThankTimerViewListener, OnDialogRedirectListener {
+class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.ThankTimerViewListener {
 
-    private lateinit var paymentMethodsBottomSheet: PaymentMethodsBottomSheet
     private lateinit var thanksPageDataViewModel: ThanksPageDataViewModel
+    private lateinit var detailInvoiceViewModel: DetailInvoiceViewModel
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -44,12 +43,10 @@ class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.Than
     var paymentType: PaymentType? = null
 
     var dialogOrigin: DialogOrigin? = null
-    private lateinit var dialogHelper: DialogHelper
 
     private lateinit var thanksPageData: ThanksPageData
 
     private var dialog: DialogUnify? = null
-
 
     override fun getScreenName(): String = SCREEN_NAME
 
@@ -74,12 +71,22 @@ class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.Than
     private fun initViewModels() {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
         thanksPageDataViewModel = viewModelProvider.get(ThanksPageDataViewModel::class.java)
+        detailInvoiceViewModel = viewModelProvider.get(DetailInvoiceViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        deferredPDPView.fragment = this
         observeViewModel()
         bindDataToUi()
+    }
+
+    override fun openInvoiceDetail() {
+        detailInvoiceViewModel.createInvoiceData(thanksPageData)
+    }
+
+    override fun getRecommendationView(): PDPThankYouPageView? {
+        return deferredPDPView
     }
 
     private fun observeViewModel() {
@@ -88,6 +95,10 @@ class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.Than
                 is Success -> onThankYouPageDataLoaded(it.data)
                 is Fail -> onThankYouPageDataLoadingFail(it.throwable)
             }
+        })
+
+        detailInvoiceViewModel.mutableInvoiceVisitables.observe(this, Observer {
+            openDetailedInvoiceBottomsheet(it)
         })
     }
 
@@ -132,8 +143,8 @@ class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.Than
             tvBankName.text = thanksPageData.additionalInfo.bankName
             tvBankName.visible()
         }
-        tvSeeDetail.setOnClickListener { openPaymentDetail() }
-        tvSeePaymentMethods.setOnClickListener { openHowTOPay() }
+        tvSeeDetail.setOnClickListener { openInvoiceDetail() }
+        tvSeePaymentMethods.setOnClickListener { openHowTOPay(thanksPageData) }
         tvDeadlineTime.text = thanksPageData.expireTimeStr
         tvDeadlineTimer.setExpireTimeUnix(thanksPageData.expireTimeUnix, this)
     }
@@ -143,7 +154,7 @@ class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.Than
             dialogOrigin = OriginCheckStatusButton
             checkPaymentStatus()
         }
-        btnShopAgain.setOnClickListener { gotoShopAgain() }
+        btnShopAgain.setOnClickListener { gotoHomePage() }
     }
 
     private fun checkPaymentStatus() {
@@ -197,14 +208,7 @@ class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.Than
     private fun onThankYouPageDataLoaded(data: ThanksPageData) {
         loading_layout.gone()
         thanksPageData = data
-        context?.let {
-            if (!::dialogHelper.isInitialized)
-                dialogHelper = DialogHelper(it, this)
-            dialogOrigin?.let { dialogOrigin ->
-                dialogHelper.showPaymentStatusDialog(dialogOrigin,
-                        PaymentStatusMapper.getPaymentStatusByInt(thanksPageData.paymentStatus))
-            }
-        }
+        showPaymentStatusDialog(dialogOrigin, thanksPageData)
     }
 
     private fun isPaymentTimerExpired(): Boolean {
@@ -220,40 +224,6 @@ class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.Than
             return true
         }
         return false
-    }
-
-    private fun openPaymentDetail() {
-        context?.let {
-            val visitables = DetailInvoiceMapper(thanksPageData).getDetailedInvoice()
-            InvoiceDetailBottomSheet(it).show(visitables)
-        }
-    }
-
-    private fun openHowTOPay() {
-        context?.let { context ->
-            if (!::paymentMethodsBottomSheet.isInitialized)
-                paymentMethodsBottomSheet = PaymentMethodsBottomSheet(context)
-            paymentMethodsBottomSheet.show(thanksPageData.howToPay)
-        }
-    }
-
-    private fun gotoShopAgain() {
-        gotoHomePage()
-    }
-
-    override fun gotoHomePage() {
-        RouteManager.route(context, ApplinkConst.HOME, "")
-        activity?.finish()
-    }
-
-    override fun gotoPaymentWaitingPage() {
-        RouteManager.route(context, ApplinkConst.PMS, "")
-        activity?.finish()
-    }
-
-    override fun gotoOrderList() {
-        RouteManager.route(context, ApplinkConst.PURCHASE_ORDER_DETAIL, "")//arrayOf(thanksPageData.orderList[0].orderId))
-        activity?.finish()
     }
 
     companion object {

@@ -8,9 +8,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
@@ -18,20 +15,23 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.di.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
+import com.tokopedia.thankyou_native.helper.getMaskedNumberSubStringPayment
 import com.tokopedia.thankyou_native.presentation.viewModel.CheckWhiteListViewModel
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.thankyou_native.presentation.viewModel.DetailInvoiceViewModel
+import com.tokopedia.thankyou_native.presentation.views.PDPThankYouPageView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_instant_payment.*
 import javax.inject.Inject
 
-class InstantPaymentFragment : BaseDaggerFragment() {
-
-    //todo RBA api model error
+class InstantPaymentFragment : ThankYouBaseFragment() {
 
     private lateinit var dialogUnify: DialogUnify
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private lateinit var detailInvoiceViewModel: DetailInvoiceViewModel
 
     private lateinit var checkWhiteListViewModel: CheckWhiteListViewModel
 
@@ -56,6 +56,7 @@ class InstantPaymentFragment : BaseDaggerFragment() {
     private fun initViewModels() {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
         checkWhiteListViewModel = viewModelProvider.get(CheckWhiteListViewModel::class.java)
+        detailInvoiceViewModel = viewModelProvider.get(DetailInvoiceViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -64,6 +65,8 @@ class InstantPaymentFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
+        pdp_recommendation_instant.fragment = this
         if (!::thanksPageData.isInitialized)
             activity?.finish()
         bindDataToUI()
@@ -73,6 +76,14 @@ class InstantPaymentFragment : BaseDaggerFragment() {
         observeViewModel()
     }
 
+    override fun openInvoiceDetail() {
+        detailInvoiceViewModel.createInvoiceData(thanksPageData)
+    }
+
+    override fun getRecommendationView(): PDPThankYouPageView? {
+        return pdp_recommendation_instant
+    }
+
     private fun observeViewModel() {
         checkWhiteListViewModel.whiteListResultLiveData.observe(this, Observer {
             when (it) {
@@ -80,6 +91,10 @@ class InstantPaymentFragment : BaseDaggerFragment() {
                 is Fail -> onSingleAuthRegisterFail()
 
             }
+        })
+
+        detailInvoiceViewModel.mutableInvoiceVisitables.observe(this, Observer {
+            openDetailedInvoiceBottomsheet(it)
         })
     }
 
@@ -107,11 +122,6 @@ class InstantPaymentFragment : BaseDaggerFragment() {
         btn_instant_see_transaction_list.setOnClickListener { gotoOrderList() }
     }
 
-    private fun gotoOrderList() {
-        RouteManager.route(context, ApplinkConst.PURCHASE_ORDER_DETAIL, "")//arrayOf(thanksPageData.orderList[0].orderId))
-
-    }
-
     private fun checkCreditCardRegisteredForRBA(context: Context) {
         if (::dialogUnify.isInitialized)
             dialogUnify.cancel()
@@ -135,19 +145,6 @@ class InstantPaymentFragment : BaseDaggerFragment() {
         checkWhiteListViewModel.registerForSingleAuth()
     }
 
-    private fun showErrorOnUI(errorMessage: String, retry: (() -> Unit)?) {
-        view?.let { view ->
-            retry?.let {
-                Toaster.make(view, errorMessage,
-                        Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
-                        getString(R.string.thank_coba_lagi), View.OnClickListener { retry.invoke() })
-            }
-        }
-    }
-
-    private fun showToaster(message: String) {
-        view?.let { Toaster.make(it, message, Toaster.LENGTH_SHORT) }
-    }
 
     companion object {
         const val SCREEN_NAME = "Pembayaran Berhasil"
@@ -163,11 +160,4 @@ class InstantPaymentFragment : BaseDaggerFragment() {
         }
     }
 
-}
-
-
-fun String.getMaskedNumberSubStringPayment(): String {
-    val LAST_NUMBERS = 4
-    val FOUR_CROSS = "XXXX "
-    return FOUR_CROSS + this.substring(this.length - LAST_NUMBERS)
 }

@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -307,23 +307,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btnShopAgain" />
 
-            <androidx.core.widget.NestedScrollView
+            <com.tokopedia.thankyou_native.presentation.views.PDPThankYouPageView
+                android:id="@+id/deferredPDPView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/view_divider_5">
-
-                <com.tokopedia.thankyou_native.presentation.views.PDPThankYouPageView
-                    android:id="@+id/deferredPDPView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </androidx.core.widget.NestedScrollView>
-
-
+                app:layout_constraintTop_toBottomOf="@id/view_divider_5" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <RelativeLayout
         android:id="@+id/loading_layout"

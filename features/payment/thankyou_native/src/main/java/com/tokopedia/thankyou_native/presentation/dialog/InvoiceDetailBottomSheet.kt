@@ -16,7 +16,7 @@ class InvoiceDetailBottomSheet(val context: Context) : CloseableBottomSheetDialo
     lateinit var visitables: List<Visitable<*>>
     lateinit var dialog: CloseableBottomSheetDialog
 
-    fun show(visitables: List<Visitable<*>>) {
+    fun show(visitables: ArrayList<Visitable<*>>) {
         this.visitables = visitables
         val view = createBottomSheetView()
         if (!::dialog.isInitialized)

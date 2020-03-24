@@ -54,7 +54,7 @@ class ThankYouPageAnalytics  {
                 ActionFieldNodeTrackingKey.KEY_REVENUE to null,//todo not clear...
                 ActionFieldNodeTrackingKey.KEY_TAX to orderedItem.tax,
                 ActionFieldNodeTrackingKey.KEY_SHIPPING to orderedItem.shippingAmount,
-                ActionFieldNodeTrackingKey.KEY_COUPON to null //todo data type not clear...
+                ActionFieldNodeTrackingKey.KEY_COUPON to orderedItem.coupon
         )
     }
 

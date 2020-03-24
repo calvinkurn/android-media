@@ -10,6 +10,8 @@ import com.tokopedia.thankyou_native.GQL_RECOMMENDATION_DATA
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -56,5 +58,19 @@ class ThankYouPageModule {
                                         userSessionInterface: UserSessionInterface): GetRecommendationUseCase {
         return GetRecommendationUseCase(query, graphqlUseCase, userSessionInterface)
     }
+
+
+    @ThankYouPageScope
+    @Provides
+    fun provideAddWishListUseCase(@ApplicationContext context: Context): AddWishListUseCase {
+        return AddWishListUseCase(context)
+    }
+
+    @ThankYouPageScope
+    @Provides
+    fun provideRemoveWishListUseCase(@ApplicationContext context: Context): RemoveWishListUseCase {
+        return RemoveWishListUseCase(context)
+    }
+
 
 }

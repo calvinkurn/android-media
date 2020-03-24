@@ -53,7 +53,9 @@ data class ThanksPageData(
         @SerializedName("payment_items")
         val paymentItems: ArrayList<PaymentItem>?,
         @SerializedName("payment_deduction")
-        val paymentDeductions: ArrayList<PaymentItem>?
+        val paymentDeductions: ArrayList<PaymentItem>?,
+        @SerializedName("payment_details")
+        val paymentDetails: ArrayList<PaymentDetail>?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readLong(),
@@ -72,7 +74,8 @@ data class ThanksPageData(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.createTypedArrayList(PaymentItem) ?: arrayListOf(),
-            parcel.createTypedArrayList(PaymentItem) ?: arrayListOf())
+            parcel.createTypedArrayList(PaymentItem) ?: arrayListOf(),
+            parcel.createTypedArrayList(PaymentDetail) ?: arrayListOf())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeLong(paymentID)
@@ -91,9 +94,8 @@ data class ThanksPageData(
         parcel.writeString(expireTimeStr)
         parcel.writeString(pageType)
         parcel.writeTypedList(paymentItems?.let { it } ?: run { arrayListOf<PaymentItem>() })
-        parcel.writeTypedList(paymentDeductions?.let { it } ?: run { arrayListOf<PaymentItem>() })
-
-
+        parcel.writeTypedList(paymentDeductions?.let { it } ?: run { arrayListOf<PaymentItem>()})
+        parcel.writeTypedList(paymentDetails?.let { it } ?: run { arrayListOf<PaymentDetail>() })
     }
 
     override fun describeContents(): Int {
@@ -110,6 +112,46 @@ data class ThanksPageData(
         }
     }
 }
+
+
+data class PaymentDetail(
+        @SerializedName("gateway_code")
+        val gatewayCode: String,
+        @SerializedName("gateway_name")
+        val gatewayName: String,
+        @SerializedName("amount")
+        val amount: Float,
+        @SerializedName("amount_str")
+        val amountStr: String
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+            parcel.readString()?:"",
+            parcel.readString()?:"",
+            parcel.readFloat(),
+            parcel.readString()?:"")
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(gatewayCode)
+        parcel.writeString(gatewayName)
+        parcel.writeFloat(amount)
+        parcel.writeString(amountStr)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<PaymentDetail> {
+        override fun createFromParcel(parcel: Parcel): PaymentDetail {
+            return PaymentDetail(parcel)
+        }
+
+        override fun newArray(size: Int): Array<PaymentDetail?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
+
 
 data class AdditionalInfo(
         @SerializedName("account_number")
@@ -193,6 +235,7 @@ data class ShopOrder(
         val tax: Long,
         @SerializedName("coupon")
         val coupon: String
+
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",

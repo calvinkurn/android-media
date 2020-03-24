@@ -18,8 +18,10 @@ import com.tokopedia.thankyou_native.presentation.fragment.ProcessingPaymentFrag
 
 
 class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComponent>, ThankYouPageDataLoadCallback {
-
-
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        updateTitle("")
+    }
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()

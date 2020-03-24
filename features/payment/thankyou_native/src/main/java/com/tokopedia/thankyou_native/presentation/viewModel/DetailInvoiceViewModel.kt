@@ -9,13 +9,14 @@ import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class DetailInvoiceViewModel(dispatcher: CoroutineDispatcher)
+class DetailInvoiceViewModel @Inject constructor(dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
     val mutableInvoiceVisitables = MutableLiveData<ArrayList<Visitable<*>>>()
 
-    fun obtainInvoiceData(thanksPageData: ThanksPageData) {
+    fun createInvoiceData(thanksPageData: ThanksPageData) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.IO) {
                 DetailInvoiceMapper(thanksPageData).getDetailedInvoice()

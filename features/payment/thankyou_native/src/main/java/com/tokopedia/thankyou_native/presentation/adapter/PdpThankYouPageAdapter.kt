@@ -1,18 +1,46 @@
 package com.tokopedia.thankyou_native.presentation.adapter
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.thankyou_native.presentation.adapter.viewholder.PDPViewHolder
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import com.tokopedia.productcard.v2.BlankSpaceConfig
+import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.thankyou_native.presentation.adapter.model.ThankYouRecommendationModel
+import com.tokopedia.thankyou_native.presentation.adapter.viewholder.RecommendationViewHolder
 
-class PdpThankYouPageAdapter(visitables: List<Visitable<*>>,
-                             typeFactory: PDPThankYouPageFactory) :
-        BaseAdapter<PDPThankYouPageFactory>(typeFactory, visitables) {
+class PdpThankYouPageAdapter(val thankYouRecommendationModelList: List<ThankYouRecommendationModel>,
+                             private val blankSpaceConfig: BlankSpaceConfig,
+                             val listener: ThankYouRecomViewListener?) :
+        ListAdapter<ProductCardModel, RecommendationViewHolder>(ProductModelDiffUtil()) {
 
-    override fun onViewRecycled(holder: AbstractViewHolder<out Visitable<*>>) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendationViewHolder {
+        val context = parent.context
+        val view = LayoutInflater.from(context)
+                .inflate(RecommendationViewHolder.LAYOUT_ID, parent, false)
+        return RecommendationViewHolder(view)
+    }
+
+    override fun getItemCount(): Int {
+        return thankYouRecommendationModelList.count()
+    }
+
+    override fun onBindViewHolder(holder: RecommendationViewHolder, position: Int) {
+        holder.bind(thankYouRecommendationModelList[position], blankSpaceConfig, listener)
+    }
+
+    override fun onViewRecycled(holder: RecommendationViewHolder) {
         super.onViewRecycled(holder)
-        if (holder.itemViewType == PDPViewHolder.LAYOUT_ID) {
-            (holder as PDPViewHolder).clearImage()
+        holder.clearImage()
+    }
+
+    class ProductModelDiffUtil : DiffUtil.ItemCallback<ProductCardModel>() {
+        override fun areItemsTheSame(oldItem: ProductCardModel, newItem: ProductCardModel): Boolean {
+            return oldItem.productName == newItem.productName
+        }
+
+        override fun areContentsTheSame(oldItem: ProductCardModel, newItem: ProductCardModel): Boolean {
+            return oldItem == newItem
         }
     }
 

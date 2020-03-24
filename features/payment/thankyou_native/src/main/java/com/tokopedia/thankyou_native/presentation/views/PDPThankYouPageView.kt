@@ -3,7 +3,6 @@ package com.tokopedia.thankyou_native.presentation.views
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -12,20 +11,26 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.productcard.v2.BlankSpaceConfig
+import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.di.DaggerThankYouPageComponent
-import com.tokopedia.thankyou_native.presentation.adapter.PDPThankYouPageFactory
 import com.tokopedia.thankyou_native.presentation.adapter.PdpThankYouPageAdapter
-import com.tokopedia.thankyou_native.presentation.adapter.model.PDPItemAdapterModel
 import com.tokopedia.thankyou_native.helper.ProductCardDefaultDecorator
+import com.tokopedia.thankyou_native.presentation.adapter.ThankYouRecomViewListener
+import com.tokopedia.thankyou_native.presentation.adapter.model.ThankYouRecommendationModel
 import com.tokopedia.thankyou_native.presentation.viewModel.PDPThankYouViewModel
 import com.tokopedia.thankyou_native.presentation.viewModel.state.Loaded
 import com.tokopedia.thankyou_native.presentation.viewModel.state.Loading
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.thank_pdp_recommendation.view.*
 import javax.inject.Inject
 
@@ -38,13 +43,16 @@ class PDPThankYouPageView @JvmOverloads constructor(
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private lateinit var dataList: ArrayList<Visitable<*>>
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
 
     private lateinit var adapter: PdpThankYouPageAdapter
 
-    var listener: RecommendationListener? = null
+    var listener: ThankYouRecomViewListener? = null
 
     fun getLayout() = R.layout.thank_pdp_recommendation
+
+    var fragment: BaseDaggerFragment? = null
 
     init {
         injectComponents()
@@ -63,7 +71,6 @@ class PDPThankYouPageView @JvmOverloads constructor(
 
     private fun initUI() {
         val v = LayoutInflater.from(context).inflate(getLayout(), this, true)
-        setupRecyclerView(v)
         viewModel?.let {
             startViewModelObserver(it)
             loadRecommendation(it)
@@ -100,36 +107,115 @@ class PDPThankYouPageView @JvmOverloads constructor(
 
     private fun addItemsToAdapter(result: List<RecommendationWidget>) {
         result.forEach { it ->
-            val list = it.recommendationItemList.map { recommendationItem ->
-                PDPItemAdapterModel(recommendationItem)
-            }
-            dataList.addAll(list)
+            val thankYouRecommendationModelList = getProductCardModel(it.recommendationItemList)
+            val blankSpaceConfig = computeBlankSpaceConfig(thankYouRecommendationModelList)
+            setupRecyclerView(thankYouRecommendationModelList, blankSpaceConfig)
             adapter.notifyDataSetChanged()
         }
     }
 
-    private fun setupRecyclerView(view: View) {
-        dataList = ArrayList()
+
+    private fun getProductCardModel(recommendationItemList: List<RecommendationItem>): List<ThankYouRecommendationModel> {
+        return recommendationItemList.map { recommendationItem ->
+            ThankYouRecommendationModel(recommendationItem,
+                    ProductCardModel(
+                            slashedPrice = recommendationItem.slashedPrice,
+                            productName = recommendationItem.name,
+                            formattedPrice = recommendationItem.price,
+                            productImageUrl = recommendationItem.imageUrl,
+                            isTopAds = recommendationItem.isTopAds,
+                            discountPercentage = recommendationItem.discountPercentage.toString(),
+                            reviewCount = recommendationItem.countReview,
+                            ratingCount = recommendationItem.rating,
+                            shopLocation = recommendationItem.location,
+                            isWishlistVisible = true,
+                            isWishlisted = recommendationItem.isWishlist,
+                            shopBadgeList = recommendationItem.badgesUrl.map {
+                                ProductCardModel.ShopBadge(imageUrl = it ?: "")
+                            },
+                            freeOngkir = ProductCardModel.FreeOngkir(
+                                    isActive = recommendationItem.isFreeOngkirActive,
+                                    imageUrl = recommendationItem.freeOngkirImageUrl
+                            )
+                    )
+            )
+        }
+    }
+
+    private fun setupRecyclerView(thankYouRecommendationModelList: List<ThankYouRecommendationModel>, blankSpaceConfig: BlankSpaceConfig) {
         listener = getRecommendationListener()
-        val typeFactory = PDPThankYouPageFactory(listener!!)
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
-        adapter = PdpThankYouPageAdapter(dataList, typeFactory)
-        recyclerView.adapter =  adapter
+        adapter = PdpThankYouPageAdapter(thankYouRecommendationModelList, blankSpaceConfig, listener)
+        recyclerView.adapter = adapter
         recyclerView.addItemDecoration(ProductCardDefaultDecorator())
     }
 
-    private fun getRecommendationListener(): RecommendationListener {
-        return object : RecommendationListener {
+    private fun computeBlankSpaceConfig(productCardModelList: List<ThankYouRecommendationModel>): BlankSpaceConfig {
+        val blankSpaceConfig = BlankSpaceConfig(
+                twoLinesProductName = true
+        )
+        productCardModelList.forEach {
+            val productCardModel = it.productCardModel
+            if (productCardModel.freeOngkir.isActive) blankSpaceConfig.freeOngkir = true
+            if (productCardModel.shopName.isNotEmpty()) blankSpaceConfig.shopName = true
+            if (productCardModel.productName.isNotEmpty()) blankSpaceConfig.productName = true
+            if (productCardModel.labelPromo.title.isNotEmpty()) blankSpaceConfig.labelPromo = true
+            if (productCardModel.slashedPrice.isNotEmpty()) blankSpaceConfig.slashedPrice = true
+            if (productCardModel.discountPercentage.isNotEmpty()) blankSpaceConfig.discountPercentage = true
+            if (productCardModel.formattedPrice.isNotEmpty()) blankSpaceConfig.price = true
+            if (productCardModel.shopBadgeList.isNotEmpty()) blankSpaceConfig.shopBadge = true
+            if (productCardModel.shopLocation.isNotEmpty()) blankSpaceConfig.shopLocation = true
+            if (productCardModel.ratingCount != 0) blankSpaceConfig.ratingCount = true
+            if (productCardModel.reviewCount != 0) blankSpaceConfig.reviewCount = true
+            if (productCardModel.labelCredibility.title.isNotEmpty()) blankSpaceConfig.labelCredibility = true
+            if (productCardModel.labelOffers.title.isNotEmpty()) blankSpaceConfig.labelOffers = true
+            if (productCardModel.isTopAds) blankSpaceConfig.topAdsIcon = true
+        }
+        return blankSpaceConfig
+    }
+
+    private fun getRecommendationListener(): ThankYouRecomViewListener {
+        return object : ThankYouRecomViewListener {
             override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString())
+                if (position.isNotEmpty()) intent.putExtra(Wishlist.PDP_EXTRA_UPDATED_POSITION, position[0])
+                fragment?.startActivityForResult(intent, Wishlist.REQUEST_FROM_PDP)
+            }
+
+            override fun onProductImpression(item: RecommendationItem, position: Int) {
+
             }
 
             override fun onProductImpression(item: RecommendationItem) {
+
+            }
+
+            override fun onProductAddToCartClick(item: RecommendationItem, position: Int) {
+
             }
 
             override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
+                if (userSessionInterface.isLoggedIn) {
+                    if (!isAddWishlist) {
+                        viewModel?.addToWishlist(item, callback)
+                    } else {
+                        viewModel?.removeFromWishlist(item, callback)
+                    }
+                } else {
+                    RouteManager.route(context, ApplinkConst.LOGIN)
+                }
             }
 
+        }
+    }
+
+    fun onActivityResult(position: Int, wishListStatusFromPdp: Boolean) {
+        if (::adapter.isInitialized) {
+            val thankYouRecommendationModel = adapter.thankYouRecommendationModelList[position]
+            thankYouRecommendationModel.recommendationItem.isWishlist = wishListStatusFromPdp
+            thankYouRecommendationModel.productCardModel.isWishlisted = wishListStatusFromPdp
+            adapter.notifyDataSetChanged()
         }
     }
 
@@ -138,5 +224,10 @@ class PDPThankYouPageView @JvmOverloads constructor(
         listener = null
     }
 
+}
 
+object Wishlist {
+    const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
+    const val PDP_WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
+    const val REQUEST_FROM_PDP = 138
 }

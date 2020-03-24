@@ -92,4 +92,9 @@
     <string name="thank_payment_detail">Detail Pembayaran</string>
     <string name="thank_item_purchased">Barang yang dibeli</string>
 
+
+
+    <string name="thank_recom_go_to_wishlist">Lihat Wishlist</string>
+    <string name="thank_menu_detail">Detail</string>
+
 </resources>

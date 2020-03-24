@@ -7,58 +7,57 @@
     android:background="@color/Neutral_N0">
 
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            
+
             <ImageView
                 android:id="@+id/ivPaymentProcessing"
                 android:layout_width="@dimen/dp_200"
                 android:layout_height="@dimen/dp_148"
                 android:layout_marginTop="@dimen/dp_16"
                 android:src="@drawable/thank_payment_processing"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-
+                app:layout_constraintTop_toTopOf="parent" />
 
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvPaymentProcessingTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
-                android:textColor="@color/Neutral_N700_96"
-                android:layout_marginStart="@dimen/dp_16"
-                android:text="@string/thank_payment_in_progress"
-                app:layout_constraintTop_toBottomOf="@id/ivPaymentProcessing"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:gravity="center"
+                android:text="@string/thank_payment_in_progress"
+                android:textColor="@color/Neutral_N700_96"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ivPaymentProcessing"
                 app:typographyType="body_2"
-                app:typographyWeight="bold"/>
+                app:typographyWeight="bold" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvPaymentProcessingTimeInfo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
-                android:textColor="@color/font_black_disabled_38"
-                android:layout_marginStart="@dimen/dp_16"
-                android:text="@string/thank_payment_in_progress_time"
-                app:layout_constraintTop_toBottomOf="@id/tvPaymentProcessingTitle"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:gravity="center"
-                app:typographyType="heading_6"/>
+                android:text="@string/thank_payment_in_progress_time"
+                android:textColor="@color/font_black_disabled_38"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvPaymentProcessingTitle"
+                app:typographyType="heading_6" />
 
 
             <View
@@ -67,18 +66,18 @@
                 android:layout_height="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
                 android:background="@color/thank_divider_color"
-                app:layout_constraintTop_toBottomOf="@id/tvPaymentProcessingTimeInfo"/>
+                app:layout_constraintTop_toBottomOf="@id/tvPaymentProcessingTimeInfo" />
 
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvPaymentGatewayName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:textColor="@color/Neutral_N700_96"
-                android:layout_marginStart="@dimen/dp_16"
                 app:layout_constraintEnd_toStartOf="@+id/ivPaymentGatewayImage"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/view_divider_1"
@@ -117,12 +116,12 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
+                android:text="@string/thank_type_of_payment"
                 android:textColor="@color/black_54"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/tvPaymentGatewayName"
                 app:layout_constraintTop_toBottomOf="@+id/view_divider_2"
-                app:typographyType="body_3"
-                android:text="@string/thank_type_of_payment" />
+                app:typographyType="body_3" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvCreditWithTimeLine"
@@ -138,7 +137,6 @@
                 tools:text="6 Bulan Rp2.000.00000" />
 
 
-
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvInterestRate"
                 android:layout_width="0dp"
@@ -148,9 +146,8 @@
                 app:layout_constraintStart_toStartOf="@+id/tvPaymentGatewayName"
                 app:layout_constraintTop_toBottomOf="@+id/tvCreditWithTimeLine"
                 app:typographyType="small"
-                tools:visibility="visible"
-                tools:text="@string/thank_interest_rate"/>
-
+                tools:text="@string/thank_interest_rate"
+                tools:visibility="visible" />
 
 
             <com.tokopedia.unifyprinciples.Typography
@@ -267,22 +264,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btnShopAgain" />
 
-            <androidx.core.widget.NestedScrollView
+            <com.tokopedia.thankyou_native.presentation.views.PDPThankYouPageView
+                android:id="@+id/deferredPDPView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/view_divider_5">
-
-                <com.tokopedia.thankyou_native.presentation.views.PDPThankYouPageView
-                    android:id="@+id/deferredPDPView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </androidx.core.widget.NestedScrollView>
+                app:layout_constraintTop_toBottomOf="@id/view_divider_5" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 
     <RelativeLayout

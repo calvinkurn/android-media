@@ -7,7 +7,6 @@ import com.tokopedia.thankyou_native.presentation.adapter.model.*
 
 class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
 
-
     private val visitableList = arrayListOf<Visitable<*>>()
 
     fun getDetailedInvoice(): ArrayList<Visitable<*>> {
@@ -17,7 +16,6 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
     }
 
     private fun createInvoiceSummary(thanksPageData: ThanksPageData) {
-
 
         var totalPrice: Float = 0F
         var totalItemCount: Int = 0
@@ -56,12 +54,9 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
 
         thanksPageData.paymentDeductions?.forEach {
             when (it.itemName) {
-                PaymentDeductionKey.PAID_BY_SALDO -> paymentModeMapList.add(PaymentModeMap(it.itemDesc, it.amountStr))
-                PaymentDeductionKey.PAID_BY_OVO_CASH -> paymentModeMapList.add(PaymentModeMap(it.itemDesc, it.amountStr))
-                PaymentDeductionKey.PAID_BY_OVO_POINT -> paymentModeMapList.add(PaymentModeMap(it.itemDesc, it.amountStr))
                 PaymentDeductionKey.TOTAL_SHIPPING_DISCOUNT -> totalShippingDiscountStr = it.amountStr
                 PaymentDeductionKey.TOTAL_DISCOUNT -> totalDiscountStr = it.amountStr
-                //PaymentDeductionKey.REWARDS_POINT -> obtainedTokoPointStr = it.amountStr
+                PaymentDeductionKey.REWARDS_POINT -> paymentModeMapList.add(PaymentModeMap(it.itemDesc, it.amountStr))
                 PaymentDeductionKey.CASH_BACK_OVO_POINT -> benefitMapList.add(BenefitMap(it.itemDesc, it.amountStr))
             }
         }
@@ -81,6 +76,10 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
 
         val billDetail = BillDetail(thanksPageData.amountStr, null, totalServiceFeeStr)
         visitableList.add(billDetail)
+
+        thanksPageData.paymentDetails?.forEach { paymentDetail ->
+            paymentModeMapList.add(PaymentModeMap(paymentDetail.gatewayName, paymentDetail.amountStr))
+        }
 
         val paymentInfo = PaymentInfo(thanksPageData.amountStr, paymentModeList = paymentModeMapList)
         visitableList.add(paymentInfo)
@@ -107,11 +106,12 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
                     PromoDataKey.LOGISTIC -> logisticDiscountStr = it.totalDiscountStr
                 }
             }
+
             visitableList.add(PurchasedProductTag())
             val shopInvoice = ShopInvoice(
                     shopOrder.storeName,
                     orderedItemList,
-                    null,//todo not available
+                    null,//todo not available merchant
                     if (shopOrder.insuranceAmount > 0F) shopOrder.insuranceAmountStr else null,
                     if (shopOrder.shippingAmount > 0F) shopOrder.shippingAmountStr else null,
                     shopOrder.logisticType,
@@ -140,9 +140,6 @@ object PaymentItemKey {
 }
 
 object PaymentDeductionKey {
-    const val PAID_BY_SALDO = "saldo"
-    const val PAID_BY_OVO_CASH = "ovocash"
-    const val PAID_BY_OVO_POINT = "ovopoint"
     const val TOTAL_SHIPPING_DISCOUNT = "total_logistic_discount"
     const val TOTAL_DISCOUNT = "total_discount"
     const val REWARDS_POINT = "rewards_point"

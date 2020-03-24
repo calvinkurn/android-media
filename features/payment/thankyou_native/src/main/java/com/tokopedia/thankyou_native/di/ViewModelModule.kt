@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.thankyou_native.presentation.viewModel.CheckWhiteListViewModel
+import com.tokopedia.thankyou_native.presentation.viewModel.DetailInvoiceViewModel
 import com.tokopedia.thankyou_native.presentation.viewModel.PDPThankYouViewModel
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
 import dagger.Binds
@@ -33,6 +34,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(CheckWhiteListViewModel::class)
     internal abstract fun provideCheckWhiteListViewModel(viewModel: CheckWhiteListViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(DetailInvoiceViewModel::class)
+    internal abstract fun provideDetailInvoiceViewModel(viewModel: DetailInvoiceViewModel): ViewModel
 
 
 }
