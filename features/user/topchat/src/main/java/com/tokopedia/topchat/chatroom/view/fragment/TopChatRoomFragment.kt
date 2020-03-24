@@ -433,7 +433,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         )
     }
 
-    private fun isUseNewCard(): Boolean {
+    override fun isUseNewCard(): Boolean {
         return RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewThumbnailKey) == variantNewThumbnail
     }
 

@@ -23,7 +23,9 @@ import javax.inject.Inject
  * @author : Steven 02/01/19
  */
 
-open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingChatMapper() {
+open class TopChatRoomGetExistingChatMapper @Inject constructor(
+        private val useNewCard: Boolean
+) : GetExistingChatMapper() {
 
     override fun mappingListChat(pojo: GetExistingChatPojo): ArrayList<Visitable<*>> {
         val listChat: ArrayList<Visitable<*>> = ArrayList()
@@ -34,7 +36,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                     val chatDateTime = chatItemPojoByDate.replies[index]
                     if (hasAttachment(chatDateTime)) {
                         val nextItem = chatItemPojoByDate.replies.getOrNull(index + 1)
-                        if (chatDateTime.isMultipleProductAttachment(nextItem)) {
+                        if (useNewCard && chatDateTime.isMultipleProductAttachment(nextItem)) {
                             val products = mergeProduct(index, chatItemPojoByDate.replies)
                             val carouselProducts = createCarouselProduct(chatDateTime, products)
                             listChat.add(carouselProducts)

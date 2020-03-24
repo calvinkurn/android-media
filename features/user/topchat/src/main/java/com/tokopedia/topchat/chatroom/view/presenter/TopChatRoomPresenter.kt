@@ -213,8 +213,10 @@ class TopChatRoomPresenter @Inject constructor(
             onError: (Throwable) -> Unit,
             onSuccessGetExistingMessage: (ChatroomViewModel) -> Unit) {
         if (messageId.isNotEmpty()) {
-            getChatUseCase.execute(GetChatUseCase.generateParamFirstTime(messageId),
-                    GetChatSubscriber(onError, onSuccessGetExistingMessage))
+            getChatUseCase.execute(
+                    GetChatUseCase.generateParamFirstTime(messageId),
+                    GetChatSubscriber(view.isUseNewCard(), onError, onSuccessGetExistingMessage)
+            )
         }
     }
 
@@ -237,7 +239,7 @@ class TopChatRoomPresenter @Inject constructor(
     ) {
         if (messageId.isNotEmpty()) {
             getChatUseCase.execute(GetChatUseCase.generateParam(messageId, page),
-                    GetChatSubscriber(onError, onSuccessGetPreviousChat))
+                    GetChatSubscriber(view.isUseNewCard(), onError, onSuccessGetPreviousChat))
         }
     }
 

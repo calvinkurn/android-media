@@ -54,6 +54,8 @@ interface TopChatContract {
         fun sendAnalyticAttachmentSent(attachment: SendablePreview)
 
         fun redirectToBrowser(url: String)
+
+        fun isUseNewCard(): Boolean
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
