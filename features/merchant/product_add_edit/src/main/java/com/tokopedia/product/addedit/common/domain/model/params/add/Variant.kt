@@ -10,7 +10,7 @@ data class Variant (
 
         @SerializedName("sizeChart")
         @Expose
-        var sizeChart: Picture? = null,
+        var sizeChart: Pictures? = null,
         @SerializedName("products")
         @Expose
         var products: Products? = null,

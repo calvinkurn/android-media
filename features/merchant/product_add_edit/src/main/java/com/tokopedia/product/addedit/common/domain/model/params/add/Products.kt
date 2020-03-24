@@ -28,7 +28,7 @@ data class Product (
     var stock: Int? = null,
     @SerializedName("picture")
     @Expose
-    var picture: Picture? = null
+    var picture: Pictures? = null
 
 ) : Parcelable
 
