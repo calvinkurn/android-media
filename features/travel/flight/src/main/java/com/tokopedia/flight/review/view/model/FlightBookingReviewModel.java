@@ -13,7 +13,7 @@ import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingVoucherMod
 import com.tokopedia.flight.bookingV2.presentation.model.FlightInsuranceModel;
 import com.tokopedia.flight.bookingV2.presentation.model.SimpleModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailModel;
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode;
 
@@ -45,7 +45,7 @@ public class FlightBookingReviewModel implements Parcelable {
     private int children;
     private int infant;
     private String returnTripId;
-    private FlightClassViewModel flightClass;
+    private FlightClassModel flightClass;
     private String departureDate;
     private String returnDate;
     private String departureTripId;
@@ -113,7 +113,7 @@ public class FlightBookingReviewModel implements Parcelable {
         children = in.readInt();
         infant = in.readInt();
         returnTripId = in.readString();
-        flightClass = in.readParcelable(FlightClassViewModel.class.getClassLoader());
+        flightClass = in.readParcelable(FlightClassModel.class.getClassLoader());
         departureDate = in.readString();
         returnDate = in.readString();
         departureTripId = in.readString();
@@ -318,11 +318,11 @@ public class FlightBookingReviewModel implements Parcelable {
         this.returnTripId = returnTripId;
     }
 
-    public FlightClassViewModel getFlightClass() {
+    public FlightClassModel getFlightClass() {
         return flightClass;
     }
 
-    public void setFlightClass(FlightClassViewModel flightClass) {
+    public void setFlightClass(FlightClassModel flightClass) {
         this.flightClass = flightClass;
     }
 

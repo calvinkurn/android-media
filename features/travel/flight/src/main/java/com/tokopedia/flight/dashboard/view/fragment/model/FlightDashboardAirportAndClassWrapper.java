@@ -1,4 +1,4 @@
-package com.tokopedia.flight.dashboard.view.fragment.viewmodel;
+package com.tokopedia.flight.dashboard.view.fragment.model;
 
 import com.tokopedia.flight.airport.view.model.FlightAirportModel;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;

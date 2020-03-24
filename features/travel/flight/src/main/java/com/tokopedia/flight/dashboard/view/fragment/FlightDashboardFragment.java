@@ -45,10 +45,10 @@ import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.activity.FlightClassesActivity;
 import com.tokopedia.flight.dashboard.view.activity.FlightSelectPassengerActivity;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardPassDataViewModel;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardPassDataModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel;
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardContract;
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardPresenter;
 import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget;
@@ -112,8 +112,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Inject
     FlightDashboardPresenter presenter;
-    private FlightDashboardViewModel viewModel;
-    private FlightDashboardPassDataViewModel passData;
+    private FlightDashboardModel viewModel;
+    private FlightDashboardPassDataModel passData;
 
     private RemoteConfig remoteConfig;
     private PerformanceMonitoring performanceMonitoring;
@@ -292,7 +292,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        passData = new FlightDashboardPassDataViewModel();
+        passData = new FlightDashboardPassDataModel();
         presenter.attachView(this);
         presenter.sendAnalyticsOpenScreen(FlightAnalytics.Screen.HOMEPAGE);
         presenter.initialize();
@@ -349,12 +349,12 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public FlightDashboardPassDataViewModel getDashboardPassData() {
+    public FlightDashboardPassDataModel getDashboardPassData() {
         return passData;
     }
 
     @Override
-    public void setDashboardPassData(FlightDashboardPassDataViewModel flightDashboardPassDataViewModel) {
+    public void setDashboardPassData(FlightDashboardPassDataModel flightDashboardPassDataViewModel) {
         this.passData = flightDashboardPassDataViewModel;
     }
 
@@ -426,7 +426,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public FlightDashboardViewModel getCurrentDashboardViewModel() {
+    public FlightDashboardModel getCurrentDashboardViewModel() {
         return viewModel;
     }
 
@@ -615,7 +615,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public void navigateToSearchPage(FlightDashboardViewModel currentDashboardViewModel) {
+    public void navigateToSearchPage(FlightDashboardModel currentDashboardViewModel) {
         FlightSearchPassDataModel passDataViewModel = new FlightSearchPassDataModel.Builder()
                 .setFlightPassengerViewModel(currentDashboardViewModel.getFlightPassengerViewModel())
                 .setDepartureDate(currentDashboardViewModel.getDepartureDate())
@@ -632,7 +632,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public void setDashBoardViewModel(FlightDashboardViewModel viewModel) {
+    public void setDashBoardViewModel(FlightDashboardModel viewModel) {
         this.viewModel = viewModel;
     }
 
@@ -643,11 +643,11 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CODE_AIRPORT_CLASSES:
-                    FlightClassViewModel viewModel = data.getParcelableExtra(FlightClassesActivity.EXTRA_FLIGHT_CLASS);
+                    FlightClassModel viewModel = data.getParcelableExtra(FlightClassesActivity.EXTRA_FLIGHT_CLASS);
                     presenter.onFlightClassesChange(viewModel);
                     break;
                 case REQUEST_CODE_AIRPORT_PASSENGER:
-                    FlightPassengerViewModel passengerViewModel = data.getParcelableExtra(FlightSelectPassengerActivity.EXTRA_PASS_DATA);
+                    FlightPassengerModel passengerViewModel = data.getParcelableExtra(FlightSelectPassengerActivity.EXTRA_PASS_DATA);
                     presenter.onFlightPassengerChange(passengerViewModel);
                     break;
                 case REQUEST_CODE_AIRPORT_DEPARTURE:

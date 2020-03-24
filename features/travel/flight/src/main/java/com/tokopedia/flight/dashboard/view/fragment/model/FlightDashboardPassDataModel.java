@@ -1,10 +1,10 @@
-package com.tokopedia.flight.dashboard.view.fragment.viewmodel;
+package com.tokopedia.flight.dashboard.view.fragment.model;
 
 /**
  * @author by furqan on 05/02/18.
  */
 
-public class FlightDashboardPassDataViewModel {
+public class FlightDashboardPassDataModel {
     private String departureAirportId;
     private String arrivalAirportId;
     private String departureCityCode;

@@ -1,4 +1,4 @@
-package com.tokopedia.flight.dashboard.view.fragment.viewmodel;
+package com.tokopedia.flight.dashboard.view.fragment.model;
 
 import android.content.Context;
 import android.os.Parcel;
@@ -16,35 +16,35 @@ import com.tokopedia.flight.airport.view.model.FlightAirportModel;
  * Created by alvarisi on 10/30/17.
  */
 
-public class FlightDashboardViewModel implements Parcelable, Cloneable {
+public class FlightDashboardModel implements Parcelable, Cloneable {
     private String departureDate;
     private String departureDateFmt;
     private String returnDate;
     private String returnDateFmt;
     private boolean isOneWay;
-    private FlightPassengerViewModel flightPassengerViewModel;
+    private FlightPassengerModel flightPassengerViewModel;
     private String flightPassengerFmt;
     private FlightAirportModel departureAirport;
     private String departureAirportFmt;
     private FlightAirportModel arrivalAirport;
     private String arrivalAirportFmt;
-    private FlightClassViewModel flightClass;
+    private FlightClassModel flightClass;
 
-    public FlightDashboardViewModel() {
+    public FlightDashboardModel() {
     }
 
-    public FlightDashboardViewModel(String departureDate,
-                                    String departureDateFmt,
-                                    String returnDate,
-                                    String returnDateFmt,
-                                    boolean isOneWay,
-                                    FlightPassengerViewModel flightPassengerViewModel,
-                                    String flightPassengerFmt,
-                                    FlightAirportModel departureAirport,
-                                    String departureAirportFmt,
-                                    FlightAirportModel arrivalAirport,
-                                    String arrivalAirportFmt,
-                                    FlightClassViewModel flightClass) {
+    public FlightDashboardModel(String departureDate,
+                                String departureDateFmt,
+                                String returnDate,
+                                String returnDateFmt,
+                                boolean isOneWay,
+                                FlightPassengerModel flightPassengerViewModel,
+                                String flightPassengerFmt,
+                                FlightAirportModel departureAirport,
+                                String departureAirportFmt,
+                                FlightAirportModel arrivalAirport,
+                                String arrivalAirportFmt,
+                                FlightClassModel flightClass) {
         this.departureDate = departureDate;
         this.departureDateFmt = departureDateFmt;
         this.returnDate = returnDate;
@@ -59,30 +59,30 @@ public class FlightDashboardViewModel implements Parcelable, Cloneable {
         this.flightClass = flightClass;
     }
 
-    protected FlightDashboardViewModel(Parcel in) {
+    protected FlightDashboardModel(Parcel in) {
         departureDate = in.readString();
         departureDateFmt = in.readString();
         returnDate = in.readString();
         returnDateFmt = in.readString();
         isOneWay = in.readByte() != 0;
-        flightPassengerViewModel = in.readParcelable(FlightPassengerViewModel.class.getClassLoader());
+        flightPassengerViewModel = in.readParcelable(FlightPassengerModel.class.getClassLoader());
         flightPassengerFmt = in.readString();
         departureAirport = in.readParcelable(FlightAirportModel.class.getClassLoader());
         departureAirportFmt = in.readString();
         arrivalAirport = in.readParcelable(FlightAirportModel.class.getClassLoader());
         arrivalAirportFmt = in.readString();
-        flightClass = in.readParcelable(FlightClassViewModel.class.getClassLoader());
+        flightClass = in.readParcelable(FlightClassModel.class.getClassLoader());
     }
 
-    public static final Creator<FlightDashboardViewModel> CREATOR = new Creator<FlightDashboardViewModel>() {
+    public static final Creator<FlightDashboardModel> CREATOR = new Creator<FlightDashboardModel>() {
         @Override
-        public FlightDashboardViewModel createFromParcel(Parcel in) {
-            return new FlightDashboardViewModel(in);
+        public FlightDashboardModel createFromParcel(Parcel in) {
+            return new FlightDashboardModel(in);
         }
 
         @Override
-        public FlightDashboardViewModel[] newArray(int size) {
-            return new FlightDashboardViewModel[size];
+        public FlightDashboardModel[] newArray(int size) {
+            return new FlightDashboardModel[size];
         }
     };
 
@@ -110,11 +110,11 @@ public class FlightDashboardViewModel implements Parcelable, Cloneable {
         isOneWay = oneWay;
     }
 
-    public FlightPassengerViewModel getFlightPassengerViewModel() {
+    public FlightPassengerModel getFlightPassengerViewModel() {
         return flightPassengerViewModel;
     }
 
-    public void setFlightPassengerViewModel(FlightPassengerViewModel flightPassengerViewModel) {
+    public void setFlightPassengerViewModel(FlightPassengerModel flightPassengerViewModel) {
         this.flightPassengerViewModel = flightPassengerViewModel;
     }
 
@@ -235,11 +235,11 @@ public class FlightDashboardViewModel implements Parcelable, Cloneable {
         return super.clone();
     }
 
-    public FlightClassViewModel getFlightClass() {
+    public FlightClassModel getFlightClass() {
         return flightClass;
     }
 
-    public void setFlightClass(FlightClassViewModel flightClass) {
+    public void setFlightClass(FlightClassModel flightClass) {
         this.flightClass = flightClass;
     }
 
@@ -270,13 +270,13 @@ public class FlightDashboardViewModel implements Parcelable, Cloneable {
         private String returnDate;
         private String returnDateFmt;
         private boolean isOneWay;
-        private FlightPassengerViewModel flightPassengerViewModel;
+        private FlightPassengerModel flightPassengerViewModel;
         private String flightPassengerFmt;
         private FlightAirportModel departureAirport;
         private String departureAirportFmt;
         private FlightAirportModel arrivalAirport;
         private String arrivalAirportFmt;
-        private FlightClassViewModel flightClass;
+        private FlightClassModel flightClass;
 
         public Builder() {
         }
@@ -306,7 +306,7 @@ public class FlightDashboardViewModel implements Parcelable, Cloneable {
             return this;
         }
 
-        public Builder setFlightPassengerViewModel(FlightPassengerViewModel flightPassengerViewModel) {
+        public Builder setFlightPassengerViewModel(FlightPassengerModel flightPassengerViewModel) {
             this.flightPassengerViewModel = flightPassengerViewModel;
             return this;
         }
@@ -336,14 +336,14 @@ public class FlightDashboardViewModel implements Parcelable, Cloneable {
             return this;
         }
 
-        public Builder setFlightClass(FlightClassViewModel flightClass) {
+        public Builder setFlightClass(FlightClassModel flightClass) {
             this.flightClass = flightClass;
             return this;
         }
 
 
-        public FlightDashboardViewModel build() {
-            return new FlightDashboardViewModel(departureDate,
+        public FlightDashboardModel build() {
+            return new FlightDashboardModel(departureDate,
                     departureDateFmt,
                     returnDate,
                     returnDateFmt,

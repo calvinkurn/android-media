@@ -21,8 +21,8 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class FlightFareCalendarModel @Inject constructor(dispatcher: CoroutineDispatcher,
-                                                  private val gqlRepository: GraphqlRepository)
+class FlightFareCalendarViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
+                                                      private val gqlRepository: GraphqlRepository)
     : BaseViewModel(dispatcher) {
 
     val fareFlightCalendarData = MutableLiveData<List<FlightFareAttributes>>()

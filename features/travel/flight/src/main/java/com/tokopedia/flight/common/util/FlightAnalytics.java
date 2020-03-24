@@ -7,8 +7,8 @@ import androidx.annotation.NonNull;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel;
 import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingCartData;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailModel;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
@@ -151,7 +151,7 @@ public class FlightAnalytics {
         ));
     }
 
-    public void eventSearchClick(FlightDashboardViewModel dashboardViewModel) {
+    public void eventSearchClick(FlightDashboardModel dashboardViewModel) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(CLICK_SEARCH_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_SEARCH,
@@ -799,7 +799,7 @@ public class FlightAnalytics {
         ));
     }
 
-    public void eventAddToCart(FlightClassViewModel flightClass, FlightBookingCartData cartData,
+    public void eventAddToCart(FlightClassModel flightClass, FlightBookingCartData cartData,
                                int resultTotalPrice, FlightDetailModel departureViewModel, FlightDetailModel returnViewModel,
                                String comboKey) {
 

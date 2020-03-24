@@ -13,8 +13,8 @@ import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
-class FlightHolidayCalendarModel @Inject constructor(private val useCase: TravelCalendarHolidayUseCase,
-                                                     val dispatcher: CoroutineDispatcher)
+class FlightHolidayCalendarViewModel @Inject constructor(private val useCase: TravelCalendarHolidayUseCase,
+                                                         val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
     val holidayCalendarData = MutableLiveData<ArrayList<Legend>>()

@@ -1,7 +1,7 @@
-package com.tokopedia.flight.dashboard.view.fragment.viewmodel.mapper;
+package com.tokopedia.flight.dashboard.view.fragment.model.mapper;
 
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,24 +12,24 @@ import javax.inject.Inject;
  * Created by alvarisi on 10/30/17.
  */
 
-public class FlightClassViewModelMapper {
+public class FlightClassModelMapper {
     @Inject
-    public FlightClassViewModelMapper() {
+    public FlightClassModelMapper() {
     }
 
-    public FlightClassViewModel transform(FlightClassEntity entity) {
-        FlightClassViewModel viewModel = null;
+    public FlightClassModel transform(FlightClassEntity entity) {
+        FlightClassModel viewModel = null;
         if (entity != null) {
-            viewModel = new FlightClassViewModel();
+            viewModel = new FlightClassModel();
             viewModel.setTitle(entity.getAttributes().getLabel());
             viewModel.setId(entity.getId());
         }
         return viewModel;
     }
 
-    public List<FlightClassViewModel> transform(List<FlightClassEntity> entities) {
-        List<FlightClassViewModel> viewModels = new ArrayList<>();
-        FlightClassViewModel viewModel;
+    public List<FlightClassModel> transform(List<FlightClassEntity> entities) {
+        List<FlightClassModel> viewModels = new ArrayList<>();
+        FlightClassModel viewModel;
         for (FlightClassEntity entity : entities) {
             viewModel = transform(entity);
             if (viewModel != null) {

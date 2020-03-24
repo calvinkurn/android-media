@@ -2,7 +2,7 @@ package com.tokopedia.flight.dashboard.view.presenter;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public class FlightClassesContract {
 
         void hideFetchClassesLoading();
 
-        void renderFlightClasses(List<FlightClassViewModel> transform);
+        void renderFlightClasses(List<FlightClassModel> transform);
     }
 
     interface Presenter extends CustomerPresenter<View> {

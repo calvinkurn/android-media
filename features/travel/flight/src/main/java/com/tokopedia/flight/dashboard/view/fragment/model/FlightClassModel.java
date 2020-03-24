@@ -1,4 +1,4 @@
-package com.tokopedia.flight.dashboard.view.fragment.viewmodel;
+package com.tokopedia.flight.dashboard.view.fragment.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -10,25 +10,25 @@ import com.tokopedia.flight.dashboard.view.adapter.FlightClassesAdapterTypeFacto
  * Created by alvarisi on 10/30/17.
  */
 
-public class FlightClassViewModel implements Visitable<FlightClassesAdapterTypeFactory>, Parcelable {
-    public static final Creator<FlightClassViewModel> CREATOR = new Creator<FlightClassViewModel>() {
+public class FlightClassModel implements Visitable<FlightClassesAdapterTypeFactory>, Parcelable {
+    public static final Creator<FlightClassModel> CREATOR = new Creator<FlightClassModel>() {
         @Override
-        public FlightClassViewModel createFromParcel(Parcel in) {
-            return new FlightClassViewModel(in);
+        public FlightClassModel createFromParcel(Parcel in) {
+            return new FlightClassModel(in);
         }
 
         @Override
-        public FlightClassViewModel[] newArray(int size) {
-            return new FlightClassViewModel[size];
+        public FlightClassModel[] newArray(int size) {
+            return new FlightClassModel[size];
         }
     };
     private String title;
     private int id;
 
-    public FlightClassViewModel() {
+    public FlightClassModel() {
     }
 
-    protected FlightClassViewModel(Parcel in) {
+    protected FlightClassModel(Parcel in) {
         title = in.readString();
         id = in.readInt();
     }

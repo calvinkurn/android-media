@@ -12,7 +12,7 @@ import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.dashboard.di.DaggerFlightDashboardComponent;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.fragment.FlightClassesfragment;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel;
 
 /**
  * Created by alvarisi on 10/30/17.
@@ -48,7 +48,7 @@ public class FlightClassesActivity extends BaseSimpleActivity implements HasComp
     }
 
     @Override
-    public void actionClassSelected(FlightClassViewModel flightClassViewModel) {
+    public void actionClassSelected(FlightClassModel flightClassViewModel) {
         setIntent(getIntent().putExtra(EXTRA_FLIGHT_CLASS, flightClassViewModel));
         setResult(RESULT_OK, getIntent());
         finish();

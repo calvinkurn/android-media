@@ -4,8 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.flight.airport.view.model.FlightAirportModel;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel;
 
 /**
  * Created by alvarisi on 11/1/17.
@@ -15,16 +15,16 @@ public class FlightSearchPassDataModel implements Parcelable{
     private String departureDate;
     private String returnDate;
     private boolean isOneWay;
-    private FlightPassengerViewModel flightPassengerViewModel;
+    private FlightPassengerModel flightPassengerViewModel;
     private FlightAirportModel departureAirport;
     private FlightAirportModel arrivalAirport;
-    private FlightClassViewModel flightClass;
+    private FlightClassModel flightClass;
     private String linkUrl;
 
     public FlightSearchPassDataModel(String departureDate, String returnDate, boolean isOneWay,
-                                     FlightPassengerViewModel flightPassengerViewModel,
+                                     FlightPassengerModel flightPassengerViewModel,
                                      FlightAirportModel departureAirport, FlightAirportModel arrivalAirport,
-                                     FlightClassViewModel flightClass, String linkUrl) {
+                                     FlightClassModel flightClass, String linkUrl) {
         this.departureDate = departureDate;
         this.returnDate = returnDate;
         this.isOneWay = isOneWay;
@@ -42,10 +42,10 @@ public class FlightSearchPassDataModel implements Parcelable{
         departureDate = in.readString();
         returnDate = in.readString();
         isOneWay = in.readByte() != 0;
-        flightPassengerViewModel = in.readParcelable(FlightPassengerViewModel.class.getClassLoader());
+        flightPassengerViewModel = in.readParcelable(FlightPassengerModel.class.getClassLoader());
         departureAirport = in.readParcelable(FlightAirportModel.class.getClassLoader());
         arrivalAirport = in.readParcelable(FlightAirportModel.class.getClassLoader());
-        flightClass = in.readParcelable(FlightClassViewModel.class.getClassLoader());
+        flightClass = in.readParcelable(FlightClassModel.class.getClassLoader());
         linkUrl = in.readString();
     }
 
@@ -97,11 +97,11 @@ public class FlightSearchPassDataModel implements Parcelable{
         isOneWay = oneWay;
     }
 
-    public FlightPassengerViewModel getFlightPassengerViewModel() {
+    public FlightPassengerModel getFlightPassengerViewModel() {
         return flightPassengerViewModel;
     }
 
-    public void setFlightPassengerViewModel(FlightPassengerViewModel flightPassengerViewModel) {
+    public void setFlightPassengerViewModel(FlightPassengerModel flightPassengerViewModel) {
         this.flightPassengerViewModel = flightPassengerViewModel;
     }
 
@@ -121,11 +121,11 @@ public class FlightSearchPassDataModel implements Parcelable{
         this.arrivalAirport = arrivalAirport;
     }
 
-    public FlightClassViewModel getFlightClass() {
+    public FlightClassModel getFlightClass() {
         return flightClass;
     }
 
-    public void setFlightClass(FlightClassViewModel flightClass) {
+    public void setFlightClass(FlightClassModel flightClass) {
         this.flightClass = flightClass;
     }
 
@@ -150,10 +150,10 @@ public class FlightSearchPassDataModel implements Parcelable{
         private String departureDate;
         private String returnDate;
         private boolean isOneWay;
-        private FlightPassengerViewModel flightPassengerViewModel;
+        private FlightPassengerModel flightPassengerViewModel;
         private FlightAirportModel departureAirport;
         private FlightAirportModel arrivalAirport;
-        private FlightClassViewModel flightClass;
+        private FlightClassModel flightClass;
         private String linkUrl;
 
         public Builder() {
@@ -174,7 +174,7 @@ public class FlightSearchPassDataModel implements Parcelable{
             return this;
         }
 
-        public Builder setFlightPassengerViewModel(FlightPassengerViewModel flightPassengerViewModel) {
+        public Builder setFlightPassengerViewModel(FlightPassengerModel flightPassengerViewModel) {
             this.flightPassengerViewModel = flightPassengerViewModel;
             return this;
         }
@@ -189,7 +189,7 @@ public class FlightSearchPassDataModel implements Parcelable{
             return this;
         }
 
-        public Builder setFlightClass(FlightClassViewModel flightClass) {
+        public Builder setFlightClass(FlightClassModel flightClass) {
             this.flightClass = flightClass;
             return this;
         }
