@@ -12,12 +12,12 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
 import com.tokopedia.flight.R
-import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
+import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.dashboard.view.fragment.cache.FlightDashboardCache
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -34,7 +34,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
     private var flightDashboardCache: FlightDashboardCache = FlightDashboardCache(context)
 
-    private val flightSearchData: FlightSearchPassDataViewModel = FlightSearchPassDataViewModel()
+    private val flightSearchData: FlightSearchPassDataModel = FlightSearchPassDataModel()
 
     private lateinit var departureDate: Date
     private lateinit var returnDate: Date
@@ -88,12 +88,12 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
     fun isRoundTrip(): Boolean = !flightSearchData.isOneWay
 
-    fun setOriginAirport(originAirport: FlightAirportViewModel) {
+    fun setOriginAirport(originAirport: FlightAirportModel) {
         flightSearchData.departureAirport = originAirport
         tvFlightOriginAirport.text = buildAirportTextFormatted(true)
     }
 
-    fun setDestinationAirport(destinationAirport: FlightAirportViewModel) {
+    fun setDestinationAirport(destinationAirport: FlightAirportModel) {
         flightSearchData.arrivalAirport = destinationAirport
         tvFlightDestinationAirport.text = buildAirportTextFormatted(false)
     }
@@ -127,15 +127,15 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         tvFlightReturnDate.text = FlightDateUtil.dateToString(returnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT)
     }
 
-    fun setPassengerView(passengerModel: FlightPassengerViewModel) {
-        flightSearchData.flightPassengerViewModel = passengerModel
+    fun setPassengerView(passengerModel: FlightPassengerModel) {
+        flightSearchData.flightPassengerModel = passengerModel
         tvFlightPassenger.text = buildPassengerTextFormatted(
                 passengerModel.adult,
                 passengerModel.children,
                 passengerModel.infant)
     }
 
-    fun setClassView(classModel: FlightClassViewModel) {
+    fun setClassView(classModel: FlightClassModel) {
         flightSearchData.flightClass = classModel
         tvFlightClass.text = classModel.title
     }
@@ -190,8 +190,8 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         tvFlightReturnDate.setOnClickListener {
             listener?.onReturnDateClicked(departureDate, returnDate)
         }
-        tvFlightPassengerLabel.setOnClickListener { listener?.onPassengerClicked(flightSearchData.flightPassengerViewModel) }
-        tvFlightPassenger.setOnClickListener { listener?.onPassengerClicked(flightSearchData.flightPassengerViewModel) }
+        tvFlightPassengerLabel.setOnClickListener { listener?.onPassengerClicked(flightSearchData.flightPassengerModel) }
+        tvFlightPassenger.setOnClickListener { listener?.onPassengerClicked(flightSearchData.flightPassengerModel) }
         tvFlightClassLabel.setOnClickListener { listener?.onClassClicked(flightSearchData.flightClass.id) }
         tvFlightClass.setOnClickListener { listener?.onClassClicked(flightSearchData.flightClass.id) }
         btnFlightSearch.setOnClickListener { onSaveSearch() }
@@ -200,7 +200,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
     private fun setOriginAirport(departureAirportId: String,
                                  departureCityCode: String,
                                  departureCityName: String) {
-        val departureAirport = FlightAirportViewModel()
+        val departureAirport = FlightAirportModel()
 
         departureAirport.cityCode = departureCityCode
         departureAirport.cityName = departureCityName
@@ -222,7 +222,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
             arrivalAirportId: String,
             arrivalCityCode: String,
             arrivalCityName: String) {
-        val arrivalAirport = FlightAirportViewModel()
+        val arrivalAirport = FlightAirportModel()
 
         arrivalAirport.cityCode = arrivalCityCode
         arrivalAirport.cityName = arrivalCityName
@@ -240,7 +240,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
     }
 
     private fun setPassengerView(adult: Int = 1, children: Int = 0, infant: Int = 0) {
-        flightSearchData.flightPassengerViewModel = FlightPassengerViewModel(adult, children, infant)
+        flightSearchData.flightPassengerModel = FlightPassengerModel(adult, children, infant)
         tvFlightPassenger.text = buildPassengerTextFormatted(adult, children, infant)
     }
 
@@ -303,21 +303,21 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         return passengerFmt
     }
 
-    private fun getClassById(classId: Int): FlightClassViewModel {
+    private fun getClassById(classId: Int): FlightClassModel {
         return when (classId) {
-            1 -> FlightClassViewModel().apply {
+            1 -> FlightClassModel().apply {
                 id = 1
                 title = "Ekonomi"
             }
-            2 -> FlightClassViewModel().apply {
+            2 -> FlightClassModel().apply {
                 id = 2
                 title = "Bisnis"
             }
-            3 -> FlightClassViewModel().apply {
+            3 -> FlightClassModel().apply {
                 id = 3
                 title = "Utama"
             }
-            else -> FlightClassViewModel()
+            else -> FlightClassModel()
         }
     }
 
@@ -411,9 +411,9 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         flightDashboardCache.putDepartureDate(flightSearchData.departureDate)
         if (isRoundTrip()) flightDashboardCache.putReturnDate(flightSearchData.returnDate)
         flightDashboardCache.putPassengerCount(
-                flightSearchData.flightPassengerViewModel.adult,
-                flightSearchData.flightPassengerViewModel.children,
-                flightSearchData.flightPassengerViewModel.infant
+                flightSearchData.flightPassengerModel.adult,
+                flightSearchData.flightPassengerModel.children,
+                flightSearchData.flightPassengerModel.infant
         )
         flightDashboardCache.putClassCache(flightSearchData.flightClass.id)
     }
@@ -439,9 +439,9 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
                                    departureDate: Date, returnDate: Date, isRoundTrip: Boolean)
 
         fun onReturnDateClicked(departureDate: Date, returnDate: Date)
-        fun onPassengerClicked(passengerModel: FlightPassengerViewModel?)
+        fun onPassengerClicked(passengerModel: FlightPassengerModel?)
         fun onClassClicked(flightClassId: Int = -1)
-        fun onSaveSearch(flightSearchData: FlightSearchPassDataViewModel)
+        fun onSaveSearch(flightSearchData: FlightSearchPassDataModel)
     }
 
 }
