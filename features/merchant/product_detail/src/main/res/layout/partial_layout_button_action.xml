@@ -14,7 +14,8 @@
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
         android:background="@drawable/bg_rounded_black"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="0dp"
@@ -44,6 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:rotation="180"
+        android:visibility="gone"
         app:srcCompat="@drawable/bg_triangle_black"
         tools:ignore="ContentDescription" />
 
