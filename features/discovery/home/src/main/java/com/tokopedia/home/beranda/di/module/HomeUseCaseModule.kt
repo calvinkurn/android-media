@@ -167,10 +167,10 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideGetDynamicChannels(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): GetDynamicChannelsUseCase{
+    fun provideGetDynamicChannels(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository, homeDataMapper: HomeDataMapper): GetDynamicChannelsUseCase{
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.dynamic_channel_query)
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeData>(graphqlRepository)
         useCase.setGraphqlQuery(query)
-        return GetDynamicChannelsUseCase(useCase)
+        return GetDynamicChannelsUseCase(useCase, homeDataMapper)
     }
 }

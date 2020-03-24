@@ -158,8 +158,8 @@ open class HomeViewModel @Inject constructor(
     private var isNeedShowGeoLocation = false
     private var headerViewModel: HeaderViewModel? = null
 
-
     private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
+
     init {
         initChannel()
         initFlow()
@@ -227,17 +227,14 @@ open class HomeViewModel @Inject constructor(
     }
 
     fun updateBannerTotalView(totalView: String) {
-        val newList = mutableListOf<Visitable<*>>()
-        newList.addAll(_homeLiveData.value?.list ?: listOf())
-
-        val playCard = newList.firstOrNull { visitable -> visitable is PlayCardViewModel }
-        val playIndex = newList.indexOf(playCard)
+        val homeList = _homeLiveData.value?.list ?: listOf()
+        val playCard = _homeLiveData.value?.list?.firstOrNull { visitable -> visitable is PlayCardViewModel }
+        val playIndex = homeList.indexOf(playCard)
         if(playCard != null && playCard is PlayCardViewModel && playCard.playCardHome != null) {
             val newPlayCard = playCard.copy(playCardHome = playCard.playCardHome.copy(totalView = totalView))
-            newList[playIndex] = newPlayCard
-            _homeLiveData.postValue(_homeLiveData.value?.copy(
-                    list = newList
-            ))
+            launch(coroutineContext){
+                updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newPlayCard, playIndex))
+            }
         }
     }
 
@@ -666,7 +663,7 @@ open class HomeViewModel @Inject constructor(
         launchCatchError(coroutineContext, block = {
             getDynamicChannelsUseCase.setParams(dynamicChannelDataModel.channel?.groupId ?: "")
             val data = getDynamicChannelsUseCase.executeOnBackground()
-            if(data.channels.isEmpty()){
+            if(data.isEmpty()){
                 updateWidget(UpdateLiveDataModel(ACTION_DELETE, dynamicChannelDataModel, position))
             } else {
                 var lastIndex = position
@@ -675,11 +672,10 @@ open class HomeViewModel @Inject constructor(
                     lastIndex = _homeLiveData.value?.list?.indexOf(dynamicChannelDataModel) ?: -1
                 }
                 updateWidget(UpdateLiveDataModel(ACTION_DELETE, dynamicChannelDataModel, lastIndex))
-                data.channels.reversed().forEach {
-                    val newChannel = DynamicChannelViewModel()
-                    newChannel.channel = it
-                    updateWidget(UpdateLiveDataModel(ACTION_ADD, newChannel, lastIndex))
+                data.reversed().forEach {
+                    updateWidget(UpdateLiveDataModel(ACTION_ADD, it, lastIndex))
                 }
+                _trackingLiveData.postValue(Event(data))
             }
         }){
             updateWidget(UpdateLiveDataModel(ACTION_DELETE, dynamicChannelDataModel, position))
@@ -852,37 +848,37 @@ open class HomeViewModel @Inject constructor(
 
     private suspend fun updateChannel(channel: Channel<UpdateLiveDataModel>){
         for(data in channel){
-            val newList = _homeLiveData.value?.list?.toMutableList()
-            data.visitable?.let { homeVisitable ->
-                if(newList != null && newList.size >  data.position) {
-                    when (data.action) {
-                        ACTION_ADD -> {
-                            if(data.position == -1 || data.position > newList.size) newList.add(homeVisitable)
-                            else newList.add(data.position, homeVisitable)
-                        }
-                        ACTION_UPDATE -> {
-                            if (data.position != -1 && newList.isNotEmpty() && newList.size > data.position && newList[data.position]::class.java == homeVisitable::class.java) {
-                                newList[data.position] = homeVisitable
-                            } else {
-                                newList.withIndex().find { it::class.java == homeVisitable::class.java }?.let {
-                                    newList[it.index] = homeVisitable
-                                }
-                            }
-                        }
-                        ACTION_DELETE -> newList.remove(homeVisitable)
-                    }
-                    withContext(homeDispatcher.ui()) {
-                        _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
-                    }
-                }
-            }
-            data.homeData?.let { homeData ->
-                if(data.action == ACTION_UPDATE_HOME_DATA){
+            if(data.action == ACTION_UPDATE_HOME_DATA){
+                data.homeData?.let { homeData ->
                     var homeDataModel = evaluateGeolocationComponent(homeData)
                     homeDataModel = evaluateAvailableComponent(homeDataModel)
-
                     withContext(homeDispatcher.ui()) {
                         _homeLiveData.value = homeDataModel
+                    }
+                }
+            } else {
+                val newList = _homeLiveData.value?.list?.toMutableList()
+                data.visitable?.let { homeVisitable ->
+                    if(newList != null && newList.size >  data.position) {
+                        when (data.action) {
+                            ACTION_ADD -> {
+                                if(data.position == -1 || data.position > newList.size) newList.add(homeVisitable)
+                                else newList.add(data.position, homeVisitable)
+                            }
+                            ACTION_UPDATE -> {
+                                if (data.position != -1 && newList.isNotEmpty() && newList.size > data.position && newList[data.position]::class.java == homeVisitable::class.java) {
+                                    newList[data.position] = homeVisitable
+                                } else {
+                                    newList.withIndex().find { it::class.java == homeVisitable::class.java }?.let {
+                                        newList[it.index] = homeVisitable
+                                    }
+                                }
+                            }
+                            ACTION_DELETE -> newList.remove(homeVisitable)
+                        }
+                        withContext(homeDispatcher.ui()) {
+                            _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
+                        }
                     }
                 }
             }

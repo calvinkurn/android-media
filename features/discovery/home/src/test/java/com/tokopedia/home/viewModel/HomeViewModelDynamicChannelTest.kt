@@ -6,7 +6,7 @@ import com.tokopedia.home.beranda.domain.interactor.GetDynamicChannelsUseCase
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeRetryModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.rules.InstantTaskExecutorRuleSpek
 import io.mockk.confirmVerified
@@ -26,13 +26,14 @@ class HomeViewModelDynamicChannelTest : Spek({
 
         val getDynamicChannelsUseCase by memoized<GetDynamicChannelsUseCase>()
         val getHomeUseCase by memoized<HomeUseCase>()
-        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
 
         Scenario("Get dynamic channel data success with single data") {
             val dataModel = DynamicChannelViewModel()
             dataModel.channel = DynamicHomeChannel.Channels(id = "1")
             val dynamicChannel = DynamicHomeChannel.Channels(id = "2")
-            val dynamicHomeChannel = DynamicHomeChannel(channels = listOf(dynamicChannel))
+            val dynamicChannelViewModel = DynamicChannelViewModel()
+            val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+            dynamicChannelViewModel.channel = dynamicChannel
             Given("dynamic banner almost expired time") {
                 getHomeUseCase.givenGetHomeDataReturn(
                         HomeDataModel(
@@ -49,7 +50,7 @@ class HomeViewModelDynamicChannelTest : Spek({
 
             Given("dynamic data returns success") {
                 getDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(
-                        homeChannel = dynamicHomeChannel
+                        dynamicChannelViewModels = listOf(dynamicChannelViewModel)
                 )
             }
 
@@ -81,10 +82,15 @@ class HomeViewModelDynamicChannelTest : Spek({
 
         Scenario("Get dynamic channel data success with multiple data") {
             val dataModel = DynamicChannelViewModel()
+            val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
             dataModel.channel = DynamicHomeChannel.Channels(id = "1")
             val dynamicChannel = DynamicHomeChannel.Channels(id = "2")
             val dynamicChannel2 = DynamicHomeChannel.Channels(id = "3")
-            val dynamicHomeChannel = DynamicHomeChannel(channels = listOf(dynamicChannel, dynamicChannel2))
+            val dynamicChannelViewModel1 = DynamicChannelViewModel()
+            val dynamicChannelViewModel2 = DynamicChannelViewModel()
+            dynamicChannelViewModel1.channel = dynamicChannel
+            dynamicChannelViewModel2.channel = dynamicChannel2
+
             Given("dynamic banner almost expired time") {
                 getHomeUseCase.givenGetHomeDataReturn(
                         HomeDataModel(
@@ -101,7 +107,7 @@ class HomeViewModelDynamicChannelTest : Spek({
 
             Given("dynamic data returns success") {
                 getDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(
-                        homeChannel = dynamicHomeChannel
+                        dynamicChannelViewModels = listOf(dynamicChannelViewModel1, dynamicChannelViewModel2)
                 )
             }
 
@@ -139,8 +145,9 @@ class HomeViewModelDynamicChannelTest : Spek({
 
         Scenario("Get dynamic channel data success with empty data") {
             val dataModel = DynamicChannelViewModel()
+            val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
             dataModel.channel = DynamicHomeChannel.Channels(id = "1")
-            val dynamicHomeChannel = DynamicHomeChannel(channels = listOf())
+
             Given("dynamic banner almost expired time") {
                 getHomeUseCase.givenGetHomeDataReturn(
                         HomeDataModel(
@@ -157,7 +164,7 @@ class HomeViewModelDynamicChannelTest : Spek({
 
             Given("dynamic data returns success") {
                 getDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(
-                        homeChannel = dynamicHomeChannel
+                        dynamicChannelViewModels = listOf()
                 )
             }
 
@@ -181,6 +188,7 @@ class HomeViewModelDynamicChannelTest : Spek({
 
         Scenario("Get dynamic channel data error") {
             val dataModel = DynamicChannelViewModel()
+            val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
             dataModel.channel = DynamicHomeChannel.Channels(id = "1")
 
             Given("dynamic banner almost expired time") {
@@ -212,7 +220,7 @@ class HomeViewModelDynamicChannelTest : Spek({
                                 (it.list.first() as DynamicChannelViewModel).channel?.id == "1"
                     })
                     observerHome.onChanged(match {
-                        it.list.isEmpty()
+                        it.list.isNotEmpty() && it.list.first() is HomeRetryModel
                     })
                 }
                 confirmVerified(observerHome)

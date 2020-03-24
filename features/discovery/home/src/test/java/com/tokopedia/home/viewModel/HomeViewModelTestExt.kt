@@ -9,6 +9,7 @@ import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.rules.TestDispatcherProvider
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
@@ -91,8 +92,8 @@ fun GetBusinessWidgetTab.givenGetBusinessWidgetTabUseCaseReturn(homeWidget: Home
     coEvery { executeOnBackground() } returns homeWidget
 }
 
-fun GetDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(homeChannel: DynamicHomeChannel) {
-    coEvery { executeOnBackground() } returns homeChannel
+fun GetDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(dynamicChannelViewModels: List<DynamicChannelViewModel>) {
+    coEvery { executeOnBackground() } returns dynamicChannelViewModels
 }
 fun GetDynamicChannelsUseCase.givenGetDynamicChannelsUseCaseThrowReturn() {
     coEvery { executeOnBackground() } throws TimeoutException()
