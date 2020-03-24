@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.feature.cashback
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.product.manage.coroutine.TestCoroutineDispatchers
 import com.tokopedia.product.manage.feature.cashback.domain.SetCashbackUseCase
 import com.tokopedia.product.manage.feature.cashback.presentation.viewmodel.ProductManageSetCashbackViewModel
 import io.mockk.MockKAnnotations
@@ -22,6 +23,6 @@ abstract class ProductManageSetCashbackViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = ProductManageSetCashbackViewModel(setCashbackUseCase, Dispatchers.Unconfined)
+        viewModel = ProductManageSetCashbackViewModel(setCashbackUseCase, TestCoroutineDispatchers)
     }
 }

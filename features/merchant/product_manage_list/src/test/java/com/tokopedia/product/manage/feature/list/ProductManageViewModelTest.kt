@@ -164,12 +164,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     @Test
     fun `when_setFilter_should_update_filter_accordingly`() {
         val selectedFilter = listOf(FilterOption.FilterByCondition.CashBackOnly, FilterOption.FilterByCondition.NewOnly)
-        val filterOptionWrapper = FilterOptionWrapper(
-                SortOption.SortByName(SortOrderOption.ASC),
-                listOf(FilterOption.FilterByCondition.CashBackOnly, FilterOption.FilterByCondition.NewOnly),
-                listOf(true, true, false, true))
 
-        viewModel.setFilterOptionWrapper(filterOptionWrapper)
         viewModel.setSelectedFilter(selectedFilter)
 
         verifySelectedFiltersEquals(selectedFilter)
