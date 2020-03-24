@@ -548,7 +548,16 @@ public class SearchActivity extends BaseActivity
     }
 
     protected void setToolbarTitle(String query) {
-        searchTextView.setText(query);
+        String toolbarTitle = getToolbarTitle(query);
+        searchTextView.setText(toolbarTitle);
+    }
+
+    private String getToolbarTitle(String query) {
+        if (getResources() == null) return query;
+
+        return query == null || query.isEmpty() ?
+                getResources().getString(R.string.search_toolbar_title_default)
+                : query;
     }
 
     private void loadSection() {
