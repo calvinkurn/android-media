@@ -351,9 +351,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         ((SimpleItemAnimator) rvShipment.getItemAnimator()).setSupportsChangeAnimations(false);
         rvShipment.addItemDecoration(new ShipmentItemDecoration());
         cdView.setupTimerFromRemianingMillis(10 * 1000, () -> {
-            ExpiredTimeDialog dialog = new ExpiredTimeDialog();
-            dialog.setCancelable(false);
-            dialog.show(getFragmentManager(), "expired dialog");
+            if (getFragmentManager() != null) {
+                ExpiredTimeDialog dialog = new ExpiredTimeDialog();
+                dialog.setCancelable(false);
+                dialog.show(getFragmentManager(), "expired dialog");
+            }
         });
     }
 
