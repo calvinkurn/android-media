@@ -160,6 +160,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
                             discountPercentage = element.discount,
                             pdpViewCount = element.productViewCountFormatted,
                             stockBarLabel = element.label,
+                            isTopAds = element.isTopads,
                             stockBarPercentage = element.soldPercentage
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
