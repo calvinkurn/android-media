@@ -43,7 +43,7 @@ object ProductHighlightTracking : BaseTracking() {
                     Product(
                             name = grid.name,
                             id = grid.id,
-                            productPrice = grid.price,
+                            productPrice = convertRupiahToInt(grid.price).toString(),
                             brand = Value.NONE_OTHER,
                             category = Value.NONE_OTHER,
                             variant = Value.NONE_OTHER,
