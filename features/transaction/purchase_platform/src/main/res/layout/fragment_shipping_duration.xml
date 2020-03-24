@@ -29,7 +29,7 @@
             android:id="@+id/shipping_duration_rv"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_8"
             app:layout_constraintBottom_toTopOf="@+id/bottom_layout_shipping"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
