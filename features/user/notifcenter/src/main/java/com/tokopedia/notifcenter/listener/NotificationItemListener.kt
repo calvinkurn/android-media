@@ -7,6 +7,7 @@ import com.tokopedia.notifcenter.data.state.BottomSheetType
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 
 interface NotificationItemListener {
+    fun itemContainerClicked(notification: NotificationItemViewBean)
     fun itemClicked(notification: NotificationItemViewBean, adapterPosition: Int)
     fun getAnalytic(): NotificationUpdateAnalytics
     fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit)

@@ -15,6 +15,7 @@ fun SuggestionItem.convertSuggestionItemToSingleLineVisitableList(searchTerm: St
     item.shortcutUrl = this.shortcutUrl
     item.shortcutImage = this.shortcutImage
     item.imageUrl = this.imageUrl
+    item.urlTracker = this.urlTracker
     item.searchTerm = searchTerm
     item.position = position
     return item

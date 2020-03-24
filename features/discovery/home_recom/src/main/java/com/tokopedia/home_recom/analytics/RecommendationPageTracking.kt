@@ -41,6 +41,7 @@ class RecommendationPageTracking {
         private const val FIELD_SHOP_ID = "shop_id"
         private const val FIELD_SHOP_TYPE = "shop_type"
         private const val FIELD_SHOP_NAME = "shop_name"
+        private const val FIELD_DIMENSION_40 = "dimension40"
         private const val FIELD_DIMENSION_45 = "dimension45"
         private const val FIELD_DIMENSION_83 = "dimension83"
 
@@ -176,9 +177,6 @@ class RecommendationPageTracking {
         private fun convertProductToDataClickAddToCart(item: RecommendationItem,
                                                list: String): Any {
             return DataLayer.mapOf(
-                    FIELD_ACTION_FIELD, DataLayer.mapOf(
-                        FIELD_PRODUCT_LIST, list
-                    ),
                     FIELD_PRODUCTS, DataLayer.listOf(
                         DataLayer.mapOf(
                                 FIELD_PRODUCT_NAME, item.name,
@@ -192,6 +190,7 @@ class RecommendationPageTracking {
                                 FIELD_SHOP_TYPE, item.shopType,
                                 FIELD_SHOP_NAME, item.shopName,
                                 FIELD_CATEGORY_ID, item.departmentId.toString(),
+                                FIELD_DIMENSION_40, list,
                                 FIELD_DIMENSION_45, item.cartId.toString()
                         )
                     )
