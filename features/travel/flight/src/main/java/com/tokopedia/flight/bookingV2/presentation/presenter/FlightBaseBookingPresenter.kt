@@ -1,18 +1,19 @@
 package com.tokopedia.flight.bookingV2.presentation.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.flight.R
 import com.tokopedia.flight.bookingV2.data.cloud.entity.NewFarePrice
 import com.tokopedia.flight.bookingV2.data.entity.GetCartEntity
 import com.tokopedia.flight.bookingV2.domain.FlightGetCartDataUseCase
 import com.tokopedia.flight.bookingV2.presentation.contract.FlightBaseBookingContract
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.*
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.mapper.FlightBookingCartDataMapper
+import com.tokopedia.flight.bookingV2.presentation.model.*
+import com.tokopedia.flight.bookingV2.presentation.model.mapper.FlightBookingCartDataMapper
 import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.data.model.FlightError
 import com.tokopedia.flight.common.data.model.FlightException
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.common.util.FlightDateUtil
-import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
+import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.search.data.api.single.response.Fare
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
@@ -37,7 +38,7 @@ abstract class FlightBaseBookingPresenter<T : FlightBaseBookingContract.View>(
 
     abstract fun onCountDownTimestampChanged(timestamp: String)
 
-    abstract fun getInsurances(): List<FlightInsuranceViewModel>
+    abstract fun getInsurances(): List<FlightInsuranceModel>
 
     abstract fun getComboKey(): String
 
@@ -196,7 +197,7 @@ abstract class FlightBaseBookingPresenter<T : FlightBaseBookingContract.View>(
 
     protected fun calculateTotalFareAndAmenities(newFares: List<Fare>,
                                                  adult: Int, child: Int, infant: Int,
-                                                 amenities: List<FlightBookingAmenityViewModel>): Int {
+                                                 amenities: List<FlightBookingAmenityModel>): Int {
         var newTotalPrice = calculateTotalPassengerFare(newFares, adult, child, infant)
 
         for (item in amenities) {
@@ -230,20 +231,20 @@ abstract class FlightBaseBookingPresenter<T : FlightBaseBookingContract.View>(
     }
 
     protected fun actionCalculatePriceAndRender(newFarePrices: List<NewFarePrice>,
-                                                departureDetailViewModel: FlightDetailViewModel,
-                                                returnDetailViewModel: FlightDetailViewModel?,
-                                                flightBookingPassengers: List<FlightBookingPassengerViewModel>,
-                                                insurances: List<FlightInsuranceViewModel>) {
+                                                departureDetailModel: FlightDetailModel,
+                                                returnDetailModel: FlightDetailModel?,
+                                                flightBookingPassengers: List<FlightBookingPassengerModel>,
+                                                insurances: List<FlightInsuranceModel>) {
         for (newPrice in newFarePrices) {
-            if (newPrice.id.equals(departureDetailViewModel.id, true)) {
-                departureDetailViewModel.adultNumericPrice = newPrice.fare.adultNumeric
-                departureDetailViewModel.childNumericPrice = newPrice.fare.childNumeric
-                departureDetailViewModel.infantNumericPrice = newPrice.fare.infantNumeric
+            if (newPrice.id.equals(departureDetailModel.id, true)) {
+                departureDetailModel.adultNumericPrice = newPrice.fare.adultNumeric
+                departureDetailModel.childNumericPrice = newPrice.fare.childNumeric
+                departureDetailModel.infantNumericPrice = newPrice.fare.infantNumeric
             }
-            if (returnDetailViewModel != null && newPrice.id.equals(returnDetailViewModel.id, true)) {
-                returnDetailViewModel.adultNumericPrice = newPrice.fare.adultNumeric
-                returnDetailViewModel.childNumericPrice = newPrice.fare.childNumeric
-                returnDetailViewModel.infantNumericPrice = newPrice.fare.infantNumeric
+            if (returnDetailModel != null && newPrice.id.equals(returnDetailModel.id, true)) {
+                returnDetailModel.adultNumericPrice = newPrice.fare.adultNumeric
+                returnDetailModel.childNumericPrice = newPrice.fare.childNumeric
+                returnDetailModel.infantNumericPrice = newPrice.fare.infantNumeric
             }
 
             if (getComboKey().isNotEmpty() && newPrice.id.equals(getComboKey(), true)) {
@@ -251,96 +252,96 @@ abstract class FlightBaseBookingPresenter<T : FlightBaseBookingContract.View>(
                 val newChildPrice = newPrice.fare.childNumeric / 2
                 val newInfantPrice = newPrice.fare.infantNumeric / 2
 
-                departureDetailViewModel.adultNumericPrice = newAdultPrice
-                departureDetailViewModel.childNumericPrice = newChildPrice
-                departureDetailViewModel.infantNumericPrice = newInfantPrice
+                departureDetailModel.adultNumericPrice = newAdultPrice
+                departureDetailModel.childNumericPrice = newChildPrice
+                departureDetailModel.infantNumericPrice = newInfantPrice
 
-                if (returnDetailViewModel != null) {
-                    returnDetailViewModel.adultNumericPrice = newPrice.fare.adultNumeric - newAdultPrice
-                    returnDetailViewModel.childNumericPrice = newPrice.fare.childNumeric - newChildPrice
-                    returnDetailViewModel.infantNumericPrice = newPrice.fare.infantNumeric - newInfantPrice
+                if (returnDetailModel != null) {
+                    returnDetailModel.adultNumericPrice = newPrice.fare.adultNumeric - newAdultPrice
+                    returnDetailModel.childNumericPrice = newPrice.fare.childNumeric - newChildPrice
+                    returnDetailModel.infantNumericPrice = newPrice.fare.infantNumeric - newInfantPrice
                 }
             }
         }
 
-        val simpleViewModels = arrayListOf<SimpleViewModel>()
+        val simpleViewModels = arrayListOf<SimpleModel>()
 
         // adult price
-        if (departureDetailViewModel.adultNumericPrice > 0) {
+        if (departureDetailModel.adultNumericPrice > 0) {
             simpleViewModels.add(
                     formatPassengerFarePriceDetail(
-                            departureDetailViewModel.departureAirport,
-                            departureDetailViewModel.arrivalAirport,
+                            departureDetailModel.departureAirport,
+                            departureDetailModel.arrivalAirport,
                             view.getString(com.tokopedia.flight.R.string.flightbooking_price_adult_label),
-                            departureDetailViewModel.countAdult,
-                            departureDetailViewModel.adultNumericPrice * departureDetailViewModel.countAdult
+                            departureDetailModel.countAdult,
+                            departureDetailModel.adultNumericPrice * departureDetailModel.countAdult
                     )
             )
         }
 
         // child price
-        if (departureDetailViewModel.countChild > 0 &&
-                departureDetailViewModel.childNumericPrice > 0) {
+        if (departureDetailModel.countChild > 0 &&
+                departureDetailModel.childNumericPrice > 0) {
             simpleViewModels.add(
                     formatPassengerFarePriceDetail(
-                            departureDetailViewModel.departureAirport,
-                            departureDetailViewModel.arrivalAirport,
+                            departureDetailModel.departureAirport,
+                            departureDetailModel.arrivalAirport,
                             view.getString(com.tokopedia.flight.R.string.flightbooking_price_child_label),
-                            departureDetailViewModel.countChild,
-                            departureDetailViewModel.childNumericPrice * departureDetailViewModel.countChild
+                            departureDetailModel.countChild,
+                            departureDetailModel.childNumericPrice * departureDetailModel.countChild
                     )
             )
         }
 
         // infant price
-        if (departureDetailViewModel.countInfant > 0 &&
-                departureDetailViewModel.infantNumericPrice > 0) {
+        if (departureDetailModel.countInfant > 0 &&
+                departureDetailModel.infantNumericPrice > 0) {
             simpleViewModels.add(
                     formatPassengerFarePriceDetail(
-                            departureDetailViewModel.departureAirport,
-                            departureDetailViewModel.arrivalAirport,
+                            departureDetailModel.departureAirport,
+                            departureDetailModel.arrivalAirport,
                             view.getString(com.tokopedia.flight.R.string.flightbooking_price_infant_label),
-                            departureDetailViewModel.countInfant,
-                            departureDetailViewModel.infantNumericPrice * departureDetailViewModel.countInfant
+                            departureDetailModel.countInfant,
+                            departureDetailModel.infantNumericPrice * departureDetailModel.countInfant
                     )
             )
         }
 
         // return price
-        if (returnDetailViewModel != null) {
+        if (returnDetailModel != null) {
             // adult price
-            if (returnDetailViewModel.adultNumericPrice > 0) {
+            if (returnDetailModel.adultNumericPrice > 0) {
                 simpleViewModels.add(
                         formatPassengerFarePriceDetail(
-                                returnDetailViewModel.departureAirport,
-                                returnDetailViewModel.arrivalAirport,
+                                returnDetailModel.departureAirport,
+                                returnDetailModel.arrivalAirport,
                                 view.getString(com.tokopedia.flight.R.string.flightbooking_price_adult_label),
-                                returnDetailViewModel.countAdult,
-                                returnDetailViewModel.adultNumericPrice * returnDetailViewModel.countAdult
+                                returnDetailModel.countAdult,
+                                returnDetailModel.adultNumericPrice * returnDetailModel.countAdult
                         )
                 )
             }
             // child price
-            if (returnDetailViewModel.countChild > 0 && returnDetailViewModel.childNumericPrice > 0) {
+            if (returnDetailModel.countChild > 0 && returnDetailModel.childNumericPrice > 0) {
                 simpleViewModels.add(
                         formatPassengerFarePriceDetail(
-                                returnDetailViewModel.departureAirport,
-                                returnDetailViewModel.arrivalAirport,
+                                returnDetailModel.departureAirport,
+                                returnDetailModel.arrivalAirport,
                                 view.getString(com.tokopedia.flight.R.string.flightbooking_price_child_label),
-                                returnDetailViewModel.countChild,
-                                returnDetailViewModel.childNumericPrice * returnDetailViewModel.countChild
+                                returnDetailModel.countChild,
+                                returnDetailModel.childNumericPrice * returnDetailModel.countChild
                         )
                 )
             }
             //infant price
-            if (returnDetailViewModel.countInfant > 0 && returnDetailViewModel.infantNumericPrice > 0) {
+            if (returnDetailModel.countInfant > 0 && returnDetailModel.infantNumericPrice > 0) {
                 simpleViewModels.add(
                         formatPassengerFarePriceDetail(
-                                returnDetailViewModel.departureAirport,
-                                returnDetailViewModel.arrivalAirport,
+                                returnDetailModel.departureAirport,
+                                returnDetailModel.arrivalAirport,
                                 view.getString(com.tokopedia.flight.R.string.flightbooking_price_infant_label),
-                                returnDetailViewModel.countInfant,
-                                returnDetailViewModel.infantNumericPrice * returnDetailViewModel.countInfant
+                                returnDetailModel.countInfant,
+                                returnDetailModel.infantNumericPrice * returnDetailModel.countInfant
                         )
                 )
             }
@@ -376,23 +377,23 @@ abstract class FlightBaseBookingPresenter<T : FlightBaseBookingContract.View>(
         }
 
         for ((key, value) in meals) {
-            simpleViewModels.add(SimpleViewModel(
-                    String.format("%s %s", view.getString(com.tokopedia.flight.R.string.flight_price_detail_prefixl_meal_label),
+            simpleViewModels.add(SimpleModel(
+                    String.format("%s %s", view.getString(R.string.flight_price_detail_prefixl_meal_label),
                             key),
                     FlightCurrencyFormatUtil.convertToIdrPrice(value)))
 
         }
         for ((key, value) in luggages) {
-            simpleViewModels.add(SimpleViewModel(
-                    String.format("%s %s", view.getString(com.tokopedia.flight.R.string.flight_price_detail_prefix_luggage_label),
+            simpleViewModels.add(SimpleModel(
+                    String.format("%s %s", view.getString(R.string.flight_price_detail_prefix_luggage_label),
                             key),
                     FlightCurrencyFormatUtil.convertToIdrPrice(value)))
 
         }
-        val totalPassenger = departureDetailViewModel.countAdult + departureDetailViewModel.countChild + departureDetailViewModel.countInfant
+        val totalPassenger = departureDetailModel.countAdult + departureDetailModel.countChild + departureDetailModel.countInfant
 
         for (insuranceViewModel in insurances) {
-            simpleViewModels.add(SimpleViewModel(
+            simpleViewModels.add(SimpleModel(
                     String.format("%s x%d", insuranceViewModel.name, totalPassenger),
                     FlightCurrencyFormatUtil.convertToIdrPrice(insuranceViewModel.totalPrice.toInt())))
         }
@@ -412,9 +413,9 @@ abstract class FlightBaseBookingPresenter<T : FlightBaseBookingContract.View>(
     }
 
     private fun formatPassengerFarePriceDetail(departureAirport: String, arrivalAirport: String, label: String,
-                                               passengerCount: Int, price: Int): SimpleViewModel =
-            SimpleViewModel(
-                    String.format(view.getString(com.tokopedia.flight.R.string.flight_booking_passenger_price_format),
+                                               passengerCount: Int, price: Int): SimpleModel =
+            SimpleModel(
+                    String.format(view.getString(R.string.flight_booking_passenger_price_format),
                             departureAirport,
                             arrivalAirport,
                             label,

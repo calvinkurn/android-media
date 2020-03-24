@@ -4,9 +4,9 @@ import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonViewModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperModel;
 
 import java.util.List;
 
@@ -17,25 +17,25 @@ import java.util.List;
 public interface FlightCancellationReasonAndProofContract {
     interface View extends CustomerView{
 
-        List<FlightCancellationAttachmentViewModel> getAttachments();
+        List<FlightCancellationAttachmentModel> getAttachments();
 
-        void setAttachment(FlightCancellationAttachmentViewModel attachment, int position);
+        void setAttachment(FlightCancellationAttachmentModel attachment, int position);
 
         void showRequiredMinimalOneAttachmentErrorMessage(int resId);
 
-        FlightCancellationWrapperViewModel getCancellationViewModel();
+        FlightCancellationWrapperModel getCancellationViewModel();
 
         String getString(int resId);
 
         void showAttachmentGreaterThanPassengersTotalAndRequiredAttachmentErrorMessage(String errorMessage);
 
-        FlightCancellationReasonViewModel getReason();
+        FlightCancellationReasonModel getReason();
 
         Activity getActivity();
 
         void showFailedToNextStepErrorMessage(String errorMessage);
 
-        void navigateToNextStep(FlightCancellationWrapperViewModel viewModel);
+        void navigateToNextStep(FlightCancellationWrapperModel viewModel);
 
         void hideAttachmentContainer();
 
@@ -49,7 +49,7 @@ public interface FlightCancellationReasonAndProofContract {
 
         void showAttachmentMaxSizeErrorMessage(int resId);
 
-        void addAttachments(List<FlightCancellationAttachmentViewModel> attachments);
+        void addAttachments(List<FlightCancellationAttachmentModel> attachments);
 
         void deleteAllAttachments();
 
@@ -62,9 +62,9 @@ public interface FlightCancellationReasonAndProofContract {
 
     interface Presenter extends CustomerPresenter<View>{
 
-        void initialize(List<FlightCancellationAttachmentViewModel> attachments);
+        void initialize(List<FlightCancellationAttachmentModel> attachments);
 
-        List<FlightCancellationAttachmentViewModel> buildAttachmentList();
+        List<FlightCancellationAttachmentModel> buildAttachmentList();
 
         void setNextButton();
 

@@ -26,7 +26,7 @@ import com.tokopedia.flight.cancellation.view.activity.FlightCancellationReviewA
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationRefundDetailContract;
 import com.tokopedia.flight.cancellation.view.fragment.customview.FlightCancellationRefundBottomSheet;
 import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationRefundDetailPresenter;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperModel;
 
 import javax.inject.Inject;
 
@@ -41,10 +41,10 @@ public class FlightCancellationRefundDetailFragment extends BaseDaggerFragment i
     private static final String PARAM_STEP_NUMBER = "PARAM_STEP_NUMBER";
     private static final int REQUEST_REVIEW_CODE = 1;
 
-    private FlightCancellationWrapperViewModel wrapperViewModel;
+    private FlightCancellationWrapperModel wrapperViewModel;
     private int stepsNumber;
 
-    public static FlightCancellationRefundDetailFragment newInstance(FlightCancellationWrapperViewModel wrapperViewModel,
+    public static FlightCancellationRefundDetailFragment newInstance(FlightCancellationWrapperModel wrapperViewModel,
                                                                      int stepNumber) {
         FlightCancellationRefundDetailFragment fragment = new FlightCancellationRefundDetailFragment();
         Bundle args = new Bundle();
@@ -134,7 +134,7 @@ public class FlightCancellationRefundDetailFragment extends BaseDaggerFragment i
     }
 
     @Override
-    public FlightCancellationWrapperViewModel getCancellationViewModel() {
+    public FlightCancellationWrapperModel getCancellationViewModel() {
         return wrapperViewModel;
     }
 

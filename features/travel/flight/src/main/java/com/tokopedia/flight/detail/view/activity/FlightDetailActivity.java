@@ -22,7 +22,7 @@ import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.detail.view.fragment.FlightDetailFacilityFragment;
 import com.tokopedia.flight.detail.view.fragment.FlightDetailFragment;
 import com.tokopedia.flight.detail.view.fragment.FlightDetailPriceFragment;
-import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
+import com.tokopedia.flight.detail.view.model.FlightDetailModel;
 
 import javax.inject.Inject;
 
@@ -38,7 +38,7 @@ public class FlightDetailActivity extends BaseTabActivity {
     private static final String EXTRA_FLIGHT_DISPLAY_SUBMIT = "EXTRA_FLIGHT_DISPLAY_SUBMIT";
     @Inject
     FlightAnalytics flightAnalytics;
-    private FlightDetailViewModel flightDetailViewModel;
+    private FlightDetailModel flightDetailViewModel;
     private Button buttonSubmit;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private AppBarLayout appBarLayout;
@@ -49,7 +49,7 @@ public class FlightDetailActivity extends BaseTabActivity {
     private boolean isSubmitDisplayed;
     private FlightComponent component;
 
-    public static Intent createIntent(Context context, FlightDetailViewModel flightDetailViewModel, boolean isSubmitDisplayed) {
+    public static Intent createIntent(Context context, FlightDetailModel flightDetailViewModel, boolean isSubmitDisplayed) {
         Intent intent = new Intent(context, FlightDetailActivity.class);
         intent.putExtra(EXTRA_FLIGHT_SEARCH_MODEL, flightDetailViewModel);
         intent.putExtra(EXTRA_FLIGHT_DISPLAY_SUBMIT, isSubmitDisplayed);

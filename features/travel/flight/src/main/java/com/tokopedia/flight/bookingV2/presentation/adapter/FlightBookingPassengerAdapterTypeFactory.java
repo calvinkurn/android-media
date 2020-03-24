@@ -5,7 +5,7 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.bookingV2.presentation.adapter.viewholder.FlightBookingPassengerViewHolder;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingPassengerModel;
 
 /**
  * Created by alvarisi on 12/7/17.
@@ -19,7 +19,7 @@ public class FlightBookingPassengerAdapterTypeFactory extends BaseAdapterTypeFac
     }
 
     @Override
-    public int type(FlightBookingPassengerViewModel viewModel) {
+    public int type(FlightBookingPassengerModel viewModel) {
         return FlightBookingPassengerViewHolder.LAYOUT;
     }
 

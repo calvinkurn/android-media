@@ -1,7 +1,7 @@
 package com.tokopedia.flight.cancellation.view.contract;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListModel;
 
 /**
  * @author by furqan on 03/05/18.
@@ -10,7 +10,7 @@ import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListVi
 public interface FlightCancellationDetailContract {
     interface View extends CustomerView {
 
-        FlightCancellationListViewModel getFlightCancellationList();
+        FlightCancellationListModel getFlightCancellationList();
 
     }
 

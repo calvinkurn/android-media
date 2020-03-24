@@ -6,16 +6,16 @@ import android.view.ViewGroup;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightInsuranceViewModel;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightInsuranceModel;
 import com.tokopedia.flight.bookingV2.presentation.widget.FlightInsuranceView;
 
 import java.util.List;
 
 public class FlightInsuranceAdapter extends RecyclerView.Adapter<FlightInsuranceAdapter.ViewHolder> {
-    private List<FlightInsuranceViewModel> viewModels;
+    private List<FlightInsuranceModel> viewModels;
     private FlightInsuranceView.ActionListener actionListener;
 
-    public FlightInsuranceAdapter(List<FlightInsuranceViewModel> viewModels) {
+    public FlightInsuranceAdapter(List<FlightInsuranceModel> viewModels) {
         this.viewModels = viewModels;
     }
 
@@ -48,7 +48,7 @@ public class FlightInsuranceAdapter extends RecyclerView.Adapter<FlightInsurance
             flightInsuranceView.setListener(actionListener);
         }
 
-        public void bind(FlightInsuranceViewModel flightInsuranceViewModel) {
+        public void bind(FlightInsuranceModel flightInsuranceViewModel) {
             flightInsuranceView.renderData(flightInsuranceViewModel);
         }
     }

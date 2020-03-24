@@ -39,7 +39,7 @@ import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity;
 import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment;
-import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
+import com.tokopedia.flight.airport.view.model.FlightAirportModel;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
@@ -54,7 +54,7 @@ import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardPresenter;
 import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget;
 import com.tokopedia.flight.dashboard.view.widget.TextInputView;
 import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity;
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget;
@@ -616,7 +616,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void navigateToSearchPage(FlightDashboardViewModel currentDashboardViewModel) {
-        FlightSearchPassDataViewModel passDataViewModel = new FlightSearchPassDataViewModel.Builder()
+        FlightSearchPassDataModel passDataViewModel = new FlightSearchPassDataModel.Builder()
                 .setFlightPassengerViewModel(currentDashboardViewModel.getFlightPassengerViewModel())
                 .setDepartureDate(currentDashboardViewModel.getDepartureDate())
                 .setDepartureAirport(currentDashboardViewModel.getDepartureAirport())
@@ -651,11 +651,11 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                     presenter.onFlightPassengerChange(passengerViewModel);
                     break;
                 case REQUEST_CODE_AIRPORT_DEPARTURE:
-                    FlightAirportViewModel departureAirport = data.getParcelableExtra(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT);
+                    FlightAirportModel departureAirport = data.getParcelableExtra(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT);
                     presenter.onDepartureAirportChange(departureAirport);
                     break;
                 case REQUEST_CODE_AIRPORT_ARRIVAL:
-                    FlightAirportViewModel arrivalAirport = data.getParcelableExtra(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT);
+                    FlightAirportModel arrivalAirport = data.getParcelableExtra(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT);
                     presenter.onArrivalAirportChange(arrivalAirport);
                     break;
             }

@@ -13,7 +13,7 @@ import com.tokopedia.common.travel.ticker.TravelTickerFlightPage;
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId;
 import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
-import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
+import com.tokopedia.flight.airport.view.model.FlightAirportModel;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
@@ -220,7 +220,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     @Override
     public void onReverseAirportButtonClicked() {
         FlightDashboardViewModel viewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
-        FlightAirportViewModel flightAirportDB = viewModel.getArrivalAirport();
+        FlightAirportModel flightAirportDB = viewModel.getArrivalAirport();
         String destinationFmt = viewModel.getArrivalAirportFmt();
         viewModel.setArrivalAirport(viewModel.getDepartureAirport());
         viewModel.setArrivalAirportFmt(viewModel.getDepartureAirportFmt());
@@ -383,7 +383,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     }
 
     @Override
-    public void onDepartureAirportChange(FlightAirportViewModel departureAirport) {
+    public void onDepartureAirportChange(FlightAirportModel departureAirport) {
         flightAnalytics.eventOriginClick(departureAirport.getCityName(), departureAirport.getAirportCode());
         FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
         flightDashboardViewModel.setDepartureAirport(departureAirport);
@@ -401,7 +401,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     }
 
     @NonNull
-    private String buildAirportFmt(FlightAirportViewModel departureAirport) {
+    private String buildAirportFmt(FlightAirportModel departureAirport) {
         String code = departureAirport.getAirportCode();
         if (TextUtils.isEmpty(code)) {
             code = departureAirport.getCityCode();
@@ -411,7 +411,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     }
 
     @Override
-    public void onArrivalAirportChange(FlightAirportViewModel arrivalAirport) {
+    public void onArrivalAirportChange(FlightAirportModel arrivalAirport) {
         flightAnalytics.eventDestinationClick(arrivalAirport.getCityName(), arrivalAirport.getAirportCode());
         FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
         flightDashboardViewModel.setArrivalAirport(arrivalAirport);
@@ -585,14 +585,14 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         if (flightDashboardPassDataViewModel.getDepartureAirportId() != null
                 && flightDashboardPassDataViewModel.getArrivalAirportId() != null) {
             cacheObservable = cacheObservable.map(airportAndClassWrapper -> {
-                FlightAirportViewModel departure = new FlightAirportViewModel();
+                FlightAirportModel departure = new FlightAirportModel();
                 departure.setAirportCode(airportsDeparture.size() > 0 ? "" : flightDashboardPassDataViewModel.getDepartureAirportId());
                 departure.setCityCode(flightDashboardPassDataViewModel.getDepartureCityCode());
                 departure.setCityName(flightDashboardPassDataViewModel.getDepartureCityName());
                 departure.setCityAirports(airportsDeparture);
                 airportAndClassWrapper.setDepartureAirport(departure);
 
-                FlightAirportViewModel arrival = new FlightAirportViewModel();
+                FlightAirportModel arrival = new FlightAirportModel();
                 arrival.setAirportCode(airportsArrival.size() > 0 ? "" : flightDashboardPassDataViewModel.getArrivalAirportId());
                 arrival.setCityCode(flightDashboardPassDataViewModel.getArrivalCityCode());
                 arrival.setCityName(flightDashboardPassDataViewModel.getArrivalCityName());

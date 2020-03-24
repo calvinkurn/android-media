@@ -20,8 +20,8 @@ import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
 import com.tokopedia.flight.dashboard.di.DaggerFlightDashboardComponent
 import com.tokopedia.flight.dashboard.view.model.FlightFareAttributes
-import com.tokopedia.flight.dashboard.view.viewmodel.FlightFareCalendarViewModel
-import com.tokopedia.flight.dashboard.view.viewmodel.FlightHolidayCalendarViewModel
+import com.tokopedia.flight.dashboard.view.viewmodel.FlightFareCalendarModel
+import com.tokopedia.flight.dashboard.view.viewmodel.FlightHolidayCalendarModel
 import com.tokopedia.travelcalendar.TRAVEL_CAL_YYYY
 import com.tokopedia.travelcalendar.dateToString
 import com.tokopedia.unifycomponents.bottomsheet.RoundedBottomSheetDialogFragment
@@ -37,8 +37,8 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
     private lateinit var loadingProgressBar: ProgressBar
     private lateinit var calendarUnify: UnifyCalendar
     private lateinit var listener: ActionListener
-    private lateinit var holidayCalendarViewModel: FlightHolidayCalendarViewModel
-    private lateinit var fareCalendarViewModel: FlightFareCalendarViewModel
+    private lateinit var holidayCalendarModel: FlightHolidayCalendarModel
+    private lateinit var fareCalendarModel: FlightFareCalendarModel
     private lateinit var titlePage: TextView
 
     lateinit var minDate: Date
@@ -62,8 +62,8 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
 
         activity?.let {
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
-            holidayCalendarViewModel = viewModelProvider.get(FlightHolidayCalendarViewModel::class.java)
-            fareCalendarViewModel = viewModelProvider.get(FlightFareCalendarViewModel::class.java)
+            holidayCalendarModel = viewModelProvider.get(FlightHolidayCalendarModel::class.java)
+            fareCalendarModel = viewModelProvider.get(FlightFareCalendarModel::class.java)
         }
 
         arguments?.run {
@@ -116,8 +116,8 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
         titlePage.text = "Pilih Tanggal"
 
         loadingProgressBar.visibility = View.VISIBLE
-        holidayCalendarViewModel.getCalendarHoliday()
-        holidayCalendarViewModel.holidayCalendarData.observe(this, androidx.lifecycle.Observer {
+        holidayCalendarModel.getCalendarHoliday()
+        holidayCalendarModel.holidayCalendarData.observe(this, androidx.lifecycle.Observer {
             loadingProgressBar.visibility = View.GONE
             it?.let {
                 if (isFirstTime) {
@@ -150,13 +150,13 @@ class FlightCalendarOneWayWidget : RoundedBottomSheetDialogFragment() {
             mapFareParam[PARAM_YEAR] = minDate.dateToString(TRAVEL_CAL_YYYY)
             mapFareParam[PARAM_CLASS] = classFlight.toString()
             activity?.run {
-                fareCalendarViewModel.getFareFlightCalendar(
+                fareCalendarModel.getFareFlightCalendar(
                         GraphqlHelper.loadRawString(this.resources, R.raw.flight_fare_calendar_query),
                         mapFareParam, minDate, maxDate)
             }
 
 
-            fareCalendarViewModel.fareFlightCalendarData.observe(this, androidx.lifecycle.Observer {
+            fareCalendarModel.fareFlightCalendarData.observe(this, androidx.lifecycle.Observer {
                 it?.let {
                     calendar?.setSubTitles(mapFareFlightToSubtitleCalendar(it))
                 }

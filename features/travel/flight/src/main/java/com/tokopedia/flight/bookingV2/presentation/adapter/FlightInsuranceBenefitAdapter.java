@@ -11,14 +11,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightInsuranceBenefitViewModel;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightInsuranceBenefitModel;
 
 import java.util.List;
 
 public class FlightInsuranceBenefitAdapter extends RecyclerView.Adapter<FlightInsuranceBenefitAdapter.ViewHolder> {
-    private List<FlightInsuranceBenefitViewModel> benefitViewModels;
+    private List<FlightInsuranceBenefitModel> benefitViewModels;
 
-    public FlightInsuranceBenefitAdapter(List<FlightInsuranceBenefitViewModel> benefitViewModels) {
+    public FlightInsuranceBenefitAdapter(List<FlightInsuranceBenefitModel> benefitViewModels) {
         this.benefitViewModels = benefitViewModels;
     }
 
@@ -50,7 +50,7 @@ public class FlightInsuranceBenefitAdapter extends RecyclerView.Adapter<FlightIn
             descriptionTextView = itemView.findViewById(R.id.tv_description);
         }
 
-        public void bind(FlightInsuranceBenefitViewModel benefitViewModel) {
+        public void bind(FlightInsuranceBenefitModel benefitViewModel) {
             ImageHandler.loadImageWithoutPlaceholder(logoImageView, benefitViewModel.getIcon(),
                     ContextCompat.getDrawable(itemView.getContext(), R.drawable.flight_ic_airline_default)
             );

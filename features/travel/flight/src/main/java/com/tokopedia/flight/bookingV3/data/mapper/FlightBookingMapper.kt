@@ -4,19 +4,19 @@ import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger
 import com.tokopedia.flight.bookingV2.data.cloud.entity.Amenity
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingAmenityMetaViewModel
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingAmenityViewModel
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingPassengerViewModel
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingAmenityMetaModel
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingAmenityModel
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingPassengerModel
 import com.tokopedia.flight.bookingV3.data.FlightCart
 import com.tokopedia.flight.bookingV3.data.FlightCartViewEntity
 import com.tokopedia.flight.bookingV3.data.FlightPromoViewEntity
-import com.tokopedia.flight.detail.view.model.FlightDetailRouteInfoViewModel
-import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel
-import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteInfoModel
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteModel
+import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightStopOverViewModel
 import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment.DEFAULT_IS_COUPON_ONE
 import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment.DEFAULT_IS_COUPON_ZERO
-import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
+import com.tokopedia.flight.search.presentation.model.FlightPriceModel
 import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
@@ -76,10 +76,10 @@ class FlightBookingMapper {
                 journies.add(newJourney)
             }
 
-            val luggageMetaModels = arrayListOf<FlightBookingAmenityMetaViewModel>()
-            val mealMetaModels = arrayListOf<FlightBookingAmenityMetaViewModel>()
+            val luggageMetaModels = arrayListOf<FlightBookingAmenityMetaModel>()
+            val mealMetaModels = arrayListOf<FlightBookingAmenityMetaModel>()
             for (amenity in flightCart.cartData.flight.amenityOptions) {
-                val amenityMetaViewModel = FlightBookingAmenityMetaViewModel()
+                val amenityMetaViewModel = FlightBookingAmenityMetaModel()
                 amenityMetaViewModel.arrivalId = amenity.arrivalAirportId
                 amenityMetaViewModel.departureId = amenity.departureAirportId
                 amenityMetaViewModel.key = amenity.key
@@ -115,12 +115,12 @@ class FlightBookingMapper {
             return FlightPromoViewEntity(voucher.enableVoucher, voucher.isCouponActive, promoData)
         }
 
-        fun mapToFlightPassengerEntity(adult: Int, child: Int, infant: Int): List<FlightBookingPassengerViewModel> {
+        fun mapToFlightPassengerEntity(adult: Int, child: Int, infant: Int): List<FlightBookingPassengerModel> {
 
             var passengerNumber = 1
-            val viewModels = arrayListOf<FlightBookingPassengerViewModel>()
+            val viewModels = arrayListOf<FlightBookingPassengerModel>()
             for (i in 1..adult) {
-                val viewModel = FlightBookingPassengerViewModel()
+                val viewModel = FlightBookingPassengerModel()
                 viewModel.passengerLocalId = passengerNumber
                 viewModel.type = FlightBookingPassenger.ADULT
                 viewModel.headerTitle = String.format("Penumpang dewasa")
@@ -132,7 +132,7 @@ class FlightBookingMapper {
 
             if (child > 0) {
                 for (i in 1..child) {
-                    val viewModel = FlightBookingPassengerViewModel()
+                    val viewModel = FlightBookingPassengerModel()
                     viewModel.passengerLocalId = passengerNumber
                     viewModel.type = FlightBookingPassenger.CHILDREN
                     viewModel.headerTitle = String.format("Penumpang anak")
@@ -145,7 +145,7 @@ class FlightBookingMapper {
 
             if (infant > 0) {
                 for (i in 1..infant) {
-                    val viewModel = FlightBookingPassengerViewModel()
+                    val viewModel = FlightBookingPassengerModel()
                     viewModel.passengerLocalId = passengerNumber
                     viewModel.type = FlightBookingPassenger.INFANT
                     viewModel.headerTitle = String.format("Penumpang bayi")
@@ -159,9 +159,9 @@ class FlightBookingMapper {
             return viewModels
         }
 
-        private fun mapToFlightBookingAmenityViewModels(entity: FlightCart.Amenity): List<FlightBookingAmenityViewModel> {
-            val viewModels = ArrayList<FlightBookingAmenityViewModel>()
-            var data: FlightBookingAmenityViewModel? = null
+        private fun mapToFlightBookingAmenityViewModels(entity: FlightCart.Amenity): List<FlightBookingAmenityModel> {
+            val viewModels = ArrayList<FlightBookingAmenityModel>()
+            var data: FlightBookingAmenityModel? = null
             if (entity != null) {
                 for (item in entity.items) {
                     data = mapToFlightBookingAmenityViewModel(entity.type, item)
@@ -173,25 +173,25 @@ class FlightBookingMapper {
             return viewModels
         }
 
-        private fun mapToFlightBookingAmenityViewModel(type: Int, item: FlightCart.AmenityItem?): FlightBookingAmenityViewModel? {
-            var viewModel: FlightBookingAmenityViewModel? = null
+        private fun mapToFlightBookingAmenityViewModel(type: Int, item: FlightCart.AmenityItem?): FlightBookingAmenityModel? {
+            var model: FlightBookingAmenityModel? = null
             if (item != null) {
-                viewModel = FlightBookingAmenityViewModel()
-                viewModel.id = item.id
-                viewModel.price = item.price
-                viewModel.priceNumeric = item.priceNumeric
-                viewModel.title = item.description
-                viewModel.amenityType = type
+                model = FlightBookingAmenityModel()
+                model.id = item.id
+                model.price = item.price
+                model.priceNumeric = item.priceNumeric
+                model.title = item.description
+                model.amenityType = type
             }
-            return viewModel
+            return model
         }
 
         fun mapToFlightDetail(flight: FlightCart.Flight, included: List<FlightCart.Included>,
-                              flightPriceViewModel: FlightPriceViewModel): List<FlightDetailViewModel> {
+                              flightPriceModel: FlightPriceModel): List<FlightDetailModel> {
 
-            val list = listOf<FlightDetailViewModel>().toMutableList()
+            val list = listOf<FlightDetailModel>().toMutableList()
             for ((index, journey) in flight.journeys.withIndex()) {
-                val flightDetailViewModel = FlightDetailViewModel()
+                val flightDetailViewModel = FlightDetailModel()
 
                 flightDetailViewModel.beforeTotal = ""
                 flightDetailViewModel.id = journey.id
@@ -210,25 +210,25 @@ class FlightBookingMapper {
                 flightDetailViewModel.isRefundable = if (journey.routes[0].refundable) RefundableEnum.REFUNDABLE else RefundableEnum.NOT_REFUNDABLE
 
                 if (index == 0) {
-                    if (flightPriceViewModel.comboKey.isNullOrEmpty()) {
-                        flightDetailViewModel.adultNumericPrice = flightPriceViewModel.departurePrice.adultNumeric
-                        flightDetailViewModel.childNumericPrice = flightPriceViewModel.departurePrice.childNumeric
-                        flightDetailViewModel.infantNumericPrice = flightPriceViewModel.departurePrice.infantNumeric
+                    if (flightPriceModel.comboKey.isNullOrEmpty()) {
+                        flightDetailViewModel.adultNumericPrice = flightPriceModel.departurePrice.adultNumeric
+                        flightDetailViewModel.childNumericPrice = flightPriceModel.departurePrice.childNumeric
+                        flightDetailViewModel.infantNumericPrice = flightPriceModel.departurePrice.infantNumeric
                     } else {
-                        flightDetailViewModel.adultNumericPrice = flightPriceViewModel.departurePrice.adultNumericCombo
-                        flightDetailViewModel.childNumericPrice = flightPriceViewModel.departurePrice.childNumericCombo
-                        flightDetailViewModel.infantNumericPrice = flightPriceViewModel.departurePrice.infantNumericCombo
+                        flightDetailViewModel.adultNumericPrice = flightPriceModel.departurePrice.adultNumericCombo
+                        flightDetailViewModel.childNumericPrice = flightPriceModel.departurePrice.childNumericCombo
+                        flightDetailViewModel.infantNumericPrice = flightPriceModel.departurePrice.infantNumericCombo
                     }
 
                 } else if (index == 1) {
-                    if (flightPriceViewModel.comboKey.isNullOrEmpty()) {
-                        flightDetailViewModel.adultNumericPrice = flightPriceViewModel.returnPrice.adultNumeric
-                        flightDetailViewModel.childNumericPrice = flightPriceViewModel.returnPrice.childNumeric
-                        flightDetailViewModel.infantNumericPrice = flightPriceViewModel.returnPrice.infantNumeric
+                    if (flightPriceModel.comboKey.isNullOrEmpty()) {
+                        flightDetailViewModel.adultNumericPrice = flightPriceModel.returnPrice.adultNumeric
+                        flightDetailViewModel.childNumericPrice = flightPriceModel.returnPrice.childNumeric
+                        flightDetailViewModel.infantNumericPrice = flightPriceModel.returnPrice.infantNumeric
                     } else {
-                        flightDetailViewModel.adultNumericPrice = flightPriceViewModel.returnPrice.adultNumericCombo
-                        flightDetailViewModel.childNumericPrice = flightPriceViewModel.returnPrice.childNumericCombo
-                        flightDetailViewModel.infantNumericPrice = flightPriceViewModel.returnPrice.infantNumericCombo
+                        flightDetailViewModel.adultNumericPrice = flightPriceModel.returnPrice.adultNumericCombo
+                        flightDetailViewModel.childNumericPrice = flightPriceModel.returnPrice.childNumericCombo
+                        flightDetailViewModel.infantNumericPrice = flightPriceModel.returnPrice.infantNumericCombo
                     }
                 }
 
@@ -241,9 +241,9 @@ class FlightBookingMapper {
                 flightDetailViewModel.arrivalTime = journey.arrivalTime
                 flightDetailViewModel.airlineDataList = listOf()
 
-                val routeList = listOf<FlightDetailRouteViewModel>().toMutableList()
+                val routeList = listOf<FlightDetailRouteModel>().toMutableList()
                 for (route in journey.routes) {
-                    val routeDetail = FlightDetailRouteViewModel()
+                    val routeDetail = FlightDetailRouteModel()
                     routeDetail.airlineCode = route.airlineId
 
                     routeDetail.airlineName = ""
@@ -299,10 +299,10 @@ class FlightBookingMapper {
             return list
         }
 
-        private fun transformToInfoDetail(infos: List<FlightCart.Info>): List<FlightDetailRouteInfoViewModel> {
-            val list = listOf<FlightDetailRouteInfoViewModel>().toMutableList()
+        private fun transformToInfoDetail(infos: List<FlightCart.Info>): List<FlightDetailRouteInfoModel> {
+            val list = listOf<FlightDetailRouteInfoModel>().toMutableList()
             for (item in infos) {
-                val infoDetail = FlightDetailRouteInfoViewModel()
+                val infoDetail = FlightDetailRouteInfoModel()
                 infoDetail.label = item.label
                 infoDetail.value = item.value
                 list.add(infoDetail)

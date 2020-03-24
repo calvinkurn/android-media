@@ -2,7 +2,7 @@ package com.tokopedia.flight.cancellation.domain;
 
 import com.tokopedia.flight.cancellation.data.cloud.entity.Passenger;
 import com.tokopedia.flight.cancellation.domain.mapper.FlightCancellationViewModelMapper;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationModel;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -19,7 +19,7 @@ import rx.functions.Func1;
  * @author by furqan on 23/03/18.
  */
 
-public class FlightCancellationGetCancelablePassengerUseCase extends UseCase<List<FlightCancellationViewModel>> {
+public class FlightCancellationGetCancelablePassengerUseCase extends UseCase<List<FlightCancellationModel>> {
 
     private static final String PARAM_INVOICE_ID = "invoice_id";
 
@@ -34,12 +34,12 @@ public class FlightCancellationGetCancelablePassengerUseCase extends UseCase<Lis
     }
 
     @Override
-    public Observable<List<FlightCancellationViewModel>> createObservable(RequestParams requestParams) {
+    public Observable<List<FlightCancellationModel>> createObservable(RequestParams requestParams) {
         return flightRepository.getCancelablePassenger(
                 requestParams.getString(PARAM_INVOICE_ID, ""))
-                .flatMap(new Func1<Map<String, List<Passenger>>, Observable<List<FlightCancellationViewModel>>>() {
+                .flatMap(new Func1<Map<String, List<Passenger>>, Observable<List<FlightCancellationModel>>>() {
                     @Override
-                    public Observable<List<FlightCancellationViewModel>> call(Map<String, List<Passenger>> passengersMap) {
+                    public Observable<List<FlightCancellationModel>> call(Map<String, List<Passenger>> passengersMap) {
                         return Observable.just(flightCancellationViewModelMapper.transform(passengersMap));
                     }
                 });

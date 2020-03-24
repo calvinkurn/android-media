@@ -4,8 +4,8 @@ import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultE
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationDetailRequestBody;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundAttribute;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerViewModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationModel;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -33,7 +33,7 @@ public class FlightCancellationEstimateRefundUseCase extends UseCase<EstimateRef
         return flightRepository.estimateRefund((FlightEstimateRefundRequest) requestParams.getObject(PARAM_REQUEST));
     }
 
-    public RequestParams createRequestParam(String invoiceId, String userId, List<FlightCancellationViewModel> journeyCancellations,
+    public RequestParams createRequestParam(String invoiceId, String userId, List<FlightCancellationModel> journeyCancellations,
                                             String reason, int reasonType){
         RequestParams requestParams = RequestParams.create();
         FlightEstimateRefundRequest requestBody = new FlightEstimateRefundRequest();
@@ -50,10 +50,10 @@ public class FlightCancellationEstimateRefundUseCase extends UseCase<EstimateRef
         return requestParams;
     }
 
-    private List<FlightCancellationDetailRequestBody> transformIntoDetails(List<FlightCancellationViewModel> journeyCancellations) {
+    private List<FlightCancellationDetailRequestBody> transformIntoDetails(List<FlightCancellationModel> journeyCancellations) {
         List<FlightCancellationDetailRequestBody> detailRequestBodies = new ArrayList<>();
-        for (FlightCancellationViewModel viewModel : journeyCancellations ){
-            for (FlightCancellationPassengerViewModel passengerViewModel : viewModel.getPassengerViewModelList()) {
+        for (FlightCancellationModel viewModel : journeyCancellations ){
+            for (FlightCancellationPassengerModel passengerViewModel : viewModel.getPassengerViewModelList()) {
                 FlightCancellationDetailRequestBody detailRequestBody = new FlightCancellationDetailRequestBody();
                 detailRequestBody.setJourneyId(Long.parseLong(viewModel.getFlightCancellationJourney().getJourneyId()));
                 detailRequestBody.setPassengerId(Long.parseLong(passengerViewModel.getPassengerId()));

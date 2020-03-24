@@ -19,7 +19,7 @@ import com.tokopedia.flight.airport.view.adapter.FlightAirportAdapterTypeFactory
 import com.tokopedia.flight.airport.view.adapter.FlightAirportClickListener;
 import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerContract;
 import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerPresenterImpl;
-import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
+import com.tokopedia.flight.airport.view.model.FlightAirportModel;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 
 import java.util.List;
@@ -159,7 +159,7 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<Visitabl
     }
 
     @Override
-    public void airportClicked(FlightAirportViewModel airportViewModel) {
+    public void airportClicked(FlightAirportModel airportViewModel) {
         Intent intent = new Intent();
         intent.putExtra(EXTRA_SELECTED_AIRPORT, airportViewModel);
         getActivity().setResult(Activity.RESULT_OK, intent);

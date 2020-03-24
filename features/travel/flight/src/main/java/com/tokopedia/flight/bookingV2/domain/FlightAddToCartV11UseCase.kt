@@ -9,7 +9,7 @@ import com.tokopedia.flight.bookingV2.data.entity.AddToCartEntity
 import com.tokopedia.flight.common.domain.FlightRepository
 import com.tokopedia.flight.common.util.FlightRequestUtil
 import com.tokopedia.flight.search.domain.FlightSearchJourneyByIdUseCase
-import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel
+import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -58,12 +58,12 @@ class FlightAddToCartV11UseCase @Inject constructor(val flightRepository: Flight
         request.idEmpotencyKey = requestParams.getString(PARAM_ID_EMPOTENCY_KEY, PARAM_DEFAULT_VALUE)
 
         return if (!TextUtils.isEmpty(arrivalId)) {
-            Observable.zip<FlightJourneyViewModel, FlightJourneyViewModel, FlightCartRequest, FlightCartRequest>(
+            Observable.zip<FlightJourneyModel, FlightJourneyModel, FlightCartRequest, FlightCartRequest>(
                     flightSearchJourneyByIdUseCase.createObservable(flightSearchJourneyByIdUseCase.createRequestParams(departureId)),
                     flightSearchJourneyByIdUseCase.createObservable(flightSearchJourneyByIdUseCase.createRequestParams(arrivalId)),
                     Observable.just<FlightCartRequest>(request),
-                    object : Func3<FlightJourneyViewModel, FlightJourneyViewModel, FlightCartRequest, FlightCartRequest> {
-                        override fun call(departureViewModel: FlightJourneyViewModel, arrivalViewModel: FlightJourneyViewModel, flightCartRequest: FlightCartRequest): FlightCartRequest {
+                    object : Func3<FlightJourneyModel, FlightJourneyModel, FlightCartRequest, FlightCartRequest> {
+                        override fun call(departureViewModel: FlightJourneyModel, arrivalViewModel: FlightJourneyModel, flightCartRequest: FlightCartRequest): FlightCartRequest {
                             val departureAirport = getCartAirportRequest(departureViewModel)
                             val arrivalAirport = getCartAirportRequest(arrivalViewModel)
                             val airportRequests = arrayListOf<CartAirportRequest>()
@@ -74,11 +74,11 @@ class FlightAddToCartV11UseCase @Inject constructor(val flightRepository: Flight
                         }
                     })
         } else {
-            Observable.zip<FlightJourneyViewModel, FlightCartRequest, FlightCartRequest>(
+            Observable.zip<FlightJourneyModel, FlightCartRequest, FlightCartRequest>(
                     flightSearchJourneyByIdUseCase.createObservable(flightSearchJourneyByIdUseCase.createRequestParams(departureId)),
                     Observable.just<FlightCartRequest>(request),
-                    object : Func2<FlightJourneyViewModel, FlightCartRequest, FlightCartRequest> {
-                        override fun call(departureViewModel: FlightJourneyViewModel, flightCartRequest: FlightCartRequest): FlightCartRequest {
+                    object : Func2<FlightJourneyModel, FlightCartRequest, FlightCartRequest> {
+                        override fun call(departureViewModel: FlightJourneyModel, flightCartRequest: FlightCartRequest): FlightCartRequest {
                             val departureAirport = getCartAirportRequest(departureViewModel)
                             val airportRequests = ArrayList<CartAirportRequest>()
                             airportRequests.add(departureAirport)
@@ -89,7 +89,7 @@ class FlightAddToCartV11UseCase @Inject constructor(val flightRepository: Flight
         }
     }
 
-    private fun getCartAirportRequest(routeViewModel: FlightJourneyViewModel): CartAirportRequest {
+    private fun getCartAirportRequest(routeViewModel: FlightJourneyModel): CartAirportRequest {
         val departureAirport = CartAirportRequest()
         departureAirport.journeyId = routeViewModel.id
         departureAirport.term = routeViewModel.term

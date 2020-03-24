@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
-import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
+import com.tokopedia.flight.airport.view.model.FlightAirportModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardPassDataViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
@@ -123,9 +123,9 @@ public interface FlightDashboardContract {
 
         void onFlightPassengerChange(FlightPassengerViewModel passengerViewModel);
 
-        void onDepartureAirportChange(FlightAirportViewModel departureAirport);
+        void onDepartureAirportChange(FlightAirportModel departureAirport);
 
-        void onArrivalAirportChange(FlightAirportViewModel arrivalAirport);
+        void onArrivalAirportChange(FlightAirportModel arrivalAirport);
 
         void onSearchTicketButtonClicked();
 

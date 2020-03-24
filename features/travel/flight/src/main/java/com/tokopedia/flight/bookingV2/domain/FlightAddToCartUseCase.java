@@ -12,7 +12,7 @@ import com.tokopedia.flight.bookingV2.data.cloud.requestbody.FlightRequest;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.search.domain.FlightSearchJourneyByIdUseCase;
-import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel;
+import com.tokopedia.flight.search.presentation.model.FlightJourneyModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -96,9 +96,9 @@ public class FlightAddToCartUseCase extends UseCase<CartEntity> {
                     flightSearchJourneyByIdUseCase.createObservable(flightSearchJourneyByIdUseCase.createRequestParams( departureId)),
                     flightSearchJourneyByIdUseCase.createObservable(flightSearchJourneyByIdUseCase.createRequestParams( arrivalId)),
                     Observable.just(request),
-                    new Func3<FlightJourneyViewModel, FlightJourneyViewModel, FlightCartRequest, FlightCartRequest>() {
+                    new Func3<FlightJourneyModel, FlightJourneyModel, FlightCartRequest, FlightCartRequest>() {
                         @Override
-                        public FlightCartRequest call(FlightJourneyViewModel departureViewModel, FlightJourneyViewModel arrivalViewModel, FlightCartRequest flightCartRequest) {
+                        public FlightCartRequest call(FlightJourneyModel departureViewModel, FlightJourneyModel arrivalViewModel, FlightCartRequest flightCartRequest) {
                             CartAirportRequest departureAirport = getCartAirportRequest(departureViewModel);
                             CartAirportRequest arrivalAirport = getCartAirportRequest(arrivalViewModel);
                             List<CartAirportRequest> airportRequests = new ArrayList<>();
@@ -112,9 +112,9 @@ public class FlightAddToCartUseCase extends UseCase<CartEntity> {
             return Observable.zip(
                     flightSearchJourneyByIdUseCase.createObservable(flightSearchJourneyByIdUseCase.createRequestParams(departureId)),
                     Observable.just(request),
-                    new Func2<FlightJourneyViewModel, FlightCartRequest, FlightCartRequest>() {
+                    new Func2<FlightJourneyModel, FlightCartRequest, FlightCartRequest>() {
                         @Override
-                        public FlightCartRequest call(FlightJourneyViewModel departureViewModel, FlightCartRequest flightCartRequest) {
+                        public FlightCartRequest call(FlightJourneyModel departureViewModel, FlightCartRequest flightCartRequest) {
                             CartAirportRequest departureAirport = getCartAirportRequest(departureViewModel);
                             List<CartAirportRequest> airportRequests = new ArrayList<>();
                             airportRequests.add(departureAirport);
@@ -126,7 +126,7 @@ public class FlightAddToCartUseCase extends UseCase<CartEntity> {
     }
 
     @NonNull
-    private CartAirportRequest getCartAirportRequest(FlightJourneyViewModel routeViewModel) {
+    private CartAirportRequest getCartAirportRequest(FlightJourneyModel routeViewModel) {
         CartAirportRequest departureAirport = new CartAirportRequest();
         departureAirport.setJourneyId(routeViewModel.getId());
         departureAirport.setTerm(routeViewModel.getTerm());

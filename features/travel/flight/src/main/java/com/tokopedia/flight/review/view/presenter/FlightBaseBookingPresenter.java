@@ -7,18 +7,18 @@ import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.flight.bookingV2.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.bookingV2.data.cloud.entity.NewFarePrice;
 import com.tokopedia.flight.bookingV2.domain.FlightAddToCartUseCase;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.BaseCartData;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingAmenityMetaViewModel;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingAmenityViewModel;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingCartData;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightInsuranceViewModel;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.bookingV2.presentation.model.BaseCartData;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingAmenityMetaModel;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingAmenityModel;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingCartData;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingPassengerModel;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightInsuranceModel;
+import com.tokopedia.flight.bookingV2.presentation.model.SimpleModel;
 import com.tokopedia.flight.common.constant.FlightErrorConstant;
 import com.tokopedia.flight.common.data.model.FlightError;
 import com.tokopedia.flight.common.data.model.FlightException;
 import com.tokopedia.flight.common.util.FlightDateUtil;
-import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
+import com.tokopedia.flight.detail.view.model.FlightDetailModel;
 import com.tokopedia.flight.review.view.model.mapper.FlightBookingCartDataMapper;
 import com.tokopedia.flight.search.data.api.single.response.Fare;
 import com.tokopedia.usecase.RequestParams;
@@ -184,14 +184,14 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
 
     protected int calculateTotalFareAndAmenities(List<Fare> newFares,
                                                  int adult, int child, int infant,
-                                                 List<FlightBookingAmenityViewModel> amenities) {
+                                                 List<FlightBookingAmenityModel> amenities) {
         int newTotalPrice = calculateTotalPassengerFare(newFares, adult, child, infant);
 
-        for (FlightBookingAmenityViewModel amenityViewModel : amenities) {
+        for (FlightBookingAmenityModel amenityViewModel : amenities) {
             newTotalPrice += amenityViewModel.getPriceNumeric();
         }
 
-        for (FlightInsuranceViewModel insurance : getInsurances()) {
+        for (FlightInsuranceModel insurance : getInsurances()) {
             newTotalPrice += insurance.getTotalPrice();
         }
         return newTotalPrice;
@@ -234,10 +234,10 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
 
     protected void actionCalculatePriceAndRender(
             List<NewFarePrice> newFarePrices,
-            FlightDetailViewModel departureDetailViewModel,
-            FlightDetailViewModel returnDetailViewModel,
-            List<FlightBookingPassengerViewModel> flightBookingPassengers,
-            List<FlightInsuranceViewModel> insurances) {
+            FlightDetailModel departureDetailViewModel,
+            FlightDetailModel returnDetailViewModel,
+            List<FlightBookingPassengerModel> flightBookingPassengers,
+            List<FlightInsuranceModel> insurances) {
         for (NewFarePrice newFarePrice : newFarePrices) {
             if (newFarePrice.getId().equalsIgnoreCase(departureDetailViewModel.getId())) {
                 departureDetailViewModel.setAdultNumericPrice(newFarePrice.getFare().getAdultNumeric());
@@ -264,7 +264,7 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                 returnDetailViewModel.setInfantNumericPrice(newInfantPrice);
             }
         }
-        List<SimpleViewModel> simpleViewModels = new ArrayList<>();
+        List<SimpleModel> simpleViewModels = new ArrayList<>();
         if (departureDetailViewModel.getAdultNumericPrice() > 0) {
             simpleViewModels.add(
                     formatPassengerFarePriceDetail(
@@ -342,9 +342,9 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
         Map<String, Integer> meals = new HashMap<>();
         Map<String, Integer> luggages = new HashMap<>();
 
-        for (FlightBookingPassengerViewModel flightPassengerViewModel : flightBookingPassengers) {
-            for (FlightBookingAmenityMetaViewModel flightBookingAmenityMetaViewModel : flightPassengerViewModel.getFlightBookingMealMetaViewModels()) {
-                for (FlightBookingAmenityViewModel flightBookingAmenityViewModel : flightBookingAmenityMetaViewModel.getAmenities()) {
+        for (FlightBookingPassengerModel flightPassengerViewModel : flightBookingPassengers) {
+            for (FlightBookingAmenityMetaModel flightBookingAmenityMetaViewModel : flightPassengerViewModel.getFlightBookingMealMetaViewModels()) {
+                for (FlightBookingAmenityModel flightBookingAmenityViewModel : flightBookingAmenityMetaViewModel.getAmenities()) {
                     if (meals.get(flightBookingAmenityMetaViewModel.getDescription()) != null) {
                         int total = meals.get(flightBookingAmenityMetaViewModel.getDescription());
                         total += flightBookingAmenityViewModel.getPriceNumeric();
@@ -355,8 +355,8 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                 }
 
             }
-            for (FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel : flightPassengerViewModel.getFlightBookingLuggageMetaViewModels()) {
-                for (FlightBookingAmenityViewModel flightBookingLuggageViewModel : flightBookingLuggageMetaViewModel.getAmenities()) {
+            for (FlightBookingAmenityMetaModel flightBookingLuggageMetaViewModel : flightPassengerViewModel.getFlightBookingLuggageMetaViewModels()) {
+                for (FlightBookingAmenityModel flightBookingLuggageViewModel : flightBookingLuggageMetaViewModel.getAmenities()) {
                     if (luggages.get(flightBookingLuggageMetaViewModel.getDescription()) != null) {
                         int total = luggages.get(flightBookingLuggageMetaViewModel.getDescription());
                         total += flightBookingLuggageViewModel.getPriceNumeric();
@@ -368,14 +368,14 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
             }
         }
         for (Map.Entry<String, Integer> entry : meals.entrySet()) {
-            simpleViewModels.add(new SimpleViewModel(
+            simpleViewModels.add(new SimpleModel(
                     String.format("%s %s", getView().getString(com.tokopedia.flight.R.string.flight_price_detail_prefixl_meal_label),
                             entry.getKey()),
                     CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(entry.getValue())));
 
         }
         for (Map.Entry<String, Integer> entry : luggages.entrySet()) {
-            simpleViewModels.add(new SimpleViewModel(
+            simpleViewModels.add(new SimpleModel(
                     String.format("%s %s", getView().getString(com.tokopedia.flight.R.string.flight_price_detail_prefix_luggage_label),
                             entry.getKey()),
                     CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(entry.getValue())));
@@ -383,8 +383,8 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
         }
         int totalPassenger = departureDetailViewModel.getCountAdult() + departureDetailViewModel.getCountChild() + departureDetailViewModel.getCountInfant();
 
-        for (FlightInsuranceViewModel insuranceViewModel : insurances) {
-            simpleViewModels.add(new SimpleViewModel(
+        for (FlightInsuranceModel insuranceViewModel : insurances) {
+            simpleViewModels.add(new SimpleModel(
                     String.format("%s x%d", insuranceViewModel.getName(), totalPassenger),
                     CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace((int) (insuranceViewModel.getTotalPrice()))));
         }
@@ -394,12 +394,12 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
 
     protected abstract String getComboKey();
 
-    private SimpleViewModel formatPassengerFarePriceDetail(String departureAirport,
-                                                           String arrivalAirport,
-                                                           String label,
-                                                           int passengerCount,
-                                                           int price) {
-        return new SimpleViewModel(
+    private SimpleModel formatPassengerFarePriceDetail(String departureAirport,
+                                                       String arrivalAirport,
+                                                       String label,
+                                                       int passengerCount,
+                                                       int price) {
+        return new SimpleModel(
                 String.format(getView().getString(com.tokopedia.flight.R.string.flight_booking_passenger_price_format),
                         departureAirport,
                         arrivalAirport,
@@ -408,5 +408,5 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                 CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(price));
     }
 
-    public abstract List<FlightInsuranceViewModel> getInsurances();
+    public abstract List<FlightInsuranceModel> getInsurances();
 }

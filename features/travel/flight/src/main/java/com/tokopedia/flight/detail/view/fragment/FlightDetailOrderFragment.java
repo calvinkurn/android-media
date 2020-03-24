@@ -46,7 +46,7 @@ import com.tokopedia.common.travel.widget.TravelCrossSellWidget;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.bookingV2.presentation.adapter.FlightSimpleAdapter;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.bookingV2.presentation.model.SimpleModel;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationActivity;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationListActivity;
 import com.tokopedia.flight.common.di.component.FlightComponent;
@@ -365,7 +365,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     @Override
-    public void updatePrice(List<SimpleViewModel> priceList, String totalPrice) {
+    public void updatePrice(List<SimpleModel> priceList, String totalPrice) {
         flightBookingReviewPriceAdapter.setViewModels(priceList);
         flightBookingReviewPriceAdapter.notifyDataSetChanged();
         this.totalPrice.setText(totalPrice);

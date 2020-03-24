@@ -10,7 +10,7 @@ import com.tokopedia.common.travel.data.entity.TravelCrossSelling;
 import com.tokopedia.common.travel.domain.TravelCrossSellingUseCase;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.bookingV2.presentation.model.SimpleModel;
 import com.tokopedia.flight.common.constant.FlightErrorConstant;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.data.model.FlightError;
@@ -440,8 +440,8 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         return journeyList;
     }
 
-    private List<SimpleViewModel> transformToSimpleModelPrice(FlightOrder flightOrder) {
-        List<SimpleViewModel> simpleViewModelList = new ArrayList<>();
+    private List<SimpleModel> transformToSimpleModelPrice(FlightOrder flightOrder) {
+        List<SimpleModel> simpleViewModelList = new ArrayList<>();
 
         Map<String, Integer> meals = new HashMap<>();
         Map<String, Integer> luggages = new HashMap<>();
@@ -507,14 +507,14 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             simpleViewModelList.add(formatPassengerFarePriceDetail(getView().getString(com.tokopedia.flight.R.string.select_passenger_infant_title), passengerInfantCount, flightOrder.getTotalInfantNumeric()));
 
         for (Map.Entry<String, Integer> entry : luggages.entrySet()) {
-            simpleViewModelList.add(new SimpleViewModel(
+            simpleViewModelList.add(new SimpleModel(
                     String.format("%s %s", getView().getString(com.tokopedia.flight.R.string.flight_price_detail_prefix_luggage_label),
                             entry.getKey()),
                     FlightCurrencyFormatUtil.Companion.convertToIdrPrice(entry.getValue())));
         }
 
         for (Map.Entry<String, Integer> entry : meals.entrySet()) {
-            simpleViewModelList.add(new SimpleViewModel(
+            simpleViewModelList.add(new SimpleModel(
                     String.format("%s %s", getView().getString(com.tokopedia.flight.R.string.flight_price_detail_prefixl_meal_label),
                             entry.getKey()),
                     FlightCurrencyFormatUtil.Companion.convertToIdrPrice(entry.getValue())));
@@ -523,7 +523,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         int totalPassenger = passengerAdultCount + passengerChildCount + passengerInfantCount;
 
         for (FlightInsurance insurance : flightOrder.getInsurances()) {
-            simpleViewModelList.add(new SimpleViewModel(
+            simpleViewModelList.add(new SimpleModel(
                     String.format("%s %dx", insurance.getTitle(), totalPassenger),
                     insurance.getPaidAmount()
             ));
@@ -533,11 +533,11 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         return simpleViewModelList;
     }
 
-    private SimpleViewModel formatPassengerFarePriceDetail(
+    private SimpleModel formatPassengerFarePriceDetail(
             String label,
             int passengerCount,
             int price) {
-        return new SimpleViewModel(
+        return new SimpleModel(
                 String.format("%s x%d",
                         label,
                         passengerCount),
@@ -593,10 +593,10 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         }
     }
 
-    private List<SimpleViewModel> transformToSimpleModelPassenger(List<FlightOrderAmenityViewModel> amenities) {
-        List<SimpleViewModel> simpleViewModels = new ArrayList<>();
+    private List<SimpleModel> transformToSimpleModelPassenger(List<FlightOrderAmenityViewModel> amenities) {
+        List<SimpleModel> simpleViewModels = new ArrayList<>();
         for (FlightOrderAmenityViewModel flightOrderAmenityViewModel : amenities) {
-            SimpleViewModel simpleViewModel = new SimpleViewModel();
+            SimpleModel simpleViewModel = new SimpleModel();
             simpleViewModel.setDescription(generateLabelPassenger(String.valueOf(flightOrderAmenityViewModel.getAmenityType()), flightOrderAmenityViewModel.getDepartureId(),
                     flightOrderAmenityViewModel.getArrivalId()));
             simpleViewModel.setLabel(flightOrderAmenityViewModel.getTitle());

@@ -7,8 +7,8 @@ import com.tokopedia.flight.search.domain.FlightGetComboKeyUseCase
 import com.tokopedia.flight.search.domain.FlightSearchJourneyByIdUseCase
 import com.tokopedia.flight.search.presentation.contract.FlightSearchContract
 import com.tokopedia.flight.search.presentation.contract.FlightSearchReturnContract
-import com.tokopedia.flight.search.presentation.model.FlightFareViewModel
-import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel
+import com.tokopedia.flight.search.presentation.model.FlightFareModel
+import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
@@ -29,7 +29,7 @@ class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJo
 
     private val compositeSubscription = CompositeSubscription()
 
-    override fun onFlightSearchSelected(selectedFlightDeparture: String, returnJourneyViewModel: FlightJourneyViewModel, adapterPosition: Int) {
+    override fun onFlightSearchSelected(selectedFlightDeparture: String, returnJourneyViewModel: FlightJourneyModel, adapterPosition: Int) {
         if (adapterPosition >= 0) {
             flightAnalytics.eventSearchProductClickFromList((view as FlightSearchContract.View)
                     .getSearchPassData(), returnJourneyViewModel, adapterPosition)
@@ -135,7 +135,7 @@ class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJo
         flightSearchJourneyByIdUseCase.unsubscribe()
     }
 
-    private fun isValidReturnJourney(departureViewModel: FlightJourneyViewModel, returnViewModel: FlightJourneyViewModel): Boolean {
+    private fun isValidReturnJourney(departureViewModel: FlightJourneyModel, returnViewModel: FlightJourneyModel): Boolean {
         if (departureViewModel.routeList != null && returnViewModel.routeList != null) {
             if (departureViewModel.routeList.size > 0 && returnViewModel.routeList.size > 0) {
                 val lastDepartureRoute = departureViewModel.routeList[departureViewModel.routeList.size - 1]
@@ -157,9 +157,9 @@ class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJo
         return true
     }
 
-    private fun buildFare(journeyFare: FlightFareViewModel, isNeedCombo: Boolean): FlightFareViewModel =
+    private fun buildFare(journeyFare: FlightFareModel, isNeedCombo: Boolean): FlightFareModel =
             if (isNeedCombo) {
-                FlightFareViewModel(
+                FlightFareModel(
                         journeyFare.adult,
                         journeyFare.adultCombo,
                         journeyFare.child,
@@ -174,7 +174,7 @@ class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJo
                         journeyFare.infantNumericCombo
                 )
             } else {
-                FlightFareViewModel(
+                FlightFareModel(
                         journeyFare.adult,
                         "",
                         journeyFare.child,

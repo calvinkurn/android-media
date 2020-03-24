@@ -1,6 +1,6 @@
 package com.tokopedia.flight.dashboard.view.fragment.viewmodel;
 
-import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
+import com.tokopedia.flight.airport.view.model.FlightAirportModel;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 
 /**
@@ -8,26 +8,26 @@ import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassE
  */
 
 public class FlightDashboardAirportAndClassWrapper {
-    private FlightAirportViewModel departureAirport;
-    private FlightAirportViewModel arrivalAirport;
+    private FlightAirportModel departureAirport;
+    private FlightAirportModel arrivalAirport;
     private FlightClassEntity flightClassEntity;
 
     public FlightDashboardAirportAndClassWrapper() {
     }
 
-    public FlightAirportViewModel getDepartureAirport() {
+    public FlightAirportModel getDepartureAirport() {
         return departureAirport;
     }
 
-    public void setDepartureAirport(FlightAirportViewModel departureAirport) {
+    public void setDepartureAirport(FlightAirportModel departureAirport) {
         this.departureAirport = departureAirport;
     }
 
-    public FlightAirportViewModel getArrivalAirport() {
+    public FlightAirportModel getArrivalAirport() {
         return arrivalAirport;
     }
 
-    public void setArrivalAirport(FlightAirportViewModel arrivalAirport) {
+    public void setArrivalAirport(FlightAirportModel arrivalAirport) {
         this.arrivalAirport = arrivalAirport;
     }
 

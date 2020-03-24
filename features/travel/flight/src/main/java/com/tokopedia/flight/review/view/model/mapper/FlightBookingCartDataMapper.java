@@ -3,12 +3,12 @@ package com.tokopedia.flight.review.view.model.mapper;
 import com.tokopedia.flight.bookingV2.data.cloud.entity.Amenity;
 import com.tokopedia.flight.bookingV2.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.bookingV2.data.cloud.entity.Voucher;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingAmenityMetaViewModel;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingCartData;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingVoucherViewModel;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightInsuranceViewModel;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.mapper.FlightBookingAmenityViewModelMapper;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.mapper.FlightInsuranceViewModelMapper;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingAmenityMetaModel;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingCartData;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingVoucherModel;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightInsuranceModel;
+import com.tokopedia.flight.bookingV2.presentation.model.mapper.FlightBookingAmenityModelMapper;
+import com.tokopedia.flight.bookingV2.presentation.model.mapper.FlightInsuranceModelMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +20,12 @@ import javax.inject.Inject;
  */
 
 public class FlightBookingCartDataMapper {
-    private FlightBookingAmenityViewModelMapper flightBookingAmenityViewModelMapper;
-    private FlightInsuranceViewModelMapper flightInsuranceViewModelMapper;
+    private FlightBookingAmenityModelMapper flightBookingAmenityViewModelMapper;
+    private FlightInsuranceModelMapper flightInsuranceViewModelMapper;
 
     @Inject
-    public FlightBookingCartDataMapper(FlightBookingAmenityViewModelMapper flightBookingAmenityViewModelMapper,
-                                       FlightInsuranceViewModelMapper flightInsuranceViewModelMapper) {
+    public FlightBookingCartDataMapper(FlightBookingAmenityModelMapper flightBookingAmenityViewModelMapper,
+                                       FlightInsuranceModelMapper flightInsuranceViewModelMapper) {
         this.flightBookingAmenityViewModelMapper = flightBookingAmenityViewModelMapper;
         this.flightInsuranceViewModelMapper = flightInsuranceViewModelMapper;
     }
@@ -39,12 +39,12 @@ public class FlightBookingCartDataMapper {
             data.setRefreshTime(entity.getAttribute().getFlightAttribute().getRefreshTime());
             data.setDomestic(entity.getAttribute().getFlightAttribute().isDomestic());
             if (entity.getAttribute().getFlightAttribute().getAmenities() != null) {
-                List<FlightBookingAmenityMetaViewModel> luggageMetaViewModels = new ArrayList<>();
-                List<FlightBookingAmenityMetaViewModel> mealMetaViewModels = new ArrayList<>();
+                List<FlightBookingAmenityMetaModel> luggageMetaViewModels = new ArrayList<>();
+                List<FlightBookingAmenityMetaModel> mealMetaViewModels = new ArrayList<>();
                 for (Amenity amenity : entity.getAttribute().getFlightAttribute().getAmenities()) {
                     switch (amenity.getType()) {
                         case Amenity.MEAL:
-                            FlightBookingAmenityMetaViewModel mealMetaViewModel = new FlightBookingAmenityMetaViewModel();
+                            FlightBookingAmenityMetaModel mealMetaViewModel = new FlightBookingAmenityMetaModel();
                             mealMetaViewModel.setArrivalId(amenity.getArrivalId());
                             mealMetaViewModel.setDepartureId(amenity.getDepartureId());
                             mealMetaViewModel.setKey(amenity.getKey());
@@ -54,7 +54,7 @@ public class FlightBookingCartDataMapper {
                             mealMetaViewModels.add(mealMetaViewModel);
                             break;
                         case Amenity.LUGGAGE:
-                            FlightBookingAmenityMetaViewModel luggageMetaViewModel = new FlightBookingAmenityMetaViewModel();
+                            FlightBookingAmenityMetaModel luggageMetaViewModel = new FlightBookingAmenityMetaModel();
                             luggageMetaViewModel.setArrivalId(amenity.getArrivalId());
                             luggageMetaViewModel.setDepartureId(amenity.getDepartureId());
                             luggageMetaViewModel.setKey(amenity.getKey());
@@ -70,22 +70,22 @@ public class FlightBookingCartDataMapper {
                 data.setMandatoryDob(entity.getAttribute().getFlightAttribute().isMandatoryDob());
                 data.setVoucherViewModel(transform(entity.getAttribute().getFlightAttribute().getVoucher()));
             } else {
-                data.setLuggageViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
-                data.setMealViewModels(new ArrayList<FlightBookingAmenityMetaViewModel>());
+                data.setLuggageViewModels(new ArrayList<FlightBookingAmenityMetaModel>());
+                data.setMealViewModels(new ArrayList<FlightBookingAmenityMetaModel>());
             }
             if (entity.getInsurances() != null && entity.getInsurances().size() > 0) {
-                List<FlightInsuranceViewModel> insuranceViewModels = flightInsuranceViewModelMapper.transform(entity.getInsurances());
+                List<FlightInsuranceModel> insuranceViewModels = flightInsuranceViewModelMapper.transform(entity.getInsurances());
                 data.setInsurances(insuranceViewModels);
             } else {
-                data.setInsurances(new ArrayList<FlightInsuranceViewModel>());
+                data.setInsurances(new ArrayList<FlightInsuranceModel>());
             }
             data.setNewFarePrices(entity.getAttribute().getFlightAttribute().getNewPrices());
         }
         return data;
     }
 
-    private FlightBookingVoucherViewModel transform(Voucher voucher) {
-        FlightBookingVoucherViewModel data = new FlightBookingVoucherViewModel();
+    private FlightBookingVoucherModel transform(Voucher voucher) {
+        FlightBookingVoucherModel data = new FlightBookingVoucherModel();
 
         data.setEnableVoucher(voucher.getEnableVoucher());
         data.setIsCouponActive(voucher.getIsCouponActive());
