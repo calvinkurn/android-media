@@ -1,5 +1,6 @@
 package com.tokopedia.onboarding.view.fragment
 
+import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -253,15 +254,22 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed, CoroutineScope 
 
     private fun startActivityWithBackTask() {
         context?.let {
-            finishOnBoarding()
-            val taskStackBuilder = TaskStackBuilder.create(it)
-            val homeIntent = RouteManager.getIntent(it, ApplinkConst.HOME)
-            taskStackBuilder.addNextIntent(homeIntent)
-            val intent = RouteManager.getIntent(it, ApplinkConst.REGISTER)
-            taskStackBuilder.addNextIntent(intent)
-            taskStackBuilder.startActivities()
+            launchCatchError(
+                    block = {
+                        val taskStackBuilder = TaskStackBuilder.create(it)
+                        val homeIntent = getIntentforApplink(it, ApplinkConst.HOME)
+                        taskStackBuilder.addNextIntent(homeIntent)
+                        val intent = getIntentforApplink(it, ApplinkConst.REGISTER)
+                        taskStackBuilder.addNextIntent(intent)
+                        taskStackBuilder.startActivities()
+                        finishOnBoarding()
+                    },
+                    onError = {
+                    }
+            )
         }
     }
+
 
     private fun hideJoinButton() {
         joinButton.hide()
