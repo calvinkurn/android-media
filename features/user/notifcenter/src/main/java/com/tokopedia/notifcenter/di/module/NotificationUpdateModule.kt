@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.consts.NotificationQueriesConstant
-import com.tokopedia.notifcenter.data.entity.NotificationCenterDetail
+import com.tokopedia.notifcenter.data.entity.NotificationCenterSingleDetail
 import com.tokopedia.notifcenter.data.entity.ProductStockHandler
 import com.tokopedia.notifcenter.data.entity.ProductStockReminder
 import com.tokopedia.notifcenter.di.scope.NotificationContext
@@ -66,7 +66,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase as UseC
     fun provideSingleNotificationUpdateUseCase(
             @Named(NotificationQueriesConstant.SINGLE_NOTIFICATION_UPDATE)
             query: String,
-            useCase: UseCase<NotificationCenterDetail>
+            useCase: UseCase<NotificationCenterSingleDetail>
     ): SingleNotificationUpdateUseCase {
         return SingleNotificationUpdateUseCase(query, useCase)
     }

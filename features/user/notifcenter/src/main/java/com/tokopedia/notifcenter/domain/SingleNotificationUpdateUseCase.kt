@@ -3,22 +3,23 @@ package com.tokopedia.notifcenter.domain
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.notifcenter.data.consts.NotificationQueriesConstant
 import com.tokopedia.notifcenter.data.entity.NotificationCenterDetail
+import com.tokopedia.notifcenter.data.entity.NotificationCenterSingleDetail
 import javax.inject.Inject
 import javax.inject.Named
 
 class SingleNotificationUpdateUseCase @Inject constructor(
         @Named(NotificationQueriesConstant.SINGLE_NOTIFICATION_UPDATE)
         private val query: String,
-        private val useCase: GraphqlUseCase<NotificationCenterDetail>
+        private val useCase: GraphqlUseCase<NotificationCenterSingleDetail>
 ){
 
     fun get(
             params: Map<String, Any>,
-            onSuccess: (NotificationCenterDetail) -> Unit,
+            onSuccess: (NotificationCenterSingleDetail) -> Unit,
             onError: (Throwable) -> Unit
     ) {
         useCase.apply {
-            setTypeClass(NotificationCenterDetail::class.java)
+            setTypeClass(NotificationCenterSingleDetail::class.java)
             setRequestParams(params)
             setGraphqlQuery(query)
             execute({ result ->
