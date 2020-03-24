@@ -40,23 +40,20 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
                 })
     }
 
-    fun deletePreference() {
+    fun deletePreference(id: Int) {
         val value = _preference.value
         if (value is OccState.Success) {
-            val id = value.data.profileId
-            if (id != null) {
-                _editResult.value = OccState.Loading
-                deletePreferenceUseCase.execute(id, { deletePreferenceGqlResponse: DeletePreferenceGqlResponse ->
-                    val messages = deletePreferenceGqlResponse.response.data.messages
-                    if (messages.isNotEmpty()) {
-                        _editResult.value = OccState.Success(messages[0])
-                    } else {
-                        _editResult.value = OccState.Success("Success")
-                    }
-                }, { throwable: Throwable ->
-                    _editResult.value = OccState.Fail(false, throwable, "")
-                })
-            }
+            _editResult.value = OccState.Loading
+            deletePreferenceUseCase.execute(id, { deletePreferenceGqlResponse: DeletePreferenceGqlResponse ->
+                val messages = deletePreferenceGqlResponse.response.data.messages
+                if (messages.isNotEmpty()) {
+                    _editResult.value = OccState.Success(messages[0])
+                } else {
+                    _editResult.value = OccState.Success("Success")
+                }
+            }, { throwable: Throwable ->
+                _editResult.value = OccState.Fail(false, throwable, "")
+            })
         }
     }
 

@@ -95,7 +95,6 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                     val profiles = it.data.profiles ?: ArrayList()
                     val maxProfiles = it.data.maxProfile
                     adapter.submitList(profiles)
-                    adapter.notifyDataSetChanged()
                     if (profiles.isEmpty()) {
                         ImageHandler.LoadImage(iv_empty, EMPTY_STATE_PREFERENCE_PICT)
                         group_empty_state.visible()
