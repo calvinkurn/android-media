@@ -1,6 +1,5 @@
 package com.example.processor
 
-import com.example.annotation.BundleThis
 import com.example.annotation.Key
 import com.example.annotation.defaultvalues.*
 import com.example.processor.utils.*
@@ -9,8 +8,6 @@ import com.squareup.kotlinpoet.asTypeName
 import com.sun.tools.javac.code.Symbol
 import com.sun.tools.javac.code.Type
 import org.jetbrains.annotations.NotNull
-import org.jetbrains.annotations.Nullable
-import java.lang.reflect.ParameterizedType
 import javax.lang.model.element.ElementKind
 import javax.lang.model.element.ExecutableElement
 import javax.lang.model.element.Modifier

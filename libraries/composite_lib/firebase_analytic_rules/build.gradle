@@ -8,9 +8,9 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation 'com.squareup:javapoet:1.11.1'
-    implementation project(':annotation')
-    implementation project(':AnalyticParam')
-    kapt project(':processor')
+    implementation project(':annotation_processor_analytic')
+    implementation project(':analytic_param')
+    kapt project(':analytic_processor')
 }
 
 sourceCompatibility = "7"

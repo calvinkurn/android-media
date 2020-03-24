@@ -13,8 +13,8 @@ dependencies {
     implementation 'com.squareup:javapoet:1.11.1'
     implementation files("${System.getProperty('java.home')}/../lib/tools.jar")
     kapt 'com.google.guava:guava:24.1-jre'
-    implementation project(':annotation')
-    implementation project(':AnalyticParam')
+    implementation project(':annotation_processor_analytic')
+    implementation project(':analytic_param')
 
     compileOnly("net.ltgt.gradle.incap:incap:0.2")
     kapt "net.ltgt.gradle.incap:incap-processor:0.2"
