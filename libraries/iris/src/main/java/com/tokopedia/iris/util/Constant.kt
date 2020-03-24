@@ -4,12 +4,7 @@ package com.tokopedia.iris.util
  * @author okasurya on 10/18/18.
  */
 
-const val LIVE = "https://hub.tokopedia.com/"
-const val STAGING = "https://hub-staging.tokopedia.com/"
-
 const val VERSION = "iris/v1/"
-
-const val BASE_URL ="$LIVE$VERSION"
 
 const val TAG = "P3IRIS-ANDROID"
 
