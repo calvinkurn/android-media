@@ -13,7 +13,6 @@ internal fun ProductCardFlashSaleView.renderProductCardFlashSaleContent(productC
     renderPdpCountView(productCardModel)
     renderTextProductName(productCardModel)
     renderDiscount(productCardModel)
-    renderLabelPrice(productCardModel)
     renderTextPrice(productCardModel)
     renderStockLabel(productCardModel)
     renderStockPercentage(productCardModel)
@@ -42,10 +41,6 @@ private fun ProductCardFlashSaleView.renderDiscount(productCardModel: ProductCar
         it.text = productCardModel.slashedPrice
         it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     }
-}
-
-private fun ProductCardFlashSaleView.renderLabelPrice(productCardModel: ProductCardFlashSaleModel) {
-    labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
 }
 
 private fun ProductCardFlashSaleView.renderTextPrice(productCardModel: ProductCardFlashSaleModel) {
