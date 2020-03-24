@@ -23,7 +23,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -86,8 +85,8 @@ import com.tokopedia.product.detail.common.data.model.product.Video
 import com.tokopedia.product.detail.data.model.ProductInfoP2General
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
-import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.TradeinResponse
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
@@ -103,7 +102,10 @@ import com.tokopedia.product.detail.view.adapter.dynamicadapter.DynamicProductDe
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
 import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.product.detail.view.util.*
+import com.tokopedia.product.detail.view.util.DynamicProductDetailHashMap
+import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
+import com.tokopedia.product.detail.view.util.ProductDetailErrorHelper
+import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
 import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet
@@ -132,10 +134,9 @@ import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.variant_common.model.ProductVariantCommon
+import com.tokopedia.variant_common.model.VariantCategory
 import com.tokopedia.variant_common.model.VariantOptionWithAttribute
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import com.tokopedia.variant_common.view.ProductVariantListener
@@ -264,7 +265,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun hasInitialSwipeRefresh(): Boolean = true
 
     override fun onSwipeRefresh() {
-        pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant = mutableMapOf()
         recommendationCarouselPositionSavedState.clear()
         isLoadingInitialData = true
         isTopdasLoaded = false
@@ -339,7 +339,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
         // handling menu toolbar / cart counter / settings / etc
-
         activity?.let {
             handlingMenuPreparation(menu)
         }
@@ -1012,27 +1011,31 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun observeonVariantClickedData() {
         viewLifecycleOwner.observe(viewModel.onVariantClickedData) {
-            val selectedChildAndPosition = VariantCommonMapper.selectedProductData(viewModel.variantData
-                    ?: ProductVariantCommon())
-            val selectedChild = selectedChildAndPosition?.second
-            val indexOfSelectedVariant = selectedChildAndPosition?.first
-            val updatedDynamicProductInfo = VariantMapper.updateDynamicProductInfo(viewModel.getDynamicProductInfoP1, selectedChild, viewModel.listOfParentMedia)
-
-            pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = it
-            viewModel.multiOrigin[selectedChild?.productId.toString()]?.let {
-                viewModel.selectedMultiOrigin = it
-                pdpHashMapUtil?.snapShotMap?.nearestWarehouseDataModel = ProductSnapshotDataModel.NearestWarehouseDataModel(it.warehouseInfo.id, it.price, it.stockWording)
-            }
-
-            productId = updatedDynamicProductInfo?.basic?.productID
-            viewModel.getDynamicProductInfoP1 = updatedDynamicProductInfo
-            pdpHashMapUtil?.updateDataP1(updatedDynamicProductInfo)
-            updateButtonAfterClickVariant(indexOfSelectedVariant)
-
-            renderFullfillment()
-            dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap)
-            dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, 1)
+            updateVariantDataToExistingProductData(it)
         }
+    }
+
+    private fun updateVariantDataToExistingProductData(variantProcessedData: List<VariantCategory>?) {
+        val selectedChildAndPosition = VariantCommonMapper.selectedProductData(viewModel.variantData
+                ?: ProductVariantCommon())
+        val selectedChild = selectedChildAndPosition?.second
+        val indexOfSelectedVariant = selectedChildAndPosition?.first
+        val updatedDynamicProductInfo = VariantMapper.updateDynamicProductInfo(viewModel.getDynamicProductInfoP1, selectedChild, viewModel.listOfParentMedia)
+
+        pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = variantProcessedData
+        viewModel.multiOrigin[selectedChild?.productId.toString()]?.let {
+            viewModel.selectedMultiOrigin = it
+            pdpHashMapUtil?.snapShotMap?.nearestWarehouseDataModel = ProductSnapshotDataModel.NearestWarehouseDataModel(it.warehouseInfo.id, it.price, it.stockWording)
+        }
+
+        productId = updatedDynamicProductInfo?.basic?.productID
+        viewModel.getDynamicProductInfoP1 = updatedDynamicProductInfo
+        pdpHashMapUtil?.updateDataP1(updatedDynamicProductInfo)
+        updateButtonAfterClickVariant(indexOfSelectedVariant)
+
+        renderFullfillment()
+        dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap)
+        dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, 1)
     }
 
     private fun updateButtonAfterClickVariant(indexOfVariantButton: Int?) {
@@ -1040,12 +1043,19 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 viewModel.p2Login.value?.isExpressCheckoutType ?: false,
                 hasTopAds(),
                 viewModel.cartTypeData?.getCartTypeAtPosition(indexOfVariantButton ?: -1))
-
     }
 
     private fun observeInitialVariantData() {
         viewLifecycleOwner.observe(viewModel.initialVariantData) {
-            pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = it
+            if (pdpHashMapUtil?.productNewVariantDataModel?.isPartialySelected() == true) {
+                pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = it
+            } else {
+                /**
+                 * If variant child only has 1 child, we will auto selected it.
+                 * So we have to update existing product and UI
+                 */
+                updateVariantDataToExistingProductData(it)
+            }
             dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, null)
         }
     }
@@ -1456,6 +1466,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         val isOnlyHaveOneVariantLeftData = data.autoSelectedOptionIds()
 
         if (isOnlyHaveOneVariantLeftData.isEmpty()) {
+            //If empty means child is more than 1 , so render initial variant data without selected any of them
             pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierToHashMap(data)
         } else {
             pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(data, isOnlyHaveOneVariantLeftData)
