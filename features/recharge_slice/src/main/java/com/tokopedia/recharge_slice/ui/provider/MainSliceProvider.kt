@@ -47,7 +47,6 @@ class MainSliceProvider : SliceProvider() {
     private lateinit var userSession: UserSession
     private lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
-
     @Inject
     lateinit var repository: GraphqlRepository
 
@@ -88,7 +87,7 @@ class MainSliceProvider : SliceProvider() {
     )
 
     private fun createGetInvoiceSlice(sliceUri: Uri): Slice? {
-        if (getRemoteConfigRechargeSliceEnabler(contextNonNull)) {
+        if (getRemoteConfigRechargeSliceEnabler()) {
             val mainPendingIntent = PendingIntent.getActivity(
                     contextNonNull,
                     0,
@@ -138,9 +137,11 @@ class MainSliceProvider : SliceProvider() {
                                         )
                                     }
                                 }
+                                if(alreadyLoadData && listProduct.size==3) {
+                                    val trackingImpression = TrackingData(listProduct)
+                                    Timber.w(contextNonNull.resources.getString(R.string.slice_track_timber_impression) + trackingImpression)
+                                }
                             }
-                            val trackingImpression = TrackingData(listProduct)
-                            Timber.w(contextNonNull.resources.getString(R.string.slice_track_timber_impression) + trackingImpression)
                         }
                     }
                 } else {
@@ -155,6 +156,8 @@ class MainSliceProvider : SliceProvider() {
     }
 
     private fun sliceNotLogin(sliceUri: Uri): Slice {
+        Timber.w(contextNonNull.resources.getString(R.string.slice_track_timber_impression) +
+                contextNonNull.resources.getString(R.string.slice_user_not_login))
         return list(contextNonNull, sliceUri, INFINITY) {
             setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
             header {
@@ -232,7 +235,7 @@ class MainSliceProvider : SliceProvider() {
     }
 
     private fun getOnlyThreeData(recommendations: List<Recommendation>): List<Recommendation> {
-        return recommendations.subList(0,3)
+        return recommendations.subList(0, 3)
     }
 
     private fun rupiahFormatter(nonRupiah: Int): String {
@@ -242,9 +245,8 @@ class MainSliceProvider : SliceProvider() {
         return if (nonRupiah != 0) rupiahFormat.format(nonRupiah) else ""
     }
 
-    fun getRemoteConfigRechargeSliceEnabler(context: Context): Boolean {
-        remoteConfig = FirebaseRemoteConfigImpl(context)
-        return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_RECHARGE,true))
+    fun getRemoteConfigRechargeSliceEnabler(): Boolean {
+        return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_RECHARGE, true))
     }
 
     companion object {
@@ -252,6 +254,5 @@ class MainSliceProvider : SliceProvider() {
         const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"
         const val RECHARGE_HOME_PAGE_EXTRA = "RECHARGE_HOME_PAGE_EXTRA"
         private val APPLINK_DEBUGGER = "APPLINK_DEBUGGER"
-
     }
 }
