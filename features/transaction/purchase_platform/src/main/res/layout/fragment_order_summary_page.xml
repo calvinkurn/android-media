@@ -43,6 +43,16 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content" />
 
+                <View
+                    android:id="@+id/divider_top"
+                    android:layout_width="0dp"
+                    android:layout_height="6dp"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:background="@color/Neutral_N75"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_note_char_counter" />
+
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_header_2"
                     android:layout_width="0dp"
@@ -54,7 +64,7 @@
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_note_char_counter"
+                    app:layout_constraintTop_toBottomOf="@+id/divider_top"
                     app:typographyType="heading_4"
                     app:typographyWeight="bold"
                     tools:text="hi blablabla" />
