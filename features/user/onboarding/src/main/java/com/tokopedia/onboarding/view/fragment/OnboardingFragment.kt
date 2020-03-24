@@ -37,10 +37,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.WeaverFirebaseConditionCheck
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.jetbrains.annotations.NotNull
 import java.util.*
 import javax.inject.Inject
@@ -308,7 +305,7 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed, CoroutineScope 
     /**
      * Get Intent for Applink using suspend function
      */
-    suspend fun getIntentforApplink(context: Context, applink: String): Intent {
+    suspend fun getIntentforApplink(context: Context, applink: String): Intent = withContext(Dispatchers.IO) {
         return RouteManager.getIntent(context, applink)
     }
 
