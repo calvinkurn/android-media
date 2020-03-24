@@ -286,7 +286,8 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         val parent = activity
         if (parent is PreferenceEditActivity) {
             parent.hideAddButton()
-            if (arguments?.getBoolean(ARG_IS_EDIT) == true && parent.profileId > -1) {
+            val profileId = parent.profileId
+            if (arguments?.getBoolean(ARG_IS_EDIT) == true && profileId > -1) {
                 parent.showDeleteButton()
                 parent.setDeleteButtonOnClickListener {
                     preferenceListAnalytics.eventClickTrashBinInEditPreference()
@@ -300,7 +301,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                                 setPrimaryCTAClickListener {
                                     preferenceListAnalytics.eventClickDeletePreferenceFromTrashBin()
                                     dismiss()
-                                    viewModel.deletePreference()
+                                    viewModel.deletePreference(profileId)
                                 }
                                 setSecondaryCTAClickListener {
                                     dismiss()

@@ -35,9 +35,7 @@ import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationP
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
-import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
-import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
+import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.utils.Utils.convertDpToPixel
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.preference.Address
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccGlobalEvent
@@ -58,7 +56,9 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.mo
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderProduct
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderTotal
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
+import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.features.promo.presentation.analytics.PromoCheckoutAnalytics
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.card_order_empty_preference.*
 import kotlinx.android.synthetic.main.fragment_order_summary_page.*
@@ -98,6 +98,25 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             refresh()
         } else if (requestCode == REQUEST_CODE_COURIER_PINPOINT) {
             onResultFromCourierPinpoint(resultCode, data)
+        }
+    }
+
+    private fun onResultFromPromo(resultCode: Int, data: Intent) {
+        if (resultCode == Activity.RESULT_OK) {
+            val validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel = data.getParcelableExtra(ARGS_VALIDATE_USE_DATA_RESULT)
+            if (validateUsePromoRevampUiModel != null) {
+//                shipmentPresenter.setValidateUsePromoRevampUiModel(validateUsePromoRevampUiModel)
+//                updateButtonPromoCheckout(validateUsePromoRevampUiModel.promoUiModel)
+                return
+            }
+            val validateUsePromoRequest: ValidateUsePromoRequest = data.getParcelableExtra(ARGS_LAST_VALIDATE_USE_REQUEST)
+            if (validateUsePromoRequest != null) {
+//                shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest)
+            }
+            val defaultTitlePromoButton = data.getStringExtra(ARGS_CLEAR_PROMO_RESULT)
+            if (defaultTitlePromoButton != null) {
+//                shipmentAdapter.checkHasSelectAllCourier(false)
+            }
         }
     }
 
