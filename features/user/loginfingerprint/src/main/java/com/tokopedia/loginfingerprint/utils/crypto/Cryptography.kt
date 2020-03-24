@@ -27,4 +27,6 @@ interface Cryptography {
     fun getSignature(textToEncrypt: String): String
 
     fun getCryptoObject(): FingerprintManagerCompat.CryptoObject?
+
+    fun isInitialized(): Boolean
 }
