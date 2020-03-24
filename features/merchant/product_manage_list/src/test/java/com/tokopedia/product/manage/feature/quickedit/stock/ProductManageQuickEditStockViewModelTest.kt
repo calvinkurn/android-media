@@ -34,15 +34,12 @@ class ProductManageQuickEditStockViewModelTest: ProductManageQuickEditStockViewM
     }
 
     @Test
-    fun `when_stock_is_valid_should_set_status_to_active_and set_stock_to_desired_value`() {
+    fun `when_stock_is_valid_should_set_stock_to_desired_value`() {
         val validStock = 10
 
         viewModel.updateStock(validStock)
 
-        val expectedStatus = ProductStatus.ACTIVE
-
         verifyStockEquals(validStock)
-        verifyStatusEquals(expectedStatus)
     }
 
     @Test

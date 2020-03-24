@@ -59,6 +59,15 @@ class ProductManageFilterExpandChecklistViewModelTest: ProductManageFilterExpand
         verifyChecklistDataSelected(expectedData)
     }
 
+    @Test
+    fun `when_data_is_null_all_operations_should_do_nothing`() {
+
+        viewModel.updateSelectedItem(getInitialData().first())
+        viewModel.clearAllChecklist()
+
+        verifyDataIsNull()
+    }
+
     private fun verifySelectCountEquals(expectedCount: Int) {
         val actualCount = viewModel.dataSize.value
         assertEquals(expectedCount, actualCount)
@@ -95,6 +104,10 @@ class ProductManageFilterExpandChecklistViewModelTest: ProductManageFilterExpand
                 ChecklistUiModel(id ="3", name = "Some Other Filter", value = "", isSelected = true),
                 ChecklistUiModel(id ="4", name = "Some Other Category", value = "", isSelected = false)
         )
+    }
+
+    private fun verifyDataIsNull() {
+        assertEquals(null, viewModel.checklistData.value)
     }
 
 

@@ -76,6 +76,14 @@ class ProductManageFilterExpandSelectViewModelTest: ProductManageFilterExpandSel
         assertFalse(result)
     }
 
+    @Test
+    fun `when_data_is_null_all_operations_should_do_nothing`() {
+
+        viewModel.updateSelectedItem(getUnselectedData().first())
+
+        verifyDataIsNull()
+    }
+
     private fun verifyUpdatedDataEquals(expectedData: List<SelectUiModel>) {
         val actualData = viewModel.selectData.value
         assertEquals(expectedData, actualData)
@@ -90,6 +98,10 @@ class ProductManageFilterExpandSelectViewModelTest: ProductManageFilterExpandSel
                 assertEquals(expectedModel.isSelected, it.isSelected)
             }
         }
+    }
+
+    private fun verifyDataIsNull() {
+        assertEquals(null, viewModel.selectData.value)
     }
 
 

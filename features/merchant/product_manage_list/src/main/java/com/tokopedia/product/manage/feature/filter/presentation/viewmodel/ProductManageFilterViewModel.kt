@@ -60,7 +60,7 @@ class ProductManageFilterViewModel @Inject constructor(
         currentValue?.let {
             it[index] = filterUiModel
         }
-        findSelectedData(listOf(filterViewModel))
+        findSelectedData(listOf(filterUiModel))
         _filterData.value = currentValue
     }
 
@@ -177,7 +177,7 @@ class ProductManageFilterViewModel @Inject constructor(
         return null
     }
 
-    private fun findSelectedData(filterViewModels: List<FilterViewModel>) {
+    private fun findSelectedData(filterViewModels: List<FilterUiModel>) {
         filterViewModels.forEach {
             if(it.title == ProductManageFilterMapper.SORT_HEADER) {
                 it.data.forEach { filterDataModel ->
