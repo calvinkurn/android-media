@@ -1,6 +1,7 @@
 package com.tokopedia.onboarding.view.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.TextUtils
@@ -16,6 +17,7 @@ import com.tokopedia.applink.DeeplinkDFMapper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dynamicfeatures.DFInstaller
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -35,6 +37,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.WeaverFirebaseConditionCheck
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.jetbrains.annotations.NotNull
 import java.util.*
 import javax.inject.Inject
@@ -213,16 +217,35 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
         return View.OnClickListener {
             context?.let {
                 onboardingAnalytics.eventOnboardingSkip(screenViewpager.currentItem)
-                val intent = if (TextUtils.isEmpty(TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)) {
+                val applink = if (TextUtils.isEmpty(TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)) {
                     when(abTestVariant) {
-                        ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_REGISTER -> RouteManager.getIntent(it, ApplinkConst.OFFICIAL_STORE)
-                        else -> RouteManager.getIntent(it, ApplinkConst.HOME)
+                        ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_REGISTER -> ApplinkConst.OFFICIAL_STORE
+                        else -> ApplinkConst.HOME
                     }
                 } else {
-                    RouteManager.getIntent(it, TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)
+                    TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists
                 }
-                startActivity(intent)
-                finishOnBoarding()
+
+//                launchCatchError(block = {
+//                    val intent = getIntentforApplink(it, applink)
+//                    startActivity(intent)
+//                    finishOnBoarding()
+//                })
+
+                launchCatchError(block = {
+                    val intent = getIntentforApplink(it, applink)
+                    startActivity(intent)
+                    finishOnBoarding()
+                },
+                onError = {
+                })
+
+
+//                GlobalScope.launch{
+//                    val intent = getIntentforApplink(it, applink)
+//                    startActivity(intent)
+//                    finishOnBoarding()
+//                }
             }
         }
     }
@@ -288,6 +311,13 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             sharedPrefs.edit().putLong(
                     KEY_FIRST_INSTALL_TIME_SEARCH, date.time).apply()
         }
+    }
+
+    /**
+     * Get Intent for Applink using suspend function
+     */
+    private suspend fun getIntentforApplink(context: Context, applink: String): Intent {
+        return RouteManager.getIntent(context, applink)
     }
 
     override fun onBackPressed(): Boolean {
