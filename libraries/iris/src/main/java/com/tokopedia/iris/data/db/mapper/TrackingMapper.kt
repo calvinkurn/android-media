@@ -93,7 +93,9 @@ class TrackingMapper {
         fun reformatEvent(event: String, sessionId: String) : JSONObject {
             return try {
                 var keyEvent = KEY_EVENT
-                if (GlobalConfig.isSellerApp()) keyEvent = KEY_EVENT_SELLERAPP
+                if (GlobalConfig.isSellerApp()) {
+                    keyEvent = KEY_EVENT_SELLERAPP
+                }
                 val item = JSONObject(event)
                 if (item.has("event") && item.get("event") != null) {
                     item.put("event_ga", item.get("event"))

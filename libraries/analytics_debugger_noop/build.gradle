@@ -12,15 +12,7 @@ buildscript {
     }
 }
 
-android {
-    defaultConfig {
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = ['targetModuleName': 'TkpdAnalytics']
-            }
-        }
-    }
-}
+
 
 dependencies {
 

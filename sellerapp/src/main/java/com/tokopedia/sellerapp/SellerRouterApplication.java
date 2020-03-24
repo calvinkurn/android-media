@@ -207,6 +207,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     private void initResourceDownloadManager() {
         (new DeferredResourceInitializer()).initializeResourceDownloadManager(context);
+        initIris();
     }
 
     private void initIris() {

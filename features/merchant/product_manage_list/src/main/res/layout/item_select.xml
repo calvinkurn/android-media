@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.product.manage.feature.filter.presentation.widget.SelectWidget
-        android:id="@+id/select_widget"
+        android:id="@+id/selectWidget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"/>

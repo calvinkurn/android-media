@@ -1,6 +1,6 @@
 package com.tokopedia.attachvoucher.analytic
 
-import com.tokopedia.attachvoucher.data.Voucher
+import com.tokopedia.attachvoucher.data.VoucherUiModel
 import com.tokopedia.attachvoucher.data.VoucherType
 import com.tokopedia.attachvoucher.view.viewmodel.AttachVoucherViewModel
 import com.tokopedia.track.TrackApp
@@ -41,7 +41,7 @@ class AttachVoucherAnalytic @Inject constructor() {
     }
 
     // #AV3
-    fun trackOnAttachVoucher(voucher: Voucher) {
+    fun trackOnAttachVoucher(voucher: VoucherUiModel) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 TrackAppUtils.gtmData(
                         Name.CHAT_DETAIL,

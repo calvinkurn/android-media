@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFitCenter
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import kotlinx.android.synthetic.main.item_manage_product_list.view.*
@@ -14,7 +15,7 @@ import kotlinx.android.synthetic.main.item_manage_product_list.view.*
 class ProductViewHolder(
     view: View,
     checkableListener: CheckableInteractionListener,
-    val listener: ProductViewHolderView
+    private val listener: ProductViewHolderView
 ): BaseCheckableViewHolder<ProductViewModel>(view, checkableListener),
     CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
@@ -35,6 +36,7 @@ class ProductViewHolder(
 
         showProductImage(product)
         showStockHintImage(product)
+        showProductCheckBox(product)
 
         setOnClickListeners(product)
     }
@@ -52,34 +54,44 @@ class ProductViewHolder(
 
     private fun showProductStock(product: ProductViewModel) {
         if(product.isNotVariant()) {
-            val productStock = itemView.context
-                .getString(R.string.product_manage_stock_format, product.stock)
-            itemView.textStock.text = productStock
+            itemView.textStockCount.text = product.stock.toString()
+            itemView.textStockCount.show()
             itemView.textStock.show()
         } else {
+            itemView.textStockCount.hide()
             itemView.textStock.hide()
         }
     }
 
     private fun showProductLabel(product: ProductViewModel) {
-        itemView.labelBanned.showViewIf(product.isBanned())
-        itemView.labelInactive.showViewIf(product.isInactive())
-        itemView.labelActive.showViewIf(product.isActive())
+        itemView.labelBanned.showWithCondition(product.isViolation())
+        itemView.labelInactive.showWithCondition(product.isInactive())
+        itemView.labelActive.showWithCondition(product.isActive())
     }
 
     private fun showVariantLabel(product: ProductViewModel) {
-        itemView.labelVariant.showViewIf(product.isVariant())
+        itemView.labelVariant.showWithCondition(product.isVariant())
     }
 
     private fun showProductButton(product: ProductViewModel) {
-        itemView.btnContactCS.showViewIf(product.isBanned())
-        itemView.btnEditVariant.showViewIf(product.isVariant())
-        itemView.btnEditPrice.showViewIf(product.isNotVariant())
-        itemView.btnEditStock.showViewIf(product.isNotVariant())
+        if(product.multiSelectActive) {
+            itemView.btnContactCS.hide()
+            itemView.btnEditVariant.hide()
+            itemView.btnEditPrice.hide()
+            itemView.btnEditStock.hide()
+            itemView.btnMoreOptions.hide()
+        } else {
+            itemView.btnContactCS.showWithCondition(product.isViolation())
+            itemView.btnEditVariant.showWithCondition(product.isVariant() && product.isNotViolation())
+            itemView.btnEditPrice.showWithCondition(product.isNotVariant() && product.isNotViolation())
+            itemView.btnEditStock.showWithCondition(product.isNotVariant() && product.isNotViolation())
+            itemView.btnMoreOptions.show()
+        }
     }
 
     private fun showStockHintImage(product: ProductViewModel) {
-        itemView.imageStockInformation.showViewIf(product.isEmpty())
+        itemView.imageStockInformation
+            .showWithCondition(product.isEmpty() && product.isNotViolation())
     }
 
     private fun showProductImage(product: ProductViewModel) {
@@ -90,15 +102,23 @@ class ProductViewHolder(
         itemView.setOnClickListener { listener.onClickProductItem(product) }
         itemView.btnMoreOptions.setOnClickListener { listener.onClickMoreOptionsButton(product) }
         itemView.imageStockInformation.setOnClickListener { listener.onClickStockInformation() }
+        itemView.btnEditPrice.setOnClickListener { listener.onClickEditPriceButton(product) }
+        itemView.btnEditStock.setOnClickListener { listener.onClickEditStockButton(product) }
+        itemView.btnEditVariant.setOnClickListener { listener.onClickEditVariantButton(product) }
+        itemView.btnContactCS.setOnClickListener { listener.onClickContactCsButton(product)}
     }
-    
-    private fun View.showViewIf(predicate: Boolean) {
-        if(predicate) show() else hide()
+
+    private fun showProductCheckBox(product: ProductViewModel) {
+        itemView.checkBoxSelect.showWithCondition(product.multiSelectActive)
     }
-    
+
     interface ProductViewHolderView {
         fun onClickStockInformation()
         fun onClickMoreOptionsButton(product: ProductViewModel)
         fun onClickProductItem(product: ProductViewModel)
+        fun onClickEditPriceButton(product: ProductViewModel)
+        fun onClickEditStockButton(product: ProductViewModel)
+        fun onClickEditVariantButton(product: ProductViewModel)
+        fun onClickContactCsButton(product: ProductViewModel)
     }
 }

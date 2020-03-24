@@ -5,5 +5,8 @@ enum class ProductStatus {
     INACTIVE,
     BANNED,
     EMPTY,
-    MODERATED
+    MODERATED,
+    DELETED,
+    PENDING,
+    VIOLATION
 }

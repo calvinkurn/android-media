@@ -404,9 +404,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         context?.let {
             if (t is MessageErrorException && t.errorCode == ERROR_CODE_LIMIT_CASHBACK) {
                 if (productManagePresenter.isIdlePowerMerchant()) {
-                    showIdlePowerMerchantBottomSheet(getString(R.string.product_manage_feature_name_cashback))
+                    showIdlePowerMerchantBottomSheet(getString(com.tokopedia.product.manage.R.string.product_manage_feature_name_cashback))
                 } else if (!productManagePresenter.isPowerMerchant()) {
-                    showRegularMerchantBottomSheet(getString(R.string.product_manage_feature_name_cashback))
+                    showRegularMerchantBottomSheet(getString(com.tokopedia.product.manage.R.string.product_manage_feature_name_cashback))
                 } else {
                     showSnackBarWithAction(ViewUtils.getErrorMessage(it, t)) {
                         productManagePresenter.setCashback(productId ?: "", cashback)
@@ -520,7 +520,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                 dialog.setCancelable(false)
                 dialog.setContentView(com.tokopedia.product.manage.R.layout.dialog_product_add)
 
-                btnSubmit = dialog.findViewById(com.tokopedia.product.manage.R.id.btn_submit)
+                btnSubmit = dialog.findViewById(com.tokopedia.product.manage.R.id.filterSubmitButton)
                 btnGoToPdp = dialog.findViewById(com.tokopedia.product.manage.R.id.btn_product_list)
                 txtTipsTrick = dialog.findViewById(com.tokopedia.product.manage.R.id.txt_tips_trick)
 
@@ -907,8 +907,10 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     fun downloadBitmap(productManageViewModel: ProductManageViewModel) {
         activity?.let {
             val productShare = ProductShare(it, ProductShare.MODE_IMAGE)
+
+            val price = if (productManageViewModel.productCurrencyId == CurrencyTypeDef.TYPE_USD) productManageViewModel.productPricePlain else productManageViewModel.productPrice
             val data = ProductData()
-            data.priceText = productManageViewModel.productPrice
+            data.priceText = productManageViewModel.productCurrencySymbol + " " + price
             data.cashbacktext = if (productManageViewModel.productCashback > 0) getString(com.tokopedia.product.manage.R.string.pml_sticker_cashback, productManageViewModel.productCashback) else ""
             data.currencySymbol = productManageViewModel.productCurrencySymbol
             data.productId = productManageViewModel.productId
