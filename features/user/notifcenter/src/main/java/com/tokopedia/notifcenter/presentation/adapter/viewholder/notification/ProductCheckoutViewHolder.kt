@@ -107,7 +107,7 @@ class ProductCheckoutViewHolder(
             listener.getAnalytic().trackAtcOnSingleProductClick(notification = element)
             element.getAtcProduct()?.let {
                 if (it.stock < SINGLE_PRODUCT) {
-                    listener.itemContainerClicked(element)
+                    listener.onItemStockHandlerClick(element)
                 } else {
                     listener.addProductToCheckout(element.userInfo, element)
                 }
