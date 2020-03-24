@@ -226,12 +226,6 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
                     TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists
                 }
 
-//                launchCatchError(block = {
-//                    val intent = getIntentforApplink(it, applink)
-//                    startActivity(intent)
-//                    finishOnBoarding()
-//                })
-
                 launchCatchError(
                         block = {
                             val intent = getIntentforApplink(it, applink)
@@ -241,13 +235,6 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
                         onError = {
                         }
                 )
-
-
-//                GlobalScope.launch{
-//                    val intent = getIntentforApplink(it, applink)
-//                    startActivity(intent)
-//                    finishOnBoarding()
-//                }
             }
         }
     }
