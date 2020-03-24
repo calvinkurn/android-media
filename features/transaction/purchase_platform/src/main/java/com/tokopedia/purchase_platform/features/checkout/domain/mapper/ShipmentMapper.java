@@ -19,9 +19,11 @@ import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.Ticker;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.egold.EgoldTieringData;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.Addresses;
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.CampaignTimer;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.CheckoutDisabledFeaturesKt;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.AddressesData;
+import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.DataAddressData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.DisabledFeaturesDetailData;
@@ -265,6 +267,21 @@ public class ShipmentMapper implements IShipmentMapper {
             cod.setMessageLink(shipmentAddressFormDataResponse.getMessage().getMessageLink());
             cod.setMessageLogo(shipmentAddressFormDataResponse.getMessage().getMessageLogo());
             dataResult.setCod(cod);
+        }
+
+        if (shipmentAddressFormDataResponse.getCampaignTimer() != null) {
+            CampaignTimer timerResponse = shipmentAddressFormDataResponse.getCampaignTimer();
+            CampaignTimerUi timerUi = new CampaignTimerUi(
+                    timerResponse.getExpiredTimerMessage().getButton(),
+                    timerResponse.getExpiredTimerMessage().getDescription(),
+                    timerResponse.getExpiredTimerMessage().getTitle(),
+                    timerResponse.getShowTimer(),
+                    timerResponse.getTimerDetail().getDeductTime(),
+                    timerResponse.getDescription(),
+                    timerResponse.getTimerDetail().getExpiredTime(),
+                    timerResponse.getTimerDetail().getExpiredDuration()
+            );
+            dataResult.setCampaignTimerUi(timerUi);
         }
 
         if (!UtilsKt.isNullOrEmpty(shipmentAddressFormDataResponse.getGroupAddress())) {
