@@ -32,4 +32,11 @@ class PlayLifecycleObserver(
             playVideoManager.muteVideo(false)
         }
     }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        synchronized(this) {
+            playVideoManager.stopPlayer()
+        }
+    }
 }

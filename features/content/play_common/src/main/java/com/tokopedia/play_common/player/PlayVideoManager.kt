@@ -25,6 +25,7 @@ import com.tokopedia.play_common.types.PlayVideoType
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import java.io.FileNotFoundException
 import java.io.IOException
+import java.net.HttpURLConnection
 import kotlin.properties.Delegates
 
 /**
@@ -35,7 +36,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     companion object {
         private const val RETRY_COUNT_LIVE = 1
         private const val RETRY_COUNT_DEFAULT = 2
-        private const val RETRY_DELAY = 1000L
+        private const val RETRY_DELAY = 2000L
 
         private const val VIDEO_MAX_SOUND = 1f
         private const val VIDEO_MIN_SOUND = 0f
@@ -80,6 +81,11 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
 
         override fun onPlayerError(error: ExoPlaybackException) {
             val parsedException = exoPlaybackExceptionParser.parse(error)
+            if (parsedException.isBlackListedException) {
+                stopPlayer()
+                return
+            }
+
             if (
                     parsedException.isBehindLiveWindowException ||
                     parsedException.isInvalidResponseCodeException
@@ -256,10 +262,6 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
 
             override fun getMinimumLoadableRetryCount(dataType: Int): Int {
                 return if (dataType == C.DATA_TYPE_MEDIA_PROGRESSIVE_LIVE) RETRY_COUNT_LIVE else RETRY_COUNT_DEFAULT
-            }
-
-            override fun getBlacklistDurationMsFor(dataType: Int, loadDurationMs: Long, exception: IOException?, errorCount: Int): Long {
-                return C.TIME_UNSET
             }
         }
     }
