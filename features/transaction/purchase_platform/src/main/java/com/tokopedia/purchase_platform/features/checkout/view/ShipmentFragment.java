@@ -36,17 +36,16 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
-import com.tokopedia.design.countdown.CountDownView;
-import com.tokopedia.iris.util.IrisSession;
-import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.component.Tooltip;
+import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.dialog.DialogUnify;
+import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet;
@@ -114,6 +113,7 @@ import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.mo
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
 import com.tokopedia.purchase_platform.common.feature.promo_clashing.ClashBottomSheetFragment;
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener;
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult;
 import com.tokopedia.purchase_platform.common.utils.Utils;
@@ -350,11 +350,20 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         ((SimpleItemAnimator) rvShipment.getItemAnimator()).setSupportsChangeAnimations(false);
         rvShipment.addItemDecoration(new ShipmentItemDecoration());
-        cdView.setupTimerFromRemianingMillis(160 * 1000, new CountDownView.CountDownListener() {
-            @Override
-            public void onCountDownFinished() {
-                Toast.makeText(getContext(), "Finisheeeeed!", Toast.LENGTH_SHORT).show();
-            }
+        cdView.setupTimerFromRemianingMillis(10 * 1000, () -> {
+            DialogUnify dialogUnify = new DialogUnify(getContext(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE);
+            dialogUnify.setTitle("Waktu Pembayaran Habis");
+            dialogUnify.setDescription("bla bla bafdjlasfj badslfjsladfj sd");
+            dialogUnify.setPrimaryCTAText("Belanja Lagi");
+            dialogUnify.setPrimaryCTAClickListener(() -> {
+                dialogUnify.dismiss();
+                if (getActivity() != null) {
+                    getActivity().finish();
+                }
+                return null;
+            });
+            dialogUnify.setCancelable(false);
+            dialogUnify.show();
         });
     }
 
@@ -1231,7 +1240,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                                        String eventLabel) {
         String sessionId = "";
         Context context = getContext();
-        if(context != null){
+        if (context != null) {
             IrisSession irisSession = new IrisSession(context);
             sessionId = irisSession.getSessionId();
 
@@ -2028,7 +2037,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         CheckPromoParam checkPromoParam = new CheckPromoParam();
         checkPromoParam.setPromo(generateCheckPromoFirstStepParam());
 
-        if(hasInsurance) {
+        if (hasInsurance) {
             mTrackerMacroInsurance.eventClickPaymentMethodWithInsurance(shipmentAdapter.getInsuranceProductId(),
                     shipmentAdapter.getInsuranceTitle());
         }
