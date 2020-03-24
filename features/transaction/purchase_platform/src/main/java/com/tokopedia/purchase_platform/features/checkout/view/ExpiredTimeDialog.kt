@@ -6,19 +6,21 @@ import androidx.fragment.app.DialogFragment
 import com.tokopedia.dialog.DialogUnify
 
 class ExpiredTimeDialog : DialogFragment() {
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialogUnify = DialogUnify(context!!, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
-        dialogUnify.setTitle("Waktu Pembayaran Habis")
-        dialogUnify.setDescription("bla bla bafdjlasfj badslfjsladfj sd")
-        dialogUnify.setPrimaryCTAText("Belanja Lagi")
-        dialogUnify.setPrimaryCTAClickListener {
-            if (activity != null) {
-                activity!!.finish()
+        return activity?.let {
+            val dialogUnify = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle("Waktu Pembayaran Habis")
+                setDescription("bla bla bafdjlasfj badslfjsladfj sd")
+                setPrimaryCTAText("Belanja Lagi")
+                setPrimaryCTAClickListener {
+                    it.finish()
+                }
+                setCancelable(false)
+                setOverlayClose(false)
             }
-        }
-        dialogUnify.setCancelable(false)
-        dialogUnify.setOverlayClose(false)
-        return dialogUnify
+            dialogUnify
+        } ?: throw IllegalStateException("Activity cannot be null")
     }
 
 }
