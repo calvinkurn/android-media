@@ -3,6 +3,7 @@ package com.tokopedia.product.manage.feature.filter.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionsResponse
 import com.tokopedia.product.manage.feature.filter.domain.GetProductManageFilterOptionsUseCase
@@ -18,14 +19,14 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ProductManageFilterViewModel @Inject constructor(
         private val getProductManageFilterOptionsUseCase: GetProductManageFilterOptionsUseCase,
         private val userSession: UserSessionInterface,
-        dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher) {
+        private val dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.main) {
 
     private val _combinedResponse = MutableLiveData<Result<FilterOptionsResponse>>()
     val filterOptionsResponse: LiveData<Result<FilterOptionsResponse>>
@@ -39,9 +40,11 @@ class ProductManageFilterViewModel @Inject constructor(
     private var selectedEtalase: FilterDataViewModel? = null
 
     fun getData(shopId: String) {
-        getProductManageFilterOptionsUseCase.params = GetProductManageFilterOptionsUseCase.createRequestParams(shopId, isMyShop(shopId))
         launchCatchError(block = {
-            val combinedResponse = getProductManageFilterOptionsUseCase.executeOnBackground()
+            val combinedResponse = withContext(dispatcher.io) {
+                getProductManageFilterOptionsUseCase.params = GetProductManageFilterOptionsUseCase.createRequestParams(shopId, isMyShop(shopId))
+                getProductManageFilterOptionsUseCase.executeOnBackground()
+            }
             combinedResponse.let {
                 _combinedResponse.postValue(Success(it))
             }
