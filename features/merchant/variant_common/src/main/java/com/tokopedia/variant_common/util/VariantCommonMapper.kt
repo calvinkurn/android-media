@@ -47,13 +47,12 @@ object VariantCommonMapper {
                     ?: listOf()
             updateSelectedOptionsIds(variantData, updatedSelectedOptionsId, mapOfSelectedVariant)
         }
-        val isSelectedProductBuyable = selectedProductData?.isBuyable ?: false
 
         selectedOptionId = updatedSelectedOptionsId
 
         for ((level, variant: Variant) in variantData.variant.withIndex()) {
             listOfVariant.add(convertVariantViewModel(variant, variantData, level, updatedSelectedOptionsId, (level + 1) == variantData.variant.size,
-                    isSelectedProductBuyable, isPartialySelected, isSelectedLevelOne))
+                    isPartialySelected, isSelectedLevelOne))
         }
 
         return listOfVariant
@@ -77,7 +76,6 @@ object VariantCommonMapper {
     }
 
     private fun convertVariantViewModel(variant: Variant, variantData: ProductVariantCommon, level: Int, selectedOptionIds: List<Int>, isLeaf: Boolean,
-                                        isSelectedProductBuyable: Boolean,
                                         partialySelected: Boolean,
                                         selectedLevelOne: Boolean): VariantCategory {
 
@@ -95,15 +93,21 @@ object VariantCommonMapper {
         val optionList = variant.options.map { option ->
             var currentState = VariantConstant.STATE_EMPTY
             var stock = 0
-
+            var isFlashSale = false
             if (selectedOptionIds.isNotEmpty() && option.id in selectedOptionIds) {
-                if (isSelectedProductBuyable) {
-                    currentState = VariantConstant.STATE_SELECTED
-                } else {
-                    for (child: VariantChildCommon in variantData.children) {
-                        if (child.isBuyable && selectedOptionIds.first() in child.optionIds) {
-                            currentState = VariantConstant.STATE_SELECTED
-                            break
+                for (child: VariantChildCommon in variantData.children) {
+                    if (child.isBuyable && selectedOptionIds.get(level) in child.optionIds) {
+                        currentState = VariantConstant.STATE_SELECTED
+                        if (partialySelected && level == 0) {
+                            isFlashSale = child.isFlashSale
+                            if (isFlashSale) {
+                                break
+                            }
+                        }
+
+                        if (!partialySelected) {
+                            isFlashSale = child.isFlashSale
+                            if (isFlashSale) break
                         }
                     }
                 }
@@ -117,12 +121,16 @@ object VariantCommonMapper {
                         if (partialSelectedListByLevel.isEmpty()) {
                             // if not lvl 1, should not go to this if , so have to check if not leaf
                             currentState = VariantConstant.STATE_UNSELECTED
+                            if (level == 0 && !isFlashSale) {
+                                isFlashSale = child.isFlashSale
+                            }
                         } else {
                             val childOptionId = child.optionIds.getOrNull(level)
                             childOptionId?.let {
                                 if (child.optionIds.subList(0, level) == partialSelectedListByLevel) {
                                     //User selecting 2+ level variant
                                     currentState = VariantConstant.STATE_UNSELECTED
+                                    isFlashSale = child.isFlashSale
                                     // || (partialySelected && isLeaf)
                                 } else if (selectedOptionIds.isEmpty()) {
                                     currentState = VariantConstant.STATE_UNSELECTED
@@ -153,7 +161,8 @@ object VariantCommonMapper {
                     hasCustomImages = hasCustomImage,
                     level = level,
                     variantOptionIdentifier = variant.identifier.orEmpty(),
-                    variantCategoryKey = variant.pv.toString()
+                    variantCategoryKey = variant.pv.toString(),
+                    flashSale = isFlashSale
             )
         }
 
