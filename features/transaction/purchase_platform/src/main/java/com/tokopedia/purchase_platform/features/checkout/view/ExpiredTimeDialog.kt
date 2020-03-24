@@ -12,7 +12,6 @@ class ExpiredTimeDialog : DialogFragment() {
         dialogUnify.setDescription("bla bla bafdjlasfj badslfjsladfj sd")
         dialogUnify.setPrimaryCTAText("Belanja Lagi")
         dialogUnify.setPrimaryCTAClickListener {
-            dialogUnify.dismiss()
             if (activity != null) {
                 activity!!.finish()
             }
