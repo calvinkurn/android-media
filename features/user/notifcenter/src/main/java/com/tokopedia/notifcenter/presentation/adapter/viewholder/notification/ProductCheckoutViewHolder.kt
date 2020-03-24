@@ -105,7 +105,13 @@ class ProductCheckoutViewHolder(
         btnCheckout.setOnClickListener {
             notificationItemMarkedClick(element)
             listener.getAnalytic().trackAtcOnSingleProductClick(notification = element)
-            listener.addProductToCheckout(element.userInfo, element)
+            element.getAtcProduct()?.let {
+                if (it.stock < SINGLE_PRODUCT) {
+                    listener.itemContainerClicked(element)
+                } else {
+                    listener.addProductToCheckout(element.userInfo, element)
+                }
+            }
         }
     }
 
@@ -114,10 +120,6 @@ class ProductCheckoutViewHolder(
             TYPE_BUY_BUTTON -> {
                 btnCheckout.text = itemView.context.getString(R.string.notifcenter_btn_buy)
                 btnCheckout.buttonType = UnifyButton.Type.TRANSACTION
-            }
-            TYPE_REMINDER_BUTTON -> {
-                btnCheckout.text = itemView.context.getString(R.string.notifcenter_btn_reminder)
-                btnCheckout.buttonType = UnifyButton.Type.MAIN
             }
             TYPE_OUT_OF_STOCK_BUTTON -> {
                 btnCheckout.text = itemView.context.getString(R.string.notifcenter_btn_out_of_stock)
