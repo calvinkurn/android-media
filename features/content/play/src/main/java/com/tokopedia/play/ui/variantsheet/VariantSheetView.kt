@@ -19,7 +19,6 @@ import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.variantsheet.adapter.VariantAdapter
 import com.tokopedia.play.ui.variantsheet.itemdecoration.VariantItemDecoration
-import com.tokopedia.play.ui.variantsheet.itemdecoration.VariantPlaceholderItemDecoration
 import com.tokopedia.play.view.custom.TopShadowOutlineProvider
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
