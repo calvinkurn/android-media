@@ -305,8 +305,8 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed, CoroutineScope 
     /**
      * Get Intent for Applink using suspend function
      */
-    suspend fun getIntentforApplink(context: Context, applink: String): Intent = withContext(Dispatchers.IO) {
-        return RouteManager.getIntent(context, applink)
+    suspend fun getIntentforApplink(context: Context, applink: String): Intent = withContext(Dispatchers.IO){
+        return@withContext RouteManager.getIntent(context, applink)
     }
 
     override fun onBackPressed(): Boolean {
