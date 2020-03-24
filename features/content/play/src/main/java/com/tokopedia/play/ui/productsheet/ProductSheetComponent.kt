@@ -1,6 +1,7 @@
 package com.tokopedia.play.ui.productsheet
 
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.productsheet.interaction.ProductSheetInteractionEvent
@@ -20,14 +21,15 @@ import java.net.UnknownHostException
 /**
  * Created by jegul on 02/03/20
  */
-class ProductSheetComponent(
+open class ProductSheetComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
         coroutineScope: CoroutineScope,
         dispatchers: CoroutineDispatcherProvider
 ) : UIComponent<ProductSheetInteractionEvent>, CoroutineScope by coroutineScope, ProductSheetView.Listener {
 
-    private val uiView = initView(container)
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    val uiView = initView(container)
 
     init {
         launch(dispatchers.immediate) {
@@ -87,7 +89,7 @@ class ProductSheetComponent(
         }
     }
 
-    private fun initView(container: ViewGroup) =
+    open fun initView(container: ViewGroup) =
             ProductSheetView(container, this)
 
     private fun handleShowHideProductSheet(state: BottomInsetsState) {

@@ -92,7 +92,7 @@ object PlayUiMapper {
                     shopId = it.shopId,
                     imageUrl = it.image,
                     title = it.name,
-                    price = if (it.price != 0L) {
+                    price = if (it.discount != 0) {
                         DiscountedPrice(
                                 originalPrice = it.originalPriceFormatted,
                                 discountedPrice = it.priceFormatted,

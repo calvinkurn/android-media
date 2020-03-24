@@ -4,11 +4,9 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.play.R
 import com.tokopedia.variant_common.model.VariantCategory
 import com.tokopedia.variant_common.view.ProductVariantListener
 import com.tokopedia.variant_common.view.holder.VariantContainerViewHolder
-
 
 /**
  * Created by mzennis on 2020-03-10.
