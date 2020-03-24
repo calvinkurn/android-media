@@ -11,21 +11,21 @@
         android:layout_width="@dimen/product_card_flashsale_pdpcount_height"
         android:layout_height="@dimen/product_card_flashsale_pdpcount_height"
         android:layout_marginTop="@dimen/product_card_flashsale_pdpcount_margintop"
-        android:src="@drawable/ic_pdp_view"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_pdp_view"
         tools:visibility="visible"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPdpView"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/product_card_flashsale_pdpcount_height"
-        android:src="@drawable/ic_pdp_view"
         android:layout_marginLeft="@dimen/dp_2"
         android:visibility="gone"
         app:layout_constraintStart_toEndOf="@+id/ivPdpView"
         app:layout_constraintTop_toTopOf="@+id/ivPdpView"
+        app:layout_constraintBottom_toBottomOf="@+id/ivPdpView"
         app:typographyType="small"
         android:textColor="@color/charcoal_grey_68"
         tools:text="989jt orang"

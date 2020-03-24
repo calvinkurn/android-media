@@ -3,6 +3,7 @@ package com.tokopedia.productcard
 import android.graphics.Paint
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.shouldShowWithAction
@@ -19,6 +20,7 @@ internal fun ProductCardFlashSaleView.renderProductCardFlashSaleContent(productC
 }
 
 private fun ProductCardFlashSaleView.renderPdpCountView(productCardModel: ProductCardFlashSaleModel) {
+    ivPdpView.hide()
     tvPdpView?.shouldShowWithAction(productCardModel.pdpViewCount.isNotEmpty()) {
         it.text = MethodChecker.fromHtml(productCardModel.pdpViewCount)
         ivPdpView.show()
