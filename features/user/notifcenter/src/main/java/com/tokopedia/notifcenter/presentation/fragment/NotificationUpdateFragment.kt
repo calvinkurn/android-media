@@ -158,6 +158,7 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
     override fun loadData(page: Int) {
         notificationId.let {
             if (it.isNotEmpty()) {
+                lstFilter?.hide()
                 viewModel.getSingleNotification(it)
             } else {
                 presenter.loadData(
