@@ -4,11 +4,9 @@ import com.google.gson.Gson
 import com.tokopedia.play.data.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
-import com.tokopedia.play.view.type.BottomInsetsState
-import com.tokopedia.play.view.type.BottomInsetsType
-import com.tokopedia.play.view.type.PlayChannelType
-import com.tokopedia.play.view.type.PlayRoomEvent
+import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
+import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.state.PlayVideoState
 
 /**
@@ -347,6 +345,74 @@ class ModelBuilder {
             count = count
     )
 
+    fun buildProductSheetUiModel(
+            title: String = "Yeaya",
+            voucherList: List<PlayVoucherUiModel> = emptyList(),
+            productList: List<PlayProductUiModel> = emptyList()
+    ) = ProductSheetUiModel(
+            title = title,
+            voucherList = voucherList,
+            productList = productList
+    )
+
+    fun buildMerchantVoucherUiModel(
+            type: MerchantVoucherType = MerchantVoucherType.Discount,
+            title: String = "Diskon gedean",
+            description: String = "wowaw"
+    ) = MerchantVoucherUiModel(
+            type = type,
+            title = title,
+            description = description
+    )
+
+    fun buildProductLineUiModel(
+            id: String = "123",
+            shopId: String = "567",
+            imageUrl: String = "https://tkp.me",
+            title: String = "Product laku",
+            stock: ProductStock = buildProductStockAvailable(),
+            isVariantAvailable: Boolean = true,
+            price: ProductPrice = buildOriginalPrice(),
+            minQty: Int = 2,
+            isFreeShipping: Boolean = true,
+            applink: String? = "https://tkp.me"
+    ) = ProductLineUiModel(
+            id = id,
+            shopId = shopId,
+            imageUrl = imageUrl,
+            title = title,
+            stock = stock,
+            isVariantAvailable = isVariantAvailable,
+            price = price,
+            minQty = minQty,
+            isFreeShipping = isFreeShipping,
+            applink = applink
+    )
+
+    fun buildProductStockAvailable(
+            stock: Int = 5
+    ) = StockAvailable(stock)
+
+    fun buildOriginalPrice(
+            price: String = "Rp120.000",
+            priceNumber: Long = 120000
+    ) = OriginalPrice(
+            price = price,
+            priceNumber = priceNumber
+    )
+
+    fun buildDiscountedPrice(
+            originalPrice: String = "Rp120.000",
+            discountPercent: Int = 10,
+            discountedPrice: String = "Rp108.000",
+            discountedPriceNumber: Long = 108000
+    ) = DiscountedPrice(
+            originalPrice = originalPrice,
+            discountPercent = discountPercent,
+            discountedPrice = discountedPrice,
+            discountedPriceNumber = discountedPriceNumber
+    )
+
     fun buildPlayRoomFreezeEvent(
             title: String = "Freeze",
             message: String = "Kamu kena freeze",
@@ -383,4 +449,17 @@ class ModelBuilder {
             isShown: Boolean = false,
             isPreviousSameState: Boolean = false
     ) = if (isShown) BottomInsetsState.Shown(250, isPreviousSameState) else BottomInsetsState.Hidden(isPreviousSameState)
+
+    fun <T>buildPlayResultLoading(
+            showPlaceholder: Boolean = true
+    ) = PlayResult.Loading<T>(showPlaceholder)
+
+    fun <T>buildPlayResultFailure(
+            error: Throwable = IllegalArgumentException(),
+            onRetry: () -> Unit = {}
+    ) = PlayResult.Failure<T>(error, onRetry)
+
+    fun <T>buildPlayResultSuccess(
+            data: T
+    ) = PlayResult.Success(data)
 }
