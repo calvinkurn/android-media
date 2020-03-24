@@ -80,30 +80,18 @@
         tools:text="Rp8.499.000"
         tools:visibility="visible" />
 
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/labelPrice"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_4"
-        android:visibility="gone"
-        app:labelType="general_light_green"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewProductName"
-        tools:visibility="gone"
-        tools:text="Cashback" />
-
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrierPromo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="textViewSlashedPrice,labelDiscount,labelPrice" />
+        app:constraint_referenced_ids="textViewSlashedPrice,labelDiscount" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewPrice"
         android:layout_width="0dp"
         android:layout_height="@dimen/product_card_text_view_price_height"
-        android:layout_marginTop="@dimen/product_card_text_view_price_margin_top"
+        android:layout_marginBottom="@dimen/product_card_flashsale_text_view_slashed_price_margin_bottom"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/charcoal_grey_96"
