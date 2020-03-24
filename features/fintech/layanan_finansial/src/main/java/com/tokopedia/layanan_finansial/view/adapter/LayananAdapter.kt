@@ -1,10 +1,7 @@
 package com.tokopedia.layanan_finansial.view.adapter
 
 import android.graphics.Color
-import android.graphics.ColorFilter
 import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.ShapeDrawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +19,6 @@ import com.tokopedia.layanan_finansial.view.Analytics.LAYANAN_FINANSIAL_CATEGORY
 import com.tokopedia.layanan_finansial.view.Analytics.LAYANAN_FINANSILA_VIEW_ACTION
 import com.tokopedia.layanan_finansial.view.Analytics.LAYANAN_FINANSILA_click_ACTION
 import com.tokopedia.layanan_finansial.view.models.LayananListItem
-import com.tokopedia.unifycomponents.ImageUrlLoader
 import kotlinx.android.synthetic.main.layanan_card_item.view.*
 import java.util.*
 import kotlin.collections.HashMap
@@ -33,13 +29,13 @@ class LayananAdapter(private val list: List<LayananListItem>) : RecyclerView.Ada
    inner class LayananViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
        fun setData(layananListItem: LayananListItem) {
            itemView.apply {
-               ImageLoader.LoadImage(icon,layananListItem.icon_url)
+               ImageLoader.LoadImage(icon,layananListItem.iconUrl)
                name.text = layananListItem.name
                category.text = layananListItem.categrory
-               desc_1.text = layananListItem.desc_1
-               if(!layananListItem.desc_2.isNullOrEmpty()){
+               desc_1.text = layananListItem.desc1
+               if(!layananListItem.desc2.isNullOrEmpty()){
                    desc_1.setLines(1)
-                   desc_2.text = layananListItem.desc_2
+                   desc_2.text = layananListItem.desc2
                    desc_2.show()
                } else {
                    desc_1.setLines(2)
@@ -57,15 +53,15 @@ class LayananAdapter(private val list: List<LayananListItem>) : RecyclerView.Ada
                }
                if(!layananListItem.status.isNullOrEmpty()){
                    status.text = layananListItem.status
-                   (status.background as GradientDrawable).setColor(Color.parseColor(layananListItem.status_background_color))
-                   status.setTextColor(Color.parseColor(layananListItem.status_text_color))
+                   (status.background as GradientDrawable).setColor(Color.parseColor(layananListItem.statusBackgroundColor))
+                   status.setTextColor(Color.parseColor(layananListItem.statusTextColor))
                    status.show()
                } else {
                    status.hide()
                }
                setOnClickListener{
                    RouteManager.route(context, String.format("%s?url=%s",ApplinkConst.WEBVIEW,layananListItem.url))
-                   val label = "product: ${layananListItem.name}, status: ${layananListItem.datalayer_status}"
+                   val label = "product: ${layananListItem.name}, status: ${layananListItem.datalayerStatus}"
                    Analytics.sendEcomerceEvent(EVENT_PROMO_CLICK,LAYANAN_FINANSIAL_CATEGORY, LAYANAN_FINANSILA_click_ACTION,label,createEcommerceMap(position = layoutPosition,item =  layananListItem))
                }
            }
@@ -88,7 +84,7 @@ class LayananAdapter(private val list: List<LayananListItem>) : RecyclerView.Ada
         super.onViewAttachedToWindow(holder)
         val layananListItem = list[holder.layoutPosition]
         if (!layananListItem.isVisited) {
-            val label = "product: ${layananListItem.name}, status: ${layananListItem.datalayer_status}"
+            val label = "product: ${layananListItem.name}, status: ${layananListItem.datalayerStatus}"
             Analytics.sendEcomerceEvent(EVENT_PROMO_VIEW, LAYANAN_FINANSIAL_CATEGORY, LAYANAN_FINANSILA_VIEW_ACTION, label,createEcommerceMap(holder.layoutPosition,item = layananListItem))
             layananListItem.isVisited = true
         }
@@ -96,11 +92,11 @@ class LayananAdapter(private val list: List<LayananListItem>) : RecyclerView.Ada
 
     private fun createEcommerceMap(position: Int, item: LayananListItem) : Map<String, Any?>{
         val map = mutableMapOf<String,Any?>()
-        map["id"] = "${item.name} _ ${item.datalayer_status}"
+        map["id"] = "${item.name} _ ${item.datalayerStatus}"
         map["name"] = "/layanan finansial"
         map["position"] = position
         map["creative"] = item.name
-        map["creative_url"] = item.icon_url
+        map["creative_url"] = item.iconUrl
 
         val promotions = HashMap<String, List<Map<String, Any?>>>()
         promotions["promotions"] = Arrays.asList<Map<String, Any?>>(map)

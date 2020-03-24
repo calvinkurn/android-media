@@ -29,8 +29,6 @@ class LayananModule(private val context: Context) {
                 R.raw.lf_query_layanan_detail)
     }
 
-
-
     companion object{
         const val LAYANAN_DETAIL_QUERY = "lf_query_layanan_detail"
     }

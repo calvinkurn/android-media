@@ -14,17 +14,17 @@ data class LayananListItem(
         @SerializedName("url")
         val url : String?= null,
         @SerializedName("image_url")
-        val icon_url: String? = null,
+        val iconUrl: String? = null,
         @SerializedName("status")
         val status:String? = null,
         @SerializedName("status_text_color")
-        val status_text_color: String? = null,
+        val statusTextColor: String? = null,
         @SerializedName("status_bg_color")
-        val status_background_color : String? = null,
+        val statusBackgroundColor : String? = null,
         @SerializedName("desc_1")
-        val desc_1: String? = null,
+        val desc1: String? = null,
         @SerializedName("desc_2")
-        val desc_2: String? = null,
+        val desc2: String? = null,
         @SerializedName("datalayer_status")
-        val datalayer_status : String? = null
+        val datalayerStatus : String? = null
 )

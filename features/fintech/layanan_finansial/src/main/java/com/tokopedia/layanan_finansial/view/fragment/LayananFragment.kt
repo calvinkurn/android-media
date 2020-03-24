@@ -19,7 +19,6 @@ import com.tokopedia.layanan_finansial.view.models.LayananSectionModel
 import com.tokopedia.layanan_finansial.view.viewModel.LayananFinansialViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.layanan_fragment.*
 import javax.inject.Inject
 
 class LayananFragment : BaseListFragment<LayananSectionModel,LayananViewHolderFactory>() {
@@ -27,9 +26,7 @@ class LayananFragment : BaseListFragment<LayananSectionModel,LayananViewHolderFa
     @Inject
     lateinit var factory: ViewModelFactory
     val viewModel by lazy { ViewModelProviders.of(this,factory)[LayananFinansialViewModel::class.java] }
-//    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-//        return inflater.inflate(R.layout.layanan_fragment,container,false)
-//    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
