@@ -30,30 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tvTapHint"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginStart="@dimen/dp_60"
-                android:layout_marginLeft="@dimen/dp_60"
-                android:layout_marginEnd="@dimen/dp_60"
-                android:layout_marginRight="@dimen/dp_60"
-                android:alpha="0"
-                android:background="@drawable/gami_bg_text_hint"
-                android:gravity="center"
-                android:paddingStart="30dp"
-                android:paddingLeft="30dp"
-                android:paddingTop="14dp"
-                android:paddingEnd="30dp"
-                android:paddingRight="30dp"
-                android:paddingBottom="10dp"
-                android:textColor="@color/gf_box_hint_color"
-                app:typographyType="heading_2"
-                app:typographyWeight="bold"
-                tools:alpha="1"
-                tools:text="Tap kotaknya untuk \n dapetin hadiah" />
-
+            <include layout="@layout/gf_gift_tap_hint"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_timer"
