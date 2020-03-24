@@ -91,7 +91,7 @@
         android:id="@+id/textViewPrice"
         android:layout_width="0dp"
         android:layout_height="@dimen/product_card_text_view_price_height"
-        android:layout_marginBottom="@dimen/product_card_flashsale_text_view_slashed_price_margin_bottom"
+        android:layout_marginBottom="@dimen/product_card_text_flashsale_view_price_margin_bottom"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/charcoal_grey_96"
