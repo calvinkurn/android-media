@@ -1,39 +1,31 @@
 package com.tokopedia.notifcenter.domain
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.notifcenter.R
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.notifcenter.data.consts.NotificationQueriesConstant
 import com.tokopedia.notifcenter.data.entity.NotificationCenterDetail
-import rx.Subscriber
 import javax.inject.Inject
-import com.tokopedia.abstraction.common.utils.GraphqlHelper.loadRawString as raw
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy.Builder as cacheBuilder
+import javax.inject.Named
 
 class SingleNotificationUpdateUseCase @Inject constructor(
-        @ApplicationContext val context: Context,
-        private val useCase: GraphqlUseCase
+        @Named(NotificationQueriesConstant.SINGLE_NOTIFICATION_UPDATE)
+        private val query: String,
+        private val useCase: GraphqlUseCase<NotificationCenterDetail>
 ){
 
-    fun execute(requestParams: Map<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
-        val query = raw(context.resources, R.raw.query_notif_center_single)
-        val cacheStrategy = cacheBuilder(CacheType.CLOUD_THEN_CACHE)
-                .setSessionIncluded(true)
-                .build()
-        val request = GraphqlRequest(
-                query,
-                NotificationCenterDetail::class.java,
-                requestParams
-        )
-
+    fun get(
+            params: Map<String, Any>,
+            onSuccess: (NotificationCenterDetail) -> Unit,
+            onError: (Throwable) -> Unit
+    ) {
         useCase.apply {
-            clearRequest()
-            addRequest(request)
-            setCacheStrategy(cacheStrategy)
-            execute(subscriber)
+            setTypeClass(NotificationCenterDetail::class.java)
+            setRequestParams(params)
+            setGraphqlQuery(query)
+            execute({ result ->
+                onSuccess(result)
+            }, { error ->
+                onError(error)
+            })
         }
     }
 
@@ -41,10 +33,10 @@ class SingleNotificationUpdateUseCase @Inject constructor(
         private const val PARAM_NOTIF_ID = "notifId"
         private const val PARAM_NOTIF_LANG = "notifLang"
 
-        fun params(notifId: Int, notifLang: String): Map<String, Any> {
+        fun params(notificationId: String, notificationLang: String = ""): Map<String, Any> {
             val variables = hashMapOf<String, Any>()
-            variables[PARAM_NOTIF_ID] = notifId
-            variables[PARAM_NOTIF_LANG] = notifLang
+            variables[PARAM_NOTIF_ID] = notificationId
+            variables[PARAM_NOTIF_LANG] = notificationLang
             return variables
         }
     }
