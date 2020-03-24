@@ -1,5 +1,5 @@
-query ($notifId: String, $notifLang: String) {
-  notifcenter_singleList(notif_id: $notifId, notif_center_lang: $notifLang) {
+query ($notifId: String) {
+  notifcenter_singleList(notif_id: $notifId) {
     paging {
       has_next
       has_prev
