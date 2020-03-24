@@ -599,6 +599,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             viewModel.sendAnalyticsClickButtonVerifikasiNomorHp()
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
             startActivityForResult(intent, REQUEST_CODE_PHONE_VERIFICATION)
+        } else {
+            reloadData()
         }
     }
 

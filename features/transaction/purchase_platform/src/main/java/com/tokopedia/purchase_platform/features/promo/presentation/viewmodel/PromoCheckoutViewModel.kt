@@ -249,6 +249,10 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                                 emptyState.uiState.isShowButton = false
                                 analytics.eventViewBlacklistErrorAfterApplyPromo(getPageSource())
                             }
+                            else -> {
+                                emptyState.uiState.isShowButton = true
+                                emptyState.uiData.buttonText = "Coba Lagi"
+                            }
                         }
                         _promoEmptyStateUiModel.value = emptyState
                     }
