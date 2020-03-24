@@ -791,6 +791,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .subscribe(getSubscriberCheckoutCart(checkoutRequest, isOneClickShipment, isTradeIn, deviceId, cornerId, leasingId))
             );
         } else {
+            getView().hideLoading();
             getView().showToastError(getView().getActivityContext().getString(R.string.message_error_checkout_empty));
         }
     }
