@@ -56,6 +56,14 @@
         app:layout_constraintLeft_toRightOf="@id/product_notify_subtitle"
         app:layout_constraintTop_toTopOf="@+id/product_notify_subtitle" />
 
+    <View
+        android:layout_width="@dimen/dp_90"
+        android:layout_height="@dimen/dp_76"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:background="@drawable/bg_notify_me"/>
+
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_notify_me"
         android:layout_width="106dp"
@@ -70,5 +78,5 @@
         app:layout_constraintTop_toTopOf="parent"
         app:unifyButtonSize="small"
         app:unifyButtonType="main"
-        app:unifyButtonVariant="ghost" />
+        app:unifyButtonVariant="ghost"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
