@@ -31,22 +31,6 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible" />
 
-        <com.tokopedia.unifycomponents.Label
-            android:id="@+id/labelProductStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_20"
-            android:layout_marginStart="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_4"
-            android:layout_marginBottom="@dimen/dp_4"
-            android:gravity="center"
-            android:paddingStart="@dimen/dp_4"
-            android:paddingEnd="@dimen/dp_4"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/imageProduct"
-            app:layout_constraintLeft_toLeftOf="@id/imageProduct"
-            tools:text="Preorder"
-            tools:visibility="visible"/>
-
         <include
             android:id="@+id/productCardContentLayout"
             android:layout_width="@dimen/dp_0"
