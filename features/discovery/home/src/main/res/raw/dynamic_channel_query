@@ -2,6 +2,7 @@ query getDynamicChannel($groupIDs: String!){
     dynamicHomeChannel {
         channels(groupIDs: $groupIDs){
           id
+          group_id
           galaxy_attribution
           persona
           brand_id
