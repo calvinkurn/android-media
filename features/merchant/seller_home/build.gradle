@@ -44,7 +44,6 @@ android {
 dependencies {
     //features
     implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.features.layanan)
 
     //libs
     implementation project(rootProject.ext.libraries.tkpddesign)

@@ -19,7 +19,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.layanan_finansial.view.acitivity.LayananAcitivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
@@ -194,8 +193,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 },
                 DividerUiModel(),
                 MenuItemUiModel(resources.getString(R.string.setting_menu_finance_service), R.drawable.ic_finance){
-                    val intent = Intent(context,LayananAcitivity::class.java)
-                    startActivity(intent)
+                    RouteManager.route(context,ApplinkConst.LAYANAN_FINANSIAL)
                 },
                 MenuItemUiModel(resources.getString(R.string.setting_menu_seller_education_center), R.drawable.ic_seller_edu) {
                     val intent = RouteManager.getIntent(context, ApplinkConst.WEBVIEW)

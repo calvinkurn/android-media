@@ -16,12 +16,16 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.layanan_finansial.R
 import com.tokopedia.layanan_finansial.view.Analytics
+import com.tokopedia.layanan_finansial.view.Analytics.EVENT_PROMO_CLICK
+import com.tokopedia.layanan_finansial.view.Analytics.EVENT_PROMO_VIEW
 import com.tokopedia.layanan_finansial.view.Analytics.LAYANAN_FINANSIAL_CATEGORY
 import com.tokopedia.layanan_finansial.view.Analytics.LAYANAN_FINANSILA_VIEW_ACTION
 import com.tokopedia.layanan_finansial.view.Analytics.LAYANAN_FINANSILA_click_ACTION
 import com.tokopedia.layanan_finansial.view.models.LayananListItem
 import com.tokopedia.unifycomponents.ImageUrlLoader
 import kotlinx.android.synthetic.main.layanan_card_item.view.*
+import java.util.*
+import kotlin.collections.HashMap
 
 class LayananAdapter(private val list: List<LayananListItem>) : RecyclerView.Adapter<LayananAdapter.LayananViewHolder>() {
 
@@ -62,9 +66,10 @@ class LayananAdapter(private val list: List<LayananListItem>) : RecyclerView.Ada
                setOnClickListener{
                    RouteManager.route(context, String.format("%s?url=%s",ApplinkConst.WEBVIEW,layananListItem.url))
                    val label = "product: ${layananListItem.name}, status: ${layananListItem.datalayer_status}"
-                   Analytics.sendEvent("",LAYANAN_FINANSIAL_CATEGORY, LAYANAN_FINANSILA_click_ACTION,label)
+                   Analytics.sendEcomerceEvent(EVENT_PROMO_CLICK,LAYANAN_FINANSIAL_CATEGORY, LAYANAN_FINANSILA_click_ACTION,label,createEcommerceMap(position = layoutPosition,item =  layananListItem))
                }
            }
+
        }
 
    }
@@ -84,8 +89,24 @@ class LayananAdapter(private val list: List<LayananListItem>) : RecyclerView.Ada
         val layananListItem = list[holder.layoutPosition]
         if (!layananListItem.isVisited) {
             val label = "product: ${layananListItem.name}, status: ${layananListItem.datalayer_status}"
-            Analytics.sendEvent("", LAYANAN_FINANSIAL_CATEGORY, LAYANAN_FINANSILA_VIEW_ACTION, label)
+            Analytics.sendEcomerceEvent(EVENT_PROMO_VIEW, LAYANAN_FINANSIAL_CATEGORY, LAYANAN_FINANSILA_VIEW_ACTION, label,createEcommerceMap(holder.layoutPosition,item = layananListItem))
             layananListItem.isVisited = true
         }
+    }
+
+    private fun createEcommerceMap(position: Int, item: LayananListItem) : Map<String, Any?>{
+        val map = mutableMapOf<String,Any?>()
+        map["id"] = "${item.name} _ ${item.datalayer_status}"
+        map["name"] = "/layanan finansial"
+        map["position"] = position
+        map["creative"] = item.name
+        map["creative_url"] = item.icon_url
+
+        val promotions = HashMap<String, List<Map<String, Any?>>>()
+        promotions["promotions"] = Arrays.asList<Map<String, Any?>>(map)
+
+        val promoView = HashMap<String, Map<String, List<Map<String, Any?>>>>()
+        promoView["promoView"] = promotions
+        return promoView
     }
 }
