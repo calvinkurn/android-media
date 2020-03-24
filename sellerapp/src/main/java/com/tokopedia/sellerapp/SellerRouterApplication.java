@@ -214,10 +214,6 @@ public abstract class SellerRouterApplication extends MainApplication
         IrisAnalytics.Companion.getInstance(this).initialize();
     }
 
-    private void initIris() {
-        IrisAnalytics.Companion.getInstance(this).initialize();
-    }
-
     private void initializeRemoteConfig() {
         remoteConfig = new FirebaseRemoteConfigImpl(this);
     }
