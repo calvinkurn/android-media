@@ -1,4 +1,4 @@
-query ($notifId: String) {
+query notifcenter_singleList($notifId: String) {
   notifcenter_singleList(notif_id: $notifId) {
     paging {
       has_next
