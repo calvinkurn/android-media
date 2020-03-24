@@ -2,6 +2,7 @@ package com.tokopedia.hotel.roomdetail.presentation.fragment
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.os.Bundle
@@ -28,6 +29,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
+import com.tokopedia.hotel.common.data.HotelErrorException
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
@@ -114,7 +116,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                     when {
                         ErrorHandlerHotel.isPhoneNotVerfiedError(it.throwable) -> navigateToAddPhonePage()
                         ErrorHandlerHotel.isGetFailedRoomError(it.throwable) -> {
-                            showFailedGetRoomErrorDialog()
+                            showFailedGetRoomErrorDialog((it as HotelErrorException).message)
                         }
                         else -> NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
                     }
@@ -376,7 +378,18 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
     private fun navigateToLoginPage() {
         if (activity != null) {
             progressDialog.dismiss()
-            RouteManager.route(context, ApplinkConst.LOGIN)
+            context?.let { startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), REQ_CODE_LOGIN) }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQ_CODE_LOGIN -> if (resultCode == Activity.RESULT_OK) {
+                progressDialog.show()
+                activity?.setResult(Activity.RESULT_OK)
+                activity?.finish()
+            }
         }
     }
 
@@ -393,10 +406,10 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         RouteManager.route(requireContext(), ApplinkConstInternalGlobal.ADD_PHONE)
     }
 
-    private fun showFailedGetRoomErrorDialog() {
+    private fun showFailedGetRoomErrorDialog(message: String) {
         val dialog = DialogUnify(activity as AppCompatActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ICON)
         dialog.setTitle(getString(R.string.hotel_room_list_failed_get_room_availability_error_title))
-        dialog.setDescription(getString(R.string.hotel_room_list_failed_get_room_availability_error_desc))
+        dialog.setDescription(message)
         dialog.setImageDrawable(R.drawable.ic_hotel_room_error_refresh)
         dialog.setPrimaryCTAText(getString(R.string.hotel_room_list_failed_get_room_availability_cta_title))
         dialog.setPrimaryCTAClickListener {
@@ -415,6 +428,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
 
         const val MINIMUM_ROOM_COUNT = 3
         const val ROOM_FACILITY_DEFAULT_COUNT = 6
+        const val REQ_CODE_LOGIN = 1345
 
         fun getInstance(savedInstanceId: String, roomIndex: Int): HotelRoomDetailFragment =
                 HotelRoomDetailFragment().also {
