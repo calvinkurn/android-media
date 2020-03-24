@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.settings.domain.usecase
 
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.sellerhome.settings.domain.entity.ShopStatusResponse
@@ -7,7 +8,7 @@ import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class ShopStatusTypeUseCase @Inject constructor(private val graphqlRepository: com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository) : UseCase<ShopType>() {
+class ShopStatusTypeUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository) : UseCase<ShopType>() {
 
     companion object {
         const val QUERY = "query GetShopStatusType(\$shopId: Int!) {\n" +
