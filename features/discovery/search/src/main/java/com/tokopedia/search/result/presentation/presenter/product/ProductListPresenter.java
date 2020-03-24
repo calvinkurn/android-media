@@ -702,7 +702,9 @@ final class ProductListPresenter
     }
 
     private void updateValueEnableGlobalNavWidget() {
-        enableGlobalNavWidget = enableGlobalNavWidget && !getView().isLandingPage();
+        if (getView() != null) {
+            enableGlobalNavWidget = enableGlobalNavWidget && !getView().isLandingPage();
+        }
     }
 
     private void sendTrackingNoSearchResult(ProductViewModel productViewModel) {
