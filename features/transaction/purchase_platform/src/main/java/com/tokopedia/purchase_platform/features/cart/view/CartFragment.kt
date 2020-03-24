@@ -1393,8 +1393,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         for (j in 0 until countListItem) {
                             if (position != -1 && j == position) {
                                 cartItemHolderData.cartItemDataList?.get(j)?.isSelected = isChecked
-                            } else {
-                                cartItemHolderData.cartItemDataList?.get(j)?.isSelected = !isChecked
                             }
                             cartItemHolderData.cartItemDataList?.get(j)?.isSelected?.let { isItemSelected ->
                                 if (isItemSelected) {
