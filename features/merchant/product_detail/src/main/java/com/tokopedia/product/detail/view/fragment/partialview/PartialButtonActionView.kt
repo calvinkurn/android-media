@@ -17,7 +17,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
 
 
-class PartialButtonActionView private constructor(private val view: View,
+class PartialButtonActionView private constructor(val view: View,
                                                   private val listener: View.OnClickListener)
     : View.OnClickListener by listener {
     var promoTopAdsClick: (() -> Unit)? = null
@@ -42,7 +42,7 @@ class PartialButtonActionView private constructor(private val view: View,
     var hasTopAdsActive: Boolean = false
     var preOrder: PreOrder? = PreOrder()
     var onSuccessGetCartType = false
-    private var cartTypeData: CartRedirection? = null
+    var cartTypeData: CartRedirection? = null
 
     companion object {
         fun build(_view: View, _listener: View.OnClickListener) = PartialButtonActionView(_view, _listener)
@@ -148,29 +148,12 @@ class PartialButtonActionView private constructor(private val view: View,
                 if (hasComponentLoading) return@setOnClickListener
                 buyNowClick?.invoke()
             }
-            setupTickerOcc()
             btn_add_to_cart.setOnClickListener {
                 if (hasComponentLoading) return@setOnClickListener
                 addToCartClick?.invoke()
             }
             btn_topchat.setOnClickListener(this@PartialButtonActionView)
             btn_apply_leasing.setOnClickListener(this@PartialButtonActionView)
-        }
-    }
-
-    private fun setupTickerOcc() {
-        if (view.btn_buy_now.visibility == View.VISIBLE && isExpressCheckout) {
-            view.ticker_occ_arrow.post {
-                view.ticker_occ_arrow?.translationX = view.btn_buy_now.x + (view.btn_buy_now.width / 2)
-                view.ticker_occ?.visible()
-                view.ticker_occ_arrow?.visible()
-                view.ticker_occ?.setOnClickListener {
-                    view.ticker_occ?.gone()
-                }
-            }
-        } else {
-            view.ticker_occ.gone()
-            view.ticker_occ_arrow.gone()
         }
     }
 
