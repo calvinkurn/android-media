@@ -31,12 +31,10 @@ class SingleNotificationUpdateUseCase @Inject constructor(
 
     companion object {
         private const val PARAM_NOTIF_ID = "notifId"
-        private const val PARAM_NOTIF_LANG = "notifLang"
 
-        fun params(notificationId: String, notificationLang: String = ""): Map<String, Any> {
+        fun params(notificationId: String): Map<String, Any> {
             val variables = hashMapOf<String, Any>()
             variables[PARAM_NOTIF_ID] = notificationId
-            variables[PARAM_NOTIF_LANG] = notificationLang
             return variables
         }
     }
