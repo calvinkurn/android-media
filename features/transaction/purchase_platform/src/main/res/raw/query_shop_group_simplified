@@ -525,6 +525,7 @@ query shop_group_simplified($lang: String, $selected_cart_id: String) {
                 codes
                 voucher_orders {
                   code
+                  unique_id
                   message {
                     state
                     color

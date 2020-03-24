@@ -110,7 +110,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             }
 
             promoRequest.orders.forEach { order ->
-                order.codes.clear()
                 promoListUiModel.value?.forEach {
                     if (it is PromoListItemUiModel && it.uiState.isSelected) {
                         if (it.uiData.uniqueId == order.uniqueId && !order.codes.contains(it.uiData.promoCode)) {
