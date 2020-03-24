@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.layanan_finansial.R
 import com.tokopedia.layanan_finansial.view.Analytics
 import com.tokopedia.layanan_finansial.view.Analytics.LAYANAN_FINANSIAL_CATEGORY
+import com.tokopedia.layanan_finansial.view.Analytics.LAYANAN_FINANSILA_VIEW_ACTION
 import com.tokopedia.layanan_finansial.view.Analytics.LAYANAN_FINANSILA_click_ACTION
 import com.tokopedia.layanan_finansial.view.models.LayananListItem
 import com.tokopedia.unifycomponents.ImageUrlLoader
@@ -80,6 +81,11 @@ class LayananAdapter(private val list: List<LayananListItem>) : RecyclerView.Ada
 
     override fun onViewAttachedToWindow(holder: LayananViewHolder) {
         super.onViewAttachedToWindow(holder)
-        Log.e("onViewAttached   ", holder.toString())
+        val layananListItem = list[holder.layoutPosition]
+        if (!layananListItem.isVisited) {
+            val label = "product: ${layananListItem.name}, status: ${layananListItem.datalayer_status}"
+            Analytics.sendEvent("", LAYANAN_FINANSIAL_CATEGORY, LAYANAN_FINANSILA_VIEW_ACTION, label)
+            layananListItem.isVisited = true
+        }
     }
 }

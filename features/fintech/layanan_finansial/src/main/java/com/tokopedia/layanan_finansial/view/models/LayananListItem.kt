@@ -3,6 +3,8 @@ package com.tokopedia.layanan_finansial.view.models
 import com.google.gson.annotations.SerializedName
 
 data class LayananListItem(
+        @SerializedName("")
+        var isVisited : Boolean = false,
         @SerializedName("name")
         val name : String? = null,
         @SerializedName("category")

@@ -15,10 +15,11 @@ object DeeplinkMapperFintech {
     }
 
     fun getRegisteredNavigationForLayanan(deeplink: String): String {
-        deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA,DeeplinkConstant.SCHEME_INTERNAL)
-        if (!deeplink[deeplink.length - 1].equals("/")){
-            return "$deeplink/"
+        deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA,DeeplinkConstant.SCHEME_INTERNAL).let {
+            if (!it[it.length - 1].equals("/")){
+                return "$it/"
+            }
+            return it
         }
-        return deeplink
     }
 }
