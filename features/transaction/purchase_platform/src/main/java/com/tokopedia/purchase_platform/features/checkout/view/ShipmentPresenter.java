@@ -771,7 +771,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
         );
 
-        if (checkoutRequest != null) {
+        if (checkoutRequest != null && checkoutRequest.data != null && checkoutRequest.data.size() > 0) {
             getView().showLoading();
             RequestParams requestParams = RequestParams.create();
             if (isTradeIn) {
@@ -791,7 +791,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .subscribe(getSubscriberCheckoutCart(checkoutRequest, isOneClickShipment, isTradeIn, deviceId, cornerId, leasingId))
             );
         } else {
-            getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
+            getView().showToastError(getView().getActivityContext().getString(R.string.message_error_checkout_empty));
         }
     }
 
