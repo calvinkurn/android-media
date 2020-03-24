@@ -38,7 +38,7 @@ data class PromoEligibilityHeaderUiModel(
 
     data class UiState(
             var isEnabled: Boolean = false,
-            var isExpanded: Boolean = false
+            var isCollapsed: Boolean = false
     )
 
 }

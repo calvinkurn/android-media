@@ -182,7 +182,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             val lastData = adapter.data[topItemPosition]
 
             val isShow: Boolean
-            if (lastData is PromoListHeaderUiModel && lastData.uiState.isEnabled && !lastData.uiState.isExpanded) {
+            if (lastData is PromoListHeaderUiModel && lastData.uiState.isEnabled && !lastData.uiState.isCollapsed) {
                 tmpLastHeaderUiModel = lastData
                 isShow = true
             } else if (tmpLastHeaderUiModel != null && lastData is PromoListItemUiModel && lastData.uiData.parentIdentifierId == tmpLastHeaderUiModel.uiData.identifierId && lastData.uiState.isParentEnabled) {
@@ -217,7 +217,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 section_label_promo_list_header_title.text = tmpLastHeaderUiModel?.uiData?.title
                 section_label_promo_list_header_sub_title.text = tmpLastHeaderUiModel?.uiData?.subTitle
 
-                if (tmpLastHeaderUiModel?.uiState?.isExpanded == false) {
+                if (tmpLastHeaderUiModel?.uiState?.isCollapsed == false) {
                     section_image_chevron.rotation = 180f
                 } else {
                     section_image_chevron.rotation = 0f
@@ -599,6 +599,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             viewModel.sendAnalyticsClickButtonVerifikasiNomorHp()
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
             startActivityForResult(intent, REQUEST_CODE_PHONE_VERIFICATION)
+        } else {
+            reloadData()
         }
     }
 

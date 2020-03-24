@@ -71,11 +71,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                 },
                 uiState = PromoEligibilityHeaderUiModel.UiState().apply {
                     isEnabled = couponSectionItem.isEnabled
-                    if (couponSectionItem.isEnabled) {
-                        isExpanded = !couponSectionItem.isCollapsed
-                    } else {
-                        isExpanded = false
-                    }
+                    isCollapsed = couponSectionItem.isCollapsed
                 }
         )
     }
@@ -99,11 +95,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                         }
                     }
                     hasSelectedPromoItem = tmpHasSellectedPromoItem
-                    if (isHeaderEnabled) {
-                        isExpanded = !couponSubSection.isCollapsed
-                    } else {
-                        isExpanded = true
-                    }
+                    isCollapsed = couponSubSection.isCollapsed
                 }
         )
     }

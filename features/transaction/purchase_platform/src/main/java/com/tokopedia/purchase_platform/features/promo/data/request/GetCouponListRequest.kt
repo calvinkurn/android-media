@@ -100,7 +100,7 @@ data class Order(
         @SerializedName("product_details")
         var product_details: List<ProductDetail> = emptyList(),
         @SerializedName("codes")
-        var codes: ArrayList<String> = ArrayList(),
+        var codes: MutableList<String> = mutableListOf(),
         @SerializedName("is_checked")
         var isChecked: Boolean = false
 ) : Parcelable {

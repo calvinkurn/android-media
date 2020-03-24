@@ -1457,8 +1457,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     for (j in 0 until countListItem) {
                         cartItemHolderData.cartItemDataList?.get(j)?.isSelected?.let { isItemSelected ->
                             if (isItemSelected) {
-                                doAddToListProducts(cartItemHolderData, j, listProductDetail) }
+                                doAddToListProducts(cartItemHolderData, j, listProductDetail)
                             }
+                        }
                     }
                     if (listProductDetail.isNotEmpty()) {
                         doAddtoOrderListRequest(cartItemHolderData, listProductDetail, listPromoCodes, listOrder)
@@ -1544,9 +1545,19 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                             shopId = shopId,
                             uniqueId = cartString,
                             product_details = listProductDetail,
-                            codes = ArrayList(listPromoCodes),
+                            codes = listPromoCodes.toMutableList(),
                             isChecked = isCheckedItem)
                     listOrder.add(order)
+                }
+            }
+        }
+
+        cartListData?.lastApplyShopGroupSimplifiedData?.voucherOrders?.forEach { lastApplyData ->
+            listOrder.forEach { order ->
+                if (lastApplyData.uniqueId == order.uniqueId) {
+                    if (lastApplyData.code.isNotBlank() && !order.codes.contains(lastApplyData.code)) {
+                        order.codes.add(lastApplyData.code)
+                    }
                 }
             }
         }
