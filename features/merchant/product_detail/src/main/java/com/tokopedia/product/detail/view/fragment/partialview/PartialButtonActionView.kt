@@ -148,6 +148,7 @@ class PartialButtonActionView private constructor(private val view: View,
                 if (hasComponentLoading) return@setOnClickListener
                 buyNowClick?.invoke()
             }
+            setupTickerOcc()
             btn_add_to_cart.setOnClickListener {
                 if (hasComponentLoading) return@setOnClickListener
                 addToCartClick?.invoke()
@@ -155,6 +156,16 @@ class PartialButtonActionView private constructor(private val view: View,
             btn_topchat.setOnClickListener(this@PartialButtonActionView)
             btn_apply_leasing.setOnClickListener(this@PartialButtonActionView)
         }
+    }
+
+    private fun setupTickerOcc() {
+        view.ticker_occ.visible()
+        view.ticker_occ_arrow.post {
+            view.ticker_occ_arrow?.translationX = view.btn_buy_now.x + (view.btn_buy_now.width / 2)
+        }
+//        ticker_occ_arrow.post {
+//            btn
+//        }
     }
 
     private fun bindAbTestChatButton(imageView: AppCompatImageView) {
