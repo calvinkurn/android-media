@@ -98,22 +98,25 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             refresh()
         } else if (requestCode == REQUEST_CODE_COURIER_PINPOINT) {
             onResultFromCourierPinpoint(resultCode, data)
+        } else if (requestCode == REQUEST_CODE_PROMO) {
+            onResultFromPromo(resultCode, data)
         }
     }
 
-    private fun onResultFromPromo(resultCode: Int, data: Intent) {
+    private fun onResultFromPromo(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
-            val validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel = data.getParcelableExtra(ARGS_VALIDATE_USE_DATA_RESULT)
+            val validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = data?.getParcelableExtra(ARGS_VALIDATE_USE_DATA_RESULT)
             if (validateUsePromoRevampUiModel != null) {
+                viewModel.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel
 //                shipmentPresenter.setValidateUsePromoRevampUiModel(validateUsePromoRevampUiModel)
 //                updateButtonPromoCheckout(validateUsePromoRevampUiModel.promoUiModel)
                 return
             }
-            val validateUsePromoRequest: ValidateUsePromoRequest = data.getParcelableExtra(ARGS_LAST_VALIDATE_USE_REQUEST)
+            val validateUsePromoRequest: ValidateUsePromoRequest? = data?.getParcelableExtra(ARGS_LAST_VALIDATE_USE_REQUEST)
             if (validateUsePromoRequest != null) {
 //                shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest)
             }
-            val defaultTitlePromoButton = data.getStringExtra(ARGS_CLEAR_PROMO_RESULT)
+            val defaultTitlePromoButton: String? = data?.getStringExtra(ARGS_CLEAR_PROMO_RESULT)
             if (defaultTitlePromoButton != null) {
 //                shipmentAdapter.checkHasSelectAllCourier(false)
             }

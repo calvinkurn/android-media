@@ -12,6 +12,8 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorPr
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_CHECKOUT
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_DEFAULT
 import com.tokopedia.purchase_platform.common.data.model.param.EditAddressParam
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.EditAddressUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetPreferenceListUseCase
@@ -36,6 +38,7 @@ import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ProductDetailsItem
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.features.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
@@ -64,6 +67,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     var kero: Kero = Kero()
     var _orderPreference: OrderPreference? = null
     var orderPromo: OrderPromo = OrderPromo()
+    var validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel()
 
     var orderPreference: MutableLiveData<OccState<OrderPreference>> = MutableLiveData(OccState.Loading)
 
@@ -464,10 +468,12 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 } else {
                     orderTotal.value = orderTotal.value?.copy(orderCost = orderCost, paymentErrorMessage = null, isButtonChoosePayment = false)
                 }
+                validateUsePromo()
                 return
             }
         }
         orderTotal.value = orderTotal.value?.copy(orderCost = OrderCost(), buttonState = ButtonBayarState.DISABLE)
+        validateUsePromo()
     }
 
     override fun onCleared() {
@@ -816,6 +822,13 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                         ProductDetail(orderProduct.productId.toLong(), orderProduct.quantity?.orderQuantity.toZeroIfNull())
                 ), ArrayList())
         )
+        promoRequest.state = PARAM_CHECKOUT
+        promoRequest.cartType = PARAM_DEFAULT
+
+        val lastApply = orderPromo.lastApply
+        if (lastApply != null) {
+            promoRequest.codes = ArrayList(lastApply.codes)
+        }
         return promoRequest
     }
 
@@ -840,10 +853,31 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         }
         ordersItem.codes = codes
         validateUsePromoRequest.orders = listOf(ordersItem)
-        validateUsePromoRequest.state = CheckoutConstant.PARAM_CHECKOUT
-        validateUsePromoRequest.cartType = CheckoutConstant.PARAM_DEFAULT
+        validateUsePromoRequest.state = PARAM_CHECKOUT
+        validateUsePromoRequest.cartType = PARAM_DEFAULT
         val globalCodes = orderPromo.lastApply?.codes ?: emptyList()
         validateUsePromoRequest.codes = globalCodes.toMutableList()
         return validateUsePromoRequest
+    }
+
+    private fun validateUsePromo() {
+        orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.LOADING)
+        val requestParams = RequestParams.create()
+        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, generateValidateUsePromoRequest())
+        validateUsePromoRevampUseCase.createObservable(requestParams)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
+                    override fun onError(e: Throwable) {
+                        e.printStackTrace()
+                    }
+
+                    override fun onNext(t: ValidateUsePromoRevampUiModel) {
+                        validateUsePromoRevampUiModel = t
+                    }
+
+                    override fun onCompleted() {
+                    }
+                })
     }
 }
