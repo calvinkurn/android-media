@@ -20,11 +20,8 @@ import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationProductReview
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationReputation
-import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationShopPage
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationShopReview
-import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.isShopPage
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.isShopReview
-import com.tokopedia.applink.notification.DeeplinkMapperNotification.getRegisteredNotification
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationOrder
 import com.tokopedia.applink.promo.getRegisteredNavigationTokopoints
 import com.tokopedia.applink.recommendation.getRegisteredNavigationRecommendation
@@ -109,7 +106,6 @@ object DeeplinkMapper {
                     isShopReview(deeplink) -> getRegisteredNavigationShopReview(deeplink)
                     deeplink.startsWith(ApplinkConst.TOPCHAT_IDLESS) -> getRegisteredNavigationTopChat(deeplink)
                     deeplink.startsWith(ApplinkConst.TALK, true) -> getRegisteredNavigationTalk(deeplink)
-                    deeplink.startsWithPattern(ApplinkConst.BUYER_INFO_WITH_ID) -> getRegisteredNotification(deeplink)
                     isProductTalkDeeplink(deeplink) -> getRegisteredNavigationProductTalk(deeplink)
                     isShopTalkDeeplink(deeplink) -> getRegisteredNavigationShopTalk(deeplink)
                     else -> {
@@ -254,6 +250,7 @@ object DeeplinkMapper {
             ApplinkConst.CHAT_TEMPLATE -> ApplinkConstInternalMarketplace.CHAT_SETTING_TEMPLATE
             ApplinkConst.PRODUCT_MANAGE -> ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
             ApplinkConst.NOTIFICATION -> ApplinkConstInternalMarketplace.NOTIFICATION_CENTER
+            ApplinkConst.BUYER_INFO -> ApplinkConstInternalMarketplace.NOTIFICATION_BUYER_INFO
             ApplinkConst.CHANGE_PASSWORD -> return ApplinkConstInternalGlobal.CHANGE_PASSWORD
             else -> ""
         }
@@ -262,7 +259,16 @@ object DeeplinkMapper {
         }
         when {
             specialNavigationMapper(deeplink, ApplinkConst.Play.HOST) -> {
-                return UriUtil.buildUri(ApplinkConstInternalPlay.GROUPCHAT_DETAIL, getSegments(deeplink).first())
+                return UriUtil.buildUri(
+                        ApplinkConstInternalPlay.GROUPCHAT_DETAIL,
+                        getSegments(deeplink).first()
+                )
+            }
+            specialNavigationMapper(deeplink, ApplinkConst.Notification.BUYER_HOST) -> {
+                return UriUtil.buildUri(
+                        ApplinkConstInternalMarketplace.NOTIFICATION_BUYER_INFO_WITH_ID,
+                        getSegments(deeplink).first()
+                )
             }
         }
         return ""
