@@ -446,8 +446,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 }
                 clearPromoResponse.value?.let {
                     it.state = ClearPromoResponseAction.ACTION_STATE_SUCCESS
-                    // TODO : baca dari backend
-                    it.data = "Ini nanti diganti data dari backend, dapat dari clear promo response"
+                    it.data = response.successData.defaultEmptyPromoMessage
                     it.lastValidateUseRequest = tmpValidateUsePromoRequest
                     _clearPromoResponse.value = it
                 }

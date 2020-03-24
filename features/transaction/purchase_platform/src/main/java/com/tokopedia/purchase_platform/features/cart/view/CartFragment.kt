@@ -1317,11 +1317,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             PromoRevampAnalytics.eventCartViewPromoChanged(lastApplyData.additionalInfo.errorDetail.message)
         }
 
-        var title = getString(R.string.promo_funnel_label)
+        var title = ""
         promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
 
         if (lastApplyData.additionalInfo.messageInfo.message.isNotEmpty()) {
             title = lastApplyData.additionalInfo.messageInfo.message
+        } else {
+            title = lastApplyData.defaultEmptyPromoMessage
         }
 
         if (lastApplyData.additionalInfo.messageInfo.detail.isNotEmpty()) {
