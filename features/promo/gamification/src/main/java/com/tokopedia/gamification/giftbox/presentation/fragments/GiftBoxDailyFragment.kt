@@ -206,6 +206,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                 giftBoxDailyView.fmGiftBox.setOnClickListener {
                                     if (!disableGiftBoxTap) {
                                         viewModel.getRewards()
+                                        disableGiftBoxTap = true
                                     }
                                 }
 
@@ -293,6 +294,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                 }
                             }
                         } else {
+                            disableGiftBoxTap = false
                             val messageList = it.data?.gamiCrack?.resultStatus?.message
                             if (!messageList.isNullOrEmpty()) {
                                 renderOpenBoxError(messageList[0], "Oke")
@@ -301,6 +303,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {
+                    disableGiftBoxTap = false
                     renderOpenBoxError("Oops, terjadi kendala. Coba beberapa saat lagi, ya!", "Oke")
                 }
             }

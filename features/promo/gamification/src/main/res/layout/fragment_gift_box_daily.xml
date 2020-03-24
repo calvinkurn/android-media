@@ -51,6 +51,7 @@
                 android:paddingRight="30dp"
                 android:paddingBottom="10dp"
                 android:textColor="@color/gf_box_hint_color"
+                android:translationY="108dp"
                 app:typographyType="heading_2"
                 app:typographyWeight="bold"
                 tools:alpha="1"
@@ -141,10 +142,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_4"
-                    tools:text="Yay, kamu dapat hadia"
                     android:textColor="@android:color/white"
                     app:typographyType="heading_5"
-                    app:typographyWeight="bold" />
+                    app:typographyWeight="bold"
+                    tools:text="Yay, kamu dapat hadia" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tvRewardSecondLine"
@@ -175,7 +176,6 @@
                     tools:text="@string/gami_palai_kupon_ovo_points" />
 
                 <RelativeLayout
-                    android:visibility="gone"
                     android:id="@+id/reminderLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -190,7 +190,8 @@
                     android:paddingStart="12dp"
                     android:paddingLeft="12dp"
                     android:paddingEnd="10dp"
-                    android:paddingRight="10dp">
+                    android:paddingRight="10dp"
+                    android:visibility="gone">
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tvReminderMessage"

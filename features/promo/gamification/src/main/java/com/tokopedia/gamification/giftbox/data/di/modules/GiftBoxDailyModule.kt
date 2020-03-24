@@ -39,6 +39,10 @@ class GiftBoxDailyModule {
     fun provideGamiRemindMeCheck(@ApplicationContext context: Context): String = GraphqlHelper.loadRawString(context.resources, R.raw.gf_gami_remind_me_check)
 
     @Provides
+    @Named(AUTO_APPLY)
+    fun provideAutoApply(@ApplicationContext context: Context): String = GraphqlHelper.loadRawString(context.resources, R.raw.gf_gift_auto_apply)
+
+    @Provides
     @Named(GET_COUPON_DETAIL)
     fun provideCouponDetailString(@ApplicationContext context: Context): String = context.resources.openRawResource(R.raw.gf_query_hachiko_catalog_detail)
             .bufferedReader()

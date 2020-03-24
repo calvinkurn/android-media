@@ -5,10 +5,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.gamification.giftbox.data.di.IO
 import com.tokopedia.gamification.giftbox.data.di.MAIN
 import com.tokopedia.gamification.giftbox.data.entities.*
-import com.tokopedia.gamification.giftbox.domain.CouponDetailUseCase
-import com.tokopedia.gamification.giftbox.domain.GiftBoxDailyRewardUseCase
-import com.tokopedia.gamification.giftbox.domain.GiftBoxDailyUseCase
-import com.tokopedia.gamification.giftbox.domain.RemindMeUseCase
+import com.tokopedia.gamification.giftbox.domain.*
 import com.tokopedia.gamification.giftbox.presentation.activities.GiftLauncherActivity
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -22,7 +19,8 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
                                                 val giftBoxDailyUseCase: GiftBoxDailyUseCase,
                                                 val giftBoxDailyRewardUseCase: GiftBoxDailyRewardUseCase,
                                                 val couponDetailUseCase: CouponDetailUseCase,
-                                                val remindMeUseCase: RemindMeUseCase)
+                                                val remindMeUseCase: RemindMeUseCase,
+                                                val autoApplyUseCase: AutoApplyUseCase)
     : BaseViewModel(workerDispatcher) {
 
     //todo Rahul these below values must not be hardcoded
@@ -36,6 +34,7 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
     val rewardLiveData: MutableLiveData<LiveDataResult<GiftBoxRewardEntity>> = MutableLiveData()
     val reminderSetLiveData: MutableLiveData<LiveDataResult<RemindMeEntity>> = MutableLiveData()
     val reminderCheckLiveData: MutableLiveData<LiveDataResult<RemindMeCheckEntity>> = MutableLiveData()
+    val autoApplyLiveData: MutableLiveData<LiveDataResult<AutoApplyResponse>> = MutableLiveData()
 
     var rewardJob: Job? = null
     var remindMeJob: Job? = null
@@ -107,6 +106,16 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
             return null
         }
         return getCatalogDetail(ids)
+    }
+
+    suspend fun autoApply(code: String) {
+        launchCatchError(block = {
+            val map = autoApplyUseCase.getQueryParams(code)
+            val response = autoApplyUseCase.getResponse(map)
+            autoApplyLiveData.postValue(LiveDataResult.success(response))
+        }, onError = {
+            autoApplyLiveData.postValue(LiveDataResult.error(it))
+        })
     }
 
     private fun mapperGratificationResponseToCouponIds(response: GiftBoxRewardEntity): List<String> {

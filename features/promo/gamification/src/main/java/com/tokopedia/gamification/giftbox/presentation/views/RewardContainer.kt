@@ -105,8 +105,6 @@ class RewardContainer : FrameLayout {
             hasCoupons = true
             couponList.clear()
             couponList.addAll(list)
-            //todo Rahul remove this
-            couponList.addAll(list)
             couponAdapter.notifyDataSetChanged()
         }
 

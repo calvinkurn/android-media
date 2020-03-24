@@ -34,4 +34,6 @@
     <color name="gf_orange_color">#FA591D</color>
     <color name="gf_loader_message_color">#AD31353B</color>
     <color name="gf_loader_title_color">#F531353B</color>
+    <color name="gf_grey68">#ae31353b</color>
+
 </resources>

@@ -38,6 +38,7 @@ class GiftPrizeSmallView : FrameLayout {
         LayoutInflater.from(context).inflate(getLayout(), this, true)
         image = findViewById(R.id.image)
         tvTitle = findViewById(R.id.tvTitle)
+        setShadows()
     }
 
     fun setShadows() {

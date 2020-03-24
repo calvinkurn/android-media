@@ -100,7 +100,7 @@ open class GiftBoxBaseFragment : Fragment() {
     }
 
     fun setInitialPositionOfViews() {
-        tvTapHint.translationY = screenHeight * 0.2f
+//        tvTapHint.translationY = screenHeight * 0.2f
     }
 
     fun showLoader() {
