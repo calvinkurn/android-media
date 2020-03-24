@@ -69,12 +69,12 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<com.tokopedi
             categoryAnalytics.eventSideBarCategoryClick(categoryList[position], position)
         }
         if (categoryList[position].isSelected) {
-            ImageHandler.loadImage(holder.itemView.context, holder.categoryImage, categoryList[position].iconImageUrl, R.drawable.category_ic_broken_image)
+            ImageHandler.loadImage(holder.itemView.context, holder.categoryImage, categoryList[position].iconImageUrl, R.drawable.square_shimmer)
             holder.categoryName.text = categoryList[position].name
             holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, R.color.white))
 
         } else {
-            ImageHandler.loadImage(holder.itemView.context, holder.categoryImage, categoryList[position].iconImageUrlGray, R.drawable.category_ic_broken_image)
+            ImageHandler.loadImage(holder.itemView.context, holder.categoryImage, categoryList[position].iconImageUrlGray, R.drawable.square_shimmer)
             holder.categoryName.text = categoryList[position].name
             holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, R.color.category_background))
         }

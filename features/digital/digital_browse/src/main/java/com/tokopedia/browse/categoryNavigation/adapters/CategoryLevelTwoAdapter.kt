@@ -92,7 +92,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
 
     private fun initProductViewHolderLayout(productViewHolder: ProductViewHolder, position: Int) {
         val item = list[position]
-        ImageHandler.loadImage(productViewHolder.itemView.context, productViewHolder.productImage, item.iconImageUrl, R.drawable.category_ic_broken_image)
+        ImageHandler.loadImage(productViewHolder.itemView.context, productViewHolder.productImage, item.iconImageUrl, R.drawable.square_shimmer)
         productViewHolder.productName.text = item.name
         productViewHolder.productRootLayout.setOnClickListener {
             fireApplink(productViewHolder.itemView.context, item.applinks)
@@ -143,7 +143,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
     private fun initYangLagiHitViewHolderLayout(yangLagiHitsViewHolder: YangLagiHitsViewHolder, position: Int) {
         val item = list[position]
         setDrawableRoundedImage(yangLagiHitsViewHolder.ylhRootLayout, item.hexColor)
-        ImageHandler.loadImage(yangLagiHitsViewHolder.itemView.context, yangLagiHitsViewHolder.ylhProductImage, item.iconImageUrl, R.drawable.category_ic_broken_image)
+        ImageHandler.loadImage(yangLagiHitsViewHolder.itemView.context, yangLagiHitsViewHolder.ylhProductImage, item.iconImageUrl, R.drawable.square_shimmer)
         yangLagiHitsViewHolder.ylhProductName.text = item.name
         yangLagiHitsViewHolder.ylhRootLayout.setOnClickListener {
             fireApplink(yangLagiHitsViewHolder.itemView.context, item.applinks)
