@@ -25,7 +25,6 @@ import com.tokopedia.play_common.types.PlayVideoType
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import java.io.FileNotFoundException
 import java.io.IOException
-import java.net.HttpURLConnection
 import kotlin.properties.Delegates
 
 /**
