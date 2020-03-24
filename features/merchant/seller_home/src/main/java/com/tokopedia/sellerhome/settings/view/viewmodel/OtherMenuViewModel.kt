@@ -11,6 +11,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 class OtherMenuViewModel @Inject constructor(
@@ -30,9 +31,15 @@ class OtherMenuViewModel @Inject constructor(
         get() = _settingShopInfoLiveData
     val isStatusBarInitialState: LiveData<Boolean>
         get() = _isStatusBarInitialState
+    val isToasterAlreadyShown: LiveData<Boolean>
+        get() = _isToasterAlreadyShown
 
-    fun getAllSettingShopInfo(isRetry: Boolean = false) {
-        _isToasterAlreadyShown.value = isRetry
+    fun getAllSettingShopInfo(isToasterRetry: Boolean = false) {
+        if (isToasterRetry) {
+            launch(coroutineContext) {
+                checkDelayErrorResponseTrigger()
+            }
+        }
         getAllShopInfoData()
     }
 
@@ -49,11 +56,10 @@ class OtherMenuViewModel @Inject constructor(
         })
     }
 
-    private suspend fun checkDelayErrorResponseTrigger(action: () -> Unit) {
+    private suspend fun checkDelayErrorResponseTrigger() {
         _isToasterAlreadyShown.value?.let { isToasterAlreadyShown ->
             if (!isToasterAlreadyShown){
                 _isToasterAlreadyShown.value = true
-                action.invoke()
                 delay(DELAY_TIME)
                 _isToasterAlreadyShown.value = false
             }

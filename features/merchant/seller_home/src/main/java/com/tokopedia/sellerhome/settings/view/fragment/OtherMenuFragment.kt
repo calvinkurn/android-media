@@ -48,7 +48,6 @@ import com.tokopedia.sellerhome.settings.view.viewholder.OtherMenuViewHolder
 import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
 import com.tokopedia.sellerhome.view.StatusBarCallback
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
-import com.tokopedia.sellerhome.view.viewmodel.SharedViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -96,9 +95,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private val otherMenuViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(OtherMenuViewModel::class.java)
-    }
-    private val sharedViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(SharedViewModel::class.java)
     }
 
     private val statusBarHeight by lazy {
@@ -213,6 +209,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
     }
 
+    override fun setCurrentFragmentType(fragmentType: Int) {
+        currentFragmentType = fragmentType
+    }
+
     override fun onTopAdsTooltipClicked(isTopAdsActive: Boolean) {
         val bottomSheetChildView = setupBottomSheetLayout(isTopAdsActive)
         bottomSheetChildView?.run {
@@ -248,15 +248,17 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun observeLiveData() {
-        otherMenuViewModel.settingShopInfoLiveData.observe(viewLifecycleOwner, Observer { result ->
-            when(result) {
-                is Success -> showSettingShopInfoState(result.data)
-                is Fail -> showSettingShopInfoState(SettingResponseState.SettingError)
-            }
-        })
-        sharedViewModel.currentSelectedPage.observe(viewLifecycleOwner, Observer { selectedPage ->
-            currentFragmentType = selectedPage.type
-        })
+        with(otherMenuViewModel) {
+            settingShopInfoLiveData.observe(viewLifecycleOwner, Observer { result ->
+                when(result) {
+                    is Success -> showSettingShopInfoState(result.data)
+                    is Fail -> showSettingShopInfoState(SettingResponseState.SettingError)
+                }
+            })
+            isToasterAlreadyShown.observe(viewLifecycleOwner, Observer { isToasterAlreadyShown ->
+                canShowErrorToaster = !isToasterAlreadyShown
+            })
+        }
     }
 
     private fun populateAdapterData() {
@@ -342,7 +344,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
             }
             is SettingResponseState.SettingLoading -> otherMenuViewHolder?.onLoadingGetSettingShopInfoData()
             is SettingResponseState.SettingError -> {
-                if (currentFragmentType == FragmentType.OTHER) {
+                val canShowToaster = currentFragmentType == FragmentType.OTHER && canShowErrorToaster
+                if (canShowToaster) {
                     view?.showToasterError(resources.getString(R.string.setting_toaster_error_message))
                 }
                 otherMenuViewHolder?.onErrorGetSettingShopInfoData()
@@ -352,7 +355,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private fun retryFetchAfterError() {
         showAllLoadingShimmering()
-        otherMenuViewModel.getAllSettingShopInfo()
+        otherMenuViewModel.getAllSettingShopInfo(isToasterRetry = true)
     }
 
     private fun View.showToasterError(errorMessage: String) {

@@ -215,6 +215,7 @@ class SellerHomeActivity : BaseActivity() {
     private fun observeCurrentSelectedPageLiveData() {
         sharedViewModel.currentSelectedPage.observe(this, Observer {
             sahBottomNav.currentItem = it.type
+            statusBarCallback?.setCurrentFragmentType(it.type)
         })
     }
 
