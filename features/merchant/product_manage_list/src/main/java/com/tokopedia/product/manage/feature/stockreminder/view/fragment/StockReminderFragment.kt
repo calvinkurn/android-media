@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -42,14 +41,16 @@ class StockReminderFragment: BaseDaggerFragment() {
     companion object {
         private const val ARG_PRODUCT_ID = "product_id"
         private const val ARG_PRODUCT_NAME = "product_name"
+        private const val ARG_STOCK = "stock"
         private const val TOGGLE_ACTIVE = "active"
         private const val TOGGLE_NOT_ACTIVE = "not active"
 
-        fun createInstance(productId: Long, productName: String): Fragment {
+        fun createInstance(productId: Long, productName: String, stock: Int): Fragment {
             val fragment = StockReminderFragment()
             fragment.arguments = Bundle().apply {
                 putString(ARG_PRODUCT_ID, productId.toString())
                 putString(ARG_PRODUCT_NAME, productName)
+                putInt(ARG_STOCK, stock)
             }
             return fragment
         }
@@ -61,6 +62,7 @@ class StockReminderFragment: BaseDaggerFragment() {
     private var productName: String? = null
     private var warehouseId: String? = null
     private var threshold: Int? = null
+    private var stock: Int = 0
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -88,6 +90,7 @@ class StockReminderFragment: BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
         arguments?.getString(ARG_PRODUCT_ID)?.let{ productId = it }
         arguments?.getString(ARG_PRODUCT_NAME)?.let { productName = it }
+        arguments?.getInt(ARG_STOCK)?.let { stock = it }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -117,6 +120,11 @@ class StockReminderFragment: BaseDaggerFragment() {
         viewModel.updateStockReminderLiveData.observe(viewLifecycleOwner, updateStockReminderObserver())
 
         getStockReminder()
+
+        when(stock) {
+            0 -> qeStock.maxValue = 1
+            else -> qeStock.maxValue = stock
+        }
 
         qeStock.apply {
             editText.setOnEditorActionListener { _, actionId, _ ->

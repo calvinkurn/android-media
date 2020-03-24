@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.domain.GetProductListMetaUseCase
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToTabFilters
@@ -43,9 +44,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import rx.Subscriber
 import javax.inject.Inject
@@ -62,8 +60,8 @@ class ProductManageViewModel @Inject constructor(
     private val deleteProductUseCase: DeleteProductUseCase,
     private val multiEditProductUseCase: MultiEditProductUseCase,
     private val getProductListMetaUseCase: GetProductListMetaUseCase,
-    mainDispatcher: CoroutineDispatcher
-): BaseViewModel(mainDispatcher) {
+    private val dispatchers: CoroutineDispatchers
+): BaseViewModel(dispatchers.main) {
 
     val viewState: LiveData<ViewState>
         get() = _viewState
@@ -114,7 +112,7 @@ class ProductManageViewModel @Inject constructor(
 
     fun getGoldMerchantStatus() {
         launchCatchError(block = {
-            val status = withContext(Dispatchers.IO) {
+            val status = withContext(dispatchers.io) {
                 val shopId: List<Int> = listOf(userSessionInterface.shopId.toInt())
                 gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(shopId)
 
@@ -135,7 +133,7 @@ class ProductManageViewModel @Inject constructor(
         launchCatchError(block = {
             showProgressDialog()
 
-            val response = withContext(Dispatchers.IO) {
+            val response = withContext(dispatchers.io) {
                 val shopParam = ShopParam(userSessionInterface.shopId)
 
                 val params = productIds.map { productId ->
@@ -161,7 +159,7 @@ class ProductManageViewModel @Inject constructor(
         launchCatchError(block = {
             showProgressDialog()
 
-            val response = withContext(Dispatchers.IO) {
+            val response = withContext(dispatchers.io) {
                 val shopParam = ShopParam(userSessionInterface.shopId)
                 val menuParam = MenuParam(menuId, menuName)
 
@@ -192,7 +190,7 @@ class ProductManageViewModel @Inject constructor(
         isRefresh: Boolean = false
     ) {
         launchCatchError(block = {
-            val productList = withContext(Dispatchers.IO) {
+            val productList = withContext(dispatchers.io) {
                 val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, filterOptions, sortOption)
                 val getProductList = getProductListUseCase.execute(requestParams)
                 val productListResponse = getProductList.productList
@@ -212,7 +210,7 @@ class ProductManageViewModel @Inject constructor(
             var filterCount = selectedFilter?.filterOptions?.count().orZero()
             selectedFilter?.sortOption?.let { filterCount++ }
 
-            val response = withContext(Dispatchers.IO) {
+            val response = withContext(dispatchers.io) {
                 getProductListMetaUseCase.setParams(shopId)
                 getProductListMetaUseCase.executeOnBackground()
             }
@@ -225,7 +223,7 @@ class ProductManageViewModel @Inject constructor(
 
     fun getFeaturedProductCount(shopId: String) {
         launchCatchError(block = {
-            val productListFeaturedOnly = withContext(Dispatchers.IO) {
+            val productListFeaturedOnly = withContext(dispatchers.io) {
                 val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, listOf(FilterOption.FilterByCondition.FeaturedOnly), null)
                 val getProductList = getProductListUseCase.execute(requestParams)
                 val productListSize = getProductList.productList?.data?.size
@@ -241,8 +239,8 @@ class ProductManageViewModel @Inject constructor(
     fun editPrice(productId: String, price: String, productName: String) {
         showProgressDialog()
         launchCatchError(block = {
-            editPriceUseCase.setParams(userSessionInterface.shopId, productId, price.toFloatOrZero())
-            val result = withContext(Dispatchers.IO) {
+            val result = withContext(dispatchers.io) {
+                editPriceUseCase.setParams(userSessionInterface.shopId, productId, price.toFloatOrZero())
                 editPriceUseCase.executeOnBackground()
             }
             if (result.productUpdateV3Data.isSuccess) {
@@ -259,8 +257,8 @@ class ProductManageViewModel @Inject constructor(
     fun editStock(productId: String, stock: Int, productName: String, status: ProductStatus) {
         showProgressDialog()
         launchCatchError(block =  {
-            editStockUseCase.setParams(userSessionInterface.shopId, productId, stock, status)
-            val result = withContext(Dispatchers.IO) {
+            val result = withContext(dispatchers.io) {
+                editStockUseCase.setParams(userSessionInterface.shopId, productId, stock, status)
                 editStockUseCase.executeOnBackground()
             }
             if (result.productUpdateV3Data.isSuccess) {
@@ -314,8 +312,8 @@ class ProductManageViewModel @Inject constructor(
     fun deleteSingleProduct(productName: String, productId: String) {
         showProgressDialog()
         launchCatchError( block = {
-            deleteProductUseCase.setParams(userSessionInterface.shopId, productId)
-            val result = withContext(Dispatchers.IO) {
+            val result = withContext(dispatchers.io) {
+                deleteProductUseCase.setParams(userSessionInterface.shopId, productId)
                 deleteProductUseCase.executeOnBackground()
             }
             if(result.productUpdateV3Data.isSuccess) {
@@ -332,7 +330,9 @@ class ProductManageViewModel @Inject constructor(
     fun setFeaturedProduct(productId: String, status: Int) {
         launchCatchError( block = {
             setFeaturedProductUseCase.setParams(productId.toInt(), status)
-            setFeaturedProductUseCase.executeOnBackground()
+            withContext(dispatchers.io) {
+                setFeaturedProductUseCase.executeOnBackground()
+            }
             _setFeaturedProductResult.postValue(Success(SetFeaturedProductResult(productId, status)))
         }, onError = { throwable ->
             _setFeaturedProductResult.postValue(Fail(throwable))
