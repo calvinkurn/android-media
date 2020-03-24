@@ -1,23 +1,18 @@
 package com.tokopedia.dynamicfeatures.utils
 
-import android.app.usage.StorageStatsManager
 import android.content.Context
-import android.os.Build
-import android.os.Environment
-import android.os.StatFs
-import android.os.storage.StorageManager
-import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import com.tokopedia.dynamicfeatures.constant.CommonConstant
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.io.File
 
 /**
  * Created by hendry on 2019-10-03.
  */
 object DFInstallerLogUtil {
-    private const val DFM_TAG = "DFM"
+    const val DFM_TAG = "DFM"
 
     internal fun logStatus(context: Context,
                            message: String = "",
@@ -27,9 +22,11 @@ object DFInstallerLogUtil {
                            errorList: List<String> = emptyList(),
                            downloadTimes: Int = 1,
                            isSuccess: Boolean = false,
-                           tag: String = DFM_TAG) {
+                           tag: String = DFM_TAG,
+                           duration: Long = 0L,
+                           progressPercentFirstTime:String = "") {
 
-        GlobalScope.launch(Dispatchers.IO + CoroutineExceptionHandler { _, _ ->  }) {
+        GlobalScope.launch(Dispatchers.IO + CoroutineExceptionHandler { _, _ -> }) {
             val messageBuilder = StringBuilder()
             messageBuilder.append(message)
 
@@ -70,6 +67,14 @@ object DFInstallerLogUtil {
                 messageBuilder.append(-1)
             }
             messageBuilder.append(";cache_size='${getSizeInMB(StorageUtils.getInternalCacheSize(context))}'")
+            messageBuilder.append(";duration=${duration}")
+
+            messageBuilder.append(";firstProgress=")
+            if (progressPercentFirstTime.isEmpty()) {
+                messageBuilder.append("0")
+            } else {
+                messageBuilder.append(progressPercentFirstTime)
+            }
 
             messageBuilder.append(";play_str='${Utils.getPlayStoreVersionName(context)}'")
             messageBuilder.append(";play_str_l=${Utils.getPlayStoreLongVersionCode(context)}")
@@ -80,11 +85,11 @@ object DFInstallerLogUtil {
         }
     }
 
-    private fun getSizeInMB(size: Long) : String {
+    private fun getSizeInMB(size: Long): String {
         return String.format("%.2f", size.toDouble() / CommonConstant.MEGA_BYTE)
     }
 
-    private fun getError(errorList: List<String>):String {
+    private fun getError(errorList: List<String>): String {
         if (errorList.isEmpty()) {
             return "0"
         }
