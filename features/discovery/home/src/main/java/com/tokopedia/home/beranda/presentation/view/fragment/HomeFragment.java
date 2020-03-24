@@ -25,6 +25,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
@@ -76,8 +77,6 @@ import com.tokopedia.home.beranda.listener.HomeFeedsListener;
 import com.tokopedia.home.beranda.listener.HomeInspirationListener;
 import com.tokopedia.home.beranda.listener.HomeReviewListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener;
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
@@ -93,7 +92,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView;
-import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel;
 import com.tokopedia.home.constant.BerandaUrl;
 import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.widget.FloatingTextButton;
@@ -194,9 +192,11 @@ public class HomeFragment extends BaseDaggerFragment implements
     private static final String SOURCE_ACCOUNT = "account";
     private MainParentStatusBarListener mainParentStatusBarListener;
     private ActivityStateListener activityStateListener;
+    private BerandaComponent component;
 
     @Inject
-    ViewModelProvider.Factory viewModelFactory;
+    @VisibleForTesting
+    public ViewModelProvider.Factory viewModelFactory;
 
     private HomeViewModel viewModel;
 
@@ -320,10 +320,16 @@ public class HomeFragment extends BaseDaggerFragment implements
     @Override
     protected void initInjector() {
         if (getActivity() != null) {
-            BerandaComponent component = DaggerBerandaComponent.builder().baseAppComponent(((BaseMainApplication)
-                    getActivity().getApplication()).getBaseAppComponent()).build();
+            if(component == null){
+                component = initBuilderComponent().build();
+            }
             component.inject(this);
         }
+    }
+
+    protected DaggerBerandaComponent.Builder initBuilderComponent(){
+        return DaggerBerandaComponent.builder().baseAppComponent(((BaseMainApplication)
+                getActivity().getApplication()).getBaseAppComponent());
     }
 
     private void fetchRemoteConfig() {

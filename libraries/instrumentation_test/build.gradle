@@ -92,6 +92,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
     implementation project(rootProject.ext.libraries.track)
     implementation "com.squareup.retrofit2:retrofit:2.6.0"
     implementation "io.mockk:mockk:1.9"

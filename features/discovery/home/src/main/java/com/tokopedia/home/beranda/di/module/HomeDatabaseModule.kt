@@ -11,7 +11,7 @@ import dagger.Provides
 open class HomeDatabaseModule{
     @HomeScope
     @Provides
-    fun provideHomeDatabase(@ApplicationContext context: Context): HomeDatabase = HomeDatabase.buildDatabase(context)
+    open fun provideHomeDatabase(@ApplicationContext context: Context): HomeDatabase = HomeDatabase.buildDatabase(context)
 
     @HomeScope
     @Provides

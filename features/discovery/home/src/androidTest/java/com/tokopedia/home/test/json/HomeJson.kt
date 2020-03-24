@@ -1,4 +1,4 @@
-package com.tokopedia.json
+package com.tokopedia.home.test.json
 
 object HomeJson{
     val resultWithSkeleton = """
