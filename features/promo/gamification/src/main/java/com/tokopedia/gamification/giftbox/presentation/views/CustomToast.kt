@@ -26,7 +26,7 @@ class CustomToast {
                 val textView = Typography(activityContext)
                 textView.text = text
                 textView.setPadding(leftPadding, topPadding, leftPadding, topPadding)
-                textView.setTextColor(ContextCompat.getColor(activityContext, R.color.gf_grey68))
+                textView.setTextColor(ContextCompat.getColor(activityContext, R.color.white))
                 textView.setBackgroundResource(R.drawable.gf_custom_toast_bg)
                 textView.fontType = Typography.BODY_3
                 val toast = Toast(activityContext)

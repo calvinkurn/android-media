@@ -38,10 +38,7 @@ import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
 import com.tokopedia.gamification.giftbox.presentation.helpers.doOnLayout
 import com.tokopedia.gamification.giftbox.presentation.helpers.updateLayoutParams
 import com.tokopedia.gamification.giftbox.presentation.viewmodels.GiftBoxDailyViewModel
-import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
-import com.tokopedia.gamification.giftbox.presentation.views.GiftPrizeLargeView
-import com.tokopedia.gamification.giftbox.presentation.views.GiftPrizeSmallView
-import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer
+import com.tokopedia.gamification.giftbox.presentation.views.*
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -74,6 +71,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     @TokenUserState
     var tokenUserState: String = TokenUserState.DEFAULT
     var disableGiftBoxTap = false
+    var autoApplyMessage = ""
 
     override fun getLayout() = R.layout.fragment_gift_box_daily
 
@@ -282,6 +280,25 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                 btnAction.setOnClickListener {
                                     val applink = actionButtonList[0].applink
                                     if (!applink.isNullOrEmpty()) {
+
+                                        //check for auto-apply
+                                        var isAutoApply = false
+                                        var dummyCode = ""
+                                        val list = giftBoxRewardEntity?.gamiCrack?.benefits
+                                        if (!list.isNullOrEmpty()) {
+                                            for (item in list) {
+                                                if (item.isAutoApply) {
+                                                    isAutoApply = true
+                                                    autoApplyMessage = item.autoApplyMsg
+                                                    dummyCode = item.dummyCode
+                                                    break
+                                                }
+                                            }
+                                        }
+
+                                        if (isAutoApply && !autoApplyMessage.isNullOrEmpty() && !dummyCode.isNullOrEmpty()) {
+                                            viewModel.autoApply(dummyCode)
+                                        }
                                         RouteManager.route(context, applink)
                                     }
                                 }
@@ -367,6 +384,18 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     showRemindCheckError("Oops, terjadi kendala. Coba beberapa saat lagi, ya!", "Oke")
                 }
             }
+        })
+
+        viewModel.autoApplyLiveData.observe(viewLifecycleOwner, Observer {
+            when (it.status) {
+                LiveDataResult.STATUS.SUCCESS -> {
+                    val messageList = it.data?.tokopointsSetAutoApply?.resultStatus?.message
+                    if (messageList != null && messageList.isNotEmpty() && context != null) {
+                        CustomToast.show(context!!, messageList[0].toString())
+                    }
+                }
+            }
+
         })
     }
 

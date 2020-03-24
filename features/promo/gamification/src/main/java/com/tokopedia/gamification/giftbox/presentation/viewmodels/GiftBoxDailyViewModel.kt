@@ -108,7 +108,7 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
         return getCatalogDetail(ids)
     }
 
-    suspend fun autoApply(code: String) {
+    fun autoApply(code: String) {
         launchCatchError(block = {
             val map = autoApplyUseCase.getQueryParams(code)
             val response = autoApplyUseCase.getResponse(map)
