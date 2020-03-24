@@ -13,7 +13,6 @@ import com.tokopedia.application.MyApplication
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.network.refreshtoken.EncoderDecoder
-import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
 import com.tokopedia.tkpd.network.DataSource
 import com.tokopedia.tkpd.network.LogoutPojo
 import com.tokopedia.user.session.UserSession
@@ -196,11 +195,5 @@ class MainActivity : AppCompatActivity() {
          * startActivity(PlayActivity.getCallingIntent(this, "668", true))
          * or, you can use route like this:
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS) */
-
-        //RouteManager.route(this, ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM)
-        startActivity(Intent(this, AddEditProductPreviewActivity::class.java))
-        //startActivity(AddEditProductDescriptionActivity.createInstance(this))
-        //startActivity(ProductEditWeightLogisticActivity.createIntent(this, ProductLogistic(), false))
-        //startActivity(ProductAddNameCategoryActivity.createInstance(this))
     }
 }

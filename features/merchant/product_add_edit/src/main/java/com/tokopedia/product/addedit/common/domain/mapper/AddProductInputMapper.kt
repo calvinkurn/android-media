@@ -1,6 +1,5 @@
 package com.tokopedia.product.addedit.common.domain.mapper
 
-import android.util.Log
 import com.tokopedia.product.addedit.common.domain.model.params.add.*
 import com.tokopedia.product.addedit.description.model.DescriptionInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
