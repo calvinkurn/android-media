@@ -147,8 +147,7 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
                     ProductStockReminderDialog(
                             context = context,
                             fragmentManager = childFragmentManager,
-                            userSession = userSession,
-                            onSuccess = ::onSuccessToast
+                            userSession = userSession
                     ).show(element)
                 }
             }
@@ -184,21 +183,6 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
 
         if (!longerTextDialog.isAdded) {
             longerTextDialog.show(childFragmentManager, "Longer Text Bottom Sheet")
-        }
-    }
-
-    private fun onSuccessToast() {
-        view?.let { view ->
-            context?.let {
-                Toaster.make(
-                        view,
-                        it.getString(R.string.product_reminder_success),
-                        Snackbar.LENGTH_LONG,
-                        Toaster.TYPE_NORMAL,
-                        it.getString(R.string.notifcenter_btn_title_ok),
-                        View.OnClickListener {  }
-                )
-            }
         }
     }
 
