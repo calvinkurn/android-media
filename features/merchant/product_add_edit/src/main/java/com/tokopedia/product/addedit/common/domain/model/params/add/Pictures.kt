@@ -6,32 +6,15 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Picture (
-    
-    @SerializedName("picID")
-    @Expose
-    var picID: String? = null,
-    @SerializedName("description")
-    @Expose
-    var description: String? = null,
-    @SerializedName("filePath")
-    @Expose
-    var filePath: String? = null,
-    @SerializedName("fileName")
-    @Expose
-    var fileName: String? = null,
-    @SerializedName("width")
-    @Expose
-    var width: Int? = null,
-    @SerializedName("height")
-    @Expose
-    var height: Int? = null
-
+data class PictureId (
+        @SerializedName("uploadIds")
+        @Expose
+        var uploadId: String = ""
 ) : Parcelable
 
 @Parcelize
 data class Pictures (
         @SerializedName("data")
         @Expose
-        var data: List<Pictures> = emptyList()
+        var data: List<PictureId> = emptyList()
 ) : Parcelable

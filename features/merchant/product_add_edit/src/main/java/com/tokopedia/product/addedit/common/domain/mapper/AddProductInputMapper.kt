@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.common.domain.mapper
 
+import android.util.Log
 import com.tokopedia.product.addedit.common.domain.model.params.add.*
 import com.tokopedia.product.addedit.description.model.DescriptionInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
@@ -13,6 +14,7 @@ import javax.inject.Inject
 
 class AddProductInputMapper @Inject constructor() {
     fun mapInputToParam(shopId:String,
+                        uploadIdList: ArrayList<String>,
                         detailInputModel: DetailInputModel,
                         descriptionInputModel: DescriptionInputModel,
                         shipmentInputModel: ShipmentInputModel): ProductAddParam {
@@ -43,10 +45,18 @@ class AddProductInputMapper @Inject constructor() {
                         "0",
                         ""
                 ),
-                Pictures(),
+                mapPictureParam(uploadIdList),
                 mapPreorderParam(detailInputModel.preorder)
 
         )
+    }
+
+    private fun mapPictureParam(uploadIdList: java.util.ArrayList<String>): Pictures {
+        val data: ArrayList<PictureId> = ArrayList()
+        uploadIdList.forEach {
+            data.add(PictureId(it))
+        }
+        return Pictures(data)
     }
 
     private fun mapPreorderParam(preorder: PreorderInputModel): Preorder {

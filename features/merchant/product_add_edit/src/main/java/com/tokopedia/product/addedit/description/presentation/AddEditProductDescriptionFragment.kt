@@ -12,13 +12,28 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_CURRENCY_TYPE
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DEFAULT_PRICE
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DEFAULT_SKU
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_HAS_ORIGINAL_VARIANT_LV1
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_HAS_ORIGINAL_VARIANT_LV2
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_HAS_WHOLESALE
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_IS_ADD
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_IS_OFFICIAL_STORE
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_IS_USING_CACHE_MANAGER
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_NEED_RETAIN_IMAGE
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_SIZECHART
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_VARIANT_SELECTION
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_STOCK_TYPE
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_CACHE_ID
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.description.adapter.VideoLinkTypeFactory
 import com.tokopedia.product.addedit.description.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.model.VideoLinkModel
 import com.tokopedia.product.addedit.shipment.presentation.activity.AddEditProductShipmentActivity
-import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment
-import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment.Companion.EXTRA_SHIPMENT_INPUT
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment.Companion.REQUEST_CODE_SHIPMENT
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
@@ -198,25 +213,6 @@ class AddEditProductDescriptionFragment : BaseListFragment<VideoLinkModel, Video
         const val TYPE_IDR = 1
         const val TYPE_USD = 2
 
-        const val EXTRA_PRODUCT_VARIANT_SELECTION = "EXTRA_PRODUCT_VARIANT_SELECTION"
-        const val EXTRA_PRODUCT_SIZECHART = "EXTRA_PRODUCT_SIZECHART"
-
-        const val EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST = "EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST"
-        const val EXTRA_CURRENCY_TYPE = "EXTRA_CURR_TYPE"
-        const val EXTRA_DEFAULT_PRICE = "EXTRA_PRICE"
-        const val EXTRA_STOCK_TYPE = "EXTRA_STOCK_TYPE"
-        const val EXTRA_IS_OFFICIAL_STORE = "EXTRA_IS_OFFICIAL_STORE"
-        const val EXTRA_NEED_RETAIN_IMAGE = "EXTRA_NEED_RETAIN_IMAGE"
-        const val EXTRA_DEFAULT_SKU = "EXTRA_DEFAULT_SKU"
-        const val EXTRA_HAS_ORIGINAL_VARIANT_LV1 = "EXTRA_HAS_ORI_VAR_LV1"
-        const val EXTRA_HAS_ORIGINAL_VARIANT_LV2 = "EXTRA_HAS_ORI_VAR_LV2"
-        const val EXTRA_HAS_WHOLESALE = "EXTRA_HAS_WHOLESALE"
-        const val EXTRA_IS_ADD = "EXTRA_IS_ADD"
-
-        const val EXTRA_VARIANT_CACHE_ID = "variant_cache_id"
-        const val EXTRA_IS_USING_CACHE_MANAGER = "is_using_cache_manager"
-
-        const val EXTRA_DESCRIPTION_INPUT = "extra_description_input"
         const val REQUEST_CODE_DESCRIPTION = 0x03
 
         // TODO faisalramd

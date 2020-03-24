@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
 import com.tokopedia.product.addedit.common.util.getTextIntOrZero
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentComponent
@@ -51,7 +52,6 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
                 }
 
         const val REQUEST_CODE_SHIPMENT = 0x04
-        const val EXTRA_SHIPMENT_INPUT = "extra_shipment_input"
     }
 
     override fun getScreenName(): String {

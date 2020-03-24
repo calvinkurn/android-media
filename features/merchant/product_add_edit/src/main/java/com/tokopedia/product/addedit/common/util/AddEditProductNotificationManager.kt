@@ -6,7 +6,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import androidx.core.app.NotificationCompat
@@ -22,7 +21,6 @@ import java.io.File
 abstract class AddEditProductNotificationManager(
         private val id: Int,
         private val maxCount: Int,
-        private val firstImage: String,
         private val notificationManager: NotificationManager,
         protected val context: Context) {
 
@@ -33,12 +31,11 @@ abstract class AddEditProductNotificationManager(
     }
 
     private val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_GENERAL).apply {
-        setContentTitle("Uploading")
+        setContentTitle(context.getString(R.string.title_notif_product_upload))
         setSmallIcon(R.drawable.ic_status_bar_notif_customerapp)
         setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.ic_big_notif_customerapp))
         setGroup(NOTIFICATION_GROUP)
         setOnlyAlertOnce(true)
-        updateLargeIcon(this)
 
         setProgress(maxCount, currentProgress, false)
         setOngoing(true)
@@ -48,8 +45,9 @@ abstract class AddEditProductNotificationManager(
     }
 
     private var currentProgress = 0
+    
     fun onSuccessPost() {
-        val text = "yessssss"
+        val text = context.getString(R.string.message_notif_product_upload_success)
         val notification = notificationBuilder.setContentText(text)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(text))
                 .setProgress(0, 0, false)
@@ -61,7 +59,7 @@ abstract class AddEditProductNotificationManager(
     }
 
     fun onSubmitPost() {
-        val text = "submit"
+        val text = context.getString(R.string.message_notif_product_upload)
         val notification = notificationBuilder.setContentText(text)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(text))
                 .setProgress(0, 0, true)
@@ -71,22 +69,19 @@ abstract class AddEditProductNotificationManager(
         notificationManager.notify(TAG, id, notification)
     }
 
-    fun onAddProgress() {
+    fun onAddProgress(fileImage: File) {
         currentProgress++
-
-        val format = "%d dari %d Media…"
-        val text = String.format(format, currentProgress, maxCount)
+        val text = context.getString(R.string.message_notif_product_upload)
         val notification = notificationBuilder.setContentText(text)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(text))
                 .setProgress(maxCount, currentProgress, false)
                 .setOngoing(true)
                 .setAutoCancel(false)
-                .build()
-        notificationManager.notify(TAG, id, notification)
+        updateLargeIcon(fileImage, notification)
     }
 
     fun onFailedPost(errorMessage: String) {
-        val text = "error"
+        val text = context.getString(R.string.message_notif_product_upload_error)
         val notification = notificationBuilder.setContentText(text)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(text))
                 .setProgress(0, 0, false)
@@ -101,21 +96,16 @@ abstract class AddEditProductNotificationManager(
 
     protected abstract fun getFailedIntent(errorMessage: String): PendingIntent
 
-    private fun updateLargeIcon(builder: NotificationCompat.Builder) {
-        val file: String = if (urlIsFile(firstImage)) {
-            Uri.fromFile(File(firstImage)).toString()
-        } else firstImage
-
+    private fun updateLargeIcon(fileImage: File, builder: NotificationCompat.Builder) {
         Handler(Looper.getMainLooper()).post {
             Glide.with(context.applicationContext)
                     .asBitmap()
-                    .load(file)
+                    .load(fileImage)
                     .error(R.drawable.ic_big_notif_customerapp)
                     .into(object: CustomTarget<Bitmap>(100, 100) {
                         override fun onLoadCleared(placeholder: Drawable?) {
-
+                            // no-op
                         }
-
                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                             builder.setLargeIcon(resource)
                             notificationManager.notify(TAG, id, builder.build())

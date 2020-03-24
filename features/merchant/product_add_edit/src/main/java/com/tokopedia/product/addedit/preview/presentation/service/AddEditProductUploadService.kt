@@ -6,24 +6,22 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.JobIntentService
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.domain.UploaderUseCase
+import com.tokopedia.product.addedit.common.constant.AddEditProductExtraConstant.Companion.IMAGE_SOURCE_ID
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DETAIL_INPUT
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
 import com.tokopedia.product.addedit.common.domain.mapper.AddProductInputMapper
 import com.tokopedia.product.addedit.common.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
 import com.tokopedia.product.addedit.description.model.DescriptionInputModel
-import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionFragment.Companion.EXTRA_DESCRIPTION_INPUT
-import com.tokopedia.product.addedit.detail.presentation.fragment.AddEditProductDetailFragment.Companion.EXTRA_DETAIL_INPUT
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
 import com.tokopedia.product.addedit.preview.di.DaggerAddEditProductPreviewComponent
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
-import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment.Companion.EXTRA_SHIPMENT_INPUT
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +30,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
 
 class AddEditProductUploadService : JobIntentService(), CoroutineScope {
@@ -50,7 +49,7 @@ class AddEditProductUploadService : JobIntentService(), CoroutineScope {
     private var detailInputModel: DetailInputModel = DetailInputModel()
 
     companion object {
-        private const val JOB_ID = 13131313
+        private const val JOB_ID = 13131314
 
         fun startService(context: Context,
                          detailInputModel: DetailInputModel,
@@ -78,46 +77,47 @@ class AddEditProductUploadService : JobIntentService(), CoroutineScope {
         shipmentInputModel = intent.getParcelableExtra(EXTRA_SHIPMENT_INPUT)
         descriptionInputModel = intent.getParcelableExtra(EXTRA_DESCRIPTION_INPUT)
         detailInputModel = intent.getParcelableExtra(EXTRA_DETAIL_INPUT)
-        uploadImage()
-
-        val notifId = Random().nextInt()
-        notificationManager = getNotificationManager(notifId)
-        notificationManager?.onSubmitPost()
+        uploadImage(detailInputModel.imageUrlOrPathList)
     }
 
-    private fun addProduct() {
+    private fun addProduct(uploadIdList: ArrayList<String>) {
         val shopId = userSession.shopId
-        val param = addProductInputMapper.mapInputToParam(shopId,
+        val param = addProductInputMapper.mapInputToParam(shopId, uploadIdList,
                 detailInputModel, descriptionInputModel, shipmentInputModel)
         launchCatchError(block = {
-            Success(withContext(Dispatchers.IO) {
+            withContext(Dispatchers.IO) {
                 productAddUseCase.params = ProductAddUseCase.createRequestParams(param)
+                notificationManager?.onSuccessPost()
                 return@withContext productAddUseCase.executeOnBackground()
-            })
+            }
         }, onError = {
-            // noop
+            notificationManager?.onFailedPost(it.message!!)
         })
     }
 
-    private fun uploadImage() {
-        val filePath = File("/sdcard/Download/test.jpg")
-        val sourceId = "VqbcmM" // TODO faisalramd move to constant
-        val params = uploaderUseCase.createParams(
-                sourceId = sourceId,
-                filePath = filePath
-        )
-
+    private fun uploadImage(imageUrlOrPathList: List<String>) {
+        val uploadIdList: ArrayList<String> = ArrayList()
+        val urlImageCount = imageUrlOrPathList.size
+        notificationManager = getNotificationManager(urlImageCount)
+        notificationManager?.onSubmitPost()
         launch(coroutineContext) {
-            val result = uploaderUseCase(params)
-            withContext(Dispatchers.Main) {
-                when (result) {
+            repeat(urlImageCount) { i ->
+                val filePath = File(imageUrlOrPathList[i])
+                val params = uploaderUseCase.createParams(
+                        sourceId = IMAGE_SOURCE_ID,
+                        filePath = filePath
+                )
+                when (val result = uploaderUseCase(params)) {
                     is UploadResult.Success -> {
-                        result.uploadId
-                        addProduct()
+                        notificationManager?.onAddProgress(filePath)
+                        uploadIdList.add(result.uploadId)
                     }
-                    is UploadResult.Error -> ""
+                    is UploadResult.Error -> {
+                        notificationManager?.onFailedPost(result.reason.name)
+                    }
                 }
             }
+            addProduct(uploadIdList)
         }
     }
 
@@ -129,29 +129,18 @@ class AddEditProductUploadService : JobIntentService(), CoroutineScope {
                 .inject(this)
     }
 
-    private fun getNotificationManager(notifId: Int): AddEditProductNotificationManager {
-        val firstImage = ""
-        val maxCount = 100
-
+    private fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager {
+        val notifId = Random().nextInt()
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        return object : AddEditProductNotificationManager(notifId, maxCount, firstImage, manager,
+        return object : AddEditProductNotificationManager(notifId, urlImageCount, manager,
                 this@AddEditProductUploadService) {
-
             override fun getSuccessIntent(): PendingIntent {
                 val intent = AddEditProductPreviewActivity.createInstance(context)
                 return PendingIntent.getActivity(context, 0, intent, 0)
             }
 
             override fun getFailedIntent(errorMessage: String): PendingIntent {
-                val message = if (errorMessage.contains(context.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown_short), false))
-                    "error"
-                else
-                    errorMessage
-
-
-                val applink = ApplinkConst.CONTENT_DRAFT_POST
-                val intent = RouteManager.getIntent(context, applink)
-
+                val intent = AddEditProductPreviewActivity.createInstance(context)
                 return PendingIntent.getActivity(context, 0, intent, 0)
             }
         }

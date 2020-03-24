@@ -18,11 +18,12 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DETAIL_INPUT
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
 import com.tokopedia.product.addedit.description.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionActivity
-import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionFragment.Companion.EXTRA_DESCRIPTION_INPUT
 import com.tokopedia.product.addedit.detail.presentation.activity.AddEditProductDetailActivity
-import com.tokopedia.product.addedit.detail.presentation.fragment.AddEditProductDetailFragment.Companion.EXTRA_DETAIL_INPUT
 import com.tokopedia.product.addedit.detail.presentation.fragment.AddEditProductDetailFragment.Companion.REQUEST_CODE_DETAIL
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
@@ -30,7 +31,6 @@ import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
 import com.tokopedia.product.addedit.preview.di.DaggerAddEditProductPreviewComponent
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductUploadService
 import com.tokopedia.product.addedit.preview.presentation.viewmodel.AddEditProductPreviewViewModel
-import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment.Companion.EXTRA_SHIPMENT_INPUT
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tooltip.model.ImageTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
@@ -66,7 +66,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        observeProductUpdateLiveData()
         return inflater.inflate(R.layout.fragment_add_edit_product_preview, container, false)
     }
 
@@ -127,29 +126,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
             previewViewModel = ViewModelProviders.of(this, viewModelFactory)
                     .get(AddEditProductPreviewViewModel::class.java)
         }
-    }
-
-    // TODO faisalramd redesign toast
-    private fun observeProductUpdateLiveData() {
-        previewViewModel._productUpdateResult.observe(viewLifecycleOwner, Observer { result ->
-            when (result) {
-                is Success -> {
-                    val isSuccess = result.data.productAddEditV3Data.isSuccess
-                    var toasterType = Toaster.TYPE_NORMAL
-                    var toasterMessage = "Success"
-
-                    if (isSuccess) {
-                        toasterMessage = result.data.productAddEditV3Data.header.reason
-                        toasterType = Toaster.TYPE_ERROR
-                    }
-
-                    Toaster.make(view!!, toasterMessage, Toaster.LENGTH_LONG, toasterType)
-                }
-                is Fail -> {
-                    result.throwable.printStackTrace()
-                }
-            }
-        })
     }
 
     private fun showPhotoTips() {
