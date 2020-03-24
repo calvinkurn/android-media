@@ -1710,4 +1710,9 @@ public class ProductListFragment
             NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist_failed));
         }
     }
+
+    @Override
+    public boolean isLandingPage() {
+        return searchParameter.getBoolean(SearchApiConst.LANDING_PAGE);
+    }
 }
