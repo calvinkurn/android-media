@@ -232,13 +232,15 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
 //                    finishOnBoarding()
 //                })
 
-                launchCatchError(block = {
-                    val intent = getIntentforApplink(it, applink)
-                    startActivity(intent)
-                    finishOnBoarding()
-                },
-                onError = {
-                })
+                launchCatchError(
+                        block = {
+                            val intent = getIntentforApplink(it, applink)
+                            startActivity(intent)
+                            finishOnBoarding()
+                        },
+                        onError = {
+                        }
+                )
 
 
 //                GlobalScope.launch{
@@ -316,7 +318,7 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
     /**
      * Get Intent for Applink using suspend function
      */
-    private suspend fun getIntentforApplink(context: Context, applink: String): Intent {
+    suspend fun getIntentforApplink(context: Context, applink: String): Intent {
         return RouteManager.getIntent(context, applink)
     }
 
