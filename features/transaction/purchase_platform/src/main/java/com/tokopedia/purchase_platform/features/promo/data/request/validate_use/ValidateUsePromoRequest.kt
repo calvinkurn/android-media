@@ -25,7 +25,7 @@ data class ValidateUsePromoRequest(
         var orders: List<OrdersItem?> = listOf(),
 
         @field:SerializedName("skip_apply")
-        var skipApply: Int = 1,
+        var skipApply: Int = 0,
 
         @field:SerializedName("cart_type")
         var cartType: String = "", // ocs & default
