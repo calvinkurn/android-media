@@ -11,8 +11,9 @@ import android.os.Build
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
+import androidx.asynclayoutinflater.view.AsyncLayoutInflater
+import androidx.asynclayoutinflater.view.AsyncLayoutInflater.OnInflateFinishedListener
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.tokopedia.applink.RouteManager
@@ -21,6 +22,7 @@ import com.tokopedia.searchbar.helper.ViewHelper
 import kotlinx.android.synthetic.main.home_main_toolbar.view.*
 import kotlinx.coroutines.*
 import java.net.URLEncoder
+import java.util.concurrent.Callable
 import kotlin.coroutines.CoroutineContext
 import kotlin.text.Charsets.UTF_8
 
@@ -50,15 +52,21 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
 
     private lateinit var inboxBitmapGrey: Drawable
 
+    private lateinit var afterInflationCallable: Callable<Any?>
+
+    private lateinit var viewHomeMainToolBar: View
+
     constructor(context: Context) : super(context)
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    override fun init(context: Context, attrs: AttributeSet?) {
-        super.init(context, attrs)
+//    override fun init(context: Context, attrs: AttributeSet?) {
+//        super.init(context, attrs)
+//    }
 
+    fun setViewAttributesAfterInflation(){
         showShadow()
 
         setBackgroundAlpha(0f)
@@ -71,6 +79,10 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             setImageDrawables()
             //..........
         }
+    }
+
+    fun setAfterInfaltionCallable(callable: Callable<Any?>){
+        afterInflationCallable = callable
     }
 
     fun initializeinBackground() : Deferred<Unit> = async(Dispatchers.IO){
@@ -133,7 +145,17 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
     }
 
     override fun inflateResource(context: Context) {
-        View.inflate(context, R.layout.home_main_toolbar, this)
+        val asyncLayoutInflater = AsyncLayoutInflater(context)
+        val inflateFinishCallBack: OnInflateFinishedListener? = OnInflateFinishedListener { view, resid, parent ->
+            viewHomeMainToolBar = view
+            actionAfterInflation(context, view)
+            setViewAttributesAfterInflation()
+            afterInflationCallable.call()
+            this@HomeMainToolbar.addView(view)
+        }
+        if (inflateFinishCallBack != null) {
+            asyncLayoutInflater.inflate(R.layout.home_main_toolbar, this@HomeMainToolbar, inflateFinishCallBack)
+        }
     }
 
     fun setBackgroundAlpha(alpha: Float) {
@@ -194,7 +216,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
     }
 
     fun setHint(placeholder: String, keyword: String, isFirstInstall: Boolean){
-        val editTextSearch = findViewById<TextView>(R.id.et_search)
+        val editTextSearch = viewHomeMainToolBar.findViewById<TextView>(R.id.et_search)
         editTextSearch.hint = if(placeholder.isEmpty()) context.getString(R.string.search_tokopedia) else placeholder
         editTextSearch.setSingleLine()
         editTextSearch.ellipsize = TextUtils.TruncateAt.END
