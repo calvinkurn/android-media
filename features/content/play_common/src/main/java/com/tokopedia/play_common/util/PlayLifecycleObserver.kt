@@ -19,7 +19,8 @@ class PlayLifecycleObserver(
     fun onPause() {
         synchronized(this) {
             isVideoPlaying = playVideoManager.isVideoPlaying()
-            if (isVideoPlaying) playVideoManager.pauseCurrentVideo(true)
+
+            playVideoManager.pauseCurrentVideo(true)
             playVideoManager.muteVideo(true)
         }
     }
