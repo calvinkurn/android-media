@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.FilterTabViewHolder.*
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel.*
-import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.NotificationUnify
 import kotlinx.android.synthetic.main.item_product_manage_more_filter.view.*
 
 class MoreFilterViewHolder(
@@ -29,10 +29,10 @@ class MoreFilterViewHolder(
     override fun bind(data: MoreFilter) {
         if(data.filterCount > 0) {
             filterCount.show()
-            filterCount.text = data.filterCount.toString()
 
-            filter.chip_image_icon.type = ImageUnify.TYPE_CIRCLE
-            filter.chipImageResource = ContextCompat.getDrawable(context, R.color.unify_G500)
+            val count = data.filterCount.toString()
+            filterCount.setNotification(count, NotificationUnify.COLOR_TEXT_TYPE, NotificationUnify.COLOR_SECONDARY)
+            filter.chipImageResource = ContextCompat.getDrawable(context, R.color.Neutral_N0)
         } else {
             filterCount.hide()
             filter.chipImageResource = ContextCompat.getDrawable(context, com.tokopedia.sortfilter.R.drawable.unify_filter_ic)
