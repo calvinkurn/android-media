@@ -89,11 +89,6 @@ class MixTopBannerViewHolder(
     }
 
     override fun onFlashSaleCardImpressed(position: Int, channel: DynamicHomeChannel.Channels) {
-        channel.grids.forEach { grid ->
-            if(grid.isTopads){
-                ImpresionTask().execute(grid.impression)
-            }
-        }
         homeCategoryListener.putEEToTrackingQueue(MixTopTracking.getMixTopView(
                 MixTopTracking.mapChannelToProductTracker(channel),
                 channel.header.name,
@@ -102,15 +97,13 @@ class MixTopBannerViewHolder(
     }
 
     override fun onFlashSaleCardClicked(position: Int, channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, applink: String) {
-        if(grid.isTopads){
-            ImpresionTask().execute(grid.productClickUrl)
-        }
         homeCategoryListener.sendEETracking(MixTopTracking.getMixTopClick(
                 listOf(MixTopTracking.mapGridToProductTracker(grid, channel.id, position, channel.persoType, channel.categoryID)),
                 channel.header.name,
                 channel.id,
                 adapterPosition.toString()
         ) as HashMap<String, Any>)
+        homeCategoryListener.onDynamicChannelClicked(grid.applink)
     }
 
     private fun mappingView(channel: DynamicHomeChannel.Channels) {
