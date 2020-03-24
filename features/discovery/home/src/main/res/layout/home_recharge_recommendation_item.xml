@@ -9,32 +9,31 @@
         android:id="@+id/recharge_recommendation_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_16"
+        android:layout_margin="@dimen/spacing_lvl4"
         android:lines="1"
+        android:text="@string/home_recharge_recommendation_title"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/ic_close_recharge_recommendation"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_2"
-        android:text="@string/home_recharge_recommendation_title"/>
+        app:typographyType="heading_2" />
 
     <ImageView
         android:id="@+id/ic_close_recharge_recommendation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_16"
-        android:padding="@dimen/dp_1"
-        android:src="@drawable/ic_action_x"
+        android:layout_margin="@dimen/spacing_lvl4"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_close_white_24" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_16"
-        app:cardCornerRadius="@dimen/dp_8"
-        app:elevation="@dimen/dp_2"
+        android:layout_margin="@dimen/spacing_lvl4"
+        app:cardCornerRadius="@dimen/layout_lvl1"
+        app:elevation="@dimen/spacing_lvl1"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintCircleRadius="@dimen/dp_8"
+        app:layout_constraintCircleRadius="@dimen/layout_lvl1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/recharge_recommendation_title">
@@ -48,17 +47,16 @@
             android:id="@+id/recharge_recommendation_card_content_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dp_8">
+            android:padding="@dimen/spacing_lvl3">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/recharge_recommendation_product_container"
-                android:layout_width="@dimen/dp_60"
-                android:layout_height="@dimen/dp_60"
-                app:cardCornerRadius="@dimen/dp_12"
+                android:layout_width="@dimen/layout_lvl7"
+                android:layout_height="@dimen/layout_lvl7"
+                app:cardCornerRadius="@dimen/layout_lvl2"
                 app:cardPreventCornerOverlap="false"
                 app:cardUseCompatPadding="true"
-                app:contentPadding="@dimen/dp_4"
-                app:elevation="@dimen/dp_4"
+                app:contentPadding="@dimen/spacing_lvl2"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -74,7 +72,7 @@
                 android:id="@+id/recharge_recommendation_description"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/spacing_lvl3"
                 android:gravity="center_vertical"
                 app:layout_constraintLeft_toRightOf="@id/recharge_recommendation_product_container"
                 app:layout_constraintRight_toRightOf="parent"
@@ -84,10 +82,8 @@
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_recharge_recommendation"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_8"
-                android:minHeight="@dimen/dp_50"
+                android:layout_marginLeft="@dimen/spacing_lvl3"
+                android:layout_marginTop="@dimen/spacing_lvl3"
                 android:text="@string/home_recharge_recommendation_button_label"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/recharge_recommendation_product_container"

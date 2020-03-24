@@ -52,7 +52,7 @@ class GetRechargeRecommendationUseCase @Inject constructor(
         """.trimIndent()
     }
 
-    private val dummyQuery by lazy {
+    private val dummyResponse by lazy {
         """
             {
                 "rechargeRecommendation": {
@@ -64,7 +64,10 @@ class GetRechargeRecommendationUseCase @Inject constructor(
                       "subText": "Rp 100.000",
                       "applink": "tokopedia://digital/form?category_id=1&client_number=0812345678&operator_id=12&product_id=70&is_from_widget=true",
                       "link": "https://pulsa.tokopedia.com/?action=init_data&amp;client_number=0812345678&amp;instant_checkout=false&amp;operator_id=12&amp;product_id=70&amp;slug=pulsa",
-                      "iconURL": "https://ecs7.tokopedia.net/img/attachment/2019/10/22/21181130/21181130_31fffa3a-b61f-4b67-b183-785aef289a5b.png"
+                      "iconURL": "https://ecs7.tokopedia.net/img/attachment/2019/10/22/21181130/21181130_31fffa3a-b61f-4b67-b183-785aef289a5b.png",
+                      "title": "Yuk, segera bayar tagihanmu!",
+                      "backgroundColor": "blue",
+                      "buttonText": "Bayar Sekarang"
                     }
                   ]
                 }
@@ -78,7 +81,7 @@ class GetRechargeRecommendationUseCase @Inject constructor(
         graphqlUseCase.setGraphqlQuery(query)
         graphqlUseCase.setRequestParams(params.parameters)
         val response = graphqlUseCase.executeOnBackground().response
-//        val response = Gson().fromJson(dummyQuery, RechargeRecommendation.Response::class.java)?.response
+//        val response = Gson().fromJson(dummyResponse, RechargeRecommendation.Response::class.java)?.response
 
         if (response != null) return response
         else throw (MessageErrorException("null data"))
