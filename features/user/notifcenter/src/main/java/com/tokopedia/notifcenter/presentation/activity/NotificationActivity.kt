@@ -55,6 +55,18 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
 
     private var fragmentAdapter: NotificationFragmentAdapter? = null
     private val tabList = ArrayList<NotificationTabItem>()
+
+    /*
+    * notification id for buyer info consume
+    * the id comes from tokopedia://notif-center/{id}
+    * notification id will be consuming on updateFragment
+    * */
+    var notificationId = ""
+
+    /*
+     * track mark all as read counter
+     * counting notification item to as read
+     * */
     private var updateCounter = 0L
 
     private val notificationLayout by lazy {
@@ -65,25 +77,23 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
         tabLayout.getTabAt(INDEX_NOTIFICATION_UPDATE)?.customView
     }
 
-    private val intentData by lazy { intent?.data }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         initTabLayoutItem()
         super.onCreate(savedInstanceState)
         notificationComponent.inject(this)
         presenter.attachView(this)
 
-        intentData?.path?.let {
-            when (it) {
-                PATH_BUYER_INFO -> {
+        intent?.data?.path?.let {
+            when {
+                it.contains(PATH_BUYER_INFO) -> {
                     initViewTabLayout(INDEX_NOTIFICATION_UPDATE)
-                    Log.d("TAGGG", intentData?.pathSegments.toString())
-                    Log.d("TAGGG", intentData?.lastPathSegment)
-                    Log.d("TAGGG", Uri.parse(intent?.data?.toString()).lastPathSegment)
+                    getNotificationId()
                 }
-                else -> initView(savedInstanceState)
+                else -> {
+                    initView(savedInstanceState)
+                }
             }
-        }?:
+        }?: initView(savedInstanceState)
 
         baseContext?.let {
             val remoteConfig = FirebaseRemoteConfigImpl(it)
@@ -92,6 +102,14 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
             if (redDotGimmickRemoteConfigStatus && !redDotGimmickLocalStatus) {
                 cacheManager.isDisplayedGimmick = true
                 presenter.sendNotif(onSuccessSendNotification(), onErrorSendNotification())
+            }
+        }
+    }
+
+    private fun getNotificationId() {
+        intent?.data?.lastPathSegment?.let {
+            if (it != PATH_BUYER_INFO) {
+                notificationId = it
             }
         }
     }
@@ -294,7 +312,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
 
     companion object {
         private const val KEY_TAB_POSITION = "tab_position"
-        private const val PATH_BUYER_INFO = "/notif-center"
+        private const val PATH_BUYER_INFO = "notif-center"
 
         var INDEX_NOTIFICATION_ACTIVITY = 0
         var INDEX_NOTIFICATION_UPDATE = 1
