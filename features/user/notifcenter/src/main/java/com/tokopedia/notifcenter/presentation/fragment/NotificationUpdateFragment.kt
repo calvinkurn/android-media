@@ -77,12 +77,6 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
     * */
     private var isFirstLoaded = true
 
-    /*
-    * notification id for buyer info consume
-    * the id comes from tokopedia://notif-center/{id}
-    * */
-    private var notificationId = ""
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = viewModelProvider(viewModelFactory)
@@ -100,10 +94,17 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
         )
     }
 
+    /*
+    * notification id for buyer info consume
+    * the id comes from tokopedia://notif-center/{id}
+    * */
+    private val notificationId by lazy {
+        (activity as NotificationActivity).notificationId
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         onListLastScroll(view)
-        getNotificationId()
         initLoadPresenter()
         initObservable()
 
@@ -155,10 +156,15 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
     }
 
     override fun loadData(page: Int) {
-        if (notificationId.isNotEmpty()) {
-            viewModel.getSingleNotification(notificationId)
-        } else {
-            presenter.loadData(cursor, ::onSuccessInitiateData, onErrorInitiateData())
+        notificationId.let {
+            if (it.isNotEmpty()) {
+                viewModel.getSingleNotification(it)
+            } else {
+                presenter.loadData(
+                        cursor,
+                        ::onSuccessInitiateData,
+                        onErrorInitiateData()
+                )            }
         }
     }
 
@@ -257,12 +263,6 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
         return {
             markAllReadCounter = it.pojo.notifUnreadInt
             notifyBottomActionView()
-        }
-    }
-
-    private fun getNotificationId() {
-        if (activity != null) {
-            notificationId = (activity as NotificationActivity).notificationId
         }
     }
 
