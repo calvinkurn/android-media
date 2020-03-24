@@ -8,6 +8,8 @@ import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.state.PlayVideoState
+import com.tokopedia.variant_common.model.ProductVariantCommon
+import com.tokopedia.variant_common.model.VariantCategory
 
 /**
  * Created by jegul on 20/02/20
@@ -353,6 +355,22 @@ class ModelBuilder {
             title = title,
             voucherList = voucherList,
             productList = productList
+    )
+
+    fun buildVariantSheetUiModel(
+            product: ProductLineUiModel = buildProductLineUiModel(),
+            action: ProductAction = ProductAction.Buy,
+            parentVariant: ProductVariantCommon? = null,
+            stockWording: String? = "Stok tersedia",
+            listOfVariantCategory: List<VariantCategory> = emptyList(),
+            mapOfSelectedVariants: MutableMap<String, Int> = mutableMapOf()
+    ) = VariantSheetUiModel(
+            product = product,
+            action = action,
+            parentVariant = parentVariant,
+            stockWording = stockWording,
+            listOfVariantCategory = listOfVariantCategory,
+            mapOfSelectedVariants = mapOfSelectedVariants
     )
 
     fun buildMerchantVoucherUiModel(

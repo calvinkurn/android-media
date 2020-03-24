@@ -1,6 +1,7 @@
 package com.tokopedia.play.ui.variantsheet
 
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.variantsheet.interaction.VariantSheetInteractionEvent
@@ -20,14 +21,15 @@ import java.net.UnknownHostException
 /**
  * Created by jegul on 05/03/20
  */
-class VariantSheetComponent(
+open class VariantSheetComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
         coroutineScope: CoroutineScope,
         dispatchers: CoroutineDispatcherProvider
 ) : UIComponent<VariantSheetInteractionEvent>, CoroutineScope by coroutineScope, VariantSheetView.Listener {
 
-    private val uiView = initView(container)
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    val uiView = initView(container)
 
     init {
         launch(dispatchers.immediate) {
@@ -75,7 +77,7 @@ class VariantSheetComponent(
         }
     }
 
-    private fun initView(container: ViewGroup) =
+    open fun initView(container: ViewGroup) =
             VariantSheetView(container, this)
 
     private fun handleShowHideVariantSheet(state: BottomInsetsState) {
