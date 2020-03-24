@@ -57,7 +57,7 @@ class CentralizedPromoViewModel @Inject constructor(
 
     private suspend fun getResult(type: LayoutType) = when (type) {
         LayoutType.ON_GOING_PROMO -> getOnGoingPromotion()
-        LayoutType.PROMO_CREATION -> getRecommendedPromotion()
+        LayoutType.PROMO_CREATION -> getPromoCreation()
         LayoutType.POST -> getPostList()
     }
 
@@ -79,7 +79,7 @@ class CentralizedPromoViewModel @Inject constructor(
         }
     }
 
-    private fun getRecommendedPromotion(): Result<BaseUiModel> {
+    private fun getPromoCreation(): Result<BaseUiModel> {
         return try {
             Success(PromoCreationStaticData.provideStaticData())
         } catch (t: Throwable) {

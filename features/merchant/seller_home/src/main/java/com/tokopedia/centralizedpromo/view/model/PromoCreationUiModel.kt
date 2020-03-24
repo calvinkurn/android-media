@@ -14,9 +14,10 @@ data class PromoCreationUiModel(
         val title: String,
         val description: String,
         val extra: String,
-        val applink: String,
-        override val impressHolder: ImpressHolder = ImpressHolder()
+        val applink: String
 ): BaseUiListItemModel<CentralizedPromoAdapterTypeFactory> {
+    override val impressHolder: ImpressHolder = ImpressHolder()
+
     override fun type(typeFactory: CentralizedPromoAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }

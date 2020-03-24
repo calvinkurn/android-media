@@ -12,9 +12,10 @@ data class OnGoingPromoListUiModel(
 data class OnGoingPromoUiModel(
         val title: String,
         val status: Status,
-        val footer: Footer,
-        override val impressHolder: ImpressHolder = ImpressHolder()
+        val footer: Footer
 ) : BaseUiListItemModel<CentralizedPromoAdapterTypeFactory> {
+    override val impressHolder: ImpressHolder = ImpressHolder()
+
     override fun type(typeFactory: CentralizedPromoAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }

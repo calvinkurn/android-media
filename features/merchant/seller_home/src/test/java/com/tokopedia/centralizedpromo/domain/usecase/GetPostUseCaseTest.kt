@@ -5,7 +5,6 @@ import com.tokopedia.centralizedpromo.domain.mapper.PostMapper
 import com.tokopedia.centralizedpromo.view.model.PostListUiModel
 import com.tokopedia.centralizedpromo.view.model.PostUiModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhome.domain.model.GetPostDataResponse
 import com.tokopedia.sellerhome.utils.TestHelper
 import io.mockk.MockKAnnotations
@@ -25,6 +24,33 @@ import org.junit.rules.ExpectedException
 class GetPostUseCaseTest {
     companion object {
         private const val SUCCESS_RESPONSE = "json/get_centralized_promo_post_usecase_success_response.json"
+
+        private val successResult = PostListUiModel(
+                items = listOf(
+                        PostUiModel(
+                                title = "Test Post",
+                                applink = "https://static-staging.tokopedia.net/seller/merchant-info/test-post/",
+                                url = "https://static-staging.tokopedia.net/seller/merchant-info/test-post/",
+                                featuredMediaUrl = "https://ecs7.tokopedia.net/img/blog/seller/2019/09/217_AM_-seller-center-1.jpg",
+                                subtitle = "<p>Info &#183; 20 SEP 19</p>"
+                        ),
+                        PostUiModel(
+                                title = "Test ke 2",
+                                applink = "https://static-staging.tokopedia.net/seller/merchant-info/test-ke-2/",
+                                url = "https://static-staging.tokopedia.net/seller/merchant-info/test-ke-2/",
+                                featuredMediaUrl = "https://ecs7.tokopedia.net/img/blog/seller/2019/09/217_AM_-seller-center-1.jpg",
+                                subtitle = "<p>Info &#183; 6 SEP 19</p>"
+                        ),
+                        PostUiModel(
+                                title = "Kumpul Keluarga Tokopedia Bersama Toko Cabang",
+                                applink = "https://seller.tokopedia.com/edu/seller-events/kumpul-keluarga-tc050320/",
+                                url = "https://seller.tokopedia.com/edu/seller-events/kumpul-keluarga-tc050320/",
+                                featuredMediaUrl = "https://seller.tokopedia.com/edu/seller-events/kumpul-keluarga-tc050320/tokocabang-event-seller-center_1024x439/",
+                                subtitle = "<p>Seller Event &#183; 5 MAR 20</p>"
+                        )
+                ),
+                errorMessage = ""
+        )
     }
 
     @get:Rule
@@ -42,36 +68,6 @@ class GetPostUseCaseTest {
             dataKey = emptyList(),
             startDate = "",
             endDate = ""
-    )
-
-    fun getSuccessResponse(impressHolder: List<ImpressHolder>) = PostListUiModel(
-            items = listOf(
-                    PostUiModel(
-                            title = "Test Post",
-                            applink = "https://static-staging.tokopedia.net/seller/merchant-info/test-post/",
-                            url = "https://static-staging.tokopedia.net/seller/merchant-info/test-post/",
-                            featuredMediaUrl = "https://ecs7.tokopedia.net/img/blog/seller/2019/09/217_AM_-seller-center-1.jpg",
-                            subtitle = "<p>Info &#183; 20 SEP 19</p>",
-                            impressHolder = impressHolder[0]
-                    ),
-                    PostUiModel(
-                            title = "Test ke 2",
-                            applink = "https://static-staging.tokopedia.net/seller/merchant-info/test-ke-2/",
-                            url = "https://static-staging.tokopedia.net/seller/merchant-info/test-ke-2/",
-                            featuredMediaUrl = "https://ecs7.tokopedia.net/img/blog/seller/2019/09/217_AM_-seller-center-1.jpg",
-                            subtitle = "<p>Info &#183; 6 SEP 19</p>",
-                            impressHolder = impressHolder[1]
-                    ),
-                    PostUiModel(
-                            title = "Kumpul Keluarga Tokopedia Bersama Toko Cabang",
-                            applink = "https://seller.tokopedia.com/edu/seller-events/kumpul-keluarga-tc050320/",
-                            url = "https://seller.tokopedia.com/edu/seller-events/kumpul-keluarga-tc050320/",
-                            featuredMediaUrl = "https://seller.tokopedia.com/edu/seller-events/kumpul-keluarga-tc050320/tokocabang-event-seller-center_1024x439/",
-                            subtitle = "<p>Seller Event &#183; 5 MAR 20</p>",
-                            impressHolder = impressHolder[2]
-                    )
-            ),
-            errorMessage = ""
     )
 
     @Before
@@ -95,7 +91,7 @@ class GetPostUseCaseTest {
             gqlRepository.getReseponse(any(), any())
         }
 
-        Assert.assertEquals(postList, getSuccessResponse(postList.items.map { it.impressHolder }))
+        Assert.assertEquals(postList, successResult)
     }
 
     @Test

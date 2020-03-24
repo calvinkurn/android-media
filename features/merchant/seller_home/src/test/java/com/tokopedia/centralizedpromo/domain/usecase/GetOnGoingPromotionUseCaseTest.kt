@@ -8,7 +8,6 @@ import com.tokopedia.centralizedpromo.view.model.OnGoingPromoListUiModel
 import com.tokopedia.centralizedpromo.view.model.OnGoingPromoUiModel
 import com.tokopedia.centralizedpromo.view.model.Status
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhome.utils.TestHelper
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -27,6 +26,25 @@ class GetOnGoingPromotionUseCaseTest {
     companion object {
         private const val SUCCESS_RESPONSE = "json/get_centralized_promo_on_going_usecase_success_response.json"
         private const val ERROR_RESPONSE_WITH_MESSAGE_ON_HEADER = "json/get_centralized_promo_on_going_usecase_failed_response.json"
+
+        private val successResult = OnGoingPromoListUiModel(
+                title = "Track your promotion",
+                items = listOf(
+                        OnGoingPromoUiModel(
+                                title = "Flash Sale",
+                                status = Status(
+                                        text = "Terdaftar",
+                                        count = 56,
+                                        url = "sellerapp://flashsale/management"
+                                ),
+                                footer = Footer(
+                                        text = "Lihat Semua",
+                                        url = "sellerapp://flashsale/management"
+                                )
+                        )
+                ),
+                errorMessage = ""
+        )
 
         private val errorResultWithMessage = OnGoingPromoListUiModel(
                 title = "Track your promotion",
@@ -49,26 +67,6 @@ class GetOnGoingPromotionUseCaseTest {
 
     private val params = GetOnGoingPromotionUseCase.getRequestParams(false)
 
-    fun getSuccessResponse(impressHolder: ImpressHolder) = OnGoingPromoListUiModel(
-            title = "Track your promotion",
-            items = listOf(
-                    OnGoingPromoUiModel(
-                            title = "Flash Sale",
-                            status = Status(
-                                    text = "Terdaftar",
-                                    count = 56,
-                                    url = "sellerapp://flashsale/management"
-                            ),
-                            footer = Footer(
-                                    text = "Lihat Semua",
-                                    url = "sellerapp://flashsale/management"
-                            ),
-                            impressHolder = impressHolder
-                    )
-            ),
-            errorMessage = ""
-    )
-
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
@@ -89,7 +87,7 @@ class GetOnGoingPromotionUseCaseTest {
             gqlRepository.getReseponse(any(), any())
         }
 
-        Assertions.assertEquals(onGoingPromotions, getSuccessResponse(onGoingPromotions.items.first().impressHolder))
+        Assertions.assertEquals(onGoingPromotions, successResult)
     }
 
     @Test

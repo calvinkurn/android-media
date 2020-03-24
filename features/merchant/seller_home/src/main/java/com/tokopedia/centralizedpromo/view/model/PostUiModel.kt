@@ -13,9 +13,10 @@ data class PostUiModel(
         val applink: String,
         val url: String,
         val featuredMediaUrl: String,
-        val subtitle: String,
-        override val impressHolder: ImpressHolder = ImpressHolder()
+        val subtitle: String
 ) : BaseUiListItemModel<CentralizedPromoAdapterTypeFactory> {
+    override val impressHolder: ImpressHolder = ImpressHolder()
+
     override fun type(typeFactory: CentralizedPromoAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
