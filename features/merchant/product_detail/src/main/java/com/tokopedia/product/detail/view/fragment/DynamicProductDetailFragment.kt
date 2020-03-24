@@ -145,6 +145,7 @@ import com.tokopedia.variant_common.view.ProductVariantListener
 import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.*
 import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
+import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -1137,6 +1138,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.p2Login.observe(this, Observer {
             topAdsGetProductManage = it.topAdsGetProductManage
             actionButtonView.renderData(it.isExpressCheckoutType, hasTopAds(), it.newCartTypeResponse.cartRedirection)
+            setupTickerOcc()
 
             if (::performanceMonitoringFull.isInitialized)
                 performanceMonitoringP2Login.stopTrace()
@@ -1146,6 +1148,23 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap, ProductDetailConstant.PAYLOAD_WISHLIST)
 
         })
+    }
+
+    private fun setupTickerOcc() {
+        val data = actionButtonView.cartTypeData?.data ?: emptyList()
+        if (actionButtonView.view.btn_buy_now.visibility == View.VISIBLE && data.isNotEmpty() && data[0].configName.equals("occ", true)) {
+            view?.let {
+                ticker_occ_arrow.post {
+                    ticker_occ_arrow?.translationX = actionButtonView.view.btn_buy_now.x + (actionButtonView.view.btn_buy_now.width / 2)
+                    ticker_occ?.setOnClickListener {
+                        ticker_occ_layout?.gone()
+                    }
+                    ticker_occ_layout?.visible()
+                }
+            }
+        } else {
+            ticker_occ_layout.gone()
+        }
     }
 
     private fun observeP2Shop() {
