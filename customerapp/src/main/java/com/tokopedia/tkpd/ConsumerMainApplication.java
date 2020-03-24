@@ -15,6 +15,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Window;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,10 +24,6 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.bugsnag.android.BeforeNotify;
-import com.bugsnag.android.BreadcrumbType;
-import com.bugsnag.android.Bugsnag;
-import com.bugsnag.android.Error;
 import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.crashlytics.android.Crashlytics;
@@ -55,6 +53,7 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.grapqhl.beta.notif.BetaInterceptor;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
@@ -81,6 +80,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
+import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -130,7 +130,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         if (!isMainProcess()) {
             return;
         }
-        initBugSnag();
         Chucker.registerDefaultCrashHandler(new ChuckerCollector(this, false));
         initConfigValues();
         initializeSdk();
@@ -154,12 +153,51 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             @Override
             public void onShakeDetected(boolean isLongShake) {
                 openShakeDetectCampaignPage(isLongShake);
-                Bugsnag.leaveBreadcrumb("shake_campaign", BreadcrumbType.STATE, new HashMap<String, String>() {{
-                    put("shake_detected", "shake_detect");
-                }});
             }
         });
         registerActivityLifecycleCallbacks(shakeSubscriber);
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onActivityStarted(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+                if(activity != null && Build.VERSION.SDK_INT >= 21 && BetaInterceptor.Companion.isBeta(activity))
+                {
+                    Window window = activity.getWindow();
+                    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                    window.setStatusBarColor(getResources().getColor(android.R.color.holo_red_dark));
+                }
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+
+            }
+        });
 
         UserIdSubscriber userIdSubscriber = new UserIdSubscriber(getApplicationContext(), new UserIdChangeCallback() {
             @Override
@@ -171,6 +209,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         NFCSubscriber nfcSubscriber = new NFCSubscriber();
         registerActivityLifecycleCallbacks(nfcSubscriber);
+
+        registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
     }
 
     private void createAndCallPreSeq(){
@@ -246,14 +286,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         generateConsumerAppNetworkKeys();
     }
 
-    private void initBugSnag() {
-        Bugsnag.init(this);
-        UserSessionInterface userSession = new UserSession(this);
-        if (!TextUtils.isEmpty(userSession.getUserId())) {
-            Bugsnag.setUser(userSession.getUserId(), userSession.getEmail(), userSession.getName());
-        }
-    }
-
     private void initGqlNWClient(){
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
@@ -296,10 +328,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConstInternalPromo.PROMO_CAMPAIGN_SHAKE_LANDING, Boolean.toString(isLongShake));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getApplicationContext().startActivity(intent);
-        Bugsnag.leaveBreadcrumb("shake_campaign", BreadcrumbType.STATE, new HashMap<String, String>() {{
-            put("init", "open_shake_detect");
-            put("long_shake", Boolean.toString(isLongShake));
-        }});
     }
 
 
@@ -373,22 +401,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     private void initializeSdk() {
-        Bugsnag.beforeNotify(new BeforeNotify() {
-            @Override
-            public boolean run(@NonNull Error error) {
-                UserSessionInterface userSession = new UserSession(ConsumerMainApplication.this);
-                if (!TextUtils.isEmpty(userSession.getUserId())) {
-                    error.addToTab("account", "userId", userSession.getUserId());
-                    error.addToTab("account", "deviceId", userSession.getDeviceId());
-                }
-                return false;
-            }
-        });
         try {
             FirebaseApp.initializeApp(this);
             FacebookSdk.sdkInitialize(this);
         } catch (Exception e) {
-            Bugsnag.notify(e);
+
         }
     }
 
@@ -397,11 +414,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         Long timestampAbTest = sharedPreferences.getLong(AbTestPlatform.Companion.getKEY_SP_TIMESTAMP_AB_TEST(), 0);
         RemoteConfigInstance.initAbTestPlatform(this);
         Long current = new Date().getTime();
-        Bugsnag.leaveBreadcrumb("initialization", BreadcrumbType.STATE, new HashMap<String, String>() {{
-            put("init", "ab_test_variant");
-            put("start_time", timestampAbTest.toString());
-            put("current_time", current.toString());
-        }});
         if (current >= timestampAbTest + TimeUnit.HOURS.toMillis(1)) {
             RemoteConfigInstance.getInstance().getABTestPlatform().fetch(getRemoteConfigListener());
         }
@@ -507,6 +519,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     public boolean checkAppSignature() {
         try {
             PackageInfo info;
+            boolean signatureValid = false;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNING_CERTIFICATES);
                 if (null != info && info.signingInfo.getApkContentsSigners().length > 0) {
@@ -516,9 +529,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                         return true;
                     }
                     byte[] rawCertJava = info.signingInfo.getApkContentsSigners()[0].toByteArray();
-                    return getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
-                } else {
-                    return false;
+                    signatureValid = getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
                 }
             } else {
                 info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
@@ -529,13 +540,15 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                         return true;
                     }
                     byte[] rawCertJava = info.signatures[0].toByteArray();
-                    return getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
-                } else {
-                    return false;
+                    signatureValid = getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
                 }
             }
+            if (!signatureValid) {
+                Timber.w("P1#APP_SIGNATURE_FAILED#'certJava!=certNative'");
+            }
+            return signatureValid;
         } catch (PackageManager.NameNotFoundException e) {
-            Bugsnag.notify(e);
+            Timber.w("P1#APP_SIGNATURE_FAILED#'PackageManager.NameNotFoundException'");
             return false;
         }
     }
@@ -580,7 +593,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
             sb.append("\n");
         } catch (CertificateException e) {
-            Bugsnag.notify(e);
+
         }
         return sb.toString();
     }

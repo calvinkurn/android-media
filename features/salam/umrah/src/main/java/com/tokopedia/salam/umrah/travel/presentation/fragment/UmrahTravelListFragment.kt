@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst.SALAM_UMRAH_AGEN
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.salam.umrah.R
@@ -40,6 +41,7 @@ class UmrahTravelListFragment : BaseListFragment<TravelAgent, UmrahTravelListAda
     var travelList : List<TravelAgent> = listOf()
 
     var umrahTravelListInput = UmrahTravelAgentsInput()
+    lateinit var performanceMonitoring: PerformanceMonitoring
 
     override fun getAdapterTypeFactory(): UmrahTravelListAdapterTypeFactory = UmrahTravelListAdapterTypeFactory(this)
 
@@ -55,6 +57,11 @@ class UmrahTravelListFragment : BaseListFragment<TravelAgent, UmrahTravelListAda
 
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_umrah_travel_list
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initializePerformance()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_umrah_travel_list, container, false)
 
@@ -66,9 +73,11 @@ class UmrahTravelListFragment : BaseListFragment<TravelAgent, UmrahTravelListAda
                 is Success -> {
                     onSuccessResult(it.data)
                     travelList = it.data.umrahTravelAgents
+                    performanceMonitoring.stopTrace()
                 }
 
                 is Fail -> {
+                    performanceMonitoring.stopTrace()
                     NetworkErrorHelper.showEmptyState(context, view?.rootView, null, null, null, R.drawable.img_umrah_pdp_empty_state) {
                         loadInitialData()
                     }
@@ -125,6 +134,20 @@ class UmrahTravelListFragment : BaseListFragment<TravelAgent, UmrahTravelListAda
         }
     }
 
+    private fun initializePerformance() {
+        performanceMonitoring = PerformanceMonitoring.start(UMRAH_TRAVEL_LIST_PAGE_PERFORMANCE)
+    }
+
+    override fun onSwipeRefresh() {
+        super.onSwipeRefresh()
+        initializePerformance()
+    }
+
+    override fun onDestroyView() {
+        performanceMonitoring.stopTrace()
+        super.onDestroyView()
+    }
+
     override fun onBackPressed() {
         if (!isDetached) {
             umrahTrackingAnalytics.umrahTravelListClickBack()
@@ -147,6 +170,7 @@ class UmrahTravelListFragment : BaseListFragment<TravelAgent, UmrahTravelListAda
     }
 
     companion object{
+        const val UMRAH_TRAVEL_LIST_PAGE_PERFORMANCE = "sl_umrah_travel_list"
         fun createInstance() = UmrahTravelListFragment()
     }
 }
