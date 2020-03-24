@@ -1,7 +1,6 @@
 package com.tokopedia.product.manage.feature.list.view.fragment
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -26,7 +25,6 @@ import android.view.Window
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.TextView
-import androidx.lifecycle.Lifecycle
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
@@ -745,6 +743,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             isFeaturedProduct = true
         }
         productManageListAdapter.updateFeaturedProduct(productId, isFeaturedProduct)
+        hideLoadingProgress()
         showMessageToastWithoutAction(successMessage)
     }
 
@@ -1168,14 +1167,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     // region observers
     private fun observeSetFeaturedProduct() {
-        hideLoadingProgress()
         observe(viewModel.setFeaturedProductResult) {
-            if(viewLifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) {
-                when (it) {
-                    is Success -> onSuccessChangeFeaturedProduct(it.data.productId, it.data.status)
-                    is Fail -> onFailedChangeFeaturedProduct(it.throwable)
-                }
-                hideLoadingProgress()
+            when (it) {
+                is Success -> onSuccessChangeFeaturedProduct(it.data.productId, it.data.status)
+                is Fail -> onFailedChangeFeaturedProduct(it.throwable)
             }
         }
     }
