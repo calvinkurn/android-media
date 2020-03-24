@@ -1,6 +1,5 @@
 package com.tokopedia.akamai_bot_lib.interceptor
 
-import com.akamai.botman.CYFMonitor
 import com.tokopedia.akamai_bot_lib.getAny
 import okhttp3.Headers
 import okhttp3.Interceptor
@@ -37,8 +36,6 @@ val registeredGqlFunctions = mapOf(
 class GqlAkamaiBotInterceptor : Interceptor {
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response  {
-        CYFMonitor.setLogLevel(CYFMonitor.INFO)
-
         val request = chain.request()
         val newRequest: Request.Builder = request.newBuilder()
 
@@ -73,8 +70,6 @@ class GqlAkamaiBotInterceptor : Interceptor {
                                 }.firstOrNull()
 
                                 if (!xTkpdAkamai.isNullOrEmpty()) {
-                                    newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                            ?: "")
                                     newRequest.addHeader("X-TKPD-AKAMAI", xTkpdAkamai)
                                 }
                                         
