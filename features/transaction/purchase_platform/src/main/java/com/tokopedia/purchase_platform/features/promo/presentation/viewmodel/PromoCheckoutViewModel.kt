@@ -312,6 +312,8 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 }
             }
 
+            validateUsePromoRequest.skipApply = 0
+
             // Set param
             val varPromo = mapOf(
                     "promo" to validateUsePromoRequest

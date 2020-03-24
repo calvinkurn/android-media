@@ -75,6 +75,7 @@ class ValidateUsePromoCheckoutMapper {
             voucherOrdersItem?.code?.let { code = it }
             return PromoCheckoutVoucherOrdersItemUiModel(
                     code = code,
+                    uniqueId = voucherOrdersItem?.uniqueId ?: "",
                     messageUiModel = mapMessageUiModel(voucherOrdersItem?.message)
             )
         }
