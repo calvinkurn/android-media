@@ -10,9 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.recharge_credit_card.R
-import com.tokopedia.recharge_credit_card.RechargeCCFragment
 import com.tokopedia.recharge_credit_card.di.RechargeCCInstance
 import com.tokopedia.recharge_credit_card.adapter.CreditCardBankAdapter
 import com.tokopedia.recharge_credit_card.analytics.CreditCardAnalytics
@@ -35,6 +33,7 @@ class CCBankListBottomSheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         initInjector()
         initViewModel()
         initBottomSheet()
