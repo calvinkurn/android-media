@@ -137,6 +137,9 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
         viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
             showToastMessageError(it)
         })
+        viewModel.singleNotification.observe(viewLifecycleOwner, Observer {
+            onSuccessInitiateData(it)
+        })
     }
 
     private fun initLoadPresenter() {
@@ -152,7 +155,11 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
     }
 
     override fun loadData(page: Int) {
-        presenter.loadData(cursor, ::onSuccessInitiateData, onErrorInitiateData())
+        if (notificationId.isNotEmpty()) {
+            viewModel.getSingleNotification(notificationId)
+        } else {
+            presenter.loadData(cursor, ::onSuccessInitiateData, onErrorInitiateData())
+        }
     }
 
     private fun onErrorInitiateData(): (Throwable) -> Unit {
