@@ -91,7 +91,7 @@ private fun ProductCardFlashSaleModel.getPriceSectionHeight(context: Context): I
     return if (priceRange.isNotEmpty() || formattedPrice.isNotEmpty()) {
         var priceMarginBottom = 0
         if (stockBarLabel.isNotEmpty()) {
-            priceMarginBottom = context.resources.getDimensionPixelSize(R.dimen.product_card_text_flashsale_view_price_margin_bottom)
+            priceMarginBottom = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_text_view_price_margin_bottom)
         }
         val priceHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_price_height)
 

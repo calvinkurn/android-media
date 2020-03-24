@@ -29,7 +29,7 @@
 
     <dimen name="product_card_text_view_price_margin_top">4dp</dimen>
     <dimen name="product_card_text_view_price_height">20dp</dimen>
-    <dimen name="product_card_text_flashsale_view_price_margin_bottom">8dp</dimen>
+    <dimen name="product_card_flashsale_text_view_price_margin_bottom">8dp</dimen>
 
     <dimen name="product_card_shop_badge_margin_top">5dp</dimen>
     <dimen name="product_card_shop_badge_size">16dp</dimen>

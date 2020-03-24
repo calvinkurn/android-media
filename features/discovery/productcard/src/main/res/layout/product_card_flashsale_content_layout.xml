@@ -91,7 +91,7 @@
         android:id="@+id/textViewPrice"
         android:layout_width="0dp"
         android:layout_height="@dimen/product_card_text_view_price_height"
-        android:layout_marginBottom="@dimen/product_card_text_flashsale_view_price_margin_bottom"
+        android:layout_marginBottom="@dimen/product_card_flashsale_text_view_price_margin_bottom"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/charcoal_grey_96"
@@ -121,13 +121,13 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/product_card_flashsale_label_height"
         android:src="@drawable/ic_pdp_view"
-        android:layout_marginLeft="@dimen/dp_2"
         android:textStyle="bold"
         android:textColor="@color/charcoal_grey_68"
         android:textSize="@dimen/sp_10"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/progressBar"
         app:typographyType="small"
+        app:typographyWeight="bold"
         tools:text="989jt orang"/>
 
 
