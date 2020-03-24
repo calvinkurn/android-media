@@ -351,19 +351,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         ((SimpleItemAnimator) rvShipment.getItemAnimator()).setSupportsChangeAnimations(false);
         rvShipment.addItemDecoration(new ShipmentItemDecoration());
         cdView.setupTimerFromRemianingMillis(10 * 1000, () -> {
-            DialogUnify dialogUnify = new DialogUnify(getContext(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE);
-            dialogUnify.setTitle("Waktu Pembayaran Habis");
-            dialogUnify.setDescription("bla bla bafdjlasfj badslfjsladfj sd");
-            dialogUnify.setPrimaryCTAText("Belanja Lagi");
-            dialogUnify.setPrimaryCTAClickListener(() -> {
-                dialogUnify.dismiss();
-                if (getActivity() != null) {
-                    getActivity().finish();
-                }
-                return null;
-            });
-            dialogUnify.setCancelable(false);
-            dialogUnify.show();
+            ExpiredTimeDialog dialog = new ExpiredTimeDialog();
+            dialog.setCancelable(false);
+            dialog.show(getFragmentManager(), "expired dialog");
         });
     }
 
