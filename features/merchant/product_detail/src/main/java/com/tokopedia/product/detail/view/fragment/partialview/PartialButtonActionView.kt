@@ -159,11 +159,14 @@ class PartialButtonActionView private constructor(private val view: View,
     }
 
     private fun setupTickerOcc() {
-        if (view.btn_buy_now.visibility == View.VISIBLE) {
+        if (view.btn_buy_now.visibility == View.VISIBLE && isExpressCheckout) {
             view.ticker_occ_arrow.post {
                 view.ticker_occ_arrow?.translationX = view.btn_buy_now.x + (view.btn_buy_now.width / 2)
-                view.ticker_occ.visible()
+                view.ticker_occ?.visible()
                 view.ticker_occ_arrow?.visible()
+                view.ticker_occ?.setOnClickListener {
+                    view.ticker_occ?.gone()
+                }
             }
         } else {
             view.ticker_occ.gone()

@@ -1971,7 +1971,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
 
         if (!::actionButtonView.isInitialized) {
-            actionButtonView = PartialButtonActionView.build(base_btn_action, onViewClickListener)
+            actionButtonView = PartialButtonActionView.build(base_btn_action_layout, onViewClickListener)
         }
 
         actionButtonView.rincianTopAdsClick = {
