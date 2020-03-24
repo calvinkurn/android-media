@@ -88,6 +88,7 @@ class CCBankListBottomSheet : BottomSheetUnify() {
             creditCardAnalytics.impressionBankList("","")
         })
         rechargeCCViewModel.errorCCBankList.observe(this, Observer {
+            performanceMonitoring.stopTrace()
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         })
     }
