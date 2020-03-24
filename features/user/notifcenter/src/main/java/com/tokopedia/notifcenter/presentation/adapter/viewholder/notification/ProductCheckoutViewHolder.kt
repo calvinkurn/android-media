@@ -36,6 +36,7 @@ class ProductCheckoutViewHolder(
 
     override fun bindProductView(element: NotificationItemViewBean) {
         val product = element.getAtcProduct() ?: return
+        checkoutButtonValidation(element.getAtcProduct()?.typeButton?: 0)
         snapMultiProductItem()
         onProductCheckoutClick(element)
         productCardItemView(element)
@@ -108,8 +109,30 @@ class ProductCheckoutViewHolder(
         }
     }
 
+    private fun checkoutButtonValidation(type: Int) {
+        when(type) {
+            TYPE_BUY_BUTTON -> {
+                btnCheckout.text = itemView.context.getString(R.string.notifcenter_btn_buy)
+                btnCheckout.buttonType = UnifyButton.Type.TRANSACTION
+            }
+            TYPE_REMINDER_BUTTON -> {
+                btnCheckout.text = itemView.context.getString(R.string.notifcenter_btn_reminder)
+                btnCheckout.buttonType = UnifyButton.Type.MAIN
+            }
+            TYPE_OUT_OF_STOCK_BUTTON -> {
+                btnCheckout.text = itemView.context.getString(R.string.notifcenter_btn_out_of_stock)
+                btnCheckout.isEnabled = false
+            }
+        }
+    }
+
     companion object {
         private const val SINGLE_PRODUCT = 1
+
+        //button checkout type
+        private const val TYPE_BUY_BUTTON = 0
+        private const val TYPE_REMINDER_BUTTON = 1
+        private const val TYPE_OUT_OF_STOCK_BUTTON = 2
 
         @LayoutRes val LAYOUT = R.layout.item_notification_product_checkout
     }

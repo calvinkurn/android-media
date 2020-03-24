@@ -3,6 +3,7 @@ package com.tokopedia.grapqhl.beta.notif
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Build
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
@@ -18,9 +19,26 @@ const val NOTIFICATION_ID = 123 shr 5
 
 class BetaInterceptor(private val context: Context) : Interceptor {
 
+    lateinit var sharedPreferences: SharedPreferences
+
+    init {
+        sharedPreferences = context
+                .getSharedPreferences(BETA_INTERCEPTOR_PREF_NAME, Context.MODE_PRIVATE)
+    }
+
     companion object {
         val URL_BETA = "1"
         val HEADER_ACCESS_CONTROL_ALLOW_ORIGIN = "x-tkpd-beta"
+        val BETA_INTERCEPTOR_PREF_NAME = "BetaInterceptor"
+        val IS_BETA_TOKOPEDIA = "IS_BETA_TOKOPEDIA"
+        
+        @JvmStatic
+        fun isBeta(context: Context) : Boolean{
+            val sharedPreferences = context
+                    .getSharedPreferences(BETA_INTERCEPTOR_PREF_NAME, Context.MODE_PRIVATE)
+           return sharedPreferences.getBoolean(IS_BETA_TOKOPEDIA, false)
+        }
+        
     }
 
 
@@ -32,6 +50,14 @@ class BetaInterceptor(private val context: Context) : Interceptor {
             response = chain.proceed(request)
         } catch (e: IOException) {
             throw e
+        }
+        
+        val saveBeta = fun(context: Context, isBeta: Boolean) {
+            val sharedPreferences = context
+                    .getSharedPreferences(BETA_INTERCEPTOR_PREF_NAME, Context.MODE_PRIVATE)
+            val edit = sharedPreferences.edit()
+            edit.putBoolean(IS_BETA_TOKOPEDIA, isBeta)
+            edit.apply()
         }
 
         val headers = response.headers()
@@ -48,7 +74,8 @@ class BetaInterceptor(private val context: Context) : Interceptor {
             var get = headers.get(HEADER_ACCESS_CONTROL_ALLOW_ORIGIN)
             if (get.equals(URL_BETA)) {
                 context.let {
-
+                    saveBeta(it, true)
+                    
                     val remoteView = RemoteViews(context.packageName, R.layout.notification_layout)
 
                     val mBuilder =
@@ -60,6 +87,7 @@ class BetaInterceptor(private val context: Context) : Interceptor {
                     mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build())
                 }
             } else {
+                saveBeta(context, false)
                 mNotificationManager.cancel(NOTIFICATION_ID)
             }
         }
