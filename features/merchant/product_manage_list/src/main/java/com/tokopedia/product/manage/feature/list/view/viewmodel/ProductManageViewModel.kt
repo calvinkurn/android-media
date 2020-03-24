@@ -239,8 +239,8 @@ class ProductManageViewModel @Inject constructor(
     fun editPrice(productId: String, price: String, productName: String) {
         showProgressDialog()
         launchCatchError(block = {
-            editPriceUseCase.setParams(userSessionInterface.shopId, productId, price.toFloatOrZero())
             val result = withContext(dispatchers.io) {
+                editPriceUseCase.setParams(userSessionInterface.shopId, productId, price.toFloatOrZero())
                 editPriceUseCase.executeOnBackground()
             }
             if (result.productUpdateV3Data.isSuccess) {
@@ -257,8 +257,8 @@ class ProductManageViewModel @Inject constructor(
     fun editStock(productId: String, stock: Int, productName: String, status: ProductStatus) {
         showProgressDialog()
         launchCatchError(block =  {
-            editStockUseCase.setParams(userSessionInterface.shopId, productId, stock, status)
             val result = withContext(dispatchers.io) {
+                editStockUseCase.setParams(userSessionInterface.shopId, productId, stock, status)
                 editStockUseCase.executeOnBackground()
             }
             if (result.productUpdateV3Data.isSuccess) {
@@ -312,8 +312,8 @@ class ProductManageViewModel @Inject constructor(
     fun deleteSingleProduct(productName: String, productId: String) {
         showProgressDialog()
         launchCatchError( block = {
-            deleteProductUseCase.setParams(userSessionInterface.shopId, productId)
             val result = withContext(dispatchers.io) {
+                deleteProductUseCase.setParams(userSessionInterface.shopId, productId)
                 deleteProductUseCase.executeOnBackground()
             }
             if(result.productUpdateV3Data.isSuccess) {
