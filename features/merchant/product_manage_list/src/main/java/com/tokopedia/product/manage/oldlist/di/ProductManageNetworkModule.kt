@@ -1,13 +1,14 @@
 package com.tokopedia.product.manage.oldlist.di
 
 import android.content.Context
-import com.readystatesoftware.chuck.ChuckInterceptor
+import com.chuckerteam.chucker.api.ChuckerCollector
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
-import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gm.common.constant.GMCommonUrl
 import com.tokopedia.gm.common.data.interceptor.GMAuthInterceptor
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi
@@ -22,8 +23,16 @@ class ProductManageNetworkModule {
 
     @Provides
     @OldProductManageScope
-    fun provideChuckInterceptor(@ApplicationContext context: Context): ChuckInterceptor {
-        return ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools())
+    fun provideChuckInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
+        val collector = ChuckerCollector(
+                context = context,
+                showNotification = GlobalConfig.isAllowDebuggingTools()
+        )
+
+        return ChuckerInterceptor(
+                context = context,
+                collector = collector
+        )
     }
 
     @OldGMProductManageQualifier
@@ -44,7 +53,7 @@ class ProductManageNetworkModule {
     @OldGMProductManageQualifier
     @Provides
     fun provideGMOkHttpClient(gmAuthInterceptor: GMAuthInterceptor,
-                              chuckInterceptor: ChuckInterceptor,
+                              chuckInterceptor: ChuckerInterceptor,
                               httpLoggingInterceptor: HttpLoggingInterceptor,
                               cacheApiInterceptor: CacheApiInterceptor): OkHttpClient {
         val builder = OkHttpClient.Builder()

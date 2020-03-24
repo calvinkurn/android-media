@@ -76,7 +76,11 @@ object ApplinkConstInternalMarketplace {
 
     // StockReminderActivity
     @JvmField
-    val STOCK_REMINDER = "$INTERNAL_MARKETPLACE/stock-reminder/{productId}/{productName}/"
+    val STOCK_REMINDER = "$INTERNAL_MARKETPLACE/stock-reminder/{productId}/{productName}/{stock}/"
+
+    // SetCashbackActivity
+    @JvmField
+    val SET_CASHBACK = "$INTERNAL_MARKETPLACE/set-cashback/{productId}/{productName}/"
 
     // CreateReviewActivity
     @JvmField

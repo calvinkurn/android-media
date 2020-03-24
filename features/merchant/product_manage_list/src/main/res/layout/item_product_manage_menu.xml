@@ -8,5 +8,6 @@
     android:drawablePadding="@dimen/product_manage_horizontal_spacing"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center_vertical"
     app:typographyWeight="bold"
     app:typographyType="body_2" />

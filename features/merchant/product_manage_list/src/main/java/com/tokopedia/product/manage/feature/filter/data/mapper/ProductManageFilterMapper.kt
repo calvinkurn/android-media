@@ -18,6 +18,9 @@ class ProductManageFilterMapper {
         const val ETALASE_HEADER = "Etalase"
         const val CATEGORY_HEADER = "Kategori"
         const val OTHER_FILTER_HEADER = "Filter Lainnya"
+        private const val ALL_PRODUCT_ETALASE_ID = "2"
+        private const val EMPTY_STOCK_ETALASE_ID = "4"
+        private const val PREORDER_ETALASE_ID = "6"
         private const val SHOW_CHIPS = true
         private const val HIDE_CHIPS = false
 
@@ -74,13 +77,59 @@ class ProductManageFilterMapper {
         fun mapFiltersToFilterOptions(filterViewModel: List<FilterViewModel>): FilterOptionWrapper {
             val filterOptions = mutableListOf<FilterOption>()
             val sortOption = mapSortToSortOptions(filterViewModel[ProductManageFilterFragment.ITEM_SORT_INDEX])
+            val isShown = mutableListOf<Boolean>()
             filterOptions.addAll(mapEtalaseToFilterOptions(filterViewModel[ProductManageFilterFragment.ITEM_ETALASE_INDEX]))
             filterOptions.addAll(mapCategoriesToFilterOptions(filterViewModel[ProductManageFilterFragment.ITEM_CATEGORIES_INDEX]))
             filterOptions.addAll(mapFiltersToFilterOptions(filterViewModel[ProductManageFilterFragment.ITEM_OTHER_FILTER_INDEX]))
-            return FilterOptionWrapper(sortOption, filterOptions)
+            filterViewModel.forEach {
+                if(it.isChipsShown) {
+                    isShown.add(SHOW_CHIPS)
+                } else {
+                    isShown.add(HIDE_CHIPS)
+                }
+            }
+            return FilterOptionWrapper(sortOption, filterOptions, isShown)
         }
 
-        private fun mapSortToSortOptions(filterViewModel: FilterViewModel): SortOption {
+        fun mapFilterOptionWrapperToSelectedSort(filterOptionWrapper: FilterOptionWrapper): FilterDataViewModel? {
+            filterOptionWrapper.sortOption?.let {
+                return FilterDataViewModel(id = it.id.name,
+                        value = it.option.name,
+                        select = false)
+            }
+            return null
+        }
+
+        fun mapFilterOptionWrapperToSelectedEtalase(filterOptionWrapper: FilterOptionWrapper): FilterDataViewModel? {
+            filterOptionWrapper.filterOptions.filterIsInstance(FilterOption.FilterByMenu::class.java).forEach {
+                    return FilterDataViewModel(it.menuIds.first(), select = false)
+            }
+            return null
+        }
+
+        fun mapFilterOptionWrapperToSelectedCategories(filterOptionWrapper: FilterOptionWrapper): List<FilterDataViewModel> {
+            val selectedCategories = mutableListOf<FilterDataViewModel>()
+            filterOptionWrapper.filterOptions.filterIsInstance(FilterOption.FilterByCategory::class.java).forEach {
+                it.categoryIds.forEach { category ->
+                    selectedCategories.add(
+                            FilterDataViewModel(category, select = false)
+                    )
+                }
+            }
+            return selectedCategories
+        }
+
+        fun mapFilterOptionWrapperToSelectedOtherFilters(filterOptionWrapper: FilterOptionWrapper): List<FilterDataViewModel> {
+            val selectedOtherFilters = mutableListOf<FilterDataViewModel>()
+            filterOptionWrapper.filterOptions.filterIsInstance(FilterOption.FilterByCondition::class.java).forEach {
+                selectedOtherFilters.add(
+                        FilterDataViewModel(it.id, select = false)
+                )
+            }
+            return selectedOtherFilters
+        }
+
+        private fun mapSortToSortOptions(filterViewModel: FilterViewModel): SortOption? {
             var selectedData: FilterDataViewModel? = null
             filterViewModel.data.forEach {
                 if(it.select) {
@@ -96,7 +145,8 @@ class ProductManageFilterMapper {
                 SortOption.SortId.UPDATE_TIME.name -> SortOption.SortByUpdateTime(sortOrderOption)
                 SortOption.SortId.SOLD.name -> SortOption.SortBySold(sortOrderOption)
                 SortOption.SortId.PRICE.name -> SortOption.SortByPrice(sortOrderOption)
-                else -> SortOption.SortByDefault(sortOrderOption)
+                SortOption.SortId.DEFAULT.name -> SortOption.SortByDefault(sortOrderOption)
+                else -> null
             }
         }
 
@@ -148,7 +198,8 @@ class ProductManageFilterMapper {
 
         private fun mapMetaResponseToSortOptions(productListMetaData: ProductListMetaData): FilterViewModel {
             val data = mutableListOf<FilterDataViewModel>()
-            productListMetaData.sorts.filter { it.name.isNotEmpty() }.forEach {
+            productListMetaData.sorts.filter { it.name.isNotEmpty() &&
+                    (it.id != SortOption.SortByDefault(SortOrderOption.DESC).id.name)}.forEach {
                 data.add(FilterDataViewModel(it.id, it.name, it.value))
             }
             return FilterViewModel(SORT_HEADER, data, SHOW_CHIPS)
@@ -156,7 +207,10 @@ class ProductManageFilterMapper {
 
         private fun mapEtalaseResponseToEtalaseOptions(etalaseResponse: ArrayList<ShopEtalaseModel>): FilterViewModel {
             val data = mutableListOf<FilterDataViewModel>()
-            etalaseResponse.filter { it.name.isNotEmpty() }.forEach {
+            etalaseResponse.filter { it.name.isNotEmpty() &&
+                    it.id != EMPTY_STOCK_ETALASE_ID &&
+                    it.id != PREORDER_ETALASE_ID &&
+                    it.id != ALL_PRODUCT_ETALASE_ID }.forEach {
                 data.add(FilterDataViewModel(it.id,it.name))
             }
             return FilterViewModel(ETALASE_HEADER, data, SHOW_CHIPS)

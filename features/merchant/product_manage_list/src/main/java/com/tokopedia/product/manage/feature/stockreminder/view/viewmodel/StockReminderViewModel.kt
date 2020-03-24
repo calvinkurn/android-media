@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.CreateStockReminderResponse
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.UpdateStockReminderResponse
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.getresponse.GetStockReminderResponse
@@ -14,7 +15,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
-class StockReminderViewModel @Inject constructor(private val stockReminderDataUseCase: StockReminderDataUseCase, coroutineDispatcher: CoroutineDispatcher): BaseViewModel(coroutineDispatcher) {
+class StockReminderViewModel @Inject constructor(private val stockReminderDataUseCase: StockReminderDataUseCase, dispatchers: CoroutineDispatchers): BaseViewModel(dispatchers.main) {
 
     val getStockReminderLiveData : LiveData<Result<GetStockReminderResponse>> get() = getStockReminderMutableLiveData
     val createStockReminderLiveData : LiveData<Result<CreateStockReminderResponse>> get() = createStockReminderMutableLiveData

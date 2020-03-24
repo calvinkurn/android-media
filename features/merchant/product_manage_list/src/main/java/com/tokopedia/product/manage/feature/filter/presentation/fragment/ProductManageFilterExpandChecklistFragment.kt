@@ -5,22 +5,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.di.DaggerProductManageFilterComponent
 import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterComponent
-import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterModule
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.SelectAdapter
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.factory.SelectAdapterTypeFactory
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistViewModel
@@ -28,23 +24,26 @@ import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmode
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment.Companion.CATEGORIES_CACHE_MANAGER_KEY
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment.Companion.OTHER_FILTER_CACHE_MANAGER_KEY
+import com.tokopedia.product.manage.feature.filter.presentation.util.textwatcher.SearchListener
+import com.tokopedia.product.manage.feature.filter.presentation.util.textwatcher.SearchTextWatcher
 import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterExpandChecklistViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChecklistClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
 import kotlinx.android.synthetic.main.fragment_product_manage_filter_search.*
+import kotlinx.android.synthetic.main.product_manage_etalase_picker.*
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ProductManageFilterExpandChecklistFragment :
         Fragment(), ChecklistClickListener, SelectClickListener,
-        HasComponent<ProductManageFilterComponent> {
+        SearchListener, HasComponent<ProductManageFilterComponent> {
 
     companion object {
-        const val CATEGORIES_TITLE = "Semua Kategori"
-        const val OTHER_FILTER_TITLE = "Filter Lainnya"
+        private const val TOGGLE_ACTIVE = "active"
+        private const val TOGGLE_NOT_ACTIVE = "not active"
+        private const val DELAY_TEXT_CHANGE = 250L
+
         fun createInstance(flag: String, cacheManagerId: String): ProductManageFilterExpandChecklistFragment {
             return ProductManageFilterExpandChecklistFragment().apply {
                 arguments = Bundle().apply {
@@ -88,8 +87,8 @@ class ProductManageFilterExpandChecklistFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        filter_search_recycler_view.adapter = adapter
-        filter_search_recycler_view.layoutManager = LinearLayoutManager(this.context)
+        filterCheckListRecyclerView.adapter = adapter
+        filterCheckListRecyclerView.layoutManager = LinearLayoutManager(this.context)
         observeDataLength()
         observeChecklistData()
         initView()
@@ -97,6 +96,11 @@ class ProductManageFilterExpandChecklistFragment :
 
     override fun onChecklistClick(element: ChecklistViewModel) {
         productManageFilterExpandChecklistViewModel.updateSelectedItem(element)
+        if(element.isSelected) {
+            ProductManageTracking.eventMoreOthersFilter(element.name, TOGGLE_ACTIVE)
+        } else {
+            ProductManageTracking.eventMoreOthersFilter(element.name, TOGGLE_NOT_ACTIVE)
+        }
     }
 
     override fun onSelectClick(element: SelectViewModel) {
@@ -107,10 +111,18 @@ class ProductManageFilterExpandChecklistFragment :
         return activity?.run {
             DaggerProductManageFilterComponent
                     .builder()
-                    .productManageFilterModule(ProductManageFilterModule())
                     .productManageComponent(ProductManageInstance.getComponent(application))
                     .build()
         }
+    }
+
+    override fun onSearchTextChanged(text: String) {
+        processSearch(text)
+    }
+
+    override fun onDestroy() {
+        removeObservers()
+        super.onDestroy()
     }
 
     private fun initInjector() {
@@ -118,60 +130,47 @@ class ProductManageFilterExpandChecklistFragment :
     }
 
     private fun initView() {
-        initTitle()
         configToolbar()
-        filter_search_recycler_view.setOnTouchListener { _, _ ->
-            filter_category_search?.hideKeyboard()
-            btn_submit.visibility = View.VISIBLE
+        filterCheckListRecyclerView.setOnTouchListener { _, _ ->
+            filterSearchBar.clearFocus()
             false
         }
         initButtons()
     }
 
     private fun configToolbar() {
-        checklist_toolbar?.setNavigationIcon(R.drawable.product_manage_arrow_back)
-        activity?.let {
-            (it as? AppCompatActivity)?.let { appCompatActivity ->
-                appCompatActivity.setSupportActionBar(checklist_toolbar)
-                appCompatActivity.supportActionBar?.setDisplayShowTitleEnabled(false)
-                appCompatActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        filterSearchHeader.isShowShadow = false
+        filterSearchHeader.isShowBackButton = true
+        filterSearchHeader.setNavigationOnClickListener {
+            activity?.onBackPressed()
+        }
+        context?.let {
+            if(flag == CATEGORIES_CACHE_MANAGER_KEY) {
+                filterSearchHeader.title = it.resources.getString(R.string.product_manage_filter_all_categories_title)
+                initSearchView()
+            } else {
+                filterSearchHeader.title = it.resources.getString(R.string.product_manage_filter_other_filters_title)
             }
+            filterSearchHeader.actionText = it.resources.getString(R.string.filter_expand_reset)
         }
     }
 
     private fun initSearchView() {
-        filter_category_search.setDelayTextChanged(250)
-        filter_category_search.setListener(object : SearchInputView.Listener {
-            override fun onSearchSubmitted(text: String?) {
-                filter_category_search.hideKeyboard()
+        filterSearchBar.clearFocus()
+        filterSearchBar.showIcon = false
+        val searchTextWatcher = SearchTextWatcher(filterSearchBar.searchBarTextField, DELAY_TEXT_CHANGE, this)
+        filterSearchBar.searchBarTextField.addTextChangedListener(searchTextWatcher)
+
+        filterSearchBar.searchBarTextField.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                processSearch(searchBar.searchBarTextField.text.toString())
+                filterSearchBar.clearFocus()
+                return@setOnEditorActionListener true
             }
-            override fun onSearchTextChanged(text: String?) {
-                hideError()
-                text?.let {
-                    if(it.isNotEmpty()) {
-                        search(it).let { result ->
-                            if(result.isNotEmpty()) {
-                                adapter?.updateChecklistData(result)
-                            } else {
-                                showError()
-                            }
-                        }
-                    } else {
-                        productManageFilterExpandChecklistViewModel.checklistData.value?.toList()?.let {data ->
-                            adapter?.updateChecklistData(data)
-                        }
-                    }
-                }
-            }
-        })
-        filter_category_search.visibility = View.VISIBLE
-        filter_category_search.setFocusChangeListener {
-            if(btn_submit.visibility == View.VISIBLE) {
-                btn_submit.visibility = View.GONE
-            } else {
-                btn_submit.visibility = View.VISIBLE
-            }
+            false
         }
+
+        filterSearchBar.visibility = View.VISIBLE
     }
 
     private fun observeDataLength() {
@@ -191,17 +190,17 @@ class ProductManageFilterExpandChecklistFragment :
     }
 
     private fun showButtons() {
-        btn_submit.isEnabled = true
-        reset_checklist.visibility = View.VISIBLE
+        filterSubmitButton.isEnabled = true
+        filterSearchHeader.actionTextView?.visibility = View.VISIBLE
     }
 
     private fun hideButtons() {
-        btn_submit.isEnabled = false
-        reset_checklist.visibility = View.GONE
+        filterSubmitButton.isEnabled = false
+        filterSearchHeader.actionTextView?.visibility = View.GONE
     }
 
     private fun initButtons() {
-        btn_submit.setOnClickListener {
+        filterSubmitButton.setOnClickListener {
             val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, true) }
             val cacheManagerId = cacheManager?.id
             productManageFilterExpandChecklistViewModel.checklistData.value?.sortByDescending { it.isSelected }
@@ -226,18 +225,11 @@ class ProductManageFilterExpandChecklistFragment :
                         Intent().putExtra(ProductManageFilterFragment.CACHE_MANAGER_KEY, cacheManagerId))
             }
             this.activity?.finish()
+            ProductManageTracking.eventMoreOthersFilterSave()
         }
-        reset_checklist.setOnClickListener {
+        filterSearchHeader.actionTextView?.setOnClickListener {
+            adapter?.reset()
             productManageFilterExpandChecklistViewModel.clearAllChecklist()
-        }
-    }
-
-    private fun initTitle() {
-        if(flag == CATEGORIES_CACHE_MANAGER_KEY) {
-            page_title.text = CATEGORIES_TITLE
-            initSearchView()
-        } else {
-            page_title.text = OTHER_FILTER_TITLE
         }
     }
 
@@ -252,16 +244,36 @@ class ProductManageFilterExpandChecklistFragment :
     }
 
     private fun showError() {
-        filter_search_recycler_view.visibility = View.GONE
-        filter_search_error_img.visibility = View.VISIBLE
-        filter_search_error_text.visibility = View.VISIBLE
+        filterCheckListRecyclerView.visibility = View.GONE
+        filterSearchErrorImage.visibility = View.VISIBLE
+        filterSearchErrorText.visibility = View.VISIBLE
     }
 
     private fun hideError() {
-        filter_search_recycler_view.visibility = View.VISIBLE
-        filter_search_error_img?.visibility = View.GONE
-        filter_search_error_text.visibility = View.GONE
+        filterCheckListRecyclerView.visibility = View.VISIBLE
+        filterSearchErrorImage?.visibility = View.GONE
+        filterSearchErrorText.visibility = View.GONE
     }
 
+    private fun processSearch(searchText: String) {
+        if(searchText.isNotEmpty()) {
+            val result = search(searchText)
+            if(result.isNotEmpty()) {
+                hideError()
+                adapter?.updateChecklistData(result)
+            } else {
+                showError()
+            }
+        } else {
+            productManageFilterExpandChecklistViewModel.checklistData.value?.toList()?.let {data ->
+                adapter?.updateChecklistData(data)
+            }
+        }
+    }
+
+    private fun removeObservers() {
+        removeObservers(productManageFilterExpandChecklistViewModel.checklistData)
+        removeObservers(productManageFilterExpandChecklistViewModel.dataSize)
+    }
 
 }

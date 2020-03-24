@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.widget_header.view.*
 
 class FilterViewHolder(view: View,
                        private val seeAllListener: SeeAllListener,
-                       private val chipClickListener: ChipClickListener,
+                       private val chipClickListener: ChipsAdapter.ChipClickListener,
                        private val showChipsListener: ShowChipsListener) : AbstractViewHolder<FilterViewModel>(view) {
 
     companion object {
@@ -26,10 +26,10 @@ class FilterViewHolder(view: View,
         private const val FLIPPED_ROTATION = 180f
     }
 
-    private val recyclerView: RecyclerView = itemView.chips_recycler_view
+    private val recyclerView: RecyclerView = itemView.chipsRecyclerView
     private var adapter: ChipsAdapter? = null
-    private val headerWidget: HeaderWidget = itemView.filter_header
-    private val seeAllWidget: SeeAllWidget = itemView.filter_see_all
+    private val headerWidget: HeaderWidget = itemView.filterHeader
+    private val seeAllWidget: SeeAllWidget = itemView.filterSeeAll
 
 
     init {
@@ -50,6 +50,9 @@ class FilterViewHolder(view: View,
         } else {
             showChips()
         }
+        headerWidget.setOnClickListener {
+            showChipsListener.onShowChips(element)
+        }
         headerWidget.arrow.setOnClickListener {
             showChipsListener.onShowChips(element)
         }
@@ -60,7 +63,7 @@ class FilterViewHolder(view: View,
             ProductManageFilterMapper.ETALASE_HEADER -> {
                 ChipsAdapter(chipClickListener, false, element.title)
             }
-            else -> ChipsAdapter(chipClickListener, true)
+            else -> ChipsAdapter(chipClickListener, true, element.title)
         }
         recyclerView.adapter = adapter
         adapter?.setData(element)
