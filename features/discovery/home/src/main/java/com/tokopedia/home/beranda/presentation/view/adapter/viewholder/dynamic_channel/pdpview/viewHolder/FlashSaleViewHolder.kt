@@ -28,10 +28,8 @@ class FlashSaleViewHolder (view: View, private val listener: FlashSaleCardListen
             applyCarousel()
             setProductModel(element.productModel)
             addOnImpressionListener(element.impressHolder) {
-                channels.grids.forEach { grid ->
-                    if(grid.isTopads){
-                        ImpresionTask().execute(grid.impression)
-                    }
+                if(element.grid.isTopads){
+                    ImpresionTask().execute(element.grid.impression)
                 }
                 listener.onFlashSaleCardImpressed(adapterPosition, channels)
             }
