@@ -101,6 +101,9 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     private val playFragment: PlayFragment
         get() = requireParentFragment() as PlayFragment
 
+    private val generalErrorMessage: String
+        get() = getString(R.string.play_general_err_message)
+
     private lateinit var loadingDialog: PlayLoadingDialogFragment
 
     override fun getScreenName(): String = "Play Bottom Sheet"
@@ -247,7 +250,11 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
                 }
                 PlayAnalytics.clickProductAction(trackingQueue, channelId, it.product, it.cartId, playViewModel.channelType, it.action, it.bottomInsetsType)
             }
-            else Toaster.make(requireView(), it.errorMessage, Snackbar.LENGTH_LONG, type = Toaster.TYPE_ERROR)
+            else Toaster.make(
+                    requireView(),
+                    if (it.errorMessage.isNotEmpty() && it.errorMessage.isNotBlank()) it.errorMessage else generalErrorMessage,
+                    Snackbar.LENGTH_LONG,
+                    type = Toaster.TYPE_ERROR)
         })
     }
 
