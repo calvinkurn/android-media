@@ -3,7 +3,6 @@ package com.tokopedia.sellerhome.view.viewmodel
 import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.arch.core.executor.TaskExecutor
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.sellerhome.data.GetTickerRepository
 import com.tokopedia.sellerhome.domain.usecase.*
 import com.tokopedia.sellerhome.view.model.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -56,10 +55,7 @@ class SellerHomeViewModelTest : Spek({
 
         val dispatcher: CoroutineDispatcher = Dispatchers.Unconfined
 
-        val sellerHomeViewModel: SellerHomeViewModel by lazy {
-            SellerHomeViewModel(userSession, getTickerUseCase, getLayoutUseCase, getCardDataUseCase,
-                    getLineGraphDataUseCase, getProgressDataUseCase, getPostDataUseCase, getCarouselDataUseCase, dispatcher)
-        }
+        var sellerHomeViewModel: SellerHomeViewModel? = null
 
         Scenario("success get ticker") {
 
@@ -75,7 +71,7 @@ class SellerHomeViewModelTest : Spek({
             }
 
             When("get ticker") {
-                sellerHomeViewModel.getTicker()
+                sellerHomeViewModel?.getTicker()
             }
 
             Then("run usecase") {
@@ -85,7 +81,7 @@ class SellerHomeViewModelTest : Spek({
             }
 
             Then("view model value is success") {
-                val result = sellerHomeViewModel.homeTicker.value
+                val result = sellerHomeViewModel?.homeTicker?.value
                 assertTrue(result == Success(tickerList))
             }
 
@@ -100,7 +96,7 @@ class SellerHomeViewModelTest : Spek({
             }
 
             When("get ticker") {
-                sellerHomeViewModel.getTicker()
+                sellerHomeViewModel?.getTicker()
             }
 
             Then("run usecase") {
@@ -110,7 +106,7 @@ class SellerHomeViewModelTest : Spek({
             }
 
             Then("view model value is Fail") {
-                assertTrue(sellerHomeViewModel.homeTicker.value is Fail)
+                assertTrue(sellerHomeViewModel?.homeTicker?.value is Fail)
             }
         }
 
@@ -137,7 +133,7 @@ class SellerHomeViewModelTest : Spek({
             }
 
             When("get layout") {
-                sellerHomeViewModel.getWidgetLayout()
+                sellerHomeViewModel?.getWidgetLayout()
             }
 
             Then("run usecase") {
@@ -145,7 +141,7 @@ class SellerHomeViewModelTest : Spek({
             }
 
             Then("view model value is Success") {
-                assertTrue(sellerHomeViewModel.widgetLayout.value == Success(dummySuccessWidgetLayout))
+                assertTrue(sellerHomeViewModel?.widgetLayout?.value == Success(dummySuccessWidgetLayout))
             }
         }
 
@@ -160,7 +156,7 @@ class SellerHomeViewModelTest : Spek({
             }
 
             When("get layout") {
-                sellerHomeViewModel.getWidgetLayout()
+                sellerHomeViewModel?.getWidgetLayout()
             }
 
             Then("run usecase") {
@@ -168,7 +164,7 @@ class SellerHomeViewModelTest : Spek({
             }
 
             Then("view model value is Fail") {
-                assertTrue(sellerHomeViewModel.widgetLayout.value is Fail)
+                assertTrue(sellerHomeViewModel?.widgetLayout?.value is Fail)
             }
         }
 
@@ -190,11 +186,11 @@ class SellerHomeViewModelTest : Spek({
             }
 
             When("get card data") {
-                sellerHomeViewModel.getCardWidgetData(stringList)
+                sellerHomeViewModel?.getCardWidgetData(stringList)
             }
 
             Then("view model value is Success") {
-                assertTrue(sellerHomeViewModel.cardWidgetData.value == Success(dummyCardDataResult))
+                assertTrue(sellerHomeViewModel?.cardWidgetData?.value == Success(dummyCardDataResult))
             }
         }
 
@@ -212,11 +208,11 @@ class SellerHomeViewModelTest : Spek({
             }
 
             When("Get Card Data") {
-                sellerHomeViewModel.getCardWidgetData(stringList)
+                sellerHomeViewModel?.getCardWidgetData(stringList)
             }
 
             Then("view model value is Fail") {
-                assertTrue(sellerHomeViewModel.cardWidgetData.value is Fail)
+                assertTrue(sellerHomeViewModel?.cardWidgetData?.value is Fail)
             }
         }
 
@@ -234,11 +230,11 @@ class SellerHomeViewModelTest : Spek({
             }
 
             When("get line graph widget data") {
-                sellerHomeViewModel.getLineGraphWidgetData(dummyDataKeys)
+                sellerHomeViewModel?.getLineGraphWidgetData(dummyDataKeys)
             }
 
             Then("view model value is success") {
-                val result = sellerHomeViewModel.lineGraphWidgetData.value
+                val result = sellerHomeViewModel?.lineGraphWidgetData?.value
                 assertTrue(result == Success(dummyList))
             }
         }

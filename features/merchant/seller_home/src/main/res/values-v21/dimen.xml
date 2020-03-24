@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="centralized_promo_on_going_item_margin">6dp</dimen>
+    <dimen name="centralized_promo_promo_creation_card_horizontal_margin">6dp</dimen>
+    <dimen name="centralized_promo_promo_creation_icon_size">40dp</dimen>
+    <dimen name="centralized_promo_promo_creation_card_icon_size">56dp</dimen>
+</resources>

@@ -6,7 +6,6 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -28,7 +27,6 @@ import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.centralized_promo_partial_on_going_promo_success.*
 import kotlinx.android.synthetic.main.centralized_promo_partial_post.*
 import kotlinx.android.synthetic.main.centralized_promo_partial_promo_creation.*
 import kotlinx.android.synthetic.main.fragment_centralized_promo.*
@@ -176,11 +174,6 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
             val coachMarkItem = ArrayList(partialViews.filter { it.value.shouldShowCoachMark() }
                     .map { it.value.getCoachMarkItem() }
                     .filterNotNull())
-
-            context?.let {
-                layoutCentralizedPromoOnGoingPromoSuccess.setBackgroundColor(ContextCompat.getColor(it, R.color.white))
-                layoutCentralizedPromoCreation.setBackgroundColor(ContextCompat.getColor(it, R.color.white))
-            }
 
             coachMark.show(activity, TAG_COACH_MARK, coachMarkItem)
         }
