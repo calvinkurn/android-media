@@ -30,6 +30,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.StatusbarHelper
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant
@@ -47,6 +48,7 @@ import com.tokopedia.sellerhome.settings.view.viewholder.OtherMenuViewHolder
 import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
 import com.tokopedia.sellerhome.view.StatusBarCallback
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
+import com.tokopedia.sellerhome.view.viewmodel.SharedViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -87,8 +89,14 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     private var isInitialStatusBar = false
     private var isDefaultDarkStatusBar = true
 
+    @FragmentType
+    private var currentFragmentType: Int = FragmentType.HOME
+
     private val otherMenuViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(OtherMenuViewModel::class.java)
+    }
+    private val sharedViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(SharedViewModel::class.java)
     }
 
     private val statusBarHeight by lazy {
@@ -197,7 +205,9 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
             setStatusBarStateInitialIsLight(isDefaultDark)
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBar()
+            if (currentFragmentType == FragmentType.OTHER) {
+                setStatusBar()
+            }
         }
     }
 
@@ -236,15 +246,15 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun observeLiveData() {
-        with(otherMenuViewModel) {
-            settingShopInfoLiveData.observe(viewLifecycleOwner, Observer { result ->
-                when(result) {
-                    is Success -> showSettingShopInfoState(result.data)
-                    is Fail -> showSettingShopInfoState(SettingResponseState.SettingError)
-                }
-            })
-
-        }
+        otherMenuViewModel.settingShopInfoLiveData.observe(viewLifecycleOwner, Observer { result ->
+            when(result) {
+                is Success -> showSettingShopInfoState(result.data)
+                is Fail -> showSettingShopInfoState(SettingResponseState.SettingError)
+            }
+        })
+        sharedViewModel.currentSelectedPage.observe(viewLifecycleOwner, Observer { selectedPage ->
+            currentFragmentType = selectedPage.type
+        })
     }
 
     private fun populateAdapterData() {
