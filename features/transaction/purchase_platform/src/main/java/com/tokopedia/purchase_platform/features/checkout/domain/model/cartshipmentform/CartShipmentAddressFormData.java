@@ -42,6 +42,7 @@ public class CartShipmentAddressFormData implements Parcelable {
     private TickerData tickerData;
     private AddressesData addressesData;
     private DisabledFeaturesDetailData disabledFeaturesDetailData;
+    private CampaignTimerUi campaignTimerUi;
 
     public boolean isHasError() {
         return hasError;
@@ -243,6 +244,14 @@ public class CartShipmentAddressFormData implements Parcelable {
         this.disabledFeaturesDetailData = disabledFeaturesDetailData;
     }
 
+    public CampaignTimerUi getCampaignTimerUi() {
+        return campaignTimerUi;
+    }
+
+    public void setCampaignTimerUi(CampaignTimerUi campaignTimerUi) {
+        this.campaignTimerUi = campaignTimerUi;
+    }
+
     public CartShipmentAddressFormData() {
     }
 
@@ -269,6 +278,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         tickerData = in.readParcelable(TickerData.class.getClassLoader());
         addressesData = in.readParcelable(AddressesData.class.getClassLoader());
         disabledFeaturesDetailData = in.readParcelable(DisabledFeaturesDetailData.class.getClassLoader());
+        campaignTimerUi = in.readParcelable(CampaignTimerUi.class.getClassLoader());
     }
 
     @Override
@@ -295,6 +305,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeParcelable(tickerData, flags);
         dest.writeParcelable(addressesData, flags);
         dest.writeParcelable(disabledFeaturesDetailData, flags);
+        dest.writeParcelable(campaignTimerUi, flags);
     }
 
     @Override
