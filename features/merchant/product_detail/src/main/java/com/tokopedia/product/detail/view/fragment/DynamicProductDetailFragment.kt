@@ -2499,4 +2499,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             productDetailTracking.eventViewHelpPopUpWhenAtc()
         }
     }
+
+    override fun onNotifyMeClicked(campaignId: Int, source: String) {
+
+    }
 }

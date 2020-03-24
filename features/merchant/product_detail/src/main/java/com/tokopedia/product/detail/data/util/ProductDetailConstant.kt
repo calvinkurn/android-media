@@ -105,6 +105,7 @@ object ProductDetailConstant {
     const val SEPARATOR = "separator"
     const val VALUE_PROPOSITION = "value_prop"
     const val PRODUCT_LIST = "product_list"
+    const val NOTIFY_ME = "teaser"
     const val VARIANT_OPTIONS = "variant_options"
     const val VARIANT = "variant"
     const val SOCIAL_PROOF_PV = "social_proof_pv"

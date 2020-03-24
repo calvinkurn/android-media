@@ -84,6 +84,9 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     val productSocialProofPvDataModel: ProductSocialProofPvDataModel?
         get() = mapOfData[ProductDetailConstant.SOCIAL_PROOF_PV] as? ProductSocialProofPvDataModel
 
+    val notifyMeMap: ProductNotifyMeDataModel?
+        get() = mapOfData[ProductDetailConstant.NOTIFY_ME] as? ProductNotifyMeDataModel
+
     val listProductRecomMap: List<ProductRecommendationDataModel>? = mapOfData.filterKeys {
         it == ProductDetailConstant.PDP_1 || it == ProductDetailConstant.PDP_2
                 || it == ProductDetailConstant.PDP_3 || it == ProductDetailConstant.PDP_4
@@ -100,6 +103,15 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                 shouldRenderImageVariant = true
                 dynamicProductInfoP1 = it
                 media = DynamicProductDetailMapper.convertMediaToDataModel(it.data.media.toMutableList())
+            }
+
+            notifyMeMap?.run {
+                campaignID = it.data.campaignId
+                campaignType = it.data.campaignType
+                campaignTypeName = it.data.campaignTypeName
+                endDate = it.data.endDate
+                startDate = it.data.startDate
+                notifyMe = it.data.notifyMe
             }
 
             valuePropositionDataModel?.run {

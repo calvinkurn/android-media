@@ -105,4 +105,9 @@ interface DynamicProductDetailListener {
      * ImpressionComponent
      */
     fun onImpressComponent(componentTrackDataModel: ComponentTrackDataModel)
+
+    /**
+     * ProductNotifyMeViewHolder
+     */
+    fun onNotifyMeClicked(campaignId: Int, source: String)
 }

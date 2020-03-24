@@ -11,5 +11,8 @@
     <color name="sale_stock_available_text">#ae31353b</color>
     <color name="bg_grey_unselected">#E5E7E9</color>
     <color name="border_circle_grey">#D3D3D3</color>
+    <color name="light_N700_AE">#ae31353b</color>
+    <color name="bg_countdown_red">#fd412b</color>
+    <color name="bg_notify_me">#4c03ac0e</color>
 
 </resources>
