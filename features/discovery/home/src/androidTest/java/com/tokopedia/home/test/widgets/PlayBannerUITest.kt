@@ -1,12 +1,16 @@
 package com.tokopedia.home.test.widgets
 
-import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.google.gson.Gson
+import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
@@ -24,6 +28,7 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
+import org.hamcrest.CoreMatchers.not
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -37,8 +42,6 @@ class PlayBannerUITest {
     @Rule
     @JvmField
     val taskExecutorRule = InstantTaskExecutorRule()
-
-    private lateinit var homeFragment: HomeFragment
 
     private val userSessionInterface = mockk<UserSessionInterface>(relaxed = true)
     private val dismissHomeReviewUseCase = mockk<DismissHomeReviewUseCase>(relaxed = true)
@@ -81,8 +84,12 @@ class PlayBannerUITest {
 
     @Before
     fun setup(){
-        homeFragment = HomeFragment()
         every { userSessionInterface.isLoggedIn } returns false
+    }
+
+    @Test
+    fun testNoSkeletonDataFromHome(){
+        val homeFragment = HomeFragment()
         val json = HomeJson.resultNoSkeleton
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
         coEvery { getHomeUseCase.getHomeData() } returns flow {
@@ -90,17 +97,26 @@ class PlayBannerUITest {
         }
         homeFragment.viewModelFactory = createViewModelFactory(viewModel)
         activityRule.activity.setupFragment(homeFragment)
-    }
-
-    @Test
-    fun testNoSkeletonDataFromHome(){
-        Thread.sleep(10000)
-        assert(true)
+        Thread.sleep(2000)
+        onView(withId(R.id.play_frame_layout)).check(doesNotExist())
     }
 
     @Test
     fun testHappyPathPlayBannerUI(){
         assert(true)
+        val homeFragment = HomeFragment()
+        val json = HomeJson.resultWithSkeleton
+        val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
+        coEvery { getHomeUseCase.getHomeData() } returns flow {
+            emit(homeDataMapper.mapToHomeViewModel(homeData, false))
+        }
+        homeFragment.viewModelFactory = createViewModelFactory(viewModel)
+        activityRule.activity.setupFragment(homeFragment)
+        Thread.sleep(2000)
+        onView(withId(R.id.play_frame_layout)).check(matches(not(isDisplayed())))
+//        onView(withId(R.id.title)).check(matches(isDisplayed()))
+//        onView(withId(R.id.title)).check(matches(withText("Play Widget")))
+        Thread.sleep(5000)
     }
 
 

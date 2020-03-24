@@ -23,7 +23,7 @@ class HomeActivityTest : AppCompatActivity(), MainParentStatusBarListener {
 
     fun setupFragment(fragment: Fragment){
         supportFragmentManager.beginTransaction()
-                .add(R.id.container_home, fragment, "TAG_FRAGMENT")
+                .replace(R.id.container_home, fragment, "TAG_FRAGMENT")
                 .commit()
     }
 }

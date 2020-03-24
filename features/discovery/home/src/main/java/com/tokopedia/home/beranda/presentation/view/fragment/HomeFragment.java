@@ -669,6 +669,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         });
     }
 
+    @VisibleForTesting
     private void observeRequestImagePlayBanner(){
         viewModel.getRequestImageTestLiveData().observe(this, playCardViewModelEvent -> {
             Glide.with(getContext())
