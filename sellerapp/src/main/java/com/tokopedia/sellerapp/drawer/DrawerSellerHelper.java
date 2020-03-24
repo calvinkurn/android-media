@@ -126,7 +126,7 @@ public class DrawerSellerHelper extends DrawerHelper
                 R.drawable.icon_setting,
                 TkpdState.DrawerPosition.SETTINGS,
                 true));
-        data.add(new DrawerItem(context.getString(R.string.title_activity_contact_us),
+        data.add(new DrawerItem(context.getString(R.string.title_activity_contact_us_drawer),
                 R.drawable.ic_contactus,
                 TkpdState.DrawerPosition.CONTACT_US,
                 true));

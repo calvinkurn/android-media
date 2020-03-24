@@ -66,6 +66,7 @@ import com.tokopedia.inbox.common.ResolutionRouter;
 import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
+import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
@@ -140,6 +141,7 @@ import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.topchat.attachproduct.view.activity.BroadcastMessageAttachProductActivity;
+import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
@@ -200,10 +202,15 @@ public abstract class SellerRouterApplication extends MainApplication
         initializeDagger();
         initializeRemoteConfig();
         initResourceDownloadManager();
+        initIris();
     }
 
     private void initResourceDownloadManager() {
         (new DeferredResourceInitializer()).initializeResourceDownloadManager(context);
+    }
+
+    private void initIris() {
+        IrisAnalytics.Companion.getInstance(this).initialize();
     }
 
     private void initializeRemoteConfig() {
@@ -977,5 +984,11 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Fragment getProductManageFragment() {
         return ProductManageFragment.newInstance();
+    }
+
+    @NotNull
+    @Override
+    public Fragment getChatListFragment() {
+        return ChatTabListFragment.create();
     }
 }

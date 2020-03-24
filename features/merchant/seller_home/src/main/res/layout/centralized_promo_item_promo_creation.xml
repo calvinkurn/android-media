@@ -107,8 +107,8 @@
 
         <ImageView
             android:id="@+id/ivRecommendedPromo"
-            android:layout_width="@dimen/layout_lvl3"
-            android:layout_height="@dimen/layout_lvl3"
+            android:layout_width="@dimen/centralized_promo_promo_creation_icon_size"
+            android:layout_height="@dimen/centralized_promo_promo_creation_icon_size"
             android:layout_gravity="center"
             android:adjustViewBounds="true"
             app:srcCompat="@drawable/sh_ic_top_ads_color" />

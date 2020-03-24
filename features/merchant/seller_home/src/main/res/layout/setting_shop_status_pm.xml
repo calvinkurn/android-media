@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:paddingTop="@dimen/setting_status_margin_top"
-    android:paddingBottom="@dimen/setting_status_margin"
+    android:paddingTop="@dimen/setting_status_padding_top"
+    android:paddingBottom="@dimen/setting_status_padding_bottom"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifycomponents.CardUnify

@@ -46,6 +46,7 @@ const val REMOTE_CONFIG_IRIS_BATCH_SEND = "android_main_app_line_iris_batch_send
 
 const val KEY_CONTAINER = "gtm"
 const val KEY_EVENT = "default_app"
+const val KEY_EVENT_SELLERAPP = "default_sellerapp"
 
 const val DEFAULT_CONFIG = "{\"row_limit\":25,\"interval\":2}"
 const val JOB_IRIS_ID = 1500

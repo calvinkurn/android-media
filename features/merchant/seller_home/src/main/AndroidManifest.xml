@@ -85,7 +85,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_marketplace"
+                    android:host="@string/host_sellerapp"
                     android:path="@string/path_centralized_promo"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>

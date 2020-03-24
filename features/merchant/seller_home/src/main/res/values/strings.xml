@@ -9,6 +9,7 @@
     <string name="sah_max_progress">/100</string>
     <string name="sah_failed_to_get_information">Informasi gagal dimuat</string>
     <string name="sah_reload">Muat ulang</string>
+    <string name="sah_exit_message">Tekan sekali lagi untuk keluar</string>
 
     <!--bottom nav-->
     <string name="sah_home">Home</string>
@@ -21,8 +22,6 @@
 
     <!--toolbar menu-->
     <string name="sah_notification">Notifikasi</string>
-    <string name="sah_add_product">Tambah Produk</string>
-    <string name="sah_chat_settings">Pengaturan Chat</string>
 
     <string name="sah_ticker_warning">#ecdb77</string>
 
@@ -38,7 +37,7 @@
     <string name="setting_not_active">Tidak Aktif</string>
     <string name="setting_on_verification">Sedang Diverifikasi</string>
     <string name="setting_balance">Saldo</string>
-    <string name="setting_topads_credits">Kredit Topads</string>
+    <string name="setting_topads_credits">Kredit TopAds</string>
     <string name="setting_logout">Logout</string>
     <string name="setting_application_version">Versi %1$s</string>
     <string name="setting_tc_divider">|</string>
@@ -52,7 +51,7 @@
     <string name="setting_menu_improve_sales">TINGKATKAN PENJUALAN</string>
     <string name="setting_menu_shop_statistic">Statistik Toko</string>
     <string name="setting_menu_ads_and_shop_promotion">Iklan &amp; Promosi Toko</string>
-    <string name="setting_menu_buyer_info">KABAR PEMBELI</string>
+    <string name="setting_menu_buyer_info">KATA PEMBELI</string>
     <string name="setting_menu_review">Ulasan</string>
     <string name="setting_menu_discussion">Diskusi</string>
     <string name="setting_menu_complaint">Komplain</string>
@@ -81,6 +80,12 @@
     <string name="setting_menu_developer_options">Developer Options</string>
     <string name="setting_error_message">Data tidak dapat ditampilkan</string>
     <string name="setting_error_description">Ketuk icon untuk memuat ulang</string>
+    <string name="setting_topads_status">Tambah Kredit Otomatis kamu %1$s aktif</string>
+    <string name="setting_topads_status_active">sedang</string>
+    <string name="setting_topads_status_inactive">belum</string>
+    <string name="setting_topads_description_active">Nggak perlu khawatir kehabisan, kredit TopAds akan otomatis ditambahkan dari Saldo Penghasilan setiap kreditmu menipis.</string>
+    <string name="setting_topads_description_inactive">Dengan mengaktifkan, kredit TopAds akan otomatis ditambahkan dari Saldo Penghasilan setiap kreditmu menipis.</string>
+    <string name="setting_topads_next">Atur</string>
 
     <!--  Centralized Promo  -->
     <string name="centralized_promo_toolbar_title">Iklan dan Promosi</string>
