@@ -1,12 +1,12 @@
 package com.tokopedia.graphql.coroutines.data.source
 
+import com.akamai.botman.CYFMonitor
 import com.google.gson.JsonElement
 import com.google.gson.JsonArray
 import com.tokopedia.graphql.FingerprintManager
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.*
-import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend
 import kotlinx.coroutines.*
 import timber.log.Timber
@@ -19,10 +19,14 @@ class GraphqlCloudDataStore @Inject constructor(private val api: GraphqlApiSuspe
                                                 private val fingerprintManager: FingerprintManager) : GraphqlDataStore {
 
     override suspend fun getResponse(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponseInternal {
+        CYFMonitor.setLogLevel(CYFMonitor.INFO)
         return withContext(Dispatchers.Default) {
             var result = JsonArray()
             try {
-                result = api.getResponseSuspend(requests.toMutableList())
+                result = api.getResponseSuspend(
+                        requests.toMutableList(),
+                        CYFMonitor.getSensorData() ?: ""
+                )
             } catch (e: Throwable) {
                 if (e !is UnknownHostException && e!is SocketTimeoutException && e !is CancellationException) {
                     Timber.e(e, "P1#REQUEST_ERROR_GQL#$requests")

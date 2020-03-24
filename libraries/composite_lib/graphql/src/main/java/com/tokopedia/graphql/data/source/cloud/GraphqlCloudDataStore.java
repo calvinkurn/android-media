@@ -2,6 +2,7 @@ package com.tokopedia.graphql.data.source.cloud;
 
 import android.text.TextUtils;
 
+import com.akamai.botman.CYFMonitor;
 import com.tokopedia.graphql.FingerprintManager;
 import com.tokopedia.graphql.GraphqlCacheManager;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -37,7 +38,8 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
 
     @Override
     public Observable<GraphqlResponseInternal> getResponse(List<GraphqlRequest> requests, GraphqlCacheStrategy cacheStrategy) {
-        return mApi.getResponse(requests)
+        CYFMonitor.setLogLevel(CYFMonitor.INFO);
+        return mApi.getResponse(requests, CYFMonitor.getSensorData())
                 .doOnError(throwable -> {
                     if (!(throwable instanceof UnknownHostException) && !(throwable instanceof SocketTimeoutException)) {
                         Timber.e(throwable, "P1#REQUEST_ERROR_GQL#%s", requests.toString());
