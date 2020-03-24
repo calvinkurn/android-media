@@ -45,6 +45,7 @@ abstract class BaseProductCampaignViewHolder(
         val product = element.getAtcProduct() ?: return
         //single product container
         productContainer.setOnClickListener {
+            listener.itemContainerClicked(element)
             notificationItemMarkedClick(element)
             trackProduct(element)
             getItemClickListener(product)
