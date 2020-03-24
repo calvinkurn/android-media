@@ -14,8 +14,8 @@ internal fun ProductCardFlashSaleView.renderProductCardFlashSaleContent(productC
     renderTextProductName(productCardModel)
     renderDiscount(productCardModel)
     renderTextPrice(productCardModel)
-    renderStockLabel(productCardModel)
     renderStockPercentage(productCardModel)
+    renderStockLabel(productCardModel)
 }
 
 private fun ProductCardFlashSaleView.renderPdpCountView(productCardModel: ProductCardFlashSaleModel) {
@@ -62,7 +62,6 @@ private fun ProductCardFlashSaleView.renderStockLabel(productCardModel: ProductC
         it.text = productCardModel.stockBarLabel
     }
 }
-
 
 private fun ProductCardFlashSaleModel.getPriceToRender(): String {
     return if (priceRange.isNotEmpty()) priceRange else formattedPrice
