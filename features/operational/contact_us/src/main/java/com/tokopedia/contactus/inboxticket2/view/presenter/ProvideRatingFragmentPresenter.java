@@ -129,41 +129,41 @@ public class ProvideRatingFragmentPresenter extends BaseDaggerPresenter<ProvideR
 
     @Override
     public void onSubmitClick() {
-        RequestParams requestParams = submitRatingUseCase.createRequestParams(getView().getCommentId(),emojiState+"",getView().getSelectedItem());
-        getView().showProgress();
-        submitRatingUseCase.execute(requestParams, new Subscriber<ChipGetInboxDetail>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (isViewNotAttached()) {
-                    return;
-                }
-                getView().hideProgress();
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(ChipGetInboxDetail chipGetInboxDetail) {
-                if (isViewNotAttached()) {
-                    return;
-                }
-                getView().hideProgress();
-                if(chipGetInboxDetail.getMessageError() != null && chipGetInboxDetail.getMessageError().size() > 0) {
-                    getView().showErrorMessage(chipGetInboxDetail.getMessageError().get(0));
-                }else {
-                    getView().onSuccessSubmit();
-                }
-            }
-        });
+//        RequestParams requestParams = submitRatingUseCase.createRequestParams(getView().getCommentId(),emojiState+"",getView().getSelectedItem());
+//        getView().showProgress();
+//        submitRatingUseCase.execute(requestParams, new Subscriber<ChipGetInboxDetail>() {
+//            @Override
+//            public void onCompleted() {
+//
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//                if (isViewNotAttached()) {
+//                    return;
+//                }
+//                getView().hideProgress();
+//                e.printStackTrace();
+//            }
+//
+//            @Override
+//            public void onNext(ChipGetInboxDetail chipGetInboxDetail) {
+//                if (isViewNotAttached()) {
+//                    return;
+//                }
+//                getView().hideProgress();
+//                if(chipGetInboxDetail.getMessageError() != null && chipGetInboxDetail.getMessageError().size() > 0) {
+//                    getView().showErrorMessage(chipGetInboxDetail.getMessageError().get(0));
+//                }else {
+//                    getView().onSuccessSubmit();
+//                }
+//            }
+//        });
     }
 
     @Override
     public void detachView() {
-        submitRatingUseCase.unsubscribe();
+       // submitRatingUseCase.unsubscribe();
         super.detachView();
     }
 }

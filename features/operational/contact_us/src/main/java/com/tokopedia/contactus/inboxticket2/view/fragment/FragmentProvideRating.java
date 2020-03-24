@@ -73,7 +73,7 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_rating_provide, container, false);
         initView(view);
-        presenter = component.getProvideRatingPresenter();
+        presenter = component.provideRatingPresenter();
         presenter.attachView(this);
         disableSubmitButton();
         return view;

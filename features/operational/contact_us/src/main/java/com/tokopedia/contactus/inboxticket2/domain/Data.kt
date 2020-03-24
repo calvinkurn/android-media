@@ -1,0 +1,15 @@
+package com.tokopedia.contactus.inboxticket2.domain
+
+import com.google.gson.annotations.SerializedName
+
+class Data {
+    @SerializedName("show_bad_reason")
+    val showBadReason = 0
+    @SerializedName("bad_reason_code")
+    val badReasonCode = 0
+    @SerializedName("rating")
+    var rating: String? = null
+    @SerializedName("comment_id")
+    val commentId: String? = null
+
+}
