@@ -37,11 +37,14 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.WeaverFirebaseConditionCheck
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.NotNull
 import java.util.*
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 
 /**
@@ -49,7 +52,7 @@ import javax.inject.Inject
  * ade.hadian@tokopedia.com
  */
 
-class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
+class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed, CoroutineScope {
 
     private lateinit var screenViewpager: ViewPager
     private lateinit var skipAction: Typography
@@ -336,4 +339,7 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             return fragment
         }
     }
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main
 }
