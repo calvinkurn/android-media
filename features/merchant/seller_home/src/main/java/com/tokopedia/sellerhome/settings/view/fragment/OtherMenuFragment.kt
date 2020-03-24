@@ -89,8 +89,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     private var isInitialStatusBar = false
     private var isDefaultDarkStatusBar = true
 
+    private var canShowErrorToaster = true
+
     @FragmentType
-    private var currentFragmentType: Int = FragmentType.HOME
+    private var currentFragmentType: Int = FragmentType.OTHER
 
     private val otherMenuViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(OtherMenuViewModel::class.java)
@@ -340,13 +342,16 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
             }
             is SettingResponseState.SettingLoading -> otherMenuViewHolder?.onLoadingGetSettingShopInfoData()
             is SettingResponseState.SettingError -> {
-                view?.showToasterError(resources.getString(R.string.setting_toaster_error_message))
+                if (currentFragmentType == FragmentType.OTHER) {
+                    view?.showToasterError(resources.getString(R.string.setting_toaster_error_message))
+                }
                 otherMenuViewHolder?.onErrorGetSettingShopInfoData()
             }
         }
     }
 
     private fun retryFetchAfterError() {
+        showAllLoadingShimmering()
         otherMenuViewModel.getAllSettingShopInfo()
     }
 
