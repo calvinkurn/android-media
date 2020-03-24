@@ -1,6 +1,7 @@
 package com.tokopedia.gamification.giftbox.presentation.fragments
 
 import android.animation.*
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -10,17 +11,28 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ProgressBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.gamification.R
+import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
 import com.tokopedia.gamification.giftbox.presentation.activities.GiftLauncherActivity
+import com.tokopedia.gamification.giftbox.presentation.dialogs.NoInternetDialog
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
+import com.tokopedia.gamification.giftbox.presentation.viewmodels.GiftBoxTapTapViewModel
 import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
 import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxTapTapView
 import com.tokopedia.gamification.giftbox.presentation.views.RewardSummaryView
+import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import javax.inject.Inject
 
 class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
@@ -37,20 +49,40 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     var hourCountDownTimer: CountDownTimer? = null
     var minuteCountDownTimer: CountDownTimer? = null
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModel: GiftBoxTapTapViewModel
+
 
     override fun getLayout() = R.layout.fragment_gift_tap_tap
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        context?.let {
+            val component = DaggerGiftBoxComponent.builder()
+                    .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
+                    .build()
+            component.inject(this)
+
+            if (it is AppCompatActivity) {
+                val viewModelProvider = ViewModelProviders.of(context as AppCompatActivity, viewModelFactory)
+                viewModel = viewModelProvider[GiftBoxTapTapViewModel::class.java]
+            }
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val v = super.onCreateView(inflater, container, savedInstanceState)
 
         colorDim = ContextCompat.getColor(activity!!, R.color.gf_dim)
         colorBlackTransParent = ContextCompat.getColor(activity!!, R.color.gf_black_transparent)
-        showLoader()
-        v.postDelayed({
-            hideLoader()
-            renderHourTimerState()
-            giftBoxDailyView.startInitialAnimation()?.start()
-        }, 1000L)
+//        showLoader()
+//        v.postDelayed({
+//            hideLoader()
+//            renderHourTimerState()
+//            giftBoxDailyView.startInitialAnimation()?.start()
+//        }, 1000L)
+        viewModel.getGiftBoxHome()
         return v
     }
 
@@ -133,6 +165,61 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
                 anim1.addListener(onEnd = { afterRewardAnimationEnds() })
                 anim1.start()
+            }
+        }
+
+        viewModel.giftHomeLiveData.observe(viewLifecycleOwner, Observer {
+            when (it.status) {
+                LiveDataResult.STATUS.LOADING -> {
+                    showLoader()
+                }
+                LiveDataResult.STATUS.SUCCESS -> {
+                    if (it.data != null) {
+
+                        //toolbar
+                        val toolbarTitle = it.data?.gamiTapEggHome?.tokensUser?.title
+
+                        //timer
+                        val timeLeftHours = it.data?.gamiTapEggHome?.timeRemaining?.unixFetch
+                        val timeLeftSeconds = it.data?.gamiTapEggHome?.timeRemaining?.seconds
+                        val showTimer = it.data?.gamiTapEggHome?.timeRemaining?.isShow
+
+                        //glowing mode
+                        val glowImageUrl = it.data?.gamiTapEggHome?.tokenAsset?.glowImgURL
+                        val glowShadowImageUrl = it.data?.gamiTapEggHome?.tokenAsset?.glowShadowImgURL
+
+                        val shouldGlow = (!glowImageUrl.isNullOrEmpty() && glowShadowImageUrl.isNullOrEmpty())
+
+                    }
+                }
+                LiveDataResult.STATUS.ERROR -> {
+                    hideLoader()
+                    renderGiftBoxError("Yaah, ada gangguan koneksi. Refresh lagi untuk buka hadiahmu.", "Oke")
+                }
+            }
+        })
+        viewModel.giftCrackLiveData.observe(viewLifecycleOwner, Observer {
+            when (it.status) {
+                LiveDataResult.STATUS.LOADING -> {
+                }
+                LiveDataResult.STATUS.SUCCESS -> {
+                    if (it.data != null) {
+
+                    }
+                }
+                LiveDataResult.STATUS.ERROR -> {
+                }
+            }
+        })
+    }
+
+    fun renderGiftBoxError(message: String, actionText: String) {
+        if (context != null) {
+            val internetAvailable = DeviceConnectionInfo.isInternetAvailable(context!!, checkWifi = true, checkCellular = true)
+            if (!internetAvailable) {
+                showNoInterNetDialog(viewModel::getGiftBoxHome, context!!)
+            } else {
+                showRedError(fmParent, message, actionText, viewModel::getGiftBoxHome)
             }
         }
     }

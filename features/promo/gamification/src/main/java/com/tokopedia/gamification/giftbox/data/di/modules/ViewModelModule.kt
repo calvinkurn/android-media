@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.gamification.giftbox.data.di.scope.GiftBoxScope
 import com.tokopedia.gamification.giftbox.presentation.viewmodels.GiftBoxDailyViewModel
+import com.tokopedia.gamification.giftbox.presentation.viewmodels.GiftBoxTapTapViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -23,4 +24,10 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(GiftBoxDailyViewModel::class)
     abstract fun giftBoxViewModel(viewModel: GiftBoxDailyViewModel): ViewModel
+
+    @GiftBoxScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(GiftBoxTapTapViewModel::class)
+    abstract fun giftBoxTapTapViewModel(viewModel: GiftBoxTapTapViewModel): ViewModel
 }

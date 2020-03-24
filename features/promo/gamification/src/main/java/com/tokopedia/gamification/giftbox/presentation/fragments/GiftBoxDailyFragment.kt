@@ -448,15 +448,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         }
     }
 
-    fun showNoInterNetDialog(method: (() -> Unit), context: Context) {
-        val dialog = NoInternetDialog()
-        dialog.showDialog(context)
-        dialog.btnRetry.setOnClickListener {
-            dialog.closeAbleDialog.dismiss()
-            method.invoke()
-        }
-    }
-
     fun renderReminderButton(isUserReminded: Boolean) {
         context?.let {
             if (isUserReminded) {
@@ -618,7 +609,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
     }
 
-    fun renderGiftBoxEmpty() {}
     fun renderGiftBoxError(message: String, actionText: String) {
         if (context != null) {
             val internetAvailable = DeviceConnectionInfo.isInternetAvailable(context!!, checkWifi = true, checkCellular = true)
@@ -629,8 +619,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             }
         }
     }
-
-    fun renderGiftBoxNoInternet() {}
 
     enum class GiftBoxState {
         ACTIVE, EMPTY, ERROR, NO_INTERNET

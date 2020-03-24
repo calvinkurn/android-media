@@ -70,6 +70,7 @@
         android:layout_width="223dp"
         android:layout_height="193dp"
         android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/dp_3"
         android:alpha="0"
         app:srcCompat="@drawable/gf_ic_box_glow"
         tools:alpha="0" />
@@ -79,6 +80,7 @@
         android:layout_width="170dp"
         android:layout_height="160dp"
         android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/dp_3"
         android:scaleType="fitCenter"
         app:srcCompat="@drawable/gf_ic_box_white"
         tools:alpha="0" />

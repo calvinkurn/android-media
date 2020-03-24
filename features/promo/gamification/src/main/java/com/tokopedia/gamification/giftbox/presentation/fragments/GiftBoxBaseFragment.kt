@@ -14,6 +14,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.gamification.R
+import com.tokopedia.gamification.giftbox.presentation.dialogs.NoInternetDialog
 import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer
 import com.tokopedia.gamification.giftbox.presentation.views.StarsContainer
@@ -168,6 +169,15 @@ open class GiftBoxBaseFragment : Fragment() {
                     method?.invoke()
                 },
                 type = Toaster.TYPE_ERROR)
+    }
+
+    fun showNoInterNetDialog(method: (() -> Unit), context: Context) {
+        val dialog = NoInternetDialog()
+        dialog.showDialog(context)
+        dialog.btnRetry.setOnClickListener {
+            dialog.closeAbleDialog.dismiss()
+            method.invoke()
+        }
     }
 
 }

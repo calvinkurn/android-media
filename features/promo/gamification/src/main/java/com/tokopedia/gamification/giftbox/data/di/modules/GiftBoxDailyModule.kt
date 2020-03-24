@@ -15,14 +15,6 @@ import javax.inject.Named
 class GiftBoxDailyModule {
 
     @Provides
-    @Named(MAIN)
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
-
-    @Provides
-    @Named(IO)
-    fun provideWorkerDispatcher(): CoroutineDispatcher = Dispatchers.IO
-
-    @Provides
     @Named(GIFT_BOX_DAILY)
     fun provideGiftBoxDailyQuery(@ApplicationContext context: Context): String = GraphqlHelper.loadRawString(context.resources, R.raw.gf_gift_box_daily)
 
