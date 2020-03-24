@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -122,7 +121,10 @@ class StockReminderFragment: BaseDaggerFragment() {
 
         getStockReminder()
 
-        qeStock.maxValue = stock
+        when(stock) {
+            0 -> qeStock.maxValue = 1
+            else -> qeStock.maxValue = stock
+        }
 
         qeStock.apply {
             editText.setOnEditorActionListener { _, actionId, _ ->
