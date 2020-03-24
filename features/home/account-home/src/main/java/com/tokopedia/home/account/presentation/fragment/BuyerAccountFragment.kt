@@ -2,21 +2,25 @@ package com.tokopedia.home.account.presentation.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.ToasterError
+import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
+import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
+import com.tokopedia.discovery.common.manager.showProductCardOptions
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.home.account.AccountConstants
 import com.tokopedia.home.account.R
@@ -34,10 +38,8 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.track.TrackApp
-import com.tokopedia.trackingoptimizer.TrackingQueue
-
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_buyer_account.*
-
 import javax.inject.Inject
 
 /**
@@ -84,6 +86,12 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
 
         swipe_refresh_layout.setOnRefreshListener { this.getData() }
         sendBuyerAccountItemImpression()
+
+        scrollToTop()
+        context?.let {
+            GraphqlClient.init(it)
+            getData()
+        }
     }
 
     private fun sendBuyerAccountItemImpression() {
@@ -102,15 +110,6 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
         super.setUserVisibleHint(isVisibleToUser)
         if (isVisibleToUser) {
             TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        scrollToTop()
-        context?.let {
-            GraphqlClient.init(it)
-            getData()
         }
     }
 
@@ -230,6 +229,20 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
         }
     }
 
+    override fun onProductRecommendationThreeDotsClicked(product: RecommendationItem, adapterPosition: Int) {
+        showProductCardOptions(
+                this,
+                ProductCardOptionsModel(
+                        hasWishlist = true,
+                        isWishlisted = product.isWishlist,
+                        productId = product.productId.toString(),
+                        isTopAds = product.isTopAds,
+                        topAdsWishlistUrl = product.wishlistUrl,
+                        productPosition = adapterPosition
+                )
+        )
+    }
+
     override fun hideLoadMoreLoading() {
         adapter.hideLoading()
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
@@ -253,6 +266,66 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
                 val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
                 updateWishlist(wishlistStatusFromPdp, position)
             }
+        }
+
+        handleProductCardOptionsActivityResult(requestCode, resultCode, data, object: ProductCardOptionsWishlistCallback {
+            override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                handleWishlistAction(productCardOptionsModel)
+            }
+        })
+    }
+
+    private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
+        sendProductWishlistClickTracking(!productCardOptionsModel.isWishlisted)
+
+        if (productCardOptionsModel.wishlistResult.isSuccess)
+            handleWishlistActionSuccess(productCardOptionsModel)
+        else
+            handleWishlistActionError()
+    }
+
+    private fun handleWishlistActionSuccess(productCardOptionsModel: ProductCardOptionsModel) {
+        val recommendationItem = adapter.list.getOrNull(productCardOptionsModel.productPosition) as? RecommendationProductViewModel ?: return
+        recommendationItem.product.isWishlist = productCardOptionsModel.wishlistResult.isAddWishlist
+
+        if (productCardOptionsModel.wishlistResult.isAddWishlist)
+            showSuccessAddWishlist()
+        else
+            showSuccessRemoveWishlist()
+    }
+
+    private fun showSuccessAddWishlist() {
+        view?.let {
+            Toaster.make(
+                    it,
+                    getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.account_go_to_wishlist),
+                    View.OnClickListener {
+                        RouteManager.route(activity, ApplinkConst.WISHLIST)
+                    }
+            )
+        }
+    }
+
+    private fun showSuccessRemoveWishlist() {
+        view?.let {
+            Toaster.make(
+                    it,
+                    getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR
+            )
+        }
+    }
+
+    private fun handleWishlistActionError() {
+        view?.let {
+            Toaster.make(
+                    it,
+                    ErrorHandler.getErrorMessage(activity, null),
+                    Snackbar.LENGTH_LONG)
         }
     }
 
