@@ -70,7 +70,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
                 DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> return TYPE_MIX_TOP
                 DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> return TYPE_PRODUCT_HIGHLIGHT
                 DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> return TYPE_MIX_LEFT
-
+                DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> return TYPE_RECOMMENDATION_LIST
             }
             return TYPE_CURATED
         }
