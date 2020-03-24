@@ -10,7 +10,9 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.recharge_credit_card.R
+import com.tokopedia.recharge_credit_card.RechargeCCFragment
 import com.tokopedia.recharge_credit_card.di.RechargeCCInstance
 import com.tokopedia.recharge_credit_card.adapter.CreditCardBankAdapter
 import com.tokopedia.recharge_credit_card.analytics.CreditCardAnalytics
@@ -25,6 +27,7 @@ class CCBankListBottomSheet : BottomSheetUnify() {
     private lateinit var rechargeCCViewModel: RechargeCCViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var descBankList: TextView
+    private lateinit var performanceMonitoring: PerformanceMonitoring
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -33,7 +36,7 @@ class CCBankListBottomSheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        initializePerformance()
         initInjector()
         initViewModel()
         initBottomSheet()
@@ -81,10 +84,20 @@ class CCBankListBottomSheet : BottomSheetUnify() {
             adapter = CreditCardBankAdapter(it.bankList)
             recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             recyclerView.adapter = adapter
+            performanceMonitoring.stopTrace()
             creditCardAnalytics.impressionBankList("","")
         })
         rechargeCCViewModel.errorCCBankList.observe(this, Observer {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         })
+    }
+
+    private fun initializePerformance(){
+        performanceMonitoring = PerformanceMonitoring.start(RechargeCCFragment.RECHARGE_CC_PAGE_PERFORMANCE)
+    }
+
+    override fun onDestroyView() {
+        performanceMonitoring.stopTrace()
+        super.onDestroyView()
     }
 }

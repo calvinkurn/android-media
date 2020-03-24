@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
@@ -44,6 +45,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
     private lateinit var rechargeSubmitCCViewModel: RechargeSubmitCCViewModel
     private lateinit var checkoutPassDataState: DigitalCheckoutPassData
     private lateinit var saveInstanceManager: SaveInstanceCacheManager
+    private lateinit var performanceMonitoring: PerformanceMonitoring
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -70,7 +72,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        initializePerformance()
         activity?.let {
             saveInstanceManager = SaveInstanceCacheManager(it, savedInstanceState)
         }
@@ -140,6 +142,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
                 GraphqlHelper.loadRawString(resources, R.raw.query_cc_menu_detail), menuId)
         rechargeCCViewModel.tickers.observe(this, Observer {
             renderTicker(it)
+            performanceMonitoring.stopTrace()
             creditCardAnalytics.impressionInitialPage("", "")
         })
     }
@@ -301,12 +304,22 @@ class RechargeCCFragment : BaseDaggerFragment() {
         }
     }
 
+    override fun onDestroyView() {
+        performanceMonitoring.stopTrace()
+        super.onDestroyView()
+    }
+
+    private fun initializePerformance(){
+        performanceMonitoring = PerformanceMonitoring.start(RECHARGE_CC_PAGE_PERFORMANCE)
+    }
+
     companion object {
 
         const val EXTRA_STATE_CHECKOUT_PASS_DATA = "EXTRA_STATE_CHECKOUT_PASS_DATA"
 
         private const val CATEGORY_ID = "category_id"
         private const val MENU_ID = "menu_id"
+        const val RECHARGE_CC_PAGE_PERFORMANCE="dg_tagihan_cc_pdp"
 
         const val REQUEST_CODE_CART = 1000
         const val REQUEST_CODE_LOGIN = 1001
