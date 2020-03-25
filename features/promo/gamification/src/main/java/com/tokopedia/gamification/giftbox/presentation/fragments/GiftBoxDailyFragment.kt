@@ -93,6 +93,15 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        mAudiosManager?.let {
+            it.destroy()
+            mAudiosManager = null;
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val v = super.onCreateView(inflater, container, savedInstanceState)
         viewModel.getGiftBox()
@@ -195,7 +204,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             }
         }
 
-        viewModel.giftBoxLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.giftBoxLiveData.observe(viewLifecycleOwner, Observer { it ->
             when (it.status) {
                 LiveDataResult.STATUS.SUCCESS -> {
                     if (it.data != null) {
@@ -212,7 +221,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
                                     context?.let {
                                         mAudiosManager = AudioFactory.createAudio(it, R.raw.gf_giftbox_tap)
-                                        mAudiosManager.playAudio()
+                                        mAudiosManager?.playAudio()
                                     }
                                 }
 
@@ -237,6 +246,12 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                             }
                         }
                     }
+
+                    context?.let { innerIt ->
+                        mAudiosManager = AudioFactory.createAudio(innerIt, R.raw.gf_giftbox_bg, true)
+                        mAudiosManager?.playAudio()
+                    }
+
                 }
 
                 LiveDataResult.STATUS.LOADING -> showLoader()
