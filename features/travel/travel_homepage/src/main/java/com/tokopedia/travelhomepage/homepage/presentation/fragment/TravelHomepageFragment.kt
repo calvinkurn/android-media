@@ -145,7 +145,6 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
         travelHomepageViewModel.travelItemList.observe(this, Observer {
             clearAllData()
             renderList(it)
-            adapter.notifyDataSetChanged()
         })
 
         travelHomepageViewModel.isAllError.observe(this, Observer {
