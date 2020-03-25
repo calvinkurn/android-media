@@ -125,7 +125,9 @@ class RecommendationViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        //recommendationProductUseCase.unsubscribe()
+        topAdsWishlishedUseCase.unsubscribe()
+        removeWishListUseCase.unsubscribe()
+        addWishListUseCase.unsubscribe()
     }
 
 }
