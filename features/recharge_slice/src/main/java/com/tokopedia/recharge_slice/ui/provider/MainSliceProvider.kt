@@ -57,6 +57,7 @@ class MainSliceProvider : SliceProvider() {
 
     override fun onBindSlice(sliceUri: Uri): Slice? {
         userSession = UserSession(contextNonNull)
+        remoteConfig = FirebaseRemoteConfigImpl(contextNonNull)
         return createGetInvoiceSlice(sliceUri)
     }
 
@@ -245,7 +246,6 @@ class MainSliceProvider : SliceProvider() {
     }
 
     fun getRemoteConfigRechargeSliceEnabler(): Boolean {
-        remoteConfig = FirebaseRemoteConfigImpl(contextNonNull)
         return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_RECHARGE, true))
     }
 
