@@ -12,7 +12,7 @@ data class UploadImageData (
      */
     @SerializedName("pic_obj")
     @Expose
-    var picObj: String? = "",
+    var picObj: String = "",
     /**
      * @return The picSrc
      */
@@ -21,6 +21,6 @@ data class UploadImageData (
      */
     @SerializedName("pic_src")
     @Expose
-    var picSrc: String? = ""
+    var picSrc: String = ""
 
 )

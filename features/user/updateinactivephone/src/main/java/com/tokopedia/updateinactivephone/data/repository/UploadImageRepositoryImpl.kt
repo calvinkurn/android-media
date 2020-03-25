@@ -7,11 +7,10 @@ import com.tokopedia.updateinactivephone.data.model.request.UploadImageModel
 import javax.inject.Inject
 
 import okhttp3.RequestBody
-import rx.Observable
 
 class UploadImageRepositoryImpl @Inject constructor(private val uploadImageSourceFactory: UploadImageSourceFactory) : UploadImageRepository {
 
-    override fun uploadImage(url: String, params: Map<String, String>, imageFile: RequestBody): Observable<UploadImageModel> {
+    override suspend fun uploadImage(url: String, params: Map<String, String>, imageFile: RequestBody): UploadImageModel {
         return uploadImageSourceFactory
                 .createCloudUploadImageDataStore()
                 .uploadImage(
@@ -20,7 +19,7 @@ class UploadImageRepositoryImpl @Inject constructor(private val uploadImageSourc
                         imageFile)
     }
 
-    override fun getUploadHost(parameters: HashMap<String, Any>): Observable<UploadHostModel> {
+    override suspend fun getUploadHost(parameters: HashMap<String, Any>): UploadHostModel {
         return uploadImageSourceFactory
                 .createCloudUploadHostDataStore()
                 .getUploadHost(parameters)

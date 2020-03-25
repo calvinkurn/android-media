@@ -1,4 +1,4 @@
-package com.tokopedia.updateinactivephone.di.scope
+package com.tokopedia.updateinactivephone.di
 
 import javax.inject.Scope
 

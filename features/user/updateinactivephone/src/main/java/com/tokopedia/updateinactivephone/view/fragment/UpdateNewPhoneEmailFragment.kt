@@ -17,8 +17,8 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.core.analytics.ScreenTracking
 import com.tokopedia.core.app.MainApplication
 import com.tokopedia.updateinactivephone.R
-import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.Companion.OLD_PHONE
-import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.Companion.USER_ID
+import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QueryConstants.Companion.OLD_PHONE
+import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QueryConstants.Companion.USER_ID
 import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventConstants
 import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventTracking
 

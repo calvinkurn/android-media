@@ -9,6 +9,9 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -18,17 +21,21 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.updateinactivephone.R
+import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.IS_DUPLICATE_REQUEST
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.USER_EMAIL
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.USER_PHONE
-import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.Companion.OLD_PHONE
-import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.Companion.USER_ID
+import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QueryConstants.Companion.OLD_PHONE
+import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QueryConstants.Companion.USER_ID
+import com.tokopedia.updateinactivephone.data.model.response.GqlUpdatePhoneStatusResponse
 import com.tokopedia.updateinactivephone.di.component.DaggerUpdateInactivePhoneComponent
 import com.tokopedia.updateinactivephone.di.module.UpdateInactivePhoneModule
 import com.tokopedia.updateinactivephone.view.fragment.SelectImageNewPhoneFragment
 import com.tokopedia.updateinactivephone.view.fragment.UpdateNewPhoneEmailFragment
-import com.tokopedia.updateinactivephone.viewmodel.presenter.ChangeInactiveFormRequestPresenter
 import com.tokopedia.updateinactivephone.view.ChangeInactiveFormRequest
+import com.tokopedia.updateinactivephone.viewmodel.ChangeInactiveFormRequestViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
@@ -42,7 +49,11 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(),
         SelectImageNewPhoneFragment.SelectImageInterface,
         UpdateNewPhoneEmailFragment.UpdateNewPhoneEmailInteractor {
 
-    @Inject lateinit var presenter: ChangeInactiveFormRequestPresenter
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
+    private val viewModel by lazy { viewModelFragmentProvider.get(ChangeInactiveFormRequestViewModel::class.java) }
 
     private var userId: String? = null
     private var tkpdProgressDialog: TkpdProgressDialog? = null
@@ -58,9 +69,47 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(),
     override fun setupLayout(savedInstanceState: Bundle?) {
         initInjector()
         super.setupLayout(savedInstanceState)
-        presenter.attachView(this)
         setupToolbar()
         initView()
+
+        viewModel.validateUserDataResponse.observe(this, Observer {
+            when(it){
+                is Success -> {
+                    when(it.data.isSuccess) {
+                        true -> onUserDataValidated(it.data.userId.toString())
+                        false -> {
+                            dismissLoading()
+                            resolveError(it.data.error)
+                        }
+                    }
+                }
+                is Fail -> {
+                    dismissLoading()
+                    onPhoneServerError()
+                }
+            }
+        })
+
+        viewModel.submitImageLiveData.observe(this, Observer {
+            when(it){
+                is Success -> {
+                    val gqlUpdatePhoneStatusResponse = it.data.getData<GqlUpdatePhoneStatusResponse>(GqlUpdatePhoneStatusResponse::class.java)
+                    when(gqlUpdatePhoneStatusResponse.changeInactivePhoneQuery?.isSuccess) {
+                        true -> {
+                            onUpdateDataRequestSuccess()
+                        }
+                        false -> {
+                            dismissLoading()
+                            gqlUpdatePhoneStatusResponse.changeInactivePhoneQuery?.error?.let { error -> resolveError(error) }
+                        }
+                    }
+                }
+                is Fail -> {
+                    dismissLoading()
+                    onPhoneServerError()
+                }
+            }
+        })
     }
 
     override fun getLayoutRes(): Int {
@@ -86,7 +135,6 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(),
         }
         fragmentTransaction.replace(R.id.parent_view, fragment, fragment.javaClass.name)
         fragmentTransaction.addToBackStack(null).commit()
-
     }
 
 
@@ -149,11 +197,11 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(),
     }
 
     override fun setAccountPhotoImagePath(imagePath: String?) {
-        imagePath?.let { presenter.setAccountPhotoImagePath(it) }
+        imagePath?.let { viewModel.setAccountPhotoImagePath(it) }
     }
 
     override fun setPhotoIdImagePath(imagePath: String?) {
-        imagePath?.let { presenter.setPhotoIdImagePath(it) }
+        imagePath?.let { viewModel.setPhotoIdImagePath(it) }
     }
 
     override fun dismissLoading() {
@@ -173,7 +221,11 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(),
     }
 
     override fun onUserDataValidated(userId: String) {
-        newEmail?.let { email -> newPhoneNumber?.let { number -> presenter.uploadPhotoIdImage(email, number, userId) } }
+        newEmail?.let { email ->
+            newPhoneNumber?.let { number ->
+                viewModel.uploadPhotoIdImage(email, number, userId)
+            }
+        }
     }
 
     override fun onPhoneTooShort() {
@@ -285,7 +337,37 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(),
     override fun onSubmissionButtonClicked(email: String, phone: String, userId: String?) {
         newEmail = email
         newPhoneNumber = phone
-        userId?.let { presenter.validateUserData(email, phone, it) }
+        val phoneStatus = viewModel.isValidPhoneNumber(newPhoneNumber?: "")
+        val emailStatus = viewModel.isValidEmail(newEmail?: "")
+        if(phoneStatus == 0 && emailStatus == 0) {
+            userId?.let {
+                showLoading()
+                viewModel.validateUserData(email, phone, it)
+            }
+        } else {
+            when {
+                (phoneStatus != 0) -> {showErrorPhoneNumber(phoneStatus)}
+                (emailStatus != 0) -> {showErrorEmail(emailStatus)}
+            }
+        }
+    }
+
+    private fun resolveError(error: String) {
+        when {
+            UpdateInactivePhoneConstants.ResponseConstants.SAME_MSISDN.equals(error, ignoreCase = true) -> onSameMsisdn()
+            UpdateInactivePhoneConstants.ResponseConstants.PHONE_TOO_SHORT.equals(error, ignoreCase = true) -> onPhoneTooShort()
+            UpdateInactivePhoneConstants.ResponseConstants.PHONE_TOO_LONG.equals(error, ignoreCase = true) -> onPhoneTooLong()
+            UpdateInactivePhoneConstants.ResponseConstants.PHONE_BLACKLISTED.equals(error, ignoreCase = true) -> onPhoneBlackListed()
+            UpdateInactivePhoneConstants.ResponseConstants.WRONG_USER_ID.equals(error, ignoreCase = true) -> onWrongUserIDInput()
+            UpdateInactivePhoneConstants.ResponseConstants.PHONE_WITH_PENDING_REQUEST.equals(error, ignoreCase = true) -> onPhoneDuplicateRequest()
+            UpdateInactivePhoneConstants.ResponseConstants.SERVER_ERROR.equals(error, ignoreCase = true) -> onPhoneServerError()
+            UpdateInactivePhoneConstants.ResponseConstants.REGISTERED_MSISDN.equals(error, ignoreCase = true) -> onAlreadyRegisteredMsisdn()
+            UpdateInactivePhoneConstants.ResponseConstants.EMPTY_MSISDN.equals(error, ignoreCase = true) -> onEmptyMsisdn()
+            UpdateInactivePhoneConstants.ResponseConstants.INVALID_PHONE.equals(error, ignoreCase = true) -> onInvalidPhone()
+            UpdateInactivePhoneConstants.ResponseConstants.INVALID_EMAIL.equals(error, ignoreCase = true) -> onEmailError()
+            UpdateInactivePhoneConstants.ResponseConstants.SERVER_ERROR.equals(error, ignoreCase = true) -> onPhoneServerError()
+            UpdateInactivePhoneConstants.ResponseConstants.MAX_REACHED_MSISDN.equals(error, ignoreCase = true) -> onMaxReachedPhone()
+        }
     }
 
     companion object {

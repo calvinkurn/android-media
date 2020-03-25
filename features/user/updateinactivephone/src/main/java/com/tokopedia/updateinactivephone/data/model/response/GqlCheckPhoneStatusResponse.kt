@@ -6,17 +6,17 @@ import com.google.gson.annotations.SerializedName
 data class GqlCheckPhoneStatusResponse (
     @SerializedName("validateInactivePhone")
     @Expose
-    var validateInactivePhone: ValidateInactivePhone? = null
+    var validateInactivePhone: ValidateInactivePhone = ValidateInactivePhone()
 )
 
 data class ValidateInactivePhone (
     @SerializedName("user_id")
     @Expose
-    var userId: String? = "",
+    var userId: String = "",
 
     @SerializedName("__typename")
     @Expose
-    var __typename: String? = "",
+    var __typename: String = "",
 
     @SerializedName("is_success")
     @Expose
@@ -24,5 +24,5 @@ data class ValidateInactivePhone (
 
     @SerializedName("error")
     @Expose
-    var error: String? = ""
+    var error: String = ""
 )

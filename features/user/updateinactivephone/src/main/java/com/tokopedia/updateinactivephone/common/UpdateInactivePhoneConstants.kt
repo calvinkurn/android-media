@@ -2,7 +2,7 @@ package com.tokopedia.updateinactivephone.common
 
 interface UpdateInactivePhoneConstants {
 
-    interface OPERATION_NAME {
+    interface OperationName {
         companion object {
             const val CHECK_USER_STATUS = "validateInactivePhoneQuery"
             const val VALIDATE_USER_DATA = "validateInactiveNewPhoneQuery"
@@ -33,7 +33,7 @@ interface UpdateInactivePhoneConstants {
 
     }
 
-    interface QUERY_CONSTANTS {
+    interface QueryConstants {
         companion object {
             val PHONE = "phone"
             val EMAIL = "email"
@@ -43,26 +43,33 @@ interface UpdateInactivePhoneConstants {
         }
     }
 
-    interface RESPONSE_CONSTANTS {
+    interface ResponseConstants {
         companion object {
+            const val INVALID_PHONE = "invalid_msisdn"
+            const val PHONE_TOO_SHORT = "too_short_msisdn"
+            const val PHONE_TOO_LONG = "too_long_msisdn"
+            const val INVALID_FILE_UPLOADED = "invalid_uploaded_file"
+            const val PHONE_BLACKLISTED = "blacklisted_msisdn"
+            const val PHONE_NOT_REGISTERED = "unregistered_msisdn"
+            const val PHONE_WITH_REGISTERED_EMAIL = "registered_email"
+            const val PHONE_WITH_PENDING_REQUEST = "has_pending_request"
+            const val UNREGISTERED_USER = "unregistered_user"
+            const val SERVER_ERROR = "server_error"
+            const val WRONG_USER_ID = "wrong_userid"
+            const val SAME_MSISDN = "same_msisdn"
+            const val REGISTERED_MSISDN = "registered_msisdn"
+            const val EMPTY_MSISDN = "empty_msisdn"
+            const val MAX_REACHED_MSISDN = "max_reached_msisdn"
+            const val INVALID_EMAIL = "invalid_email"
+            const val REQUEST_FAILED = "request_failed"
+        }
+    }
 
-            val INVALID_PHONE = "invalid_msisdn"
-            val PHONE_TOO_SHORT = "too_short_msisdn"
-            val PHONE_TOO_LONG = "too_long_msisdn"
-            val INVALID_FILE_UPLOADED = "invalid_uploaded_file"
-            val PHONE_BLACKLISTED = "blacklisted_msisdn"
-            val PHONE_NOT_REGISTERED = "unregistered_msisdn"
-            val PHONE_WITH_REGISTERED_EMAIL = "registered_email"
-            val PHONE_WITH_PENDING_REQUEST = "has_pending_request"
-            val UNREGISTERED_USER = "unregistered_user"
-            val SERVER_ERROR = "server_error"
-            val WRONG_USER_ID = "wrong_userid"
-            val SAME_MSISDN = "same_msisdn"
-            val REGISTERED_MSISDN = "registered_msisdn"
-            val EMPTY_MSISDN = "empty_msisdn"
-            val MAX_REACHED_MSISDN = "max_reached_msisdn"
-            val INVALID_EMAIL = "invalid_email"
-            val REQUEST_FAILED = "request_failed"
+    interface UpdateInactivePhoneQueryConstant {
+        companion object {
+            const val QUERY_CHECK_PHONE_NUMBER_STATUS = "check_phone_number_status"
+            const val QUERY_UPDATE_PHONE_EMAIL = "update_phone_email"
+            const val QUERY_VALIDATE_USER_DATA = "validate_user_data"
         }
     }
 }

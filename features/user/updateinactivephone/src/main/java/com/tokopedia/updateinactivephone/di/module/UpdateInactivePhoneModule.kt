@@ -1,13 +1,16 @@
 package com.tokopedia.updateinactivephone.di.module
 
 import android.content.Context
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.updateinactivephone.data.repository.UploadImageRepositoryImpl
-import com.tokopedia.updateinactivephone.di.scope.UpdateInActiveContext
-import com.tokopedia.updateinactivephone.di.scope.UpdateInactivePhoneScope
+import com.tokopedia.updateinactivephone.di.UpdateInActiveContext
+import com.tokopedia.updateinactivephone.di.UpdateInactivePhoneScope
 import com.tokopedia.updateinactivephone.usecase.*
-import com.tokopedia.updateinactivephone.viewmodel.presenter.ChangeInactiveFormRequestPresenter
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
 @Module class UpdateInactivePhoneModule(val context: Context) {
 
@@ -17,15 +20,11 @@ import dagger.Provides
 
     @Provides
     @UpdateInactivePhoneScope
-    fun provideCheckPhoneNumberStatusUsecase(@UpdateInActiveContext context: Context): CheckPhoneNumberStatusUsecase {
-        return CheckPhoneNumberStatusUsecase(context)
-    }
+    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
     @Provides
     @UpdateInactivePhoneScope
-    fun provideValidateUserDataUseCase(@UpdateInActiveContext context: Context): ValidateUserDataUseCase {
-        return ValidateUserDataUseCase(context)
-    }
+    fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
     @Provides
     @UpdateInactivePhoneScope
@@ -37,30 +36,6 @@ import dagger.Provides
     @UpdateInactivePhoneScope
     fun provideGetUploadHostUseCase(uploadImageRepository: UploadImageRepositoryImpl): GetUploadHostUseCase {
         return GetUploadHostUseCase(uploadImageRepository)
-    }
-
-    @Provides
-    @UpdateInactivePhoneScope
-    fun provideUploadChangePhoneNumberRequestUseCase(uploadImageUseCase: UploadImageUseCase,
-                      submitImageUseCase: SubmitImageUseCase,
-                      getUploadHostUseCase: GetUploadHostUseCase): UploadChangePhoneNumberRequestUseCase {
-
-        return UploadChangePhoneNumberRequestUseCase(uploadImageUseCase, submitImageUseCase, getUploadHostUseCase)
-    }
-
-    @Provides
-    @UpdateInactivePhoneScope
-    fun provideSubmitImageUseCase(@UpdateInActiveContext context: Context): SubmitImageUseCase {
-        return SubmitImageUseCase(context)
-    }
-
-    @Provides
-    @UpdateInactivePhoneScope
-    fun provideChangeInactiveFormRequestPresenter(
-            validateUserDataUseCase: ValidateUserDataUseCase,
-            uploadChangePhoneNumberRequestUseCase: UploadChangePhoneNumberRequestUseCase
-    ): ChangeInactiveFormRequestPresenter {
-        return ChangeInactiveFormRequestPresenter(validateUserDataUseCase, uploadChangePhoneNumberRequestUseCase)
     }
 
 }

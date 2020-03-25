@@ -5,18 +5,12 @@ import com.tokopedia.updateinactivephone.data.network.service.UploadImageService
 import com.tokopedia.updateinactivephone.data.model.request.UploadImageModel
 
 import okhttp3.RequestBody
-import rx.Observable
 
 class CloudUploadImageDataSource(private val uploadImageService: UploadImageService,
                                  private val uploadImageMapper: UploadImageMapper) {
-
-    fun uploadImage(url: String,
+    suspend fun uploadImage(url: String,
                     params: Map<String, String>,
-                    imageFile: RequestBody): Observable<UploadImageModel> {
-        return uploadImageService.api.uploadImage(
-                url,
-                params,
-                imageFile)
-                .map(uploadImageMapper)
+                    imageFile: RequestBody): UploadImageModel {
+        return uploadImageMapper.call(uploadImageService.api.uploadImage(url, params, imageFile))
     }
 }

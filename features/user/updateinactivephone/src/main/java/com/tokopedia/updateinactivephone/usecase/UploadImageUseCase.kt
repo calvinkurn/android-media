@@ -11,7 +11,6 @@ import java.util.HashMap
 
 import okhttp3.MediaType
 import okhttp3.RequestBody
-import rx.Observable
 
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.ID
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.IMAGE_UPLOAD_URL
@@ -21,11 +20,10 @@ import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Con
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.TOKEN
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.USERID
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase
 
-class UploadImageUseCase(private val uploadImageRepository: UploadImageRepositoryImpl) : UseCase<UploadImageModel>() {
+class UploadImageUseCase(private val uploadImageRepository: UploadImageRepositoryImpl) {
 
-    override fun createObservable(requestParams: RequestParams): Observable<UploadImageModel> {
+    suspend fun uploadImage(requestParams: RequestParams): UploadImageModel {
         val uploadUrl = "https://" + requestParams.getString(IMAGE_UPLOAD_URL, "") + "/upload/attachment"
 
         return uploadImageRepository.uploadImage(uploadUrl,

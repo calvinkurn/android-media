@@ -39,7 +39,7 @@ class ChangeInactivePhoneRequestSubmittedActivity : BaseSimpleActivity() {
         return null
     }
 
-    override fun setupLayout(savedInstanceState: Bundle) {
+    override fun setupLayout(savedInstanceState: Bundle?) {
         super.setupLayout(savedInstanceState)
         setupToolbar()
         initView()
@@ -50,7 +50,6 @@ class ChangeInactivePhoneRequestSubmittedActivity : BaseSimpleActivity() {
     }
 
     private fun initView() {
-
         if (intent.extras != null) {
             val bundle = intent.extras
             isDuplicateRequest = bundle?.getBoolean(IS_DUPLICATE_REQUEST, false) == true
@@ -104,7 +103,6 @@ class ChangeInactivePhoneRequestSubmittedActivity : BaseSimpleActivity() {
     }
 
     companion object {
-
         fun createNewIntent(context: Context, bundle: Bundle): Intent {
             val intent = Intent(context, ChangeInactivePhoneRequestSubmittedActivity::class.java)
             intent.putExtras(bundle)

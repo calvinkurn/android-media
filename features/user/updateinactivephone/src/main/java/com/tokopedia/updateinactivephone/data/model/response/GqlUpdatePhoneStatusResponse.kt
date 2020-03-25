@@ -7,7 +7,6 @@ data class GqlUpdatePhoneStatusResponse (
     @SerializedName("changeInactivePhone")
     @Expose
     var changeInactivePhoneQuery: ChangeInactivePhoneQuery? = null
-
 )
 
 data class ChangeInactivePhoneQuery (

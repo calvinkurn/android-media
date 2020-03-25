@@ -15,27 +15,32 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.core.analytics.ScreenTracking
 import com.tokopedia.core.app.MainApplication
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.updateinactivephone.R
+import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants
 import com.tokopedia.updateinactivephone.view.activity.ChangeInactiveFormRequestActivity
 import com.tokopedia.updateinactivephone.view.activity.ChangeInactivePhoneRequestSubmittedActivity
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.IS_DUPLICATE_REQUEST
-import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.Companion.OLD_PHONE
-import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.Companion.USER_ID
+import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QueryConstants.Companion.OLD_PHONE
+import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QueryConstants.Companion.USER_ID
 import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventConstants
 import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventTracking
-import com.tokopedia.updateinactivephone.viewmodel.presenter.ChangeInactivePhonePresenter
 import com.tokopedia.updateinactivephone.view.ChangeInactivePhone
 import com.tokopedia.updateinactivephone.di.component.DaggerUpdateInactivePhoneComponent
+import com.tokopedia.updateinactivephone.viewmodel.ChangeInactivePhoneViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 
 import javax.inject.Inject
 
@@ -48,7 +53,10 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
     private var tkpdProgressDialog: TkpdProgressDialog? = null
 
     @Inject
-    lateinit var presenter: ChangeInactivePhonePresenter
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
+    private val viewModel by lazy { viewModelFragmentProvider.get(ChangeInactivePhoneViewModel::class.java) }
 
     override fun initInjector() {
         DaggerUpdateInactivePhoneComponent.builder()
@@ -72,16 +80,33 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
         buttonContinue = view.findViewById(R.id.button_continue)
         phoneHintTextView = view.findViewById(R.id.phone_hint_text_view)
         errorText = view.findViewById(R.id.error)
-        presenter.attachView(this)
         prepareView()
         return view
     }
 
-    private fun prepareView() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.changeInactiveFormRequestResponse.observe(this, Observer {
+            when(it){
+                is Success -> {
+                    when(it.data.isSuccess) {
+                        true -> {
+                            onPhoneStatusSuccess(it.data.userId)
+                        }
+                        false -> resolveError(it.data.error)
+                    }
+                }
+                is Fail -> {
+                    dismissLoading()
+                    showErrorPhoneNumber(getString(R.string.error_general))
+                }
+            }
+        })
+    }
 
+    private fun prepareView() {
         inputMobileNumber?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
-
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
                 setErrorText("")
                 if (charSequence.toString().isEmpty()) {
@@ -94,7 +119,6 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
                     buttonContinue?.setTextColor(Color.WHITE)
                 }
             }
-
             override fun afterTextChanged(editable: Editable) {}
         })
 
@@ -108,9 +132,15 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
 
         buttonContinue?.setOnClickListener { v ->
             setErrorText("")
-            presenter.checkPhoneNumberStatus(inputMobileNumber?.text.toString())
             hideKeyboard(v)
             UpdateInactivePhoneEventTracking.eventInactivePhoneClick(v.context)
+            val status = viewModel.isValidPhoneNumber(inputMobileNumber?.text.toString())
+            if(status == 0) {
+                showLoading()
+                viewModel.checkPhoneNumberStatus(inputMobileNumber?.text.toString())
+            } else {
+                showErrorPhoneNumber(status)
+            }
         }
     }
 
@@ -209,13 +239,21 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
         setErrorText(getString(R.string.phone_number_invalid_max_15))
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.detachView()
+    private fun resolveError(error: String) {
+        when {
+            UpdateInactivePhoneConstants.ResponseConstants.INVALID_PHONE.equals(error, ignoreCase = true) -> onPhoneInvalid()
+            UpdateInactivePhoneConstants.ResponseConstants.PHONE_TOO_SHORT.equals(error, ignoreCase = true) -> onPhoneTooShort()
+            UpdateInactivePhoneConstants.ResponseConstants.PHONE_TOO_LONG.equals(error, ignoreCase = true) -> onPhoneTooLong()
+            UpdateInactivePhoneConstants.ResponseConstants.PHONE_BLACKLISTED.equals(error, ignoreCase = true) -> onPhoneBlackListed()
+            UpdateInactivePhoneConstants.ResponseConstants.PHONE_NOT_REGISTERED.equals(error, ignoreCase = true) -> onPhoneNotRegistered()
+            UpdateInactivePhoneConstants.ResponseConstants.PHONE_WITH_REGISTERED_EMAIL.equals(error, ignoreCase = true) -> onPhoneRegisteredWithEmail()
+            UpdateInactivePhoneConstants.ResponseConstants.PHONE_WITH_PENDING_REQUEST.equals(error, ignoreCase = true) -> onPhoneDuplicateRequest()
+            UpdateInactivePhoneConstants.ResponseConstants.SERVER_ERROR.equals(error, ignoreCase = true) -> onPhoneServerError()
+            else -> showErrorPhoneNumber(getString(R.string.error_general))
+        }
     }
 
     companion object {
-
         val instance: Fragment
             get() = ChangeInactivePhoneFragment()
     }

@@ -6,6 +6,4 @@ data class SubmitImageModel (
     var statusMessage: String? = "",
     var responseCode: Int = 0,
     val isResponseSuccess: Boolean = false
-
-
 )

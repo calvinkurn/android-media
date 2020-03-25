@@ -1,6 +1,5 @@
 package com.tokopedia.updateinactivephone.data.model.response
 
-
 data class ResponseUploadImage (
     var isSuccess: Boolean = false,
     var uploadImageData: UploadImageData? = null,

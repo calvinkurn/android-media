@@ -4,19 +4,17 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class UploadHostModel (
-    var isSuccess: Boolean = false,
-    var uploadHostData: UploadHostData? = null,
-    var errorMessage: String? = "",
-    var statusMessage: String? = "",
-    var responseCode: Int = 0,
-    val isResponseSuccess: Boolean = false
-
+        var isSuccess: Boolean = false,
+        var uploadHostData: UploadHostData = UploadHostData(GeneratedHost()),
+        var errorMessage: String = "",
+        var statusMessage: String = "",
+        val isResponseSuccess: Boolean = false
 )
 
 data class UploadHostData (
     @SerializedName("generated_host")
     @Expose
-    var generatedHost: GeneratedHost
+    var generatedHost: GeneratedHost = GeneratedHost()
 )
 
 data class GeneratedHost (
@@ -26,5 +24,5 @@ data class GeneratedHost (
 
     @SerializedName("upload_host")
     @Expose
-    var uploadHost: String? = ""
+    var uploadHost: String = ""
 )

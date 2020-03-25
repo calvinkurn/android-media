@@ -1,6 +1,5 @@
 package com.tokopedia.updateinactivephone.data.model.request
 
-
 import com.tokopedia.updateinactivephone.data.model.response.UploadImageData
 
 data class UploadImageModel (

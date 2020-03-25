@@ -68,9 +68,6 @@ class ChangeInactivePhoneActivity : BaseSimpleActivity() {
     }
 
     companion object {
-
-        private val TITLE = "title"
-
         private fun getChangeInactivePhoneIntent(context: Context): Intent {
             return Intent(context, ChangeInactivePhoneActivity::class.java)
         }

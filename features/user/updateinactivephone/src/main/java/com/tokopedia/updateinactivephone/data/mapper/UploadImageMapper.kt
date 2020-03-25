@@ -5,31 +5,23 @@ import com.tokopedia.updateinactivephone.data.model.response.UploadImageData
 
 import javax.inject.Inject
 
-import retrofit2.Response
 import rx.functions.Func1
 
-class UploadImageMapper @Inject constructor() : Func1<Response<UploadImageData>, UploadImageModel> {
+class UploadImageMapper @Inject constructor() : Func1<UploadImageData, UploadImageModel> {
 
-    override fun call(response: Response<UploadImageData>): UploadImageModel {
+    override fun call(response: UploadImageData): UploadImageModel {
         return mappingResponse(response)
     }
 
-    private fun mappingResponse(response: Response<UploadImageData>): UploadImageModel {
+    private fun mappingResponse(response: UploadImageData): UploadImageModel {
         val model = UploadImageModel()
-
-        if (response.isSuccessful) {
-            if (response.body() != null) {
-                val data = response.body()
-                model.isSuccess = true
-                model.uploadImageData = data
-            } else {
-                model.isSuccess = false
-
-            }
-        } else {
+        try {
+            model.uploadImageData = response
+            model.isSuccess = true
+        } catch (e: Exception) {
+            e.printStackTrace()
             model.isSuccess = false
         }
-        model.responseCode = response.code()
         return model
     }
 }
