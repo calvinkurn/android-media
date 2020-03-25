@@ -71,11 +71,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                 },
                 uiState = PromoEligibilityHeaderUiModel.UiState().apply {
                     isEnabled = couponSectionItem.isEnabled
-                    if (couponSectionItem.isEnabled) {
-                        isExpanded = !couponSectionItem.isCollapsed
-                    } else {
-                        isExpanded = false
-                    }
+                    isCollapsed = couponSectionItem.isCollapsed
                 }
         )
     }
@@ -99,11 +95,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                         }
                     }
                     hasSelectedPromoItem = tmpHasSellectedPromoItem
-                    if (isHeaderEnabled) {
-                        isExpanded = !couponSubSection.isCollapsed
-                    } else {
-                        isExpanded = true
-                    }
+                    isCollapsed = couponSubSection.isCollapsed
                 }
         )
     }
@@ -119,6 +111,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     imageResourceUrls = couponItem.tagImageUrls
                     parentIdentifierId = headerIdentifierId
                     promoCode = couponItem.code
+                    couponAppLink = couponItem.couponAppLink
                     val clashingInfoMap = HashMap<String, String>()
                     couponItem.clashingInfos.forEach {
                         clashingInfoMap[it.code] = it.message

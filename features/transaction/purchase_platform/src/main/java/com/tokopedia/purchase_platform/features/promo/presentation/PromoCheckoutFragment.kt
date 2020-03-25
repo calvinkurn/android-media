@@ -182,7 +182,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             val lastData = adapter.data[topItemPosition]
 
             val isShow: Boolean
-            if (lastData is PromoListHeaderUiModel && lastData.uiState.isEnabled && !lastData.uiState.isExpanded) {
+            if (lastData is PromoListHeaderUiModel && lastData.uiState.isEnabled && !lastData.uiState.isCollapsed) {
                 tmpLastHeaderUiModel = lastData
                 isShow = true
             } else if (tmpLastHeaderUiModel != null && lastData is PromoListItemUiModel && lastData.uiData.parentIdentifierId == tmpLastHeaderUiModel.uiData.identifierId && lastData.uiState.isParentEnabled) {
@@ -217,7 +217,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 section_label_promo_list_header_title.text = tmpLastHeaderUiModel?.uiData?.title
                 section_label_promo_list_header_sub_title.text = tmpLastHeaderUiModel?.uiData?.subTitle
 
-                if (tmpLastHeaderUiModel?.uiState?.isExpanded == false) {
+                if (tmpLastHeaderUiModel?.uiState?.isCollapsed == false) {
                     section_image_chevron.rotation = 180f
                 } else {
                     section_image_chevron.rotation = 0f
@@ -321,6 +321,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             when {
                 it.state == GetCouponRecommendationAction.ACTION_CLEAR_DATA -> {
                     clearAllData()
+                }
+                it.state == GetCouponRecommendationAction.ACTION_SHOW_TOAST_ERROR -> {
+                    it.exception?.let {
+                        showToastMessage(it)
+                    }
                 }
             }
         })
@@ -503,7 +508,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun getErrorMessage(throwable: Throwable): String {
-        var errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        var errorMessage = throwable.message
+        if (throwable !is PromoErrorException) errorMessage = ErrorHandler.getErrorMessage(context, throwable)
         if (errorMessage.isNullOrBlank()) {
             errorMessage = "Terjadi kesalahan. Ulangi beberapa saat lagi"
         }
@@ -582,7 +588,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     override fun onClickPromoItemDetail(element: PromoListItemUiModel) {
         viewModel.sendAnalyticsClickLihatDetailKupon(element.uiData.promoCode)
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_MARKETPLACE).apply {
-            putExtra(EXTRA_KUPON_CODE, element.uiData.promoCode)
+            val promoCodeLink = element.uiData.promoCode + element.uiData.promoCode
+            putExtra(EXTRA_KUPON_CODE, promoCodeLink)
             putExtra(EXTRA_IS_USE, true)
             putExtra(ONE_CLICK_SHIPMENT, false)
             putExtra(PAGE_TRACKING, FROM_CART)
@@ -599,6 +606,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             viewModel.sendAnalyticsClickButtonVerifikasiNomorHp()
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
             startActivityForResult(intent, REQUEST_CODE_PHONE_VERIFICATION)
+        } else {
+            reloadData()
         }
     }
 

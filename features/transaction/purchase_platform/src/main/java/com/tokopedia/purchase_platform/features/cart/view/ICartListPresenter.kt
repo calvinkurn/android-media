@@ -14,6 +14,7 @@ import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartRecommenda
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import java.util.*
@@ -105,4 +106,14 @@ interface ICartListPresenter {
     fun doUpdateCartAndValidateUse(promoRequest: ValidateUsePromoRequest)
 
     fun doClearRedPromosBeforeGoToCheckout(promoCodeList: ArrayList<String>)
+
+    fun getValidateUseLastResponse(): ValidateUsePromoRevampUiModel?
+
+    fun setValidateUseLastResponse(response: ValidateUsePromoRevampUiModel)
+
+    fun isLastApplyValid(): Boolean
+
+    fun setLastApplyNotValid()
+
+    fun setLastApplyValid()
 }

@@ -10,5 +10,6 @@ data class LastApplyUiModel(
 		var additionalInfo: LastApplyAdditionalInfoUiModel = LastApplyAdditionalInfoUiModel(),
 		var message: LastApplyMessageUiModel = LastApplyMessageUiModel(),
 		var listRedPromos: List<String> = emptyList(),
-        var listAllPromoCodes: List<String> = emptyList()
+        var listAllPromoCodes: List<String> = emptyList(),
+		var defaultEmptyPromoMessage: String = ""
 ) : Parcelable

@@ -51,7 +51,7 @@ class ButtonPromoCheckoutView @JvmOverloads constructor(
     }
 
     private fun initView() {
-        cl_promo_checkout?.background = ViewUtils.generateBackgroundWithShadow(cl_promo_checkout)
+        cl_promo_checkout?.background = ViewUtils.generateBackgroundWithoutShadow(cl_promo_checkout)
         when (state) {
             State.LOADING -> setViewLoading()
             State.ACTIVE -> setViewActive()

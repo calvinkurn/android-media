@@ -34,18 +34,27 @@ class PromoListItemViewHolder(private val view: View,
     override fun bind(element: PromoListItemUiModel) {
         if (element.uiData.imageResourceUrls.isNotEmpty()) {
             itemView.container_image_promo_item.removeAllViews()
+            var hasNonBlankUrl = false
             element.uiData.imageResourceUrls.forEach {
-                val imageView = ImageView(itemView.context)
-                imageView.layoutParams = LinearLayout.LayoutParams(
-                        itemView.context.resources.getDimensionPixelSize(R.dimen.dp_30),
-                        LinearLayout.LayoutParams.MATCH_PARENT
-                )
-                imageView.setMargin(0, 0, itemView.context.resources.getDimensionPixelSize(R.dimen.dp_4), 0)
-                imageView.scaleType = ImageView.ScaleType.FIT_START
-                ImageHandler.loadImageRounded2(itemView.context, imageView, it)
-                itemView.container_image_promo_item.addView(imageView)
+                if (it.isNotBlank()) {
+                    hasNonBlankUrl = true
+                    val imageView = ImageView(itemView.context)
+                    imageView.layoutParams = LinearLayout.LayoutParams(
+                            itemView.context.resources.getDimensionPixelSize(R.dimen.dp_30),
+                            LinearLayout.LayoutParams.MATCH_PARENT
+                    )
+                    imageView.setMargin(0, 0, itemView.context.resources.getDimensionPixelSize(R.dimen.dp_4), 0)
+                    imageView.scaleType = ImageView.ScaleType.FIT_START
+                    ImageHandler.loadImageRounded2(itemView.context, imageView, it)
+                    itemView.container_image_promo_item.addView(imageView)
+                }
             }
-            itemView.container_image_promo_item.show()
+            if (hasNonBlankUrl) {
+                itemView.container_image_promo_item.show()
+            } else {
+                itemView.label_promo_item_title.setMargin(0, 0, itemView.context.resources.getDimension(R.dimen.dp_12).toInt(), 0)
+                itemView.container_image_promo_item.gone()
+            }
         } else {
             itemView.label_promo_item_title.setMargin(0, 0, itemView.context.resources.getDimension(R.dimen.dp_12).toInt(), 0)
             itemView.container_image_promo_item.gone()
