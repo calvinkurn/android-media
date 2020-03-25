@@ -18,6 +18,7 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.SummaryText
+import com.tokopedia.variant_common.model.ProductVariantCommon
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.view.*
 
 class PartialVariantAndRateEstView private constructor(private val view: View) {
@@ -36,7 +37,7 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
         view.title_multiorigin.text = spanText
     }
 
-    fun renderData(productVariant: ProductVariant?, selectedOptionString: String, onVariantClickedListener: (() -> Unit)? = null) {
+    fun renderData(productVariant: ProductVariantCommon?, selectedOptionString: String, onVariantClickedListener: (() -> Unit)? = null) {
         with(view) {
             if (productVariant != null) {
                 label_variant.visible()
