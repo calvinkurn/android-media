@@ -228,7 +228,6 @@ class MainSliceProvider : SliceProvider() {
 
     override fun onCreateSliceProvider(): Boolean {
         contextNonNull = context.applicationContext ?: return false
-        remoteConfig = FirebaseRemoteConfigImpl(contextNonNull)
         LocalCacheHandler(context, APPLINK_DEBUGGER)
         loadString = contextNonNull.resources.getString(R.string.slice_loading)
         return true
@@ -246,6 +245,7 @@ class MainSliceProvider : SliceProvider() {
     }
 
     fun getRemoteConfigRechargeSliceEnabler(): Boolean {
+        remoteConfig = FirebaseRemoteConfigImpl(contextNonNull)
         return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_RECHARGE, true))
     }
 
