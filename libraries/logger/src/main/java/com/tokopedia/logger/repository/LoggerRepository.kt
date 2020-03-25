@@ -60,8 +60,12 @@ class LoggerRepository(private val logDao: LoggerDao,
     override suspend fun sendScalyrLogToServer(logs: List<Logger>,
                                                secretKey: SecretKey) = coroutineScope {
         val scalyrEventList = mutableListOf<ScalyrEvent>()
+        //make the timestamp equals to timestamp when hit the api
+        //covnert the milli to nano, based on scalyr requirement.
+        var ts = System.currentTimeMillis() * 1000000
         for (log in logs) {
-            val ts = System.currentTimeMillis() * 1000
+            //to make sure each timestamp in each row is unique
+            ts += 1000
             val message = decrypt(log.message, secretKey)
             val truncatedMessage = if (message.length > Constants.MAX_BUFFER) {
                 message.substring(0, Constants.MAX_BUFFER)

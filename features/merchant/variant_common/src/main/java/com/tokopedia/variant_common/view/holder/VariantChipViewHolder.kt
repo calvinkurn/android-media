@@ -49,7 +49,7 @@ class VariantChipViewHolder(val view: View,
             }
             VariantConstant.STATE_SELECTED -> {
                 containerChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_chip_selected)
-                txtChipVariant.setTextColor(MethodChecker.getColor(context, R.color.g_500))
+                txtChipVariant.setTextColor(MethodChecker.getColor(context,R.color.g_500))
                 view.isEnabled = true
                 view.setOnClickListener(null)
             }

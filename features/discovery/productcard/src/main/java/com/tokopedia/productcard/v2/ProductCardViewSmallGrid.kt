@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
@@ -18,6 +19,7 @@ import kotlinx.android.synthetic.main.product_card_layout_v2_small_grid.view.*
 /**
  * ProductCardView with Small Grid layout.
  */
+@Deprecated("Please use ProductCardGridView or ProductCardListView")
 class ProductCardViewSmallGrid: ProductCardView {
 
     private var imageShop: ImageView? = null

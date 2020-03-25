@@ -223,6 +223,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val ADD_PIN_ONBOARDING = "$INTERNAL_GLOBAL/add-pin-onboarding"
 
+    // RegisterFingerprintOnboardingActivity
+    // tokopedia-android-internal://global/add-fingerprint-onboarding
+    @JvmField
+    val ADD_FINGERPRINT_ONBOARDING = "$INTERNAL_GLOBAL/add-fingerprint-onboarding"
+
     // PinCompleteActivity
     // tokopedia-android-internal://global/add-pin-complete
     @JvmField
@@ -384,7 +389,8 @@ object ApplinkConstInternalGlobal {
         "dfname={moduleTranslate}&" +
         "dfapplink={encodedApplink}&" +
         "dfauto={isAutoDownload}&" +
-        "dfimage={imageUrl}"
+        "dfimage={imageUrl}&" +
+        "dffallbackurl={fallbackUrl}"
 
     /**
      * LogoutActivity

@@ -1,0 +1,22 @@
+query($tabId:Int){
+  home_widget {
+    widget_grid(tabID:$tabId) {
+      id
+      name
+      image_url
+      url
+      applink
+      title_1
+      desc_1
+      title_2
+      desc_2
+      tag_name
+      tag_type
+      price
+      original_price
+      price_prefix
+      template_id
+    }
+  }
+}
+

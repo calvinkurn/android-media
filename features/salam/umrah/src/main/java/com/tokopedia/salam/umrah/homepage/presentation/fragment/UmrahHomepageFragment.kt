@@ -281,6 +281,10 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         trackingUmrahUtil.umrahHomepagePartnerTravelClick(headerTitle,travelAgent)
     }
 
+    override fun onClickAllPartner() {
+        RouteManager.route(context, ApplinkConst.SALAM_UMRAH_LIST_AGEN)
+    }
+
     companion object {
         fun getInstance(): UmrahHomepageFragment = UmrahHomepageFragment()
         var isRequestedMyUmrah = false

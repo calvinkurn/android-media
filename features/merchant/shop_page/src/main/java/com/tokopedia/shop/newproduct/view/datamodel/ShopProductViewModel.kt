@@ -36,6 +36,7 @@ class ShopProductViewModel : BaseShopProductViewModel, ImpressHolder {
     var freeOngkirPromoIcon: String? = null
     var isCarousel = false
     var etalaseId = ""
+    var labelGroupList: List<LabelGroupViewModel> = listOf()
 
     override fun type(typeFactory: ShopProductAdapterTypeFactory): Int {
         return typeFactory.type(this)

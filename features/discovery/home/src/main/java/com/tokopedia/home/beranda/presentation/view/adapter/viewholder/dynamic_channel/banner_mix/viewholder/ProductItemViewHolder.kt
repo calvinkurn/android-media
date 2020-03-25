@@ -1,9 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.viewholder
 
-import androidx.annotation.LayoutRes
 import android.view.View
-import android.view.ViewTreeObserver
-import androidx.recyclerview.widget.RecyclerView
+import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
@@ -12,7 +10,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.datamodel.ProductBannerMixDataModel
 import com.tokopedia.home.beranda.presentation.view.customview.ThematicCardView
-import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
 
 class ProductItemViewHolder(view: View,
                             val homeCategoryListener: HomeCategoryListener): AbstractViewHolder<ProductBannerMixDataModel>(view) {
@@ -38,6 +35,4 @@ class ProductItemViewHolder(view: View,
             }
         }
     }
-
-    val productCard: ProductCardViewSmallGrid by lazy { view.findViewById<ProductCardViewSmallGrid>(R.id.banner_item) }
 }
