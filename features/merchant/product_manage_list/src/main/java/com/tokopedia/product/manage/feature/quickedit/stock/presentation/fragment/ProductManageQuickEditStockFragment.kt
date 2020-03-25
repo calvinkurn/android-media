@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.ProductManageInstance
@@ -94,9 +95,9 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
             }
             editText.setOnFocusChangeListener { v, hasFocus ->
                 if(hasFocus) {
-                    showKeyboard()
+                    activity?.let { KeyboardHandler.showSoftKeyboard(it) }
                 } else {
-                    closeKeyboard()
+                    context?.let { KeyboardHandler.DropKeyboard(it, view) }
                 }
             }
             editText.addTextChangedListener(object : TextWatcher {
@@ -201,16 +202,6 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
     private fun removeObservers() {
         removeObservers(viewModel.status)
         removeObservers(viewModel.stock)
-    }
-
-    private fun showKeyboard() {
-        val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
-    }
-
-    private fun closeKeyboard() {
-        val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
     }
 
     interface OnFinishedListener {
