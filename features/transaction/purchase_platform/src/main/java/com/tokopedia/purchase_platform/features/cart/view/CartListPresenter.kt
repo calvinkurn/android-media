@@ -30,6 +30,7 @@ import com.tokopedia.purchase_platform.features.cart.view.subscriber.*
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.*
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.features.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
@@ -74,6 +75,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     private var cartListData: CartListData? = null
     private var hasPerformChecklistChange: Boolean = false
     private var insuranceChecked = true
+    var lastValidateUseResponse: ValidateUsePromoRevampUiModel? = null
+    var isLastApplyResponseStillValid = true
 
     companion object {
         private val PERCENTAGE = 100.0f
@@ -1126,7 +1129,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 .subscribeOn(schedulers.io)
                 .unsubscribeOn(schedulers.io)
                 .observeOn(schedulers.main)
-                .subscribe(ValidateUseSubscriber(view))
+                .subscribe(ValidateUseSubscriber(view, this))
     }
 
     override fun doUpdateCartAndValidateUse(promoRequestValidateUse: ValidateUsePromoRequest) {
@@ -1145,7 +1148,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
             compositeSubscription.add(
                     updateCartAndValidateUseUseCase.createObservable(requestParams)
-                            .subscribe(UpdateCartAndValidateUseSubscriber(cartListView))
+                            .subscribe(UpdateCartAndValidateUseSubscriber(cartListView, this))
             )
         }
     }
@@ -1156,5 +1159,25 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 clearCacheAutoApplyStackUseCase?.createObservable(RequestParams.create())
                         ?.subscribe(ClearRedPromosBeforeGoToCheckoutSubscriber(view))
         )
+    }
+
+    override fun getValidateUseLastResponse(): ValidateUsePromoRevampUiModel? {
+        return lastValidateUseResponse
+    }
+
+    override fun setValidateUseLastResponse(response: ValidateUsePromoRevampUiModel) {
+        lastValidateUseResponse = response
+    }
+
+    override fun isLastApplyValid(): Boolean {
+        return isLastApplyResponseStillValid
+    }
+
+    override fun setLastApplyNotValid() {
+        isLastApplyResponseStillValid = false
+    }
+
+    override fun setLastApplyValid() {
+        isLastApplyResponseStillValid = true
     }
 }

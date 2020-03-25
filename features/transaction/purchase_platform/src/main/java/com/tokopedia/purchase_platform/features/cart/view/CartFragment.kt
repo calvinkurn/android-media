@@ -1317,11 +1317,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             PromoRevampAnalytics.eventCartViewPromoChanged(lastApplyData.additionalInfo.errorDetail.message)
         }
 
-        var title = getString(R.string.promo_funnel_label)
+        var title = ""
         promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
 
         if (lastApplyData.additionalInfo.messageInfo.message.isNotEmpty()) {
             title = lastApplyData.additionalInfo.messageInfo.message
+        } else {
+            title = lastApplyData.defaultEmptyPromoMessage
         }
 
         if (lastApplyData.additionalInfo.messageInfo.detail.isNotEmpty()) {
@@ -1514,54 +1516,58 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun generateParamsCouponList(): PromoRequest {
-        val globalPromo = arrayListOf<String>()
-        cartListData?.lastApplyShopGroupSimplifiedData?.codes?.forEach { globalPromo.add(it) }
-
-        val listProductDetail = arrayListOf<ProductDetail>()
-        var isCheckedItem: Boolean = false
-        var listPromoCodes = listOf<String>()
-        cartListData?.shopGroupAvailableDataList?.forEach { shopGroupAvailableData ->
-            shopGroupAvailableData.cartItemDataList?.forEach { cartItemHolderData ->
-                cartItemHolderData.cartItemData?.originData?.productId?.let { productId ->
-                    cartItemHolderData.cartItemData?.updatedData?.quantity?.let { qty ->
+        val listOrder = ArrayList<Order>()
+        cartListData?.shopGroupAvailableDataList?.forEach { shop ->
+            shop.shopId?.toLong()?.let { shopId ->
+                shop.cartString?.let { cartString ->
+                    val listProductDetail = arrayListOf<ProductDetail>()
+                    shop.cartItemDataList?.forEach { cartItem ->
                         val productDetail = ProductDetail(
-                                productId = productId.toLong(),
-                                quantity = qty
+                                productId = cartItem.cartItemData?.originData?.productId?.toLong()
+                                        ?: 0,
+                                quantity = cartItem.cartItemData?.updatedData?.quantity ?: 0
                         )
                         listProductDetail.add(productDetail)
+                    }
+                    val order = Order(
+                            shopId = shopId,
+                            uniqueId = cartString,
+                            product_details = listProductDetail,
+                            codes = shop.promoCodes?.toMutableList() ?: mutableListOf(),
+                            isChecked = shop.isChecked)
+                    listOrder.add(order)
+                }
+            }
+        }
 
-                        cartItemHolderData.cartItemData?.originData?.isCheckboxState?.let { isChecked ->
-                            isCheckedItem = isChecked
-                        }
+        val globalPromo = arrayListOf<String>()
 
-                        cartItemHolderData.cartItemData?.originData?.listPromoCheckout?.let {
-                            listPromoCodes = it
+        val lastValidateUseResponse = dPresenter.getValidateUseLastResponse()
+        if (lastValidateUseResponse?.promoUiModel != null) {
+            lastValidateUseResponse.promoUiModel.codes.forEach {
+                if (!globalPromo.contains(it)) globalPromo.add(it)
+            }
+            lastValidateUseResponse.promoUiModel.voucherOrderUiModels.forEach { voucherOrder ->
+                listOrder.forEach { order ->
+                    if (voucherOrder?.uniqueId == order.uniqueId) {
+                        if (!order.codes.contains(voucherOrder.code)) {
+                            order.codes.add(voucherOrder.code)
                         }
                     }
                 }
             }
         }
 
-        val listOrder = ArrayList<Order>()
-        cartListData?.shopGroupAvailableDataList?.forEach { shop ->
-            shop.shopId?.toLong()?.let { shopId ->
-                shop.cartString?.let { cartString ->
-                    val order = Order(
-                            shopId = shopId,
-                            uniqueId = cartString,
-                            product_details = listProductDetail,
-                            codes = listPromoCodes.toMutableList(),
-                            isChecked = isCheckedItem)
-                    listOrder.add(order)
-                }
+        if (dPresenter.isLastApplyValid()) {
+            cartListData?.lastApplyShopGroupSimplifiedData?.codes?.forEach {
+                if (!globalPromo.contains(it)) globalPromo.add(it)
             }
-        }
-
-        cartListData?.lastApplyShopGroupSimplifiedData?.voucherOrders?.forEach { lastApplyData ->
-            listOrder.forEach { order ->
-                if (lastApplyData.uniqueId == order.uniqueId) {
-                    if (lastApplyData.code.isNotBlank() && !order.codes.contains(lastApplyData.code)) {
-                        order.codes.add(lastApplyData.code)
+            cartListData?.lastApplyShopGroupSimplifiedData?.voucherOrders?.forEach { lastApplyData ->
+                listOrder.forEach { order ->
+                    if (lastApplyData.uniqueId == order.uniqueId) {
+                        if (lastApplyData.code.isNotBlank() && !order.codes.contains(lastApplyData.code)) {
+                            order.codes.add(lastApplyData.code)
+                        }
                     }
                 }
             }
@@ -1914,6 +1920,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 if (resultCode == Activity.RESULT_OK) {
                     val validateUseUiModel = data?.getParcelableExtra<ValidateUsePromoRevampUiModel>(ARGS_VALIDATE_USE_DATA_RESULT)
                     if (validateUseUiModel != null) {
+                        dPresenter.setValidateUseLastResponse(validateUseUiModel)
+                        dPresenter.setLastApplyNotValid()
                         updatePromoCheckoutStickyButton(validateUseUiModel.promoUiModel)
                         return
                     }

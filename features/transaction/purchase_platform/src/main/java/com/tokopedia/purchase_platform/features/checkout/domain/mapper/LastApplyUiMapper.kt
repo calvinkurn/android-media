@@ -14,7 +14,8 @@ class LastApplyUiMapper {
                     codes = promoUiModel.codes,
                     voucherOrders = mapVoucherOrders(promoUiModel.voucherOrderUiModels),
                     additionalInfo = mapAdditionalInfo(promoUiModel.additionalInfoUiModel),
-                    message = mapMessageUiModel(promoUiModel.messageUiModel)
+                    message = mapMessageUiModel(promoUiModel.messageUiModel),
+                    defaultEmptyPromoMessage = if (promoUiModel.titleDescription.isNotBlank()) promoUiModel.titleDescription else ""
             )
         }
 

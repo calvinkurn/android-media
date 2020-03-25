@@ -12,5 +12,8 @@ data class SuccessData(
         val success: Boolean = false,
 
         @SerializedName("ticker_message")
-        val tickerMessage: String = ""
+        val tickerMessage: String = "",
+
+        @SerializedName("default_empty_promo_message")
+        val defaultEmptyPromoMessage: String = ""
 )
