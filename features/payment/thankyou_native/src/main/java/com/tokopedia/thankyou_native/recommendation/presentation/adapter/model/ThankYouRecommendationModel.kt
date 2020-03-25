@@ -1,4 +1,4 @@
-package com.tokopedia.thankyou_native.presentation.adapter.model
+package com.tokopedia.thankyou_native.recommendation.presentation.adapter.model
 
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.productcard.v2.ProductCardModel

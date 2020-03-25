@@ -12,7 +12,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
-import com.tokopedia.thankyou_native.di.ThankYouPageComponent
+import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.PaymentType
 import com.tokopedia.thankyou_native.helper.PaymentTypeMapper
@@ -22,7 +22,7 @@ import com.tokopedia.thankyou_native.presentation.helper.OriginCheckStatusButton
 import com.tokopedia.thankyou_native.presentation.helper.OriginOnBackPress
 import com.tokopedia.thankyou_native.presentation.viewModel.DetailInvoiceViewModel
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
-import com.tokopedia.thankyou_native.presentation.views.PDPThankYouPageView
+import com.tokopedia.thankyou_native.recommendation.presentation.view.PDPThankYouPageView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_processing.*

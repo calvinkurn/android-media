@@ -1,20 +1,14 @@
-package com.tokopedia.thankyou_native.presentation.adapter.viewholder
+package com.tokopedia.thankyou_native.recommendation.presentation.adapter.viewholder
 
 import android.app.Activity
 import android.view.View
 import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.v2.BlankSpaceConfig
-import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.thankyou_native.R
-import com.tokopedia.thankyou_native.presentation.adapter.ThankYouRecomViewListener
-import com.tokopedia.thankyou_native.presentation.adapter.model.ThankYouRecommendationModel
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.thankyou_native.recommendation.presentation.adapter.ThankYouRecomViewListener
+import com.tokopedia.thankyou_native.recommendation.presentation.adapter.model.ThankYouRecommendationModel
 import kotlinx.android.synthetic.main.thank_item_recommendation.view.*
 
 class RecommendationViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
@@ -44,12 +38,12 @@ class RecommendationViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
                             val rootView = (context as Activity).window.decorView
                             if (recommendationItem.isWishlist) {
-                                showSuccessAddWishlist(rootView, getString(R.string.msg_success_add_wishlist))
+                                listener.onWishListedSuccessfully(getString(R.string.msg_success_add_wishlist))
                             } else {
-                                showSuccessRemoveWishlist(rootView, getString(R.string.msg_success_remove_wishlist))
+                                listener.onRemoveFromWishList(getString(R.string.msg_success_remove_wishlist))
                             }
                         } else {
-                            showError(rootView, throwable)
+                            listener.onShowError(throwable)
                         }
                     }
 
@@ -66,29 +60,6 @@ class RecommendationViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
     fun clearImage() {
         itemView.productCardView.setImageProductVisible(false)
-    }
-
-    private fun showSuccessAddWishlist(view: View, message: String) {
-        Toaster.make(view,
-                message,
-                Snackbar.LENGTH_LONG,
-                actionText = view.context.getString(R.string.thank_recom_go_to_wishlist),
-                clickListener = View.OnClickListener {
-                    RouteManager.route(view.context, ApplinkConst.WISHLIST)
-                },
-                type = Toaster.TYPE_NORMAL)
-    }
-
-    private fun showSuccessRemoveWishlist(view: View, message: String) {
-        Toaster.make(view, message, Snackbar.LENGTH_LONG)
-    }
-
-    private fun showError(view: View, throwable: Throwable?) {
-        val message = ErrorHandler.getErrorMessage(view.context, throwable)
-        Toaster.make(view,
-                message,
-                Snackbar.LENGTH_LONG,
-                type = Toaster.TYPE_NORMAL)
     }
 }
 

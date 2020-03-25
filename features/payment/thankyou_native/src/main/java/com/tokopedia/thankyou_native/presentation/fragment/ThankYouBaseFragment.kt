@@ -17,8 +17,8 @@ import com.tokopedia.thankyou_native.presentation.dialog.PaymentMethodsBottomShe
 import com.tokopedia.thankyou_native.presentation.helper.DialogHelper
 import com.tokopedia.thankyou_native.presentation.helper.DialogOrigin
 import com.tokopedia.thankyou_native.presentation.helper.OnDialogRedirectListener
-import com.tokopedia.thankyou_native.presentation.views.PDPThankYouPageView
-import com.tokopedia.thankyou_native.presentation.views.Wishlist
+import com.tokopedia.thankyou_native.recommendation.presentation.view.PDPThankYouPageView
+import com.tokopedia.thankyou_native.recommendation.presentation.view.WishList
 import com.tokopedia.unifycomponents.Toaster
 import java.util.*
 
@@ -91,10 +91,10 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            Wishlist.REQUEST_FROM_PDP -> {
+            WishList.REQUEST_FROM_PDP -> {
                 if (data != null) {
-                    val wishListStatusFromPdp = data.getBooleanExtra(Wishlist.PDP_WIHSLIST_STATUS_IS_WISHLIST, false)
-                    val position = data.getIntExtra(Wishlist.PDP_EXTRA_UPDATED_POSITION, -1)
+                    val wishListStatusFromPdp = data.getBooleanExtra(WishList.PDP_WIHSLIST_STATUS_IS_WISHLIST, false)
+                    val position = data.getIntExtra(WishList.PDP_EXTRA_UPDATED_POSITION, -1)
                     getRecommendationView()?.onActivityResult(position, wishListStatusFromPdp)
                 }
             }

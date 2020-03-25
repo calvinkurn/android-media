@@ -7,8 +7,8 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.thankyou_native.di.DaggerThankYouPageComponent
-import com.tokopedia.thankyou_native.di.ThankYouPageComponent
+import com.tokopedia.thankyou_native.di.component.DaggerThankYouPageComponent
+import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.*
 import com.tokopedia.thankyou_native.presentation.fragment.DeferredPaymentFragment
@@ -17,7 +17,8 @@ import com.tokopedia.thankyou_native.presentation.fragment.LoaderFragment
 import com.tokopedia.thankyou_native.presentation.fragment.ProcessingPaymentFragment
 
 
-class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComponent>, ThankYouPageDataLoadCallback {
+class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComponent>,
+        ThankYouPageDataLoadCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         updateTitle("")
@@ -100,7 +101,8 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         const val ARG_PAYMENT_ID = "paymentID"
         const val ARG_MERCHANT = "merchant"
 
-        fun createIntent(context: Context, paymentID: String, merchant: String) = Intent(context, ThankYouPageActivity::class.java).apply {
+        fun createIntent(context: Context, paymentID: String, merchant: String)
+                = Intent(context, ThankYouPageActivity::class.java).apply {
             putExtra(ARG_MERCHANT, merchant)
             putExtra(ARG_PAYMENT_ID, paymentID)
         }

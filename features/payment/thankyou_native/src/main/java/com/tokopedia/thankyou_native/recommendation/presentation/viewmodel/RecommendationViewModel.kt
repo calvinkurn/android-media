@@ -1,4 +1,4 @@
-package com.tokopedia.thankyou_native.presentation.viewModel
+package com.tokopedia.thankyou_native.recommendation.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -8,6 +8,10 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.thankyou_native.presentation.viewModel.state.Loaded
 import com.tokopedia.thankyou_native.presentation.viewModel.state.Loading
 import com.tokopedia.thankyou_native.presentation.viewModel.state.RequestDataState
+import com.tokopedia.thankyou_native.recommendation.di.module.DispatcherModule
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
+import com.tokopedia.topads.sdk.domain.model.WishlistModel
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -18,14 +22,17 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import rx.Subscriber
 import javax.inject.Inject
+import javax.inject.Named
 
-class PDPThankYouViewModel @Inject constructor(
+class RecommendationViewModel @Inject constructor(
         private val getRecommendationUseCase: GetRecommendationUseCase,
         val addWishListUseCase: AddWishListUseCase,
         val removeWishListUseCase: RemoveWishListUseCase,
+        val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         val userSession: UserSessionInterface,
-        dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+        @Named(DispatcherModule.MAIN) val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     val titleLiveData: MutableLiveData<RequestDataState<String>> = MutableLiveData()
 
@@ -57,9 +64,9 @@ class PDPThankYouViewModel @Inject constructor(
         }
     }
 
-    fun addToWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)) {
+    fun addToWishList(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)) {
         if (model.isTopAds) {
-            /*val params = RequestParams.create()
+            val params = RequestParams.create()
             params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
             topAdsWishlishedUseCase.execute(params, object : Subscriber<WishlistModel>() {
                 override fun onCompleted() {
@@ -74,7 +81,7 @@ class PDPThankYouViewModel @Inject constructor(
                         callback.invoke(true, null)
                     }
                 }
-            })*/
+            })
         } else {
             addWishListUseCase.createObservable(model.productId.toString(), userSession.userId, object : WishListActionListener {
                 override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
@@ -96,8 +103,7 @@ class PDPThankYouViewModel @Inject constructor(
         }
     }
 
-
-    fun removeFromWishlist(model: RecommendationItem, wishlistCallback: (((Boolean, Throwable?) -> Unit))) {
+    fun removeFromWishList(model: RecommendationItem, wishListCallback: (((Boolean, Throwable?) -> Unit))) {
         removeWishListUseCase.createObservable(model.productId.toString(), userSession.userId, object : WishListActionListener {
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
                 // do nothing
@@ -108,20 +114,18 @@ class PDPThankYouViewModel @Inject constructor(
             }
 
             override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                wishlistCallback.invoke(false, Throwable(errorMessage))
+                wishListCallback.invoke(false, Throwable(errorMessage))
             }
 
             override fun onSuccessRemoveWishlist(productId: String?) {
-                wishlistCallback.invoke(true, null)
+                wishListCallback.invoke(true, null)
             }
         })
     }
-
 
     override fun onCleared() {
         super.onCleared()
         //recommendationProductUseCase.unsubscribe()
     }
-
 
 }

@@ -1,8 +1,9 @@
-package com.tokopedia.thankyou_native.presentation.views
+package com.tokopedia.thankyou_native.recommendation.presentation.view
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -10,25 +11,27 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.productcard.v2.ProductCardModel
-import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.thankyou_native.R
-import com.tokopedia.thankyou_native.di.DaggerThankYouPageComponent
-import com.tokopedia.thankyou_native.presentation.adapter.PdpThankYouPageAdapter
-import com.tokopedia.thankyou_native.helper.ProductCardDefaultDecorator
-import com.tokopedia.thankyou_native.presentation.adapter.ThankYouRecomViewListener
-import com.tokopedia.thankyou_native.presentation.adapter.model.ThankYouRecommendationModel
-import com.tokopedia.thankyou_native.presentation.viewModel.PDPThankYouViewModel
+import com.tokopedia.thankyou_native.recommendation.presentation.adapter.PdpThankYouPageAdapter
+import com.tokopedia.thankyou_native.recommendation.presentation.adapter.decorator.ProductCardDefaultDecorator
+import com.tokopedia.thankyou_native.recommendation.presentation.adapter.ThankYouRecomViewListener
+import com.tokopedia.thankyou_native.recommendation.presentation.adapter.model.ThankYouRecommendationModel
+import com.tokopedia.thankyou_native.recommendation.presentation.viewmodel.RecommendationViewModel
 import com.tokopedia.thankyou_native.presentation.viewModel.state.Loaded
 import com.tokopedia.thankyou_native.presentation.viewModel.state.Loading
+import com.tokopedia.thankyou_native.recommendation.di.component.DaggerRecommendationComponent
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.thank_pdp_recommendation.view.*
@@ -38,7 +41,7 @@ class PDPThankYouPageView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
-    private var viewModel: PDPThankYouViewModel? = null
+    private var viewModel: RecommendationViewModel? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -60,12 +63,12 @@ class PDPThankYouPageView @JvmOverloads constructor(
     }
 
     private fun injectComponents() {
-        DaggerThankYouPageComponent.builder()
+        DaggerRecommendationComponent.builder()
                 .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
                 .build().inject(this)
         if (context is AppCompatActivity) {
             val viewModelProvider = ViewModelProviders.of(context as AppCompatActivity, viewModelFactory)
-            viewModel = viewModelProvider[PDPThankYouViewModel::class.java]
+            viewModel = viewModelProvider[RecommendationViewModel::class.java]
         }
     }
 
@@ -77,12 +80,12 @@ class PDPThankYouPageView @JvmOverloads constructor(
         }
     }
 
-    private fun loadRecommendation(pdpThankYouViewModel: PDPThankYouViewModel) {
-        pdpThankYouViewModel.loadRecommendationData()
+    private fun loadRecommendation(recommendationViewModel: RecommendationViewModel) {
+        recommendationViewModel.loadRecommendationData()
     }
 
-    private fun startViewModelObserver(pdpThankYouViewModel: PDPThankYouViewModel) {
-        pdpThankYouViewModel.titleLiveData.observe(context as AppCompatActivity, Observer {
+    private fun startViewModelObserver(recommendationViewModel: RecommendationViewModel) {
+        recommendationViewModel.titleLiveData.observe(context as AppCompatActivity, Observer {
             when (it) {
                 is Loaded -> {
                     (it.data as? Success)?.data?.let { title ->
@@ -92,7 +95,7 @@ class PDPThankYouPageView @JvmOverloads constructor(
             }
         })
 
-        pdpThankYouViewModel.recommendationListModel.observe(context as AppCompatActivity, Observer {
+        recommendationViewModel.recommendationListModel.observe(context as AppCompatActivity, Observer {
             when (it) {
                 is Loading -> {
                 }
@@ -113,7 +116,6 @@ class PDPThankYouPageView @JvmOverloads constructor(
             adapter.notifyDataSetChanged()
         }
     }
-
 
     private fun getProductCardModel(recommendationItemList: List<RecommendationItem>): List<ThankYouRecommendationModel> {
         return recommendationItemList.map { recommendationItem ->
@@ -177,10 +179,11 @@ class PDPThankYouPageView @JvmOverloads constructor(
 
     private fun getRecommendationListener(): ThankYouRecomViewListener {
         return object : ThankYouRecomViewListener {
+
             override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString())
-                if (position.isNotEmpty()) intent.putExtra(Wishlist.PDP_EXTRA_UPDATED_POSITION, position[0])
-                fragment?.startActivityForResult(intent, Wishlist.REQUEST_FROM_PDP)
+                if (position.isNotEmpty()) intent.putExtra(WishList.PDP_EXTRA_UPDATED_POSITION, position[0])
+                fragment?.startActivityForResult(intent, WishList.REQUEST_FROM_PDP)
             }
 
             override fun onProductImpression(item: RecommendationItem, position: Int) {
@@ -195,18 +198,47 @@ class PDPThankYouPageView @JvmOverloads constructor(
 
             }
 
+            override fun onWishListedSuccessfully(message: String) {
+                fragment?.view?.let { view ->
+                    Toaster.make(view,
+                            message,
+                            Snackbar.LENGTH_LONG,
+                            actionText = view.context.getString(R.string.thank_recom_go_to_wishlist),
+                            clickListener = View.OnClickListener {
+                                RouteManager.route(view.context, ApplinkConst.WISHLIST)
+                            },
+                            type = Toaster.TYPE_NORMAL)
+                }
+            }
+
+            override fun onRemoveFromWishList(message: String) {
+                fragment?.view?.let { view ->
+                    Toaster.make(view, message, Snackbar.LENGTH_LONG)
+                }
+
+            }
+
+            override fun onShowError(throwable: Throwable?) {
+                fragment?.view?.let { view ->
+                    val message = ErrorHandler.getErrorMessage(view.context, throwable)
+                    Toaster.make(view,
+                            message,
+                            Snackbar.LENGTH_LONG,
+                            type = Toaster.TYPE_NORMAL)
+                }
+            }
+
             override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
                 if (userSessionInterface.isLoggedIn) {
                     if (!isAddWishlist) {
-                        viewModel?.addToWishlist(item, callback)
+                        viewModel?.addToWishList(item, callback)
                     } else {
-                        viewModel?.removeFromWishlist(item, callback)
+                        viewModel?.removeFromWishList(item, callback)
                     }
                 } else {
                     RouteManager.route(context, ApplinkConst.LOGIN)
                 }
             }
-
         }
     }
 
@@ -226,7 +258,7 @@ class PDPThankYouPageView @JvmOverloads constructor(
 
 }
 
-object Wishlist {
+object WishList {
     const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
     const val PDP_WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
     const val REQUEST_FROM_PDP = 138

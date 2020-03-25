@@ -1,4 +1,4 @@
-package com.tokopedia.thankyou_native.helper
+package com.tokopedia.thankyou_native.recommendation.presentation.adapter.decorator
 
 import android.graphics.Rect
 import android.view.View

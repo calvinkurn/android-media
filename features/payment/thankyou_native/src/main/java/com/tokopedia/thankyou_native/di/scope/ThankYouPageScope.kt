@@ -1,4 +1,4 @@
-package com.tokopedia.thankyou_native.di
+package com.tokopedia.thankyou_native.di.scope
 
 import javax.inject.Scope
 
