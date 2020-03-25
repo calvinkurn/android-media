@@ -57,7 +57,6 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.feed_detail_header.view.*
-import kotlinx.android.synthetic.main.fragment_feed_plus_detail_nav.*
 import java.util.*
 import javax.inject.Inject
 
@@ -74,7 +73,8 @@ private const val TITLE_OTHER = "Lainnya"
 class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, ShareCallback {
     private lateinit var recyclerView: RecyclerView
     private lateinit var shareButton: ImageButton
-    private lateinit var seeShopButon: Typography
+    private lateinit var seeShopButton: Typography
+    private lateinit var footer: View
     private lateinit var progressBar: ProgressBar
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private lateinit var layoutManager: LinearLayoutManager
@@ -154,9 +154,12 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         val view = inflater.inflate(R.layout.fragment_feed_plus_detail_nav, container, false)
         view.run {
             recyclerView = findViewById(R.id.detail_list)
-            shareButton = findViewById(R.id.share_button)
-            seeShopButon = findViewById(R.id.see_shop)
             progressBar = findViewById(R.id.progress_bar)
+        }
+        (activity as FeedPlusDetailActivity).getFooterLayout()?.run {
+            footer = this
+            shareButton = findViewById(R.id.share_button)
+            seeShopButton = findViewById(R.id.see_shop)
         }
         prepareView()
         return view
@@ -168,6 +171,9 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = adapter
         recyclerView.addOnScrollListener(recyclerviewScrollListener)
+        footer.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        val height = footer.measuredHeight
+        recyclerView.setPadding(0,0,0,height)
     }
 
     override fun getScreenName(): String {
@@ -293,7 +299,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 header.shopName,
                 header.shopAvatar,
                 header.shareLinkDescription))
-        seeShopButon.setOnClickListener(onGoToShopDetailFromButton(header.shopId))
+        seeShopButton.setOnClickListener(onGoToShopDetailFromButton(header.shopId))
         pagingHandler.setHasNext(listDetail.size > 1 && hasNextPage)
         adapter.notifyDataSetChanged()
         trackImpression(listDetail)
@@ -329,6 +335,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             }
             shopAvatar.setOnClickListener { onGoToShopDetail(header.activityId, header.shopId) }
             this.setOnClickListener { onGoToShopDetail(header.activityId, header.shopId) }
+            show()
         }
     }
 

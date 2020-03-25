@@ -25,7 +25,7 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
     }
 
     private fun hideStatusBar() {
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
         this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
     }
 
@@ -57,4 +57,9 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
     fun getShopInfoLayout(): View? {
         return findViewById(R.id.shop_info_card)
     }
+
+    fun getFooterLayout(): View? {
+        return findViewById(R.id.footer)
+    }
+
 }
