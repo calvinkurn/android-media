@@ -20,6 +20,8 @@ import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
 import com.tokopedia.settingnotif.usersetting.di.UserSettingModule
 import com.tokopedia.settingnotif.usersetting.domain.pojo.setusersetting.SetUserSettingResponse
+import com.tokopedia.settingnotif.usersetting.listener.SectionItemListener
+import com.tokopedia.settingnotif.usersetting.view.activity.UserNotificationSettingActivity
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldAdapter
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldTypeFactoryImpl
@@ -30,13 +32,17 @@ import com.tokopedia.settingnotif.usersetting.widget.NotifSettingDividerDecorati
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
+typealias ParentActivity = UserNotificationSettingActivity
+
 abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         BaseAdapterTypeFactory>(),
         SettingFieldAdapter.SettingFieldAdapterListener,
-        SettingFieldContract.View {
+        SettingFieldContract.View,
+        SectionItemListener {
 
-    @Inject
-    lateinit var presenter: SettingFieldContract.Presenter
+    @Inject lateinit var presenter: SettingFieldContract.Presenter
+
+    protected var isRequestData = true
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
@@ -90,12 +96,13 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     abstract fun getNotificationType(): String
 
     override fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>) {
+        if (!isRequestData) return
         presenter.requestUpdateUserSetting(notificationType, updatedSettingIds)
         presenter.requestUpdateMoengageUserSetting(updatedSettingIds)
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
-        return SettingFieldTypeFactoryImpl()
+        return SettingFieldTypeFactoryImpl(this)
     }
 
     override fun onItemClicked(item: Visitable<*>?) {
@@ -130,7 +137,7 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         }
     }
 
-    protected fun showMessage(@StringRes messageRes: Int) {
+    private fun showMessage(@StringRes messageRes: Int) {
         activity?.let {
             val message = it.getString(messageRes)
             view?.let { view ->
@@ -139,9 +146,16 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         }
     }
 
-    protected fun showMessage(message: String) {
+    private fun showMessage(message: String) {
         view?.let {
             Toaster.showNormal(it, message, Snackbar.LENGTH_SHORT)
         }
     }
+
+    override fun onItemClicked() {
+        activity?.let {
+            (it as ParentActivity).openSellerFiled()
+        }
+    }
+
 }
