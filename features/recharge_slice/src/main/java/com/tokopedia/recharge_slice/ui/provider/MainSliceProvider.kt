@@ -45,7 +45,6 @@ import java.util.*
 class MainSliceProvider : SliceProvider() {
     private lateinit var contextNonNull: Context
     private lateinit var userSession: UserSession
-    private lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
     @Inject
     lateinit var repository: GraphqlRepository
@@ -57,7 +56,6 @@ class MainSliceProvider : SliceProvider() {
 
     override fun onBindSlice(sliceUri: Uri): Slice? {
         userSession = UserSession(contextNonNull)
-        remoteConfig = FirebaseRemoteConfigImpl(contextNonNull)
         return createGetInvoiceSlice(sliceUri)
     }
 
@@ -88,7 +86,7 @@ class MainSliceProvider : SliceProvider() {
     )
 
     private fun createGetInvoiceSlice(sliceUri: Uri): Slice? {
-        if (getRemoteConfigRechargeSliceEnabler()) {
+        if (getRemoteConfigRechargeSliceEnabler(contextNonNull)) {
             val mainPendingIntent = PendingIntent.getActivity(
                     contextNonNull,
                     0,
@@ -245,7 +243,8 @@ class MainSliceProvider : SliceProvider() {
         return if (nonRupiah != 0) rupiahFormat.format(nonRupiah) else ""
     }
 
-    fun getRemoteConfigRechargeSliceEnabler(): Boolean {
+    fun getRemoteConfigRechargeSliceEnabler(context: Context): Boolean {
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
         return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_RECHARGE, true))
     }
 
