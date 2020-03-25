@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingSectionViewHolder
+import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SmsSectionViewHolder
 
 class NotifSettingDividerDecoration(context: Context?) : RecyclerView.ItemDecoration() {
 
@@ -18,7 +19,7 @@ class NotifSettingDividerDecoration(context: Context?) : RecyclerView.ItemDecora
         context?.let {
             divider = ContextCompat.getDrawable(it, R.drawable.setting_notif_bg_line_separator_thin)
             dividerHeight = context.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_half)
-            dividerLeftPadding = context.resources.getDimensionPixelSize(R.dimen.setting_notif_dp_56)
+            dividerLeftPadding = context.resources.getDimensionPixelSize(R.dimen.setting_notif_dp_12)
         }
     }
 
@@ -32,6 +33,7 @@ class NotifSettingDividerDecoration(context: Context?) : RecyclerView.ItemDecora
             val childViewHolder = parent.getChildViewHolder(childView)
 
             if (childViewHolder is SettingSectionViewHolder) continue
+            if (childViewHolder is SmsSectionViewHolder) continue
 
             val childParams = childView.layoutParams as RecyclerView.LayoutParams
 
