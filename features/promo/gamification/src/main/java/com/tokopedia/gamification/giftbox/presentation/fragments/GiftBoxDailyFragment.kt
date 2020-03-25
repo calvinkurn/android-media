@@ -26,6 +26,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.gamification.R
+import com.tokopedia.gamification.audio.AudioFactory
+import com.tokopedia.gamification.audio.AudioManager
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
 import com.tokopedia.gamification.giftbox.data.entities.GameRemindMeCheck
 import com.tokopedia.gamification.giftbox.data.entities.GiftBoxEntity
@@ -72,6 +74,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     var tokenUserState: String = TokenUserState.DEFAULT
     var disableGiftBoxTap = false
     var autoApplyMessage = ""
+    var mAudiosManager: AudioManager? = null
 
     override fun getLayout() = R.layout.fragment_gift_box_daily
 
@@ -205,6 +208,11 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                     if (!disableGiftBoxTap) {
                                         viewModel.getRewards()
                                         disableGiftBoxTap = true
+                                    }
+
+                                    context?.let {
+                                        mAudiosManager = AudioFactory.createAudio(it, R.raw.gf_giftbox_tap)
+                                        mAudiosManager.playAudio()
                                     }
                                 }
 
