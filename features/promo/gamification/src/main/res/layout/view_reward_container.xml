@@ -55,7 +55,7 @@
             android:paddingLeft="25dp"
             android:paddingEnd="15dp"
             android:paddingRight="15dp"
-            android:text="50 OVO Points"
+            tools:text="50 OVO Points"
             android:textColor="@android:color/white"
             app:typographyType="heading_5"
             app:typographyWeight="bold" />

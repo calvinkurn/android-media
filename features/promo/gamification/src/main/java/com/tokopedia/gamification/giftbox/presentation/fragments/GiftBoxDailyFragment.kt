@@ -4,7 +4,6 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
-import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -31,7 +30,6 @@ import com.tokopedia.gamification.giftbox.data.entities.GameRemindMeCheck
 import com.tokopedia.gamification.giftbox.data.entities.GiftBoxEntity
 import com.tokopedia.gamification.giftbox.data.entities.GiftBoxRewardEntity
 import com.tokopedia.gamification.giftbox.data.entities.Reminder
-import com.tokopedia.gamification.giftbox.presentation.dialogs.NoInternetDialog
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.ACTIVE
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.EMPTY
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
@@ -467,6 +465,19 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     fun setPositionOfViewsAtBoxOpen(@TokenUserState state: String) {
         rewardContainer.setFinalTranslationOfCirclesTap(giftBoxDailyView.fmGiftBox.top)
 
+        giftBoxDailyView.imageGiftBoxLid.doOnLayout {lid->
+            val array = IntArray(2)
+            lid.getLocationInWindow(array)
+            val heightOfRvCoupons = dpToPx(148f)
+            val lidTop = array[1].toFloat() - getStatusBarHeight(context)
+            val translationY = lidTop - heightOfRvCoupons + dpToPx(3f)
+
+            rewardContainer.rvCoupons.translationY = translationY
+            val distanceFromLidTop = dpToPx(29f)
+            val heightOfRewardText = dpToPx(31f)
+            rewardContainer.llRewardTextLayout.translationY = lidTop  + distanceFromLidTop
+
+        }
         giftBoxDailyView.imageBoxFront.doOnLayout { imageBoxFront ->
             val array = IntArray(2)
             imageBoxFront.getLocationInWindow(array)
@@ -474,8 +485,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             starsContainer.setStartPositionOfStars(starsContainer.width / 2f, translationY)
 
             val tranY = (screenHeight * 0.385f) - statusBarHeight
-            rewardContainer.llRewardTextLayout.translationY = tranY
-            rewardContainer.rvCoupons.translationY = array[1].toFloat() - (screenHeight * 0.15f) - dpToPx(158f) - statusBarHeight
+//            rewardContainer.llRewardTextLayout.translationY = tranY
+//            rewardContainer.rvCoupons.translationY = array[1].toFloat() - (screenHeight * 0.15f) - dpToPx(158f) - statusBarHeight
 //            rewardContainer.rvCoupons.translationY = tranY - dpToPx(20f)
             if (state == TokenUserState.EMPTY) {
 //                llBenefits.gravity = Gravity.TOP
