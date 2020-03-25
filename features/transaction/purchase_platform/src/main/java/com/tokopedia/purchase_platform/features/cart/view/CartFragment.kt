@@ -1329,7 +1329,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             promoCheckoutBtn.desc = lastApplyData.additionalInfo.messageInfo.detail
         } else {
             isApplied = false
-            promoCheckoutBtn.desc = ""
+
+            if (cartAdapter.selectedCartItemData.isEmpty()) {
+                promoCheckoutBtn.desc = getString(R.string.promo_desc_no_selected_item)
+            } else {
+                promoCheckoutBtn.desc = ""
+            }
         }
 
         promoCheckoutBtn.title = title

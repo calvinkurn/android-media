@@ -36,13 +36,15 @@
             app:layout_constraintStart_toEndOf="@id/iv_promo_checkout_left"
             app:layout_constraintTop_toTopOf="@id/iv_promo_checkout_left"
             app:layout_constraintBottom_toBottomOf="@id/iv_promo_checkout_left"
+            android:paddingTop="@dimen/dp_6"
+            android:paddingBottom="@dimen/dp_6"
             android:orientation="vertical">
 
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
+            <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/promo_checkout_loading_state"
                 android:layout_width="@dimen/dp_200"
-                android:layout_height="@dimen/dp_16"
-                app:corners="20"
+                android:layout_height="wrap_content"
+                app:loader_type="line"
                 android:layout_margin="@dimen/dp_8"
                 android:visibility="visible"/>
 
