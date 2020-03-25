@@ -33,7 +33,7 @@ open class GiftBoxDailyView : FrameLayout {
     var initialBounceAnimatorSet: AnimatorSet? = null
     var giftBoxState: GiftBoxState = GiftBoxState.CLOSED
 
-    open var TOTAL_ASYNC_IMAGES = 2
+    open var TOTAL_ASYNC_IMAGES = 3
     var imagesLoaded = AtomicInteger(0)
     val GIFT_BOX_START_DELAY = 300L
 
@@ -98,7 +98,34 @@ open class GiftBoxDailyView : FrameLayout {
     }
 
     fun loadFiles(@TokenUserState state: String, imageFrontUrl: String?, imageBgUrl: String, imageCallback: ((isLoaded: Boolean) -> Unit)) {
-        val listener = object : RequestListener<Drawable> {
+
+        var drawableRedForLid = R.drawable.gf_ic_lid_frame_7
+        if (state == TokenUserState.ACTIVE) {
+            drawableRedForLid = R.drawable.gf_ic_lid_frame_0
+        }
+        Glide.with(this)
+                .load(drawableRedForLid)
+                .dontAnimate()
+                .addListener(getGlideListener(imageCallback))
+                .into(imageGiftBoxLid)
+
+        Glide.with(this)
+                .load(imageFrontUrl)
+                .dontAnimate()
+                .addListener(getGlideListener(imageCallback))
+                .into(imageBoxFront)
+
+
+        Glide.with(this)
+                .load(imageBgUrl)
+                .dontAnimate()
+                .addListener(getGlideListener(imageCallback))
+                .into(imageBg)
+
+    }
+
+    fun getGlideListener(imageCallback: ((isLoaded: Boolean) -> Unit)):RequestListener<Drawable>{
+        return object : RequestListener<Drawable> {
             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                 imageCallback.invoke(false)
                 return false
@@ -112,29 +139,6 @@ open class GiftBoxDailyView : FrameLayout {
                 return false
             }
         }
-        var drawableRedForLid = R.drawable.gf_ic_lid_frame_7
-        if (state == TokenUserState.ACTIVE) {
-            drawableRedForLid = R.drawable.gf_ic_lid_frame_0
-        }
-        Glide.with(this)
-                .load(drawableRedForLid)
-                .dontAnimate()
-                .addListener(listener)
-                .into(imageGiftBoxLid)
-
-        Glide.with(this)
-                .load(imageFrontUrl)
-                .dontAnimate()
-                .addListener(listener)
-                .into(imageBoxFront)
-
-        //todo Rahul change to imageBgUrl later & also update TOTAL_ASYNC_IMAGES
-        Glide.with(this)
-                .load(R.drawable.gf_ic_gift_background)
-                .dontAnimate()
-                .addListener(listener)
-                .into(imageBg)
-
     }
 
     open fun startInitialAnimation(): Animator? {
