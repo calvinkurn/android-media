@@ -135,7 +135,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
             // Get response
             val response = withContext(Dispatchers.IO) {
-                //                Gson().fromJson(MOCK_RESPONSE, CouponListRecommendationResponse::class.java)
+//                                Gson().fromJson(MOCK_RESPONSE, CouponListRecommendationResponse::class.java)
                 val request = GraphqlRequest(mutation, CouponListRecommendationResponse::class.java, promo)
                 graphqlRepository.getReseponse(listOf(request))
                         .getSuccessData<CouponListRecommendationResponse>()
