@@ -43,6 +43,10 @@ class GiftBoxDailyRewardUseCase @Inject constructor(@Named(GIFT_BOX_DAILY_REWARD
         return getFakeEntity(FakeResponses.GamiCrackResponse.COUPONS_WITH_POINTS)
     }
 
+    fun getTwoCoupons():GiftBoxRewardEntity{
+        return getFakeEntity(FakeResponses.GamiCrackResponse.TWO_COUPONS)
+    }
+
     fun getCoupons():GiftBoxRewardEntity{
         return getFakeEntity(FakeResponses.GamiCrackResponse.COUPONS_ONLY)
     }

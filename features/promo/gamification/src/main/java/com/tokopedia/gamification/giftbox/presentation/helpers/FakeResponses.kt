@@ -114,6 +114,58 @@ object FakeResponses {
                 "  }\n" +
                 "}"
 
+        val TWO_COUPONS = "{\n" +
+                "  \"gamiCrack\": {\n" +
+                "    \"resultStatus\": {\n" +
+                "      \"code\": \"200\",\n" +
+                "      \"message\": [\n" +
+                "        \"success\"\n" +
+                "      ],\n" +
+                "      \"reason\": \"\"\n" +
+                "    },\n" +
+                "    \"imageUrl\": \"https://ecs7.tokopedia.net/assets-tokopoints/prod/images/2018/09/Coupon-Reward_DesktopMobile-635x364-gold.png\",\n" +
+                "    \"benefitText\": [\n" +
+                "      \"Yay, kamu dapat hadiah\",\n" +
+                "      \"2 Kupon\"\n" +
+                "    ],\n" +
+                "    \"benefits\": [\n" +
+                "      {\n" +
+                "        \"text\": \"1 Kupon Special Rp 100\",\n" +
+                "        \"color\": \"#ffffff\",\n" +
+                "        \"size\": \"small\",\n" +
+                "        \"benefitType\": \"coupon\",\n" +
+                "        \"imageURL\": \"\",\n" +
+                "        \"dummyCode\": \"HCKQTUDVAGOLDTEST-0\",\n" +
+                "        \"referenceID\": \"2446\",\n" +
+                "        \"isAutoApply\": true,\n" +
+                "        \"autoApplyMsg\": \"Kupon Special Rp 100 udah terpasang ya. Ayo beli sekarang!\",\n" +
+                "        \"isBigPrize\": false\n" +
+                "      },\n" +
+                "      {\n" +
+                "        \"text\": \"1 Kupon Cashback\",\n" +
+                "        \"color\": \"#ffffff\",\n" +
+                "        \"size\": \"small\",\n" +
+                "        \"benefitType\": \"coupon\",\n" +
+                "        \"imageURL\": \"\",\n" +
+                "        \"dummyCode\": \"HCKQTUDVAMZAFLIF2-0\",\n" +
+                "        \"referenceID\": \"1470\",\n" +
+                "        \"isAutoApply\": false,\n" +
+                "        \"autoApplyMsg\": \"\",\n" +
+                "        \"isBigPrize\": false\n" +
+                "      }\n" +
+                "    ],\n" +
+                "    \"actionButton\": [\n" +
+                "      {\n" +
+                "        \"text\": \"Cek Produk\",\n" +
+                "        \"url\": \"https://staging.tokopedia.com/sepatutascom/sepatu-sport-asd-005\",\n" +
+                "        \"applink\": \"tokopedia://product/5356104\",\n" +
+                "        \"type\": \"redirect\",\n" +
+                "        \"backgroundColor\": \"orange\"\n" +
+                "      }\n" +
+                "    ]\n" +
+                "  }\n" +
+                "}"
+
         val POINTS_ONLY = "{\n" +
                 "  \"gamiCrack\": {\n" +
                 "    \"resultStatus\": {\n" +

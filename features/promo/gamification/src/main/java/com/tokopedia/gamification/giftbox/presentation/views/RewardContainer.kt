@@ -112,7 +112,7 @@ class RewardContainer : FrameLayout {
         var iconUrl: String? = ""
         rewardEntity.gamiCrack.benefits?.let {
             it.forEach { benefit ->
-                if (benefit.benefitType != "coupons") {
+                if (benefit.benefitType != "coupon") {
                     hasPoints = true
                     tvSmallReward.text = benefit.text
                     if (!benefit.color.isNullOrEmpty()) {
