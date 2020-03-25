@@ -44,6 +44,20 @@ data class ProductVariantCommon(
         @Expose
         var children: List<VariantChildCommon> = listOf()
 ) {
+
+    fun isSelectedChildHasFlashSale(optionId: Int): Boolean {
+        var isFlashSale = false
+        for (child: VariantChildCommon in children) {
+            if (optionId == child.optionIds.firstOrNull()) {
+                if(child.isFlashSale) {
+                    isFlashSale = true
+                    break
+                }
+            }
+        }
+        return isFlashSale
+    }
+
     val hasChildren: Boolean
         get() = with(children) {this.isNotEmpty() }
 
