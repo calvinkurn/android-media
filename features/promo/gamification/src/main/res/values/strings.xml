@@ -54,6 +54,6 @@
 
     <string name="gami_no_internet_title">Koneksi internetmu terganggu!</string>
     <string name="gami_no_internet_message">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>
-    <string name="gami_coba_lagi_refresh">Coba Laogi Refresh</string>
+    <string name="gami_coba_lagi_refresh">Coba Lagi Refresh</string>
     <string name="gami_ke_pengaturan">Ke Pengaturan</string>
 </resources>
