@@ -165,7 +165,8 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
                         cursor,
                         ::onSuccessInitiateData,
                         onErrorInitiateData()
-                )            }
+                )
+            }
         }
     }
 
