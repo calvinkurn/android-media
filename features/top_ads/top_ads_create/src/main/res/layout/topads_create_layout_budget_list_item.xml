@@ -18,7 +18,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/budget_parent"
-            style="@style/TextInputLayout"
+            android:layout_height="wrap_content"
             android:layout_width="0dp"
             app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout.VerySmall"
             app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +37,6 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dp_5"
             android:text="@string/biaya_per_klik"
             android:textColor="@color/topads_heading_color"
             app:layout_constraintStart_toStartOf="parent"
@@ -57,7 +56,7 @@
             style="@style/TextView.Micro"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_4"
             android:text="@string/biaya_per_klik"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title"

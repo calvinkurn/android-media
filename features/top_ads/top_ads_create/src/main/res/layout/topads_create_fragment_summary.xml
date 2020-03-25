@@ -46,12 +46,11 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/summary"
-                    style="@style/TextView.Micro"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/title"
                     android:text="@string/optimalkan_penjualan_dengan_atur_anggaran_harian_iklan"
-                    app:typographyType="body_2" />
+                    app:typographyType="body_1" />
 
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -120,7 +119,6 @@
                     android:orientation="horizontal">
 
                     <com.tokopedia.unifyprinciples.Typography
-                        style="@style/TextView.Micro"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -147,7 +145,6 @@
                     android:orientation="horizontal">
 
                     <com.tokopedia.unifyprinciples.Typography
-                        style="@style/TextView.Micro"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -174,7 +171,6 @@
                     android:orientation="horizontal">
 
                     <com.tokopedia.unifyprinciples.Typography
-                        style="@style/TextView.Micro"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -200,7 +196,6 @@
                     android:orientation="horizontal">
 
                     <com.tokopedia.unifyprinciples.Typography
-                        style="@style/TextView.Micro"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -226,7 +221,6 @@
                     android:orientation="horizontal">
 
                     <com.tokopedia.unifyprinciples.Typography
-                        style="@style/TextView.Micro"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -253,7 +247,6 @@
                     android:orientation="horizontal">
 
                     <com.tokopedia.unifyprinciples.Typography
-                        style="@style/TextView.Micro"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

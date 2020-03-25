@@ -2,10 +2,8 @@ package com.tokopedia.topads.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.LayoutInflater
@@ -17,6 +15,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.topads.common.activity.NoCreditActivity
 import com.tokopedia.topads.common.activity.SuccessActivity
@@ -117,10 +116,10 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btn_submit.setOnClickListener {
-            var map = convertToParam(view)
+            val map = convertToParam(view)
             viewModel.topAdsCreated(map, this::onSuccessActivation, this::onErrorActivation)
         }
-        var suggestion = (stepperModel?.finalBidPerClick!!) * MULTIPLIER
+        val suggestion = (stepperModel?.finalBidPerClick!!) * MULTIPLIER
         stepperModel?.dailyBudget = suggestion
         error_text.text = String.format(getString(R.string.daily_budget_error), suggestion)
         dailyBudget = stepperModel?.finalBidPerClick!! * 40
@@ -131,7 +130,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 daily_budget_butt.text = "Anggaran harian Dibatasi"
                 var budget = 0
                 try {
-                    budget = Integer.parseInt(daily_budget.textWithoutPrefix.toString())
+                    budget = Integer.parseInt(daily_budget.textWithoutPrefix.toString().replace(",", ""))
                 } catch (e: NumberFormatException) {
 
                 }
@@ -163,43 +162,25 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         spannableText.setSpan(clickableSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         info_text.movementMethod = LinkMovementMethod.getInstance()
         info_text.append(spannableText)
-
-        bid_range.text = String.format(resources.getString(R.string.bid_range), stepperModel?.minBid, stepperModel?.maxBid)
+        bid_range.text = String.format(resources.getString(R.string.bid_range), String.format("%,d", stepperModel?.minBid), String.format("%,d", stepperModel?.maxBid))
     }
 
-    private fun watcher(): TextWatcher? {
-        return object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                try {
-                    var input = 0
-                    var s = s.toString().replaceFirst("Rp ".toRegex(), "").trim()
-                    if (s.isNotEmpty()) {
-                        input = Integer.parseInt(s.toString())
-                    }
-                    if (input < stepperModel?.finalBidPerClick!! * MULTIPLIER
-                            && daily_budget.isVisible) {
-                        error_text.visibility = View.VISIBLE
-                        btn_submit.isEnabled = false
-                    } else {
-                        stepperModel?.dailyBudget = input
-                        error_text.visibility = View.GONE
-                        btn_submit.isEnabled = true
-                    }
-
-                } catch (e: NumberFormatException) {
-                    e.printStackTrace()
+    private fun watcher(): NumberTextWatcher? {
+        return object : NumberTextWatcher(daily_budget, "0") {
+            override fun onNumberChanged(number: Double) {
+                super.onNumberChanged(number)
+                var input = number.toInt()
+                if (input < stepperModel?.finalBidPerClick!! * MULTIPLIER
+                        && daily_budget.isVisible) {
+                    error_text.visibility = View.VISIBLE
+                    btn_submit.isEnabled = false
+                } else {
+                    stepperModel?.dailyBudget = input
+                    error_text.visibility = View.GONE
+                    btn_submit.isEnabled = true
                 }
             }
-
-            override fun afterTextChanged(s: Editable) {
-
-            }
         }
-
     }
 
     override fun onResume() {
@@ -223,7 +204,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
         if (stepperModel!!.selectedKeywords.count() > 0) {
             stepperModel!!.selectedKeywords.forEachIndexed { index, _ ->
-                var key = KeywordsItem()
+                val key = KeywordsItem()
                 key.keywordTag = stepperModel?.selectedKeywords!![index]
                 key.priceBid = stepperModel?.selectedSuggestBid!![index]
                 keywordsList.add(key)
