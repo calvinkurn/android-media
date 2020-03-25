@@ -4,6 +4,8 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.removeFirst
+import com.tokopedia.settingnotif.usersetting.domain.pojo.NotificationActivation
 import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
 
@@ -62,4 +64,10 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
     override fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>) {
         settingFieldAdapterListener.requestUpdateUserSetting(notificationType, updatedSettingIds)
     }
+
+    fun removeNotificationPermission() {
+        visitables.removeFirst { it is NotificationActivation }
+        notifyDataSetChanged()
+    }
+
 }
