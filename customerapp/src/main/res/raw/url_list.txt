@@ -13,7 +13,9 @@
     "image_message_thank_you.png",
     "image_rating_request.png",
     "image_message_request.png",
-    "phone_verification.png"
+    "phone_verification.png",
+    "sinar_rewards_3_x.png",
+    "swd_prgrm_withdrawal.png"
   ],
   "pendingDownload": [
 
