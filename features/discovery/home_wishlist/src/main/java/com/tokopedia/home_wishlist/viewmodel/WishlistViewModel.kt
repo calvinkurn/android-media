@@ -606,7 +606,7 @@ open class WishlistViewModel @Inject constructor(
      * This function will remove selected wishlist data based on selected position
      */
     fun removeWishlistedProduct(position: Int) {
-        if(position != -1 && position < wishlistData.value.size) {
+        if(position != -1 && position < wishlistData.value.size && wishlistData.value.isNotEmpty()) {
             val selectedVisitable = wishlistData.value[position]
             selectedVisitable.let {
                 if (it is WishlistItemDataModel) {
