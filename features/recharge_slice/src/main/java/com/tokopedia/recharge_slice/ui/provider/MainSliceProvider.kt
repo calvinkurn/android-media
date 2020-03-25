@@ -45,6 +45,7 @@ import java.util.*
 class MainSliceProvider : SliceProvider() {
     private lateinit var contextNonNull: Context
     private lateinit var userSession: UserSession
+    private lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
     @Inject
     lateinit var repository: GraphqlRepository
@@ -227,6 +228,7 @@ class MainSliceProvider : SliceProvider() {
 
     override fun onCreateSliceProvider(): Boolean {
         contextNonNull = context.applicationContext ?: return false
+        remoteConfig = FirebaseRemoteConfigImpl(context)
         LocalCacheHandler(context, APPLINK_DEBUGGER)
         loadString = contextNonNull.resources.getString(R.string.slice_loading)
         return true
@@ -244,7 +246,7 @@ class MainSliceProvider : SliceProvider() {
     }
 
     fun getRemoteConfigRechargeSliceEnabler(context: Context): Boolean {
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        remoteConfig = FirebaseRemoteConfigImpl(context)
         return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_RECHARGE, true))
     }
 
