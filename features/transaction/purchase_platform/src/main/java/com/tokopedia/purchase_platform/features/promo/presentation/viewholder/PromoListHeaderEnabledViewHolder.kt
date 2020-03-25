@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.viewholder
 
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -31,8 +32,10 @@ class PromoListHeaderEnabledViewHolder(private val view: View,
         itemView.label_promo_list_header_title.text = element.uiData.title
         if (element.uiState.hasSelectedPromoItem) {
             itemView.label_promo_list_header_sub_title.text = "Promo dipilih"
+            itemView.label_promo_list_header_sub_title.setTextColor(ContextCompat.getColor(itemView.context, R.color.light_T500))
         } else {
             itemView.label_promo_list_header_sub_title.text = element.uiData.subTitle
+            itemView.label_promo_list_header_sub_title.setTextColor(ContextCompat.getColor(itemView.context, R.color.n_700_44))
         }
 
         if (!element.uiState.isCollapsed) {
