@@ -121,6 +121,7 @@ import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionLis
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsMacroInsurance;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CornerAnalytics;
+import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.CartAddressChoiceActivity;
@@ -139,6 +140,7 @@ import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDo
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentNotifierModel;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.unifyprinciples.Typography;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -244,7 +246,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private boolean isInsuranceEnabled = false;
 
     private Subscription delayScrollToFirstShopSubscription;
+
+    // count down component
+    private View cdLayout;
     private CountDownView cdView;
+    private Typography cdText;
 
     public static ShipmentFragment newInstance(String defaultSelectedTabPromo,
                                                boolean isAutoApplyPromoCodeApplied,
@@ -339,7 +345,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         rvShipment = view.findViewById(R.id.rv_shipment);
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
+        cdLayout = view.findViewById(R.id.partial_countdown);
         cdView = view.findViewById(R.id.count_down);
+        cdText = view.findViewById(R.id.tv_count_down);
 
         snackbarError = Snackbar.make(view, "", BaseToaster.LENGTH_SHORT);
 
@@ -350,13 +358,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         ((SimpleItemAnimator) rvShipment.getItemAnimator()).setSupportsChangeAnimations(false);
         rvShipment.addItemDecoration(new ShipmentItemDecoration());
-        cdView.setupTimerFromRemianingMillis(10 * 1000, () -> {
-            if (getFragmentManager() != null) {
-                ExpiredTimeDialog dialog = new ExpiredTimeDialog();
-                dialog.setCancelable(false);
-                dialog.show(getFragmentManager(), "expired dialog");
-            }
-        });
     }
 
     @Override
@@ -707,6 +708,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             recipientAddressModel.setDisableMultipleAddress(true);
         }
         shipmentAdapter.setShowOnboarding(shipmentPresenter.isShowOnboarding());
+        if (shipmentPresenter.getCampaignTimer() != null) {
+            CampaignTimerUi timer = shipmentPresenter.getCampaignTimer();
+
+            cdLayout.setVisibility(View.VISIBLE);
+            cdText.setText(timer.getTimerDescription());
+            cdView.setupTimerFromRemianingMillis(10 * 1000, () -> {
+                if (getFragmentManager() != null) {
+                    ExpiredTimeDialog dialog = new ExpiredTimeDialog();
+                    dialog.setCancelable(false);
+                    dialog.show(getFragmentManager(), "expired dialog");
+                }
+            });
+        }
         initRecyclerViewData(
                 shipmentPresenter.getTickerAnnouncementHolderData(),
                 shipmentAdapter.getPromoGlobalStackData(),
