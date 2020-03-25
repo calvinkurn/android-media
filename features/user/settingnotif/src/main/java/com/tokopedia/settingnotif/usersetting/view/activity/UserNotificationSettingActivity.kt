@@ -11,7 +11,7 @@ import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingType
 class UserNotificationSettingActivity : BaseSimpleActivity(),
         SettingTypeFragment.SettingTypeContract {
 
-    var fragmentContainer: FrameLayout? = null
+    private var fragmentContainer: FrameLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,13 +33,18 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
     }
 
     override fun openSettingField(settingType: SettingType) {
-        val fragment = supportFragmentManager.findFragmentByTag(settingType.name)
+        val fragment = supportFragmentManager
+                .findFragmentByTag(settingType.name)
                 ?: settingType.createNewFragmentInstance()
 
         supportFragmentManager.beginTransaction()
                 .addToBackStack(null)
                 .replace(parentViewResourceID, fragment, settingType.name)
                 .commit()
+    }
+
+    fun openSellerFiled() {
+        openSettingField(SettingType.createSellerType())
     }
 
     override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view
