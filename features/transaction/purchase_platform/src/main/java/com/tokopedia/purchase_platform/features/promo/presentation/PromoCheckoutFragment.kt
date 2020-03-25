@@ -322,6 +322,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 it.state == GetCouponRecommendationAction.ACTION_CLEAR_DATA -> {
                     clearAllData()
                 }
+                it.state == GetCouponRecommendationAction.ACTION_SHOW_TOAST_ERROR -> {
+                    it.exception?.let {
+                        showToastMessage(it)
+                    }
+                }
             }
         })
     }
@@ -503,7 +508,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun getErrorMessage(throwable: Throwable): String {
-        var errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        var errorMessage = throwable.message
+        if (throwable !is PromoErrorException) errorMessage = ErrorHandler.getErrorMessage(context, throwable)
         if (errorMessage.isNullOrBlank()) {
             errorMessage = "Terjadi kesalahan. Ulangi beberapa saat lagi"
         }
