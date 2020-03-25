@@ -32,6 +32,7 @@ import com.tokopedia.purchase_platform.common.domain.model.PriceValidationData;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.DataChangeAddressRequest;
+import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataConverter;
@@ -354,6 +355,8 @@ public interface ShipmentContract {
         boolean getHasDeletePromoAfterChecKPromoCodeFinal();
 
         CodModel getCodData();
+
+        CampaignTimerUi getCampaignTimer();
 
         void proceedCodCheckout(CheckPromoParam checkPromoParam, boolean hasInsurance, boolean isOneClickShipment, boolean isTradeIn, String deviceId, String leasingId);
 

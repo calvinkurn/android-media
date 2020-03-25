@@ -85,6 +85,7 @@ import com.tokopedia.purchase_platform.features.checkout.data.model.request.save
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.saveshipmentstate.ShipmentStateShopProductData;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.cod.CodResponse;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartmultipleshipment.SetShippingAddressData;
+import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.ChangeShippingAddressUseCase;
@@ -168,6 +169,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private ShipmentDonationModel shipmentDonationModel;
     private ShipmentButtonPaymentModel shipmentButtonPaymentModel;
     private CodModel codData;
+    private CampaignTimerUi campaignTimer;
     private Token token;
 
     private List<DataCheckoutRequest> dataCheckoutRequestList;
@@ -630,6 +632,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if ((this.codData != null && this.codData.isCod()) || cartShipmentAddressFormData.isMultipleDisable()) {
             recipientAddressModel.setDisableMultipleAddress(true);
         }
+
+        this.campaignTimer = cartShipmentAddressFormData.getCampaignTimerUi();
 
         if (cartShipmentAddressFormData.isAvailablePurchaseProtection()) {
             isPurchaseProtectionPage = true;
@@ -1900,6 +1904,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public CodModel getCodData() {
         return this.codData;
+    }
+
+    @Override
+    public CampaignTimerUi getCampaignTimer() {
+        return this.campaignTimer;
     }
 
     @Override
