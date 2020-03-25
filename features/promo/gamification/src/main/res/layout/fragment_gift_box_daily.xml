@@ -32,7 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-            <include layout="@layout/gf_gift_tap_hint"/>
+            <include layout="@layout/gf_gift_tap_hint" />
 
             <LinearLayout
                 android:id="@+id/ll_benefits"
@@ -108,10 +108,9 @@
                 android:id="@+id/ll_reward_message"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
+                android:layout_marginBottom="70dp"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/dp_16"
                 tools:alpha="1">
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -152,78 +151,83 @@
                     android:textStyle="bold"
                     tools:text="@string/gami_palai_kupon_ovo_points" />
 
-                <RelativeLayout
-                    android:id="@+id/reminderLayout"
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/reminderLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_52"
+                android:layout_gravity="bottom"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="@dimen/dp_16"
+                android:background="@drawable/gami_bg_benefit_small"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="12dp"
+                android:paddingLeft="12dp"
+                android:paddingEnd="10dp"
+                android:paddingRight="10dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tvReminderMessage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="21dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:background="@drawable/gami_bg_benefit_small"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingStart="12dp"
-                    android:paddingLeft="12dp"
-                    android:paddingEnd="10dp"
-                    android:paddingRight="10dp"
-                    android:visibility="gone">
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="18dp"
+                    android:layout_marginRight="18dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_toStartOf="@id/fmReminder"
+                    android:layout_toLeftOf="@id/fmReminder"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textColor="@android:color/white"
+                    app:typographyType="body_3"
+                    app:typographyWeight="reguler"
+                    tools:text="Besok bisa sadasd asdsad asd asd?" />
 
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/tvReminderMessage"
+                <FrameLayout
+                    android:id="@+id/fmReminder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/gf_bg_green_3d">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvReminderBtn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="18dp"
-                        android:layout_marginRight="18dp"
-                        android:layout_marginBottom="8dp"
-                        android:layout_toStartOf="@id/fmReminder"
-                        android:layout_toLeftOf="@id/fmReminder"
+                        android:paddingStart="15dp"
+                        android:paddingLeft="15dp"
+                        android:paddingTop="7dp"
+                        android:paddingEnd="15dp"
+                        android:paddingRight="15dp"
+                        android:paddingBottom="7dp"
+                        android:textAllCaps="false"
                         android:textColor="@android:color/white"
-                        app:typographyType="body_3"
-                        app:typographyWeight="reguler"
-                        tools:text="Besok bisa dapet hadiah lagi lho. Mau diingetin?" />
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        app:fontFamily="sans-serif"
+                        tools:text="Ingatkan Besok" />
 
-                    <FrameLayout
-                        android:id="@+id/fmReminder"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:background="@drawable/gf_bg_green_3d">
+                    <com.tokopedia.unifycomponents.LoaderUnify
+                        android:id="@+id/loaderReminder"
+                        android:layout_width="@dimen/dp_18"
+                        android:layout_height="@dimen/dp_18"
+                        android:layout_gravity="center" />
+                </FrameLayout>
 
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/tvReminderBtn"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingStart="15dp"
-                            android:paddingLeft="15dp"
-                            android:paddingTop="7dp"
-                            android:paddingEnd="15dp"
-                            android:paddingRight="15dp"
-                            android:paddingBottom="7dp"
-                            android:textAllCaps="false"
-                            android:textColor="@android:color/white"
-                            android:textSize="10sp"
-                            android:textStyle="bold"
-                            app:fontFamily="sans-serif"
-                            tools:text="Ingatkan Besok" />
+            </RelativeLayout>
 
-                        <com.tokopedia.unifycomponents.LoaderUnify
-                            android:id="@+id/loaderReminder"
-                            android:layout_width="@dimen/dp_18"
-                            android:layout_height="@dimen/dp_18"
-                            android:layout_gravity="center" />
-                    </FrameLayout>
-
-                </RelativeLayout>
-            </LinearLayout>
         </FrameLayout>
 
         <LinearLayout

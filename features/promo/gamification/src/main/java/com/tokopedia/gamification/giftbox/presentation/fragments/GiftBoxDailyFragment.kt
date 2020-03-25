@@ -481,7 +481,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         giftBoxDailyView.imageBoxFront.doOnLayout { imageBoxFront ->
             val array = IntArray(2)
             imageBoxFront.getLocationInWindow(array)
-            val translationY = array[1].toFloat() - getStatusBarHeight(context) - dpToPx(40f)
+            val imageFrontTop = array[1].toFloat() - getStatusBarHeight(context)
+            val translationY = imageFrontTop - dpToPx(40f)
             starsContainer.setStartPositionOfStars(starsContainer.width / 2f, translationY)
 
             val tranY = (screenHeight * 0.385f) - statusBarHeight
@@ -490,12 +491,14 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 //            rewardContainer.rvCoupons.translationY = tranY - dpToPx(20f)
             if (state == TokenUserState.EMPTY) {
 //                llBenefits.gravity = Gravity.TOP
-                llBenefits.translationY = array[1].toFloat() + imageBoxFront.height - getStatusBarHeight(context) + dpToPx(18f)
+                llBenefits.translationY = imageFrontTop + imageBoxFront.height  + dpToPx(18f)
             } else {
                 llBenefits.updateLayoutParams<FrameLayout.LayoutParams> {
                     this.gravity = Gravity.BOTTOM
                 }
             }
+
+            llRewardMessage.translationY = imageFrontTop + imageBoxFront.height + dpToPx(16f)
 
         }
     }
@@ -503,14 +506,19 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     fun showRewardMessageDescription(): Animator {
         val alphaProp = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
         val alphaAnim = ObjectAnimator.ofPropertyValuesHolder(llRewardMessage, alphaProp)
-        alphaAnim.duration = 200L
-        return alphaAnim
+
+        val alphaAnimReminder = ObjectAnimator.ofPropertyValuesHolder(reminderLayout, alphaProp)
+        val animatorSet = AnimatorSet()
+        animatorSet.playTogether(alphaAnim, alphaAnimReminder)
+        animatorSet.duration = 200L
+        return animatorSet
     }
 
     override fun initialViewSetup() {
         super.initialViewSetup()
         llBenefits.alpha = 0f
         llRewardMessage.alpha = 0f
+        reminderLayout.alpha = 0f
         loaderReminder.visibility = View.GONE
         setDynamicMargin()
     }
@@ -599,7 +607,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 val animatorSet = AnimatorSet()
                 if (tokenUserState == TokenUserState.EMPTY) {
                     val rewardAlphaAnim = ObjectAnimator.ofPropertyValuesHolder(llRewardMessage, alphaProp)
-                    animatorSet.playTogether(tapHintAnim, giftBoxAnim, prizeListContainerAnim, rewardAlphaAnim)
+                    val reminderAlphaAnim = ObjectAnimator.ofPropertyValuesHolder(reminderLayout, alphaProp)
+                    animatorSet.playTogether(tapHintAnim, giftBoxAnim, prizeListContainerAnim, rewardAlphaAnim, reminderAlphaAnim)
                 } else {
                     animatorSet.playTogether(tapHintAnim, giftBoxAnim, prizeListContainerAnim)
                 }
