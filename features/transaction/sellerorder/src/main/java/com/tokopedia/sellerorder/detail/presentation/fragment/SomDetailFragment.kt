@@ -974,7 +974,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     override fun onSeeInvoice(url: String) {
-        SomAnalytics.eventClickViewInvoice()
+        SomAnalytics.eventClickViewInvoice(detailResponse.statusCode.toString())
         Intent(activity, SomSeeInvoiceActivity::class.java).apply {
             putExtra(KEY_URL, url)
             putExtra(KEY_TITLE, resources.getString(R.string.title_som_invoice))
