@@ -322,6 +322,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 it.state == GetCouponRecommendationAction.ACTION_CLEAR_DATA -> {
                     clearAllData()
                 }
+                it.state == GetCouponRecommendationAction.ACTION_SHOW_TOAST_ERROR -> {
+                    it.exception?.let {
+                        showToastMessage(it)
+                    }
+                }
             }
         })
     }
@@ -503,7 +508,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun getErrorMessage(throwable: Throwable): String {
-        var errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        var errorMessage = throwable.message
+        if (throwable !is PromoErrorException) errorMessage = ErrorHandler.getErrorMessage(context, throwable)
         if (errorMessage.isNullOrBlank()) {
             errorMessage = "Terjadi kesalahan. Ulangi beberapa saat lagi"
         }
@@ -582,7 +588,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     override fun onClickPromoItemDetail(element: PromoListItemUiModel) {
         viewModel.sendAnalyticsClickLihatDetailKupon(element.uiData.promoCode)
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_MARKETPLACE).apply {
-            putExtra(EXTRA_KUPON_CODE, element.uiData.promoCode)
+            val promoCodeLink = element.uiData.promoCode + element.uiData.promoCode
+            putExtra(EXTRA_KUPON_CODE, promoCodeLink)
             putExtra(EXTRA_IS_USE, true)
             putExtra(ONE_CLICK_SHIPMENT, false)
             putExtra(PAGE_TRACKING, FROM_CART)

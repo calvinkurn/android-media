@@ -24,25 +24,33 @@ import kotlinx.android.synthetic.main.item_promo_checkout.view.*
 class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapterActionListener) : RecyclerView.ViewHolder(view) {
 
     private var isApplied = false
+
     companion object {
         @JvmStatic
         val ITEM_VIEW_PROMO_CHECKOUT = R.layout.item_promo_checkout
     }
 
     fun bindViewHolder(lastApplyUiModel: LastApplyUiModel) {
-        var title = itemView.context.getString(R.string.promo_funnel_label)
+        var title = ""
 
         if (lastApplyUiModel.additionalInfo.messageInfo.message.isNotEmpty()) {
             title = lastApplyUiModel.additionalInfo.messageInfo.message
             isApplied = true
             actionListener.onSendAnalyticsViewPromoCheckoutApplied()
+        } else if (lastApplyUiModel.defaultEmptyPromoMessage.isNotBlank()) {
+            title = lastApplyUiModel.defaultEmptyPromoMessage
+            isApplied = false
+        } else {
+            title = itemView.context.getString(R.string.promo_funnel_label)
+            isApplied = false
         }
         itemView.promo_checkout_btn_shipment.title = title
         itemView.promo_checkout_btn_shipment.desc = lastApplyUiModel.additionalInfo.messageInfo.detail
         itemView.promo_checkout_btn_shipment.state = ButtonPromoCheckoutView.State.ACTIVE
         itemView.promo_checkout_btn_shipment.setOnClickListener {
             actionListener.onClickPromoCheckout(lastApplyUiModel)
-            actionListener.onSendAnalyticsClickPromoCheckout(isApplied, lastApplyUiModel.listAllPromoCodes)}
+            actionListener.onSendAnalyticsClickPromoCheckout(isApplied, lastApplyUiModel.listAllPromoCodes)
+        }
 
         val params = LinearLayout.LayoutParams(
                 RelativeLayout.LayoutParams.MATCH_PARENT,
@@ -54,11 +62,11 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
             itemView.ll_summary_transaction.gone()
         } else {
             itemView.ll_summary_transaction.visible()
-            for ((i, lastApplyUsageSummary : LastApplyUsageSummariesUiModel) in lastApplyUiModel.additionalInfo.usageSummaries.withIndex()) {
+            for ((i, lastApplyUsageSummary: LastApplyUsageSummariesUiModel) in lastApplyUiModel.additionalInfo.usageSummaries.withIndex()) {
                 val relativeLayout: RelativeLayout = RelativeLayout(itemView.context).apply {
                     layoutParams = params
 
-                    if (i>0) {
+                    if (i > 0) {
                         displayMetrics?.let {
                             setMargin(0, 12.dpToPx(it), 0, 0)
                         }
