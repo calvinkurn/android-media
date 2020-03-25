@@ -57,12 +57,14 @@ object VariantCommonMapper {
                     ?: listOf()
             updateSelectedOptionsIds(variantData, updatedSelectedOptionsId, mapOfSelectedVariant)
         }
+        val isSelectedProductBuyable = selectedProductData?.isBuyable ?: false
+        val isSelectedProductFlashSale = selectedProductData?.isFlashSale ?: false
 
         selectedOptionId = updatedSelectedOptionsId
 
         for ((level, variant: Variant) in variantData.variant.withIndex()) {
             listOfVariant.add(convertVariantViewModel(variant, variantData, level, updatedSelectedOptionsId, (level + 1) == variantData.variant.size,
-                    isPartialySelected, isSelectedLevelOne))
+                    isSelectedProductBuyable, isPartialySelected, isSelectedLevelOne, isSelectedProductFlashSale))
         }
 
         return listOfVariant
@@ -86,8 +88,10 @@ object VariantCommonMapper {
     }
 
     private fun convertVariantViewModel(variant: Variant, variantData: ProductVariantCommon, level: Int, selectedOptionIds: List<Int>, isLeaf: Boolean,
+                                        isSelectedProductBuyable: Boolean,
                                         partialySelected: Boolean,
-                                        selectedLevelOne: Boolean): VariantCategory {
+                                        selectedLevelOne: Boolean,
+                                        isSelectedProductFlashSale: Boolean): VariantCategory {
 
         //If all options has images, show images, if not show colour type / chip type
         val hasCustomImage = variant.options.all {
@@ -105,43 +109,46 @@ object VariantCommonMapper {
             var stock = 0
             var isFlashSale = false
             if (selectedOptionIds.isNotEmpty() && option.id in selectedOptionIds) {
-                for (child: VariantChildCommon in variantData.children) {
-                    if (child.isBuyable && selectedOptionIds.get(level) in child.optionIds) {
-                        currentState = VariantConstant.STATE_SELECTED
-                        if (partialySelected && level == 0) {
-                            isFlashSale = child.isFlashSale
-                            if (isFlashSale) {
+                if (isSelectedProductBuyable) {
+                    // This Function is Fired When User Already Select All Of The Variant
+                    currentState = VariantConstant.STATE_SELECTED
+                    isFlashSale = if (level == 0) {
+                        variantData.isSelectedChildHasFlashSale(selectedOptionIds[level])
+                    } else {
+                        isSelectedProductFlashSale
+                    }
+                } else {
+                    // This Function is Fired When User Selected Partial Variant
+                    for (child: VariantChildCommon in variantData.children) {
+                        if (child.isBuyable && selectedOptionIds.first() in child.optionIds) {
+                            currentState = VariantConstant.STATE_SELECTED
+                            if (selectedLevelOne && child.isFlashSale) {
+                                isFlashSale = true
                                 break
                             }
-                        }
-
-                        if (!partialySelected) {
-                            isFlashSale = child.isFlashSale
-                            if (isFlashSale) break
                         }
                     }
                 }
             } else {
+                //This Function is to determine unselect or empty variant
                 for (child: VariantChildCommon in variantData.children) {
                     //child.optionIds[1] means variant lvl2
                     //child.optionIds[0] means variant lvl1
                     //Check one by one wether childId is match with another Id
                     if (child.isBuyable && child.optionIds[level] == option.id) {
-                        //|| (partialySelected && !isLeaf)
                         if (partialSelectedListByLevel.isEmpty()) {
-                            // if not lvl 1, should not go to this if , so have to check if not leaf
+                            //It means level 1
                             currentState = VariantConstant.STATE_UNSELECTED
-                            if (level == 0 && !isFlashSale) {
-                                isFlashSale = child.isFlashSale
+                            if (level == 0 && child.isFlashSale) {
+                                isFlashSale = true
                             }
                         } else {
                             val childOptionId = child.optionIds.getOrNull(level)
                             childOptionId?.let {
                                 if (child.optionIds.subList(0, level) == partialSelectedListByLevel) {
-                                    //User selecting 2+ level variant
+                                    //Check if the combination is match with child
                                     currentState = VariantConstant.STATE_UNSELECTED
                                     isFlashSale = child.isFlashSale
-                                    // || (partialySelected && isLeaf)
                                 } else if (selectedOptionIds.isEmpty()) {
                                     currentState = VariantConstant.STATE_UNSELECTED
                                 }
