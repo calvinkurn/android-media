@@ -100,7 +100,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         llBenefits = v.findViewById(R.id.ll_benefits)
         llRewardMessage = v.findViewById(R.id.ll_reward_message)
         prizeViewSmallFirst = v.findViewById(R.id.giftPrizeSmallViewFirst)
-        prizeViewSmallSecond = v.findViewById(R.id.giftPrizeSmallViewFirst)
+        prizeViewSmallSecond = v.findViewById(R.id.giftPrizeSmallViewSecond)
         prizeViewLarge = v.findViewById(R.id.giftPrizeLargeView)
         tvRewardFirstLine = v.findViewById(R.id.tvRewardFirstLine)
         tvRewardSecondLine = v.findViewById(R.id.tvRewardSecondLine)

@@ -29,7 +29,7 @@ class GiftBoxDailyUseCase @Inject constructor(@Named(GIFT_BOX_DAILY) val querySt
     }
 
     fun getFakeResponseActive(): GiftBoxEntity {
-        return getFakeEntity(FakeResponses.GamiLuckyHomeResponse.ACTIVE)
+        return getFakeEntity(FakeResponses.GamiLuckyHomeResponse.ACTIVE_3_PRIZE)
     }
 
     fun getFakeResponseEmpty(): GiftBoxEntity {

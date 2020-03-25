@@ -222,6 +222,63 @@ object FakeResponses {
                 "  }\n" +
                 "}"
 
+        val ACTIVE_3_PRIZE = "{\n" +
+                "  \"gamiLuckyHome\": {\n" +
+                "    \"resultStatus\": {\n" +
+                "      \"code\": \"200\"\n" +
+                "    },\n" +
+                "    \"liveFeedChannelID\": 1,\n" +
+                "    \"tokensUser\": {\n" +
+                "      \"state\": \"active\",\n" +
+                "      \"campaignSlug\": \"TESTGIFTBOX_2C\",\n" +
+                "      \"title\": \"Tap kotak ini untuk \\nbuka hadiahmu!\",\n" +
+                "      \"text\": \"Hadiah yang bisa kamu dapatkan:\",\n" +
+                "      \"desc\": \"\"\n" +
+                "    },\n" +
+                "    \"actionButton\": [],\n" +
+                "    \"tokenAsset\": {\n" +
+                "      \"backgroundImgURL\": \"https://ecs7.tokopedia.net/img/blog/promo/2020/03/kejutan-bg02.png\",\n" +
+                "      \"seamlessImgURL\": \"\",\n" +
+                "      \"imageURL\": \"\",\n" +
+                "      \"imageV2URLs\": [\n" +
+                "        \"https://ecs7.tokopedia.net/img/blog/promo/2020/03/kejutan-box3x.png\",\n" +
+                "        \"https://ecs7.tokopedia.net/img/blog/promo/2020/03/kejutan-box.gif\"\n" +
+                "      ],\n" +
+                "      \"spriteURL\": \"https://ecs7.tokopedia.net/img/blog/promo/2020/03/sprite.png\"\n" +
+                "    },\n" +
+                "    \"prizeList\": [\n" +
+                "      {\n" +
+                "        \"isSpecial\": false,\n" +
+                "        \"imageURL\": \"https://ecs7.tokopedia.net/img/blog/promo/2020/03/ovo%403x.png\",\n" +
+                "        \"text\": [\n" +
+                "          \"OVO Points\"\n" +
+                "        ]\n" +
+                "      },\n" +
+                "      {\n" +
+                "        \"isSpecial\": false,\n" +
+                "        \"imageURL\": \"https://ecs7.tokopedia.net/img/blog/promo/2020/03/coupon3x.png\",\n" +
+                "        \"text\": [\n" +
+                "          \"Kupon\"\n" +
+                "        ]\n" +
+                "      },\n" +
+                "      {\n" +
+                "        \"isSpecial\": true,\n" +
+                "        \"imageURL\": \"https://ecs7.tokopedia.net/img/blog/promo/2019/10/2.png\",\n" +
+                "        \"text\": [\n" +
+                "          \"Special Hari Ini 25\",\n" +
+                "          \"Kupon Diskon Bimoli\",\n" +
+                "          \"Jadi Rp100\"\n" +
+                "        ]\n" +
+                "      }\n" +
+                "    ],\n" +
+                "    \"reminder\": {\n" +
+                "      \"text\": \"Mau dapat hadiah lagi? Jangan lupa buka Kotak Kejutan besok!\",\n" +
+                "      \"enableText\": \"Ingatkan Besok\",\n" +
+                "      \"disableText\": \"Ingatkan Besok\"\n" +
+                "    }\n" +
+                "  }\n" +
+                "}"
+
         val EMPTY = "{\n" +
                 "  \"gamiLuckyHome\": {\n" +
                 "    \"resultStatus\": {\n" +
