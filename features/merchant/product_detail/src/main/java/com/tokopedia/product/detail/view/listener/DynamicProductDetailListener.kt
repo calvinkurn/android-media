@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.listener
 import android.app.Application
 import android.util.SparseIntArray
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -14,6 +15,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 
 interface DynamicProductDetailListener {
     fun getApplicationContext(): Application?
+    fun getLifecycleFragment(): Lifecycle
 
     /**
      * ProductSnapshotViewHolder

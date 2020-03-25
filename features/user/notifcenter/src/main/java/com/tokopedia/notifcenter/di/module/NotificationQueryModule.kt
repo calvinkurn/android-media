@@ -47,4 +47,22 @@ import javax.inject.Named
     fun provideFilterNotification(@NotificationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_notification_update_filter)
 
+    @Provides
+    @NotificationScope
+    @Named(NotificationQueriesConstant.PRODUCT_STOCK_HANDLER)
+    fun provideProductStockHandler(@NotificationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_product_stock_handler)
+
+    @Provides
+    @NotificationScope
+    @Named(NotificationQueriesConstant.PRODUCT_STOCK_REMINDER)
+    fun provideProductStockReminder(@NotificationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_product_stock_reminder)
+
+    @Provides
+    @NotificationScope
+    @Named(NotificationQueriesConstant.SINGLE_NOTIFICATION_UPDATE)
+    fun provideSingleNotificationUpdate(@NotificationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_notif_center_single)
+
 }

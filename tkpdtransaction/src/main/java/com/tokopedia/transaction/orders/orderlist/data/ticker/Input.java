@@ -1,10 +1,15 @@
 package com.tokopedia.transaction.orders.orderlist.data.ticker;
 
-public class Input {
-    private String request_by;
-    private String client;
-    private String user_id;
+import com.google.gson.annotations.SerializedName;
 
+public class Input {
+
+    @SerializedName("request_by")
+    private String request_by;
+    @SerializedName("client")
+    private String client;
+    @SerializedName("user_id")
+    private String user_id;
 
     public String getRequest_by() {
         return request_by;
@@ -29,4 +34,5 @@ public class Input {
     public void setUser_id(String user_id) {
         this.user_id = user_id;
     }
+
 }

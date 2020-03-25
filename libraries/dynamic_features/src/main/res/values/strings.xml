@@ -31,4 +31,6 @@
     <string name="feature_download_title">Download Fitur %1$s</string>
     <string name="feature_download_subtitle">Fitur %s belum tersedia di aplikasimu. Download dan nikmati fiturnya.
 </string>
+    <string name="continue_without_install">Lanjut Tanpa Install</string>
+    <string name="continue_without_delete_storage">Lanjut Tanpa Menghapus</string>
 </resources>
