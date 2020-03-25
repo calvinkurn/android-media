@@ -39,6 +39,7 @@
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_12"
                 android:text="Gratis Ongkir hingga Rp1.200.000"
+                android:textColor="@color/n_700_96"
                 app:layout_constraintEnd_toStartOf="@+id/image_select_promo"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/container_image_promo_item"
