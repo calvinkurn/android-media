@@ -111,6 +111,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     imageResourceUrls = couponItem.tagImageUrls
                     parentIdentifierId = headerIdentifierId
                     promoCode = couponItem.code
+                    couponAppLink = couponItem.couponAppLink
                     val clashingInfoMap = HashMap<String, String>()
                     couponItem.clashingInfos.forEach {
                         clashingInfoMap[it.code] = it.message
