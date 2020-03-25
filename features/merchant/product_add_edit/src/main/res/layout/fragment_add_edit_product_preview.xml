@@ -2,17 +2,18 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_add_edit_product_step_sub"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/dp_35"
-        android:layout_marginRight="@dimen/spacing_lvl4"
         android:text="@string/product_subtitle_product_information"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Neutral_N700"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4"
@@ -23,7 +24,11 @@
         layout="@layout/add_edit_product_photo_step_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_add_edit_product_step_sub" />
 
@@ -31,8 +36,8 @@
         android:id="@+id/du_first"
         android:layout_width="match_parent"
         android:layout_height="2dp"
+        android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
         app:layout_constraintTop_toBottomOf="@id/add_product_photo_step_layout" />
 
     <include
@@ -40,6 +45,10 @@
         layout="@layout/add_edit_product_detail_step_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/du_first" />
 
@@ -47,9 +56,8 @@
         android:id="@+id/du_second"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl1"
+        android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
-
-        android:layout_marginRight="@dimen/spacing_lvl4"
         app:layout_constraintTop_toBottomOf="@id/add_product_detail_step_layout" />
 
     <include
@@ -57,6 +65,10 @@
         layout="@layout/add_edit_product_description_step_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/du_second" />
 
@@ -64,9 +76,8 @@
         android:id="@+id/du_third"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl1"
+        android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
-
-        android:layout_marginRight="@dimen/spacing_lvl4"
         app:layout_constraintTop_toBottomOf="@id/add_product_description_step_layout" />
 
     <include
@@ -74,6 +85,10 @@
         layout="@layout/add_edit_product_shipment_step_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/du_third" />
 
@@ -81,9 +96,8 @@
         android:id="@+id/du_fourth"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl1"
+        android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
-
-        android:layout_marginRight="@dimen/spacing_lvl4"
         app:layout_constraintTop_toBottomOf="@id/add_product_shipment_step_layout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

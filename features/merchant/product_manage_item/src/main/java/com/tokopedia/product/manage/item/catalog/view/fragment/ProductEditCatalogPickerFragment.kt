@@ -49,6 +49,7 @@ class ProductEditCatalogPickerFragment : BaseListFragment<ProductCatalog, Produc
     @Inject lateinit var presenter: ProductEditCatalogPickerPresenter
     private var productName = ""
     private var categoryId = -1L
+    private var jsonChosenCatalog = ""
     private var choosenCatalog: ProductCatalog = ProductCatalog()
     private var selectedPosCatalog = -1
 
@@ -75,7 +76,12 @@ class ProductEditCatalogPickerFragment : BaseListFragment<ProductCatalog, Produc
         arguments?.run {
             productName = getString(EXTRA_NAME, "")
             categoryId = getLong(EXTRA_CATEGORY, -1L)
+            jsonChosenCatalog = getString(EXTRA_JSON_CATALOG,"")
             choosenCatalog = getParcelable(EXTRA_CATALOG)
+        }
+
+        if (jsonChosenCatalog.isNotEmpty()) {
+            choosenCatalog = Gson().fromJson(jsonChosenCatalog,ProductCatalog::class.java)
         }
     }
 
@@ -130,10 +136,11 @@ class ProductEditCatalogPickerFragment : BaseListFragment<ProductCatalog, Produc
 
     companion object {
 
-        fun createInstance(productName: String, categoryId: Long, choosenCatalog: ProductCatalog) =
+        fun createInstance(productName: String, categoryId: Long, jsonChosenCatalog: String, choosenCatalog: ProductCatalog) =
                 ProductEditCatalogPickerFragment().apply {
                     arguments = Bundle().apply { putString(EXTRA_NAME, productName)
                                                 putLong(EXTRA_CATEGORY, categoryId)
+                                                putString(EXTRA_JSON_CATALOG, jsonChosenCatalog)
                                                 putParcelable(EXTRA_CATALOG, choosenCatalog)}
         }
     }

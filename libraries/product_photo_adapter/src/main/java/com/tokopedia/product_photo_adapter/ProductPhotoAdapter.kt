@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
 class ProductPhotoAdapter(private val maxSize: Int,
-                          private val productPhotoPaths: MutableList<String>,
+                          private var productPhotoPaths: MutableList<String>,
                           private val onStartDragListener: ProductPhotoViewHolder.OnStartDragListener)
     : RecyclerView.Adapter<ProductPhotoViewHolder>(), ProductPhotoViewHolder.OnDeleteButtonClickListener {
 
@@ -37,6 +37,16 @@ class ProductPhotoAdapter(private val maxSize: Int,
         if (productPhotoPaths.size == maxSize) return
         else productPhotoPaths.add(productPhotoPath)
         notifyItemInserted(productPhotoPaths.lastIndex)
+    }
+
+    fun setProductPhotoPaths(newProductPhotoPaths: MutableList<String>) {
+        productPhotoPaths.clear()
+        productPhotoPaths = newProductPhotoPaths
+        notifyDataSetChanged()
+    }
+
+    fun getProductPhotoPaths(): MutableList<String> {
+        return productPhotoPaths
     }
 
     override fun onDeleteButtonClicked(position: Int) {
