@@ -387,9 +387,16 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         viewModel.autoApplyLiveData.observe(viewLifecycleOwner, Observer {
             when (it.status) {
                 LiveDataResult.STATUS.SUCCESS -> {
+                    val code = it.data?.tokopointsSetAutoApply?.resultStatus?.code
                     val messageList = it.data?.tokopointsSetAutoApply?.resultStatus?.message
-                    if (messageList != null && messageList.isNotEmpty() && context != null) {
-                        CustomToast.show(context!!, messageList[0].toString())
+                    if (code == 200) {
+                        if (autoApplyMessage.isNotEmpty() && context != null) {
+                            CustomToast.show(context!!, autoApplyMessage)
+                        }
+                    } else {
+                        if(!messageList.isNullOrEmpty()){
+                            CustomToast.show(context!!, messageList[0], isError = true)
+                        }
                     }
                 }
             }
@@ -465,7 +472,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     fun setPositionOfViewsAtBoxOpen(@TokenUserState state: String) {
         rewardContainer.setFinalTranslationOfCirclesTap(giftBoxDailyView.fmGiftBox.top)
 
-        giftBoxDailyView.imageGiftBoxLid.doOnLayout {lid->
+        giftBoxDailyView.imageGiftBoxLid.doOnLayout { lid ->
             val array = IntArray(2)
             lid.getLocationInWindow(array)
             val heightOfRvCoupons = dpToPx(148f)
@@ -475,7 +482,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             rewardContainer.rvCoupons.translationY = translationY
             val distanceFromLidTop = dpToPx(29f)
             val heightOfRewardText = dpToPx(31f)
-            rewardContainer.llRewardTextLayout.translationY = lidTop  + distanceFromLidTop
+            rewardContainer.llRewardTextLayout.translationY = lidTop + distanceFromLidTop
 
         }
         giftBoxDailyView.imageBoxFront.doOnLayout { imageBoxFront ->
@@ -491,7 +498,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 //            rewardContainer.rvCoupons.translationY = tranY - dpToPx(20f)
             if (state == TokenUserState.EMPTY) {
 //                llBenefits.gravity = Gravity.TOP
-                llBenefits.translationY = imageFrontTop + imageBoxFront.height  + dpToPx(18f)
+                llBenefits.translationY = imageFrontTop + imageBoxFront.height + dpToPx(18f)
             } else {
                 llBenefits.updateLayoutParams<FrameLayout.LayoutParams> {
                     this.gravity = Gravity.BOTTOM
