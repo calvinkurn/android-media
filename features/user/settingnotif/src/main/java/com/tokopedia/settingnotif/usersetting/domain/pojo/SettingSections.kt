@@ -9,7 +9,9 @@ data class SettingSections(
         @SerializedName("list_settings")
         var listSettings: List<ParentSetting?> = emptyList(),
         @SerializedName("section")
-        var title: String = ""
+        var title: String = "",
+        @SerializedName("icon")
+        var icon: String = ""
 ) : Visitable<SettingFieldTypeFactory> {
 
         override fun type(typeFactory: SettingFieldTypeFactory): Int {
