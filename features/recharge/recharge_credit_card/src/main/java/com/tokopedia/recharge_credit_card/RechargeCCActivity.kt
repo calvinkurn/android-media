@@ -24,6 +24,10 @@ class RechargeCCActivity : BaseSimpleActivity() {
         return R.id.toolbar_credit_card
     }
 
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
