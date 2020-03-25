@@ -4,29 +4,25 @@ import android.content.Context
 import android.content.res.AssetFileDescriptor
 import android.media.MediaPlayer
 import android.util.Log
+import java.lang.IllegalArgumentException
 
 
-class AudioManager(var mSource: Int = -1, var mContext: Context, var isLoop: Boolean = false) {
+class AudioManager(var mContext: Context) {
     var mPlayer: MediaPlayer? = null
 
     init {
         mPlayer = MediaPlayer()
     }
 
-    public fun playAudio() {
+    public fun playAudio(resId: Int, isLoop: Boolean = false) {
+        if (resId <= 0) {
+            throw IllegalArgumentException("Please provide correct audio file")
+        }
+
         mPlayer?.apply {
             setOnPreparedListener { mp ->
                 mp.start()
                 Log.e("DailyGiftBox", "Started");
-            }
-
-            setOnCompletionListener { mp ->
-                if (!isLooping) {
-                    mp.release()
-                    mPlayer = null;
-                }
-
-                Log.e("DailyGiftBox", "Completed");
             }
 
             isLooping = isLoop
@@ -37,7 +33,7 @@ class AudioManager(var mSource: Int = -1, var mContext: Context, var isLoop: Boo
 
             reset()
 
-            val afd: AssetFileDescriptor = mContext.getResources().openRawResourceFd(mSource)
+            val afd: AssetFileDescriptor = mContext.getResources().openRawResourceFd(resId)
                     ?: return
 
             setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)

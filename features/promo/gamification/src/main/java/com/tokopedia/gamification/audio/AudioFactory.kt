@@ -5,12 +5,9 @@ import java.lang.IllegalArgumentException
 
 class AudioFactory {
     companion object {
-        fun createAudio(context: Context, res: Int, isLoop: Boolean = false): AudioManager {
-            if (res <= 0) {
-                throw IllegalArgumentException("Please provide correct audio file")
-            }
+        fun createAudio(context: Context): AudioManager {
 
-            return AudioManager(res, context, isLoop)
+            return AudioManager(context)
         }
     }
 }

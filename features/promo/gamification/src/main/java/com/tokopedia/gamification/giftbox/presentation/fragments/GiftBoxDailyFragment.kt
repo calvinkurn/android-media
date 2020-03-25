@@ -90,6 +90,9 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 val viewModelProvider = ViewModelProviders.of(context as AppCompatActivity, viewModelFactory)
                 viewModel = viewModelProvider[GiftBoxDailyViewModel::class.java]
             }
+
+            //Init AudioManager
+            mAudiosManager = AudioFactory.createAudio(it)
         }
     }
 
@@ -219,9 +222,12 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                         disableGiftBoxTap = true
                                     }
 
-                                    context?.let {
-                                        mAudiosManager = AudioFactory.createAudio(it, R.raw.gf_giftbox_tap)
-                                        mAudiosManager?.playAudio()
+                                    context?.let { soundIt ->
+                                        if (mAudiosManager == null) {
+                                            mAudiosManager = AudioFactory.createAudio(soundIt)
+                                        }
+
+                                        mAudiosManager?.playAudio(R.raw.gf_giftbox_tap)
                                     }
                                 }
 
@@ -248,8 +254,11 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     }
 
                     context?.let { innerIt ->
-                        mAudiosManager = AudioFactory.createAudio(innerIt, R.raw.gf_giftbox_bg, true)
-                        mAudiosManager?.playAudio()
+                        if (mAudiosManager == null) {
+                            mAudiosManager = AudioFactory.createAudio(innerIt)
+                        }
+
+                        mAudiosManager?.playAudio(R.raw.gf_giftbox_bg, true)
                     }
 
                 }
@@ -332,6 +341,14 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                 if (!isReminderSet) {
                                     viewModel.setReminder()
                                 }
+                            }
+
+                            context?.let { soundIt ->
+                                if(mAudiosManager == null){
+                                    mAudiosManager = AudioFactory.createAudio(soundIt)
+                                }
+
+                                mAudiosManager?.playAudio(R.raw.gf_giftbox_prize)
                             }
                         } else {
                             disableGiftBoxTap = false
