@@ -15,7 +15,8 @@
     "image_message_request.png",
     "phone_verification.png",
     "sinar_rewards_3_x.png",
-    "swd_prgrm_withdrawal.png"
+    "swd_prgrm_withdrawal.png",
+    "img_selfie_id.webp"
   ],
   "pendingDownload": [
 
