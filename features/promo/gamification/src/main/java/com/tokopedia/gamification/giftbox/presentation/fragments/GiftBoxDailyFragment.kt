@@ -215,7 +215,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                 tvRewardSecondLine.visibility = View.GONE
                                 btnAction.visibility = View.GONE
 
-
+                                tvReminderMessage.text = reminder?.text
+                                setInitialUiForReminder()
                             }
                             else -> {
                                 hideLoader()
@@ -223,6 +224,9 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                 if (!messageList.isNullOrEmpty()) {
                                     renderGiftBoxError(messageList[0], "Oke")
                                 }
+
+                                tvReminderMessage.text = reminder?.text
+                                setInitialUiForReminder()
 
                             }
                         }

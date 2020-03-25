@@ -8,9 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewParent
 import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.gamification.R
@@ -20,28 +20,39 @@ class NoInternetDialog {
     lateinit var llParent: LinearLayout
     lateinit var btnRetry: View
     lateinit var btnSettings: View
+    lateinit var imageClose: View
     lateinit var closeAbleDialog: CloseableBottomSheetDialog
 
     fun showDialog(context: Context) {
         val resId = R.layout.dialog_gami_no_internet
         val v = LayoutInflater.from(context).inflate(resId, null, false)
-        closeAbleDialog = CloseableBottomSheetDialog.createInstanceCloseableRounded(context, {})
+        closeAbleDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
         closeAbleDialog.setContentView(v)
+
 
         llParent = v.findViewById(R.id.llParent)
         btnRetry = v.findViewById(R.id.btnRetry)
         btnSettings = v.findViewById(R.id.btnSettings)
+        imageClose = v.findViewById(R.id.imageClose)
 
-        setCustomCloseIcon()
+        hideDivider()
         setClicks(context)
         closeAbleDialog.show()
         expandBottomSheet()
     }
 
-    fun setCustomCloseIcon() {
-        if (llParent.parent is ViewGroup && llParent.parent.parent is ViewGroup) {
-            val imageClose = (llParent.parent.parent as ViewGroup).findViewById<ImageView>(com.tokopedia.design.R.id.close_button_rounded)
-            imageClose.setImageResource(R.drawable.ic_close_default)
+    fun hideDivider() {
+        if (llParent.parent?.parent is ViewGroup) {
+            val viewGroup = (llParent.parent?.parent as ViewGroup)
+            val headerRounded = viewGroup.findViewById<View>(com.tokopedia.design.R.id.header_rounded)
+            if (headerRounded != null) {
+                headerRounded.visibility = View.GONE
+            }
+
+            val fmContainer = viewGroup.findViewById<View>(com.tokopedia.design.R.id.container)
+            if (fmContainer != null) {
+                fmContainer.setBackgroundResource(com.tokopedia.design.R.drawable.header_bottom_sheet_rounded_white)
+            }
         }
     }
 
@@ -54,6 +65,12 @@ class NoInternetDialog {
                 //Do nothing
             }
         }
+
+        imageClose.setOnClickListener {
+            closeAbleDialog.dismiss()
+        }
+
+
     }
 
     private fun expandBottomSheet() {
