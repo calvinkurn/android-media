@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.animation.AnimationUtils
-import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ViewFlipper
 import androidx.appcompat.widget.AppCompatImageView
@@ -12,9 +11,11 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gamification.R
-
 import com.tokopedia.gamification.giftbox.presentation.adapter.RewardSummaryAdapter
+import com.tokopedia.gamification.giftbox.presentation.entities.RewardSummaryItem
 import com.tokopedia.gamification.giftbox.presentation.helpers.RewardItemDecoration
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 
 class RewardSummaryView : FrameLayout {
 
@@ -24,21 +25,21 @@ class RewardSummaryView : FrameLayout {
     lateinit var image: AppCompatImageView
     lateinit var tvTitle: AppCompatTextView
     lateinit var tvMessage: AppCompatTextView
-    lateinit var btnFirst: Button
-    lateinit var btnSecond: Button
+    lateinit var btnFirst: Typography
+    lateinit var btnSecond: UnifyButton
     lateinit var fmParent: FrameLayout
 
     lateinit var rvAdapter: RewardSummaryAdapter
-    val dataList = arrayListOf<String>("", "")
+    val dataList = arrayListOf<RewardSummaryItem>()
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         init(attrs)
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
+            context,
+            attrs,
+            defStyleAttr
     ) {
         init(attrs)
     }
@@ -65,7 +66,7 @@ class RewardSummaryView : FrameLayout {
         rvRewards.addItemDecoration(RewardItemDecoration())
     }
 
-    fun playRewardItemAnimation(){
+    fun playRewardItemAnimation() {
         val rewardItemAnimation = AnimationUtils.loadLayoutAnimation(context, R.anim.gf_box_rewards_list_item_anim)
         rvRewards.layoutAnimation = rewardItemAnimation
         rvRewards.scheduleLayoutAnimation()

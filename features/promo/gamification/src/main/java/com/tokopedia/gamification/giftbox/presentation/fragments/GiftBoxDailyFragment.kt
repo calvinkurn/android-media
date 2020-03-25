@@ -132,7 +132,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             override fun onBoxOpenAnimationStart(startDelay: Long) {
                 giftBoxDailyView.adjustGlowImagePosition()
 
-                rewardContainer.setFinalTranslationOfCircles(giftBoxDailyView.fmGiftBox.top)
+                rewardContainer.setFinalTranslationOfCirclesTap(giftBoxDailyView.fmGiftBox.top)
                 val stageLightAnim = giftBoxDailyView.stageGlowAnimation()
 
                 //new code===
@@ -465,7 +465,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
 
     fun setPositionOfViewsAtBoxOpen(@TokenUserState state: String) {
-        rewardContainer.setFinalTranslationOfCircles(giftBoxDailyView.fmGiftBox.top)
+        rewardContainer.setFinalTranslationOfCirclesTap(giftBoxDailyView.fmGiftBox.top)
 
         giftBoxDailyView.imageBoxFront.doOnLayout { imageBoxFront ->
             val array = IntArray(2)

@@ -153,24 +153,6 @@ class RewardContainer : FrameLayout {
         smallImage.alpha = 0f
         largeImage.alpha = 0f
         circleReward.alpha = 0f
-
-        val largeDimen = (this@RewardContainer.width * 0.6).toInt()
-        val smallDimen = (this@RewardContainer.width * 0.4).toInt()
-        val circleRewardDimen = (this@RewardContainer.width * 0.25).toInt()
-        largeImage.updateLayoutParams<FrameLayout.LayoutParams> {
-            this.width = largeDimen
-            this.height = largeDimen
-        }
-
-        smallImage.updateLayoutParams<FrameLayout.LayoutParams> {
-            this.width = smallDimen
-            this.height = smallDimen
-        }
-
-        circleReward.updateLayoutParams<FrameLayout.LayoutParams> {
-            this.width = circleRewardDimen
-            this.height = circleRewardDimen
-        }
     }
 
     fun showSingleLargeRewardAnimation(giftBoxTop: Int): Animator {
@@ -269,11 +251,13 @@ class RewardContainer : FrameLayout {
         return animatorSet
     }
 
-    fun setFinalTranslationOfCircles(giftBoxTop: Int) {
-        val largeY = giftBoxTop - imageGlowCircleLarge.height.toFloat()
+    fun setFinalTranslationOfCirclesTap(giftBoxTop: Int) {
+        val largeY = giftBoxTop + dpToPx(30f) - imageGlowCircleLarge.height.toFloat()
+        val smallY = largeY + (imageGlowCircleLarge.height - imageGlowCircleSmall.height) / 2f
+        val circleRewardY = smallY + (imageGlowCircleSmall.height - imageCircleReward.height) / 2f
         imageGlowCircleLarge.translationY = largeY
-        imageGlowCircleSmall.translationY = largeY + (imageGlowCircleLarge.height - imageGlowCircleSmall.height) / 2f
-        imageCircleReward.translationY = largeY + (imageGlowCircleLarge.height - imageCircleReward.height) / 3f
+        imageGlowCircleSmall.translationY = smallY
+        imageCircleReward.translationY = circleRewardY
     }
 
     fun ovoPointsTextAnimation(): Animator {
@@ -299,12 +283,13 @@ class RewardContainer : FrameLayout {
 
     private fun concentricCircleAnimation(smallImage: View, largeImage: View, giftboxTop: Int, isInfinite: Boolean): Animator {
 
-        val largeY = giftboxTop + dpToPx(30f) - largeImage.height.toFloat()
-        val smallY = largeY + (largeImage.height - smallImage.height) / 2f
-        val circleRewardY = smallY + (smallImage.height - imageCircleReward.height) / 2f
-        largeImage.translationY = largeY
-        smallImage.translationY = smallY
-        imageCircleReward.translationY = circleRewardY
+//        val largeY = giftboxTop + dpToPx(30f) - largeImage.height.toFloat()
+//        val smallY = largeY + (largeImage.height - smallImage.height) / 2f
+//        val circleRewardY = smallY + (smallImage.height - imageCircleReward.height) / 2f
+//        largeImage.translationY = largeY
+//        smallImage.translationY = smallY
+//        imageCircleReward.translationY = circleRewardY
+        setFinalTranslationOfCirclesTap(giftboxTop)
 
 
         fun circlesAlphaAnimator(view: View): Animator {

@@ -1,7 +1,6 @@
 package com.tokopedia.gamification.giftbox.presentation.fragments
 
 import android.animation.*
-import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -20,18 +19,21 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.gamification.R
+import com.tokopedia.gamification.data.entity.CrackBenefitEntity
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
-import com.tokopedia.gamification.giftbox.presentation.activities.GiftLauncherActivity
-import com.tokopedia.gamification.giftbox.presentation.dialogs.NoInternetDialog
+import com.tokopedia.gamification.giftbox.data.entities.GetCouponDetail
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
+import com.tokopedia.gamification.giftbox.presentation.helpers.doOnLayout
 import com.tokopedia.gamification.giftbox.presentation.viewmodels.GiftBoxTapTapViewModel
 import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
 import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxTapTapView
+import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer
 import com.tokopedia.gamification.giftbox.presentation.views.RewardSummaryView
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.image.ImageUtils
 import javax.inject.Inject
 
 class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
@@ -48,6 +50,9 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     var colorBlackTransParent: Int = 0
     var hourCountDownTimer: CountDownTimer? = null
     var minuteCountDownTimer: CountDownTimer? = null
+    var isTimeOut = false
+    @RewardContainer.RewardState
+    var rewardState: Int = RewardContainer.RewardState.COUPON_ONLY
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -90,15 +95,15 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         giftBoxDailyView.boxCallback = object : GiftBoxDailyView.BoxCallback {
 
             override fun onBoxOpenAnimationStart(startDelay: Long) {
-                rewardContainer.setFinalTranslationOfCircles(giftBoxDailyView.fmGiftBox.top)
+
 
                 val stageLightAnim = giftBoxDailyView.stageGlowAnimation()
                 stageLightAnim.startDelay = startDelay
                 val greenGlowAnim = rewardContainer.greenGlowAlphaAnimation(true)
                 greenGlowAnim.startDelay = startDelay
 
-                when (GiftLauncherActivity.uiType) {
-                    GiftLauncherActivity.UiType.COUPON_POINTS -> {
+                when (rewardState) {
+                    RewardContainer.RewardState.COUPON_WITH_POINTS -> {
 
                         val anim1 = rewardContainer.showCouponAndRewardAnimationFadeOut(startDelay)
 
@@ -110,14 +115,28 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                         ovoPointsTextAnim.addListener(onEnd = { afterRewardAnimationEnds() })
                         animatorSet.start()
                     }
-                    GiftLauncherActivity.UiType.POINTS -> {
-
+                    RewardContainer.RewardState.POINTS_ONLY -> {
+//
+//
+                        //todo Rahul temp values
+//                rewardContainer.imageCircleReward.alpha = 1f
+//                rewardContainer.imageGlowCircleLarge.alpha = 1f
+//                rewardContainer.imageGlowCircleSmall.alpha = 1f
+//                rewardContainer.imageGreenGlow.alpha = 1f
 
                         val anim = rewardContainer.showSingleLargeRewardAnimationFadeOut(startDelay)
                         anim.addListener(onEnd = { afterRewardAnimationEnds() })
 
                         val animatorSet = AnimatorSet()
                         animatorSet.playTogether(stageLightAnim, greenGlowAnim, anim)
+                        animatorSet.start()
+                    }
+                    RewardContainer.RewardState.COUPON_ONLY -> {
+                        val rewardAnim = rewardContainer.showCouponAndRewardAnimationFadeOut(startDelay)
+
+                        val animatorSet = AnimatorSet()
+                        animatorSet.playTogether(rewardAnim, stageLightAnim, greenGlowAnim)
+                        animatorSet.startDelay = startDelay
                         animatorSet.start()
                     }
                 }
@@ -136,7 +155,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         }
 
         (giftBoxDailyView as GiftBoxTapTapView).boxRewardCallback = object : GiftBoxDailyView.BoxRewardCallback {
-            override fun showPoints() {
+            override fun showPoints(): Animator {
                 val anim1 = rewardContainer.showSingleLargeRewardAnimationFadeOut()
 
                 val ovoPointsTextAnim = rewardContainer.ovoPointsTextAnimationFadeOut()
@@ -146,9 +165,11 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 animatorSet.playTogether(anim1, ovoPointsTextAnim)
                 animatorSet.addListener(onEnd = { afterRewardAnimationEnds() })
                 animatorSet.start()
+                return animatorSet
             }
 
-            override fun showPointsWithCoupons() {
+            override fun showPointsWithCoupons(): Animator {
+
                 val anim1 = rewardContainer.showCouponAndRewardAnimationFadeOut()
 
                 val ovoPointsTextAnim = rewardContainer.ovoPointsTextAnimationFadeOut()
@@ -158,13 +179,15 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 animatorSet.playTogether(anim1, ovoPointsTextAnim)
                 animatorSet.addListener(onEnd = { afterRewardAnimationEnds() })
                 animatorSet.start()
+                return animatorSet
             }
 
-            override fun showCoupons() {
+            override fun showCoupons(): Animator {
                 val anim1 = rewardContainer.showCouponAndRewardAnimationFadeOut()
 
                 anim1.addListener(onEnd = { afterRewardAnimationEnds() })
                 anim1.start()
+                return anim1
             }
         }
 
@@ -174,10 +197,15 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                     showLoader()
                 }
                 LiveDataResult.STATUS.SUCCESS -> {
+                    //todo add check for 200 all over api calls
                     if (it.data != null) {
 
                         //toolbar
                         val toolbarTitle = it.data?.gamiTapEggHome?.tokensUser?.title
+                        toolbarTitle?.let { title ->
+                            tvTapHint.text = title
+                        }
+
 
                         //timer
                         val timeLeftHours = it.data?.gamiTapEggHome?.timeRemaining?.unixFetch
@@ -185,11 +213,52 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                         val showTimer = it.data?.gamiTapEggHome?.timeRemaining?.isShow
 
                         //glowing mode
-                        val glowImageUrl = it.data?.gamiTapEggHome?.tokenAsset?.glowImgURL
-                        val glowShadowImageUrl = it.data?.gamiTapEggHome?.tokenAsset?.glowShadowImgURL
+                        val tokenAsset = it.data?.gamiTapEggHome?.tokenAsset
+                        val glowImageUrl = tokenAsset?.glowImgURL
+                        val glowShadowImageUrl = tokenAsset?.glowShadowImgURL
+
+                        val imageUrlList = tokenAsset?.imageV2URLs
+                        var imageFrontUrl = ""
+                        val bgImageUrl = tokenAsset?.glowShadowImgURL
+                        if (imageUrlList != null && imageUrlList.isNotEmpty()) {
+                            imageFrontUrl = imageUrlList[0]
+                        }
+
 
                         val shouldGlow = (!glowImageUrl.isNullOrEmpty() && glowShadowImageUrl.isNullOrEmpty())
+                        val tokenUserState = it.data?.gamiTapEggHome?.tokensUser?.state
 
+                        if (showTimer != null && showTimer && timeLeftHours != null && timeLeftSeconds != null) {
+                            renderBottomHourTimer(timeLeftSeconds)
+
+                            getTapTapView().loadFilesForTapTap(tokenUserState!!,
+                                    glowImageUrl,
+                                    glowShadowImageUrl,
+                                    imageFrontUrl,
+                                    bgImageUrl!!,
+                                    imageCallback = { it ->
+                                        setPositionOfViewsAtBoxOpen(tokenUserState)
+                                        hideLoader()
+                                        fadeInActiveStateViews()
+                                        getTapTapView().startInitialAnimation()?.start()
+                                    }
+                            )
+                        }
+
+                        getTapTapView().fmGiftBox.setOnClickListener {
+                            if (isTimeOut) {
+                                //Do nothing
+                            } else if (getTapTapView().isGiftTapAble) {
+                                getTapTapView().isGiftTapAble = false
+                                if (getTapTapView().tapCount == getTapTapView().targetTapCount) {
+                                    crackGiftBox()
+                                    getTapTapView().targetTapCount = getTapTapView().getRandomNumber()
+                                } else {
+                                    getTapTapView().showConfettiAnimation()
+                                }
+                                getTapTapView().incrementTapCount()
+                            }
+                        }
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {
@@ -203,8 +272,32 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
                 LiveDataResult.STATUS.LOADING -> {
                 }
                 LiveDataResult.STATUS.SUCCESS -> {
+                    val responseCrackResultEntity = it.data?.second
+                    val couponDetailEntity = it.data?.first
                     if (it.data != null) {
+                        val resultCode = responseCrackResultEntity?.crackResultEntity?.resultStatus?.code
+                        if (!resultCode.isNullOrEmpty() && resultCode == "200") {
 
+                            getTapTapView().disableConfettiAnimation = true
+                            getTapTapView().resetTapCount()
+
+                            val benefits = responseCrackResultEntity?.crackResultEntity?.benefits
+
+                            updateRewardStateAndRewards(couponDetailEntity?.couponList, benefits)
+
+                            if (!isTimeOut) {
+                                if (!getTapTapView().isBoxAlreadyOpened) {
+                                    getTapTapView().firstTimeBoxOpenAnimation()
+                                    getTapTapView().isBoxAlreadyOpened = true
+                                } else {
+                                    getTapTapView().showRewardAnimation()
+                                }
+
+                            }
+
+                        } else {
+                            //todo Rahul show error
+                        }
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {
@@ -212,6 +305,33 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             }
         })
     }
+
+    fun setPositionOfViewsAtBoxOpen(@TokenUserState state: String) {
+        giftBoxDailyView.imageGiftBoxLid.doOnLayout { lid ->
+            val array = IntArray(2)
+            lid.getLocationInWindow(array)
+            rewardContainer.setFinalTranslationOfCirclesTap(array[1] - getStatusBarHeight(context))
+        }
+
+        giftBoxDailyView.imageBoxFront.doOnLayout { imageBoxFront ->
+            val array = IntArray(2)
+            imageBoxFront.getLocationInWindow(array)
+            val translationY = array[1].toFloat() - getStatusBarHeight(context) - dpToPx(40f)
+            starsContainer.setStartPositionOfStars(starsContainer.width / 2f, translationY)
+
+            //todo Rahul have to refacor this below code
+            giftBoxDailyView.adjustGlowImagePosition()
+
+            val tranY = (screenHeight * 0.385f) - statusBarHeight
+            rewardContainer.llRewardTextLayout.translationY = tranY
+            rewardContainer.rvCoupons.translationY = array[1].toFloat() - (screenHeight * 0.15f) - dpToPx(158f) - statusBarHeight
+        }
+    }
+
+    fun crackGiftBox() {
+        viewModel.crackGiftBox()
+    }
+
 
     fun renderGiftBoxError(message: String, actionText: String) {
         if (context != null) {
@@ -247,10 +367,23 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         fmWaktuHabis = v.findViewById(R.id.fm_waktu_habis)
         rewardSummary = v.findViewById(R.id.rewardSummary)
         super.initViews(v)
+        setShadows()
+        setDynamicSize()
         setListeners()
+    }
 
+    fun setDynamicSize() {
         tvProgressCount.setTextSize(TypedValue.COMPLEX_UNIT_PX, 40.toPx().toFloat())
         tvTimer.setTextSize(TypedValue.COMPLEX_UNIT_PX, 24.toPx().toFloat())
+    }
+
+    fun setShadows() {
+        val shadowColor = Color.parseColor("#4A000000")
+        val shadowRadius = dpToPx(5f)
+        val shadowOffset = dpToPx(4f)
+
+        tvProgressCount.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
+        tvTimer.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
     }
 
     fun showRewardSummary() {
@@ -266,10 +399,9 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         alphaAnim.start()
     }
 
-    fun renderHourTimerState() {
-        renderBottomHourTimer()
-        fadeInActiveStateViews()
-    }
+//    fun renderHourTimerState() {
+//
+//    }
 
     fun startOneMinuteCounter() {
         //todo this time should come from backend
@@ -290,9 +422,9 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         minuteCountDownTimer?.start()
     }
 
-    fun renderBottomHourTimer() {
+    fun renderBottomHourTimer(timeLeftSeconds: Long) {
         //todo this time should come from backend
-        val time = 60 * 60 * 1000L
+        val time = timeLeftSeconds * 1000L
         hourCountDownTimer = object : CountDownTimer(time, 1000) {
             override fun onFinish() {
                 (giftBoxDailyView as GiftBoxTapTapView).glowingAnimator?.end()
@@ -323,7 +455,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         alphaAnim.duration = 500L
         alphaAnim.start()
 
-        tvTimer.postDelayed(Runnable { hourCountDownTimer?.onFinish() }, 3 * 1000L)
+        tvTimer.postDelayed({ hourCountDownTimer?.onFinish() }, 8 * 1000L)
     }
 
     fun animateTvTimerAndProgressBar() {
@@ -343,9 +475,9 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         animatorSet.playTogether(tapHintAnim, giftBoxAnim)
         animatorSet.duration = FADE_IN_DURATION
 
-        animatorSet.addListener(onEnd = {
-            //            giftBoxDailyView.startInitialAnimation()
-        })
+//        animatorSet.addListener(onEnd = {
+//            //            giftBoxDailyView.startInitialAnimation()
+//        })
         animatorSet.start()
     }
 
@@ -458,6 +590,49 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
     enum class GiftBoxTapTapState {
         HOUR_TIMER, MINUTE_TIMER, ERROR, NO_INTERNET
+    }
+
+    fun getTapTapView(): GiftBoxTapTapView {
+        return giftBoxDailyView as GiftBoxTapTapView
+    }
+
+    fun updateRewardStateAndRewards(couponDetailList: ArrayList<GetCouponDetail>?, benefits: List<CrackBenefitEntity>?) {
+        var hasPoints = false
+        var hasCoupons = false
+
+        if (!couponDetailList.isNullOrEmpty()) {
+            hasCoupons = true
+            rewardContainer.couponList.clear()
+            rewardContainer.couponList.addAll(couponDetailList)
+            rewardContainer.couponAdapter.notifyDataSetChanged()
+        }
+
+        //set coins
+        var iconUrl: String? = ""
+        benefits?.let {
+            it.forEach { benefit ->
+                if (benefit.benefitType != "coupons") {
+                    hasPoints = true
+                    iconUrl = benefit.imageUrl
+                }
+            }
+        }
+
+        if (hasPoints && hasCoupons) {
+            rewardState = RewardContainer.RewardState.COUPON_WITH_POINTS
+            if (!iconUrl.isNullOrEmpty()) {
+                ImageUtils.loadImage(rewardContainer.imageSmallReward, iconUrl!!)
+            }
+        } else if (hasPoints) {
+            //only points
+            rewardState = RewardContainer.RewardState.POINTS_ONLY
+            if (!iconUrl.isNullOrEmpty()) {
+                ImageUtils.loadImage(rewardContainer.imageSmallReward, iconUrl!!)
+                ImageUtils.loadImage(rewardContainer.imageCircleReward, iconUrl!!)
+            }
+        } else if (hasCoupons) {
+            rewardState = RewardContainer.RewardState.COUPON_ONLY
+        }
     }
 
 }

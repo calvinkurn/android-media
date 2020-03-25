@@ -33,7 +33,7 @@ open class GiftBoxDailyView : FrameLayout {
     var initialBounceAnimatorSet: AnimatorSet? = null
     var giftBoxState: GiftBoxState = GiftBoxState.CLOSED
 
-    val TOTAL_ASYNC_IMAGES = 2
+    open var TOTAL_ASYNC_IMAGES = 2
     var imagesLoaded = AtomicInteger(0)
     val GIFT_BOX_START_DELAY = 300L
 
@@ -70,12 +70,8 @@ open class GiftBoxDailyView : FrameLayout {
 
         imageFlatGlow.alpha = 0f
 
-        setClicks()
     }
 
-    fun setClicks() {
-
-    }
 
     open fun handleTapOnGiftBox() {
         //todo Rahul make api call first
@@ -225,11 +221,11 @@ open class GiftBoxDailyView : FrameLayout {
         return Pair(animatorSet, totalDuration)
     }
 
-    fun loadGifFirstFrame(imageView: AppCompatImageView) {
-        Glide.with(this)
-                .load(R.drawable.gf_ic_lid_frame_0)
-                .into(imageView)
-    }
+//    fun loadGifFirstFrame(imageView: AppCompatImageView) {
+//        Glide.with(this)
+//                .load(R.drawable.gf_ic_lid_frame_0)
+//                .into(imageView)
+//    }
 
     fun loadLidFrames(): Animator {
         val drawableArray = arrayOf(
@@ -274,9 +270,9 @@ open class GiftBoxDailyView : FrameLayout {
     }
 
     interface BoxRewardCallback {
-        fun showPoints()
-        fun showPointsWithCoupons()
-        fun showCoupons()
+        fun showPoints():Animator
+        fun showPointsWithCoupons():Animator
+        fun showCoupons():Animator
     }
 }
 

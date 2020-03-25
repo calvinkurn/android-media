@@ -351,4 +351,115 @@ object FakeResponses {
         val ERROR = "{\"gameRemindMeCheck\":{\"resultStatus\":{\"code\":\"403\",\"message\":[\"User ID not found\"],\"reason\":\"User ID not found\"},\"isRemindMe\":false}}"
 
     }
+
+    object TapTapHome{
+        val RESPONSE = "{\n" +
+                "  \"gamiTapEggHome\": {\n" +
+                "    \"backButton\": {\n" +
+                "      \"isShow\": true,\n" +
+                "      \"imageURL\": \"https://ecs7.tokopedia.net/img/blog/promo/2019/03/confirm.png\",\n" +
+                "      \"title\": \"Selesaikan Permainan?\",\n" +
+                "      \"text\": \"Sisa telur kamu akan hangus apabila kamu menyelesaikan permainan.\",\n" +
+                "      \"yesText\": \"Ya, Selesaikan\",\n" +
+                "      \"cancelText\": \"Lanjut Main\"\n" +
+                "    },\n" +
+                "    \"tokensUser\": {\n" +
+                "      \"state\": \"crackunlimited\",\n" +
+                "      \"tokenUserIDstr\": \"0\",\n" +
+                "      \"campaignID\": 2164,\n" +
+                "      \"title\": \"Pecahkan Lucky Egg sebanyak-banyaknya\"\n" +
+                "    },\n" +
+                "    \"timeRemaining\": {\n" +
+                "      \"isShow\": true,\n" +
+                "      \"unixFetch\": 1585025376,\n" +
+                "      \"seconds\": 30,\n" +
+                "      \"backgroundColor\": \"#60562B\",\n" +
+                "      \"fontColor\": \"#EEEEAE\",\n" +
+                "      \"borderColor\": \"#C5C593\"\n" +
+                "    },\n" +
+                "    \"actionButton\": [],\n" +
+                "    \"tokenAsset\": {\n" +
+                "      \"backgroundImgURL\": \"https://ecs7.tokopedia.net/assets-tokopoints/prod/images/2019/01/Desktop-BG-main-special%403x.png\",\n" +
+                "      \"seamlessImgURL\": \"https://ecs7.tokopedia.net/assets-tokopoints/prod/images/2019/01/Desktop-BG-seamless-special%403x.png\",\n" +
+                "      \"imageURL\": \"\",\n" +
+                "      \"glowShadowImgURL\": \"https://ecs7.tokopedia.net/img/blog/promo/2019/03/shadow.png\",\n" +
+                "      \"glowImgURL\": \"https://ecs7.tokopedia.net/img/blog/promo/2019/03/glow.png\",\n" +
+                "      \"imageV2URLs\": [\n" +
+                "        \"https://ecs7.tokopedia.net/img/blog/promo/2019/02/sp1.png\",\n" +
+                "        \"https://ecs7.tokopedia.net/img/blog/promo/2019/02/sp2.png\",\n" +
+                "        \"https://ecs7.tokopedia.net/img/blog/promo/2019/02/sp3.png\",\n" +
+                "        \"https://ecs7.tokopedia.net/img/blog/promo/2019/02/sp4.png\",\n" +
+                "        \"https://ecs7.tokopedia.net/img/blog/promo/2019/02/sp5.png\",\n" +
+                "        \"https://ecs7.tokopedia.net/img/blog/promo/2019/02/sp6.png\",\n" +
+                "        \"https://ecs7.tokopedia.net/img/blog/promo/2019/02/sp7.png\",\n" +
+                "        \"https://ecs7.tokopedia.net/img/blog/promo/2019/02/sp8.png\",\n" +
+                "        \"https://ecs7.tokopedia.net/img/blog/promo/2019/02/sp9.png\",\n" +
+                "        \"https://ecs7.tokopedia.net/img/blog/promo/2019/02/sp10.png\",\n" +
+                "        \"https://ecs7.tokopedia.net/img/blog/promo/2019/02/spkiri.png\",\n" +
+                "        \"https://ecs7.tokopedia.net/img/blog/promo/2019/02/spkanan.png\"\n" +
+                "      ]\n" +
+                "    },\n" +
+                "    \"rewardButton\": [\n" +
+                "      {\n" +
+                "        \"text\": \"Cek Hadiah\",\n" +
+                "        \"type\": \"redirect\",\n" +
+                "        \"url\": \"https://www.tokopedia.com/tokopoints\",\n" +
+                "        \"applink\": \"tokopedia://tokopoints\",\n" +
+                "        \"isDisable\": false,\n" +
+                "        \"backgroundColor\": \"green\"\n" +
+                "      },\n" +
+                "      {\n" +
+                "        \"text\": \"Keluar\",\n" +
+                "        \"type\": \"redirect\",\n" +
+                "        \"url\": \"https://www.tokopedia.com\",\n" +
+                "        \"applink\": \"tokopedia://home\",\n" +
+                "        \"isDisable\": false,\n" +
+                "        \"backgroundColor\": \"outline\"\n" +
+                "      }\n" +
+                "    ]\n" +
+                "  }\n" +
+                "}"
+    }
+
+    object TAP_TAP_CRACK {
+        val REWARD_POINTS = "{\n" +
+                "  \"crackResult\": {\n" +
+                "    \"resultStatus\": {\n" +
+                "      \"code\": \"200\",\n" +
+                "      \"message\": [\n" +
+                "        \"success\"\n" +
+                "      ],\n" +
+                "      \"status\": \"\"\n" +
+                "    },\n" +
+                "    \"imageUrl\": \"https://ecs7.tokopedia.net/assets/images/gamification/benefit/loyalty.png\",\n" +
+                "    \"benefitType\": \"loyalty_reward_point\",\n" +
+                "    \"benefits\": [\n" +
+                "      {\n" +
+                "        \"text\": \"+10 Points\",\n" +
+                "        \"color\": \"#FFDC00\",\n" +
+                "        \"size\": \"large\",\n" +
+                "        \"benefitType\": \"reward_point\",\n" +
+                "        \"templateText\": \"\",\n" +
+                "        \"animationType\": \"\",\n" +
+                "        \"valueBefore\": 0,\n" +
+                "        \"valueAfter\": 10,\n" +
+                "        \"tierInformation\": \"Classic 1\",\n" +
+                "        \"multiplier\": \"\"\n" +
+                "      }\n" +
+                "    ],\n" +
+                "    \"ctaButton\": {\n" +
+                "      \"title\": \"Cek Tokopoints Anda\",\n" +
+                "      \"url\": \"https://staging.tokopedia.com/tokopoints\",\n" +
+                "      \"applink\": \"tokopedia://webview?url=https%3A%2F%2Fm.tokopedia.com%2Ftokopoints%2Fmobile&title=TokoPoints\",\n" +
+                "      \"type\": \"redirect\"\n" +
+                "    },\n" +
+                "    \"returnButton\": {\n" +
+                "      \"title\": \"Pecahkan Lucky Egg Lain\",\n" +
+                "      \"url\": \"\",\n" +
+                "      \"applink\": \"\",\n" +
+                "      \"type\": \"dismiss\"\n" +
+                "    }\n" +
+                "  }\n" +
+                "}"
+    }
 }
