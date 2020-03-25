@@ -509,6 +509,18 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         override fun onErrorPaymentClicked() {
             nested_scroll_view.smoothScrollTo(nested_scroll_view.scrollX, nested_scroll_view.maxScrollAmount)
         }
+
+        override fun onPreferenceEditClicked(preference: OrderPreference) {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
+            intent.apply {
+                putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, 1)
+                putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.preference.profileId)
+                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.preference.address.addressId)
+                putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, preference.preference.shipment.serviceId)
+                putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, preference.preference.payment.gatewayCode)
+            }
+            startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
+        }
     }
 
     fun showPreferenceListBottomSheet() {

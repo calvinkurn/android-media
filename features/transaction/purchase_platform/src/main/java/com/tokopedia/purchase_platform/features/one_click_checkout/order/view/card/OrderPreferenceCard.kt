@@ -32,6 +32,8 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
 
     @SuppressLint("SetTextI18n")
     private fun showPreference() {
+        showHeader()
+
         showAddress()
 
         showShipping()
@@ -40,6 +42,14 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
 
         view.tv_choose_preference.setOnClickListener {
             listener.onChangePreferenceClicked()
+        }
+    }
+
+    private fun showHeader(){
+        view.tv_card_header.text = "Pilihan"
+
+        view.iv_edit_preference.setOnClickListener {
+            listener.onPreferenceEditClicked(preference)
         }
     }
 
@@ -225,5 +235,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         fun chooseDuration()
 
         fun onErrorPaymentClicked()
+
+        fun onPreferenceEditClicked(preference: OrderPreference)
     }
 }

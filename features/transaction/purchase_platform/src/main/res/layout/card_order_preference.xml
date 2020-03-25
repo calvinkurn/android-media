@@ -10,6 +10,63 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <ImageView
+            android:id="@+id/iv_card_header"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_40"
+            android:src="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription"/>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_1"
+            android:background="@color/Neutral_N100"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_card_header"/>
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_card_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:lines="1"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_card_header"
+            app:layout_constraintStart_toStartOf="@+id/iv_card_header"
+            app:layout_constraintTop_toTopOf="@+id/iv_card_header"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold"
+            tools:text="Pilihan" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/lbl_main_preference"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            app:labelTitle="@string/lbl_default_preference"
+            app:labelType="general_dark_green"
+            app:layout_constraintBottom_toBottomOf="@id/iv_card_header"
+            app:layout_constraintStart_toEndOf="@+id/tv_card_header"
+            app:layout_constraintTop_toTopOf="@id/iv_card_header" />
+
+        <ImageView
+            android:id="@+id/iv_edit_preference"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginEnd="@dimen/dp_18"
+            android:layout_marginRight="@dimen/dp_18"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_card_header"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/iv_card_header"
+            app:srcCompat="@drawable/ic_system_action_gear_normal_24"
+            tools:ignore="ContentDescription" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_address_name"
             android:layout_width="wrap_content"
@@ -20,7 +77,7 @@
             android:lines="1"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_card_header"
             app:typographyType="body_3"
             app:typographyWeight="bold"
             tools:text="Kantor baba asd a sdf asdf " />
