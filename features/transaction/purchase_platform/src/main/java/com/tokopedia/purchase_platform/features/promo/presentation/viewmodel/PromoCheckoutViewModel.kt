@@ -822,7 +822,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 val headerIndex = promoListUiModel.value?.indexOf(it) ?: 0
                 _tmpUiModel.value = Update(it)
 
-                if (headerIndex != 0) {
+                if (headerIndex != -1) {
                     // Un check other item on current header if previously selected
                     val promoListSize = promoListUiModel.value?.size ?: 0
                     for (index in headerIndex + 1 until promoListSize) {
@@ -933,10 +933,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
         val dataIndex = promoListUiModel.value?.indexOf(element) ?: 0
 
-        if (dataIndex != 0) {
+        if (dataIndex != -1) {
             val data = promoListUiModel.value?.get(dataIndex) as PromoEligibilityHeaderUiModel
             data.let {
                 if (!it.uiState.isCollapsed) {
+                    // Collapse ineligible section
                     val startIndex = dataIndex + 1
                     val promoListSize = promoListUiModel.value?.size ?: 0
                     for (index in startIndex until promoListSize) {
@@ -952,7 +953,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     modifiedData.forEach {
                         _tmpUiModel.value = Delete(it)
                     }
+                    promoListUiModel.value?.removeAll(modifiedData)
                 } else {
+                    // Expand ineligible section
                     it.uiState.isCollapsed = !it.uiState.isCollapsed
 
                     _tmpUiModel.value = Update(it)
@@ -961,21 +964,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
                     _tmpListUiModel.value = Insert(mapListPromoHeader)
                     it.uiData.tmpPromo.forEach {
-                        if (it is PromoListHeaderUiModel && it.uiState.isCollapsed && it.uiData.tmpPromoItemList.isNotEmpty()) {
-                            promoListUiModel.value?.add(it)
-
-                            val mapListPromoItem = HashMap<Visitable<*>, List<Visitable<*>>>()
-                            mapListPromoItem[it] = it.uiData.tmpPromoItemList
-                            _tmpListUiModel.value = Insert(mapListPromoItem)
-
-                            it.uiData.tmpPromoItemList.forEach {
-                                promoListUiModel.value?.add(it)
-                            }
-
-                            it.uiState.isCollapsed = false
-                            it.uiData.tmpPromoItemList = emptyList()
-                            _tmpUiModel.value = Insert(it)
-                        }
+                        promoListUiModel.value?.add(it)
                     }
                     it.uiData.tmpPromo = emptyList()
                     _tmpUiModel.value = Update(it)
