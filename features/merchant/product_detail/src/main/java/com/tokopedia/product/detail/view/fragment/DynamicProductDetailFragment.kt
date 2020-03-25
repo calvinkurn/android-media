@@ -2120,7 +2120,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 ProductDetailConstant.OCS_BUTTON -> {
                     val addToCartOcsRequestParams = AddToCartOcsRequestParams().apply {
                         productId = data.basic.productID.toLongOrNull() ?: 0
-                        shopId = viewModel.shopInfo?.shopCore?.shopID.toIntOrZero()
+                        shopId = data.basic.shopID.toIntOrZero()
                         quantity = data.basic.minOrder
                         notes = ""
                         warehouseId = selectedWarehouseId
@@ -2133,7 +2133,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 else -> {
                     val addToCartRequestParams = AddToCartRequestParams().apply {
                         productId = data.basic.productID.toLongOrNull() ?: 0
-                        shopId = viewModel.shopInfo?.shopCore?.shopID.toIntOrZero()
+                        shopId = data.basic.shopID.toIntOrZero()
                         quantity = data.basic.minOrder
                         notes = ""
                         attribution = trackerAttributionPdp ?: ""
