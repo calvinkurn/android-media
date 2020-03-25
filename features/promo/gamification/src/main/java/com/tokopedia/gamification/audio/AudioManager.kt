@@ -22,10 +22,9 @@ class AudioManager(var mContext: Context) {
         mPlayer?.apply {
             setOnPreparedListener { mp ->
                 mp.start()
-                Log.e("DailyGiftBox", "Started");
-            }
 
-            isLooping = isLoop
+                isLooping = isLoop
+            }
 
             if (isPlaying) {
                 stop()
