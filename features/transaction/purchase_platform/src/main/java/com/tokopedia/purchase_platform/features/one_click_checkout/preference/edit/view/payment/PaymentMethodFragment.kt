@@ -108,7 +108,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         if (msisdnVerified && phoneNumber.isNotBlank()) {
             phone = phoneNumber
         }
-        val data = "merchant_code=tokopediatest&profile_code=EXPRESS_SAVE&user_id=${userSession.userId}&customer_name=${userSession.name.trim()}&customer_email=${userSession.email}&customer_msisdn${phone}=&address_id=${addressId}&callback_url=https%3A%2F%2Fpay-staging.tokopedia.com%2Fdummy%2Fpayment%2Flisting"
+        val data = "merchant_code=tokopediatest&profile_code=EXPRESS_SAVE&user_id=${userSession.userId}&customer_name=${userSession.name.trim()}&customer_email=${userSession.email}&customer_msisdn${phone}=&address_id=${addressId}&callback_url=${TokopediaUrl.getInstance().PAY}/dummy/payment/listing"
 //        val data = "merchant_code=tokopediatest&profile_code=EXPRESS_SAVE&user_id=5511791&customer_name=Davin+Kurniawan&customer_email=davin.kurniawan%40tokopedia.com&customer_msisdn=&address_id=4653430&callback_url=https%3A%2F%2Fpay-staging.tokopedia.com%2Fdummy%2Fpayment%2Flisting"
         val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
         web_view.postUrl(url, data.toByteArray())

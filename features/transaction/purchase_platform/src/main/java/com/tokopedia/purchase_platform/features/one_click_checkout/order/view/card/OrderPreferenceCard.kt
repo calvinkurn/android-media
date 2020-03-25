@@ -81,6 +81,15 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     view.tv_shipping_courier_lbl.gone()
                     view.tv_shipping_message.gone()
                     view.tv_shipping_change_duration.gone()
+
+                    //BBO
+                    if (shipping.logisticPromoTickerMessage?.isNotEmpty() == true && shipping.logisticPromoViewModel != null) {
+                        view.ticker_description.text = shipping.logisticPromoTickerMessage
+                        view.ticker_shipping_promo.visible()
+                        view.ticker_action.setOnClickListener {
+                            listener.onLogisticPromoClick(shipping.logisticPromoViewModel)
+                        }
+                    }
                 } else {
                     view.tv_shipping_duration.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_down_grey_24dp, 0)
                     view.tv_shipping_duration.setOnClickListener {
@@ -176,13 +185,16 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     break
                 }
             }
+            if (shippingRecommendationData.logisticPromo != null) {
+                list.add(shippingRecommendationData.logisticPromo)
+            }
             ShippingCourierOccBottomSheet().showBottomSheet(fragment, list, object : ShippingCourierOccBottomSheetListener {
                 override fun onCourierChosen(shippingCourierViewModel: ShippingCourierUiModel) {
                     listener.onCourierChange(shippingCourierViewModel)
                 }
 
                 override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
-
+                    listener.onLogisticPromoClick(data)
                 }
             })
         }
@@ -227,6 +239,8 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         fun onCourierChange(shippingCourierViewModel: ShippingCourierUiModel)
 
         fun onDurationChange(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean)
+
+        fun onLogisticPromoClick(logisticPromoUiModel: LogisticPromoUiModel)
 
 //        fun isLoading(): Boolean
 

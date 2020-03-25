@@ -11,7 +11,6 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.TKPDMapParam
-import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_CHECKOUT
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_DEFAULT
 import com.tokopedia.purchase_platform.common.data.model.param.EditAddressParam
@@ -362,6 +361,15 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                             }
                                         }
                                     }
+
+                                    //BBO
+                                    if (shipping?.serviceErrorMessage?.isNotEmpty() == true) {
+                                        val logisticPromo: LogisticPromoUiModel? = shippingRecommendationData.logisticPromo
+                                        if (logisticPromo != null) {
+                                            shipping = shipping.copy(logisticPromoViewModel = logisticPromo, logisticPromoTickerMessage = "Tersedia ${logisticPromo.title}")
+                                        }
+                                    }
+
                                     _orderPreference = value.copy(shipping = shipping)
                                     orderPreference.value = OccState.Success(_orderPreference!!)
                                     orderTotal.value = orderTotal.value?.copy(buttonState = if (shipping?.serviceErrorMessage.isNullOrEmpty()) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
@@ -468,12 +476,12 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 } else {
                     orderTotal.value = orderTotal.value?.copy(orderCost = orderCost, paymentErrorMessage = null, isButtonChoosePayment = false)
                 }
-                validateUsePromo()
+//                validateUsePromo()
                 return
             }
         }
         orderTotal.value = orderTotal.value?.copy(orderCost = OrderCost(), buttonState = ButtonBayarState.DISABLE)
-        validateUsePromo()
+//        validateUsePromo()
     }
 
     override fun onCleared() {
@@ -650,6 +658,15 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     private fun generateAuthParam(): MutableMap<String, String> {
         return AuthHelper.generateParamsNetwork(userSessionInterface.userId, userSessionInterface.deviceId, TKPDMapParam())
+    }
+
+    fun chooseLogisticPromo(logisticPromoUiModel: LogisticPromoUiModel) {
+        val shipping = _orderPreference?.shipping
+        if (shipping?.shippingRecommendationData != null) {
+            shipping.copy(
+
+            )
+        }
     }
 
     fun updateCart() {

@@ -28,6 +28,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
 import com.tokopedia.logisticdata.data.constant.LogisticConstant
@@ -513,6 +514,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         override fun onDurationChange(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
             viewModel.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
+        }
+
+        override fun onLogisticPromoClick(logisticPromoUiModel: LogisticPromoUiModel) {
+            viewModel.chooseLogisticPromo(logisticPromoUiModel)
         }
 
         override fun chooseCourier() {
