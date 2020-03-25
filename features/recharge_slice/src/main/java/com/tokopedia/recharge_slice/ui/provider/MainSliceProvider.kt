@@ -137,10 +137,10 @@ class MainSliceProvider : SliceProvider() {
                                         )
                                     }
                                 }
-                                if(alreadyLoadData && listProduct.size==3) {
-                                    val trackingImpression = TrackingData(listProduct)
-                                    Timber.w(contextNonNull.resources.getString(R.string.slice_track_timber_impression) + trackingImpression)
-                                }
+                            }
+                            if(alreadyLoadData && listProduct.size==3) {
+                                val trackingImpression = TrackingData(listProduct)
+                                Timber.w(contextNonNull.resources.getString(R.string.slice_track_timber_impression) + trackingImpression)
                             }
                         }
                     }
