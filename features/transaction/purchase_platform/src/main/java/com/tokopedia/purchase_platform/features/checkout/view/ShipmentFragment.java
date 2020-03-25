@@ -133,6 +133,7 @@ import com.tokopedia.purchase_platform.features.checkout.view.adapter.ShipmentAd
 import com.tokopedia.purchase_platform.features.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.purchase_platform.features.checkout.view.di.CheckoutModule;
 import com.tokopedia.purchase_platform.features.checkout.view.di.DaggerCheckoutComponent;
+import com.tokopedia.purchase_platform.features.checkout.view.dialog.ExpiredTimeDialog;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentButtonPaymentModel;
@@ -715,8 +716,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             cdText.setText(timer.getTimerDescription());
             cdView.setupTimerFromRemianingMillis(10 * 1000, () -> {
                 if (getFragmentManager() != null) {
-                    ExpiredTimeDialog dialog = new ExpiredTimeDialog();
-                    dialog.setCancelable(false);
+                    ExpiredTimeDialog dialog = ExpiredTimeDialog.newInstance(timer);
                     dialog.show(getFragmentManager(), "expired dialog");
                 }
             });

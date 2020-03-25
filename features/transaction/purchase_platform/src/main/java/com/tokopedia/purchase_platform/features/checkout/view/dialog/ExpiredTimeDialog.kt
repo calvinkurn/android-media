@@ -1,9 +1,10 @@
-package com.tokopedia.purchase_platform.features.checkout.view
+package com.tokopedia.purchase_platform.features.checkout.view.dialog
 
 import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CampaignTimerUi
 
 class ExpiredTimeDialog : DialogFragment() {
 
@@ -21,6 +22,16 @@ class ExpiredTimeDialog : DialogFragment() {
             }
             dialogUnify
         } ?: throw IllegalStateException("Activity cannot be null")
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(model: CampaignTimerUi): ExpiredTimeDialog = ExpiredTimeDialog().apply {
+            arguments = Bundle().apply {
+                putParcelable("ARGUMENT_CAMPAIGN_TIMER", model)
+            }
+            isCancelable = false
+        }
     }
 
 }
