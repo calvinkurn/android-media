@@ -93,7 +93,7 @@ dependencies {
     //Salam
     implementation project(rootProject.ext.features.umrah)
     //Travel
-    implementation project(rootProject.ext.features.travelHomepage)
+//    implementation project(rootProject.ext.features.travelHomepage)
     implementation project(rootProject.ext.features.flight)
     implementation project(rootProject.ext.features.hotel)
     //User
