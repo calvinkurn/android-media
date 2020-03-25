@@ -18,4 +18,10 @@
     </string>
     <string name="settingnotif_desc_information">Push notification adalah notifikasi yang dikirimkan langsung ke HP kamu dari aplikasi Tokopedia</string>
     <string name="settingnotif_settings_seller_title">Notifikasi Penjual</string>
+
+    <string name="settingnotif_title">Notifikasi</string>
+    <string name="settingnotif_dialog_info_title">Push Notification</string>
+    <string name="settingnotif_email">Email</string>
+    <string name="settingnotif_sms">SMS</string>
+    <string name="settingnotif_seller">Seller</string>
 </resources>

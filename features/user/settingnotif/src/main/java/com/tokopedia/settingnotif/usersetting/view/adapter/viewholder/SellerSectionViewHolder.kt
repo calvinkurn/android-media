@@ -8,8 +8,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.domain.pojo.SellerSection
-import com.tokopedia.settingnotif.usersetting.listener.SectionItemListener
-import com.tokopedia.settingnotif.usersetting.util.openNotificationSetting
+import com.tokopedia.settingnotif.usersetting.view.listener.SectionItemListener
 
 class SellerSectionViewHolder(
         private val listener: SectionItemListener,

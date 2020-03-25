@@ -65,7 +65,9 @@ class ParentSettingViewHolder(
         if (childToChangeIndex.isEmpty()) return
 
         val currentSettingPosition = adapterPosition
-        val childToChangeAdapterIndex = childToChangeIndex.map { index -> currentSettingPosition + 1 + index }
+        val childToChangeAdapterIndex = childToChangeIndex.map {
+            index -> currentSettingPosition + 1 + index
+        }
         settingListener.updateSettingView(childToChangeAdapterIndex)
     }
 
@@ -86,7 +88,6 @@ class ParentSettingViewHolder(
     }
 
     companion object {
-        @LayoutRes
-        val LAYOUT = R.layout.item_parent_setting
+        @LayoutRes val LAYOUT = R.layout.item_parent_setting
     }
 }

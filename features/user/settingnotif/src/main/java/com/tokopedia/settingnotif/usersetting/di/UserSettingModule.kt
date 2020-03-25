@@ -11,9 +11,7 @@ import dagger.Module
 import dagger.Provides
 
 
-@UserSettingScope
-@Module
-class UserSettingModule(var context: Context?, @RawRes val gqlQueryRaw: Int) {
+@Module class UserSettingModule(var context: Context?, @RawRes val gqlQueryRaw: Int) {
 
     @UserSettingScope
     @Provides

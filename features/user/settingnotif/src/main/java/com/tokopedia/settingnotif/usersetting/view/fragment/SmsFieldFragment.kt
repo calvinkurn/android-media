@@ -4,12 +4,18 @@ import android.os.Bundle
 import android.view.View
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.domain.pojo.SmsSection
+import com.tokopedia.settingnotif.usersetting.view.fragment.base.SettingFieldFragment
 import com.tokopedia.settingnotif.usersetting.view.viewmodel.UserSettingViewModel
 
 class SmsFieldFragment: SettingFieldFragment() {
 
-    override fun getScreenName(): String = "SMS"
-    override fun getNotificationType(): String  = "sms"
+    override fun getScreenName(): String {
+        return getString(R.string.settingnotif_sms)
+    }
+
+    override fun getNotificationType(): String {
+        return getString(R.string.settingnotif_sms)
+    }
 
     override fun getGqlRawQuery(): Int {
         return R.raw.query_sms_setting

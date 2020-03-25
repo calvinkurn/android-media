@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.settingnotif.usersetting.domain.pojo.NotificationActivation
 import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
+import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
 
 class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
@@ -42,7 +43,7 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
     private fun notifyRangedPosition(positions: List<Int>) {
         val sortedPosition = positions.sorted()
         val endArrayIndex = sortedPosition.size - 1
-        val startPosition = sortedPosition[0]
+        val startPosition = sortedPosition.first()
         val endPosition = sortedPosition[endArrayIndex]
         notifyItemRangeChanged(startPosition, endPosition, SettingViewHolder.PAYLOAD_SWITCH)
     }

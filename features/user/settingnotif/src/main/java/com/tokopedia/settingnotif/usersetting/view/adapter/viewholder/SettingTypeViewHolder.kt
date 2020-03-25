@@ -18,7 +18,7 @@ class SettingTypeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
 
     fun bind(settingType: SettingType, settingTypeContract: SettingTypeFragment.SettingTypeContract) {
         settingTypeIcon?.loadImageDrawable(settingType.icon)
-        settingTypeName?.text = settingType.name
+        settingTypeName?.text = itemView.context.getString(settingType.name)
 
         itemView.setOnClickListener {
             settingTypeContract.openSettingField(settingType)
@@ -27,7 +27,9 @@ class SettingTypeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
 
     companion object {
         fun createViewHolder(viewGroup: ViewGroup): SettingTypeViewHolder {
-            val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.item_setting_type, viewGroup, false)
+            val view = LayoutInflater
+                    .from(viewGroup.context)
+                    .inflate(R.layout.item_setting_type, viewGroup, false)
             return SettingTypeViewHolder(view)
         }
     }

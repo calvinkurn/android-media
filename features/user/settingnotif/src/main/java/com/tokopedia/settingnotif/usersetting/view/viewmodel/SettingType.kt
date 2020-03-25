@@ -2,10 +2,11 @@ package com.tokopedia.settingnotif.usersetting.view.viewmodel
 
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.view.fragment.*
+import com.tokopedia.settingnotif.usersetting.view.fragment.base.SettingFieldFragment
 
 data class SettingType(
         val icon: Int = 0,
-        val name: String = "",
+        val name: Int = 0,
         val fragment: Class<out SettingFieldFragment>
 ) {
 
@@ -18,17 +19,17 @@ data class SettingType(
             return arrayListOf(
                     SettingType(
                             icon = R.drawable.ic_notifsetting_notification,
-                            name = "Push Notification",
+                            name = R.string.settingnotif_dialog_info_title,
                             fragment = PushNotifFieldFragment::class.java
                     ),
                     SettingType(
                             icon = R.drawable.ic_notifsetting_email,
-                            name = "Email",
+                            name = R.string.settingnotif_email,
                             fragment = EmailFieldFragment::class.java
                     ),
                     SettingType(
                             icon = R.drawable.ic_notifsetting_sms,
-                            name = "SMS",
+                            name = R.string.settingnotif_sms,
                             fragment = SmsFieldFragment::class.java
                     )
             )
@@ -37,7 +38,7 @@ data class SettingType(
         fun createSellerType(): SettingType {
             return SettingType(
                     icon = 0,
-                    name = "Seller",
+                    name = R.string.settingnotif_seller,
                     fragment = SellerFieldFragment::class.java
             )
         }

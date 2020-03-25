@@ -8,7 +8,8 @@ import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.domain.pojo.NotificationActivation
 import com.tokopedia.settingnotif.usersetting.domain.pojo.SellerSection
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldAdapter
-import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldTypeFactory
+import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
+import com.tokopedia.settingnotif.usersetting.view.fragment.base.SettingFieldFragment
 import com.tokopedia.settingnotif.usersetting.view.viewmodel.UserSettingViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
@@ -16,10 +17,15 @@ typealias VisitableSettings = Visitable<SettingFieldTypeFactory>
 
 class PushNotifFieldFragment : SettingFieldFragment() {
 
-    override fun getScreenName(): String = "Push Notification"
-    override fun getNotificationType(): String  = "pushnotif"
-
     private val _adapter by lazy { adapter as SettingFieldAdapter }
+
+    override fun getScreenName(): String {
+        return getString(R.string.settingnotif_dialog_info_title)
+    }
+
+    override fun getNotificationType(): String {
+        return getString(R.string.settingnotif_dialog_info_title)
+    }
 
     override fun getGqlRawQuery(): Int {
         return R.raw.query_push_notif_setting
@@ -71,11 +77,15 @@ class PushNotifFieldFragment : SettingFieldFragment() {
     private fun showInformationDialog() {
         val customDialogView = View.inflate(context, R.layout.dialog_push_notif_information, null)
         val informationSheet = BottomSheetUnify().apply {
-            setTitle("Push Notification")
+            setTitle(getString(R.string.settingnotif_dialog_info_title))
             setChild(customDialogView)
             setCloseClickListener { dismiss() }
         }
-        informationSheet.show(childFragmentManager, "Information")
+        informationSheet.show(childFragmentManager, TAG_INFORMATION)
+    }
+
+    companion object {
+        private const val TAG_INFORMATION = "information"
     }
 
 }

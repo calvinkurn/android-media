@@ -20,7 +20,6 @@ class SettingSectionViewHolder(itemView: View?) : AbstractViewHolder<SettingSect
     }
 
     companion object {
-        @LayoutRes
-        val LAYOUT = R.layout.item_setting_section
+        @LayoutRes val LAYOUT = R.layout.item_setting_section
     }
 }

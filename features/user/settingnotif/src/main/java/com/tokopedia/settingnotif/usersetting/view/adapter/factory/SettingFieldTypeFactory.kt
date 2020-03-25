@@ -1,4 +1,4 @@
-package com.tokopedia.settingnotif.usersetting.view.adapter
+package com.tokopedia.settingnotif.usersetting.view.adapter.factory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory

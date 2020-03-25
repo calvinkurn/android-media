@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.settingnotif.R
+import com.tokopedia.settingnotif.usersetting.const.Unify.Neutral_N700_96
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingTypeAdapter
 import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingType
 import com.tokopedia.showcase.*
@@ -17,7 +18,6 @@ import java.util.*
 class SettingTypeFragment : BaseDaggerFragment() {
 
     private lateinit var rvSettingType: RecyclerView
-
     private lateinit var settingTypeContract: SettingTypeContract
 
     interface SettingTypeContract {
@@ -25,7 +25,7 @@ class SettingTypeFragment : BaseDaggerFragment() {
     }
 
     override fun getScreenName(): String {
-        return "Notifikasi"
+        return getString(R.string.settingnotif_title)
     }
 
     override fun initInjector() {}
@@ -65,7 +65,7 @@ class SettingTypeFragment : BaseDaggerFragment() {
     }
 
     private fun showShowCaseIfNeeded() {
-        val tag = javaClass.name + ".BroadcastMessage"
+        val tag = javaClass.name + BROADCAST_MESSAGE
         val hasBeenShown = ShowCasePreference.hasShown(context, tag)
         if (hasBeenShown) return
         showShowCase(tag)
@@ -79,7 +79,7 @@ class SettingTypeFragment : BaseDaggerFragment() {
 
     private fun generateShowCaseDialog(): ShowCaseDialog {
         return ShowCaseBuilder()
-                .backgroundContentColorRes(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96)
+                .backgroundContentColorRes(Neutral_N700_96)
                 .shadowColorRes(R.color.shadow)
                 .textColorRes(R.color.grey_400)
                 .textSizeRes(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl2)
@@ -101,4 +101,9 @@ class SettingTypeFragment : BaseDaggerFragment() {
         val position = ShowCaseContentPosition.BOTTOM
         return ShowCaseObject(rvSettingType, title, description, position)
     }
+
+    companion object {
+        private const val BROADCAST_MESSAGE = ".BroadcastMessage"
+    }
+
 }

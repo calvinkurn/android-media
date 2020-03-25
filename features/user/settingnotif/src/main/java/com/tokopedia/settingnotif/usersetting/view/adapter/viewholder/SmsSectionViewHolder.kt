@@ -8,8 +8,6 @@ import com.tokopedia.settingnotif.usersetting.domain.pojo.SmsSection
 
 class SmsSectionViewHolder(itemView: View?): AbstractViewHolder<SmsSection>(itemView) {
 
-    private val context by lazy { itemView?.context }
-
     override fun bind(element: SmsSection?) {}
 
     companion object {

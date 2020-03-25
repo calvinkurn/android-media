@@ -1,10 +1,10 @@
-package com.tokopedia.settingnotif.usersetting.view.adapter
+package com.tokopedia.settingnotif.usersetting.view.adapter.factory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.settingnotif.usersetting.domain.pojo.*
-import com.tokopedia.settingnotif.usersetting.listener.SectionItemListener
+import com.tokopedia.settingnotif.usersetting.view.listener.SectionItemListener
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.*
 
 class SettingFieldTypeFactoryImpl(
@@ -12,15 +12,10 @@ class SettingFieldTypeFactoryImpl(
 ) : BaseAdapterTypeFactory(), SettingFieldTypeFactory {
 
     override fun type(settingSections: SettingSections): Int = SettingSectionViewHolder.LAYOUT
-
     override fun type(parentSetting: ParentSetting): Int = ParentSettingViewHolder.LAYOUT
-
     override fun type(childSetting: ChildSetting): Int = ChildSettingViewHolder.LAYOUT
-
     override fun type(settingSections: NotificationActivation): Int = PushNotifActivationViewHolder.LAYOUT
-
     override fun type(settingSections: SellerSection): Int = SellerSectionViewHolder.LAYOUT
-
     override fun type(parentSetting: SmsSection): Int = SmsSectionViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {

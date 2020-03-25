@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import android.widget.FrameLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.settingnotif.usersetting.const.Unify.Neutral_N0
 import com.tokopedia.settingnotif.usersetting.view.fragment.SettingTypeFragment
 import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingType
 
@@ -24,7 +25,7 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
     }
 
     private fun setupView() {
-        val color = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0)
+        val color = ContextCompat.getColor(this, Neutral_N0)
         fragmentContainer?.setBackgroundColor(color)
     }
 
@@ -34,12 +35,12 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
 
     override fun openSettingField(settingType: SettingType) {
         val fragment = supportFragmentManager
-                .findFragmentByTag(settingType.name)
+                .findFragmentByTag(getString(settingType.name))
                 ?: settingType.createNewFragmentInstance()
 
         supportFragmentManager.beginTransaction()
                 .addToBackStack(null)
-                .replace(parentViewResourceID, fragment, settingType.name)
+                .replace(parentViewResourceID, fragment, getString(settingType.name))
                 .commit()
     }
 

@@ -43,8 +43,7 @@ abstract class SettingViewHolder<T : BaseSetting>(
 
     override fun bind(element: T, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
-
-        val payload = payloads[0]
+        val payload = payloads.first()
         if (payload == PAYLOAD_SWITCH) {
             settingSwitch?.isChecked = element.status
         }
