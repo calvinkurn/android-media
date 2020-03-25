@@ -75,6 +75,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     var disableGiftBoxTap = false
     var autoApplyMessage = ""
     var mAudiosManager: AudioManager? = null
+    var mAudiosManagerBackgroudSoundLoopIn: AudioManager? = null
 
     override fun getLayout() = R.layout.fragment_gift_box_daily
 
@@ -102,6 +103,11 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         mAudiosManager?.let {
             it.destroy()
             mAudiosManager = null;
+        }
+
+        mAudiosManagerBackgroudSoundLoopIn?.let {
+            it.destroy()
+            mAudiosManagerBackgroudSoundLoopIn = null;
         }
     }
 
@@ -254,11 +260,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     }
 
                     context?.let { innerIt ->
-                        if (mAudiosManager == null) {
-                            mAudiosManager = AudioFactory.createAudio(innerIt)
-                        }
-
-                        mAudiosManager?.playAudio(R.raw.gf_giftbox_bg, true)
+                        mAudiosManagerBackgroudSoundLoopIn = AudioFactory.createAudio(innerIt)
+                        mAudiosManagerBackgroudSoundLoopIn?.playAudio(R.raw.gf_giftbox_bg, true)
                     }
 
                 }
@@ -344,7 +347,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                             }
 
                             context?.let { soundIt ->
-                                if(mAudiosManager == null){
+                                if (mAudiosManager == null) {
                                     mAudiosManager = AudioFactory.createAudio(soundIt)
                                 }
 
