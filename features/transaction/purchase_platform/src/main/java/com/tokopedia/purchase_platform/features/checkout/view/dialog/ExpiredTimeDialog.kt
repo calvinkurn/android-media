@@ -9,11 +9,12 @@ import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipme
 class ExpiredTimeDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val timerModel: CampaignTimerUi = arguments?.getParcelable(ARGUMENT_CAMPAIGN_TIMER) ?: CampaignTimerUi()
         return activity?.let {
             val dialogUnify = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle("Waktu Pembayaran Habis")
-                setDescription("bla bla bafdjlasfj badslfjsladfj sd")
-                setPrimaryCTAText("Belanja Lagi")
+                setTitle(timerModel.dialogTitle)
+                setDescription(timerModel.dialogDescription)
+                setPrimaryCTAText(timerModel.dialogButton)
                 setPrimaryCTAClickListener {
                     it.finish()
                 }
@@ -25,10 +26,12 @@ class ExpiredTimeDialog : DialogFragment() {
     }
 
     companion object {
+        private const val ARGUMENT_CAMPAIGN_TIMER = "ARGUMENT_CAMPAIGN_TIMER"
+
         @JvmStatic
         fun newInstance(model: CampaignTimerUi): ExpiredTimeDialog = ExpiredTimeDialog().apply {
             arguments = Bundle().apply {
-                putParcelable("ARGUMENT_CAMPAIGN_TIMER", model)
+                putParcelable(ARGUMENT_CAMPAIGN_TIMER, model)
             }
             isCancelable = false
         }
