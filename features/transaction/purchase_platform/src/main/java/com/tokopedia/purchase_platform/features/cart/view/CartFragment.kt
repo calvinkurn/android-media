@@ -1323,8 +1323,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         if (lastApplyData.additionalInfo.messageInfo.message.isNotEmpty()) {
             title = lastApplyData.additionalInfo.messageInfo.message
-        } else {
+        } else if(lastApplyData.defaultEmptyPromoMessage.isNotBlank()) {
             title = lastApplyData.defaultEmptyPromoMessage
+        } else {
+            title = getString(R.string.promo_funnel_label)
         }
 
         if (lastApplyData.additionalInfo.messageInfo.detail.isNotEmpty()) {
