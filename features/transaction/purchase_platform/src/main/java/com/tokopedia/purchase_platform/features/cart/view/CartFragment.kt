@@ -1222,7 +1222,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             cartAdapter.resetData()
 
             renderTickerAnnouncement(it)
-            renderPromoCheckout(it)
 
             if (it.shopGroupAvailableDataList.isEmpty() && it.shopGroupWithErrorDataList.isEmpty()) {
                 renderCartEmpty(it)
@@ -1247,6 +1246,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             } else {
                 renderRecommendation(null)
             }
+
+            renderPromoCheckout(it)
         }
     }
 
