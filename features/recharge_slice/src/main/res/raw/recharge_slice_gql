@@ -2,6 +2,7 @@ query rechargeFavoriteRecommendationList($device_id: Int!) {
 	rechargeFavoriteRecommendationList(device_id: $device_id) {
 		title
 		recommendations{
+		    productId
 			iconUrl
 			title
 			clientNumber
@@ -12,6 +13,7 @@ query rechargeFavoriteRecommendationList($device_id: Int!) {
 			categoryId
 			productName
 			type
+			productPrice
 		}
 	}
 }
