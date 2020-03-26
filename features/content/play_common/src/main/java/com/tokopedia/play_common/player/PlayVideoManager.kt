@@ -80,10 +80,10 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
 
         override fun onPlayerError(error: ExoPlaybackException) {
             val parsedException = exoPlaybackExceptionParser.parse(error)
-            if (parsedException.isBlackListedException) {
-                stopPlayer()
-                return
-            }
+//            if (parsedException.isBlackListedException) {
+//                stopPlayer()
+//                return
+//            }
 
             if (
                     parsedException.isBehindLiveWindowException ||
@@ -178,6 +178,13 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     fun pauseCurrentVideo(preventLoadingBuffer: Boolean) {
         playerModel.loadControl.setPreventLoading(preventLoadingBuffer)
         videoPlayer.playWhenReady = false
+    }
+
+    fun resumeOrPlayPreviousVideo() {
+        val prepareState = currentPrepareState
+        if (prepareState is PlayVideoPrepareState.Unprepared && prepareState.previousUri != null) {
+            safePlayVideoWithUri(prepareState.previousUri)
+        }
     }
 
     fun resetCurrentVideo() {
