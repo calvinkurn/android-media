@@ -228,8 +228,8 @@ class MainSliceProvider : SliceProvider() {
 
     override fun onCreateSliceProvider(): Boolean {
         contextNonNull = context.applicationContext ?: return false
-        remoteConfig = FirebaseRemoteConfigImpl(context)
-        LocalCacheHandler(context, APPLINK_DEBUGGER)
+        remoteConfig = FirebaseRemoteConfigImpl(contextNonNull)
+        LocalCacheHandler(context,APPLINK_DEBUGGER)
         loadString = contextNonNull.resources.getString(R.string.slice_loading)
         return true
     }
