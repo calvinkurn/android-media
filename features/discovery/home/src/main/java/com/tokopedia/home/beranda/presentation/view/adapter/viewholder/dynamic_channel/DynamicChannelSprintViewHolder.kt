@@ -72,7 +72,6 @@ class DynamicChannelSprintViewHolder(sprintView: View,
                 defaultSpanCount,
                 GridLayoutManager.VERTICAL, false)
         backgroundThematic.loadImageWithoutPlaceholder(channel.header.backImage)
-        mappingHeader(channel)
         mappingGrid(channel)
     }
 
@@ -88,23 +87,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         }
 
         channel.let {
-            mappingHeader(it)
             mappingGrid(it)
-        }
-    }
-
-    private fun mappingHeader(channel: DynamicHomeChannel.Channels) {
-        if (channel.header.backImage.isNotBlank()) {
-            val channelTitle: Typography = itemView.findViewById(R.id.channel_title)
-            channelTitle.setTextColor(ContextCompat.getColor(channelTitle.context, R.color.white))
-            backgroundThematic.show()
-            seeAllButtonUnify?.setOnClickListener {
-                homeCategoryListener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header))
-                HomeTrackingUtils.homeDiscoveryWidgetViewAll(context,
-                        DynamicLinkHelper.getActionLink(channel.header))
-                onSeeAllClickTracker(channel, DynamicLinkHelper.getActionLink(channel.header))
-
-            }
         }
     }
 
