@@ -1,11 +1,14 @@
 package com.tokopedia.product.addedit.common.domain.mapper
 
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.common.domain.model.params.add.*
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
+import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.WholeSaleResponse
 import javax.inject.Inject
 
 /**
@@ -43,22 +46,27 @@ class AddProductInputMapper @Inject constructor() {
                 detailInputModel.condition,
                 shipmentInputModel.isMustInsurance,
                 detailInputModel.sku,
-                ShopParam(
-                        shopId
-                ),
-                Catalog(
-                        detailInputModel.catalogId
-                ),
-                Category(
-                        detailInputModel.categoryId
-                ),
+                ShopParam(shopId),
+                Catalog(detailInputModel.catalogId),
+                Category(detailInputModel.categoryId),
                 ProductEtalase(), // TODO product etalase not implemented yet
                 mapPictureParam(uploadIdList),
                 mapPreorderParam(detailInputModel.preorder),
-                Wholesales(),
+                mapWholesaleParam(detailInputModel.wholesaleList),
                 mapVideoParam(descriptionInputModel.videoLinkList)
 
         )
+    }
+
+    private fun mapWholesaleParam(wholesaleList: List<WholeSaleInputModel>): Wholesales? {
+        val data: ArrayList<Wholesale> = ArrayList()
+        wholesaleList.forEach {
+            data.add(Wholesale(
+                    it.quantity.replace(".", "").toIntOrZero(),
+                    it.price.replace(".", "").toIntOrZero())
+            )
+        }
+        return Wholesales(data)
     }
 
     private fun mapShipmentUnit(weightUnit: Int): String? {
@@ -68,10 +76,12 @@ class AddProductInputMapper @Inject constructor() {
     private fun mapVideoParam(videoLinkList: List<VideoLinkModel>): Videos {
         val data: ArrayList<Video> = ArrayList()
         videoLinkList.forEach {
-            val urlSplit = it.inputUrl.split("/watch?v=")
-            val source = urlSplit[0]
-            val url = urlSplit[1]
-            data.add(Video(source, url))
+            if (it.inputUrl.isNotEmpty()) {
+                val urlSplit = it.inputUrl.split("/watch?v=")
+                val source = urlSplit[0]
+                val url = urlSplit[1]
+                data.add(Video(source, url))
+            }
         }
         return Videos(data)
     }

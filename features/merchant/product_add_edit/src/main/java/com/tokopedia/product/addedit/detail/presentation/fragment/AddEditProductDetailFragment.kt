@@ -54,6 +54,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.ProductCatalog
+import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.detail.presentation.viewholder.WholeSaleInputViewHolder
 import com.tokopedia.product.addedit.detail.presentation.viewmodel.AddEditProductDetailViewModel
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
@@ -618,6 +619,23 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         }
     }
 
+    private fun getWholesaleInput(): MutableList<WholeSaleInputModel> {
+        val inputResult: ArrayList<WholeSaleInputModel> = ArrayList()
+        productWholeSaleInputFormsView?.childCount?.let {
+            for (index in 0 until it) {
+                val productWholeSaleFormView = productWholeSaleInputFormsView?.layoutManager?.getChildAt(index)
+                val productWholeSalePriceField: TextFieldUnify? = productWholeSaleFormView?.findViewById(R.id.tfu_wholesale_price)
+                val productWholeSaleQuantityField: TextFieldUnify? = productWholeSaleFormView?.findViewById(R.id.tfu_wholesale_quantity)
+                val item = WholeSaleInputModel(
+                        productWholeSalePriceField.getText(),
+                        productWholeSaleQuantityField.getText()
+                )
+                inputResult.add(item)
+            }
+        }
+        return inputResult
+    }
+
     private fun subscribeToProductNameInputStatus() {
         viewModel.isProductNameInputError.observe(this, Observer {
             productNameField?.setError(it)
@@ -764,12 +782,6 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         }
     }
 
-    private fun resetPreOrderDurationField() {
-        preOrderDurationField?.apply {
-            setError(false)
-        }
-    }
-
     private fun moveToDescriptionActivity() {
         val intent = Intent(context, AddEditProductDescriptionActivity::class.java)
         startActivityForResult(intent, REQUEST_CODE_DESCRIPTION)
@@ -791,7 +803,8 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
                         preOrderDurationField.getTextIntOrZero(),
                         selectedDurationPosition,
                         preOrderSwitch?.isChecked ?: false
-                )
+                ),
+                getWholesaleInput()
         )
 
         val intent = Intent()

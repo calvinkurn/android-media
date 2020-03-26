@@ -7,14 +7,12 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Wholesale (
-    
     @SerializedName("minQty")
     @Expose
     var minQty: Int? = null,
     @SerializedName("price")
     @Expose
     var price: Int? = null
-
 ) : Parcelable
 
 @Parcelize
