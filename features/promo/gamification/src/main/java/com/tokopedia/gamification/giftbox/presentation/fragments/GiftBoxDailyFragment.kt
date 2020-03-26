@@ -604,32 +604,57 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         }
 
         //set prize list
+        loadPrizeImagesAsync(entity) {
+            val imageUrlList = entity.gamiLuckyHome.tokenAsset.imageV2URLs
+            var frontImageUrl = ""
+            var bgUrl = entity.gamiLuckyHome.tokenAsset.backgroundImgURL
+            if (!imageUrlList.isNullOrEmpty()) {
+                frontImageUrl = imageUrlList[0]
+                if (frontImageUrl.isEmpty()) {
+                    frontImageUrl = ""
+                }
+            }
+
+            fadeInActiveStateViews(frontImageUrl, bgUrl)
+        }
+    }
+
+    fun loadPrizeImagesAsync(entity: GiftBoxEntity, imageCallback: (() -> Unit)) {
+        var totalImagesCount = 0
+        var loadedImagesCount = 0
+
+        fun checkImageLoadStatus() {
+            loadedImagesCount += 1
+            if (loadedImagesCount == totalImagesCount) {
+                imageCallback.invoke()
+            }
+        }
         entity.gamiLuckyHome.prizeList?.forEach {
             if (it.isSpecial) {
-                prizeViewLarge.setData(it.imageURL, it.text)
+                totalImagesCount += 1
+                prizeViewLarge.setData(it.imageURL, it.text) {
+                    checkImageLoadStatus()
+                }
                 prizeViewLarge.visibility = View.VISIBLE
             } else {
                 if (prizeViewSmallFirst.tvTitle.text.isNullOrEmpty()) {
-                    prizeViewSmallFirst.setData(it.imageURL, it.text)
+                    prizeViewSmallFirst.setData(it.imageURL, it.text) {
+                        checkImageLoadStatus()
+                    }
                     prizeViewSmallFirst.visibility = View.VISIBLE
+                    totalImagesCount += 1
                 } else {
-                    prizeViewSmallSecond.setData(it.imageURL, it.text)
+                    prizeViewSmallSecond.setData(it.imageURL, it.text) {
+                        checkImageLoadStatus()
+                    }
                     prizeViewSmallSecond.visibility = View.VISIBLE
+                    totalImagesCount += 1
                 }
             }
         }
-
-        val imageUrlList = entity.gamiLuckyHome.tokenAsset.imageV2URLs
-        var frontImageUrl = ""
-        var bgUrl = entity.gamiLuckyHome.tokenAsset.backgroundImgURL
-        if (!imageUrlList.isNullOrEmpty()) {
-            frontImageUrl = imageUrlList[0]
-            if (frontImageUrl.isEmpty()) {
-                frontImageUrl = ""
-            }
+        if (totalImagesCount == loadedImagesCount) {
+            imageCallback.invoke()
         }
-
-        fadeInActiveStateViews(frontImageUrl, bgUrl)
     }
 
     fun fadeOutViews() {

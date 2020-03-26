@@ -13,8 +13,7 @@
         android:layout_width="26dp"
         android:layout_height="26dp"
         android:layout_marginStart="12dp"
-        android:layout_marginLeft="12dp"
-        app:srcCompat="@drawable/gf_ic_ovo_small" />
+        android:layout_marginLeft="12dp" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTitle"
