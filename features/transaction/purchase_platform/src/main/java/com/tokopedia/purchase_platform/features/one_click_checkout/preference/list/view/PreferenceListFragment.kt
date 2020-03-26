@@ -104,6 +104,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                     } else if (profiles.isNotEmpty() && profiles.size >= maxProfiles) {
                         group_empty_state.gone()
                         rv_preference_list.visible()
+                        btn_preference_list_action.setText(R.string.add_preference)
                         btn_preference_list_action.isEnabled = false
                     } else {
                         group_empty_state.gone()
