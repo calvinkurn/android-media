@@ -10,8 +10,8 @@ import com.tokopedia.hotel.roomlist.data.model.HotelRoomInfo
 import com.tokopedia.hotel.roomlist.data.model.RoomListModel
 import com.tokopedia.hotel.roomlist.widget.ImageViewPager
 import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.item_hotel_room_full.view.*
 import kotlinx.android.synthetic.main.item_hotel_room_list.view.*
@@ -44,7 +44,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : Ab
                 room_left_text_view.visibility = if (roomListModel.roomLeft <= 2) View.VISIBLE else View.GONE
                 room_left_text_view.text = getString(R.string.hotel_room_room_left_text, roomListModel.roomLeft.toString())
                 cc_not_required_text_view.text = roomListModel.creditCardHeader
-                initRoomFacility(roomListModel.breakfastIncluded, roomListModel.isRefundable, roomListModel.roomFacility)
+                initRoomFacility(roomListModel.breakfastIncluded, roomListModel.refundInfo, roomListModel.roomFacility)
 
                 choose_room_button.setOnClickListener { listener.onClickBookListener(hotelRoom) }
                 choose_room_button.text = getString(R.string.hotel_room_list_choose_room_button, "")
@@ -69,7 +69,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : Ab
         }
     }
 
-    private fun initRoomFacility(breakfastIncluded: Boolean, refundable: Boolean, roomFacility: List<HotelRoomInfo.Facility>) {
+    private fun initRoomFacility(breakfastIncluded: Boolean, refundInfo: HotelRoom.RefundInfo, roomFacility: List<HotelRoomInfo.Facility>) {
         with(itemView) {
             room_facility_recycler_view.removeAllViews()
 
@@ -82,14 +82,11 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : Ab
             }
             room_facility_recycler_view.addView(breakfastTextView)
 
-
-            val refundableTextView = FacilityTextView(context)
-            if (refundable) {
-                refundableTextView.setIconAndText(R.drawable.ic_hotel_refundable, getString(R.string.hotel_room_list_refundable_with_condition))
-            } else {
-                refundableTextView.setIconAndText(R.drawable.ic_hotel_not_refundable, getString(R.string.hotel_room_list_not_refundable))
+            if (refundInfo.refundStatus.isNotEmpty()) {
+                val refundableTextView = FacilityTextView(context)
+                refundableTextView.setIconAndText(refundInfo.iconUrl, refundInfo.refundStatus)
+                room_facility_recycler_view.addView(refundableTextView)
             }
-            room_facility_recycler_view.addView(refundableTextView)
 
             for (i in 0 until min(roomFacility.size, 2)) {
                 var textView = FacilityTextView(context)
@@ -128,7 +125,8 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : Ab
         roomListModel.roomFacility = hotelRoom.roomInfo.facility
         roomListModel.payInHotel = !hotelRoom.additionalPropertyInfo.isDirectPayment
         roomListModel.breakfastIncluded = hotelRoom.breakfastInfo.isBreakfastIncluded
-        roomListModel.isRefundable = hotelRoom.refundInfo.isRefundable
+        roomListModel.refundInfo = hotelRoom.refundInfo
+        roomListModel.refundStatus = hotelRoom.refundInfo.refundStatus
         roomListModel.creditCardHeader = hotelRoom.creditCardInfo.header
         roomListModel.creditCardInfo = hotelRoom.creditCardInfo.creditCardInfo
         roomListModel.price = hotelRoom.roomPrice.roomPrice

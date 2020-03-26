@@ -233,13 +233,11 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
             }
             room_detail_header_facilities.addView(breakfastTextView)
 
-            val refundableTextView = FacilityTextView(this)
-            if (hotelRoom.refundInfo.isRefundable) {
-                refundableTextView.setIconAndText(R.drawable.ic_hotel_refundable, getString(R.string.hotel_room_list_refundable_with_condition))
-            } else {
-                refundableTextView.setIconAndText(R.drawable.ic_hotel_not_refundable, getString(R.string.hotel_room_list_not_refundable))
+            if (hotelRoom.refundInfo.refundStatus.isNotEmpty()) {
+                val refundableTextView = FacilityTextView(this)
+                refundableTextView.setIconAndText(hotelRoom.refundInfo.iconUrl, hotelRoom.refundInfo.refundStatus)
+                room_detail_header_facilities.addView(refundableTextView)
             }
-            room_detail_header_facilities.addView(refundableTextView)
         }
 
         if (hotelRoom.numberRoomLeft <= MINIMUM_ROOM_COUNT) {
