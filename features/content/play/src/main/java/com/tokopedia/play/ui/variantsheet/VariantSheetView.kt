@@ -1,5 +1,6 @@
 package com.tokopedia.play.ui.variantsheet
 
+import android.graphics.Paint
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
@@ -95,6 +96,7 @@ class VariantSheetView(
         }
 
         tvSheetTitle.text = container.context.getString(R.string.play_title_variant)
+        tvOriginalPrice.paintFlags = tvOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     }
 
     override val containerId: Int = view.id

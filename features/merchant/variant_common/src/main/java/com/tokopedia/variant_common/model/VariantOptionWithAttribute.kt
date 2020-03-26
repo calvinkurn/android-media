@@ -16,5 +16,6 @@ data class VariantOptionWithAttribute(
         val variantCategoryKey: String = "",
         val selectedStockWording: String = "",
         val level: Int = -1,
+        val flashSale: Boolean = false,
         val hasCustomImages: Boolean = false // If one of all the child dont have image, it will return false. If all of the child have custom image then will return true
 )
