@@ -106,6 +106,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             if (promoCode.isNotBlank()) {
                 promoRequest.attemptedCodes.clear()
                 promoRequest.attemptedCodes.add(promoCode)
+                promoRequest.skipApply = 0
+            } else {
+                promoRequest.skipApply = 1
             }
 
             promoRequest.orders.forEach { order ->
