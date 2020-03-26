@@ -1,11 +1,13 @@
 package com.tokopedia.home.viewModel
 
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
+import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.data.model.PlayData
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.rules.TestDispatcherProvider
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
@@ -21,7 +23,7 @@ fun TestBody.createHomeViewModel(): HomeViewModel{
     val dismissHomeReviewUseCase by memoized<DismissHomeReviewUseCase>()
     val getHomeReviewSuggestedUseCase by memoized<GetHomeReviewSuggestedUseCase>()
     val getKeywordSearchUseCase by memoized<GetKeywordSearchUseCase>()
-    val getFeedTabUseCase by memoized<GetFeedTabUseCase>()
+    val getRecommendationTabUseCase by memoized<GetRecommendationTabUseCase>()
     val getHomeTokopointsDataUseCase by memoized<GetHomeTokopointsDataUseCase>()
     val getCoroutinePendingCashbackUseCase by memoized<GetCoroutinePendingCashbackUseCase>()
     val getPlayLiveDynamicUseCase by memoized<GetPlayLiveDynamicUseCase>()
@@ -29,11 +31,13 @@ fun TestBody.createHomeViewModel(): HomeViewModel{
     val getHomeUseCase by memoized<HomeUseCase>()
     val getSendGeolocationInfoUseCase by memoized<SendGeolocationInfoUseCase>()
     val getStickyLoginUseCase by memoized<StickyLoginUseCase>()
-    val homeDataMapper by memoized<HomeDataMapper>()
+    val getBusinessWidgetTab by memoized<GetBusinessWidgetTab>()
+    val getBusinessUnitDataUseCase by memoized<GetBusinessUnitDataUseCase>()
+    val getPopularKeywordUseCase by memoized<GetPopularKeywordUseCase>()
     return HomeViewModel(
             homeUseCase = getHomeUseCase,
             userSession = userSessionInterface,
-            getFeedTabUseCase = getFeedTabUseCase,
+            getRecommendationTabUseCase = getRecommendationTabUseCase,
             sendGeolocationInfoUseCase = getSendGeolocationInfoUseCase,
             getWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
             getPendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
@@ -43,6 +47,9 @@ fun TestBody.createHomeViewModel(): HomeViewModel{
             getHomeReviewSuggestedUseCase = getHomeReviewSuggestedUseCase,
             dismissHomeReviewUseCase = dismissHomeReviewUseCase,
             getPlayCardHomeUseCase = getPlayLiveDynamicUseCase,
+            getBusinessWidgetTab = getBusinessWidgetTab,
+            getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
+            popularKeywordUseCase = getPopularKeywordUseCase,
             homeDispatcher = TestDispatcherProvider()
     )
 }
@@ -52,7 +59,7 @@ fun FeatureBody.createHomeViewModelTestInstance() {
     val dismissHomeReviewUseCase by memoized<DismissHomeReviewUseCase> { mockk(relaxed = true) }
     val getHomeReviewSuggestedUseCase by memoized<GetHomeReviewSuggestedUseCase> { mockk(relaxed = true) }
     val getKeywordSearchUseCase by memoized<GetKeywordSearchUseCase> { mockk(relaxed = true) }
-    val getFeedTabUseCase by memoized<GetFeedTabUseCase> { mockk(relaxed = true) }
+    val getRecommendationTabUseCase by memoized<GetRecommendationTabUseCase> { mockk(relaxed = true) }
     val getHomeTokopointsDataUseCase by memoized<GetHomeTokopointsDataUseCase> { mockk(relaxed = true) }
     val getCoroutinePendingCashbackUseCase by memoized<GetCoroutinePendingCashbackUseCase> { mockk(relaxed = true) }
     val getPlayLiveDynamicUseCase by memoized<GetPlayLiveDynamicUseCase> { mockk(relaxed = true) }
@@ -60,6 +67,9 @@ fun FeatureBody.createHomeViewModelTestInstance() {
     val getHomeUseCase by memoized<HomeUseCase> { mockk(relaxed = true) }
     val getSendGeolocationInfoUseCase by memoized<SendGeolocationInfoUseCase> { mockk(relaxed = true) }
     val getStickyLoginUseCase by memoized<StickyLoginUseCase> { mockk(relaxed = true) }
+    val getBusinessWidgetTab by memoized<GetBusinessWidgetTab> { mockk(relaxed = true) }
+    val getBusinessUnitDataUseCase by memoized<GetBusinessUnitDataUseCase> { mockk(relaxed = true) }
+    val getPopularKeywordUseCase by memoized<GetPopularKeywordUseCase> { mockk(relaxed = true) }
     val homeDataMapper by memoized<HomeDataMapper> { mockk(relaxed = true) }
 }
 
@@ -69,6 +79,18 @@ fun GetPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(channel: Play
             playChannels = listOf(channel)
     )
 }
+
+fun GetBusinessWidgetTab.givenGetBusinessWidgetTabUseCaseReturn(homeWidget: HomeWidget) {
+    coEvery { executeOnBackground() } returns homeWidget
+}
+
+fun GetBusinessUnitDataUseCase.givenGetBusinessUnitDataUseCaseReturn(businessList: List<BusinessUnitItemDataModel>){
+    coEvery{ executeOnBackground() } returns businessList
+}
+fun GetBusinessUnitDataUseCase.givenGetBusinessUnitDataUseCaseThrowReturn(){
+    coEvery{ executeOnBackground() } throws Exception()
+}
+
 fun HomeUseCase.givenGetHomeDataReturn(homeDataModel: HomeDataModel) {
     coEvery { getHomeData() } returns flow{
         emit(homeDataModel)

@@ -2,6 +2,7 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -70,10 +71,7 @@ class ShopHomeSliderSquareViewHolder(
     }
 
     private fun getIndexRatio(data: ShopHomeDisplayWidgetUiModel, index: Int): Int {
-        if(data.header.ratio.isNotEmpty()) {
-            return data.header.ratio.split(":")[index].toIntOrZero()
-        }
-        return 0
+        return data.header.ratio.split(":").getOrNull(index).toIntOrZero()
     }
 
     private fun getHeightRatio(data: ShopHomeDisplayWidgetUiModel): Float {

@@ -1,10 +1,7 @@
 package com.tokopedia.salam.umrah.travel.di
 
 import com.tokopedia.salam.umrah.common.di.UmrahComponent
-import com.tokopedia.salam.umrah.travel.presentation.fragment.UmrahTravelAgentGalleryFragment
-import com.tokopedia.salam.umrah.travel.presentation.fragment.UmrahTravelAgentInfoFragment
-import com.tokopedia.salam.umrah.travel.presentation.fragment.UmrahTravelAgentProductsFragment
-import com.tokopedia.salam.umrah.travel.presentation.fragment.UmrahTravelFragment
+import com.tokopedia.salam.umrah.travel.presentation.fragment.*
 import dagger.Component
 
 /**
@@ -19,4 +16,5 @@ interface UmrahTravelComponent {
     fun inject(umrahTravelAgentProductsFragment: UmrahTravelAgentProductsFragment)
     fun inject(umrahTravelAgentInfoFragment: UmrahTravelAgentInfoFragment)
     fun inject(umrahTravelAgentGalleryFragment: UmrahTravelAgentGalleryFragment)
+    fun inject(umrahTravelListFragment: UmrahTravelListFragment)
 }

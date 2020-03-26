@@ -436,6 +436,10 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
         return counter
     }
 
+    override fun sendQuickFilterTrack(filterName: String) {
+        flightAnalytics.eventQuickFilterClick(filterName)
+    }
+
     private fun countProgress(): Int = FlightSearchFragment.MAX_PROGRESS / maxCall
 
     private fun deleteAllSearchData(subscriber: Subscriber<Boolean>) {

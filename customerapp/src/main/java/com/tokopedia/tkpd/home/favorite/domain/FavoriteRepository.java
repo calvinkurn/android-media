@@ -14,10 +14,6 @@ import rx.Observable;
 
 public interface FavoriteRepository {
 
-    Observable<DomainWishlist> getWishlist(TKPDMapParam<String, Object> params);
-
-    Observable<DomainWishlist> getFreshWishlist(TKPDMapParam<String, Object> params);
-
     Observable<FavoriteShop> getFirstPageFavoriteShop(TKPDMapParam<String, String> params);
 
     Observable<FavoriteShop> getFavoriteShop(

@@ -31,7 +31,7 @@
             android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginRight="@dimen/dp_8"
             android:ellipsize="end"
-            android:maxLines="1"
+            android:maxLines="2"
             android:textColor="@color/charcoal_grey_96"
             app:layout_constraintLeft_toRightOf="@+id/iv_product"
             app:layout_constraintTop_toTopOf="parent"

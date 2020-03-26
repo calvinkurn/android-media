@@ -9,7 +9,7 @@
     - Radius and padding isnt exactly like zeplin
 -->
     <com.tokopedia.unifycomponents.ChipsUnify
-        android:id="@+id/autocompleteRecentSearchItem"
+        android:id="@+id/autocompletePopularSearchItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingRight="@dimen/dp_4"

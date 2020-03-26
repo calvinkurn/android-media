@@ -36,7 +36,11 @@ class UmrahSearchViewModel @Inject constructor(private val graphqlRepository: Gr
         searchParam = umrahSearchProductDataParam
     }
 
-    private fun getSearchParam() = searchParam
+    fun getSearchParam() = searchParam
+
+    fun resetSearchParam() {
+        searchParam = UmrahSearchProductDataParam(sortMethod = searchParam.sortMethod)
+    }
 
     fun setSortValue(sort: String) {
         searchParam.sortMethod = sort

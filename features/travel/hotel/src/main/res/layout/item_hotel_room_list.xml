@@ -23,7 +23,7 @@
         <com.tokopedia.hotel.roomlist.widget.ImageViewPager
             android:id="@+id/room_image_view_pager"
             android:layout_width="match_parent"
-            android:layout_height="136dp"
+            android:layout_height="@dimen/hotel_room_list_image_height"
             android:background="@color/colorGray"
             app:layout_constraintTop_toTopOf="parent" />
 

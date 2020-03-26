@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -28,6 +29,11 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
         }
 
         element.data.run {
+            if (element.data.firstOrNull()?.subtitle?.isEmpty() == true) {
+                view.general_info_container.layoutParams.height = 0
+            } else {
+                view.general_info_container.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            }
 
             view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(getComponentTrackData(element))
@@ -40,7 +46,6 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
             } else {
                 view.pdp_arrow_right.hide()
             }
-
         }
 
         view.pdp_info_title.text = MethodChecker.fromHtml(element.title)
@@ -50,7 +55,7 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
 
         if (element.parentIcon.isNotEmpty()) {
             view.pdp_icon.show()
-            ImageHandler.loadImage(view.context, view.pdp_icon, element.parentIcon, R.drawable.ic_loading_image)
+            ImageHandler.LoadImage(view.pdp_icon, element.parentIcon)
         } else {
             view.pdp_icon.hide()
         }

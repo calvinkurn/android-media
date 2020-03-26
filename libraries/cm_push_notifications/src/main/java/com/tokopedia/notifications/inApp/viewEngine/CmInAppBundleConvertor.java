@@ -57,6 +57,9 @@ public class CmInAppBundleConvertor {
             if (map.containsKey(RulesUtil.Constants.Payload.CANCELLABLE))
                 cmInApp.setCancelable(getBooleanFromString(map.get(RulesUtil.Constants.Payload.CANCELLABLE)));
 
+            if (map.containsKey(RulesUtil.Constants.Payload.IS_TEST))
+                cmInApp.setTest(getBooleanFromString(map.get(RulesUtil.Constants.Payload.IS_TEST)));
+
             if (map.containsKey(RulesUtil.Constants.Payload.NOTIFICATION_TYPE))
                 cmInApp.setType(map.get(RulesUtil.Constants.Payload.NOTIFICATION_TYPE));
 

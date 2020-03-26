@@ -276,7 +276,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
             val shopProductViewModel = shopProductViewModelList[i]
             if (shopProductViewModel.id.equals(productId, ignoreCase = true)) {
                 shopProductViewModel.isWishList = wishList
-                notifyItemChanged(visitables.indexOf(shopProductViewModel))
+                notifyItemChanged(visitables.indexOf(shopProductViewModel), wishList)
                 break
             }
             i++
@@ -284,14 +284,14 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         shopProductFeaturedViewModel?.let {
             val isFeaturedChanged = it.updateWishListStatus(productId, wishList)
             if (isFeaturedChanged) {
-                notifyItemChanged(visitables.indexOf(it))
+                notifyItemChanged(visitables.indexOf(it), wishList)
             }
         }
 
         shopProductEtalaseHighlightViewModel?.let {
             val isEtalaseChanged = it.updateWishListStatus(productId, wishList)
             if (isEtalaseChanged) {
-                notifyItemChanged(visitables.indexOf(it))
+                notifyItemChanged(visitables.indexOf(it), wishList)
             }
         }
     }

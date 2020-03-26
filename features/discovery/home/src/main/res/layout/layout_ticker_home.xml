@@ -33,7 +33,7 @@
                 android:lineSpacingExtra="@dimen/sp_5"
                 android:paddingTop="@dimen/dp_8"
                 android:paddingBottom="@dimen/dp_8"
-                android:text="Akan ada perubahan batas waktu respon pesanan. dskmdsjdisjidjsijd"
+                tools:text="Akan ada perubahan batas waktu respon pesanan. dskmdsjdisjidjsijd"
                 android:textColor="@color/home_ticker_text_color"
                 android:textColorLink="@color/home_ticker_info_lengkap_color"
                 android:textSize="@dimen/sp_12"

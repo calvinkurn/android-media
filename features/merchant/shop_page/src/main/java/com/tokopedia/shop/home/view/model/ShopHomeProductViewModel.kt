@@ -6,11 +6,8 @@ import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
-import com.tokopedia.shop.home.view.adapter.ShopPageHomeCarousellAdapterTypeFactory
-import com.tokopedia.shop.newproduct.view.adapter.ShopProductAdapterTypeFactory
+import com.tokopedia.shop.newproduct.view.datamodel.LabelGroupViewModel
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct
-import com.tokopedia.shop.product.data.source.cloud.model.ShopProductBadge
-import com.tokopedia.shop.product.data.source.cloud.model.ShopProductLabel
 
 /**
  * Created by nathan on 2/6/18.
@@ -39,13 +36,11 @@ class ShopHomeProductViewModel : Visitable<BaseAdapterTypeFactory>, ImpressHolde
     var isShowFreeOngkir: Boolean = false
     var freeOngkirPromoIcon: String? = null
     var isCarousel = false
+    var labelGroupList: List<LabelGroupViewModel> = listOf()
 
     override fun type(typeFactory: BaseAdapterTypeFactory): Int {
         return when(typeFactory){
             is ShopHomeAdapterTypeFactory -> {
-                typeFactory.type(this)
-            }
-            is ShopPageHomeCarousellAdapterTypeFactory ->{
                 typeFactory.type(this)
             }
             else ->  {

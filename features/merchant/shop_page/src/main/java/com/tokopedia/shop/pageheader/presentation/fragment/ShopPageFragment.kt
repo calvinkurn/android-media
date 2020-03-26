@@ -19,7 +19,6 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -27,6 +26,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -131,7 +131,7 @@ class ShopPageFragment :
     var isGoldMerchant: Boolean = false
     var createPostUrl: String = ""
     var shopName: String = ""
-    private var tabPosition = 0
+    private var tabPosition = TAB_POSITION_HOME
     lateinit var stickyLoginView: StickyLoginView
     private var tickerDetail: StickyLoginTickerPojo.TickerDetail? = null
     private lateinit var shopPageFragmentHeaderViewHolder: ShopPageFragmentHeaderViewHolder
@@ -282,7 +282,11 @@ class ShopPageFragment :
                 tabPosition = getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
                 data?.run {
                     if (shopId.isNullOrEmpty()) {
-                        shopId = getQueryParameter(SHOP_ID)
+                        if (pathSegments.size > 1) {
+                            shopId = pathSegments[1]
+                        } else if (!getQueryParameter(SHOP_ID).isNullOrEmpty()) {
+                            shopId = getQueryParameter(SHOP_ID)
+                        }
                     }
                     if (shopDomain.isNullOrEmpty()) {
                         shopDomain = getQueryParameter(SHOP_DOMAIN)

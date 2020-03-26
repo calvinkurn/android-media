@@ -9,8 +9,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.ProductData
+import com.tokopedia.notifcenter.data.state.BottomSheetType
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.listener.NotificationItemListener
+import com.tokopedia.notifcenter.util.isSingleItem
 import com.tokopedia.notifcenter.widget.ProductVariantLayout
 
 abstract class BaseProductCampaignViewHolder(
@@ -25,13 +27,11 @@ abstract class BaseProductCampaignViewHolder(
     private val productVariant: ProductVariantLayout = itemView.findViewById(R.id.pvl_variant)
 
     abstract fun bindProductView(element: NotificationItemViewBean)
-
-    abstract fun bindProductClickTrack(element: NotificationItemViewBean)
+    abstract fun trackProduct(element: NotificationItemViewBean)
 
     override fun bindNotificationPayload(element: NotificationItemViewBean) {
         val product = element.getAtcProduct() ?: return
         bindProductView(element)
-        assignProductClickListener(element)
 
         with(product) {
             productName.text = name
@@ -43,24 +43,38 @@ abstract class BaseProductCampaignViewHolder(
 
     override fun bindOnNotificationClick(element: NotificationItemViewBean) {
         val product = element.getAtcProduct() ?: return
-        container.setOnClickListener(getItemClickListener(product, element))
+        //single product container
+        productContainer.setOnClickListener {
+            notificationItemMarkedClick(element)
+            trackProduct(element)
+            getItemClickListener(product)
+        }
+
+        //common notification container
+        container.setOnClickListener {
+            if (element.products.isSingleItem() && !element.isShowBottomSheet) {
+                getItemClickListener(product)
+            } else {
+                onBindDetailProductClick(element)
+            }
+            trackProduct(element)
+            listener.itemContainerClicked(element)
+            notificationItemMarkedClick(element)
+        }
     }
 
-    private fun assignProductClickListener(element: NotificationItemViewBean) {
-        val product = element.getAtcProduct() ?: return
-        productContainer.setOnClickListener(getItemClickListener(product, element))
+    private fun getItemClickListener(product: ProductData) {
+        RouteManager.route(
+                itemView.context,
+                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                product.productId
+        )
     }
 
-    private fun getItemClickListener(product: ProductData, element: NotificationItemViewBean): View.OnClickListener {
-        return View.OnClickListener {
-            listener.itemClicked(element, adapterPosition)
-            bindProductClickTrack(element)
-            element.isRead = true
-            RouteManager.route(
-                    itemView.context,
-                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                    product.productId
-            )
+    private fun onBindDetailProductClick(element: NotificationItemViewBean) {
+        val bottomSheetType = BottomSheetType.map(element.typeBottomSheet)
+        if (element.isShowBottomSheet && bottomSheetType !== BottomSheetType.StockHandler) {
+            listener.showNotificationDetail(bottomSheetType, element)
         }
     }
 
