@@ -33,6 +33,7 @@ class DynamicChannelViewModel : HomeVisitable {
                 it.forEachIndexed {position, grid->
                     b.channel?.grids?.let {newGrid->
                         if (grid.imageUrl != newGrid[position].imageUrl) return false
+                    }
                 }
                 return  channel?.layout == b.channel?.layout
                         &&channel?.header == b.channel?.header
