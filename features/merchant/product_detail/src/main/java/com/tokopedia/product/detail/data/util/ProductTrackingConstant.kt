@@ -28,6 +28,8 @@ object ProductTrackingConstant {
         const val KEY_PROMO_ID = "promoId"
         const val USER_NON_LOGIN = "non login"
 
+        const val KEY_USER_ID_VARIANT = "userId"
+
         const val PRODUCT_DETAIL_SCREEN_NAME = "/product"
 
         const val ID = "id"
@@ -129,6 +131,10 @@ object ProductTrackingConstant {
         const val IMPRESSION_CHOOSE_VARIANT_NOTIFICATION = "impression - choose variant notification"
         const val CLICK_EDIT_PRODUCT = "click - edit product"
         const val CLICK_ATC_NON_LOGIN = "click - tambah ke keranjang on pdp - non login"
+
+        const val CLICK_ACCEPT_PERMISSION = "click -  berikan akses on access request bottomsheet"
+        const val CLICK_GO_TO_SETTING = "click - ke pengaturan hp on access request pop up"
+        const val CLICK_PERMISSION_LATER = "click - ke nanti saja on access request pop up"
     }
 
     object Label {

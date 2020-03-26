@@ -198,6 +198,6 @@
     <string name="check_imei_title">Butuh Akses ke HP-mu</string>
     <string name="check_imei_btn_rationale">Ke Pengaturan HP</string>
     <string name="check_imei_btn_later">Nanti Saja</string>
-    <string name="check_imei_understand_title">Saya Mengerti</string>
+    <string name="check_imei_understand_title">Berikan Akses</string>
 
 </resources>
