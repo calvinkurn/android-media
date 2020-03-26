@@ -159,7 +159,7 @@
                     tools:ignore="ContentDescription" />
 
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/ticker_description"
+                    android:id="@+id/ticker_shipping_promo_description"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_16"
