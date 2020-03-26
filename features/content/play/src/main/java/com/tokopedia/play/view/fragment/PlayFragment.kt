@@ -396,7 +396,7 @@ class PlayFragment : BaseDaggerFragment() {
             override fun onKeyboardHidden() {
                 playViewModel.onKeyboardHidden()
                 ivClose.invisible()
-                this@PlayFragment.onBottomInsetsViewHidden()
+                if (!playViewModel.isAnyBottomSheetShown) this@PlayFragment.onBottomInsetsViewHidden()
             }
         })
     }

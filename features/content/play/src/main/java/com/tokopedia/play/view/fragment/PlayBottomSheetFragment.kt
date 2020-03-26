@@ -208,7 +208,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
 
                 if (productSheetState != null && !productSheetState.isPreviousStateSame) {
                     when (productSheetState) {
-                        is BottomInsetsState.Hidden -> playFragment.onBottomInsetsViewHidden()
+                        is BottomInsetsState.Hidden -> if (!it.isAnyShown) playFragment.onBottomInsetsViewHidden()
                         is BottomInsetsState.Shown -> pushParentPlayBySheetHeight(productSheetState.estimatedInsetsHeight)
                     }
                 }

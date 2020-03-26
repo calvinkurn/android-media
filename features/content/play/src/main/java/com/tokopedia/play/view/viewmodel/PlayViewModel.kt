@@ -14,6 +14,8 @@ import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.domain.*
+import com.tokopedia.play.extensions.isAnyBottomSheetsShown
+import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CoroutineDispatcherProvider
@@ -135,6 +137,12 @@ class PlayViewModel @Inject constructor(
                     bottomInsets = bottomInsets ?: getDefaultBottomInsetsMapState()
             )
         }
+
+    val isAnyBottomSheetShown: Boolean
+        get() = _observableBottomInsetsState.value?.isAnyBottomSheetsShown == true
+
+    val isKeyboardShown: Boolean
+        get() = _observableBottomInsetsState.value?.isKeyboardShown == true
 
     private val isProductSheetInitialized: Boolean
         get() = _observableProductSheetContent.value != null

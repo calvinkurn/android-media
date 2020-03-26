@@ -11,6 +11,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.bumptech.glide.Glide
 import com.tokopedia.play.R
+import com.tokopedia.resources.common.R as commonResourceR
 
 /**
  * Created by jegul on 16/03/20
@@ -53,7 +54,7 @@ class PlayLoadingDialogFragment : DialogFragment() {
         if (ivLoading.drawable == null) {
             Glide.with(ivLoading.context)
                     .asGif()
-                    .load(R.drawable.ic_play_loading)
+                    .load(commonResourceR.drawable.ic_loading_indeterminate)
                     .into(ivLoading)
         }
     }
