@@ -251,7 +251,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     private Map<String,RecyclerView.OnScrollListener> impressionScrollListeners = new HashMap<>();
 
     private long mLastClickTime = System.currentTimeMillis();
-    private static final long CLICK_TIME_INTERVAL = 300;
+    private static final long CLICK_TIME_INTERVAL = 500;
 
     @NonNull
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
