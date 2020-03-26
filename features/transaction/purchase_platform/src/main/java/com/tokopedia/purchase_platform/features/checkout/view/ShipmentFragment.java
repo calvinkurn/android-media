@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.DateFormatUtils;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -135,6 +137,7 @@ import com.tokopedia.purchase_platform.features.checkout.view.converter.RatesDat
 import com.tokopedia.purchase_platform.features.checkout.view.di.CheckoutModule;
 import com.tokopedia.purchase_platform.features.checkout.view.di.DaggerCheckoutComponent;
 import com.tokopedia.purchase_platform.features.checkout.view.dialog.ExpiredTimeDialog;
+import com.tokopedia.purchase_platform.features.checkout.view.helper.DateHelper;
 import com.tokopedia.purchase_platform.features.checkout.view.helper.RfcDateTimeParser;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata;
@@ -716,12 +719,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (shipmentPresenter.getCampaignTimer() != null) {
             CampaignTimerUi timer = shipmentPresenter.getCampaignTimer();
 
-            Date server = RfcDateTimeParser.parseDateString(timer.getTimerServer(), RfcDateTimeParser.RFC_3339);
-            Date expired = RfcDateTimeParser.parseDateString(timer.getTimerExpired(), RfcDateTimeParser.RFC_3339);
+            long diff = DateHelper.timeSince(timer.getTimerServer(), timer.getTimerExpired());
 
             cdLayout.setVisibility(View.VISIBLE);
             cdText.setText(timer.getTimerDescription());
-            cdView.setupTimerFromRemianingMillis(10 * 1000, () -> {
+            cdView.setupTimerFromRemianingMillis(diff, () -> {
                 if (getFragmentManager() != null) {
                     ExpiredTimeDialog dialog = ExpiredTimeDialog.newInstance(timer);
                     dialog.show(getFragmentManager(), "expired dialog");
