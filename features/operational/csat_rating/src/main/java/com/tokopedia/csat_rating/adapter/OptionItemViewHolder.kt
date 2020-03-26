@@ -9,7 +9,7 @@ import com.tokopedia.design.quickfilter.ItemFilterViewHolder
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.QuickSingleFilterListener
 
-class OptionItemViewHolder(itemView: View, listener: QuickSingleFilterListener) : ItemFilterViewHolder(itemView, listener) {
+open class OptionItemViewHolder(itemView: View, listener: QuickSingleFilterListener) : ItemFilterViewHolder(itemView, listener) {
 
     override fun updateData(filterItem: QuickFilterItem) {
         filterName.text = filterItem.name

@@ -1,17 +1,11 @@
 package com.tokopedia.csat_rating.presenter
 
 import android.content.Intent
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.csat_rating.ProvideRatingContract
-import com.tokopedia.csat_rating.presenter.screenState.FifthScreenState
-import com.tokopedia.csat_rating.presenter.screenState.FirstScreenState
-import com.tokopedia.csat_rating.presenter.screenState.FourthScreenState
-import com.tokopedia.csat_rating.presenter.screenState.ScreenState
-import com.tokopedia.csat_rating.presenter.screenState.SecondScreenState
-import com.tokopedia.csat_rating.presenter.screenState.ThirdScreenState
-
-import java.util.ArrayList
+import com.tokopedia.csat_rating.fragment.BaseFragmentProvideRating.Companion.NO_EMOJI
+import com.tokopedia.csat_rating.presenter.screenState.*
+import java.util.*
 
 class BaseProvideRatingFragmentPresenter : BaseDaggerPresenter<ProvideRatingContract.ProvideRatingView>(), ProvideRatingContract.ProvideRatingPresenter {
     private var captionsList = ArrayList<String>()
@@ -34,12 +28,19 @@ class BaseProvideRatingFragmentPresenter : BaseDaggerPresenter<ProvideRatingCont
         questionList = getView().getQuestion()
         emojiState = getView().getSelectedEmoji()
         updateScreenState()
-        getView().setFilterList(getView().getReasonList())
+        if (emojiState == 0) {
+            getView().setFilterList(ArrayList())
+            getView().hideSubmitButton()
+        } else {
+            getView().setFilterList(getView().getReasonList())
+            getView().showSubmitButton()
+        }
     }
 
     fun getScreenState(emoji: Int): ScreenState? {
         var screenState: ScreenState? = null
         when (emoji) {
+            NO_EMOJI -> screenState = ZeroScreenState()
             FIRST_EMOJI -> screenState = FirstScreenState(captionsList[FIRST_EMOJI - 1], questionList[FIRST_EMOJI - 1])
             SECOND_EMOJI -> screenState = SecondScreenState(captionsList[SECOND_EMOJI - 1], questionList[SECOND_EMOJI - 1])
             THIRD_EMOJI -> screenState = ThirdScreenState(captionsList[THIRD_EMOJI - 1], questionList[THIRD_EMOJI - 1])

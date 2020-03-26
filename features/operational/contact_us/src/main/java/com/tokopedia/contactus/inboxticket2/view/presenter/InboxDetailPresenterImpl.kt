@@ -17,8 +17,8 @@ import com.tokopedia.contactus.common.analytics.InboxTicketTracking
 import com.tokopedia.contactus.inboxticket2.data.model.Tickets
 import com.tokopedia.contactus.inboxticket2.domain.*
 import com.tokopedia.contactus.inboxticket2.domain.usecase.*
+import com.tokopedia.contactus.inboxticket2.view.activity.ContactUsProvideRatingActivity
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity
-import com.tokopedia.contactus.inboxticket2.view.activity.ProvideRatingActivity
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBaseView
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.InboxDetailPresenter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.InboxDetailView
@@ -53,6 +53,7 @@ import java.io.IOException
 import java.lang.reflect.Type
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
 
 class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCase,
@@ -92,21 +93,47 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == InboxBaseView.REQUEST_SUBMIT_FEEDBACK && resultCode == Activity.RESULT_OK) {
-            mView?.showMessage(mView?.getActivity()?.getString(R.string.cu_terima_kasih_atas_masukannya)
-                    ?: "")
-            mView?.showIssueClosed()
-            isIssueClosed = true
-            Observable.timer(DELAY_FOUR_MILLIS.toLong(), TimeUnit.MILLISECONDS)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(object : Subscriber<Long>() {
-                        override fun onCompleted() {}
-                        override fun onError(e: Throwable) {}
-                        override fun onNext(aLong: Long) {
-                            ticketDetails
-                        }
-                    })
+            submitCsatRating(data)
         }
+    }
+
+    private fun submitCsatRating(data: Intent?) {
+
+        launchCatchError(
+                block = {
+                    mView?.showProgressBar()
+                    val requestParams = submitRatingUseCase.createRequestParams(mView?.getCommentID(),
+                            data?.extras?.getInt("emoji_state").toString(),
+                            data?.getStringExtra("selected_items"))
+
+                    val chipGetInboxDetail = submitRatingUseCase.getChipInboxDetail(requestParams)
+
+                    if (chipGetInboxDetail?.messageError?.size ?: 0 > 0) {
+                        mView?.showErrorMessage(chipGetInboxDetail?.messageError?.get(0))
+                    } else {
+                        mView?.showMessage(mView?.getActivity()?.getString(R.string.cu_terima_kasih_atas_masukannya)
+                                ?: "")
+                        mView?.showIssueClosed()
+                        isIssueClosed = true
+                        Observable.timer(DELAY_FOUR_MILLIS.toLong(), TimeUnit.MILLISECONDS)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(object : Subscriber<Long>() {
+                                    override fun onCompleted() {}
+                                    override fun onError(e: Throwable) {}
+                                    override fun onNext(aLong: Long) {
+                                        ticketDetails
+                                    }
+                                })
+                    }
+
+                },
+                onError = {
+                    mView?.hideProgressBar()
+                    it.printStackTrace()
+                }
+        )
+
     }
 
     override fun onDestroy() {}
@@ -688,8 +715,12 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
 
     override fun onClickEmoji(number: Int) {
         sendGTMEventView()
-        mView?.startActivityForResult(ProvideRatingActivity.getInstance(mView?.getActivity(), number, mView?.getCommentID(), mTicketDetail?.badCsatReasonList), InboxBaseView.REQUEST_SUBMIT_FEEDBACK)
+        mView?.startActivityForResult(ContactUsProvideRatingActivity.getInstance(mView?.getActivity() as Context,
+                number,
+                mView?.getCommentID() ?: "",
+                mTicketDetail?.badCsatReasonList ?: arrayListOf()), InboxBaseView.REQUEST_SUBMIT_FEEDBACK)
     }
+
 
     override fun onClick(agreed: Boolean, commentPosition: Int, commentId: String) {
         val rating = if (agreed) KEY_LIKED else KEY_DISLIKED

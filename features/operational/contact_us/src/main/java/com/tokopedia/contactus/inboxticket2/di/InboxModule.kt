@@ -6,10 +6,8 @@ import android.preference.PreferenceManager
 import com.tokopedia.contactus.inboxticket2.domain.usecase.*
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBasePresenter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.InboxDetailPresenter
-import com.tokopedia.contactus.inboxticket2.view.contract.ProvideRatingContract
 import com.tokopedia.contactus.inboxticket2.view.presenter.InboxDetailPresenterImpl
 import com.tokopedia.contactus.inboxticket2.view.presenter.InboxListPresenterImpl
-import com.tokopedia.contactus.inboxticket2.view.presenter.ProvideRatingFragmentPresenter
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -44,12 +42,6 @@ class InboxModule(private val context: Context) {
                                   submitRatingUseCase: SubmitRatingUseCase,
                                   closeTicketByUserUseCase: CloseTicketByUserUseCase): InboxDetailPresenter {
         return InboxDetailPresenterImpl(messageUseCase, messageUseCase2, ratingUseCase, inboxOptionUseCase, submitRatingUseCase, closeTicketByUserUseCase)
-    }
-
-    @InboxScope
-    @Provides
-    fun provideRatingPresenter(submitRatingUseCase: SubmitRatingUseCase?): ProvideRatingContract.ProvideRatingPresenter {
-        return ProvideRatingFragmentPresenter(submitRatingUseCase)
     }
 
 }

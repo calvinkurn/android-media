@@ -4,10 +4,11 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.contactus.inboxticket2.domain.AttachmentItem
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem
 import com.tokopedia.contactus.inboxticket2.domain.CreatedBy
+import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 
 class Tickets {
     @SerializedName("badCsatReasonList")
-    val badCsatReasonList: List<BadCsatReasonListItem>? = null
+    val badCsatReasonList: ArrayList<BadCsatReasonListItem>? = null
     @SerializedName("showRating")
     var isShowRating = false
     @SerializedName("id")
