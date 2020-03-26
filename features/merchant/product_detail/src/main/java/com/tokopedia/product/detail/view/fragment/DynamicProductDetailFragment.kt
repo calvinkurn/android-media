@@ -2067,8 +2067,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun checkImei(imeiRemoteConfig: Boolean, campaignNeedCheckImei: Boolean?): Boolean {
-//        return imeiRemoteConfig && campaignNeedCheckImei == true
-        return true
+        return imeiRemoteConfig && campaignNeedCheckImei == true
     }
 
     private fun doBuy() {
