@@ -14,6 +14,8 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.signature.ObjectKey
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
@@ -36,6 +38,7 @@ open class GiftBoxDailyView : FrameLayout {
     open var TOTAL_ASYNC_IMAGES = 3
     var imagesLoaded = AtomicInteger(0)
     val GIFT_BOX_START_DELAY = 300L
+    val GLIDE_SIGNATURE = "giftbox"
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         setup(attrs)
@@ -97,7 +100,11 @@ open class GiftBoxDailyView : FrameLayout {
 
     }
 
-    fun loadFiles(@TokenUserState state: String, imageFrontUrl: String?, imageBgUrl: String, imageCallback: ((isLoaded: Boolean) -> Unit)) {
+    fun loadFiles(@TokenUserState state: String,
+                  imageFrontUrl: String?,
+                  imageBgUrl: String,
+                  lidImages: ArrayList<String>,
+                  imageCallback: ((isLoaded: Boolean) -> Unit)) {
 
         var drawableRedForLid = R.drawable.gf_ic_lid_frame_7
         if (state == TokenUserState.ACTIVE) {
@@ -122,9 +129,19 @@ open class GiftBoxDailyView : FrameLayout {
                 .addListener(getGlideListener(imageCallback))
                 .into(imageBg)
 
+        //download all lid images
+        for (url in lidImages) {
+            ImageHandler.downloadOriginalSizeImageWithSignature(
+                    context,
+                    url,
+                    ObjectKey(GLIDE_SIGNATURE),
+                    getGlideListener(imageCallback)
+            )
+        }
+
     }
 
-    fun getGlideListener(imageCallback: ((isLoaded: Boolean) -> Unit)):RequestListener<Drawable>{
+    fun getGlideListener(imageCallback: ((isLoaded: Boolean) -> Unit)): RequestListener<Drawable> {
         return object : RequestListener<Drawable> {
             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                 imageCallback.invoke(false)
@@ -232,6 +249,9 @@ open class GiftBoxDailyView : FrameLayout {
 //    }
 
     fun loadLidFrames(): Animator {
+
+        //todo Rahul Need to chang logic once images will come from backend
+        //ImageHandler.loadImageWithSignature(imageGiftBoxLid, url, GLIDE_SIGNATURE)
         val drawableArray = arrayOf(
                 R.drawable.gf_ic_lid_frame_0,
                 R.drawable.gf_ic_lid_frame_1,
@@ -274,10 +294,8 @@ open class GiftBoxDailyView : FrameLayout {
     }
 
     interface BoxRewardCallback {
-        fun showPoints():Animator
-        fun showPointsWithCoupons():Animator
-        fun showCoupons():Animator
+        fun showPoints(): Animator
+        fun showPointsWithCoupons(): Animator
+        fun showCoupons(): Animator
     }
 }
-
-class DurationAnimation(val duration: Long, val animator: Animator, val startDelay: Long)

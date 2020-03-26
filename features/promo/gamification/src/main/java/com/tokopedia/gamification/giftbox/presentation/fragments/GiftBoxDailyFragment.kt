@@ -605,7 +605,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
     fun fadeInActiveStateViews(frontImageUrl: String, imageBgUrl: String) {
-        giftBoxDailyView.loadFiles(tokenUserState, frontImageUrl, imageBgUrl, imageCallback = {
+        giftBoxDailyView.loadFiles(tokenUserState, frontImageUrl, imageBgUrl, arrayListOf<String>(), imageCallback = {
             if (it) {
                 setPositionOfViewsAtBoxOpen(tokenUserState)
                 hideLoader()
