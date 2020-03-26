@@ -29,8 +29,13 @@ open class GetExistingChatMapper @Inject constructor() {
         val canLoadMore = pojo.chatReplies.hasNext
         val isReplyable: Boolean = pojo.chatReplies.textAreaReply != 0
         val blockedStatus: BlockedStatus = mapBlockedStatus(pojo)
+        val minReplyTime = pojo.chatReplies.minReplyTime
         listChat.reverse()
-        return ChatroomViewModel(listChat, headerModel, canLoadMore, isReplyable, blockedStatus)
+        return ChatroomViewModel(
+                listChat, headerModel,
+                canLoadMore, isReplyable,
+                blockedStatus, minReplyTime
+        )
 
     }
 

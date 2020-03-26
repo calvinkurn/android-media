@@ -15,6 +15,9 @@ data class GetExistingChatPojo(
 
 data class ChatReplies(
         @Expose
+        @SerializedName("minReplyTime")
+        val minReplyTime: String = "0",
+        @Expose
         @SerializedName("contacts")
         val contacts: List<Contact> = ArrayList(),
         @Expose

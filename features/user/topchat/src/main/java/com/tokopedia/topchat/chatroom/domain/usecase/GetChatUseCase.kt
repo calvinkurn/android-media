@@ -38,24 +38,15 @@ class GetChatUseCase @Inject constructor(
     }
 
     companion object {
+        private const val PARAM_MESSAGE_ID: String = "msgId"
+        private const val PARAM_BEFORE_REPLY_TIME: String = "beforeReplyTime"
 
-        private val PARAM_MESSAGE_ID: String = "msgId"
-        private val PARAM_PAGE: String = "page"
-        private val PARAM_CACHE_STRATEGY: String = "cache"
-
-
-        fun generateParamFirstTime(messageId: String): Map<String, Any> {
-            val requestParams = HashMap<String, Any>()
-            requestParams[PARAM_MESSAGE_ID] = if (messageId.isNotBlank()) messageId.toInt() else 0
-            requestParams[PARAM_PAGE] = 1
-            return requestParams
-        }
-
-        fun generateParam(messageId: String, page: Int): Map<String, Any> {
-            val requestParams = HashMap<String, Any>()
-            requestParams[PARAM_MESSAGE_ID] = if (messageId.isNotBlank()) messageId.toInt() else 0
-            requestParams[PARAM_PAGE] = page
-            return requestParams
+        fun generateParam(messageId: String, beforeReplyTime: String): Map<String, Any> {
+            val intMessageId = if (messageId.isNotBlank()) messageId.toInt() else 0
+            return mapOf(
+                    PARAM_MESSAGE_ID to intMessageId,
+                    PARAM_BEFORE_REPLY_TIME to beforeReplyTime
+            )
         }
     }
 

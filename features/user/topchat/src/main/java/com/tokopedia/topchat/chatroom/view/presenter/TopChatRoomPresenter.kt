@@ -94,13 +94,14 @@ class TopChatRoomPresenter @Inject constructor(
 
     var thisMessageId: String = ""
 
+    private lateinit var webSocketUrl: String
+    private lateinit var addToCardSubscriber: Subscriber<AddToCartDataModel>
     private var attachmentsPreview: ArrayList<SendablePreview> = arrayListOf()
     private var mSubscription: CompositeSubscription
     private var compressImageSubscription: CompositeSubscription
     private var listInterceptor: ArrayList<Interceptor>
-    private lateinit var webSocketUrl: String
-    private lateinit var addToCardSubscriber: Subscriber<AddToCartDataModel>
     private var dummyList: ArrayList<Visitable<*>>
+    private var paramBeforeReplyTime = "0"
 
     init {
         mSubscription = CompositeSubscription()
@@ -214,7 +215,7 @@ class TopChatRoomPresenter @Inject constructor(
             onSuccessGetExistingMessage: (ChatroomViewModel) -> Unit) {
         if (messageId.isNotEmpty()) {
             getChatUseCase.execute(
-                    GetChatUseCase.generateParamFirstTime(messageId),
+                    GetChatUseCase.generateParam(messageId, paramBeforeReplyTime),
                     GetChatSubscriber(view.isUseNewCard(), onError, onSuccessGetExistingMessage)
             )
         }
@@ -233,13 +234,14 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun loadPreviousChat(
             messageId: String,
-            page: Int,
             onError: (Throwable) -> Unit,
             onSuccessGetPreviousChat: (ChatroomViewModel) -> Unit
     ) {
         if (messageId.isNotEmpty()) {
-            getChatUseCase.execute(GetChatUseCase.generateParam(messageId, page),
-                    GetChatSubscriber(view.isUseNewCard(), onError, onSuccessGetPreviousChat))
+            getChatUseCase.execute(
+                    GetChatUseCase.generateParam(messageId, paramBeforeReplyTime),
+                    GetChatSubscriber(view.isUseNewCard(), onError, onSuccessGetPreviousChat)
+            )
         }
     }
 
@@ -681,5 +683,9 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun removeFromWishList(productId: String, userId: String, wishListActionListener: WishListActionListener) {
         removeWishListUseCase.createObservable(productId, userId, wishListActionListener)
+    }
+
+    override fun updateMinReplyTime(chatRoom: ChatroomViewModel) {
+        paramBeforeReplyTime = chatRoom.minReplyTime
     }
 }

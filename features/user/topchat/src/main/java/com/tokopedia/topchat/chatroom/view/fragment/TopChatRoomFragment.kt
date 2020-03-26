@@ -178,16 +178,20 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun loadInitialData() {
         if (messageId.isNotEmpty()) {
-            presenter.getExistingChat(messageId,
-                    onErrorInitiateData(),
-                    onSuccessGetExistingChatFirstTime())
+            presenter.getExistingChat(
+                    messageId,
+                    ::onErrorInitiateData,
+                    ::onSuccessGetExistingChatFirstTime
+            )
             presenter.connectWebSocket(messageId)
         } else {
-            presenter.getMessageId(toUserId,
+            presenter.getMessageId(
+                    toUserId,
                     toShopId,
                     source,
                     onError(),
-                    onSuccessGetMessageId())
+                    onSuccessGetMessageId()
+            )
         }
     }
 
@@ -240,22 +244,21 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-    private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel) -> Unit {
-        return {
-            updateViewData(it)
-            checkCanAttachVoucher(it)
-            presenter.connectWebSocket(messageId)
-            presenter.getShopFollowingStatus(shopId, onErrorGetShopFollowingStatus(),
-                    onSuccessGetShopFollowingStatus())
+    private fun onSuccessGetExistingChatFirstTime(chatRoom: ChatroomViewModel) {
+        updateViewData(chatRoom)
+        checkCanAttachVoucher(chatRoom)
+        presenter.updateMinReplyTime(chatRoom)
+        presenter.connectWebSocket(messageId)
+        presenter.getShopFollowingStatus(shopId, onErrorGetShopFollowingStatus(),
+                onSuccessGetShopFollowingStatus())
 
-            renderList(it.listChat, it.canLoadMore)
-            getViewState().onSuccessLoadFirstTime(it, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
-            getViewState().onSetCustomMessage(customMessage)
-            presenter.getTemplate(getUserSession().shopId == shopId.toString())
-            loadChatRoomSettings(it)
+        renderList(chatRoom.listChat, chatRoom.canLoadMore)
+        getViewState().onSuccessLoadFirstTime(chatRoom, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
+        getViewState().onSetCustomMessage(customMessage)
+        presenter.getTemplate(getUserSession().shopId == shopId.toString())
+        loadChatRoomSettings(chatRoom)
 
-            fpm.stopTrace()
-        }
+        fpm.stopTrace()
     }
 
     private fun checkCanAttachVoucher(room: ChatroomViewModel) {
@@ -304,6 +307,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             renderList(it.listChat, it.canLoadMore)
             checkShowLoading(it.canLoadMore)
             loadChatRoomSettings(it)
+            presenter.updateMinReplyTime(it)
         }
     }
 
@@ -327,12 +331,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-    private fun onErrorInitiateData(): (Throwable) -> Unit {
-        return {
-            hideLoading()
-            showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, it))
-            fpm.stopTrace()
-        }
+    private fun onErrorInitiateData(throwable: Throwable) {
+        hideLoading()
+        showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, throwable))
+        fpm.stopTrace()
     }
 
     override fun getScreenName(): String {
@@ -382,7 +384,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun loadData(page: Int) {
-        presenter.loadPreviousChat(messageId, page, onError(), onSuccessGetPreviousChat())
+        presenter.loadPreviousChat(messageId, onError(), onSuccessGetPreviousChat())
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {

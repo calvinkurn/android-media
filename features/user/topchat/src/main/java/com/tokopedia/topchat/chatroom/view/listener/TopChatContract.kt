@@ -82,7 +82,11 @@ interface TopChatContract {
 
         fun startUploadImages(it: ImageUploadViewModel)
 
-        fun loadPreviousChat(messageId: String, page: Int, onError: (Throwable) -> Unit, onSuccessGetPreviousChat: (ChatroomViewModel) -> Unit)
+        fun loadPreviousChat(
+                messageId: String,
+                onError: (Throwable) -> Unit,
+                onSuccessGetPreviousChat: (ChatroomViewModel) -> Unit
+        )
 
         fun isUploading(): Boolean
 
@@ -140,5 +144,7 @@ interface TopChatContract {
                 userId: String,
                 wishListActionListener: WishListActionListener
         )
+
+        fun updateMinReplyTime(chatRoom: ChatroomViewModel)
     }
 }
