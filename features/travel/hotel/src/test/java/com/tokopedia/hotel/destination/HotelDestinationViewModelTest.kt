@@ -1,8 +1,8 @@
 package com.tokopedia.hotel.destination
 
 import android.app.Activity
+import android.app.FragmentManager
 import android.content.Context
-import android.content.ContextWrapper
 import android.os.Looper
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.android.gms.location.LocationServices
@@ -10,7 +10,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.hotel.HotelDispatchersProviderTest
-import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.destination.data.model.HotelSuggestion
 import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.destination.data.model.RecentSearch
@@ -294,6 +293,11 @@ class HotelHomepageViewModelTest {
 
         val mContextMock = mockk<Context>(relaxed = true)
         coEvery{ activity.applicationContext } returns mContextMock
+
+        val fragmentManager = mockk<FragmentManager>()
+        coEvery{ activity.fragmentManager } returns fragmentManager
+
+        coEvery { fragmentManager.findFragmentById(any()) } returns mockk()
 
         //when
         hotelDestinationViewModel.getCurrentLocation(activity, LocationServices.getFusedLocationProviderClient(activity))
