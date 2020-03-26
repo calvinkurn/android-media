@@ -92,13 +92,13 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
             }
 
             if (gqlResponse.getError(CartRedirectionResponse::class.java)?.isNotEmpty() != true) {
-//                p2Login.newCartTypeResponse = gqlResponse.getData<CartRedirectionResponse>(CartRedirectionResponse::class.java)
-                p2Login.newCartTypeResponse = CartRedirectionResponse(CartRedirection(status = "OK", data = listOf(
-                        CartTypeData(configName = "occ", availableButtons = listOf(
-                                AvailableButton("occ", "secondary", "Sikat bos!", false),
-                                AvailableButton("normal", "primary", "Tambah ke Keranjang", true)
-                        ))
-                )))
+                p2Login.newCartTypeResponse = gqlResponse.getData<CartRedirectionResponse>(CartRedirectionResponse::class.java)
+//                p2Login.newCartTypeResponse = CartRedirectionResponse(CartRedirection(status = "OK", data = listOf(
+//                        CartTypeData(configName = "occ", availableButtons = listOf(
+//                                AvailableButton("occ", "secondary", "Sikat bos!", false),
+//                                AvailableButton("normal", "primary", "Tambah ke Keranjang", true)
+//                        ))
+//                )))
             }
 
         } catch (t: Throwable) {

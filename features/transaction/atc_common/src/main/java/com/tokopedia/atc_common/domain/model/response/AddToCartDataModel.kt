@@ -19,7 +19,7 @@ data class AddToCartDataModel(
         return (data.success == 0 || !status.equals("OK", true)) && (data.message.isNotEmpty() || errorMessage.isNotEmpty())
     }
 
-    fun getErrorMessage(): String? {
+    fun getAtcErrorMessage(): String? {
         return errorMessage.firstOrNull() ?: data.message.firstOrNull()
     }
 
