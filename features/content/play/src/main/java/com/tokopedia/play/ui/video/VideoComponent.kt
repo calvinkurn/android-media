@@ -28,6 +28,8 @@ open class VideoComponent(
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container)
 
+    private var isReadyAfterOnResume = false
+
     init {
         launch(dispatchers.immediate) {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
@@ -52,11 +54,12 @@ open class VideoComponent(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
-        uiView.setThumbnail()
+        if (isReadyAfterOnResume) uiView.setThumbnail()
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
+        isReadyAfterOnResume = false
         uiView.showThumbnail(true)
     }
 
@@ -74,7 +77,11 @@ open class VideoComponent(
     private fun handleVideoStateChanged(state: PlayVideoState) {
         when (state) {
             PlayVideoState.NoMedia -> uiView.showThumbnail(true)
-            PlayVideoState.Playing, PlayVideoState.Ended, PlayVideoState.Pause, is PlayVideoState.Error -> uiView.showThumbnail(false)
+            PlayVideoState.Playing, PlayVideoState.Pause -> {
+                uiView.showThumbnail(false)
+                isReadyAfterOnResume = true
+            }
+            PlayVideoState.Ended, is PlayVideoState.Error -> uiView.showThumbnail(false)
         }
     }
 }
