@@ -55,6 +55,7 @@ class ContainerFragment : Fragment() {
             null
     }
 
+    private var sellerHomeListener: SellerHomeFragment.Listener? = null
     private val handler = Handler()
     private val homeFragment: SellerHomeFragment by lazy { SellerHomeFragment.newInstance() }
     private val productManageFragment: Fragment? by lazy { sellerHomeRouter?.getProductManageFragment() }
@@ -81,6 +82,7 @@ class ContainerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         homeFragmentTitle = context?.getString(R.string.sah_home).orEmpty()
+        homeFragment.bindListener(sellerHomeListener)
 
         setupView()
         observeCurrentSelectedPage()
@@ -182,5 +184,9 @@ class ContainerFragment : Fragment() {
         homeFragmentTitle = if (shopName.isBlank()) homeFragmentTitle else shopName
         if (currentFragmentType == FragmentType.HOME)
             view?.sahToolbar?.title = homeFragmentTitle
+    }
+
+    fun setSellerHomeListener(listener: SellerHomeFragment.Listener) {
+        this.sellerHomeListener = listener
     }
 }

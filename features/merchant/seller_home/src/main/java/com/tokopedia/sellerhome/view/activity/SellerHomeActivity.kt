@@ -29,6 +29,7 @@ import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
 import com.tokopedia.sellerhome.view.StatusBarCallback
 import com.tokopedia.sellerhome.view.fragment.ContainerFragment
+import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.sellerhome.view.model.NotificationCenterUnreadUiModel
 import com.tokopedia.sellerhome.view.model.NotificationChatUiModel
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
@@ -39,7 +40,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_sah_seller_home.*
 import javax.inject.Inject
 
-class SellerHomeActivity : BaseActivity() {
+class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     companion object {
         @JvmStatic
@@ -60,8 +61,11 @@ class SellerHomeActivity : BaseActivity() {
 
     private val handler = Handler() //create handler to make sure when showing fragment is on UI thread
     private val containerFragment by lazy {
-        ContainerFragment.newInstance()
+        ContainerFragment.newInstance().apply {
+            setSellerHomeListener(this@SellerHomeActivity)
+        }
     }
+
     private val otherSettingsFragment by lazy {
         OtherMenuFragment.createInstance()
     }
@@ -106,6 +110,10 @@ class SellerHomeActivity : BaseActivity() {
 
     override fun onBackPressed() {
         doubleTapToExit()
+    }
+
+    override fun getShopInfo() {
+        homeViewModel.getShopInfo()
     }
 
     fun attachCallback(callback: StatusBarCallback) {
