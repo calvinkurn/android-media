@@ -297,7 +297,7 @@ ext {
             //blockCanary : "com.github.moduth:blockcanary:1.4.3@aar",
             blockCanary     : ":libraries:blockcanary",
             blockCanaryNoOp : ":libraries:blockcanary_noop",
-            leakCanary      : "com.squareup.leakcanary:leakcanary-android:2.1"
+            leakCanary      : "com.squareup.leakcanary:leakcanary-android:2.2"
     ]
 
     tkpdLibDependencies = [
