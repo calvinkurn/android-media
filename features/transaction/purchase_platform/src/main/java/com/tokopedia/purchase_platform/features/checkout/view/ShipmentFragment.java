@@ -1088,7 +1088,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         } else {
             if (courierItemData.getLogPromoCode() != null) {
                 String cartString = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition).getCartString();
-                shipmentPresenter.doValidateuseLogisticPromo(itemPosition, cartString, generateValidateUsePromoRequest());
+
+                ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition);
+                ValidateUsePromoRequest validateUsePromoRequest = generateValidateUsePromoRequest();
+                if (courierItemData.getLogPromoCode() != null && courierItemData.getLogPromoCode().length() > 0) {
+                    for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
+                        if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString())) {
+                            ordersItem.getCodes().add(courierItemData.getLogPromoCode());
+                            break;
+                        }
+                    }
+                }
+
+                shipmentPresenter.doValidateuseLogisticPromo(itemPosition, cartString, validateUsePromoRequest);
             }
             checkCourierPromo(courierItemData, itemPosition);
             shipmentAdapter.setSelectedCourier(itemPosition, courierItemData);
@@ -2019,10 +2031,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (!flagNeedToSetPinpoint) {
             ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartPosition);
             ValidateUsePromoRequest validateUsePromoRequest = generateValidateUsePromoRequest();
-            for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString())) {
-                    ordersItem.getCodes().add(promoCode);
-                    break;
+            if (promoCode != null && promoCode.length() > 0) {
+                for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
+                    if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString())) {
+                        ordersItem.getCodes().add(promoCode);
+                        break;
+                    }
                 }
             }
             shipmentPresenter.doValidateuseLogisticPromo(cartPosition, cartString, validateUsePromoRequest);
