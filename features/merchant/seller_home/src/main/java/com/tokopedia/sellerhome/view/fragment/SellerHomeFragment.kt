@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -17,10 +18,12 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.sellerhome.BuildConfig
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.common.ShopStatus
 import com.tokopedia.sellerhome.common.WidgetType
+import com.tokopedia.sellerhome.common.exception.SellerHomeException
 import com.tokopedia.sellerhome.common.utils.Utils
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
@@ -56,9 +59,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         @JvmStatic
         fun newInstance() = SellerHomeFragment()
 
-        private val NOTIFICATION_MENU_ID = R.id.menu_sah_notification
-        private const val NOTIFICATION_BADGE_DELAY = 3000L
+        val NOTIFICATION_MENU_ID = R.id.menu_sah_notification
+        private const val NOTIFICATION_BADGE_DELAY = 2000L
         private const val TAG_TOOLTIP = "seller_home_tooltip"
+        private const val ERROR_LAYOUT = "Error get layout data."
+        private const val ERROR_WIDGET = "Error get widget data."
+        private const val ERROR_TICKER = "Error get ticker data."
         private const val TOAST_DURATION = 5000L
     }
 
@@ -128,6 +134,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.sah_menu_toolbar_notification, menu)
         this.menu = menu
+        showNotificationBadge()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -162,6 +169,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
         swipeRefreshLayout.setOnRefreshListener {
             reloadPage()
+            showNotificationBadge()
         }
 
         sahGlobalError.setActionClickListener {
@@ -266,14 +274,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         showNotificationBadge()
     }
 
-    fun showNotificationBadge() {
+    private fun showNotificationBadge() {
         Handler().postDelayed({
             context?.let {
-                val menuItem = menu?.findItem(NOTIFICATION_MENU_ID) ?: return@let
+                val menuItem = menu?.findItem(NOTIFICATION_MENU_ID)
                 if (notifCenterCount > 0) {
-                    notificationDotBadge?.showBadge(menuItem)
+                    notificationDotBadge?.showBadge(menuItem ?: return@let)
                 } else {
-                    notificationDotBadge?.removeBadge(menuItem)
+                    notificationDotBadge?.removeBadge(menuItem ?: return@let)
                 }
             }
         }, NOTIFICATION_BADGE_DELAY)
@@ -312,7 +320,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> setOnSuccessGetLayout(result.data)
-                is Fail -> setOnErrorGetLayout()
+                is Fail -> setOnErrorGetLayout(result.throwable)
             }
         })
 
@@ -367,7 +375,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         }
     }
 
-    private fun setOnErrorGetLayout() = view?.run {
+    private fun setOnErrorGetLayout(throwable: Throwable) = view?.run {
         if (adapter.data.isEmpty()) {
             sahGlobalError.visible()
         } else {
@@ -376,6 +384,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         }
         view?.swipeRefreshLayout?.isRefreshing = false
         setProgressBarVisibility(false)
+
+        logToCrashlytics(throwable, ERROR_LAYOUT)
     }
 
     private fun showErrorToaster() = view?.run {
@@ -441,7 +451,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         sellerHomeViewModel.homeTicker.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetTickers(it.data)
-                is Fail -> view?.relTicker?.gone()
+                is Fail -> {
+                    logToCrashlytics(it.throwable, ERROR_TICKER)
+                    view?.relTicker?.gone()
+                }
             }
         })
         sellerHomeViewModel.getTicker()
@@ -480,7 +493,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         liveData.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> result.data.setOnSuccessWidgetState(type)
-                is Fail -> result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
+                is Fail -> {
+                    logToCrashlytics(result.throwable, "$ERROR_WIDGET $type")
+                    result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
+                }
             }
         })
     }
@@ -538,6 +554,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
                     }
                 }
             })
+        }
+    }
+
+    private fun logToCrashlytics(throwable: Throwable, message: String) {
+        if (!BuildConfig.DEBUG) {
+            val exceptionMessage = "$message - ${throwable.localizedMessage}"
+
+            Crashlytics.logException(SellerHomeException(
+                    message = exceptionMessage,
+                    cause = throwable
+            ))
+        } else {
+            throwable.printStackTrace()
         }
     }
 }

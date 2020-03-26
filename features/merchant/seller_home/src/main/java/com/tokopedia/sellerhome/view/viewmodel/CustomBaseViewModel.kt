@@ -2,6 +2,7 @@ package com.tokopedia.sellerhome.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -14,21 +15,23 @@ import kotlin.coroutines.CoroutineContext
 
 abstract class CustomBaseViewModel(baseDispatcher: CoroutineDispatcher) : BaseViewModel(baseDispatcher) {
 
-    fun <T : Any> CoroutineScope.executeCall(
+    protected fun <T : Any> CoroutineScope.executeCall(
             liveData: MutableLiveData<Result<T>>,
             context: CoroutineContext = coroutineContext,
-            onError: (Throwable) -> Unit = {},
+            onError: suspend (t: Throwable) -> Unit = {},
             block: suspend () -> T
     ) {
-        launch(context) {
-            try {
-                liveData.value = Success(withContext(Dispatchers.IO) {
-                    block.invoke()
-                })
-            } catch (e: Exception) {
-                liveData.value = Fail(e)
-                onError(e)
-            }
-        }
+        launchCatchError(
+                context = context,
+                block = {
+                    liveData.value = Success(withContext(Dispatchers.IO) {
+                        block()
+                    })
+                },
+                onError = {
+                    liveData.value = Fail(it)
+                    onError(it)
+                }
+        )
     }
 }

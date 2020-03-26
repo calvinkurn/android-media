@@ -1,93 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<LinearLayout
     android:id="@+id/coordinatorLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar_layout"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            app:elevation="0dp">
+
+            <com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
+                android:id="@+id/topAdsWidgetFreeClaim"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifycomponents.SearchBarUnify
+                android:id="@+id/searchBar"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:layout_marginBottom="@dimen/spacing_lvl1"
+                android:layout_marginRight="@dimen/spacing_lvl4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:search_bar_clearable="true"
+                app:search_bar_show_icon="false"
+                app:layout_scrollFlags="scroll|snap"/>
+
+            <com.tokopedia.product.manage.feature.list.view.ui.tab.ProductManageTabFilter
+                android:id="@+id/tabFilters"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/product_manage_horizontal_spacing"
+                android:paddingRight="@dimen/product_manage_horizontal_spacing"
+                android:layout_marginTop="@dimen/product_manage_vertical_spacing"
+                android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
+                android:visibility="gone"
+                app:layout_scrollFlags="scroll|snap" />
+
+            <LinearLayout
+                android:id="@+id/multiSelectContainer"
+                android:paddingRight="@dimen/product_manage_container_spacing"
+                android:paddingEnd="@dimen/product_manage_container_spacing"
+                android:paddingLeft="@dimen/product_manage_container_spacing"
+                android:paddingStart="@dimen/product_manage_container_spacing"
+                android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_anchor="@id/app_bar_layout"
+                app:layout_scrollFlags="scroll">
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/textProductCount"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    app:typographyType="body_3"
+                    app:typographyWeight="reguler"
+                    android:text="@string/product_manage_bulk_count" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/textMultipleSelect"
+                    android:textColor="@color/g_500"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:typographyType="heading_6"
+                    app:typographyWeight="bold"
+                    android:text="@string/product_manage_multiple_select" />
+            </LinearLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+            android:id="@+id/swipe_refresh_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            tools:visibility="gone"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:scrollbars="vertical" />
+        </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/btnMultiEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
-        app:elevation="0dp">
-
-        <com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
-            android:id="@+id/topAdsWidgetFreeClaim"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
-            android:visibility="gone"
-            tools:visibility="visible"
-            app:layout_scrollFlags="scroll" />
-
-        <com.tokopedia.design.text.SearchInputView
-            android:id="@+id/search_input_view_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|snap|enterAlways"/>
-
-        <com.tokopedia.product.manage.feature.list.view.ui.ProductManageTabFilter
-            android:id="@+id/tabFilters"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/product_manage_horizontal_spacing"
-            android:paddingRight="@dimen/product_manage_horizontal_spacing"
-            android:layout_marginTop="@dimen/product_manage_vertical_spacing"
-            android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
-            app:layout_scrollFlags="scroll" />
-
-        <LinearLayout
-            android:paddingRight="@dimen/product_manage_container_spacing"
-            android:paddingEnd="@dimen/product_manage_container_spacing"
-            android:paddingLeft="@dimen/product_manage_container_spacing"
-            android:paddingStart="@dimen/product_manage_container_spacing"
-            android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll">
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/textProductCount"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                app:typographyType="body_3"
-                app:typographyWeight="reguler"
-                android:text="@string/product_manage_bulk_count" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/textMultipleSelect"
-                android:textColor="@color/g_500"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:typographyType="heading_6"
-                app:typographyWeight="bold"
-                android:text="@string/product_manage_multiple_select" />
-        </LinearLayout>
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-        android:id="@+id/swipe_refresh_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:visibility="gone">
-
-        <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:scrollbars="vertical" />
-    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
-
-    <ProgressBar
-        android:id="@+id/progressBar"
         android:visibility="gone"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        app:cardElevation="@dimen/layout_lvl2"
+        app:contentPaddingBottom="@dimen/spacing_lvl3"
+        app:contentPaddingLeft="@dimen/spacing_lvl4"
+        app:contentPaddingRight="@dimen/spacing_lvl4"
+        app:contentPaddingTop="@dimen/spacing_lvl3"
+        tools:visibility="visible">
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/product_manage_button_multi_edit"
+            app:unifyButtonSize="large" />
+    </androidx.cardview.widget.CardView>
+</LinearLayout>

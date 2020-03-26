@@ -21,6 +21,7 @@ class OtherMenuAdapterTypeFactory(private val trackingListener: SettingTrackingL
             MenuItemsViewHolder.LAYOUT -> MenuItemsViewHolder(parent, trackingListener)
             MenuItemsViewHolder.LAYOUT_NO_ICON -> MenuItemsViewHolder(parent, trackingListener)
             SettingTitleMenuViewHolder.LAYOUT -> SettingTitleMenuViewHolder(parent)
+            SpacingViewHolder.LAYOUT -> SpacingViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -43,5 +44,9 @@ class OtherMenuAdapterTypeFactory(private val trackingListener: SettingTrackingL
 
     override fun type(indentedSettingTitleUiModel: IndentedSettingTitleUiModel): Int {
         return IndentedSettingTitleViewHolder.LAYOUT
+    }
+
+    override fun type(spacingUiModel: SpacingUiModel): Int {
+        return SpacingViewHolder.LAYOUT
     }
 }

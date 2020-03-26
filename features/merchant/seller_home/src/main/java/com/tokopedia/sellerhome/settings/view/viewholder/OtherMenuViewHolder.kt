@@ -19,6 +19,7 @@ import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.*
 import kotlinx.android.synthetic.main.fragment_other_menu.view.*
 import kotlinx.android.synthetic.main.fragment_other_menu.view.shopInfoLayout
 import kotlinx.android.synthetic.main.setting_balance.view.*
+import kotlinx.android.synthetic.main.setting_balance_topads.view.*
 import kotlinx.android.synthetic.main.setting_partial_main_info_success.view.*
 import kotlinx.android.synthetic.main.setting_partial_shop_info_error.view.*
 import kotlinx.android.synthetic.main.setting_partial_shop_info_success.view.*
@@ -131,21 +132,34 @@ class OtherMenuViewHolder(private val itemView: View,
             balanceTitle?.text = context.resources.getString(R.string.setting_balance)
             balanceValue?.text = saldoBalanceUiModel.balanceValue
             sendSettingShopInfoImpressionTracking(saldoBalanceUiModel, trackingListener::sendImpressionDataIris)
-            saldoBalance.setOnClickListener {
+            balanceValue.setOnClickListener {
                 listener.onSaldoClicked()
                 saldoBalanceUiModel.sendSettingShopInfoClickTracking()
             }
         }
     }
 
-    private fun setKreditTopadsBalance(topadsBalanceUiModel: BalanceUiModel) {
+    private fun setKreditTopadsBalance(topadsBalanceUiModel: TopadsBalanceUiModel) {
         itemView.topAdsBalance.run {
-            balanceTitle?.text = context.resources.getString(R.string.setting_topads_credits)
-            balanceValue?.text = topadsBalanceUiModel.balanceValue
+            topadsBalanceTitle?.text = context.resources.getString(R.string.setting_topads_credits)
+            topadsBalanceValue?.text = topadsBalanceUiModel.balanceValue
             sendSettingShopInfoImpressionTracking(topadsBalanceUiModel, trackingListener::sendImpressionDataIris)
-            topAdsBalance.setOnClickListener {
+            topadsBalanceValue.setOnClickListener {
                 listener.onKreditTopadsClicked()
                 topadsBalanceUiModel.sendSettingShopInfoClickTracking()
+            }
+            val isTopAdsUser = topadsBalanceUiModel.isTopAdsUser
+            val topAdsTooltipDrawable =
+                    if (isTopAdsUser) {
+                        ContextCompat.getDrawable(context, R.drawable.ic_topads_active)
+                    } else {
+                        ContextCompat.getDrawable(context, R.drawable.ic_topads_inactive)
+                    }
+            topAdsStatusTooltip.run {
+                setImageDrawable(topAdsTooltipDrawable)
+                setOnClickListener {
+                    listener.onTopAdsTooltipClicked(isTopAdsUser)
+                }
             }
         }
     }
@@ -192,6 +206,14 @@ class OtherMenuViewHolder(private val itemView: View,
 
     private fun showShopStatusHeader(shopType: ShopType) {
         itemView.shopStatusHeader?.setImageDrawable(ContextCompat.getDrawable(context, shopType.shopTypeHeaderRes))
+        itemView.shopStatusHeaderIcon?.run {
+            if (shopType !is RegularMerchant) {
+                visibility = View.VISIBLE
+                setImageDrawable(ContextCompat.getDrawable(context, shopType.shopTypeHeaderIconRes))
+            } else {
+                visibility = View.GONE
+            }
+        }
     }
 
     private fun View.setRegularMerchantShopStatus(regularMerchant: RegularMerchant) : View {
@@ -246,6 +268,7 @@ class OtherMenuViewHolder(private val itemView: View,
         fun onKreditTopadsClicked()
         fun onRefreshShopInfo()
         fun onStatusBarNeedDarkColor(isDefaultDark: Boolean)
+        fun onTopAdsTooltipClicked(isTopAdsActive: Boolean)
     }
 
 }

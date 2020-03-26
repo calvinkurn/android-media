@@ -3,6 +3,7 @@ package com.tokopedia.product.manage.feature.stockreminder.view.activity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.stockreminder.constant.AppScreen
@@ -17,19 +18,24 @@ class StockReminderActivity : BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
         setupLayout(savedInstanceState)
 
-        header.backButtonView?.setOnClickListener { onBackPressed() }
-        header.subTitle = productName
+        header.setNavigationOnClickListener {
+            onBackPressed()
+        }
+        header.headerTitle = getString(R.string.product_stock_reminder_header_title)
+        header.headerSubTitle = productName
     }
 
     override fun getNewFragment(): Fragment? {
         var productId = 0L
+        var stock = 0
         val uri = intent.data
         if (uri != null) {
             val segments = uri.pathSegments
-            productId = segments[segments.size - 2].toLongOrZero()
-            productName = segments[segments.size - 1]
+            productId = segments[segments.size - 3].toLongOrZero()
+            productName = segments[segments.size - 2]
+            stock = segments[segments.size - 1].toIntOrZero()
         }
-        return StockReminderFragment.createInstance(productId, productName)
+        return StockReminderFragment.createInstance(productId, productName, stock)
     }
 
     override fun getLayoutRes(): Int = R.layout.activity_stock_reminder

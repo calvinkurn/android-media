@@ -51,23 +51,22 @@ class GetProductManageFilterOptionsUseCase @Inject constructor(
     }
 
     private suspend fun executeProductListMetaDataUseCaseAsync(): Deferred<ProductListMetaResponse> {
-        getProductListMetaUseCase.params = GetProductListMetaUseCase.createRequestParams(
-                params.getString(PARAM_SHOP_ID,""))
         return withContext(Dispatchers.IO) {
             async {
+                getProductListMetaUseCase.setParams(params.getString(PARAM_SHOP_ID,""))
                 getProductListMetaUseCase.executeOnBackground()
             }
         }
     }
 
     private suspend fun executeEtalaseUseCaseAsync(): Deferred<ArrayList<ShopEtalaseModel>> {
-        val params = GetShopEtalaseByShopUseCase.createRequestParams(
-                params.getString(PARAM_SHOP_ID,""),
-                params.getBoolean(HIDE_NO_COUNT, DEFAULT_HIDE_NO_COUNT),
-                params.getBoolean(HIDE_SHOWCASE_GROUP, DEFAULT_HIDE_SHOWCASE_GROUP),
-                params.getBoolean(IS_OWNER, false))
         return withContext(Dispatchers.IO) {
             async {
+                val params = GetShopEtalaseByShopUseCase.createRequestParams(
+                        params.getString(PARAM_SHOP_ID,""),
+                        params.getBoolean(HIDE_NO_COUNT, DEFAULT_HIDE_NO_COUNT),
+                        params.getBoolean(HIDE_SHOWCASE_GROUP, DEFAULT_HIDE_SHOWCASE_GROUP),
+                        params.getBoolean(IS_OWNER, false))
                 getShopEtalaseByShopUseCase.run {
                     createObservable(params).toBlocking().first()
                 }
@@ -76,10 +75,9 @@ class GetProductManageFilterOptionsUseCase @Inject constructor(
     }
 
     private suspend fun executeCategoriesUseCaseAsync(): Deferred<CategoriesResponse> {
-        getCategoryListUseCase.params = GetCategoryListUseCase.createRequestParams(
-                params.getString(PARAM_SHOP_ID,""))
         return withContext(Dispatchers.IO) {
             async {
+                getCategoryListUseCase.setParams(params.getString(PARAM_SHOP_ID,""))
                 getCategoryListUseCase.executeOnBackground()
             }
         }

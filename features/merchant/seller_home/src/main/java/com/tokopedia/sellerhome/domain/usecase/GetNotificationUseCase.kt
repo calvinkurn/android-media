@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sellerhome.domain.mapper.NotificationMapper
 import com.tokopedia.sellerhome.domain.model.GetNotificationsResponse
 import com.tokopedia.sellerhome.view.model.NotificationUiModel
+import com.tokopedia.usecase.RequestParams
 
 /**
  * Created By @ilhamsuaib on 2020-03-03
@@ -19,7 +20,7 @@ class GetNotificationUseCase(
 ) : BaseGqlUseCase<NotificationUiModel>() {
 
     override suspend fun executeOnBackground(): NotificationUiModel {
-        val gqlRequest = GraphqlRequest(QUERY, GetNotificationsResponse::class.java, params.parameters)
+        val gqlRequest = GraphqlRequest(QUERY, GetNotificationsResponse::class.java)
         val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetNotificationsResponse::class.java)

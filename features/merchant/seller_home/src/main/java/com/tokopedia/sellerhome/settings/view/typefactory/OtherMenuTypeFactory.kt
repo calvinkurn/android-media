@@ -9,5 +9,6 @@ interface OtherMenuTypeFactory {
     fun type(indentedSettingTitleUiModel: IndentedSettingTitleUiModel): Int
     fun type(menuItemUiModel: MenuItemUiModel): Int
     fun type(settingTitleMenuUiModel: SettingTitleMenuUiModel): Int
+    fun type(spacingUiModel: SpacingUiModel): Int
 
 }

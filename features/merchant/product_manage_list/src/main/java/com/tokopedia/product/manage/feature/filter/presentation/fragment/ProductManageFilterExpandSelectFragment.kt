@@ -5,20 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.di.DaggerProductManageFilterComponent
 import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterComponent
-import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterModule
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.SelectAdapter
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.factory.SelectAdapterTypeFactory
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistViewModel
@@ -31,9 +28,8 @@ import com.tokopedia.product.manage.feature.filter.presentation.fragment.Product
 import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterExpandSelectViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChecklistClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
 import kotlinx.android.synthetic.main.fragment_product_manage_filter_select.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ProductManageFilterExpandSelectFragment :
@@ -41,8 +37,6 @@ class ProductManageFilterExpandSelectFragment :
         HasComponent<ProductManageFilterComponent> {
 
     companion object {
-        const val SORT_TITLE = "Urutkan"
-        const val ETALASE_TITLE = "Etalase"
         fun createInstance(flag: String, cacheManagerId: String): ProductManageFilterExpandSelectFragment {
             return ProductManageFilterExpandSelectFragment().apply {
                 arguments = Bundle().apply {
@@ -87,16 +81,17 @@ class ProductManageFilterExpandSelectFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        select_recycler_view.adapter = adapter
-        select_recycler_view.layoutManager = LinearLayoutManager(this.context)
+        filterSelectRecyclerView.adapter = adapter
+        filterSelectRecyclerView.layoutManager = LinearLayoutManager(this.context)
         initView()
     }
 
     override fun onSelectClick(element: SelectViewModel) {
-        productManageFilterExpandSelectViewModel.updateSelectedItem(element)
-        val dataToSave = productManageFilterExpandSelectViewModel.selectData.value?.toList() ?: listOf()
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
         val cacheManagerId = cacheManager?.id
+        val needSort = productManageFilterExpandSelectViewModel.updateSelectedItem(element)
+        val dataToSave = productManageFilterExpandSelectViewModel.selectData.value?.toMutableList() ?: mutableListOf()
+        if(needSort) dataToSave.sortByDescending { it.isSelected }
         if(flag == SORT_CACHE_MANAGER_KEY) {
             cacheManager?.put(SORT_CACHE_MANAGER_KEY, ProductManageFilterMapper.mapSelectViewModelsToFilterViewModel(
                     SORT_CACHE_MANAGER_KEY,
@@ -104,6 +99,7 @@ class ProductManageFilterExpandSelectFragment :
                     isChipsShown
             ))
             this.activity?.setResult(ProductManageFilterFragment.UPDATE_SORT_SUCCESS_RESPONSE, Intent().putExtra(CACHE_MANAGER_KEY, cacheManagerId))
+            ProductManageTracking.eventMoreSorting(element.name)
         } else {
             cacheManager?.put(ETALASE_CACHE_MANAGER_KEY, ProductManageFilterMapper.mapSelectViewModelsToFilterViewModel(
                     ETALASE_CACHE_MANAGER_KEY,
@@ -123,10 +119,14 @@ class ProductManageFilterExpandSelectFragment :
         return activity?.run {
             DaggerProductManageFilterComponent
                     .builder()
-                    .productManageFilterModule(ProductManageFilterModule())
                     .productManageComponent(ProductManageInstance.getComponent(application))
                     .build()
         }
+    }
+
+    override fun onDestroy() {
+        removeObservers()
+        super.onDestroy()
     }
 
     private fun initInjector() {
@@ -139,19 +139,16 @@ class ProductManageFilterExpandSelectFragment :
     }
 
     private fun configToolbar() {
-        select_toolbar.setNavigationIcon(R.drawable.ic_back)
-        flag.let {
-            if(it == SORT_CACHE_MANAGER_KEY) {
-                page_title.text = SORT_TITLE
-            } else {
-                page_title.text = ETALASE_TITLE
-            }
+        filterSelectHeader.isShowBackButton = true
+        filterSelectHeader.isShowShadow = false
+        filterSelectHeader.setNavigationOnClickListener {
+            activity?.onBackPressed()
         }
-        activity?.let {
-            (it as? AppCompatActivity)?.let { appCompatActivity ->
-                appCompatActivity.setSupportActionBar(select_toolbar)
-                appCompatActivity.supportActionBar?.setDisplayShowTitleEnabled(false)
-                appCompatActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        context?.let {
+            if(flag == SORT_CACHE_MANAGER_KEY) {
+                filterSelectHeader.title = it.resources.getString(R.string.product_manage_filter_sort_select_title)
+            } else {
+                filterSelectHeader.title = it.resources.getString(R.string.product_manage_filter_etalase_select_title)
             }
         }
     }
@@ -160,5 +157,9 @@ class ProductManageFilterExpandSelectFragment :
         productManageFilterExpandSelectViewModel.selectData.observe(this, Observer {
             adapter?.updateSelectData(it)
         })
+    }
+
+    private fun removeObservers() {
+        removeObservers(productManageFilterExpandSelectViewModel.selectData)
     }
 }
