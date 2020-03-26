@@ -108,6 +108,12 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 promoRequest.attemptedCodes.add(promoCode)
                 promoRequest.skipApply = 0
             } else {
+                // Clear all pre selected promo on load data
+                promoRequest.codes.clear()
+                promoRequest.orders.forEach {
+                    it.codes.clear()
+                }
+
                 promoRequest.skipApply = 1
             }
 
@@ -116,16 +122,16 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     if (it is PromoListItemUiModel && it.uiState.isSelected) {
                         if (it.uiData.uniqueId == order.uniqueId && !order.codes.contains(it.uiData.promoCode)) {
                             order.codes.add(it.uiData.promoCode)
-                        } else if (it.uiData.shopId == 0 && !promoRequest.codes.contains(promoCode)) {
-                            promoRequest.codes.add(promoCode)
+                        } else if (it.uiData.shopId == 0 && !promoRequest.codes.contains(it.uiData.promoCode)) {
+                            promoRequest.codes.add(it.uiData.promoCode)
                         }
                     } else if (it is PromoListHeaderUiModel && it.uiData.tmpPromoItemList.isNotEmpty()) {
                         it.uiData.tmpPromoItemList.forEach {
                             if (it.uiState.isSelected) {
                                 if (it.uiData.uniqueId == order.uniqueId && !order.codes.contains(it.uiData.promoCode)) {
                                     order.codes.add(it.uiData.promoCode)
-                                } else if (it.uiData.shopId == 0 && !promoRequest.codes.contains(promoCode)) {
-                                    promoRequest.codes.add(promoCode)
+                                } else if (it.uiData.shopId == 0 && !promoRequest.codes.contains(it.uiData.promoCode)) {
+                                    promoRequest.codes.add(it.uiData.promoCode)
                                 }
                             }
                         }
@@ -138,7 +144,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
             // Get response
             val response = withContext(Dispatchers.IO) {
-//                                Gson().fromJson(MOCK_RESPONSE, CouponListRecommendationResponse::class.java)
+                //                                Gson().fromJson(MOCK_RESPONSE, CouponListRecommendationResponse::class.java)
                 val request = GraphqlRequest(mutation, CouponListRecommendationResponse::class.java, promo)
                 graphqlRepository.getReseponse(listOf(request))
                         .getSuccessData<CouponListRecommendationResponse>()
