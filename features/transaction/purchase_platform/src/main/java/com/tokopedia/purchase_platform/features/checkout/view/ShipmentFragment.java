@@ -2016,8 +2016,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 cartPosition, selectedServiceId, serviceData, flagNeedToSetPinpoint,
                 false, false);
         String cartString = shipmentAdapter.getShipmentCartItemModelByIndex(cartPosition).getCartString();
-        if (!flagNeedToSetPinpoint)
-            shipmentPresenter.doValidateuseLogisticPromo(cartPosition, cartString, generateValidateUsePromoRequest());
+        if (!flagNeedToSetPinpoint) {
+            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartPosition);
+            ValidateUsePromoRequest validateUsePromoRequest = generateValidateUsePromoRequest();
+            for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
+                if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString())) {
+                    ordersItem.getCodes().add(promoCode);
+                    break;
+                }
+            }
+            shipmentPresenter.doValidateuseLogisticPromo(cartPosition, cartString, validateUsePromoRequest);
+        }
     }
 
     @Override
