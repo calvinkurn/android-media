@@ -30,6 +30,7 @@ open class GiftBoxDailyView : FrameLayout {
     lateinit var imageFlatGlow: AppCompatImageView
     lateinit var imageBoxFront: AppCompatImageView
     lateinit var imageBg: AppCompatImageView
+    lateinit var imageShadow: AppCompatImageView
 
     var boxCallback: BoxCallback? = null
     var initialBounceAnimatorSet: AnimatorSet? = null
@@ -70,6 +71,7 @@ open class GiftBoxDailyView : FrameLayout {
         imageFlatGlow = findViewById(R.id.image_flat_glow)
         imageBoxFront = findViewById(R.id.image_box_front)
         imageBg = findViewById(R.id.imageBg)
+        imageShadow = findViewById(R.id.imageShadow)
 
         imageFlatGlow.alpha = 0f
 
@@ -77,9 +79,7 @@ open class GiftBoxDailyView : FrameLayout {
 
 
     open fun handleTapOnGiftBox() {
-        //todo Rahul make api call first
         if (giftBoxState == GiftBoxState.CLOSED) {
-//            boxCallback?.onBoxScaleDownAnimationStart()
             giftBoxState = GiftBoxState.OPEN
             startBoxOpenAnimation()
         }
@@ -242,11 +242,6 @@ open class GiftBoxDailyView : FrameLayout {
         return Pair(animatorSet, totalDuration)
     }
 
-//    fun loadGifFirstFrame(imageView: AppCompatImageView) {
-//        Glide.with(this)
-//                .load(R.drawable.gf_ic_lid_frame_0)
-//                .into(imageView)
-//    }
 
     fun loadLidFrames(): Animator {
 

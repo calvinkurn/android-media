@@ -12,6 +12,13 @@
         android:scaleType="centerCrop"
         tools:srcCompat="@drawable/gf_ic_gift_background" />
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageShadow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/gf_ic_box_shadow"
+        android:visibility="visible" />
+
     <FrameLayout
         android:id="@+id/fm_gift_box"
         android:layout_width="wrap_content"
@@ -22,12 +29,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="140dp"
-            android:src="@drawable/gf_ic_box_shadow"
-            android:visibility="invisible" />
 
         <RelativeLayout
             android:id="@+id/ll_gift_box"

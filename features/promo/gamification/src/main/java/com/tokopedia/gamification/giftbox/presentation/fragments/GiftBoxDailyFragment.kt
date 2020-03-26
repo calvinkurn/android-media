@@ -552,6 +552,11 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             llRewardMessage.translationY = imageFrontTop + imageBoxFront.height + dpToPx(16f)
 
         }
+
+        giftBoxDailyView.fmGiftBox.doOnLayout { fm ->
+            giftBoxDailyView.imageShadow.translationY = fm.bottom.toFloat() - dpToPx(40f)
+            giftBoxDailyView.imageShadow.translationX = fm.left.toFloat()
+        }
     }
 
     fun showRewardMessageDescription(): Animator {
