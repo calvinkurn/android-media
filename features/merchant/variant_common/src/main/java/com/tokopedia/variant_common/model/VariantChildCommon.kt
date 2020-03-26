@@ -164,7 +164,15 @@ data class Campaign(
 
         @SerializedName("appLinks")
         @Expose
-        val applinks: String? = null
+        val applinks: String? = null,
+
+        @SerializedName("endDateUnix")
+        @Expose
+        val endDateUnix: Int? = null,
+
+        @SerializedName("stockSoldPercentage")
+        @Expose
+        val stockSoldPercentage: Float? = null
 ) {
     val activeAndHasId: Boolean
         get() = isActive == true && (campaignID?.isNotEmpty() == true)
