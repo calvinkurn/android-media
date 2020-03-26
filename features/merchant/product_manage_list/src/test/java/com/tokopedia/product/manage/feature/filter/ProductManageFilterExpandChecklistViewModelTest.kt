@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.feature.filter
 
+import com.tokopedia.product.manage.data.getInitialChecklistData
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistUiModel
 import junit.framework.Assert.assertEquals
 import org.junit.Test
@@ -8,7 +9,7 @@ class ProductManageFilterExpandChecklistViewModelTest: ProductManageFilterExpand
 
     @Test
     fun `when_init_data_should_update_daa_and_number_of_selected_data_accordingly`() {
-        val dataToInsert = getInitialData()
+        val dataToInsert = getInitialChecklistData()
 
         viewModel.initData(dataToInsert)
 
@@ -21,7 +22,7 @@ class ProductManageFilterExpandChecklistViewModelTest: ProductManageFilterExpand
 
     @Test
     fun `when_clear_all_checklist_should_update_select_values_to_false`() {
-        val initialData = getInitialData()
+        val initialData = getInitialChecklistData()
 
         viewModel.initData(initialData)
         viewModel.clearAllChecklist()
@@ -31,7 +32,7 @@ class ProductManageFilterExpandChecklistViewModelTest: ProductManageFilterExpand
 
     @Test
     fun `when_update_select_should_update_actual_data_and_number_of_selected_data_accordingly`() {
-        val dataToInsert = getInitialData()
+        val dataToInsert = getInitialChecklistData()
         val selectedData = dataToInsert.first()
 
         viewModel.initData(dataToInsert)
@@ -46,7 +47,7 @@ class ProductManageFilterExpandChecklistViewModelTest: ProductManageFilterExpand
 
     @Test
     fun `when_update_select_selected_data_should_update_actual_data_and_number_of_selected_data_accordingly`() {
-        val dataToInsert = getInitialData()
+        val dataToInsert = getInitialChecklistData()
         val selectedData = dataToInsert[2]
 
         viewModel.initData(dataToInsert)
@@ -62,7 +63,7 @@ class ProductManageFilterExpandChecklistViewModelTest: ProductManageFilterExpand
     @Test
     fun `when_data_is_null_all_operations_should_do_nothing`() {
 
-        viewModel.updateSelectedItem(getInitialData().first())
+        viewModel.updateSelectedItem(getInitialChecklistData().first())
         viewModel.clearAllChecklist()
 
         verifyDataIsNull()
@@ -95,15 +96,6 @@ class ProductManageFilterExpandChecklistViewModelTest: ProductManageFilterExpand
                 assertEquals(expectedData.isSelected, it.isSelected)
             }
         }
-    }
-
-    private fun getInitialData(): List<ChecklistUiModel> {
-        return listOf(
-                ChecklistUiModel(id ="1", name = "Some Filter", value = "", isSelected = false),
-                ChecklistUiModel(id ="2", name = "Some Category", value = "", isSelected = true),
-                ChecklistUiModel(id ="3", name = "Some Other Filter", value = "", isSelected = true),
-                ChecklistUiModel(id ="4", name = "Some Other Category", value = "", isSelected = false)
-        )
     }
 
     private fun verifyDataIsNull() {

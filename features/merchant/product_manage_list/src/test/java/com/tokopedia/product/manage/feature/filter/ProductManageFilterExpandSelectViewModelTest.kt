@@ -1,5 +1,7 @@
 package com.tokopedia.product.manage.feature.filter
 
+import com.tokopedia.product.manage.data.getSelectedData
+import com.tokopedia.product.manage.data.getUnselectedData
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectUiModel
 import junit.framework.Assert.*
 import org.junit.Test
@@ -102,26 +104,5 @@ class ProductManageFilterExpandSelectViewModelTest: ProductManageFilterExpandSel
 
     private fun verifyDataIsNull() {
         assertEquals(null, viewModel.selectData.value)
-    }
-
-
-    private fun getUnselectedData(): List<SelectUiModel>{
-        return listOf(SelectUiModel(id = "1", name = "Some Sort", value = "DESC", isSelected = false),
-                SelectUiModel(id = "2", name = "Some Etalase", value = "", isSelected = false),
-                SelectUiModel(id = "3", name = "Some Etalase", value = "", isSelected = false),
-                SelectUiModel(id = "4", name = "Some Etalase", value = "", isSelected = false),
-                SelectUiModel(id = "5", name = "Some Etalase", value = "", isSelected = false),
-                SelectUiModel(id = "6", name = "Some Etalase", value = "", isSelected = false),
-                SelectUiModel(id = "7", name = "Some Etalase", value = "", isSelected = false))
-    }
-
-    private fun getSelectedData(): List<SelectUiModel>{
-        return listOf(SelectUiModel(id = "1", name = "Some Sort", value = "DESC", isSelected = false),
-                SelectUiModel(id = "2", name = "Some Etalase", value = "", isSelected = false),
-                SelectUiModel(id = "3", name = "Some Etalase", value = "", isSelected = false),
-                SelectUiModel(id = "4", name = "Some Etalase", value = "", isSelected = false),
-                SelectUiModel(id = "5", name = "Some Etalase", value = "", isSelected = false),
-                SelectUiModel(id = "6", name = "Some Etalase", value = "", isSelected = false),
-                SelectUiModel(id = "7", name = "Some Etalase", value = "", isSelected = true))
     }
 }

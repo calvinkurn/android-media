@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.feature.filter
 
 import com.tokopedia.core.common.category.domain.model.CategoriesResponse
+import com.tokopedia.product.manage.data.*
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionsResponse
 import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaResponse
@@ -238,70 +239,6 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
             }
             assertEquals(expectedModel.isChipsShown, dataToVerify.isChipsShown)
         }
-    }
-
-    private fun getSortDataModel(): FilterDataUiModel {
-        return FilterDataUiModel("312", "Some Sort", "DESC", false)
-    }
-
-    private fun getSortFilterViewModel(sortDataModel: FilterDataUiModel = getSortDataModel()): FilterUiModel {
-        return FilterUiModel(ProductManageFilterMapper.SORT_HEADER,
-                mutableListOf(
-                        sortDataModel,
-                        FilterDataUiModel("706", "Some Other Sort", "ASC", false)
-                ), false)
-    }
-
-    private fun getEtalaseDataModel(): FilterDataUiModel {
-        return FilterDataUiModel("342", "Some Etalase", "", false)
-    }
-
-    private fun getEtalaseFilterViewModel(etalaseDataModel: FilterDataUiModel = getEtalaseDataModel()): FilterUiModel {
-        return FilterUiModel(ProductManageFilterMapper.ETALASE_HEADER,
-                mutableListOf(
-                        etalaseDataModel,
-                        FilterDataUiModel("123", "Some Other Etalase", "", false)
-                ), false)
-    }
-
-    private fun getCategoryDataModel(): FilterDataUiModel {
-        return FilterDataUiModel("293", "Some Category", "", false)
-    }
-
-    private fun getCategoryFilterViewModel(categoryDataModel: FilterDataUiModel = getCategoryDataModel()): FilterUiModel {
-        return FilterUiModel(ProductManageFilterMapper.CATEGORY_HEADER,
-                mutableListOf(
-                        categoryDataModel,
-                        FilterDataUiModel("452", "Some Other Category", "", false)
-                ), false)
-    }
-
-    private fun getOtherFilterDataModel(): FilterDataUiModel {
-        return FilterDataUiModel("4183", "Some Other Filter", "", false)
-    }
-
-    private fun getOtherFilterFilterViewModel(otherFilterDataModel: FilterDataUiModel = getOtherFilterDataModel()): FilterUiModel {
-        return FilterUiModel(ProductManageFilterMapper.OTHER_FILTER_HEADER,
-                mutableListOf(
-                        otherFilterDataModel,
-                        FilterDataUiModel("611", "Some Other Filter", "", false)
-                ), false)
-    }
-
-    private fun getSelectedSortData(sortDataModel: FilterDataUiModel = getSortDataModel()): FilterUiModel {
-        return FilterUiModel(ProductManageFilterMapper.SORT_HEADER,
-                mutableListOf(
-                        sortDataModel,
-                        FilterDataUiModel("706", "Some Other Sort", "ASC", true)
-                ), false)
-    }
-
-    private fun getSelectedEtalaseData(etalaseDataModel: FilterDataUiModel = getEtalaseDataModel()): FilterUiModel {
-        return FilterUiModel(ProductManageFilterMapper.ETALASE_HEADER,
-                mutableListOf(
-                        etalaseDataModel,
-                        FilterDataUiModel("123", "Some Other Etalase", "", true)
-                ), false)
     }
 
     private fun verifyChipsShownStateEquals(expectedShowStates: List<Boolean>) {
