@@ -11,7 +11,7 @@ import com.tokopedia.shop.home.WidgetType.VOUCHER
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.newproduct.view.datamodel.LabelGroupViewModel
-import com.tokopedia.shop.product.data.model.ShopProduct
+import com.tokopedia.shop.newproduct.data.model.ShopProduct
 import kotlin.math.roundToInt
 
 object ShopPageHomeMapper {

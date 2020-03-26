@@ -6,7 +6,7 @@ import com.tokopedia.shop.common.constant.ShopParamApiConstant;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.shop.note.data.source.cloud.model.ShopNoteDetail;
 import com.tokopedia.shop.note.data.source.cloud.model.ShopNoteList;
-import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
+import com.tokopedia.shop.newproduct.data.source.cloud.model.ShopProduct;
 import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSortList;
 
 import java.util.Map;

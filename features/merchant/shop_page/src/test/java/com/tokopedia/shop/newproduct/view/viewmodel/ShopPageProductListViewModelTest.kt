@@ -2,8 +2,8 @@ package com.tokopedia.shop.newproduct.view.viewmodel
 
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
-import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
-import com.tokopedia.shop.product.data.model.ShopProduct
+import com.tokopedia.shop.newproduct.data.model.ShopFeaturedProduct
+import com.tokopedia.shop.newproduct.data.model.ShopProduct
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -12,7 +12,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.*
 import java.lang.Exception
 

@@ -12,8 +12,8 @@ import com.tokopedia.shop.common.data.viewmodel.ItemUnregisteredViewModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
 import com.tokopedia.shop.newproduct.view.datamodel.*
-import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
-import com.tokopedia.shop.product.data.model.ShopProduct
+import com.tokopedia.shop.newproduct.data.model.ShopFeaturedProduct
+import com.tokopedia.shop.newproduct.data.model.ShopProduct
 import java.text.NumberFormat
 import java.text.ParseException
 import kotlin.math.roundToInt

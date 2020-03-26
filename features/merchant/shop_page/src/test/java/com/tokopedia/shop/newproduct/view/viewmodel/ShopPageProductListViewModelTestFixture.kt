@@ -7,9 +7,9 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.ClaimBenefitMembershipUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCaseNew
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
-import com.tokopedia.shop.product.di.ShopProductGetHighlightProductQualifier
-import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase
-import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
+import com.tokopedia.shop.newproduct.di.ShopProductGetHighlightProductQualifier
+import com.tokopedia.shop.newproduct.domain.interactor.GetShopFeaturedProductUseCase
+import com.tokopedia.shop.newproduct.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase

@@ -15,9 +15,8 @@ import com.tokopedia.shop.newproduct.view.datamodel.EtalaseHighlightCarouselView
 import com.tokopedia.shop.newproduct.view.listener.ShopCarouselSeeAllClickedListener
 import com.tokopedia.shop.newproduct.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.newproduct.view.listener.ShopProductImpressionListener
-import com.tokopedia.shop.product.view.adapter.viewholder.ErrorNetworkWrapViewHolder
+import com.tokopedia.shop.newproduct.view.viewholder.ErrorNetworkWrapViewHolder
 import com.tokopedia.shop.newproduct.view.viewholder.ShopProductCarouselViewHolder
-import com.tokopedia.shop.product.view.model.HideViewModel
 
 class EtalaseHighlightAdapterTypeFactory(
         private val shopProductClickedListener: ShopProductClickedListener?,
@@ -40,10 +39,6 @@ class EtalaseHighlightAdapterTypeFactory(
 
     override fun type(errorNetworkModel: ErrorNetworkModel): Int {
         return ErrorNetworkWrapViewHolder.LAYOUT
-    }
-
-    fun type(viewModel: HideViewModel): Int {
-        return HideViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {

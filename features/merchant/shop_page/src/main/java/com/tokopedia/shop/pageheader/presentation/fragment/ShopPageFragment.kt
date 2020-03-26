@@ -47,14 +47,14 @@ import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.newproduct.view.fragment.ShopPageProductListFragment
-import com.tokopedia.shop.oldpage.di.component.DaggerOldShopPageComponent
-import com.tokopedia.shop.oldpage.di.component.OldShopPageComponent
-import com.tokopedia.shop.oldpage.di.module.OldShopPageModule
-import com.tokopedia.shop.oldpage.view.ShopPageViewModel
+import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
+import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
+import com.tokopedia.shop.pageheader.di.module.ShopPageModule
+import com.tokopedia.shop.pageheader.presentation.ShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentHeaderViewHolder
-import com.tokopedia.shop.product.view.activity.ShopProductListActivity
-import com.tokopedia.shop.product.view.fragment.HomeProductFragment
+import com.tokopedia.shop.newproduct.view.activity.ShopProductListActivity
+import com.tokopedia.shop.newproduct.view.fragment.HomeProductFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.shop.setting.view.activity.ShopPageSettingActivity
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
@@ -71,7 +71,7 @@ import javax.inject.Inject
 
 class ShopPageFragment :
         BaseDaggerFragment(),
-        HasComponent<OldShopPageComponent>,
+        HasComponent<ShopPageComponent>,
         ShopPageFragmentHeaderViewHolder.ShopPageFragmentViewHolderListener {
 
     companion object {
@@ -155,7 +155,7 @@ class ShopPageFragment :
         } else false
 
     override fun getComponent() = activity?.run {
-        DaggerOldShopPageComponent.builder().oldShopPageModule(OldShopPageModule())
+        DaggerShopPageComponent.builder().shopPageModule(ShopPageModule())
                 .shopComponent(ShopComponentInstance.getComponent(application)).build()
     }
 

@@ -6,7 +6,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.ShopNoteQuery
-import com.tokopedia.shop.product.data.GQLQueryConstant.SHOP_NOTES
+import com.tokopedia.shop.newproduct.data.GQLQueryConstant.SHOP_NOTES
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 

@@ -11,9 +11,9 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.ALL_ETALASE
 import com.tokopedia.shop.newproduct.view.viewholder.ShopProductEtalaseListViewHolder
-import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
-import com.tokopedia.shop.product.view.widget.OnStickySingleHeaderListener
-import com.tokopedia.shop.product.view.widget.StickySingleHeaderView
+import com.tokopedia.shop.newproduct.view.adapter.scrolllistener.DataEndlessScrollListener
+import com.tokopedia.shop.newproduct.view.widget.OnStickySingleHeaderListener
+import com.tokopedia.shop.newproduct.view.widget.StickySingleHeaderView
 
 import com.tokopedia.shop.common.constant.ShopPageConstant.*
 import com.tokopedia.shop.newproduct.view.datamodel.*

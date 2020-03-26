@@ -12,8 +12,8 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
 import com.tokopedia.shop.newproduct.view.listener.ShopProductClickedListener
-import com.tokopedia.shop.product.view.adapter.viewholder.ErrorNetworkWrapViewHolder
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductListEmptyViewHolder
+import com.tokopedia.shop.newproduct.view.viewholder.ErrorNetworkWrapViewHolder
+import com.tokopedia.shop.newproduct.view.viewholder.ShopProductListEmptyViewHolder
 
 import com.tokopedia.shop.newproduct.view.datamodel.*
 import com.tokopedia.shop.newproduct.view.listener.ShopCarouselSeeAllClickedListener

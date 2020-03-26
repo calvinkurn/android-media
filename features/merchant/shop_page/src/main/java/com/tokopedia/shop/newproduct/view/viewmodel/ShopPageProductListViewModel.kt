@@ -13,10 +13,10 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembers
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop.newproduct.view.datamodel.*
 import com.tokopedia.shop.newproduct.utils.mapper.ShopPageProductListMapper
-import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
-import com.tokopedia.shop.product.di.ShopProductGetHighlightProductQualifier
-import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase
-import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
+import com.tokopedia.shop.newproduct.data.source.cloud.model.ShopProductFilterInput
+import com.tokopedia.shop.newproduct.di.ShopProductGetHighlightProductQualifier
+import com.tokopedia.shop.newproduct.domain.interactor.GetShopFeaturedProductUseCase
+import com.tokopedia.shop.newproduct.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

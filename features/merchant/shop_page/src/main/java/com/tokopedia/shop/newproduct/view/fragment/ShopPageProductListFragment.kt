@@ -59,13 +59,12 @@ import com.tokopedia.shop.newproduct.view.viewholder.ShopProductAddViewHolder
 import com.tokopedia.shop.newproduct.view.viewholder.ShopProductEtalaseListViewHolder
 import com.tokopedia.shop.newproduct.view.viewholder.ShopProductsEmptyViewHolder
 import com.tokopedia.shop.newproduct.view.viewmodel.ShopPageProductListViewModel
-import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
-import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
-import com.tokopedia.shop.product.di.module.ShopProductModule
-import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
-import com.tokopedia.shop.product.view.activity.ShopProductListActivity
-import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
+import com.tokopedia.shop.newproduct.di.component.DaggerShopProductComponent
+import com.tokopedia.shop.newproduct.di.module.ShopProductModule
+import com.tokopedia.shop.newproduct.util.ShopProductOfficialStoreUtils
+import com.tokopedia.shop.newproduct.view.activity.ShopProductListActivity
+import com.tokopedia.shop.newproduct.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
@@ -969,8 +968,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun showErrorToasterWithRetry(error: Throwable) {
-        if (activity is ShopPageActivity) {
-            (activity as? ShopPageActivity)?.stopPerformanceMonitor()
+        if (parentFragment is ShopPageFragment) {
+            (parentFragment as? ShopPageFragment)?.stopPerformanceMonitor()
         }
         hideLoading()
         updateStateScrollListener()

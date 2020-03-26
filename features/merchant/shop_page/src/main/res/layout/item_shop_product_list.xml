@@ -33,7 +33,7 @@
                 app:cardPreventCornerOverlap="false"
                 app:cardUseCompatPadding="true">
 
-                <com.tokopedia.shop.product.view.widget.SquareImageView
+                <com.tokopedia.shop.newproduct.view.widget.SquareImageView
                     android:id="@+id/product_image"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

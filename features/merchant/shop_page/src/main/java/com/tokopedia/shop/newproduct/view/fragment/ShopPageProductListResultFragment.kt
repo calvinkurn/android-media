@@ -57,10 +57,10 @@ import com.tokopedia.shop.newproduct.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.newproduct.view.listener.ShopProductImpressionListener
 import com.tokopedia.shop.newproduct.view.viewholder.ShopProductEtalaseListViewHolder
 import com.tokopedia.shop.newproduct.view.viewmodel.ShopPageProductListResultViewModel
-import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
-import com.tokopedia.shop.product.di.module.ShopProductModule
-import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
-import com.tokopedia.shop.product.view.listener.OnShopProductListFragmentListener
+import com.tokopedia.shop.newproduct.di.component.DaggerShopProductComponent
+import com.tokopedia.shop.newproduct.di.module.ShopProductModule
+import com.tokopedia.shop.newproduct.view.adapter.scrolllistener.DataEndlessScrollListener
+import com.tokopedia.shop.newproduct.view.listener.OnShopProductListFragmentListener
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -68,9 +68,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.common.listener.WishListActionListener
-import kotlinx.android.synthetic.main.fragment_shop_product_list_new.recycler_view_etalase
-import kotlinx.android.synthetic.main.fragment_shop_product_list_new.v_etalase_more
-import kotlinx.android.synthetic.main.fragment_shop_product_list_new.vg_etalase_list
 import kotlinx.android.synthetic.main.fragment_shop_product_list_result_new.*
 import javax.inject.Inject
 

@@ -1,7 +1,7 @@
 package com.tokopedia.shop.newproduct.view.viewmodel
 
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.product.data.model.ShopProduct
+import com.tokopedia.shop.newproduct.data.model.ShopProduct
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery

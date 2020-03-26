@@ -18,7 +18,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 
-import static com.tokopedia.shop.product.data.GQLQueryConstant.SHOP_NOTES;
+import static com.tokopedia.shop.newproduct.data.GQLQueryConstant.SHOP_NOTES;
 
 @ShopNoteScope
 @Module
