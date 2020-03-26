@@ -7,6 +7,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.webkit.URLUtil;
 
 import androidx.annotation.Nullable;
@@ -224,8 +225,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     //Please do not delete this function to keep AppNotificationReceiver
     private void initAppNotificationReceiver() {
-        String tag = AppNotificationReceiver.class.getSimpleName();
-        Timber.d("Init %s", tag);
+        AppNotificationReceiver appNotificationReceiver = new AppNotificationReceiver();
+        String tag = appNotificationReceiver.getClass().getSimpleName();
+        Log.d("Init %s", tag);
     }
 
     @Override
