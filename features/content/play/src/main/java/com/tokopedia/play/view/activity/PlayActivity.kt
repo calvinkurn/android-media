@@ -2,6 +2,7 @@ package com.tokopedia.play.view.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -41,6 +42,11 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
 
         val channelId = intent?.data?.lastPathSegment
         setupView(channelId)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     override fun onNewIntent(intent: Intent?) {

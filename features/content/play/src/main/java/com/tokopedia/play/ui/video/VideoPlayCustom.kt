@@ -32,6 +32,9 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
 
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
+    val textureView: TextureView?
+        get() = surfaceView
+
     init{
 
         LayoutInflater.from(context).inflate(playerLayoutId, this)

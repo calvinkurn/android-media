@@ -8,8 +8,8 @@ import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
+import com.tokopedia.play_common.state.PlayVideoState
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emptyFlow
@@ -39,6 +39,7 @@ open class VideoComponent(
                                 uiView.hide()
                                 uiView.setPlayer(null)
                             }
+                            is ScreenStateEvent.VideoPropertyChanged -> handleVideoStateChanged(it.videoProp.state)
                         }
                     }
         }
@@ -47,6 +48,16 @@ open class VideoComponent(
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         uiView.onDestroy()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun onPause() {
+        uiView.setThumbnail()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun onResume() {
+        uiView.showThumbnail(true)
     }
 
     override fun getContainerId(): Int {
@@ -59,4 +70,11 @@ open class VideoComponent(
 
     protected open fun initView(container: ViewGroup): VideoView =
             VideoView(container)
+
+    private fun handleVideoStateChanged(state: PlayVideoState) {
+        when (state) {
+            PlayVideoState.NoMedia -> uiView.showThumbnail(true)
+            PlayVideoState.Playing, PlayVideoState.Ended, PlayVideoState.Pause, is PlayVideoState.Error -> uiView.showThumbnail(false)
+        }
+    }
 }
