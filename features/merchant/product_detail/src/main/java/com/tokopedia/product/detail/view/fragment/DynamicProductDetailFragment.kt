@@ -140,7 +140,6 @@ import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.variant_common.model.VariantOptionWithAttribute
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import com.tokopedia.variant_common.view.ProductVariantListener
-import kotlinx.android.synthetic.main.dialog_permission_phone_state.view.*
 import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.*
 import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
