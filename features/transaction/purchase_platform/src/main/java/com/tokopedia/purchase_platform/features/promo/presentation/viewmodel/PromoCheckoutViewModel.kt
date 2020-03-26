@@ -244,20 +244,12 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
                         if (promoCode.isNotBlank()) {
                             promoInputUiModel.value?.let {
-                                it.uiData.exception = null
-                                it.uiData.promoCode = ""
-                                it.uiState.isError = false
+                                it.uiData.exception = PromoErrorException(response.couponListRecommendation.data.resultStatus.message.joinToString(". "))
+                                it.uiState.isError = true
                                 it.uiState.isButtonSelectEnabled = true
                                 it.uiState.isLoading = false
 
                                 _promoInputUiModel.value = it
-                            }
-
-                            getCouponRecommendationResponse.value?.let {
-                                val errorMessage = response.couponListRecommendation.data.resultStatus.message.joinToString(". ")
-                                it.state = GetCouponRecommendationAction.ACTION_SHOW_TOAST_ERROR
-                                it.exception = PromoErrorException(errorMessage)
-                                _getCouponRecommendationResponse.value = it
                             }
                         } else {
                             val emptyState = uiModelMapper.mapEmptyState(response.couponListRecommendation)
