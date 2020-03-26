@@ -6,11 +6,11 @@ import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
 
-class ThankYouPageAnalytics  {
+class ThankYouPageAnalytics {
 
     private val IDR = "IDR"
 
-    val analyticTracker: ContextAnalytics
+    private val analyticTracker: ContextAnalytics
         get() = TrackApp.getInstance().gtm
 
     fun sendThankYouPageData(thanksPageData: ThanksPageData) {
@@ -27,8 +27,8 @@ class ThankYouPageAnalytics  {
 
     private fun getParentTrackingNode(thanksPageData: ThanksPageData): MutableMap<String, Any> {
         return mutableMapOf(
-                ParentTrackingKey.KEY_EVENT to "transaction",
-                ParentTrackingKey.KEY_EVENT_CATEGORY to "order complete",
+                ParentTrackingKey.KEY_EVENT to ParentTrackingKeyValue.KEY_EVENT_VALUE,
+                ParentTrackingKey.KEY_EVENT_CATEGORY to ParentTrackingKeyValue.KEY_EVENT_CATEGORY_VALUE,
                 ParentTrackingKey.KEY_EVENT_ACTION to "",
                 ParentTrackingKey.KEY_EVENT_LABEL to "",
                 ParentTrackingKey.KEY_PAYMENT_ID to thanksPageData.paymentID,
@@ -76,6 +76,11 @@ class ThankYouPageAnalytics  {
 
 }
 
+object ParentTrackingKeyValue {
+    val KEY_EVENT_VALUE = "transaction"
+    val KEY_EVENT_CATEGORY_VALUE = "order complete"
+}
+
 object ParentTrackingKey {
     val KEY_EVENT = "event"
     val KEY_EVENT_CATEGORY = "eventCategory"
@@ -104,10 +109,10 @@ object PurchaseNodeTrackingKey {
 object ActionFieldNodeTrackingKey {
     val KEY_ID = "id"
     val KEY_AFFILIATION = "affiliation"
-    val KEY_REVENUE = "revenue"         //: "{revenue}", // total transaction value (incl. tax and shipping), mandatory
+    val KEY_REVENUE = "revenue"
     val KEY_TAX = "tax"
     val KEY_SHIPPING = "shipping"
-    val KEY_COUPON = "coupon"           //: "[Global Voucher] , [Merchant Voucher] , [Logistic Voucher] , [Payment voucher]"
+    val KEY_COUPON = "coupon"
 }
 
 object ProductNodeTrackingKey {
