@@ -128,7 +128,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
     }
 
     fun setPassengerView(passengerModel: FlightPassengerModel) {
-        flightSearchData.flightPassengerModel = passengerModel
+        flightSearchData.flightPassengerViewModel = passengerModel
         tvFlightPassenger.text = buildPassengerTextFormatted(
                 passengerModel.adult,
                 passengerModel.children,
@@ -190,8 +190,8 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         tvFlightReturnDate.setOnClickListener {
             listener?.onReturnDateClicked(departureDate, returnDate)
         }
-        tvFlightPassengerLabel.setOnClickListener { listener?.onPassengerClicked(flightSearchData.flightPassengerModel) }
-        tvFlightPassenger.setOnClickListener { listener?.onPassengerClicked(flightSearchData.flightPassengerModel) }
+        tvFlightPassengerLabel.setOnClickListener { listener?.onPassengerClicked(flightSearchData.flightPassengerViewModel) }
+        tvFlightPassenger.setOnClickListener { listener?.onPassengerClicked(flightSearchData.flightPassengerViewModel) }
         tvFlightClassLabel.setOnClickListener { listener?.onClassClicked(flightSearchData.flightClass.id) }
         tvFlightClass.setOnClickListener { listener?.onClassClicked(flightSearchData.flightClass.id) }
         btnFlightSearch.setOnClickListener { onSaveSearch() }
@@ -240,7 +240,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
     }
 
     private fun setPassengerView(adult: Int = 1, children: Int = 0, infant: Int = 0) {
-        flightSearchData.flightPassengerModel = FlightPassengerModel(adult, children, infant)
+        flightSearchData.flightPassengerViewModel = FlightPassengerModel(adult, children, infant)
         tvFlightPassenger.text = buildPassengerTextFormatted(adult, children, infant)
     }
 
@@ -411,9 +411,9 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         flightDashboardCache.putDepartureDate(flightSearchData.departureDate)
         if (isRoundTrip()) flightDashboardCache.putReturnDate(flightSearchData.returnDate)
         flightDashboardCache.putPassengerCount(
-                flightSearchData.flightPassengerModel.adult,
-                flightSearchData.flightPassengerModel.children,
-                flightSearchData.flightPassengerModel.infant
+                flightSearchData.flightPassengerViewModel.adult,
+                flightSearchData.flightPassengerViewModel.children,
+                flightSearchData.flightPassengerViewModel.infant
         )
         flightDashboardCache.putClassCache(flightSearchData.flightClass.id)
     }
