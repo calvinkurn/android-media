@@ -264,13 +264,6 @@ abstract class DynamicChannelViewHolder(itemView: View,
         }
 
         seeAllButtonUnify?.show()
-        seeAllButtonUnify?.setOnClickListener {
-            listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header))
-            HomeTrackingUtils.homeDiscoveryWidgetViewAll(context,
-                    DynamicLinkHelper.getActionLink(channel.header))
-            onSeeAllClickTracker(channel, DynamicLinkHelper.getActionLink(channel.header))
-        }
-
         seeAllButton?.hide()
     }
 
