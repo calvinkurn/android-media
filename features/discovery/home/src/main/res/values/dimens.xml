@@ -61,4 +61,6 @@
     <dimen name="home_play_banner_viewer_margin_end">4dp</dimen>
 
     <dimen name="new_margin_sm">24dp</dimen>
+
+    <dimen name="home_recharge_recommendation_background_margin">6dp</dimen>
 </resources>

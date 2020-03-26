@@ -47,7 +47,8 @@ class RechargeRecommendationViewHolder(
                     recharge_recommendation_title.text = recommendation.title
                 }
                 ic_recharge_recommendation_product.loadImage(recommendation.iconURL)
-                recharge_recommendation_description.text = MethodChecker.fromHtml(recommendation.mainText)
+                recharge_recommendation_text_main.text = MethodChecker.fromHtml(recommendation.mainText)
+                recharge_recommendation_text_sub.text = MethodChecker.fromHtml(recommendation.subText)
 
                 if (recommendation.buttonText.isNotEmpty()) {
                     btn_recharge_recommendation.text = recommendation.buttonText
