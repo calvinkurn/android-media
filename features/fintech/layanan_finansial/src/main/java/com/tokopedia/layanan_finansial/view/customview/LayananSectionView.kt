@@ -1,6 +1,8 @@
 package com.tokopedia.layanan_finansial.view.customview
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.util.AttributeSet
 import android.view.View
@@ -33,6 +35,14 @@ class LayananSectionView : RelativeLayout {
     }
 
     fun setData(it: LayananSectionModel) {
+        if(!it.backgroundColor.isNullOrEmpty()){
+            val list = it.backgroundColor.split("-")
+            val gradient = GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM,
+                    intArrayOf(Color.parseColor(list[0]), Color.parseColor(list[1])))
+            gradient.setCornerRadius(0f)
+            setBackgroundDrawable(gradient)
+        }
         title.text = it.title
         subTitle.text = it.subtitle
         if (it.type.equals("vertical")) {
