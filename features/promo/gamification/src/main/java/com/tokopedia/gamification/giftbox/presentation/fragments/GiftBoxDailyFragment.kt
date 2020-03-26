@@ -26,6 +26,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
+import com.tokopedia.gamification.audio.AudioFactory
+import com.tokopedia.gamification.audio.AudioManager
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
 import com.tokopedia.gamification.giftbox.data.entities.*
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.ACTIVE
@@ -68,6 +70,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     var tokenUserState: String = TokenUserState.DEFAULT
     var disableGiftBoxTap = false
     var autoApplyMessage = ""
+    var mAudiosManager: AudioManager? = null
+    var mAudiosManagerBackgroudSoundLoopIn: AudioManager? = null
 
     override fun getLayout() = R.layout.fragment_gift_box_daily
 
@@ -83,6 +87,23 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 val viewModelProvider = ViewModelProviders.of(context as AppCompatActivity, viewModelFactory)
                 viewModel = viewModelProvider[GiftBoxDailyViewModel::class.java]
             }
+
+            //Init AudioManager
+            mAudiosManager = AudioFactory.createAudio(it)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        mAudiosManager?.let {
+            it.destroy()
+            mAudiosManager = null;
+        }
+
+        mAudiosManagerBackgroudSoundLoopIn?.let {
+            it.destroy()
+            mAudiosManagerBackgroudSoundLoopIn = null;
         }
     }
 
@@ -188,7 +209,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             }
         }
 
-        viewModel.giftBoxLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.giftBoxLiveData.observe(viewLifecycleOwner, Observer { it ->
             when (it.status) {
                 LiveDataResult.STATUS.SUCCESS -> {
                     if (it.data != null) {
@@ -211,6 +232,15 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                             GtmEvents.clickGiftBox("")
                                             viewModel.getRewards()
                                             disableGiftBoxTap = true
+
+                                        }
+
+                                        context?.let { soundIt ->
+                                            if (mAudiosManager == null) {
+                                                mAudiosManager = AudioFactory.createAudio(soundIt)
+                                            }
+
+                                            mAudiosManager?.playAudio(R.raw.gf_giftbox_tap)
                                         }
                                     }
 
@@ -258,6 +288,11 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                 }
                             }
                         }
+                    }
+
+                    context?.let { innerIt ->
+                        mAudiosManagerBackgroudSoundLoopIn = AudioFactory.createAudio(innerIt)
+                        mAudiosManagerBackgroudSoundLoopIn?.playAudio(R.raw.gf_giftbox_bg, true)
                     }
 
                 }
@@ -344,6 +379,14 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                     viewModel.setReminder()
                                     GtmEvents.clickReminderButton()
                                 }
+                            }
+
+                            context?.let { soundIt ->
+                                if (mAudiosManager == null) {
+                                    mAudiosManager = AudioFactory.createAudio(soundIt)
+                                }
+
+                                mAudiosManager?.playAudio(R.raw.gf_giftbox_prize)
                             }
                         } else {
                             disableGiftBoxTap = false
