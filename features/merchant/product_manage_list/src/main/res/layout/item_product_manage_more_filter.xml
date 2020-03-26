@@ -12,15 +12,14 @@
         app:chipSize="medium"
         app:chipType="normal" />
 
-    <com.tokopedia.unifyprinciples.Typography
+    <com.tokopedia.unifycomponents.NotificationUnify
         android:id="@+id/filterCount"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:textColor="@android:color/white"
-        android:visibility="gone"
-        app:typographyType="body_3"
-        app:typographyWeight="bold"/>
+        android:layout_marginLeft="@dimen/product_manage_chip_filter_count_spacing"
+        android:layout_marginStart="@dimen/product_manage_chip_filter_count_spacing"
+        app:notificationType="counter_type"
+        app:notificationColor="color_secondary"
+        android:visibility="gone" />
 </FrameLayout>

@@ -26,7 +26,10 @@ class StockInformationBottomSheet(
 
         val title = itemView.context.getString(R.string.product_manage_stock_information)
         val description = itemView.context.getString(R.string.product_manage_stock_info_description)
+        val padding = itemView.context.resources.getDimensionPixelSize(R.dimen.spacing_lvl4)
+
         itemView.textDescription.text = description
+        itemView.setPadding(0, 0, 0, padding)
 
         setTitle(title)
         setChild(itemView)

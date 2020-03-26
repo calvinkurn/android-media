@@ -29,7 +29,6 @@ class ChecklistWidget: BaseCustomView {
         this.checklist.text = element.name
         this.checklist.isChecked = element.isSelected
         checklist.setOnClickListener {
-            this.checklist.isChecked = !this.checklist.isChecked
             checklistClickListener.onChecklistClick(element)
         }
     }

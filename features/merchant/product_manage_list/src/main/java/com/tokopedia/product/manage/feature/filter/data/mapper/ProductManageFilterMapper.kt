@@ -21,6 +21,7 @@ class ProductManageFilterMapper {
         private const val ALL_PRODUCT_ETALASE_ID = "2"
         private const val EMPTY_STOCK_ETALASE_ID = "4"
         private const val PREORDER_ETALASE_ID = "6"
+        private const val MODERATED_ETALASE_ID = "5"
         private const val SHOW_CHIPS = true
         private const val HIDE_CHIPS = false
 
@@ -210,7 +211,8 @@ class ProductManageFilterMapper {
             etalaseResponse.filter { it.name.isNotEmpty() &&
                     it.id != EMPTY_STOCK_ETALASE_ID &&
                     it.id != PREORDER_ETALASE_ID &&
-                    it.id != ALL_PRODUCT_ETALASE_ID }.forEach {
+                    it.id != ALL_PRODUCT_ETALASE_ID &&
+                    it.id != MODERATED_ETALASE_ID }.forEach {
                 data.add(FilterDataUiModel(it.id,it.name))
             }
             return FilterUiModel(ETALASE_HEADER, data, SHOW_CHIPS)
