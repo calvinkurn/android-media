@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivFlightDashboardBanner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_flight_dashboard_banner" />
+
+    <com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_top_flight_dashboard"
+        app:layout_constraintLeft_toLeftOf="@+id/ivFlightDashboardBanner"
+        app:layout_constraintRight_toRightOf="@+id/ivFlightDashboardBanner"
+        app:layout_constraintTop_toTopOf="@+id/ivFlightDashboardBanner" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
