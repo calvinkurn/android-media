@@ -43,7 +43,6 @@ import com.newrelic.agent.android.NewRelic;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import timber.log.Timber;
 
 /**
