@@ -60,7 +60,7 @@ class LayananAdapter(private val list: List<LayananListItem>) : RecyclerView.Ada
                    status.hide()
                }
                setOnClickListener{
-                   RouteManager.route(context, String.format("%s?url=%s",ApplinkConst.WEBVIEW,layananListItem.url))
+                   RouteManager.route(context, String.format("%s?url=%s",ApplinkConst.SellerApp.WEBVIEW,layananListItem.url))
                    val label = "product: ${layananListItem.name}, status: ${layananListItem.datalayerStatus}"
                    Analytics.sendEcomerceEvent(EVENT_PROMO_CLICK,LAYANAN_FINANSIAL_CATEGORY, LAYANAN_FINANSILA_click_ACTION,label,createEcommerceMap(position = layoutPosition,item =  layananListItem))
                }
