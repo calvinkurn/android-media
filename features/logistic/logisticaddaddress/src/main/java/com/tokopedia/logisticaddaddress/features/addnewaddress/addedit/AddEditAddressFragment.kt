@@ -148,7 +148,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
     private fun prepareLayout() {
         zipCodeChipsAdapter = ZipCodeChipsAdapter(context, this)
-        labelAlamatChipsAdapter = LabelAlamatChipsAdapter(context, this)
+        labelAlamatChipsAdapter = LabelAlamatChipsAdapter(this)
         chipsLayoutManager = ChipsLayoutManager.newBuilder(getView?.context)
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
@@ -358,8 +358,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
                                 labelAlamatDisplay.add(it)
                             }
                         }
-                        labelAlamatChipsAdapter.labelAlamatList = labelAlamatDisplay
-                        labelAlamatChipsAdapter.notifyDataSetChanged()
+                        labelAlamatChipsAdapter.submitList(labelAlamatDisplay)
                     }
                 }
 
@@ -746,8 +745,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
         rv_label_alamat_chips.visibility = View.VISIBLE
         ViewCompat.setLayoutDirection(rv_label_alamat_chips, ViewCompat.LAYOUT_DIRECTION_LTR)
-        labelAlamatChipsAdapter.labelAlamatList = labelAlamatList.toMutableList()
-        labelAlamatChipsAdapter.notifyDataSetChanged()
+        labelAlamatChipsAdapter.submitList(labelAlamatList.toList())
     }
 
     private fun setSaveAddressModel() {
