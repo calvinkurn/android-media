@@ -18,7 +18,7 @@ import com.tokopedia.notifcenter.analytics.StockHandlerAnalytics
 import com.tokopedia.notifcenter.data.entity.ProductStockReminder
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.domain.ProductStockReminderUseCase
-import com.tokopedia.notifcenter.listener.NotificationFilterListener
+import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.BaseBottomSheetDialog
 import com.tokopedia.notifcenter.widget.CampaignRedView
 import com.tokopedia.unifycomponents.CardUnify
