@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">top_ads_create</string>
     <string name="mulai_beriklan">Mulai Beriklan</string>
-    <string name="apa_itu_group_iklan">Apa itu Group Iklan?</string>
+    <string name="apa_itu_group_iklan">Apa itu Grup Iklan?</string>
     <string name="atur_dan_pilih_produkmu_untuk_diiklankan_sekaligus">Atur dan pilih produkmu untuk diiklankan sekaligus.</string>
     <string name="isi_group_iklan_dengan_produk_dalam_kategori_serupa">Isi group iklan dengan produk dalam kategori serupa</string>
     <string name="produk_dalam_1_group_akan_menggunakan_kata_kunci_yang_sama">Produk dalam 1 group akan menggunakan kata kunci yang sama</string>
@@ -30,12 +30,12 @@
     <string name="pilih_produk_terpopuler">Pilih produk terpopuler</string>
     <string name="lanjutkan">Lanjutkan</string>
     <string name="tip_memilih_kata_kunci">Tip memilih kata kunci</string>
-    <string name="buat_group_iklan">Buat Group Iklan</string>
+    <string name="buat_group_iklan">Buat Grup Iklan</string>
     <string name="contoh_spatu_lari_bando_wanita_gaun_pesta">Contoh: Spatu Lari, Bando Wanita, Gaun Pesta</string>
     <string name="ketik_nama_group_iklan">Ketik nama grup iklan</string>
     <string name="duplicate_group_name_error">Nama grup iklan telah digunakan</string>
     <string name="duplicate_group_name_error_wrong">Nama Grup Anda telah digunakan</string>
-    <string name="atur_beberapa_iklan_sekaligus_ke_dalam_satu_group_sesuai_kategori_produk">Atur beberapa iklan sekaligus ke dalam satu group sesuai kategori produk.</string>
+    <string name="atur_beberapa_iklan_sekaligus_ke_dalam_satu_group_sesuai_kategori_produk">Atur beberapa iklan sekaligus ke dalam satu grup sesuai kategori produk.</string>
     <string name="group_iklan">Grup Iklan</string>
     <string name="pencarian_bulan">Pencarian / bulan</string>
     <string name="oops_produk_ntidak_ditemukan">Oops, produk tidak ditemukan</string>
