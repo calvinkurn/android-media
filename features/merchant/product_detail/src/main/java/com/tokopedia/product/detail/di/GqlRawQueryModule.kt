@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.product.detail.R
-import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase
 import dagger.Module
 import dagger.Provides
@@ -237,7 +236,6 @@ class GqlRawQueryModule {
     fun provideProductCategory(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_product_catalog)
 
-
     @ProductDetailScope
     @Provides
     @IntoMap
@@ -257,5 +255,18 @@ class GqlRawQueryModule {
     @Named(AtcConstant.MUTATION_UPDATE_CART_COUNTER)
     fun provideUpdateCartCounterMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gql_update_cart_counter)
+    }
+
+    @ProductDetailScope
+    @Provides
+    @Named("atcMutation")
+    fun provideAddToCartMutation(@ApplicationContext context: Context):
+            String = GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart)
+
+    @ProductDetailScope
+    @Provides
+    @Named("atcOcsMutation")
+    fun provideAddToCartOcsMutation(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart_one_click_shipment)
     }
 }
