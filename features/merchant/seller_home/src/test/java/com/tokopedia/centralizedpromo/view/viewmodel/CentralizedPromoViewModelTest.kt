@@ -3,14 +3,17 @@ package com.tokopedia.centralizedpromo.view.viewmodel
 import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.arch.core.executor.TaskExecutor
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.centralizedpromo.domain.usecase.GetPostUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
+import com.tokopedia.centralizedpromo.domain.usecase.GetPostUseCase
 import com.tokopedia.centralizedpromo.view.LayoutType
+import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
 import com.tokopedia.centralizedpromo.view.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.mockk
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -196,6 +199,19 @@ class CentralizedPromoViewModelTest : Spek({
             Then("view model layout data for posts is fail") {
                 val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.POST)
                 assertTrue(result != null && result is Fail)
+            }
+        }
+
+        Scenario("Success get layout data for promo creation") {
+            val successResult = PromoCreationStaticData.provideStaticData()
+
+            When("get layout data for post") {
+                viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+            }
+
+            Then("view model layout data for promo creation is success") {
+                val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
+                assertTrue(result != null && result is Success)
             }
         }
     }
