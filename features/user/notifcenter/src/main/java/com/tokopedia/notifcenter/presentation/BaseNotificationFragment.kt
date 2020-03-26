@@ -191,7 +191,7 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
         view?.let { Toaster.showError(it, message, Snackbar.LENGTH_LONG) }
     }
 
-    protected fun onSuccessReminderStock() {
+    override fun onSuccessReminderStock() {
         view?.let { view ->
             context?.let {
                 Toaster.make(
