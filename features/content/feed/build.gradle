@@ -42,7 +42,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.interestPickCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
@@ -62,13 +61,13 @@ dependencies {
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.linker)
-
     implementation project(rootProject.ext.libraries.youtubeutil)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
+    implementation project(rootProject.ext.libraries.remoteResourceRequest)
 
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.principles
@@ -79,7 +78,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
