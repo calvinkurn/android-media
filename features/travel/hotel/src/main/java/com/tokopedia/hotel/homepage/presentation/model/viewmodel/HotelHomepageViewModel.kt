@@ -31,7 +31,7 @@ class HotelHomepageViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         private val bannerUseCase: GetTravelCollectiveBannerUseCase,
         private val travelRecentSearchUseCase: TravelRecentSearchUseCase,
-        val dispatcher: HotelDispatcherProvider) : BaseViewModel(dispatcher.IO) {
+        val dispatcher: HotelDispatcherProvider) : BaseViewModel(dispatcher.io) {
 
     val promoData = MutableLiveData<Result<TravelCollectiveBannerModel>>()
 
@@ -60,7 +60,7 @@ class HotelHomepageViewModel @Inject constructor(
 
     fun deleteRecentSearch(rawQuery: String) {
         launchCatchError(block = {
-            val data = withContext(dispatcher.IO) {
+            val data = withContext(dispatcher.ui) {
                 val graphqlRequest = GraphqlRequest(rawQuery, HotelDeleteRecentSearchEntity.Response::class.java)
                 var graphQlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)

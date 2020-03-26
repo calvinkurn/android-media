@@ -9,9 +9,9 @@ import kotlinx.coroutines.Dispatchers
  */
 
 class HotelDispatchersProviderTest : HotelDispatcherProvider() {
-    override val IO: CoroutineDispatcher
+    override val io: CoroutineDispatcher
         get() = Dispatchers.Unconfined
 
-    override val Main: CoroutineDispatcher
+    override val ui: CoroutineDispatcher
         get() = Dispatchers.Unconfined
 }

@@ -9,6 +9,6 @@ import kotlinx.coroutines.Dispatchers
 
 @Suppress("PropertyName")
 open class HotelDispatcherProvider {
-    open val Main: CoroutineDispatcher = Dispatchers.Main
-    open val IO: CoroutineDispatcher = Dispatchers.IO
+    open val io: CoroutineDispatcher = Dispatchers.IO
+    open val ui: CoroutineDispatcher = Dispatchers.Default
 }

@@ -35,14 +35,14 @@ import javax.inject.Inject
 class HotelDestinationViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         val graphqlRepository: GraphqlRepository,
-        val dispatcher: HotelDispatcherProvider) : BaseViewModel(dispatcher.IO) {
+        val dispatcher: HotelDispatcherProvider) : BaseViewModel(dispatcher.io) {
 
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     val popularSearch = MutableLiveData<Result<List<PopularSearch>>>()
     val recentSearch = MutableLiveData<Result<List<RecentSearch>>>()
     val searchDestination = MutableLiveData<RecentSearchState<MutableList<SearchDestination>>>()
     val longLat = MutableLiveData<Result<Pair<Double, Double>>>()
-    private val deleteSuccess = MutableLiveData<Boolean>()
+    val deleteSuccess = MutableLiveData<Boolean>()
 
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
@@ -83,7 +83,7 @@ class HotelDestinationViewModel @Inject constructor(
         val dataParams = mapOf(PARAM_DATA to params)
         launchCatchError(block = {
             searchDestination.postValue(Shimmering)
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(dispatcher.ui) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_SEARCH_RESPONSE, dataParams)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<HotelSuggestion.Response>()
@@ -96,7 +96,7 @@ class HotelDestinationViewModel @Inject constructor(
     fun deleteRecentSearch(query: String, uuid: String) {
         val params = mapOf(PARAM_USER_ID to userSessionInterface.userId.toInt(), PARAM_DELETE_RECENT_UUID to uuid)
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(dispatcher.ui) {
                 val graphqlRequest = GraphqlRequest(query, RecentSearch.DeleteResponse::class.java, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<RecentSearch.DeleteResponse>()
