@@ -31,7 +31,16 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DETAIL_INPUT
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
+import com.tokopedia.product.addedit.common.util.getText
+import com.tokopedia.product.addedit.common.util.getTextFloatOrZero
+import com.tokopedia.product.addedit.common.util.getTextIntOrZero
+import com.tokopedia.product.addedit.description.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionActivity
+import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionFragment.Companion.REQUEST_CODE_DESCRIPTION
+import com.tokopedia.product.addedit.detail.presentation.adapter.ProductNameRecAdapter
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailComponent
 import com.tokopedia.product.addedit.detail.presentation.adapter.NameRecommendationAdapter
 import com.tokopedia.product.addedit.detail.presentation.adapter.WholeSalePriceInputAdapter
@@ -43,11 +52,14 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
+import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
+import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.ProductCatalog
 import com.tokopedia.product.addedit.detail.presentation.viewholder.WholeSaleInputViewHolder
 import com.tokopedia.product.addedit.detail.presentation.viewmodel.AddEditProductDetailViewModel
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
+import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
 import com.tokopedia.product_photo_adapter.ProductPhotoViewHolder
@@ -82,6 +94,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
                     UNIT_WEEK -> R.string.label_week
                     else -> -1
                 }
+        const val REQUEST_CODE_DETAIL = 0x02
     }
 
     @Inject
@@ -548,6 +561,13 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
                         }
                     }
                 }
+                REQUEST_CODE_DESCRIPTION -> {
+                    val shipmentInputModel =
+                            data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
+                    val descriptionInputModel =
+                            data.getParcelableExtra<DescriptionInputModel>(EXTRA_DESCRIPTION_INPUT)
+                    submitInput(shipmentInputModel, descriptionInputModel)
+                }
             }
         }
     }
@@ -719,7 +739,6 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
     }
 
     private fun showDurationUnitOption() {
-
         fragmentManager?.let {
             val optionPicker = OptionPicker()
             val title = getString(R.string.label_duration)
@@ -742,5 +761,43 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
                 viewModel.validatePreOrderDurationInput(selectedDurationPosition, preOrderDurationInput)
             }
         }
+    }
+
+    private fun resetPreOrderDurationField() {
+        preOrderDurationField?.apply {
+            setError(false)
+        }
+    }
+
+    private fun moveToDescriptionActivity() {
+        val intent = Intent(context, AddEditProductDescriptionActivity::class.java)
+        startActivityForResult(intent, REQUEST_CODE_DESCRIPTION)
+    }
+
+    private fun submitInput(shipmentInputModel: ShipmentInputModel,
+                            descriptionInputModel: DescriptionInputModel) {
+        val detailInputModel = DetailInputModel(
+                productNameField.getText(),
+                "1",
+                "1",
+                productPriceField.getTextFloatOrZero(),
+                productStockField.getTextIntOrZero(),
+                productMinOrderField.getTextIntOrZero(),
+                if (newRadioButton?.isChecked == true) "NEW" else "USED",
+                productSkuField.getText(),
+                productPhotoPaths,
+                PreorderInputModel(
+                        preOrderDurationField.getTextIntOrZero(),
+                        selectedDurationPosition,
+                        preOrderSwitch?.isChecked ?: false
+                )
+        )
+
+        val intent = Intent()
+        intent.putExtra(EXTRA_DETAIL_INPUT, detailInputModel)
+        intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
+        intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
 }

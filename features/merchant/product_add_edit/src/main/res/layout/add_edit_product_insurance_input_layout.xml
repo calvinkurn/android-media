@@ -8,6 +8,7 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+        android:id="@+id/switch_insurance"
         app:bold="true"
         android:text="@string/label_shipment_insurance"
         android:layout_width="match_parent"

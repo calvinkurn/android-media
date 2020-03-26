@@ -1,5 +1,7 @@
 package com.tokopedia.product.addedit.shipment.presentation.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +12,8 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
+import com.tokopedia.product.addedit.common.util.getTextIntOrZero
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentComponent
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_GRAM
@@ -17,14 +21,17 @@ import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProdu
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MIN_WEIGHT
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.UNIT_GRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.UNIT_KILOGRAM
+import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.shipment.presentation.viewmodel.AddEditProductShipmentViewModel
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import javax.inject.Inject
 
 class AddEditProductShipmentFragment : BaseDaggerFragment() {
     private var tfWeightAmount: TextFieldUnify? = null
     private var tfWeightUnit: TextFieldUnify? = null
+    private var switchInsurance: SwitchUnify? = null
     private var btnEnd: UnifyButton? = null
     private var selectedWeightPosition: Int = 0
     private lateinit var shipmentViewModel: AddEditProductShipmentViewModel
@@ -43,6 +50,16 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
                     UNIT_KILOGRAM ->  R.string.label_weight_kilogram
                     else -> -1
                 }
+
+        const val REQUEST_CODE_SHIPMENT = 0x04
+    }
+
+    override fun getScreenName(): String {
+        return ""
+    }
+
+    override fun initInjector() {
+        getComponent(AddEditProductShipmentComponent::class.java).inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,7 +69,6 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_add_edit_product_shipment, container, false)
     }
 
@@ -60,6 +76,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         tfWeightUnit = view.findViewById(R.id.tf_weight_unit)
         tfWeightAmount = view.findViewById(R.id.tf_weight_amount)
+        switchInsurance = view.findViewById(R.id.switch_insurance)
         btnEnd = view.findViewById(R.id.btn_end)
         tfWeightUnit?.apply {
             textFieldInput.setText(getWeightTypeTitle(0))
@@ -73,7 +90,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             validateInputWeight(it)
         }
         btnEnd?.setOnClickListener {
-            activity?.finish()
+            submitInput()
         }
     }
 
@@ -128,12 +145,16 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         }
     }
 
-    override fun getScreenName(): String {
-        return ""
-    }
-
-    override fun initInjector() {
-        getComponent(AddEditProductShipmentComponent::class.java).inject(this)
+    private fun submitInput() {
+        val shipmentInputModel = ShipmentInputModel(
+                tfWeightAmount.getTextIntOrZero(),
+                selectedWeightPosition,
+                switchInsurance?.isChecked == true
+        )
+        val intent = Intent()
+        intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
 
 }

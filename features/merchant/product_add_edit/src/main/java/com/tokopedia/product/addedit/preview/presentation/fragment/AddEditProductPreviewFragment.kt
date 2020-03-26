@@ -9,32 +9,60 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DETAIL_INPUT
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
+import com.tokopedia.product.addedit.description.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionActivity
 import com.tokopedia.product.addedit.detail.presentation.activity.AddEditProductDetailActivity
+import com.tokopedia.product.addedit.detail.presentation.fragment.AddEditProductDetailFragment.Companion.REQUEST_CODE_DETAIL
+import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
+import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
+import com.tokopedia.product.addedit.preview.di.DaggerAddEditProductPreviewComponent
+import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductUploadService
+import com.tokopedia.product.addedit.preview.presentation.viewmodel.AddEditProductPreviewViewModel
+import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tooltip.model.ImageTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import javax.inject.Inject
 
 class AddEditProductPreviewFragment : BaseDaggerFragment() {
 
     private var addEditProductPhotoButton: AppCompatTextView? = null
+    private lateinit var previewViewModel: AddEditProductPreviewViewModel
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     companion object {
         fun createInstance(): Fragment {
             return AddEditProductPreviewFragment()
         }
 
-
         private const val MAX_PRODUCT_PHOTOS = 5
         private const val REQUEST_CODE_IMAGE = 0x01
+
         // TODO faisalramd
         const val TEST_IMAGE_URL = "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/9/16/36162992/36162992_778e5d1e-06fd-4e4a-b650-50c232815b24_1080_1080.jpg"
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initViewModel()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -67,10 +95,16 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
             if (requestCode == REQUEST_CODE_IMAGE) {
                 val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
                 if (imageUrlOrPathList != null && imageUrlOrPathList.size > 0) {
-                    val addEditProductDetailIntent = Intent(context, AddEditProductDetailActivity::class.java)
-                    addEditProductDetailIntent.putStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS, imageUrlOrPathList)
-                    startActivity(addEditProductDetailIntent)
+                    moveToAddEditProductActivity(imageUrlOrPathList)
                 }
+            } else if (requestCode == REQUEST_CODE_DETAIL) {
+                val shipmentInputModel =
+                        data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
+                val descriptionInputModel =
+                        data.getParcelableExtra<DescriptionInputModel>(EXTRA_DESCRIPTION_INPUT)
+                val detailInputModel =
+                        data.getParcelableExtra<DetailInputModel>(EXTRA_DETAIL_INPUT)
+                AddEditProductUploadService.startService(context!!, detailInputModel, descriptionInputModel, shipmentInputModel)
             }
         }
     }
@@ -80,7 +114,18 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
+        DaggerAddEditProductPreviewComponent.builder()
+                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+                .addEditProductPreviewModule(AddEditProductPreviewModule())
+                .build()
+                .inject(this)
+    }
 
+    private fun initViewModel() {
+        activity?.run {
+            previewViewModel = ViewModelProviders.of(this, viewModelFactory)
+                    .get(AddEditProductPreviewViewModel::class.java)
+        }
     }
 
     private fun showPhotoTips() {
@@ -98,10 +143,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
                 show(it, null)
             }
         }
-    }
-
-    private fun moveToDescriptionActivity() {
-        startActivity(AddEditProductDescriptionActivity.createInstance(context))
     }
 
     @SuppressLint("WrongConstant")
@@ -141,5 +182,15 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
                 true,
                 imagePickerEditorBuilder,
                 imagePickerMultipleSelectionBuilder)
+    }
+
+    private fun moveToDescriptionActivity() {
+        startActivity(AddEditProductDescriptionActivity.createInstance(context))
+    }
+
+    private fun moveToAddEditProductActivity(imageUrlOrPathList: ArrayList<String>) {
+        val addEditProductDetailIntent = Intent(context, AddEditProductDetailActivity::class.java)
+        addEditProductDetailIntent.putStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS, imageUrlOrPathList)
+        startActivityForResult(addEditProductDetailIntent, REQUEST_CODE_DETAIL)
     }
 }
