@@ -16,7 +16,7 @@ class SettingSectionViewHolder(itemView: View?) : AbstractViewHolder<SettingSect
 
     override fun bind(element: SettingSections?) {
         sectionTitle?.text = element?.title
-        //ImageHandler.LoadImage(icSection, element?.icon)
+        ImageHandler.LoadImage(icSection, element?.icon)
     }
 
     companion object {
