@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.hotel.common.util.HotelDispatcherProvider
 import com.tokopedia.hotel.search.data.model.Filter
 import com.tokopedia.hotel.search.data.model.PropertySearch
 import com.tokopedia.hotel.search.data.model.Sort
@@ -21,8 +22,8 @@ import javax.inject.Inject
 
 class HotelSearchResultViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
-        dispatcher: CoroutineDispatcher)
-    : BaseViewModel(dispatcher) {
+        private val dispatcher: HotelDispatcherProvider)
+    : BaseViewModel(dispatcher.io) {
 
     val searchParam: SearchParam = SearchParam()
     var selectedSort: Sort = Sort()
@@ -61,7 +62,7 @@ class HotelSearchResultViewModel @Inject constructor(
             val params = mapOf(PARAM_SEARCH_PROPERTY to searchParam)
             val graphqlRequest = GraphqlRequest(searchQuery, PropertySearch.Response::class.java, params)
 
-            val response = withContext(Dispatchers.IO) { graphqlRepository.getReseponse(listOf(graphqlRequest)) }
+            val response = withContext(dispatcher.ui) { graphqlRepository.getReseponse(listOf(graphqlRequest)) }
             liveSearchResult.value = Success(response.getSuccessData<PropertySearch.Response>().response)
         }) {
             liveSearchResult.value = Fail(it)

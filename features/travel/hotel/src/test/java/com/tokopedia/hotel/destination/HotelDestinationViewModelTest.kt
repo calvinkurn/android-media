@@ -284,26 +284,7 @@ class HotelHomepageViewModelTest {
 
     @Test
     fun getCurrentLocation() {
-        //given
-        val activity = mockk<Activity>()
-        hotelDestinationViewModel.setPermissionChecker(PermissionCheckerHelper())
 
-        val contextWrapper = mockk<Looper>()
-        coEvery { activity.mainLooper } returns contextWrapper
-
-        val mContextMock = mockk<Context>(relaxed = true)
-        coEvery{ activity.applicationContext } returns mContextMock
-
-        val fragmentManager = mockk<FragmentManager>()
-        coEvery{ activity.fragmentManager } returns fragmentManager
-
-        coEvery { fragmentManager.findFragmentById(any()) } returns mockk()
-
-        //when
-        hotelDestinationViewModel.getCurrentLocation(activity, LocationServices.getFusedLocationProviderClient(activity))
-
-        //then
-        assert(hotelDestinationViewModel.longLat.value is Success)
     }
 
     @Test
