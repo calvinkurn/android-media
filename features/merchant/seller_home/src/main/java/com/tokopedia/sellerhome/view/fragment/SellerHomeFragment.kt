@@ -78,6 +78,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     private val tooltipBottomSheet by lazy { BottomSheetUnify() }
     private val recyclerView: RecyclerView by lazy { super.getRecyclerView(view) }
 
+    private var sellerHomeListener: Listener? = null
     private var menu: Menu? = null
     private val notificationDotBadge: NotificationDotBadge? by lazy {
         NotificationDotBadge(context ?: return@lazy null)
@@ -170,6 +171,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         swipeRefreshLayout.setOnRefreshListener {
             reloadPage()
             showNotificationBadge()
+            sellerHomeViewModel.getShopStatus()
+            sellerHomeListener?.getShopInfo()
         }
 
         sahGlobalError.setActionClickListener {
@@ -267,11 +270,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
     override fun setOnErrorWidget(position: Int, widget: BaseWidgetUiModel<*>) {
         showErrorToaster()
-    }
-
-    fun setNotifCenterCounter(count: Int) {
-        this.notifCenterCount = count
-        showNotificationBadge()
     }
 
     private fun showNotificationBadge() {
@@ -568,5 +566,18 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         } else {
             throwable.printStackTrace()
         }
+    }
+
+    fun setNotifCenterCounter(count: Int) {
+        this.notifCenterCount = count
+        showNotificationBadge()
+    }
+
+    fun bindListener(listener: Listener?) {
+        this.sellerHomeListener = listener
+    }
+
+    interface Listener {
+        fun getShopInfo()
     }
 }
