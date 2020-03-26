@@ -3,7 +3,6 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.order.view
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.authentication.AuthHelper
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.*
@@ -129,7 +128,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         orderSummaryPageEnhanceECommerce.setCartId(orderShop.cartResponse.cartId)
         orderSummaryPageEnhanceECommerce.setBuyerAddressId(_orderPreference?.preference?.address?.addressId
                 ?: 0)
-        orderSummaryPageEnhanceECommerce.setSpid(_orderPreference?.shipping?.getRealShipperProductId() ?: 0)
+        orderSummaryPageEnhanceECommerce.setSpid(_orderPreference?.shipping?.getRealShipperProductId()
+                ?: 0)
         orderSummaryPageEnhanceECommerce.setCodFlag(false)
         orderSummaryPageEnhanceECommerce.setCornerFlag(false)
         orderSummaryPageEnhanceECommerce.setIsFullfilment(false)
@@ -366,7 +366,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                     //BBO
                                     //reset last BBO
                                     if (shipping?.logisticPromoViewModel != null) {
-                                        shipping = shipping.copy(logisticPromoTickerMessage = null, logisticPromoViewModel = null, logisticPromoShipping = null)
+                                        shipping = shipping.copy(logisticPromoTickerMessage = null, logisticPromoViewModel = null, logisticPromoShipping = null, isApplyLogisticPromo = false)
                                     }
                                     if (shipping?.serviceErrorMessage?.isEmpty() == true) {
                                         val logisticPromo: LogisticPromoUiModel? = shippingRecommendationData.logisticPromo
@@ -460,39 +460,39 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             }
             val totalProductPrice = quantity.orderQuantity * productPrice
             val shipping = _orderPreference?.shipping
-            val totalShippingPrice : Double = if (shipping?.logisticPromoShipping != null) {
+            val totalShippingPrice: Double = if (shipping?.logisticPromoShipping != null && shipping.isApplyLogisticPromo) {
                 shipping.logisticPromoShipping.productData.price.price.toDouble()
             } else if (shipping?.shippingPrice != null) {
                 shipping.shippingPrice.toDouble()
             } else 0.0
-                var insurancePrice = 0.0
-                if (shipping?.isCheckInsurance == true && shipping.insuranceData != null) {
-                    insurancePrice = shipping.insuranceData.insurancePrice.toDouble()
-                }
-            val benefitAmount = shipping?.logisticPromoViewModel?.benefitAmount ?: 0
+            var insurancePrice = 0.0
+            if (shipping?.isCheckInsurance == true && shipping.insuranceData != null) {
+                insurancePrice = shipping.insuranceData.insurancePrice.toDouble()
+            }
+            val benefitAmount = if (shipping?.isApplyLogisticPromo == true && shipping.logisticPromoViewModel != null) shipping.logisticPromoViewModel.benefitAmount else 0
             val fee = _orderPreference?.preference?.payment?.fee?.toDouble() ?: 0.0
             val subtotal = totalProductPrice + totalShippingPrice + insurancePrice + fee - benefitAmount
             val minimumAmount = _orderPreference?.preference?.payment?.minimumAmount ?: 0
             val maximumAmount = _orderPreference?.preference?.payment?.maximumAmount ?: 0
 //                validateUsePromoRevampUiModel.promoUiModel.benefitSummaryInfoUiModel.summaries
             val orderCost = OrderCost(totalProductPrice, subtotal, totalShippingPrice, insurancePrice, fee, benefitAmount)
-                if (minimumAmount > subtotal) {
-                    orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
-                            paymentErrorMessage = "Belanjaanmu kurang dari min. transaksi ${_orderPreference?.preference?.payment?.gatewayName}. Silahkan pilih pembayaran lain.",
+            if (minimumAmount > subtotal) {
+                orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
+                        paymentErrorMessage = "Belanjaanmu kurang dari min. transaksi ${_orderPreference?.preference?.payment?.gatewayName}. Silahkan pilih pembayaran lain.",
 //                            paymentErrorMessage = "minimum pembayaran adalah ${CurrencyFormatUtil.convertPriceValueToIdrFormat(minimumAmount, false)}",
-                            isButtonChoosePayment = true)
-                } else if (maximumAmount > 0 && maximumAmount < subtotal) {
-                    orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
-                            paymentErrorMessage = "Belanjaanmu melebihi limit transaksi ${_orderPreference?.preference?.payment?.gatewayName}. Silahkan pilih pembayaran lain.",
+                        isButtonChoosePayment = true)
+            } else if (maximumAmount > 0 && maximumAmount < subtotal) {
+                orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
+                        paymentErrorMessage = "Belanjaanmu melebihi limit transaksi ${_orderPreference?.preference?.payment?.gatewayName}. Silahkan pilih pembayaran lain.",
 //                            paymentErrorMessage = "maximum pembayaran adalah ${CurrencyFormatUtil.convertPriceValueToIdrFormat(maximumAmount, false)}",
-                            isButtonChoosePayment = true)
-                } else if (_orderPreference?.preference?.payment?.gatewayCode?.contains("OVO") == true && subtotal > _orderPreference?.preference?.payment?.walletAmount ?: 0) {
-                    orderTotal.value = orderTotal.value?.copy(orderCost = orderCost, paymentErrorMessage = "OVO Cash kamu tidak cukup. Silahkan pilih pembayaran lain.", isButtonChoosePayment = true)
-                } else {
-                    orderTotal.value = orderTotal.value?.copy(orderCost = orderCost, paymentErrorMessage = null, isButtonChoosePayment = false)
-                }
+                        isButtonChoosePayment = true)
+            } else if (_orderPreference?.preference?.payment?.gatewayCode?.contains("OVO") == true && subtotal > _orderPreference?.preference?.payment?.walletAmount ?: 0) {
+                orderTotal.value = orderTotal.value?.copy(orderCost = orderCost, paymentErrorMessage = "OVO Cash kamu tidak cukup. Silahkan pilih pembayaran lain.", isButtonChoosePayment = true)
+            } else {
+                orderTotal.value = orderTotal.value?.copy(orderCost = orderCost, paymentErrorMessage = null, isButtonChoosePayment = false)
+            }
 //                validateUsePromo()
-                return
+            return
 //            }
         }
         orderTotal.value = orderTotal.value?.copy(orderCost = OrderCost(), buttonState = ButtonBayarState.DISABLE)
@@ -515,6 +515,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo?.copy(isApplied = false)
             for (shippingDurationViewModel in shippingDurationViewModels) {
                 if (shippingDurationViewModel.serviceData.serviceId == shipping.serviceId) {
+                    shippingDurationViewModel.isSelected = true
                     val shippingCourierViewModelList = shippingDurationViewModel.shippingCourierViewModelList
                     var selectedShippingCourierUiModel: ShippingCourierUiModel? = null
                     for (shippingCourierUiModel in shippingCourierViewModelList) {
@@ -575,7 +576,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             } else {
                 "Durasi tergantung kurir"
             }
-            val shipping1 = shipping.copy(
+            var shipping1 = shipping.copy(
                     needPinpoint = flagNeedToSetPinpoint,
                     serviceErrorMessage = if (flagNeedToSetPinpoint) "Butuh pinpoint lokasi" else null,
                     isServicePickerEnable = !flagNeedToSetPinpoint,
@@ -591,8 +592,17 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     insuranceData = selectedShippingCourierUiModel.productData.insurance,
                     shippingPrice = selectedShippingCourierUiModel.productData.price.price,
                     shippingRecommendationData = shippingRecommendationData,
+                    logisticPromoTickerMessage = null,
+                    logisticPromoViewModel = null,
                     logisticPromoShipping = null,
                     isApplyLogisticPromo = false)
+
+            if (shipping1.serviceErrorMessage.isNullOrEmpty()) {
+                val logisticPromo: LogisticPromoUiModel? = shippingRecommendationData.logisticPromo
+                if (logisticPromo != null && !logisticPromo.disabled) {
+                    shipping1 = shipping1.copy(logisticPromoTickerMessage = "Tersedia ${logisticPromo.title}", logisticPromoViewModel = logisticPromo, logisticPromoShipping = null)
+                }
+            }
             _orderPreference = _orderPreference?.copy(shipping = shipping1)
             orderPreference.value = OccState.Success(_orderPreference!!)
             // TODO: BUTTON STATE LOADING -> VALIDATE PROMO
@@ -725,6 +735,9 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                             }
                                         }
                                     }
+                                    if (_orderPreference?.shipping?.isServicePickerEnable == true) {
+                                        shippingDurationViewModel.isSelected = false
+                                    }
                                 }
                                 shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo.copy(isApplied = true)
                             }
@@ -851,7 +864,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                 )
                         )
                 )
-        ))))
+        )), promos = generateCheckoutPromos(pref)))
         checkoutOccUseCase.execute(param, { checkoutOccGqlResponse: CheckoutOccGqlResponse ->
             if (checkoutOccGqlResponse.response.status.equals("OK", true)) {
                 if (checkoutOccGqlResponse.response.data.success == 1) {
@@ -882,6 +895,14 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             throwable.printStackTrace()
             globalEvent.value = OccGlobalEvent.Error(throwable)
         })
+    }
+
+    private fun generateCheckoutPromos(pref: OrderPreference): List<com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.PromoRequest> {
+        val list = ArrayList<com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.PromoRequest>()
+        if (pref.shipping?.isApplyLogisticPromo == true && pref.shipping.logisticPromoShipping != null && pref.shipping.logisticPromoViewModel != null) {
+            list.add(PromoRequest("logistic", pref.shipping.logisticPromoViewModel.promoCode))
+        }
+        return list
     }
 
     fun updateCartPromo(onSuccess: (PromoRequest, ValidateUsePromoRequest) -> Unit) {
