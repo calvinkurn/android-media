@@ -68,6 +68,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private val SHOP_TEMPLATE = 1
     private val DIGITAL_TEMPLATE = 2
     private final val VARIANT_A = "Headline A"
+    private final val VARIANT_NO_HEADLINE = "No Headline"
     private final val VARIANT_B = "Headline B"
     private final val AB_TEST_KEY = "Headline Ads New Design 2"
 
@@ -92,7 +93,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         if (activityIsFinishing(context))
             return
         if (template == NO_TEMPLATE && isEligible(cpmData)) {
-            var variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_KEY, VARIANT_A)
+            var variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_KEY, VARIANT_NO_HEADLINE)
             if (variant.equals(VARIANT_B)) {
                 View.inflate(getContext(), R.layout.layout_ads_banner_shop_b_pager, this)
                 BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_b_product
