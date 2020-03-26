@@ -22,9 +22,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import timber.log.Timber
 import javax.annotation.Resource
 
@@ -41,6 +39,7 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
     }
 
     lateinit var resources: Resources
+    lateinit var job: Job
 
     val searchList: MutableLiveData<List<SearchEventItem<*>>> by lazy { MutableLiveData<List<SearchEventItem<*>>>() }
     val listViewHolder : MutableList<SearchEventItem<*>> = mutableListOf()
@@ -84,7 +83,7 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
     }
 
     fun getSearchData(text: String){
-        launchCatchError(
+        job = launchCatchError(
                 block = {
                     val listsLocation : MutableList<SearchLocationListViewHolder.LocationSuggestion> = mutableListOf()
                     val listsKegiatan : MutableList<SearchEventListViewHolder.KegiatanSuggestion> = mutableListOf()
@@ -122,6 +121,11 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
                     isItRefreshing.value = false
                 }
         )
+    }
+
+    fun cancelRequest(){
+        if(::job.isInitialized) job.cancel()
+        if(job.isCancelled) Timber.tag("Cancel").w("CANCEL")
     }
 
     suspend fun getLocationSuggestionData(text: String) : EventSearchLocationResponse.Data{

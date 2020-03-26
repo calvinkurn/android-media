@@ -103,7 +103,7 @@ class SearchLocationListViewHolder(val view: View, val onClicked: (() -> Unit)) 
                 spannable.setSpan(StyleSpan(Typeface.BOLD), startIndex, city_full_text.length,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 if (startIndex - 1 - text_to_bold.length > -1)
-                    spannable.setSpan(StyleSpan(Typeface.BOLD), 0, startIndex - 1 -
+                    spannable.setSpan(StyleSpan(Typeface.BOLD), 0, startIndex -
                             text_to_bold.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             } catch (e: Exception) {
                 e.printStackTrace()

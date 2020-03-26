@@ -43,8 +43,7 @@ class SearchEventGridViewHolder(val view : View) : DetailEventViewHolder<SearchE
             val location : String,
             val nama_event : String,
             val harga_start : String,
-            val harga_now : String,
-            val isFavorite : Boolean
+            val harga_now : String
     ): ImpressHolder()
 
     class EventGridAdapter : RecyclerView.Adapter<EventGridViewHolder>(){
@@ -59,24 +58,11 @@ class SearchEventGridViewHolder(val view : View) : DetailEventViewHolder<SearchE
 
         override fun onBindViewHolder(holder: EventGridViewHolder, position: Int) {
             val event = listEvent.get(position)
-            var favClicked = false
             with(holder.view){
                 Glide.with(context)
                         .load(event.image_url)
                         .centerCrop()
                         .into(image)
-
-                iv_favorite.setImageResource(if(event.isFavorite) R.drawable.ent_ic_wishlist_active else R.drawable.ent_ic_wishlist_inactive)
-                iv_favorite.setOnClickListener {
-                    //TODO Send API?
-                    if(favClicked){
-                        iv_favorite.setImageResource(R.drawable.ent_ic_wishlist_inactive)
-                        favClicked = false
-                    }else{
-                        iv_favorite.setImageResource(R.drawable.ent_ic_wishlist_active)
-                        favClicked = true
-                    }
-                }
 
                 txt_location.text = event.location
                 txt_title.text = event.nama_event

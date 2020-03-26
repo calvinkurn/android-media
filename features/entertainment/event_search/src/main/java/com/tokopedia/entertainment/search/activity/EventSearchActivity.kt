@@ -2,7 +2,9 @@ package com.tokopedia.entertainment.search.activity
 
 import android.content.Context
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View.OnFocusChangeListener
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -37,6 +39,14 @@ class EventSearchActivity : BaseSimpleActivity(), HasComponent<EventSearchCompon
         }
         txt_search.searchBarTextField.requestFocus()
         txt_search.searchBarTextField.setOnClickListener { EventSearchPageTracking.getInstance().clickSearchBarOnSearchActivity() }
+        txt_search.searchBarTextField.setOnEditorActionListener { view, i, keyEvent ->
+            if(i == EditorInfo.IME_ACTION_SEARCH || keyEvent.action == KeyEvent.KEYCODE_ENTER){
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(view.windowToken, 0)
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
+        }
     }
 
     private fun getExtrasQuery(): String {

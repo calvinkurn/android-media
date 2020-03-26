@@ -14,10 +14,11 @@ import com.tokopedia.entertainment.search.analytics.EventCategoryPageTracking
 import com.tokopedia.kotlin.extensions.view.setMargin
 import kotlinx.android.synthetic.main.ent_search_category_text.view.*
 import kotlinx.android.synthetic.main.ent_search_category_text_item.view.*
+import timber.log.Timber
 
 class CategoryTextViewHolder(val view: View, val onClicked : ((String)->Unit)?) : DetailEventViewHolder<CategoryTextViewModel>(view) {
 
-    val categoryTextBubbleAdapter = CategoryTextBubbleAdapter(onClicked)
+    val categoryTextBubbleAdapter = CategoryTextBubbleAdapter(onClicked, ::setPosition)
     init {
         initRecycle()
     }
@@ -33,10 +34,16 @@ class CategoryTextViewHolder(val view: View, val onClicked : ((String)->Unit)?) 
     }
 
     override fun bind(element: CategoryTextViewModel) {
-        initRecycle()
         categoryTextBubbleAdapter.listCategory = element.listsCategory
         categoryTextBubbleAdapter.hashSet = element.hashSet
         categoryTextBubbleAdapter.notifyDataSetChanged()
+    }
+
+    private fun setPosition(position: Int){
+        Timber.tag("Scroll").w("Scroll %s", position.toString())
+        Timber.tag("Scroll").w("%s", itemView.recycler_view_category.layoutManager?.itemCount)
+        itemView.recycler_view_category.layoutManager?.scrollToPosition(position)
+        itemView.recycler_view_category.scrollToPosition(position)
     }
 
     companion object{
@@ -48,7 +55,8 @@ class CategoryTextViewHolder(val view: View, val onClicked : ((String)->Unit)?) 
             val category: String
     )
 
-    class CategoryTextBubbleAdapter(val onClicked: ((String) -> Unit)?) : RecyclerView.Adapter<CategoryTextBubbleViewHolder>(){
+    class CategoryTextBubbleAdapter(val onClicked: ((String) -> Unit)?,
+                                    val setPosition: ((Int) -> Unit)) : RecyclerView.Adapter<CategoryTextBubbleViewHolder>(){
         lateinit var listCategory : List<CategoryTextBubble>
         lateinit var hashSet: HashSet<String>
         private val FIRST_ITEM = 100
@@ -97,6 +105,7 @@ class CategoryTextViewHolder(val view: View, val onClicked : ((String)->Unit)?) 
                 }
                 if(hashSet.contains(category.id)) {
                     clicked = setClicked(this, context, clicked)
+                    setPosition(holder.adapterPosition)
                 }
             }
         }

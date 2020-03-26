@@ -22,10 +22,12 @@ import com.tokopedia.entertainment.search.viewmodel.EventSearchViewModel
 import com.tokopedia.entertainment.search.viewmodel.factory.EventSearchViewModelFactory
 import kotlinx.android.synthetic.main.ent_search_activity.*
 import kotlinx.android.synthetic.main.ent_search_fragment.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -36,6 +38,7 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope {
     lateinit var factory : EventSearchViewModelFactory
     lateinit var viewModel : EventSearchViewModel
 
+    var job: Job = Job()
 
     override fun getScreenName(): String {
         return TAG
@@ -121,11 +124,14 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope {
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if(p0.toString().length == 0){
+                if(p0.toString().isEmpty()){
+                    if(job.isActive) job.cancel()
+                    viewModel.cancelRequest()
                     viewModel.getHistorySearch()
                 }
                 else{
-                    launch {
+                    if(job.isActive) job.cancel()
+                    job = launch {
                         delay(200)
                         viewModel.getSearchData(p0.toString())
                     }
@@ -135,7 +141,7 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main
+        get() = Dispatchers.Main + Job()
 
     companion object{
         fun newInstance() = EventSearchFragment()

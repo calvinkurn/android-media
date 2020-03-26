@@ -74,8 +74,7 @@ class EventCategoryFragment : BaseDaggerFragment() {
         activity?.txt_search?.searchBarTextField?.setText(QUERY_TEXT)
         observeSearchList()
         observeErrorReport()
-        setInitCategory()
-        getEventData(QUERY_TEXT, CITY_ID)
+        setInitData()
 
         categoryAdapter = DetailEventAdapter(DetailTypeFactoryImp(::onCategoryClicked))
 
@@ -97,18 +96,20 @@ class EventCategoryFragment : BaseDaggerFragment() {
             setOnRefreshListener {
                 activity?.shimering_layout?.visibility = View.VISIBLE
                 activity?.parent_view?.visibility = View.GONE
-                getEventData(QUERY_TEXT, CITY_ID)
+                getEventData()
             }
         }
     }
 
-    private fun setInitCategory(){
+    private fun setInitData(){
+        viewModel.setData(cityID = CITY_ID)
         if(CATEGORY_ID.isNotBlank()){
             val cat = CATEGORY_ID.split(",")
             cat.forEach{
                 viewModel.putCategoryToQuery(it)
             }
-        }
+            viewModel.initCategory = true
+        } else viewModel.getData()
     }
 
     private fun observeErrorReport(){
@@ -150,8 +151,8 @@ class EventCategoryFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun getEventData(searchQuery: String, city_id: String){
+    private fun getEventData(){
         showShimmerOrNot(true)
-        viewModel.getData(city_id, searchQuery)
+        viewModel.getData()
     }
 }
