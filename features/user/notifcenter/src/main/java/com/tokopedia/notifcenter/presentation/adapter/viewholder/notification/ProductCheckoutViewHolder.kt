@@ -36,7 +36,7 @@ class ProductCheckoutViewHolder(
 
     override fun bindProductView(element: NotificationItemViewBean) {
         val product = element.getAtcProduct() ?: return
-        checkoutButtonValidation(element.getAtcProduct()?.typeButton?: 0)
+        //checkoutButtonValidation(element.getAtcProduct()?.typeButton?: 0)
         snapMultiProductItem()
         onProductCheckoutClick(element)
         productCardItemView(element)
@@ -102,15 +102,14 @@ class ProductCheckoutViewHolder(
     }
 
     private fun onProductCheckoutClick(element: NotificationItemViewBean) {
+        val product = element.getAtcProduct() ?: return
         btnCheckout.setOnClickListener {
             notificationItemMarkedClick(element)
             listener.getAnalytic().trackAtcOnSingleProductClick(notification = element)
-            element.getAtcProduct()?.let {
-                if (it.stock < SINGLE_PRODUCT) {
-                    listener.onItemStockHandlerClick(element)
-                } else {
-                    listener.addProductToCheckout(element.userInfo, element)
-                }
+            if (product.stock < SINGLE_PRODUCT) {
+                listener.onItemStockHandlerClick(element)
+            } else {
+                listener.addProductToCheckout(element.userInfo, element)
             }
         }
     }
