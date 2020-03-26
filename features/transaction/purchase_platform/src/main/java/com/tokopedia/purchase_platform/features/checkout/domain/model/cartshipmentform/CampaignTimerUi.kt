@@ -12,7 +12,8 @@ data class CampaignTimerUi(
         var timerDeduct: String = "",
         var timerDescription: String = "",
         var timerExpired: String = "",
-        var timerExpiredDuration: Int = 0
+        var timerExpiredDuration: Int = 0,
+        var timerServer: String = ""
 ) : Parcelable {
     constructor(source: Parcel) : this(
             source.readString(),
@@ -22,7 +23,8 @@ data class CampaignTimerUi(
             source.readString(),
             source.readString(),
             source.readString(),
-            source.readInt()
+            source.readInt(),
+            source.readString()
     )
 
     override fun describeContents() = 0
@@ -36,6 +38,7 @@ data class CampaignTimerUi(
         writeString(timerDescription)
         writeString(timerExpired)
         writeInt(timerExpiredDuration)
+        writeString(timerServer)
     }
 
     companion object {

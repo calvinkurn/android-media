@@ -279,7 +279,8 @@ public class ShipmentMapper implements IShipmentMapper {
                     timerResponse.getTimerDetail().getDeductTime(),
                     timerResponse.getDescription(),
                     timerResponse.getTimerDetail().getExpiredTime(),
-                    timerResponse.getTimerDetail().getExpiredDuration()
+                    timerResponse.getTimerDetail().getExpiredDuration(),
+                    timerResponse.getTimerDetail().getServerTime()
             );
             dataResult.setCampaignTimerUi(timerUi);
         }
