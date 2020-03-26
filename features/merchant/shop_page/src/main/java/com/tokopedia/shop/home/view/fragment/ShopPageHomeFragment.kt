@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -72,6 +73,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         const val KEY_SHOP_ATTRIBUTION = "SHOP_ATTRIBUTION"
         const val KEY_SHOP_REF = "SHOP_REF"
         const val SPAN_COUNT = 2
+        const val SHOP_HOME_TAB_TRACE = "mp_shop_home_tab"
 
         fun createInstance(
                 shopId: String,
@@ -108,6 +110,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private var shopName: String = ""
     private var shopAttribution: String = ""
     private var shopRef: String = ""
+    private var performanceMonitoring: PerformanceMonitoring? = null
 
     val isLogin: Boolean
         get() = viewModel?.isLogin ?: false
@@ -139,6 +142,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        performanceMonitoring = PerformanceMonitoring.start(SHOP_HOME_TAB_TRACE)
         super.onViewCreated(view, savedInstanceState)
         getRecyclerView(view)?.apply {
             layoutManager = recyclerViewLayoutManager
@@ -195,6 +199,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 }
                 is Fail -> {
                     onErrorGetShopHomeLayoutData(it.throwable)
+                    stopPerformanceMonitor()
                 }
             }
         })
@@ -206,6 +211,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     onSuccessGetProductListData(it.data.first, it.data.second)
                 }
             }
+            stopPerformanceMonitor()
         })
 
         viewModel?.checkWishlistData?.observe(this, Observer {
@@ -736,6 +742,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             )
         }
     }
+
+    private fun stopPerformanceMonitor(){
+        performanceMonitoring?.stopTrace()
+    }
+
 
     fun clearCache() {
         viewModel?.clearCache()

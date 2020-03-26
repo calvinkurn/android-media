@@ -13,7 +13,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayoutProductCard"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:paddingBottom="@dimen/product_card_padding_bottom"
         tools:layout_height="match_parent">
 
@@ -36,11 +36,10 @@
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/product_card_content_margin"
-            app:layout_constraintStart_toStartOf="@id/imageProduct"
-            app:layout_constraintTop_toBottomOf="@id/imageProduct"
-            app:layout_constraintEnd_toEndOf="@id/imageProduct"
+            app:layout_constraintStart_toStartOf="@+id/imageProduct"
+            app:layout_constraintTop_toBottomOf="@+id/imageProduct"
+            app:layout_constraintEnd_toEndOf="@+id/imageProduct"
             layout="@layout/product_card_flashsale_content_layout" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
