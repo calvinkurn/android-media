@@ -43,7 +43,6 @@ import com.newrelic.agent.android.NewRelic;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-
 import timber.log.Timber;
 
 /**
@@ -152,9 +151,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         }
         TimberWrapper.init(this);
         super.onCreate();
-        if(remoteConfig.getBoolean(ANDROID_ROBUST_ENABLE, true)) {
-            TokoFix.init(this, BuildConfig.VERSION_NAME);
-        }
+        TokoFix.init(this, BuildConfig.VERSION_NAME);
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
         initCacheApi();
