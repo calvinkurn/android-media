@@ -26,6 +26,10 @@ class PromoCheckoutActivity: BaseSimpleActivity() {
     }
 
     override fun onBackPressed() {
-        fragment.onBackPressed()
+        if (::fragment.isInitialized) {
+            fragment.onBackPressed()
+        } else {
+            super.onBackPressed()
+        }
     }
 }
