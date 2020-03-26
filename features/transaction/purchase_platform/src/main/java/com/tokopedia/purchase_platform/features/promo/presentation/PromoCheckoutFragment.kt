@@ -142,6 +142,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             }
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (recyclerView.canScrollVertically(-1)) {
+                    setToolbarShadowVisibility(true)
+                } else {
+                    setToolbarShadowVisibility(false)
+                }
                 handleStickyPromoHeader(recyclerView, lastHeaderUiModel)
             }
         })
@@ -238,7 +243,6 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 setToolbarShadowVisibility(false)
             } else {
                 header_promo_section.gone()
-                setToolbarShadowVisibility(true)
             }
         }
     }

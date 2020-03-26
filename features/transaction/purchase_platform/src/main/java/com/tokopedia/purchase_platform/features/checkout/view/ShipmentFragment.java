@@ -1257,11 +1257,38 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
             ValidateUsePromoRequest validateUsePromoRequest = data.getParcelableExtra(ARGS_LAST_VALIDATE_USE_REQUEST);
             if (validateUsePromoRequest != null) {
-                shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
+                boolean stillHasPromo = false;
+                for (String promoGlobalCode : validateUsePromoRequest.getCodes()) {
+                    if (promoGlobalCode.length() > 0) {
+                        stillHasPromo = true;
+                        break;
+                    }
+                }
+
+                if (!stillHasPromo) {
+                    for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
+                        for (String promoMerchantCode : ordersItem.getCodes()) {
+                            if (promoMerchantCode.length() > 0) {
+                                stillHasPromo = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (stillHasPromo) {
+                    shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
+                } else {
+                    shipmentPresenter.setLatValidateUseRequest(null);
+                    doResetButtonPromoCheckout();
+                }
             }
 
             String defaultTitlePromoButton = data.getStringExtra(ARGS_CLEAR_PROMO_RESULT);
             if (defaultTitlePromoButton != null) {
+                PromoUiModel promoUiModel = new PromoUiModel();
+                promoUiModel.setTitleDescription(defaultTitlePromoButton);
+                doUpdateButtonPromoCheckout(promoUiModel);
                 shipmentAdapter.checkHasSelectAllCourier(false);
             }
         }

@@ -129,10 +129,12 @@
             android:id="@+id/label_total_promo_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
             android:gravity="center_vertical"
             android:text="Kamu bisa hemat"
+            android:textColor="@color/n_700_96"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/label_tokopoints"
+            app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_3"
             app:typographyWeight="bold" />
 
@@ -140,9 +142,10 @@
             android:id="@+id/label_total_promo_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_4"
             android:text="Rp66.000"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/label_total_promo_info"
             app:typographyType="heading_4"
             app:typographyWeight="bold" />
 
@@ -152,8 +155,9 @@
             android:layout_height="wrap_content"
             android:foreground="?selectableItemBackground"
             android:text="Pakai Promo (3)"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/label_tokopoints"
+            app:layout_constraintTop_toTopOf="parent"
             app:unifyButtonVariant="filled" />
 
         <com.tokopedia.unifycomponents.UnifyButton
