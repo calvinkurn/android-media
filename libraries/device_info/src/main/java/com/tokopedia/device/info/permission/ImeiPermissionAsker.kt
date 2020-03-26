@@ -3,6 +3,7 @@ package com.tokopedia.device.info.permission
 import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -12,7 +13,6 @@ import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.device.info.DeviceInfo.getImeiCache
 import com.tokopedia.device.info.cache.DeviceInfoCache
 import com.tokopedia.device.info.cache.FingerprintCache
-
 
 /**
  * ImeiPermissionAsker is helper to ask Imei Permission
@@ -51,6 +51,7 @@ import com.tokopedia.device.info.cache.FingerprintCache
 
 object ImeiPermissionAsker {
     const val IMEI_PERMISION_REQ_CODE = 720
+    const val KEY_FIRST_TIME_ASK = "keyFirstTimeAsk"
 
     fun checkImeiPermission(activity: FragmentActivity,
                             onNeedAskPermission: (() -> Unit),
@@ -74,11 +75,16 @@ object ImeiPermissionAsker {
             }
             // user don't allow permission and imei is not in cache.
             else {
-                val showRationale = ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.READ_PHONE_STATE)
-                if (!showRationale) {
+                if(isFirstTimeAsk(activity)) {
                     onNeedAskPermission.invoke()
-                } else {
-                    onNeedAskPermission.invoke()
+                }
+                else {
+                    val showRationale = ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.READ_PHONE_STATE)
+                    if (!showRationale) {
+                        onUserAlreadyDeniedAndDontAskAgain.invoke()
+                    } else {
+                        onNeedAskPermission.invoke()
+                    }
                 }
             }
         }
@@ -92,9 +98,10 @@ object ImeiPermissionAsker {
     }
 
     fun askImeiPermissionFragment(fragment: Fragment) {
+        fragment.context?.run { setFirstTimeAsk(this, false) }
         fragment.requestPermissions(arrayOf(Manifest.permission.READ_PHONE_STATE),
                 IMEI_PERMISION_REQ_CODE
-        );
+        )
     }
 
     fun onImeiRequestPermissionsResult(activity: Activity, requestCode: Int, permissions: Array<out String>, grantResults: IntArray,
@@ -123,6 +130,18 @@ object ImeiPermissionAsker {
                 }
             }
         }
+    }
+
+    private fun setFirstTimeAsk(context: Context, isFirstTime: Boolean){
+        val prefs: SharedPreferences = context.getSharedPreferences(
+                KEY_FIRST_TIME_ASK, Context.MODE_PRIVATE)
+        prefs.edit().putBoolean(KEY_FIRST_TIME_ASK, isFirstTime).apply()
+    }
+
+    private fun isFirstTimeAsk(context: Context): Boolean {
+        val prefs: SharedPreferences = context.getSharedPreferences(
+                KEY_FIRST_TIME_ASK, Context.MODE_PRIVATE)
+        return prefs.getBoolean(KEY_FIRST_TIME_ASK, true)
     }
 
     private fun updateImeiCache(context: Context) {

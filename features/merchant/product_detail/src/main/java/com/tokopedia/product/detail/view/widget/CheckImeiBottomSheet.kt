@@ -23,14 +23,12 @@ class CheckImeiBottomSheet(val mActivity: FragmentActivity?, val onUnderstandCli
 
     init {
         val contentView = View.inflate(mActivity, R.layout.dialog_check_imei, null)
-        showHeader = false
         setChild(contentView)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.dialog_check_imei_close_btn.setOnClickListener { dismiss() }
         view.dialog_check_imei_btn.setOnClickListener {
             onUnderstandClicked()
             dismiss()
