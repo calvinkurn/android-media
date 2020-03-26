@@ -382,6 +382,8 @@ public interface ShipmentContract {
         void getInsuranceTechCartOnCheckout();
 
         ShipmentDataConverter getShipmentDataConverter();
+
+        void releaseBooking();
     }
 
 }

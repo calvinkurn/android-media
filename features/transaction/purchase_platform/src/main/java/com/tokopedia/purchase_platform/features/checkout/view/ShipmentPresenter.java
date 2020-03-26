@@ -83,6 +83,7 @@ import com.tokopedia.purchase_platform.features.checkout.data.model.request.save
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.saveshipmentstate.ShipmentStateRequestData;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.saveshipmentstate.ShipmentStateShippingInfoData;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.saveshipmentstate.ShipmentStateShopProductData;
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.ReleaseBookingResponse;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.cod.CodResponse;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartmultipleshipment.SetShippingAddressData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CampaignTimerUi;
@@ -99,6 +100,7 @@ import com.tokopedia.purchase_platform.features.checkout.domain.usecase.SaveShip
 import com.tokopedia.purchase_platform.features.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataConverter;
 import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataRequestConverter;
+import com.tokopedia.purchase_platform.features.checkout.view.helper.ShipmentCartItemModelHelper;
 import com.tokopedia.purchase_platform.features.checkout.view.subscriber.CheckShipmentPromoFirstStepAfterClashSubscriber;
 import com.tokopedia.purchase_platform.features.checkout.view.subscriber.ClearNotEligiblePromoSubscriber;
 import com.tokopedia.purchase_platform.features.checkout.view.subscriber.ClearShipmentCacheAutoApplyAfterClashSubscriber;
@@ -1973,6 +1975,32 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public ShipmentDataConverter getShipmentDataConverter() {
         return shipmentDataConverter;
+    }
+
+    @Override
+    public void releaseBooking() {
+        String productId = ShipmentCartItemModelHelper.getFirstProductId(shipmentCartItemModelList);
+        if (productId != null) {
+            compositeSubscription.add(releaseBookingUseCase
+                    .execute(productId)
+                    .subscribe(new Subscriber<ReleaseBookingResponse>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(ReleaseBookingResponse releaseBookingResponse) {
+
+                        }
+                    }));
+        }
+
     }
 
     @Override
