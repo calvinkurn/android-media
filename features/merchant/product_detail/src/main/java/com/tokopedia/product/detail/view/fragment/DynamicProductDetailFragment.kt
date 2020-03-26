@@ -21,7 +21,6 @@ import android.view.animation.ScaleAnimation
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
@@ -65,7 +64,6 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.dialog.IAccessRequestListener
 import com.tokopedia.design.drawable.CountDrawable
-import com.tokopedia.device.info.DeviceInfo.getPackageName
 import com.tokopedia.device.info.permission.ImeiPermissionAsker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.AdultManager
@@ -142,6 +140,7 @@ import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.variant_common.model.VariantOptionWithAttribute
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import com.tokopedia.variant_common.view.ProductVariantListener
+import kotlinx.android.synthetic.main.dialog_permission_phone_state.view.*
 import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.*
 import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
@@ -241,7 +240,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     lateinit var performanceMonitoringP2Login: PerformanceMonitoring
     lateinit var performanceMonitoringFull: PerformanceMonitoring
 
-    private var enableCheckImei = false
+    private var enableCheckImeiRemoteConfig = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dynamic_product_detail_fragment, container, false)
@@ -251,7 +250,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         super.onViewCreated(view, savedInstanceState)
         if (::remoteConfig.isInitialized) {
             viewModel.enableCaching = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_CACHE_PDP, true)
-            enableCheckImei = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CHECK_IMEI_PDP, false)
+            enableCheckImeiRemoteConfig = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CHECK_IMEI_PDP, false)
         }
 
         initTradein()
@@ -2042,7 +2041,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         actionButtonView.addToCartClick = {
             viewModel.buttonActionText = it
             viewModel.getDynamicProductInfoP1?.let {
-                if (enableCheckImei && viewModel.getDynamicProductInfoP1?.data?.campaign?.needCheckImei == true) {
+                if (checkImei(enableCheckImeiRemoteConfig,
+                                viewModel.getDynamicProductInfoP1?.data?.campaign?.needCheckImei)) {
                     activity?.run {
                         ImeiPermissionAsker.checkImeiPermission(this, ::showImeiPermissionDialog, {
                             doAtc(ProductDetailConstant.ATC_BUTTON)
@@ -2056,7 +2056,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
         actionButtonView.buyNowClick = {
             viewModel.buttonActionText = it
-            if(enableCheckImei && viewModel.getDynamicProductInfoP1?.data?.campaign?.needCheckImei == true){
+            if(checkImei(enableCheckImeiRemoteConfig,
+                            viewModel.getDynamicProductInfoP1?.data?.campaign?.needCheckImei)){
                 activity?.run {
                     ImeiPermissionAsker.checkImeiPermission(this, ::showImeiPermissionDialog, ::doBuy) {
                         onNeverAskAgain()
@@ -2064,6 +2065,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 }
             } else doBuy()
         }
+    }
+
+    private fun checkImei(imeiRemoteConfig: Boolean, campaignNeedCheckImei: Boolean?): Boolean {
+//        return imeiRemoteConfig && campaignNeedCheckImei == true
+        return true
     }
 
     private fun doBuy() {
@@ -2529,28 +2535,44 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         activity?.run {
             ImeiPermissionAsker.onImeiRequestPermissionsResult(this, requestCode, permissions, grantResults,
                 onUserDenied = {},
-                onUserDeniedAndDontAskAgain = {
-                    onNeverAskAgain()
-                }, onUserAcceptPermission = { doBuy() }
+                onUserDeniedAndDontAskAgain = {}, onUserAcceptPermission = { doBuy() }
             )
         }
-
     }
 
     private fun onNeverAskAgain() {
+        showDialogGoToSetting()
+    }
+
+    private fun showDialogGoToSetting(){
         activity?.run {
-            CheckImeiBottomSheet.showPermissionDialog(this) {
-                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                val uri = Uri.fromParts("package", packageName, null)
-                intent.data = uri
-                startActivity(intent);
+            val dialog = DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+            val view = View.inflate(context, R.layout.dialog_permission_phone_state, null)
+            dialog.apply {
+                setChild(view)
+                setPrimaryCTAText(activity?.getString(R.string.check_imei_btn_rationale) ?: "")
+                setPrimaryCTAClickListener {
+                    DynamicProductDetailTracking.Click.eventClickGoToSetting(viewModel.userId, viewModel.getDynamicProductInfoP1)
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    val uri = Uri.fromParts("package", packageName, null)
+                    intent.data = uri
+                    startActivity(intent)
+                    dialog.dismiss()
+                }
+                setSecondaryCTAText(activity?.getString(R.string.check_imei_btn_later) ?: "")
+                setSecondaryCTAClickListener {
+                    DynamicProductDetailTracking.Click.eventClickLater(viewModel.userId, viewModel.getDynamicProductInfoP1)
+                    dialog.dismiss()
+                }
             }
+            dialog.show()
         }
     }
 
     private fun showImeiPermissionDialog() {
         activity?.run {
             CheckImeiBottomSheet.showPermissionDialog(this) {
+                DynamicProductDetailTracking.Click.eventClickAcceptPhoneStatePermission(viewModel.userId, viewModel.getDynamicProductInfoP1)
                 ImeiPermissionAsker.askImeiPermissionFragment(this@DynamicProductDetailFragment)
             }
         }
