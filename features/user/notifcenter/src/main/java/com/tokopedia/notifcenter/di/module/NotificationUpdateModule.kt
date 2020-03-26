@@ -18,7 +18,8 @@ import dagger.Provides
 import javax.inject.Named
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase as UseCase
 
-@Module class NotificationUpdateModule {
+@Module
+class NotificationUpdateModule {
 
     @Provides
     @Named("atcMutation")
