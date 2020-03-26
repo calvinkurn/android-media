@@ -363,7 +363,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 val keyboardState = it[BottomInsetsType.Keyboard]
                 if (keyboardState != null && !keyboardState.isPreviousStateSame) {
                     when (keyboardState) {
-                        is BottomInsetsState.Hidden -> playFragment.onBottomInsetsViewHidden()
+                        is BottomInsetsState.Hidden -> if (!it.isAnyShown) playFragment.onBottomInsetsViewHidden()
                         is BottomInsetsState.Shown -> {
                             pushParentPlayByKeyboardHeight(keyboardState.estimatedInsetsHeight)
                         }

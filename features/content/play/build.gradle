@@ -26,6 +26,7 @@ dependencies {
     implementation project(rootProject.ext.features.playCommon)
     implementation project(rootProject.ext.features.atc_common)
     implementation project(rootProject.ext.features.variantCommon)
+    implementation project(rootProject.ext.features.resourcesCommon)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
