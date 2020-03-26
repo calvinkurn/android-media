@@ -25,6 +25,7 @@ import com.tokopedia.gamification.giftbox.data.entities.GetCouponDetail
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
 import com.tokopedia.gamification.giftbox.presentation.helpers.doOnLayout
+import com.tokopedia.gamification.giftbox.presentation.helpers.dpToPx
 import com.tokopedia.gamification.giftbox.presentation.viewmodels.GiftBoxTapTapViewModel
 import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
 import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxTapTapView
@@ -316,7 +317,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         giftBoxDailyView.imageBoxFront.doOnLayout { imageBoxFront ->
             val array = IntArray(2)
             imageBoxFront.getLocationInWindow(array)
-            val translationY = array[1].toFloat() - getStatusBarHeight(context) - dpToPx(40f)
+            val translationY = array[1].toFloat() - getStatusBarHeight(context) - imageBoxFront.dpToPx(40)
             starsContainer.setStartPositionOfStars(starsContainer.width / 2f, translationY)
 
             //todo Rahul have to refacor this below code
@@ -324,7 +325,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
             val tranY = (screenHeight * 0.385f) - statusBarHeight
             rewardContainer.llRewardTextLayout.translationY = tranY
-            rewardContainer.rvCoupons.translationY = array[1].toFloat() - (screenHeight * 0.15f) - dpToPx(158f) - statusBarHeight
+            rewardContainer.rvCoupons.translationY = array[1].toFloat() - (screenHeight * 0.15f) - imageBoxFront.dpToPx(158) - statusBarHeight
         }
     }
 
@@ -379,8 +380,8 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
     fun setShadows() {
         val shadowColor = Color.parseColor("#4A000000")
-        val shadowRadius = dpToPx(5f)
-        val shadowOffset = dpToPx(4f)
+        val shadowRadius = tvProgressCount.dpToPx(5)
+        val shadowOffset = tvProgressCount.dpToPx(4)
 
         tvProgressCount.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
         tvTimer.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
@@ -536,7 +537,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
         habisImageAnimation.startDelay = translateAnimationDuration - 100L
 
         //translation for 45 degree from cx and cy
-        val distance = dpToPx(6f)
+        val distance = imageWaktu.dpToPx(6)
         val habisPropX45 = PropertyValuesHolder.ofFloat(View.TRANSLATION_X, habisFinalX, habisFinalX - distance, habisFinalX)
         val habisPropY45 = PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, habisFinalY, habisFinalY + distance, habisFinalY)
         val habisTranslateAt45 = ObjectAnimator.ofPropertyValuesHolder(imageHabis, habisPropX45, habisPropY45)

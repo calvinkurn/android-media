@@ -274,10 +274,6 @@ open class GiftBoxDailyView : FrameLayout {
         return result
     }
 
-    fun dpToPx(dp: Float): Float {
-        return dp * (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
-    }
-
     enum class GiftBoxState {
         CLOSED, OPEN
     }

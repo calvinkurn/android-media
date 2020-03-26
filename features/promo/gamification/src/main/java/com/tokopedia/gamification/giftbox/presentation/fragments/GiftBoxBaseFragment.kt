@@ -150,13 +150,6 @@ open class GiftBoxBaseFragment : Fragment() {
         return 0
     }
 
-    //todo Rahul remove this method
-    fun dpToPx(dp: Float): Float {
-        context?.let {
-            return dp * (it.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
-        }
-        return 0f
-    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.gami_menu_share, menu)

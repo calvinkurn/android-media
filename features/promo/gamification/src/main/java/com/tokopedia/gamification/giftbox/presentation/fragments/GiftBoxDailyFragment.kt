@@ -34,6 +34,7 @@ import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.EMPTY
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
 import com.tokopedia.gamification.giftbox.presentation.helpers.doOnLayout
+import com.tokopedia.gamification.giftbox.presentation.helpers.dpToPx
 import com.tokopedia.gamification.giftbox.presentation.helpers.updateLayoutParams
 import com.tokopedia.gamification.giftbox.presentation.viewmodels.GiftBoxDailyViewModel
 import com.tokopedia.gamification.giftbox.presentation.views.*
@@ -135,8 +136,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
     fun setShadows() {
         val shadowColor = Color.parseColor("#4A000000")
-        val shadowRadius = dpToPx(5f)
-        val shadowOffset = dpToPx(4f)
+        val shadowRadius = tvRewardFirstLine.dpToPx(5)
+        val shadowOffset = tvRewardFirstLine.dpToPx(4)
         tvRewardFirstLine.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
         tvRewardSecondLine.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
         tvBenefits.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
@@ -524,13 +525,13 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         giftBoxDailyView.imageGiftBoxLid.doOnLayout { lid ->
             val array = IntArray(2)
             lid.getLocationInWindow(array)
-            val heightOfRvCoupons = dpToPx(148f)
+            val heightOfRvCoupons = lid.dpToPx(148)
             val lidTop = array[1].toFloat() - getStatusBarHeight(context)
-            val translationY = lidTop - heightOfRvCoupons + dpToPx(3f)
+            val translationY = lidTop - heightOfRvCoupons + lid.dpToPx(3)
 
             rewardContainer.rvCoupons.translationY = translationY
-            val distanceFromLidTop = dpToPx(29f)
-            val heightOfRewardText = dpToPx(31f)
+            val distanceFromLidTop = lid.dpToPx(29)
+            val heightOfRewardText = lid.dpToPx(31)
             rewardContainer.llRewardTextLayout.translationY = lidTop + distanceFromLidTop
 
         }
@@ -538,23 +539,23 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             val array = IntArray(2)
             imageBoxFront.getLocationInWindow(array)
             val imageFrontTop = array[1].toFloat() - getStatusBarHeight(context)
-            val translationY = imageFrontTop - dpToPx(40f)
+            val translationY = imageFrontTop - imageBoxFront.dpToPx(40)
             starsContainer.setStartPositionOfStars(starsContainer.width / 2f, translationY)
 
             if (state == TokenUserState.EMPTY) {
-                llBenefits.translationY = imageFrontTop + imageBoxFront.height + dpToPx(18f)
+                llBenefits.translationY = imageFrontTop + imageBoxFront.height + imageBoxFront.dpToPx(18)
             } else {
                 llBenefits.updateLayoutParams<FrameLayout.LayoutParams> {
                     this.gravity = Gravity.BOTTOM
                 }
             }
 
-            llRewardMessage.translationY = imageFrontTop + imageBoxFront.height + dpToPx(16f)
+            llRewardMessage.translationY = imageFrontTop + imageBoxFront.height + imageBoxFront.dpToPx(16)
 
         }
 
         giftBoxDailyView.fmGiftBox.doOnLayout { fm ->
-            giftBoxDailyView.imageShadow.translationY = fm.bottom.toFloat() - dpToPx(40f)
+            giftBoxDailyView.imageShadow.translationY = fm.bottom.toFloat() - fm.dpToPx(40)
             giftBoxDailyView.imageShadow.translationX = fm.left.toFloat()
         }
     }
@@ -584,8 +585,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         when (dpi) {
             DisplayMetrics.DENSITY_MEDIUM, DisplayMetrics.DENSITY_HIGH -> {
                 tvTapHint.updateLayoutParams<FrameLayout.LayoutParams> {
-                    val margin = dpToPx(40f)
-                    setMargins(40, 0, 40, 0)
+                    val margin = tvTapHint.dpToPx(40).toInt()
+                    setMargins(margin, 0, margin, 0)
                 }
             }
             else -> {
