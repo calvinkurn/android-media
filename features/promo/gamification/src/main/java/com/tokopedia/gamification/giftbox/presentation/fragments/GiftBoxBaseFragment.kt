@@ -14,6 +14,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.gamification.R
+import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.presentation.dialogs.NoInternetDialog
 import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer
@@ -75,6 +76,7 @@ open class GiftBoxBaseFragment : Fragment() {
         initialViewSetup()
 
         imageToolbarIcon.setOnClickListener {
+            GtmEvents.clickBackButton()
             activity?.finish()
         }
     }
@@ -151,6 +153,7 @@ open class GiftBoxBaseFragment : Fragment() {
                     }
                     val shareIntent = Intent.createChooser(sendIntent, null)
                     startActivity(shareIntent)
+                    GtmEvents.clickShareButton()
                 } catch (ex: Exception) {
 
                 }
@@ -166,6 +169,7 @@ open class GiftBoxBaseFragment : Fragment() {
                 Snackbar.LENGTH_LONG,
                 actionText = actionText,
                 clickListener = View.OnClickListener {
+                    GtmEvents.clickToaster()
                     method?.invoke()
                 },
                 type = Toaster.TYPE_ERROR)
@@ -177,6 +181,7 @@ open class GiftBoxBaseFragment : Fragment() {
         dialog.btnRetry.setOnClickListener {
             dialog.closeAbleDialog.dismiss()
             method.invoke()
+            GtmEvents.clickTryAgainButton()
         }
     }
 

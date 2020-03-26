@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.gamification.R
+import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
 import com.tokopedia.gamification.giftbox.data.entities.*
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.ACTIVE
@@ -202,10 +203,12 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                             reminder = giftBoxEntity.gamiLuckyHome.reminder
                             when (tokenUserState) {
                                 TokenUserState.ACTIVE -> {
+                                    GtmEvents.viewGiftBoxPage("")
                                     reminderLayout.visibility = View.VISIBLE
                                     renderGiftBoxActive(giftBoxEntity)
                                     giftBoxDailyView.fmGiftBox.setOnClickListener {
                                         if (!disableGiftBoxTap) {
+                                            GtmEvents.clickGiftBox("")
                                             viewModel.getRewards()
                                             disableGiftBoxTap = true
                                         }
@@ -330,6 +333,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                             viewModel.autoApply(dummyCode)
                                         }
                                         RouteManager.route(context, applink)
+                                        GtmEvents.clickClaimButton(btnAction.text.toString())
                                     }
                                 }
                             }
@@ -338,6 +342,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                             tvReminderBtn.setOnClickListener {
                                 if (!isReminderSet) {
                                     viewModel.setReminder()
+                                    GtmEvents.clickReminderButton()
                                 }
                             }
                         } else {
@@ -539,6 +544,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
 
     fun renderGiftBoxActive(entity: GiftBoxEntity) {
+
         tvTapHint.text = entity.gamiLuckyHome.tokensUser.title
         tvBenefits.text = entity.gamiLuckyHome.tokensUser.text
 

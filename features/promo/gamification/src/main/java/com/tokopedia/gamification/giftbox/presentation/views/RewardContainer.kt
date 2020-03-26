@@ -15,6 +15,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gamification.R
+import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.data.entities.GetCouponDetail
 import com.tokopedia.gamification.giftbox.data.entities.GiftBoxRewardEntity
 import com.tokopedia.gamification.giftbox.presentation.adapter.CouponAdapter
@@ -118,7 +119,12 @@ class RewardContainer : FrameLayout {
                     if (!benefit.color.isNullOrEmpty()) {
                         tvSmallReward.setTextColor(Color.parseColor(benefit.color))
                     }
+                    GtmEvents.viewRewardsPoints(benefit.text)
                     iconUrl = benefit.imageUrl
+                }else if (benefit.benefitType == "coupon"){
+                    benefit.referenceID?.let {
+                        GtmEvents.viewRewards(it.toString())
+                    }
                 }
             }
         }
