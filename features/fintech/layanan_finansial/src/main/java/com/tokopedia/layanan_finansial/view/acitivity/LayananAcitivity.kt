@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.DaggerBaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.layanan_finansial.R
 import com.tokopedia.layanan_finansial.di.DaggerLayananComponent
 import com.tokopedia.layanan_finansial.di.LayananComponent
 import com.tokopedia.layanan_finansial.di.LayananModule
@@ -21,7 +22,7 @@ class LayananAcitivity : BaseSimpleActivity() , HasComponent<LayananComponent>{
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        updateTitle("Layanan Finansial")
+        updateTitle(getString(R.string.layanan_finansial))
     }
 
     override fun getComponent(): LayananComponent = layananComponent
