@@ -31,6 +31,7 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
     private var destinationType: String = ""
     private var destinationName: String = ""
     private var isDirectPayment: Boolean =  true
+    private var showRoom = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
@@ -47,6 +48,8 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
                     val dayAfterTomorrow = TravelDateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 2)
                     checkInDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, tomorrow)
                     checkOutDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayAfterTomorrow)
+            } else if (!uri.getQueryParameter(PARAM_SHOW_ROOM).isNullOrEmpty() && uri.getQueryParameter(PARAM_SHOW_ROOM).toInt() == 0) {
+                showRoom = false
             }
         } else {
             with(intent) {
@@ -78,7 +81,7 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
 
     override fun getNewFragment(): Fragment =
             HotelDetailFragment.getInstance(checkInDate, checkOutDate, propertyId, roomCount,
-                    adultCount, destinationType, destinationName, isDirectPayment)
+                    adultCount, destinationType, destinationName, isDirectPayment, showRoom)
 
     override fun getComponent(): HotelDetailComponent =
             DaggerHotelDetailComponent.builder()
