@@ -8,6 +8,7 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopRep
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockkObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
@@ -39,6 +40,8 @@ abstract class ShopPageSettingViewModelTestFixture {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+
+        mockkObject(GQLGetShopInfoUseCase)
 
         viewModel = ShopPageSettingViewModel(
                 gqlRepository,
