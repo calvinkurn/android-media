@@ -67,6 +67,8 @@ class ProductManageViewModel @Inject constructor(
 ): BaseViewModel(dispatchers.main) {
 
     companion object {
+        // Currently update data on server is not realtime.
+        // Client need to add request delay in order to receive updated data.
         private const val REQUEST_DELAY = 1000L
     }
 
