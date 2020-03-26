@@ -849,13 +849,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             Dialog(it, Dialog.Type.LONG_PROMINANCE).apply {
                 setTitle(getString(R.string.campaign_expired_title))
                 setDesc(getString(R.string.campaign_expired_descr))
-                setBtnOk(getString(R.string.exp_dialog_ok))
                 setBtnCancel(getString(R.string.close))
                 setOnCancelClickListener {
                     onSwipeRefresh()
-                    dismiss()
-                }
-                setOnOkClickListener {
                     dismiss()
                 }
             }.show()
