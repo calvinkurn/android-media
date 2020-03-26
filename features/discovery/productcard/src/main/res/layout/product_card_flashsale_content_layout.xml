@@ -15,6 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_pdp_view"
+        app:layout_constraintBottom_toTopOf="@+id/tvPdpView"
         tools:visibility="visible"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -42,7 +43,8 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvPdpView"
+        app:layout_constraintTop_toBottomOf="@+id/tvPdpView"
+        app:layout_constraintBottom_toTopOf="@+id/labelDiscount"
         app:layout_goneMarginTop="@dimen/product_card_text_view_product_name_gone_margin_top"
         app:typographyType="body_3"
         tools:text="Product Name"
@@ -58,6 +60,7 @@
         app:labelType="general_light_red"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewProductName"
+        app:layout_constraintBottom_toTopOf="@+id/textViewPrice"
         tools:text="20%"
         tools:visibility="visible" />
 
@@ -80,13 +83,6 @@
         tools:text="Rp8.499.000"
         tools:visibility="visible" />
 
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrierPromo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="textViewSlashedPrice,labelDiscount" />
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewPrice"
         android:layout_width="0dp"
@@ -100,7 +96,8 @@
         app:layout_goneMarginBottom="@dimen/product_card_flashsale_text_view_price_gone_margin_bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/barrierPromo"
+        app:layout_constraintTop_toBottomOf="@id/textViewSlashedPrice"
+        app:layout_constraintBottom_toTopOf="@+id/progressBar"
         app:typographyType="body_2"
         app:typographyWeight="bold"
         tools:text="Rp7.999.000"
@@ -113,7 +110,8 @@
         android:layout_marginBottom="@dimen/product_card_flashsale_progressbar_marginbottom"
         style="?android:attr/progressBarStyleHorizontal"
         android:progressDrawable="@drawable/progressbar_flashsale"
-        app:layout_constraintTop_toBottomOf="@id/textViewPrice"
+        app:layout_constraintTop_toBottomOf="@+id/textViewPrice"
+        app:layout_constraintBottom_toTopOf="@+id/tvLabel"
         android:max="100"/>
 
     <com.tokopedia.unifyprinciples.Typography
