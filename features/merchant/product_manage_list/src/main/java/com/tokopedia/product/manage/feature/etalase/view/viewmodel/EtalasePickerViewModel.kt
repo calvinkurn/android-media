@@ -11,6 +11,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -19,6 +20,12 @@ class EtalasePickerViewModel @Inject constructor(
     mainDispatcher: CoroutineDispatcher
 ): BaseViewModel(mainDispatcher) {
 
+    companion object {
+        // Currently update data on server is not realtime.
+        // Client need to add request delay in order to receive updated data.
+        private const val REQUEST_DELAY = 1000L
+    }
+
     var selectedEtalase: EtalaseViewModel? = null
 
     val getEtalaseResult: LiveData<Result<List<EtalaseViewModel>>>
@@ -26,9 +33,10 @@ class EtalasePickerViewModel @Inject constructor(
 
     private val _getEtalaseResult = MutableLiveData<Result<List<EtalaseViewModel>>>()
 
-    fun getEtalaseList(shopId: String) {
+    fun getEtalaseList(shopId: String, withDelay: Boolean = false) {
         launchCatchError(block = {
             val etalaseList = withContext(Dispatchers.IO) {
+                if(withDelay) { delay(REQUEST_DELAY) }
                 val requestParams = GetShopEtalaseByShopUseCase.createRequestParams(
                     shopId = shopId,
                     hideNoCount = false,

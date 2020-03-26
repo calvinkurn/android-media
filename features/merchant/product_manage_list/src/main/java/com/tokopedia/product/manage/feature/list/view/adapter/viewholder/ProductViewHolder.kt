@@ -100,7 +100,14 @@ class ProductViewHolder(
     }
 
     private fun setOnClickListeners(product: ProductViewModel) {
-        itemView.setOnClickListener { listener.onClickProductItem(product) }
+        itemView.setOnClickListener {
+            if(product.multiSelectActive) {
+                toggle()
+            } else {
+                listener.onClickProductItem(product)
+            }
+        }
+
         itemView.btnMoreOptions.setOnClickListener { listener.onClickMoreOptionsButton(product) }
         itemView.imageStockInformation.setOnClickListener { listener.onClickStockInformation() }
         itemView.btnEditPrice.setOnClickListener { listener.onClickEditPriceButton(product) }
