@@ -33,7 +33,11 @@ class OrderPriceSummaryBottomSheet {
 
     private fun setupView(child: View, orderCost: OrderCost) {
         child.tv_total_product_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalItemPrice, false)
-        child.tv_total_shipping_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.shippingFee, false)
+        if (orderCost.shippingDiscountAmount >= orderCost.shippingFee) {
+            child.tv_total_shipping_price_value.setText(R.string.label_free_shipping)
+        } else {
+            child.tv_total_shipping_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.shippingFee - orderCost.shippingDiscountAmount, false)
+        }
         if (orderCost.insuranceFee > 0.0) {
             child.tv_total_insurance_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.insuranceFee, false)
             child.tv_total_insurance_price_label.visible()

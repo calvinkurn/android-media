@@ -29,9 +29,11 @@ data class ApplyPromoResponseAction(
 }
 
 data class GetCouponRecommendationAction(
-        var state: Int = 0
+        var state: Int = 0,
+        var exception: Throwable? = null
 ) {
     companion object {
         val ACTION_CLEAR_DATA = 1
+        val ACTION_SHOW_TOAST_ERROR =2
     }
 }

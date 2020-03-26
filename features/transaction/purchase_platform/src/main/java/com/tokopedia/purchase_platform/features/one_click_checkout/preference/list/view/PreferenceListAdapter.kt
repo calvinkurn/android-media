@@ -3,10 +3,12 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.preference.l
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ProfilesItemModel
 
-class PreferenceListAdapter(private val listener: PreferenceListAdapterListener, private val currentProfileId: Int = -1) : ListAdapter<ProfilesItemModel, PreferenceListViewHolder>(DIFF_CALLBACK) {
+class PreferenceListAdapter(private val listener: PreferenceListAdapterListener, private val currentProfileId: Int = -1) : RecyclerView.Adapter<PreferenceListViewHolder>() {
+
+    private var list: ArrayList<ProfilesItemModel> = ArrayList()
 
     companion object {
         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ProfilesItemModel>() {
@@ -21,6 +23,14 @@ class PreferenceListAdapter(private val listener: PreferenceListAdapterListener,
         }
     }
 
+    fun submitList(newList: List<ProfilesItemModel>?) {
+        list.clear()
+        if (newList != null) {
+            list.addAll(newList)
+        }
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PreferenceListViewHolder {
         return PreferenceListViewHolder(
                 LayoutInflater.from(parent.context).inflate(PreferenceListViewHolder.LAYOUT, parent, false),
@@ -28,7 +38,11 @@ class PreferenceListAdapter(private val listener: PreferenceListAdapterListener,
     }
 
     override fun onBindViewHolder(holder: PreferenceListViewHolder, position: Int) {
-        holder.bind(getItem(position), currentProfileId)
+        holder.bind(list[position], currentProfileId)
+    }
+
+    override fun getItemCount(): Int {
+        return list.size
     }
 
     interface PreferenceListAdapterListener {

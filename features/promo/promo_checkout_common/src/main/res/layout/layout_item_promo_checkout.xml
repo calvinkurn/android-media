@@ -31,18 +31,21 @@
             app:layout_constraintBottom_toBottomOf="parent"/>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toEndOf="@id/iv_promo_checkout_left"
             app:layout_constraintTop_toTopOf="@id/iv_promo_checkout_left"
             app:layout_constraintBottom_toBottomOf="@id/iv_promo_checkout_left"
+            app:layout_constraintEnd_toStartOf="@id/iv_promo_checkout_right"
+            android:paddingTop="@dimen/dp_6"
+            android:paddingBottom="@dimen/dp_6"
             android:orientation="vertical">
 
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
+            <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/promo_checkout_loading_state"
                 android:layout_width="@dimen/dp_200"
-                android:layout_height="@dimen/dp_16"
-                app:corners="20"
+                android:layout_height="wrap_content"
+                app:loader_type="line"
                 android:layout_margin="@dimen/dp_8"
                 android:visibility="visible"/>
 
@@ -66,6 +69,8 @@
                 app:typographyWeight="reguler"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_8"
                 android:visibility="gone"/>
 
         </LinearLayout>

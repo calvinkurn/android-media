@@ -9,7 +9,6 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRecommendationRequest
 import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
@@ -19,6 +18,7 @@ import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus
 import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus.Companion.STATUS_PHONE_NOT_VERIFIED
 import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus.Companion.STATUS_USER_BLACKLISTED
 import com.tokopedia.purchase_platform.features.promo.data.response.validate_use.ValidateUseResponse
+import com.tokopedia.purchase_platform.features.promo.presentation.PromoErrorException
 import com.tokopedia.purchase_platform.features.promo.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.purchase_platform.features.promo.presentation.mapper.PromoCheckoutUiModelMapper
 import com.tokopedia.purchase_platform.features.promo.presentation.mapper.ValidateUsePromoCheckoutMapper
@@ -109,7 +109,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             }
 
             promoRequest.orders.forEach { order ->
-                order.codes.clear()
                 promoListUiModel.value?.forEach {
                     if (it is PromoListItemUiModel && it.uiState.isSelected) {
                         if (it.uiData.uniqueId == order.uniqueId && !order.codes.contains(it.uiData.promoCode)) {
@@ -167,7 +166,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     val attemptedPromoCodeError = response.couponListRecommendation.data.attemptedPromoCodeError
                     if (attemptedPromoCodeError.code.isNotBlank() && attemptedPromoCodeError.message.isNotBlank()) {
                         promoInputUiModel.value?.let {
-                            it.uiData.exception = MessageErrorException(attemptedPromoCodeError.message)
+                            it.uiData.exception = PromoErrorException(attemptedPromoCodeError.message)
                             it.uiData.promoCode = attemptedPromoCodeError.code
                             it.uiState.isError = true
                             it.uiState.isButtonSelectEnabled = true
@@ -221,39 +220,74 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     calculateAndRenderTotalBenefit()
 
                 } else {
+                    if (getCouponRecommendationResponse.value == null) {
+                        _getCouponRecommendationResponse.value = GetCouponRecommendationAction()
+                    }
+
                     if (response.couponListRecommendation.data.emptyState.title.isEmpty() &&
                             response.couponListRecommendation.data.emptyState.description.isEmpty() &&
                             response.couponListRecommendation.data.emptyState.imageUrl.isEmpty()) {
-                        throw MessageErrorException()
+                        if (promoCode.isNotBlank()) {
+                            getCouponRecommendationResponse.value?.let {
+                                it.state = GetCouponRecommendationAction.ACTION_SHOW_TOAST_ERROR
+                                it.exception = PromoErrorException(response.couponListRecommendation.data.resultStatus.message.joinToString { ". " })
+                                _getCouponRecommendationResponse.value = it
+                            }
+                        } else {
+                            throw PromoErrorException()
+                        }
                     } else {
                         fragmentUiModel.value?.let {
                             it.uiState.isLoading = false
                             _fragmentUiModel.value = it
                         }
 
-                        val emptyState = uiModelMapper.mapEmptyState(response.couponListRecommendation)
-                        emptyState.uiData.emptyStateStatus = response.couponListRecommendation.data.resultStatus.code
-                        when {
-                            response.couponListRecommendation.data.resultStatus.code == STATUS_COUPON_LIST_EMPTY -> {
-                                emptyState.uiState.isShowButton = false
-                                initPromoInput()
-                                analytics.eventViewAvailablePromoListNoPromo(getPageSource())
+                        if (promoCode.isNotBlank()) {
+                            promoInputUiModel.value?.let {
+                                it.uiData.exception = null
+                                it.uiData.promoCode = ""
+                                it.uiState.isError = false
+                                it.uiState.isButtonSelectEnabled = true
+                                it.uiState.isLoading = false
+
+                                _promoInputUiModel.value = it
                             }
-                            response.couponListRecommendation.data.resultStatus.code == STATUS_PHONE_NOT_VERIFIED -> {
-                                emptyState.uiData.buttonText = "Verifikasi Nomor HP"
-                                emptyState.uiState.isShowButton = true
-                                analytics.eventViewPhoneVerificationMessage(getPageSource())
+
+                            getCouponRecommendationResponse.value?.let {
+                                val errorMessage = response.couponListRecommendation.data.resultStatus.message.joinToString(". ")
+                                it.state = GetCouponRecommendationAction.ACTION_SHOW_TOAST_ERROR
+                                it.exception = PromoErrorException(errorMessage)
+                                _getCouponRecommendationResponse.value = it
                             }
-                            response.couponListRecommendation.data.resultStatus.code == STATUS_USER_BLACKLISTED -> {
-                                emptyState.uiState.isShowButton = false
-                                analytics.eventViewBlacklistErrorAfterApplyPromo(getPageSource())
+                        } else {
+                            val emptyState = uiModelMapper.mapEmptyState(response.couponListRecommendation)
+                            emptyState.uiData.emptyStateStatus = response.couponListRecommendation.data.resultStatus.code
+                            when {
+                                response.couponListRecommendation.data.resultStatus.code == STATUS_COUPON_LIST_EMPTY -> {
+                                    emptyState.uiState.isShowButton = false
+                                    initPromoInput()
+                                    analytics.eventViewAvailablePromoListNoPromo(getPageSource())
+                                }
+                                response.couponListRecommendation.data.resultStatus.code == STATUS_PHONE_NOT_VERIFIED -> {
+                                    emptyState.uiData.buttonText = "Verifikasi Nomor HP"
+                                    emptyState.uiState.isShowButton = true
+                                    analytics.eventViewPhoneVerificationMessage(getPageSource())
+                                }
+                                response.couponListRecommendation.data.resultStatus.code == STATUS_USER_BLACKLISTED -> {
+                                    emptyState.uiState.isShowButton = false
+                                    analytics.eventViewBlacklistErrorAfterApplyPromo(getPageSource())
+                                }
+                                else -> {
+                                    emptyState.uiState.isShowButton = true
+                                    emptyState.uiData.buttonText = "Coba Lagi"
+                                }
                             }
+                            _promoEmptyStateUiModel.value = emptyState
                         }
-                        _promoEmptyStateUiModel.value = emptyState
                     }
                 }
             } else {
-                throw MessageErrorException()
+                throw PromoErrorException()
             }
 
         }) { throwable ->
@@ -308,6 +342,8 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 }
             }
 
+            validateUsePromoRequest.skipApply = 0
+
             // Set param
             val varPromo = mapOf(
                     "promo" to validateUsePromoRequest
@@ -347,7 +383,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                                 successCount++
                             } else {
                                 // If one of promo merchant is error, then show error message
-                                throw MessageErrorException(voucherOrder.message.text)
+                                throw PromoErrorException(voucherOrder.message.text)
                             }
                         }
                         if (isGlobalSuccess || successCount == responseValidatePromo.voucherOrders.size) {
@@ -371,13 +407,13 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                         analytics.eventClickPilihPromoFailedTerjadiKesalahanServer(getPageSource())
                         // Voucher orders is empty but the response is OK
                         // This section is added as fallback mechanism
-                        throw MessageErrorException()
+                        throw PromoErrorException()
                     }
                 }
             } else {
                 analytics.eventClickPilihPromoFailedTerjadiKesalahanServer(getPageSource())
                 // Response is not OK, need to show error message
-                throw MessageErrorException(response.validateUsePromoRevamp.message.joinToString(". "))
+                throw PromoErrorException(response.validateUsePromoRevamp.message.joinToString(". "))
             }
         }) { throwable ->
             // Notify fragment apply promo to stop loading
@@ -440,13 +476,12 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 }
                 clearPromoResponse.value?.let {
                     it.state = ClearPromoResponseAction.ACTION_STATE_SUCCESS
-                    // TODO : baca dari backend
-                    it.data = "Ini nanti diganti data dari backend, dapat dari clear promo response"
+                    it.data = response.successData.defaultEmptyPromoMessage
                     it.lastValidateUseRequest = tmpValidateUsePromoRequest
                     _clearPromoResponse.value = it
                 }
             } else {
-                throw MessageErrorException()
+                throw PromoErrorException()
             }
         }) { throwable ->
             clearPromoResponse.value?.let {
@@ -482,14 +517,20 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             couponList.add(eligibilityHeader)
 
             // Initialize promo list header
+            val tmpIneligiblePromoList = ArrayList<Visitable<*>>()
             val tmpPromoHeaderList = ArrayList<Visitable<*>>()
             couponSectionItem.subSections.forEach { couponSubSection ->
                 val promoHeader = uiModelMapper.mapPromoListHeaderUiModel(couponSubSection, headerIdentifierId, couponSectionItem.isEnabled)
-                if (eligibilityHeader.uiState.isEnabled) {
+                if (!hasAnyEnabledPromo && eligibilityHeader.uiState.isEnabled) {
                     hasAnyEnabledPromo = true
-                    if (!eligibilityHeader.uiState.isExpanded) {
+                }
+
+                if (eligibilityHeader.uiState.isEnabled) {
+                    if (!eligibilityHeader.uiState.isCollapsed) {
                         couponList.add(promoHeader)
                     }
+                } else {
+                    tmpIneligiblePromoList.add(promoHeader)
                 }
                 headerIdentifierId++
 
@@ -499,20 +540,23 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     val promoItem = uiModelMapper.mapPromoListItemUiModel(
                             couponItem, promoHeader.uiData.identifierId, couponSubSection.isEnabled, selectedPromoList
                     )
-                    if (promoHeader.uiState.isExpanded) {
-                        tmpCouponList.add(promoItem)
+                    if (eligibilityHeader.uiState.isEnabled) {
+                        if (promoHeader.uiState.isCollapsed) {
+                            tmpCouponList.add(promoItem)
+                        } else {
+                            couponList.add(promoItem)
+                        }
                     } else {
-                        couponList.add(promoItem)
+                        tmpIneligiblePromoList.add(promoItem)
                     }
                 }
-                if (tmpCouponList.isNotEmpty()) {
-                    promoHeader.uiData.tmpPromoItemList = tmpCouponList
-                }
 
-                if (!eligibilityHeader.uiState.isEnabled) {
-                    tmpPromoHeaderList.add(promoHeader)
-                } else {
-                    if (promoHeader.uiState.isExpanded) {
+                if (eligibilityHeader.uiState.isEnabled) {
+                    if (tmpCouponList.isNotEmpty()) {
+                        promoHeader.uiData.tmpPromoItemList = tmpCouponList
+                    }
+
+                    if (promoHeader.uiState.isCollapsed) {
                         tmpPromoHeaderList.add(promoHeader)
                     }
                 }
@@ -520,6 +564,14 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
             if (tmpPromoHeaderList.isNotEmpty()) {
                 eligibilityHeader.uiData.tmpPromo = tmpPromoHeaderList
+            }
+
+            if (tmpIneligiblePromoList.isNotEmpty()) {
+                if (eligibilityHeader.uiState.isCollapsed) {
+                    eligibilityHeader.uiData.tmpPromo = tmpIneligiblePromoList
+                } else {
+                    couponList.addAll(tmpIneligiblePromoList)
+                }
             }
         }
         _promoListUiModel.value = couponList
@@ -704,11 +756,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     }
 
     fun updatePromoListAfterClickPromoHeader(element: PromoListHeaderUiModel) {
-        if (!element.uiState.isExpanded) {
+        if (!element.uiState.isCollapsed) {
             promoListUiModel.value?.indexOf(element)?.let {
                 // Get the header data and set inverse collapsed value
                 val headerData = promoListUiModel.value?.get(it) as PromoListHeaderUiModel
-                headerData.uiState.isExpanded = !headerData.uiState.isExpanded
+                headerData.uiState.isCollapsed = !headerData.uiState.isCollapsed
 
                 // Get promo item which will be collapsed and store into single list
                 val modifiedData = ArrayList<PromoListItemUiModel>()
@@ -738,7 +790,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             promoListUiModel.value?.indexOf(element)?.let {
                 // Get the header data and set inverse collapsed value
                 val headerData = promoListUiModel.value?.get(it) as PromoListHeaderUiModel
-                headerData.uiState.isExpanded = !headerData.uiState.isExpanded
+                headerData.uiState.isCollapsed = !headerData.uiState.isCollapsed
 
                 // Get expanded promo item from temporary data on header, then put on the map
                 val mapList = HashMap<Visitable<*>, List<Visitable<*>>>()
@@ -800,7 +852,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 val headerIndex = promoListUiModel.value?.indexOf(it) ?: 0
                 _tmpUiModel.value = Update(it)
 
-                if (headerIndex != 0) {
+                if (headerIndex != -1) {
                     // Un check other item on current header if previously selected
                     val promoListSize = promoListUiModel.value?.size ?: 0
                     for (index in headerIndex + 1 until promoListSize) {
@@ -911,10 +963,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
         val dataIndex = promoListUiModel.value?.indexOf(element) ?: 0
 
-        if (dataIndex != 0) {
+        if (dataIndex != -1) {
             val data = promoListUiModel.value?.get(dataIndex) as PromoEligibilityHeaderUiModel
             data.let {
-                if (!it.uiState.isExpanded) {
+                if (!it.uiState.isCollapsed) {
+                    // Collapse ineligible section
                     val startIndex = dataIndex + 1
                     val promoListSize = promoListUiModel.value?.size ?: 0
                     for (index in startIndex until promoListSize) {
@@ -923,15 +976,17 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                         }
                     }
 
-                    it.uiState.isExpanded = !it.uiState.isExpanded
+                    it.uiState.isCollapsed = !it.uiState.isCollapsed
                     it.uiData.tmpPromo = modifiedData
 
                     _tmpUiModel.value = Update(it)
                     modifiedData.forEach {
                         _tmpUiModel.value = Delete(it)
                     }
+                    promoListUiModel.value?.removeAll(modifiedData)
                 } else {
-                    it.uiState.isExpanded = !it.uiState.isExpanded
+                    // Expand ineligible section
+                    it.uiState.isCollapsed = !it.uiState.isCollapsed
 
                     _tmpUiModel.value = Update(it)
                     val mapListPromoHeader = HashMap<Visitable<*>, List<Visitable<*>>>()
@@ -939,21 +994,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
                     _tmpListUiModel.value = Insert(mapListPromoHeader)
                     it.uiData.tmpPromo.forEach {
-                        if (it is PromoListHeaderUiModel && it.uiState.isExpanded && it.uiData.tmpPromoItemList.isNotEmpty()) {
-                            promoListUiModel.value?.add(it)
-
-                            val mapListPromoItem = HashMap<Visitable<*>, List<Visitable<*>>>()
-                            mapListPromoItem[it] = it.uiData.tmpPromoItemList
-                            _tmpListUiModel.value = Insert(mapListPromoItem)
-
-                            it.uiData.tmpPromoItemList.forEach {
-                                promoListUiModel.value?.add(it)
-                            }
-
-                            it.uiState.isExpanded = false
-                            it.uiData.tmpPromoItemList = emptyList()
-                            _tmpUiModel.value = Insert(it)
-                        }
+                        promoListUiModel.value?.add(it)
                     }
                     it.uiData.tmpPromo = emptyList()
                     _tmpUiModel.value = Update(it)

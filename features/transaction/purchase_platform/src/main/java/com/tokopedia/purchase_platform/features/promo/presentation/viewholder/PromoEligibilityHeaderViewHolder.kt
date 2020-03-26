@@ -32,7 +32,7 @@ class PromoEligibilityHeaderViewHolder(private val view: View,
             itemView.image_chevron.gone()
             itemView.setOnClickListener { }
         } else {
-            if (!element.uiState.isExpanded) {
+            if (!element.uiState.isCollapsed) {
                 itemView.image_chevron.rotation = 180f
             } else {
                 itemView.image_chevron.rotation = 0f

@@ -28,6 +28,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
 import com.tokopedia.logisticdata.data.constant.LogisticConstant
@@ -35,9 +36,7 @@ import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationP
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
-import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
-import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
+import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.utils.Utils.convertDpToPixel
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.preference.Address
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccGlobalEvent
@@ -58,7 +57,9 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.mo
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderProduct
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderTotal
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
+import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.features.promo.presentation.analytics.PromoCheckoutAnalytics
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.card_order_empty_preference.*
 import kotlinx.android.synthetic.main.fragment_order_summary_page.*
@@ -98,6 +99,31 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             refresh()
         } else if (requestCode == REQUEST_CODE_COURIER_PINPOINT) {
             onResultFromCourierPinpoint(resultCode, data)
+        } else if (requestCode == REQUEST_CODE_PROMO) {
+            onResultFromPromo(resultCode, data)
+        }
+    }
+
+    private fun onResultFromPromo(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            val validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = data?.getParcelableExtra(ARGS_VALIDATE_USE_DATA_RESULT)
+            if (validateUsePromoRevampUiModel != null) {
+                viewModel.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel
+//                shipmentPresenter.setValidateUsePromoRevampUiModel(validateUsePromoRevampUiModel)
+                // update button promo
+//                updateButtonPromoCheckout(validateUsePromoRevampUiModel.promoUiModel)
+                return
+            }
+            val validateUsePromoRequest: ValidateUsePromoRequest? = data?.getParcelableExtra(ARGS_LAST_VALIDATE_USE_REQUEST)
+            if (validateUsePromoRequest != null) {
+                viewModel.lastValidateUsePromoRequest = validateUsePromoRequest
+//                shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest)
+            }
+            val defaultTitlePromoButton: String? = data?.getStringExtra(ARGS_CLEAR_PROMO_RESULT)
+            if (defaultTitlePromoButton != null) {
+                //trigger validate use
+//                shipmentAdapter.checkHasSelectAllCourier(false)
+            }
         }
     }
 
@@ -170,7 +196,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
         })
         viewModel.orderTotal.observe(this, Observer {
-            orderPreferenceCard.setPaymentError(it.paymentErrorMessage)
+            setupPaymentError(it.paymentErrorMessage)
+//            orderPreferenceCard.setPaymentError(it.paymentErrorMessage)
             setupButtonBayar(it)
         })
         viewModel.globalEvent.observe(this, Observer {
@@ -449,6 +476,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
     }
 
+    private fun setupPaymentError(paymentErrorMessage: String?) {
+        if (paymentErrorMessage.isNullOrEmpty()) {
+            ticker_payment_error.gone()
+        } else {
+            ticker_payment_error.setTextDescription(paymentErrorMessage)
+            ticker_payment_error.visible()
+        }
+    }
 
     private fun showMessage(preference: ProfileResponse) {
         tv_header.text = "Barang yang dibeli"
@@ -491,6 +526,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         override fun onDurationChange(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
             viewModel.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
+        }
+
+        override fun onLogisticPromoClick(logisticPromoUiModel: LogisticPromoUiModel) {
+            viewModel.chooseLogisticPromo(logisticPromoUiModel)
         }
 
         override fun chooseCourier() {
