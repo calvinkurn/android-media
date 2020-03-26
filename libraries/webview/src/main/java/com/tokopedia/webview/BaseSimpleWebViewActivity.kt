@@ -269,7 +269,6 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             return getStartIntent(context, webUrl, showToolbar, allowOverride, needLogin)
         }
 
-        // example url: tokopedia://sellerinfo/detail?url=http%3A%2F%2Ftkp.me%2Fta43
         @DeepLink(ApplinkConst.SellerApp.WEBVIEW, ApplinkConst.SELLER_INFO_DETAIL)
         @JvmStatic
         fun createApplinkIntent(context: Context, bundle: Bundle): Intent {
