@@ -1,16 +1,19 @@
 package com.tokopedia.settingnotif.usersetting.view.fragment
 
 import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import androidx.core.app.NotificationManagerCompat
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.settingnotif.R
-import com.tokopedia.settingnotif.usersetting.domain.pojo.NotificationActivation
 import com.tokopedia.settingnotif.usersetting.domain.pojo.SellerSection
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldAdapter
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
+import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationPushNotif
 import com.tokopedia.settingnotif.usersetting.view.fragment.base.SettingFieldFragment
-import com.tokopedia.settingnotif.usersetting.view.viewmodel.UserSettingViewModel
+import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 typealias VisitableSettings = Visitable<SettingFieldTypeFactory>
@@ -56,13 +59,13 @@ class PushNotifFieldFragment : SettingFieldFragment() {
     }
 
     override fun onSuccessGetUserSetting(data: UserSettingViewModel) {
-        val newData = arrayListOf<VisitableSettings>()
+        val dataSettings = arrayListOf<VisitableSettings>()
         if (isNotificationEnabled() == false) {
-            newData.add(NotificationActivation())
+            dataSettings.add(activationPushNotif())
         }
-        newData.add(SellerSection())
-        newData.addAll(data.data)
-        data.data = newData.toList()
+        dataSettings.add(SellerSection())
+        dataSettings.addAll(data.data)
+        data.data = dataSettings.toList()
         super.onSuccessGetUserSetting(data)
     }
 
@@ -77,7 +80,7 @@ class PushNotifFieldFragment : SettingFieldFragment() {
     private fun showInformationDialog() {
         val customDialogView = View.inflate(context, R.layout.dialog_push_notif_information, null)
         val informationSheet = BottomSheetUnify().apply {
-            setTitle(getString(R.string.settingnotif_dialog_info_title))
+            setTitle("Push Notification")
             setChild(customDialogView)
             setCloseClickListener { dismiss() }
         }
