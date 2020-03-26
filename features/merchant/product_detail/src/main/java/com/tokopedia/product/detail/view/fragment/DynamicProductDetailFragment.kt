@@ -10,6 +10,7 @@ import android.graphics.Color
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.text.TextUtils
 import android.util.SparseIntArray
 import android.view.*
@@ -20,6 +21,7 @@ import android.view.animation.ScaleAnimation
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
@@ -63,6 +65,7 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.dialog.IAccessRequestListener
 import com.tokopedia.design.drawable.CountDrawable
+import com.tokopedia.device.info.DeviceInfo.getPackageName
 import com.tokopedia.device.info.permission.ImeiPermissionAsker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.AdultManager
@@ -238,6 +241,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     lateinit var performanceMonitoringP2Login: PerformanceMonitoring
     lateinit var performanceMonitoringFull: PerformanceMonitoring
 
+    private var enableCheckImei = false
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dynamic_product_detail_fragment, container, false)
     }
@@ -246,7 +251,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         super.onViewCreated(view, savedInstanceState)
         if (::remoteConfig.isInitialized) {
             viewModel.enableCaching = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_CACHE_PDP, true)
+            enableCheckImei = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CHECK_IMEI_PDP, false)
         }
+
         initTradein()
         initPerformanceMonitoring()
         initRecyclerView(view)
@@ -2035,19 +2042,37 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         actionButtonView.addToCartClick = {
             viewModel.buttonActionText = it
             viewModel.getDynamicProductInfoP1?.let {
-                doAtc(ProductDetailConstant.ATC_BUTTON)
+                if (enableCheckImei && viewModel.getDynamicProductInfoP1?.data?.campaign?.needCheckImei == true) {
+                    activity?.run {
+                        ImeiPermissionAsker.checkImeiPermission(this, ::showImeiPermissionDialog, {
+                            doAtc(ProductDetailConstant.ATC_BUTTON)
+                        }, {
+                            onNeverAskAgain()
+                        })
+                    }
+                } else doAtc(ProductDetailConstant.ATC_BUTTON)
             }
         }
 
         actionButtonView.buyNowClick = {
             viewModel.buttonActionText = it
-            // buy now / buy / preorder
-            viewModel.getDynamicProductInfoP1?.let {
-                if (viewModel.p2Login.value?.isOcsCheckoutType == true) {
-                    doAtc(ProductDetailConstant.OCS_BUTTON)
-                } else {
-                    doAtc(ProductDetailConstant.BUY_BUTTON)
+            if(enableCheckImei && viewModel.getDynamicProductInfoP1?.data?.campaign?.needCheckImei == true){
+                activity?.run {
+                    ImeiPermissionAsker.checkImeiPermission(this, ::showImeiPermissionDialog, ::doBuy) {
+                        onNeverAskAgain()
+                    }
                 }
+            } else doBuy()
+        }
+    }
+
+    private fun doBuy() {
+        // buy now / buy / preorder
+        viewModel.getDynamicProductInfoP1?.let {
+            if (viewModel.p2Login.value?.isOcsCheckoutType == true) {
+                doAtc(ProductDetailConstant.OCS_BUTTON)
+            } else {
+                doAtc(ProductDetailConstant.BUY_BUTTON)
             }
         }
     }
@@ -2497,32 +2522,37 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             productDetailTracking.eventViewHelpPopUpWhenAtc()
         }
     }
-    fun askImeiPermission(){
+
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         activity?.run {
-            ImeiPermissionAsker.askImeiPermission(this)
+            ImeiPermissionAsker.onImeiRequestPermissionsResult(this, requestCode, permissions, grantResults,
+                onUserDenied = {},
+                onUserDeniedAndDontAskAgain = {
+                    onNeverAskAgain()
+                }, onUserAcceptPermission = { doBuy() }
+            )
+        }
+
+    }
+
+    private fun onNeverAskAgain() {
+        activity?.run {
+            CheckImeiBottomSheet.showPermissionDialog(this) {
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                val uri = Uri.fromParts("package", packageName, null)
+                intent.data = uri
+                startActivity(intent);
+            }
         }
     }
 
     private fun showImeiPermissionDialog() {
         activity?.run {
-            CheckImeiBottomSheet.showPermissionDialog(this, ::askImeiPermission)
-        }
-    }
-
-    override fun checkImei() {
-        activity?.run {
-            ImeiPermissionAsker.checkImeiPermission(this, {
-                // Need Ask Permission
-                showToastSuccess("Need Ask Permission")
-                showImeiPermissionDialog()
-            }, {
-                showToastSuccess("Already Granted")
-                // Already Granted
-            }, {
-                showToastSuccess("User Denied")
-//                ImeiPermissionAsker.askImeiPermission(this)
-                // User Denied
-            })
+            CheckImeiBottomSheet.showPermissionDialog(this) {
+                ImeiPermissionAsker.askImeiPermissionFragment(this@DynamicProductDetailFragment)
+            }
         }
     }
 }

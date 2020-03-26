@@ -215,4 +215,7 @@ public class RemoteConfigKey {
     public static final String ENABLE_BRANCH_UTM_SUPPORT = "app_enable_branch_utm_support";
 
     public static final String ENABLE_SLICE_ACTION_RECHARGE = "android_mainapp_enable_slice_recharge";
+
+    public static final String ENABLE_CHECK_IMEI_PDP = "app_enable_check_imei_pdp";
+
 }

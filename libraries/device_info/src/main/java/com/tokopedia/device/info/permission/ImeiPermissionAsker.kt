@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.device.info.DeviceInfo.getImeiCache
@@ -90,7 +91,13 @@ object ImeiPermissionAsker {
         );
     }
 
-    fun onImeiRequestPermissionsResult(activity: Activity, requestCode: Int, permissions: Array<String>, grantResults: Array<Int>,
+    fun askImeiPermissionFragment(fragment: Fragment) {
+        fragment.requestPermissions(arrayOf(Manifest.permission.READ_PHONE_STATE),
+                IMEI_PERMISION_REQ_CODE
+        );
+    }
+
+    fun onImeiRequestPermissionsResult(activity: Activity, requestCode: Int, permissions: Array<out String>, grantResults: IntArray,
                                        onUserDenied: (() -> Unit),
                                        onUserDeniedAndDontAskAgain: (() -> Unit),
                                        onUserAcceptPermission: (() -> Unit)) {
