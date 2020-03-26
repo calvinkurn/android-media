@@ -23,6 +23,8 @@ class GetRechargeRecommendationUseCase @Inject constructor(
     companion object {
         const val PARAM_TYPE = "type"
         const val DEFAULT_TYPE = 1
+
+        const val NULL_RESPONSE = "null response"
     }
 
     private var params: RequestParams = RequestParams.create()
@@ -51,29 +53,6 @@ class GetRechargeRecommendationUseCase @Inject constructor(
             }
         """.trimIndent()
     }
-
-    private val dummyResponse by lazy {
-        """
-            {
-                "rechargeRecommendation": {
-                  "UUID": "recharge_watf_1234567",
-                  "recommendations": [
-                    {
-                      "contentID": "70_0812345678",
-                      "mainText": "Tagihan Pulsa anda: 0812345678 sudah due",
-                      "subText": "Rp 100.000",
-                      "applink": "tokopedia://digital/form?category_id=1&client_number=0812345678&operator_id=12&product_id=70&is_from_widget=true",
-                      "link": "https://pulsa.tokopedia.com/?action=init_data&amp;client_number=0812345678&amp;instant_checkout=false&amp;operator_id=12&amp;product_id=70&amp;slug=pulsa",
-                      "iconURL": "https://ecs7.tokopedia.net/img/attachment/2019/10/22/21181130/21181130_31fffa3a-b61f-4b67-b183-785aef289a5b.png",
-                      "title": "Yuk, segera bayar tagihanmu!",
-                      "backgroundColor": "blue",
-                      "buttonText": "Bayar Sekarang"
-                    }
-                  ]
-                }
-            }
-        """.trimIndent()
-    }
     //endregion
 
     override suspend fun executeOnBackground(): RechargeRecommendation {
@@ -81,10 +60,9 @@ class GetRechargeRecommendationUseCase @Inject constructor(
         graphqlUseCase.setGraphqlQuery(query)
         graphqlUseCase.setRequestParams(params.parameters)
         val response = graphqlUseCase.executeOnBackground().response
-//        val response = Gson().fromJson(dummyResponse, RechargeRecommendation.Response::class.java)?.response
 
         if (response != null) return response
-        else throw (MessageErrorException("null data"))
+        else throw (MessageErrorException(NULL_RESPONSE))
     }
 
     fun setParams(type: Int = DEFAULT_TYPE) {

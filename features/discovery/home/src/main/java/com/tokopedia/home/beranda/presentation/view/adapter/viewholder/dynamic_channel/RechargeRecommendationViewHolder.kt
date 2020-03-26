@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
+import com.tokopedia.home.analytics.v2.RechargeRecommendationTracking
 import com.tokopedia.home.beranda.domain.interactor.DeclineRechargeRecommendationUseCase.Companion.PARAM_CONTENT_ID
 import com.tokopedia.home.beranda.domain.interactor.DeclineRechargeRecommendationUseCase.Companion.PARAM_UUID
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
@@ -20,13 +21,9 @@ class RechargeRecommendationViewHolder(
         private val categoryListener: HomeCategoryListener
 ) : AbstractViewHolder<RechargeRecommendationViewModel>(itemView) {
 
-    var isPressed = false
-
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_recharge_recommendation_item
-
-        private const val cardBg = "https://ecs7.tokopedia.net/android/others/review_home_bg.png"
     }
 
     override fun bind(element: RechargeRecommendationViewModel) {
@@ -54,22 +51,23 @@ class RechargeRecommendationViewHolder(
                     btn_recharge_recommendation.text = recommendation.buttonText
                 }
                 btn_recharge_recommendation.setOnClickListener {
-                    HomePageTracking.homeRechargeRecommendationOnClickTracker(
-                            categoryListener.trackingQueue, recommendation.applink, recommendation)
+                    RechargeRecommendationTracking.homeRechargeRecommendationOnClickTracker(
+                            categoryListener.trackingQueue, recommendation
+                    )
 
                     listener.onContentClickListener(recommendation.applink)
                 }
 
                 addOnImpressionListener(element, object : ViewHintListener {
                     override fun onViewHint() {
-                        HomePageTracking.homeRechargeRecommendationImpressionTracker(
-                                categoryListener.trackingQueue, recommendation.applink, recommendation
+                        RechargeRecommendationTracking.homeRechargeRecommendationImpressionTracker(
+                                categoryListener.trackingQueue, recommendation
                         )
                     }
                 })
 
                 ic_close_recharge_recommendation.setOnClickListener {
-                    HomePageTracking.homeRechargeRecommendationOnCloseTracker("")
+                    RechargeRecommendationTracking.homeRechargeRecommendationOnCloseTracker(recommendation)
 
                     val requestParams = mapOf(
                             PARAM_UUID to element.rechargeRecommendation.UUID,

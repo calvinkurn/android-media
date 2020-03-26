@@ -462,14 +462,14 @@ open class HomeViewModel @Inject constructor(
         getTokocashBalance()
     }
 
-    private fun insertRechargeRecommendation(recommendations: RechargeRecommendation) {
-        if (recommendations.recommendations.isNotEmpty()) {
+    private fun insertRechargeRecommendation(data: RechargeRecommendation) {
+        if (data.recommendations.isNotEmpty()) {
             _homeLiveData.value?.list?.run {
                 val findRechargeRecommendationViewModel = find { visitable -> visitable is RechargeRecommendationViewModel }
                 val indexOfRechargeRecommendationViewModel = indexOf(findRechargeRecommendationViewModel)
                 if (indexOfRechargeRecommendationViewModel > -1 && findRechargeRecommendationViewModel is RechargeRecommendationViewModel) {
                     val newFindRechargeRecommendationViewModel = findRechargeRecommendationViewModel.copy(
-                            rechargeRecommendation = recommendations
+                            rechargeRecommendation = data
                     )
                     launch { channel?.send(UpdateLiveDataModel(ACTION_UPDATE, newFindRechargeRecommendationViewModel, indexOfRechargeRecommendationViewModel)) }
                 }
