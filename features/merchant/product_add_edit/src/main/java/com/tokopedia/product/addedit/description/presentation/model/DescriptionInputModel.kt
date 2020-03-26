@@ -1,4 +1,4 @@
-package com.tokopedia.product.addedit.description.model
+package com.tokopedia.product.addedit.description.presentation.model
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

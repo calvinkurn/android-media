@@ -37,9 +37,9 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstan
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextFloatOrZero
 import com.tokopedia.product.addedit.common.util.getTextIntOrZero
-import com.tokopedia.product.addedit.description.model.DescriptionInputModel
-import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionActivity
-import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionFragment.Companion.REQUEST_CODE_DESCRIPTION
+import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity
+import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
+import com.tokopedia.product.addedit.description.presentation.fragment.AddEditProductDescriptionFragment.Companion.REQUEST_CODE_DESCRIPTION
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailComponent
 import com.tokopedia.product.addedit.detail.presentation.adapter.NameRecommendationAdapter
 import com.tokopedia.product.addedit.detail.presentation.adapter.WholeSalePriceInputAdapter

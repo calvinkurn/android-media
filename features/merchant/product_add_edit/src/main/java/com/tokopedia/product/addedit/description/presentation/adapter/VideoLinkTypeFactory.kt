@@ -1,4 +1,4 @@
-package com.tokopedia.product.addedit.description.adapter
+package com.tokopedia.product.addedit.description.presentation.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.description.model.VideoLinkModel
+import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import kotlinx.android.synthetic.main.item_product_add_video.view.*
 
 class VideoLinkTypeFactory: BaseAdapterTypeFactory(){

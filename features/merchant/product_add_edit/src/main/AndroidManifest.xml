@@ -17,7 +17,7 @@
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name=".description.presentation.AddEditProductDescriptionActivity"
+            android:name=".description.presentation.activity.AddEditProductDescriptionActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 

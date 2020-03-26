@@ -1,7 +1,8 @@
 package com.tokopedia.product.addedit.common.domain.mapper
 
 import com.tokopedia.product.addedit.common.domain.model.params.add.*
-import com.tokopedia.product.addedit.description.model.DescriptionInputModel
+import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
+import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
@@ -45,9 +46,22 @@ class AddProductInputMapper @Inject constructor() {
                         ""
                 ),
                 mapPictureParam(uploadIdList),
-                mapPreorderParam(detailInputModel.preorder)
+                mapPreorderParam(detailInputModel.preorder),
+                Wholesales(),
+                mapVideoParam(descriptionInputModel.videoLinkList)
 
         )
+    }
+
+    private fun mapVideoParam(videoLinkList: List<VideoLinkModel>): Videos {
+        val data: ArrayList<Video> = ArrayList()
+        videoLinkList.forEach {
+            val urlSplit = it.inputUrl.split("/watch?v=")
+            val source = urlSplit[0]
+            val url = urlSplit[1]
+            data.add(Video(source, url))
+        }
+        return Videos(data)
     }
 
     private fun mapPictureParam(uploadIdList: java.util.ArrayList<String>): Pictures {

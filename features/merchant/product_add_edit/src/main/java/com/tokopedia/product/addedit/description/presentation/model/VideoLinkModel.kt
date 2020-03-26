@@ -1,8 +1,8 @@
-package com.tokopedia.product.addedit.description.model
+package com.tokopedia.product.addedit.description.presentation.model
 
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.product.addedit.description.adapter.VideoLinkTypeFactory
+import com.tokopedia.product.addedit.description.presentation.adapter.VideoLinkTypeFactory
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
