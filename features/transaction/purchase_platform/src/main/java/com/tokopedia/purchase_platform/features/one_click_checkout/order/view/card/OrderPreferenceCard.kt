@@ -45,7 +45,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         }
     }
 
-    private fun showHeader(){
+    private fun showHeader() {
         view.tv_card_header.text = "Pilihan"
 
         view.iv_edit_preference.setOnClickListener {
@@ -84,15 +84,13 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
 
                     //BBO
                     if (shipping.logisticPromoTickerMessage?.isNotEmpty() == true && shipping.shippingRecommendationData?.logisticPromo != null) {
-                        try {
-                            view.ticker_shipping_promo_description.text = "${shipping.logisticPromoTickerMessage}"
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
+                        view.ticker_shipping_promo_description.text = "${shipping.logisticPromoTickerMessage}"
                         view.ticker_shipping_promo.visible()
                         view.ticker_action.setOnClickListener {
                             listener.onLogisticPromoClick(shipping.shippingRecommendationData.logisticPromo)
                         }
+                    } else {
+                        view.ticker_shipping_promo.gone()
                     }
 
                     //BBO APPLY
@@ -105,10 +103,18 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                             "Durasi tergantung kurir"
                         }
                         view.tv_shipping_duration.text = serviceDur
+                        if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoViewModel.shippingRate) {
+                            view.tv_shipping_price.text = "Rp 0"
+                            view.tv_shipping_slash_price.gone()
+                        } else {
+                            view.tv_shipping_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.discountedRate, false)
+                            view.tv_shipping_slash_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.shippingRate, false)
+                            view.tv_shipping_slash_price.visible()
+                        }
                     }
 
                 } else {
-                    view.tv_shipping_duration.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_down_grey_24dp, 0)
+                    view.tv_shipping_duration.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_down_grey_20dp, 0)
                     view.tv_shipping_duration.setOnClickListener {
                         listener.chooseDuration()
                     }
@@ -195,7 +201,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
             val list: ArrayList<RatesViewModelType> = ArrayList()
             for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
                 if (shippingDurationViewModel.isSelected) {
-                    if(shippingDurationViewModel.shippingCourierViewModelList.isNotEmpty() && isCourierInstantOrSameday(shippingDurationViewModel.shippingCourierViewModelList[0].productData.shipperId)) {
+                    if (shippingDurationViewModel.shippingCourierViewModelList.isNotEmpty() && isCourierInstantOrSameday(shippingDurationViewModel.shippingCourierViewModelList[0].productData.shipperId)) {
                         list.add(NotifierModel())
                     }
                     list.addAll(shippingDurationViewModel.shippingCourierViewModelList)

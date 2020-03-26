@@ -171,7 +171,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         compositeSubscription.add(
                 ratesUseCase.execute(ratesParam)
                         .map {
-//                            Log.i("OSP", Thread.currentThread().name)
+                            //                            Log.i("OSP", Thread.currentThread().name)
                             val value = _orderPreference
                             val data = ratesResponseStateConverter.fillState(it, generateListShopShipment(), value?.shipping?.shipperProductId
                                     ?: 0, value?.shipping?.serviceId ?: 0)
@@ -367,10 +367,10 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                     if (shipping?.serviceErrorMessage?.isEmpty() == true) {
                                         val logisticPromo: LogisticPromoUiModel? = shippingRecommendationData.logisticPromo
                                         if (logisticPromo != null && !logisticPromo.disabled) {
-                                            shipping = shipping.copy(logisticPromoTickerMessage = "Tersedia ${logisticPromo.title}", logisticPromoViewModel = logisticPromo)
+                                            shipping = shipping.copy(logisticPromoTickerMessage = "Tersedia ${logisticPromo.title}", logisticPromoViewModel = logisticPromo, logisticPromoShipping = null)
                                         }
                                     } else if (shipping != null) {
-                                        shipping = shipping.copy(logisticPromoTickerMessage = null, logisticPromoViewModel = null)
+                                        shipping = shipping.copy(logisticPromoTickerMessage = null, logisticPromoViewModel = null, logisticPromoShipping = null)
                                     }
 
                                     _orderPreference = value.copy(shipping = shipping)
@@ -504,6 +504,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         val shipping = value?.shipping
         if (shippingRecommendationData != null && curShip != null && shipping != null) {
             val shippingDurationViewModels = shippingRecommendationData.shippingDurationViewModels
+            shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo?.copy(isApplied = false)
             for (shippingDurationViewModel in shippingDurationViewModels) {
                 if (shippingDurationViewModel.serviceData.serviceId == shipping.serviceId) {
                     val shippingCourierViewModelList = shippingDurationViewModel.shippingCourierViewModelList
@@ -525,7 +526,10 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                 shipperId = selectedShippingCourierUiModel.productData.shipperId,
                                 shipperName = selectedShippingCourierUiModel.productData.shipperName,
                                 insuranceData = selectedShippingCourierUiModel.productData.insurance,
-                                shippingPrice = selectedShippingCourierUiModel.productData.price.price))
+                                shippingPrice = selectedShippingCourierUiModel.productData.price.price,
+                                shippingRecommendationData = shippingRecommendationData,
+                                logisticPromoShipping = null,
+                                isApplyLogisticPromo = false))
                         orderPreference.value = OccState.Success(_orderPreference!!)
                         calculateTotal()
                     }
@@ -578,7 +582,9 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     shipperName = selectedShippingCourierUiModel.productData.shipperName,
                     insuranceData = selectedShippingCourierUiModel.productData.insurance,
                     shippingPrice = selectedShippingCourierUiModel.productData.price.price,
-                    shippingRecommendationData = shippingRecommendationData)
+                    shippingRecommendationData = shippingRecommendationData,
+                    logisticPromoShipping = null,
+                    isApplyLogisticPromo = false)
             _orderPreference = _orderPreference?.copy(shipping = shipping1)
             orderPreference.value = OccState.Success(_orderPreference!!)
             // TODO: BUTTON STATE LOADING -> VALIDATE PROMO
@@ -694,7 +700,28 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 //                                    orderPreference.value = OccState.Success(_orderPreference!!)
 //                                }
 //                            }
-                            _orderPreference = _orderPreference?.copy(shipping = shipping.copy(logisticPromoTickerMessage = null, isApplyLogisticPromo = true))
+                            val shippingRecommendationData = _orderPreference?.shipping?.shippingRecommendationData
+                            var logisticPromoShipping: ShippingCourierUiModel? = null
+                            if (shippingRecommendationData != null) {
+                                for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
+                                    if (shippingDurationViewModel.isSelected) {
+                                        for (shippingCourierUiModel in shippingDurationViewModel.shippingCourierViewModelList) {
+                                            shippingCourierUiModel.isSelected = false
+                                        }
+                                    }
+                                    if (shippingDurationViewModel.serviceData.serviceId == logisticPromoUiModel.serviceId) {
+                                        for (shippingCourierUiModel in shippingDurationViewModel.shippingCourierViewModelList) {
+                                            if (shippingCourierUiModel.productData.shipperProductId == logisticPromoUiModel.shipperProductId) {
+                                                logisticPromoShipping = shippingCourierUiModel
+                                                break
+                                            }
+                                        }
+                                    }
+                                }
+                                shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo.copy(isApplied = true)
+                            }
+                            _orderPreference = _orderPreference?.copy(shipping = shipping.copy(shippingRecommendationData = shippingRecommendationData,
+                                    logisticPromoTickerMessage = null, isApplyLogisticPromo = true, logisticPromoShipping = logisticPromoShipping))
                             orderPreference.value = OccState.Success(_orderPreference!!)
                             globalEvent.value = OccGlobalEvent.Normal
                             calculateTotal()
@@ -939,7 +966,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     private fun validateUsePromo(validateUsePromoRequest: ValidateUsePromoRequest? = null) {
         orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.LOADING)
         val requestParams = RequestParams.create()
-        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest ?: generateValidateUsePromoRequest())
+        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest
+                ?: generateValidateUsePromoRequest())
         validateUsePromoRevampUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
