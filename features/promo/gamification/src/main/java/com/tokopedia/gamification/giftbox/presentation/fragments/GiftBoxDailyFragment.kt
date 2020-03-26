@@ -25,9 +25,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.gamification.R
-import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.audio.AudioFactory
 import com.tokopedia.gamification.audio.AudioManager
+import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
 import com.tokopedia.gamification.giftbox.data.entities.*
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.ACTIVE
@@ -70,8 +70,9 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     var tokenUserState: String = TokenUserState.DEFAULT
     var disableGiftBoxTap = false
     var autoApplyMessage = ""
+
     var mAudiosManager: AudioManager? = null
-    var mAudiosManagerBackgroudSoundLoopIn: AudioManager? = null
+    var bgSoundManager: AudioManager? = null
 
     override fun getLayout() = R.layout.fragment_gift_box_daily
 
@@ -88,8 +89,25 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 viewModel = viewModelProvider[GiftBoxDailyViewModel::class.java]
             }
 
-            //Init AudioManager
             mAudiosManager = AudioFactory.createAudio(it)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (bgSoundManager != null) {
+            bgSoundManager?.mPlayer?.pause()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (bgSoundManager != null) {
+            val pos = bgSoundManager?.mPlayer?.currentPosition
+            if (pos != null) {
+                bgSoundManager?.mPlayer?.seekTo(pos)
+                bgSoundManager?.mPlayer?.start()
+            }
         }
     }
 
@@ -98,12 +116,12 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
         mAudiosManager?.let {
             it.destroy()
-            mAudiosManager = null;
+            mAudiosManager = null
         }
 
-        mAudiosManagerBackgroudSoundLoopIn?.let {
+        bgSoundManager?.let {
             it.destroy()
-            mAudiosManagerBackgroudSoundLoopIn = null;
+            bgSoundManager = null
         }
     }
 
@@ -232,20 +250,13 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                             GtmEvents.clickGiftBox("")
                                             viewModel.getRewards()
                                             disableGiftBoxTap = true
-
                                         }
-
-                                        context?.let { soundIt ->
-                                            if (mAudiosManager == null) {
-                                                mAudiosManager = AudioFactory.createAudio(soundIt)
-                                            }
-
-                                            mAudiosManager?.playAudio(R.raw.gf_giftbox_tap)
-                                        }
+                                        playTapSound()
                                     }
 
                                     tvReminderMessage.text = reminder?.text
                                     setInitialUiForReminder()
+                                    playLoopSound()
                                 }
                                 TokenUserState.EMPTY -> {
                                     reminderLayout.visibility = View.VISIBLE
@@ -289,12 +300,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                             }
                         }
                     }
-
-                    context?.let { innerIt ->
-                        mAudiosManagerBackgroudSoundLoopIn = AudioFactory.createAudio(innerIt)
-                        mAudiosManagerBackgroudSoundLoopIn?.playAudio(R.raw.gf_giftbox_bg, true)
-                    }
-
                 }
 
                 LiveDataResult.STATUS.LOADING -> showLoader()
@@ -381,13 +386,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                 }
                             }
 
-                            context?.let { soundIt ->
-                                if (mAudiosManager == null) {
-                                    mAudiosManager = AudioFactory.createAudio(soundIt)
-                                }
-
-                                mAudiosManager?.playAudio(R.raw.gf_giftbox_prize)
-                            }
+                            playPrizeSound()
                         } else {
                             disableGiftBoxTap = false
                             val messageList = it.data?.gamiCrack?.resultStatus?.message
@@ -455,6 +454,32 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
         })
     }
+
+    private fun playLoopSound() {
+        context?.let { it ->
+            bgSoundManager = AudioFactory.createAudio(it)
+            bgSoundManager?.playAudio(R.raw.gf_giftbox_bg, true)
+        }
+    }
+
+    private fun playTapSound() {
+        context?.let { soundIt ->
+            if (mAudiosManager == null) {
+                mAudiosManager = AudioFactory.createAudio(soundIt)
+            }
+            mAudiosManager?.playAudio(R.raw.gf_giftbox_tap)
+        }
+    }
+
+    private fun playPrizeSound() {
+        context?.let { soundIt ->
+            if (mAudiosManager == null) {
+                mAudiosManager = AudioFactory.createAudio(soundIt)
+            }
+            mAudiosManager?.playAudio(R.raw.gf_giftbox_prize)
+        }
+    }
+
 
     fun renderUiForReminderCheck(remindMeCheckEntity: RemindMeCheckEntity) {
         this.gameRemindMeCheck = remindMeCheckEntity?.gameRemindMeCheck

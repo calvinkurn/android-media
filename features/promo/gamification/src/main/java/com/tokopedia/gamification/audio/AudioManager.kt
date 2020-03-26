@@ -14,7 +14,7 @@ class AudioManager(var mContext: Context) {
         mPlayer = MediaPlayer()
     }
 
-    public fun playAudio(resId: Int, isLoop: Boolean = false) {
+    fun playAudio(resId: Int, isLoop: Boolean = false) {
         if (resId <= 0) {
             throw IllegalArgumentException("Please provide correct audio file")
         }
@@ -32,7 +32,7 @@ class AudioManager(var mContext: Context) {
 
             reset()
 
-            val afd: AssetFileDescriptor = mContext.getResources().openRawResourceFd(resId)
+            val afd: AssetFileDescriptor = mContext.resources.openRawResourceFd(resId)
                     ?: return
 
             setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
@@ -42,7 +42,7 @@ class AudioManager(var mContext: Context) {
         }
     }
 
-    public fun destroy() {
+    fun destroy() {
         mPlayer?.release()
         mPlayer = null
     }
