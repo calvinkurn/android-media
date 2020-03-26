@@ -8,17 +8,6 @@
     android:orientation="horizontal"
     android:padding="@dimen/dp_16">
 
-    <ImageView
-        android:id="@+id/iv_icon"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_desc"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_sw_title"
-        tools:src="@drawable/ic_smiley_bad" />
-
     <TextView
         android:id="@+id/tv_sw_title"
         android:layout_width="0dp"
@@ -27,7 +16,7 @@
         android:textColor="@color/charcoal_grey_96"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/sw_setting"
-        app:layout_constraintStart_toEndOf="@+id/iv_icon"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Activity" />
 
