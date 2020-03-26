@@ -364,11 +364,13 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                     }
 
                                     //BBO
-                                    if (shipping?.serviceErrorMessage?.isNotEmpty() == true) {
+                                    if (shipping?.serviceErrorMessage?.isEmpty() == true) {
                                         val logisticPromo: LogisticPromoUiModel? = shippingRecommendationData.logisticPromo
-                                        if (logisticPromo != null) {
-                                            shipping = shipping.copy(logisticPromoTickerMessage = "Tersedia ${logisticPromo.title}")
+                                        if (logisticPromo != null && !logisticPromo.disabled) {
+                                            shipping = shipping.copy(logisticPromoTickerMessage = "Tersedia ${logisticPromo.title}", logisticPromoViewModel = logisticPromo)
                                         }
+                                    } else if (shipping != null) {
+                                        shipping = shipping.copy(logisticPromoTickerMessage = null, logisticPromoViewModel = null)
                                     }
 
                                     _orderPreference = value.copy(shipping = shipping)
@@ -667,6 +669,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     }
 
     fun chooseLogisticPromo(logisticPromoUiModel: LogisticPromoUiModel) {
+        globalEvent.value = OccGlobalEvent.Loading
         val shipping = _orderPreference?.shipping
         if (shipping != null) {
             val validateUsePromoRequest = generateValidateUsePromoRequest()
@@ -678,18 +681,23 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
                         override fun onError(e: Throwable) {
+                            globalEvent.value = OccGlobalEvent.Error(e)
                             e.printStackTrace()
                         }
 
                         override fun onNext(response: ValidateUsePromoRevampUiModel) {
                             validateUsePromoRevampUiModel = response
                             // TODO : SAVE APPLIED LOGISTIC PROMO
-                            for (voucherOrderUiModel in response.promoUiModel.voucherOrderUiModels) {
-                                if (voucherOrderUiModel != null && voucherOrderUiModel.type.equals("logistic", true)) {
-                                    _orderPreference = _orderPreference?.copy(shipping = shipping.copy(logisticPromoTickerMessage = null, isApplyLogisticPromo = true))
-                                    orderPreference.value = OccState.Success(_orderPreference!!)
-                                }
-                            }
+//                            for (voucherOrderUiModel in response.promoUiModel.voucherOrderUiModels) {
+//                                if (voucherOrderUiModel != null && voucherOrderUiModel.type.equals("logistic", true)) {
+//                                    _orderPreference = _orderPreference?.copy(shipping = shipping.copy(logisticPromoTickerMessage = null, isApplyLogisticPromo = true))
+//                                    orderPreference.value = OccState.Success(_orderPreference!!)
+//                                }
+//                            }
+                            _orderPreference = _orderPreference?.copy(shipping = shipping.copy(logisticPromoTickerMessage = null, isApplyLogisticPromo = true))
+                            orderPreference.value = OccState.Success(_orderPreference!!)
+                            globalEvent.value = OccGlobalEvent.Normal
+                            calculateTotal()
                         }
 
                         override fun onCompleted() {

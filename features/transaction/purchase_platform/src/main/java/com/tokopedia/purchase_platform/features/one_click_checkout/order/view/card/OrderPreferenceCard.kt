@@ -84,7 +84,11 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
 
                     //BBO
                     if (shipping.logisticPromoTickerMessage?.isNotEmpty() == true && shipping.shippingRecommendationData?.logisticPromo != null) {
-                        view.ticker_description.text = shipping.logisticPromoTickerMessage
+                        try {
+                            view.ticker_shipping_promo_description.text = "${shipping.logisticPromoTickerMessage}"
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
                         view.ticker_shipping_promo.visible()
                         view.ticker_action.setOnClickListener {
                             listener.onLogisticPromoClick(shipping.shippingRecommendationData.logisticPromo)
@@ -92,9 +96,17 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     }
 
                     //BBO APPLY
-                    if (shipping.isApplyLogisticPromo) {
-
+                    if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null) {
+                        view.tv_shipping_name.text = "Pengiriman Bebas Ongkir"
+                        val tempServiceDuration = shipping.logisticPromoViewModel.title
+                        val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
+                            tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
+                        } else {
+                            "Durasi tergantung kurir"
+                        }
+                        view.tv_shipping_duration.text = serviceDur
                     }
+
                 } else {
                     view.tv_shipping_duration.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_down_grey_24dp, 0)
                     view.tv_shipping_duration.setOnClickListener {
