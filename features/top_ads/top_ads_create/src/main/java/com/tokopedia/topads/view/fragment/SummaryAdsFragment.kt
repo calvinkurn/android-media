@@ -49,6 +49,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     private var adsItemsList: MutableList<AdsItem> = mutableListOf()
     var isEnoughDeposit = false
     private var dailyBudget = 0
+    private var suggestion = 0
 
 
     companion object {
@@ -119,36 +120,37 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             val map = convertToParam(view)
             viewModel.topAdsCreated(map, this::onSuccessActivation, this::onErrorActivation)
         }
-        val suggestion = (stepperModel?.finalBidPerClick!!) * MULTIPLIER
+        suggestion = (stepperModel?.finalBidPerClick!!) * MULTIPLIER
         stepperModel?.dailyBudget = suggestion
-        error_text.text = String.format(getString(R.string.daily_budget_error), suggestion)
         dailyBudget = stepperModel?.finalBidPerClick!! * 40
-        daily_budget.setText(dailyBudget.toString())
+        daily_budget.textFieldInput.setText(dailyBudget.toString())
         toggle.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 daily_budget.visibility = View.VISIBLE
                 daily_budget_butt.text = "Anggaran harian Dibatasi"
                 var budget = 0
                 try {
-                    budget = Integer.parseInt(daily_budget.textWithoutPrefix.toString().replace(",", ""))
+                    budget = Integer.parseInt(daily_budget.textFieldInput.text.toString().replace(",", ""))
                 } catch (e: NumberFormatException) {
 
                 }
                 if (budget < suggestion && daily_budget.isVisible) {
-                    error_text.visibility = View.VISIBLE
+                    daily_budget.setMessage(String.format(getString(R.string.daily_budget_error), suggestion))
+                    daily_budget.setError(true)
                     btn_submit.isEnabled = false
 
                 }
             } else {
                 daily_budget_butt.text = "Tidak dibatasi"
                 daily_budget.visibility = View.GONE
-                error_text.visibility = View.GONE
+                daily_budget.setError(false)
+                daily_budget.setMessage("")
                 btn_submit.isEnabled = true
 
             }
 
         }
-        daily_budget.addTextChangedListener(watcher())
+        daily_budget.textFieldInput.addTextChangedListener(watcher())
         val spannableText = SpannableString(MORE_INFO)
         val startIndex = 0
         val endIndex = spannableText.length
@@ -166,18 +168,21 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     }
 
     private fun watcher(): NumberTextWatcher? {
-        return object : NumberTextWatcher(daily_budget, "0") {
+        return object : NumberTextWatcher(daily_budget.textFieldInput, "0") {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 var input = number.toInt()
                 if (input < stepperModel?.finalBidPerClick!! * MULTIPLIER
                         && daily_budget.isVisible) {
-                    error_text.visibility = View.VISIBLE
+                    daily_budget.setError(true)
+                    daily_budget.setMessage(String.format(getString(R.string.daily_budget_error), suggestion))
                     btn_submit.isEnabled = false
                 } else {
                     stepperModel?.dailyBudget = input
-                    error_text.visibility = View.GONE
                     btn_submit.isEnabled = true
+                    daily_budget.setMessage("")
+                    daily_budget.setError(false)
+
                 }
             }
         }
@@ -186,7 +191,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     override fun onResume() {
         super.onResume()
         activity?.runOnUiThread {
-            daily_budget.setText(dailyBudget.toString())
+            daily_budget.textFieldInput.setText(dailyBudget.toString())
             daily_budget.refreshDrawableState()
         }
 

@@ -52,37 +52,14 @@
                     android:text="@string/optimalkan_penjualan_dengan_atur_anggaran_harian_iklan"
                     app:typographyType="body_1" />
 
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/budget_parent"
-                    style="@style/TextInputLayout"
-                    android:layout_width="match_parent"
-                    android:layout_below="@+id/summary"
-                    android:layout_marginRight="@dimen/dp_16"
-                    tools:visibility="visible">
-
-                    <com.tokopedia.seller.common.widget.PrefixEditText
-                        android:id="@+id/daily_budget"
-                        style="@style/EditText.Currency"
-                        android:layout_width="match_parent"
-                        android:maxLines="1"
-                        android:visibility="gone"
-                        app:prefix="Rp "
-                        tools:visibility="visible" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/error_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/budget_parent"
-                    android:text="@string/daily_budget_error"
-                    android:textColor="@color/bright_red"
+                <com.tokopedia.unifycomponents.TextFieldUnify
+                    android:id="@+id/daily_budget"
                     android:visibility="gone"
-                    app:typographyType="body_3"
-                    tools:text="@string/daily_budget_error"
-                    tools:visibility="visible" />
-
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/summary"
+                    app:text_field_input_type="number"
+                    app:text_field_prepend_text="Rp" />
             </RelativeLayout>
 
         </androidx.cardview.widget.CardView>

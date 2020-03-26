@@ -21,16 +21,17 @@ class BidInfoItemViewHolder(val view: View, var selectedKeywords: MutableList<St
             if (selectedKeywords.size != 0) {
                 view.title.text = selectedKeywords[adapterPosition]
                 if (selectedSuggestBid[adapterPosition] != 0) {
-                    view.budget.setText(selectedSuggestBid[adapterPosition].toString())
-                    view.recom_txt.text = String.format(view.resources.getString(R.string.recommendated_bid_message), selectedSuggestBid[adapterPosition])
+                    view.budget.textFieldInput.setText(selectedSuggestBid[adapterPosition].toString())
+                    setMessageErrorField((view.resources.getString(R.string.recommendated_bid_message)), selectedSuggestBid[adapterPosition], false)
                 } else {
-                    view.budget.setText(bidMap["min"].toString())
-                    view.recom_txt.text = String.format(view.resources.getString(R.string.recommendated_bid_message), bidMap["min"])
+                    view.budget.textFieldInput.setText(bidMap["min"].toString())
+                    setMessageErrorField((view.resources.getString(R.string.recommendated_bid_message)), bidMap["min"]!!, false)
+
 
                 }
             }
 
-            view.budget.addTextChangedListener(object : NumberTextWatcher(view.budget, "0") {
+            view.budget.textFieldInput.addTextChangedListener(object : NumberTextWatcher(view.budget.textFieldInput, "0") {
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
                     val result = number.toInt()
@@ -38,17 +39,19 @@ class BidInfoItemViewHolder(val view: View, var selectedKeywords: MutableList<St
                     when {
                         result < bidMap["min"]!! -> {
                             actionEnable!!.invoke(false)
-                            errorTextVisibility(true)
-                            view.error_text.text = String.format(view.resources.getString(R.string.min_bid_error), bidMap["min"])
+                            setMessageErrorField(view.resources.getString(R.string.min_bid_error), bidMap["min"]!!, true)
                         }
                         result > bidMap["max"]!! -> {
                             actionEnable!!.invoke(false)
-                            errorTextVisibility(true)
-                            view.error_text.text = String.format(view.resources.getString(R.string.max_bid_error), bidMap["max"])
+                            setMessageErrorField(view.resources.getString(R.string.max_bid_error), bidMap["max"]!!, true)
                         }
                         else -> {
                             actionEnable!!.invoke(true)
-                            errorTextVisibility(false)
+                            if (selectedSuggestBid[adapterPosition] != 0) {
+                                setMessageErrorField((view.resources.getString(R.string.recommendated_bid_message)), selectedSuggestBid[adapterPosition], false)
+                            } else {
+                                setMessageErrorField((view.resources.getString(R.string.recommendated_bid_message)), bidMap["min"]!!, false)
+                            }
                         }
                     }
                 }
@@ -59,13 +62,9 @@ class BidInfoItemViewHolder(val view: View, var selectedKeywords: MutableList<St
         }
     }
 
-    fun errorTextVisibility(visible: Boolean) {
-        if (visible) {
-            view.error_text.visibility = View.VISIBLE
-            view.recom_txt.visibility = View.GONE
-        } else {
-            view.error_text.visibility = View.GONE
-            view.recom_txt.visibility = View.VISIBLE
-        }
+    private fun setMessageErrorField(error: String, bid: Int, bool: Boolean) {
+        view.budget.setError(bool)
+        view.budget.setMessage(String.format(error, bid))
+
     }
 }
