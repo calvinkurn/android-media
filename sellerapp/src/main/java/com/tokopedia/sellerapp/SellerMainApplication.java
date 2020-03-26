@@ -17,29 +17,30 @@ import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
 import com.moengage.pushbase.push.MoEPushCallBacks;
+import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
+import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
 import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.tokofix.TokoFix;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
-import com.newrelic.agent.android.NewRelic;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -164,6 +165,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         NewRelic.withApplicationToken(
                 decodeKey(RAW_NEWRELIC_TOKEN)
         ).start(this);
+
+        initAppNotificationReceiver();
     }
 
     private String decodeKey(int[] keys) {
@@ -217,6 +220,12 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
                         CacheApiWhiteList.getWhiteList(),
                         String.valueOf(getCurrentVersion(getApplicationContext())))
         );
+    }
+
+    //Please do not delete this function to keep AppNotificationReceiver
+    private void initAppNotificationReceiver() {
+        String tag = AppNotificationReceiver.class.getSimpleName();
+        Timber.d("Init %s", tag);
     }
 
     @Override
