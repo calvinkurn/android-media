@@ -7,7 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.settingnotif.usersetting.domain.mapper.UserSettingFieldMapper
 import com.tokopedia.settingnotif.usersetting.domain.pojo.UserNotificationResponse
-import com.tokopedia.settingnotif.usersetting.view.viewmodel.UserSettingViewModel
+import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable

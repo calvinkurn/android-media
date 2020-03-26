@@ -1,4 +1,4 @@
-package com.tokopedia.settingnotif.usersetting.view.viewmodel
+package com.tokopedia.settingnotif.usersetting.view.dataview
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory

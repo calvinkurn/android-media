@@ -14,7 +14,7 @@ class SettingFieldTypeFactoryImpl(
     override fun type(settingSections: SettingSections): Int = SettingSectionViewHolder.LAYOUT
     override fun type(parentSetting: ParentSetting): Int = ParentSettingViewHolder.LAYOUT
     override fun type(childSetting: ChildSetting): Int = ChildSettingViewHolder.LAYOUT
-    override fun type(settingSections: NotificationActivation): Int = PushNotifActivationViewHolder.LAYOUT
+    override fun type(settingSections: NotificationActivation): Int = ItemActivationViewHolder.LAYOUT
     override fun type(settingSections: SellerSection): Int = SellerSectionViewHolder.LAYOUT
     override fun type(parentSetting: SmsSection): Int = SmsSectionViewHolder.LAYOUT
 
@@ -33,7 +33,7 @@ class SettingFieldTypeFactoryImpl(
         return when (type) {
             ParentSettingViewHolder.LAYOUT -> ParentSettingViewHolder(parent, settingListener)
             ChildSettingViewHolder.LAYOUT -> ChildSettingViewHolder(parent, settingListener)
-            PushNotifActivationViewHolder.LAYOUT -> PushNotifActivationViewHolder(parent)
+            ItemActivationViewHolder.LAYOUT -> ItemActivationViewHolder(parent)
             SellerSectionViewHolder.LAYOUT -> SellerSectionViewHolder(listener, parent)
             SmsSectionViewHolder.LAYOUT -> SmsSectionViewHolder(parent)
             else -> createViewHolder(parent, type)

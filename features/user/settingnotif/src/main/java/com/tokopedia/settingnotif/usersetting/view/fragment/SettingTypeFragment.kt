@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.const.Unify.Neutral_N700_96
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingTypeAdapter
-import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingType
+import com.tokopedia.settingnotif.usersetting.view.dataview.SettingTypeDataView
 import com.tokopedia.showcase.*
 import java.util.*
 
@@ -21,7 +21,7 @@ class SettingTypeFragment : BaseDaggerFragment() {
     private lateinit var settingTypeContract: SettingTypeContract
 
     interface SettingTypeContract {
-        fun openSettingField(settingType: SettingType)
+        fun openSettingField(settingType: SettingTypeDataView)
     }
 
     override fun getScreenName(): String {
@@ -60,7 +60,7 @@ class SettingTypeFragment : BaseDaggerFragment() {
     private fun setupSettingTypes() {
         with (rvSettingType) {
             setHasFixedSize(true)
-            adapter = SettingTypeAdapter(SettingType.createSettingTypes(), settingTypeContract)
+            adapter = SettingTypeAdapter(SettingTypeDataView.createSettingTypes(), settingTypeContract)
         }
     }
 

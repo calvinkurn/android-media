@@ -7,7 +7,7 @@ import android.widget.FrameLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.settingnotif.usersetting.const.Unify.Neutral_N0
 import com.tokopedia.settingnotif.usersetting.view.fragment.SettingTypeFragment
-import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingType
+import com.tokopedia.settingnotif.usersetting.view.dataview.SettingTypeDataView
 
 class UserNotificationSettingActivity : BaseSimpleActivity(),
         SettingTypeFragment.SettingTypeContract {
@@ -33,7 +33,7 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
         return SettingTypeFragment()
     }
 
-    override fun openSettingField(settingType: SettingType) {
+    override fun openSettingField(settingType: SettingTypeDataView) {
         val fragment = supportFragmentManager
                 .findFragmentByTag(getString(settingType.name))
                 ?: settingType.createNewFragmentInstance()
@@ -45,7 +45,7 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
     }
 
     fun openSellerFiled() {
-        openSettingField(SettingType.createSellerType())
+        openSettingField(SettingTypeDataView.createSellerType())
     }
 
     override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view

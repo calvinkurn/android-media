@@ -5,7 +5,7 @@ import android.view.View
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.domain.pojo.SmsSection
 import com.tokopedia.settingnotif.usersetting.view.fragment.base.SettingFieldFragment
-import com.tokopedia.settingnotif.usersetting.view.viewmodel.UserSettingViewModel
+import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingViewModel
 
 class SmsFieldFragment: SettingFieldFragment() {
 

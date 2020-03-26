@@ -26,7 +26,7 @@ import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldAdapter
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactoryImpl
 import com.tokopedia.settingnotif.usersetting.view.listener.SettingFieldContract
-import com.tokopedia.settingnotif.usersetting.view.viewmodel.UserSettingViewModel
+import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingViewModel
 import com.tokopedia.settingnotif.usersetting.widget.NotifSettingBigDividerDecoration
 import com.tokopedia.settingnotif.usersetting.widget.NotifSettingDividerDecoration
 import com.tokopedia.unifycomponents.Toaster

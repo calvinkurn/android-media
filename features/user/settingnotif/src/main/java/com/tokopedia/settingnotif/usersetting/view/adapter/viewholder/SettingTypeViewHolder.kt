@@ -9,14 +9,14 @@ import android.widget.TextView
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.view.fragment.SettingTypeFragment
-import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingType
+import com.tokopedia.settingnotif.usersetting.view.dataview.SettingTypeDataView
 
 class SettingTypeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private val settingTypeIcon: ImageView? = itemView.findViewById(R.id.img_main_setting)
     private val settingTypeName: TextView? = itemView.findViewById(R.id.tv_setting_type)
 
-    fun bind(settingType: SettingType, settingTypeContract: SettingTypeFragment.SettingTypeContract) {
+    fun bind(settingType: SettingTypeDataView, settingTypeContract: SettingTypeFragment.SettingTypeContract) {
         settingTypeIcon?.loadImageDrawable(settingType.icon)
         settingTypeName?.text = itemView.context.getString(settingType.name)
 

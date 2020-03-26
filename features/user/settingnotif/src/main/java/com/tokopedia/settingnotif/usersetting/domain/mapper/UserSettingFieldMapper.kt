@@ -3,7 +3,7 @@ package com.tokopedia.settingnotif.usersetting.domain.mapper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.settingnotif.usersetting.domain.pojo.UserNotificationResponse
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
-import com.tokopedia.settingnotif.usersetting.view.viewmodel.UserSettingViewModel
+import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingViewModel
 import rx.functions.Func1
 
 class UserSettingFieldMapper : Func1<UserNotificationResponse, UserSettingViewModel> {
