@@ -1151,18 +1151,40 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun setupTickerOcc() {
-        val data = actionButtonView.cartTypeData?.data ?: emptyList()
-        if (actionButtonView.view.btn_buy_now.visibility == View.VISIBLE && data.isNotEmpty() && data[0].configName.equals("occ", true)) {
-            view?.let {
-                ticker_occ_arrow.post {
-                    ticker_occ_arrow?.translationX = actionButtonView.view.btn_buy_now.x + (actionButtonView.view.btn_buy_now.width / 2)
-                    ticker_occ?.setOnClickListener {
-                        ticker_occ_layout?.gone()
+        var willShowTicker = false
+        if (actionButtonView.onSuccessGetCartType) {
+            val data = actionButtonView.cartTypeData?.data
+            if (data != null) {
+                dataLoop@ for (item in data) {
+                    for (button in item.availableButtons.withIndex()) {
+                        val onboardingMessage = button.value.onboardingMessage
+                        if (onboardingMessage.isNotEmpty()) {
+                            var selectedButton: View? = null
+                            if (button.index == 0) {
+                                selectedButton = actionButtonView.view.btn_buy_now
+                            } else if (button.index == 1) {
+                                selectedButton = actionButtonView.view.btn_add_to_cart
+                            }
+                            if (selectedButton != null && selectedButton.visibility == View.VISIBLE) {
+                                view?.let {
+                                    ticker_occ_arrow.post {
+                                        ticker_occ_text?.text = onboardingMessage
+                                        ticker_occ_arrow?.translationX = selectedButton.x + (selectedButton.width / 2)
+                                        ticker_occ?.setOnClickListener {
+                                            ticker_occ_layout?.gone()
+                                        }
+                                        ticker_occ_layout?.visible()
+                                    }
+                                }
+                                willShowTicker = true
+                                break@dataLoop
+                            }
+                        }
                     }
-                    ticker_occ_layout?.visible()
                 }
             }
-        } else {
+        }
+        if (!willShowTicker) {
             ticker_occ_layout.gone()
         }
     }

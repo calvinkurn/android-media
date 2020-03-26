@@ -34,5 +34,7 @@ data class AvailableButton(
         @SerializedName("text")
         val text: String = "",
         @SerializedName("show_recommendation")
-        val showRecommendation: Boolean = false
+        val showRecommendation: Boolean = false,
+        @SerializedName("onboarding_message")
+        val onboardingMessage: String = ""
 )

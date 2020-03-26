@@ -471,7 +471,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             }
             val benefitAmount = if (shipping?.isApplyLogisticPromo == true && shipping.logisticPromoViewModel != null) shipping.logisticPromoViewModel.benefitAmount else 0
             val fee = _orderPreference?.preference?.payment?.fee?.toDouble() ?: 0.0
-            val subtotal = totalProductPrice + totalShippingPrice + insurancePrice + fee - benefitAmount
+            val finalShippingPrice = if ((totalShippingPrice - benefitAmount) < 0) 0.0 else (totalShippingPrice - benefitAmount)
+            val subtotal = totalProductPrice + finalShippingPrice + insurancePrice + fee
             val minimumAmount = _orderPreference?.preference?.payment?.minimumAmount ?: 0
             val maximumAmount = _orderPreference?.preference?.payment?.maximumAmount ?: 0
 //                validateUsePromoRevampUiModel.promoUiModel.benefitSummaryInfoUiModel.summaries
