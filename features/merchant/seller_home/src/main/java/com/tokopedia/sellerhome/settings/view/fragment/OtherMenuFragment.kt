@@ -30,6 +30,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.StatusbarHelper
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant
@@ -86,6 +87,11 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private var isInitialStatusBar = false
     private var isDefaultDarkStatusBar = true
+
+    private var canShowErrorToaster = true
+
+    @FragmentType
+    private var currentFragmentType: Int = FragmentType.OTHER
 
     private val otherMenuViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(OtherMenuViewModel::class.java)
@@ -197,8 +203,14 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
             setStatusBarStateInitialIsLight(isDefaultDark)
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBar()
+            if (currentFragmentType == FragmentType.OTHER) {
+                setStatusBar()
+            }
         }
+    }
+
+    override fun setCurrentFragmentType(fragmentType: Int) {
+        currentFragmentType = fragmentType
     }
 
     override fun onTopAdsTooltipClicked(isTopAdsActive: Boolean) {
@@ -243,7 +255,9 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                     is Fail -> showSettingShopInfoState(SettingResponseState.SettingError)
                 }
             })
-
+            isToasterAlreadyShown.observe(viewLifecycleOwner, Observer { isToasterAlreadyShown ->
+                canShowErrorToaster = !isToasterAlreadyShown
+            })
         }
     }
 
@@ -330,14 +344,18 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
             }
             is SettingResponseState.SettingLoading -> otherMenuViewHolder?.onLoadingGetSettingShopInfoData()
             is SettingResponseState.SettingError -> {
-                view?.showToasterError(resources.getString(R.string.setting_toaster_error_message))
+                val canShowToaster = currentFragmentType == FragmentType.OTHER && canShowErrorToaster
+                if (canShowToaster) {
+                    view?.showToasterError(resources.getString(R.string.setting_toaster_error_message))
+                }
                 otherMenuViewHolder?.onErrorGetSettingShopInfoData()
             }
         }
     }
 
     private fun retryFetchAfterError() {
-        otherMenuViewModel.getAllSettingShopInfo()
+        showAllLoadingShimmering()
+        otherMenuViewModel.getAllSettingShopInfo(isToasterRetry = true)
     }
 
     private fun View.showToasterError(errorMessage: String) {
