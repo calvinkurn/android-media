@@ -30,6 +30,7 @@ import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingViewModel
 import com.tokopedia.settingnotif.usersetting.widget.NotifSettingBigDividerDecoration
 import com.tokopedia.settingnotif.usersetting.widget.NotifSettingDividerDecoration
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 typealias ItemAdapter = SettingFieldAdapter<Visitable<SettingFieldTypeFactory>>
@@ -42,6 +43,7 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         SectionItemListener {
 
     @Inject lateinit var presenter: SettingFieldContract.Presenter
+    @Inject lateinit var userSession: UserSessionInterface
 
     protected var isRequestData = true
 

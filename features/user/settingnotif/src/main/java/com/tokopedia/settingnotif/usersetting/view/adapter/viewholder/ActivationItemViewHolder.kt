@@ -12,7 +12,7 @@ import com.tokopedia.settingnotif.usersetting.util.openNotificationSetting
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
-class ItemActivationViewHolder(
+class ActivationItemViewHolder(
         itemView: View?
 ): AbstractViewHolder<NotificationActivation>(itemView) {
 

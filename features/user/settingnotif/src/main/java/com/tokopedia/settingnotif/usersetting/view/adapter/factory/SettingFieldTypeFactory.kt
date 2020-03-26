@@ -7,12 +7,13 @@ import com.tokopedia.settingnotif.usersetting.domain.pojo.*
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
 
 interface SettingFieldTypeFactory : AdapterTypeFactory {
-    fun type(settingSections: NotificationActivation): Int
+    fun type(notificationActivation: NotificationActivation): Int
     fun type(settingSections: SettingSections): Int
-    fun type(settingSections: SellerSection): Int
+    fun type(sellerSection: SellerSection): Int
+    fun type(changeSection: ChangeSection): Int
     fun type(parentSetting: ParentSetting): Int
     fun type(childSetting: ChildSetting): Int
-    fun type(parentSetting: SmsSection): Int
+    fun type(smsSection: SmsSection): Int
     fun createViewHolder(
             parent: View,
             type: Int,

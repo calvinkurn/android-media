@@ -11,12 +11,13 @@ class SettingFieldTypeFactoryImpl(
         private val listener: SectionItemListener
 ) : BaseAdapterTypeFactory(), SettingFieldTypeFactory {
 
+    override fun type(notificationActivation: NotificationActivation): Int = ActivationItemViewHolder.LAYOUT
     override fun type(settingSections: SettingSections): Int = SettingSectionViewHolder.LAYOUT
+    override fun type(sellerSection: SellerSection): Int = SellerSectionViewHolder.LAYOUT
+    override fun type(changeSection: ChangeSection): Int = ChangeItemViewHolder.LAYOUT
     override fun type(parentSetting: ParentSetting): Int = ParentSettingViewHolder.LAYOUT
     override fun type(childSetting: ChildSetting): Int = ChildSettingViewHolder.LAYOUT
-    override fun type(settingSections: NotificationActivation): Int = ItemActivationViewHolder.LAYOUT
-    override fun type(settingSections: SellerSection): Int = SellerSectionViewHolder.LAYOUT
-    override fun type(parentSetting: SmsSection): Int = SmsSectionViewHolder.LAYOUT
+    override fun type(smsSection: SmsSection): Int = SmsSectionViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
@@ -33,9 +34,10 @@ class SettingFieldTypeFactoryImpl(
         return when (type) {
             ParentSettingViewHolder.LAYOUT -> ParentSettingViewHolder(parent, settingListener)
             ChildSettingViewHolder.LAYOUT -> ChildSettingViewHolder(parent, settingListener)
-            ItemActivationViewHolder.LAYOUT -> ItemActivationViewHolder(parent)
             SellerSectionViewHolder.LAYOUT -> SellerSectionViewHolder(listener, parent)
+            ActivationItemViewHolder.LAYOUT -> ActivationItemViewHolder(parent)
             SmsSectionViewHolder.LAYOUT -> SmsSectionViewHolder(parent)
+            ChangeItemViewHolder.LAYOUT -> ChangeItemViewHolder(parent)
             else -> createViewHolder(parent, type)
         }
     }

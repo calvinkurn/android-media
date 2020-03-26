@@ -31,4 +31,7 @@
     <string name="settingnotif_email">Email</string>
     <string name="settingnotif_sms">SMS</string>
     <string name="settingnotif_seller">Seller</string>
+
+    <string name="settingnotif_change">Ubah</string>
+    <string name="settingnotif_change_email">Notifikasi e-mail akan dikirim ke:</string>
 </resources>

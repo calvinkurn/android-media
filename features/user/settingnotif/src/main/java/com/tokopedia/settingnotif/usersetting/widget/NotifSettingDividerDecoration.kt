@@ -6,7 +6,7 @@ import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.settingnotif.R
-import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.ItemActivationViewHolder
+import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.ActivationItemViewHolder
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingSectionViewHolder
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SmsSectionViewHolder
 
@@ -45,7 +45,7 @@ class NotifSettingDividerDecoration(context: Context?) : RecyclerView.ItemDecora
             * set full divider width for
             * push notification activation
             * */
-            if (childViewHolder is ItemActivationViewHolder) {
+            if (childViewHolder is ActivationItemViewHolder) {
                 dividerLeftPadding = 0
             }
 
