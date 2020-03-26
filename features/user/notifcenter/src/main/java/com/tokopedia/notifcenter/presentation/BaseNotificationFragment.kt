@@ -147,7 +147,8 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
                     ProductStockReminderDialog(
                             context = context,
                             fragmentManager = childFragmentManager,
-                            userSession = userSession
+                            userSession = userSession,
+                            listener = this
                     ).show(element)
                 }
             }

@@ -33,7 +33,8 @@ typealias UseCase = GraphqlUseCase<ProductStockReminder>
 class ProductStockReminderDialog(
         private val userSession: UserSessionInterface,
         fragmentManager: FragmentManager,
-        private val context: Context
+        private val context: Context,
+        private val listener: NotificationItemListener
 ): BaseBottomSheetDialog<NotificationItemViewBean>(context, fragmentManager) {
 
     private val productCard = container?.findViewById<CardUnify>(R.id.productCard)
@@ -99,7 +100,11 @@ class ProductStockReminderDialog(
 
             btnReminder?.setOnClickListener {
                 analytics.stockReminderClicked(element, userSession.userId)
-                setReminder(product.productId, element.notificationId)
+                if (product.stock < SINGLE_PRODUCT_STOCK) {
+                    setReminder(product.productId, element.notificationId)
+                } else {
+                    listener.addProductToCheckout(element.userInfo, element)
+                }
             }
         }
     }
@@ -153,6 +158,8 @@ class ProductStockReminderDialog(
         private const val TYPE_BUY_BUTTON = 0
         private const val TYPE_REMINDER_BUTTON = 1
         private const val TYPE_OUT_OF_STOCK_BUTTON = 2
+
+        private const val SINGLE_PRODUCT_STOCK = 1
     }
 
 }
