@@ -62,7 +62,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     }
 
     private val exoPlaybackExceptionParser = ExoPlaybackExceptionParser()
-    private var currentPrepareState: PlayVideoPrepareState = PlayVideoPrepareState.Unprepared(null, PlayVideoType.Unknown, null, true)
+    private var currentPrepareState: PlayVideoPrepareState = getDefaultPrepareState()
     private val _observablePlayVideoState = MutableLiveData<PlayVideoState>()
     private val _observableVideoPlayer = MutableLiveData<SimpleExoPlayer>()
 
@@ -192,7 +192,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     }
 
     fun releasePlayer() {
-        currentPrepareState = PlayVideoPrepareState.Unprepared(null, PlayVideoType.Unknown, null, true)
+        currentPrepareState = getDefaultPrepareState()
         videoPlayer.release()
     }
 
@@ -200,9 +200,9 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         val prepareState = currentPrepareState
         if (prepareState is PlayVideoPrepareState.Prepared)
             currentPrepareState = PlayVideoPrepareState.Unprepared(
-                    prepareState.uri,
-                    if (isVideoLive()) PlayVideoType.Live else PlayVideoType.VOD,
-                    when (prepareState.positionHandle) {
+                    previousUri = prepareState.uri,
+                    previousType = if (isVideoLive()) PlayVideoType.Live else PlayVideoType.VOD,
+                    lastPosition = when (prepareState.positionHandle) {
                         VideoPositionHandle.Handled -> getCurrentPosition()
                         is VideoPositionHandle.NotHandled -> prepareState.positionHandle.lastPosition
                     },
@@ -211,6 +211,13 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
 
         videoPlayer.stop()
     }
+
+    private fun getDefaultPrepareState() = PlayVideoPrepareState.Unprepared(
+            previousUri = null,
+            previousType = PlayVideoType.Unknown,
+            lastPosition = null,
+            resetState = true
+    )
     //endregion
 
     //region video state
