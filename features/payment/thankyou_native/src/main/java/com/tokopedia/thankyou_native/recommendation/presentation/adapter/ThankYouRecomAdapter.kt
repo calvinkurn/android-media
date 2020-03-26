@@ -9,9 +9,9 @@ import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.model.ThankYouRecommendationModel
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.viewholder.RecommendationViewHolder
 
-class PdpThankYouPageAdapter(val thankYouRecommendationModelList: List<ThankYouRecommendationModel>,
-                             private val blankSpaceConfig: BlankSpaceConfig,
-                             val listener: ThankYouRecomViewListener?) :
+class ThankYouRecomAdapter(val thankYouRecommendationModelList: List<ThankYouRecommendationModel>,
+                           private val blankSpaceConfig: BlankSpaceConfig,
+                           val listener: ThankYouRecomViewListener?) :
         ListAdapter<ProductCardModel, RecommendationViewHolder>(ProductModelDiffUtil()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendationViewHolder {

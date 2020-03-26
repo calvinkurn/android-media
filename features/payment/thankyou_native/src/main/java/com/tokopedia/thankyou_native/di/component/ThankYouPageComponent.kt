@@ -7,10 +7,7 @@ import com.tokopedia.thankyou_native.di.module.GqlQueryModule
 import com.tokopedia.thankyou_native.di.module.ThankYouPageModule
 import com.tokopedia.thankyou_native.di.scope.ThankYouPageScope
 import com.tokopedia.thankyou_native.di.module.ViewModelModule
-import com.tokopedia.thankyou_native.presentation.fragment.DeferredPaymentFragment
-import com.tokopedia.thankyou_native.presentation.fragment.InstantPaymentFragment
-import com.tokopedia.thankyou_native.presentation.fragment.LoaderFragment
-import com.tokopedia.thankyou_native.presentation.fragment.ProcessingPaymentFragment
+import com.tokopedia.thankyou_native.presentation.fragment.*
 import dagger.Component
 
 @ThankYouPageScope
@@ -27,5 +24,6 @@ interface ThankYouPageComponent {
     fun inject(instantPaymentFragment: InstantPaymentFragment)
     fun inject(deferredPaymentFragment: DeferredPaymentFragment)
     fun inject(processingPaymentFragment: ProcessingPaymentFragment)
+    fun inject(invoiceFragment: InvoiceFragment)
 
 }

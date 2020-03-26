@@ -7,6 +7,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.di.scope.ThankYouPageScope
+import com.tokopedia.thankyou_native.presentation.adapter.DetailedInvoiceAdapter
+import com.tokopedia.thankyou_native.presentation.adapter.InvoiceTypeFactory
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -45,6 +47,20 @@ class ThankYouPageModule {
     @Provides
     fun provideThankYouPageAnalytics(): ThankYouPageAnalytics {
         return ThankYouPageAnalytics()
+    }
+
+    @ThankYouPageScope
+    @Provides
+    fun provideInvoiceTypeFactory() : InvoiceTypeFactory{
+        return InvoiceTypeFactory()
+    }
+
+
+
+    @ThankYouPageScope
+    @Provides
+    fun provideDetailInvoiceAdapter(invoiceTypeFactory: InvoiceTypeFactory): DetailedInvoiceAdapter {
+        return DetailedInvoiceAdapter(arrayListOf(), invoiceTypeFactory)
     }
 
 }

@@ -17,7 +17,6 @@ import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.getMaskedNumberSubStringPayment
 import com.tokopedia.thankyou_native.presentation.viewModel.CheckWhiteListViewModel
-import com.tokopedia.thankyou_native.presentation.viewModel.DetailInvoiceViewModel
 import com.tokopedia.thankyou_native.recommendation.presentation.view.PDPThankYouPageView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -30,8 +29,6 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    private lateinit var detailInvoiceViewModel: DetailInvoiceViewModel
 
     private lateinit var checkWhiteListViewModel: CheckWhiteListViewModel
 
@@ -56,7 +53,6 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     private fun initViewModels() {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
         checkWhiteListViewModel = viewModelProvider.get(CheckWhiteListViewModel::class.java)
-        detailInvoiceViewModel = viewModelProvider.get(DetailInvoiceViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -76,9 +72,10 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         observeViewModel()
     }
 
-    override fun openInvoiceDetail() {
-        detailInvoiceViewModel.createInvoiceData(thanksPageData)
+    override fun getThankPageData(): ThanksPageData {
+        return thanksPageData
     }
+
 
     override fun getRecommendationView(): PDPThankYouPageView? {
         return pdp_recommendation_instant
@@ -91,10 +88,6 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
                 is Fail -> onSingleAuthRegisterFail()
 
             }
-        })
-
-        detailInvoiceViewModel.mutableInvoiceVisitables.observe(this, Observer {
-            openDetailedInvoiceBottomsheet(it)
         })
     }
 

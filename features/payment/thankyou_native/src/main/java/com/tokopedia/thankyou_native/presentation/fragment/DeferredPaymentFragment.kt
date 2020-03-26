@@ -23,7 +23,6 @@ import com.tokopedia.thankyou_native.presentation.helper.DialogOrigin
 import com.tokopedia.thankyou_native.presentation.helper.OriginCheckStatusButton
 import com.tokopedia.thankyou_native.presentation.helper.OriginOnBackPress
 import com.tokopedia.thankyou_native.presentation.helper.OriginTimerFinished
-import com.tokopedia.thankyou_native.presentation.viewModel.DetailInvoiceViewModel
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
 import com.tokopedia.thankyou_native.recommendation.presentation.view.PDPThankYouPageView
 import com.tokopedia.thankyou_native.presentation.views.ThankYouPageTimerView
@@ -35,7 +34,6 @@ import javax.inject.Inject
 class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.ThankTimerViewListener {
 
     private lateinit var thanksPageDataViewModel: ThanksPageDataViewModel
-    private lateinit var detailInvoiceViewModel: DetailInvoiceViewModel
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -71,7 +69,6 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
     private fun initViewModels() {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
         thanksPageDataViewModel = viewModelProvider.get(ThanksPageDataViewModel::class.java)
-        detailInvoiceViewModel = viewModelProvider.get(DetailInvoiceViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -81,8 +78,8 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
         bindDataToUi()
     }
 
-    override fun openInvoiceDetail() {
-        detailInvoiceViewModel.createInvoiceData(thanksPageData)
+    override fun getThankPageData(): ThanksPageData {
+        return thanksPageData
     }
 
     override fun getRecommendationView(): PDPThankYouPageView? {
@@ -95,10 +92,6 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
                 is Success -> onThankYouPageDataLoaded(it.data)
                 is Fail -> onThankYouPageDataLoadingFail(it.throwable)
             }
-        })
-
-        detailInvoiceViewModel.mutableInvoiceVisitables.observe(this, Observer {
-            openDetailedInvoiceBottomsheet(it)
         })
     }
 
@@ -143,7 +136,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
             tvBankName.text = thanksPageData.additionalInfo.bankName
             tvBankName.visible()
         }
-        tvSeeDetail.setOnClickListener { openInvoiceDetail() }
+        tvSeeDetail.setOnClickListener { openInvoiceDetail(thanksPageData) }
         tvSeePaymentMethods.setOnClickListener { openHowTOPay(thanksPageData) }
         tvDeadlineTime.text = thanksPageData.expireTimeStr
         tvDeadlineTimer.setExpireTimeUnix(thanksPageData.expireTimeUnix, this)

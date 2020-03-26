@@ -20,7 +20,6 @@ import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.helper.DialogOrigin
 import com.tokopedia.thankyou_native.presentation.helper.OriginCheckStatusButton
 import com.tokopedia.thankyou_native.presentation.helper.OriginOnBackPress
-import com.tokopedia.thankyou_native.presentation.viewModel.DetailInvoiceViewModel
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
 import com.tokopedia.thankyou_native.recommendation.presentation.view.PDPThankYouPageView
 import com.tokopedia.usecase.coroutines.Fail
@@ -31,7 +30,6 @@ import javax.inject.Inject
 class ProcessingPaymentFragment : ThankYouBaseFragment() {
 
     private lateinit var thanksPageDataViewModel: ThanksPageDataViewModel
-    private lateinit var detailInvoiceViewModel: DetailInvoiceViewModel
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -67,7 +65,6 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
     private fun initViewModels() {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
         thanksPageDataViewModel = viewModelProvider.get(ThanksPageDataViewModel::class.java)
-        detailInvoiceViewModel = viewModelProvider.get(DetailInvoiceViewModel::class.java)
 
     }
 
@@ -78,8 +75,8 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
         bindDataToUi()
     }
 
-    override fun openInvoiceDetail() {
-        detailInvoiceViewModel.createInvoiceData(thanksPageData)
+    override fun getThankPageData(): ThanksPageData {
+        return thanksPageData
     }
 
     override fun getRecommendationView(): PDPThankYouPageView? {
@@ -92,9 +89,6 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
                 is Success -> onThankYouPageDataLoaded(it.data)
                 is Fail -> onThankYouPageDataLoadingFail(it.throwable)
             }
-        })
-        detailInvoiceViewModel.mutableInvoiceVisitables.observe(this, Observer {
-            openDetailedInvoiceBottomsheet(it)
         })
     }
 
@@ -115,7 +109,7 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
         tvCreditWithTimeLine.text = thanksPageData.additionalInfo.installmentInfo
         tvInterestRate.text = getString(R.string.thank_interest_rate, thanksPageData.additionalInfo.interest)
         tvTotalAmount.text = getString(R.string.thankyou_rp, thanksPageData.amountStr)
-        tvSeeDetail.setOnClickListener { openInvoiceDetail() }
+        tvSeeDetail.setOnClickListener { openInvoiceDetail(thanksPageData) }
     }
 
     private fun initCheckPaymentWidgetData() {
@@ -123,7 +117,9 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
             dialogOrigin = OriginCheckStatusButton
             checkPaymentStatus()
         }
-        btnShopAgain.setOnClickListener { gotoShopAgain() }
+        btnShopAgain.setOnClickListener {
+            gotoHomePage()
+        }
     }
 
     private fun checkPaymentStatus() {
@@ -148,10 +144,6 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
         loading_layout.gone()
         thanksPageData = data
         showPaymentStatusDialog(dialogOrigin, thanksPageData)
-    }
-
-    private fun gotoShopAgain() {
-        gotoHomePage()
     }
 
     internal fun onBackPressed(): Boolean {

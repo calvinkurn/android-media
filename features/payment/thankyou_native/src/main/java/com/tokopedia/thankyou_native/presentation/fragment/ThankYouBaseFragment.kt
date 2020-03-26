@@ -5,26 +5,24 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.PaymentStatusMapper
-import com.tokopedia.thankyou_native.presentation.dialog.InvoiceDetailBottomSheet
-import com.tokopedia.thankyou_native.presentation.dialog.PaymentMethodsBottomSheet
+import com.tokopedia.thankyou_native.presentation.dialog.CloseableBottomSheetFragment
 import com.tokopedia.thankyou_native.presentation.helper.DialogHelper
 import com.tokopedia.thankyou_native.presentation.helper.DialogOrigin
 import com.tokopedia.thankyou_native.presentation.helper.OnDialogRedirectListener
 import com.tokopedia.thankyou_native.recommendation.presentation.view.PDPThankYouPageView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.WishList
 import com.tokopedia.unifycomponents.Toaster
-import java.util.*
 
 abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectListener {
 
-    private lateinit var paymentMethodsBottomSheet: PaymentMethodsBottomSheet
+    private lateinit var invoiceBottomSheets: CloseableBottomSheetFragment
+    private lateinit var howToPayBottomSheets: CloseableBottomSheetFragment
     private lateinit var dialogHelper: DialogHelper
 
 
@@ -35,34 +33,30 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == R.id.menu_info) {
-            openInvoiceDetail()
+            openInvoiceDetail(getThankPageData())
             true
         } else {
             super.onOptionsItemSelected(item)
         }
     }
 
-    abstract fun openInvoiceDetail()
-    abstract fun getRecommendationView() : PDPThankYouPageView?
-
-
-    fun openDetailedInvoiceBottomsheet(visitables: ArrayList<Visitable<*>>?) {
-        context?.let { context ->
-            visitables?.let { visitables ->
-                InvoiceDetailBottomSheet(context).show(visitables)
-            }
-        }
-    }
+    abstract fun getThankPageData(): ThanksPageData
+    abstract fun getRecommendationView(): PDPThankYouPageView?
 
     fun openHowTOPay(thanksPageData: ThanksPageData) {
-        context?.let { context ->
-            if (!::paymentMethodsBottomSheet.isInitialized)
-                paymentMethodsBottomSheet = PaymentMethodsBottomSheet(context)
-            paymentMethodsBottomSheet.show(thanksPageData.howToPay)
+        if (!::howToPayBottomSheets.isInitialized)
+            howToPayBottomSheets = CloseableBottomSheetFragment
+                    .newInstance(HowToPayFragment.getInstance(thanksPageData.howToPay),
+                            true,
+                            getString(R.string.thank_payment_method_bottom_sheet),
+                            null,
+                            CloseableBottomSheetFragment.STATE_FULL)
+        activity?.let {
+            howToPayBottomSheets.showNow(it.supportFragmentManager, "")
         }
     }
 
-    fun showPaymentStatusDialog(dialogOrigin: DialogOrigin?, thanksPageData: ThanksPageData){
+    fun showPaymentStatusDialog(dialogOrigin: DialogOrigin?, thanksPageData: ThanksPageData) {
         context?.let {
             if (!::dialogHelper.isInitialized)
                 dialogHelper = DialogHelper(it, this)
@@ -70,6 +64,19 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                 dialogHelper.showPaymentStatusDialog(dialogOrigin,
                         PaymentStatusMapper.getPaymentStatusByInt(thanksPageData.paymentStatus))
             }
+        }
+    }
+
+    fun openInvoiceDetail(thanksPageData: ThanksPageData) {
+        if (!::invoiceBottomSheets.isInitialized)
+            invoiceBottomSheets = CloseableBottomSheetFragment
+                    .newInstance(InvoiceFragment.getInvoiceFragment(thanksPageData),
+                            true,
+                            getString(R.string.thank_payment_detail),
+                            null,
+                            CloseableBottomSheetFragment.STATE_FULL)
+        activity?.let {
+            invoiceBottomSheets.showNow(it.supportFragmentManager, "")
         }
     }
 

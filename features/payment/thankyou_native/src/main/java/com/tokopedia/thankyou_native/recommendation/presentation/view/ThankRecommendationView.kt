@@ -23,7 +23,7 @@ import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.thankyou_native.R
-import com.tokopedia.thankyou_native.recommendation.presentation.adapter.PdpThankYouPageAdapter
+import com.tokopedia.thankyou_native.recommendation.presentation.adapter.ThankYouRecomAdapter
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.decorator.ProductCardDefaultDecorator
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.ThankYouRecomViewListener
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.model.ThankYouRecommendationModel
@@ -49,7 +49,7 @@ class PDPThankYouPageView @JvmOverloads constructor(
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
-    private lateinit var adapter: PdpThankYouPageAdapter
+    private lateinit var adapter: ThankYouRecomAdapter
 
     var listener: ThankYouRecomViewListener? = null
 
@@ -148,7 +148,7 @@ class PDPThankYouPageView @JvmOverloads constructor(
         listener = getRecommendationListener()
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
-        adapter = PdpThankYouPageAdapter(thankYouRecommendationModelList, blankSpaceConfig, listener)
+        adapter = ThankYouRecomAdapter(thankYouRecommendationModelList, blankSpaceConfig, listener)
         recyclerView.adapter = adapter
         recyclerView.addItemDecoration(ProductCardDefaultDecorator())
     }
