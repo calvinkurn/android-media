@@ -40,7 +40,6 @@ import com.tokopedia.product.addedit.common.util.getTextIntOrZero
 import com.tokopedia.product.addedit.description.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionActivity
 import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionFragment.Companion.REQUEST_CODE_DESCRIPTION
-import com.tokopedia.product.addedit.detail.presentation.adapter.ProductNameRecAdapter
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailComponent
 import com.tokopedia.product.addedit.detail.presentation.adapter.NameRecommendationAdapter
 import com.tokopedia.product.addedit.detail.presentation.adapter.WholeSalePriceInputAdapter
@@ -157,6 +156,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
 
     // product conditions
     private var productConditionListView: ListUnify? = null
+    private var isProductConditionNew = true
 
     // product sku
     private var productSkuField: TextFieldUnify? = null
@@ -340,9 +340,11 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
             newCondition.listRightRadiobtn?.isChecked = true
             newCondition.listRightRadiobtn?.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) secondHandCondition.listRightRadiobtn?.isChecked = false
+                isProductConditionNew = true
             }
             secondHandCondition.listRightRadiobtn?.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) newCondition.listRightRadiobtn?.isChecked = false
+                isProductConditionNew = false
             }
         }
 
@@ -519,8 +521,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
 
             isInputValid?.let {
                 if (it) {
-                    val intent = Intent(context, AddEditProductDescriptionActivity::class.java)
-                    startActivity((intent))
+                    moveToDescriptionActivity()
                 }
             }
         }
@@ -783,7 +784,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
                 productPriceField.getTextFloatOrZero(),
                 productStockField.getTextIntOrZero(),
                 productMinOrderField.getTextIntOrZero(),
-                if (newRadioButton?.isChecked == true) "NEW" else "USED",
+                if (isProductConditionNew) "NEW" else "USED",
                 productSkuField.getText(),
                 productPhotoPaths,
                 PreorderInputModel(
