@@ -180,6 +180,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun initView() {
+        setupInterceptor()
         setupSearchBar()
         setupProductList()
         setupTabFilters()
@@ -245,13 +246,11 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     override fun onClickMoreFilter(filter: FilterTabViewModel, tabName: String) {
         showFilterBottomSheet()
-        searchBar.clearFocus()
         ProductManageTracking.eventInventory(tabName)
     }
 
     override fun onClickProductFilter(filter: FilterTabViewModel, viewHolder: FilterTabViewHolder, tabName: String) {
         clickStatusFilterTab(filter, viewHolder)
-        searchBar.clearFocus()
         ProductManageTracking.eventInventory(tabName)
     }
 
@@ -298,6 +297,13 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         return searchKeyword.isEmpty() && selectedFilters == null && !tabFilters.isActive()
     }
 
+    private fun setupInterceptor() {
+        interceptor.setOnTouchListener { _, _ ->
+            searchBar.clearFocus()
+            false
+        }
+    }
+
     private fun setupSearchBar() {
         searchBar.clearFocus()
 
@@ -315,6 +321,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             loadInitialData()
         }
 
+        searchBar.setOnTouchListener { view, _ ->
+            view.requestFocus()
+        }
+
         searchBar.searchBarPlaceholder = getString(R.string.product_manage_search_hint)
     }
 
@@ -326,13 +336,11 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun setupMultiSelect() {
         textMultipleSelect.setOnClickListener {
             viewModel.toggleMultiSelect()
-            searchBar.clearFocus()
             ProductManageTracking.eventMultipleSelect()
         }
 
         btnMultiEdit.setOnClickListener {
             multiEditBottomSheet?.show()
-            searchBar.clearFocus()
             ProductManageTracking.eventBulkSettings()
         }
     }
@@ -792,7 +800,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         onItemChecked(selectedItem, isChecked)
 
         productManageListAdapter.setCheckedPositionList(checkedPositionList)
-        searchBar.clearFocus()
     }
 
     override fun onClickStockInformation() {
@@ -802,19 +809,16 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     override fun onClickEditStockButton(product: ProductViewModel) {
         val editStockBottomSheet = context?.let { ProductManageQuickEditStockFragment.createInstance(it, product, this) }
         editStockBottomSheet?.show(childFragmentManager, "quick_edit_stock")
-        searchBar.clearFocus()
         ProductManageTracking.eventEditStock(product.id)
     }
 
     override fun onClickEditVariantButton(product: ProductViewModel) {
         goToEditProduct(product.id)
-        searchBar.clearFocus()
         ProductManageTracking.eventEditVariants(product.id)
     }
 
     override fun onClickContactCsButton(product: ProductViewModel) {
         goToProductViolationHelpPage()
-        searchBar.clearFocus()
         ProductManageTracking.eventContactCs(product.id)
     }
 
@@ -827,13 +831,11 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         } else {
             productManageBottomSheet?.show(product)
         }
-        searchBar.clearFocus()
     }
 
     override fun onClickEditPriceButton(product: ProductViewModel) {
         val editPriceBottomSheet = context?.let { ProductManageQuickEditPriceFragment.createInstance(it, product, this) }
         editPriceBottomSheet?.show(childFragmentManager, "quick_edit_price")
-        searchBar.clearFocus()
         ProductManageTracking.eventEditPrice(product.id)
     }
 
