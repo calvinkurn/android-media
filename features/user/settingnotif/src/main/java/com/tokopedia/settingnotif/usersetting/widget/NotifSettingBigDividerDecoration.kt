@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.tokopedia.settingnotif.R
+import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SellerSectionViewHolder
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingSectionViewHolder
 
 class NotifSettingBigDividerDecoration(context: Context?) : RecyclerView.ItemDecoration() {
@@ -37,12 +38,11 @@ class NotifSettingBigDividerDecoration(context: Context?) : RecyclerView.ItemDec
         val childCount = parent.childCount
         for (childIndex in 0 until childCount) {
             val childView = parent.getChildAt(childIndex)
-
+            val childViewHolder = parent.getChildViewHolder(childView)
             val nextChildPosition = childIndex + 1
 
-            if (nextChildPosition >= childCount) {
-                continue
-            }
+            if (nextChildPosition >= childCount) continue
+            if (childViewHolder is SellerSectionViewHolder) continue
 
             val nextChildView = parent.getChildAt(nextChildPosition)
             val nextChildViewHolder = parent.getChildViewHolder(nextChildView)
