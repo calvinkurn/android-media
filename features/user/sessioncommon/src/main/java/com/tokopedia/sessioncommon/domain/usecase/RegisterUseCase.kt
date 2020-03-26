@@ -42,9 +42,11 @@ class RegisterUseCase @Inject constructor(val resources: Resources,
         private val PARAM_EMAIL: String = "email"
         private val PARAM_PASSWORD: String = "password"
         private val PARAM_OS_TYPE: String = "os_type"
+        private val PARAM_ACCOUNTS_TYPE_NAME: String = "accounts_type_name"
 
         private val OS_TYPE_ANDROID: String = "1"
         private val REG_TYPE_PHONE: String = "phone"
+        private val ACCOUNTS_TYPE_SELLER_ONBOARDING: String = "SellerOnboarding"
 
 
         fun generateParamRegisterPhone(name: String, phoneNumber: String):
@@ -54,6 +56,21 @@ class RegisterUseCase @Inject constructor(val resources: Resources,
             val input = JsonObject()
             input.addProperty(PARAM_PHONE_NUMBER, phoneNumber)
             input.addProperty(PARAM_FULL_NAME, name)
+            input.addProperty(PARAM_OS_TYPE, OS_TYPE_ANDROID)
+            input.addProperty(PARAM_REG_TYPE, REG_TYPE_PHONE)
+
+            requestParams[PARAM_INPUT] = input
+            return requestParams
+        }
+
+        fun generateParamRegisterPhoneShopCreation(name: String, phoneNumber: String):
+                Map<String, Any> {
+            val requestParams = HashMap<String, Any>()
+
+            val input = JsonObject()
+            input.addProperty(PARAM_PHONE_NUMBER, phoneNumber)
+            input.addProperty(PARAM_FULL_NAME, name)
+            input.addProperty(PARAM_ACCOUNTS_TYPE_NAME, ACCOUNTS_TYPE_SELLER_ONBOARDING)
             input.addProperty(PARAM_OS_TYPE, OS_TYPE_ANDROID)
             input.addProperty(PARAM_REG_TYPE, REG_TYPE_PHONE)
 

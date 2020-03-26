@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
-import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 
 /**
@@ -61,7 +60,7 @@ public class AppUpdateDialogBuilder {
                     } else { // flexible update
                         AppUpdateManagerWrapper.checkAndDoFlexibleUpdate(activity, onProgressMessage -> {
                             // if in progress
-                            ToasterNormal.show(activity, onProgressMessage);
+                            Toast.makeText(activity, onProgressMessage, Toast.LENGTH_LONG).show();
                             return null;
                         }, () -> {
                             // if flexible update fail or cannot be operated

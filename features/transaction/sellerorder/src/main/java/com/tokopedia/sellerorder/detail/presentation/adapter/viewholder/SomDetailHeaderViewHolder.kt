@@ -27,7 +27,7 @@ import kotlinx.android.synthetic.main.detail_header_resi_item.view.*
 /**
  * Created by fwidjaja on 2019-10-03.
  */
-class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomDetailAdapter.ActionListener) : SomDetailAdapter.BaseViewHolder<SomDetailData>(itemView) {
+class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomDetailAdapter.ActionListener?) : SomDetailAdapter.BaseViewHolder<SomDetailData>(itemView) {
     private val somDetailLabelInfoAdapter = SomDetailLabelInfoAdapter()
     private val viewPool = RecyclerView.RecycledViewPool()
 
@@ -48,10 +48,10 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                     visibility = View.VISIBLE
                     closeButtonVisibility = View.GONE
                     setHtmlDescription(itemView.context.getString(R.string.buyer_request_cancel_html))
-                    setOnClickListener { actionListener.onShowBuyerRequestCancelReasonBottomSheet() }
+                    setOnClickListener { actionListener?.onShowBuyerRequestCancelReasonBottomSheet() }
                     setDescriptionClickEvent(object: TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                            actionListener.onShowBuyerRequestCancelReasonBottomSheet()
+                            actionListener?.onShowBuyerRequestCancelReasonBottomSheet()
                         }
 
                         override fun onDismiss() {}
@@ -106,11 +106,11 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
             itemView.header_invoice?.text = item.dataObject.invoice
 
             itemView.header_invoice_copy?.setOnClickListener {
-                actionListener.onCopiedInvoice(itemView.context.getString(R.string.invoice_label), item.dataObject.invoice)
+                actionListener?.onCopiedInvoice(itemView.context.getString(R.string.invoice_label), item.dataObject.invoice)
             }
 
             itemView.header_see_invoice?.setOnClickListener {
-                actionListener.onSeeInvoice(item.dataObject.invoiceUrl)
+                actionListener?.onSeeInvoice(item.dataObject.invoiceUrl)
             }
 
             if (item.dataObject.awb.isNotEmpty()) {
@@ -120,7 +120,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                     itemView.header_resi_value?.setTextColor(Color.parseColor(item.dataObject.awbTextColor))
                 }
                 itemView.header_copy_resi?.setOnClickListener {
-                    actionListener.onTextCopied(itemView.context.getString(R.string.awb_label), item.dataObject.awb)
+                    actionListener?.onTextCopied(itemView.context.getString(R.string.awb_label), item.dataObject.awb)
                 }
             } else {
                 itemView.layout_resi?.visibility = View.GONE
@@ -140,7 +140,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                         requestLayout()
                     }
                     if (item.dataObject.awbUploadUrl.isNotEmpty()) {
-                        setOnClickListener { actionListener.onInvalidResiUpload(item.dataObject.awbUploadUrl) }
+                        setOnClickListener { actionListener?.onInvalidResiUpload(item.dataObject.awbUploadUrl) }
                     }
                 }
             } else {
@@ -152,7 +152,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                 itemView.context.getString(R.string.coachmark_header),
                 itemView.context.getString(R.string.coachmark_header_info))
 
-        actionListener.onAddedCoachMarkHeader(
+        actionListener?.onAddedCoachMarkHeader(
                 coachmarkHeader
         )
 

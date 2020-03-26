@@ -1,6 +1,7 @@
 package com.tokopedia.rechargegeneral.di
 
 import com.tokopedia.rechargegeneral.util.RechargeGeneralAnalytics
+import com.tokopedia.rechargegeneral.util.RechargeGeneralDispatchersProvider
 import dagger.Module
 import dagger.Provides
 
@@ -13,5 +14,9 @@ class RechargeGeneralModule {
     @RechargeGeneralScope
     @Provides
     fun provideRechargeGeneralAnalytics(): RechargeGeneralAnalytics = RechargeGeneralAnalytics()
+
+    @RechargeGeneralScope
+    @Provides
+    fun provideDispatcher(): RechargeGeneralDispatchersProvider = RechargeGeneralDispatchersProvider()
 
 }

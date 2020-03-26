@@ -3,6 +3,7 @@ package com.tokopedia.play.ui.overlayvideo
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play.component.EventBusFactory
+import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
@@ -97,7 +98,7 @@ class OverlayVideoComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class OverlayVideoComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : OverlayVideoComponent(container, bus, coroutineScope) {
+    class OverlayVideoComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : OverlayVideoComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): OverlayVideoView {
             return mockk(relaxed = true)
         }

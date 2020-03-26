@@ -33,7 +33,6 @@ class DigitalHomePageTrustMarkViewHolder(itemView: View?, val onItemBindListener
         } else {
             itemView.digital_homepage_trust_mark_shimmering.show()
             itemView.digital_homepage_trust_mark_container.hide()
-            onItemBindListener.onTrustMarkItemDigitalBind(element.isLoadFromCloud)
         }
     }
 

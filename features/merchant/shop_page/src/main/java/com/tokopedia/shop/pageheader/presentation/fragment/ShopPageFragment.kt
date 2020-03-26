@@ -19,7 +19,6 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -27,8 +26,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.ToasterError
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -42,11 +40,12 @@ import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
-import com.tokopedia.shop.common.constant.ShopStatusDef
-import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
+import com.tokopedia.shop.analytic.model.TrackShopTypeDef
+import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
+import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.newproduct.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.oldpage.di.component.DaggerOldShopPageComponent
 import com.tokopedia.shop.oldpage.di.component.OldShopPageComponent
@@ -77,6 +76,7 @@ class ShopPageFragment :
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
+        const val SHOP_REF = "EXTRA_SHOP_REF"
         const val SHOP_DOMAIN = "domain"
         const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
         const val APP_LINK_EXTRA_SHOP_ID = "shop_id"
@@ -123,13 +123,15 @@ class ShopPageFragment :
     var shopPageTracking: ShopPageTrackingBuyer? = null
     var titles = listOf<String>()
     var shopId: String? = null
+    var shopRef: String = ""
     var shopDomain: String? = null
     var shopAttribution: String? = null
     var isShowFeed: Boolean = false
     var isOfficialStore: Boolean = false
     var isGoldMerchant: Boolean = false
     var createPostUrl: String = ""
-    private var tabPosition = 0
+    var shopName: String = ""
+    private var tabPosition = TAB_POSITION_HOME
     lateinit var stickyLoginView: StickyLoginView
     private var tickerDetail: StickyLoginTickerPojo.TickerDetail? = null
     private lateinit var shopPageFragmentHeaderViewHolder: ShopPageFragmentHeaderViewHolder
@@ -141,6 +143,7 @@ class ShopPageFragment :
     private val iconTabFeed = R.drawable.ic_shop_tab_feed_inactive
     private val iconTabReview = R.drawable.ic_shop_tab_review_inactive
     private val intentData: Intent = Intent()
+    private var isFirstLoading: Boolean = false
     private val customDimensionShopPage: CustomDimensionShopPage by lazy {
         CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
     }
@@ -202,11 +205,15 @@ class ShopPageFragment :
 
             override fun onTabSelected(tab: TabLayout.Tab) {
                 viewPagerAdapter.handleSelectedTab(tab, true)
-                (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
-                    shopPageTracking?.clickTab(shopViewModel.isMyShop(it.shopCore.shopID),
-                            titles[tab.position],
-                            CustomDimensionShopPage.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
-                                    it.goldOS.isGold == 1))
+                if (isFirstLoading) {
+                    isFirstLoading = false
+                } else {
+                    (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
+                        shopPageTracking?.clickTab(shopViewModel.isMyShop(it.shopCore.shopID),
+                                titles[tab.position],
+                                CustomDimensionShopPage.create(it.shopCore.shopID, it.goldOS.isOfficial == 1,
+                                        it.goldOS.isGold == 1))
+                    }
                 }
             }
         })
@@ -269,12 +276,17 @@ class ShopPageFragment :
             shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it))
             activity?.intent?.run {
                 shopId = getStringExtra(SHOP_ID)
+                shopRef = getStringExtra(SHOP_REF).orEmpty()
                 shopDomain = getStringExtra(SHOP_DOMAIN)
                 shopAttribution = getStringExtra(SHOP_ATTRIBUTION)
                 tabPosition = getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
                 data?.run {
                     if (shopId.isNullOrEmpty()) {
-                        shopId = getQueryParameter(SHOP_ID)
+                        if (pathSegments.size > 1) {
+                            shopId = pathSegments[1]
+                        } else if (!getQueryParameter(SHOP_ID).isNullOrEmpty()) {
+                            shopId = getQueryParameter(SHOP_ID)
+                        }
                     }
                     if (shopDomain.isNullOrEmpty()) {
                         shopDomain = getQueryParameter(SHOP_DOMAIN)
@@ -309,6 +321,7 @@ class ShopPageFragment :
     }
 
     private fun getShopInfo(isRefresh: Boolean = false) {
+        isFirstLoading = true
         if (!swipeToRefresh.isRefreshing)
             setViewState(VIEW_LOADING)
         shopViewModel.getShop(shopId, shopDomain, isRefresh)
@@ -351,6 +364,7 @@ class ShopPageFragment :
     }
 
     private fun clickSort() {
+        shopPageTracking?.clickSort(isMyShop, customDimensionShopPage)
         openShopProductSortPage()
     }
 
@@ -370,7 +384,8 @@ class ShopPageFragment :
                             context,
                             "",
                             cacheManagerId,
-                            shopAttribution
+                            shopAttribution,
+                            shopRef
                     ))
                 }
             }
@@ -457,6 +472,7 @@ class ShopPageFragment :
     }
 
     private fun clickSearch() {
+        shopPageTracking?.clickSearch(isMyShop, customDimensionShopPage)
         redirectToShopSearchProduct()
     }
 
@@ -512,6 +528,7 @@ class ShopPageFragment :
         with(shopInfo) {
             isOfficialStore = (goldOS.isOfficial == 1 && !TextUtils.isEmpty(shopInfo.topContent.topUrl))
             isGoldMerchant = (goldOS.isGoldBadge == 1)
+            shopName = shopInfo.shopCore.name
             customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
             shopPageFragmentHeaderViewHolder.bind(this, shopViewModel.isMyShop(shopCore.shopID), remoteConfig)
             setupTabs()
@@ -524,7 +541,12 @@ class ShopPageFragment :
                 button_chat.hide()
             }
             activity?.run {
-                shopPageTracking?.sendScreenShopPage(shopCore.shopID)
+                val shopType = when {
+                    isOfficialStore -> TrackShopTypeDef.OFFICIAL_STORE
+                    isGoldMerchant -> TrackShopTypeDef.GOLD_MERCHANT
+                    else -> TrackShopTypeDef.REGULAR_MERCHANT
+                }
+                shopPageTracking?.sendScreenShopPage(shopCore.shopID, shopType)
             }
             shopPageFragmentHeaderViewHolder.updateShopTicker(shopInfo, isMyShop)
         }
@@ -541,34 +563,15 @@ class ShopPageFragment :
     }
 
     private fun setupTabs() {
-        titles = when {
-            isShowFeed and isOfficialStore -> {
-                listOf(getString(R.string.shop_info_title_tab_home),
-                        getString(R.string.new_shop_info_title_tab_product),
-                        getString(R.string.shop_info_title_tab_feed),
-                        getString(R.string.shop_info_title_tab_review))
-            }
-            isShowFeed -> {
-                listOf(getString(R.string.new_shop_info_title_tab_product),
-                        getString(R.string.shop_info_title_tab_feed),
-                        getString(R.string.shop_info_title_tab_review))
-            }
-            isOfficialStore -> {
-                listOf(getString(R.string.shop_info_title_tab_home),
-                        getString(R.string.new_shop_info_title_tab_product),
-                        getString(R.string.shop_info_title_tab_review))
-            }
-            else -> {
-                listOf(getString(R.string.new_shop_info_title_tab_product),
-                        getString(R.string.shop_info_title_tab_review))
-            }
+        titles = mutableListOf<String>().apply {
+            if (isShowHomeTab())
+                add(getString(R.string.shop_info_title_tab_home))
+            add(getString(R.string.new_shop_info_title_tab_product))
+            if (isShowFeed)
+                add(getString(R.string.shop_info_title_tab_feed))
+            add(getString(R.string.shop_info_title_tab_review))
         }
-        if (isOfficialStore && tabPosition == 0) {
-            tabPosition = 1
-        } else if (isOfficialStore && tabPosition == TAB_POSITION_OS_HOME) {
-            tabPosition = 0
-        }
-        val selectedPosition = if (tabPosition == TAB_POSITION_INFO) getShopInfoPosition() else tabPosition
+        val selectedPosition = tabPosition
         viewPagerAdapter.setTabData(generateTabData())
         viewPagerAdapter.notifyDataSetChanged()
         tabLayout?.apply {
@@ -577,7 +580,19 @@ class ShopPageFragment :
             }
         }
         setViewState(VIEW_CONTENT)
-        viewPager.currentItem = selectedPosition
+        viewPager.setCurrentItem(selectedPosition, false)
+    }
+
+    private fun isShowHomeTab(): Boolean {
+        return getShopInfoData()?.shopHomeType?.let {
+            it != ShopHomeType.NONE
+        } ?: false
+    }
+
+    private fun isShowNewHomeTab(): Boolean {
+        return getShopInfoData()?.shopHomeType?.let {
+            it == ShopHomeType.NATIVE
+        } ?: false
     }
 
     private fun generateTabData(): Pair<List<Int>, List<Fragment>> {
@@ -585,44 +600,56 @@ class ShopPageFragment :
     }
 
     private fun getListFragment(): List<Fragment> {
-        val shopPageProductFragment = ShopPageProductListFragment.createInstance(shopAttribution)
-        val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity, shopId, shopDomain)
-        val homeFragment = HomeProductFragment.createInstance()
-        val feedFragment = FeedShopFragment.createInstance(shopId ?: "", createPostUrl)
-        getShopInfoData()?.let {
-            homeFragment.setShopInfo(it)
-            shopPageProductFragment.setShopInfo(it)
+        val shopPageProductFragment = ShopPageProductListFragment.createInstance(shopAttribution, shopRef).apply {
+            getShopInfoData()?.let {
+                setShopInfo(it)
+            }
         }
-        return when {
-            isShowFeed and isOfficialStore -> {
-                listOf(homeFragment, shopPageProductFragment, feedFragment, shopReviewFragment)
+        val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity, shopId, shopDomain)
+        val homeFragment = getHomeFragment()
+        val feedFragment = FeedShopFragment.createInstance(shopId ?: "", createPostUrl)
+        return mutableListOf<Fragment>().apply {
+            homeFragment?.let {
+                if (isShowHomeTab()) add(it)
             }
-            isShowFeed -> {
-                listOf(shopPageProductFragment, feedFragment, shopReviewFragment)
+            add(shopPageProductFragment)
+            if (isShowFeed)
+                add(feedFragment)
+            add(shopReviewFragment)
+        }
+    }
+
+    private fun getHomeFragment(): Fragment? {
+        return if (isShowHomeTab()) {
+            if (isShowNewHomeTab()) {
+                ShopPageHomeFragment.createInstance(
+                        shopId ?: "",
+                        isOfficialStore,
+                        isGoldMerchant,
+                        shopName,
+                        shopAttribution ?: "",
+                        shopRef
+                )
+            } else {
+                HomeProductFragment.createInstance().apply {
+                    getShopInfoData()?.let {
+                        setShopInfo(it)
+                    }
+                }
             }
-            isOfficialStore -> {
-                listOf(homeFragment, shopPageProductFragment, shopReviewFragment)
-            }
-            else -> {
-                listOf(shopPageProductFragment, shopReviewFragment)
-            }
+        } else {
+            null
         }
     }
 
     private fun getListTitleIcon(): List<Int> {
-        return when {
-            isShowFeed and isOfficialStore -> {
-                listOf(iconTabHome, iconTabProduct, iconTabFeed, iconTabReview)
-            }
-            isShowFeed -> {
-                listOf(iconTabProduct, iconTabFeed, iconTabReview)
-            }
-            isOfficialStore -> {
-                listOf(iconTabHome, iconTabProduct, iconTabReview)
-            }
-            else -> {
-                listOf(iconTabProduct, iconTabReview)
-            }
+        return mutableListOf<Int>().apply {
+            if (isShowHomeTab())
+                add(iconTabHome)
+            add(iconTabProduct)
+            if (isShowFeed)
+                add(iconTabFeed)
+            add(iconTabReview)
         }
     }
 
@@ -691,6 +718,7 @@ class ShopPageFragment :
             data?.let {
                 val sortValue = it.getStringExtra(ShopProductSortActivity.SORT_VALUE)
                 val sortName = it.getStringExtra(ShopProductSortActivity.SORT_NAME)
+                shopPageTracking?.sortProduct(sortName, isMyShop, customDimensionShopPage)
                 redirectToShopSearchProductResultPage(sortValue)
             }
         } else if (requestCode == REQUEST_CODE_USER_LOGIN_CART) {
@@ -714,7 +742,7 @@ class ShopPageFragment :
             shopPageTracking?.clickSortBy(isMyShop,
                     sortName, CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant))
             startActivity(ShopProductListActivity.createIntent(activity, shopId,
-                    "", selectedEtalaseId, "", sortName))
+                    "", selectedEtalaseId, "", sortName, shopRef))
         }
     }
 
@@ -727,6 +755,14 @@ class ShopPageFragment :
         if (feedfragment != null && feedfragment is FeedShopFragment) {
             feedfragment.clearCache()
         }
+
+        if (isShowHomeTab() && isShowNewHomeTab()) {
+            val shopPageHomeFragment: Fragment? = viewPagerAdapter.getRegisteredFragment(TAB_POSITION_HOME)
+            if (shopPageHomeFragment != null && shopPageHomeFragment is ShopPageHomeFragment) {
+                shopPageHomeFragment.clearCache()
+            }
+        }
+
         getShopInfo(true)
         swipeToRefresh.isRefreshing = true
     }

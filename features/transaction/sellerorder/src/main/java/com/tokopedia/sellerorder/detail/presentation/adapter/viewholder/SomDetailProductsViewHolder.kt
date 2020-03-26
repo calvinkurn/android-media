@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.detail_products_item.view.*
 /**
  * Created by fwidjaja on 2019-10-04.
  */
-class SomDetailProductsViewHolder(itemView: View, private val actionListener: SomDetailAdapter.ActionListener) : SomDetailAdapter.BaseViewHolder<SomDetailData>(itemView) {
+class SomDetailProductsViewHolder(itemView: View, private val actionListener: SomDetailAdapter.ActionListener?) : SomDetailAdapter.BaseViewHolder<SomDetailData>(itemView) {
     private val somDetailProductsCardAdapter = SomDetailProductsCardAdapter(actionListener)
 
     override fun bind(item: SomDetailData, position: Int) {
@@ -34,7 +34,7 @@ class SomDetailProductsViewHolder(itemView: View, private val actionListener: So
                 itemView.context.getString(R.string.coachmark_product),
                 itemView.context.getString(R.string.coachmark_product_info))
 
-        actionListener.onAddedCoachMarkProducts(
+        actionListener?.onAddedCoachMarkProducts(
                 coachmarkProducts
         )
     }

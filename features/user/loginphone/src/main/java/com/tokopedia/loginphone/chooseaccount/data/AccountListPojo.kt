@@ -24,13 +24,13 @@ data class AccountList(
         var msisdn: String = "",
         @SerializedName("users_details")
         @Expose
-        var userDetails: ArrayList<UserDetail> = ArrayList(),
+        var userDetails: List<UserDetail> = listOf(),
         @SerializedName("users_count")
         @Expose
         var userCount: Int = 0,
         @SerializedName("errors")
         @Expose
-        var errors: ArrayList<Error> = ArrayList()
+        var errors: List<Error> = listOf()
 )
 
 data class UserDetail(
@@ -48,9 +48,11 @@ data class UserDetail(
         var msisdn_verified: Boolean = false,
         @SerializedName("image")
         @Expose
-        var image: String = ""
+        var image: String = "",
+        @SerializedName("shop_detail")
+        @Expose
+        var shopDetail: ShopDetail?
 )
-
 
 data class Error(
         @SerializedName("name")
@@ -59,4 +61,16 @@ data class Error(
         @SerializedName("message")
         @Expose
         var message: String = ""
+)
+
+data class ShopDetail(
+        @SerializedName("id")
+        @Expose
+        var id: Int = 0,
+        @SerializedName("name")
+        @Expose
+        var name: String = "",
+        @SerializedName("domain")
+        @Expose
+        var domain: String = ""
 )

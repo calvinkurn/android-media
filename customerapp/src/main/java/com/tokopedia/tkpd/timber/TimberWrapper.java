@@ -48,6 +48,7 @@ public class TimberWrapper {
                     timberReportingTree.setUserId(userSession.getUserId());
                     timberReportingTree.setVersionName(GlobalConfig.VERSION_NAME);
                     timberReportingTree.setVersionCode(GlobalConfig.VERSION_CODE);
+                    timberReportingTree.setClientLogs(dataLogConfig.getClientLogs());
                     Timber.plant(timberReportingTree);
                 }
             }

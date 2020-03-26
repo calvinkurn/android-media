@@ -91,12 +91,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
-        <service
-            android:name="com.tokopedia.purchase_platform.features.cart.view.UpdateCartIntentService"
-            android:enabled="true"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-
-
     </application>
 
 </manifest>

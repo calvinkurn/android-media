@@ -12,9 +12,9 @@ import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.ImageDualAnnouncementPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.QuotationAttributes
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
-import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 import javax.inject.Inject
 
 /**
@@ -55,7 +55,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 merchantVoucherStatus = MerchantVoucherStatus()
         )
 
-        return TopChatVoucherViewModel(
+        return TopChatVoucherUiModel(
                 item.msgId.toString(),
                 item.senderId.toString(),
                 item.senderName,
@@ -76,7 +76,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     private fun convertToDualAnnouncement(item: Reply): Visitable<*> {
         val pojoAttribute = GsonBuilder().create().fromJson<ImageDualAnnouncementPojo>(item.attachment?.attributes,
                 ImageDualAnnouncementPojo::class.java)
-        return ImageDualAnnouncementViewModel(
+        return ImageDualAnnouncementUiModel(
                 item.msgId.toString(),
                 item.senderId.toString(),
                 item.senderName,
@@ -100,7 +100,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                         message.attachment?.attributes,
                         QuotationAttributes::class.java
                 )
-        return QuotationViewModel(
+        return QuotationUiModel(
                 quotationPojo = quotationAttributes.quotation,
                 messageId = message.msgId.toString(),
                 fromUid = message.senderId.toString(),

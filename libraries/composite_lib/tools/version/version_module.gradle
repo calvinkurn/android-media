@@ -28,6 +28,7 @@ task scanProjectTask(type: ScanProjectTask) {
     doFirst {
         println("[VERSION TASK START]")
         versionConfigMap = readVersionConfigTask.versionConfigMap
+        versionSuffix = readVersionConfigTask.versionSuffix
         moduleLatestLogMap = scanReleaseDate.moduleLatestLogMap
     }
     doLast {
@@ -56,6 +57,7 @@ task versionDependency(type: PublishCompositeTask, dependsOn: scanProjectTask){
         projectToArtifactInfoList = scanProjectTask.projectToArtifactInfoList
         artifactIdToProjectNameList = scanProjectTask.artifactIdToProjectNameList
         versionConfigMap = scanProjectTask.versionConfigMap
+        versionSuffix = scanProjectTask.versionSuffix
     }
     doLast{
         println("[PUBLISH COMPOSITE TASK FINISHED]")

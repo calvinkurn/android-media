@@ -9,6 +9,7 @@ import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
+import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.search.di.DaggerHotelSearchPropertyComponent
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragment
@@ -20,7 +21,7 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
     var checkOut = ""
     var checkInString = ""
     var checkOutString = ""
-    var id = 0
+    var id: Long = 0
     var name = ""
     var type = ""
     var room = 1
@@ -36,24 +37,26 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
 
     override fun shouldShowOptionMenu(): Boolean = false
 
+    override fun getScreenName(): String = SEARCH_SCREEN_NAME
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         val uri = intent.data
         if (uri != null) {
             if (!uri.getQueryParameter(PARAM_HOTEL_ID).isNullOrEmpty()) {
-                id = uri.getQueryParameter(PARAM_HOTEL_ID).toInt()
+                id = uri.getQueryParameter(PARAM_HOTEL_ID).toLong()
                 name = uri.getQueryParameter(PARAM_HOTEL_NAME)
                 type = TYPE_PROPERTY
             } else if (!uri.getQueryParameter(PARAM_CITY_ID).isNullOrEmpty()) {
-                id = uri.getQueryParameter(PARAM_CITY_ID).toInt()
+                id = uri.getQueryParameter(PARAM_CITY_ID).toLong()
                 name = uri.getQueryParameter(PARAM_CITY_NAME)
                 type = TYPE_CITY
             } else if (!uri.getQueryParameter(PARAM_DISTRICT_ID).isNullOrEmpty()) {
-                id = uri.getQueryParameter(PARAM_DISTRICT_ID).toInt()
+                id = uri.getQueryParameter(PARAM_DISTRICT_ID).toLong()
                 name = uri.getQueryParameter(PARAM_DISTRICT_NAME)
                 type = TYPE_DISTRICT
             } else if (!uri.getQueryParameter(PARAM_REGION_ID).isNullOrEmpty()) {
-                id = uri.getQueryParameter(PARAM_REGION_ID).toInt()
+                id = uri.getQueryParameter(PARAM_REGION_ID).toLong()
                 name = uri.getQueryParameter(PARAM_REGION_NAME)
                 type = TYPE_REGION
             }
@@ -65,7 +68,7 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
 
         } else {
             name = intent.getStringExtra(HotelSearchResultFragment.ARG_DESTINATION_NAME)
-            id = intent.getIntExtra(HotelSearchResultFragment.ARG_DESTINATION_ID, 0)
+            id = intent.getLongExtra(HotelSearchResultFragment.ARG_DESTINATION_ID, 0)
             type = intent.getStringExtra(HotelSearchResultFragment.ARG_TYPE)
             lat = intent.getFloatExtra(HotelSearchResultFragment.ARG_LAT, 0f)
             long = intent.getFloatExtra(HotelSearchResultFragment.ARG_LONG, 0f)
@@ -91,33 +94,12 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
 
     }
 
-    fun checkParameter() {
-        val todayWithoutTime = TravelDateUtil.removeTime(TravelDateUtil.getCurrentCalendar().time)
-        val tomorrow = TravelDateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 1)
-        val dayAfterTomorrow = TravelDateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 2)
-
-        if (checkIn.isBlank() && checkOut.isBlank()) {
-            checkIn = TravelDateUtil.dateToString(
-                    TravelDateUtil.YYYY_MM_DD, tomorrow)
-            checkInString = TravelDateUtil.dateToString(
-                    TravelDateUtil.DEFAULT_VIEW_FORMAT, tomorrow)
-            checkOut = TravelDateUtil.dateToString(
-                    TravelDateUtil.YYYY_MM_DD, dayAfterTomorrow)
-            checkOutString = TravelDateUtil.dateToString(
-                    TravelDateUtil.DEFAULT_VIEW_FORMAT, dayAfterTomorrow)
-        } else if (checkIn.isBlank()) {
-            val checkout = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, checkOut)
-            val dayBeforeCheckOut = TravelDateUtil.addTimeToSpesificDate(checkout, Calendar.DATE, -1)
-            checkIn = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayBeforeCheckOut)
-            checkInString = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, dayBeforeCheckOut)
-
-        } else if (checkOut.isBlank()) {
-            val checkin = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, checkIn)
-            val dayAfterCheckIn = TravelDateUtil.addTimeToSpesificDate(checkin, Calendar.DATE, 1)
-            checkOut = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayAfterCheckIn)
-            checkOutString = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, dayAfterCheckIn)
-        }
-
+    private fun checkParameter() {
+        val updatedCheckInCheckOutDate = HotelUtils.validateCheckInAndCheckOutDate(checkIn, checkOut)
+        checkIn = updatedCheckInCheckOutDate.first
+        checkOut = updatedCheckInCheckOutDate.second
+        checkInString = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, checkIn))
+        checkOutString = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, checkOut))
     }
 
     override fun getNewFragment(): Fragment {
@@ -131,7 +113,6 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
 
 
     companion object {
-
         const val PARAM_HOTEL_ID = "hotel_id"
         const val PARAM_HOTEL_NAME = "hotel_name"
         const val PARAM_DISTRICT_ID = "district_id"
@@ -150,7 +131,9 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
         const val TYPE_CITY = "city"
         const val TYPE_PROPERTY = "property"
 
-        fun createIntent(context: Context, destinationName: String = "", destinationID: Int = 0, type: String = "",
+        const val SEARCH_SCREEN_NAME = "/hotel/searchresult"
+
+        fun createIntent(context: Context, destinationName: String = "", destinationID: Long = 0, type: String = "",
                          latitude: Float = 0f, longitude: Float = 0f, checkIn: String = "",
                          checkOut: String = "", totalRoom: Int = 1, totalAdult: Int = 0,
                          totalChildren: Int = 0): Intent =

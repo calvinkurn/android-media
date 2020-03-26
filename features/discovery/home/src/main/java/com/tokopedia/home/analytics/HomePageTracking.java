@@ -7,7 +7,7 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.tokopedia.iris.util.IrisSession;
+import com.tokopedia.iris.util.ConstantKt;
 
 /**
  * Created by Akmal on 2/6/18.
@@ -34,13 +36,16 @@ import java.util.Map;
 
 public class HomePageTracking {
 
+
+    public static final String FORMAT_4_VALUE_UNDERSCORE = "%s_%s_%s_%s";
+
     public static final String BELI_INI_ITU_CLICK = "beli ini itu click";
     public static final String BAYAR_INI_ITU_CLICK = "bayar ini itu click";
     public static final String PESAN_INI_ITU_CLICK = "pesan ini itu click";
     public static final String AJUKAN_INI_ITU_CLICK = "ajukan ini itu click";
     public static final String JUAL_INI_ITU_CLICK = "jual ini itu click";
     public static final String LEGO_BANNER_3_IMAGE_CLICK = "lego banner 3 image click";
-    private static final String CATEGORY_HOMEPAGE_TOKOPOINTS = "homepage-tokopoints";
+
     private static final String ACTION_CLICK_POINT = "click point & tier status";
 
     private static final String EVENT_CLICK_HOME_PAGE = "clickHomepage";
@@ -56,6 +61,7 @@ public class HomePageTracking {
     private static final String CATEGORY_HOMEPAGE_DIGITAL = "homepage digital";
     private static final String CATEGORY_TOKOPOINTS_USER_PAGE = "tokopoints - user profile page";
     private static final String CATEGORY_HOMEPAGE_TOKOCASH_WIDGET = "homepage tokocash widget";
+    private static final String CATEGORY_HOMEPAGE_TOKOPOINTS = "homepage-tokopoints";
 
     private static final String ACTION_CLICK_HOME_PAGE = "clickHomePage";
     private static final String ACTION_CLICK_VIEW_ALL_PROMO = "slider banner click view all";
@@ -79,11 +85,13 @@ public class HomePageTracking {
     private static final String ACTION_CLICK_SEE_ALL_LEGO_THREE_IMAGE_BANNER_CHANNEL = "lego banner 3 image click view all";
     private static final String ACTION_CLICK_OPEN_SHOP = "jual ini itu buka toko";
     private static final String ACTION_CLICK_EDIT_SHOP = "jual ini itu click ubah";
+    private static final String EVENT_ACTION_CLICK_ON_TOKOPOINTS_NEW_COUPON = "click on tokopoints new coupon";
 
     private static final String LABEL_TOKOPOINTS = "tokopoints";
     private static final String LABEL_EMPTY = "";
     public static final String EVENT = "event";
     public static final String PROMO_VIEW = "promoView";
+
     public static final String EVENT_CATEGORY = "eventCategory";
     public static final String EVENT_ACTION_CLICK_ON_HOMEPAGE_RECOMMENDATION_TAB = "click on homepage recommendation tab";
     public static final String EVENT_ACTION = "eventAction";
@@ -274,7 +282,7 @@ public class HomePageTracking {
             if (tracker != null) {
                 HashMap<String, String> customDimensions = new HashMap<>();
                 customDimensions.put(SCREEN_DIMENSION_IS_LOGGED_IN_STATUS, String.valueOf(isUserLoggedIn));
-
+                customDimensions.put(ConstantKt.KEY_SESSION_IRIS, new IrisSession(activity).getSessionId());
                 tracker.sendScreenAuthenticated(
                         screenName, customDimensions);
             }
@@ -401,7 +409,7 @@ public class HomePageTracking {
                         PROMO_CLICK, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
                                         DataLayer.mapOf(
-                                                FIELD_ID, grid.getId(),
+                                                FIELD_ID, channel.getId() + "_" + grid.getId()+ "_" + channel.getPersoType()+ "_" + channel.getCategoryID(),
                                                 FIELD_NAME, channel.getPromoName(),
                                                 FIELD_CREATIVE, grid.getAttribution(),
                                                 FIELD_CREATIVE_URL, grid.getImageUrl(),
@@ -430,7 +438,12 @@ public class HomePageTracking {
                         PROMO_CLICK, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
                                         DataLayer.mapOf(
-                                                FIELD_ID, grid.getId(),
+                                                FIELD_ID, String.format(
+                                                        FORMAT_4_VALUE_UNDERSCORE,
+                                                        channel.getId(),
+                                                        grid.getId(),
+                                                        channel.getPersoType(),
+                                                        channel.getCategoryID()),
                                                 FIELD_NAME, channel.getPromoName(),
                                                 FIELD_CREATIVE, grid.getAttribution(),
                                                 FIELD_CREATIVE_URL, grid.getImageUrl(),
@@ -1139,7 +1152,7 @@ public class HomePageTracking {
                         PROMO_CLICK, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
                                         DataLayer.mapOf(
-                                                FIELD_ID, channel.getBanner().getId(),
+                                                FIELD_ID, channel.getId() + "_" + channel.getBanner().getId()+ "_" + channel.getPersoType()+ "_" + channel.getCategoryID(),
                                                 FIELD_NAME, VALUE_DYNAMIC_CHANNEL_MIX_BANNER_NAME+channel.getHeader().getName(),
                                                 FIELD_CREATIVE, channel.getBanner().getAttribution(),
                                                 FIELD_CREATIVE_URL, channel.getBanner().getImageUrl(),
@@ -1228,7 +1241,7 @@ public class HomePageTracking {
                                     PROMO_CLICK, DataLayer.mapOf(
                                             PROMOTIONS, DataLayer.listOf(
                                                     DataLayer.mapOf(
-                                                            FIELD_ID, bannerChannel.getBanner().getId(),
+                                                            FIELD_ID, bannerChannel.getId() + "_" + bannerChannel.getBanner().getId()+ "_" + bannerChannel.getPersoType()+ "_" + bannerChannel.getCategoryID(),
                                                             FIELD_NAME, String.format(PROMOTIONS_NAME, bannerChannel.getHeader().getName()),
                                                             FIELD_CREATIVE, bannerChannel.getBanner().getAttribution(),
                                                             FIELD_CREATIVE_URL, bannerChannel.getBanner().getImageUrl(),
@@ -1784,6 +1797,15 @@ public class HomePageTracking {
                 EVENT_CATEGORY, "homepage-pdp",
                 EVENT_ACTION, "click - home product review widget",
                 EVENT_LABEL, orderId + " - " + productId
+        ));
+    }
+
+    public static void sendClickOnTokopointsNewCouponTracker() {
+        getTracker().sendGeneralEvent(DataLayer.mapOf(
+                EVENT, EVENT_TOKO_POINT,
+                EVENT_CATEGORY, CATEGORY_HOMEPAGE_TOKOPOINTS,
+                EVENT_ACTION, EVENT_ACTION_CLICK_ON_TOKOPOINTS_NEW_COUPON,
+                EVENT_LABEL, LABEL_EMPTY
         ));
     }
 }

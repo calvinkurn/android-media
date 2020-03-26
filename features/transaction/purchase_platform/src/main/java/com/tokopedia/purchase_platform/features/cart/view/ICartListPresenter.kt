@@ -36,13 +36,15 @@ interface ICartListPresenter {
 
     fun processDeleteCartItem(allCartItemData: List<CartItemData>, removedCartItems: List<CartItemData>, appliedPromoCodeList: ArrayList<String>?, addWishList: Boolean, removeInsurance: Boolean)
 
-    fun processUpdateCartData()
+    fun processUpdateCartData(fireAndForget: Boolean)
 
     fun processUpdateCartDataPromoMerchant(cartItemDataList: List<CartItemData>, shopGroupAvailableData: ShopGroupAvailableData)
 
     fun processUpdateCartDataPromoGlobal(cartItemDataList: List<CartItemData>, promoStackingData: PromoStackingData, goToDetail: Int)
 
     fun processToUpdateAndReloadCartData(cartId: String)
+
+    fun processUpdateCartCounter()
 
     fun reCalculateSubTotal(dataList: List<CartShopHolderData>, insuranceCartShopsArrayList: ArrayList<InsuranceCartShops>)
 
@@ -52,9 +54,9 @@ interface ICartListPresenter {
 
     fun processApplyPromoStackAfterClash(promoStackingGlobalData: PromoStackingData, newPromoList: ArrayList<ClashingVoucherOrderUiModel>, type: String)
 
-    fun generateCartDataAnalytics(cartItemDataList: List<CartItemData>, enhancedECommerceAction: String): Map<String, Any>
+    fun generateDeleteCartDataAnalytics(cartItemDataList: List<CartItemData>): Map<String, Any>
 
-    fun generateRecommendationDataAnalytics(cartRecommendationItemHolderDataList: List<CartRecommendationItemHolderData>, isEmptyCart: Boolean): Map<String, Any>
+    fun generateRecommendationImpressionDataAnalytics(cartRecommendationItemHolderDataList: List<CartRecommendationItemHolderData>, isEmptyCart: Boolean): Map<String, Any>
 
     fun generateRecommendationDataOnClickAnalytics(recommendationItem: RecommendationItem, isEmptyCart: Boolean, position: Int): Map<String, Any>
 

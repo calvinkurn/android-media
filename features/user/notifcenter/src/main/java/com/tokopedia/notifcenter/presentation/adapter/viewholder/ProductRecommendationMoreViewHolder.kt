@@ -1,25 +1,24 @@
 package com.tokopedia.notifcenter.presentation.adapter.viewholder
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.data.entity.DataNotification
 import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.presentation.adapter.NotifCenterProductRecomAdapter
-import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 
 class ProductRecommendationMoreViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private val moreCount = itemView.findViewById<TextView>(R.id.tvMoreCount)
     private val thumbnail = itemView.findViewById<ImageView>(R.id.iv_product)
 
-    fun bind(products: List<ProductData>, position: Int, totalProducts: Int) {
+    fun bind(products: List<ProductData>, dataNotification: DataNotification, position: Int, totalProducts: Int) {
         val productData = products[position]
         val more = getMoreProductCount(products, totalProducts)
 
@@ -27,12 +26,7 @@ class ProductRecommendationMoreViewHolder(itemView: View) : RecyclerView.ViewHol
         moreCount.text = more
 
         itemView.setOnClickListener {
-            RouteManager.route(
-                    itemView.context,
-                    ApplinkConst.RECOMMENDATION_PAGE,
-                    productData.productId,
-                    NotificationItemViewBean.SOURCE
-            )
+            RouteManager.route(itemView.context, dataNotification.appLink)
         }
     }
 

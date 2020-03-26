@@ -452,6 +452,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
 
     @Override
     public void onPause() {
+        hideLoading();
         super.onPause();
         // https://github.com/natario1/CameraView/issues/122
         stopCamera();
@@ -459,6 +460,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
 
     @Override
     public void onDestroy() {
+        hideLoading();
         super.onDestroy();
         stopCamera();
     }

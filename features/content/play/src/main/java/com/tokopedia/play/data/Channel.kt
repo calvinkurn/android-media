@@ -65,7 +65,7 @@ data class Channel(
         val likeType: Int = 1,
 
         @SerializedName("video_stream")
-        var videoStream: VideoStream = VideoStream(), // TODO("testing purposes")
+        var videoStream: VideoStream = VideoStream(),
 
         @SerializedName("pinned_message")
         val pinnedMessage: PinnedMessage = PinnedMessage(),

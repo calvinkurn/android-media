@@ -76,8 +76,7 @@ class ProductOrganicChannelViewHolder(sprintView: View,
             adapter = OrganicAdapter(context,
                     homeCategoryListener,
                     channel,
-                    getLayoutType(channel),
-                    countDownView)
+                    getLayoutType(channel))
             recyclerView.adapter = adapter
         } else {
             adapter?.grids = channel.grids
@@ -97,8 +96,7 @@ class ProductOrganicChannelViewHolder(sprintView: View,
     class OrganicAdapter(private val context: Context,
                          private val listener: HomeCategoryListener,
                          private val channels: DynamicHomeChannel.Channels,
-                         private val sprintType: Int,
-                         private val countDownView: CountDownView) : RecyclerView.Adapter<OrganicViewHolder>() {
+                         private val sprintType: Int) : RecyclerView.Adapter<OrganicViewHolder>() {
         var grids: Array<DynamicHomeChannel.Grid> = channels.grids
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrganicViewHolder {

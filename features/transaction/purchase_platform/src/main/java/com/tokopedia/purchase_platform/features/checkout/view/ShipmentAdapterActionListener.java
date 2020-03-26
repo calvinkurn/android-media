@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.features.checkout.view;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCheckoutRequest;
 
@@ -89,7 +89,7 @@ public interface ShipmentAdapterActionListener {
                                   List<ShopShipment> shopShipmentList,
                                   int position);
 
-    void onChangeShippingCourier(List<ShippingCourierViewModel> shippingCourierViewModels,
+    void onChangeShippingCourier(List<ShippingCourierUiModel> shippingCourierUiModels,
                                  RecipientAddressModel recipientAddressModel,
                                  ShipmentCartItemModel shipmentCartItemModel,
                                  List<ShopShipment> shopShipmentList, int position);

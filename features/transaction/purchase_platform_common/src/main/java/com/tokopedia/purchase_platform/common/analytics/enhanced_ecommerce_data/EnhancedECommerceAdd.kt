@@ -12,10 +12,10 @@ class EnhancedECommerceAdd {
     companion object {
         @JvmStatic
         val KEY_ADD = "add"
+        const val KEY_PRODUCT = "products"
+        const val KEY_ACTION_FIELD = "actionField"
     }
 
-    private val KEY_PRODUCT = "products"
-    private val KEY_ACTION_FIELD = "actionField"
 
     private val checkoutMap = HashMap<String, Any>()
     private val listProducts = ArrayList<Any>()

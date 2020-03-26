@@ -7,6 +7,7 @@ import android.util.Log
 import com.google.firebase.messaging.RemoteMessage
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.notifications.common.CMConstant
+import com.tokopedia.notifications.common.HOURS_24_IN_MILLIS
 import com.tokopedia.notifications.common.PayloadConverter
 import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.notifications.worker.PushWorker
@@ -46,6 +47,10 @@ class CMPushNotificationManager : CoroutineScope {
     private val isInAppEnable: Boolean
         get() = (applicationContext as CMRouter).getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_INAPP_ENABLE,
                 false) || BuildConfig.DEBUG
+
+    val cmPushEndTimeInterval: Long
+        get() = (applicationContext as CMRouter).getLongRemoteConfig(CMConstant.RemoteKeys.KEY_CM_PUSH_END_TIME_INTERVAL,
+                HOURS_24_IN_MILLIS * 7)
 
     /**
      * initialization of push notification library

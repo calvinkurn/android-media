@@ -6,6 +6,7 @@ import android.util.DisplayMetrics
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import io.mockk.verify
 import org.junit.After
 import org.junit.Before
 
@@ -17,6 +18,7 @@ class DensityFinderTest {
     val context = mockk<Context>()
     var metrics = mockk<DisplayMetrics>(relaxed = true)
     val mockRes = mockk<Resources>()
+    val callback = mockk<DeferredCallback>(relaxed = true)
     @Before
     fun setUp() {
 
@@ -28,9 +30,10 @@ class DensityFinderTest {
         every { mockRes.displayMetrics } returns metrics
         every { context.resources } returns mockRes
         metrics.densityDpi= DisplayMetrics.DENSITY_LOW
-        val density = DensityFinder.findDensity(context)
+        val density = DensityFinder.findDensity(context, callback)
 
         assertEquals("ldpi", density)
+        verify { callback.logDeferred(any()) }
     }
 
     @Test
@@ -38,7 +41,7 @@ class DensityFinderTest {
         every { mockRes.displayMetrics } returns metrics
         every { context.resources } returns mockRes
         metrics.densityDpi = DisplayMetrics.DENSITY_MEDIUM
-        val density = DensityFinder.findDensity(context)
+        val density = DensityFinder.findDensity(context, callback)
 
         assertEquals("mdpi", density)
     }
@@ -49,13 +52,13 @@ class DensityFinderTest {
         every { context.resources } returns mockRes
         metrics.densityDpi = DisplayMetrics.DENSITY_TV
 
-        val density = DensityFinder.findDensity(context)
+        val density = DensityFinder.findDensity(context, callback)
 
         assertEquals("hdpi", density)
 
 
         metrics.densityDpi = DisplayMetrics.DENSITY_HIGH
-        val densityNew = DensityFinder.findDensity(context)
+        val densityNew = DensityFinder.findDensity(context, callback)
 
         assertEquals("hdpi",densityNew)
     }
@@ -65,7 +68,7 @@ class DensityFinderTest {
         every { mockRes.displayMetrics } returns metrics
         every { context.resources } returns mockRes
         metrics.densityDpi = DisplayMetrics.DENSITY_XHIGH
-        val density = DensityFinder.findDensity(context)
+        val density = DensityFinder.findDensity(context, callback)
 
         assertEquals("xhdpi", density)
     }
@@ -75,19 +78,19 @@ class DensityFinderTest {
         every { mockRes.displayMetrics } returns metrics
         every { context.resources } returns mockRes
         metrics.densityDpi = DisplayMetrics.DENSITY_XXHIGH
-        val density = DensityFinder.findDensity(context)
+        val density = DensityFinder.findDensity(context, callback)
 
         assertEquals("xxhdpi", density)
         metrics.densityDpi = DisplayMetrics.DENSITY_360
-        val density1 = DensityFinder.findDensity(context)
+        val density1 = DensityFinder.findDensity(context, callback)
 
         assertEquals("xxhdpi", density1)
         metrics.densityDpi = DisplayMetrics.DENSITY_420
-        val density2 = DensityFinder.findDensity(context)
+        val density2 = DensityFinder.findDensity(context, callback)
 
         assertEquals("xxhdpi", density2)
         metrics.densityDpi = DisplayMetrics.DENSITY_400
-        val density3 = DensityFinder.findDensity(context)
+        val density3 = DensityFinder.findDensity(context, callback)
 
         assertEquals("xxhdpi", density3)
     }
@@ -97,11 +100,11 @@ class DensityFinderTest {
         every { mockRes.displayMetrics } returns metrics
         every { context.resources } returns mockRes
         metrics.densityDpi = DisplayMetrics.DENSITY_XXXHIGH
-        val density = DensityFinder.findDensity(context)
+        val density = DensityFinder.findDensity(context, callback)
 
         assertEquals("xxxhdpi", density)
         metrics.densityDpi = DisplayMetrics.DENSITY_560
-        val densityNew = DensityFinder.findDensity(context)
+        val densityNew = DensityFinder.findDensity(context, callback)
 
         assertEquals("xxxhdpi", densityNew)
     }
@@ -111,9 +114,9 @@ class DensityFinderTest {
         every { mockRes.displayMetrics } returns metrics
         every { context.resources } returns mockRes
         metrics.densityDpi = DisplayMetrics.DENSITY_140
-        val density = DensityFinder.findDensity(context)
+        val density = DensityFinder.findDensity(context, callback)
 
-        assertEquals("", density)
+        assertEquals("mdpi", density)
 
     }
     @After

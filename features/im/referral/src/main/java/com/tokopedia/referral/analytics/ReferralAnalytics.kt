@@ -1,6 +1,6 @@
 package com.tokopedia.referral.analytics
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 

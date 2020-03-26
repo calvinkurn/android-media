@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.play.component.EventBusFactory
+import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.PlayRoomEvent
@@ -121,7 +122,7 @@ class VideoControlComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class VideoControlComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : VideoControlComponent(container, bus, coroutineScope) {
+    class VideoControlComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : VideoControlComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): VideoControlView {
             return mockk(relaxed = true)
         }

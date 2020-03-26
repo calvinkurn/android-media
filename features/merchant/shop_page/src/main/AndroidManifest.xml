@@ -9,6 +9,7 @@
             android:label="@string/shop_info_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
+            android:configChanges="uiMode"
             android:windowSoftInputMode="adjustPan" >
         </activity>
 
@@ -27,7 +28,7 @@
 
                 <data
                     android:host="@string/host_marketplace"
-                    android:path="@string/path_shop_page"
+                    android:pathPattern="@string/path_shop_page"
                     android:scheme="@string/internal_scheme" />
 
             </intent-filter>
@@ -114,6 +115,9 @@
                     android:path="@string/path_shop_page_setting"/>
             </intent-filter>
         </activity>
+
+        <activity android:name=".home.view.activity.ShopHomePageYoutubePlayerActivity"
+            android:theme="@style/Theme.White"/>
 
     </application>
 </manifest>

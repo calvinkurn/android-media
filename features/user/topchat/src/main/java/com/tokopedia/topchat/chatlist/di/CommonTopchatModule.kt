@@ -9,8 +9,8 @@ import dagger.Provides
 
 @Module
 class CommonTopchatModule {
-
     @Provides
+    @ChatListScope
     fun provideRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
         return FirebaseRemoteConfigImpl(context)
     }

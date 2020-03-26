@@ -9,6 +9,7 @@ import com.tokopedia.talk.producttalk.domain.pojo.CommentProduct
 import com.tokopedia.talk.producttalk.domain.pojo.ProductTalkItemPojo
 import com.tokopedia.talk.producttalk.domain.pojo.ProductTalkPojo
 import com.tokopedia.talk.producttalk.domain.pojo.TalkCommentItem
+import com.tokopedia.talk.producttalk.view.data.ChatBannerUiModel
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkItemViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
@@ -44,8 +45,13 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
     }
 
     private fun mapToViewModel(pojo: ProductTalkPojo): ProductTalkViewModel {
-
         val listThread = ArrayList<Visitable<*>>()
+
+        val chatBanner = ChatBannerUiModel(
+                pojo.product_id.toString(), pojo.product_image, pojo.product_name,
+                pojo.product_price, pojo.product_url, pojo.shop_id.toString(), pojo.shop_name
+        )
+        listThread.add(chatBanner)
 
         for (data: ProductTalkItemPojo in pojo.list) {
             listThread.add(mapThread(data))

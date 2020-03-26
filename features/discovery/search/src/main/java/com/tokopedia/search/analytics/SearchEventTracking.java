@@ -70,6 +70,7 @@ public interface SearchEventTracking {
         String IMPRESSION_INSPIRATION_CAROUSEL_PRODUCT = "impression - inspiration carousel product";
         String CLICK_INSPIRATION_CAROUSEL_SEARCH = "click - inspiration carousel search";
         String CLICK_INSPIRATION_CAROUSEL_PRODUCT = "click - inspiration carousel product";
+        String CLICK = "click";
     }
 
     interface Label {
@@ -89,4 +90,6 @@ public interface SearchEventTracking {
     interface EventMoEngage {
         String SEARCH_ATTEMPT = "Search_Attempt";
     }
+
+    String NONE = "none";
 }

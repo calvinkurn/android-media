@@ -1,9 +1,8 @@
 package com.tokopedia.product.detail.data.util
 
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
-import com.tokopedia.product.detail.common.data.model.product.Etalase
-import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.product.detail.data.model.variant.VariantDataModel
 
 object DynamicProductDetailMapper {
 
@@ -50,6 +49,12 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.VALUE_PROPOSITION -> {
                     listOfComponent.add(ProductValuePropositionDataModel(type = component.type, name = component.componentName))
                 }
+                ProductDetailConstant.VARIANT -> {
+                    listOfComponent.add(VariantDataModel(type = component.type, name = component.componentName))
+                }
+                ProductDetailConstant.SOCIAL_PROOF_PV -> {
+                    listOfComponent.add(ProductSocialProofPvDataModel(type = component.type, name = component.componentName))
+                }
             }
         }
         return listOfComponent
@@ -60,59 +65,7 @@ object DynamicProductDetailMapper {
             it.type == ProductDetailConstant.PRODUCT_SNAPSHOT
         }?.componentData?.firstOrNull() ?: ComponentData()
 
-        return DynamicProductInfoP1(basic = data.basicInfo, data = componentData)
-    }
-
-    fun mapProductInfoToDynamicProductInfo(newData: ProductInfo, oldData: DynamicProductInfoP1): DynamicProductInfoP1 {
-        val basic = oldData.basic.copy(
-                alias = newData.basic.alias,
-                catalogID = newData.basic.catalogID.toString(),
-                category = newData.category,
-                gtin = newData.basic.gtin,
-                isKreasiLokal = newData.basic.isKreasiLokal,
-                isLeasing = newData.basic.isLeasing,
-                isMustInsurance = newData.basic.isMustInsurance,
-                maxOrder = newData.basic.maxOrder,
-                minOrder = newData.basic.minOrder,
-                menu = Etalase(newData.menu.id, newData.menu.name, newData.menu.url),
-                needPrescription = newData.basic.needPrescription,
-                productID = newData.basic.id.toString(),
-                shopID = newData.basic.shopID.toString(),
-                sku = newData.basic.sku,
-                status = newData.basic.status,
-                url = newData.basic.url,
-                condition = newData.basic.condition,
-                weightUnit = newData.basic.weightUnit)
-
-        val campaignData = newData.campaign
-        val mediaCopy: List<Media> = newData.media.map {
-            Media(it.mediaDescription, it.isAutoPlay, it.type, it.url300, it.urlOriginal,
-                    it.urlThumbnail, it.videoUrl, it.videoUrl)
-        }
-        val wholesaleCopy: List<Wholesale> = newData.wholesale?.map {
-            Wholesale(WholesalePrice(value = it.price.toInt()), it.minQty)
-        } ?: listOf()
-
-        val data = oldData.data.copy(
-                campaign = CampaignModular(campaignData.applinks, campaignData.id, campaignData.type.toString(),
-                        campaignData.name, campaignData.discountedPrice.toInt(), campaignData.endDate, campaignData.endDateUnix.toString(),
-                        campaignData.hideGimmick, campaignData.isActive, campaignData.isAppsOnly, campaignData.originalPrice.toInt(),
-                        campaignData.percentage.toInt(), campaignData.startDate, campaignData.stock),
-                isCOD = newData.basic.isEligibleCod,
-                isCashback = newData.cashback,
-                isFreeOngkir = IsFreeOngkir(newData.freeOngkir.freeOngkirImgUrl, newData.freeOngkir.isFreeOngkirActive),
-                media = mediaCopy,
-                pictures = newData.pictures ?: listOf(),
-                price = Price(newData.basic.priceCurrency, newData.basic.lastUpdatePrice, newData.basic.price.toInt()),
-                stock = newData.stock,
-                variant = newData.variant,
-                videos = newData.videos,
-                wholesale = wholesaleCopy,
-                preOrder = newData.preorder,
-                name = newData.basic.name
-        )
-
-        return DynamicProductInfoP1(basic,data)
+        return DynamicProductInfoP1(layoutName = data.generalName, basic = data.basicInfo, data = componentData)
     }
 
     fun hashMapLayout(data: List<DynamicPdpDataModel>): Map<String, DynamicPdpDataModel> {
@@ -130,6 +83,12 @@ object DynamicProductDetailMapper {
             data.map {
                 com.tokopedia.product.detail.common.data.model.product.Wholesale(it.minQty, it.price.value.toFloat())
             }
+        }
+    }
+
+    fun convertMediaToDataModel(media: MutableList<Media>): List<ProductMediaDataModel> {
+        return media.map { it ->
+            ProductMediaDataModel(it.type, it.uRL300, it.uRLOriginal, it.uRLThumbnail, it.description, it.videoURLAndroid, it.isAutoplay)
         }
     }
 

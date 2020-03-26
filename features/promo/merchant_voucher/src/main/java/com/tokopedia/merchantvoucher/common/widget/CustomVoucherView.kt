@@ -14,7 +14,6 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.SpannableStringBuilder
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.StyleSpan
 import android.text.style.TypefaceSpan

@@ -134,5 +134,17 @@ public interface CommonConstant {
         String TP_GQL_COUPON_LISTING_STACK ="tp_gql_coupon_listing_stack";
         String TP_GQL_COUPON_IN_STACK = "tp_gql_coupon_in_stack";
         String TP_GQL_USER_INFO = "tp_gql_user_info";
+        String TP_GQL_TOKOPOINT_REDEEM_COUPON = "tp_gql_tokopoint_redeem_coupon";
+        String TP_GQL_CATLOG_STATUS = "tp_gql_catalog_status";
+        String TP_GQL_TOKOPOINT_VALIDATE_REDEEM = "tp_gql_tokopoint_validate_redeem";
+        String TP_GQL_PRE_VALIDATE_REDEEM = "tp_gql_pre_validate_redeem";
+        String TP_GQL_CATALOG_DETAIL = "tp_gql_catalog_detail";
+        String TP_GQL_CATALOG_BANNER = "tp_gql_catalog_banner";
+        String TP_GQL_TOKOPOINT_DETAIL = "tp_gql_tokopoint_detail";
+        String TP_GQL_CATALOG_FILTER = "tp_gql_catalog_filter";
+        String TP_GQL_LUCKY_EGG_DETAILS = "tp_gql_lucky_egg_detail";
+        String TP_GQL_TOKOPOINT_DETAIL_NEW = "tp_gql_tokopoint_detail_new";
+        String TP_GQL_HOME_PAGE_SECTION = "tp_gql_home_page_section";
+        String TP_GQL_SUM_COUPON = "tp_gql_sum_coupon";
     }
 }

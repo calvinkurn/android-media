@@ -89,6 +89,11 @@ class HomeProductFragment : BaseDaggerFragment() {
         isBind = true
     }
 
+    override fun onDestroy() {
+        isBind = false
+        super.onDestroy()
+    }
+
     private fun clearCache(webView: WebView?) {
         webView?.clearCache(true)
     }

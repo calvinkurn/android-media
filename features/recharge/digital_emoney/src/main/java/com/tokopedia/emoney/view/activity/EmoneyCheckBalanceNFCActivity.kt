@@ -22,7 +22,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.authentication.AuthKey
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
@@ -77,6 +76,9 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     @Inject
     lateinit var brizziInstance: Brizzi
 
+    private var issuerIdSelected: Int = 0
+    private var operatorIdSelected: String = ""
+
 
     override fun getNewFragment(): Fragment? {
         return null
@@ -109,7 +111,7 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
                         .build()
 
                 if (intent != null && intent.getStringExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD) != null) {
-                    if (intent.getStringExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD) === DigitalExtraParam.EXTRA_NFC) {
+                    if (intent.getStringExtra(ApplinkConsInternalDigital.PARAM_SMARTCARD) == DigitalExtraParam.EXTRA_NFC) {
                         navigatePageToDigitalProduct(passData)
                     } else {
                         val intentReturn = Intent()
@@ -340,6 +342,10 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     }
 
     override fun showCardLastBalance(emoneyInquiry: EmoneyInquiry) {
+        emoneyInquiry.attributesEmoneyInquiry?.let {
+            operatorIdSelected = it.operatorId
+            issuerIdSelected = it.issuer_id
+        }
         emoneyAnalytics.onShowLastBalance()
         tapETollCardView.visibility = View.GONE
         eTollUpdateBalanceResultView.visibility = View.VISIBLE
@@ -405,8 +411,7 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     private fun navigatePageToDigitalProduct(passData: DigitalCategoryDetailPassData) {
         val bundle = Bundle()
         bundle.putParcelable(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA, passData)
-        val applink = UriUtil.buildUri(ApplinkConsInternalDigital.DIGITAL_PRODUCT, passData.categoryId, passData.operatorId)
-        val intent = RouteManager.getIntent(this, applink)
+        val intent = RouteManager.getIntent(this, ApplinkConsInternalDigital.DIGITAL_PRODUCT_FORM)
         intent.putExtras(bundle)
         startActivity(intent)
     }
@@ -458,7 +463,7 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         data?.let {
-            if (requestCode == REQUEST_CODE_LOGIN) {
+            if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_LOGIN) {
                 if (userSession.isLoggedIn) {
                     data?.let {
                         executeMandiri(data)

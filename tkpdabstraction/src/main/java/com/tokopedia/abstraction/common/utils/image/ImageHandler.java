@@ -762,8 +762,12 @@ public class ImageHandler {
     }
 
     public static void clearImage(ImageView imageView) {
-        if (imageView != null) {
-            Glide.with(imageView.getContext()).clear(imageView);
+        try {
+            if (imageView != null) {
+                Glide.with(imageView.getContext()).clear(imageView);
+            }
+        } catch (IllegalArgumentException e){
+            Timber.e("%s", e.getMessage());
         }
     }
 

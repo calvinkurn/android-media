@@ -131,7 +131,7 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
         if (prepareState is TokopediaPlayPrepareState.Unprepared || currentUri != uri) {
             val lastPosition = if (prepareState is TokopediaPlayPrepareState.Unprepared && !prepareState.previousType.isLive && currentUri == uri) prepareState.lastPosition else null
             playVideoWithUri(uri, autoPlay, lastPosition)
-            currentPrepareState = TokopediaPlayPrepareState.Prepared(uri, if (prepareState is TokopediaPlayPrepareState.Unprepared) VideoPositionHandle.NotHandled(prepareState.lastPosition) else VideoPositionHandle.Handled)
+            currentPrepareState = TokopediaPlayPrepareState.Prepared(uri, if (prepareState is TokopediaPlayPrepareState.Unprepared) VideoPositionHandle.NotHandled(lastPosition) else VideoPositionHandle.Handled)
         }
         if (!videoPlayer.isPlaying) resumeCurrentVideo()
     }

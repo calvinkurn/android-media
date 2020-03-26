@@ -2,7 +2,6 @@ package com.tokopedia.salam.umrah.homepage.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -25,10 +24,14 @@ class UmrahHomepagePartnerTravelsViewHolder(view: View, private val onItemBindLi
             if (element.isLoaded && element.umrahTravelAgents.isNotEmpty()) {
                 umrah_partner_section_layout.show()
                 umrah_partner_section_shimmering.hide()
+                onItemBindListener.onImpressionPartnerTravel(resources.getString(R.string.umrah_home_page_partner_label),element)
                 adapterPartnerTravel.setList(element.umrahTravelAgents)
                 rv_umrah_home_page_partner_travel.apply {
                     adapter = adapterPartnerTravel
                     layoutManager = GridLayoutManager(context, COLUMN_SIZE)
+                }
+                tg_umrah_list_travel.setOnClickListener {
+                    onItemBindListener.onClickAllPartner()
                 }
             } else {
                 umrah_partner_section_layout.hide()

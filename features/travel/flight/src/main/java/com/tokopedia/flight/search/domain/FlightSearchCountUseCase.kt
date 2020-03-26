@@ -21,6 +21,12 @@ class FlightSearchCountUseCase @Inject constructor(
         return flightSearchRepository.getSearchCount(filterModel)
     }
 
+    fun executeCoroutine(requestParams: RequestParams): Int {
+        val filterModel = requestParams.getObject(PARAM_FILTER_MODEL) as FlightFilterModel
+
+        return flightSearchRepository.getSearchCountCoroutine(filterModel)
+    }
+
     fun createRequestParams(flightFilterModel: FlightFilterModel): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putObject(PARAM_FILTER_MODEL, flightFilterModel)

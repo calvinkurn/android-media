@@ -57,6 +57,7 @@ public class TkpdAppsflyerMapUseCase extends UseCase<Boolean> {
         AppsflyerMappingRequest appsflyerMappingRequest = new AppsflyerMappingRequest();
         appsflyerMappingRequest.setAppsflyerId(appsFlyerId);
         appsflyerMappingRequest.setCustomerUserId(userID);
+        appsflyerMappingRequest.setEventTime("");
         requestParams.putObject("input", appsflyerMappingRequest);
         GraphqlClient.init(context);
         GraphqlRequest graphqlRequest = new

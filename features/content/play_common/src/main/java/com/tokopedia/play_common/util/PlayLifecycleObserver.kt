@@ -20,6 +20,7 @@ class PlayLifecycleObserver(
         synchronized(this) {
             isVideoPlaying = playManager.isVideoPlaying()
             if (isVideoPlaying) playManager.pauseCurrentVideo()
+            playManager.muteVideo(true)
         }
     }
 
@@ -27,6 +28,7 @@ class PlayLifecycleObserver(
     fun onResume() {
         synchronized(this) {
             if (isVideoPlaying) playManager.resumeCurrentVideo()
+            playManager.muteVideo(false)
         }
     }
 }

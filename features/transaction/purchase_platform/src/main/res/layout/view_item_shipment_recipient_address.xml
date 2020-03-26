@@ -13,10 +13,24 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginBottom="@dimen/dp_8"
         android:text="@string/label_showcase_address_title"
-        app:typographyType="heading_3" />
+        app:typographyType="heading_6" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_change_address_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:textColor="@color/g_500"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:text="@string/label_button_change_address"
+        app:typographyType="heading_6" />
 
     <View
         android:id="@+id/separator"
@@ -40,9 +54,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tab_unify_trade_in_address"
         android:background="@color/white"
-        android:padding="@dimen/dp_16">
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_4">
 
-        <LinearLayout
+    <LinearLayout
             android:id="@+id/rl_detail_shipment_recipient"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -51,12 +68,12 @@
             <include
                 android:id="@+id/layout_address_normal"
                 layout="@layout/layout_address_normal"
-                tools:visibility="gone" />
+                tools:visibility="visible" />
 
             <include
                 android:id="@+id/layout_address_drop_off"
                 layout="@layout/layout_address_drop_off"
-                tools:visibility="visible" />
+                tools:visibility="gone" />
 
         </LinearLayout>
 
@@ -88,13 +105,50 @@
 
     </RelativeLayout>
 
+    <View
+        android:id="@+id/separator_bottom"
+        android:layout_width="match_parent"
+        tools:visibility="invisible"
+        android:layout_height="0.5dp"
+        android:layout_below="@id/rl_image_address_container"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:background="@color/separator_color" />
+
+    <Space
+        android:id="@+id/space"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:layout_below="@id/rl_image_address_container"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:background="@color/separator_color" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_disabled_multiple_address_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/separator_bottom"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:lineSpacingExtra="@dimen/dp_3"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_4"
+        tools:visibility="gone"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_4"
+        android:textColor="@color/n_700_44"
+        tools:text="Multiple address shipping is disabled"
+        app:typographyType="small"
+        app:typographyWeight="reguler" />
+
     <LinearLayout
         android:id="@+id/ll_add_or_change_address_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/rl_image_address_container"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_below="@+id/tv_disabled_multiple_address_info"
         android:background="@color/white"
+        tools:visibility="visible"
         android:orientation="horizontal">
 
         <com.tokopedia.unifyprinciples.Typography

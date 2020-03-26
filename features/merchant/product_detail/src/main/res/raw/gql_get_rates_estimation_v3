@@ -1,5 +1,5 @@
-query RateEstimate($weight: Float!, $domain: String!, $origin: String) {
-  ratesEstimateV3(input: {weight: $weight, domain: $domain, origin: $origin}) {
+query RateEstimate($weight: Float!, $domain: String!, $origin: String, $shop_id: String, $product_id: String) {
+  ratesEstimateV3(input: {weight: $weight, domain: $domain, origin: $origin, shop_id: $shop_id, product_id: $product_id}) {
       data{
           address {
               city_name

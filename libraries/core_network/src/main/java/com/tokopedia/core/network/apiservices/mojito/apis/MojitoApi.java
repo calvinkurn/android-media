@@ -2,7 +2,6 @@ package com.tokopedia.core.network.apiservices.mojito.apis;
 
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.entity.intermediary.brands.MojitoBrandsModel;
 import com.tokopedia.core.network.entity.wishlist.WishlistCheckResult;
 
 import retrofit2.Response;
@@ -22,11 +21,6 @@ public interface MojitoApi {
     String DEVICE = "device";
     String ID = "id";
     String CATEGORY_ID = "categoryId";
-
-    @GET(TkpdBaseURL.Mojito.API_V1_BRANDS_CATEGORY)
-    Observable<Response<MojitoBrandsModel>> getBrandsCategory(
-            @Path(CATEGORY_ID) String categoryID
-    );
 
     @GET(TkpdBaseURL.Mojito.PATH_OS_BANNER)
     Observable<Response<String>> getOfficialStoreBanner(@Query("keywords") String keyword);

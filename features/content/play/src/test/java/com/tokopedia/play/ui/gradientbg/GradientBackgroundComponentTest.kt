@@ -3,6 +3,7 @@ package com.tokopedia.play.ui.gradientbg
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play.component.EventBusFactory
+import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayRoomEvent
 import io.mockk.confirmVerified
@@ -70,7 +71,7 @@ class GradientBackgroundComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class GradientBackgroundComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : GradientBackgroundComponent(container, bus, coroutineScope) {
+    class GradientBackgroundComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : GradientBackgroundComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): GradientBackgroundView {
             return mockk(relaxed = true)
         }

@@ -211,6 +211,11 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     }
 
     @Override
+    public void setGeoAddress(String address) {
+        addressLayout.renderGeoAddress(address);
+    }
+
+    @Override
     public void setShopLocationData(ShopShipping shopData) {
         fragmentShippingHeader.renderData(shopData);
     }

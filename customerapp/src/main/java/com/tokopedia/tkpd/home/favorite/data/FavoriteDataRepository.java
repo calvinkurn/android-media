@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.home.favorite.data;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.tkpd.home.favorite.domain.FavoriteRepository;
-import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShop;
@@ -18,18 +17,6 @@ public class FavoriteDataRepository implements FavoriteRepository {
 
     public FavoriteDataRepository(FavoriteFactory favoriteFactory) {
         this.favoriteFactory = favoriteFactory;
-    }
-
-
-    @Override
-    public Observable<DomainWishlist> getWishlist(TKPDMapParam<String, Object> params) {
-
-        return favoriteFactory.getWishlist(params);
-    }
-
-    @Override
-    public Observable<DomainWishlist> getFreshWishlist(TKPDMapParam<String, Object> params) {
-        return favoriteFactory.getFreshWishlist(params);
     }
 
     @Override

@@ -4,16 +4,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
@@ -39,8 +39,6 @@ import com.tokopedia.purchase_platform.features.checkout.analytics.CornerAnalyti
 import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.domain.mapper.AddressModelMapper;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.di.DaggerAddressChoiceComponent;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.recyclerview.ShipmentAddressListAdapter;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -49,13 +47,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.logisticdata.data.constant.LogisticConstant.INSTANCE_TYPE_ADD_ADDRESS_FROM_MULTIPLE_CHECKOUT;
-import static com.tokopedia.logisticdata.data.constant.LogisticConstant.INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT;
 import static com.tokopedia.logisticdata.data.constant.LogisticConstant.INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT;
 import static com.tokopedia.logisticdata.data.constant.LogisticConstant.INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT;
 import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_EXISTING_USER;
 import static com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.CartAddressChoiceActivity.EXTRA_CURRENT_ADDRESS;
-import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_ADD_NEW_ADDRESS_KEY;
 
 public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         AddressListContract.View, SearchInputView.Listener,
@@ -94,7 +89,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     private RecipientAddressModel mCurrentAddress;
     private PerformanceMonitoring chooseAddressTracePerformance;
     private boolean isChooseAddressTraceStopped;
-    private FirebaseRemoteConfigImpl remoteConfig;
     private Token token;
     private int originDirectionType;
 
@@ -183,11 +177,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         chooseAddressTracePerformance = PerformanceMonitoring.start(CHOOSE_ADDRESS_TRACE);
-        remoteConfig = new FirebaseRemoteConfigImpl(getContext());
         if (getArguments() != null) {
             mCurrentAddress = getArguments().getParcelable(EXTRA_CURRENT_ADDRESS);
-            isDisableCorner = getArguments().getBoolean(ARGUMENT_DISABLE_CORNER, false) ||
-                    isDisableSampaiView();
+            isDisableCorner = getArguments().getBoolean(ARGUMENT_DISABLE_CORNER, false);
             requestType = getArguments().getInt(CheckoutConstant.EXTRA_TYPE_REQUEST, 0);
             originDirectionType = getArguments().getInt(ARGUMENT_ORIGIN_DIRECTION_TYPE, ORIGIN_DIRECTION_TYPE_DEFAULT);
         }
@@ -466,37 +458,19 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         if (getActivity() != null) {
             if (originDirectionType == ORIGIN_DIRECTION_TYPE_FROM_MULTIPLE_ADDRESS_FORM) {
                 checkoutAnalyticsMultipleAddress.eventClickAddressCartMultipleAddressClickPlusFromMultiple();
-
-                if (isAddNewAddressEnabled()) {
-                    checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), SCREEN_NAME_CART_EXISTING_USER);
-                    Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
-                    intent.putExtra(PARAM_TOKEN, token);
-                    startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED);
-
-                } else {
-                    Intent intent = RouteManager.getIntent(getContext(),
-                            ApplinkConstInternalLogistic.ADD_ADDRESS_V1,
-                            INSTANCE_TYPE_ADD_ADDRESS_FROM_MULTIPLE_CHECKOUT);
-                    intent.putExtra(PARAM_TOKEN, token);
-                    startActivityForResult(intent, LogisticConstant.REQUEST_CODE_PARAM_CREATE);
-                }
+                checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), SCREEN_NAME_CART_EXISTING_USER);
+                Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
+                intent.putExtra(PARAM_TOKEN, token);
+                startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED);
 
             } else {
                 checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat();
                 checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTambahFromAlamatPengiriman();
+                checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), SCREEN_NAME_CART_EXISTING_USER);
+                Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
+                intent.putExtra(PARAM_TOKEN, token);
+                startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED);
 
-                if (isAddNewAddressEnabled()) {
-                    checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), SCREEN_NAME_CART_EXISTING_USER);
-                    Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
-                    intent.putExtra(PARAM_TOKEN, token);
-                    startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED);
-                } else {
-                    Intent intent = RouteManager.getIntent(getContext(),
-                            ApplinkConstInternalLogistic.ADD_ADDRESS_V1,
-                            INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT);
-                    intent.putExtra(PARAM_TOKEN, token);
-                    startActivityForResult(intent, LogisticConstant.REQUEST_CODE_PARAM_CREATE);
-                }
             }
 
 
@@ -545,14 +519,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
             mSvAddressSearchBox.getSearchTextView().setCursorVisible(true);
             openSoftKeyboard();
         };
-    }
-
-    private boolean isAddNewAddressEnabled() {
-        return remoteConfig.getBoolean(ENABLE_ADD_NEW_ADDRESS_KEY, false);
-    }
-
-    private boolean isDisableSampaiView() {
-        return remoteConfig.getBoolean(RemoteConfigKey.APP_HIDE_SAMPAI_VIEW, false);
     }
 
     public interface ICartAddressChoiceActivityListener {

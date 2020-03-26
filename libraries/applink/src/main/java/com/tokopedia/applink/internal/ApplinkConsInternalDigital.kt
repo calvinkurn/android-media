@@ -23,6 +23,7 @@ object ApplinkConsInternalDigital {
     const val SMARTCARD_WITH_BRIZZI = "$INTERNAL_DIGITAL/smartcard/emoneybrizzi?$PARAM_SMARTCARD={type}"
     const val SMARTCARD_EMONEY = "$INTERNAL_DIGITAL/smartcard/emoney?$PARAM_SMARTCARD={type}"
 
+    const val DIGITAL_PRODUCT_FORM = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_DIGITAL/form"
     const val DIGITAL_PRODUCT = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_DIGITAL/form?category_id={category_id}&operator_id={operator_id}"
     const val PRODUCT_TEMPLATE = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_DIGITAL/form?category_id={category_id}&menu_id={menu_id}&template={template}"
 }

@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showLoading
@@ -16,6 +18,7 @@ import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.TERMS_AND_CONDITION_URL
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.contract.PmTermsContract
+import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantSubscribeFragment.Companion.APPLINK_POWER_MERCHANT_KYC
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseWebViewFragment
@@ -126,9 +129,16 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
                     Toaster.make(it, getString(R.string.pm_terms_error_no_agreed), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
                 }
             } else {
-                presenter.activatePowerMerchant()
+                openKycPage()
             }
         }
+    }
+
+    private fun openKycPage() {
+        val intent = RouteManager.getIntent(activity, APPLINK_POWER_MERCHANT_KYC)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, ApplinkConstInternalGlobal.PARAM_SOURCE_KYC_SELLER)
+        startActivity(intent)
+        activity?.finish()
     }
 
     private fun onCheckBoxClicked() {

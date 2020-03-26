@@ -3,6 +3,7 @@ package com.tokopedia.rechargegeneral.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
+import com.tokopedia.rechargegeneral.util.RechargeGeneralDispatchersProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.rechargegeneral.presentation.fragment.RechargeGeneralFragment
 import com.tokopedia.rechargegeneral.presentation.fragment.RechargeGeneralPromoListFragment
@@ -10,7 +11,6 @@ import com.tokopedia.rechargegeneral.presentation.fragment.RechargeGeneralRecent
 import com.tokopedia.rechargegeneral.util.RechargeGeneralAnalytics
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
-import kotlinx.coroutines.CoroutineDispatcher
 
 @RechargeGeneralScope
 @Component(modules = [RechargeGeneralModule::class, RechargeGeneralViewModelModule::class], dependencies = [CommonTopupBillsComponent::class])
@@ -21,7 +21,7 @@ interface RechargeGeneralComponent {
 
     fun userSessionInterface(): UserSessionInterface
 
-    fun coroutineDispatcher(): CoroutineDispatcher
+    fun rechargeGeneralDispatchersProvider(): RechargeGeneralDispatchersProvider
 
     fun graphqlRepository(): GraphqlRepository
 

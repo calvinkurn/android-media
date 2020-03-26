@@ -3,6 +3,7 @@ apply plugin: 'io.fabric'
 apply plugin: 'io.hansel.preprocessor'
 
 apply from: '../tools/dynamic_feature_inclusion.gradle'
+apply from: '../tools/set_debug_tools.gradle'
 
 def getDpiId(String density) {
 
@@ -358,8 +359,13 @@ dependencies {
     }
 
     implementation project(rootProject.ext.libraries.analytics)
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(rootProject.ext.libraries.analyticsDebugger)
+    } else {
+        implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
+    }
 
-    implementation(rootProject.ext.analyticsDependencies.moengage) 
+    implementation(rootProject.ext.analyticsDependencies.moengage)
 
     implementation rootProject.ext.playServicesDependencies.maps
     implementation project(rootProject.ext.libraries.playCore)
@@ -408,7 +414,6 @@ dependencies {
         exclude group: "com.android.support"
     }
 
-    
 
     implementation('de.hdodenhof:circleimageview:2.1.0') {
         exclude group: 'com.android.support', module: 'support-annotations'

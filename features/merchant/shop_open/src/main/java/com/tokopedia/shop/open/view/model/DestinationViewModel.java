@@ -8,7 +8,6 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.util.MethodChecker;
 
 public class DestinationViewModel {
@@ -166,11 +165,6 @@ public class DestinationViewModel {
 
     public String getAddressDetail() {
         return MethodChecker.fromHtml(this.receiverName) + "<br>" + MethodChecker.fromHtml(this.addressStreet) + "<br>" + this.districtName + ", " + this.cityName + ", " + this.postalCode + "<br>" + this.provinceName + "<br>" + this.receiverPhone;
-    }
-
-    public String getGeoLocation(Context context) {
-        this.geoLocation = GeoLocationUtils.reverseGeoCode(context, this.latitude, this.longitude);
-        return this.geoLocation;
     }
 
     public boolean isCompleted() {

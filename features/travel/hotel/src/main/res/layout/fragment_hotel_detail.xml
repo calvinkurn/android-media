@@ -31,7 +31,7 @@
                     app:contentScrim="@color/white"
                     app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/toolbar_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -45,14 +45,17 @@
                             android:id="@+id/iv_main_photo_preview"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dp_160"
-                            android:layout_marginBottom="@dimen/dp_2"
                             android:scaleType="centerCrop"
+                            app:layout_constraintTop_toTopOf="parent"
                             app:srcCompat="@color/grey_no_image" />
 
                         <LinearLayout
+                            android:id="@+id/hotel_photo_layout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:layout_marginTop="@dimen/dp_2"
+                            android:orientation="horizontal"
+                            app:layout_constraintTop_toBottomOf="@+id/iv_main_photo_preview">
 
                             <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/iv_first_photo_preview"
@@ -109,7 +112,37 @@
 
                             </RelativeLayout>
                         </LinearLayout>
-                    </LinearLayout>
+
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/hotel_detail_tag"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/layout_lvl3"
+                            android:layout_marginRight="@dimen/layout_lvl3"
+                            android:background="@drawable/bg_hotel_property_tag_half_radius"
+                            android:ellipsize="end"
+                            android:lines="1"
+                            android:maxWidth="@dimen/dp_300"
+                            android:maxLines="1"
+                            android:paddingStart="@dimen/dp_12"
+                            android:paddingLeft="@dimen/dp_12"
+                            android:paddingTop="@dimen/dp_4"
+                            android:paddingEnd="@dimen/dp_16"
+                            android:paddingRight="@dimen/dp_16"
+                            android:paddingBottom="@dimen/dp_4"
+                            android:textColor="@color/Red_R400"
+                            android:visibility="invisible"
+                            app:layout_constraintBottom_toBottomOf="@+id/hotel_photo_layout"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/hotel_photo_layout"
+                            app:typographyType="small"
+                            app:typographyWeight="bold"
+                            tools:text="Hargae oooo uuuuu lalala yeyeye okokok wwkwkapp:layout_constraintHorizontal_biaswkkwk nicae okay bye"
+                            tools:visibility="visible" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.appcompat.widget.Toolbar
                         android:id="@+id/detail_toolbar"
@@ -142,7 +175,7 @@
                 android:background="@color/white"
                 android:visibility="gone"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                tools:visibility="visible">
+                tools:visibility="gone">
 
                 <androidx.core.widget.NestedScrollView
                     android:layout_width="match_parent"
@@ -160,7 +193,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/dp_16"
-                            android:layout_marginTop="@dimen/dp_16"
+                            android:layout_marginTop="@dimen/dp_12"
                             android:layout_marginRight="@dimen/dp_16"
                             app:fontSize="titleBig"
                             app:textViewTheme="lightPrimary"

@@ -1,6 +1,10 @@
 package com.tokopedia.device.info
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
+import android.provider.Settings
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
@@ -81,6 +85,46 @@ object DeviceInfo {
             false
         } finally {
             process?.destroy()
+        }
+    }
+
+    @JvmStatic
+    fun getPackageName(context: Context): String {
+        return try {
+            context.packageName
+        } catch (e: Exception) {
+            ""
+        }
+    }
+
+    @JvmStatic
+    @SuppressLint("HardwareIds")
+    fun getAndroidId(context: Context): String {
+        return try {
+            Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+        } catch (e: Exception) {
+            ""
+        }
+    }
+
+    @JvmStatic
+    fun isx86() =
+        try {
+            if (Build.VERSION.SDK_INT < 21) {
+                Build.CPU_ABI.contains("x86") ||  Build.CPU_ABI.contains("x86")
+            } else {
+                Build.SUPPORTED_ABIS.any { it.contains("x86") }
+            }
+        } catch (e: Exception) {
+            false
+        }
+
+    @JvmStatic
+    fun getInstalledAppsCount(context: Context): Int {
+        return try {
+            context.packageManager.getInstalledApplications(PackageManager.GET_META_DATA).size
+        } catch (e: Exception) {
+            0
         }
     }
 
