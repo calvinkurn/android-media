@@ -243,7 +243,7 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
         }
     }
 
-    override fun itemContainerClicked(notification: NotificationItemViewBean) {
+    override fun onItemStockHandlerClick(notification: NotificationItemViewBean) {
         //if product data only one, check product stock
         if (notification.products.isSingleItem()) {
             viewModel.isProductStockHandler(notification.notificationId)
