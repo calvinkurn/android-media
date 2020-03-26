@@ -88,6 +88,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val addToCartUseCase: AddToCartUseCase,
                                                              private val addToCartOcsUseCase: AddToCartOcsUseCase,
                                                              private val getP3VariantUseCase: GetP3VariantUseCase,
+                                                             private val toggleNotifyMeUseCase: ToggleNotifyMeUseCase,
                                                              val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.ui()) {
 
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
@@ -142,6 +143,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val onVariantClickedData: LiveData<List<VariantCategory>?>
         get() = _onVariantClickedData
 
+    private val _toggleTeaserNotifyMe = MutableLiveData<Result<Boolean>>()
+    val toggleTeaserNotifyMe: LiveData<Result<Boolean>>
+        get() = _toggleTeaserNotifyMe
+
     var multiOrigin: Map<String, VariantMultiOriginWarehouse> = mapOf()
     var selectedMultiOrigin: VariantMultiOriginWarehouse = VariantMultiOriginWarehouse()
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
@@ -184,6 +189,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         updateCartCounterSubscription?.unsubscribe()
         addToCartUseCase.unsubscribe()
         addToCartOcsUseCase.unsubscribe()
+        toggleNotifyMeUseCase.cancelJobs()
     }
 
     fun processVariant(data: ProductVariantCommon, mapOfSelectedVariant: MutableMap<String, Int>?) {
@@ -716,5 +722,14 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         getPdpLayoutUseCase.forceRefresh = forceRefresh
         getPdpLayoutUseCase.enableCaching = enableCaching
         return getPdpLayoutUseCase.executeOnBackground()
+    }
+
+    fun toggleTeaserNotifyMe(campaignId: Int, productId: Int, action: String, source: String) {
+        launchCatchError(block = {
+            toggleNotifyMeUseCase.createParams(campaignId, productId, action, source)
+            _toggleTeaserNotifyMe.value = Success(toggleNotifyMeUseCase.executeOnBackground().result.isSuccess)
+        }) {
+            _toggleTeaserNotifyMe.value = Fail(it)
+        }
     }
 }

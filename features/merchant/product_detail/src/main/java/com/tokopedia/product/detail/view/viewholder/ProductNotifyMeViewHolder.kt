@@ -6,7 +6,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.partial_product_notify_me.view.*
@@ -17,7 +19,6 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
 
     companion object {
         val LAYOUT = R.layout.partial_product_notify_me
-        const val SOURCE = "campaign"
         const val SECOND = 1000L
     }
 
@@ -25,7 +26,7 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
         if (element != null) {
             bindSubTitle(element)
             bindButton(element)
-            bindListener(element)
+            bindListener(element, ComponentTrackDataModel(element.type, element.name, adapterPosition + 1))
         }
     }
 
@@ -84,7 +85,19 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
         }
     }
 
-    private fun bindListener(data: ProductNotifyMeDataModel) {
-//        listener.onNotifyMeClicked(data.campaignID.toInt(), SOURCE)
+    private fun bindListener(data: ProductNotifyMeDataModel, componentTrackDataModel: ComponentTrackDataModel) {
+        itemView.btn_notify_me?.setOnClickListener {
+            listener.onNotifyMeClicked(data, componentTrackDataModel)
+        }
+    }
+
+    override fun bind(element: ProductNotifyMeDataModel?, payloads: MutableList<Any>) {
+        super.bind(element, payloads)
+        if (element == null || payloads.isEmpty()) {
+            return
+        }
+        when (payloads[0] as Int) {
+            ProductDetailConstant.PAYLOAD_NOTIFY_ME -> bindButton(element)
+        }
     }
 }

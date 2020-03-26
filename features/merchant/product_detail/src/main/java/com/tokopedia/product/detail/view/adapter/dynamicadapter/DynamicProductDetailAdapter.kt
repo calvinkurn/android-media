@@ -122,10 +122,14 @@ class DynamicProductDetailAdapter(
         }
     }
 
-    fun notifyNotifyMe(notifyMeData: ProductNotifyMeDataModel?, payload: Int) {
+    fun notifyNotifyMe(notifyMeData: ProductNotifyMeDataModel?, payload: Int?) {
         notifyMeData?.let{
             val indexOfNotifyMe = list.indexOf(notifyMeData)
-            notifyItemChanged(indexOfNotifyMe, payload)
+            if (payload != null) {
+                notifyItemChanged(indexOfNotifyMe, payload)
+            } else {
+                notifyItemChanged(indexOfNotifyMe)
+            }
         }
     }
 

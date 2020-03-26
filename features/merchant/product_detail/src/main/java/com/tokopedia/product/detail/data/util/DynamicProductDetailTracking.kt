@@ -610,6 +610,17 @@ object DynamicProductDetailTracking {
             )
             TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.CLICK_CART_BUTTON_VARIANT)
         }
+
+        fun eventNotifyMe(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?,
+                          action: String) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.Label.EMPTY_LABEL,
+                    ProductTrackingConstant.Category.PDP,
+                    "${ProductTrackingConstant.Action.CLICK_NOTIFY_ME} - $action",
+                    ProductTrackingConstant.Label.EMPTY_LABEL)
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_NOTIFY_ME)
+        }
     }
 
     object Iris {

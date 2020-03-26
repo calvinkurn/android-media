@@ -85,7 +85,7 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
         get() = mapOfData[ProductDetailConstant.SOCIAL_PROOF_PV] as? ProductSocialProofPvDataModel
 
     val notifyMeMap: ProductNotifyMeDataModel?
-        get() = mapOfData[ProductDetailConstant.NOTIFY_ME] as? ProductNotifyMeDataModel
+        get() = mapOfData[ProductDetailConstant.UPCOMING_DEALS] as? ProductNotifyMeDataModel
 
     val listProductRecomMap: List<ProductRecommendationDataModel>? = mapOfData.filterKeys {
         it == ProductDetailConstant.PDP_1 || it == ProductDetailConstant.PDP_2
@@ -106,12 +106,12 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
             }
 
             notifyMeMap?.run {
-                campaignID = it.data.campaignId
-                campaignType = it.data.campaignType
-                campaignTypeName = it.data.campaignTypeName
-                endDate = it.data.endDate
-                startDate = it.data.startDate
-                notifyMe = it.data.notifyMe
+                campaignID = it.upComingData.campaignIdNotifyMe
+                campaignType = it.upComingData.campaignTypeNotifyMe
+                campaignTypeName = it.upComingData.campaignTypeNameNotifyMe
+                endDate = it.upComingData.endDateNotifyMe
+                startDate = it.upComingData.startDateNotifyMe
+                notifyMe = it.upComingData.upComingNotifyMe
             }
 
             valuePropositionDataModel?.run {

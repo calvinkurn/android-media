@@ -269,4 +269,11 @@ class GqlRawQueryModule {
     fun provideAddToCartOcsMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart_one_click_shipment)
     }
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.MUTATION_NOTIFY_ME)
+    fun provideNotifyMeStatus(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_check_campaign_notify_me)
 }
