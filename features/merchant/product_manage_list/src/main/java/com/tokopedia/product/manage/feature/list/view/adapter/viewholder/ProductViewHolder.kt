@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.feature.list.helper.getStockFormatted
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import kotlinx.android.synthetic.main.item_manage_product_list.view.*
 
@@ -54,7 +55,7 @@ class ProductViewHolder(
 
     private fun showProductStock(product: ProductViewModel) {
         if(product.isNotVariant()) {
-            itemView.textStockCount.text = product.stock.toString()
+            itemView.textStockCount.text = product.stock?.getStockFormatted()
             itemView.textStockCount.show()
             itemView.textStock.show()
         } else {
