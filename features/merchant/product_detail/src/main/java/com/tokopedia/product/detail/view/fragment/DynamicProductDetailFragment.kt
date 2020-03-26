@@ -2543,6 +2543,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         showDialogGoToSetting()
     }
 
+    private fun openSettingPage() {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        val uri = Uri.fromParts("package", context?.packageName, null)
+        intent.data = uri
+        startActivity(intent)
+    }
+
     private fun showDialogGoToSetting(){
         activity?.run {
             val dialog = DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
@@ -2552,10 +2559,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 setPrimaryCTAText(activity?.getString(R.string.check_imei_btn_rationale) ?: "")
                 setPrimaryCTAClickListener {
                     DynamicProductDetailTracking.Click.eventClickGoToSetting(viewModel.userId, viewModel.getDynamicProductInfoP1)
-                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                    val uri = Uri.fromParts("package", packageName, null)
-                    intent.data = uri
-                    startActivity(intent)
+                    openSettingPage()
                     dialog.dismiss()
                 }
                 setSecondaryCTAText(activity?.getString(R.string.check_imei_btn_later) ?: "")
