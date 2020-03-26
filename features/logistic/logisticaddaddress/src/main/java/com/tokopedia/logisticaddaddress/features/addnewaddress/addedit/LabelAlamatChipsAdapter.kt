@@ -31,7 +31,9 @@ class LabelAlamatChipsAdapter(private var actionListener: ActionListener)
             setTextColor(ContextCompat.getColor(ctx, R.color.font_black_secondary_54))
             setOnClickListener {
                 setTextColor(ContextCompat.getColor(ctx, R.color.tkpd_green))
-                actionListener.onLabelAlamatChipClicked(labelAlamatList[position])
+                labelAlamatList.getOrNull(position)?.let {
+                    actionListener.onLabelAlamatChipClicked(it)
+                }
             }
         }
     }
