@@ -83,12 +83,17 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     view.tv_shipping_change_duration.gone()
 
                     //BBO
-                    if (shipping.logisticPromoTickerMessage?.isNotEmpty() == true && shipping.logisticPromoViewModel != null) {
+                    if (shipping.logisticPromoTickerMessage?.isNotEmpty() == true && shipping.shippingRecommendationData?.logisticPromo != null) {
                         view.ticker_description.text = shipping.logisticPromoTickerMessage
                         view.ticker_shipping_promo.visible()
                         view.ticker_action.setOnClickListener {
-                            listener.onLogisticPromoClick(shipping.logisticPromoViewModel)
+                            listener.onLogisticPromoClick(shipping.shippingRecommendationData.logisticPromo)
                         }
+                    }
+
+                    //BBO APPLY
+                    if (shipping.isApplyLogisticPromo) {
+
                     }
                 } else {
                     view.tv_shipping_duration.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_down_grey_24dp, 0)

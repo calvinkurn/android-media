@@ -34,6 +34,7 @@ data class Shipment(
         val shippingPrice: Int? = null,
         val logisticPromoTickerMessage: String? = null,
         val logisticPromoViewModel: LogisticPromoUiModel? = null, // BBO ?
+        val isApplyLogisticPromo: Boolean = false, // BBO ?
         val shippingRecommendationData: ShippingRecommendationData? = null,
         val insuranceData: InsuranceData? = null,
         val isCheckInsurance: Boolean = false
@@ -83,7 +84,7 @@ data class OrderCost(
 //        val totalWeight: Double,
         val shippingFee: Double = 0.0,
         val insuranceFee: Double = 0.0,
-        val paymentFee: Double = 0.0
+        val paymentFee: Double = 0.0,
 //        val priorityFee: Double,
 //        val totalPurchaseProtectionItem: Int,
 //        val purchaseProtectionFee: Double,
@@ -103,7 +104,7 @@ data class OrderCost(
 //        val discountAmount: Int,
 //        val hasDiscountDetails: Boolean,
 //        val shippingDiscountLabel: String,
-//        val shippingDiscountAmount: Int,
+        val shippingDiscountAmount: Int = 0
 //        val productDiscountLabel: String,
 //        val productDiscountAmount: Int,
 //        val cashbackLabel: String,

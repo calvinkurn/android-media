@@ -67,6 +67,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     var _orderPreference: OrderPreference? = null
     var orderPromo: OrderPromo = OrderPromo()
     var validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel()
+    var lastValidateUsePromoRequest: ValidateUsePromoRequest? = null
 
     var orderPreference: MutableLiveData<OccState<OrderPreference>> = MutableLiveData(OccState.Loading)
 
@@ -366,12 +367,13 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                     if (shipping?.serviceErrorMessage?.isNotEmpty() == true) {
                                         val logisticPromo: LogisticPromoUiModel? = shippingRecommendationData.logisticPromo
                                         if (logisticPromo != null) {
-                                            shipping = shipping.copy(logisticPromoViewModel = logisticPromo, logisticPromoTickerMessage = "Tersedia ${logisticPromo.title}")
+                                            shipping = shipping.copy(logisticPromoTickerMessage = "Tersedia ${logisticPromo.title}")
                                         }
                                     }
 
                                     _orderPreference = value.copy(shipping = shipping)
                                     orderPreference.value = OccState.Success(_orderPreference!!)
+                                    // TODO: BUTTON STATE LOADING -> VALIDATE PROMO
                                     orderTotal.value = orderTotal.value?.copy(buttonState = if (shipping?.serviceErrorMessage.isNullOrEmpty()) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
                                     if (!hasSentViewOspEe) {
                                         orderSummaryAnalytics.eventViewOrderSummaryPage(generateOspEe(1, "order summary page loaded"))
@@ -462,17 +464,20 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 val minimumAmount = _orderPreference?.preference?.payment?.minimumAmount ?: 0
                 val maximumAmount = _orderPreference?.preference?.payment?.maximumAmount ?: 0
                 val fee = _orderPreference?.preference?.payment?.fee?.toDouble() ?: 0.0
+                validateUsePromoRevampUiModel.promoUiModel.benefitSummaryInfoUiModel.summaries
                 val orderCost = OrderCost(totalProductPrice, subtotal, totalShippingPrice, insurancePrice, fee)
                 if (minimumAmount > subtotal) {
                     orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
-                            paymentErrorMessage = "minimum pembayaran adalah ${CurrencyFormatUtil.convertPriceValueToIdrFormat(minimumAmount, false)}",
+                            paymentErrorMessage = "Belanjaanmu kurang dari min. transaksi ${_orderPreference?.preference?.payment?.gatewayName}. Silahkan pilih pembayaran lain.",
+//                            paymentErrorMessage = "minimum pembayaran adalah ${CurrencyFormatUtil.convertPriceValueToIdrFormat(minimumAmount, false)}",
                             isButtonChoosePayment = true)
                 } else if (maximumAmount > 0 && maximumAmount < subtotal) {
                     orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
-                            paymentErrorMessage = "maximum pembayaran adalah ${CurrencyFormatUtil.convertPriceValueToIdrFormat(maximumAmount, false)}",
+                            paymentErrorMessage = "Belanjaanmu melebihi limit transaksi ${_orderPreference?.preference?.payment?.gatewayName}. Silahkan pilih pembayaran lain.",
+//                            paymentErrorMessage = "maximum pembayaran adalah ${CurrencyFormatUtil.convertPriceValueToIdrFormat(maximumAmount, false)}",
                             isButtonChoosePayment = true)
                 } else if (_orderPreference?.preference?.payment?.gatewayCode?.contains("OVO") == true && subtotal > _orderPreference?.preference?.payment?.walletAmount ?: 0) {
-                    orderTotal.value = orderTotal.value?.copy(orderCost = orderCost, paymentErrorMessage = "OVO kamu tidak cukup", isButtonChoosePayment = true)
+                    orderTotal.value = orderTotal.value?.copy(orderCost = orderCost, paymentErrorMessage = "OVO Cash kamu tidak cukup. Silahkan pilih pembayaran lain.", isButtonChoosePayment = true)
                 } else {
                     orderTotal.value = orderTotal.value?.copy(orderCost = orderCost, paymentErrorMessage = null, isButtonChoosePayment = false)
                 }
@@ -574,6 +579,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     shippingRecommendationData = shippingRecommendationData)
             _orderPreference = _orderPreference?.copy(shipping = shipping1)
             orderPreference.value = OccState.Success(_orderPreference!!)
+            // TODO: BUTTON STATE LOADING -> VALIDATE PROMO
             orderTotal.value = orderTotal.value?.copy(buttonState = if (shipping1.serviceErrorMessage.isNullOrEmpty()) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
             calculateTotal()
 //            }
@@ -662,10 +668,33 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     fun chooseLogisticPromo(logisticPromoUiModel: LogisticPromoUiModel) {
         val shipping = _orderPreference?.shipping
-        if (shipping?.shippingRecommendationData != null) {
-            shipping.copy(
+        if (shipping != null) {
+            val validateUsePromoRequest = generateValidateUsePromoRequest()
+            validateUsePromoRequest.orders[0]?.codes?.add(logisticPromoUiModel.promoCode)
+            val requestParams = RequestParams.create()
+            requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest)
+            validateUsePromoRevampUseCase.createObservable(requestParams)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
+                        override fun onError(e: Throwable) {
+                            e.printStackTrace()
+                        }
 
-            )
+                        override fun onNext(response: ValidateUsePromoRevampUiModel) {
+                            validateUsePromoRevampUiModel = response
+                            // TODO : SAVE APPLIED LOGISTIC PROMO
+                            for (voucherOrderUiModel in response.promoUiModel.voucherOrderUiModels) {
+                                if (voucherOrderUiModel != null && voucherOrderUiModel.type.equals("logistic", true)) {
+                                    _orderPreference = _orderPreference?.copy(shipping = shipping.copy(logisticPromoTickerMessage = null, isApplyLogisticPromo = true))
+                                    orderPreference.value = OccState.Success(_orderPreference!!)
+                                }
+                            }
+                        }
+
+                        override fun onCompleted() {
+                        }
+                    })
         }
     }
 
@@ -835,7 +864,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     private fun generatePromoRequest(): PromoRequest {
         val promoRequest = PromoRequest()
         promoRequest.orders = listOf(
-                Order(orderShop.shopId.toLong(), orderShop.cartResponse.cartId.toString(), listOf(
+                Order(orderShop.shopId.toLong(), "${orderShop.shopId}-0-${orderShop.cartResponse.warehouse.warehouseId}-${_orderPreference?.preference?.address?.addressId}", listOf(
                         ProductDetail(orderProduct.productId.toLong(), orderProduct.quantity?.orderQuantity.toZeroIfNull())
                 ), ArrayList())
         )
@@ -850,10 +879,32 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     }
 
     private fun generateValidateUsePromoRequest(): ValidateUsePromoRequest {
+
+        // Update param if have done param data generation before
+//        val lastRequest = lastValidateUsePromoRequest
+//        if (lastRequest != null) {
+////            val shipmentCartItemModelList: List<ShipmentCartItemModel> = shipmentAdapter.getShipmentCartItemModelList()
+////            for (shipmentCartItemModel in shipmentCartItemModelList) {
+//                for (ordersItem in lastRequest.orders) {
+//                    val shipping = _orderPreference?.shipping
+//                    if (shipping != null && orderShop.cartResponse.cartId.toString() == ordersItem!!.uniqueId) {
+//                        if (shipping.logisticPromoViewModel != null && shipping.isApplyLogisticPromo &&
+//                                !ordersItem.codes.contains(shipping.logisticPromoViewModel.promoCode)) {
+//                            ordersItem.codes.add(shipping.logisticPromoViewModel.promoCode)
+//                        }
+//                        if (shipping.shipperProductId != null && shipping.shipperId != null) {
+//                            ordersItem.shippingId = shipping.shipperId
+//                            ordersItem.spId = shipping.shipperProductId
+//                        }
+//                    }
+////                }
+//            }
+//        }
+
         val validateUsePromoRequest = ValidateUsePromoRequest()
         val ordersItem = OrdersItem()
         ordersItem.shopId = orderShop.shopId
-        ordersItem.uniqueId = orderShop.cartResponse.cartId.toString()
+        ordersItem.uniqueId = "${orderShop.shopId}-0-${orderShop.cartResponse.warehouse.warehouseId}-${_orderPreference?.preference?.address?.addressId}"
         ordersItem.productDetails = listOf(ProductDetailsItem(orderProduct.quantity?.orderQuantity.toZeroIfNull(), orderProduct.productId))
         val shipping = _orderPreference?.shipping
         if (shipping?.shipperProductId != null && shipping.shipperId != null) {
@@ -877,10 +928,10 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         return validateUsePromoRequest
     }
 
-    private fun validateUsePromo() {
+    private fun validateUsePromo(validateUsePromoRequest: ValidateUsePromoRequest? = null) {
         orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.LOADING)
         val requestParams = RequestParams.create()
-        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, generateValidateUsePromoRequest())
+        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest ?: generateValidateUsePromoRequest())
         validateUsePromoRevampUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -891,6 +942,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
                     override fun onNext(t: ValidateUsePromoRevampUiModel) {
                         validateUsePromoRevampUiModel = t
+                        // TODO: UPDATE PROMO BUTTON -> BUTTON PAY STATE
                     }
 
                     override fun onCompleted() {

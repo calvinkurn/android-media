@@ -110,15 +110,18 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             if (validateUsePromoRevampUiModel != null) {
                 viewModel.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel
 //                shipmentPresenter.setValidateUsePromoRevampUiModel(validateUsePromoRevampUiModel)
+                // update button promo
 //                updateButtonPromoCheckout(validateUsePromoRevampUiModel.promoUiModel)
                 return
             }
             val validateUsePromoRequest: ValidateUsePromoRequest? = data?.getParcelableExtra(ARGS_LAST_VALIDATE_USE_REQUEST)
             if (validateUsePromoRequest != null) {
+                viewModel.lastValidateUsePromoRequest = validateUsePromoRequest
 //                shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest)
             }
             val defaultTitlePromoButton: String? = data?.getStringExtra(ARGS_CLEAR_PROMO_RESULT)
             if (defaultTitlePromoButton != null) {
+                //trigger validate use
 //                shipmentAdapter.checkHasSelectAllCourier(false)
             }
         }
@@ -193,7 +196,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
         })
         viewModel.orderTotal.observe(this, Observer {
-            orderPreferenceCard.setPaymentError(it.paymentErrorMessage)
+            setupPaymentError(it.paymentErrorMessage)
+//            orderPreferenceCard.setPaymentError(it.paymentErrorMessage)
             setupButtonBayar(it)
         })
         viewModel.globalEvent.observe(this, Observer {
@@ -472,6 +476,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
     }
 
+    private fun setupPaymentError(paymentErrorMessage: String?) {
+        if (paymentErrorMessage.isNullOrEmpty()) {
+            ticker_payment_error.gone()
+        } else {
+            ticker_payment_error.setTextDescription(paymentErrorMessage)
+            ticker_payment_error.visible()
+        }
+    }
 
     private fun showMessage(preference: ProfileResponse) {
         tv_header.text = "Barang yang dibeli"
