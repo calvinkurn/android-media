@@ -2,18 +2,21 @@ package com.tokopedia.gamification.giftbox.presentation.fragments
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.ViewFlipper
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.gamification.R
+import com.tokopedia.gamification.audio.AudioFactory
+import com.tokopedia.gamification.audio.AudioManager
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.presentation.dialogs.NoInternetDialog
 import com.tokopedia.gamification.giftbox.presentation.views.GiftBoxDailyView
@@ -24,6 +27,9 @@ import com.tokopedia.unifycomponents.Toaster
 
 
 open class GiftBoxBaseFragment : Fragment() {
+
+    val GIFT_SOUND_PREF = "gami_gift_box_sound.pref"
+    val GIFT_SOUND_ENABLE = "gami_gift_sound_enable"
 
     lateinit var loader: LoaderUnify
     lateinit var viewFlipper: ViewFlipper
@@ -37,6 +43,7 @@ open class GiftBoxBaseFragment : Fragment() {
     lateinit var imageToolbarIcon: View
     lateinit var tvToolbarTitle: AppCompatTextView
     lateinit var fmParent: FrameLayout
+    lateinit var imageSound: AppCompatImageView
 
     val CONTAINER_LOADER = 1
     val CONTAINER_GIFT_BOX = 0
@@ -46,6 +53,8 @@ open class GiftBoxBaseFragment : Fragment() {
 
     val FADE_IN_DURATION = 500L
     var statusBarHeight: Int = 0
+
+    var bgSoundManager: AudioManager? = null
 
     open fun getLayout() = 0
 
@@ -70,14 +79,26 @@ open class GiftBoxBaseFragment : Fragment() {
         tvToolbarTitle = v.findViewById(R.id.tvToolbarTitle)
         imageToolbarIcon = v.findViewById(R.id.imageToolbarIcon)
         fmParent = v.findViewById(R.id.fmParent)
+        imageSound = v.findViewById(R.id.imageSound)
 
         statusBarHeight = getStatusBarHeight(context)
         setInitialPositionOfViews()
         initialViewSetup()
+        toggleSound(isSoundEnabled())
 
         imageToolbarIcon.setOnClickListener {
             GtmEvents.clickBackButton()
             activity?.finish()
+        }
+
+        imageSound.setOnClickListener {
+            val state = !isSoundEnabled()
+            toggleSound(state)
+            if (state) {
+                playLoopSound()
+            } else {
+                stopBgSound()
+            }
         }
     }
 
@@ -103,7 +124,7 @@ open class GiftBoxBaseFragment : Fragment() {
     }
 
     fun setInitialPositionOfViews() {
-//        tvTapHint.translationY = screenHeight * 0.2f
+        //Do nothing
     }
 
     fun showLoader() {
@@ -183,6 +204,66 @@ open class GiftBoxBaseFragment : Fragment() {
             method.invoke()
             GtmEvents.clickTryAgainButton()
         }
+    }
+
+    fun toggleSound(enable: Boolean) {
+        val editor = getSharedPres()?.edit()
+        editor?.putBoolean(GIFT_SOUND_ENABLE, enable)
+        editor?.apply()
+        if (enable) {
+            imageSound.setImageResource(R.drawable.gf_ic_sound_on)
+        } else {
+            imageSound.setImageResource(R.drawable.gf_ic_sound_off)
+        }
+    }
+
+    fun stopBgSound() {
+        if (bgSoundManager != null) {
+            bgSoundManager?.mPlayer?.pause()
+        }
+    }
+
+    fun resumeBgSound() {
+        if (bgSoundManager != null) {
+            val pos = bgSoundManager?.mPlayer?.currentPosition
+            if (pos != null) {
+                bgSoundManager?.mPlayer?.seekTo(pos)
+                bgSoundManager?.mPlayer?.start()
+            }
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        stopBgSound()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (isSoundEnabled()) {
+            resumeBgSound()
+        }
+    }
+
+    fun playLoopSound() {
+        if (isSoundEnabled()) {
+            context?.let { it ->
+                bgSoundManager = AudioFactory.createAudio(it)
+                bgSoundManager?.playAudio(R.raw.gf_giftbox_bg, true)
+            }
+        }
+    }
+
+    fun isSoundEnabled(): Boolean {
+        val prefs = getSharedPres()
+        if (prefs != null) {
+            return prefs.getBoolean(GIFT_SOUND_ENABLE, true)
+        }
+        return true
+    }
+
+    fun getSharedPres(): SharedPreferences? {
+        return context?.getSharedPreferences(GIFT_SOUND_PREF, Context.MODE_PRIVATE)
     }
 
 }

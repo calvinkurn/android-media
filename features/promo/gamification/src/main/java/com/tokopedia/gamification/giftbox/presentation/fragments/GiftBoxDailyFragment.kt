@@ -72,7 +72,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     var autoApplyMessage = ""
 
     var mAudiosManager: AudioManager? = null
-    var bgSoundManager: AudioManager? = null
 
     override fun getLayout() = R.layout.fragment_gift_box_daily
 
@@ -90,24 +89,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             }
 
             mAudiosManager = AudioFactory.createAudio(it)
-        }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        if (bgSoundManager != null) {
-            bgSoundManager?.mPlayer?.pause()
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (bgSoundManager != null) {
-            val pos = bgSoundManager?.mPlayer?.currentPosition
-            if (pos != null) {
-                bgSoundManager?.mPlayer?.seekTo(pos)
-                bgSoundManager?.mPlayer?.start()
-            }
         }
     }
 
@@ -455,28 +436,25 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         })
     }
 
-    private fun playLoopSound() {
-        context?.let { it ->
-            bgSoundManager = AudioFactory.createAudio(it)
-            bgSoundManager?.playAudio(R.raw.gf_giftbox_bg, true)
-        }
-    }
-
     private fun playTapSound() {
-        context?.let { soundIt ->
-            if (mAudiosManager == null) {
-                mAudiosManager = AudioFactory.createAudio(soundIt)
+        if (isSoundEnabled()) {
+            context?.let { soundIt ->
+                if (mAudiosManager == null) {
+                    mAudiosManager = AudioFactory.createAudio(soundIt)
+                }
+                mAudiosManager?.playAudio(R.raw.gf_giftbox_tap)
             }
-            mAudiosManager?.playAudio(R.raw.gf_giftbox_tap)
         }
     }
 
     private fun playPrizeSound() {
-        context?.let { soundIt ->
-            if (mAudiosManager == null) {
-                mAudiosManager = AudioFactory.createAudio(soundIt)
+        if (isSoundEnabled()) {
+            context?.let { soundIt ->
+                if (mAudiosManager == null) {
+                    mAudiosManager = AudioFactory.createAudio(soundIt)
+                }
+                mAudiosManager?.playAudio(R.raw.gf_giftbox_prize)
             }
-            mAudiosManager?.playAudio(R.raw.gf_giftbox_prize)
         }
     }
 
@@ -716,10 +694,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
     enum class GiftBoxState {
         ACTIVE, EMPTY, ERROR, NO_INTERNET
-    }
-
-    companion object {
-        val TOKEN_USER_STATE = arrayListOf<String>("active", "empty", "inactive", "expired", "nonlogin")
     }
 }
 

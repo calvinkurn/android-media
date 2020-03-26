@@ -22,6 +22,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageSound"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|end"
+                android:layout_marginTop="@dimen/dp_56"
+                android:layout_marginEnd="@dimen/dp_12"
+                android:layout_marginRight="@dimen/dp_12"
+                app:srcCompat="@drawable/gf_ic_sound_on" />
+
             <com.tokopedia.gamification.giftbox.presentation.views.StarsContainer
                 android:id="@+id/starsContainer"
                 android:layout_width="match_parent"
@@ -40,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_32"
                 android:orientation="vertical"
-                tools:alpha="1">
+                tools:alpha="0">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tvBenefits"
@@ -111,7 +121,7 @@
                 android:layout_marginBottom="70dp"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
-                tools:alpha="1">
+                tools:alpha="0">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tvRewardFirstLine"
