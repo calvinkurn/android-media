@@ -40,5 +40,6 @@ class DeleteProductUseCase @Inject constructor(repository: GraphqlRepository)
         deleteProductParam.productId = productId
         deleteProductParam.shop.shopId = shopId
         requestParams.putObject(PARAM_INPUT, deleteProductParam)
+        setRequestParams(requestParams.parameters)
     }
 }

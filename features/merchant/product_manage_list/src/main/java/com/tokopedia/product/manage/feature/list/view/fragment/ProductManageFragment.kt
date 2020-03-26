@@ -312,7 +312,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
         searchBar.searchBarIcon.setOnClickListener {
             clearSearchBarInput()
-            clearProductList()
             loadInitialData()
         }
 
@@ -362,7 +361,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             tabFilters.setSelectedFilter(filter)
         }
 
-        getProductList(isRefresh = true)
+        getProductList(isRefresh = true, withDelay = true)
     }
 
     private fun renderCheckedView() {
@@ -395,8 +394,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                         val productId = intent.extras?.getString(TkpdState.ProductService.PRODUCT_ID)
                             ?: ""
                         viewModel.getPopupsInfo(productId)
-                        clearProductList()
-                        getFiltersTab()
+                        getFiltersTab(withDelay = true)
                         loadInitialData()
                     }
                 }
@@ -425,7 +423,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         renderCheckedView()
     }
 
-    private fun getProductList(page: Int = 1, isRefresh: Boolean = false) {
+    private fun getProductList(page: Int = 1, isRefresh: Boolean = false, withDelay: Boolean = false) {
         val keyword = searchBar.searchBarTextField.text.toString()
         val selectedFilter = viewModel.selectedFilterAndSort.value
         val filterOptions = createFilterOptions(page, keyword)
@@ -435,7 +433,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             filterOptions.add(FilterByStatus(it))
         }
 
-        viewModel.getProductList(userSession.shopId, filterOptions, sortOption, isRefresh)
+        viewModel.getProductList(userSession.shopId, filterOptions, sortOption, isRefresh, withDelay)
     }
 
     private fun getProductListFeaturedOnlySize() {
@@ -542,7 +540,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
         productManageListAdapter.deleteProduct(productId)
         renderMultiSelectProduct()
-        getFiltersTab()
+        getFiltersTab(withDelay = true)
     }
 
     private fun showMessageToast(message: String) {
@@ -650,6 +648,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun onSuccessMultiEditProducts(result: MultiEditResult) {
         showMultiEditToast(result)
         updateEditProductList(result)
+        getFiltersTab(withDelay = true)
     }
 
     private fun showMultiEditToast(result: MultiEditResult) {
@@ -685,8 +684,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             is EditByStatus -> updateProductListStatus(productIds, result.status)
             is EditByMenu -> viewModel.toggleMultiSelect()
         }
-
-        getFiltersTab()
     }
 
     private fun updateProductListStatus(productIds: List<String>, status: ProductStatus) {
@@ -708,11 +705,16 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun onSwipeRefresh() {
+        isLoadingInitialData = true
+        swipeToRefresh.isRefreshing = true
+
+        hideSnackBarRetry()
         clearProductList()
         clearSelectedProduct()
         renderCheckedView()
-        getFiltersTab()
-        super.onSwipeRefresh()
+
+        getFiltersTab(withDelay = true)
+        getProductList(withDelay = true)
     }
 
     private fun clearSearchBarInput() {
@@ -1163,8 +1165,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         viewModel.getGoldMerchantStatus()
     }
 
-    private fun getFiltersTab() {
-        viewModel.getFiltersTab(userSession.shopId)
+    private fun getFiltersTab(withDelay: Boolean = false) {
+        viewModel.getFiltersTab(userSession.shopId, withDelay)
     }
 
     private fun setDialogFeaturedProduct(imageUrl: String, title: String, desc: String, primaryCta: String, secondaryCta: String) {
