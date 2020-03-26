@@ -13,11 +13,13 @@
         android:id="@+id/text_shipping_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_18"
         android:text="@string/text_shipping_duration"
         android:textColor="#31353B"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:typographyType="body_1"
         app:typographyWeight="bold"
         tools:text="@string/text_shipping_duration" />
@@ -49,7 +51,7 @@
     <View
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_18"
         android:background="@color/Neutral_N100"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/item_shipping_desc"/>
