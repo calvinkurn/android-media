@@ -65,6 +65,7 @@ object ShipmentPresenterDisableFeatureTest : Spek({
     val getInsuranceCartUseCase: GetInsuranceCartUseCase = mockk()
     val shipmentAnalyticsActionListener: ShipmentContract.AnalyticsActionListener = mockk()
     val shipmentDataConverter = ShipmentDataConverter()
+    val releaseBookingUseCase: ReleaseBookingUseCase = mockk()
 
     val gson = Gson()
     val unitTestFileUtils = UnitTestFileUtils()
@@ -90,7 +91,7 @@ object ShipmentPresenterDisableFeatureTest : Spek({
                     codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
                     ratesStatesConverter, shippingCourierConverter, shipmentAnalyticsActionListener,
                     userSessionInterface, analyticsPurchaseProtection, codAnalytics,
-                    checkoutAnalytics, getInsuranceCartUseCase, shipmentDataConverter)
+                    checkoutAnalytics, getInsuranceCartUseCase, shipmentDataConverter, releaseBookingUseCase)
         }
 
         val view by memoized { mockk<ShipmentContract.View>(relaxed = true) }
