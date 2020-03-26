@@ -77,7 +77,7 @@
             android:label="@string/centralized_promo_toolbar_title"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Background">
+            android:theme="@style/CentralizedPromoTheme">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

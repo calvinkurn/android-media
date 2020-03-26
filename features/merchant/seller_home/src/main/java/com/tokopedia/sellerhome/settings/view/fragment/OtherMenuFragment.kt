@@ -298,7 +298,9 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_finance_service),
                         R.drawable.ic_finance,
-                        eventActionSuffix = SettingTrackingConstant.FINANCIAL_SERVICE),
+                        eventActionSuffix = SettingTrackingConstant.FINANCIAL_SERVICE){
+                    RouteManager.route(context,ApplinkConst.LAYANAN_FINANSIAL)
+                },
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_seller_education_center),
                         R.drawable.ic_seller_edu,

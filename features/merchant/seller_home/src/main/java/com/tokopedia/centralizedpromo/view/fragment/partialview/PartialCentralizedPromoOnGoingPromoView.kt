@@ -1,6 +1,7 @@
 package com.tokopedia.centralizedpromo.view.fragment.partialview
 
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapterTypeFactory
 import com.tokopedia.centralizedpromo.view.fragment.CoachMarkListener
@@ -89,6 +90,7 @@ class PartialCentralizedPromoOnGoingPromoView(
     override fun shouldShowCoachMark(): Boolean = showCoachMark && view.layoutCentralizedPromoOnGoingPromoSuccess.isShown
 
     override fun getCoachMarkItem() = with(view) {
+        layoutCentralizedPromoOnGoingPromoSuccess.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
         CoachMarkItem(layoutCentralizedPromoOnGoingPromoSuccess,
                 context.getString(R.string.sh_coachmark_title_on_going_promo),
                 context.getString(R.string.sh_coachmark_desc_on_going_promo))
