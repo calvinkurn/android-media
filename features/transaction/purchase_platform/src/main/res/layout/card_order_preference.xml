@@ -378,11 +378,10 @@
             android:layout_height="@dimen/dp_45"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_2"
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="@+id/tv_payment_detail"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider2"
+            app:layout_constraintTop_toTopOf="@id/tv_payment_name"
             tools:ignore="ContentDescription" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -391,7 +390,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_6"
             android:layout_marginLeft="@dimen/dp_6"
-            android:layout_marginTop="@dimen/dp_6"
+            android:layout_marginTop="@dimen/dp_18"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:lines="1"
@@ -437,7 +436,7 @@
             android:layout_height="0.5dp"
             android:layout_marginStart="@dimen/dp_18"
             android:layout_marginLeft="@dimen/dp_18"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_20"
             android:background="@color/Neutral_N75"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

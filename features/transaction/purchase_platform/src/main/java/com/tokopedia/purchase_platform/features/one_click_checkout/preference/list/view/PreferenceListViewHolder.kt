@@ -66,9 +66,9 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
         val phone = addressModel?.phone
         var receiverText = ""
         if (receiverName != null) {
-            receiverText = "- $receiverName"
+            receiverText = " - $receiverName"
             if (phone != null) {
-                receiverText = "$receiverText($phone)"
+                receiverText = "$receiverText ($phone)"
             }
         }
         if (receiverText.isNotEmpty()) {

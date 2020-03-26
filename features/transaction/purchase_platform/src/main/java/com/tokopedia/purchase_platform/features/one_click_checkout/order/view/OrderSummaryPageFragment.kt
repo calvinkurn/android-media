@@ -425,7 +425,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         btn_order_detail.setOnClickListener {
             if (orderTotal.orderCost.totalPrice > 0.0) {
-//                orderSummaryAnalytics
+                orderSummaryAnalytics.eventClickRingkasanBelanjaOSP(viewModel.orderProduct.productId.toString(), orderTotal.orderCost.totalItemPrice.toString())
                 OrderPriceSummaryBottomSheet().show(this, orderTotal.orderCost)
             }
         }
