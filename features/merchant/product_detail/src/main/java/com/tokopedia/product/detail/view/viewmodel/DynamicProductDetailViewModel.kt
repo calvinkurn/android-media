@@ -431,6 +431,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         val hasWholesale = getDynamicProductInfoP1?.data?.hasWholesale == true
         val isOfficialStore = getDynamicProductInfoP1?.data?.isOS == true
         val isVariant = getDynamicProductInfoP1?.data?.variant?.isVariant == true
+        val isTeaser = getDynamicProductInfoP1?.shouldShowNotifyMe() ?: false
         val shopId = getDynamicProductInfoP1?.basic?.shopID.toIntOrZero()
 
         val removedData = initialLayoutData.map {
@@ -445,6 +446,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             } else if (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO) {
                 it
             } else if (it.name() == ProductDetailConstant.VARIANT && !isVariant) {
+                it
+            } else if (it.name() == ProductDetailConstant.UPCOMING_DEALS && !isTeaser) {
                 it
             } else {
                 null

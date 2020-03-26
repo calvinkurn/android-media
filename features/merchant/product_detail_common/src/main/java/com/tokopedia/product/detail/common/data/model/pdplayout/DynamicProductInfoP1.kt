@@ -1,5 +1,7 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
+import java.util.concurrent.TimeUnit
+
 data class DynamicProductInfoP1(
         val basic: BasicInfo = BasicInfo(),
         val data: ComponentData = ComponentData(),
@@ -57,6 +59,17 @@ data class DynamicProductInfoP1(
             }
         } else {
             multiOriginStock
+        }
+    }
+
+    fun shouldShowNotifyMe(): Boolean {
+        return try {
+            val now = System.currentTimeMillis()
+            val startTime = upComingData.startDateNotifyMe.toLong() * 1000L
+            val dayLeft = TimeUnit.MICROSECONDS.toDays(now - startTime)
+            !(upComingData.campaignIdNotifyMe.isEmpty() || dayLeft > 3)
+        } catch (ex: Exception) {
+            false
         }
     }
 }
