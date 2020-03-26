@@ -28,14 +28,8 @@ class PromoListHeaderDisabledViewHolder(private val view: View,
         }
 
         itemView.label_promo_list_header_title.text = element.uiData.title
-        if (element.uiState.hasSelectedPromoItem) {
-            itemView.label_promo_list_header_sub_title.text = "Promo dipilih"
-        } else {
-            itemView.label_promo_list_header_sub_title.text = element.uiData.subTitle
-        }
 
         setImageFilterGrayScale(itemView.image_promo_list_header)
-        itemView.label_promo_list_header_sub_title.gone()
         itemView.setOnClickListener {}
     }
 
