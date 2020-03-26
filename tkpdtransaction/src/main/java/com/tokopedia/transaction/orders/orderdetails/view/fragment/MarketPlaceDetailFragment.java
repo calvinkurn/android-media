@@ -102,6 +102,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public static final String NO_SALIN = "No. Resi";
     public static final String NO_SANIN_NEXT_LINE = "\n\nSalin No. Resi";
     public static final String BELI_LAGI = "Beli Lagi";
+    public static final String KEY_TULIS_REVIEW = "give_review";
     public static final String INVOICE_URL = "invoiceUrl";
     public static final String TX_ASK_SELLER = "tx_ask_seller";
     public static final String STATUS_CODE_220 = "220";
@@ -581,6 +582,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             } else {
                 if (!TextUtils.isEmpty(actionButton.getUri())) {
                     textView.setOnClickListener(clickActionButton(actionButton));
+                }
+
+                if (actionButton.getKey().equalsIgnoreCase(KEY_TULIS_REVIEW)) {
+                    orderListAnalytics.sendTulisReviewEventData(this.status.status());
                 }
             }
             actionBtnLayout.addView(textView);
