@@ -1,6 +1,5 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.compoundview
 
-import android.app.Activity
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
@@ -30,10 +29,12 @@ class ToolbarPromoCheckout : Toolbar {
     }
 
     fun disableResetButton() {
+        buttonResetPromo.isEnabled = false
         buttonResetPromo.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_20))
     }
 
     fun enableResetButton() {
+        buttonResetPromo.isEnabled = true
         buttonResetPromo.setTextColor(ContextCompat.getColor(context, R.color.Green_G500))
     }
 
@@ -48,7 +49,9 @@ class ToolbarPromoCheckout : Toolbar {
         }
 
         buttonResetPromo.setOnClickListener {
-            listener.onClickResetPromo()
+            if (buttonResetPromo.isEnabled) {
+                listener.onClickResetPromo()
+            }
         }
     }
 
