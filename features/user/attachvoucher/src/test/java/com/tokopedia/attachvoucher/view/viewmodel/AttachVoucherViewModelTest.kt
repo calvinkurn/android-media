@@ -4,7 +4,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.attachvoucher.FileUtil
 import com.tokopedia.attachvoucher.InstantTaskExecutorRuleSpek
 import com.tokopedia.attachvoucher.data.GetVoucherResponse
-import com.tokopedia.attachvoucher.data.Voucher
+import com.tokopedia.attachvoucher.data.VoucherUiModel
 import com.tokopedia.attachvoucher.data.VoucherType
 import com.tokopedia.attachvoucher.usecase.GetVoucherUseCase
 import com.tokopedia.attachvoucher.view.viewmodel.AttachVoucherViewModel.Companion.NO_FILTER
@@ -52,7 +52,7 @@ object AttachVoucherViewModelTest : Spek({
                     }
                 }
                 test("Vouchers list changed on success") {
-                    val voucherObservers = mockk<Observer<List<Voucher>>>(relaxed = true)
+                    val voucherObservers = mockk<Observer<List<VoucherUiModel>>>(relaxed = true)
                     viewModel.filteredVouchers.observeForever(voucherObservers)
                     viewModel.loadVouchers(exShopId)
                     assertEquals(3, exVouchers.size)
@@ -66,7 +66,7 @@ object AttachVoucherViewModelTest : Spek({
                 }
                 test("Filter cashback clicked") {
                     val filterObserver = mockk<Observer<Int>>(relaxed = true)
-                    val voucherObservers = mockk<Observer<List<Voucher>>>(relaxed = true)
+                    val voucherObservers = mockk<Observer<List<VoucherUiModel>>>(relaxed = true)
                     viewModel.filteredVouchers.observeForever(voucherObservers)
                     viewModel.filter.observeForever(filterObserver)
 
@@ -78,7 +78,7 @@ object AttachVoucherViewModelTest : Spek({
                 }
                 test("Filter cashback clicked twice") {
                     val filterObserver = mockk<Observer<Int>>(relaxed = true)
-                    val voucherObservers = mockk<Observer<List<Voucher>>>(relaxed = true)
+                    val voucherObservers = mockk<Observer<List<VoucherUiModel>>>(relaxed = true)
                     viewModel.filteredVouchers.observeForever(voucherObservers)
                     viewModel.filter.observeForever(filterObserver)
 
@@ -91,7 +91,7 @@ object AttachVoucherViewModelTest : Spek({
                 }
                 test("Filter cashback clicked then click free-ongkir filter") {
                     val filterObserver = mockk<Observer<Int>>(relaxed = true)
-                    val voucherObservers = mockk<Observer<List<Voucher>>>(relaxed = true)
+                    val voucherObservers = mockk<Observer<List<VoucherUiModel>>>(relaxed = true)
                     viewModel.filteredVouchers.observeForever(voucherObservers)
                     viewModel.filter.observeForever(filterObserver)
 
