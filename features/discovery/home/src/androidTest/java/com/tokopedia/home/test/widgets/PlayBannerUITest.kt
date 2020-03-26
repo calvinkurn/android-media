@@ -1,12 +1,14 @@
 package com.tokopedia.home.test.widgets
 
+import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.google.gson.Gson
@@ -19,6 +21,7 @@ import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.test.activity.HomeActivityTest
+import com.tokopedia.home.test.fragment.HomeFragmentTest
 import com.tokopedia.home.test.json.HomeJson
 import com.tokopedia.home.test.rules.TestDispatcherProvider
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
@@ -62,25 +65,7 @@ class PlayBannerUITest {
     private val homeDataMapper = HomeDataMapper(InstrumentationRegistry.getInstrumentation().context, HomeVisitableFactoryImpl(userSessionInterface), mockk(relaxed = true))
 
 
-    private val viewModel: HomeViewModel = HomeViewModel(
-            dismissHomeReviewUseCase = dismissHomeReviewUseCase,
-            getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
-            getBusinessWidgetTab = getBusinessWidgetTab,
-            getDynamicChannelsUseCase = getDynamicChannelsUseCase,
-            getHomeReviewSuggestedUseCase = getHomeReviewSuggestedUseCase,
-            getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
-            getKeywordSearchUseCase = getKeywordSearchUseCase,
-            getPendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
-            getPlayCardHomeUseCase = getPlayLiveDynamicUseCase,
-            getRecommendationTabUseCase = getRecommendationTabUseCase,
-            getWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
-            homeDispatcher = TestDispatcherProvider(),
-            homeUseCase = getHomeUseCase,
-            popularKeywordUseCase = getPopularKeywordUseCase,
-            sendGeolocationInfoUseCase = getSendGeolocationInfoUseCase,
-            stickyLoginUseCase = getStickyLoginUseCase,
-            userSession = userSessionInterface
-    )
+    private lateinit var viewModel: HomeViewModel;
 
     @Before
     fun setup(){
@@ -89,30 +74,38 @@ class PlayBannerUITest {
 
     @Test
     fun testNoSkeletonDataFromHome(){
-        val homeFragment = HomeFragment()
         val json = HomeJson.resultNoSkeleton
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
+        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
         coEvery { getHomeUseCase.getHomeData() } returns flow {
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
+            Log.d("testNoSkeleton", "Flow emit masuk")
         }
-        homeFragment.viewModelFactory = createViewModelFactory(viewModel)
+        viewModel = reInitViewModel()
+        Log.d("testNoSkeleton", viewModel.toString())
+        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
+
         activityRule.activity.setupFragment(homeFragment)
-        Thread.sleep(2000)
+        Thread.sleep(5000)
         onView(withId(R.id.play_frame_layout)).check(doesNotExist())
     }
 
     @Test
     fun testHappyPathPlayBannerUI(){
-        assert(true)
-        val homeFragment = HomeFragment()
         val json = HomeJson.resultWithSkeleton
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
+        Log.d("testNoSkeleton", "Home data init " + homeData.dynamicHomeChannel.toString())
+        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
         coEvery { getHomeUseCase.getHomeData() } returns flow {
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
+            Log.d("testNoSkeleton", "Flow emit masuk")
         }
-        homeFragment.viewModelFactory = createViewModelFactory(viewModel)
+        viewModel = reInitViewModel()
+        Log.d("testNoSkeleton", viewModel.toString())
+        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
+
         activityRule.activity.setupFragment(homeFragment)
-        Thread.sleep(2000)
+        Thread.sleep(5000)
         onView(withId(R.id.play_frame_layout)).check(matches(not(isDisplayed())))
 //        onView(withId(R.id.title)).check(matches(isDisplayed()))
 //        onView(withId(R.id.title)).check(matches(withText("Play Widget")))
@@ -149,6 +142,7 @@ class PlayBannerUITest {
         return object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(viewModelClass: Class<T>): T {
                 if (viewModelClass.isAssignableFrom(viewModel.javaClass)) {
+                    Log.d("testNoSkeleton", "Masuk custom view model factory")
                     @Suppress("UNCHECKED_CAST")
                     return viewModel as T
                 }
@@ -156,4 +150,24 @@ class PlayBannerUITest {
             }
         }
     }
+
+    private fun reInitViewModel() = HomeViewModel(
+            dismissHomeReviewUseCase = dismissHomeReviewUseCase,
+            getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
+            getBusinessWidgetTab = getBusinessWidgetTab,
+            getDynamicChannelsUseCase = getDynamicChannelsUseCase,
+            getHomeReviewSuggestedUseCase = getHomeReviewSuggestedUseCase,
+            getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCase,
+            getKeywordSearchUseCase = getKeywordSearchUseCase,
+            getPendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
+            getPlayCardHomeUseCase = getPlayLiveDynamicUseCase,
+            getRecommendationTabUseCase = getRecommendationTabUseCase,
+            getWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
+            homeDispatcher = TestDispatcherProvider(),
+            homeUseCase = getHomeUseCase,
+            popularKeywordUseCase = getPopularKeywordUseCase,
+            sendGeolocationInfoUseCase = getSendGeolocationInfoUseCase,
+            stickyLoginUseCase = getStickyLoginUseCase,
+            userSession = userSessionInterface
+    )
 }

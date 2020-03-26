@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -195,7 +196,6 @@ public class HomeFragment extends BaseDaggerFragment implements
     private BerandaComponent component;
 
     @Inject
-    @VisibleForTesting
     public ViewModelProvider.Factory viewModelFactory;
 
     private HomeViewModel viewModel;
@@ -286,12 +286,17 @@ public class HomeFragment extends BaseDaggerFragment implements
         searchBarTransitionRange = getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
         startToTransitionOffset = (getResources().getDimensionPixelSize(R.dimen.banner_background_height)) / 2;
 
-        ViewModelProvider viewModelProvider = ViewModelProviders.of(this, viewModelFactory);
-        viewModel = viewModelProvider.get(HomeViewModel.class);
+        initViewModel();
         setGeolocationPermission();
         needToShowGeolocationComponent();
         getStickyContent();
         startHomeInitPerformanceMonitoring();
+    }
+
+    @VisibleForTesting
+    protected void initViewModel(){
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(HomeViewModel.class);
+        Log.d("testNoSkeleton", viewModel.toString());
     }
 
     @Override

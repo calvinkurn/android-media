@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class HomeUseCase @Inject constructor(
+open class HomeUseCase @Inject constructor(
         private val homeRepository: HomeRepository,
         private val homeDataMapper: HomeDataMapper
 ) {

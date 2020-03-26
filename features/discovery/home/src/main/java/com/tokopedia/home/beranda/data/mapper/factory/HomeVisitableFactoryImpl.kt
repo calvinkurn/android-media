@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.data.mapper.factory
 
 import android.content.Context
+import android.util.Log
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.home.analytics.HomePageTracking
@@ -159,6 +160,9 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
     override fun addDynamicChannelVisitable(): HomeVisitableFactory {
         homeData?.dynamicHomeChannel?.channels?.forEachIndexed { index, channel ->
             val position = index+1
+            Log.d("testNoSkeleton", channel.toString())
+            Log.d("testNoSkeleton", "LAYOUT " + channel.layout)
+
             setDynamicChannelPromoName(position, channel)
             when (channel.layout) {
                 DynamicHomeChannel.Channels.LAYOUT_TOPADS -> createDynamicTopAds(channel)

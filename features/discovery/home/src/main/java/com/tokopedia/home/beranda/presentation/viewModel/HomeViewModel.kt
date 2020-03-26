@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.viewModel
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -163,6 +164,7 @@ open class HomeViewModel @Inject constructor(
     init {
         initChannel()
         initFlow()
+        Log.d("testNoSkeleton", "init")
     }
 
     fun refresh(isFirstInstall: Boolean){
@@ -572,8 +574,10 @@ open class HomeViewModel @Inject constructor(
 // ===========================================================================================
 
     private fun initFlow() {
+        Log.d("testNoSkeleton", "init Flow ")
         launchCatchError(coroutineContext, block = {
             homeFlowData.collect { homeDataModel ->
+                Log.d("testNoSkeleton", "Collect data " + homeDataModel.toString())
                 if (homeDataModel?.isCache == false) {
                     updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
                     getHeaderData()
@@ -587,6 +591,7 @@ open class HomeViewModel @Inject constructor(
                 }
             }
         }) {
+            Log.d("testNoSkeleton", "Error : " +Log.getStackTraceString(it))
             _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
         }
     }
