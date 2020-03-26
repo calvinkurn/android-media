@@ -10,7 +10,6 @@ import android.graphics.Color
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.text.TextUtils
 import android.util.SparseIntArray
 import android.view.*
@@ -240,6 +239,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     lateinit var performanceMonitoringFull: PerformanceMonitoring
 
     private var enableCheckImeiRemoteConfig = false
+    private var isBuy = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dynamic_product_detail_fragment, container, false)
@@ -2039,9 +2039,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
         actionButtonView.addToCartClick = {
             viewModel.buttonActionText = it
-            viewModel.getDynamicProductInfoP1?.let {
-                if (checkImei(enableCheckImeiRemoteConfig,
-                                viewModel.getDynamicProductInfoP1?.data?.campaign?.needCheckImei)) {
+            isBuy = false
+            viewModel.getDynamicProductInfoP1?.run {
+                if (this.checkImei(enableCheckImeiRemoteConfig)) {
                     activity?.run {
                         ImeiPermissionAsker.checkImeiPermission(this, ::showImeiPermissionDialog, {
                             doAtc(ProductDetailConstant.ATC_BUTTON)
@@ -2055,19 +2055,17 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
         actionButtonView.buyNowClick = {
             viewModel.buttonActionText = it
-            if(checkImei(enableCheckImeiRemoteConfig,
-                            viewModel.getDynamicProductInfoP1?.data?.campaign?.needCheckImei)){
-                activity?.run {
-                    ImeiPermissionAsker.checkImeiPermission(this, ::showImeiPermissionDialog, ::doBuy) {
-                        onNeverAskAgain()
+            isBuy = true
+            viewModel.getDynamicProductInfoP1?.run {
+                if (this.checkImei(enableCheckImeiRemoteConfig)) {
+                    activity?.run {
+                        ImeiPermissionAsker.checkImeiPermission(this, ::showImeiPermissionDialog, ::doBuy) {
+                            onNeverAskAgain()
+                        }
                     }
-                }
-            } else doBuy()
+                } else doBuy()
+            }
         }
-    }
-
-    private fun checkImei(imeiRemoteConfig: Boolean, campaignNeedCheckImei: Boolean?): Boolean {
-        return imeiRemoteConfig && campaignNeedCheckImei == true
     }
 
     private fun doBuy() {
@@ -2527,48 +2525,24 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         activity?.run {
             ImeiPermissionAsker.onImeiRequestPermissionsResult(this, requestCode, permissions, grantResults,
                 onUserDenied = {},
-                onUserDeniedAndDontAskAgain = {}, onUserAcceptPermission = { doBuy() }
+                onUserDeniedAndDontAskAgain = {}, onUserAcceptPermission = {
+                    if(isBuy) doBuy()  else doAtc(ProductDetailConstant.ATC_BUTTON)
+                }
             )
         }
     }
 
     private fun onNeverAskAgain() {
-        showDialogGoToSetting()
-    }
-
-    private fun openSettingPage() {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-        val uri = Uri.fromParts("package", context?.packageName, null)
-        intent.data = uri
-        startActivity(intent)
-    }
-
-    private fun showDialogGoToSetting(){
-        activity?.run {
-            val dialog = DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-            val view = View.inflate(context, R.layout.dialog_permission_phone_state, null)
-            dialog.apply {
-                setChild(view)
-                setPrimaryCTAText(activity?.getString(R.string.check_imei_btn_rationale) ?: "")
-                setPrimaryCTAClickListener {
-                    DynamicProductDetailTracking.Click.eventClickGoToSetting(viewModel.userId, viewModel.getDynamicProductInfoP1)
-                    openSettingPage()
-                    dialog.dismiss()
-                }
-                setSecondaryCTAText(activity?.getString(R.string.check_imei_btn_later) ?: "")
-                setSecondaryCTAClickListener {
-                    DynamicProductDetailTracking.Click.eventClickLater(viewModel.userId, viewModel.getDynamicProductInfoP1)
-                    dialog.dismiss()
-                }
-            }
-            dialog.show()
-        }
+        CheckImeiRationaleDialog.showRationaleDialog(activity, {
+            DynamicProductDetailTracking.Click.eventClickGoToSetting(viewModel.userId, viewModel.getDynamicProductInfoP1)
+        }, {
+            DynamicProductDetailTracking.Click.eventClickLater(viewModel.userId, viewModel.getDynamicProductInfoP1)
+        })
     }
 
     private fun showImeiPermissionDialog() {
