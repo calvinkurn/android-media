@@ -94,6 +94,7 @@ import com.tokopedia.purchase_platform.features.checkout.domain.usecase.CodCheck
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.EditAddressUseCase;
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.GetShipmentAddressFormOneClickShipementUseCase;
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.GetShipmentAddressFormUseCase;
+import com.tokopedia.purchase_platform.features.checkout.domain.usecase.ReleaseBookingUseCase;
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.SaveShipmentStateUseCase;
 import com.tokopedia.purchase_platform.features.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataConverter;
@@ -160,6 +161,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final UserSessionInterface userSessionInterface;
     private final GetInsuranceCartUseCase getInsuranceCartUseCase;
     private final ShipmentDataConverter shipmentDataConverter;
+    private final ReleaseBookingUseCase releaseBookingUseCase;
 
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
     private TickerAnnouncementHolderData tickerAnnouncementHolderData;
@@ -217,7 +219,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              CodAnalytics codAnalytics,
                              CheckoutAnalyticsCourierSelection checkoutAnalytics,
                              GetInsuranceCartUseCase getInsuranceCartUseCase,
-                             ShipmentDataConverter shipmentDataConverter) {
+                             ShipmentDataConverter shipmentDataConverter,
+                             ReleaseBookingUseCase releaseBookingUseCase) {
         this.checkPromoStackingCodeFinalUseCase = checkPromoStackingCodeFinalUseCase;
         this.checkPromoStackingCodeUseCase = checkPromoStackingCodeUseCase;
         this.checkPromoStackingCodeMapper = checkPromoStackingCodeMapper;
@@ -242,6 +245,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.mTrackerShipment = checkoutAnalytics;
         this.getInsuranceCartUseCase = getInsuranceCartUseCase;
         this.shipmentDataConverter = shipmentDataConverter;
+        this.releaseBookingUseCase = releaseBookingUseCase;
     }
 
     @Override
