@@ -136,24 +136,8 @@ class ProductStockReminderDialog(
 
     private fun isSuccessProductReminder() {
         btnReminder?.isEnabled = false
-        onSuccessToast()
+        listener.onSuccessReminderStock()
     }
-
-    private fun onSuccessToast() {
-        container?.let { view ->
-            container?.context?.let {
-                Toaster.make(
-                        view,
-                        it.getString(R.string.product_reminder_success),
-                        Snackbar.LENGTH_LONG,
-                        Toaster.TYPE_NORMAL,
-                        it.getString(R.string.notifcenter_btn_title_ok),
-                        View.OnClickListener {  }
-                )
-            }
-        }
-    }
-
 
     companion object {
         private const val TYPE_BUY_BUTTON = 0

@@ -191,6 +191,21 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
         view?.let { Toaster.showError(it, message, Snackbar.LENGTH_LONG) }
     }
 
+    protected fun onSuccessReminderStock() {
+        view?.let { view ->
+            context?.let {
+                Toaster.make(
+                        view,
+                        it.getString(R.string.product_reminder_success),
+                        Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL,
+                        it.getString(R.string.notifcenter_btn_title_ok),
+                        View.OnClickListener {  }
+                )
+            }
+        }
+    }
+
     override fun onPause() {
         super.onPause()
         trackScrollListToBottom()
