@@ -779,8 +779,8 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
                             descriptionInputModel: DescriptionInputModel) {
         val detailInputModel = DetailInputModel(
                 productNameField.getText(),
-                "1",
-                "1",
+                productCategoryPickerButton?.getTag(R.id.category_id).toString(),
+                "", //TODO faisalramd fill the catalog id based on input
                 productPriceField.getTextFloatOrZero(),
                 productStockField.getTextIntOrZero(),
                 productMinOrderField.getTextIntOrZero(),

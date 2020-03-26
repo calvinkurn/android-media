@@ -55,7 +55,7 @@ data class ProductAddParam (
         @SerializedName("menu")
         @Expose
         var productEtalase: ProductEtalase? = null,
-        @SerializedName("picture")
+        @SerializedName("pictures")
         @Expose
         var picture: Pictures = Pictures(),
         @SerializedName("preorder")
