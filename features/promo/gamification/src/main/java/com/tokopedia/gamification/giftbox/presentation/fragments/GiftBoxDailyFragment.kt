@@ -26,10 +26,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
-import com.tokopedia.gamification.giftbox.data.entities.GameRemindMeCheck
-import com.tokopedia.gamification.giftbox.data.entities.GiftBoxEntity
-import com.tokopedia.gamification.giftbox.data.entities.GiftBoxRewardEntity
-import com.tokopedia.gamification.giftbox.data.entities.Reminder
+import com.tokopedia.gamification.giftbox.data.entities.*
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.ACTIVE
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.EMPTY
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
@@ -40,7 +37,6 @@ import com.tokopedia.gamification.giftbox.presentation.views.*
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.fragment_gift_box_daily.*
 import javax.inject.Inject
 
 class GiftBoxDailyFragment : GiftBoxBaseFragment() {
@@ -58,6 +54,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     lateinit var tvReminderMessage: AppCompatTextView
     lateinit var loaderReminder: LoaderUnify
     lateinit var reminderLayout: RelativeLayout
+    lateinit var fmReminder: FrameLayout
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -91,7 +88,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val v = super.onCreateView(inflater, container, savedInstanceState)
         viewModel.getGiftBox()
-        viewModel.getRemindMeCheck()
         return v
     }
 
@@ -110,6 +106,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         tvReminderMessage = v.findViewById(R.id.tvReminderMessage)
         loaderReminder = v.findViewById(R.id.loaderReminder)
         reminderLayout = v.findViewById(R.id.reminderLayout)
+        fmReminder = v.findViewById(R.id.fmReminder)
         super.initViews(v)
         setShadows()
         setListeners()
@@ -194,54 +191,85 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             when (it.status) {
                 LiveDataResult.STATUS.SUCCESS -> {
                     if (it.data != null) {
-                        tokenUserState = it.data.gamiLuckyHome.tokensUser.state
-                        reminder = it.data.gamiLuckyHome.reminder
-                        when (tokenUserState) {
-                            TokenUserState.ACTIVE -> {
-                                renderGiftBoxActive(it.data)
-                                giftBoxDailyView.fmGiftBox.setOnClickListener {
-                                    if (!disableGiftBoxTap) {
-                                        viewModel.getRewards()
-                                        disableGiftBoxTap = true
+                        val giftBoxEntity = it.data.first
+                        val remindMeCheckEntity = it.data.second
+
+                        val giftBoxStatusCode = giftBoxEntity.gamiLuckyHome?.resultStatus?.code
+                        val remindMeCheckStatusCode = giftBoxEntity.gamiLuckyHome?.resultStatus?.code
+                        if (giftBoxStatusCode == 200 && remindMeCheckStatusCode == 200) {
+
+                            tokenUserState = giftBoxEntity.gamiLuckyHome.tokensUser.state
+                            reminder = giftBoxEntity.gamiLuckyHome.reminder
+                            when (tokenUserState) {
+                                TokenUserState.ACTIVE -> {
+                                    reminderLayout.visibility = View.VISIBLE
+                                    renderGiftBoxActive(giftBoxEntity)
+                                    giftBoxDailyView.fmGiftBox.setOnClickListener {
+                                        if (!disableGiftBoxTap) {
+                                            viewModel.getRewards()
+                                            disableGiftBoxTap = true
+                                        }
                                     }
+
+                                    tvReminderMessage.text = reminder?.text
+                                    setInitialUiForReminder()
                                 }
+                                TokenUserState.EMPTY -> {
+                                    reminderLayout.visibility = View.VISIBLE
+                                    renderGiftBoxActive(giftBoxEntity)
+                                    tvRewardFirstLine.visibility = View.GONE
+                                    tvRewardSecondLine.visibility = View.GONE
+                                    btnAction.visibility = View.GONE
 
-                                tvReminderMessage.text = reminder?.text
-                                setInitialUiForReminder()
-                            }
-                            TokenUserState.EMPTY -> {
-                                renderGiftBoxActive(it.data)
-                                tvRewardFirstLine.visibility = View.GONE
-                                tvRewardSecondLine.visibility = View.GONE
-                                btnAction.visibility = View.GONE
+                                    tvReminderMessage.text = reminder?.text
+                                    setInitialUiForReminder()
+                                }
+                                else -> {
+                                    hideLoader()
+                                    val messageList = giftBoxEntity.gamiLuckyHome.resultStatus.message
+                                    if (!messageList.isNullOrEmpty()) {
+                                        renderGiftBoxError(messageList[0], "Oke")
+                                    }
 
-                                tvReminderMessage.text = reminder?.text
-                                setInitialUiForReminder()
+                                    tvReminderMessage.text = reminder?.text
+                                    setInitialUiForReminder()
+
+                                }
                             }
-                            else -> {
-                                hideLoader()
-                                val messageList = it.data.gamiLuckyHome.resultStatus.message
+
+                            renderUiForReminderCheck(remindMeCheckEntity)
+                        } else {
+                            reminderLayout.visibility = View.GONE
+
+                            if (remindMeCheckStatusCode != 200) {
+
+                                val messageList = remindMeCheckEntity?.gameRemindMeCheck?.resultStatus?.message
                                 if (!messageList.isNullOrEmpty()) {
                                     renderGiftBoxError(messageList[0], "Oke")
                                 }
 
-                                tvReminderMessage.text = reminder?.text
-                                setInitialUiForReminder()
-
+                            } else if (giftBoxStatusCode != 200) {
+                                val messageList = giftBoxEntity?.gamiLuckyHome?.resultStatus?.message
+                                if (!messageList.isNullOrEmpty()) {
+                                    renderGiftBoxError(messageList[0], "Oke")
+                                }
                             }
                         }
                     }
+
                 }
 
                 LiveDataResult.STATUS.LOADING -> showLoader()
 
                 LiveDataResult.STATUS.ERROR -> {
                     hideLoader()
+                    reminderLayout.visibility = View.GONE
                     renderGiftBoxError("Yaah, ada gangguan koneksi. Refresh lagi untuk buka hadiahmu.", "Oke")
                 }
             }
         })
-        viewModel.rewardLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.rewardLiveData.observe(viewLifecycleOwner, Observer
+        {
             when (it.status) {
                 LiveDataResult.STATUS.SUCCESS -> {
 
@@ -328,7 +356,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             }
         })
 
-        viewModel.reminderSetLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.reminderSetLiveData.observe(viewLifecycleOwner, Observer
+        {
             when (it.status) {
                 LiveDataResult.STATUS.LOADING -> {
                     loaderReminder.visibility = View.VISIBLE
@@ -358,37 +387,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             }
         })
 
-
-        viewModel.reminderCheckLiveData.observe(viewLifecycleOwner, Observer {
-            when (it.status) {
-                LiveDataResult.STATUS.LOADING -> {
-
-                }
-                LiveDataResult.STATUS.SUCCESS -> {
-                    this.gameRemindMeCheck = it.data?.gameRemindMeCheck
-                    loaderReminder.visibility = View.GONE
-                    tvReminderBtn.visibility = View.VISIBLE
-                    val code = gameRemindMeCheck?.resultStatus?.code
-                    val isRemindMe = gameRemindMeCheck?.isRemindMe
-                    if (code == 200 && isRemindMe != null) {
-                        reminderLayout.visibility = View.VISIBLE
-                        renderReminderButton(isRemindMe)
-                    } else {
-                        reminderLayout.visibility = View.GONE
-                        val messageList = it.data?.gameRemindMeCheck?.resultStatus?.message
-                        if (!messageList.isNullOrEmpty()) {
-                            showRemindCheckError(messageList[0], "Oke")
-                        }
-                    }
-                }
-                LiveDataResult.STATUS.ERROR -> {
-                    reminderLayout.visibility = View.GONE
-                    showRemindCheckError("Oops, terjadi kendala. Coba beberapa saat lagi, ya!", "Oke")
-                }
-            }
-        })
-
-        viewModel.autoApplyLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.autoApplyLiveData.observe(viewLifecycleOwner, Observer
+        {
             when (it.status) {
                 LiveDataResult.STATUS.SUCCESS -> {
                     val code = it.data?.tokopointsSetAutoApply?.resultStatus?.code
@@ -398,7 +398,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                             CustomToast.show(context!!, autoApplyMessage)
                         }
                     } else {
-                        if(!messageList.isNullOrEmpty()){
+                        if (!messageList.isNullOrEmpty()) {
                             CustomToast.show(context!!, messageList[0], isError = true)
                         }
                     }
@@ -408,22 +408,24 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         })
     }
 
+    fun renderUiForReminderCheck(remindMeCheckEntity: RemindMeCheckEntity) {
+        this.gameRemindMeCheck = remindMeCheckEntity?.gameRemindMeCheck
+        loaderReminder.visibility = View.GONE
+        tvReminderBtn.visibility = View.VISIBLE
+        val isRemindMe = gameRemindMeCheck?.isRemindMe
+        if (isRemindMe != null) {
+            reminderLayout.visibility = View.VISIBLE
+            renderReminderButton(isRemindMe)
+        } else {
+            reminderLayout.visibility = View.GONE
+        }
+    }
+
     fun setInitialUiForReminder() {
         if (gameRemindMeCheck != null) {
             val isRemindMe = gameRemindMeCheck?.isRemindMe
             if (isRemindMe != null)
                 renderReminderButton(isRemindMe)
-        }
-    }
-
-    fun showRemindCheckError(message: String, actionText: String) {
-        if (context != null) {
-            val internetAvailable = DeviceConnectionInfo.isInternetAvailable(context!!, checkWifi = true, checkCellular = true)
-            if (!internetAvailable) {
-                showNoInterNetDialog(viewModel::getRemindMeCheck, context!!)
-            } else {
-                showRedError(fmParent, message, actionText, viewModel::getRemindMeCheck)
-            }
         }
     }
 
@@ -446,14 +448,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             } else {
                 showRedError(fmParent, message, actionText, viewModel::setReminder)
             }
-        }
-    }
-
-    fun renderReminderForReminderMeCheck() {
-        val code = gameRemindMeCheck?.resultStatus?.code
-        val isRemindMe = gameRemindMeCheck?.isRemindMe
-        if (code == 200 && isRemindMe != null && isRemindMe) {
-            renderReminderButton(isRemindMe)
         }
     }
 
@@ -496,12 +490,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             val translationY = imageFrontTop - dpToPx(40f)
             starsContainer.setStartPositionOfStars(starsContainer.width / 2f, translationY)
 
-            val tranY = (screenHeight * 0.385f) - statusBarHeight
-//            rewardContainer.llRewardTextLayout.translationY = tranY
-//            rewardContainer.rvCoupons.translationY = array[1].toFloat() - (screenHeight * 0.15f) - dpToPx(158f) - statusBarHeight
-//            rewardContainer.rvCoupons.translationY = tranY - dpToPx(20f)
             if (state == TokenUserState.EMPTY) {
-//                llBenefits.gravity = Gravity.TOP
                 llBenefits.translationY = imageFrontTop + imageBoxFront.height + dpToPx(18f)
             } else {
                 llBenefits.updateLayoutParams<FrameLayout.LayoutParams> {

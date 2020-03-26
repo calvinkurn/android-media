@@ -30,10 +30,9 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
     var uniqueCode: String = ""
     var about: String = "dailybox"
 
-    val giftBoxLiveData: MutableLiveData<LiveDataResult<GiftBoxEntity>> = MutableLiveData()
+    val giftBoxLiveData: MutableLiveData<LiveDataResult<Pair<GiftBoxEntity, RemindMeCheckEntity>>> = MutableLiveData()
     val rewardLiveData: MutableLiveData<LiveDataResult<GiftBoxRewardEntity>> = MutableLiveData()
     val reminderSetLiveData: MutableLiveData<LiveDataResult<RemindMeEntity>> = MutableLiveData()
-    val reminderCheckLiveData: MutableLiveData<LiveDataResult<RemindMeCheckEntity>> = MutableLiveData()
     val autoApplyLiveData: MutableLiveData<LiveDataResult<AutoApplyResponse>> = MutableLiveData()
 
     var rewardJob: Job? = null
@@ -46,26 +45,19 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
             if (GiftLauncherActivity.iS_STAGING) {
                 val response = giftBoxDailyUseCase.getResponse(params)
                 campaignSlug = response?.gamiLuckyHome.tokensUser?.campaignSlug
-                giftBoxLiveData.postValue(LiveDataResult.success(response))
+                val remindMeCheckEntity = remindMeUseCase.getRemindMeCheckResponse(remindMeUseCase.getRequestParams(about))
+
+                giftBoxLiveData.postValue(LiveDataResult.success(Pair(response, remindMeCheckEntity)))
 
             } else {
                 val response = giftBoxDailyUseCase.getFakeResponseActive()
-                giftBoxLiveData.postValue(LiveDataResult.success(response))
+                val remindMeCheckEntity = remindMeUseCase.getRemindMeCheckResponse(remindMeUseCase.getRequestParams(about))
+                giftBoxLiveData.postValue(LiveDataResult.success(Pair(response, remindMeCheckEntity)))
             }
 
         }, onError = {
             giftBoxLiveData.postValue(LiveDataResult.error(it))
         })
-    }
-
-    fun getRemindMeCheck() {
-        launchCatchError(block = {
-            val remindMeCheckEntity = remindMeUseCase.getRemindMeCheckResponse(remindMeUseCase.getRequestParams(about))
-            reminderCheckLiveData.postValue(LiveDataResult.success(remindMeCheckEntity))
-        }, onError = {
-            reminderCheckLiveData.postValue(LiveDataResult.error(it))
-        })
-
     }
 
     fun getRewards() {
