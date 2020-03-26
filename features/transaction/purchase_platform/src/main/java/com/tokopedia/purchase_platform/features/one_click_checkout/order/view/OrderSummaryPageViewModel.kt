@@ -364,6 +364,10 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                     }
 
                                     //BBO
+                                    //reset last BBO
+                                    if (shipping?.logisticPromoViewModel != null) {
+                                        shipping = shipping.copy(logisticPromoTickerMessage = null, logisticPromoViewModel = null, logisticPromoShipping = null)
+                                    }
                                     if (shipping?.serviceErrorMessage?.isEmpty() == true) {
                                         val logisticPromo: LogisticPromoUiModel? = shippingRecommendationData.logisticPromo
                                         if (logisticPromo != null && !logisticPromo.disabled) {
