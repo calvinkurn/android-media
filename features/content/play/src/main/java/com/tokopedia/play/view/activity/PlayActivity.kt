@@ -49,6 +49,11 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
+    override fun onPause() {
+        super.onPause()
+        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         val fragment = supportFragmentManager.findFragmentByTag(PLAY_FRAGMENT_TAG)
