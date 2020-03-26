@@ -499,6 +499,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             iv_subheader.visible()
             tv_subheader.text = preference.onboardingHeaderMessage
             tv_subheader_action.setOnClickListener {
+                orderSummaryAnalytics.eventClickInfoOnOSP()
                 OccInfoBottomSheet().show(this, preference.onboardingComponent)
             }
             tv_subheader_action.visible()
@@ -572,7 +573,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     listener = object : PreferenceListBottomSheet.PreferenceListBottomSheetListener {
                         override fun onChangePreference(preference: ProfilesItemModel) {
                             viewModel.updatePreference(preference)
-                            orderSummaryAnalytics.eventChangesProfile()
+                            orderSummaryAnalytics.eventClickGunakanPilihanIniFromGantiPilihanOSP()
                         }
 
                         override fun onEditPreference(preference: ProfilesItemModel, adapterPosition: Int) {

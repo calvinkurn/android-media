@@ -226,6 +226,15 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         sendEnhancedEcommerce(dataLayer)
     }
 
+    fun eventClickInfoOnOSP() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_BUTTON_INFO_ON_OSP,
+                EventLabel.NEW_OCC
+        )
+    }
+
     companion object {
         private const val NOT_SUCCESS = "not success"
     }

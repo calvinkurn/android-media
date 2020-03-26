@@ -434,6 +434,7 @@ public interface ConstantTransactionAnalytics {
         String GUNAKAN_PILIHAN_INI_FROM_GANTI_PILIHAN_OSP  = "preference -  click gunakan pilihan ini from ganti pilihan";
         String CLICK_TAMBAH_PILIHAN_FROM_GANTI_PILIHAN_OSP  = "preference -  click tambah pilihan from ganti pilihan";
         String CLICK_BACK_FROM_OSP = "click back in order summary page";
+        String CLICK_BUTTON_INFO_ON_OSP = "click button info on order summary page";
 
         String VIEW_ORDER_SUMMARY_PAGE = "view order summary page";
 
@@ -491,6 +492,8 @@ public interface ConstantTransactionAnalytics {
         String FAILED_TERJADI_KESALAHAN_SERVER = "failed - error terjadi kesalahan server";
         String BLACKLIST_ERROR = "blacklist error";
         String PHONE_VERIFICATION_MESSAGE = "phone verification message";
+
+        String NEW_OCC = "new occ";
     }
 
     interface ScreenName {
