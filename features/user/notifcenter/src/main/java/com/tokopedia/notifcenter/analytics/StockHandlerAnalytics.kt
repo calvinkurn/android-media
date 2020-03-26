@@ -45,16 +45,16 @@ class StockHandlerAnalytics {
         val eventAction = "click on restock product card"
         val eventLabel = "${element.notificationId} - ${element.getAtcProduct()?.productId}"
 
-        val product = mapOf(
-                "name" to element.getAtcProduct()?.name,
-                "id" to element.getAtcProduct()?.productId,
-                "price" to element.getAtcProduct()?.price,
-                "brand" to "",
-                "category" to "",
-                "variant" to "",
-                "list" to "/notifcenter",
-                "position" to "0",
-                "dimension79" to element.getAtcProduct()?.shop?.id
+        val product = layerMapOf(
+                "name", element.getAtcProduct()?.name,
+                "id", element.getAtcProduct()?.productId,
+                "price", element.getAtcProduct()?.price,
+                "brand", "",
+                "category", "",
+                "variant", "",
+                "list", "/notifcenter",
+                "position", "0",
+                "dimension79", element.getAtcProduct()?.shop?.id?: ""
         )
         val click = mapOf(
                 KEY_ACTION_FIELD to mapOf(
