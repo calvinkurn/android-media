@@ -66,7 +66,6 @@
                     android:layout_marginStart="@dimen/product_manage_container_spacing"
                     android:layout_marginLeft="@dimen/product_manage_container_spacing"
                     android:paddingBottom="@dimen/product_manage_vertical_spacing"
-                    android:layout_weight="1"
                     android:text="@string/product_manage_bulk_count"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
