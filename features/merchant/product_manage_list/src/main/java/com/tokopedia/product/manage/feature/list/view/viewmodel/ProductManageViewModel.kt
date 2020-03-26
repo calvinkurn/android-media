@@ -44,6 +44,9 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import rx.Subscriber
 import javax.inject.Inject
@@ -62,6 +65,12 @@ class ProductManageViewModel @Inject constructor(
     private val getProductListMetaUseCase: GetProductListMetaUseCase,
     private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
+
+    companion object {
+        // Currently update data on server is not realtime.
+        // Client need to add request delay in order to receive updated data.
+        private const val REQUEST_DELAY = 1000L
+    }
 
     val viewState: LiveData<ViewState>
         get() = _viewState
@@ -106,6 +115,9 @@ class ProductManageViewModel @Inject constructor(
     private val _multiEditProductResult = MutableLiveData<Result<MultiEditResult>>()
     private val _selectedFilterAndSort = MutableLiveData<FilterOptionWrapper>()
     private val _productFiltersTab = MutableLiveData<Result<List<FilterTabViewModel>>>()
+
+    private var getProductListJob: Job? = null
+    private var getFilterTabJob: Job? = null
 
     fun isIdlePowerMerchant(): Boolean = userSessionInterface.isPowerMerchantIdle
     fun isPowerMerchant(): Boolean = userSessionInterface.isGoldMerchant
@@ -187,10 +199,14 @@ class ProductManageViewModel @Inject constructor(
         shopId: String,
         filterOptions: List<FilterOption>? = null,
         sortOption: SortOption? = null,
-        isRefresh: Boolean = false
+        isRefresh: Boolean = false,
+        withDelay: Boolean = false
     ) {
+        getProductListJob?.cancel()
+
         launchCatchError(block = {
             val productList = withContext(dispatchers.io) {
+                if(withDelay) { delay(REQUEST_DELAY) }
                 val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, filterOptions, sortOption)
                 val getProductList = getProductListUseCase.execute(requestParams)
                 val productListResponse = getProductList.productList
@@ -200,25 +216,34 @@ class ProductManageViewModel @Inject constructor(
             if(isRefresh) refreshList()
             showProductList(productList)
         }, onError = {
+            if(it is CancellationException) {
+                return@launchCatchError
+            }
             _productListResult.value = Fail(it)
-        })
+        }).let { getProductListJob = it }
     }
 
-    fun getFiltersTab(shopId: String) {
+    fun getFiltersTab(shopId: String, withDelay: Boolean = false) {
+        getFilterTabJob?.cancel()
+
         launchCatchError(block = {
             val selectedFilter = selectedFilterAndSort.value
             var filterCount = selectedFilter?.filterOptions?.count().orZero()
             selectedFilter?.sortOption?.let { filterCount++ }
 
             val response = withContext(dispatchers.io) {
+                if(withDelay) { delay(REQUEST_DELAY) }
                 getProductListMetaUseCase.setParams(shopId)
                 getProductListMetaUseCase.executeOnBackground()
             }
 
             _productFiltersTab.value = Success(mapToTabFilters(response, filterCount))
         }, onError = {
+            if(it is CancellationException) {
+                return@launchCatchError
+            }
             _productFiltersTab.value = Fail(it)
-        })
+        }).let { getFilterTabJob = it }
     }
 
     fun getFeaturedProductCount(shopId: String) {
