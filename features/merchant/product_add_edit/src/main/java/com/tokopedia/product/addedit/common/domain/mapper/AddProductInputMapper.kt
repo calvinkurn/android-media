@@ -13,6 +13,17 @@ import javax.inject.Inject
  */
 
 class AddProductInputMapper @Inject constructor() {
+
+    companion object{
+        const val PRICE_CURRENCY = "IDR"
+        const val STOCK_STATUS = "LIMITED"
+        const val UNIT_GRAM = "GR"
+        const val UNIT_KILOGRAM = "KG"
+        const val UNIT_DAY = "DAY"
+        const val UNIT_WEEK = "WEEK"
+        const val UNIT_MONTH = "MONTH"
+    }
+
     fun mapInputToParam(shopId:String,
                         uploadIdList: ArrayList<String>,
                         detailInputModel: DetailInputModel,
@@ -22,12 +33,12 @@ class AddProductInputMapper @Inject constructor() {
         return ProductAddParam(
                 detailInputModel.productName,
                 detailInputModel.price,
-                "IDR",
+                PRICE_CURRENCY,
                 detailInputModel.stock,
-                "LIMITED",
+                STOCK_STATUS,
                 descriptionInputModel.productDescription,
                 detailInputModel.minOrder,
-                "GR",
+                mapShipmentUnit(shipmentInputModel.weightUnit),
                 shipmentInputModel.weight,
                 detailInputModel.condition,
                 shipmentInputModel.isMustInsurance,
@@ -41,16 +52,17 @@ class AddProductInputMapper @Inject constructor() {
                 Category(
                         detailInputModel.categoryId
                 ),
-                ProductEtalase(
-                        "0",
-                        ""
-                ),
+                ProductEtalase(), // TODO product etalase not implemented yet
                 mapPictureParam(uploadIdList),
                 mapPreorderParam(detailInputModel.preorder),
                 Wholesales(),
                 mapVideoParam(descriptionInputModel.videoLinkList)
 
         )
+    }
+
+    private fun mapShipmentUnit(weightUnit: Int): String? {
+        return if (weightUnit == 0) UNIT_GRAM else UNIT_KILOGRAM
     }
 
     private fun mapVideoParam(videoLinkList: List<VideoLinkModel>): Videos {
@@ -77,9 +89,9 @@ class AddProductInputMapper @Inject constructor() {
         return Preorder(
                 preorder.duration,
                 when (preorder.timeUnit) {
-                    0 -> "DAY"
-                    1 -> "WEEK"
-                    else -> "Month"
+                    0 -> UNIT_DAY
+                    1 -> UNIT_WEEK
+                    else -> UNIT_MONTH
                 },
                 preorder.isActive
         )

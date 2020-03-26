@@ -10,9 +10,9 @@ class ProductEtalase (
 
     @SerializedName("menuID")
     @Expose
-    var menuID: String? = null,
+    var menuID: String = "0",
     @SerializedName("name")
     @Expose
-    var name: String? = null
+    var name: String = ""
 
 ) : Parcelable
