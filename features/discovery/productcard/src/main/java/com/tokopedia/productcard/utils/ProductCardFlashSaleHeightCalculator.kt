@@ -101,7 +101,7 @@ private fun ProductCardFlashSaleModel.getPriceSectionHeight(context: Context): I
 }
 
 private fun ProductCardFlashSaleModel.getStockBarSectionHeight(context: Context): Int {
-    return if (stockBarPercentage != 0) {
+    return if (stockBarLabel.isNotEmpty()) {
         val stockBarMarginBottom = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_progressbar_marginbottom)
         val stockBarHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_progressbar_height)
 
@@ -111,7 +111,7 @@ private fun ProductCardFlashSaleModel.getStockBarSectionHeight(context: Context)
 }
 
 private fun ProductCardFlashSaleModel.getStockLabelHeight(context: Context): Int {
-    return if (stockBarPercentage != 0) {
+    return if (stockBarLabel.isNotEmpty()) {
         val labelHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_label_height)
 
         return labelHeight
