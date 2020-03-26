@@ -349,20 +349,13 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
                 override fun onTextChanged(s: CharSequence, start: Int, before: Int,
                                            count: Int) {
-                    if (s.isNotEmpty()) {
-                        val input = "$s"
-                        val labelAlamatDisplay = mutableListOf<String>()
-
-                        labelAlamatList.forEach {
-                            if (it.contains(input, ignoreCase = true)) {
-                                labelAlamatDisplay.add(it)
-                            }
-                        }
-                        labelAlamatChipsAdapter.submitList(labelAlamatDisplay)
-                    }
                 }
 
                 override fun afterTextChanged(s: Editable) {
+                    val filterList = labelAlamatList.filter {
+                        it.contains("$s", true)
+                    }
+                    labelAlamatChipsAdapter.submitList(filterList)
                 }
             })
             setOnTouchListener { view, event ->

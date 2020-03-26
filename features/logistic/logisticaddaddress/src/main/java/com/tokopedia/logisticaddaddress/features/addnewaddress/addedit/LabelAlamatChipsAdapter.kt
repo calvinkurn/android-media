@@ -39,6 +39,7 @@ class LabelAlamatChipsAdapter(private var actionListener: ActionListener)
     }
 
     fun submitList(addressLabels: List<String>) {
+        labelAlamatList.clear()
         labelAlamatList.addAll(addressLabels)
         notifyDataSetChanged()
     }
