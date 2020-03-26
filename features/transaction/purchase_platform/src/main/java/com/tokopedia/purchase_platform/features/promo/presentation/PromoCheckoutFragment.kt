@@ -565,7 +565,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     override fun onClickApplyRecommendedPromo() {
-        viewModel.applyPromoSuggestion()
+        viewModel.applyRecommendedPromo()
     }
 
     override fun onClickApplyManualInputPromo(promoCode: String) {

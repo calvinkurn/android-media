@@ -812,7 +812,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
 
         setFragmentStateHasPromoSelected(false)
-        resetPromoSuggestion()
+        resetRecommendedPromo()
     }
 
     private fun setFragmentStateHasPromoSelected(hasAnyPromoSelected: Boolean) {
@@ -891,6 +891,10 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             val promoItem = promoListUiModel.value?.get(it) as PromoListItemUiModel
             promoItem.uiState.isSelected = !promoItem.uiState.isSelected
 
+            if (!promoItem.uiState.isSelected && promoItem.uiState.isRecommended) {
+                resetRecommendedPromo()
+            }
+
             // Update view
             _tmpUiModel.value = Update(promoItem)
 
@@ -934,6 +938,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                             val tmpPromoItem = promoListUiModel.value?.get(index) as PromoListItemUiModel
                             if (tmpPromoItem.uiData.promoCode != element.uiData.promoCode && tmpPromoItem.uiState.isSelected) {
                                 tmpPromoItem.uiState.isSelected = false
+                                if (tmpPromoItem.uiState.isRecommended) {
+                                    resetRecommendedPromo()
+                                }
                                 _tmpUiModel.value = Update(tmpPromoItem)
                                 // Calculate clash after uncheck
                                 // Clash result is ignoned
@@ -982,7 +989,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    fun applyPromoSuggestion() {
+    fun applyRecommendedPromo() {
         val promoRecommendation = promoRecommendationUiModel.value
         promoRecommendation?.let {
             analytics.eventClickPilihPromoRecommendation(getPageSource(), it.uiData.promoCodes)
@@ -994,6 +1001,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 if (it is PromoListItemUiModel) {
                     if (promoRecommendation.uiData.promoCodes.contains(it.uiData.promoCode)) {
                         it.uiState.isSelected = true
+                        it.uiState.isRecommended = true
                         _tmpUiModel.value = Update(it)
                         calculateClash(it)
                         expandedParentIdentifierList.add(it.uiData.parentIdentifierId)
@@ -1003,6 +1011,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     it.uiData.tmpPromoItemList.forEach {
                         if (promoRecommendation.uiData.promoCodes.contains(it.uiData.promoCode)) {
                             it.uiState.isSelected = true
+                            it.uiState.isRecommended = true
                             _tmpUiModel.value = Update(it)
                             calculateClash(it)
                             hasSelectedPromoItem = true
@@ -1024,7 +1033,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    fun resetPromoSuggestion() {
+    fun resetRecommendedPromo() {
         val promoRecommendation = promoRecommendationUiModel.value
         promoRecommendation?.let {
             it.uiState.isButtonSelectEnabled = true
@@ -1094,7 +1103,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         // Check if :
         // CASE 1 : has any promo item unchecked, but exist as pre applied promo item
         // CASE 2 : has any promo item checked but have not been applied, or
-        // CASE 3 : is manual apply
         val preAppliedPromoCodes = fragmentUiModel.value?.uiData?.preAppliedPromoCode ?: emptyList()
         if (preAppliedPromoCodes.isEmpty()) {
             return false
@@ -1109,10 +1117,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     if (!preAppliedPromoCodes.contains(it.uiData.promoCode) && it.uiState.isSelected) {
                         return true
                     }
-                    // CASE 3
-//                    if (it.uiState.isSelected && it.uiState.isAttempted) {
-//                        return true
-//                    }
                 } else if (it is PromoListHeaderUiModel && it.uiData.tmpPromoItemList.isNotEmpty()) {
                     it.uiData.tmpPromoItemList.forEach {
                         // CASE 1
@@ -1123,10 +1127,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                         if (!preAppliedPromoCodes.contains(it.uiData.promoCode) && it.uiState.isSelected) {
                             return true
                         }
-                        // CASE 3
-//                        if (it.uiState.isSelected && it.uiState.isAttempted) {
-//                            return true
-//                        }
                     }
                 }
             }
