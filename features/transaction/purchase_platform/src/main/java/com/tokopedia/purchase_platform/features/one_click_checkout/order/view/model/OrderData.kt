@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model
 
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
@@ -40,7 +41,24 @@ data class Shipment(
         val shippingRecommendationData: ShippingRecommendationData? = null,
         val insuranceData: InsuranceData? = null,
         val isCheckInsurance: Boolean = false
-)
+) {
+    fun getRealShipperProductId(): Int {
+        return logisticPromoShipping?.productData?.shipperProductId ?: shipperProductId.toZeroIfNull()
+    }
+
+    fun getRealShipperId(): Int {
+        return logisticPromoShipping?.productData?.shipperId ?: shipperId.toZeroIfNull()
+    }
+    fun getRealRatesId(): String {
+        return logisticPromoShipping?.ratesId ?: ratesId ?: ""
+    }
+    fun getRealUt(): String {
+        return logisticPromoShipping?.productData?.unixTime ?: ut ?: ""
+    }
+    fun getRealChecksum(): String {
+        return logisticPromoShipping?.productData?.checkSum ?: checksum ?: ""
+    }
+}
 
 data class Payment(
         val image: String? = null,

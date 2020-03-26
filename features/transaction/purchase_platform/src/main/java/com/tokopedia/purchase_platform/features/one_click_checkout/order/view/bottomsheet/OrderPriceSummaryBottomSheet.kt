@@ -46,6 +46,14 @@ class OrderPriceSummaryBottomSheet {
             child.tv_total_insurance_price_label.gone()
             child.tv_total_insurance_price_value.gone()
         }
+        if (orderCost.paymentFee > 0.0) {
+            child.tv_total_payment_fee_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.paymentFee, false)
+            child.tv_total_payment_fee_price_label.visible()
+            child.tv_total_payment_fee_price_value.visible()
+        } else {
+            child.tv_total_payment_fee_price_label.gone()
+            child.tv_total_payment_fee_price_value.gone()
+        }
         child.tv_total_payment_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalPrice, false)
     }
 }

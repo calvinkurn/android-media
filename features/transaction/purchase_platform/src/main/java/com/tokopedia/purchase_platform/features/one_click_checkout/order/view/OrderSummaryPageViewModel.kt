@@ -129,7 +129,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         orderSummaryPageEnhanceECommerce.setCartId(orderShop.cartResponse.cartId)
         orderSummaryPageEnhanceECommerce.setBuyerAddressId(_orderPreference?.preference?.address?.addressId
                 ?: 0)
-        orderSummaryPageEnhanceECommerce.setSpid(_orderPreference?.shipping?.shipperProductId ?: 0)
+        orderSummaryPageEnhanceECommerce.setSpid(_orderPreference?.shipping?.getRealShipperProductId() ?: 0)
         orderSummaryPageEnhanceECommerce.setCodFlag(false)
         orderSummaryPageEnhanceECommerce.setCornerFlag(false)
         orderSummaryPageEnhanceECommerce.setIsFullfilment(false)
@@ -456,18 +456,22 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             }
             val totalProductPrice = quantity.orderQuantity * productPrice
             val shipping = _orderPreference?.shipping
-            if (shipping?.shippingPrice != null) {
-                val totalShippingPrice = shipping.shippingPrice.toDouble()
+            val totalShippingPrice : Double = if (shipping?.logisticPromoShipping != null) {
+                shipping.logisticPromoShipping.productData.price.price.toDouble()
+            } else if (shipping?.shippingPrice != null) {
+                shipping.shippingPrice.toDouble()
+            } else 0.0
                 var insurancePrice = 0.0
-                if (shipping.isCheckInsurance && shipping.insuranceData != null) {
+                if (shipping?.isCheckInsurance == true && shipping.insuranceData != null) {
                     insurancePrice = shipping.insuranceData.insurancePrice.toDouble()
                 }
-                val subtotal = totalProductPrice + totalShippingPrice + insurancePrice
-                val minimumAmount = _orderPreference?.preference?.payment?.minimumAmount ?: 0
-                val maximumAmount = _orderPreference?.preference?.payment?.maximumAmount ?: 0
-                val fee = _orderPreference?.preference?.payment?.fee?.toDouble() ?: 0.0
-                validateUsePromoRevampUiModel.promoUiModel.benefitSummaryInfoUiModel.summaries
-                val orderCost = OrderCost(totalProductPrice, subtotal, totalShippingPrice, insurancePrice, fee)
+            val benefitAmount = shipping?.logisticPromoViewModel?.benefitAmount ?: 0
+            val fee = _orderPreference?.preference?.payment?.fee?.toDouble() ?: 0.0
+            val subtotal = totalProductPrice + totalShippingPrice + insurancePrice + fee - benefitAmount
+            val minimumAmount = _orderPreference?.preference?.payment?.minimumAmount ?: 0
+            val maximumAmount = _orderPreference?.preference?.payment?.maximumAmount ?: 0
+//                validateUsePromoRevampUiModel.promoUiModel.benefitSummaryInfoUiModel.summaries
+            val orderCost = OrderCost(totalProductPrice, subtotal, totalShippingPrice, insurancePrice, fee, benefitAmount)
                 if (minimumAmount > subtotal) {
                     orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
                             paymentErrorMessage = "Belanjaanmu kurang dari min. transaksi ${_orderPreference?.preference?.payment?.gatewayName}. Silahkan pilih pembayaran lain.",
@@ -485,7 +489,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 }
 //                validateUsePromo()
                 return
-            }
+//            }
         }
         orderTotal.value = orderTotal.value?.copy(orderCost = OrderCost(), buttonState = ButtonBayarState.DISABLE)
 //        validateUsePromo()
@@ -721,6 +725,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                 shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo.copy(isApplied = true)
                             }
                             _orderPreference = _orderPreference?.copy(shipping = shipping.copy(shippingRecommendationData = shippingRecommendationData,
+                                    insuranceData = logisticPromoShipping?.productData?.insurance,
                                     logisticPromoTickerMessage = null, isApplyLogisticPromo = true, logisticPromoShipping = logisticPromoShipping))
                             orderPreference.value = OccState.Success(_orderPreference!!)
                             globalEvent.value = OccGlobalEvent.Normal
@@ -754,13 +759,13 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     quantity.orderQuantity,
                     op.notes,
                     op.productId.toString(),
-                    pref.shipping?.shipperId.toZeroIfNull(),
-                    pref.shipping?.shipperProductId.toZeroIfNull()
+                    pref.shipping?.getRealShipperId() ?: 0,
+                    pref.shipping?.getRealShipperProductId() ?: 0
             )
             val profile = UpdateCartOccProfileRequest(
                     pref.preference.profileId.toString(),
                     pref.preference.payment.gatewayCode,
-                    "",
+                    pref.preference.payment.metadata,
                     pref.preference.shipment.serviceId,
                     pref.preference.address.addressId.toString()
             )
@@ -798,7 +803,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         val product = orderProduct
         val shop = orderShop
         val pref = _orderPreference
-        if (orderTotal.value?.buttonState == ButtonBayarState.NORMAL && pref != null && pref.shipping?.shipperProductId ?: 0 > 0) {
+        if (orderTotal.value?.buttonState == ButtonBayarState.NORMAL && pref != null && pref.shipping?.getRealShipperProductId() ?: 0 > 0) {
             val param = generateUpdateCartParam()
             if (param != null) {
                 globalEvent.value = OccGlobalEvent.Loading
@@ -834,11 +839,11 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                         )
                                 ),
                                 shippingInfo = ShippingInfo(
-                                        pref.shipping.shipperId!!,
-                                        pref.shipping.shipperProductId!!,
-                                        pref.shipping.ratesId!!,
-                                        pref.shipping.ut!!,
-                                        pref.shipping.checksum!!
+                                        pref.shipping.getRealShipperId(),
+                                        pref.shipping.getRealShipperProductId(),
+                                        pref.shipping.getRealRatesId(),
+                                        pref.shipping.getRealUt(),
+                                        pref.shipping.getRealChecksum()
                                 )
                         )
                 )
@@ -942,9 +947,9 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         ordersItem.uniqueId = "${orderShop.shopId}-0-${orderShop.cartResponse.warehouse.warehouseId}-${_orderPreference?.preference?.address?.addressId}"
         ordersItem.productDetails = listOf(ProductDetailsItem(orderProduct.quantity?.orderQuantity.toZeroIfNull(), orderProduct.productId))
         val shipping = _orderPreference?.shipping
-        if (shipping?.shipperProductId != null && shipping.shipperId != null) {
-            ordersItem.shippingId = shipping.shipperId
-            ordersItem.spId = shipping.shipperProductId
+        if (shipping?.getRealShipperProductId() ?: 0 > 0 && shipping?.getRealShipperId() ?: 0 > 0) {
+            ordersItem.shippingId = shipping!!.getRealShipperId()
+            ordersItem.spId = shipping.getRealShipperProductId()
         }
         val codes = ArrayList<String>()
         val voucherOrders = orderPromo.lastApply?.voucherOrders ?: emptyList()
