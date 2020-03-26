@@ -135,7 +135,6 @@
                     app:typographyWeight="bold" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_marginTop="@dimen/dp_100"
                     android:id="@+id/btnAction"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
