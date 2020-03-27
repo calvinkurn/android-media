@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:id="@+id/coordinatorLayout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator_layout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent"
+        android:layout_above="@id/btnMultiEdit"
+        android:layout_alignParentTop="true">
+
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
@@ -29,25 +30,25 @@
 
             <com.tokopedia.unifycomponents.SearchBarUnify
                 android:id="@+id/searchBar"
-                android:layout_marginLeft="@dimen/spacing_lvl4"
-                android:layout_marginTop="@dimen/spacing_lvl4"
-                android:layout_marginBottom="@dimen/spacing_lvl1"
-                android:layout_marginRight="@dimen/spacing_lvl4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:layout_marginRight="@dimen/spacing_lvl4"
+                android:layout_marginBottom="@dimen/spacing_lvl1"
                 android:visibility="gone"
+                app:layout_scrollFlags="scroll|snap"
                 app:search_bar_clearable="true"
-                app:search_bar_show_icon="false"
-                app:layout_scrollFlags="scroll|snap"/>
+                app:search_bar_show_icon="false" />
 
             <com.tokopedia.product.manage.feature.list.view.ui.tab.ProductManageTabFilter
                 android:id="@+id/tabFilters"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/product_manage_horizontal_spacing"
-                android:paddingRight="@dimen/product_manage_horizontal_spacing"
                 android:layout_marginTop="@dimen/product_manage_vertical_spacing"
                 android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
+                android:paddingLeft="@dimen/product_manage_horizontal_spacing"
+                android:paddingRight="@dimen/product_manage_horizontal_spacing"
                 android:visibility="gone"
                 app:layout_scrollFlags="scroll|snap" />
 
@@ -94,36 +95,42 @@
                     app:typographyWeight="bold"
                     android:text="@string/product_manage_multiple_select" />
             </LinearLayout>
+
+            <com.tokopedia.unifycomponents.DividerUnify
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"/>
         </com.google.android.material.appbar.AppBarLayout>
 
         <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
             android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:background="@color/white"
-            tools:visibility="gone"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:visibility="gone">
 
             <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:clipToPadding="false"
                 android:scrollbars="vertical" />
         </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
         <ProgressBar
             android:id="@+id/progressBar"
-            android:visibility="gone"
-            android:layout_gravity="center"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/btnMultiEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:background="@android:color/white"
         android:visibility="gone"
         app:cardElevation="@dimen/layout_lvl2"
@@ -132,10 +139,16 @@
         app:contentPaddingRight="@dimen/spacing_lvl4"
         app:contentPaddingTop="@dimen/spacing_lvl3"
         tools:visibility="visible">
+
         <com.tokopedia.unifycomponents.UnifyButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/product_manage_button_multi_edit"
             app:unifyButtonSize="large" />
     </androidx.cardview.widget.CardView>
-</LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/interceptor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</RelativeLayout>
