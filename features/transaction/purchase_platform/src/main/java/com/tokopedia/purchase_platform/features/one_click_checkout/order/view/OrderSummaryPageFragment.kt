@@ -109,6 +109,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             val validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = data?.getParcelableExtra(ARGS_VALIDATE_USE_DATA_RESULT)
             if (validateUsePromoRevampUiModel != null) {
                 viewModel.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel
+                viewModel.updatePromoState(validateUsePromoRevampUiModel.promoUiModel)
 //                shipmentPresenter.setValidateUsePromoRevampUiModel(validateUsePromoRevampUiModel)
                 // update button promo
 //                updateButtonPromoCheckout(validateUsePromoRevampUiModel.promoUiModel)
@@ -459,10 +460,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         var title = getString(R.string.promo_funnel_label)
         if (lastApply?.additionalInfo?.messageInfo?.message?.isNotEmpty() == true) {
             title = lastApply.additionalInfo.messageInfo.message
-            btn_promo_checkout.desc = lastApply.additionalInfo.messageInfo.detail
+        } else if (lastApply?.defaultEmptyPromoMessage?.isNotBlank() == true) {
+            title = lastApply.defaultEmptyPromoMessage
         }
         btn_promo_checkout.state = ButtonPromoCheckoutView.State.ACTIVE
         btn_promo_checkout.title = title
+        btn_promo_checkout.desc = lastApply?.additionalInfo?.messageInfo?.detail ?: ""
 
         btn_promo_checkout.setOnClickListener {
             viewModel.updateCartPromo { promoRequest, validateUsePromoRequest ->

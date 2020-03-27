@@ -13,6 +13,7 @@ import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_CHECKOUT
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_DEFAULT
 import com.tokopedia.purchase_platform.common.data.model.param.EditAddressParam
+import com.tokopedia.purchase_platform.features.checkout.domain.mapper.LastApplyUiMapper
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.EditAddressUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetPreferenceListUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccGlobalEvent
@@ -36,6 +37,7 @@ import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ProductDetailsItem
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.features.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoUiModel
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -1009,11 +1011,19 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
                     override fun onNext(t: ValidateUsePromoRevampUiModel) {
                         validateUsePromoRevampUiModel = t
+                        t.promoUiModel
+                        orderPromo.lastApply
                         // TODO: UPDATE PROMO BUTTON -> BUTTON PAY STATE
                     }
 
                     override fun onCompleted() {
                     }
                 })
+    }
+
+    fun updatePromoState(promoUiModel: PromoUiModel) {
+        orderPromo.lastApply = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel)
+        //trigger refresh promo button
+        orderTotal.value = orderTotal.value
     }
 }
