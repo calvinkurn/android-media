@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.view.fragment
 
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -94,12 +95,16 @@ class ContainerFragment : Fragment() {
             (activity as AppCompatActivity).setSupportActionBar(sahToolbar)
         }
 
-        val statusBarHeight = StatusbarHelper.getStatusBarHeight(context)
-        val layoutParams = statusBarBackground.layoutParams
-        if (layoutParams is LinearLayout.LayoutParams) {
-            layoutParams.height = statusBarHeight
-            statusBarBackground.layoutParams = layoutParams
-            statusBarBackground.requestLayout()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val statusBarHeight = StatusbarHelper.getStatusBarHeight(context)
+            val layoutParams = statusBarBackground?.layoutParams
+            layoutParams?.let {
+                if (it is LinearLayout.LayoutParams) {
+                    it.height = statusBarHeight
+                    statusBarBackground?.layoutParams = it
+                    statusBarBackground?.requestLayout()
+                }
+            }
         }
     }
 
