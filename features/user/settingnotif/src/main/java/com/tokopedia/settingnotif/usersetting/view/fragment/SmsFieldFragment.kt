@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.View
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.domain.pojo.SmsSection
+import com.tokopedia.settingnotif.usersetting.view.dataview.ChangeItemDataView.changePhoneNumber
+import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationPhoneNumber
 import com.tokopedia.settingnotif.usersetting.view.fragment.base.SettingFieldFragment
 import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingViewModel
 
@@ -28,7 +30,12 @@ class SmsFieldFragment: SettingFieldFragment() {
 
     override fun onSuccessGetUserSetting(data: UserSettingViewModel) {
         val newData = arrayListOf<VisitableSettings>()
-        newData.add(SmsSection())
+        if (userSession.phoneNumber.isEmpty()) {
+            newData.add(activationPhoneNumber())
+        } else {
+            newData.add(changePhoneNumber(userSession.phoneNumber))
+            newData.add(SmsSection())
+        }
         data.data = newData.toList()
         super.onSuccessGetUserSetting(data)
     }

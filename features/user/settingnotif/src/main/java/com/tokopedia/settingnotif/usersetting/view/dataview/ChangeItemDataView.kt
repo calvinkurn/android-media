@@ -2,12 +2,23 @@ package com.tokopedia.settingnotif.usersetting.view.dataview
 
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.domain.pojo.ChangeSection
+import com.tokopedia.settingnotif.usersetting.state.Email
+import com.tokopedia.settingnotif.usersetting.state.Phone
 
 object ChangeItemDataView {
 
     fun changeEmail(email: String) = ChangeSection(
+            icon = R.drawable.ic_settingnotif_change_email,
             description = R.string.settingnotif_change_email,
-            changeItem = email
+            changeItem = email,
+            state = Email
+    )
+
+    fun changePhoneNumber(phoneNumber: String) = ChangeSection(
+            icon = R.drawable.ic_settingnotif_change_email,
+            description = R.string.settingnotif_change_phone_number,
+            changeItem = phoneNumber,
+            state = Phone
     )
 
 }
