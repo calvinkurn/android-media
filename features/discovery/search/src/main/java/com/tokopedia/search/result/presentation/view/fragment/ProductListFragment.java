@@ -1638,12 +1638,12 @@ public class ProductListFragment
     }
 
     @Override
-    public void onInspirationCarouselProductClicked(InspirationCarouselViewModel.Option.Product product) {
+    public void onInspirationCarouselProductClicked(@NotNull InspirationCarouselViewModel.Option.Product product) {
         redirectionStartActivity(product.getApplink(), product.getUrl());
 
         List<Object> products = new ArrayList<>();
         products.add(product.getProductAsObjectDataLayer());
-        SearchTracking.trackEventClickInspirationCarouselOptionProduct(getQueryKey(), products);
+        SearchTracking.trackEventClickInspirationCarouselOptionProduct(product.getInspirationCarouselType(), getQueryKey(), products);
     }
 
     @Override
@@ -1653,7 +1653,7 @@ public class ProductListFragment
         String keywordBefore = getQueryKey();
         Uri applink = Uri.parse(option.getApplink());
         String keywordAfter = applink.getQueryParameter(SearchApiConst.Q);
-        SearchTracking.trackEventClickInspirationCarouselOptionSeeAll(keywordBefore, keywordAfter);
+        SearchTracking.trackEventClickInspirationCarouselOptionSeeAll(option.getInspirationCarouselType(), keywordBefore, keywordAfter);
     }
 
     @Override
@@ -1665,7 +1665,7 @@ public class ProductListFragment
                 products.add(object.getProductImpressionAsObjectDataLayer());
             }
         }
-        SearchTracking.trackImpressionInspirationCarousel(getQueryKey(), products);
+        SearchTracking.trackImpressionInspirationCarousel(inspirationCarouselViewModel.getType(), getQueryKey(), products);
     }
 
     @Override
@@ -1709,5 +1709,10 @@ public class ProductListFragment
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist_failed));
         }
+    }
+
+    @Override
+    public boolean isLandingPage() {
+        return searchParameter.getBoolean(SearchApiConst.LANDING_PAGE);
     }
 }
