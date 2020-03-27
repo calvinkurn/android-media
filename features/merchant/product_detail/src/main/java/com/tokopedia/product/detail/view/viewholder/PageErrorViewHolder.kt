@@ -10,7 +10,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TobacoErrorData
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.product.detail.view.util.ErrorHelper
+import com.tokopedia.product.detail.view.util.ProductDetailErrorHelper
 import kotlinx.android.synthetic.main.item_dynamic_global_error.view.*
 
 class PageErrorViewHolder(val view: View,
@@ -26,7 +26,7 @@ class PageErrorViewHolder(val view: View,
         if (element.shouldShowTobacoError) {
             renderTobacoError(element.tobacoErrorData ?: TobacoErrorData())
         } else {
-            if (element.errorCode == ErrorHelper.CODE_PRODUCT_ERR_BANNED) {
+            if (element.errorCode == ProductDetailErrorHelper.CODE_PRODUCT_ERR_BANNED) {
                 renderBannedProductError()
             } else {
                 view.global_error_pdp.setType(element.errorCode.toInt())
@@ -40,7 +40,7 @@ class PageErrorViewHolder(val view: View,
             element.errorCode == GlobalError.PAGE_NOT_FOUND.toString() -> view.global_error_pdp.setActionClickListener {
                 listener.goToHomePageClicked()
             }
-            element.errorCode == ErrorHelper.CODE_PRODUCT_ERR_BANNED -> view.global_error_pdp.setActionClickListener {
+            element.errorCode == ProductDetailErrorHelper.CODE_PRODUCT_ERR_BANNED -> view.global_error_pdp.setActionClickListener {
                 listener.goToWebView(TNC_BANNED_PRODUCT)
             }
             element.shouldShowTobacoError -> view.global_error_pdp.setActionClickListener {

@@ -144,7 +144,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
 
 
     fun switchToDarkToolbar() {
-        if (toolbarType != TOOLBAR_DARK_TYPE) {
+        if (toolbarType != TOOLBAR_DARK_TYPE && crossfaderIsInitialized()) {
             wishlistCrossfader.reverseTransition(200)
             notifCrossfader.reverseTransition(200)
             inboxCrossfader.reverseTransition(200)
@@ -152,6 +152,11 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             toolbarType = TOOLBAR_DARK_TYPE
         }
     }
+
+    private fun crossfaderIsInitialized() =
+            ::wishlistCrossfader.isInitialized
+                    && ::notifCrossfader.isInitialized
+                    && ::inboxCrossfader.isInitialized
 
     private fun getBitmapDrawableFromVectorDrawable(context: Context, drawableId: Int): Drawable {
         return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -175,7 +180,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
     }
 
     fun switchToLightToolbar() {
-        if (toolbarType != TOOLBAR_LIGHT_TYPE) {
+        if (toolbarType != TOOLBAR_LIGHT_TYPE && crossfaderIsInitialized()) {
             wishlistCrossfader.reverseTransition(200)
             notifCrossfader.reverseTransition(200)
             inboxCrossfader.reverseTransition(200)

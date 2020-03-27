@@ -122,6 +122,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupToolbar(view)
+        setToolbarShadowVisibility(false)
         viewModel.initFragmentUiModel(arguments?.getInt(ARGS_PAGE_SOURCE, 0) ?: 0)
 
         button_apply_promo.setOnClickListener {
@@ -565,7 +566,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     override fun onClickApplyRecommendedPromo() {
-        viewModel.applyPromoSuggestion()
+        viewModel.applyRecommendedPromo()
     }
 
     override fun onClickApplyManualInputPromo(promoCode: String) {

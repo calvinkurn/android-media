@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -12,6 +13,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.button.BottomActionView
+import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationTracker
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.data.entity.ProductData
@@ -20,10 +22,15 @@ import com.tokopedia.notifcenter.data.state.BottomSheetType
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.listener.NotificationFilterListener
 import com.tokopedia.notifcenter.listener.NotificationItemListener
+import com.tokopedia.notifcenter.presentation.activity.NotificationActivity
 import com.tokopedia.notifcenter.presentation.fragment.NotificationLongerTextDialog
 import com.tokopedia.notifcenter.presentation.fragment.NotificationProductCardDialog
+import com.tokopedia.notifcenter.presentation.fragment.ProductStockReminderDialog
 import com.tokopedia.notifcenter.util.endLess
 import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
         BaseAdapterTypeFactory>(),
@@ -31,6 +38,8 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
         NotificationFilterListener {
 
     private lateinit var longerTextDialog: BottomSheetDialogFragment
+
+    @Inject lateinit var userSession: UserSessionInterface
 
     abstract fun bottomFilterView(): BottomActionView?
     abstract fun analytics(): NotificationTracker
@@ -127,6 +136,22 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
         when (bottomSheet) {
             is BottomSheetType.LongerContent -> showLongerContent(element)
             is BottomSheetType.ProductCheckout -> showProductCheckout(element)
+            is BottomSheetType.StockHandler -> showStockHandlerDialog(element)
+        }
+    }
+
+    private fun showStockHandlerDialog(element: NotificationItemViewBean) {
+        element.getAtcProduct()?.let {
+            if (it.stock < 1) {
+                context?.let { context ->
+                    ProductStockReminderDialog(
+                            context = context,
+                            fragmentManager = childFragmentManager,
+                            userSession = userSession,
+                            listener = this
+                    ).show(element)
+                }
+            }
         }
     }
 
@@ -162,6 +187,25 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
         }
     }
 
+    protected fun showToastMessageError(message: String) {
+        view?.let { Toaster.showError(it, message, Snackbar.LENGTH_LONG) }
+    }
+
+    override fun onSuccessReminderStock() {
+        view?.let { view ->
+            context?.let {
+                Toaster.make(
+                        view,
+                        it.getString(R.string.product_reminder_success),
+                        Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL,
+                        it.getString(R.string.notifcenter_btn_title_ok),
+                        View.OnClickListener {  }
+                )
+            }
+        }
+    }
+
     override fun onPause() {
         super.onPause()
         trackScrollListToBottom()
@@ -192,6 +236,12 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
     override fun onItemClicked(t: Visitable<*>?) = Unit
     override fun getScreenName(): String = ""
     override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {}
+
+    override fun initInjector() {
+        (activity as NotificationActivity)
+                .notificationComponent
+                .inject(this)
+    }
 
     companion object {
         const val PARAM_CONTENT_TITLE = "content title"
