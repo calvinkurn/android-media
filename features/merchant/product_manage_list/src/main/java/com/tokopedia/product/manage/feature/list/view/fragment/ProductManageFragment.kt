@@ -694,10 +694,20 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
         when(result) {
             is EditByStatus -> updateProductListStatus(productIds, result.status)
-            is EditByMenu -> viewModel.toggleMultiSelect()
+            is EditByMenu -> if(result.failed.isEmpty()) {
+                viewModel.toggleMultiSelect()
+            }
         }
 
-        getFiltersTab(withDelay = true)
+        unCheckProducts(productIds)
+    }
+
+    private fun unCheckProducts(productIds: List<String>) {
+        productIds.forEach { productId ->
+            val index = adapter.data.indexOfFirst { it.id == productId }
+            if(index > 0) { onClickProductCheckBox(false, index) }
+        }
+        productManageListAdapter.notifyDataSetChanged()
     }
 
     private fun updateProductListStatus(productIds: List<String>, status: ProductStatus) {
@@ -1345,6 +1355,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun clearSelectAllCheckBox() {
         checkBoxSelectAll.isChecked = false
+        checkBoxSelectAll.setIndeterminate(false)
     }
 
     private fun clearProductList() {
