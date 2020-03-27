@@ -23,7 +23,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -86,8 +85,8 @@ import com.tokopedia.product.detail.common.data.model.product.Video
 import com.tokopedia.product.detail.data.model.ProductInfoP2General
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
-import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.TradeinResponse
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
@@ -106,6 +105,7 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.DynamicProductDetailHashMap
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHelper
+import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
 import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet
@@ -134,10 +134,9 @@ import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.variant_common.model.ProductVariantCommon
+import com.tokopedia.variant_common.model.VariantCategory
 import com.tokopedia.variant_common.model.VariantOptionWithAttribute
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import com.tokopedia.variant_common.view.ProductVariantListener
@@ -266,7 +265,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun hasInitialSwipeRefresh(): Boolean = true
 
     override fun onSwipeRefresh() {
-        pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant = mutableMapOf()
         recommendationCarouselPositionSavedState.clear()
         isLoadingInitialData = true
         isTopdasLoaded = false
@@ -341,7 +339,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
         // handling menu toolbar / cart counter / settings / etc
-
         activity?.let {
             handlingMenuPreparation(menu)
         }
@@ -992,7 +989,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun observeImageVariantPartialyChanged() {
-        viewModel.updatedImageVariant.observe(viewLifecycleOwner, Observer {
+        viewLifecycleOwner.observe(viewModel.updatedImageVariant) {
             val mediaList = it.second.toMutableList()
             val processedVariant = it.first
             pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = processedVariant
@@ -1005,62 +1002,182 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             } else {
                 dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, ProductDetailConstant.PAYLOAD_VARIANT_COMPONENT)
             }
-        })
+        }
     }
 
     private fun observeonVariantClickedData() {
-        viewModel.onVariantClickedData.observe(viewLifecycleOwner, Observer {
-            val selectedChildAndPosition = VariantCommonMapper.selectedProductData(viewModel.variantData
-                    ?: ProductVariantCommon())
-            val selectedChild = selectedChildAndPosition?.second
-            val updatedDynamicProductInfo = VariantMapper.updateDynamicProductInfo(viewModel.getDynamicProductInfoP1, selectedChild, viewModel.listOfParentMedia)
+        viewLifecycleOwner.observe(viewModel.onVariantClickedData) {
+            updateVariantDataToExistingProductData(it)
+        }
+    }
 
-            pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = it
-            viewModel.multiOrigin[selectedChild?.productId.toString()]?.let {
-                viewModel.selectedMultiOrigin = it
-                pdpHashMapUtil?.snapShotMap?.nearestWarehouseDataModel = ProductSnapshotDataModel.NearestWarehouseDataModel(it.warehouseInfo.id, it.price, it.stockWording)
-            }
+    private fun updateVariantDataToExistingProductData(variantProcessedData: List<VariantCategory>?) {
+        val selectedChildAndPosition = VariantCommonMapper.selectedProductData(viewModel.variantData
+                ?: ProductVariantCommon())
+        val selectedChild = selectedChildAndPosition?.second
+        val indexOfSelectedVariant = selectedChildAndPosition?.first
+        val updatedDynamicProductInfo = VariantMapper.updateDynamicProductInfo(viewModel.getDynamicProductInfoP1, selectedChild, viewModel.listOfParentMedia)
 
-            productId = updatedDynamicProductInfo?.basic?.productID
-            viewModel.getDynamicProductInfoP1 = updatedDynamicProductInfo
-            pdpHashMapUtil?.updateDataP1(updatedDynamicProductInfo)
+        pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = variantProcessedData
+        viewModel.multiOrigin[selectedChild?.productId.toString()]?.let {
+            viewModel.selectedMultiOrigin = it
+            pdpHashMapUtil?.snapShotMap?.nearestWarehouseDataModel = ProductSnapshotDataModel.NearestWarehouseDataModel(it.warehouseInfo.id, it.price, it.stockWording)
+        }
 
-            actionButtonView.renderData(viewModel.getDynamicProductInfoP1?.basic?.isActive() == false,
-                    viewModel.p2Login.value?.isExpressCheckoutType ?: false,
-                    hasTopAds())
+        productId = updatedDynamicProductInfo?.basic?.productID
+        viewModel.getDynamicProductInfoP1 = updatedDynamicProductInfo
+        pdpHashMapUtil?.updateDataP1(updatedDynamicProductInfo)
+        updateButtonAfterClickVariant(indexOfSelectedVariant)
 
-            renderFullfillment()
-            dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap)
-            dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, 1)
-        })
+        renderFullfillment()
+        dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap)
+        dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, 1)
+    }
+
+    private fun updateButtonAfterClickVariant(indexOfVariantButton: Int?) {
+        actionButtonView.renderData(viewModel.getDynamicProductInfoP1?.basic?.isActive() == false,
+                viewModel.p2Login.value?.isExpressCheckoutType ?: false,
+                hasTopAds(),
+                viewModel.cartTypeData?.getCartTypeAtPosition(indexOfVariantButton ?: -1))
     }
 
     private fun observeInitialVariantData() {
-        viewModel.initialVariantData.observe(viewLifecycleOwner, Observer {
-            pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = it
+        viewLifecycleOwner.observe(viewModel.initialVariantData) {
+            if (pdpHashMapUtil?.productNewVariantDataModel?.isPartialySelected() == true) {
+                pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = it
+            } else {
+                /**
+                 * If variant child only has 1 child, we will auto selected it.
+                 * So we have to update existing product and UI
+                 */
+                updateVariantDataToExistingProductData(it)
+            }
             dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, null)
-        })
+        }
     }
 
     private fun observeAddToCart() {
-        viewModel.addToCartLiveData.observe(viewLifecycleOwner, Observer {
+        viewLifecycleOwner.observe(viewModel.addToCartLiveData) { data ->
             hideProgressDialog()
-            when (it) {
-                is Success -> {
-                    if (it.data.errorReporter.eligible) {
-                        logException(Throwable(it.data.errorReporter.texts.submitTitle))
-                        showDialogErrorAtc(it.data)
-                    } else {
-                        onSuccessAtc(it.data.data.cartId.toString())
-                    }
+
+            data.doSuccessOrFail({
+                if (it.data.errorReporter.eligible) {
+                    logException(Throwable(it.data.errorReporter.texts.submitTitle))
+                    showDialogErrorAtc(it.data)
+                } else {
+                    onSuccessAtc(it.data.data.cartId.toString())
                 }
-                is Fail -> {
-                    logException(it.throwable)
-                    showToasterError(it.throwable.message ?: "")
-                }
-            }
-        })
+            }, {
+                logException(it)
+                showToasterError(it.message ?: "")
+            })
+        }
     }
+
+    private fun observeP1() {
+        viewLifecycleOwner.observe(viewModel.productLayout) { data ->
+            if (::performanceMonitoringP1.isInitialized)
+                performanceMonitoringP1.stopTrace()
+
+            data.doSuccessOrFail({
+                context?.let { context ->
+                    pdpHashMapUtil = DynamicProductDetailHashMap(context, DynamicProductDetailMapper.hashMapLayout(it.data))
+                }
+                onSuccessGetDataP1(it.data)
+            }, {
+                logException(it)
+                renderPageError(it)
+            })
+        }
+    }
+
+    private fun observeP2Login() {
+        viewLifecycleOwner.observe(viewModel.p2Login) {
+            topAdsGetProductManage = it.topAdsGetProductManage
+            actionButtonView.renderData(viewModel.getDynamicProductInfoP1?.basic?.isActive() == false,
+                    it.isExpressCheckoutType, hasTopAds(),
+                    it.newCartTypeResponse.cartRedirection.data.firstOrNull())
+
+            it.pdpAffiliate?.let { renderAffiliate(it) }
+
+            if (::performanceMonitoringFull.isInitialized)
+                performanceMonitoringP2Login.stopTrace()
+
+            pdpHashMapUtil?.updateDataP2Login(it)
+            dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap, ProductDetailConstant.PAYLOAD_WISHLIST)
+        }
+    }
+
+    private fun observeP2Shop() {
+        viewLifecycleOwner.observe(viewModel.p2ShopDataResp) {
+            if (!viewModel.isUserSessionActive && ::performanceMonitoringFull.isInitialized)
+                performanceMonitoringFull.stopTrace()
+            performanceMonitoringP2.stopTrace()
+
+            onSuccessGetDataP2Shop(it)
+        }
+    }
+
+    private fun observeP2General() {
+        viewLifecycleOwner.observe(viewModel.p2General) {
+            if (::performanceMonitoringP2General.isInitialized)
+                performanceMonitoringP2General.stopTrace()
+
+            onSuccessGetDataP2General(it)
+        }
+    }
+
+    private fun observeP3() {
+        observe(viewModel.productInfoP3resp) {
+            if (::performanceMonitoringFull.isInitialized)
+                performanceMonitoringFull.stopTrace()
+
+            trackProductView(viewModel.tradeInParams.isEligible == 1)
+            onSuccessGetDataP3Resp(it)
+        }
+    }
+
+    private fun observeToggleFavourite() {
+        viewLifecycleOwner.observe(viewModel.toggleFavoriteResult) { data ->
+            data.doSuccessOrFail({
+                onSuccessFavoriteShop(it.data)
+            }, {
+                onFailFavoriteShop(it)
+            })
+        }
+    }
+
+    private fun observeMoveToWarehouse() {
+        viewLifecycleOwner.observe(viewModel.moveToWarehouseResult) { data ->
+            data.doSuccessOrFail({
+                onSuccessWarehouseProduct()
+            }, {
+                onErrorWarehouseProduct(it)
+            })
+        }
+    }
+
+    private fun observeMoveToEtalase() {
+        viewLifecycleOwner.observe(viewModel.moveToEtalaseResult) { data ->
+            data.doSuccessOrFail({
+                onSuccessMoveToEtalase()
+            }, {
+                onErrorMoveToEtalase(it)
+            })
+        }
+    }
+
+    private fun observeRecommendationProduct() {
+        viewLifecycleOwner.observe(viewModel.loadTopAdsProduct) { data ->
+            data.doSuccessOrFail({
+                pdpHashMapUtil?.updateRecomData(it.data)
+                dynamicAdapter.notifyRecomAdapter(pdpHashMapUtil?.listProductRecomMap)
+            }, {
+                dynamicAdapter.removeRecommendation(pdpHashMapUtil?.listProductRecomMap)
+            })
+        }
+    }
+
 
     private fun onSuccessAtc(cartId: String) {
         DynamicProductDetailTracking.Click.eventEcommerceBuy(viewModel.buttonActionType,
@@ -1112,109 +1229,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             putExtra(ApplinkConst.Transaction.EXTRA_CART_ID, cartId)
             startActivity(intent)
         }
-    }
-
-    private fun observeP1() {
-        viewModel.productLayout.observe(viewLifecycleOwner, Observer {
-            if (::performanceMonitoringP1.isInitialized)
-                performanceMonitoringP1.stopTrace()
-            when (it) {
-                is Success -> {
-                    context?.let { context ->
-                        pdpHashMapUtil = DynamicProductDetailHashMap(context, DynamicProductDetailMapper.hashMapLayout(it.data))
-                    }
-                    onSuccessGetDataP1(it.data)
-                }
-                is Fail -> {
-                    logException(it.throwable)
-                    renderPageError(it.throwable)
-                }
-            }
-        })
-    }
-
-    private fun observeP2Login() {
-        viewModel.p2Login.observe(this, Observer {
-            topAdsGetProductManage = it.topAdsGetProductManage
-            it.pdpAffiliate?.let { renderAffiliate(it) }
-            actionButtonView.renderData(viewModel.getDynamicProductInfoP1?.basic?.isActive() == false,
-                    it.isExpressCheckoutType, hasTopAds())
-
-            if (::performanceMonitoringFull.isInitialized)
-                performanceMonitoringP2Login.stopTrace()
-
-            pdpHashMapUtil?.updateDataP2Login(it)
-            dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap, ProductDetailConstant.PAYLOAD_WISHLIST)
-        })
-    }
-
-    private fun observeP2Shop() {
-        viewModel.p2ShopDataResp.observe(this, Observer {
-            if (!viewModel.isUserSessionActive && ::performanceMonitoringFull.isInitialized)
-                performanceMonitoringFull.stopTrace()
-            performanceMonitoringP2.stopTrace()
-
-            onSuccessGetDataP2Shop(it)
-        })
-    }
-
-    private fun observeP2General() {
-        viewModel.p2General.observe(this, Observer {
-            if (::performanceMonitoringP2General.isInitialized)
-                performanceMonitoringP2General.stopTrace()
-
-            onSuccessGetDataP2General(it)
-        })
-    }
-
-    private fun observeP3() {
-        viewModel.productInfoP3resp.observe(this, Observer {
-            if (::performanceMonitoringFull.isInitialized)
-                performanceMonitoringFull.stopTrace()
-
-            trackProductView(viewModel.tradeInParams.isEligible == 1)
-            onSuccessGetDataP3Resp(it)
-        })
-    }
-
-    private fun observeToggleFavourite() {
-        viewModel.toggleFavoriteResult.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessFavoriteShop(it.data)
-                is Fail -> onFailFavoriteShop(it.throwable)
-            }
-        })
-    }
-
-    private fun observeMoveToWarehouse() {
-        viewModel.moveToWarehouseResult.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessWarehouseProduct()
-                is Fail -> onErrorWarehouseProduct(it.throwable)
-            }
-        })
-    }
-
-    private fun observeMoveToEtalase() {
-        viewModel.moveToEtalaseResult.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessMoveToEtalase()
-                is Fail -> onErrorMoveToEtalase(it.throwable)
-            }
-        })
-    }
-
-    private fun observeRecommendationProduct() {
-        viewModel.loadTopAdsProduct.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    pdpHashMapUtil?.updateRecomData(it.data)
-                    dynamicAdapter.notifyRecomAdapter(pdpHashMapUtil?.listProductRecomMap)
-
-                }
-                is Fail -> dynamicAdapter.removeRecommendation(pdpHashMapUtil?.listProductRecomMap)
-            }
-        })
     }
 
     private fun onSuccessGetDataP1(data: List<DynamicPdpDataModel>) {
@@ -1444,7 +1458,16 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             dynamicAdapter.clearElement(pdpHashMapUtil?.productNewVariantDataModel)
             return
         }
-        pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierToHashMap(data)
+
+        val isOnlyHaveOneVariantLeftData = data.autoSelectedOptionIds()
+
+        if (isOnlyHaveOneVariantLeftData.isEmpty()) {
+            //If empty means child is more than 1 , so render initial variant data without selected any of them
+            pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierToHashMap(data)
+        } else {
+            pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(data, isOnlyHaveOneVariantLeftData)
+        }
+
         viewModel.processVariant(data, pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant)
     }
 
@@ -2047,6 +2070,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     doAtc(ProductDetailConstant.BUY_BUTTON)
                 }
             }
+        }
+
+        actionButtonView.buttonCartTypeClick = { cartType, isAtcButton ->
+            val isLeasing = viewModel.getDynamicProductInfoP1?.basic?.isLeasing ?: false
+            val atcKey = DynamicProductDetailMapper.generateButtonAction(cartType, isAtcButton, isLeasing)
+            doAtc(atcKey)
         }
     }
 
