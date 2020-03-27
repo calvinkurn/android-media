@@ -16,20 +16,20 @@ class SettingFieldPresenter @Inject constructor(
 ) : BaseDaggerPresenter<SettingFieldContract.View>(), SettingFieldContract.Presenter {
 
     override fun loadUserSettings() {
-        return getUserSettingUseCase.load({ data ->
+        return getUserSettingUseCase.load(onSuccess = { data ->
             if (data != null) {
                 view?.onSuccessGetUserSetting(data)
             }
-        }, ::onUserSettingError)
+        }, onError = ::onUserSettingError)
     }
 
     override fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>) {
         val params = settingParams(notificationType, updatedSettingIds)
-        setUserSettingUseCase.load({ data ->
+        setUserSettingUseCase.load(requestParams = params, onSuccess = { data ->
             if (data != null) {
                 view?.onSuccessSetUserSetting(data)
             }
-        }, ::onUserSettingError)
+        }, onError = ::onUserSettingError)
     }
 
     override fun requestUpdateMoengageUserSetting(updatedSettingIds: List<Map<String, Any>>) {
