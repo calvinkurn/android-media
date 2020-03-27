@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.text.Editable
 import android.text.InputType
 import android.text.TextUtils
@@ -29,6 +28,7 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
@@ -67,6 +67,8 @@ import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
@@ -170,6 +172,12 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
 
     override fun initInjector() {
         getComponent(AddEditProductDetailComponent::class.java).inject(this)
+//        DaggerAddEditProductDetailComponent
+//                .builder()
+//                .addEditProductDetailModule(AddEditProductDetailModule())
+//                .build()
+//                .inject(this)
+        //                .shopComponent(getComponent(ShopComponent::class.java))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -362,18 +370,15 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
 
             if (!hasFocus) {
                 // TODO: refactor this code once the integration code is ready
+                onLoadingNameSuggestion()
                 productNameRecAdapter?.setProductNameInput(productNameInput)
-                productNameRecAdapter?.setProductNameRecommendations(dummyProductNameRecs)
-                productNameRecLoader?.visibility = View.VISIBLE
-                productNameRecShimmering?.visibility = View.VISIBLE
-                Handler().postDelayed({
-                    productNameRecLoader?.visibility = View.GONE
-                    productNameRecShimmering?.visibility = View.GONE
-                    productNameRecView?.visibility = View.VISIBLE
-                    productCategoryLayout?.visibility = View.VISIBLE
-                    productCatalogLayout?.visibility = View.VISIBLE
-                    productCategoryRecListView?.setData(productCategoryRecs)
-                }, 1000)
+//                productNameRecAdapter?.setProductNameRecommendations(dummyProductNameRecs)
+                viewModel.getSearchNameSuggestion(query = productNameInput)
+
+//                Handler().postDelayed({
+//
+//                    productCategoryRecListView?.setData(productCategoryRecs)
+//                }, 1000)
             }
         }
 
@@ -534,6 +539,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         subscribeToPreOrderSwitchStatus()
         subscribeToPreOrderDurationInputStatus()
         subscribeToInputStatus()
+        subscribeNameSuggestion()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -800,5 +806,32 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
+    }
+
+    private fun subscribeNameSuggestion() {
+        observe(viewModel.searchProductSuggestionName) {
+            when(it) {
+                is Success -> {
+                    productNameRecAdapter?.setProductNameRecommendations(it.data)
+                    onResultNameSuggestion()
+                }
+                is Fail -> {
+
+                }
+            }
+        }
+    }
+
+    private fun onLoadingNameSuggestion() {
+        productNameRecLoader?.visibility = View.VISIBLE
+        productNameRecShimmering?.visibility = View.VISIBLE
+    }
+
+    private fun onResultNameSuggestion() {
+        productNameRecLoader?.visibility = View.GONE
+        productNameRecShimmering?.visibility = View.GONE
+        productNameRecView?.visibility = View.VISIBLE
+        productCategoryLayout?.visibility = View.VISIBLE
+        productCatalogLayout?.visibility = View.VISIBLE
     }
 }
