@@ -233,6 +233,7 @@
             android:layout_height="wrap_content"
             android:paddingEnd="@dimen/dp_30"
             android:paddingStart="@dimen/dp_30"
+            android:minWidth="@dimen/dp_80"
             android:text="@string/action_buy"
             android:textAllCaps="false"
             android:visibility="gone"
