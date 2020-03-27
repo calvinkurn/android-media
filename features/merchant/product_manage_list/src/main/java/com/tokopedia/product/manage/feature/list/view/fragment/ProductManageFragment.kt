@@ -38,13 +38,10 @@ import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.gm.common.constant.URL_POWER_MERCHANT_SCORE_TIPS
-import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST
 import com.tokopedia.kotlin.extensions.view.*
@@ -93,20 +90,15 @@ import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStock
 import com.tokopedia.product.manage.feature.quickedit.stock.presentation.fragment.ProductManageQuickEditStockFragment
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
 import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity
-import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_STOCK
 import com.tokopedia.product.manage.item.main.duplicate.activity.ProductDuplicateActivity
 import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActivity
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_PRODUCT_NAME
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_THRESHOLD
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.INSTAGRAM_SELECT_REQUEST_CODE
-import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.REQUEST_CODE_FILTER
-import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.REQUEST_CODE_SORT
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.REQUEST_CODE_STOCK_REMINDER
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.SET_CASHBACK_REQUEST_CODE
-import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.STOCK_EDIT_REQUEST_CODE
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.URL_TIPS_TRICK
-import com.tokopedia.product.manage.oldlist.data.model.BulkBottomSheetType
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
@@ -127,7 +119,6 @@ import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 
 open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductManageAdapterFactoryImpl>(),
-    MerchantCommonBottomSheet.BottomSheetListener,
     ProductViewHolder.ProductViewHolderView,
     FilterTabViewHolder.ProductFilterListener,
     ProductMenuViewHolder.ProductMenuListener,
@@ -152,7 +143,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private val stockInfoBottomSheet by lazy { StockInformationBottomSheet(view, fragmentManager) }
 
     private val productManageListAdapter by lazy { adapter as ProductManageListAdapter }
-    private var stockType = BulkBottomSheetType.StockType()
     private var itemsChecked: MutableList<ProductViewModel> = mutableListOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -773,14 +763,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             else -> ErrorHandler.getErrorMessage(context, throwable)
         }
 
-    override fun onBottomSheetButtonClicked() {
-        if (viewModel.isIdlePowerMerchant()) {
-            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_POWER_MERCHANT_SCORE_TIPS)
-        } else if (!viewModel.isPowerMerchant()) {
-            RouteManager.route(context, ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE)
-        }
-    }
-
     override fun onClickProductCheckBox(isChecked: Boolean, position: Int) {
         val product = adapter.data[position]
         val checkedData = itemsChecked.firstOrNull { it.id.contains(product.id) }
@@ -1106,24 +1088,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     val imageDescList = it.getStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST)
                     goToProductDraft(imageUrls, imageDescList)
                 }
-                REQUEST_CODE_FILTER -> if (resultCode == Activity.RESULT_OK) {
-                    loadInitialData()
-                }
                 REQUEST_CODE_PICK_ETALASE -> if (resultCode == Activity.RESULT_OK) {
                     val productIds = itemsChecked.map{ product -> product.id }
                     val etalaseId = it.getStringExtra(EXTRA_ETALASE_ID)
                     val etalaseName = it.getStringExtra(EXTRA_ETALASE_NAME)
 
                     viewModel.editProductsEtalase(productIds, etalaseId, etalaseName)
-                }
-                STOCK_EDIT_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
-                    val isActive = it.getBooleanExtra(EXTRA_STOCK, false)
-                    val productStock: Int
-                    productStock = if (isActive) 1 else 0
-                    stockType.stockStatus = productStock
-                }
-                REQUEST_CODE_SORT -> if (resultCode == Activity.RESULT_OK) {
-                    loadInitialData()
                 }
                 REQUEST_CODE_STOCK_REMINDER -> if(resultCode == Activity.RESULT_OK) {
                     val productName = it.getStringExtra(EXTRA_PRODUCT_NAME)
