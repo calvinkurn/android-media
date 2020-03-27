@@ -124,11 +124,11 @@ data class OrderCost(
 //        val discountAmount: Int,
 //        val hasDiscountDetails: Boolean,
 //        val shippingDiscountLabel: String,
-        val shippingDiscountAmount: Int = 0
+        val shippingDiscountAmount: Int = 0,
 //        val productDiscountLabel: String,
 //        val productDiscountAmount: Int,
-//        val cashbackLabel: String,
-//        val cashbackAmount: Int
+        val cashbackLabel: String = "",
+        val cashbackAmount: Int = 0
 )
 
 enum class ButtonBayarState { NORMAL, LOADING, DISABLE }
