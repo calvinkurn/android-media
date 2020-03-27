@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.MixTopTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -23,7 +22,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SimpleHorizontalLinearLayoutDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.SeeMorePdpDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.typeFactory.FlashSaleCardViewTypeFactoryImpl
 import com.tokopedia.productcard.ProductCardFlashSaleModel
@@ -35,9 +33,8 @@ import java.util.*
 
 class MixTopBannerViewHolder(
         itemView: View, val homeCategoryListener: HomeCategoryListener,
-        countDownListener: CountDownView.CountDownListener,
         private val parentRecycledViewPool: RecyclerView.RecycledViewPool
-) : DynamicChannelViewHolder(itemView, homeCategoryListener, countDownListener), FlashSaleCardListener{
+) : DynamicChannelViewHolder(itemView, homeCategoryListener), FlashSaleCardListener{
     private val bannerTitle = itemView.findViewById<Typography>(R.id.banner_title)
     private val bannerDescription = itemView.findViewById<Typography>(R.id.banner_description)
     private val bannerUnifyButton = itemView.findViewById<UnifyButton>(R.id.banner_button)
