@@ -34,8 +34,7 @@ import java.util.*
 
 class MixTopBannerViewHolder(
         itemView: View, val homeCategoryListener: HomeCategoryListener,
-        countDownListener: CountDownView.CountDownListener,
-        private val parentRecycledViewPool: RecyclerView.RecycledViewPool
+        countDownListener: CountDownView.CountDownListener
 ) : DynamicChannelViewHolder(itemView, homeCategoryListener, countDownListener), FlashSaleCardListener{
     private val bannerTitle = itemView.findViewById<Typography>(R.id.banner_title)
     private val bannerDescription = itemView.findViewById<Typography>(R.id.banner_description)
@@ -106,8 +105,6 @@ class MixTopBannerViewHolder(
 
     private fun mappingView(channel: DynamicHomeChannel.Channels) {
         val visitables = mappingVisitablesFromChannel(channel)
-
-        recyclerView.setRecycledViewPool(parentRecycledViewPool)
         recyclerView.setHasFixedSize(true)
 
         valuateRecyclerViewDecoration()
