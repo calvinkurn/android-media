@@ -1,13 +1,6 @@
 package com.tokopedia.product.addedit.detail.di
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.detail.domain.interactor.GetSearchShopProductUseCase
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIVERSE_SEARCH_QUERY
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -46,4 +39,5 @@ class AddEditProductDetailModule {
     fun provideUserSessionInterface(@ApplicationContext context: Context?): UserSessionInterface {
         return UserSession(context)
     }
+    fun provideUserSession(context: Context): UserSessionInterface = UserSession(context)
 }
