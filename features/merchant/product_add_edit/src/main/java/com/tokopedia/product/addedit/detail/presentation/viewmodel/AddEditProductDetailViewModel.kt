@@ -4,13 +4,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.detail.domain.interactor.GetSearchShopProductUseCase
+import com.tokopedia.product.addedit.detail.domain.mapper.AddEditProductDetailMapper
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class AddEditProductDetailViewModel @Inject constructor(val provider: ResourceProvider, dispatcher: CoroutineDispatcher)
+class AddEditProductDetailViewModel @Inject constructor(val provider: ResourceProvider, dispatcher: CoroutineDispatcher,
+                                                        private val getSearchShopProductUseCase: GetSearchShopProductUseCase)
     : BaseViewModel(dispatcher) {
 
     private val mIsProductPhotoError = MutableLiveData<Boolean>()
@@ -45,6 +54,9 @@ class AddEditProductDetailViewModel @Inject constructor(val provider: ResourcePr
     val isPreOrderDurationInputError: LiveData<Boolean>
         get() = mIsPreOrderDurationInputError
     var preOrderDurationMessage: String = ""
+
+    private var _searchProductSuggestionName = MutableLiveData<Result<List<String>>>()
+    val searchProductSuggestionName: LiveData<Result<List<String>>> = _searchProductSuggestionName
 
     private val mIsInputValid = MediatorLiveData<Boolean>().apply {
 
@@ -83,6 +95,24 @@ class AddEditProductDetailViewModel @Inject constructor(val provider: ResourcePr
     private val minPreOrderDuration = 1
     private val maxPreOrderDays = 90
     private val maxPreOrderWeeks = 13
+
+    fun getSearchNameSuggestion(shopId: Int = 0, query: String) {
+        launchCatchError(
+                block = {
+                    val result = withContext(Dispatchers.IO) {
+                        getSearchShopProductUseCase.requestParams =
+                                GetSearchShopProductUseCase.createRequestParam(shopId, query)
+                        getSearchShopProductUseCase.executeOnBackground()
+                    }
+                    val getSuggestionName = AddEditProductDetailMapper.getProductNameAutoComplete(result)
+                    _searchProductSuggestionName.postValue(Success(
+                           AddEditProductDetailMapper.getProductNameStart(getSuggestionName, query)
+                    ))
+                }
+        ) {
+            _searchProductSuggestionName.postValue(Fail(it))
+        }
+    }
 
     private fun isInputValid(): Boolean {
 
