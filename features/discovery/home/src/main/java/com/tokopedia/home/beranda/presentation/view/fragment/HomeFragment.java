@@ -250,6 +250,9 @@ public class HomeFragment extends BaseDaggerFragment implements
     private static final String KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar";
     private Map<String,RecyclerView.OnScrollListener> impressionScrollListeners = new HashMap<>();
 
+    private long mLastClickTime = System.currentTimeMillis();
+    private static final long CLICK_TIME_INTERVAL = 500;
+
     @NonNull
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
@@ -538,7 +541,6 @@ public class HomeFragment extends BaseDaggerFragment implements
     public void onResume() {
         super.onResume();
         createAndCallSendScreen();
-        sendScreen();
         adapter.onResume();
         viewModel.refresh(isFirstInstall());
         if (activityStateListener != null) {
@@ -547,7 +549,13 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private void createAndCallSendScreen(){
-        WeaveInterface sendScrWeave = this::sendScreen;
+        WeaveInterface sendScrWeave =  new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return sendScreen();
+            }
+        };
         Weaver.Companion.executeWeaveCoRoutine(sendScrWeave,
                 new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, remoteConfig));
     }
@@ -1281,6 +1289,12 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private void onActionLinkClicked(String actionLink, String trackingAttribution) {
+        long now = System.currentTimeMillis();
+        if (now - mLastClickTime < CLICK_TIME_INTERVAL) {
+            return;
+        }
+        mLastClickTime = now;
+
         if (TextUtils.isEmpty(actionLink)) {
             return;
         }

@@ -81,6 +81,9 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     val productNewVariantDataModel: VariantDataModel?
         get() = mapOfData[ProductDetailConstant.VARIANT_OPTIONS] as? VariantDataModel
 
+    val productSocialProofPvDataModel: ProductSocialProofPvDataModel?
+        get() = mapOfData[ProductDetailConstant.SOCIAL_PROOF_PV] as? ProductSocialProofPvDataModel
+
     val listProductRecomMap: List<ProductRecommendationDataModel>? = mapOfData.filterKeys {
         it == ProductDetailConstant.PDP_1 || it == ProductDetailConstant.PDP_2
                 || it == ProductDetailConstant.PDP_3 || it == ProductDetailConstant.PDP_4
@@ -94,6 +97,7 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     fun updateDataP1(dataP1: DynamicProductInfoP1?) {
         dataP1?.let {
             snapShotMap?.run {
+                shouldRenderImageVariant = true
                 dynamicProductInfoP1 = it
                 media = DynamicProductDetailMapper.convertMediaToDataModel(it.data.media.toMutableList())
             }
@@ -113,6 +117,12 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                 rating = it.basic.stats.rating
             }
 
+            productSocialProofPvDataModel?.run {
+                txStats = it.basic.txStats
+                stats = it.basic.stats
+                rating = it.basic.stats.rating
+            }
+
             productInfoMap?.run {
                 dynamicProductInfoP1 = it
             }
@@ -127,21 +137,8 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                  * Sometimes this lastUpdateUnix doesn't has Long value like "123"
                  * If P1 updated by selected variant this value will be formatted dated "dd-mm-yyy , hh:mm"
                  */
-                val isLongFormat = try {
-                    it.data.price.lastUpdateUnix.toLong()
-                    true
-                } catch (e: Throwable) {
-                    false
-                }
-
-                lastSeen = if (isLongFormat) {
-                    val date = Date(it.data.price.lastUpdateUnix.toLong() * 1000)
-                    val dateString = date.toFormattedString("dd-MM-yyyy , HH:mm")
-                    "$dateString WIB"
-                } else {
-                    it.data.price.lastUpdateUnix
-                }
-
+                val dateFormatted = it.data.price.lastUpdateUnix toDate "dd-MM-yyy , HH:mm"
+                lastSeen = "$dateFormatted WIB"
             }
         }
     }
@@ -172,10 +169,6 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
         dataP2?.let {
             shopInfoMap?.run {
                 shopInfo = it.shopInfo
-            }
-
-            productFullfilmentMap?.run {
-                data.first().subtitle = context.getString(R.string.multiorigin_desc)
             }
 
             snapShotMap?.run {
@@ -221,6 +214,10 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
             }
 
             socialProofMap?.run {
+                wishListCount = it.wishlistCount.count
+            }
+
+            productSocialProofPvDataModel?.run {
                 wishListCount = it.wishlistCount.count
             }
 

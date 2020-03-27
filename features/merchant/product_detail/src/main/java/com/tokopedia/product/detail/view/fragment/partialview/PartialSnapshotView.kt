@@ -70,6 +70,7 @@ class PartialSnapshotView(private val view: View,
                     discount_timer_holder.visibility = View.VISIBLE
                     showCountDownTimer(data.campaign)
                     sale_text_stock_available.visible()
+                    setProgressStockBar(campaign)
                     text_stock_available.gone()
                 } else {
                     discount_timer_holder.gone()
@@ -160,12 +161,7 @@ class PartialSnapshotView(private val view: View,
             imageIc = ImageSpan(drawableOs, ImageSpan.ALIGN_BOTTOM)
             colorIc = ContextCompat.getColor(context, R.color.purple_official_store)
             renderTxtIcon(labelIc, colorIc, imageIc)
-            view.layout_guarantee.visible()
-            view.layout_guarantee.setOnClickListener {
-                listener.onValuePropositionClicked(R.id.layout_guarantee)
-            }
         } else {
-            view.layout_guarantee.gone()
             view.label_official_store.gone()
         }
     }
@@ -186,6 +182,7 @@ class PartialSnapshotView(private val view: View,
             setText(spanText, android.widget.TextView.BufferType.SPANNABLE)
         }
         view.label_official_store.visible()
+
     }
 
     private fun showCountDownTimer(campaign: CampaignModular) {
@@ -205,6 +202,15 @@ class PartialSnapshotView(private val view: View,
             }
         } catch (ex: Exception) {
             view.discount_timer_holder.visibility = View.GONE
+        }
+    }
+
+    private fun setProgressStockBar(campaign: CampaignModular) {
+        try {
+            view.stock_bar_sold_product.progress = campaign.stockSoldPercentage
+            view.stock_bar_sold_product.visible()
+        } catch (ex: Exception) {
+            view.stock_bar_sold_product.visibility = View.GONE
         }
     }
 }

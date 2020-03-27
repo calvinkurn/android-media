@@ -2,7 +2,6 @@ package com.tokopedia.atc_common.domain.mapper
 
 import com.google.gson.Gson
 import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
-import com.tokopedia.atc_common.data.model.response.AddToCartOccGqlResponse
 import com.tokopedia.atc_common.data.model.response.AddToCartOcsGqlResponse
 import com.tokopedia.atc_common.data.model.response.DataResponse
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -50,28 +49,6 @@ class AddToCartDataMapper @Inject constructor() {
             addToCartDataModel.status = it.status
             addToCartDataModel.errorMessage = it.errorMessage
             addToCartDataModel.data = dataModel
-
-            addToCartDataModel
-        }
-    }
-
-    fun mapAddToCartOccResponse(addToCartOccGqlResponse: AddToCartOccGqlResponse): AddToCartDataModel {
-        return addToCartOccGqlResponse.addToCartOccResponse.let {
-            val addToCartDataModel = AddToCartDataModel()
-            addToCartDataModel.status = it.status
-            addToCartDataModel.errorMessage = it.errorMessage
-            addToCartDataModel.data = DataModel().apply {
-                success = it.data.success
-                message = it.data.message
-                cartId = it.data.detail.cartId
-                productId = it.data.detail.productId
-                quantity = it.data.detail.quantity
-                notes = it.data.detail.notes
-                shopId = it.data.detail.shopId
-                customerId = it.data.detail.customerId
-                warehouseId = it.data.detail.warehouseId
-                isTradeIn = it.data.detail.isTradeIn
-            }
 
             addToCartDataModel
         }

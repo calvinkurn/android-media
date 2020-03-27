@@ -32,8 +32,8 @@ object ApplinkConstInternalMarketplace {
     val DISCOVERY_CATEGORY_DETAIL_QUERY = "$INTERNAL_MARKETPLACE/category/{DEPARTMENT_ID}/?{query_param}"
 
     // CheckoutVariantActivity, "EXTRA_ATC_REQUEST" = AtcRequestParam
-//    @JvmField
-//    val EXPRESS_CHECKOUT = "$INTERNAL_MARKETPLACE/checkout-variant"
+    @JvmField
+    val EXPRESS_CHECKOUT = "$INTERNAL_MARKETPLACE/checkout-variant"
     // CartActivity
     @JvmField
     val CART = "$INTERNAL_MARKETPLACE/cart"
@@ -196,6 +196,12 @@ object ApplinkConstInternalMarketplace {
     // NotificationActivity
     @JvmField
     val NOTIFICATION_CENTER = "$INTERNAL_MARKETPLACE/notification"
+
+    @JvmField
+    val NOTIFICATION_BUYER_INFO = "$INTERNAL_MARKETPLACE/notif-center"
+
+    @JvmField
+    val NOTIFICATION_BUYER_INFO_WITH_ID = "$INTERNAL_MARKETPLACE/notif-center/{id}/"
 
     // PowerMerchantSubscribeActivity
     @JvmField

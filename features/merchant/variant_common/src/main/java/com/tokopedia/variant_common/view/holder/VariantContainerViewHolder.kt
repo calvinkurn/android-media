@@ -48,7 +48,7 @@ class VariantContainerViewHolder(val view: View, val listener: ProductVariantLis
         setSelectedOptionText(data)
         setStockText(data)
 
-        if (data.variantGuideline.isNotEmpty()) {
+        if (data.variantGuideline.isNotEmpty() && !listener.onVariantGuideLineHide()) {
             txtVariantGuideline.show()
             txtVariantGuideline.setOnClickListener {
                 listener.onVariantGuideLineClicked(data.variantGuideline)

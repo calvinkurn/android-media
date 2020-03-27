@@ -151,7 +151,7 @@ data class Coupon(
         @SerializedName("is_recommended")
         val isRecommended: Boolean = false,
         @SerializedName("is_selected")
-        val isSelected: Boolean = false,
+        var isSelected: Boolean = false,
         @SerializedName("is_attempted")
         val isAttempted: Boolean = false,
         @SerializedName("radio_check_state")

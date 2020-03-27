@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isVisibleOnTheScreen
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -47,14 +48,17 @@ class ProductSnapshotViewHolder(private val view: View,
             }
 
             renderWishlist(element.isAllowManage, element.isWishlisted)
-
             renderTradein(element.showTradeIn())
             renderCod(element.showCod())
 
             element.media?.let {
                 view_picture_search_bar.renderData(it, listener::onImageClicked, listener::onSwipePicture, listener.getProductFragmentManager(),
                         getComponentTrackData(element), listener::onImageClickedTrack, listener.getLifecycleFragment())
+                if (element.shouldRenderImageVariant) {
+                    view.view_picture_search_bar.updateImage(element.media)
+                }
                 element.shouldRefreshViewPager = false
+                element.shouldRenderImageVariant = false
             }
         }
     }
@@ -73,7 +77,9 @@ class ProductSnapshotViewHolder(private val view: View,
                         ?: false)
                 renderCod(element.showCod())
             }
-            ProductDetailConstant.PAYLOAD_VARIANT_SELECTED -> view.view_picture_search_bar.updateImage(element.media)
+            ProductDetailConstant.PAYLOAD_VARIANT_SELECTED -> {
+                view.view_picture_search_bar.updateImage(element.media)
+            }
         }
     }
 
@@ -91,7 +97,8 @@ class ProductSnapshotViewHolder(private val view: View,
             header?.updateStockAndPriceWarehouse(nearestWarehouseData, campaign, variant)
     }
 
-    private fun renderCod(shouldShowCod: Boolean) {
+    private fun renderCod(shouldShowCod: Boolean) = with(view){
+        label_cod.showWithCondition(shouldShowCod)
         header?.renderCod(shouldShowCod)
     }
 

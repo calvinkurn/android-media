@@ -120,7 +120,7 @@
     <string name="label_button_change_courier_recommendation">Ubah Kurir</string>
     <string name="label_hardcoded_courier_ticker_bold_part">pk 14:00</string>
     <string name="label_button_change_note">Ubah Catatan</string>
-    <string name="label_select_all_product">Pilih semua barang</string>
+    <string name="label_select_all_product">Pilih Semua Barang</string>
     <string name="message_checkout_empty_selection">Silahkan pilih terlebih dahulu produk yang ingin anda checkout</string>
     <string name="message_delete_empty_selection">Silahkan pilih terlebih dahulu produk yang ingin anda hapus</string>
     <string name="label_price_total">Total Harga</string>

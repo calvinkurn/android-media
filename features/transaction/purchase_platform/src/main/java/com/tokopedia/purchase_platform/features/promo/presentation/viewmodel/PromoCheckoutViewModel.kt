@@ -251,7 +251,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     }
 
                     calculateAndRenderTotalBenefit()
-
+                    updateRecommendationState()
                 } else {
                     if (getCouponRecommendationResponse.value == null) {
                         _getCouponRecommendationResponse.value = GetCouponRecommendationAction()
@@ -1000,6 +1000,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             promoListUiModel.value?.forEach {
                 if (it is PromoListItemUiModel) {
                     if (promoRecommendation.uiData.promoCodes.contains(it.uiData.promoCode)) {
+                        uncheckSibling(it)
                         it.uiState.isSelected = true
                         it.uiState.isRecommended = true
                         _tmpUiModel.value = Update(it)
@@ -1010,6 +1011,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     var hasSelectedPromoItem = false
                     it.uiData.tmpPromoItemList.forEach {
                         if (promoRecommendation.uiData.promoCodes.contains(it.uiData.promoCode)) {
+                            uncheckSibling(it)
                             it.uiState.isSelected = true
                             it.uiState.isRecommended = true
                             _tmpUiModel.value = Update(it)
@@ -1033,11 +1035,55 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
+    fun uncheckSibling(promoItem: PromoListItemUiModel) {
+        promoListUiModel.value?.forEach {
+            if (it is PromoListItemUiModel && it.uiData.parentIdentifierId == promoItem.uiData.parentIdentifierId && it.uiState.isSelected) {
+                it.uiState.isSelected = false
+                _tmpUiModel.value = Update(it)
+            } else if (it is PromoListHeaderUiModel && it.uiData.tmpPromoItemList.isNotEmpty()) {
+                it.uiData.tmpPromoItemList.forEach {
+                    if (it.uiData.parentIdentifierId == promoItem.uiData.parentIdentifierId && it.uiState.isSelected) {
+                        it.uiState.isSelected = false
+                        _tmpUiModel.value = Update(it)
+                    }
+                }
+            }
+        }
+    }
+
     fun resetRecommendedPromo() {
         val promoRecommendation = promoRecommendationUiModel.value
         promoRecommendation?.let {
             it.uiState.isButtonSelectEnabled = true
             _promoRecommendationUiModel.value = it
+        }
+    }
+
+    fun updateRecommendationState() {
+        val recommendationPromoCodeList = promoRecommendationUiModel.value?.uiData?.promoCodes
+                ?: emptyList()
+        if (recommendationPromoCodeList.isNotEmpty()) {
+            var selectedRecommendationCount = 0
+            promoListUiModel.value?.forEach {
+                if (it is PromoListItemUiModel) {
+                    if (it.uiState.isSelected && recommendationPromoCodeList.contains(it.uiData.promoCode)) {
+                        selectedRecommendationCount++
+                    }
+                } else if (it is PromoListHeaderUiModel && it.uiData.tmpPromoItemList.isNotEmpty()) {
+                    it.uiData.tmpPromoItemList.forEach {
+                        if (it.uiState.isSelected && recommendationPromoCodeList.contains(it.uiData.promoCode)) {
+                            selectedRecommendationCount++
+                        }
+                    }
+                }
+            }
+
+            if (recommendationPromoCodeList.size == selectedRecommendationCount) {
+                promoRecommendationUiModel.value?.let {
+                    it.uiState.isButtonSelectEnabled = false
+                    _promoRecommendationUiModel.value = it
+                }
+            }
         }
     }
 

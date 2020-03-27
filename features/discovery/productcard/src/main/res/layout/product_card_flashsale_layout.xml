@@ -13,7 +13,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayoutProductCard"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:paddingBottom="@dimen/product_card_padding_bottom"
         tools:layout_height="match_parent">
 
@@ -31,32 +31,15 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible" />
 
-        <com.tokopedia.unifycomponents.Label
-            android:id="@+id/labelProductStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_20"
-            android:layout_marginStart="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_4"
-            android:layout_marginBottom="@dimen/dp_4"
-            android:gravity="center"
-            android:paddingStart="@dimen/dp_4"
-            android:paddingEnd="@dimen/dp_4"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/imageProduct"
-            app:layout_constraintLeft_toLeftOf="@id/imageProduct"
-            tools:text="Preorder"
-            tools:visibility="visible"/>
-
         <include
             android:id="@+id/productCardContentLayout"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/product_card_content_margin"
-            app:layout_constraintStart_toStartOf="@id/imageProduct"
-            app:layout_constraintTop_toBottomOf="@id/imageProduct"
-            app:layout_constraintEnd_toEndOf="@id/imageProduct"
+            app:layout_constraintStart_toStartOf="@+id/imageProduct"
+            app:layout_constraintTop_toBottomOf="@+id/imageProduct"
+            app:layout_constraintEnd_toEndOf="@+id/imageProduct"
             layout="@layout/product_card_flashsale_content_layout" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
