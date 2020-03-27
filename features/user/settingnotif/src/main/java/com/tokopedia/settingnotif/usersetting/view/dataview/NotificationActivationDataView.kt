@@ -21,4 +21,11 @@ object NotificationActivationDataView {
             type = Email
     )
 
+    fun activationPhoneNumber() = NotificationActivation(
+            title = R.string.settingnotif_title_sms,
+            description = R.string.settingnotif_desc_sms,
+            action = R.string.settingnotif_added_phone,
+            type = Email
+    )
+
 }
