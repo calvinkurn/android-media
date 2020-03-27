@@ -20,6 +20,8 @@ import javax.inject.Inject
  */
 class RegisterAnalytics @Inject constructor() {
 
+    @Inject
+    lateinit var analytics: LoginRegisterAnalytics
     //#R1
     fun trackClickTopSignUpButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
@@ -443,7 +445,7 @@ class RegisterAnalytics @Inject constructor() {
             UserSessionInterface.LOGIN_METHOD_GOOGLE -> onSuccessRegisterGoogle()
             UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onSuccessRegisterFacebook()
         }
-        sendSuccessRegisterToMoengage(userId, name, email, loginMethod, phoneNumber, isGoldMerchant, shopId,shopName)
+        sendSuccessRegisterToMoengage(userId, name, email, analytics.getLoginMethodMoengage(loginMethod), phoneNumber, isGoldMerchant, shopId,shopName)
     }
 
     //#R7
@@ -503,7 +505,7 @@ class RegisterAnalytics @Inject constructor() {
         sendBranchRegisterEvent(email)
     }
 
-    private fun sendSuccessRegisterToMoengage(userId: Int, name: String, email: String, loginMethod: String, phoneNumber: String, isGoldMerchant: Boolean, shopId: String,shopName:String){
+    private fun sendSuccessRegisterToMoengage(userId: Int, name: String, email: String, loginMethod: String?, phoneNumber: String, isGoldMerchant: Boolean, shopId: String,shopName:String){
         TrackApp.getInstance().moEngage.sendMoengageRegisterEvent(name, userId.toString(),email, loginMethod, phoneNumber,  isGoldMerchant, shopId,shopName)
     }
 
