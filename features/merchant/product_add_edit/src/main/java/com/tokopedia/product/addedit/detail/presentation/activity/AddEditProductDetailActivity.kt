@@ -1,10 +1,10 @@
 package com.tokopedia.product.addedit.detail.presentation.activity
 
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailComponent
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailModule
 import com.tokopedia.product.addedit.detail.di.DaggerAddEditProductDetailComponent
@@ -20,7 +20,7 @@ class AddEditProductDetailActivity : BaseSimpleActivity(), HasComponent<AddEditP
     override fun getComponent(): AddEditProductDetailComponent {
         return DaggerAddEditProductDetailComponent
                 .builder()
-                .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+                .addEditProductComponent(AddEditProductComponentBuilder.getComponent(application))
                 .addEditProductDetailModule(AddEditProductDetailModule())
                 .build()
     }
