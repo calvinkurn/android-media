@@ -10,6 +10,9 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.TKPDMapParam
+import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
+import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase.Companion.PARAM_VALUE_MARKETPLACE
+import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_CHECKOUT
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_DEFAULT
 import com.tokopedia.purchase_platform.common.data.model.param.EditAddressParam
@@ -58,6 +61,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                     private val ratesResponseStateConverter: RatesResponseStateConverter,
                                                     private val editAddressUseCase: EditAddressUseCase,
                                                     private val checkoutOccUseCase: CheckoutOccUseCase,
+                                                    private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
                                                     private val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
                                                     private val userSessionInterface: UserSessionInterface,
                                                     val orderSummaryAnalytics: OrderSummaryAnalytics) : BaseViewModel(dispatcher) {
@@ -514,6 +518,23 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         val shipping = value?.shipping
         if (shippingRecommendationData != null && curShip != null && shipping != null) {
             val shippingDurationViewModels = shippingRecommendationData.shippingDurationViewModels
+            if (shippingRecommendationData.logisticPromo?.isApplied == true && shipping.isApplyLogisticPromo) {
+                clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, arrayListOf(shippingRecommendationData.logisticPromo?.promoCode
+                        ?: ""))
+                compositeSubscription.add(
+                        clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe(object : Observer<ClearCacheAutoApplyStackResponse?> {
+                            override fun onError(e: Throwable?) {
+                                e?.printStackTrace()
+                            }
+
+                            override fun onNext(t: ClearCacheAutoApplyStackResponse?) {
+                            }
+
+                            override fun onCompleted() {
+                            }
+                        })
+                )
+            }
             shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo?.copy(isApplied = false)
             for (shippingDurationViewModel in shippingDurationViewModels) {
                 if (shippingDurationViewModel.serviceData.serviceId == shipping.serviceId) {
@@ -578,6 +599,24 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             } else {
                 "Durasi tergantung kurir"
             }
+            if (shippingRecommendationData.logisticPromo?.isApplied == true && shipping.isApplyLogisticPromo) {
+                clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, arrayListOf(shippingRecommendationData.logisticPromo?.promoCode
+                        ?: ""))
+                compositeSubscription.add(
+                        clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe(object : Observer<ClearCacheAutoApplyStackResponse?> {
+                            override fun onError(e: Throwable?) {
+                                e?.printStackTrace()
+                            }
+
+                            override fun onNext(t: ClearCacheAutoApplyStackResponse?) {
+                            }
+
+                            override fun onCompleted() {
+                            }
+                        })
+                )
+            }
+            shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo?.copy(isApplied = false)
             var shipping1 = shipping.copy(
                     needPinpoint = flagNeedToSetPinpoint,
                     serviceErrorMessage = if (flagNeedToSetPinpoint) "Butuh pinpoint lokasi" else null,
@@ -873,7 +912,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         )), promos = generateCheckoutPromos(pref)))
         checkoutOccUseCase.execute(param, { checkoutOccGqlResponse: CheckoutOccGqlResponse ->
             if (checkoutOccGqlResponse.response.status.equals("OK", true)) {
-                if (checkoutOccGqlResponse.response.data.success == 1) {
+                if (checkoutOccGqlResponse.response.data.success == 1 || checkoutOccGqlResponse.response.data.paymentParameter.redirectParam.url.isNotEmpty()) {
                     globalEvent.value = OccGlobalEvent.Normal
                     onSuccessCheckout(checkoutOccGqlResponse.response.data)
                     orderSummaryAnalytics.eventClickBayarSuccess(generateOspEe(2, "click bayar success"))
