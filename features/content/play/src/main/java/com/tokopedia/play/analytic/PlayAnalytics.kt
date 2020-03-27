@@ -231,7 +231,7 @@ object PlayAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
-                "$KEY_TRACK_CLICK buy in bottom sheet with variant",
+                "$KEY_TRACK_CLICK buy in bottom sheet with varian",
                 "$channelId - $productId - ${channelType.value}"
         )
     }
@@ -240,7 +240,7 @@ object PlayAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
-                "$KEY_TRACK_CLICK atc in bottom sheet with variant",
+                "$KEY_TRACK_CLICK atc in bottom sheet with varian",
                 "$channelId - $productId - ${channelType.value}"
         )
     }
@@ -322,14 +322,14 @@ object PlayAnalytics {
                 EventModel(
                         KEY_TRACK_ADD_TO_CART,
                         KEY_TRACK_GROUP_CHAT_ROOM,
-                        "$KEY_TRACK_CLICK atc in variant page",
+                        "$KEY_TRACK_CLICK atc in varian page",
                         "$channelId - ${product.id} - ${channelType.value}"
                 ),
                 hashMapOf<String, Any>(
                         "ecommerce" to hashMapOf(
                                 "currencyCode" to "IDR",
                                 "add" to hashMapOf(
-                                        "products" to convertProductToHashMap(product, cartId, "variant page")
+                                        "products" to convertProductToHashMap(product, cartId, "varian page")
                                 )
                         )
                 )
@@ -345,14 +345,14 @@ object PlayAnalytics {
                 EventModel(
                         KEY_TRACK_ADD_TO_CART,
                         KEY_TRACK_GROUP_CHAT_ROOM,
-                        "$KEY_TRACK_CLICK beli in variant page",
+                        "$KEY_TRACK_CLICK beli in varian page",
                         "$channelId - ${product.id} - ${channelType.value}"
                 ),
                 hashMapOf<String, Any>(
                         "ecommerce" to hashMapOf(
                                 "currencyCode" to "IDR",
                                 "add" to hashMapOf(
-                                        "products" to convertProductToHashMap(product, cartId, "variant page")
+                                        "products" to convertProductToHashMap(product, cartId, "varian page")
                                 )
                         )
                 )
