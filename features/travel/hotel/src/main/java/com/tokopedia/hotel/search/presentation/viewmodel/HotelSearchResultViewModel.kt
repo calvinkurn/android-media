@@ -63,9 +63,9 @@ class HotelSearchResultViewModel @Inject constructor(
             val graphqlRequest = GraphqlRequest(searchQuery, PropertySearch.Response::class.java, params)
 
             val response = withContext(dispatcher.ui) { graphqlRepository.getReseponse(listOf(graphqlRequest)) }
-            liveSearchResult.value = Success(response.getSuccessData<PropertySearch.Response>().response)
+            liveSearchResult.postValue(Success(response.getSuccessData<PropertySearch.Response>().response))
         }) {
-            liveSearchResult.value = Fail(it)
+            liveSearchResult.postValue(Fail(it))
         }
     }
 

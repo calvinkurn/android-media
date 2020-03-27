@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.hotel.common.util.HotelDispatcherProvider
 import com.tokopedia.hotel.evoucher.data.entity.SharePdfDataParam
 import com.tokopedia.hotel.evoucher.data.entity.SharePdfDataResponse
 import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
@@ -24,16 +25,16 @@ import javax.inject.Inject
  * @author by furqan on 23/05/19
  */
 class HotelEVoucherViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                 dispatcher: CoroutineDispatcher,
+                                                 private val dispatcher: HotelDispatcherProvider,
                                                  private val useCase: GetHotelOrderDetailUseCase)
-    : BaseViewModel(dispatcher) {
+    : BaseViewModel(dispatcher.io) {
 
     val orderDetailData = MutableLiveData<Result<HotelOrderDetail>>()
     val sharePdfData = MutableLiveData<Result<SharePdfDataResponse>>()
 
     fun getOrderDetail(rawQuery: String, orderId: String) {
         launch {
-            orderDetailData.value = useCase.execute(rawQuery, orderId, HotelOrderDetailActivity.HOTEL_ORDER_CATEGORY, false)
+            orderDetailData.postValue(useCase.execute(rawQuery, orderId, HotelOrderDetailActivity.HOTEL_ORDER_CATEGORY, false))
         }
     }
 
@@ -44,14 +45,14 @@ class HotelEVoucherViewModel @Inject constructor(private val graphqlRepository: 
         val sharePdfParams = mapOf(PARAM_HOTEL_PDF_PARAM to requestParams)
 
         launchCatchError(block = {
-            val response = withContext(Dispatchers.Default) {
+            val response = withContext(dispatcher.ui) {
                 val sharePdfRequest = GraphqlRequest(rawQuery, TYPE_SHARE_PDF, sharePdfParams)
                 graphqlRepository.getReseponse(listOf(sharePdfRequest))
             }.getSuccessData<SharePdfDataResponse>()
 
-            sharePdfData.value = Success(response)
+            sharePdfData.postValue(Success(response))
         }) {
-            sharePdfData.value = Fail(it)
+            sharePdfData.postValue(Fail(it))
         }
     }
 

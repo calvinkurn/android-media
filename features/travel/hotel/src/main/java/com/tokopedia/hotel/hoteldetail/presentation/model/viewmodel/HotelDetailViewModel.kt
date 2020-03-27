@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.hotel.common.util.HotelDispatcherProvider
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDataParam
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
@@ -22,9 +23,9 @@ import javax.inject.Inject
  * @author by furqan on 22/04/19
  */
 class HotelDetailViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                               dispatcher: CoroutineDispatcher,
+                                               private val dispatcher: HotelDispatcherProvider,
                                                private val useCase: GetHotelRoomListUseCase)
-    : BaseViewModel(dispatcher) {
+    : BaseViewModel(dispatcher.io) {
 
     val hotelInfoResult = MutableLiveData<Result<PropertyDetailData>>()
     val hotelReviewResult = MutableLiveData<Result<HotelReview.ReviewData>>()
@@ -58,7 +59,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
 
         try {
             val hotelInfoData = async {
-                val response = withContext(Dispatchers.Default) {
+                val response = withContext(dispatcher.ui) {
                     val detailRequest = GraphqlRequest(rawQuery, TYPE_HOTEL_INFO, detailParams)
                     graphqlRepository.getReseponse(listOf(detailRequest))
                             .getSuccessData<PropertyDetailData.Response>()
@@ -66,9 +67,9 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
                 response
             }
 
-            hotelInfoResult.value = Success(hotelInfoData.await().propertyDetailData)
+            hotelInfoResult.postValue(Success(hotelInfoData.await().propertyDetailData))
         } catch (t: Throwable) {
-            hotelInfoResult.value = Fail(t)
+            hotelInfoResult.postValue(Fail(t))
         }
     }
 
@@ -85,7 +86,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
 
         try {
             val hotelReviewData = async {
-                val response = withContext(Dispatchers.Default) {
+                val response = withContext(dispatcher.ui) {
                     val reviewRequest = GraphqlRequest(rawQuery, TYPE_HOTEL_REVIEW, reviewParams)
                     graphqlRepository.getReseponse(listOf(reviewRequest))
                             .getSuccessData<HotelReview.Response>()
@@ -93,20 +94,20 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
                 response
             }
 
-            hotelReviewResult.value = Success(hotelReviewData.await().propertyReview)
+            hotelReviewResult.postValue(Success(hotelReviewData.await().propertyReview))
         } catch (t: Throwable) {
-            hotelReviewResult.value = Fail(t)
+            hotelReviewResult.postValue(Fail(t))
         }
     }
 
     private suspend fun getRoomList(rawQuery: String, searchParam: HotelHomepageModel) {
-        roomListResult.value = useCase.execute(rawQuery, HotelRoomListPageModel(
+        roomListResult.postValue(useCase.execute(rawQuery, HotelRoomListPageModel(
                 propertyId = searchParam.locId,
                 checkIn = searchParam.checkInDate,
                 checkOut = searchParam.checkOutDate,
                 adult = searchParam.adultCount,
                 child = 0,
-                room = searchParam.roomCount))
+                room = searchParam.roomCount)))
     }
 
     companion object {

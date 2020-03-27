@@ -45,7 +45,7 @@ class HotelHomepageViewModel @Inject constructor(
 
     fun getHotelPromo(rawQuery: String) {
         launch {
-            promoData.value = bannerUseCase.execute(rawQuery, TravelType.HOTEL, true)
+            promoData.postValue(bannerUseCase.execute(rawQuery, TravelType.HOTEL, true))
         }
     }
 

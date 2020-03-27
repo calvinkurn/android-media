@@ -9,6 +9,7 @@ import com.tokopedia.hotel.booking.data.model.CartDataParam
 import com.tokopedia.hotel.booking.data.model.HotelCart
 import com.tokopedia.hotel.booking.data.model.HotelCheckoutParam
 import com.tokopedia.hotel.booking.data.model.HotelCheckoutResponse
+import com.tokopedia.hotel.common.util.HotelDispatcherProvider
 import com.tokopedia.hotel.roomlist.util.HotelUtil
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.promocheckout.common.domain.model.FlightCancelVoucher
@@ -32,7 +33,7 @@ import javax.inject.Inject
 class HotelBookingViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                 private val getContactListUseCase: GetContactListUseCase,
                                                 private val upsertContactListUseCase: UpsertContactListUseCase,
-                                                val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+                                                val dispatcher: HotelDispatcherProvider) : BaseViewModel(dispatcher.io) {
 
     val contactListResult = MutableLiveData<List<TravelContactListModel.Contact>>()
     val hotelCartResult = MutableLiveData<Result<HotelCart.Response>>()
@@ -42,12 +43,12 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
         launch {
             var contacts = getContactListUseCase.execute(query = query,
                     product = GetContactListUseCase.PARAM_PRODUCT_HOTEL)
-            contactListResult.value = contacts.map {
+            contactListResult.postValue(contacts.map {
                 if (it.fullName.isBlank()) {
                     it.fullName = "${it.firstName} ${it.lastName}"
                 }
                 return@map it
-            }.toMutableList()
+            }.toMutableList())
         }
     }
 
@@ -64,13 +65,13 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
         val requestParams = CartDataParam(cartId)
         val params = mapOf(PARAM_CART_PROPERTY to requestParams)
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(dispatcher.ui) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_HOTEL_CART, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<HotelCart.Response>()
-            hotelCartResult.value = Success(data)
+            hotelCartResult.postValue(Success(data))
         }) {
-            hotelCartResult.value = Fail(it)
+            hotelCartResult.postValue(Fail(it))
         }
     }
 
@@ -79,14 +80,14 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
         hotelCheckoutParam.idempotencyKey = generateIdEmpotency(hotelCheckoutParam.cartId)
         val params = mapOf(PARAM_CART_PROPERTY to hotelCheckoutParam)
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(dispatcher.ui) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_HOTEL_CHECKOUT, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<HotelCheckoutResponse.Response>()
 
-            hotelCheckoutResult.value = Success(data.response)
+            hotelCheckoutResult.postValue(Success(data.response))
         }) {
-            hotelCheckoutResult.value = Fail(it)
+            hotelCheckoutResult.postValue(Fail(it))
         }
     }
 

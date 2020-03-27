@@ -2,12 +2,15 @@ package com.tokopedia.hotel.roomlist.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.hotel.roomlist.data.model.*
+import com.tokopedia.hotel.common.util.HotelDispatcherProvider
+import com.tokopedia.hotel.roomlist.data.model.HotelAddCartData
+import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
+import com.tokopedia.hotel.roomlist.data.model.HotelRoom
+import com.tokopedia.hotel.roomlist.data.model.HotelRoomListPageModel
 import com.tokopedia.hotel.roomlist.usecase.GetHotelRoomListUseCase
 import com.tokopedia.hotel.roomlist.usecase.HotelAddToCartUseCase
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,10 +19,10 @@ import javax.inject.Inject
  */
 
 class HotelRoomListViewModel @Inject constructor(
-        val dispatcher: CoroutineDispatcher,
+        private val dispatcher: HotelDispatcherProvider,
         private val useCase: GetHotelRoomListUseCase,
         private val addToCartUsecase: HotelAddToCartUseCase)
-    : BaseViewModel(dispatcher) {
+    : BaseViewModel(dispatcher.io) {
 
     var roomList: List<HotelRoom> = listOf()
     val roomListResult = MutableLiveData<Result<MutableList<HotelRoom>>>()
@@ -32,7 +35,7 @@ class HotelRoomListViewModel @Inject constructor(
     fun getRoomList(rawQuery: String, hotelRoomListPageModel: HotelRoomListPageModel, fromCloud: Boolean = true) {
         isFilter = false
         launch {
-            roomListResult.value = useCase.execute(rawQuery, hotelRoomListPageModel, fromCloud)
+            roomListResult.postValue(useCase.execute(rawQuery, hotelRoomListPageModel, fromCloud))
             doFilter()
         }
     }
@@ -43,7 +46,7 @@ class HotelRoomListViewModel @Inject constructor(
         doFilter()
     }
 
-    fun doFilter() {
+    private fun doFilter() {
         if (filterFreeBreakfast || filterFreeCancelable) {
             isFilter = true
             var list: MutableList<HotelRoom> = arrayListOf()
@@ -53,21 +56,21 @@ class HotelRoomListViewModel @Inject constructor(
                 if (filterFreeBreakfast && !room.breakfastInfo.isBreakfastIncluded) valid = false
                 if (valid) list.add(room)
             }
-            roomListResult.value = Success(list)
+            roomListResult.postValue(Success(list))
         } else {
-            roomListResult.value = Success(roomList.toMutableList())
+            roomListResult.postValue(Success(roomList.toMutableList()))
         }
     }
 
     fun addToCart(rawQuery: String, hotelAddCartParam: HotelAddCartParam) {
         launch {
-            addCartResponseResult.value = addToCartUsecase.execute(rawQuery, hotelAddCartParam)
+            addCartResponseResult.postValue(addToCartUsecase.execute(rawQuery, hotelAddCartParam))
         }
     }
 
     fun clearFilter() {
         filterFreeCancelable = false
         filterFreeBreakfast = false
-        roomListResult.value = Success(roomList.toMutableList())
+        roomListResult.postValue(Success(roomList.toMutableList()))
     }
 }
