@@ -840,11 +840,17 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onCartItemQuantityPlusButtonClicked(cartItemHolderData: CartItemHolderData, position: Int, parentPosition: Int) {
         sendAnalyticsOnClickButtonPlusCartItem()
         cartAdapter.increaseQuantity(position, parentPosition)
+
+        renderPromoCheckoutLoading()
+        dPresenter.doUpdateCartAndValidateUse(generateParamValidateUsePromoRevamp(false, -1, -1, true))
     }
 
     override fun onCartItemQuantityMinusButtonClicked(cartItemHolderData: CartItemHolderData, position: Int, parentPosition: Int) {
         sendAnalyticsOnClickButtonMinusCartItem()
         cartAdapter.decreaseQuantity(position, parentPosition)
+
+        renderPromoCheckoutLoading()
+        dPresenter.doUpdateCartAndValidateUse(generateParamValidateUsePromoRevamp(false, -1, -1, true))
     }
 
     override fun onCartItemQuantityReseted(position: Int, parentPosition: Int, needRefreshItemView: Boolean) {
