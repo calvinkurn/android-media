@@ -1986,17 +1986,17 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     .subscribe(new Subscriber<ReleaseBookingResponse>() {
                         @Override
                         public void onCompleted() {
-
+                            // no op
                         }
 
                         @Override
                         public void onError(Throwable e) {
-
+                            Timber.d(e);
                         }
 
                         @Override
                         public void onNext(ReleaseBookingResponse releaseBookingResponse) {
-
+                            Timber.d("Release Booking Success %s", releaseBookingResponse.getData());
                         }
                     }));
         }

@@ -2636,6 +2636,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
+    void releaseBookingIfAny() {
+        if (cdLayout.getVisibility() == View.VISIBLE) {
+            shipmentPresenter.releaseBooking();
+        }
+    }
+
     @Override
     public void updateCourierBottomsheetHasNoData(int cartPosition, ShipmentCartItemModel shipmentCartItemModel, List<ShopShipment> shopShipmentList) {
         if (shippingCourierBottomsheet != null) {
