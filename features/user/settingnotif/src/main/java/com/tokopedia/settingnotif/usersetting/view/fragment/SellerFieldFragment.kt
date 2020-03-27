@@ -5,16 +5,11 @@ import com.tokopedia.settingnotif.usersetting.view.fragment.base.SettingFieldFra
 
 class SellerFieldFragment: SettingFieldFragment() {
 
-    override fun getScreenName(): String {
-        return getString(R.string.settingnotif_seller)
-    }
-
-    override fun getNotificationType(): String {
-        return "sellernotif"
-    }
-
     override fun getGqlRawQuery(): Int {
         return R.raw.query_seller_notif_setting
     }
+
+    override fun getScreenName() = getString(R.string.settingnotif_seller)
+    override fun getNotificationType() = SELLER_NOTIF_TYPE
 
 }

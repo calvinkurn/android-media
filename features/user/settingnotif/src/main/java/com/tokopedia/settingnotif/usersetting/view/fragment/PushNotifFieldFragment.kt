@@ -6,29 +6,18 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.core.app.NotificationManagerCompat
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.domain.pojo.SellerSection
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldAdapter
-import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
+import com.tokopedia.settingnotif.usersetting.view.adapter.factory.VisitableSettings
 import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationPushNotif
-import com.tokopedia.settingnotif.usersetting.view.fragment.base.SettingFieldFragment
 import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingViewModel
+import com.tokopedia.settingnotif.usersetting.view.fragment.base.SettingFieldFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
-
-typealias VisitableSettings = Visitable<SettingFieldTypeFactory>
 
 class PushNotifFieldFragment : SettingFieldFragment() {
 
     private val _adapter by lazy { adapter as SettingFieldAdapter }
-
-    override fun getScreenName(): String {
-        return getString(R.string.settingnotif_dialog_info_title)
-    }
-
-    override fun getNotificationType(): String {
-        return "pushnotif"
-    }
 
     override fun getGqlRawQuery(): Int {
         return R.raw.query_push_notif_setting
@@ -59,15 +48,23 @@ class PushNotifFieldFragment : SettingFieldFragment() {
     }
 
     override fun onSuccessGetUserSetting(data: UserSettingViewModel) {
-        val dataSettings = arrayListOf<VisitableSettings>()
+        val pinnedData = arrayListOf<VisitableSettings>()
+        /*
+        * showing pinned message
+        * if notification permission turn off
+        * */
         if (isNotificationEnabled() == false) {
-            dataSettings.add(activationPushNotif())
+            pinnedData.add(activationPushNotif())
         }
+        /*
+        * showing seller sub menu card
+        * is user has a shop
+        * */
         if (userSession.hasShop()) {
-            dataSettings.add(SellerSection())
+            pinnedData.add(SellerSection())
         }
-        dataSettings.addAll(data.data)
-        data.data = dataSettings.toList()
+        pinnedData.addAll(data.data)
+        data.data = pinnedData.toList()
         super.onSuccessGetUserSetting(data)
     }
 
@@ -88,6 +85,9 @@ class PushNotifFieldFragment : SettingFieldFragment() {
         }
         informationSheet.show(childFragmentManager, TAG_INFORMATION)
     }
+
+    override fun getScreenName() = getString(R.string.settingnotif_dialog_info_title)
+    override fun getNotificationType() = PUSH_NOTIF_TYPE
 
     companion object {
         private const val TAG_INFORMATION = "information"

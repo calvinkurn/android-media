@@ -4,20 +4,13 @@ import android.os.Bundle
 import android.view.View
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.domain.pojo.SmsSection
+import com.tokopedia.settingnotif.usersetting.view.adapter.factory.VisitableSettings
 import com.tokopedia.settingnotif.usersetting.view.dataview.ChangeItemDataView.changePhoneNumber
 import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationPhoneNumber
 import com.tokopedia.settingnotif.usersetting.view.fragment.base.SettingFieldFragment
 import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingViewModel
 
 class SmsFieldFragment: SettingFieldFragment() {
-
-    override fun getScreenName(): String {
-        return getString(R.string.settingnotif_sms)
-    }
-
-    override fun getNotificationType(): String {
-        return "sms"
-    }
 
     override fun getGqlRawQuery(): Int {
         return R.raw.query_sms_setting
@@ -29,15 +22,27 @@ class SmsFieldFragment: SettingFieldFragment() {
     }
 
     override fun onSuccessGetUserSetting(data: UserSettingViewModel) {
-        val newData = arrayListOf<VisitableSettings>()
+        val pinnedData = arrayListOf<VisitableSettings>()
         if (userSession.phoneNumber.isEmpty()) {
-            newData.add(activationPhoneNumber())
+            /*
+            * showing pinned message to
+            * instruction to add a new phone number
+            * */
+            pinnedData.add(activationPhoneNumber())
         } else {
-            newData.add(changePhoneNumber(userSession.phoneNumber))
-            newData.add(SmsSection())
+            /*
+            * if user has a phone number,
+            * show the phone number changer card and
+            * SMS ticker layout
+            * */
+            pinnedData.add(changePhoneNumber(userSession.phoneNumber))
+            pinnedData.add(SmsSection())
         }
-        data.data = newData.toList()
+        data.data = pinnedData.toList()
         super.onSuccessGetUserSetting(data)
     }
+
+    override fun getScreenName() = getString(R.string.settingnotif_sms)
+    override fun getNotificationType() = SMS_TYPE
 
 }

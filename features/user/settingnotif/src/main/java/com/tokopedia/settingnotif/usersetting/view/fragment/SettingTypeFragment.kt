@@ -24,22 +24,24 @@ class SettingTypeFragment : BaseDaggerFragment() {
         fun openSettingField(settingType: SettingTypeDataView)
     }
 
-    override fun getScreenName(): String {
-        return getString(R.string.settingnotif_title)
-    }
-
-    override fun initInjector() {}
-
     override fun onAttachActivity(context: Context?) {
         if (context is SettingTypeContract) {
             settingTypeContract = context
         } else {
-            throw IllegalStateException("The activity must implement SettingTypeContract interface")
+            throw IllegalStateException(ILLEGAL_EXCEPTION_MESSAGE)
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return LayoutInflater.from(context).inflate(R.layout.fragment_setting_type, container, false).also {
+    override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View? {
+        return LayoutInflater.from(context).inflate(
+                R.layout.fragment_setting_type,
+                container,
+                false
+        ).also {
             bindView(it)
             setupToolbar()
             setupSettingTypes()
@@ -60,7 +62,10 @@ class SettingTypeFragment : BaseDaggerFragment() {
     private fun setupSettingTypes() {
         with (rvSettingType) {
             setHasFixedSize(true)
-            adapter = SettingTypeAdapter(SettingTypeDataView.createSettingTypes(), settingTypeContract)
+            adapter = SettingTypeAdapter(
+                    SettingTypeDataView.createSettingTypes(),
+                    settingTypeContract
+            )
         }
     }
 
@@ -90,9 +95,7 @@ class SettingTypeFragment : BaseDaggerFragment() {
     }
 
     private fun generateShowCaseList(): ArrayList<ShowCaseObject> {
-        return arrayListOf(
-                generateShowCaseSettingObject()
-        )
+        return arrayListOf(generateShowCaseSettingObject())
     }
 
     private fun generateShowCaseSettingObject(): ShowCaseObject {
@@ -102,7 +105,12 @@ class SettingTypeFragment : BaseDaggerFragment() {
         return ShowCaseObject(rvSettingType, title, description, position)
     }
 
+    override fun getScreenName() = getString(R.string.settingnotif_title)
+
+    override fun initInjector() {}
+
     companion object {
+        private const val ILLEGAL_EXCEPTION_MESSAGE = "The activity must implement SettingTypeContract interface"
         private const val BROADCAST_MESSAGE = ".BroadcastMessage"
     }
 

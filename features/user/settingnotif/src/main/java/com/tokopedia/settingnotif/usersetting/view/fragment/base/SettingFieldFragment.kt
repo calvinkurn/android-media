@@ -45,8 +45,16 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     @Inject lateinit var presenter: SettingFieldContract.Presenter
     @Inject lateinit var userSession: UserSessionInterface
 
+    /*
+    * a flag for preventing request network if needed
+    * @example: SMS section item
+    * */
     protected var isRequestData = true
 
+    /*
+    * notificationType for graph query consume
+    * it will be use it into set user setting
+    *  */
     abstract fun getNotificationType(): String
 
     @RawRes abstract fun getGqlRawQuery(): Int
@@ -159,5 +167,12 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     override fun isLoadMoreEnabledByDefault(): Boolean = false
 
     override fun onItemClicked(item: Visitable<*>?) = Unit
+
+    companion object {
+        const val SELLER_NOTIF_TYPE = "sellernotif"
+        const val PUSH_NOTIF_TYPE = "pushnotif"
+        const val EMAIL_TYPE = "email"
+        const val SMS_TYPE = "sms"
+    }
 
 }
