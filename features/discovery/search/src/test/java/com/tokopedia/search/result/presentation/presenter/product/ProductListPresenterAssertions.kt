@@ -13,6 +13,8 @@ fun MockKVerificationScope.verifyShowLoading(productListView: ProductListSection
 }
 
 fun MockKVerificationScope.verifyProcessingData(productListView: ProductListSectionContract.View) {
+    productListView.isLandingPage
+
     productListView.clearLastProductItemPositionFromCache()
     productListView.lastProductItemPositionFromCache
     productListView.saveLastProductItemPositionToCache(any())

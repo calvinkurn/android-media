@@ -75,7 +75,7 @@ final class ProductListPresenter
         extends BaseDaggerPresenter<ProductListSectionContract.View>
         implements ProductListSectionContract.Presenter {
 
-    private List<Integer> searchNoResultCodeList = Arrays.asList(1, 2, 3, 6);
+    private List<Integer> searchNoResultCodeList = Arrays.asList(1, 2, 3, 6, 8);
     private static final String SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search";
     private static final String DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu";
     private static final String DEFAULT_USER_ID = "0";
@@ -664,6 +664,8 @@ final class ProductListPresenter
     }
 
     private void getViewToProcessSearchResult(SearchProductModel searchProductModel) {
+        updateValueEnableGlobalNavWidget();
+
         ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
 
         sendTrackingNoSearchResult(productViewModel);
@@ -685,6 +687,12 @@ final class ProductListPresenter
 
         if (isFirstTimeLoad) {
             getViewToSendTrackingOnFirstTimeLoad(productViewModel);
+        }
+    }
+
+    private void updateValueEnableGlobalNavWidget() {
+        if (getView() != null) {
+            enableGlobalNavWidget = enableGlobalNavWidget && !getView().isLandingPage();
         }
     }
 
