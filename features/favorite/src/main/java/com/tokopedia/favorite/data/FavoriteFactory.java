@@ -5,9 +5,9 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.base.common.service.ServiceV4;
-import com.tokopedia.core.base.common.service.TopAdsService;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
+
+import com.tokopedia.favorite.data.source.apis.service.ServiceV4;
+import com.tokopedia.favorite.data.source.apis.service.TopAdsService;
 import com.tokopedia.favorite.data.source.cloud.CloudFavoriteShopDataSource;
 import com.tokopedia.favorite.data.source.cloud.CloudTopAdsShopDataSource;
 import com.tokopedia.favorite.data.source.local.LocalFavoriteShopDataSource;
@@ -31,7 +31,7 @@ public class FavoriteFactory {
     private Gson gson;
     private ServiceV4 serviceV4;
     private TopAdsService topAdsService;
-    private GlobalCacheManager cacheManager;
+    private CacheManager cacheManager;
 
     public FavoriteFactory(Context context, Gson gson, ServiceV4 serviceVersion4,
                            TopAdsService topAdsService,

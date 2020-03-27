@@ -3,7 +3,6 @@ package com.tokopedia.favorite.view;
 
 import android.os.Bundle;
 
-import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.favorite.view.viewmodel.FavoriteShopViewModel;

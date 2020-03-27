@@ -4,9 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 
-import com.tokopedia.core.var.RecyclerViewItem;
-import com.tokopedia.core.var.ShopItem;
-
 import org.json.JSONObject;
 
 import java.util.List;

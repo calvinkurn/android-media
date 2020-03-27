@@ -1,13 +1,8 @@
-package com.tokopedia.home.account.presentation.activity;
+package com.tokopedia.favorite.view;
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.favorite.view.FragmentFavorite;
 
 /**
  * @author okasurya on 7/26/18.
