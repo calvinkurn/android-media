@@ -7,9 +7,11 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
@@ -90,6 +92,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val updateCartCounterUseCase: UpdateCartCounterUseCase,
                                                              private val addToCartUseCase: AddToCartUseCase,
                                                              private val addToCartOcsUseCase: AddToCartOcsUseCase,
+                                                             private val addToCartOccUseCase: AddToCartOccUseCase,
                                                              private val getP3VariantUseCase: GetP3VariantUseCase,
                                                              val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.ui()) {
 
@@ -285,6 +288,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 is AddToCartOcsRequestParams -> {
                     getAddToCartOcsUseCase(requestParams)
                 }
+                is AddToCartOccRequestParams -> {
+                    getAddToCartOccUseCase(requestParams)
+                }
             }
         }) {
             _addToCartLiveData.value = it.asFail()
@@ -329,6 +335,18 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             val result = addToCartOcsUseCase.createObservable(requestParams).toBlocking().single()
             if (result.isDataError()) {
                 _addToCartLiveData.postValue(result.errorMessage.asThrowable().asFail())
+
+            } else {
+                _addToCartLiveData.postValue(result.asSuccess())
+            }
+        }
+    }
+
+    private suspend fun getAddToCartOccUseCase(requestParams: RequestParams) {
+        withContext(dispatcher.io()) {
+            val result = addToCartOccUseCase.createObservable(requestParams).toBlocking().single()
+            if (result.isDataError()) {
+                _addToCartLiveData.postValue((result.getAtcErrorMessage() ?: "").asThrowable().asFail())
 
             } else {
                 _addToCartLiveData.postValue(result.asSuccess())

@@ -109,6 +109,9 @@ object DynamicProductDetailMapper {
             "ocs" -> {
                 ProductDetailConstant.OCS_BUTTON
             }
+            "occ" -> {
+                ProductDetailConstant.OCC_BUTTON
+            }
             else -> ProductDetailConstant.BUY_BUTTON
         }
     }

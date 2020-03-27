@@ -49,6 +49,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -143,6 +144,7 @@ import com.tokopedia.variant_common.view.ProductVariantListener
 import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.*
 import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
+import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -1112,6 +1114,43 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
+    private fun setupTickerOcc() {
+        var willShowTicker = false
+        if (actionButtonView.onSuccessGetCartType) {
+            val data = actionButtonView.cartTypeData
+            if (data != null) {
+                for (button in data.availableButtons.withIndex()) {
+                    val onboardingMessage = button.value.onboardingMessage
+                    if (onboardingMessage.isNotEmpty()) {
+                        var selectedButton: View? = null
+                        if (button.index == 0) {
+                            selectedButton = actionButtonView.view.btn_buy_now
+                        } else if (button.index == 1) {
+                            selectedButton = actionButtonView.view.btn_add_to_cart
+                        }
+                        if (selectedButton != null && selectedButton.visibility == View.VISIBLE) {
+                            view?.let {
+                                ticker_occ_arrow.post {
+                                    ticker_occ_text?.text = onboardingMessage
+                                    ticker_occ_arrow?.translationX = selectedButton.x + (selectedButton.width / 2)
+                                    ticker_occ?.setOnClickListener {
+                                        ticker_occ_layout?.gone()
+                                    }
+                                    ticker_occ_layout?.visible()
+                                }
+                            }
+                            willShowTicker = true
+                            break
+                        }
+                    }
+                }
+            }
+        }
+        if (!willShowTicker) {
+            ticker_occ_layout.gone()
+        }
+    }
+
     private fun observeP2Shop() {
         viewLifecycleOwner.observe(viewModel.p2ShopDataResp) {
             if (!viewModel.isUserSessionActive && ::performanceMonitoringFull.isInitialized)
@@ -1203,6 +1242,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         .build()
                         .bundle)
             }
+            ProductDetailConstant.OCC_BUTTON -> {
+                goToOneClickCheckout()
+            }
             ProductDetailConstant.BUY_BUTTON -> {
                 goToCartCheckout(cartId)
             }
@@ -1217,6 +1259,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         .bundle)
             }
         }
+    }
+
+    private fun goToOneClickCheckout() {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
     }
 
     private fun goToCheckout(shipmentFormRequest: Bundle) {
@@ -2158,6 +2204,17 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         isTradeIn = data.data.isTradeIn
                     }
                     viewModel.addToCart(addToCartOcsRequestParams)
+                }
+                ProductDetailConstant.OCC_BUTTON -> {
+                    val addToCartOccRequestParams = AddToCartOccRequestParams(
+                            productId = data.basic.productID ?: "",
+                            shopId = viewModel.shopInfo?.shopCore?.shopID ?: "",
+                            quantity = data.basic.minOrder.toString(),
+                            attribution = trackerAttributionPdp ?: "",
+                            listTracker = trackerListNamePdp ?: "",
+                            warehouseId = selectedWarehouseId.toString()
+                    )
+                    viewModel.addToCart(addToCartOccRequestParams)
                 }
                 else -> {
                     val addToCartRequestParams = AddToCartRequestParams().apply {
