@@ -537,6 +537,9 @@ public class SearchProductModel {
         @SerializedName("free_ongkir")
         @Expose
         private FreeOngkir freeOngkir = new FreeOngkir();
+        @SerializedName("booster_list")
+        @Expose
+        private String boosterList = "";
 
         public String getId() {
             return id;
@@ -684,6 +687,10 @@ public class SearchProductModel {
 
         public FreeOngkir getFreeOngkir() {
             return freeOngkir;
+        }
+
+        public String getBoosterList() {
+            return boosterList;
         }
     }
 
