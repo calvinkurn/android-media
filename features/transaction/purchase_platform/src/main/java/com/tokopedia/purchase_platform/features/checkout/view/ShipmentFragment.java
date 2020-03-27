@@ -1265,7 +1265,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (validateUsePromoRevampUiModel != null) {
                 shipmentPresenter.setValidateUsePromoRevampUiModel(validateUsePromoRevampUiModel);
                 updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel());
-                return;
             }
 
             ValidateUsePromoRequest validateUsePromoRequest = data.getParcelableExtra(ARGS_LAST_VALIDATE_USE_REQUEST);
@@ -2456,9 +2455,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public ValidateUsePromoRequest generateValidateUsePromoRequest() {
-
-        // Update param if have done param data generation before
         if (shipmentPresenter.getLastValidateUseRequest() != null) {
+            // Update param if have done param data generation before
             ValidateUsePromoRequest validateUsePromoRequest = shipmentPresenter.getLastValidateUseRequest();
             List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentAdapter.getShipmentCartItemModelList();
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
@@ -2484,76 +2482,75 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 validateUsePromoRequest.setTradeIn(1);
                 validateUsePromoRequest.setTradeInDropOff(isTradeInByDropOff() ? 1 : 0);
             }
-        }
+            shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
+            return validateUsePromoRequest;
+        } else {
+            // First param data generation / initialization
+            ValidateUsePromoRequest validateUsePromoRequest = new ValidateUsePromoRequest();
+            ArrayList<OrdersItem> listOrderItem = new ArrayList<>();
 
-
-        // First param data generation / initialization
-        ValidateUsePromoRequest validateUsePromoRequest = new ValidateUsePromoRequest();
-        ArrayList<OrdersItem> listOrderItem = new ArrayList<>();
-
-        List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentAdapter.getShipmentCartItemModelList();
-        LastApplyUiModel lastApplyUiModel = shipmentPresenter.getLastApplyData();
-        if (shipmentCartItemModelList != null) {
-            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
-                OrdersItem ordersItem = new OrdersItem();
-                ArrayList<ProductDetailsItem> productDetailsItems = new ArrayList<>();
-                for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                    if (!cartItemModel.isError()) {
-                        ProductDetailsItem productDetail = new ProductDetailsItem();
-                        productDetail.setProductId(cartItemModel.getProductId());
-                        productDetail.setQuantity(cartItemModel.getQuantity());
-                        productDetailsItems.add(productDetail);
-                    }
-                }
-                ordersItem.setProductDetails(productDetailsItems);
-
-                ArrayList<String> listOrderCodes = new ArrayList<>();
-                if (lastApplyUiModel != null) {
-                    for (LastApplyVoucherOrdersItemUiModel lastApplyVoucherOrdersItemUiModel : lastApplyUiModel.getVoucherOrders()) {
-                        if (shipmentCartItemModel.getCartString().equalsIgnoreCase(lastApplyVoucherOrdersItemUiModel.getUniqueId())) {
-                            listOrderCodes.add(lastApplyVoucherOrdersItemUiModel.getCode());
-                            break;
+            List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentAdapter.getShipmentCartItemModelList();
+            LastApplyUiModel lastApplyUiModel = shipmentPresenter.getLastApplyData();
+            if (shipmentCartItemModelList != null) {
+                for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                    OrdersItem ordersItem = new OrdersItem();
+                    ArrayList<ProductDetailsItem> productDetailsItems = new ArrayList<>();
+                    for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                        if (!cartItemModel.isError()) {
+                            ProductDetailsItem productDetail = new ProductDetailsItem();
+                            productDetail.setProductId(cartItemModel.getProductId());
+                            productDetail.setQuantity(cartItemModel.getQuantity());
+                            productDetailsItems.add(productDetail);
                         }
                     }
-                }
-                // Add data BBO
-                if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
-                    listOrderCodes.add(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
-                }
-                ordersItem.setCodes(listOrderCodes);
-                ordersItem.setUniqueId(shipmentCartItemModel.getCartString());
-                ordersItem.setShopId(shipmentCartItemModel.getShopId());
-                if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
-                    if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
-                        ordersItem.setShippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperId());
-                        ordersItem.setSpId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperProductId());
-                    } else if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff() != null) {
-                        ordersItem.setShippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShipperId());
-                        ordersItem.setSpId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShipperProductId());
+                    ordersItem.setProductDetails(productDetailsItems);
+
+                    ArrayList<String> listOrderCodes = new ArrayList<>();
+                    if (lastApplyUiModel != null) {
+                        for (LastApplyVoucherOrdersItemUiModel lastApplyVoucherOrdersItemUiModel : lastApplyUiModel.getVoucherOrders()) {
+                            if (shipmentCartItemModel.getCartString().equalsIgnoreCase(lastApplyVoucherOrdersItemUiModel.getUniqueId())) {
+                                listOrderCodes.add(lastApplyVoucherOrdersItemUiModel.getCode());
+                                break;
+                            }
+                        }
                     }
+                    // Add data BBO
+                    if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+                        listOrderCodes.add(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                    }
+                    ordersItem.setCodes(listOrderCodes);
+                    ordersItem.setUniqueId(shipmentCartItemModel.getCartString());
+                    ordersItem.setShopId(shipmentCartItemModel.getShopId());
+                    if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
+                        if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+                            ordersItem.setShippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperId());
+                            ordersItem.setSpId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperProductId());
+                        } else if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff() != null) {
+                            ordersItem.setShippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShipperId());
+                            ordersItem.setSpId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShipperProductId());
+                        }
+                    }
+                    listOrderItem.add(ordersItem);
                 }
-                listOrderItem.add(ordersItem);
             }
-        }
-        validateUsePromoRequest.setOrders(listOrderItem);
-        validateUsePromoRequest.setState(PARAM_CHECKOUT);
-        validateUsePromoRequest.setCartType(PARAM_DEFAULT);
-        if (isTradeIn()) {
-            validateUsePromoRequest.setTradeIn(1);
-            validateUsePromoRequest.setTradeInDropOff(isTradeInByDropOff() ? 1 : 0);
-        }
-
-        if (lastApplyUiModel != null) {
-            ArrayList<String> globalPromoCodes = new ArrayList<>();
-            if (lastApplyUiModel.getCodes().size() > 0) {
-                globalPromoCodes.addAll(lastApplyUiModel.getCodes());
+            validateUsePromoRequest.setOrders(listOrderItem);
+            validateUsePromoRequest.setState(PARAM_CHECKOUT);
+            validateUsePromoRequest.setCartType(PARAM_DEFAULT);
+            if (isTradeIn()) {
+                validateUsePromoRequest.setTradeIn(1);
+                validateUsePromoRequest.setTradeInDropOff(isTradeInByDropOff() ? 1 : 0);
             }
-            validateUsePromoRequest.setCodes(globalPromoCodes);
+
+            if (lastApplyUiModel != null) {
+                ArrayList<String> globalPromoCodes = new ArrayList<>();
+                if (lastApplyUiModel.getCodes().size() > 0) {
+                    globalPromoCodes.addAll(lastApplyUiModel.getCodes());
+                }
+                validateUsePromoRequest.setCodes(globalPromoCodes);
+            }
+            shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
+            return validateUsePromoRequest;
         }
-
-        shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
-
-        return validateUsePromoRequest;
     }
 
     @Override
