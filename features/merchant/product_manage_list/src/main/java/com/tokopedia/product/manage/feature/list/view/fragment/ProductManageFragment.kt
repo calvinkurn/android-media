@@ -180,7 +180,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun initView() {
-        setupInterceptor()
         setupSearchBar()
         setupProductList()
         setupTabFilters()
@@ -297,13 +296,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         return searchKeyword.isEmpty() && selectedFilters == null && !tabFilters.isActive()
     }
 
-    private fun setupInterceptor() {
-        interceptor.setOnTouchListener { _, _ ->
-            searchBar.clearFocus()
-            false
-        }
-    }
-
     private fun setupSearchBar() {
         searchBar.clearFocus()
 
@@ -319,10 +311,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         searchBar.searchBarIcon.setOnClickListener {
             clearSearchBarInput()
             loadInitialData()
-        }
-
-        searchBar.setOnTouchListener { view, _ ->
-            view.requestFocus()
         }
 
         searchBar.searchBarPlaceholder = getString(R.string.product_manage_search_hint)
