@@ -117,9 +117,9 @@ abstract class BaseTracking {
                     CURRENCY_CODE, IDR,
                     CLICK, DataLayer.mapOf(
                         ACTION_FIELD, DataLayer.mapOf(
-                            LIST, list
+                            LIST, list  + if(products.first().isTopAds) " - topads" else ""
                         ),
-                        PRODUCTS, getProducts(products)
+                        PRODUCTS, getProductsClick(products, list)
                     )
             )
         }
@@ -140,6 +140,12 @@ abstract class BaseTracking {
         private fun getProducts(products: List<Product>): List<Any>{
             val list = ArrayList<Map<String,Any>>()
             products.forEach { list.add(createProductMap(it)) }
+            return DataLayer.listOf(*list.toTypedArray<Any>())
+        }
+
+        private fun getProductsClick(products: List<Product>, listClick: String): List<Any>{
+            val list = ArrayList<Map<String,Any>>()
+            products.forEach { list.add(createProductMap(it, listClick)) }
             return DataLayer.listOf(*list.toTypedArray<Any>())
         }
 
@@ -173,7 +179,7 @@ abstract class BaseTracking {
             map[KEY_DIMENSION_83] = if(product.isFreeOngkir) FREE_ONGKIR else NONE
             if (product.channelId.isNotEmpty()) map[KEY_DIMENSION_84] = product.channelId else NONE
             if (product.categoryId.isNotEmpty() || product.persoType.isNotEmpty()) map[KEY_DIMENSION_96] = String.format(FORMAT_2_ITEMS_UNDERSCORE, product.persoType, product.categoryId) else NONE
-            if (list.isNotEmpty()) map[KEY_LIST] = list
+            if (list.isNotEmpty()) map[KEY_LIST] = list + if(product.isTopAds) " - topads" else ""
             return map
         }
     }
@@ -190,6 +196,7 @@ abstract class BaseTracking {
             val isFreeOngkir: Boolean,
             val channelId: String = "",
             val persoType: String = "",
+            val isTopAds: Boolean = false,
             val categoryId: String = ""): ImpressHolder()
 
     open fun getBasicPromotionView(

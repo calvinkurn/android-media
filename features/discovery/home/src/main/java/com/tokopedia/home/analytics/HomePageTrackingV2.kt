@@ -83,7 +83,8 @@ object HomePageTrackingV2 : BaseTracking() {
                             channelId = channel.id,
                             isFreeOngkir = grid.freeOngkir.isActive,
                             persoType = channel.persoType,
-                            categoryId = channel.categoryID
+                            categoryId = channel.categoryID,
+                            isTopAds = grid.isTopads
                     )
                 },
                 list = String.format(
@@ -110,7 +111,8 @@ object HomePageTrackingV2 : BaseTracking() {
                                 channelId = channel.id,
                                 isFreeOngkir = grid.freeOngkir.isActive,
                                 persoType = channel.persoType,
-                                categoryId = channel.categoryID
+                                categoryId = channel.categoryID,
+                                isTopAds = grid.isTopads
                         )
                 ),
                 list = String.format(
@@ -176,7 +178,8 @@ object HomePageTrackingV2 : BaseTracking() {
                             channelId = channel.id,
                             isFreeOngkir = grid.freeOngkir.isActive,
                             persoType = channel.persoType,
-                            categoryId = channel.categoryID
+                            categoryId = channel.categoryID,
+                            isTopAds = grid.isTopads
                     )
                 },
                 list = String.format(
@@ -203,7 +206,8 @@ object HomePageTrackingV2 : BaseTracking() {
                                 channelId = channel.id,
                                 isFreeOngkir = grid.freeOngkir.isActive,
                                 persoType = channel.persoType,
-                                categoryId = channel.categoryID
+                                categoryId = channel.categoryID,
+                                isTopAds = grid.isTopads
                         )
                 ),
                 list = String.format(
@@ -300,7 +304,8 @@ object HomePageTrackingV2 : BaseTracking() {
                             channelId = channel.id,
                             isFreeOngkir = grid.freeOngkir.isActive,
                             persoType = channel.persoType,
-                            categoryId = channel.categoryID
+                            categoryId = channel.categoryID,
+                            isTopAds = grid.isTopads
                     )
                 },
                 list = String.format(
@@ -325,7 +330,8 @@ object HomePageTrackingV2 : BaseTracking() {
                                 channelId = channel.id,
                                 isFreeOngkir = grid.freeOngkir.isActive,
                                 persoType = channel.persoType,
-                                categoryId = channel.categoryID
+                                categoryId = channel.categoryID,
+                                isTopAds = grid.isTopads
                         )
                 ),
                 list = String.format(

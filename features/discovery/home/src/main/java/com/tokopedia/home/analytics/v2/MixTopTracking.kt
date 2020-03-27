@@ -76,9 +76,12 @@ object MixTopTracking : BaseTracking() {
             productPrice = CurrencyFormatHelper.convertRupiahToInt(grid.price).toString(),
             variant = "",
             persoType = persoType,
-            categoryId = categoryId
+            categoryId = categoryId,
+            isTopAds = grid.isTopads
     )
 
-    fun mapChannelToProductTracker(channels: DynamicHomeChannel.Channels) = channels.grids.withIndex().map { mapGridToProductTracker(it.value, channels.id,  it.index, channels.persoType, channels.categoryID) }
+    fun mapChannelToProductTracker(channels: DynamicHomeChannel.Channels) = channels.grids.withIndex().map {
+        mapGridToProductTracker(it.value, channels.id, it.index, channels.persoType, channels.categoryID)
+    }
 
 }
