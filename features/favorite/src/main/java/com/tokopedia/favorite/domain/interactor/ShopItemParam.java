@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.favorite.domain.interactor;
+package com.tokopedia.favorite.domain.interactor;
 
 /**
  * @author kulomady on 3/20/17.

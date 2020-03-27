@@ -1,9 +1,9 @@
-package com.tokopedia.home.account.favorite.view.viewmodel;
+package com.tokopedia.favorite.view.viewmodel;
 
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.home.account.favorite.domain.model.FavoriteShopItem;
-import com.tokopedia.home.account.favorite.domain.model.FavoriteShop;
-import com.tokopedia.home.account.favorite.domain.model.TopAdsShop;
+import com.tokopedia.favorite.domain.model.FavoriteShopItem;
+import com.tokopedia.favorite.domain.model.FavoriteShop;
+import com.tokopedia.favorite.domain.model.TopAdsShop;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ public class DataFavoriteMapper {
         TopAdsShopViewModel shopViewModel = new TopAdsShopViewModel();
         ArrayList<TopAdsShopItem> shopItems = new ArrayList<>();
         if (adsShop.getTopAdsShopItemList() != null) {
-            for (com.tokopedia.home.account.favorite.domain.model.TopAdsShopItem item
+            for (com.tokopedia.favorite.domain.model.TopAdsShopItem item
                     : adsShop.getTopAdsShopItemList()) {
                 TopAdsShopItem shopItem = new TopAdsShopItem();
                 shopItem.setShopId(item.getShopId());

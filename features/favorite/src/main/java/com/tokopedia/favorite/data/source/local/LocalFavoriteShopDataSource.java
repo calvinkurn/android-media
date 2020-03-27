@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.favorite.data.source.local;
+package com.tokopedia.favorite.data.source.local;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
@@ -6,8 +6,8 @@ import androidx.annotation.NonNull;
 import com.google.gson.Gson;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.home.account.favorite.data.mapper.FavoriteShopMapper;
-import com.tokopedia.home.account.favorite.domain.model.FavoriteShop;
+import com.tokopedia.favorite.data.mapper.FavoriteShopMapper;
+import com.tokopedia.favorite.domain.model.FavoriteShop;
 
 import retrofit2.Response;
 import rx.Observable;

@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.favorite.view.viewmodel;
+package com.tokopedia.favorite.view.viewmodel;
 
 /**
  * @author by erry on 30/01/17.

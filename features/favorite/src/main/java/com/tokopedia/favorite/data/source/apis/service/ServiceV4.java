@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.favorite.data.source.apis.service;
+package com.tokopedia.favorite.data.source.apis.service;
 
 import java.util.HashMap;
 import java.util.Map;

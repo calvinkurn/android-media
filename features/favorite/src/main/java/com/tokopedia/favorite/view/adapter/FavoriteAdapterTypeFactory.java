@@ -1,14 +1,14 @@
-package com.tokopedia.home.account.favorite.view.adapter;
+package com.tokopedia.favorite.view.adapter;
 
 import android.view.View;
 
 import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.home.account.favorite.view.adapter.viewholders.FavoriteShopViewHolder;
-import com.tokopedia.home.account.favorite.view.adapter.viewholders.TopAdsShopViewHolder;
-import com.tokopedia.home.account.favorite.view.viewlistener.FavoriteClickListener;
-import com.tokopedia.home.account.favorite.view.viewmodel.FavoriteShopViewModel;
-import com.tokopedia.home.account.favorite.view.viewmodel.TopAdsShopViewModel;
+import com.tokopedia.favorite.view.adapter.viewholders.FavoriteShopViewHolder;
+import com.tokopedia.favorite.view.adapter.viewholders.TopAdsShopViewHolder;
+import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener;
+import com.tokopedia.favorite.view.viewmodel.FavoriteShopViewModel;
+import com.tokopedia.favorite.view.viewmodel.TopAdsShopViewModel;
 
 /**
  * @author kulomady on 1/24/17.

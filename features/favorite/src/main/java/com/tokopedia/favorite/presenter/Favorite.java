@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.favorite.presenter;
+package com.tokopedia.favorite.presenter;
 
 import android.content.Context;
 import android.os.Bundle;

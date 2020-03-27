@@ -1,6 +1,6 @@
-package com.tokopedia.home.account.favorite.data;
+package com.tokopedia.favorite.data;
 
-import com.tokopedia.home.account.favorite.domain.model.FavoritShopResponseData;
+import com.tokopedia.favorite.domain.model.FavoritShopResponseData;
 import com.tokopedia.network.data.model.response.GraphqlResponse;
 
 import retrofit2.Response;

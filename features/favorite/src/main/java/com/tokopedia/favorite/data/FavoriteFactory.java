@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.favorite.data;
+package com.tokopedia.favorite.data;
 
 import android.content.Context;
 
@@ -8,13 +8,13 @@ import com.google.gson.Gson;
 import com.tokopedia.core.base.common.service.ServiceV4;
 import com.tokopedia.core.base.common.service.TopAdsService;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.home.account.favorite.data.source.cloud.CloudFavoriteShopDataSource;
-import com.tokopedia.home.account.favorite.data.source.cloud.CloudTopAdsShopDataSource;
-import com.tokopedia.home.account.favorite.data.source.local.LocalFavoriteShopDataSource;
-import com.tokopedia.home.account.favorite.data.source.local.LocalTopAdsShopDataSource;
-import com.tokopedia.home.account.favorite.domain.model.FavShop;
-import com.tokopedia.home.account.favorite.domain.model.FavoriteShop;
-import com.tokopedia.home.account.favorite.domain.model.TopAdsShop;
+import com.tokopedia.favorite.data.source.cloud.CloudFavoriteShopDataSource;
+import com.tokopedia.favorite.data.source.cloud.CloudTopAdsShopDataSource;
+import com.tokopedia.favorite.data.source.local.LocalFavoriteShopDataSource;
+import com.tokopedia.favorite.data.source.local.LocalTopAdsShopDataSource;
+import com.tokopedia.favorite.domain.model.FavShop;
+import com.tokopedia.favorite.domain.model.FavoriteShop;
+import com.tokopedia.favorite.domain.model.TopAdsShop;
 
 import java.util.HashMap;
 

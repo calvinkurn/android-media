@@ -1,11 +1,11 @@
-package com.tokopedia.home.account.favorite.domain.interactor;
+package com.tokopedia.favorite.domain.interactor;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
 
-import com.tokopedia.home.account.favorite.domain.model.DataFavorite;
-import com.tokopedia.home.account.favorite.domain.model.FavoriteShop;
-import com.tokopedia.home.account.favorite.domain.model.TopAdsShop;
+import com.tokopedia.favorite.domain.model.DataFavorite;
+import com.tokopedia.favorite.domain.model.FavoriteShop;
+import com.tokopedia.favorite.domain.model.TopAdsShop;
 import com.tokopedia.topads.sdk.utils.CacheHandler;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;

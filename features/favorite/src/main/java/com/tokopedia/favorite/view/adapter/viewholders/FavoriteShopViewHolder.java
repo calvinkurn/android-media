@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.favorite.view.adapter.viewholders;
+package com.tokopedia.favorite.view.adapter.viewholders;
 
 import android.content.Context;
 
@@ -15,7 +15,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.home.account.favorite.view.viewmodel.FavoriteShopViewModel;
+import com.tokopedia.favorite.view.viewmodel.FavoriteShopViewModel;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.track.TrackApp;
 

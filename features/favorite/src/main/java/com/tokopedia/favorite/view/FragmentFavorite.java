@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.favorite.view;
+package com.tokopedia.favorite.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,13 +29,13 @@ import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.home.account.favorite.view.adapter.FavoriteAdapter;
+import com.tokopedia.favorite.view.adapter.FavoriteAdapter;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.di.component.DaggerFavoriteComponent;
-import com.tokopedia.home.account.favorite.view.adapter.FavoriteAdapterTypeFactory;
-import com.tokopedia.home.account.favorite.view.viewlistener.FavoriteClickListener;
-import com.tokopedia.home.account.favorite.view.viewmodel.FavoriteShopViewModel;
-import com.tokopedia.home.account.favorite.view.viewmodel.TopAdsShopItem;
+import com.tokopedia.favorite.view.adapter.FavoriteAdapterTypeFactory;
+import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener;
+import com.tokopedia.favorite.view.viewmodel.FavoriteShopViewModel;
+import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem;
 import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;

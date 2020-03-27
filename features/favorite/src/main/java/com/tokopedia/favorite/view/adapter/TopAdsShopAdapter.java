@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.favorite.view.adapter;
+package com.tokopedia.favorite.view.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -28,8 +28,8 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.home.account.favorite.view.viewlistener.FavoriteClickListener;
-import com.tokopedia.home.account.favorite.view.viewmodel.TopAdsShopItem;
+import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener;
+import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem;
 import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.topads.sdk.utils.ImageLoader;

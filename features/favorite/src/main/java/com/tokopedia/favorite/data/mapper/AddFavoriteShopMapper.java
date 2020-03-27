@@ -1,12 +1,12 @@
-package com.tokopedia.home.account.favorite.data.mapper;
+package com.tokopedia.favorite.data.mapper;
 
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tokopedia.home.account.R;
-import com.tokopedia.home.account.favorite.domain.model.FavShop;
-import com.tokopedia.home.account.favorite.domain.model.FavoriteSendData;
-import com.tokopedia.home.account.favorite.domain.model.FavoriteShopItem;
+import com.tokopedia.favorite.R;
+import com.tokopedia.favorite.domain.model.FavShop;
+import com.tokopedia.favorite.domain.model.FavoriteSendData;
+import com.tokopedia.favorite.domain.model.FavoriteShopItem;
 
 import retrofit2.Response;
 import rx.functions.Func1;

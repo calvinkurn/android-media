@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.favorite.domain.model;
+package com.tokopedia.favorite.domain.model;
 
 public class Reputation{
 	private int badgeLevel;

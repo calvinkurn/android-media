@@ -1,12 +1,12 @@
-package com.tokopedia.home.account.favorite.data.mapper;
+package com.tokopedia.favorite.data.mapper;
 
 import android.content.Context;
 
 import com.google.gson.Gson;
 import com.tokopedia.home.account.R;
-import com.tokopedia.home.account.favorite.domain.model.TopAdsHome;
-import com.tokopedia.home.account.favorite.domain.model.TopAdsShopItem;
-import com.tokopedia.home.account.favorite.domain.model.TopAdsShop;
+import com.tokopedia.favorite.domain.model.TopAdsHome;
+import com.tokopedia.favorite.domain.model.TopAdsShopItem;
+import com.tokopedia.favorite.domain.model.TopAdsShop;
 
 import java.util.ArrayList;
 import java.util.List;

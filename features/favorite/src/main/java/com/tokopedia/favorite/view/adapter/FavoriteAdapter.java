@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.favorite.view.adapter;
+package com.tokopedia.favorite.view.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

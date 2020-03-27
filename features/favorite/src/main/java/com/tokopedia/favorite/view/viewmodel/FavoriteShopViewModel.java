@@ -1,7 +1,7 @@
-package com.tokopedia.home.account.favorite.view.viewmodel;
+package com.tokopedia.favorite.view.viewmodel;
 
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.home.account.favorite.view.adapter.FavoriteTypeFactory;
+import com.tokopedia.favorite.view.adapter.FavoriteTypeFactory;
 
 /**
  *

@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.favorite.data.source.apis;
+package com.tokopedia.favorite.data.source.apis;
 
 import com.tokopedia.core.network.retrofit.services.AuthService;
 import com.tokopedia.url.TokopediaUrl;

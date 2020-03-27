@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.favorite.di.modul;
+package com.tokopedia.favorite.di.modul;
 
 import android.content.Context;
 
@@ -12,15 +12,15 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.home.account.favorite.data.FavoriteDataRepository;
-import com.tokopedia.home.account.favorite.data.FavoriteFactory;
-import com.tokopedia.home.account.favorite.di.scope.FavoriteScope;
-import com.tokopedia.home.account.favorite.domain.FavoriteRepository;
-import com.tokopedia.home.account.favorite.domain.interactor.AddFavoriteShopUseCase;
-import com.tokopedia.home.account.favorite.domain.interactor.GetAllDataFavoriteUseCase;
-import com.tokopedia.home.account.favorite.domain.interactor.GetFavoriteShopUsecase;
-import com.tokopedia.home.account.favorite.domain.interactor.GetInitialDataPageUsecase;
-import com.tokopedia.home.account.favorite.domain.interactor.GetTopAdsShopUseCase;
+import com.tokopedia.favorite.data.FavoriteDataRepository;
+import com.tokopedia.favorite.data.FavoriteFactory;
+import com.tokopedia.favorite.di.scope.FavoriteScope;
+import com.tokopedia.favorite.domain.FavoriteRepository;
+import com.tokopedia.favorite.domain.interactor.AddFavoriteShopUseCase;
+import com.tokopedia.favorite.domain.interactor.GetAllDataFavoriteUseCase;
+import com.tokopedia.favorite.domain.interactor.GetFavoriteShopUsecase;
+import com.tokopedia.favorite.domain.interactor.GetInitialDataPageUsecase;
+import com.tokopedia.favorite.domain.interactor.GetTopAdsShopUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 
 import dagger.Module;

@@ -1,8 +1,8 @@
-package com.tokopedia.home.account.favorite.view.viewlistener;
+package com.tokopedia.favorite.view.viewlistener;
 
 import android.view.View;
 
-import com.tokopedia.home.account.favorite.view.viewmodel.TopAdsShopItem;
+import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem;
 
 
 /**

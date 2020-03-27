@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.favorite.data.source.cloud;
+package com.tokopedia.favorite.data.source.cloud;
 
 import android.content.Context;
 
@@ -8,8 +8,8 @@ import com.tokopedia.core.base.utils.HttpResponseValidator;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.home.account.favorite.data.mapper.TopAdsShopMapper;
-import com.tokopedia.home.account.favorite.domain.model.TopAdsShop;
+import com.tokopedia.favorite.data.mapper.TopAdsShopMapper;
+import com.tokopedia.favorite.domain.model.TopAdsShop;
 
 import retrofit2.Response;
 import rx.Observable;

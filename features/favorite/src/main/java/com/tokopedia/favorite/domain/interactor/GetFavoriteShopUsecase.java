@@ -1,7 +1,7 @@
-package com.tokopedia.home.account.favorite.domain.interactor;
+package com.tokopedia.favorite.domain.interactor;
 
-import com.tokopedia.home.account.favorite.domain.FavoriteRepository;
-import com.tokopedia.home.account.favorite.domain.model.FavoriteShop;
+import com.tokopedia.favorite.domain.FavoriteRepository;
+import com.tokopedia.favorite.domain.model.FavoriteShop;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

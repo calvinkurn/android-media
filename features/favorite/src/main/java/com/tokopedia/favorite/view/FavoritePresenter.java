@@ -1,26 +1,25 @@
-package com.tokopedia.home.account.favorite.view;
+package com.tokopedia.favorite.view;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.home.account.favorite.domain.interactor.GetInitialDataPageUsecase;
+import com.tokopedia.favorite.domain.interactor.GetInitialDataPageUsecase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
-import com.tokopedia.home.account.favorite.domain.interactor.GetAllDataFavoriteUseCase;
-import com.tokopedia.home.account.favorite.domain.interactor.GetFavoriteShopUsecase;
-import com.tokopedia.home.account.favorite.domain.interactor.GetTopAdsShopUseCase;
-import com.tokopedia.home.account.favorite.domain.model.DataFavorite;
-import com.tokopedia.home.account.favorite.domain.model.FavoriteShop;
-import com.tokopedia.home.account.favorite.domain.model.FavoriteShopItem;
-import com.tokopedia.home.account.favorite.domain.model.TopAdsShop;
-import com.tokopedia.home.account.favorite.view.viewmodel.DataFavoriteMapper;
-import com.tokopedia.home.account.favorite.view.viewmodel.FavoriteShopViewModel;
-import com.tokopedia.home.account.favorite.view.viewmodel.TopAdsShopItem;
+import com.tokopedia.favorite.domain.interactor.GetAllDataFavoriteUseCase;
+import com.tokopedia.favorite.domain.interactor.GetFavoriteShopUsecase;
+import com.tokopedia.favorite.domain.interactor.GetTopAdsShopUseCase;
+import com.tokopedia.favorite.domain.model.DataFavorite;
+import com.tokopedia.favorite.domain.model.FavoriteShop;
+import com.tokopedia.favorite.domain.model.FavoriteShopItem;
+import com.tokopedia.favorite.domain.model.TopAdsShop;
+import com.tokopedia.favorite.view.viewmodel.DataFavoriteMapper;
+import com.tokopedia.favorite.view.viewmodel.FavoriteShopViewModel;
+import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem;
 
 import java.util.ArrayList;
 import java.util.List;

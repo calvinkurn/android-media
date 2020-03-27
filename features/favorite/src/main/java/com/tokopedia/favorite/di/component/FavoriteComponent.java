@@ -1,9 +1,9 @@
-package com.tokopedia.home.account.favorite.di.component;
+package com.tokopedia.favorite.di.component;
 
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.home.account.favorite.view.FragmentFavorite;
-import com.tokopedia.home.account.favorite.di.modul.FavoriteModule;
-import com.tokopedia.home.account.favorite.di.scope.FavoriteScope;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.favorite.view.FragmentFavorite;
+import com.tokopedia.favorite.di.modul.FavoriteModule;
+import com.tokopedia.favorite.di.scope.FavoriteScope;
 
 import dagger.Component;
 
@@ -12,7 +12,7 @@ import dagger.Component;
  */
 
 @FavoriteScope
-@Component(modules = FavoriteModule.class, dependencies = AppComponent.class)
+@Component(modules = FavoriteModule.class, dependencies = BaseAppComponent.class)
 public interface FavoriteComponent {
     void inject(FragmentFavorite fragmentFavorite);
 }

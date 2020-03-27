@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.favorite.domain.model;
+package com.tokopedia.favorite.domain.model;
 
 /**
  * Created by erry on 31/01/17.

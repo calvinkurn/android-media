@@ -1,10 +1,10 @@
-package com.tokopedia.home.account.favorite.data;
+package com.tokopedia.favorite.data;
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.home.account.favorite.domain.FavoriteRepository;
-import com.tokopedia.home.account.favorite.domain.model.FavShop;
-import com.tokopedia.home.account.favorite.domain.model.FavoriteShop;
-import com.tokopedia.home.account.favorite.domain.model.TopAdsShop;
+import com.tokopedia.favorite.domain.FavoriteRepository;
+import com.tokopedia.favorite.domain.model.FavShop;
+import com.tokopedia.favorite.domain.model.FavoriteShop;
+import com.tokopedia.favorite.domain.model.TopAdsShop;
 
 import java.util.HashMap;
 

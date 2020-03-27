@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.favorite.data.source.cloud;
+package com.tokopedia.favorite.data.source.cloud;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -6,12 +6,12 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.tokopedia.home.account.favorite.data.FavoriteShopResponseValidator;
-import com.tokopedia.home.account.favorite.data.mapper.AddFavoriteShopMapper;
-import com.tokopedia.home.account.favorite.data.mapper.FavoritShopGraphQlMapper;
-import com.tokopedia.home.account.favorite.data.source.apis.FavoriteShopAuthService;
-import com.tokopedia.home.account.favorite.domain.interactor.AddFavoriteShopUseCase;
-import com.tokopedia.home.account.favorite.domain.interactor.GetFavoriteShopUsecase;
+import com.tokopedia.favorite.data.FavoriteShopResponseValidator;
+import com.tokopedia.favorite.data.mapper.AddFavoriteShopMapper;
+import com.tokopedia.favorite.data.mapper.FavoritShopGraphQlMapper;
+import com.tokopedia.favorite.data.source.apis.FavoriteShopAuthService;
+import com.tokopedia.favorite.domain.interactor.AddFavoriteShopUseCase;
+import com.tokopedia.favorite.domain.interactor.GetFavoriteShopUsecase;
 import com.tokopedia.network.data.model.response.GraphqlResponse;
 import com.tokopedia.core.base.common.service.ServiceV4;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -20,8 +20,8 @@ import com.tokopedia.core.network.entity.home.TopAdsHome;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.home.account.favorite.domain.model.FavShop;
-import com.tokopedia.home.account.favorite.domain.model.FavoriteShop;
+import com.tokopedia.favorite.domain.model.FavShop;
+import com.tokopedia.favorite.domain.model.FavoriteShop;
 
 import java.io.BufferedReader;
 import java.io.IOException;

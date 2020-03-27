@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.favorite.di.scope;
+package com.tokopedia.favorite.di.scope;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
