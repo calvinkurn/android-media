@@ -225,13 +225,12 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
 
         room_detail_header_facilities.removeAllViews()
         context?.run {
-            val breakfastTextView = FacilityTextView(this)
-            if (hotelRoom.breakfastInfo.isBreakfastIncluded) {
-                breakfastTextView.setIconAndText(R.drawable.ic_hotel_free_breakfast, getString(R.string.hotel_room_list_free_breakfast))
-            } else {
-                breakfastTextView.setIconAndText(R.drawable.ic_hotel_no_breakfast, getString(R.string.hotel_room_list_breakfast_not_included))
+
+            if (hotelRoom.breakfastInfo.breakFast.isNotEmpty()) {
+                val breakfastTextView = FacilityTextView(this)
+                breakfastTextView.setIconAndText(hotelRoom.breakfastInfo.iconUrl, hotelRoom.breakfastInfo.breakFast)
+                room_detail_header_facilities.addView(breakfastTextView)
             }
-            room_detail_header_facilities.addView(breakfastTextView)
 
             if (hotelRoom.refundInfo.refundStatus.isNotEmpty()) {
                 val refundableTextView = FacilityTextView(this)

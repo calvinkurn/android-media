@@ -11,7 +11,7 @@ data class RoomListModel(
         var maxFreeChild: Int = 0,
         var occupancyText: String = "",
         var bedInfo: String = "",
-        var breakfastIncluded: Boolean = false,
+        var breakfastInfo: HotelRoom.RoomBreakfastInfo = HotelRoom.RoomBreakfastInfo(),
         var refundInfo: HotelRoom.RefundInfo = HotelRoom.RefundInfo(),
         var refundStatus: String = "",
         var roomFacility: List<HotelRoomInfo.Facility> = listOf(),

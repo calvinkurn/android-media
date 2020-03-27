@@ -87,8 +87,6 @@
     <string name="hotel_room_not_found_subtitle">Tenang, mungkin kamu cuma perlu ubah detail pencarian di awal</string>
     <string name="hotel_room_room_left_text">Sisa %1$s Kamar!</string>
     <string name="hotel_room_full_text_view">Sudah Penuh</string>
-    <string name="hotel_room_list_free_breakfast">Sarapan Gratis</string>
-    <string name="hotel_room_list_breakfast_not_included">Tanpa Sarapan</string>
     <string name="hotel_room_list_per_room_per_night">/kamar/malam</string>
     <string name="hotel_room_list_include_tax">Termasuk pajak</string>
     <string name="hotel_room_list_choose_room_button">Pilih Kamar</string>

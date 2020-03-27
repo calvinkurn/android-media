@@ -44,7 +44,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : Ab
                 room_left_text_view.visibility = if (roomListModel.roomLeft <= 2) View.VISIBLE else View.GONE
                 room_left_text_view.text = getString(R.string.hotel_room_room_left_text, roomListModel.roomLeft.toString())
                 cc_not_required_text_view.text = roomListModel.creditCardHeader
-                initRoomFacility(roomListModel.breakfastIncluded, roomListModel.refundInfo, roomListModel.roomFacility)
+                initRoomFacility(roomListModel.breakfastInfo, roomListModel.refundInfo, roomListModel.roomFacility)
 
                 choose_room_button.setOnClickListener { listener.onClickBookListener(hotelRoom) }
                 choose_room_button.text = getString(R.string.hotel_room_list_choose_room_button, "")
@@ -69,18 +69,15 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : Ab
         }
     }
 
-    private fun initRoomFacility(breakfastIncluded: Boolean, refundInfo: HotelRoom.RefundInfo, roomFacility: List<HotelRoomInfo.Facility>) {
+    private fun initRoomFacility(breakfastInfo: HotelRoom.RoomBreakfastInfo, refundInfo: HotelRoom.RefundInfo, roomFacility: List<HotelRoomInfo.Facility>) {
         with(itemView) {
             room_facility_recycler_view.removeAllViews()
 
-            val breakfastTextView = FacilityTextView(context)
-
-            if (breakfastIncluded) {
-                breakfastTextView.setIconAndText(R.drawable.ic_hotel_free_breakfast, getString(R.string.hotel_room_list_free_breakfast))
-            } else {
-                breakfastTextView.setIconAndText(R.drawable.ic_hotel_no_breakfast, getString(R.string.hotel_room_list_breakfast_not_included))
+            if (breakfastInfo.breakFast.isNotEmpty()) {
+                val breakfastTextView = FacilityTextView(context)
+                breakfastTextView.setIconAndText(breakfastInfo.iconUrl, breakfastInfo.breakFast)
+                room_facility_recycler_view.addView(breakfastTextView)
             }
-            room_facility_recycler_view.addView(breakfastTextView)
 
             if (refundInfo.refundStatus.isNotEmpty()) {
                 val refundableTextView = FacilityTextView(context)
@@ -124,7 +121,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : Ab
         roomListModel.bedInfo = hotelRoom.bedInfo
         roomListModel.roomFacility = hotelRoom.roomInfo.facility
         roomListModel.payInHotel = !hotelRoom.additionalPropertyInfo.isDirectPayment
-        roomListModel.breakfastIncluded = hotelRoom.breakfastInfo.isBreakfastIncluded
+        roomListModel.breakfastInfo = hotelRoom.breakfastInfo
         roomListModel.refundInfo = hotelRoom.refundInfo
         roomListModel.refundStatus = hotelRoom.refundInfo.refundStatus
         roomListModel.creditCardHeader = hotelRoom.creditCardInfo.header
