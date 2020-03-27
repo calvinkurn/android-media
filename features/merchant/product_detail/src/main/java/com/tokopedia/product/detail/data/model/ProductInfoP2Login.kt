@@ -19,6 +19,7 @@ data class ProductInfoP2Login (
 
     val isOcsCheckoutType: Boolean
         get() {
-            return cartType.equals(CART_TYPE_OCS, true)
+            // Todo : revert
+            return true
         }
 }
