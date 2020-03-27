@@ -21,9 +21,8 @@ import com.tokopedia.unifyprinciples.Typography
 
 class RecommendationListCarouselViewHolder(itemView: View,
                                            private val listener: HomeCategoryListener,
-                                           private val countDownViewListener: CountDownView.CountDownListener,
                                            private val parentRecycledViewPool: RecyclerView.RecycledViewPool): DynamicChannelViewHolder(
-        itemView, listener, countDownViewListener) {
+        itemView, listener) {
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
         val listCarouselTitle = itemView.findViewById<Typography>(R.id.list_carousel_title)
         val listCarouselDescription = itemView.findViewById<Typography>(R.id.list_carousel_description)
