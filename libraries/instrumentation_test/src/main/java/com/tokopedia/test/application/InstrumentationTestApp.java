@@ -300,7 +300,7 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
 
     @Override
     public FingerprintModel getFingerprintModel() {
-        return new FingerprintModel();
+        return generateFingerprintModel();
     }
 
     @Override
@@ -308,4 +308,11 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
 
     }
 
+    public static FingerprintModel generateFingerprintModel() {
+        FingerprintModel fingerprintModel = new FingerprintModel();
+        fingerprintModel.setFingerprintHash(MOCK_FINGERPRINT_HASH);
+        fingerprintModel.setAdsId(MOCK_ADS_ID);
+        fingerprintModel.setRegistrarionId(MOCK_DEVICE_ID);
+        return fingerprintModel;
+    }
 }
