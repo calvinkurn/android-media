@@ -16,6 +16,7 @@ import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.util.DefaultCoroutineDispatcherProvider
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.util.PlayLifecycleObserver
+import com.tokopedia.play_common.util.PlayProcessLifecycleObserver
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
@@ -38,7 +39,11 @@ class PlayModule(val mContext: Context) {
 
     @PlayScope
     @Provides
-    fun providePlayLifecycleObserver(playVideoManager: PlayVideoManager): PlayLifecycleObserver = PlayLifecycleObserver(playVideoManager)
+    fun providePlayLifecycleObserver(): PlayLifecycleObserver = PlayLifecycleObserver(mContext)
+
+    @PlayScope
+    @Provides
+    fun providePlayProcessLifecycleObserver(): PlayProcessLifecycleObserver = PlayProcessLifecycleObserver(mContext)
 
     @PlayScope
     @Provides

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
@@ -14,6 +15,7 @@ import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play_common.util.PlayLifecycleObserver
+import com.tokopedia.play_common.util.PlayProcessLifecycleObserver
 import javax.inject.Inject
 
 /**
@@ -29,6 +31,9 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
     @Inject
     lateinit var playLifecycleObserver: PlayLifecycleObserver
 
+    @Inject
+    lateinit var playProcessLifecycleObserver: PlayProcessLifecycleObserver
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play)
@@ -37,6 +42,16 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
 
         val channelId = intent?.data?.lastPathSegment
         setupView(channelId)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -49,13 +64,9 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
     }
 
     override fun onNewChannel(channelId: String?) {
-        //TODO("Uncomment Development Code")
         supportFragmentManager.beginTransaction()
                 .replace(R.id.fl_fragment, getFragment(channelId), PLAY_FRAGMENT_TAG)
                 .commit()
-//        supportFragmentManager.beginTransaction()
-//                .replace(R.id.fl_fragment, getFragment("2287"), PLAY_FRAGMENT_TAG)
-//                .commit()
     }
 
     private fun inject() {
@@ -74,6 +85,8 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
 
     private fun setupPage() {
         lifecycle.addObserver(playLifecycleObserver)
+        ProcessLifecycleOwner.get()
+                .lifecycle.addObserver(playProcessLifecycleObserver)
     }
 
     private fun setupView(channelId: String?) {
@@ -96,5 +109,11 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
                 }
             }
         } else super.onBackPressed()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        ProcessLifecycleOwner.get()
+                .lifecycle.removeObserver(playProcessLifecycleObserver)
     }
 }

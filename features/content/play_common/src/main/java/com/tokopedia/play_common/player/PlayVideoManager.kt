@@ -35,7 +35,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     companion object {
         private const val RETRY_COUNT_LIVE = 1
         private const val RETRY_COUNT_DEFAULT = 2
-        private const val RETRY_DELAY = 1000L
+        private const val RETRY_DELAY = 2000L
 
         private const val VIDEO_MAX_SOUND = 1f
         private const val VIDEO_MIN_SOUND = 0f
@@ -62,7 +62,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     }
 
     private val exoPlaybackExceptionParser = ExoPlaybackExceptionParser()
-    private var currentPrepareState: PlayVideoPrepareState = PlayVideoPrepareState.Unprepared(null, PlayVideoType.Unknown, null, true)
+    private var currentPrepareState: PlayVideoPrepareState = getDefaultPrepareState()
     private val _observablePlayVideoState = MutableLiveData<PlayVideoState>()
     private val _observableVideoPlayer = MutableLiveData<SimpleExoPlayer>()
 
@@ -80,6 +80,11 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
 
         override fun onPlayerError(error: ExoPlaybackException) {
             val parsedException = exoPlaybackExceptionParser.parse(error)
+//            if (parsedException.isBlackListedException) {
+//                stopPlayer()
+//                return
+//            }
+
             if (
                     parsedException.isBehindLiveWindowException ||
                     parsedException.isInvalidResponseCodeException
@@ -175,12 +180,19 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         videoPlayer.playWhenReady = false
     }
 
+    fun resumeOrPlayPreviousVideo() {
+        val prepareState = currentPrepareState
+        if (prepareState is PlayVideoPrepareState.Unprepared && prepareState.previousUri != null) {
+            safePlayVideoWithUri(prepareState.previousUri)
+        }
+    }
+
     fun resetCurrentVideo() {
         videoPlayer.seekTo(0)
     }
 
     fun releasePlayer() {
-        currentPrepareState = PlayVideoPrepareState.Unprepared(null, PlayVideoType.Unknown, null, true)
+        currentPrepareState = getDefaultPrepareState()
         videoPlayer.release()
     }
 
@@ -188,9 +200,9 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         val prepareState = currentPrepareState
         if (prepareState is PlayVideoPrepareState.Prepared)
             currentPrepareState = PlayVideoPrepareState.Unprepared(
-                    prepareState.uri,
-                    if (isVideoLive()) PlayVideoType.Live else PlayVideoType.VOD,
-                    when (prepareState.positionHandle) {
+                    previousUri = prepareState.uri,
+                    previousType = if (isVideoLive()) PlayVideoType.Live else PlayVideoType.VOD,
+                    lastPosition = when (prepareState.positionHandle) {
                         VideoPositionHandle.Handled -> getCurrentPosition()
                         is VideoPositionHandle.NotHandled -> prepareState.positionHandle.lastPosition
                     },
@@ -199,6 +211,13 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
 
         videoPlayer.stop()
     }
+
+    private fun getDefaultPrepareState() = PlayVideoPrepareState.Unprepared(
+            previousUri = null,
+            previousType = PlayVideoType.Unknown,
+            lastPosition = null,
+            resetState = true
+    )
     //endregion
 
     //region video state
@@ -256,10 +275,6 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
 
             override fun getMinimumLoadableRetryCount(dataType: Int): Int {
                 return if (dataType == C.DATA_TYPE_MEDIA_PROGRESSIVE_LIVE) RETRY_COUNT_LIVE else RETRY_COUNT_DEFAULT
-            }
-
-            override fun getBlacklistDurationMsFor(dataType: Int, loadDurationMs: Long, exception: IOException?, errorCount: Int): Long {
-                return C.TIME_UNSET
             }
         }
     }

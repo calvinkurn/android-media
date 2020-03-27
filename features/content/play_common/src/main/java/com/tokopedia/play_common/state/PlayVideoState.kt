@@ -10,6 +10,5 @@ sealed class PlayVideoState {
     object Pause : PlayVideoState()
     object NoMedia : PlayVideoState()
     object Ended : PlayVideoState()
-    object NotConfigured : PlayVideoState()
     data class Error(val error: Throwable) : PlayVideoState()
 }
