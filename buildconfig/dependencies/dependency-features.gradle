@@ -214,6 +214,7 @@ ext {
             vote                            : ":features:user:vote",
             liveness                        : ":features:user:liveness",
             fcm_common                      : ":features:fcm_common",
+            favorite                        : ":features:favorite",
             tkpdcore                        : ":tkpdcore",
             tkpddiscovery                   : ":tkpddiscovery",
             tkpdinbox                       : ":tkpdinbox",
