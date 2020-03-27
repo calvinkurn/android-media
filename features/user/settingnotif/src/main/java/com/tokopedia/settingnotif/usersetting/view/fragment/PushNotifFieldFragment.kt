@@ -27,7 +27,7 @@ class PushNotifFieldFragment : SettingFieldFragment() {
     }
 
     override fun getNotificationType(): String {
-        return getString(R.string.settingnotif_dialog_info_title)
+        return "pushnotif"
     }
 
     override fun getGqlRawQuery(): Int {

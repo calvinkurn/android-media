@@ -10,7 +10,7 @@ class SellerFieldFragment: SettingFieldFragment() {
     }
 
     override fun getNotificationType(): String {
-        return getString(R.string.settingnotif_seller)
+        return "sellernotif"
     }
 
     override fun getGqlRawQuery(): Int {

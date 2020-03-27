@@ -16,7 +16,7 @@ class SmsFieldFragment: SettingFieldFragment() {
     }
 
     override fun getNotificationType(): String {
-        return getString(R.string.settingnotif_sms)
+        return "sms"
     }
 
     override fun getGqlRawQuery(): Int {

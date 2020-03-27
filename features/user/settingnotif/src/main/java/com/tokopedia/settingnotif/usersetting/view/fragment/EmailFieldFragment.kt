@@ -13,7 +13,7 @@ class EmailFieldFragment: SettingFieldFragment() {
     }
 
     override fun getNotificationType(): String {
-        return getString(R.string.settingnotif_email)
+        return "email"
     }
 
     override fun getGqlRawQuery(): Int {
