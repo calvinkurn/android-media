@@ -48,7 +48,7 @@ data class DynamicProductInfoP1(
         }
 
     fun checkImei(imeiRemoteConfig: Boolean): Boolean {
-        return imeiRemoteConfig && data.campaign.needCheckImei
+        return imeiRemoteConfig && data.campaign.isCheckImei
     }
 
     fun getFinalStock(multiOriginStock: String): String {
