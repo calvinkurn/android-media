@@ -1,17 +1,19 @@
 package com.tokopedia.purchase_platform.features.checkout.view.helper
 
+import com.tokopedia.purchase_platform.features.checkout.view.helper.RfcDateTimeParser.RFC_3339
+
 object DateHelper {
 
     @JvmStatic
     fun timeSince(startTime: String, endTime: String): Long {
-        val start = RfcDateTimeParser.parseDateString(startTime, RfcDateTimeParser.RFC_3339)?.time ?: 0
-        val end = RfcDateTimeParser.parseDateString(endTime, RfcDateTimeParser.RFC_3339)?.time ?: 0
+        val start = RfcDateTimeParser.parseDateString(startTime, RFC_3339)?.time ?: 0
+        val end = RfcDateTimeParser.parseDateString(endTime, RFC_3339)?.time ?: 0
 
         val diff = end - start
-        if (diff > 0) {
-            return diff
+        return if (diff > 0) {
+            diff
         } else {
-            return 0
+            0
         }
     }
 }
