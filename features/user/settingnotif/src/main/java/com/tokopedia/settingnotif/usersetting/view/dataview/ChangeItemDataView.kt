@@ -8,14 +8,14 @@ import com.tokopedia.settingnotif.usersetting.state.Phone
 object ChangeItemDataView {
 
     fun changeEmail(email: String) = ChangeSection(
-            icon = R.drawable.ic_settingnotif_change_email,
+            icon = R.drawable.ic_notifsetting_change_email,
             description = R.string.settingnotif_change_email,
             changeItem = email,
             state = Email
     )
 
     fun changePhoneNumber(phoneNumber: String) = ChangeSection(
-            icon = R.drawable.ic_settingnotif_change_email,
+            icon = R.drawable.ic_notifsetting_change_email,
             description = R.string.settingnotif_change_phone_number,
             changeItem = phoneNumber,
             state = Phone
