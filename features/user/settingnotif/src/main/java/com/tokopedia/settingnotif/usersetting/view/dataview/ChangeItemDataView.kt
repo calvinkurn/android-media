@@ -15,7 +15,7 @@ object ChangeItemDataView {
     )
 
     fun changePhoneNumber(phoneNumber: String) = ChangeSection(
-            icon = R.drawable.ic_notifsetting_change_email,
+            icon = R.drawable.ic_notifsetting_change_phone,
             description = R.string.settingnotif_change_phone_number,
             changeItem = phoneNumber,
             state = Phone
