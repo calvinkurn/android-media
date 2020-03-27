@@ -31,3 +31,12 @@ compileTestKotlin {
         jvmTarget = "1.8"
     }
 }
+
+project.ext {
+    artifactId = 'analyticparam'
+    groupId = 'com.example.analyticparam'
+    versionName = "0.0.1-alpha"
+    artifactName = "analytic_param"
+}
+
+apply from: '../publish_local.gradle'

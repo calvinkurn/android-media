@@ -8,9 +8,9 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation 'com.squareup:javapoet:1.11.1'
-    implementation project(':annotation_processor_analytic')
-    implementation project(':analytic_param')
-    kapt project(':analytic_processor')
+    implementation "com.example.annotation:annotation:0.0.1-alpha"
+    implementation "com.example.analyticparam:analyticparam:0.0.1-alpha"
+    kapt "com.example.processor:processor:0.0.1-alpha"
 }
 
 sourceCompatibility = "7"
@@ -44,3 +44,12 @@ compileTestKotlin {
         jvmTarget = "1.8"
     }
 }
+
+project.ext {
+    artifactId = 'rules'
+    groupId = 'com.example.firebaseanalyticrules.rules'
+    versionName = "0.0.1-alpha"
+    artifactName = "firebase_analytic_rules"
+}
+
+apply from: '../publish_local.gradle'

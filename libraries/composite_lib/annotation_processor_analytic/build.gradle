@@ -28,3 +28,12 @@ compileTestKotlin {
         jvmTarget = "1.8"
     }
 }
+
+project.ext {
+    artifactId = 'annotation'
+    groupId = 'com.example.annotation'
+    versionName = "0.0.1-alpha"
+    artifactName = "annotation_processor_analytic"
+}
+
+apply from: '../publish_local.gradle'

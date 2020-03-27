@@ -13,8 +13,8 @@ dependencies {
     implementation 'com.squareup:javapoet:1.11.1'
     implementation files("${System.getProperty('java.home')}/../lib/tools.jar")
     kapt 'com.google.guava:guava:24.1-jre'
-    implementation project(':annotation_processor_analytic')
-    implementation project(':analytic_param')
+    implementation "com.example.annotation:annotation:0.0.1-alpha"
+    implementation "com.example.analyticparam:analyticparam:0.0.1-alpha"
 
     compileOnly("net.ltgt.gradle.incap:incap:0.2")
     kapt "net.ltgt.gradle.incap:incap-processor:0.2"
@@ -45,3 +45,12 @@ compileTestKotlin {
         jvmTarget = "1.8"
     }
 }
+
+project.ext {
+    artifactId = 'processor'
+    groupId = 'com.example.processor'
+    versionName = "0.0.1-alpha"
+    artifactName = "analytic_processor"
+}
+
+apply from: '../publish_local.gradle'
