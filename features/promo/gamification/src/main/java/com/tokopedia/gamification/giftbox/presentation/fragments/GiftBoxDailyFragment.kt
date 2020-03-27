@@ -241,6 +241,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                     playLoopSound()
                                 }
                                 TokenUserState.EMPTY -> {
+                                    fadeOutSoundIcon()
                                     reminderLayout.visibility = View.VISIBLE
                                     renderGiftBoxActive(giftBoxEntity)
                                     tvRewardFirstLine.visibility = View.GONE

@@ -55,7 +55,7 @@ class GiftPrizeLargeView : FrameLayout {
                 .addListener(getGlideListener(imageCallback))
                 .dontAnimate()
                 .into(image)
-        val tvList = arrayListOf<AppCompatTextView>(tvTitle, tvMessage, tvDescription)
+        val tvList = arrayListOf<AppCompatTextView>(tvTitle, tvDescription, tvMessage)
         text?.forEachIndexed { index, s ->
             tvList[index].text = s
         }
