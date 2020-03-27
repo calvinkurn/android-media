@@ -58,10 +58,12 @@ class ProductManageBottomSheet(
 
         menuList.add(SetCashBack(product))
 
-        if(product.isFeatured == true) {
-            menuList.add(RemoveFeaturedProduct(product))
-        } else {
-            menuList.add(SetFeaturedProduct(product))
+        if(product.isActive()) {
+            if(product.isFeatured == true) {
+                menuList.add(RemoveFeaturedProduct(product))
+            } else {
+                menuList.add(SetFeaturedProduct(product))
+            }
         }
 
         return menuList

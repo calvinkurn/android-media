@@ -5,6 +5,7 @@ import android.widget.CompoundButton
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFitCenter
+import com.tokopedia.kotlin.extensions.view.getNumberFormatted
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -54,7 +55,7 @@ class ProductViewHolder(
 
     private fun showProductStock(product: ProductViewModel) {
         if(product.isNotVariant()) {
-            itemView.textStockCount.text = product.stock.toString()
+            itemView.textStockCount.text = product.stock?.getNumberFormatted()
             itemView.textStockCount.show()
             itemView.textStock.show()
         } else {
