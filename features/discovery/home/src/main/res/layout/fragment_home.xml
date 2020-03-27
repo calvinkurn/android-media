@@ -80,12 +80,6 @@
       android:tag="floating_egg"
       app:draggable="true"
       app:margin_bottom="@dimen/new_margin_sm" />
-
-    <Button
-        android:id="@+id/btnGift"
-        android:text="Gift box"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
   
   </FrameLayout>
 

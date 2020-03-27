@@ -151,8 +151,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
                 rewardContainer.setFinalTranslationOfCirclesTap(giftBoxDailyView.fmGiftBox.top)
                 val stageLightAnim = giftBoxDailyView.stageGlowAnimation()
-
-                //new code===
+                
                 giftBoxRewardEntity?.let {
                     rewardContainer.setRewards(it, asyncCallback = { rewardState ->
                         when (rewardState) {
@@ -190,13 +189,10 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     })
 
                 }
-                //new code ends===
-
-
             }
 
             override fun onBoxScaleDownAnimationStart() {
-//                fadeOutViews()
+                //Do nothing
             }
 
             override fun onBoxOpened() {

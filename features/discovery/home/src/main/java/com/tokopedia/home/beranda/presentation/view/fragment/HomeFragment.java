@@ -52,7 +52,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalContent;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
@@ -330,16 +329,6 @@ public class HomeFragment extends BaseDaggerFragment implements
         if (getArguments() != null) {
             scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
         }
-
-        view.findViewById(R.id.btnGift).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String actionName =  "com.tokopedia.tkpd.gift";
-                Intent intent = new Intent(actionName);
-                intent.addCategory(Intent.CATEGORY_DEFAULT);
-                startActivity(intent);
-            }
-        });
 
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
         setupStatusBar();
