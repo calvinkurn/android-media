@@ -239,7 +239,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     lateinit var performanceMonitoringFull: PerformanceMonitoring
 
     private var enableCheckImeiRemoteConfig = false
-    private var isBuy = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dynamic_product_detail_fragment, container, false)
@@ -2039,15 +2038,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
         actionButtonView.addToCartClick = {
             viewModel.buttonActionText = it
-            isBuy = false
             viewModel.getDynamicProductInfoP1?.run {
                 if (this.checkImei(enableCheckImeiRemoteConfig)) {
                     activity?.run {
                         ImeiPermissionAsker.checkImeiPermission(this, ::showImeiPermissionDialog, {
                             doAtc(ProductDetailConstant.ATC_BUTTON)
-                        }, {
-                            onNeverAskAgain()
-                        })
+                        }, { onNeverAskAgain() })
                     }
                 } else doAtc(ProductDetailConstant.ATC_BUTTON)
             }
@@ -2055,7 +2051,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
         actionButtonView.buyNowClick = {
             viewModel.buttonActionText = it
-            isBuy = true
             viewModel.getDynamicProductInfoP1?.run {
                 if (this.checkImei(enableCheckImeiRemoteConfig)) {
                     activity?.run {
@@ -2530,9 +2525,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         activity?.run {
             ImeiPermissionAsker.onImeiRequestPermissionsResult(this, requestCode, permissions, grantResults,
                 onUserDenied = {},
-                onUserDeniedAndDontAskAgain = {}, onUserAcceptPermission = {
-                    if(isBuy) doBuy()  else doAtc(ProductDetailConstant.ATC_BUTTON)
-                }
+                onUserDeniedAndDontAskAgain = {}, onUserAcceptPermission = {}
             )
         }
     }
