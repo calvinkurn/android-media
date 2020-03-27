@@ -429,6 +429,9 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junit
 
     implementation rootProject.ext.miscDependencies.robust
+
+    implementation rootProject.ext.playServicesDependencies.tagManager
+    implementation rootProject.ext.playServicesDependencies.tagManagerImpl
 }
 
 apply plugin: 'com.google.gms.google-services'
