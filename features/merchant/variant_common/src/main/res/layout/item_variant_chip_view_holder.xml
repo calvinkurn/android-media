@@ -43,5 +43,5 @@
         tools:visibility="gone"
         app:notificationType="text_type"
         app:notificationColor="color_text_type"
-        app:notificationTitle="PROMO" />
+        app:notificationTitle="@string/variant_promo" />
 </LinearLayout>

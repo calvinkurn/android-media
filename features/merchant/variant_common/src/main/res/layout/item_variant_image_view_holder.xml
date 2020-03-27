@@ -62,7 +62,7 @@
         android:id="@+id/promoVariantImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:notificationTitle="PROMO"
+        app:notificationTitle="@string/variant_promo"
         app:notificationType="text_type"
         app:notificationColor="color_text_type"
         app:layout_constraintEnd_toEndOf="parent"
