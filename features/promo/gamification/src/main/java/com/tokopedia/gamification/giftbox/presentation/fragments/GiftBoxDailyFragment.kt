@@ -220,6 +220,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                             reminder = giftBoxEntity.gamiLuckyHome.reminder
                             when (tokenUserState) {
                                 TokenUserState.ACTIVE -> {
+                                    fadeInSoundIcon()
                                     if (!viewModel.campaignSlug.isNullOrEmpty()) {
                                         GtmEvents.viewGiftBoxPage(viewModel.campaignSlug!!)
                                     }
