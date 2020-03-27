@@ -115,7 +115,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         recyclerView = getRecyclerView(view)
         recyclerView.addItemDecoration(itemDecorator)
         (recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
-
+        setToolbarShadowVisibility(false)
         return view
     }
 

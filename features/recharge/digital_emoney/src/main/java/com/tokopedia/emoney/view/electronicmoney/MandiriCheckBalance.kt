@@ -9,6 +9,7 @@ import com.tokopedia.emoney.R
 import com.tokopedia.emoney.view.activity.EmoneyCheckBalanceNFCActivity
 import com.tokopedia.emoney.viewmodel.EmoneyInquiryBalanceViewModel
 import java.io.IOException
+import java.lang.Exception
 
 class MandiriCheckBalance(val listener: MandiriActionListener) : ElectronicMoney {
 
@@ -18,10 +19,10 @@ class MandiriCheckBalance(val listener: MandiriActionListener) : ElectronicMoney
         val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
         if (tag != null) {
 
-            //do something with tagFromIntent
-            isoDep = IsoDep.get(tag)
-
             try {
+
+                //do something with tagFromIntent
+                isoDep = IsoDep.get(tag)
                 isoDep.close()
                 isoDep.connect()
                 isoDep.timeout = TRANSCEIVE_TIMEOUT_IN_SEC // 5 sec time out
@@ -56,7 +57,7 @@ class MandiriCheckBalance(val listener: MandiriActionListener) : ElectronicMoney
                         listener.onErrorCardNotFound(ISSUER_ID_EMONEY, intent)
                     }
                 }
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 e.printStackTrace()
                 listener.onErrorDefault(R.string.emoney_failed_read_card)
             }

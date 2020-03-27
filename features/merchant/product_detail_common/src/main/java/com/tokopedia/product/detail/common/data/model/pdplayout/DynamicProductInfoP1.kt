@@ -20,4 +20,42 @@ data class DynamicProductInfoP1(
     val getProductName: String
         get() = data.name
 
+    val finalPrice: Int
+        get() {
+            return if (data.campaign.isActive) {
+                data.campaign.discountedPrice
+            } else {
+                data.price.value
+            }
+        }
+
+    val priceBeforeInt: Int
+        get() {
+            return if (data.campaign.isActive) {
+                data.campaign.originalPrice
+            } else {
+                0
+            }
+        }
+
+    val dropPercentage: String?
+        get() {
+            return if (data.campaign.isActive) {
+                data.campaign.percentageAmount.toString()
+            } else {
+                ""
+            }
+        }
+
+    fun getFinalStock(multiOriginStock: String): String {
+        return if (multiOriginStock.isEmpty()) {
+            if (data.campaign.isActive) {
+                data.campaign.stock.toString()
+            } else {
+                data.stock.value.toString()
+            }
+        } else {
+            multiOriginStock
+        }
+    }
 }
