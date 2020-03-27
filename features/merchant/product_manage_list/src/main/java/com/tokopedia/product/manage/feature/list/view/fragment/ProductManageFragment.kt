@@ -27,8 +27,6 @@ import android.widget.Button
 import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
-import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
@@ -68,7 +66,7 @@ import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
 import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.decoration.ProductListItemDecoration
-import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactory
+import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactoryImpl
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.FilterTabViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
@@ -128,10 +126,8 @@ import java.util.*
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 
-open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductManageAdapterFactory>(),
-    BaseListCheckableAdapter.OnCheckableAdapterListener<ProductViewModel>,
+open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductManageAdapterFactoryImpl>(),
     MerchantCommonBottomSheet.BottomSheetListener,
-    BaseCheckableViewHolder.CheckableInteractionListener,
     ProductViewHolder.ProductViewHolderView,
     FilterTabViewHolder.ProductFilterListener,
     ProductMenuViewHolder.ProductMenuListener,
@@ -156,8 +152,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private val stockInfoBottomSheet by lazy { StockInformationBottomSheet(view, fragmentManager) }
 
     private val productManageListAdapter by lazy { adapter as ProductManageListAdapter }
-    private val checkedPositionList: HashSet<Int> = hashSetOf()
-
     private var stockType = BulkBottomSheetType.StockType()
     private var itemsChecked: MutableList<ProductViewModel> = mutableListOf()
 
@@ -426,11 +420,13 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
     }
 
-    override fun createAdapterInstance(): BaseListAdapter<ProductViewModel, ProductManageAdapterFactory> {
-        return ProductManageListAdapter(adapterTypeFactory, this)
+    override fun createAdapterInstance(): BaseListAdapter<ProductViewModel, ProductManageAdapterFactoryImpl> {
+        return ProductManageListAdapter(adapterTypeFactory)
     }
 
-    override fun getAdapterTypeFactory(): ProductManageAdapterFactory = ProductManageAdapterFactory(this, this)
+    override fun getAdapterTypeFactory(): ProductManageAdapterFactoryImpl {
+        return ProductManageAdapterFactoryImpl(this)
+    }
 
     override fun getScreenName(): String = ""
 
@@ -746,10 +742,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         searchBar.searchBarTextField.text.clear()
     }
 
-    override fun onItemChecked(data: ProductViewModel, isChecked: Boolean) {
-
-    }
-
     private fun onSuccessChangeFeaturedProduct(productId: String, status: Int) {
         //Default feature product action is to remove the product from featured products.
         //The value will change depends on the status code. 0 is remove, 1 is add
@@ -786,15 +778,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         } else if (!viewModel.isPowerMerchant()) {
             RouteManager.route(context, ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE)
         }
-    }
-
-    override fun isChecked(position: Int): Boolean {
-        val selectedItem = adapter.data[position]
-        return itemsChecked.contains(selectedItem)
-    }
-
-    override fun updateListByCheck(isChecked: Boolean, position: Int) {
-
     }
 
     override fun onClickProductCheckBox(isChecked: Boolean, position: Int) {
@@ -1387,8 +1370,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun clearSelectedProduct() {
         itemsChecked.clear()
-        checkedPositionList.clear()
-        productManageListAdapter.resetCheckedItemSet()
     }
 
     private fun clearSelectAllCheckBox() {

@@ -1,9 +1,8 @@
 package com.tokopedia.product.manage.feature.list.view.adapter.viewholder
 
 import android.view.View
-import android.widget.CompoundButton
 import androidx.annotation.LayoutRes
-import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFitCenter
 import com.tokopedia.kotlin.extensions.view.getNumberFormatted
 import com.tokopedia.kotlin.extensions.view.hide
@@ -15,9 +14,8 @@ import kotlinx.android.synthetic.main.item_manage_product_list.view.*
 
 class ProductViewHolder(
     view: View,
-    checkableListener: CheckableInteractionListener,
     private val listener: ProductViewHolderView
-): BaseCheckableViewHolder<ProductViewModel>(view, checkableListener), CompoundButton.OnCheckedChangeListener {
+): AbstractViewHolder<ProductViewModel>(view) {
 
     companion object {
         @LayoutRes
@@ -25,8 +23,6 @@ class ProductViewHolder(
     }
 
     override fun bind(product: ProductViewModel) {
-        super.bind(product)
-
         setTitleAndPrice(product)
         showProductStock(product)
 
@@ -39,10 +35,6 @@ class ProductViewHolder(
         showProductCheckBox(product)
 
         setOnClickListeners(product)
-    }
-
-    override fun getCheckable(): CompoundButton? {
-        return itemView.checkBoxSelect
     }
 
     private fun setTitleAndPrice(product: ProductViewModel) {
@@ -124,7 +116,7 @@ class ProductViewHolder(
     }
 
     private fun toggleCheckBox() {
-        itemView.checkBoxSelect.isChecked.apply { isChecked = !isChecked }
+        itemView.checkBoxSelect.apply { isChecked = !isChecked }
     }
 
     private fun onClickCheckBox() {

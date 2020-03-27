@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.feature.list.view.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.factory.BaseListCheckableTypeFactory
+import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactory
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 data class ProductViewModel(
@@ -18,8 +18,8 @@ data class ProductViewModel(
     val isVariant: Boolean?,
     val multiSelectActive: Boolean,
     val isChecked: Boolean
-) : Visitable<BaseListCheckableTypeFactory<ProductViewModel>> {
-    override fun type(typeFactory: BaseListCheckableTypeFactory<ProductViewModel>): Int {
+) : Visitable<ProductManageAdapterFactory> {
+    override fun type(typeFactory: ProductManageAdapterFactory): Int {
         return typeFactory.type(this)
     }
 
