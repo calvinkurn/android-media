@@ -506,7 +506,7 @@ class RegisterAnalytics @Inject constructor() {
     }
 
     private fun sendSuccessRegisterToMoengage(userId: Int, name: String, email: String, loginMethod: String?, phoneNumber: String, isGoldMerchant: Boolean, shopId: String,shopName:String){
-        TrackApp.getInstance().moEngage.sendMoengageRegisterEvent(name, userId.toString(),email, loginMethod, phoneNumber,  isGoldMerchant, shopId,shopName)
+        TrackApp.getInstance().moEngage.sendMoengageRegisterEvent(name, userId.toString(),email, loginMethod?:"", phoneNumber,  isGoldMerchant, shopId,shopName)
     }
 
     private fun sendBranchRegisterEvent(email: String) {
