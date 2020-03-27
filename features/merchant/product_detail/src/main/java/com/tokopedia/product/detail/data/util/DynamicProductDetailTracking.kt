@@ -614,7 +614,7 @@ object DynamicProductDetailTracking {
         fun eventNotifyMe(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?,
                           action: String) {
             val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.Label.EMPTY_LABEL,
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,
                     "${ProductTrackingConstant.Action.CLICK_NOTIFY_ME} - $action",
                     ProductTrackingConstant.Label.EMPTY_LABEL)

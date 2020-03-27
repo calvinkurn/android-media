@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
@@ -11,6 +12,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataMode
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.unifycomponents.UnifyButton
+import kotlinx.android.synthetic.main.item_dynamic_general_info.view.*
 import kotlinx.android.synthetic.main.partial_product_notify_me.view.*
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -23,10 +25,28 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
     }
 
     override fun bind(element: ProductNotifyMeDataModel) {
-        if (element != null) {
+        if (element.campaignID.isNotEmpty()) {
+            itemView.layout_notify_me?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            bindTitle(element)
             bindSubTitle(element)
             bindButton(element)
             bindListener(element, ComponentTrackDataModel(element.type, element.name, adapterPosition + 1))
+        } else {
+            itemView.layout_notify_me?.layoutParams?.height = 0
+        }
+    }
+
+    private fun bindTitle(data: ProductNotifyMeDataModel) {
+        itemView.product_notify_title.showWithAction(data.campaignTypeName.isNotEmpty()) {
+            it.text = data.campaignTypeName
+        }
+    }
+
+    private fun <T : View> T?.showWithAction(shouldShow: Boolean, action: (T) -> Unit) {
+        if (this == null) return
+
+        if (shouldShow) {
+            action(this)
         }
     }
 
