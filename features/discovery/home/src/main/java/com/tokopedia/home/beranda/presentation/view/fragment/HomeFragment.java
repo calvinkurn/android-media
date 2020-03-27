@@ -676,26 +676,24 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     @VisibleForTesting
     private void observeRequestImagePlayBanner(){
-        viewModel.getRequestImageTestLiveData().observe(this, playCardViewModelEvent -> {
-            Glide.with(getContext())
-                    .asBitmap()
-                    .load(playCardViewModelEvent.peekContent().getPlayCardHome().getCoverUrl())
-                    .into(new CustomTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                            viewModel.setPlayBanner(playCardViewModelEvent.peekContent());
-                        }
+        viewModel.getRequestImageTestLiveData().observe(this, playCardViewModelEvent -> Glide.with(getContext())
+                .asBitmap()
+                .load(playCardViewModelEvent.peekContent().getPlayCardHome().getCoverUrl())
+                .into(new CustomTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        viewModel.setPlayBanner(playCardViewModelEvent.peekContent());
+                    }
 
-                        @Override
-                        public void onLoadCleared(@Nullable Drawable placeholder) {
-                        }
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                    }
 
-                        @Override
-                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                            viewModel.clearPlayBanner();
-                        }
-                    });
-        });
+                    @Override
+                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                        viewModel.clearPlayBanner();
+                    }
+                }));
     }
 
     private void setData(List<HomeVisitable> data, boolean isCache){

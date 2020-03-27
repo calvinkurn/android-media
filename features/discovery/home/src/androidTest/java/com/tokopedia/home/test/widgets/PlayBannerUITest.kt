@@ -7,18 +7,21 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.google.gson.Gson
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
+import com.tokopedia.home.beranda.data.model.Config
+import com.tokopedia.home.beranda.data.model.PlayChannel
+import com.tokopedia.home.beranda.data.model.PlayData
+import com.tokopedia.home.beranda.data.model.VideoStream
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.HomeData
-import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
+import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.test.activity.HomeActivityTest
 import com.tokopedia.home.test.fragment.HomeFragmentTest
@@ -30,6 +33,7 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import org.hamcrest.CoreMatchers.not
 import org.junit.Before
@@ -100,42 +104,229 @@ class PlayBannerUITest {
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
             Log.d("testNoSkeleton", "Flow emit masuk")
         }
+        coEvery { getPlayLiveDynamicUseCase.executeOnBackground() } returns PlayData(
+                listOf(
+                        PlayChannel(
+                                title = "Channel 1",
+                                description = "Description Channel 1",
+                                channelId = "1",
+                                coverUrl = "https://ecs7.tokopedia.net/img/cache/1400/attachment/2020/3/26/1585203280769/1585203280769_aaa8879c-4456-4f99-a801-71c3322f941d.jpg",
+                                totalView = "200rb",
+                                videoStream =  VideoStream(
+                                        isLive = false,
+                                        config = Config(
+                                                streamUrl = "http://cobastrea.com/s/1/",
+                                                isAutoPlay = false
+                                        )
+                                )
+                        )
+                )
+        )
         viewModel = reInitViewModel()
         Log.d("testNoSkeleton", viewModel.toString())
         val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
-        onView(withId(R.id.play_frame_layout)).check(matches(not(isDisplayed())))
-//        onView(withId(R.id.title)).check(matches(isDisplayed()))
-//        onView(withId(R.id.title)).check(matches(withText("Play Widget")))
+        onView(withId(R.id.play_frame_layout)).check(matches(isDisplayed()))
+        Thread.sleep(2000)
+        onView(withId(R.id.title)).check(matches(isDisplayed()))
+        onView(withId(R.id.title)).check(matches(withText("Play Widget")))
+        onView(withId(R.id.title_play)).check(matches(withText("Channel 1")))
         Thread.sleep(5000)
     }
 
 
     @Test
     fun testNotValidImageUrlFromBackend(){
+        val json = HomeJson.resultWithSkeleton
+        val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
+        Log.d("testNoSkeleton", "Home data init " + homeData.dynamicHomeChannel.toString())
+        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.getHomeData() } returns flow {
+            emit(homeDataMapper.mapToHomeViewModel(homeData, false))
+            Log.d("testNoSkeleton", "Flow emit masuk")
+        }
+        coEvery { getPlayLiveDynamicUseCase.executeOnBackground() } returns PlayData(
+                listOf(
+                        PlayChannel(
+                                title = "Channel 1",
+                                description = "Description Channel 1",
+                                channelId = "1",
+                                coverUrl = "",
+                                totalView = "200rb",
+                                videoStream =  VideoStream(
+                                        isLive = false,
+                                        config = Config(
+                                                streamUrl = "http://cobastrea.com/s/1/",
+                                                isAutoPlay = false
+                                        )
+                                )
+                        )
+                )
+        )
+        viewModel = reInitViewModel()
+        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
 
+        activityRule.activity.setupFragment(homeFragment)
+        Thread.sleep(5000)
+        onView(withId(R.id.play_frame_layout)).check(matches(not(isDisplayed())))
+        Thread.sleep(5000)
     }
 
     @Test
     fun testNoReturnDataPlayFromBackend(){
+        val json = HomeJson.resultWithSkeleton
+        val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
+        Log.d("testNoSkeleton", "Home data init " + homeData.dynamicHomeChannel.toString())
+        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.getHomeData() } returns flow {
+            emit(homeDataMapper.mapToHomeViewModel(homeData, false))
+            Log.d("testNoSkeleton", "Flow emit masuk")
+        }
+        coEvery { getPlayLiveDynamicUseCase.executeOnBackground() } returns PlayData(
+                listOf()
+        )
+        viewModel = reInitViewModel()
+        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
 
+        activityRule.activity.setupFragment(homeFragment)
+        Thread.sleep(5000)
+        onView(withId(R.id.play_frame_layout)).check(matches(not(isDisplayed())))
+        Thread.sleep(5000)
     }
 
     @Test
     fun testErrorDataPlayFromBackend(){
+        val json = HomeJson.resultWithSkeleton
+        val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
+        Log.d("testNoSkeleton", "Home data init " + homeData.dynamicHomeChannel.toString())
+        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.getHomeData() } returns flow {
+            emit(homeDataMapper.mapToHomeViewModel(homeData, false))
+            Log.d("testNoSkeleton", "Flow emit masuk")
+        }
+        coEvery { getPlayLiveDynamicUseCase.executeOnBackground() } throws RuntimeException()
+        viewModel = reInitViewModel()
+        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
 
+        activityRule.activity.setupFragment(homeFragment)
+        Thread.sleep(5000)
+        onView(withId(R.id.play_frame_layout)).check(matches(not(isDisplayed())))
+        Thread.sleep(5000)
     }
 
     @Test
     fun testUpdateBannerAndDataFromHomeEmpty(){
+        coEvery { getHomeUseCase.updateHomeData() } returns flow {
+            emit(Result.success(""))
+        }
+        coEvery { getHomeUseCase.getHomeData() } returns flow {
+            var json = HomeJson.resultNoSkeleton
+            var homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
+            emit(homeDataMapper.mapToHomeViewModel(homeData, false))
+            delay(4000)
+            json = HomeJson.resultWithSkeleton
+            homeData = Gson().fromJson(json, HomeData::class.java)
+            emit(homeDataMapper.mapToHomeViewModel(homeData, false))
+        }
+        coEvery { getPlayLiveDynamicUseCase.executeOnBackground() } returns PlayData(
+                listOf(
+                        PlayChannel(
+                                title = "Channel 1",
+                                description = "Description Channel 1",
+                                channelId = "1",
+                                coverUrl = "https://ecs7.tokopedia.net/img/cache/1400/attachment/2020/3/26/1585203280769/1585203280769_aaa8879c-4456-4f99-a801-71c3322f941d.jpg",
+                                totalView = "200rb",
+                                videoStream =  VideoStream(
+                                        isLive = false,
+                                        config = Config(
+                                                streamUrl = "http://cobastrea.com/s/1/",
+                                                isAutoPlay = false
+                                        )
+                                )
+                        )
+                )
+        )
+        viewModel = reInitViewModel()
+        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
 
+        activityRule.activity.setupFragment(homeFragment)
+        Thread.sleep(3000)
+        onView(withId(R.id.play_frame_layout)).check(doesNotExist())
+        Thread.sleep(4000)
+        onView(withId(R.id.play_frame_layout)).check(matches(isDisplayed()))
+        Thread.sleep(2000)
+        onView(withId(R.id.title)).check(matches(isDisplayed()))
+        onView(withId(R.id.title)).check(matches(withText("Play Widget")))
+        onView(withId(R.id.title_play)).check(matches(withText("Channel 1")))
     }
 
     @Test
     fun testUpdateBannerFromPlayDataDifferent(){
+        coEvery { getHomeUseCase.updateHomeData() } returns flow {
+            emit(Result.success(""))
+        }
+        coEvery { getHomeUseCase.getHomeData() } returns flow {
+            var json = HomeJson.resultWithSkeleton
+            var homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
+            emit(homeDataMapper.mapToHomeViewModel(homeData, false))
+            delay(4000)
+            json = HomeJson.resultWithSkeleton
+            homeData = Gson().fromJson(json, HomeData::class.java)
+            emit(homeDataMapper.mapToHomeViewModel(homeData, false))
+        }
+        coEvery { getPlayLiveDynamicUseCase.executeOnBackground() } returns PlayData(
+                listOf(
+                        PlayChannel(
+                                title = "Channel 1",
+                                description = "Description Channel 1",
+                                channelId = "1",
+                                coverUrl = "https://ecs7.tokopedia.net/img/cache/1400/attachment/2020/3/26/1585203280769/1585203280769_aaa8879c-4456-4f99-a801-71c3322f941d.jpg",
+                                totalView = "200rb",
+                                videoStream =  VideoStream(
+                                        isLive = false,
+                                        config = Config(
+                                                streamUrl = "http://cobastrea.com/s/1/",
+                                                isAutoPlay = false
+                                        )
+                                )
+                        )
+                )
+        ) andThen PlayData(
+                listOf(
+                        PlayChannel(
+                                title = "Channel 2",
+                                description = "Description Channel 2",
+                                channelId = "3",
+                                coverUrl = "https://ecs7.tokopedia.net/img/cache/1400/attachment/2020/3/26/1585203280769/1585203280769_aaa8879c-4456-4f99-a801-71c3322f941d.jpg",
+                                totalView = "200rb",
+                                videoStream =  VideoStream(
+                                        isLive = false,
+                                        config = Config(
+                                                streamUrl = "http://cobastrea.com/s/2/",
+                                                isAutoPlay = false
+                                        )
+                                )
+                        )
+                )
+        )
+        viewModel = reInitViewModel()
+        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
 
+        activityRule.activity.setupFragment(homeFragment)
+        Thread.sleep(2000)
+        onView(withId(R.id.play_frame_layout)).check(matches(isDisplayed()))
+        Thread.sleep(1000)
+        onView(withId(R.id.title)).check(matches(isDisplayed()))
+        onView(withId(R.id.title)).check(matches(withText("Play Widget")))
+        onView(withId(R.id.title_play)).check(matches(withText("Channel 1")))
+        Thread.sleep(2000)
+        onView(withId(R.id.play_frame_layout)).check(matches(isDisplayed()))
+        Thread.sleep(1000)
+        onView(withId(R.id.title)).check(matches(isDisplayed()))
+        onView(withId(R.id.title)).check(matches(withText("Play Widget")))
+        onView(withId(R.id.title_play)).check(matches(withText("Channel 2")))
     }
 
     private fun <T : ViewModel> createViewModelFactory(viewModel: T): ViewModelProvider.Factory {
