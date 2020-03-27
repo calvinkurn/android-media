@@ -370,8 +370,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun renderSelectAllCheckBox() {
         when {
             itemsChecked.isEmpty() -> {
-                checkBoxSelectAll.isChecked = false
-                checkBoxSelectAll.setIndeterminate(false)
+                resetSelectAllCheckBox()
             }
             itemsChecked.size == adapter.data.size -> {
                 checkBoxSelectAll.isChecked = true
@@ -719,7 +718,9 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     productManageListAdapter.deleteProduct(productId)
                     renderMultiSelectProduct()
                 }
-                else -> {} // do nothing
+                else -> {
+                    // do nothing
+                }
             }
         }
         getFiltersTab(withDelay = true)
@@ -732,7 +733,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         hideSnackBarRetry()
         clearProductList()
         clearSelectedProduct()
-        clearSelectAllCheckBox()
+        resetSelectAllCheckBox()
         renderCheckedView()
 
         getFiltersTab(withDelay = true)
@@ -1298,7 +1299,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
             clearProductList()
             clearSelectedProduct()
-            clearSelectAllCheckBox()
+            resetSelectAllCheckBox()
 
             renderCheckedView()
             showProductList(productList)
@@ -1353,7 +1354,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         itemsChecked.clear()
     }
 
-    private fun clearSelectAllCheckBox() {
+    private fun resetSelectAllCheckBox() {
         checkBoxSelectAll.isChecked = false
         checkBoxSelectAll.setIndeterminate(false)
     }
