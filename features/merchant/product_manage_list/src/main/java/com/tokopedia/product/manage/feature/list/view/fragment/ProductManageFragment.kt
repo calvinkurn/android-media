@@ -516,6 +516,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 R.string.product_manage_quick_edit_stock_success, productName),
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
         productManageListAdapter.updateStock(productId, stock, status)
+        getFiltersTab(withDelay = true)
     }
 
     private fun onSuccessSetCashback(setCashbackResult: SetCashbackResult) {
@@ -705,22 +706,21 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             is EditByStatus -> updateProductListStatus(productIds, result.status)
             is EditByMenu -> viewModel.toggleMultiSelect()
         }
+
+        getFiltersTab(withDelay = true)
     }
 
     private fun updateProductListStatus(productIds: List<String>, status: ProductStatus) {
         productIds.forEach { productId ->
-            if(status == INACTIVE) {
-                val index = adapter.data.indexOfFirst { it.id == productId }
-
-                if(index >= 0) {
-                    adapter.data[index] = adapter.data[index].copy(status = status)
+            when (status) {
+                INACTIVE -> {
                     productManageListAdapter.updateInactiveProducts(productId)
                 }
-            }
-            if(status == DELETED) {
-                adapter.data.removeFirst { it.id == productId }
-                productManageListAdapter.deleteProduct(productId)
-                renderMultiSelectProduct()
+                DELETED -> {
+                    productManageListAdapter.deleteProduct(productId)
+                    renderMultiSelectProduct()
+                }
+                else -> {} // do nothing
             }
         }
     }
