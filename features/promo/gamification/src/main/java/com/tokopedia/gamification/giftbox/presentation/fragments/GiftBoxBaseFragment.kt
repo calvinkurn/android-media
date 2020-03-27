@@ -238,7 +238,7 @@ open class GiftBoxBaseFragment : Fragment() {
         }
     }
 
-    fun playLoopSound() {
+    open fun playLoopSound() {
         if (isSoundEnabled()) {
             context?.let { it ->
                 bgSoundManager = AudioFactory.createAudio(it)
@@ -257,6 +257,10 @@ open class GiftBoxBaseFragment : Fragment() {
 
     fun getSharedPres(): SharedPreferences? {
         return context?.getSharedPreferences(GIFT_SOUND_PREF, Context.MODE_PRIVATE)
+    }
+
+    fun fadeOutSoundIcon(){
+        imageSound.animate().alpha(0f).setDuration(300L).start()
     }
 
 }

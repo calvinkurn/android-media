@@ -303,6 +303,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     } else {
                         val code = it.data?.gamiCrack.resultStatus.code
                         if (code == 200) {
+                            fadeOutSoundIcon()
                             //set data in rewards first and then animate
                             disableGiftBoxTap = true
                             giftBoxRewardEntity = it.data
@@ -435,6 +436,12 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             }
 
         })
+    }
+
+    override fun playLoopSound() {
+        if (tokenUserState != null && tokenUserState == TokenUserState.ACTIVE) {
+            super.playLoopSound()
+        }
     }
 
     private fun playTapSound() {
