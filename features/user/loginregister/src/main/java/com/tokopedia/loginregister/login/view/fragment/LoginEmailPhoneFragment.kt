@@ -1307,6 +1307,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     }
 
     override fun goToFingerprintRegisterPage() {
+        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
         RouteManager.route(context, ApplinkConstInternalGlobal.ADD_FINGERPRINT_ONBOARDING)
     }
 
