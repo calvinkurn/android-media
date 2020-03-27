@@ -89,12 +89,21 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:textColor="@color/Neutral_N700_96"
-        app:layout_constraintEnd_toEndOf="@+id/tv_product_name"
         app:layout_constraintStart_toStartOf="@+id/tv_product_name"
         app:layout_constraintTop_toBottomOf="@+id/tv_product_name"
         app:typographyType="body_2"
         app:typographyWeight="bold"
         tools:text="Rp 1.000.000" />
+
+    <ImageView
+        android:id="@+id/iv_free_shipping"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_8"
+        app:layout_constraintTop_toTopOf="@id/tv_product_price"
+        app:layout_constraintStart_toEndOf="@id/tv_product_price"
+        app:layout_constraintBottom_toBottomOf="@id/tv_product_price"
+        tools:src="@drawable/ic_close_default"/>
 
 <!--    <androidx.recyclerview.widget.RecyclerView-->
 <!--        android:id="@+id/rv_product_variant"-->
