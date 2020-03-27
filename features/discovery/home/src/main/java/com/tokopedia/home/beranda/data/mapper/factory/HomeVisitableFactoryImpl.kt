@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.data.mapper.factory
 
 import android.content.Context
-import android.util.Log
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.home.analytics.HomePageTracking
