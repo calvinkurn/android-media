@@ -247,7 +247,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener)
             MixLeftViewHolder.LAYOUT -> viewHolder = MixLeftViewHolder(view, listener, countDownListener, parentRecycledViewPool)
             RecommendationListCarouselViewHolder.LAYOUT -> viewHolder = RecommendationListCarouselViewHolder(view, listener, countDownListener, parentRecycledViewPool)
-            MixTopBannerViewHolder.LAYOUT -> viewHolder = MixTopBannerViewHolder(view, listener, countDownListener, parentRecycledViewPool)
+            MixTopBannerViewHolder.LAYOUT -> viewHolder = MixTopBannerViewHolder(view, listener, countDownListener)
             ProductHighlightViewHolder.LAYOUT -> viewHolder = ProductHighlightViewHolder(view, listener, countDownListener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
