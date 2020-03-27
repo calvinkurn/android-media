@@ -63,7 +63,9 @@ class PushNotifFieldFragment : SettingFieldFragment() {
         if (isNotificationEnabled() == false) {
             dataSettings.add(activationPushNotif())
         }
-        dataSettings.add(SellerSection())
+        if (userSession.hasShop()) {
+            dataSettings.add(SellerSection())
+        }
         dataSettings.addAll(data.data)
         data.data = dataSettings.toList()
         super.onSuccessGetUserSetting(data)
