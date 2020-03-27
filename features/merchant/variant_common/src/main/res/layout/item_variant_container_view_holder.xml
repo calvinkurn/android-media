@@ -28,6 +28,7 @@
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
         android:textColor="@color/Neutral_N700_44"
+        app:layout_constraintBaseline_toBaselineOf="@+id/txtVariantCategoryName"
         app:layout_constraintBottom_toBottomOf="@+id/txtVariantCategoryName"
         app:layout_constraintStart_toEndOf="@+id/txtVariantCategoryName"
         app:layout_constraintTop_toTopOf="@+id/txtVariantCategoryName"
