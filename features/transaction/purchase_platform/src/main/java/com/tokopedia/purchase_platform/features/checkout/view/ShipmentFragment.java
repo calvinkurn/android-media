@@ -1260,6 +1260,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void onResultFromPromo(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
+            shipmentPresenter.setCouponStateChanged(true);
             ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = data.getParcelableExtra(ARGS_VALIDATE_USE_DATA_RESULT);
             if (validateUsePromoRevampUiModel != null) {
                 shipmentPresenter.setValidateUsePromoRevampUiModel(validateUsePromoRevampUiModel);
