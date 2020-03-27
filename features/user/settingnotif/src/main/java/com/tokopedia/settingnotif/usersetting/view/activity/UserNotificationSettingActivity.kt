@@ -9,6 +9,8 @@ import com.tokopedia.settingnotif.usersetting.const.Unify.Neutral_N0
 import com.tokopedia.settingnotif.usersetting.view.fragment.SettingTypeFragment
 import com.tokopedia.settingnotif.usersetting.view.dataview.SettingTypeDataView
 
+typealias ParentActivity = UserNotificationSettingActivity
+
 class UserNotificationSettingActivity : BaseSimpleActivity(),
         SettingTypeFragment.SettingTypeContract {
 

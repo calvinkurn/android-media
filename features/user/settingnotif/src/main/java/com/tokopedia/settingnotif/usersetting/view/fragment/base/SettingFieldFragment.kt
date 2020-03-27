@@ -20,8 +20,10 @@ import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
 import com.tokopedia.settingnotif.usersetting.di.UserSettingModule
 import com.tokopedia.settingnotif.usersetting.domain.pojo.setusersetting.SetUserSettingResponse
+import com.tokopedia.settingnotif.usersetting.view.activity.ParentActivity
 import com.tokopedia.settingnotif.usersetting.view.listener.SectionItemListener
 import com.tokopedia.settingnotif.usersetting.view.activity.UserNotificationSettingActivity
+import com.tokopedia.settingnotif.usersetting.view.adapter.ItemAdapter
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldAdapter
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactoryImpl
@@ -32,9 +34,6 @@ import com.tokopedia.settingnotif.usersetting.widget.NotifSettingDividerDecorati
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-
-typealias ItemAdapter = SettingFieldAdapter<Visitable<SettingFieldTypeFactory>>
-typealias ParentActivity = UserNotificationSettingActivity
 
 abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         BaseAdapterTypeFactory>(),

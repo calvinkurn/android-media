@@ -10,6 +10,8 @@ import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
 
+typealias ItemAdapter = SettingFieldAdapter<Visitable<SettingFieldTypeFactory>>
+
 class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
         private val notificationType: String,
         private val settingFieldAdapterListener: SettingFieldAdapterListener,
