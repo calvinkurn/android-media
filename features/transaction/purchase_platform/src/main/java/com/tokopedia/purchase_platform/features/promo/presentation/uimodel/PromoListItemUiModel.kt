@@ -53,7 +53,8 @@ data class PromoListItemUiModel(
             var isSelected: Boolean = false,
             var isAttempted: Boolean = false,
             var isAlreadyApplied: Boolean = false,
-            var isCausingOtherPromoClash: Boolean = false
+            var isCausingOtherPromoClash: Boolean = false,
+            var isRecommended: Boolean = false
     ) {
         companion object {
             const val STATE_IS_ENABLED = "enabled"

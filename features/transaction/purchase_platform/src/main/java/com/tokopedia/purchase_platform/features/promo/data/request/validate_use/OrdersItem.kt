@@ -10,10 +10,10 @@ import kotlinx.android.parcel.Parcelize
 data class OrdersItem(
 
 		@field:SerializedName("shipping_id")
-        var shippingId: Int = -1,
+        var shippingId: Int = 0,
 
 		@field:SerializedName("shop_id")
-        var shopId: Int = -1,
+        var shopId: Int = 0,
 
 		@field:SerializedName("codes")
         var codes: MutableList<String> = mutableListOf(),
@@ -22,7 +22,7 @@ data class OrdersItem(
         var uniqueId: String = "",
 
 		@field:SerializedName("sp_id")
-        var spId: Int = -1,
+        var spId: Int = 0,
 
 		@field:SerializedName("product_details")
         var productDetails: List<ProductDetailsItem?> = listOf()

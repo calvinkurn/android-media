@@ -27,19 +27,10 @@
         android:ellipsize="end"
         android:text="Kupon saya 111"
         android:textColor="@color/n_700_96"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/image_promo_list_header"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
         app:typographyWeight="bold" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/label_promo_list_header_sub_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:text="Hanya bisa pilih satu aja"
-        app:layout_constraintStart_toEndOf="@+id/image_promo_list_header"
-        app:layout_constraintTop_toBottomOf="@+id/label_promo_list_header_title"
-        app:typographyType="body_3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
