@@ -33,16 +33,20 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
     fun bindViewHolder(lastApplyUiModel: LastApplyUiModel) {
         var title = ""
 
-        if (lastApplyUiModel.additionalInfo.messageInfo.message.isNotEmpty()) {
-            title = lastApplyUiModel.additionalInfo.messageInfo.message
-            isApplied = true
-            actionListener.onSendAnalyticsViewPromoCheckoutApplied()
-        } else if (lastApplyUiModel.defaultEmptyPromoMessage.isNotBlank()) {
-            title = lastApplyUiModel.defaultEmptyPromoMessage
-            isApplied = false
-        } else {
-            title = itemView.context.getString(R.string.promo_funnel_label)
-            isApplied = false
+        when {
+            lastApplyUiModel.additionalInfo.messageInfo.message.isNotEmpty() -> {
+                title = lastApplyUiModel.additionalInfo.messageInfo.message
+                isApplied = true
+                actionListener.onSendAnalyticsViewPromoCheckoutApplied()
+            }
+            lastApplyUiModel.defaultEmptyPromoMessage.isNotBlank() -> {
+                title = lastApplyUiModel.defaultEmptyPromoMessage
+                isApplied = false
+            }
+            else -> {
+                title = itemView.context.getString(R.string.promo_funnel_label)
+                isApplied = false
+            }
         }
         itemView.promo_checkout_btn_shipment.title = title
         itemView.promo_checkout_btn_shipment.desc = lastApplyUiModel.additionalInfo.messageInfo.detail

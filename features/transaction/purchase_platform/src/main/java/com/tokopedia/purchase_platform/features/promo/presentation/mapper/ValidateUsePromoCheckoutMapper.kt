@@ -98,6 +98,7 @@ class ValidateUsePromoCheckoutMapper {
             additionalInfo?.usageSummaries?.forEach {
                 listUsageSummariesUiModel.add(mapToUsageSummariesUiModel(it))
             }
+            additionalInfoUiModel.usageSummariesUiModel = listUsageSummariesUiModel
             return additionalInfoUiModel
         }
 
