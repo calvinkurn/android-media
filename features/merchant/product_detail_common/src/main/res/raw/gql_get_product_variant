@@ -46,7 +46,6 @@ query getProductVariant($productID:String!,$option:pdpGetProductVariantReqOption
         campaignTypeName
         startDate
         endDate
-        endDateUnix
         stock
         appLinks
         isAppsOnly

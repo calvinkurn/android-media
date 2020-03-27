@@ -5,7 +5,6 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
-import com.tokopedia.product.detail.view.util.toDate
 import com.tokopedia.variant_common.model.VariantChildCommon
 
 /**
@@ -35,13 +34,11 @@ object VariantMapper {
                 originalPrice = newData?.campaign?.originalPrice?.toInt() ?: 0,
                 discountedPrice = newData?.campaign?.discountedPrice?.toInt() ?: 0,
                 startDate = newData?.campaign?.startDate ?: "",
-                endDate = newData?.campaign?.endDateUnix.toString() toDate "yyyy-MM-dd HH:mm:ss",
-                endDateUnix = newData?.campaign?.endDateUnix.toString(),
+                endDate = newData?.campaign?.endDate ?: "",
                 stock = newData?.campaign?.stock ?: 0,
                 isAppsOnly = newData?.campaign?.isAppsOnly ?: false,
                 appLinks = newData?.campaign?.applinks ?: "",
-                percentageAmount = newData?.campaign?.discountedPercentage?.toInt() ?: 0,
-                stockSoldPercentage = newData?.campaign?.stockSoldPercentage?.toInt() ?: 0
+                percentageAmount = newData?.campaign?.discountedPercentage?.toInt() ?: 0
         )
 
         val newMedia = if (newData?.hasPicture == true) {

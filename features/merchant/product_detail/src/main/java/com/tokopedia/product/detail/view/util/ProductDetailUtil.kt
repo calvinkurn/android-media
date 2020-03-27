@@ -5,8 +5,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.kotlin.extensions.toFormattedString
-import java.util.*
 
 object ProductDetailUtil {
 
@@ -43,23 +41,3 @@ fun <T : Any> Result<T>.doSuccessOrFail(success: (Success<T>) -> Unit, fail: (Fa
 fun <T : Any> T.asSuccess(): Success<T> = Success(this)
 fun Throwable.asFail(): Fail = Fail(this)
 
-
-
-infix fun String?.toDate(format: String): String {
-    this?.let {
-        val isLongFormat = try {
-            it.toLong()
-            true
-        } catch (e: Throwable) {
-            false
-        }
-
-        return if (isLongFormat) {
-            val date = Date(it.toLong() * 1000)
-            date.toFormattedString(format)
-        } else {
-            this
-        }
-    }
-    return ""
-}

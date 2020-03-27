@@ -137,8 +137,21 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                  * Sometimes this lastUpdateUnix doesn't has Long value like "123"
                  * If P1 updated by selected variant this value will be formatted dated "dd-mm-yyy , hh:mm"
                  */
-                val dateFormatted = it.data.price.lastUpdateUnix toDate "dd-MM-yyy , HH:mm"
-                lastSeen = "$dateFormatted WIB"
+                val isLongFormat = try {
+                    it.data.price.lastUpdateUnix.toLong()
+                    true
+                } catch (e: Throwable) {
+                    false
+                }
+
+                lastSeen = if (isLongFormat) {
+                    val date = Date(it.data.price.lastUpdateUnix.toLong() * 1000)
+                    val dateString = date.toFormattedString("dd-MM-yyyy , HH:mm")
+                    "$dateString WIB"
+                } else {
+                    it.data.price.lastUpdateUnix
+                }
+
             }
         }
     }

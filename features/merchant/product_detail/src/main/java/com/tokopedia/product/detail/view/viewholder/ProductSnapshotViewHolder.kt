@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isVisibleOnTheScreen
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -97,8 +96,7 @@ class ProductSnapshotViewHolder(private val view: View,
             header?.updateStockAndPriceWarehouse(nearestWarehouseData, campaign, variant)
     }
 
-    private fun renderCod(shouldShowCod: Boolean) = with(view){
-        label_cod.showWithCondition(shouldShowCod)
+    private fun renderCod(shouldShowCod: Boolean) {
         header?.renderCod(shouldShowCod)
     }
 

@@ -6,7 +6,8 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
-import com.tokopedia.product.detail.common.data.model.carttype.*
+import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionParams
+import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionResponse
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManageResponse
@@ -93,12 +94,6 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
 
             if (gqlResponse.getError(CartRedirectionResponse::class.java)?.isNotEmpty() != true) {
                 p2Login.newCartTypeResponse = gqlResponse.getData<CartRedirectionResponse>(CartRedirectionResponse::class.java)
-//                p2Login.newCartTypeResponse = CartRedirectionResponse(CartRedirection(status = "OK", data = listOf(
-//                        CartTypeData(configName = "occ", availableButtons = listOf(
-//                                AvailableButton("occ", "secondary", "Sikat bos!", false),
-//                                AvailableButton("normal", "primary", "Tambah ke Keranjang", true)
-//                        ))
-//                )))
             }
 
         } catch (t: Throwable) {
