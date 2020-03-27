@@ -30,7 +30,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-open class HomeUseCaseModule {
+class HomeUseCaseModule {
 
     @HomeScope
     @Provides
@@ -104,7 +104,7 @@ open class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    open fun provideGetPlayLiveDynamicDataUseCase(graphqlRepository: GraphqlRepository): GetPlayLiveDynamicUseCase {
+    fun provideGetPlayLiveDynamicDataUseCase(graphqlRepository: GraphqlRepository): GetPlayLiveDynamicUseCase {
         return GetPlayLiveDynamicUseCase(com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository))
     }
 
