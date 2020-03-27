@@ -10,7 +10,7 @@ interface SellerHomeRouter {
 
     fun getSomListFragment(tabPage: String?): Fragment
 
-    fun getProductManageFragment(): Fragment
+    fun getProductManageFragment(filterOptions: ArrayList<String>): Fragment
 
     fun getChatListFragment(): Fragment
 }

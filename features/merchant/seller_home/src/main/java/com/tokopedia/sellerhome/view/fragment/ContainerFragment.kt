@@ -23,6 +23,7 @@ import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.view.model.NotificationCenterUnreadUiModel
 import com.tokopedia.sellerhome.view.viewmodel.SharedViewModel
 import com.tokopedia.sellerhome.view.widget.toolbar.NotificationDotBadge
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import kotlinx.android.synthetic.main.fragment_sah_container.view.*
 import javax.inject.Inject
 
@@ -58,7 +59,7 @@ class ContainerFragment : Fragment() {
     private var sellerHomeListener: SellerHomeFragment.Listener? = null
     private val handler = Handler()
     private val homeFragment: SellerHomeFragment by lazy { SellerHomeFragment.newInstance() }
-    private val productManageFragment: Fragment? by lazy { sellerHomeRouter?.getProductManageFragment() }
+    private val productManageFragment: Fragment? by lazy { sellerHomeRouter?.getProductManageFragment(arrayListOf()) }
     private val chatFragment: Fragment? by lazy { sellerHomeRouter?.getChatListFragment() }
     private val somListFragment: Fragment? by lazy { sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_ALL_ORDER) }
 
@@ -133,10 +134,10 @@ class ContainerFragment : Fragment() {
             if (isFragmentAttached && manager.fragments.isNotEmpty()) {
                 manager.fragments.forEach { fmt ->
                     if (fragmentName == fmt.javaClass.name) {
-                        if (page.type == FragmentType.ORDER) {
-                            showSomPage(fmt, transaction, page, fragmentName)
-                        } else {
-                            transaction.show(fmt)
+                        when (page.type) {
+                            FragmentType.PRODUCT -> showProductMangePage(fmt, transaction, page, fragmentName)
+                            FragmentType.ORDER -> showSomPage(fmt, transaction, page, fragmentName)
+                            else -> transaction.show(fmt)
                         }
                     } else {
                         transaction.hide(fmt)
@@ -146,7 +147,11 @@ class ContainerFragment : Fragment() {
                 manager.fragments.forEach {
                     transaction.hide(it)
                 }
-                transaction.add(R.id.sahFragmentContainer, fragment, fragmentName).show(fragment)
+                when (page.type) {
+                    FragmentType.PRODUCT -> addProductFragment(fragment, transaction, page, fragmentName)
+                    FragmentType.ORDER -> addSomFragment(fragment, transaction, page, fragmentName)
+                    else -> addFragmentToTransaction(transaction, fragment, fragmentName)
+                }
             }
 
             transaction.commitNowAllowingStateLoss()
@@ -161,13 +166,58 @@ class ContainerFragment : Fragment() {
         }
     }
 
+    private fun addFragmentToTransaction(transaction: FragmentTransaction, fragment: Fragment, fragmentName: String) {
+        transaction.add(R.id.sahFragmentContainer, fragment, fragmentName).show(fragment)
+    }
+
+    private fun addProductFragment(fragment: Fragment, transaction: FragmentTransaction, page: PageFragment, fragmentName: String) {
+        val filterOptionEmptyStock = FilterOption.EMPTY_STOCK_ONLY
+        if (page.tabPage.isNotBlank() && page.tabPage == filterOptionEmptyStock) {
+            val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(filterOptionEmptyStock))
+            if (null != productManageFragment) {
+                addFragmentToTransaction(transaction, productManageFragment, fragmentName)
+            } else {
+                addFragmentToTransaction(transaction, fragment, fragmentName)
+            }
+        } else {
+            addFragmentToTransaction(transaction, fragment, fragmentName)
+        }
+    }
+
+    private fun addSomFragment(fragment: Fragment, transaction: FragmentTransaction, page: PageFragment, fragmentName: String) {
+        if (page.tabPage.isNotBlank() && SomTabConst.STATUS_ALL_ORDER != page.tabPage) {
+            val mSomListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage)
+            if (null != mSomListFragment) {
+                addFragmentToTransaction(transaction, mSomListFragment, fragmentName)
+            } else {
+                addFragmentToTransaction(transaction, fragment, fragmentName)
+            }
+        } else {
+            addFragmentToTransaction(transaction, fragment, fragmentName)
+        }
+    }
+
+    private fun showProductMangePage(fmt: Fragment, transaction: FragmentTransaction, page: PageFragment, fragmentName: String) {
+        val filterOptionEmptyStock = FilterOption.EMPTY_STOCK_ONLY
+        if (page.tabPage.isNotBlank() && page.tabPage == filterOptionEmptyStock) {
+            val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(filterOptionEmptyStock))
+            if (null != productManageFragment) {
+                transaction.remove(fmt)
+                addFragmentToTransaction(transaction, productManageFragment, fragmentName)
+            } else {
+                transaction.show(fmt)
+            }
+        } else {
+            transaction.show(fmt)
+        }
+    }
+
     private fun showSomPage(fmt: Fragment, transaction: FragmentTransaction, page: PageFragment, fragmentName: String) {
         if (page.tabPage.isNotBlank() && SomTabConst.STATUS_ALL_ORDER != page.tabPage) {
             val mSomListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage)
             if (null != mSomListFragment) {
                 transaction.remove(fmt)
-                transaction.add(R.id.sahFragmentContainer, mSomListFragment, fragmentName)
-                transaction.show(mSomListFragment)
+                addFragmentToTransaction(transaction, mSomListFragment, fragmentName)
             } else {
                 transaction.show(fmt)
             }
