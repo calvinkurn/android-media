@@ -1,9 +1,10 @@
 package com.tokopedia.product.addedit.detail.di
 
+import android.content.Context
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 
 @Module(includes = [AddEditProductDetailViewModelModule::class])
 @AddEditProductDetailScope
@@ -11,5 +12,5 @@ class AddEditProductDetailModule {
 
     @AddEditProductDetailScope
     @Provides
-    fun provideCoroutineDispatcher(): CoroutineDispatcher = Dispatchers.Main
+    fun provideUserSession(context: Context): UserSessionInterface = UserSession(context)
 }
