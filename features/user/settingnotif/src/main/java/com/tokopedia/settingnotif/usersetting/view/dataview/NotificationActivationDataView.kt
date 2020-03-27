@@ -3,6 +3,7 @@ package com.tokopedia.settingnotif.usersetting.view.dataview
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.domain.pojo.NotificationActivation
 import com.tokopedia.settingnotif.usersetting.state.Email
+import com.tokopedia.settingnotif.usersetting.state.Phone
 import com.tokopedia.settingnotif.usersetting.state.PushNotif
 
 object NotificationActivationDataView {
@@ -25,7 +26,7 @@ object NotificationActivationDataView {
             title = R.string.settingnotif_title_sms,
             description = R.string.settingnotif_desc_sms,
             action = R.string.settingnotif_added_phone,
-            type = Email
+            type = Phone
     )
 
 }
