@@ -46,44 +46,20 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/summary"
-                    style="@style/TextView.Micro"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/title"
                     android:text="@string/optimalkan_penjualan_dengan_atur_anggaran_harian_iklan"
-                    app:typographyType="body_2" />
+                    app:typographyType="body_1" />
 
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/budget_parent"
-                    style="@style/TextInputLayout"
-                    android:layout_width="match_parent"
-                    android:layout_below="@+id/summary"
-                    android:layout_marginRight="@dimen/dp_16"
-                    tools:visibility="visible">
-
-                    <com.tokopedia.seller.common.widget.PrefixEditText
-                        android:id="@+id/daily_budget"
-                        style="@style/EditText.Currency"
-                        android:layout_width="match_parent"
-                        android:maxLines="1"
-                        android:visibility="gone"
-                        app:prefix="Rp "
-                        tools:visibility="visible" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/error_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/budget_parent"
-                    android:text="@string/daily_budget_error"
-                    android:textColor="@color/bright_red"
+                <com.tokopedia.unifycomponents.TextFieldUnify
+                    android:id="@+id/daily_budget"
                     android:visibility="gone"
-                    app:typographyType="body_3"
-                    tools:text="@string/daily_budget_error"
-                    tools:visibility="visible" />
-
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/summary"
+                    app:text_field_input_type="number"
+                    app:text_field_prepend_text="Rp" />
             </RelativeLayout>
 
         </androidx.cardview.widget.CardView>
@@ -120,7 +96,6 @@
                     android:orientation="horizontal">
 
                     <com.tokopedia.unifyprinciples.Typography
-                        style="@style/TextView.Micro"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -147,12 +122,11 @@
                     android:orientation="horizontal">
 
                     <com.tokopedia.unifyprinciples.Typography
-                        style="@style/TextView.Micro"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="left"
-                        android:text="Group iklan"
+                        android:text="@string/grup_iklan"
                         app:typographyType="body_2" />
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -163,7 +137,7 @@
                         android:layout_weight="1"
                         android:gravity="right"
                         app:typographyType="body_2"
-                        tools:text="Group Kemeja Murah" />
+                        tools:text="Grup Kemeja Murah" />
 
                 </LinearLayout>
 
@@ -174,7 +148,6 @@
                     android:orientation="horizontal">
 
                     <com.tokopedia.unifyprinciples.Typography
-                        style="@style/TextView.Micro"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -200,7 +173,6 @@
                     android:orientation="horizontal">
 
                     <com.tokopedia.unifyprinciples.Typography
-                        style="@style/TextView.Micro"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -226,12 +198,11 @@
                     android:orientation="horizontal">
 
                     <com.tokopedia.unifyprinciples.Typography
-                        style="@style/TextView.Micro"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="left"
-                        android:text="Biaya per klik"
+                        android:text="@string/biaya_per_klik"
                         app:typographyType="body_2" />
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -253,12 +224,11 @@
                     android:orientation="horizontal">
 
                     <com.tokopedia.unifyprinciples.Typography
-                        style="@style/TextView.Micro"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="left"
-                        android:text="Anggaran harian"
+                        android:text="@string/anggaran_harian"
                         app:typographyType="body_2" />
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -269,7 +239,7 @@
                         android:layout_weight="1"
                         android:gravity="right"
                         app:typographyType="body_2"
-                        android:text="Tidak dibatasi"
+                        android:text="@string/tidak_dibatasi"
                         tools:text="Tidak dibatasi" />
                 </LinearLayout>
             </LinearLayout>
@@ -308,7 +278,7 @@
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_16"
             android:gravity="center"
-            android:text="Sistem TopAds akan melindungi iklanmu dari klik\nyang tidak valid. Info Selengkapnya"
+            android:text="@string/info_text_summary"
             app:typographyType="body_3" />
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
