@@ -9,7 +9,6 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.home.favorite.domain.model.DataFavorite;
-import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShop;
 import com.tokopedia.topads.sdk.utils.CacheHandler;
@@ -29,7 +28,6 @@ import rx.functions.Func2;
 public class GetInitialDataPageUsecase extends UseCase<DataFavorite> {
 
     private GetFavoriteShopUsecase getFavoriteShopUsecase;
-    private GetWishlistUtil getWishlistUtil;
     private final GetTopAdsShopUseCase getTopAdsShopUseCase;
     private final Context context;
     private final CacheHandler cacheHandler;
@@ -38,13 +36,11 @@ public class GetInitialDataPageUsecase extends UseCase<DataFavorite> {
     public GetInitialDataPageUsecase(Context context, ThreadExecutor threadExecutor,
                                      PostExecutionThread postExecutionThread,
                                      GetFavoriteShopUsecase getFavoriteShopUsecase,
-                                     GetWishlistUtil getWishlistUtil,
                                      GetTopAdsShopUseCase getTopAdsShopUseCase) {
 
         super(threadExecutor, postExecutionThread);
         this.context = context;
         this.getFavoriteShopUsecase = getFavoriteShopUsecase;
-        this.getWishlistUtil = getWishlistUtil;
         this.getTopAdsShopUseCase = getTopAdsShopUseCase;
         this.cacheHandler = new CacheHandler(context, CacheHandler.TOP_ADS_CACHE);
         random = new Random();

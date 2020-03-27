@@ -78,7 +78,6 @@ public class FragmentFavorite extends BaseDaggerFragment
     private FavoriteAdapter favoriteAdapter;
     private EndlessRecyclerviewListener recylerviewScrollListener;
     private SnackbarRetry messageSnackbar;
-    private boolean isWishlistNetworkFailed;
     private boolean isFavoriteShopNetworkFailed;
     private boolean isTopAdsShopNetworkFailed;
     private View favoriteShopViewSelected;
@@ -189,8 +188,7 @@ public class FragmentFavorite extends BaseDaggerFragment
     @Override
     public void validateMessageError() {
         if (messageSnackbar != null) {
-            if (isWishlistNetworkFailed
-                    || isFavoriteShopNetworkFailed || isTopAdsShopNetworkFailed) {
+            if (isFavoriteShopNetworkFailed || isTopAdsShopNetworkFailed) {
                 messageSnackbar.showRetrySnackbar();
             } else {
                 messageSnackbar.hideRetrySnackbar();
@@ -306,16 +304,6 @@ public class FragmentFavorite extends BaseDaggerFragment
                         }
                     });
         }
-    }
-
-    @Override
-    public void showWishlistFailedMessage() {
-        isWishlistNetworkFailed = true;
-    }
-
-    @Override
-    public void dismissWishlistFailedMessage() {
-        isWishlistNetworkFailed = false;
     }
 
     @Override

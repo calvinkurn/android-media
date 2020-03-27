@@ -41,10 +41,6 @@ interface FavoriteContract {
 
         void showErrorLoadData();
 
-        void showWishlistFailedMessage();
-
-        void dismissWishlistFailedMessage();
-
         void showFavoriteShopFailedMessage();
 
         void dismissFavoriteShopFailedMessage();

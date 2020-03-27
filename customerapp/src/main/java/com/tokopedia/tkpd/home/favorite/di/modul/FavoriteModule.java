@@ -22,7 +22,6 @@ import com.tokopedia.tkpd.home.favorite.domain.interactor.GetAllDataFavoriteUseC
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetFavoriteShopUsecase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetInitialDataPageUsecase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetTopAdsShopUseCase;
-import com.tokopedia.tkpd.home.favorite.domain.interactor.GetWishlistUtil;
 
 import dagger.Module;
 import dagger.Provides;
@@ -84,10 +83,9 @@ public class FavoriteModule {
                                                             ThreadExecutor threadExecutor,
                                                             PostExecutionThread postExecutor,
                                                             GetFavoriteShopUsecase favUseCase,
-                                                            GetWishlistUtil wishlistUseCase,
                                                             GetTopAdsShopUseCase topAdsShopUseCase) {
         return new GetAllDataFavoriteUseCase(context,
-                threadExecutor, postExecutor, favUseCase, wishlistUseCase, topAdsShopUseCase);
+                threadExecutor, postExecutor, favUseCase, topAdsShopUseCase);
     }
 
     @FavoriteScope
@@ -106,7 +104,6 @@ public class FavoriteModule {
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,
             GetFavoriteShopUsecase getFavoriteShopUsecase,
-            GetWishlistUtil getWishlistUse,
             GetTopAdsShopUseCase getTopAdsShopUseCase) {
 
         return new GetInitialDataPageUsecase(
@@ -114,7 +111,6 @@ public class FavoriteModule {
                 threadExecutor,
                 postExecutionThread,
                 getFavoriteShopUsecase,
-                getWishlistUse,
                 getTopAdsShopUseCase);
     }
 

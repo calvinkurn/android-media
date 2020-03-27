@@ -16,7 +16,6 @@ import com.tokopedia.tkpd.home.favorite.domain.interactor.GetFavoriteShopUsecase
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetInitialDataPageUsecase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetTopAdsShopUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.model.DataFavorite;
-import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShopItem;
@@ -134,15 +133,6 @@ public class FavoritePresenter
             getView().showFavoriteShopFailedMessage();
         } else {
             getView().dismissFavoriteShopFailedMessage();
-        }
-
-    }
-
-    private void validateWishlistErrorNetwork(DomainWishlist domainWishlist) {
-        if (domainWishlist.isNetworkError()) {
-            getView().showWishlistFailedMessage();
-        } else {
-            getView().dismissWishlistFailedMessage();
         }
 
     }
