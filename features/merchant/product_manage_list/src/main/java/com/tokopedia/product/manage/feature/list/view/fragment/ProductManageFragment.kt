@@ -660,7 +660,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun onSuccessMultiEditProducts(result: MultiEditResult) {
         showMultiEditToast(result)
         updateEditProductList(result)
-        getFiltersTab(withDelay = true)
     }
 
     private fun showMultiEditToast(result: MultiEditResult) {
@@ -723,6 +722,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 else -> {} // do nothing
             }
         }
+        getFiltersTab(withDelay = true)
     }
 
     override fun onSwipeRefresh() {
