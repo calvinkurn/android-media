@@ -40,6 +40,8 @@ open class GiftBoxDailyView : FrameLayout {
     var imagesLoaded = AtomicInteger(0)
     val GIFT_BOX_START_DELAY = 300L
     val GLIDE_SIGNATURE = "giftbox"
+    var LID_ANIMATION_DURATION = 450L
+    var SCALE_UP_ANIMATION_DURATION = 500L
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         setup(attrs)
@@ -230,10 +232,9 @@ open class GiftBoxDailyView : FrameLayout {
 
         val lidAnimator = loadLidFrames()
 
-        val scaleYAnimUp = PropertyValuesHolder.ofFloat(View.SCALE_Y, 0.5f, 1f)
+        val scaleYAnimUp = PropertyValuesHolder.ofFloat(View.SCALE_Y, 0.5f, 1.3f, 1f)
         val bounceAnimUp: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(view, scaleYAnimUp)
-        bounceAnimUp.interpolator = CubicBezierInterpolator(.56, 1.59, .49, 1.02)
-        bounceAnimUp.duration = duration
+        bounceAnimUp.duration = SCALE_UP_ANIMATION_DURATION
 
         val animatorSet = AnimatorSet()
         animatorSet.playTogether(bounceAnimUp, lidAnimator)
@@ -261,7 +262,7 @@ open class GiftBoxDailyView : FrameLayout {
         valueAnimator.addUpdateListener {
             imageGiftBoxLid.setImageResource(drawableArray[it.animatedValue as Int])
         }
-        valueAnimator.duration = 250L
+        valueAnimator.duration = LID_ANIMATION_DURATION
         return valueAnimator
     }
 
