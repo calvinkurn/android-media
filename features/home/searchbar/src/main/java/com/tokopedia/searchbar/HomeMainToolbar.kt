@@ -62,10 +62,6 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-//    override fun init(context: Context, attrs: AttributeSet?) {
-//        super.init(context, attrs)
-//    }
-
     fun setViewAttributesAfterInflation(){
         showShadow()
 
@@ -81,7 +77,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         }
     }
 
-    fun setAfterInfaltionCallable(callable: Callable<Any?>){
+    fun setAfterInflationCallable(callable: Callable<Any?>){
         afterInflationCallable = callable
     }
 
