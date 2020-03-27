@@ -98,9 +98,6 @@ class PlayCardViewHolder(
 
             if (model.channel.header.applink.isNotEmpty()) {
                 seeAll.visible()
-                seeAll.setOnClickListener {
-                    goToChannelList(model.channel.header.applink)
-                }
             } else {
                 seeAll.gone()
             }
@@ -133,6 +130,10 @@ class PlayCardViewHolder(
 
             play.setSafeOnClickListener {
                 goToPlayChannel(model)
+            }
+
+            seeAll.setOnClickListener {
+                goToChannelList(model.channel.header.applink)
             }
         }
     }
