@@ -50,7 +50,7 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
                 giftBoxLiveData.postValue(LiveDataResult.success(Pair(response, remindMeCheckEntity)))
 
             } else {
-                val response = giftBoxDailyUseCase.getFakeResponseActive()
+                val response = giftBoxDailyUseCase.getFakeResponseEmpty()
                 val remindMeCheckEntity = remindMeUseCase.getRemindMeCheckResponse(remindMeUseCase.getRequestParams(about))
                 giftBoxLiveData.postValue(LiveDataResult.success(Pair(response, remindMeCheckEntity)))
             }

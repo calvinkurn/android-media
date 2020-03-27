@@ -240,6 +240,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                     tvReminderMessage.text = reminder?.text
                                     setInitialUiForReminder()
                                     playLoopSound()
+                                    setClickEventOnReminder()
                                 }
                                 TokenUserState.EMPTY -> {
                                     fadeOutSoundIcon()
@@ -251,6 +252,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
                                     tvReminderMessage.text = reminder?.text
                                     setInitialUiForReminder()
+                                    setClickEventOnReminder()
                                 }
                                 else -> {
                                     hideLoader()
@@ -363,14 +365,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                 }
                             }
 
-                            //set reminder action
-                            tvReminderBtn.setOnClickListener {
-                                if (!isReminderSet) {
-                                    viewModel.setReminder()
-                                    GtmEvents.clickReminderButton()
-                                }
-                            }
-
                             playPrizeSound()
                         } else {
                             disableGiftBoxTap = false
@@ -438,6 +432,15 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             }
 
         })
+    }
+
+    fun setClickEventOnReminder() {
+        tvReminderBtn.setOnClickListener {
+            if (!isReminderSet) {
+                viewModel.setReminder()
+                GtmEvents.clickReminderButton()
+            }
+        }
     }
 
     override fun playLoopSound() {

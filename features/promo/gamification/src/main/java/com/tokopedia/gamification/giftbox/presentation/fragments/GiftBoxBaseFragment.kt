@@ -24,6 +24,7 @@ import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer
 import com.tokopedia.gamification.giftbox.presentation.views.StarsContainer
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSession
 
 
 open class GiftBoxBaseFragment : Fragment() {
@@ -159,22 +160,33 @@ open class GiftBoxBaseFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_share -> {
-                try {
-                    val sendIntent: Intent = Intent().apply {
-                        action = Intent.ACTION_SEND
-                        putExtra(Intent.EXTRA_TEXT, "This is my text to send.")
-                        type = "text/plain"
-                    }
-                    val shareIntent = Intent.createChooser(sendIntent, null)
-                    startActivity(shareIntent)
-                    GtmEvents.clickShareButton()
-                } catch (ex: Exception) {
-
-                }
-
+                performShareAction()
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    fun performShareAction() {
+        try {
+            var userName = ""
+            var shareText = ""
+            context?.let {
+                userName = UserSession(it).name
+                shareText = String.format(it.getString(R.string.gami_gift_share), userName)
+            }
+
+            val sendIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, shareText)
+                type = "text/plain"
+
+            }
+            val shareIntent = Intent.createChooser(sendIntent, null)
+            startActivity(shareIntent)
+            GtmEvents.clickShareButton()
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
     }
 
     fun showRedError(view: View, message: String, actionText: String, method: (() -> Unit)?) {
@@ -259,10 +271,11 @@ open class GiftBoxBaseFragment : Fragment() {
         return context?.getSharedPreferences(GIFT_SOUND_PREF, Context.MODE_PRIVATE)
     }
 
-    fun fadeOutSoundIcon(){
+    fun fadeOutSoundIcon() {
         imageSound.animate().alpha(0f).setDuration(300L).start()
     }
-    fun fadeInSoundIcon(){
+
+    fun fadeInSoundIcon() {
         imageSound.animate().alpha(1f).setDuration(300L).start()
     }
 
