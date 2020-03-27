@@ -126,7 +126,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="left"
-                        android:text="Group iklan"
+                        android:text="@string/grup_iklan"
                         app:typographyType="body_2" />
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -137,7 +137,7 @@
                         android:layout_weight="1"
                         android:gravity="right"
                         app:typographyType="body_2"
-                        tools:text="Group Kemeja Murah" />
+                        tools:text="Grup Kemeja Murah" />
 
                 </LinearLayout>
 
@@ -202,7 +202,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="left"
-                        android:text="Biaya per klik"
+                        android:text="@string/biaya_per_klik"
                         app:typographyType="body_2" />
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -228,7 +228,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="left"
-                        android:text="Anggaran harian"
+                        android:text="@string/anggaran_harian"
                         app:typographyType="body_2" />
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -239,7 +239,7 @@
                         android:layout_weight="1"
                         android:gravity="right"
                         app:typographyType="body_2"
-                        android:text="Tidak dibatasi"
+                        android:text="@string/tidak_dibatasi"
                         tools:text="Tidak dibatasi" />
                 </LinearLayout>
             </LinearLayout>
@@ -278,7 +278,7 @@
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_16"
             android:gravity="center"
-            android:text="Sistem TopAds akan melindungi iklanmu dari klik\nyang tidak valid. Info Selengkapnya"
+            android:text="@string/info_text_summary"
             app:typographyType="body_3" />
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -127,7 +127,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         toggle.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 daily_budget.visibility = View.VISIBLE
-                daily_budget_butt.text = "Anggaran harian Dibatasi"
+                daily_budget_butt.text = getString(R.string.anggaran_dibatasi)
                 var budget = 0
                 try {
                     budget = Integer.parseInt(daily_budget.textFieldInput.text.toString().replace(",", ""))
@@ -141,7 +141,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
                 }
             } else {
-                daily_budget_butt.text = "Tidak dibatasi"
+                daily_budget_butt.text = getString(R.string.tidak_dibatasi)
                 daily_budget.visibility = View.GONE
                 daily_budget.setError(false)
                 daily_budget.setMessage("")
