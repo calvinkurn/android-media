@@ -415,7 +415,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                             ?: ""
                         viewModel.getPopupsInfo(productId)
                         getFiltersTab(withDelay = true)
-                        loadInitialData()
+                        getProductList(withDelay = true, isRefresh = true)
                     }
                 }
             }
