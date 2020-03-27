@@ -64,6 +64,7 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         try {
             projectId = Integer.parseInt(getIntent().getData().getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID));
+            getIntent().putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId);
         } catch (NumberFormatException | NullPointerException e) {
             projectId = KYCConstant.STATUS_DEFAULT;
         } catch (Exception e) {
