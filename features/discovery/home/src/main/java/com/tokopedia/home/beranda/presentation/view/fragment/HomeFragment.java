@@ -47,9 +47,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
-import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.analytics.performance.util.JankyFrameMonitoringUtil;
-import com.tokopedia.analytics.performance.util.PerformanceData;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalContent;
@@ -539,7 +537,6 @@ public class HomeFragment extends BaseDaggerFragment implements
     public void onResume() {
         super.onResume();
         createAndCallSendScreen();
-        sendScreen();
         adapter.onResume();
         viewModel.refresh(isFirstInstall());
         if (activityStateListener != null) {
@@ -548,7 +545,13 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private void createAndCallSendScreen(){
-        WeaveInterface sendScrWeave = this::sendScreen;
+        WeaveInterface sendScrWeave =  new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return sendScreen();
+            }
+        };
         Weaver.Companion.executeWeaveCoRoutine(sendScrWeave,
                 new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, remoteConfig));
     }
@@ -576,7 +579,7 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     private void initRefreshLayout() {
         refreshLayout.post(() -> {
-            viewModel.searchHint(isFirstInstall());
+            viewModel.getSearchHint(isFirstInstall());
             viewModel.refreshHomeData();
             /*
              * set notification gimmick
@@ -1018,7 +1021,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         resetFeedState();
         removeNetworkError();
         if (viewModel != null) {
-            viewModel.searchHint(isFirstInstall());
+            viewModel.getSearchHint(isFirstInstall());
             viewModel.refreshHomeData();
             getStickyContent();
         }
@@ -1280,6 +1283,11 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     private void onActionLinkClicked(String actionLink) {
         onActionLinkClicked(actionLink, "");
+    }
+
+    @Override
+    public void updateExpiredChannel(@NotNull DynamicChannelViewModel dynamicChannelDataModel, int position) {
+        viewModel.getDynamicChannelData(dynamicChannelDataModel, position);
     }
 
     private void onActionLinkClicked(String actionLink, String trackingAttribution) {
@@ -1901,8 +1909,8 @@ public class HomeFragment extends BaseDaggerFragment implements
                 break;
             case TYPE_BANNER_CAROUSEL :
             case TYPE_BANNER :
-                String bannerType = BannerOrganicViewHolder.Companion.getTYPE_NON_CAROUSEL();
-                if (layoutType == TYPE_BANNER_CAROUSEL) bannerType = BannerOrganicViewHolder.Companion.getTYPE_CAROUSEL();
+                String bannerType = BannerOrganicViewHolder.TYPE_NON_CAROUSEL;
+                if (layoutType == TYPE_BANNER_CAROUSEL) bannerType = BannerOrganicViewHolder.TYPE_CAROUSEL;
                 putEEToIris(
                         HomePageTracking.getEnhanceImpressionProductChannelMix(
                                 channel, bannerType

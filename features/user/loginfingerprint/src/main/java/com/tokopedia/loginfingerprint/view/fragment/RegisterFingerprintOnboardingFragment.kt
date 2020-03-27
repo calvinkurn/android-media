@@ -90,9 +90,10 @@ class RegisterFingerprintOnboardingFragment : BaseDaggerFragment() {
             }
 
             override fun onFingerprintError(msg: String, errCode: Int) {
-                if(errCode == FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE || errCode == FingerprintManager.FINGERPRINT_ERROR_UNABLE_TO_PROCESS){
+                if(errCode == FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE || errCode == FingerprintManager.FINGERPRINT_ERROR_UNABLE_TO_PROCESS || errCode == ScanFingerprintDialog.FP_ERROR_KEY_NOT_INITIALIZED){
                     activity?.finish()
-                }else{
+                }
+                else{
                     onErrorRegisterFP(Throwable(message = msg))
                 }
             }

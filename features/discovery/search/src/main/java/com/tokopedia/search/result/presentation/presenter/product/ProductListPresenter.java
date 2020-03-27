@@ -75,7 +75,7 @@ final class ProductListPresenter
         extends BaseDaggerPresenter<ProductListSectionContract.View>
         implements ProductListSectionContract.Presenter {
 
-    private List<Integer> searchNoResultCodeList = Arrays.asList(1, 2, 3, 6);
+    private List<Integer> searchNoResultCodeList = Arrays.asList(1, 2, 3, 6, 8);
     private static final String SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search";
     private static final String DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu";
     private static final String DEFAULT_USER_ID = "0";
@@ -462,18 +462,7 @@ final class ProductListPresenter
         List<Visitable> list = new ArrayList<>(convertToListOfVisitable(productViewModel));
         productList.addAll(list);
 
-        if (inspirationCarouselViewModel.size() > 0) {
-            Iterator<InspirationCarouselViewModel> inspirationCarouselViewModelIterator = inspirationCarouselViewModel.iterator();
-            while(inspirationCarouselViewModelIterator.hasNext()) {
-                InspirationCarouselViewModel data = inspirationCarouselViewModelIterator.next();
-                if (data.getPosition() < getView().getLastProductItemPositionFromCache()) {
-                    Visitable product = productList.get(data.getPosition());
-                    list.add(list.indexOf(product), data);
-                    getView().sendImpressionInspirationCarousel(data);
-                    inspirationCarouselViewModelIterator.remove();
-                }
-            }
-        }
+        processInspirationCarouselPosition(list);
 
         getView().removeLoading();
         getView().addProductList(list);
@@ -675,6 +664,8 @@ final class ProductListPresenter
     }
 
     private void getViewToProcessSearchResult(SearchProductModel searchProductModel) {
+        updateValueEnableGlobalNavWidget();
+
         ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
 
         sendTrackingNoSearchResult(productViewModel);
@@ -696,6 +687,12 @@ final class ProductListPresenter
 
         if (isFirstTimeLoad) {
             getViewToSendTrackingOnFirstTimeLoad(productViewModel);
+        }
+    }
+
+    private void updateValueEnableGlobalNavWidget() {
+        if (getView() != null) {
+            enableGlobalNavWidget = enableGlobalNavWidget && !getView().isLandingPage();
         }
     }
 
@@ -840,19 +837,7 @@ final class ProductListPresenter
         }
 
         inspirationCarouselViewModel = productViewModel.getInspirationCarouselViewModel();
-
-        if (inspirationCarouselViewModel.size() > 0) {
-            Iterator<InspirationCarouselViewModel> inspirationCarouselViewModelIterator = inspirationCarouselViewModel.iterator();
-            while(inspirationCarouselViewModelIterator.hasNext()) {
-                InspirationCarouselViewModel data = inspirationCarouselViewModelIterator.next();
-                if (data.getPosition() < list.size()) {
-                    Visitable product = productList.get(data.getPosition());
-                    list.add(list.indexOf(product), data);
-                    getView().sendImpressionInspirationCarousel(data);
-                    inspirationCarouselViewModelIterator.remove();
-                }
-            }
-        }
+        processInspirationCarouselPosition(list);
 
         getView().removeLoading();
         getView().setProductList(list);
@@ -908,6 +893,33 @@ final class ProductListPresenter
                 + "Gunakan <a href=\"" + liteUrl + "\">browser</a>";
 
         return new BannedProductsTickerViewModel(htmlErrorMessage);
+    }
+
+    private void processInspirationCarouselPosition(List<Visitable> list) {
+        if (inspirationCarouselViewModel.size() > 0) {
+            Iterator<InspirationCarouselViewModel> inspirationCarouselViewModelIterator = inspirationCarouselViewModel.iterator();
+
+            while(inspirationCarouselViewModelIterator.hasNext()) {
+                InspirationCarouselViewModel data = inspirationCarouselViewModelIterator.next();
+
+                if (data.getPosition() <= 0) {
+                    inspirationCarouselViewModelIterator.remove();
+                    continue;
+                }
+
+                if (data.getPosition() <= getView().getLastProductItemPositionFromCache()) {
+                    try {
+                        Visitable product = productList.get(data.getPosition() - 1);
+                        list.add(list.indexOf(product) + 1, data);
+                        getView().sendImpressionInspirationCarousel(data);
+                        inspirationCarouselViewModelIterator.remove();
+                    }
+                    catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
     private boolean isExistsFreeOngkirBadge(List<Visitable> productList) {
