@@ -244,6 +244,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun onClickProductFilter(filter: FilterTabViewModel, viewHolder: FilterTabViewHolder, tabName: String) {
+        showLoadingProgress()
         clickStatusFilterTab(filter, viewHolder)
         ProductManageTracking.eventInventory(tabName)
     }
