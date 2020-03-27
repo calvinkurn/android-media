@@ -267,6 +267,7 @@
 -keep class com.tokopedia.seller.selling.model.** { *; }
 
 -keep class com.tokopedia.tkpd.fcm.** { *; }
+-keep class com.tokopedia.sellerapp.fcm.** { *; }
 
 -keep class com.airbnb.deeplinkdispatch.** { *; }
 -keepclasseswithmembers class * {
