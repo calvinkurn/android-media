@@ -160,9 +160,6 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
     override fun addDynamicChannelVisitable(): HomeVisitableFactory {
         homeData?.dynamicHomeChannel?.channels?.forEachIndexed { index, channel ->
             val position = index+1
-            Log.d("testNoSkeleton", channel.toString())
-            Log.d("testNoSkeleton", "LAYOUT " + channel.layout)
-
             setDynamicChannelPromoName(position, channel)
             when (channel.layout) {
                 DynamicHomeChannel.Channels.LAYOUT_TOPADS -> createDynamicTopAds(channel)
