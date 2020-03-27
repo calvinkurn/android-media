@@ -5,8 +5,7 @@ import java.util.concurrent.TimeUnit
 data class DynamicProductInfoP1(
         val basic: BasicInfo = BasicInfo(),
         val data: ComponentData = ComponentData(),
-        val layoutName: String = "",
-        val upComingData: UpComingData = UpComingData()
+        val layoutName: String = ""
 ) {
 
     val parentProductId: String
@@ -65,9 +64,9 @@ data class DynamicProductInfoP1(
     fun shouldShowNotifyMe(): Boolean {
         return try {
             val now = System.currentTimeMillis()
-            val startTime = upComingData.startDateNotifyMe.toLong() * 1000L
+            val startTime = data.startDate.toLong() * 1000L
             val dayLeft = TimeUnit.MICROSECONDS.toDays(now - startTime)
-            !(upComingData.campaignIdNotifyMe.isEmpty() || dayLeft > 3)
+            !(data.campaignId.isEmpty() || dayLeft > 3)
         } catch (ex: Exception) {
             false
         }

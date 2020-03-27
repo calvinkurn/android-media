@@ -106,12 +106,12 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
             }
 
             notifyMeMap?.run {
-                campaignID = it.upComingData.campaignIdNotifyMe
-                campaignType = it.upComingData.campaignTypeNotifyMe
-                campaignTypeName = it.upComingData.campaignTypeNameNotifyMe
-                endDate = it.upComingData.endDateNotifyMe
-                startDate = it.upComingData.startDateNotifyMe
-                notifyMe = it.upComingData.upComingNotifyMe
+                campaignID = it.data.campaignId
+                campaignType = it.data.campaignType
+                campaignTypeName = it.data.campaignTypeName
+                endDate = it.data.endDate
+                startDate = it.data.startDate
+                notifyMe = it.data.notifyMe
             }
 
             valuePropositionDataModel?.run {

@@ -81,15 +81,16 @@ object DynamicProductDetailMapper {
             it.type == ProductDetailConstant.NOTIFY_ME
         }?.componentData?.firstOrNull() ?: ComponentData()
 
-        return DynamicProductInfoP1(layoutName = data.generalName, basic = data.basicInfo, data = componentData,
-                upComingData = UpComingData(
-                        campaignIdNotifyMe = upcomingData.campaignId,
-                        campaignTypeNotifyMe = upcomingData.campaignType,
-                        campaignTypeNameNotifyMe = upcomingData.campaignTypeName,
-                        endDateNotifyMe = upcomingData.endDate,
-                        startDateNotifyMe = upcomingData.startDate,
-                        upComingNotifyMe = upcomingData.notifyMe
-                ))
+        val newData = componentData.copy(
+                campaignId = upcomingData.campaignId,
+                campaignType = upcomingData.campaignType,
+                campaignTypeName = upcomingData.campaignTypeName,
+                endDate = upcomingData.endDate,
+                startDate = upcomingData.startDate,
+                notifyMe = upcomingData.notifyMe
+        )
+
+        return DynamicProductInfoP1(layoutName = data.generalName, basic = data.basicInfo, data = newData)
     }
 
     fun hashMapLayout(data: List<DynamicPdpDataModel>): Map<String, DynamicPdpDataModel> {

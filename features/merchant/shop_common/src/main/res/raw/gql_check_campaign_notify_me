@@ -8,6 +8,6 @@ mutation checkCampaignNotifyMe($campaignId:Int!, $productId:Int!, $action:Action
       product_id
       campaign_id
       success
-      ErrorMessage
+      error_message
     }
 }
