@@ -102,10 +102,7 @@ import com.tokopedia.product.detail.view.adapter.dynamicadapter.DynamicProductDe
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
 import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.product.detail.view.util.DynamicProductDetailHashMap
-import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
-import com.tokopedia.product.detail.view.util.ProductDetailErrorHelper
-import com.tokopedia.product.detail.view.util.doSuccessOrFail
+import com.tokopedia.product.detail.view.util.*
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
 import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet
@@ -697,13 +694,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
      */
     override fun openShopClicked() {
         activity?.let {
-            if (viewModel.isUserSessionActive) {
+            doActionOrLogin(viewModel.isUserSessionActive) {
                 val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.OPEN_SHOP)
-                        ?: return@let
+                        ?: return@doActionOrLogin
                 startActivity(intent)
-            } else {
-                startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                        ProductDetailConstant.REQUEST_CODE_LOGIN)
             }
         }
     }
@@ -1666,23 +1660,17 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun reportProduct() {
         viewModel.getDynamicProductInfoP1?.run {
-            if (viewModel.isUserSessionActive) {
+            doActionOrloginWithExtra(viewModel.isUserSessionActive, {
                 context?.let {
                     val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.REPORT_PRODUCT,
                             basic.productID)
                     startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_REPORT)
                 }
-
                 productDetailTracking.eventReportLogin()
-            } else {
-                context?.run {
-                    startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                            ProductDetailConstant.REQUEST_CODE_LOGIN)
-                }
+            }, {
                 productDetailTracking.eventReportNoLogin()
-            }
+            })
         }
-
     }
 
     private fun warehouseProduct() {
@@ -1818,7 +1806,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             activity?.let {
                 DynamicProductDetailTracking.Click.eventClickAffiliate(viewModel.userId, productInfo.basic.getShopId(), isRegularPdp,
                         viewModel.getDynamicProductInfoP1)
-                if (viewModel.isUserSessionActive) {
+                doActionOrLogin(viewModel.isUserSessionActive) {
                     RouteManager.getIntent(it,
                             ApplinkConst.AFFILIATE_CREATE_POST,
                             pdpAffiliate.productId.toString(),
@@ -1827,9 +1815,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                             .let(::startActivity)
                     it.setResult(Activity.RESULT_OK)
                     it.finish()
-                } else {
-                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                            ProductDetailConstant.REQUEST_CODE_LOGIN)
                 }
             }
         }
@@ -2076,7 +2061,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
         }
 
-        actionButtonView.buttonCartTypeClick = { cartType, isAtcButton ->
+        actionButtonView.buttonCartTypeClick = { cartType, buttonText, isAtcButton ->
+            viewModel.buttonActionText = buttonText
             val isLeasing = viewModel.getDynamicProductInfoP1?.basic?.isLeasing ?: false
             val atcKey = DynamicProductDetailMapper.generateButtonAction(cartType, isAtcButton, isLeasing)
             doAtc(atcKey)
@@ -2181,7 +2167,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
             if (!viewModel.isUserSessionActive) {
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                        ProductDetailConstant.REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS)
+                        ProductDetailConstant.REQUEST_CODE_LOGIN)
                 return@run
             }
 
@@ -2216,16 +2202,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun onShopFavoriteClick(componentTrackDataModel: ComponentTrackDataModel? = null) {
         val shop = viewModel.shopInfo ?: return
-        activity?.let {
-            if (viewModel.isUserSessionActive) {
-                trackToggleFavoriteShop(componentTrackDataModel)
-                pdpHashMapUtil?.getShopInfo?.toogleFavorite = false
-                dynamicAdapter.notifyShopInfo(pdpHashMapUtil?.getShopInfo, ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE)
-                viewModel.toggleFavorite(shop.shopCore.shopID)
-            } else {
-                startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                        ProductDetailConstant.REQUEST_CODE_LOGIN)
-            }
+        doActionOrLogin(viewModel.isUserSessionActive) {
+            trackToggleFavoriteShop(componentTrackDataModel)
+            pdpHashMapUtil?.getShopInfo?.toogleFavorite = false
+            dynamicAdapter.notifyShopInfo(pdpHashMapUtil?.getShopInfo, ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE)
+            viewModel.toggleFavorite(shop.shopCore.shopID)
         }
     }
 
@@ -2269,17 +2250,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun onShopChatClicked() {
         val shop = viewModel.shopInfo ?: return
         val product = viewModel.getDynamicProductInfoP1 ?: return
-        activity?.let {
-            if (viewModel.isUserSessionActive) {
+        doActionOrLogin(viewModel.isUserSessionActive) {
+            activity?.let {
                 val intent = RouteManager.getIntent(it,
                         ApplinkConst.TOPCHAT_ASKSELLER,
                         shop.shopCore.shopID, "",
                         "product", shop.shopCore.name, shop.shopAssets.avatar)
                 viewModel.putChatProductInfoTo(intent, product.basic.productID, product)
                 startActivity(intent)
-            } else {
-                startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                        ProductDetailConstant.REQUEST_CODE_LOGIN)
             }
         }
     }
@@ -2342,14 +2320,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun gotoCart() {
         activity?.let {
-            if (viewModel.isUserSessionActive) {
-                startActivity(RouteManager.getIntent(it, ApplinkConst.CART))
-            } else {
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                        ProductDetailConstant.REQUEST_CODE_LOGIN)
-            }
             DynamicProductDetailTracking.Click.eventCartToolbarClicked(viewModel.generateVariantString(),
                     viewModel.getDynamicProductInfoP1)
+            doActionOrLogin(viewModel.isUserSessionActive) {
+                startActivity(RouteManager.getIntent(it, ApplinkConst.CART))
+            }
         }
     }
 

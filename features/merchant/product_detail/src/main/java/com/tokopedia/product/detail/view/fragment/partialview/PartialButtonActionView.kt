@@ -24,7 +24,7 @@ class PartialButtonActionView private constructor(private val view: View,
     var rincianTopAdsClick: (() -> Unit)? = null
     var buyNowClick: ((String) -> Unit)? = null
     var addToCartClick: ((String) -> Unit)? = null
-    var buttonCartTypeClick: ((String, Boolean) -> Unit)? = null
+    var buttonCartTypeClick: ((String, String, Boolean) -> Unit)? = null
 
     var byMeClick: ((TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate, Boolean) -> Unit)? = null
     var visibility: Boolean = false
@@ -107,12 +107,14 @@ class PartialButtonActionView private constructor(private val view: View,
 
         btn_buy_now.setOnClickListener {
             buttonCartTypeClick?.invoke(availableButton.getOrNull(0)?.cartType
-                    ?: "", availableButton.getOrNull(0)?.showRecommendation ?: false)
+                    ?: "", btn_buy_now.text.toString(), availableButton.getOrNull(0)?.showRecommendation
+                    ?: false)
         }
 
         btn_add_to_cart.setOnClickListener {
             buttonCartTypeClick?.invoke(availableButton.getOrNull(1)?.cartType
-                    ?: "", availableButton.getOrNull(1)?.showRecommendation ?: false)
+                    ?: "", btn_add_to_cart.text.toString(), availableButton.getOrNull(1)?.showRecommendation
+                    ?: false)
         }
 
         btn_buy_now.generateTheme(availableButton.getOrNull(0)?.color ?: "")

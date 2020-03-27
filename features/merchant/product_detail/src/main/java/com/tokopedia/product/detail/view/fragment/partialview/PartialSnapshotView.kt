@@ -205,12 +205,12 @@ class PartialSnapshotView(private val view: View,
         }
     }
 
-    private fun setProgressStockBar(campaign: CampaignModular) {
+    private fun setProgressStockBar(campaign: CampaignModular) = with(view) {
         try {
-            view.stock_bar_sold_product.progress = campaign.stockSoldPercentage
-            view.stock_bar_sold_product.visible()
+            stock_bar_sold_product.progress = campaign.stockSoldPercentage
+            stock_bar_sold_product.show()
         } catch (ex: Exception) {
-            view.stock_bar_sold_product.visibility = View.GONE
+            stock_bar_sold_product.hide()
         }
     }
 }
