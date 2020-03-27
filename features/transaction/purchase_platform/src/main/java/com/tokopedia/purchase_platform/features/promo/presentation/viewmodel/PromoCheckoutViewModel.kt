@@ -478,7 +478,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     }
                 }
             } else {
-                analytics.eventClickPilihPromoFailedTerjadiKesalahanServer(getPageSource())
                 // Response is not OK, need to show error message
                 throw PromoErrorException(response.validateUsePromoRevamp.message.joinToString(". "))
             }
