@@ -30,25 +30,25 @@
 
             <com.tokopedia.unifycomponents.SearchBarUnify
                 android:id="@+id/searchBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing_lvl4"
                 android:layout_marginTop="@dimen/spacing_lvl4"
-                android:layout_marginRight="@dimen/spacing_lvl4"
                 android:layout_marginBottom="@dimen/spacing_lvl1"
+                android:layout_marginRight="@dimen/spacing_lvl4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:layout_scrollFlags="scroll|snap"
                 app:search_bar_clearable="true"
-                app:search_bar_show_icon="false" />
+                app:search_bar_show_icon="false"
+                app:layout_scrollFlags="scroll|snap"/>
 
             <com.tokopedia.product.manage.feature.list.view.ui.tab.ProductManageTabFilter
                 android:id="@+id/tabFilters"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/product_manage_vertical_spacing"
-                android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
                 android:paddingLeft="@dimen/product_manage_horizontal_spacing"
                 android:paddingRight="@dimen/product_manage_horizontal_spacing"
+                android:layout_marginTop="@dimen/product_manage_vertical_spacing"
+                android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
                 android:visibility="gone"
                 app:layout_scrollFlags="scroll|snap" />
 
@@ -105,25 +105,25 @@
         <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
             android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@color/white"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:visibility="gone">
+            tools:visibility="gone"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:clipToPadding="false"
                 android:scrollbars="vertical" />
         </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
         <ProgressBar
+            android:visibility="gone"
+            android:layout_gravity="center"
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="gone" />
+            android:layout_height="wrap_content" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <androidx.cardview.widget.CardView
