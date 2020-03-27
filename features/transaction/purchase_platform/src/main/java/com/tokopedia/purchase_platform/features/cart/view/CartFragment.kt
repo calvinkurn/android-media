@@ -1,5 +1,7 @@
 package com.tokopedia.purchase_platform.features.cart.view
 
+import android.animation.Animator
+import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Canvas
@@ -189,6 +191,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var listRedPromos: List<String> = emptyList()
     private var prevCbSelectAllIsSelected: Boolean = false
     private var cbChangeJob: Job? = null
+    private var isButtonAnimating = false
+    private var _animator: Animator? = null
+    private val ANIMATION_TYPE = "translationY"
+    private val ANIMATION_DURATION_IN_MILIS = 250L
+    private val TRANSLATION_LENGTH = 500f
 
     companion object {
 
@@ -484,9 +491,34 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     }
                 }
             })
+
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        _animator?.end()
+                        ObjectAnimator.ofFloat(llPromoCheckout, ANIMATION_TYPE, 0f).apply {
+                            duration = ANIMATION_DURATION_IN_MILIS
+                            addListener(object : Animator.AnimatorListener {
+                                override fun onAnimationRepeat(p0: Animator?) {
+                                }
 
+                                override fun onAnimationCancel(p0: Animator?) {
+                                    isButtonAnimating = false
+                                }
+
+                                override fun onAnimationStart(animation: Animator) {
+                                    isButtonAnimating = true
+                                }
+
+                                override fun onAnimationEnd(animation: Animator) {
+                                    isButtonAnimating = false
+                                }
+                            })
+                            if (!isButtonAnimating) {
+                                start()
+                            }
+                        }
+                    }
                 }
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -494,6 +526,57 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         disableSwipeRefresh()
                     } else {
                         enableSwipeRefresh()
+                    }
+                    if (dy > 0) {
+                        ObjectAnimator.ofFloat(llPromoCheckout, ANIMATION_TYPE, TRANSLATION_LENGTH).apply {
+                            duration = ANIMATION_DURATION_IN_MILIS
+                            addListener(object : Animator.AnimatorListener {
+                                override fun onAnimationRepeat(p0: Animator?) {
+                                }
+
+                                override fun onAnimationCancel(p0: Animator?) {
+                                    isButtonAnimating = false
+                                    _animator = null
+                                }
+
+                                override fun onAnimationStart(animation: Animator) {
+                                    isButtonAnimating = true
+                                    _animator = animation
+                                }
+
+                                override fun onAnimationEnd(animation: Animator) {
+                                    isButtonAnimating = false
+                                    _animator = null
+
+                                }
+                            })
+                            if (!isButtonAnimating) {
+                                start()
+                            }
+                        }
+                    } else if (dy < 0) {
+                        ObjectAnimator.ofFloat(llPromoCheckout, ANIMATION_TYPE, 0f).apply {
+                            duration = ANIMATION_DURATION_IN_MILIS
+                            addListener(object : Animator.AnimatorListener {
+                                override fun onAnimationRepeat(p0: Animator?) {
+                                }
+
+                                override fun onAnimationCancel(p0: Animator?) {
+                                    isButtonAnimating = false
+                                }
+
+                                override fun onAnimationStart(animation: Animator) {
+                                    isButtonAnimating = true
+                                }
+
+                                override fun onAnimationEnd(animation: Animator) {
+                                    isButtonAnimating = false
+                                }
+                            })
+                            if (!isButtonAnimating) {
+                                start()
+                            }
+                        }
                     }
                 }
             })
