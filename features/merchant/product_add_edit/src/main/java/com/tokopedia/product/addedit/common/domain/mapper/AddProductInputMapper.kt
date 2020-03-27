@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.common.domain.mapper
 
+import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.common.domain.model.params.add.*
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
@@ -8,7 +9,6 @@ import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.WholeSaleResponse
 import javax.inject.Inject
 
 /**
@@ -61,10 +61,14 @@ class AddProductInputMapper @Inject constructor() {
     private fun mapWholesaleParam(wholesaleList: List<WholeSaleInputModel>): Wholesales? {
         val data: ArrayList<Wholesale> = ArrayList()
         wholesaleList.forEach {
-            data.add(Wholesale(
-                    it.quantity.replace(".", "").toIntOrZero(),
-                    it.price.replace(".", "").toIntOrZero())
-            )
+            val quantity = it.quantity.replace(".", "").toIntOrZero()
+            val price = it.price.replace(".", "").toFloatOrZero()
+            if (quantity > 1) {
+                data.add(Wholesale(
+                        quantity,
+                        price)
+                )
+            }
         }
         return Wholesales(data)
     }

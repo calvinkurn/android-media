@@ -118,16 +118,10 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
                 activityIntent.getBooleanExtra(ProductExtraConstant.EXTRA_IS_USING_CACHE_MANAGER, false);
 
         if (isUsingCacheManager) {
-            SaveInstanceCacheManager cacheManager = new SaveInstanceCacheManager(getContext(), variantCacheId);
-            List<String> jsonVariants = cacheManager.get(ProductVariantDashboardActivity.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST,
-                            (new TypeToken<List<String>>() {}).getType(), new ArrayList<>());
-            productVariantByCatModelList = new ArrayList<>();
             Gson gson = new Gson();
-            for (String jsonVariant : jsonVariants) {
-                ProductVariantByCatModel productVariantByCatModel =
-                        gson.fromJson(jsonVariant, ProductVariantByCatModel.class);
-                productVariantByCatModelList.add(productVariantByCatModel);
-            }
+            SaveInstanceCacheManager cacheManager = new SaveInstanceCacheManager(getContext(), variantCacheId);
+            productVariantByCatModelList = cacheManager.get(ProductVariantDashboardActivity.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST,
+                            (new TypeToken<List<ProductVariantByCatModel>>() {}).getType(), new ArrayList<>());
             currencyType = cacheManager.get(ProductVariantDashboardActivity.EXTRA_CURRENCY_TYPE, int.class, CurrencyTypeDef.TYPE_IDR);
             defaultPrice = cacheManager.get(ProductVariantDashboardActivity.EXTRA_DEFAULT_PRICE, double.class, 0.0);
             defaultStockType = cacheManager.get(ProductVariantDashboardActivity.EXTRA_STOCK_TYPE, int.class, 0);

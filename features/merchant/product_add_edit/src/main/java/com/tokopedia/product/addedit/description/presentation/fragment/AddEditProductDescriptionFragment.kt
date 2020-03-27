@@ -7,6 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -30,9 +35,13 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstan
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_STOCK_TYPE
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_CACHE_ID
 import com.tokopedia.product.addedit.common.util.getText
+import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
+import com.tokopedia.product.addedit.description.di.AddEditProductDescriptionModule
+import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescriptionComponent
 import com.tokopedia.product.addedit.description.presentation.adapter.VideoLinkTypeFactory
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
+import com.tokopedia.product.addedit.description.presentation.viewmodel.AddEditProductDescriptionViewModel
 import com.tokopedia.product.addedit.shipment.presentation.activity.AddEditProductShipmentActivity
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment.Companion.REQUEST_CODE_SHIPMENT
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
@@ -42,11 +51,34 @@ import kotlinx.android.synthetic.main.add_edit_product_description_input_layout.
 import kotlinx.android.synthetic.main.add_edit_product_variant_input_layout.*
 import kotlinx.android.synthetic.main.add_edit_product_video_input_layout.*
 import kotlinx.android.synthetic.main.fragment_add_edit_product_description.*
+import javax.inject.Inject
 
-class AddEditProductDescriptionFragment : BaseListFragment<VideoLinkModel, VideoLinkTypeFactory>(),
-        VideoLinkTypeFactory.VideoLinkListener {
+class AddEditProductDescriptionFragment(
+        private val categoryId: String
+) : BaseListFragment<VideoLinkModel, VideoLinkTypeFactory>(), VideoLinkTypeFactory.VideoLinkListener {
+
+    companion object {
+        fun createInstance(categoryId: String): Fragment {
+            return AddEditProductDescriptionFragment(categoryId)
+        }
+
+        const val MAX_VIDEOS = 3
+        const val REQUEST_CODE_VARIANT = 0
+
+        const val TYPE_IDR = 1
+        const val TYPE_USD = 2
+
+        const val REQUEST_CODE_DESCRIPTION = 0x03
+
+        // TODO faisalramd
+        const val TEST_IMAGE_URL = "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/9/16/36162992/36162992_778e5d1e-06fd-4e4a-b650-50c232815b24_1080_1080.jpg"
+    }
 
     private var videoId = 0
+    private lateinit var descriptionViewModel: AddEditProductDescriptionViewModel
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     override fun getAdapterTypeFactory(): VideoLinkTypeFactory {
         val videoLinkTypeFactory = VideoLinkTypeFactory()
@@ -72,7 +104,18 @@ class AddEditProductDescriptionFragment : BaseListFragment<VideoLinkModel, Video
 
     override fun getScreenName(): String? = null
 
-    override fun initInjector() {}
+    override fun initInjector() {
+        DaggerAddEditProductDescriptionComponent.builder()
+                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+                .addEditProductDescriptionModule(AddEditProductDescriptionModule())
+                .build()
+                .inject(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initViewModel()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_add_edit_product_description, container, false)
@@ -98,12 +141,16 @@ class AddEditProductDescriptionFragment : BaseListFragment<VideoLinkModel, Video
         }
 
         tvAddVariant.setOnClickListener {
-            showVariantDialog()
+            descriptionViewModel.getVariants(categoryId)
         }
 
         btnNext.setOnClickListener {
             moveToDescriptionActivity()
         }
+
+        descriptionViewModel.homeTicker.observe(viewLifecycleOwner, Observer { result ->
+            showVariantDialog(result.data)
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -114,6 +161,13 @@ class AddEditProductDescriptionFragment : BaseListFragment<VideoLinkModel, Video
                         data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
                 submitInput(shipmentInputModel)
             }
+        }
+    }
+
+    private fun initViewModel() {
+        activity?.run {
+            descriptionViewModel = ViewModelProviders.of(this, viewModelFactory)
+                    .get(AddEditProductDescriptionViewModel::class.java)
         }
     }
 
@@ -161,12 +215,10 @@ class AddEditProductDescriptionFragment : BaseListFragment<VideoLinkModel, Video
                 if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
     }
 
-    private fun showVariantDialog(){
+    private fun showVariantDialog(variants: List<ProductVariantByCatModel>) {
         activity?.let {
-            val productVariantByCatModelList: ArrayList<String> = ArrayList()
-            productVariantByCatModelList.add(TEST_VARIANT)
             val cacheManager = SaveInstanceCacheManager(it, true).apply {
-                put(EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList) // must using json
+                put(EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, variants)
                 put(EXTRA_PRODUCT_VARIANT_SELECTION, "") // must using json
                 put(EXTRA_CURRENCY_TYPE, TYPE_IDR)
                 put(EXTRA_DEFAULT_PRICE, 0.0)
@@ -204,20 +256,6 @@ class AddEditProductDescriptionFragment : BaseListFragment<VideoLinkModel, Video
         intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
-    }
-
-    companion object {
-        const val MAX_VIDEOS = 3
-        const val REQUEST_CODE_VARIANT = 0
-
-        const val TYPE_IDR = 1
-        const val TYPE_USD = 2
-
-        const val REQUEST_CODE_DESCRIPTION = 0x03
-
-        // TODO faisalramd
-        const val TEST_VARIANT = "{\"variant_id\":1,\"name\":\"Warna\",\"identifier\":\"colour\",\"status\":2,\"has_unit\":0,\"units\":[{\"unit_id\":0,\"name\":\"\",\"short_name\":\"\",\"values\":[{\"value_id\":1,\"value\":\"Putih\",\"hex_code\":\"#ffffff\",\"icon\":\"\"},{\"value_id\":2,\"value\":\"Hitam\",\"hex_code\":\"#000000\",\"icon\":\"\"}]}]}"
-        const val TEST_IMAGE_URL = "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/9/16/36162992/36162992_778e5d1e-06fd-4e4a-b650-50c232815b24_1080_1080.jpg"
     }
 
 }

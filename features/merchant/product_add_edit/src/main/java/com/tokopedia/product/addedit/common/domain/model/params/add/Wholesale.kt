@@ -6,13 +6,13 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Wholesale (
-    @SerializedName("minQty")
+data class Wholesale(
+        @SerializedName("minQty")
     @Expose
-    var minQty: Int? = null,
-    @SerializedName("price")
+        var minQty: Int = 0,
+        @SerializedName("price")
     @Expose
-    var price: Int? = null
+        var price: Float = 0F
 ) : Parcelable
 
 @Parcelize

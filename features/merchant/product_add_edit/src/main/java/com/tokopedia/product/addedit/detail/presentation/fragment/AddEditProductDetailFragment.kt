@@ -783,7 +783,9 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
     }
 
     private fun moveToDescriptionActivity() {
+        val categoryId = productCategoryPickerButton?.getTag(R.id.category_id).toString()
         val intent = Intent(context, AddEditProductDescriptionActivity::class.java)
+        intent.putExtra(EXTRA_CATEGORY_ID, categoryId)
         startActivityForResult(intent, REQUEST_CODE_DESCRIPTION)
     }
 
