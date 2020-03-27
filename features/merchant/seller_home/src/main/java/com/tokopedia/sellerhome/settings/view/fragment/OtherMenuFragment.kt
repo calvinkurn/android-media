@@ -276,15 +276,15 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                         eventActionSuffix = SettingTrackingConstant.SHOP_ADS_AND_PROMOTION),
                 SettingTitleUiModel(resources.getString(R.string.setting_menu_buyer_info)),
                 MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_review),
-                        R.drawable.ic_star_setting,
-                        ApplinkConst.REPUTATION,
-                        eventActionSuffix = SettingTrackingConstant.REVIEW),
-                MenuItemUiModel(
                         resources.getString(R.string.setting_menu_discussion),
                         R.drawable.ic_setting_discussion,
                         ApplinkConst.TALK,
                         eventActionSuffix = SettingTrackingConstant.DISCUSSION),
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_review),
+                        R.drawable.ic_star_setting,
+                        ApplinkConst.REPUTATION,
+                        eventActionSuffix = SettingTrackingConstant.REVIEW),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_complaint),
                         R.drawable.ic_complaint,
