@@ -1,6 +1,7 @@
 package com.tokopedia.settingnotif.usersetting.view.adapter.viewholder
 
 import android.view.View
+import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_EMAIL_REGISTER
@@ -18,6 +19,7 @@ class ChangeItemViewHolder(
         itemView: View?
 ): AbstractViewHolder<ChangeSection>(itemView) {
 
+    private val imgIcon = itemView?.findViewById<ImageView>(R.id.imgIcon)
     private val txtTitle = itemView?.findViewById<Typography>(R.id.txtTitle)
     private val btnChange = itemView?.findViewById<Typography>(R.id.btnChange)
     private val txtChangeType = itemView?.findViewById<Typography>(R.id.txtChangeType)
@@ -28,6 +30,7 @@ class ChangeItemViewHolder(
         element?.let { data ->
             txtTitle?.text = context?.getString(data.description)
             txtChangeType?.text = data.changeItem
+            imgIcon?.setImageResource(element.icon)
 
             btnChange?.setOnClickListener {
                 val appLink = when(data.state) {
