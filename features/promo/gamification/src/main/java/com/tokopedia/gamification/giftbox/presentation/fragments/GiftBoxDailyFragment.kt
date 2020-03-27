@@ -224,12 +224,16 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                             reminder = giftBoxEntity.gamiLuckyHome.reminder
                             when (tokenUserState) {
                                 TokenUserState.ACTIVE -> {
-                                    GtmEvents.viewGiftBoxPage("")
+                                    if (!viewModel.campaignSlug.isNullOrEmpty()) {
+                                        GtmEvents.viewGiftBoxPage(viewModel.campaignSlug!!)
+                                    }
                                     reminderLayout.visibility = View.VISIBLE
                                     renderGiftBoxActive(giftBoxEntity)
                                     giftBoxDailyView.fmGiftBox.setOnClickListener {
                                         if (!disableGiftBoxTap) {
-                                            GtmEvents.clickGiftBox("")
+                                            if (!viewModel.campaignSlug.isNullOrEmpty()) {
+                                                GtmEvents.clickGiftBox(viewModel.campaignSlug!!)
+                                            }
                                             viewModel.getRewards()
                                             disableGiftBoxTap = true
                                         }

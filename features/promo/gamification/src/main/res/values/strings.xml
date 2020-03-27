@@ -45,7 +45,7 @@
 
     <string name="path_gamification">/gamification</string>
     <string name="path_gamification2">/gamification2</string>
-    <string name="path_daily_gift">/dailygift</string>
+    <string name="path_daily_gift">/gamification_gift_daily</string>
     <string name="path_tap_tap_gift">/taptapgift</string>
 
     <string name="gami_kupon_undian_100_ovo_points"><![CDATA[Kupon Undian &\n 100 OVO Points]]></string>
