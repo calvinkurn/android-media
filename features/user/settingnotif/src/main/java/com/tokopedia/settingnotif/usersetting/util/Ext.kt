@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Subscriber
 
@@ -16,8 +17,12 @@ fun Context.openNotificationSetting() {
     }
 }
 
-fun <T> UseCase<T>.load(onSuccess: (t: T?) -> Unit, onError: () -> Unit) {
-    execute(object : Subscriber<T>() {
+fun <T> UseCase<T>.load(
+        requestParams: RequestParams = RequestParams.EMPTY,
+        onSuccess: (t: T?) -> Unit,
+        onError: () -> Unit
+) {
+    execute(requestParams, object : Subscriber<T>() {
         override fun onNext(t: T) {
             onSuccess(t)
         }
