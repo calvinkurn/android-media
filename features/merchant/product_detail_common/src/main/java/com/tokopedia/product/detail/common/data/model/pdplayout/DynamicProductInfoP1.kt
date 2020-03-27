@@ -29,6 +29,24 @@ data class DynamicProductInfoP1(
             }
         }
 
+    val priceBeforeInt: Int
+        get() {
+            return if (data.campaign.isActive) {
+                data.campaign.originalPrice
+            } else {
+                0
+            }
+        }
+
+    val dropPercentage: String?
+        get() {
+            return if (data.campaign.isActive) {
+                data.campaign.percentageAmount.toString()
+            } else {
+                ""
+            }
+        }
+
     fun checkImei(imeiRemoteConfig: Boolean): Boolean {
         return imeiRemoteConfig && data.campaign.needCheckImei
     }
