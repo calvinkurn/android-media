@@ -5,13 +5,20 @@ import android.content.Intent
 import android.os.Build
 import android.provider.Settings
 import android.provider.Settings.ACTION_SETTINGS
+import android.view.View
+import androidx.annotation.LayoutRes
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Subscriber
 
-fun Context.openNotificationSetting(): Intent {
+/**
+ * open notification system settings,
+ * only supported for O and above
+ * @return Intent
+ */
+fun Context.notificationSetting(): Intent {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -21,6 +28,13 @@ fun Context.openNotificationSetting(): Intent {
     }
 }
 
+/**
+ * extension for Rx subscriber with
+ * return two callback
+ * @param requestParams
+ * @param onSuccess
+ * @param onError
+ */
 fun <T> UseCase<T>.load(
         requestParams: RequestParams = RequestParams.EMPTY,
         onSuccess: (t: T?) -> Unit,
@@ -33,17 +47,38 @@ fun <T> UseCase<T>.load(
     })
 }
 
+/**
+ * change user info for email and phone number
+ * @param appLink
+ * @param email
+ * @param phoneNumber
+ * @return Intent
+ */
 fun Context.changeUserInfoIntent(
         appLink: String,
         email: String,
         phoneNumber: String
 ): Intent {
-    return getActivationIntent(appLink).apply {
+    return intent(appLink).apply {
         putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
         putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
     }
 }
 
-fun Context.getActivationIntent(appLink: String): Intent {
+/**
+ * extension for simplify get intent from appLink
+ * @param appLink
+ * @return Intent
+ */
+fun Context.intent(appLink: String): Intent {
     return RouteManager.getIntent(this, appLink)
+}
+
+/**
+ * simplify inflate a view
+ * @param layoutId
+ * @return View
+ */
+fun Context?.inflateView(@LayoutRes layoutId: Int): View {
+    return View.inflate(this, layoutId, null)
 }

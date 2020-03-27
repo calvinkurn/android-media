@@ -8,6 +8,7 @@ import android.view.View
 import androidx.core.app.NotificationManagerCompat
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.domain.pojo.SellerSection
+import com.tokopedia.settingnotif.usersetting.util.inflateView
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldAdapter
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.VisitableSettings
 import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationPushNotif
@@ -77,20 +78,16 @@ class PushNotifFieldFragment : SettingFieldFragment() {
     }
 
     private fun showInformationDialog() {
-        val customDialogView = View.inflate(context, R.layout.dialog_push_notif_information, null)
+        val customDialogView = context.inflateView(R.layout.dialog_push_notif_information)
         val informationSheet = BottomSheetUnify().apply {
-            setTitle("Push Notification")
+            setTitle(screenName)
             setChild(customDialogView)
             setCloseClickListener { dismiss() }
         }
-        informationSheet.show(childFragmentManager, TAG_INFORMATION)
+        informationSheet.show(childFragmentManager, screenName)
     }
 
     override fun getScreenName() = getString(R.string.settingnotif_dialog_info_title)
     override fun getNotificationType() = PUSH_NOTIF_TYPE
-
-    companion object {
-        private const val TAG_INFORMATION = "information"
-    }
 
 }

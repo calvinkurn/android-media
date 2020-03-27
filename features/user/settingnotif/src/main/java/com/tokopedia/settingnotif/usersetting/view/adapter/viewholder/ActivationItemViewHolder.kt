@@ -10,8 +10,8 @@ import com.tokopedia.settingnotif.usersetting.domain.pojo.NotificationActivation
 import com.tokopedia.settingnotif.usersetting.state.Email
 import com.tokopedia.settingnotif.usersetting.state.Phone
 import com.tokopedia.settingnotif.usersetting.state.PushNotif
-import com.tokopedia.settingnotif.usersetting.util.getActivationIntent
-import com.tokopedia.settingnotif.usersetting.util.openNotificationSetting
+import com.tokopedia.settingnotif.usersetting.util.intent
+import com.tokopedia.settingnotif.usersetting.util.notificationSetting
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
@@ -33,9 +33,9 @@ class ActivationItemViewHolder(
             btnActivation?.setOnClickListener {
                 context?.let {
                     it.startActivity(when(data.type) {
-                        is PushNotif -> it.openNotificationSetting()
-                        is Email -> it.getActivationIntent(ADD_EMAIL)
-                        is Phone -> it.getActivationIntent(ADD_PHONE)
+                        is PushNotif -> it.notificationSetting()
+                        is Email -> it.intent(ADD_EMAIL)
+                        is Phone -> it.intent(ADD_PHONE)
                     })
                 }
             }
