@@ -17,8 +17,7 @@ class ProductViewHolder(
     view: View,
     checkableListener: CheckableInteractionListener,
     private val listener: ProductViewHolderView
-): BaseCheckableViewHolder<ProductViewModel>(view, checkableListener),
-    CompoundButton.OnCheckedChangeListener, View.OnClickListener {
+): BaseCheckableViewHolder<ProductViewModel>(view, checkableListener), CompoundButton.OnCheckedChangeListener {
 
     companion object {
         @LayoutRes
@@ -41,8 +40,6 @@ class ProductViewHolder(
 
         setOnClickListeners(product)
     }
-
-    override fun onClick(v: View?) = toggle()
 
     override fun getCheckable(): CompoundButton? {
         return itemView.checkBoxSelect
@@ -100,14 +97,8 @@ class ProductViewHolder(
     }
 
     private fun setOnClickListeners(product: ProductViewModel) {
-        itemView.setOnClickListener {
-            if(product.multiSelectActive) {
-                toggle()
-            } else {
-                listener.onClickProductItem(product)
-            }
-        }
-
+        setOnItemClickListener(product)
+        itemView.checkBoxSelect.setOnClickListener { onClickCheckBox() }
         itemView.btnMoreOptions.setOnClickListener { listener.onClickMoreOptionsButton(product) }
         itemView.imageStockInformation.setOnClickListener { listener.onClickStockInformation() }
         itemView.btnEditPrice.setOnClickListener { listener.onClickEditPriceButton(product) }
@@ -116,14 +107,40 @@ class ProductViewHolder(
         itemView.btnContactCS.setOnClickListener { listener.onClickContactCsButton(product)}
     }
 
+    private fun setOnItemClickListener(product: ProductViewModel) {
+        itemView.setOnClickListener {
+            if (product.multiSelectActive) {
+                toggleCheckBox()
+                onClickCheckBox()
+            } else {
+                onClickProductItem(product)
+            }
+        }
+    }
+
     private fun showProductCheckBox(product: ProductViewModel) {
+        itemView.checkBoxSelect.isChecked = product.isChecked
         itemView.checkBoxSelect.showWithCondition(product.multiSelectActive)
+    }
+
+    private fun toggleCheckBox() {
+        itemView.checkBoxSelect.isChecked.apply { isChecked = !isChecked }
+    }
+
+    private fun onClickCheckBox() {
+        val isChecked = itemView.checkBoxSelect.isChecked
+        listener.onClickProductCheckBox(isChecked, adapterPosition)
+    }
+
+    private fun onClickProductItem(product: ProductViewModel) {
+        listener.onClickProductItem(product)
     }
 
     interface ProductViewHolderView {
         fun onClickStockInformation()
         fun onClickMoreOptionsButton(product: ProductViewModel)
         fun onClickProductItem(product: ProductViewModel)
+        fun onClickProductCheckBox(isChecked: Boolean, position: Int)
         fun onClickEditPriceButton(product: ProductViewModel)
         fun onClickEditStockButton(product: ProductViewModel)
         fun onClickEditVariantButton(product: ProductViewModel)

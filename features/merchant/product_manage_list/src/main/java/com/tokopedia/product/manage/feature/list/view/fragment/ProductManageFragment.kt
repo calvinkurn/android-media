@@ -185,6 +185,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         setupTabFilters()
         setupBottomSheet()
         setupMultiSelect()
+        setupSelectAll()
         renderCheckedView()
 
         observeShopInfo()
@@ -333,6 +334,16 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
     }
 
+    private fun setupSelectAll() {
+        checkBoxSelectAll.setOnClickListener {
+            val isChecked = checkBoxSelectAll.isChecked
+            adapter.data.forEachIndexed { index, _ ->
+                onClickProductCheckBox(isChecked, index)
+            }
+            productManageListAdapter.notifyDataSetChanged()
+        }
+    }
+
     private fun showFilterBottomSheet() {
         filterProductBottomSheet = context?.let {
             ProductManageFilterFragment.createInstance(it, viewModel.selectedFilterAndSort.value,this)
@@ -368,6 +379,23 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         } else {
             btnMultiEdit.hide()
             textProductCount.text = getString(R.string.product_manage_count_format, adapter.data.count())
+        }
+    }
+
+    private fun renderSelectAllCheckBox() {
+        when {
+            itemsChecked.isEmpty() -> {
+                checkBoxSelectAll.isChecked = false
+                checkBoxSelectAll.setIndeterminate(false)
+            }
+            itemsChecked.size == adapter.data.size -> {
+                checkBoxSelectAll.isChecked = true
+                checkBoxSelectAll.setIndeterminate(false)
+            }
+            !checkBoxSelectAll.getIndeterminate() -> {
+                checkBoxSelectAll.isChecked = true
+                checkBoxSelectAll.setIndeterminate(true)
+            }
         }
     }
 
@@ -515,7 +543,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 setSecondaryCTAClickListener {
                     dismiss()
                     viewModel.getProductList(shopId = userSession.shopId, filterOptions = listOf(FilterByCondition.CashBackOnly), isRefresh = true)
-                    viewModel.setSelectedFilter(selectedFilter = listOf(FilterOption.FilterByCondition.CashBackOnly))
+                    viewModel.setSelectedFilter(selectedFilter = listOf(FilterByCondition.CashBackOnly))
                 }
                 setImageUrl(ProductManageUrl.ILLUSTRATION_SET_CASHBACK_LIMIT_REACHED)
             }.show()
@@ -707,6 +735,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         hideSnackBarRetry()
         clearProductList()
         clearSelectedProduct()
+        clearSelectAllCheckBox()
         renderCheckedView()
 
         getFiltersTab(withDelay = true)
@@ -718,20 +747,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun onItemChecked(data: ProductViewModel, isChecked: Boolean) {
-        if (isChecked) {
-            itemsChecked.add(data)
-        } else {
-            /**
-             * When refresh the data , it will keept the check
-             * but the id *ex:ProductManageViewModel@12xxx will also update
-             * then we cant remove it from itemsChecked because the id is different.
-             */
-            val checkedData = itemsChecked.find {
-                it.id.contains(data.id)
-            }
-            itemsChecked.remove(checkedData)
-        }
-        renderCheckedView()
+
     }
 
     private fun onSuccessChangeFeaturedProduct(productId: String, status: Int) {
@@ -778,16 +794,22 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun updateListByCheck(isChecked: Boolean, position: Int) {
-        if (isChecked) {
-            checkedPositionList.add(position)
-        } else {
-            checkedPositionList.remove(position)
+
+    }
+
+    override fun onClickProductCheckBox(isChecked: Boolean, position: Int) {
+        val product = adapter.data[position]
+        val checkedData = itemsChecked.firstOrNull { it.id.contains(product.id) }
+        adapter.data[position] = product.copy(isChecked = isChecked)
+
+        if (isChecked && checkedData == null) {
+            itemsChecked.add(product)
+        } else if(!isChecked){
+            itemsChecked.remove(checkedData)
         }
 
-        val selectedItem = adapter.data[position]
-        onItemChecked(selectedItem, isChecked)
-
-        productManageListAdapter.setCheckedPositionList(checkedPositionList)
+        renderSelectAllCheckBox()
+        renderCheckedView()
     }
 
     override fun onClickStockInformation() {
@@ -1295,20 +1317,26 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
         observe(viewModel.toggleMultiSelect) { multiSelectEnabled ->
             val productList = adapter.data.map {
-                it.copy(multiSelectActive = multiSelectEnabled)
+                it.copy(
+                    multiSelectActive = multiSelectEnabled,
+                    isChecked = false
+                )
             }
 
             if(multiSelectEnabled) {
+                checkBoxSelectAll.show()
                 textMultipleSelect.text = cancelMultiSelectText
             } else {
                 btnMultiEdit.hide()
+                checkBoxSelectAll.hide()
                 textMultipleSelect.text = multiSelectText
             }
 
             clearProductList()
             clearSelectedProduct()
-            renderCheckedView()
+            clearSelectAllCheckBox()
 
+            renderCheckedView()
             showProductList(productList)
         }
     }
@@ -1361,6 +1389,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         itemsChecked.clear()
         checkedPositionList.clear()
         productManageListAdapter.resetCheckedItemSet()
+    }
+
+    private fun clearSelectAllCheckBox() {
+        checkBoxSelectAll.isChecked = false
     }
 
     private fun clearProductList() {

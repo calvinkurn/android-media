@@ -16,7 +16,8 @@ data class ProductViewModel(
     val stock: Int?,
     val isFeatured: Boolean?,
     val isVariant: Boolean?,
-    val multiSelectActive: Boolean
+    val multiSelectActive: Boolean,
+    val isChecked: Boolean
 ) : Visitable<BaseListCheckableTypeFactory<ProductViewModel>> {
     override fun type(typeFactory: BaseListCheckableTypeFactory<ProductViewModel>): Int {
         return typeFactory.type(this)
