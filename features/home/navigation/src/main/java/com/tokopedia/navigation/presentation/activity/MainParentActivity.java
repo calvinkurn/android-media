@@ -21,8 +21,11 @@ import android.os.Handler;
 import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
+
+import androidx.asynclayoutinflater.view.AsyncLayoutInflater;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -36,6 +39,7 @@ import android.view.FrameMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -350,17 +354,7 @@ public class MainParentActivity extends BaseActivity implements
         isFirstNavigationImpression = true;
         setContentView(R.layout.activity_main_parent);
 
-        bottomNavigation = findViewById(R.id.bottomnav);
         fragmentContainer = findViewById(R.id.container);
-
-        bottomNavigation.setItemIconTintList(null);
-        bottomNavigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
-        bottomNavigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
-        bottomNavigation.setOnNavigationItemReselectedListener(item -> {
-            Fragment fragment = fragmentList.get(getPositionFragmentByMenu(item));
-            scrollToTop(fragment); // enable feature scroll to top for home & feed
-        });
-
         fragmentList = fragments();
 
         WeaveInterface firstTimeWeave = new WeaveInterface() {
@@ -371,11 +365,36 @@ public class MainParentActivity extends BaseActivity implements
             }
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(firstTimeWeave, RemoteConfigKey.ENABLE_ASYNC_FIRSTTIME_EVENT, getContext());
-
-        handleAppLinkBottomNavigation(savedInstanceState);
+        showSelectedPage();
         checkAppUpdateAndInApp();
         checkApplinkCouponCode(getIntent());
+        inflateBottomNavigationViewAsync(savedInstanceState);
+    }
 
+    private void inflateBottomNavigationViewAsync(Bundle savedInstanceState){
+        AsyncLayoutInflater asyncLayoutInflater = new AsyncLayoutInflater(getContext());
+        AsyncLayoutInflater.OnInflateFinishedListener inflationCompleteListener = new AsyncLayoutInflater.OnInflateFinishedListener() {
+            @Override
+            public void onInflateFinished(@NonNull View view, int resid, @Nullable ViewGroup parent) {
+                parent.addView(view);
+                afterBottomNaviagtionInflation(savedInstanceState);
+            }
+        };
+        final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) this
+                .findViewById(android.R.id.content)).getChildAt(0);
+        asyncLayoutInflater.inflate(R.layout.bottom_navigation_view, viewGroup, inflationCompleteListener);
+    }
+
+    private void afterBottomNaviagtionInflation(Bundle savedInstanceState){
+        bottomNavigation = findViewById(R.id.bottomnav);
+        bottomNavigation.setItemIconTintList(null);
+        bottomNavigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
+        bottomNavigation.setOnNavigationItemSelectedListener(MainParentActivity.this::onNavigationItemSelected);
+        bottomNavigation.setOnNavigationItemReselectedListener(item -> {
+            Fragment fragment = fragmentList.get(getPositionFragmentByMenu(item));
+            scrollToTop(fragment); // enable feature scroll to top for home & feed
+        });
+        handleAppLinkBottomNavigation(savedInstanceState);
         initNewFeedClickReceiver();
     }
 
@@ -385,6 +404,18 @@ public class MainParentActivity extends BaseActivity implements
             globalNavAnalytics.trackFirstTime(MainParentActivity.this);
         }
         return true;
+    }
+
+    private void showSelectedPage(){
+        int tabPosition = HOME_MENU;
+        if (getIntent().getExtras() != null) {
+            tabPosition = getIntent().getExtras().getInt(ARGS_TAB_POSITION, HOME_MENU);
+        }
+        Fragment fragment = fragmentList.get(tabPosition);
+        if (fragment != null) {
+            this.currentFragment = fragment;
+            selectFragment(fragment);
+        }
     }
 
     private void handleAppLinkBottomNavigation(Bundle savedInstanceState) {
@@ -412,7 +443,6 @@ public class MainParentActivity extends BaseActivity implements
             }
         } else if (savedInstanceState == null) {
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_home));
-            this.currentFragment = fragmentList.get(HOME_MENU);
         }
     }
 
