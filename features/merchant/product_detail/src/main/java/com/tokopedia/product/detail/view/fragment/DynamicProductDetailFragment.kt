@@ -144,8 +144,6 @@ import com.tokopedia.variant_common.view.ProductVariantListener
 import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.*
 import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
-import com.tokopedia.common_tradein.utils.TradeInUtils
-import com.tokopedia.purchase_platform.common.sharedata.ShipmentFormRequest
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
