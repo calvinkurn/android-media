@@ -1093,7 +1093,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 ValidateUsePromoRequest validateUsePromoRequest = generateValidateUsePromoRequest();
                 if (courierItemData.getLogPromoCode() != null && courierItemData.getLogPromoCode().length() > 0) {
                     for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                        if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString())) {
+                        if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString()) &&
+                                !ordersItem.getCodes().contains(courierItemData.getLogPromoCode())) {
                             ordersItem.getCodes().add(courierItemData.getLogPromoCode());
                             break;
                         }
@@ -2028,7 +2029,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             ValidateUsePromoRequest validateUsePromoRequest = generateValidateUsePromoRequest();
             if (promoCode != null && promoCode.length() > 0) {
                 for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                    if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString())) {
+                    if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString()) && !ordersItem.getCodes().contains(promoCode)) {
                         ordersItem.getCodes().add(promoCode);
                         break;
                     }
@@ -2544,7 +2545,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (lastApplyUiModel != null) {
                 ArrayList<String> globalPromoCodes = new ArrayList<>();
                 if (lastApplyUiModel.getCodes().size() > 0) {
-                    globalPromoCodes.addAll(lastApplyUiModel.getCodes());
+                    for (String code : lastApplyUiModel.getCodes()) {
+                        if (code.length() > 0 && !globalPromoCodes.contains(code)) {
+                            globalPromoCodes.add(code);
+                        }
+                    }
                 }
                 validateUsePromoRequest.setCodes(globalPromoCodes);
             }
