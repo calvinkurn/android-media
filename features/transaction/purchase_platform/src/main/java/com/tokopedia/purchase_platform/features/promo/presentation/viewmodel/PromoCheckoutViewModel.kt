@@ -1000,6 +1000,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             promoListUiModel.value?.forEach {
                 if (it is PromoListItemUiModel) {
                     if (promoRecommendation.uiData.promoCodes.contains(it.uiData.promoCode)) {
+                        uncheckSibling(it)
                         it.uiState.isSelected = true
                         it.uiState.isRecommended = true
                         _tmpUiModel.value = Update(it)
@@ -1010,6 +1011,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     var hasSelectedPromoItem = false
                     it.uiData.tmpPromoItemList.forEach {
                         if (promoRecommendation.uiData.promoCodes.contains(it.uiData.promoCode)) {
+                            uncheckSibling(it)
                             it.uiState.isSelected = true
                             it.uiState.isRecommended = true
                             _tmpUiModel.value = Update(it)
@@ -1030,6 +1032,21 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
             _promoRecommendationUiModel.value = it
             calculateAndRenderTotalBenefit()
+        }
+    }
+
+    fun uncheckSibling(promoItem: PromoListItemUiModel) {
+        promoListUiModel.value?.forEach {
+            if (it is PromoListItemUiModel && it.uiData.parentIdentifierId == promoItem.uiData.parentIdentifierId && it.uiState.isSelected) {
+                it.uiState.isSelected = false
+            } else if (it is PromoListHeaderUiModel && it.uiData.tmpPromoItemList.isNotEmpty()) {
+                it.uiData.tmpPromoItemList.forEach {
+                    if (it.uiData.parentIdentifierId == promoItem.uiData.parentIdentifierId && it.uiState.isSelected) {
+                        it.uiState.isSelected = false
+                        _tmpUiModel.value = Update(it)
+                    }
+                }
+            }
         }
     }
 
