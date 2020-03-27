@@ -55,6 +55,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private boolean isShopPowerBadge;
     private boolean isShopOfficialStore;
     private FreeOngkirViewModel freeOngkirViewModel = new FreeOngkirViewModel();
+    private String boosterList = "";
 
     public boolean isTopAds() {
         return isTopAds;
@@ -356,6 +357,14 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         return freeOngkirViewModel;
     }
 
+    public void setBoosterList(String boosterList) {
+        this.boosterList = boosterList;
+    }
+
+    public String getBoosterList() {
+        return this.boosterList;
+    }
+
     public ProductItemViewModel() {
     }
 
@@ -380,7 +389,8 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
                 "dimension83", isFreeOngkirActive() ? "bebas ongkir" : "none / other",
                 "dimension87", "search result",
                 "dimension88", "search - product",
-                "dimension90", searchRef
+                "dimension90", searchRef,
+                "dimension96", getBoosterList()
         );
     }
 

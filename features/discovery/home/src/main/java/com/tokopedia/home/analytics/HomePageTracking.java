@@ -38,6 +38,7 @@ public class HomePageTracking {
 
 
     public static final String FORMAT_4_VALUE_UNDERSCORE = "%s_%s_%s_%s";
+    public static final String FORMAT_2_VALUE_UNDERSCORE = "%s_%s";
 
     public static final String BELI_INI_ITU_CLICK = "beli ini itu click";
     public static final String BAYAR_INI_ITU_CLICK = "bayar ini itu click";
@@ -1121,9 +1122,11 @@ public class HomePageTracking {
         objects.add(
                 DataLayer.mapOf(
                         FIELD_ID, bannerFeedViewModel.getId(),
-                        FIELD_NAME, bannerFeedViewModel.getName(),
-                        FIELD_CREATIVE, String.format(
+                        FIELD_NAME, String.format(
                                 VALUE_CREATIVE_BANNER_INSIDE_RECOM_TAB, tabName
+                        ),
+                        FIELD_CREATIVE, String.format(
+                                FORMAT_2_VALUE_UNDERSCORE, bannerFeedViewModel.getBuAttribution(), bannerFeedViewModel.getCreativeName()
                         ),
                         FIELD_CREATIVE_URL, bannerFeedViewModel.getImageUrl(),
                         FIELD_POSITION, String.valueOf(bannerFeedViewModel.getPosition()),
