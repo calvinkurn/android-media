@@ -3,15 +3,18 @@ package com.tokopedia.settingnotif.usersetting.view.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_EMAIL_REGISTER
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PHONE_NUMBER
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.domain.pojo.ChangeSection
 import com.tokopedia.settingnotif.usersetting.state.Email
 import com.tokopedia.settingnotif.usersetting.state.Phone
+import com.tokopedia.settingnotif.usersetting.util.changeUserInfoIntent
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
 
 class ChangeItemViewHolder(
+        private val userSession: UserSessionInterface,
         itemView: View?
 ): AbstractViewHolder<ChangeSection>(itemView) {
 
@@ -19,21 +22,28 @@ class ChangeItemViewHolder(
     private val btnChange = itemView?.findViewById<Typography>(R.id.btnChange)
     private val txtChangeType = itemView?.findViewById<Typography>(R.id.txtChangeType)
 
+    private val context by lazy { itemView?.context }
+
     override fun bind(element: ChangeSection?) {
-        val context = itemView.context
         element?.let { data ->
-            txtTitle?.text = context.getString(data.description)
+            txtTitle?.text = context?.getString(data.description)
             txtChangeType?.text = data.changeItem
+
             btnChange?.setOnClickListener {
-                when(data.state) {
-                    is Email -> context.startActivity(RouteManager.getIntent(
-                            context,
-                            ApplinkConstInternalGlobal.ADD_EMAIL
-                    ))
-                    is Phone -> context.startActivity(RouteManager.getIntent(
-                            context,
-                            ApplinkConstInternalGlobal.ADD_PHONE
-                    ))
+                val appLink = when(data.state) {
+                    is Email -> CHANGE_EMAIL_REGISTER
+                    is Phone -> CHANGE_PHONE_NUMBER
+                    else -> ""
+                }
+                if (appLink.isNotEmpty()) {
+                    context?.let {
+                        val intent = it.changeUserInfoIntent(
+                                appLink,
+                                userSession.email,
+                                userSession.phoneNumber
+                        )
+                        it.startActivity(intent)
+                    }
                 }
             }
         }

@@ -6,9 +6,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.settingnotif.usersetting.domain.pojo.*
 import com.tokopedia.settingnotif.usersetting.view.listener.SectionItemListener
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.*
+import com.tokopedia.user.session.UserSessionInterface
 
 class SettingFieldTypeFactoryImpl(
-        private val listener: SectionItemListener
+        private val listener: SectionItemListener,
+        private val userSession: UserSessionInterface
 ) : BaseAdapterTypeFactory(), SettingFieldTypeFactory {
 
     override fun type(notificationActivation: NotificationActivation): Int = ActivationItemViewHolder.LAYOUT
@@ -35,9 +37,9 @@ class SettingFieldTypeFactoryImpl(
             ParentSettingViewHolder.LAYOUT -> ParentSettingViewHolder(parent, settingListener)
             ChildSettingViewHolder.LAYOUT -> ChildSettingViewHolder(parent, settingListener)
             SellerSectionViewHolder.LAYOUT -> SellerSectionViewHolder(listener, parent)
+            ChangeItemViewHolder.LAYOUT -> ChangeItemViewHolder(userSession, parent)
             ActivationItemViewHolder.LAYOUT -> ActivationItemViewHolder(parent)
             SmsSectionViewHolder.LAYOUT -> SmsSectionViewHolder(parent)
-            ChangeItemViewHolder.LAYOUT -> ChangeItemViewHolder(parent)
             else -> createViewHolder(parent, type)
         }
     }

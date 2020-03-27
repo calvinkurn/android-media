@@ -96,7 +96,7 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
-        return SettingFieldTypeFactoryImpl(this)
+        return SettingFieldTypeFactoryImpl(this, userSession)
     }
 
     override fun loadData(page: Int) {

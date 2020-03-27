@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Subscriber
@@ -33,4 +35,15 @@ fun <T> UseCase<T>.load(
 
         override fun onCompleted() {}
     })
+}
+
+fun Context.changeUserInfoIntent(
+        appLink: String,
+        email: String,
+        phoneNumber: String
+): Intent {
+    return RouteManager.getIntent(this, appLink).apply {
+        putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
+        putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
+    }
 }
