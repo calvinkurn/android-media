@@ -159,7 +159,7 @@
                                 app:unifyButtonVariant="filled"
                                 app:unifyButtonType="transaction"
                                 tools:text="Checkout"/>
-                            
+
                         </LinearLayout>
 
                     </LinearLayout>
