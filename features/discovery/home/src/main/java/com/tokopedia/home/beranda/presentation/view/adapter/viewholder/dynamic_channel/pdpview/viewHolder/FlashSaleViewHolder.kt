@@ -5,12 +5,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardFlashSaleView
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 
-class FlashSaleViewHolder (view: View, private val listener: FlashSaleCardListener,
+class FlashSaleViewHolder (view: View,
                            private val channels: DynamicHomeChannel.Channels):
         AbstractViewHolder<FlashSaleDataModel>(view) {
 
@@ -31,13 +30,13 @@ class FlashSaleViewHolder (view: View, private val listener: FlashSaleCardListen
                 if(element.grid.isTopads){
                     ImpresionTask().execute(element.grid.impression)
                 }
-                listener.onFlashSaleCardImpressed(adapterPosition, channels)
+                element.listener.onFlashSaleCardImpressed(adapterPosition, channels)
             }
             setOnClickListener {
                 if(element.grid.isTopads){
                     ImpresionTask().execute(element.grid.productClickUrl)
                 }
-                listener.onFlashSaleCardClicked(adapterPosition, channels, element.grid, element.applink)
+                element.listener.onFlashSaleCardClicked(adapterPosition, channels, element.grid, element.applink)
             }
         }
     }

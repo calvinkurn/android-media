@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
 import android.graphics.Color
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
@@ -21,7 +20,6 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mixleft.model.MixLeftAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.EmptyDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.SeeMorePdpDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.typeFactory.FlashSaleCardViewTypeFactoryImpl
 import com.tokopedia.productcard.ProductCardFlashSaleModel
@@ -100,7 +98,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
         image.alpha = 1f
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
-        val typeFactoryImpl = FlashSaleCardViewTypeFactoryImpl(this, channel)
+        val typeFactoryImpl = FlashSaleCardViewTypeFactoryImpl(channel)
         val listData = mutableListOf<Visitable<*>>()
         listData.add(EmptyDataModel())
         val productDataList = convertDataToProductData(channel)
@@ -165,7 +163,8 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
-                    applink = element.applink
+                    applink = element.applink,
+                    listener = this
             ))
         }
         return list

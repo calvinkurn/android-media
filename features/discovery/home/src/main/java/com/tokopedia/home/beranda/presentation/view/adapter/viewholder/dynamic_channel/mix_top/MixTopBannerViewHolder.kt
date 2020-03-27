@@ -23,6 +23,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SimpleHorizontalLinearLayoutDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.SeeMorePdpDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.typeFactory.FlashSaleCardViewTypeFactoryImpl
 import com.tokopedia.productcard.ProductCardFlashSaleModel
@@ -157,7 +158,7 @@ class MixTopBannerViewHolder(
 
     private fun mappingItem(channel: DynamicHomeChannel.Channels, visitables: MutableList<Visitable<*>>) {
         startSnapHelper.attachToRecyclerView(recyclerView)
-        val typeFactoryImpl = FlashSaleCardViewTypeFactoryImpl(this, channel)
+        val typeFactoryImpl = FlashSaleCardViewTypeFactoryImpl(channel)
         adapter = MixTopAdapter(visitables, typeFactoryImpl)
         recyclerView.adapter = adapter
     }
@@ -240,7 +241,14 @@ class MixTopBannerViewHolder(
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
-                    applink = element.applink
+                    applink = element.applink,
+                    listener = this
+            ))
+        }
+        if (isHasSeeMoreApplink(channel)) {
+            list.add(SeeMorePdpDataModel(
+                    applink = channel.header.applink,
+                    listener = this
             ))
         }
         return list

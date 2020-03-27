@@ -183,7 +183,7 @@ object HomePageTrackingV2 : BaseTracking() {
                     )
                 },
                 list = String.format(
-                        Value.LIST, "1", LIST_MIX_LEFT, channel.header.name
+                        Value.LIST_HEADER_NAME, "1", LIST_MIX_LEFT, channel.header.name
                 ),
                 channelId = channel.id
         )
@@ -211,7 +211,7 @@ object HomePageTrackingV2 : BaseTracking() {
                         )
                 ),
                 list = String.format(
-                        Value.LIST, "1", LIST_MIX_LEFT, channel.header.name
+                        Value.LIST_HEADER_NAME, "1", LIST_MIX_LEFT, channel.header.name
                 )
         )
 
