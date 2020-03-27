@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.MixTopTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -34,9 +33,8 @@ import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
 class MixTopBannerViewHolder(
-        itemView: View, val homeCategoryListener: HomeCategoryListener,
-        countDownListener: CountDownView.CountDownListener
-) : DynamicChannelViewHolder(itemView, homeCategoryListener, countDownListener), FlashSaleCardListener{
+        itemView: View, val homeCategoryListener: HomeCategoryListener
+) : DynamicChannelViewHolder(itemView, homeCategoryListener), FlashSaleCardListener{
     private val bannerTitle = itemView.findViewById<Typography>(R.id.banner_title)
     private val bannerDescription = itemView.findViewById<Typography>(R.id.banner_description)
     private val bannerUnifyButton = itemView.findViewById<UnifyButton>(R.id.banner_button)

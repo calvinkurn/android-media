@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -34,9 +33,8 @@ import kotlinx.coroutines.launch
  * @author by yoasfs on 2020-03-05
  */
 class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryListener,
-                         val countDownListener: CountDownView.CountDownListener,
                          private val parentRecycledViewPool: RecyclerView.RecycledViewPool)
-    : DynamicChannelViewHolder(itemView, homeCategoryListener, countDownListener), CoroutineScope, FlashSaleCardListener {
+    : DynamicChannelViewHolder(itemView, homeCategoryListener), CoroutineScope, FlashSaleCardListener {
 
     private lateinit var adapter: MixLeftAdapter
 
