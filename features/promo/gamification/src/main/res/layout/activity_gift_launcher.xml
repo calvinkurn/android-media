@@ -42,4 +42,10 @@
         android:onClick="openGiftBoxTapTapActivity"
         android:text="Tap Tap" />
 
+    <Button
+        android:onClick="launchStaticPage"
+        android:text="Static page"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
 </LinearLayout>
