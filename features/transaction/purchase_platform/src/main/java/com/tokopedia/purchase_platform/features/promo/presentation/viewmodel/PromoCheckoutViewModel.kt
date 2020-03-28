@@ -459,23 +459,62 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                             }
                         }
                     } else {
+                        val redStateList = ArrayList<String>()
+                        var resStateMessage = ""
                         if (!responseValidatePromo.success) {
                             // Error promo global
-                            throw PromoErrorException(responseValidatePromo.message.text)
+                            if (resStateMessage.isBlank()) {
+                                resStateMessage = responseValidatePromo.message.text
+                            }
+                            if (responseValidatePromo.codes.isNotEmpty()) {
+                                responseValidatePromo.codes.forEach {
+                                    if (!redStateList.contains(it)) {
+                                        redStateList.add(it)
+                                    }
+                                }
+                            }
                         } else {
                             // Error promo merchant
                             if (responseValidatePromo.voucherOrders.isNotEmpty()) {
                                 responseValidatePromo.voucherOrders.forEach {
                                     if (!it.success) {
-                                        throw PromoErrorException(it.message.text)
+                                        if (resStateMessage.isEmpty()) {
+                                            resStateMessage = responseValidatePromo.message.text
+                                        }
+                                        if (it.code.isNotBlank()) {
+                                            if (!redStateList.contains(it.code)) {
+                                                redStateList.add(it.code)
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
 
-                        // Voucher global is empty and voucher orders are empty but the response is OK
-                        // This section is added as fallback mechanism
-                        throw PromoErrorException()
+                        if (resStateMessage.isNotBlank()) {
+                            promoListUiModel.value?.forEach {
+                                if (it is PromoListItemUiModel) {
+                                    if (resStateMessage.contains(it.uiData.promoCode)) {
+                                        it.uiState.isSelected = false
+                                        it.uiState.isDisabled = true
+                                        _tmpUiModel.value = Update(it)
+                                    }
+                                } else if (it is PromoListHeaderUiModel && it.uiData.tmpPromoItemList.isNotEmpty()) {
+                                    it.uiData.tmpPromoItemList.forEach {
+                                        if (resStateMessage.contains(it.uiData.promoCode)) {
+                                            it.uiState.isSelected = false
+                                            it.uiState.isDisabled = true
+                                            _tmpUiModel.value = Update(it)
+                                        }
+                                    }
+                                }
+                            }
+                            throw PromoErrorException(responseValidatePromo.message.text)
+                        } else {
+                            // Voucher global is empty and voucher orders are empty but the response is OK
+                            // This section is added as fallback mechanism
+                            throw PromoErrorException()
+                        }
                     }
                 }
             } else {

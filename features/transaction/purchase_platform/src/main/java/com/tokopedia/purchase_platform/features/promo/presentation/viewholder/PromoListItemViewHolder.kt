@@ -73,13 +73,17 @@ class PromoListItemViewHolder(private val view: View,
         formatSubTitle(element)
 
         if (element.uiState.isParentEnabled && element.uiData.currentClashingPromo.isNullOrEmpty()) {
-            renderEnablePromoItem(element)
+            if (element.uiState.isDisabled) {
+                renderDisablePromoItem(element)
+            } else {
+                renderEnablePromoItem(element)
+            }
         } else {
             renderDisablePromoItem(element)
         }
 
         itemView.card_promo_item.setOnClickListener {
-            if (adapterPosition != RecyclerView.NO_POSITION && element.uiData.currentClashingPromo.isNullOrEmpty() && element.uiState.isParentEnabled) {
+            if (adapterPosition != RecyclerView.NO_POSITION && element.uiData.currentClashingPromo.isNullOrEmpty() && element.uiState.isParentEnabled && !element.uiState.isDisabled) {
                 listener.onClickPromoListItem(element)
             }
         }
