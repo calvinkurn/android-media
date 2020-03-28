@@ -108,7 +108,7 @@
         <View
             android:id="@+id/v_shadow_top"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_4"
+            android:layout_height="@dimen/dp_3"
             android:layout_gravity="bottom"
             android:background="@drawable/bottom_sheet_shadow" />
 
