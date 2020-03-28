@@ -275,7 +275,7 @@ open class GiftBoxBaseFragment : Fragment() {
                 if (mAudiosManager == null) {
                     mAudiosManager = AudioFactory.createAudio(soundIt)
                 }
-                mAudiosManager?.playAudio(R.raw.gf_giftbox_prize)
+                mAudiosManager?.playAudio(R.raw.gf_giftbox_tap)
             }
         }
     }

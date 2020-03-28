@@ -12,7 +12,7 @@ class GiftLauncherActivity:AppCompatActivity() {
 
     companion object{
         var uiType = UiType.COUPON_POINTS
-        var iS_STAGING = false
+        var iS_STAGING = true
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
