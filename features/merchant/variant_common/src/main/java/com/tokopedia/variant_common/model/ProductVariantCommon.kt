@@ -49,7 +49,7 @@ data class ProductVariantCommon(
         var isFlashSale = false
         for (child: VariantChildCommon in children) {
             if (optionId == child.optionIds.firstOrNull()) {
-                if(child.isFlashSale) {
+                if (child.isFlashSale && child.isBuyable) {
                     isFlashSale = true
                     break
                 }
