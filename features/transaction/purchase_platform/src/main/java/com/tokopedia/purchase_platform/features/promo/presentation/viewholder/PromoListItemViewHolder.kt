@@ -130,7 +130,7 @@ class PromoListItemViewHolder(private val view: View,
 
     private fun formatSubTitle(element: PromoListItemUiModel) {
         if (!element.uiState.isAttempted) {
-            var clickableText = "Lihat detail"
+            var clickableText = "Lihat Detail"
             if (element.uiData.subTitle.isNotEmpty()) {
                 clickableText = " $clickableText"
             }
