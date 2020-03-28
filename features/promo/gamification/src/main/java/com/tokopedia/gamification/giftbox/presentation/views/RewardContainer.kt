@@ -1,6 +1,7 @@
 package com.tokopedia.gamification.giftbox.presentation.views
 
 import android.animation.*
+import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
@@ -86,7 +87,17 @@ class RewardContainer : FrameLayout {
 
         rvCoupons.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
-        rvCoupons.addItemDecoration(CouponItemDecoration())
+        var isTablet = context?.resources?.getBoolean(R.bool.gami_is_tablet)
+        var listItemWidthInTablet = context?.resources?.getDimension(R.dimen.gami_rv_coupons_width)
+        if (isTablet == null) {
+            isTablet = false
+        }
+
+        if (listItemWidthInTablet == null) {
+            listItemWidthInTablet = 0f
+        }
+
+        rvCoupons.addItemDecoration(CouponItemDecoration(isTablet, listItemWidthInTablet.toInt(), getScreenWidth()))
         couponAdapter = CouponAdapter(couponList)
         rvCoupons.adapter = couponAdapter
 
@@ -365,5 +376,15 @@ class RewardContainer : FrameLayout {
             const val POINTS_ONLY = 2
             const val COUPON_WITH_POINTS = 3
         }
+    }
+
+    fun getScreenWidth():Int {
+        val displayMetrics = DisplayMetrics()
+        var width = 0
+        if(context is Activity) {
+            (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
+            width = displayMetrics.widthPixels
+        }
+        return width
     }
 }

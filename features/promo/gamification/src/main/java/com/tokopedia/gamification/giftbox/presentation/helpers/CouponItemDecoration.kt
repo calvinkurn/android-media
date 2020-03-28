@@ -4,26 +4,41 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
-class CouponItemDecoration : RecyclerView.ItemDecoration() {
+class CouponItemDecoration(val isTablet: Boolean = false, val listItemWidthInTablet: Int, val screenWidth: Int) : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-        val topSpace = parent.dpToPx(36).toInt()
-        val rightSpace = parent.dpToPx(13).toInt()
+        var topSpace = parent.dpToPx(36).toInt()
+        var rightSpace = parent.dpToPx(13).toInt()
 
         val adapter = parent.adapter
         if (adapter != null) {
 
-            if(adapter.itemCount == 1){
-                if (parent.layoutManager?.getPosition(view) == 0) {
-                    outRect.left = topSpace
-                    outRect.right = topSpace
+            if (isTablet) {
+                if (adapter.itemCount == 1) {
+                    if (parent.layoutManager?.getPosition(view) == 0) {
+                        outRect.left = screenWidth/2 - listItemWidthInTablet/2
+                    }
+                } else if (adapter.itemCount > 1) {
+                    if (parent.layoutManager?.getPosition(view) == 0) {
+                        outRect.left = screenWidth/2 - listItemWidthInTablet/2
+                    }
+                    outRect.right = rightSpace
                 }
-            }else if (adapter.itemCount > 1){
-                if (parent.layoutManager?.getPosition(view) == 0) {
-                    outRect.left = topSpace
+            } else {
+
+                if (adapter.itemCount == 1) {
+                    if (parent.layoutManager?.getPosition(view) == 0) {
+                        outRect.left = topSpace
+                        outRect.right = topSpace
+                    }
+                } else if (adapter.itemCount > 1) {
+                    if (parent.layoutManager?.getPosition(view) == 0) {
+                        outRect.left = topSpace
+                    }
+                    outRect.right = rightSpace
                 }
-                outRect.right = rightSpace
             }
+
         }
 
     }

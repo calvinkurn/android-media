@@ -106,7 +106,7 @@ object FakeResponses {
                 "      {\n" +
                 "        \"text\": \"Pakai TokoPoints\",\n" +
                 "        \"url\": \"https://tokopedia.com/tokopoints\",\n" +
-                "        \"applink\": \"tokopedia://webview?url=https%3A%2F%2Fm.tokopedia.com%2Ftokopoints%2Fmobile&title=TokoPoints\",\n" +
+                "        \"applink\": \"tokopedia://digital/form?category_id=1\",\n" +
                 "        \"type\": \"redirect\",\n" +
                 "        \"backgroundColor\": \"orange\"\n" +
                 "      }\n" +
@@ -567,6 +567,20 @@ object FakeResponses {
                 "      \"url\": \"\",\n" +
                 "      \"applink\": \"\",\n" +
                 "      \"type\": \"dismiss\"\n" +
+                "    }\n" +
+                "  }\n" +
+                "}"
+    }
+
+    object AutoApply{
+        val ACTIVE = "{\n" +
+                "  \"tokopointsSetAutoApply\": {\n" +
+                "    \"resultStatus\": {\n" +
+                "      \"code\": \"200\",\n" +
+                "      \"status\": \"Coupon already applied\",\n" +
+                "      \"message\": [\n" +
+                "        \"Kupon tadi sudah siap digunakan di keranjang kamu ya\"\n" +
+                "      ]\n" +
                 "    }\n" +
                 "  }\n" +
                 "}"

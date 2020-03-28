@@ -67,7 +67,7 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
                     val params = giftBoxDailyRewardUseCase.getRequestParams(campaignSlug!!, uniqueCode)
                     response = giftBoxDailyRewardUseCase.getResponse(params)
                 } else {
-                    response = giftBoxDailyRewardUseCase.getCouponsWithOvoPoints()
+                    response = giftBoxDailyRewardUseCase.getTwoCoupons()
                 }
                 val couponDetail = composeApi(response)
                 response.couponDetailResponse = couponDetail
@@ -102,7 +102,12 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
     fun autoApply(code: String) {
         launchCatchError(block = {
             val map = autoApplyUseCase.getQueryParams(code)
-            val response = autoApplyUseCase.getResponse(map)
+            var response: AutoApplyResponse
+            if (GiftLauncherActivity.iS_STAGING) {
+                response = autoApplyUseCase.getResponse(map)
+            } else {
+                response = autoApplyUseCase.getFakeAutoApplyResponse()
+            }
             autoApplyLiveData.postValue(LiveDataResult.success(response))
         }, onError = {
             autoApplyLiveData.postValue(LiveDataResult.error(it))

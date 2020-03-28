@@ -2,9 +2,8 @@
 <com.tokopedia.gamification.giftbox.presentation.views.CouponConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="390dp"
-    android:layout_marginBottom="@dimen/dp_25"
-    android:layout_height="193dp">
+    android:layout_width="@dimen/gami_rv_coupons_width"
+    android:layout_height="@dimen/gami_rv_coupons_height">
 
     <com.tokopedia.gamification.giftbox.presentation.views.CouponImageView
         android:id="@+id/appCompatImageView"

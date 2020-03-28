@@ -7,6 +7,7 @@ import android.animation.PropertyValuesHolder
 import android.graphics.Color
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -26,7 +27,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.audio.AudioFactory
-import com.tokopedia.gamification.audio.AudioManager
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
 import com.tokopedia.gamification.giftbox.data.entities.*
@@ -40,6 +40,7 @@ import com.tokopedia.gamification.giftbox.presentation.viewmodels.GiftBoxDailyVi
 import com.tokopedia.gamification.giftbox.presentation.views.*
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
@@ -133,6 +134,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         reminderLayout = v.findViewById(R.id.reminderLayout)
         fmReminder = v.findViewById(R.id.fmReminder)
         super.initViews(v)
+        setTextSize()
         setShadows()
         setListeners()
     }
@@ -144,6 +146,13 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         tvRewardFirstLine.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
         tvRewardSecondLine.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
         tvBenefits.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
+    }
+
+    fun setTextSize() {
+        val isTablet = context?.resources?.getBoolean(R.bool.gami_is_tablet)
+        if (isTablet != null && isTablet) {
+            tvBenefits.setTextSize(TypedValue.COMPLEX_UNIT_PX, 24.toPx().toFloat())
+        }
     }
 
     private fun setListeners() {
@@ -158,7 +167,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 giftBoxRewardEntity?.let {
                     rewardContainer.setRewards(it, asyncCallback = { rewardState ->
                         var soundDelay = 700L
-                        giftBoxDailyView.postDelayed({playPrizeSound()}, soundDelay)
+                        giftBoxDailyView.postDelayed({ playPrizeSound() }, soundDelay)
 
                         when (rewardState) {
                             RewardContainer.RewardState.COUPON_WITH_POINTS -> {
@@ -228,14 +237,14 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                 TokenUserState.ACTIVE -> {
                                     fadeInSoundIcon()
                                     if (!viewModel.campaignSlug.isNullOrEmpty()) {
-                                        GtmEvents.viewGiftBoxPage(viewModel.campaignSlug!!,userSession?.userId)
+                                        GtmEvents.viewGiftBoxPage(viewModel.campaignSlug!!, userSession?.userId)
                                     }
                                     reminderLayout.visibility = View.VISIBLE
                                     renderGiftBoxActive(giftBoxEntity)
                                     giftBoxDailyView.fmGiftBox.setOnClickListener {
                                         if (!disableGiftBoxTap) {
                                             if (!viewModel.campaignSlug.isNullOrEmpty()) {
-                                                GtmEvents.clickGiftBox(viewModel.campaignSlug!!,userSession?.userId)
+                                                GtmEvents.clickGiftBox(viewModel.campaignSlug!!, userSession?.userId)
                                             }
                                             viewModel.getRewards()
                                             disableGiftBoxTap = true
@@ -367,7 +376,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                             viewModel.autoApply(dummyCode)
                                         }
                                         RouteManager.route(context, applink)
-                                        GtmEvents.clickClaimButton(btnAction.text.toString(),userSession?.userId)
+                                        GtmEvents.clickClaimButton(btnAction.text.toString(), userSession?.userId)
                                     }
                                 }
                             }
@@ -517,16 +526,14 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     fun setPositionOfViewsAtBoxOpen(@TokenUserState state: String) {
         rewardContainer.setFinalTranslationOfCirclesTap(giftBoxDailyView.fmGiftBox.top)
 
-        giftBoxDailyView.imageGiftBoxLid.doOnLayout { lid ->
-            val array = IntArray(2)
-            lid.getLocationInWindow(array)
-            val heightOfRvCoupons = lid.dpToPx(148)
-            val lidTop = array[1].toFloat() - getStatusBarHeight(context)
-            val translationY = lidTop - heightOfRvCoupons + lid.dpToPx(3)
+        giftBoxDailyView.fmGiftBox.doOnLayout { fmGiftBox ->
+            val heightOfRvCoupons = fmGiftBox.context.resources.getDimension(R.dimen.gami_rv_coupons_height)
+            val lidTop = fmGiftBox.top
+            val translationY = lidTop - heightOfRvCoupons + fmGiftBox.dpToPx(3)
 
             rewardContainer.rvCoupons.translationY = translationY
-            val distanceFromLidTop = lid.dpToPx(29)
-            val heightOfRewardText = lid.dpToPx(31)
+            val distanceFromLidTop = fmGiftBox.dpToPx(29)
+            val heightOfRewardText = fmGiftBox.dpToPx(31)
             rewardContainer.llRewardTextLayout.translationY = lidTop + distanceFromLidTop
 
         }
