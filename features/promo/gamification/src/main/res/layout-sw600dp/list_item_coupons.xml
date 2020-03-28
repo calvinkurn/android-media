@@ -2,14 +2,14 @@
 <com.tokopedia.gamification.giftbox.presentation.views.CouponConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/dp_300"
+    android:layout_width="390dp"
     android:layout_marginBottom="@dimen/dp_25"
-    android:layout_height="@dimen/dp_148">
+    android:layout_height="193dp">
 
     <com.tokopedia.gamification.giftbox.presentation.views.CouponImageView
         android:id="@+id/appCompatImageView"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_96"
+        android:layout_height="125dp"
         android:background="@color/colorGray"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,13 +20,13 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_52"
+        android:layout_height="0dp"
         android:background="@drawable/gf_bg_bottom_corner"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appCompatImageView">
 
         <LinearLayout
-            app:layout_constraintVertical_bias="0.50"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
@@ -34,7 +34,8 @@
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/icon"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.50">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvTitle"
