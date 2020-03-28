@@ -33,12 +33,12 @@
                 app:typographyWeight="bold"
                 app:layout_constraintStart_toStartOf="@id/middleGuideline"/>
 
-            <View
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/leftGuideline"
-                android:background="@drawable/setting_tip_bar_os"/>
+                app:srcCompat="@drawable/setting_tip_bar_os"/>
 
             <View
                 android:id="@+id/badgeBorder"
