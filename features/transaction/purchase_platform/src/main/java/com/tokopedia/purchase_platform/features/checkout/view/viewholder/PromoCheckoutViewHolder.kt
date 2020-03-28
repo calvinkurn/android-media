@@ -66,6 +66,7 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
             itemView.ll_summary_transaction.gone()
         } else {
             itemView.ll_summary_transaction.visible()
+            if  (hasChildren(itemView.ll_summary_transaction)) itemView.ll_summary_transaction.removeAllViews()
             for ((i, lastApplyUsageSummary: LastApplyUsageSummariesUiModel) in lastApplyUiModel.additionalInfo.usageSummaries.withIndex()) {
                 val relativeLayout: RelativeLayout = RelativeLayout(itemView.context).apply {
                     layoutParams = params
@@ -114,5 +115,9 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
                 itemView.ll_summary_transaction.addView(relativeLayout)
             }
         }
+    }
+
+    private fun hasChildren(viewGroup: ViewGroup): Boolean {
+        return viewGroup.childCount > 0
     }
 }
