@@ -48,7 +48,7 @@ object DynamicProductDetailTracking {
 
         fun eventClickAcceptPhoneStatePermission(userId: String, productInfo: DynamicProductInfoP1?) {
             val mapEvent = TrackAppUtils.gtmData(
-                    "",
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Action.CLICK_ACCEPT_PERMISSION, "")
             mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
@@ -59,7 +59,7 @@ object DynamicProductDetailTracking {
 
         fun eventClickGoToSetting(userId: String, productInfo: DynamicProductInfoP1?) {
             val mapEvent = TrackAppUtils.gtmData(
-                    "",
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Action.CLICK_GO_TO_SETTING, "")
 
@@ -71,7 +71,7 @@ object DynamicProductDetailTracking {
 
         fun eventClickLater(userId: String, productInfo: DynamicProductInfoP1?) {
             val mapEvent = TrackAppUtils.gtmData(
-                    "",
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Action.CLICK_PERMISSION_LATER, "")
 
