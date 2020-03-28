@@ -194,8 +194,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var isButtonAnimating = false
     private var _animator: Animator? = null
     private val ANIMATION_TYPE = "translationY"
-    private val ANIMATION_DURATION_IN_MILIS = 250L
-    private val TRANSLATION_LENGTH = 500f
+    private val ANIMATION_DURATION_IN_MILIS = 1800L
+    private val TRANSLATION_LENGTH = 1800f
 
     companion object {
 
@@ -840,17 +840,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onCartItemQuantityPlusButtonClicked(cartItemHolderData: CartItemHolderData, position: Int, parentPosition: Int) {
         sendAnalyticsOnClickButtonPlusCartItem()
         cartAdapter.increaseQuantity(position, parentPosition)
-
-        renderPromoCheckoutLoading()
-        dPresenter.doUpdateCartAndValidateUse(generateParamValidateUsePromoRevamp(false, -1, -1, true))
     }
 
     override fun onCartItemQuantityMinusButtonClicked(cartItemHolderData: CartItemHolderData, position: Int, parentPosition: Int) {
         sendAnalyticsOnClickButtonMinusCartItem()
         cartAdapter.decreaseQuantity(position, parentPosition)
-
-        renderPromoCheckoutLoading()
-        dPresenter.doUpdateCartAndValidateUse(generateParamValidateUsePromoRevamp(false, -1, -1, true))
     }
 
     override fun onCartItemQuantityReseted(position: Int, parentPosition: Int, needRefreshItemView: Boolean) {
