@@ -351,7 +351,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     activity?.setResult(Activity.RESULT_OK, intent)
                     activity?.finish()
                 }
-                it.state == ApplyPromoResponseAction.ACTION_RELOAD_PROMO -> {
+                it.state == ApplyPromoResponseAction.ACTION_SHOW_TOAST_AND_RELOAD_PROMO -> {
+                    it.exception?.let {
+                        showToastMessage(it)
+                    }
                     reloadData()
                 }
                 it.state == ApplyPromoResponseAction.ACTION_SHOW_TOAST_ERROR -> {

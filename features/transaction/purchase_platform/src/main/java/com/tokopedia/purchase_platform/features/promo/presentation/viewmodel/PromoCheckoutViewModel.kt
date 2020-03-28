@@ -419,7 +419,8 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 if (responseValidatePromo.clashingInfoDetail.isClashedPromos) {
                     // Promo is clashing. Need to reload promo page
                     applyPromoResponse.value?.let {
-                        it.state = ApplyPromoResponseAction.ACTION_RELOAD_PROMO
+                        it.state = ApplyPromoResponseAction.ACTION_SHOW_TOAST_AND_RELOAD_PROMO
+                        it.exception = PromoErrorException("Oops, terjadi kesalahan. Coba pilih promo lagi.")
                         _applyPromoResponse.value = it
                     }
                 } else {
