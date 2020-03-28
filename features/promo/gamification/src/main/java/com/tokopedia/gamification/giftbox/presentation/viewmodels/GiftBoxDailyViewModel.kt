@@ -23,7 +23,6 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
                                                 val autoApplyUseCase: AutoApplyUseCase)
     : BaseViewModel(workerDispatcher) {
 
-    //todo Rahul these below values must not be hardcoded
     @Volatile
     var campaignSlug: String? = ""
     var pageName: String = "giftbox"
@@ -50,7 +49,7 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
                 giftBoxLiveData.postValue(LiveDataResult.success(Pair(response, remindMeCheckEntity)))
 
             } else {
-                val response = giftBoxDailyUseCase.getFakeResponseEmpty()
+                val response = giftBoxDailyUseCase.getFakeResponseActive()
                 val remindMeCheckEntity = remindMeUseCase.getRemindMeCheckResponse(remindMeUseCase.getRequestParams(about))
                 giftBoxLiveData.postValue(LiveDataResult.success(Pair(response, remindMeCheckEntity)))
             }

@@ -154,6 +154,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
                 giftBoxRewardEntity?.let {
                     rewardContainer.setRewards(it, asyncCallback = { rewardState ->
+                        playPrizeSound()
                         when (rewardState) {
                             RewardContainer.RewardState.COUPON_WITH_POINTS -> {
 
@@ -222,14 +223,14 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                 TokenUserState.ACTIVE -> {
                                     fadeInSoundIcon()
                                     if (!viewModel.campaignSlug.isNullOrEmpty()) {
-                                        GtmEvents.viewGiftBoxPage(viewModel.campaignSlug!!)
+                                        GtmEvents.viewGiftBoxPage(viewModel.campaignSlug!!,userSession?.userId)
                                     }
                                     reminderLayout.visibility = View.VISIBLE
                                     renderGiftBoxActive(giftBoxEntity)
                                     giftBoxDailyView.fmGiftBox.setOnClickListener {
                                         if (!disableGiftBoxTap) {
                                             if (!viewModel.campaignSlug.isNullOrEmpty()) {
-                                                GtmEvents.clickGiftBox(viewModel.campaignSlug!!)
+                                                GtmEvents.clickGiftBox(viewModel.campaignSlug!!,userSession?.userId)
                                             }
                                             viewModel.getRewards()
                                             disableGiftBoxTap = true
@@ -293,7 +294,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 LiveDataResult.STATUS.ERROR -> {
                     hideLoader()
                     reminderLayout.visibility = View.GONE
-                    renderGiftBoxError("Yaah, ada gangguan koneksi. Refresh lagi untuk buka hadiahmu.", "Oke")
+                    renderGiftBoxError(defaultErrorMessage, "Oke")
                 }
             }
         })
@@ -303,7 +304,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 LiveDataResult.STATUS.SUCCESS -> {
 
                     if (it.data == null) {
-                        renderOpenBoxError("Oops, terjadi kendala. Coba beberapa saat lagi, ya!", "Oke")
+                        renderOpenBoxError(defaultErrorMessage, "Oke")
                     } else {
                         val code = it.data?.gamiCrack.resultStatus.code
                         if (code == 200) {
@@ -360,12 +361,11 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                             viewModel.autoApply(dummyCode)
                                         }
                                         RouteManager.route(context, applink)
-                                        GtmEvents.clickClaimButton(btnAction.text.toString())
+                                        GtmEvents.clickClaimButton(btnAction.text.toString(),userSession?.userId)
                                     }
                                 }
                             }
 
-                            playPrizeSound()
                         } else {
                             disableGiftBoxTap = false
                             val messageList = it.data?.gamiCrack?.resultStatus?.message
@@ -377,7 +377,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 }
                 LiveDataResult.STATUS.ERROR -> {
                     disableGiftBoxTap = false
-                    renderOpenBoxError("Oops, terjadi kendala. Coba beberapa saat lagi, ya!", "Oke")
+                    renderOpenBoxError(defaultErrorMessage, "Oke")
                 }
             }
         })
@@ -408,7 +408,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 LiveDataResult.STATUS.ERROR -> {
                     loaderReminder.visibility = View.GONE
                     tvReminderBtn.visibility = View.VISIBLE
-                    showRemindMeError("Oops, terjadi kendala. Coba beberapa saat lagi, ya!", "Oke")
+                    showRemindMeError(defaultErrorMessage, "Oke")
                 }
             }
         })
@@ -438,7 +438,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         tvReminderBtn.setOnClickListener {
             if (!isReminderSet) {
                 viewModel.setReminder()
-                GtmEvents.clickReminderButton()
+                GtmEvents.clickReminderButton(userSession?.userId)
             }
         }
     }
@@ -567,7 +567,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         }
 
         giftBoxDailyView.fmGiftBox.doOnLayout { fm ->
-            giftBoxDailyView.imageShadow.translationY = fm.bottom.toFloat() - fm.dpToPx(40)
+            giftBoxDailyView.imageShadow.translationY = fm.bottom.toFloat() - fm.dpToPx(55)
             giftBoxDailyView.imageShadow.translationX = fm.left.toFloat()
         }
     }
@@ -615,6 +615,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         if (tokenUserState == TokenUserState.EMPTY) {
             tvBenefits.setType(Typography.HEADING_2)
             tvBenefits.setWeight(Typography.BOLD)
+            tvBenefits.translationY = tvBenefits.dpToPx(5)
         }
 
         if (tvTapHint.text.isNullOrEmpty()) {

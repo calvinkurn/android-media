@@ -56,12 +56,15 @@ open class GiftBoxBaseFragment : Fragment() {
     var statusBarHeight: Int = 0
 
     var bgSoundManager: AudioManager? = null
+    var defaultErrorMessage = ""
+    var userSession: UserSession? = null
 
     open fun getLayout() = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         setHasOptionsMenu(true)
         val v = LayoutInflater.from(context).inflate(getLayout(), container, false)
+        userSession = UserSession(context)
         getScreenDimens()
         initViews(v)
         return v
@@ -83,12 +86,17 @@ open class GiftBoxBaseFragment : Fragment() {
         imageSound = v.findViewById(R.id.imageSound)
 
         statusBarHeight = getStatusBarHeight(context)
+
+        context?.let {
+            defaultErrorMessage = it.getString(R.string.gami_gift_default_error_msg)
+        }
+
         setInitialPositionOfViews()
         initialViewSetup()
         toggleSound(isSoundEnabled())
 
         imageToolbarIcon.setOnClickListener {
-            GtmEvents.clickBackButton()
+            GtmEvents.clickBackButton(userSession?.userId)
             activity?.finish()
         }
 
@@ -183,7 +191,7 @@ open class GiftBoxBaseFragment : Fragment() {
             }
             val shareIntent = Intent.createChooser(sendIntent, null)
             startActivity(shareIntent)
-            GtmEvents.clickShareButton()
+            GtmEvents.clickShareButton(userSession?.userId)
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
@@ -195,7 +203,7 @@ open class GiftBoxBaseFragment : Fragment() {
                 Snackbar.LENGTH_LONG,
                 actionText = actionText,
                 clickListener = View.OnClickListener {
-                    GtmEvents.clickToaster()
+                    GtmEvents.clickToaster(userSession?.userId)
                     method?.invoke()
                 },
                 type = Toaster.TYPE_ERROR)
@@ -207,7 +215,7 @@ open class GiftBoxBaseFragment : Fragment() {
         dialog.btnRetry.setOnClickListener {
             dialog.closeAbleDialog.dismiss()
             method.invoke()
-            GtmEvents.clickTryAgainButton()
+            GtmEvents.clickTryAgainButton(userSession?.userId)
         }
     }
 

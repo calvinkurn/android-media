@@ -15,6 +15,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
+import com.tokopedia.user.session.UserSession
 
 class NoInternetDialog {
 
@@ -60,7 +61,8 @@ class NoInternetDialog {
     fun setClicks(context: Context) {
         btnSettings.setOnClickListener {
             try {
-                GtmEvents.clickSettingsButton()
+                val userSession = UserSession(it.context)
+                GtmEvents.clickSettingsButton(userSession.userId)
                 val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
                 context.startActivity(intent)
             } catch (ex: Exception) {
@@ -69,7 +71,8 @@ class NoInternetDialog {
         }
 
         imageClose.setOnClickListener {
-            GtmEvents.clickExitButton()
+            val userSession = UserSession(it.context)
+            GtmEvents.clickExitButton(userSession.userId)
             closeAbleDialog.dismiss()
         }
 

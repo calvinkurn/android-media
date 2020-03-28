@@ -26,6 +26,7 @@ import com.tokopedia.gamification.giftbox.presentation.helpers.updateLayoutParam
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardState.Companion.COUPON_ONLY
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardState.Companion.COUPON_WITH_POINTS
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardState.Companion.POINTS_ONLY
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.image.ImageUtils
 
 class RewardContainer : FrameLayout {
@@ -43,7 +44,7 @@ class RewardContainer : FrameLayout {
 
     val couponList = ArrayList<GetCouponDetail>()
     val FADE_OUT_REWARDS_DURATION = 1000L
-
+    var userSession: UserSession? = null
 
     @RewardState
     var rewardState: Int = RewardState.COUPON_ONLY
@@ -89,6 +90,7 @@ class RewardContainer : FrameLayout {
         couponAdapter = CouponAdapter(couponList)
         rvCoupons.adapter = couponAdapter
 
+        userSession = UserSession(context)
 
         doOnLayout {
             setGreenGlowImagePosition(imageGreenGlow)
@@ -119,11 +121,11 @@ class RewardContainer : FrameLayout {
                     if (!benefit.color.isNullOrEmpty()) {
                         tvSmallReward.setTextColor(Color.parseColor(benefit.color))
                     }
-                    GtmEvents.viewRewardsPoints(benefit.text)
+                    GtmEvents.viewRewardsPoints(benefit.text, userSession?.userId)
                     iconUrl = benefit.imageUrl
-                }else if (benefit.benefitType == "coupon"){
+                } else if (benefit.benefitType == "coupon") {
                     benefit.referenceID?.let {
-                        GtmEvents.viewRewards(it.toString())
+                        GtmEvents.viewRewards(it.toString(), userSession?.userId)
                     }
                 }
             }
