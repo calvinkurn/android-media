@@ -6,9 +6,12 @@ import com.google.gson.annotations.SerializedName
 data class UploadHostModel (
         var isSuccess: Boolean = false,
         var uploadHostData: UploadHostData = UploadHostData(GeneratedHost()),
-        var errorMessage: String = "",
-        var statusMessage: String = "",
-        val isResponseSuccess: Boolean = false
+        var errorMessage: String = ""
+)
+
+data class UploadHostResponse (
+        @SerializedName("data")
+        var data: UploadHostData = UploadHostData()
 )
 
 data class UploadHostData (

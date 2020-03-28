@@ -91,23 +91,16 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(),
         })
 
         viewModel.submitImageLiveData.observe(this, Observer {
+            dismissLoading()
             when(it){
                 is Success -> {
                     val gqlUpdatePhoneStatusResponse = it.data.getData<GqlUpdatePhoneStatusResponse>(GqlUpdatePhoneStatusResponse::class.java)
                     when(gqlUpdatePhoneStatusResponse.changeInactivePhoneQuery?.isSuccess) {
-                        true -> {
-                            onUpdateDataRequestSuccess()
-                        }
-                        false -> {
-                            dismissLoading()
-                            gqlUpdatePhoneStatusResponse.changeInactivePhoneQuery?.error?.let { error -> resolveError(error) }
-                        }
+                        true -> { onUpdateDataRequestSuccess() }
+                        false -> { gqlUpdatePhoneStatusResponse.changeInactivePhoneQuery?.error?.let { error -> resolveError(error) } }
                     }
                 }
-                is Fail -> {
-                    dismissLoading()
-                    onPhoneServerError()
-                }
+                is Fail -> { onPhoneServerError() }
             }
         })
     }
@@ -223,7 +216,7 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(),
     override fun onUserDataValidated(userId: String) {
         newEmail?.let { email ->
             newPhoneNumber?.let { number ->
-                viewModel.uploadPhotoIdImage(email, number, userId)
+                viewModel.requestChangePhoneNumber(email, number, userId)
             }
         }
     }

@@ -1,6 +1,6 @@
 package com.tokopedia.updateinactivephone.usecase
 
-import com.tokopedia.core.app.MainApplication
+import android.content.Context
 import com.tokopedia.core.util.ImageUploadHandler
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.data.repository.UploadImageRepositoryImpl
@@ -19,13 +19,16 @@ import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Con
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.SERVER_ID
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.TOKEN
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.USERID
+import com.tokopedia.updateinactivephone.di.UpdateInActiveContext
 import com.tokopedia.usecase.RequestParams
 
-class UploadImageUseCase(private val uploadImageRepository: UploadImageRepositoryImpl) {
+class UploadImageUseCase(
+        @UpdateInActiveContext private val context: Context,
+        private val uploadImageRepository: UploadImageRepositoryImpl
+) {
 
     suspend fun uploadImage(requestParams: RequestParams): UploadImageModel {
         val uploadUrl = "https://" + requestParams.getString(IMAGE_UPLOAD_URL, "") + "/upload/attachment"
-
         return uploadImageRepository.uploadImage(uploadUrl,
                 generateRequestBody(requestParams),
                 getUploadImageFile(requestParams)
@@ -50,7 +53,7 @@ class UploadImageUseCase(private val uploadImageRepository: UploadImageRepositor
                     ImageUploadHandler.compressImage(requestParams.getString(PARAM_FILE_TO_UPLOAD, ""))
             )
         } catch (e: Exception) {
-            throw RuntimeException(MainApplication.getAppContext().getString(R.string.error_upload_image))
+            throw RuntimeException(context.getString(R.string.error_upload_image))
         }
 
         return RequestBody.create(MediaType.parse("image/*"), file)

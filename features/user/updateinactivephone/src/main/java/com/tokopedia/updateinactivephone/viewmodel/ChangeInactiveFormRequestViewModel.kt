@@ -1,6 +1,8 @@
 package com.tokopedia.updateinactivephone.viewmodel
 
+import android.content.Context
 import android.text.TextUtils
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -15,6 +17,7 @@ import com.tokopedia.updateinactivephone.data.model.request.UploadHostModel
 import com.tokopedia.updateinactivephone.data.model.request.UploadImageModel
 import com.tokopedia.updateinactivephone.data.model.response.GqlValidateUserDataResponse
 import com.tokopedia.updateinactivephone.data.model.response.ValidateUserDataResponse
+import com.tokopedia.updateinactivephone.di.UpdateInActiveContext
 import com.tokopedia.updateinactivephone.usecase.*
 import com.tokopedia.updateinactivephone.viewmodel.ChangeInactivePhoneViewModel.Companion.PHONE_MATCHER
 import com.tokopedia.usecase.RequestParams
@@ -30,6 +33,7 @@ import java.util.regex.Pattern
 import javax.inject.Inject
 
 class ChangeInactiveFormRequestViewModel @Inject constructor(
+        @UpdateInActiveContext private val context: Context,
         private val getValidationUserDataUsecase: GetValidationUserDataUseCase,
         private val getUploadHostUseCase: GetUploadHostUseCase,
         private val uploadImageUseCase: UploadImageUseCase,
@@ -44,23 +48,12 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
     val validateUserDataResponse: LiveData<Result<ValidateUserDataResponse>>
         get() = mutableValidateUserDataResponse
 
-    private val mutableUploadHostModel = MutableLiveData<Result<UploadHostModel>>()
-    val uploadHostModel: LiveData<Result<UploadHostModel>>
-        get() = mutableUploadHostModel
-
-    private val mutableUploadImageIdModel = MutableLiveData<Result<UploadImageModel>>()
-    val uploadImageIdModel: LiveData<Result<UploadImageModel>>
-        get() = mutableUploadImageIdModel
-
-    private val mutableUploadImageAccountModel = MutableLiveData<Result<UploadImageModel>>()
-    val uploadImageAccountModel: LiveData<Result<UploadImageModel>>
-        get() = mutableUploadImageAccountModel
-
     private val mutableSubmitImage = MutableLiveData<Result<GraphqlResponse>>()
     val submitImageLiveData: LiveData<Result<GraphqlResponse>>
         get() = mutableSubmitImage
 
     private val changePhoneNumberRequestModel = ChangePhoneNumberRequestModel()
+    private var requestParams: RequestParams? = null
 
     fun setPhotoIdImagePath(imagePath: String) {
         this.photoIdImagePath = imagePath
@@ -70,73 +63,10 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
         this.accountImagePath = imagePath
     }
 
-    fun uploadPhotoIdImage(email: String, phone: String, userId: String) {
+    fun requestChangePhoneNumber(email: String, phone: String, userId: String) {
         if (!TextUtils.isEmpty(photoIdImagePath) && !TextUtils.isEmpty(accountImagePath)) {
             launchCatchError(block = {
-                val requestParams = getUploadChangePhoneNumberRequestParam(email, phone, userId)
-                val uploadHostModel = getUploadHost(getUploadHostParam(requestParams))
-                changePhoneNumberRequestModel.uploadHostModel = uploadHostModel
-                changePhoneNumberRequestModel.isSuccess = uploadHostModel.isSuccess
-
-                if (changePhoneNumberRequestModel.uploadHostModel?.isSuccess == false &&
-                        changePhoneNumberRequestModel.uploadHostModel?.errorMessage != null) {
-                    throw RuntimeException(changePhoneNumberRequestModel.uploadHostModel?.errorMessage)
-
-                } else if (changePhoneNumberRequestModel.uploadHostModel?.isSuccess == false) {
-                    throw RuntimeException(java.lang.RuntimeException())
-
-                } else if (changePhoneNumberRequestModel.uploadHostModel?.isSuccess == true) {
-                    mutableUploadHostModel.value = Success(uploadHostModel)
-
-                    launchCatchError(block = {
-                        val uploadImageModel = uploadImage(getUploadIdImageParam(requestParams, changePhoneNumberRequestModel))
-                        changePhoneNumberRequestModel.uploadIdImageModel = uploadImageModel
-                        changePhoneNumberRequestModel.isSuccess = uploadImageModel.isSuccess
-
-                        if (changePhoneNumberRequestModel.uploadIdImageModel?.isSuccess == false &&
-                                changePhoneNumberRequestModel.uploadIdImageModel?.errorMessage != null) {
-                            throw RuntimeException(changePhoneNumberRequestModel.uploadIdImageModel?.errorMessage)
-
-                        } else if (changePhoneNumberRequestModel.uploadIdImageModel?.isSuccess == false &&
-                                changePhoneNumberRequestModel.uploadIdImageModel?.responseCode != 200) {
-                            throw RuntimeException(changePhoneNumberRequestModel.uploadIdImageModel?.responseCode.toString())
-
-                        } else if (changePhoneNumberRequestModel.uploadIdImageModel?.isSuccess == true) {
-                            mutableUploadImageIdModel.value = Success(uploadImageModel)
-
-                            launchCatchError(block = {
-                                val uploadImageAccountModel = uploadImage(getUploadBookBankImageParam(requestParams, changePhoneNumberRequestModel))
-                                changePhoneNumberRequestModel.uploadBankBookImageModel = uploadImageModel
-                                changePhoneNumberRequestModel.isSuccess = uploadImageModel.isSuccess
-
-                                if (changePhoneNumberRequestModel.uploadBankBookImageModel?.isSuccess == false &&
-                                        changePhoneNumberRequestModel.uploadBankBookImageModel?.errorMessage != null){
-                                    throw RuntimeException(changePhoneNumberRequestModel.uploadBankBookImageModel?.errorMessage)
-
-                                } else if (changePhoneNumberRequestModel.uploadBankBookImageModel?.isSuccess == false &&
-                                        changePhoneNumberRequestModel.uploadBankBookImageModel?.responseCode != 200) {
-                                    throw RuntimeException(changePhoneNumberRequestModel.uploadBankBookImageModel?.responseCode.toString())
-
-                                } else if (changePhoneNumberRequestModel.uploadBankBookImageModel?.isSuccess == true) {
-                                    mutableUploadImageAccountModel.value = Success(uploadImageAccountModel)
-
-                                    val submitImageParams = getSubmitImageParam(requestParams, changePhoneNumberRequestModel)
-                                    submitImageUseCase.submitImage(onSuccessSubmitImage(),
-                                            onErrorSubmitImage(),
-                                            submitImageParams)
-                                }
-                            }) {
-                                it.printStackTrace()
-                                mutableSubmitImage.value = Fail(it)
-                            }
-                        }
-
-                    }) {
-                        it.printStackTrace()
-                        mutableSubmitImage.value = Fail(it)
-                    }
-                }
-
+                getUploadHost(email, phone, userId)
             }) {
                 it.printStackTrace()
                 mutableSubmitImage.value = Fail(it)
@@ -192,10 +122,8 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
         params.putString(UpdateInactivePhoneConstants.Constants.TOKEN, "tokopedia-lite-inactive-phone")
 
         setParamUploadIdImage(params)
+        setParamUploadBankBookImage(params)
 
-        if (!TextUtils.isEmpty(accountImagePath)) {
-            setParamUploadBankBookImage(params)
-        }
         return params
     }
 
@@ -207,30 +135,22 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
         params.putString(UpdateInactivePhoneConstants.Constants.PARAM_KTP_IMAGE_PATH, photoIdImagePath)
     }
 
-    private suspend fun getUploadHost(requestParams: RequestParams): UploadHostModel {
-        return getUploadHostUseCase.getUploadHost(requestParams)
-    }
-
-    private fun getUploadHostParam(requestParams: RequestParams): RequestParams {
+    private fun getUploadHostParam(): RequestParams {
         val params = RequestParams.create()
-        params.putString(GetUploadHostUseCase.PARAM_NEW_ADD, requestParams.getString(GetUploadHostUseCase.PARAM_NEW_ADD,
+        params.putString(GetUploadHostUseCase.PARAM_NEW_ADD, requestParams?.getString(GetUploadHostUseCase.PARAM_NEW_ADD,
                 GetUploadHostUseCase.DEFAULT_NEW_ADD))
         return params
     }
 
-    private suspend fun uploadImage(requestParams: RequestParams): UploadImageModel {
-        return uploadImageUseCase.uploadImage(requestParams)
-    }
-
-    private fun getUploadBookBankImageParam(requestParams: RequestParams, changePhoneNumberRequestModel: ChangePhoneNumberRequestModel?): RequestParams {
+    private fun getUploadBookBankImageParam(requestParams: RequestParams): RequestParams {
         val params = RequestParams.create()
 
         params.putString(UpdateInactivePhoneConstants.Constants.USERID,
                 requestParams.getString(UpdateInactivePhoneConstants.Constants.USERID,
-                        SessionHandler.getTempLoginSession(MainApplication.getAppContext())))
+                        SessionHandler.getTempLoginSession(context)))
         params.putString(UpdateInactivePhoneConstants.Constants.PARAM_DEVICE_ID,
                 requestParams.getString(UpdateInactivePhoneConstants.Constants.PARAM_DEVICE_ID,
-                        GCMHandler.getRegistrationId(MainApplication.getAppContext())))
+                        GCMHandler.getRegistrationId(context)))
 
         params.putString(UpdateInactivePhoneConstants.Constants.PARAM_FILE_TO_UPLOAD,
                 requestParams.getString(UpdateInactivePhoneConstants.Constants.PARAM_BANK_BOOK_IMAGE_PATH, ""))
@@ -238,9 +158,7 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
         params.putInt(UpdateInactivePhoneConstants.Constants.RESOLUTION, requestParams.getInt(UpdateInactivePhoneConstants.Constants.RESOLUTION, 215))
         params.putString(UpdateInactivePhoneConstants.Constants.TOKEN, requestParams.getString(UpdateInactivePhoneConstants.Constants.TOKEN, ""))
 
-        if (changePhoneNumberRequestModel?.uploadHostModel != null &&
-                changePhoneNumberRequestModel.uploadHostModel?.uploadHostData != null &&
-                !TextUtils.isEmpty(changePhoneNumberRequestModel.uploadHostModel?.uploadHostData?.generatedHost?.uploadHost)) {
+        if (!TextUtils.isEmpty(changePhoneNumberRequestModel.uploadHostModel?.uploadHostData?.generatedHost?.uploadHost)) {
             params.putString(UpdateInactivePhoneConstants.Constants.IMAGE_UPLOAD_URL, changePhoneNumberRequestModel.uploadHostModel?.uploadHostData?.generatedHost?.uploadHost)
         }
 
@@ -248,33 +166,29 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
     }
 
 
-    private fun getUploadIdImageParam(requestParams: RequestParams, changePhoneNumberRequestModel: ChangePhoneNumberRequestModel?): RequestParams {
+    private fun getUploadIdImageParam(requestParams: RequestParams): RequestParams {
         val params = RequestParams.create()
 
         params.putString(UpdateInactivePhoneConstants.Constants.USERID,
                 requestParams.getString(UpdateInactivePhoneConstants.Constants.USERID,
-                        SessionHandler.getTempLoginSession(MainApplication.getAppContext())))
+                        SessionHandler.getTempLoginSession(context)))
         params.putString(UpdateInactivePhoneConstants.Constants.PARAM_DEVICE_ID,
                 requestParams.getString(UpdateInactivePhoneConstants.Constants.PARAM_DEVICE_ID,
-                        GCMHandler.getRegistrationId(MainApplication.getAppContext())))
+                        GCMHandler.getRegistrationId(context)))
         params.putString(UpdateInactivePhoneConstants.Constants.PARAM_FILE_TO_UPLOAD,
                 requestParams.getString(UpdateInactivePhoneConstants.Constants.PARAM_KTP_IMAGE_PATH, ""))
         params.putInt(UpdateInactivePhoneConstants.Constants.SERVER_ID, requestParams.getInt(UpdateInactivePhoneConstants.Constants.SERVER_ID, 49))
         params.putInt(UpdateInactivePhoneConstants.Constants.RESOLUTION, requestParams.getInt(UpdateInactivePhoneConstants.Constants.RESOLUTION, 215))
         params.putString(UpdateInactivePhoneConstants.Constants.TOKEN, requestParams.getString(UpdateInactivePhoneConstants.Constants.TOKEN, ""))
-
-        if (changePhoneNumberRequestModel?.uploadHostModel != null &&
-                changePhoneNumberRequestModel.uploadHostModel?.uploadHostData != null &&
-                !TextUtils.isEmpty(changePhoneNumberRequestModel.uploadHostModel?.uploadHostData?.generatedHost?.uploadHost)) {
-
+        Log.d("PARAMS-ID0", changePhoneNumberRequestModel.uploadHostModel?.uploadHostData?.generatedHost?.uploadHost)
+        if (!TextUtils.isEmpty(changePhoneNumberRequestModel.uploadHostModel?.uploadHostData?.generatedHost?.uploadHost)) {
             params.putString(UpdateInactivePhoneConstants.Constants.IMAGE_UPLOAD_URL, changePhoneNumberRequestModel.uploadHostModel?.uploadHostData?.generatedHost?.uploadHost)
         }
-
+        Log.d("PARAMS-ID", params.getString(UpdateInactivePhoneConstants.Constants.IMAGE_UPLOAD_URL, "KOSONG"))
         return params
     }
 
-    private fun getSubmitImageParam(requestParams: RequestParams,
-                                    changePhoneNumberRequestModel: ChangePhoneNumberRequestModel): RequestParams {
+    private fun getSubmitImageParam(requestParams: RequestParams): RequestParams {
         val params = RequestParams.create()
         params.putString(SubmitImgUseCase.PARAM_FILE_UPLOADED,
                 generateFileUploaded(requestParams, changePhoneNumberRequestModel))
@@ -295,10 +209,64 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
                         changePhoneNumberRequestModel.uploadBankBookImageModel?.uploadImageData?.picObj)
             }
         } catch (e: JSONException) {
-            throw RuntimeException(MainApplication.getAppContext().getString(R.string.default_error_upload_image))
+            throw RuntimeException(context.getString(R.string.default_error_upload_image))
         }
 
         return reviewPhotos.toString()
+    }
+
+
+
+    private suspend fun getUploadHost(email: String, phone: String, userId: String) {
+        requestParams = getUploadChangePhoneNumberRequestParam(email, phone, userId)
+        val uploadHostModel = getUploadHostUseCase.getUploadHost(getUploadHostParam())
+        changePhoneNumberRequestModel.uploadHostModel = uploadHostModel
+        changePhoneNumberRequestModel.isSuccess = uploadHostModel.isSuccess
+
+        when {
+            (changePhoneNumberRequestModel.uploadHostModel?.isSuccess == false &&
+                    changePhoneNumberRequestModel.uploadHostModel?.errorMessage != null) -> { throw RuntimeException(changePhoneNumberRequestModel.uploadHostModel?.errorMessage) }
+            (changePhoneNumberRequestModel.uploadHostModel?.isSuccess == true) -> { uploadIdImage() }
+        }
+    }
+
+    private suspend fun uploadIdImage(){
+        val uploadImageModel = requestParams?.let {
+            getUploadIdImageParam(it)
+        }?.let {
+            uploadImageUseCase.uploadImage(it)
+        }
+        changePhoneNumberRequestModel.uploadIdImageModel = uploadImageModel
+        changePhoneNumberRequestModel.isSuccess = uploadImageModel?.isSuccess ?: false
+
+        when {
+            (changePhoneNumberRequestModel.uploadIdImageModel?.isSuccess == false &&
+                    changePhoneNumberRequestModel.uploadIdImageModel?.errorMessage != null) -> { throw RuntimeException(changePhoneNumberRequestModel.uploadIdImageModel?.errorMessage) }
+            (changePhoneNumberRequestModel.uploadIdImageModel?.isSuccess == true) -> { uploadBankBookImage() }
+        }
+    }
+
+    private suspend fun uploadBankBookImage(){
+        val uploadImageAccountModel = requestParams?.let {
+            getUploadBookBankImageParam(it)
+        }?.let {
+            uploadImageUseCase.uploadImage(it)
+        }
+        changePhoneNumberRequestModel.uploadBankBookImageModel = uploadImageAccountModel
+        changePhoneNumberRequestModel.isSuccess = uploadImageAccountModel?.isSuccess ?: false
+
+        when {
+            (changePhoneNumberRequestModel.uploadBankBookImageModel?.isSuccess == false &&
+                    changePhoneNumberRequestModel.uploadBankBookImageModel?.errorMessage != null) -> { throw RuntimeException(changePhoneNumberRequestModel.uploadBankBookImageModel?.errorMessage) }
+            (changePhoneNumberRequestModel.uploadBankBookImageModel?.isSuccess == true) -> { submitImage() }
+        }
+    }
+
+    private fun submitImage(){
+        val submitImageParams = requestParams?.let { getSubmitImageParam(it) }
+        submitImageParams?.let {
+            submitImageUseCase.submitImage(onSuccessSubmitImage(), onErrorSubmitImage(), it)
+        }
     }
 
     private fun onErrorValidateUserData(): (Throwable) -> Unit {

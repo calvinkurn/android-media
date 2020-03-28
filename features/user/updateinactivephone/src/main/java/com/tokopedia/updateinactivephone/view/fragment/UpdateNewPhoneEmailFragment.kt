@@ -43,7 +43,7 @@ class UpdateNewPhoneEmailFragment : TkpdBaseV4Fragment() {
 
     override fun onStart() {
         super.onStart()
-        ScreenTracking.screen(MainApplication.getAppContext(), screenName)
+        ScreenTracking.screen(requireContext(), screenName)
         activity?.let { UpdateInactivePhoneEventTracking.eventViewKirimPengajuan(it) }
     }
 

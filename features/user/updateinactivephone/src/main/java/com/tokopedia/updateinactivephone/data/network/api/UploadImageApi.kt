@@ -1,7 +1,7 @@
 package com.tokopedia.updateinactivephone.data.network.api
 
-import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneURL
+import com.tokopedia.updateinactivephone.data.model.request.UploadHostResponse
 import com.tokopedia.updateinactivephone.data.model.response.UploadImageData
 
 import okhttp3.RequestBody
@@ -23,5 +23,5 @@ interface UploadImageApi {
 
     @FormUrlEncoded
     @POST(UpdateInactivePhoneURL.GET_UPLOAD_HOST)
-    suspend fun getUploadHost(@FieldMap params: Map<String, @JvmSuppressWildcards Any>): TokopediaWsV4Response
+    suspend fun getUploadHost(@FieldMap params: Map<String, @JvmSuppressWildcards Any>): UploadHostResponse
 }

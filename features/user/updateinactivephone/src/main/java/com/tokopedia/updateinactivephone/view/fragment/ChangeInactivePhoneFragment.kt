@@ -70,7 +70,7 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
 
     override fun onStart() {
         super.onStart()
-        ScreenTracking.screen(MainApplication.getAppContext(), screenName)
+        ScreenTracking.screen(requireContext(), screenName)
     }
 
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View? {

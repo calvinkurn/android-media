@@ -7,5 +7,5 @@ data class UploadImageModel (
     var uploadImageData: UploadImageData? = null,
     var errorMessage: String? = null,
     var responseCode: Int = 0,
-    val isResponseSuccess: Boolean = false
+    var isResponseSuccess: Boolean = false
 )

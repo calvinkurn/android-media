@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.core.analytics.ScreenTracking
-import com.tokopedia.core.app.MainApplication
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.updateinactivephone.R
@@ -48,7 +47,7 @@ class SelectImageNewPhoneFragment : TkpdBaseV4Fragment() {
 
     override fun onStart() {
         super.onStart()
-        ScreenTracking.screen(MainApplication.getAppContext(), screenName)
+        ScreenTracking.screen(requireContext(), screenName)
         activity?.let { UpdateInactivePhoneEventTracking.eventViewPhotoUploadScreen(it) }
     }
 
