@@ -201,15 +201,6 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
         return eventMap;
     }
 
-    private String formatPrice(String displayedPrice) {
-        if (!TextUtils.isEmpty(displayedPrice)) {
-            displayedPrice = displayedPrice.replaceAll("[^\\d]", "");
-            return displayedPrice;
-        } else {
-            return "";
-        }
-    }
-
     @NonNull
     public String getListNameOfProduct(String tabName, String etalaseName) {
         etalaseName = TextUtils.isEmpty(etalaseName) ? ALL_ETALASE : etalaseName;
@@ -307,7 +298,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 getShopPageCategory(isOwner),
                 loginNonLoginString,
                 joinDash(PRODUCT_LIST_IMPRESSION, getProductEtalaseEvent(selectedEtalaseChipName, etalaseSection), loginNonLoginString),
-                shopProductViewModel.getId(),
+                "",
                 customDimensionShopPage,
                 shopProductViewModel,
                 selectedEtalaseChipName, etalaseSection,
@@ -334,7 +325,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 getShopPageCategory(isOwner),
                 loginNonLoginString,
                 joinDash(PRODUCT_LIST_IMPRESSION, getProductEtalaseEvent(selectedEtalaseChipName, etalaseSection), loginNonLoginString, SEARCH_RESULT),
-                shopProductViewModel.getId(),
+                "",
                 customDimensionShopPage,
                 shopProductViewModel,
                 selectedEtalaseChipName, etalaseSection,

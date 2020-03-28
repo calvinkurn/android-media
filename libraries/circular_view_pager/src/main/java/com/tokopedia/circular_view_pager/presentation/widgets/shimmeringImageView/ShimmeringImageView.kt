@@ -1,4 +1,4 @@
-package com.tokopedia.home_page_banner.presentation.widgets.shimmeringImageView
+package com.tokopedia.circular_view_pager.presentation.widgets.shimmeringImageView
 
 import android.content.Context
 import android.graphics.drawable.Drawable

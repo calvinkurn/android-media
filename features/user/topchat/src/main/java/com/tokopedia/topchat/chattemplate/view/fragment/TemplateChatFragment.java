@@ -27,6 +27,7 @@ import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics;
 import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent;
+import com.tokopedia.topchat.chattemplate.di.TemplateChatModule;
 import com.tokopedia.topchat.chattemplate.view.activity.EditTemplateChatActivity;
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatSettingAdapter;
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatSettingTypeFactoryImpl;
@@ -184,7 +185,9 @@ public class TemplateChatFragment extends BaseDaggerFragment
                     .getBaseAppComponent();
             DaggerTemplateChatComponent daggerTemplateChatComponent =
                     (DaggerTemplateChatComponent) DaggerTemplateChatComponent.builder()
-                            .baseAppComponent(appComponent).build();
+                            .baseAppComponent(appComponent)
+                            .templateChatModule(new TemplateChatModule(getContext()))
+                            .build();
             daggerTemplateChatComponent.inject(this);
         }
     }

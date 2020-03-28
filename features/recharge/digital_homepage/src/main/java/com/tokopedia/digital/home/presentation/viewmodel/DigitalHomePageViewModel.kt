@@ -14,15 +14,16 @@ import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.SPOTLI
 import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.SUBSCRIPTION_ORDER
 import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.TRUST_MARK_ORDER
 import com.tokopedia.digital.home.model.DigitalHomePageItemModel
+import com.tokopedia.digital.home.presentation.Util.DigitalHomePageDispatchersProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class DigitalHomePageViewModel @Inject constructor(
-        dispatcher: CoroutineDispatcher,
-        private val digitalHomePageUseCase: DigitalHomePageUseCase)
-    : BaseViewModel(dispatcher) {
+        private val digitalHomePageUseCase: DigitalHomePageUseCase,
+        private val dispatcher: DigitalHomePageDispatchersProvider)
+    : BaseViewModel(dispatcher.Main) {
 
     private val mutableDigitalHomePageList = MutableLiveData<List<DigitalHomePageItemModel>>()
     val digitalHomePageList: LiveData<List<DigitalHomePageItemModel>>
@@ -41,7 +42,7 @@ class DigitalHomePageViewModel @Inject constructor(
 
     fun getData(isLoadFromCloud: Boolean) {
         digitalHomePageUseCase.isFromCloud = isLoadFromCloud
-        launch(Dispatchers.IO) {
+        launch(dispatcher.IO) {
             val data = digitalHomePageUseCase.executeOnBackground()
             if (data.isEmpty() || checkError(data)) {
                 mutableIsAllError.postValue(true)

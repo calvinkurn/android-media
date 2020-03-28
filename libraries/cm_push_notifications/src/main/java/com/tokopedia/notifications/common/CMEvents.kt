@@ -51,6 +51,8 @@ object IrisAnalyticsEvents {
     private const val INAPP_TYPE="inapp_type"
 
     fun sendPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel) {
+        if (baseNotificationModel.isTest)
+            return
         val irisAnalytics = IrisAnalytics(context)
         if (irisAnalytics != null) {
             val values = addBaseValues(context, eventName, baseNotificationModel)
@@ -59,6 +61,8 @@ object IrisAnalyticsEvents {
     }
 
     fun sendPushEvent(context: Context, eventName: String, baseNotificationModel: BaseNotificationModel, elementID: String?) {
+        if (baseNotificationModel.isTest)
+            return
         val irisAnalytics = IrisAnalytics(context)
         if (irisAnalytics != null) {
             val values = addBaseValues(context, eventName, baseNotificationModel)
@@ -93,6 +97,8 @@ object IrisAnalyticsEvents {
     }
 
     fun sendPushEvent(context: Context, eventName: String, cmInApp: CMInApp) {
+        if (cmInApp.isTest)
+            return
         val irisAnalytics = IrisAnalytics(context)
         if (irisAnalytics != null) {
             val values = addBaseValues(context, eventName, cmInApp)
@@ -102,6 +108,8 @@ object IrisAnalyticsEvents {
     }
 
     fun sendPushEvent(context: Context, eventName: String, cmInApp: CMInApp, elementID: String?) {
+        if (cmInApp.isTest)
+            return
         val irisAnalytics = IrisAnalytics(context)
         if (irisAnalytics != null) {
             val values = addBaseValues(context, eventName, cmInApp)

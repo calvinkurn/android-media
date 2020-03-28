@@ -37,7 +37,6 @@
             android:theme="@style/Theme.White"/>
         <activity
             android:name=".banklist.v2.view.activity.ChooseBankActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />

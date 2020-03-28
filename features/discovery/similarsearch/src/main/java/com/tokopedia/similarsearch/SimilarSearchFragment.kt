@@ -206,7 +206,6 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         observeSimilarSearchLiveData()
         observeRouteToLoginEventLiveData()
         observeUpdateWishlistOriginalProductEventLiveData()
-        observeWishlistSimilarProductEventLiveData()
         observeAddWishlistEventLiveData()
         observeRemoveWishlistEventLiveData()
         observeAddToCartEventLiveData()
@@ -300,12 +299,6 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
     private fun observeUpdateWishlistOriginalProductEventLiveData() {
         similarSearchViewModel?.getUpdateWishlistOriginalProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
             originalProductView?.updateWishlistStatus(it)
-        })
-    }
-
-    private fun observeWishlistSimilarProductEventLiveData() {
-        similarSearchViewModel?.getUpdateWishlistSimilarProductEventLiveData()?.observe(viewLifecycleOwner, EventObserver {
-            similarSearchAdapter?.updateSimilarProductItemWishlistStatus(it)
         })
     }
 
@@ -429,10 +422,6 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
         val similarProductItemAsObjectDataLayer = similarProductItem.asObjectDataLayerImpressionAndClick()
 
         SimilarSearchTracking.trackEventClickSimilarProduct(getOriginalProductId(), screenName, similarProductItemAsObjectDataLayer)
-    }
-
-    override fun onItemWishlistClicked(productId: String, isWishlisted: Boolean) {
-        similarSearchViewModel?.onViewToggleWishlistSimilarProduct(productId, isWishlisted)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

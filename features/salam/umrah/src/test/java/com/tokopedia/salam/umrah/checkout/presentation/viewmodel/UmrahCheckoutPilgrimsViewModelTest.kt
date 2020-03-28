@@ -4,11 +4,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.salam.umrah.UmrahDispatchersProviderTest
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
 import com.tokopedia.travel.passenger.domain.GetContactListUseCase
-import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -46,6 +44,19 @@ class UmrahCheckoutPilgrimsViewModelTest{
     }
 
     @Test
+    fun `responseContactListTypeDefault_SuccessGetContact_ShowActualResult`(){
+        //given
+        coEvery {
+            umrahGetContactListUseCase.execute(any(),any(),any())
+        } returns TravelContactListModel.Response().response.contacts
+
+        //when
+        umrahCheckoutPilgrimsViewModel.getContactList("")
+        val actual = umrahCheckoutPilgrimsViewModel.contactListResult.value
+        assert(actual is List<TravelContactListModel.Contact>)
+    }
+
+    @Test
     fun `responseContactList_FailureGetContact_ShowFailureResult`(){
         //given
         coEvery {
@@ -57,8 +68,4 @@ class UmrahCheckoutPilgrimsViewModelTest{
         val actual = umrahCheckoutPilgrimsViewModel.contactListResult.value
         assert(actual == listOf<TravelContactListModel.Contact>())
     }
-
-
-
-
 }
