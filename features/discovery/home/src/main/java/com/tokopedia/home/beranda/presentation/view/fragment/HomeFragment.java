@@ -1015,7 +1015,7 @@ public class HomeFragment extends BaseDaggerFragment implements
                 }
                 break;
             case REQUEST_CODE_PLAY_ROOM:
-                if(data.hasExtra(EXTRA_TOTAL_VIEW)) viewModel.updateBannerTotalView(data.getStringExtra(EXTRA_TOTAL_VIEW));
+                if(data != null && data.hasExtra(EXTRA_TOTAL_VIEW)) viewModel.updateBannerTotalView(data.getStringExtra(EXTRA_TOTAL_VIEW));
                 break;
         }
     }
@@ -1827,6 +1827,11 @@ public class HomeFragment extends BaseDaggerFragment implements
         if(!TextUtils.isEmpty(applink)){
             RouteManager.route(getContext(),applink);
         }
+    }
+
+    @Override
+    public void onOpenPlayChannelList(String appLink) {
+        openApplink(appLink);
     }
 
     @Override
