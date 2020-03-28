@@ -149,8 +149,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
     fun setTextSize() {
-        val isTablet = context?.resources?.getBoolean(R.bool.gami_is_tablet)
-        if (isTablet != null && isTablet) {
+        if (isTablet) {
             tvBenefits.setTextSize(TypedValue.COMPLEX_UNIT_PX, 24.toPx().toFloat())
         }
     }
@@ -557,8 +556,15 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         }
 
         giftBoxDailyView.fmGiftBox.doOnLayout { fm ->
-            giftBoxDailyView.imageShadow.translationY = fm.bottom.toFloat() - fm.dpToPx(55)
-            giftBoxDailyView.imageShadow.translationX = fm.left.toFloat()
+            if (isTablet) {
+                var offsetY = fm.dpToPx(62)
+                giftBoxDailyView.imageShadow.translationX = 0f
+                giftBoxDailyView.imageShadow.translationY  = fm.bottom.toFloat() - offsetY
+            } else {
+                giftBoxDailyView.imageShadow.translationX = fm.left.toFloat()
+                giftBoxDailyView.imageShadow.translationY = fm.bottom.toFloat() - fm.dpToPx(50)
+
+            }
         }
     }
 

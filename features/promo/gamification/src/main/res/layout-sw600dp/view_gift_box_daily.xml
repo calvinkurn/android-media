@@ -14,11 +14,12 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageShadow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="423dp"
+        android:layout_height="119dp"
         android:visibility="visible"
         app:srcCompat="@drawable/gf_ic_box_shadow"
-        tools:translationX="170dp"
+        android:layout_gravity="center_horizontal"
+        tools:translationX="0dp"
         tools:translationY="530dp" />
 
     <FrameLayout

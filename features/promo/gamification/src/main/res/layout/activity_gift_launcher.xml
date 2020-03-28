@@ -44,7 +44,12 @@
 
     <Button
         android:onClick="launchStaticPage"
-        android:text="Static page"
+        android:text="link for old version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:onClick="launchDigital"
+        android:text="launch digital"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 

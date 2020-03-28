@@ -60,7 +60,7 @@ open class GiftBoxBaseFragment : Fragment() {
     var mAudiosManager: AudioManager? = null
     var defaultErrorMessage = ""
     var userSession: UserSession? = null
-
+    var isTablet = false
     open fun getLayout() = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -89,8 +89,13 @@ open class GiftBoxBaseFragment : Fragment() {
 
         statusBarHeight = getStatusBarHeight(context)
 
+
         context?.let {
             defaultErrorMessage = it.getString(R.string.gami_gift_default_error_msg)
+            val tabletRes = it.resources?.getBoolean(R.bool.gami_is_tablet)
+            tabletRes?.let { tablet ->
+                isTablet = tablet
+            }
         }
 
         setInitialPositionOfViews()

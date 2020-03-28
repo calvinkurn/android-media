@@ -50,6 +50,11 @@ class GiftLauncherActivity:AppCompatActivity() {
         RouteManager.route(this, url)
     }
 
+    fun launchDigital(v:View){
+        val url = "tokopedia://digital/form?category_id=1"
+        RouteManager.route(this, url)
+    }
+
     enum class UiType{
         COUPON_POINTS, POINTS
     }
