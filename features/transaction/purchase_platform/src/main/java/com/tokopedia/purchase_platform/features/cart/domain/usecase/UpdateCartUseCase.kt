@@ -56,14 +56,9 @@ class UpdateCartUseCase @Inject constructor(private val graphqlUseCase: GraphqlU
 
                     val updateCartData = UpdateCartData()
 
-                    if (updateCartGqlResponse.updateCartDataResponse.status != "OK" ||
+                    updateCartData.isSuccess = !(updateCartGqlResponse.updateCartDataResponse.status != "OK" ||
                             updateCartGqlResponse.updateCartDataResponse.error.isNotEmpty() ||
-                            updateCartGqlResponse.updateCartDataResponse.data == null ||
-                            updateCartGqlResponse.updateCartDataResponse.data?.status == false) {
-                        updateCartData.isSuccess = false
-                    } else {
-                        updateCartData.isSuccess = true
-                    }
+                            updateCartGqlResponse.updateCartDataResponse.data == null || !updateCartGqlResponse.updateCartDataResponse.data?.status)
 
                     updateCartData.message = if (updateCartGqlResponse.updateCartDataResponse.error.isNotEmpty()) {
                         updateCartGqlResponse.updateCartDataResponse.error[0]
