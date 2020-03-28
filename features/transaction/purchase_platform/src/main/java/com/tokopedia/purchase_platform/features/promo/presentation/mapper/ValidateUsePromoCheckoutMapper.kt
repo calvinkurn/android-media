@@ -31,8 +31,20 @@ class ValidateUsePromoCheckoutMapper {
                     messageUiModel = mapMessageUiModel(promo?.message),
                     additionalInfoUiModel = mapToAdditionalInfoUiModel(promo?.additionalInfo),
                     benefitSummaryInfoUiModel = mapToBenefitSummaryInfoUiModel(promo?.benefitSummaryInfo),
-                    voucherOrderUiModels = mapListVoucherOrders(promo?.voucherOrders)
+                    voucherOrderUiModels = mapListVoucherOrders(promo?.voucherOrders),
+                    tickerInfoUiModel = mapTickerInfoUiModel(promo?.tickerInfo)
             )
+        }
+
+        private fun mapTickerInfoUiModel(tickerInfo: TickerInfo?): TickerInfoUiModel {
+            val tickerInfoUiModel = TickerInfoUiModel()
+            tickerInfoUiModel.let {
+                it.uniqueId = tickerInfo?.uniqueId
+                it.statusCode = tickerInfo?.statusCode
+                it.message = tickerInfo?.message ?: ""
+            }
+
+            return tickerInfoUiModel
         }
 
         private fun mapCodes(codes: List<String?>?): ArrayList<String> {
@@ -60,7 +72,7 @@ class ValidateUsePromoCheckoutMapper {
                     text = text)
         }
 
-        private fun mapListVoucherOrders(voucherOrders: List<VoucherOrdersItem?>?) : List<PromoCheckoutVoucherOrdersItemUiModel> {
+        private fun mapListVoucherOrders(voucherOrders: List<VoucherOrdersItem?>?): List<PromoCheckoutVoucherOrdersItemUiModel> {
             val listVoucherOrders = arrayListOf<PromoCheckoutVoucherOrdersItemUiModel>()
             voucherOrders?.let {
                 it.forEach { voucherOrderItem ->
@@ -81,7 +93,7 @@ class ValidateUsePromoCheckoutMapper {
             )
         }
 
-        private fun mapToAdditionalInfoUiModel(additionalInfo: AdditionalInfo?) : AdditionalInfoUiModel {
+        private fun mapToAdditionalInfoUiModel(additionalInfo: AdditionalInfo?): AdditionalInfoUiModel {
             val additionalInfoUiModel = AdditionalInfoUiModel()
             val listUsageSummariesUiModel = arrayListOf<UsageSummariesUiModel>()
             additionalInfo?.messageInfo?.let {
