@@ -16,8 +16,7 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
                                private val presenter: ICartListPresenter,
                                private val toBeDeletedCartIds: List<String>,
                                private val removeAllItems: Boolean,
-                               private val removeInsurance: Boolean,
-                               private val promoRequest: ValidateUsePromoRequest) : Subscriber<DeleteCartData>() {
+                               private val removeInsurance: Boolean) : Subscriber<DeleteCartData>() {
     override fun onCompleted() {
 
     }
@@ -48,7 +47,7 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
                 } else {
                     view.onDeleteCartDataSuccess(toBeDeletedCartIds)
                 }
-                presenter.doUpdateCartAndValidateUse(promoRequest)
+                presenter.doUpdateCartAndValidateUse(view.generateGeneralParamValidateUse())
                 view.updateCartCounter(deleteCartData.cartCounter)
             } else {
                 view.showToastMessageRed(deleteCartData.message ?: "")
