@@ -5,6 +5,7 @@ import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorExceptio
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.DeleteCartData
 import com.tokopedia.purchase_platform.features.cart.view.ICartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
+import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
 import rx.Subscriber
 
 /**
@@ -15,7 +16,8 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
                                private val presenter: ICartListPresenter,
                                private val toBeDeletedCartIds: List<String>,
                                private val removeAllItems: Boolean,
-                               private val removeInsurance: Boolean) : Subscriber<DeleteCartData>() {
+                               private val removeInsurance: Boolean,
+                               private val promoRequest: ValidateUsePromoRequest) : Subscriber<DeleteCartData>() {
     override fun onCompleted() {
 
     }
@@ -32,6 +34,7 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
         view?.let { view ->
             view.hideProgressLoading()
             view.renderLoadGetCartDataFinish()
+            view.showPromoCheckoutStickyButtonLoading()
 
             if (deleteCartData.isSuccess) {
                 if (removeInsurance) {
@@ -45,6 +48,7 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
                 } else {
                     view.onDeleteCartDataSuccess(toBeDeletedCartIds)
                 }
+                presenter.doUpdateCartAndValidateUse(promoRequest)
                 view.updateCartCounter(deleteCartData.cartCounter)
             } else {
                 view.showToastMessageRed(deleteCartData.message ?: "")

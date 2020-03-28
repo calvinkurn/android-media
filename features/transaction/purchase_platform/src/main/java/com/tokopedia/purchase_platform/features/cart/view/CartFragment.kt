@@ -194,7 +194,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var isButtonAnimating = false
     private var _animator: Animator? = null
     private val ANIMATION_TYPE = "translationY"
-    private val ANIMATION_DURATION_IN_MILIS = 1800L
+    private val ANIMATION_DURATION_IN_MILIS = 1000L
     private val TRANSLATION_LENGTH = 1800f
 
     companion object {
@@ -2541,6 +2541,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    override fun showPromoCheckoutStickyButtonLoading() {
+        renderPromoCheckoutLoading()
+    }
+
     override fun updatePromoCheckoutStickyButton(promoUiModel: PromoUiModel) {
         doRenderPromoCheckoutButton(LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel))
     }
@@ -2591,5 +2595,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequest)
 
         startActivityForResult(intent, NAVIGATION_PROMO)
+    }
+
+    override fun generateGeneralParamValidateUse(): ValidateUsePromoRequest {
+        return generateParamValidateUsePromoRevamp(false, -1, -1, true)
     }
 }
