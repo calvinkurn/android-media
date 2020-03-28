@@ -71,7 +71,6 @@ import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.BenefitSummaryInfoUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel;
-import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
@@ -2466,7 +2465,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             shipmentCartItemModel.getCartString().equals(ordersItem.getUniqueId())) {
                         if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null &&
                                 !ordersItem.getCodes().contains(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode())) {
-                            ordersItem.getCodes().add(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                            if (!ordersItem.getCodes().contains(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode())) {
+                                ordersItem.getCodes().add(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                            }
                         }
 
                         if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
@@ -2510,14 +2511,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     if (lastApplyUiModel != null) {
                         for (LastApplyVoucherOrdersItemUiModel lastApplyVoucherOrdersItemUiModel : lastApplyUiModel.getVoucherOrders()) {
                             if (shipmentCartItemModel.getCartString().equalsIgnoreCase(lastApplyVoucherOrdersItemUiModel.getUniqueId())) {
-                                listOrderCodes.add(lastApplyVoucherOrdersItemUiModel.getCode());
+                                if (!listOrderCodes.contains(lastApplyVoucherOrdersItemUiModel.getCode())) {
+                                    listOrderCodes.add(lastApplyVoucherOrdersItemUiModel.getCode());
+                                }
                                 break;
                             }
                         }
                     }
                     // Add data BBO
                     if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
-                        listOrderCodes.add(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                        if (!listOrderCodes.contains(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode())) {
+                            listOrderCodes.add(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                        }
                     }
                     ordersItem.setCodes(listOrderCodes);
                     ordersItem.setUniqueId(shipmentCartItemModel.getCartString());
