@@ -14,6 +14,7 @@
         android:ellipsize="end"
         android:text="Pilih promo"
         android:textColor="@color/n_700_96"
+        android:textSize="@dimen/sp_14"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_1"
