@@ -15,5 +15,7 @@ data class CartDataResponse(
         @SerializedName("shop")
         val shop: ShopDataResponse = ShopDataResponse(),
         @SerializedName("warehouse")
-        val warehouse: Warehouse = Warehouse()
+        val warehouse: Warehouse = Warehouse(),
+        @SerializedName("cart_string")
+        val cartString: String = ""
 )

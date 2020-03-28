@@ -12,6 +12,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
@@ -38,6 +40,8 @@ import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.utils.Utils.convertDpToPixel
+import com.tokopedia.purchase_platform.features.checkout.view.PromoNotEligibleActionListener
+import com.tokopedia.purchase_platform.features.checkout.view.PromoNotEligibleBottomsheet
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.preference.Address
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccGlobalEvent
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
@@ -52,13 +56,11 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bo
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.PreferenceListBottomSheet
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.OrderPreferenceCard
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.OrderProductCard
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.ButtonBayarState
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderPreference
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderProduct
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderTotal
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.*
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.features.promo.presentation.analytics.PromoCheckoutAnalytics
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoUiModel
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.card_order_empty_preference.*
@@ -113,7 +115,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 //                shipmentPresenter.setValidateUsePromoRevampUiModel(validateUsePromoRevampUiModel)
                 // update button promo
 //                updateButtonPromoCheckout(validateUsePromoRevampUiModel.promoUiModel)
-                return
+//                return
             }
             val validateUsePromoRequest: ValidateUsePromoRequest? = data?.getParcelableExtra(ARGS_LAST_VALIDATE_USE_REQUEST)
             if (validateUsePromoRequest != null) {
@@ -122,7 +124,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
             val defaultTitlePromoButton: String? = data?.getStringExtra(ARGS_CLEAR_PROMO_RESULT)
             if (defaultTitlePromoButton != null) {
-                //trigger validate use
+                //reset
+                viewModel.updatePromoState(PromoUiModel().apply {
+                    titleDescription = defaultTitlePromoButton
+                })
 //                shipmentAdapter.checkHasSelectAllCourier(false)
             }
         }
@@ -201,6 +206,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 //            orderPreferenceCard.setPaymentError(it.paymentErrorMessage)
             setupButtonBayar(it)
         })
+        viewModel.orderPromo.observe(this, Observer {
+            setupButtonPromo(it)
+        })
         viewModel.globalEvent.observe(this, Observer {
             when (it) {
                 is OccGlobalEvent.Loading -> {
@@ -210,7 +218,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                 .setCancelable(false)
                                 .create()
                     }
-                    progressDialog?.show()
+                    if (progressDialog?.isShowing == false) {
+                        progressDialog?.show()
+                    }
                 }
                 is OccGlobalEvent.Normal -> {
                     progressDialog?.dismiss()
@@ -264,6 +274,40 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                 eventLabelBuilder.append(TextUtils.join(",", trackerData.productIds))
                             }
 //                            checkoutAnalyticsCourierSelection.eventViewPopupPriceIncrease(eventLabelBuilder.toString())
+                        }
+                    }
+                }
+                is OccGlobalEvent.PromoClashing -> {
+                    progressDialog?.dismiss()
+                    if (activity != null) {
+                        val promoNotEligibleBottomsheet = PromoNotEligibleBottomsheet.createInstance()
+                        promoNotEligibleBottomsheet.notEligiblePromoHolderDataList = it.notEligiblePromoHolderdataList
+                        promoNotEligibleBottomsheet.actionListener = object : PromoNotEligibleActionListener {
+                            override fun onShow() {
+                                val bottomSheetBehavior = promoNotEligibleBottomsheet.bottomSheetBehavior
+                                bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetCallback() {
+                                    override fun onStateChanged(bottomSheet: View, newState: Int) {
+                                        if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                                            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                                        }
+                                    }
+
+                                    override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+                                })
+                            }
+
+                            override fun onButtonContinueClicked(checkoutType: Int) {
+                                viewModel.cancelIneligiblePromoCheckout(it.notEligiblePromoHolderdataList, onSuccessCheckout())
+                            }
+
+                            override fun onButtonChooseOtherPromo() {
+                                val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
+                                intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.PAGE_CHECKOUT)
+                                intent.putExtra(ARGS_PROMO_REQUEST, viewModel.generatePromoRequest())
+                                intent.putExtra(ARGS_VALIDATE_USE_REQUEST, viewModel.generateValidateUsePromoRequest())
+
+                                startActivityForResult(intent, REQUEST_CODE_PROMO)
+                            }
                         }
                     }
                 }
@@ -432,49 +476,43 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         btn_pay.setOnClickListener {
-            //            refresh(false, false)
-            viewModel.finalUpdate { checkoutData: Data ->
-                view?.let { v ->
-                    activity?.let {
-                        val redirectParam = checkoutData.paymentParameter.redirectParam
-                        if (redirectParam.url.isNotEmpty() && redirectParam.method.isNotEmpty()) {
-                            val paymentPassData = PaymentPassData()
-                            paymentPassData.redirectUrl = redirectParam.url
-                            paymentPassData.queryString = redirectParam.form
-                            paymentPassData.method = redirectParam.method
+            viewModel.finalUpdate(onSuccessCheckout())
+        }
+    }
 
-                            val intent = RouteManager.getIntent(activity, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
-                            intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
-                            intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE, checkoutData.error.message)
-                            startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
-//                            it.finish()
-                        } else {
-                            Toaster.make(v, "Terjadi kesalahan", type = Toaster.TYPE_ERROR)
-                        }
-                    }
-                }
+    private fun setupButtonPromo(orderPromo: OrderPromo) {
+        //loading
+        if (orderPromo.state == ButtonBayarState.LOADING) {
+            btn_promo_checkout.state = ButtonPromoCheckoutView.State.LOADING
+        } else if (orderPromo.state == ButtonBayarState.DISABLE) {
+            //failed
+            btn_promo_checkout.state = ButtonPromoCheckoutView.State.INACTIVE
+            btn_promo_checkout.title = getString(R.string.promo_checkout_inactive_label)
+            btn_promo_checkout.desc = getString(R.string.promo_checkout_inactive_desc)
+            btn_promo_checkout.setOnClickListener {
+                viewModel.validateUsePromo()
             }
-        }
+        } else {
+            val lastApply = orderPromo.lastApply
+            var title = getString(R.string.promo_funnel_label)
+            if (lastApply?.additionalInfo?.messageInfo?.message?.isNotEmpty() == true) {
+                title = lastApply.additionalInfo.messageInfo.message
+            } else if (lastApply?.defaultEmptyPromoMessage?.isNotBlank() == true) {
+                title = lastApply.defaultEmptyPromoMessage
+            }
+            btn_promo_checkout.state = ButtonPromoCheckoutView.State.ACTIVE
+            btn_promo_checkout.title = title
+            btn_promo_checkout.desc = lastApply?.additionalInfo?.messageInfo?.detail ?: ""
 
-        val lastApply = viewModel.orderPromo.lastApply
-        var title = getString(R.string.promo_funnel_label)
-        if (lastApply?.additionalInfo?.messageInfo?.message?.isNotEmpty() == true) {
-            title = lastApply.additionalInfo.messageInfo.message
-        } else if (lastApply?.defaultEmptyPromoMessage?.isNotBlank() == true) {
-            title = lastApply.defaultEmptyPromoMessage
-        }
-        btn_promo_checkout.state = ButtonPromoCheckoutView.State.ACTIVE
-        btn_promo_checkout.title = title
-        btn_promo_checkout.desc = lastApply?.additionalInfo?.messageInfo?.detail ?: ""
+            btn_promo_checkout.setOnClickListener {
+                viewModel.updateCartPromo { promoRequest, validateUsePromoRequest ->
+                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
+                    intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.PAGE_CHECKOUT)
+                    intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
+                    intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUsePromoRequest)
 
-        btn_promo_checkout.setOnClickListener {
-            viewModel.updateCartPromo { promoRequest, validateUsePromoRequest ->
-                val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
-                intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.PAGE_CHECKOUT)
-                intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
-                intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUsePromoRequest)
-
-                startActivityForResult(intent, REQUEST_CODE_PROMO)
+                    startActivityForResult(intent, REQUEST_CODE_PROMO)
+                }
             }
         }
     }
@@ -661,6 +699,27 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         super.onStop()
         if (!swipe_refresh_layout.isRefreshing) {
             viewModel.updateCart()
+        }
+    }
+
+    private fun onSuccessCheckout(): (Data) -> Unit = { checkoutData: Data ->
+        view?.let { v ->
+            activity?.let {
+                val redirectParam = checkoutData.paymentParameter.redirectParam
+                if (redirectParam.url.isNotEmpty() && redirectParam.method.isNotEmpty()) {
+                    val paymentPassData = PaymentPassData()
+                    paymentPassData.redirectUrl = redirectParam.url
+                    paymentPassData.queryString = redirectParam.form
+                    paymentPassData.method = redirectParam.method
+
+                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
+                    intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
+                    intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE, checkoutData.error.message)
+                    startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
+                } else {
+                    Toaster.make(v, "Terjadi kesalahan", type = Toaster.TYPE_ERROR)
+                }
+            }
         }
     }
 

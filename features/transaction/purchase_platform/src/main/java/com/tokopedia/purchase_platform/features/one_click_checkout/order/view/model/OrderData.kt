@@ -17,7 +17,8 @@ data class OrderData(
 
 data class OrderPromo(
         var lastApply: LastApplyUiModel? = null,
-        var promoErrorDefault: PromoCheckoutErrorDefault? = null
+        var promoErrorDefault: PromoCheckoutErrorDefault? = null,
+        var state: ButtonBayarState = ButtonBayarState.DISABLE
 )
 
 data class Shipment(

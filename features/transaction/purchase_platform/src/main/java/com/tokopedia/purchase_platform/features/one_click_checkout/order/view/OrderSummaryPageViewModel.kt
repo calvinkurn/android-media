@@ -18,6 +18,10 @@ import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companio
 import com.tokopedia.purchase_platform.common.data.model.param.EditAddressParam
 import com.tokopedia.purchase_platform.features.checkout.domain.mapper.LastApplyUiMapper
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.EditAddressUseCase
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata.Companion.TYPE_ICON_GLOBAL
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata.Companion.TYPE_ICON_OFFICIAL_STORE
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata.Companion.TYPE_ICON_POWER_MERCHANT
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetPreferenceListUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccGlobalEvent
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
@@ -70,18 +74,16 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     var orderShop: OrderShop = OrderShop()
     var kero: Kero = Kero()
     var _orderPreference: OrderPreference? = null
-    var orderPromo: OrderPromo = OrderPromo()
-    var validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel()
+
+    var orderPromo: MutableLiveData<OrderPromo> = MutableLiveData(OrderPromo())
+    var validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = null
     var lastValidateUsePromoRequest: ValidateUsePromoRequest? = null
 
     var orderPreference: MutableLiveData<OccState<OrderPreference>> = MutableLiveData(OccState.Loading)
-
     var orderTotal: MutableLiveData<OrderTotal> = MutableLiveData(OrderTotal())
-
     var globalEvent: MutableLiveData<OccGlobalEvent> = MutableLiveData(OccGlobalEvent.Normal)
 
     private var compositeSubscription = CompositeSubscription()
-
     private var debounceJob: Job? = null
 
     private var hasSentViewOspEe = false
@@ -100,7 +102,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             }
 //            _orderPreference = OrderPreference(preference)
             orderPreference.value = OccState.FirstLoad(_orderPreference!!)
-            orderPromo = orderData.promo
+            orderPromo.value = orderData.promo.copy(state = ButtonBayarState.NORMAL)
             if (orderProduct.productId > 0 && preference.shipment.serviceId > 0) {
                 orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.LOADING)
                 getRates()
@@ -386,7 +388,11 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                     _orderPreference = value.copy(shipping = shipping)
                                     orderPreference.value = OccState.Success(_orderPreference!!)
                                     // TODO: BUTTON STATE LOADING -> VALIDATE PROMO
-                                    orderTotal.value = orderTotal.value?.copy(buttonState = if (shipping?.serviceErrorMessage.isNullOrEmpty()) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
+                                    if (shipping?.serviceErrorMessage.isNullOrEmpty()) {
+                                        validateUsePromo()
+                                    } else {
+                                        orderTotal.value = orderTotal.value?.copy(buttonState = if (shipping?.serviceErrorMessage.isNullOrEmpty()) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
+                                    }
                                     if (!hasSentViewOspEe) {
                                         orderSummaryAnalytics.eventViewOrderSummaryPage(generateOspEe(1, "order summary page loaded"))
                                         hasSentViewOspEe = true
@@ -481,7 +487,9 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             val subtotal = totalProductPrice + finalShippingPrice + insurancePrice + fee
             val minimumAmount = _orderPreference?.preference?.payment?.minimumAmount ?: 0
             val maximumAmount = _orderPreference?.preference?.payment?.maximumAmount ?: 0
-            val orderCost = OrderCost(totalProductPrice, subtotal, totalShippingPrice, insurancePrice, fee, benefitAmount, validateUsePromoRevampUiModel.promoUiModel.benefitSummaryInfoUiModel.finalBenefitText, validateUsePromoRevampUiModel.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount)
+            val orderCost = OrderCost(totalProductPrice, subtotal, totalShippingPrice, insurancePrice, fee, benefitAmount, validateUsePromoRevampUiModel?.promoUiModel?.benefitSummaryInfoUiModel?.finalBenefitText
+                    ?: "", validateUsePromoRevampUiModel?.promoUiModel?.benefitSummaryInfoUiModel?.finalBenefitAmount
+                    ?: 0)
             if (minimumAmount > subtotal) {
                 orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
                         paymentErrorMessage = "Belanjaanmu kurang dari min. transaksi ${_orderPreference?.preference?.payment?.gatewayName}. Silahkan pilih pembayaran lain.",
@@ -564,6 +572,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                 isApplyLogisticPromo = false))
                         orderPreference.value = OccState.Success(_orderPreference!!)
                         calculateTotal()
+                        validateUsePromo()
                     }
                 }
             }
@@ -647,7 +656,11 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             _orderPreference = _orderPreference?.copy(shipping = shipping1)
             orderPreference.value = OccState.Success(_orderPreference!!)
             // TODO: BUTTON STATE LOADING -> VALIDATE PROMO
-            orderTotal.value = orderTotal.value?.copy(buttonState = if (shipping1.serviceErrorMessage.isNullOrEmpty()) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
+            if (shipping1.serviceErrorMessage.isNullOrEmpty()) {
+                validateUsePromo()
+            } else {
+                orderTotal.value = orderTotal.value?.copy(buttonState = if (shipping1.serviceErrorMessage.isNullOrEmpty()) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
+            }
             calculateTotal()
 //            }
         }
@@ -791,7 +804,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                     }
                                 }
                             }
-                            globalEvent.value = OccGlobalEvent.Error(null, "Terjadi kesalahan")
+                            updatePromoState(response.promoUiModel)
+                            globalEvent.value = OccGlobalEvent.Error(null, "Gagal mengaplikasikan bebas ongkir")
                         }
 
                         override fun onCompleted() {
@@ -885,67 +899,152 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     }
 
     private fun doCheckout(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (Data) -> Unit) {
-        val param = CheckoutOccRequest(Profile(pref.preference.profileId), ParamCart(data = listOf(ParamData(
-                pref.preference.address.addressId,
-                listOf(
-                        ShopProduct(
-                                shopId = shop.shopId,
-                                isPreorder = shop.cartResponse.product.isPreorder,
-                                warehouseId = shop.cartResponse.product.wareHouseId,
-                                finsurance = if (pref.shipping!!.isCheckInsurance) 1 else 0,
-                                productData = listOf(
-                                        ProductData(
-                                                product.productId,
-                                                product.quantity!!.orderQuantity,
-                                                product.notes
-                                        )
-                                ),
-                                shippingInfo = ShippingInfo(
-                                        pref.shipping.getRealShipperId(),
-                                        pref.shipping.getRealShipperProductId(),
-                                        pref.shipping.getRealRatesId(),
-                                        pref.shipping.getRealUt(),
-                                        pref.shipping.getRealChecksum()
-                                )
-                        )
-                )
-        )), promos = generateCheckoutPromos(pref)))
-        checkoutOccUseCase.execute(param, { checkoutOccGqlResponse: CheckoutOccGqlResponse ->
-            if (checkoutOccGqlResponse.response.status.equals("OK", true)) {
-                if (checkoutOccGqlResponse.response.data.success == 1 || checkoutOccGqlResponse.response.data.paymentParameter.redirectParam.url.isNotEmpty()) {
-                    globalEvent.value = OccGlobalEvent.Normal
-                    onSuccessCheckout(checkoutOccGqlResponse.response.data)
-                    orderSummaryAnalytics.eventClickBayarSuccess(generateOspEe(2, "click bayar success"))
-                } else {
-                    val errorCode = checkoutOccGqlResponse.response.data.error.code
-                    orderSummaryAnalytics.eventClickBayarNotSuccess(errorCode)
-                    if (errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_STOCK_EMPTY || errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_SHOP_CLOSED) {
-                        globalEvent.value = OccGlobalEvent.CheckoutError(checkoutOccGqlResponse.response.data.error)
-                    } else if (checkoutOccGqlResponse.response.data.error.additionalInfo?.priceValidation?.isUpdated == true && checkoutOccGqlResponse.response.data.error.additionalInfo.priceValidation.message != null) {
-                        globalEvent.value = OccGlobalEvent.PriceChangeError(checkoutOccGqlResponse.response.data.error.additionalInfo.priceValidation)
-                    } else if (checkoutOccGqlResponse.response.data.error.message.isNotBlank()) {
-                        globalEvent.value = OccGlobalEvent.Error(errorMessage = checkoutOccGqlResponse.response.data.error.message)
+        if (checkIneligiblePromo()) {
+            val param = CheckoutOccRequest(Profile(pref.preference.profileId), ParamCart(data = listOf(ParamData(
+                    pref.preference.address.addressId,
+                    listOf(
+                            ShopProduct(
+                                    shopId = shop.shopId,
+                                    isPreorder = shop.cartResponse.product.isPreorder,
+                                    warehouseId = shop.cartResponse.product.wareHouseId,
+                                    finsurance = if (pref.shipping!!.isCheckInsurance) 1 else 0,
+                                    productData = listOf(
+                                            ProductData(
+                                                    product.productId,
+                                                    product.quantity!!.orderQuantity,
+                                                    product.notes
+                                            )
+                                    ),
+                                    shippingInfo = ShippingInfo(
+                                            pref.shipping.getRealShipperId(),
+                                            pref.shipping.getRealShipperProductId(),
+                                            pref.shipping.getRealRatesId(),
+                                            pref.shipping.getRealUt(),
+                                            pref.shipping.getRealChecksum()
+                                    )
+                            )
+                    )
+            )), promos = generateCheckoutPromos(pref)))
+            checkoutOccUseCase.execute(param, { checkoutOccGqlResponse: CheckoutOccGqlResponse ->
+                if (checkoutOccGqlResponse.response.status.equals("OK", true)) {
+                    if (checkoutOccGqlResponse.response.data.success == 1 || checkoutOccGqlResponse.response.data.paymentParameter.redirectParam.url.isNotEmpty()) {
+                        globalEvent.value = OccGlobalEvent.Normal
+                        onSuccessCheckout(checkoutOccGqlResponse.response.data)
+                        orderSummaryAnalytics.eventClickBayarSuccess(generateOspEe(2, "click bayar success"))
                     } else {
-                        globalEvent.value = OccGlobalEvent.Error(errorMessage = "Terjadi kesalahan dengan kode ${checkoutOccGqlResponse.response.data.error.message}")
+                        val errorCode = checkoutOccGqlResponse.response.data.error.code
+                        orderSummaryAnalytics.eventClickBayarNotSuccess(errorCode)
+                        if (errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_STOCK_EMPTY || errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_SHOP_CLOSED) {
+                            globalEvent.value = OccGlobalEvent.CheckoutError(checkoutOccGqlResponse.response.data.error)
+                        } else if (checkoutOccGqlResponse.response.data.error.additionalInfo?.priceValidation?.isUpdated == true && checkoutOccGqlResponse.response.data.error.additionalInfo.priceValidation.message != null) {
+                            globalEvent.value = OccGlobalEvent.PriceChangeError(checkoutOccGqlResponse.response.data.error.additionalInfo.priceValidation)
+                        } else if (checkoutOccGqlResponse.response.data.error.message.isNotBlank()) {
+                            globalEvent.value = OccGlobalEvent.Error(errorMessage = checkoutOccGqlResponse.response.data.error.message)
+                        } else {
+                            globalEvent.value = OccGlobalEvent.Error(errorMessage = "Terjadi kesalahan dengan kode ${checkoutOccGqlResponse.response.data.error.message}")
+                        }
+                    }
+                } else {
+                    if (checkoutOccGqlResponse.response.header.messages.isNotEmpty()) {
+                        globalEvent.value = OccGlobalEvent.Error(errorMessage = checkoutOccGqlResponse.response.header.messages[0])
+                    } else {
+                        globalEvent.value = OccGlobalEvent.Error(errorMessage = "Terjadi kesalahan")
                     }
                 }
-            } else {
-                if (checkoutOccGqlResponse.response.header.messages.isNotEmpty()) {
-                    globalEvent.value = OccGlobalEvent.Error(errorMessage = checkoutOccGqlResponse.response.header.messages[0])
-                } else {
-                    globalEvent.value = OccGlobalEvent.Error(errorMessage = "Terjadi kesalahan")
+            }, { throwable: Throwable ->
+                throwable.printStackTrace()
+                globalEvent.value = OccGlobalEvent.Error(throwable)
+            })
+        }
+    }
+
+    private fun checkIneligiblePromo(): Boolean {
+        val notEligiblePromoHolderdataList = ArrayList<NotEligiblePromoHolderdata>()
+        val validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = validateUsePromoRevampUiModel
+        if (validateUsePromoRevampUiModel != null) {
+            if (validateUsePromoRevampUiModel.promoUiModel.messageUiModel.state == "red") {
+                val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
+                notEligiblePromoHolderdata.promoTitle = validateUsePromoRevampUiModel.promoUiModel.titleDescription
+                if (validateUsePromoRevampUiModel.promoUiModel.codes.isNotEmpty()) {
+                    notEligiblePromoHolderdata.promoCode = validateUsePromoRevampUiModel.promoUiModel.codes[0]
+                }
+                notEligiblePromoHolderdata.shopName = "Kode promo"
+                notEligiblePromoHolderdata.iconType = TYPE_ICON_GLOBAL
+                notEligiblePromoHolderdata.showShopSection = true
+                notEligiblePromoHolderdata.errorMessage = validateUsePromoRevampUiModel.promoUiModel.messageUiModel.text
+                notEligiblePromoHolderdataList.add(notEligiblePromoHolderdata)
+            }
+            val voucherOrdersItemUiModels = validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels
+            if (voucherOrdersItemUiModels.isNotEmpty()) {
+                for (i in voucherOrdersItemUiModels.indices) {
+                    val voucherOrdersItemUiModel = voucherOrdersItemUiModels[i]
+                    if (voucherOrdersItemUiModel != null && voucherOrdersItemUiModel.messageUiModel.state == "red") {
+                        val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
+                        notEligiblePromoHolderdata.promoTitle = if (voucherOrdersItemUiModel.titleDescription != null) voucherOrdersItemUiModel.titleDescription else ""
+                        if (validateUsePromoRevampUiModel.promoUiModel.codes.size > 0) {
+                            notEligiblePromoHolderdata.promoCode = validateUsePromoRevampUiModel.promoUiModel.codes[0]
+                        }
+                        if (orderShop.cartResponse.cartString == voucherOrdersItemUiModel.uniqueId) {
+                            notEligiblePromoHolderdata.shopName = orderShop.shopName
+                            if (orderShop.cartResponse.shop.isOfficial == 1) {
+                                notEligiblePromoHolderdata.iconType = TYPE_ICON_OFFICIAL_STORE
+                            } else if (orderShop.cartResponse.shop.isGold == 1) {
+                                notEligiblePromoHolderdata.iconType = TYPE_ICON_POWER_MERCHANT
+                            }
+                        }
+                        notEligiblePromoHolderdata.errorMessage = validateUsePromoRevampUiModel.promoUiModel.messageUiModel.text
+                        notEligiblePromoHolderdataList.add(notEligiblePromoHolderdata)
+                    }
                 }
             }
-        }, { throwable: Throwable ->
-            throwable.printStackTrace()
-            globalEvent.value = OccGlobalEvent.Error(throwable)
-        })
+        }
+
+        if (notEligiblePromoHolderdataList.size > 0) {
+            globalEvent.value = OccGlobalEvent.PromoClashing(notEligiblePromoHolderdataList)
+            return false
+        } else {
+            return true
+        }
+    }
+
+    fun cancelIneligiblePromoCheckout(notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>, onSuccessCheckout: (Data) -> Unit) {
+        globalEvent.value = OccGlobalEvent.Loading
+        clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, ArrayList(notEligiblePromoHolderdataList.map { it.promoCode }))
+        compositeSubscription.add(
+                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY)
+                        .subscribe(object : Observer<ClearCacheAutoApplyStackResponse> {
+                            override fun onError(e: Throwable) {
+                                e.printStackTrace()
+                                finalUpdate(onSuccessCheckout)
+                            }
+
+                            override fun onNext(t: ClearCacheAutoApplyStackResponse) {
+                                finalUpdate(onSuccessCheckout)
+                            }
+
+                            override fun onCompleted() {
+                            }
+                        })
+        )
     }
 
     private fun generateCheckoutPromos(pref: OrderPreference): List<com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.PromoRequest> {
         val list = ArrayList<com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.PromoRequest>()
-        if (pref.shipping?.isApplyLogisticPromo == true && pref.shipping.logisticPromoShipping != null && pref.shipping.logisticPromoViewModel != null) {
-            list.add(PromoRequest("logistic", pref.shipping.logisticPromoViewModel.promoCode))
+//        if (pref.shipping?.isApplyLogisticPromo == true && pref.shipping.logisticPromoShipping != null && pref.shipping.logisticPromoViewModel != null) {
+//            list.add(PromoRequest("logistic", pref.shipping.logisticPromoViewModel.promoCode))
+//        }
+        val finalPromo = validateUsePromoRevampUiModel
+        if (finalPromo != null) {
+            for (code in finalPromo.promoUiModel.codes) {
+                list.add(PromoRequest("global", code))
+            }
+            for (voucherOrderUiModel in finalPromo.promoUiModel.voucherOrderUiModels) {
+                if (voucherOrderUiModel != null) {
+                    list.add(PromoRequest(voucherOrderUiModel.type, voucherOrderUiModel.code))
+                }
+            }
+        } else if (orderPromo.value?.lastApply != null) {
+
         }
         return list
     }
@@ -971,89 +1070,107 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         }
     }
 
-    private fun generatePromoRequest(): PromoRequest {
+    fun generatePromoRequest(shouldAddLogisticPromo: Boolean = true): PromoRequest {
         val promoRequest = PromoRequest()
 
         val ordersItem = Order(orderShop.shopId.toLong(), "${orderShop.shopId}-0-${orderShop.cartResponse.warehouse.warehouseId}-${_orderPreference?.preference?.address?.addressId}", listOf(
                 ProductDetail(orderProduct.productId.toLong(), orderProduct.quantity?.orderQuantity.toZeroIfNull())
         ))
 
-        val codes = ArrayList<String>()
-        val voucherOrders = orderPromo.lastApply?.voucherOrders ?: emptyList()
-        for (voucherOrder in voucherOrders) {
-            if (voucherOrder.uniqueId.equals(ordersItem.uniqueId, true)) {
-                codes.add(voucherOrder.code)
-                break
+        val shipping = _orderPreference?.shipping
+//        if (shipping?.getRealShipperProductId() ?: 0 > 0 && shipping?.getRealShipperId() ?: 0 > 0) {
+//            ordersItem.shippingId = shipping!!.getRealShipperId()
+//            ordersItem.spId = shipping.getRealShipperProductId()
+//        }
+
+        val lastRequest = lastValidateUsePromoRequest
+        var codes: MutableList<String> = ArrayList()
+        if (lastRequest != null && lastRequest.orders.isNotEmpty() && lastRequest.orders[0] != null) {
+            codes = lastRequest.orders[0]?.codes ?: ArrayList()
+        } else {
+            val voucherOrders = orderPromo.value?.lastApply?.voucherOrders ?: emptyList()
+            for (voucherOrder in voucherOrders) {
+                if (voucherOrder.uniqueId.equals(ordersItem.uniqueId, true)) {
+                    codes.add(voucherOrder.code)
+                    break
+                }
             }
         }
-//        if (shouldAddLogisticPromo && shipping?.isApplyLogisticPromo == true && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
+
+        if (shouldAddLogisticPromo && shipping?.isApplyLogisticPromo == true && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
 //            codes.add(shipping.logisticPromoViewModel.promoCode)
-//        }
+        }
+
+        ordersItem.codes = codes
+
         promoRequest.orders = listOf(ordersItem)
         promoRequest.state = PARAM_CHECKOUT
         promoRequest.cartType = PARAM_DEFAULT
 
-        val lastApply = orderPromo.lastApply
+        val lastApply = orderPromo.value?.lastApply
         if (lastApply != null) {
             promoRequest.codes = ArrayList(lastApply.codes)
         }
         return promoRequest
     }
 
-    private fun generateValidateUsePromoRequest(shouldAddLogisticPromo: Boolean = true): ValidateUsePromoRequest {
+    fun generateValidateUsePromoRequest(shouldAddLogisticPromo: Boolean = true): ValidateUsePromoRequest {
+        val validateUsePromoRequest = lastValidateUsePromoRequest ?: ValidateUsePromoRequest()
 
-        // Update param if have done param data generation before
-//        val lastRequest = lastValidateUsePromoRequest
-//        if (lastRequest != null) {
-////            val shipmentCartItemModelList: List<ShipmentCartItemModel> = shipmentAdapter.getShipmentCartItemModelList()
-////            for (shipmentCartItemModel in shipmentCartItemModelList) {
-//                for (ordersItem in lastRequest.orders) {
-//                    val shipping = _orderPreference?.shipping
-//                    if (shipping != null && orderShop.cartResponse.cartId.toString() == ordersItem!!.uniqueId) {
-//                        if (shipping.logisticPromoViewModel != null && shipping.isApplyLogisticPromo &&
-//                                !ordersItem.codes.contains(shipping.logisticPromoViewModel.promoCode)) {
-//                            ordersItem.codes.add(shipping.logisticPromoViewModel.promoCode)
-//                        }
-//                        if (shipping.shipperProductId != null && shipping.shipperId != null) {
-//                            ordersItem.shippingId = shipping.shipperId
-//                            ordersItem.spId = shipping.shipperProductId
-//                        }
-//                    }
-////                }
-//            }
-//        }
-
-        val validateUsePromoRequest = ValidateUsePromoRequest()
         val ordersItem = OrdersItem()
         ordersItem.shopId = orderShop.shopId
         ordersItem.uniqueId = "${orderShop.shopId}-0-${orderShop.cartResponse.warehouse.warehouseId}-${_orderPreference?.preference?.address?.addressId}"
+
         ordersItem.productDetails = listOf(ProductDetailsItem(orderProduct.quantity?.orderQuantity.toZeroIfNull(), orderProduct.productId))
+
         val shipping = _orderPreference?.shipping
         if (shipping?.getRealShipperProductId() ?: 0 > 0 && shipping?.getRealShipperId() ?: 0 > 0) {
             ordersItem.shippingId = shipping!!.getRealShipperId()
             ordersItem.spId = shipping.getRealShipperProductId()
         }
-        val codes = ArrayList<String>()
-        val voucherOrders = orderPromo.lastApply?.voucherOrders ?: emptyList()
-        for (voucherOrder in voucherOrders) {
-            if (voucherOrder.uniqueId.equals(ordersItem.uniqueId, true)) {
-                codes.add(voucherOrder.code)
-                break
+
+        val lastRequest = lastValidateUsePromoRequest
+        var codes: MutableList<String> = ArrayList()
+        if (lastRequest != null && lastRequest.orders.isNotEmpty() && lastRequest.orders[0] != null) {
+            codes = lastRequest.orders[0]?.codes ?: ArrayList()
+        } else {
+            val voucherOrders = orderPromo.value?.lastApply?.voucherOrders ?: emptyList()
+            for (voucherOrder in voucherOrders) {
+                if (voucherOrder.uniqueId.equals(ordersItem.uniqueId, true)) {
+                    if (!codes.contains(voucherOrder.code)) {
+                        codes.add(voucherOrder.code)
+                    }
+                    break
+                }
             }
         }
+
         if (shouldAddLogisticPromo && shipping?.isApplyLogisticPromo == true && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
-            codes.add(shipping.logisticPromoViewModel.promoCode)
+            if (!codes.contains(shipping.logisticPromoViewModel.promoCode)) {
+                codes.add(shipping.logisticPromoViewModel.promoCode)
+            }
+        } else if (shipping?.logisticPromoViewModel?.promoCode?.isNotEmpty() == true) {
+            codes.remove(shipping.logisticPromoViewModel.promoCode)
         }
         ordersItem.codes = codes
+
         validateUsePromoRequest.orders = listOf(ordersItem)
         validateUsePromoRequest.state = PARAM_CHECKOUT
         validateUsePromoRequest.cartType = PARAM_DEFAULT
-        val globalCodes = orderPromo.lastApply?.codes ?: emptyList()
-        validateUsePromoRequest.codes = globalCodes.toMutableList()
+
+        if (lastRequest != null) {
+            validateUsePromoRequest.codes = lastRequest.codes
+        } else {
+            val globalCodes = orderPromo.value?.lastApply?.codes ?: emptyList()
+            validateUsePromoRequest.codes = globalCodes.toMutableList()
+        }
+
+        lastValidateUsePromoRequest = validateUsePromoRequest
+
         return validateUsePromoRequest
     }
 
-    private fun validateUsePromo(validateUsePromoRequest: ValidateUsePromoRequest? = null) {
+    fun validateUsePromo(validateUsePromoRequest: ValidateUsePromoRequest? = null) {
         orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.LOADING)
         val requestParams = RequestParams.create()
         requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest
@@ -1064,13 +1181,13 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
                     override fun onError(e: Throwable) {
                         e.printStackTrace()
+                        orderPromo.value = orderPromo.value?.copy(state = ButtonBayarState.DISABLE)
                     }
 
                     override fun onNext(t: ValidateUsePromoRevampUiModel) {
                         validateUsePromoRevampUiModel = t
-                        t.promoUiModel
-                        orderPromo.lastApply
-                        // TODO: UPDATE PROMO BUTTON -> BUTTON PAY STATE
+                        updatePromoState(t.promoUiModel)
+                        orderTotal.value = orderTotal.value?.copy(buttonState = if (_orderPreference?.shipping?.serviceErrorMessage.isNullOrEmpty()) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
                     }
 
                     override fun onCompleted() {
@@ -1079,7 +1196,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     }
 
     fun updatePromoState(promoUiModel: PromoUiModel) {
-        orderPromo.lastApply = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel)
+        orderPromo.value = orderPromo.value?.copy(lastApply = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel), state = ButtonBayarState.NORMAL)
         calculateTotal()
     }
 }

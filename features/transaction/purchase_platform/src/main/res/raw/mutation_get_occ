@@ -186,6 +186,7 @@ query get_occ_cart_page {
             }
           }
         }
+        #cart_string
         shop {
           shop_id
           user_id
