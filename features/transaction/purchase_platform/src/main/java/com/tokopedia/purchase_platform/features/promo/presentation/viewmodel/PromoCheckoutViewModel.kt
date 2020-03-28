@@ -543,7 +543,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 }
                 clearPromoResponse.value?.let {
                     it.state = ClearPromoResponseAction.ACTION_STATE_SUCCESS
-                    it.data = response.successData.defaultEmptyPromoMessage
+                    it.data = uiModelMapper.mapClearPromoResponse(response)
                     it.lastValidateUseRequest = tmpValidateUsePromoRequest
                     _clearPromoResponse.value = it
                 }

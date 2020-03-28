@@ -69,6 +69,7 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.Service
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
+import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.BenefitSummaryInfoUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
@@ -1296,10 +1297,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
             }
 
-            String defaultTitlePromoButton = data.getStringExtra(ARGS_CLEAR_PROMO_RESULT);
-            if (defaultTitlePromoButton != null) {
+            ClearPromoUiModel clearPromoUiModel = data.getParcelableExtra(ARGS_CLEAR_PROMO_RESULT);
+            if (clearPromoUiModel != null) {
                 PromoUiModel promoUiModel = new PromoUiModel();
-                promoUiModel.setTitleDescription(defaultTitlePromoButton);
+                promoUiModel.setTitleDescription(clearPromoUiModel.getSuccessDataModel().getDefaultEmptyPromoMessage());
+
+                if (!TextUtils.isEmpty(clearPromoUiModel.getSuccessDataModel().getTickerMessage())) {
+                    shipmentPresenter.getTickerAnnouncementHolderData().setMessage(clearPromoUiModel.getSuccessDataModel().getTickerMessage());
+                    updateTickerAnnouncementMessage();
+                }
+
                 doUpdateButtonPromoCheckout(promoUiModel);
                 shipmentAdapter.checkHasSelectAllCourier(false);
             }

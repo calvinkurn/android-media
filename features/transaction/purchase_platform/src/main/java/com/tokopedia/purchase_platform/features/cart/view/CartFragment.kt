@@ -47,6 +47,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.navigation_common.listener.CartNotifyListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
+import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
@@ -1403,7 +1404,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         if (lastApplyData.additionalInfo.messageInfo.message.isNotEmpty()) {
             title = lastApplyData.additionalInfo.messageInfo.message
-        } else if(lastApplyData.defaultEmptyPromoMessage.isNotBlank()) {
+        } else if (lastApplyData.defaultEmptyPromoMessage.isNotBlank()) {
             title = lastApplyData.defaultEmptyPromoMessage
         } else {
             title = getString(R.string.promo_funnel_label)
@@ -2011,9 +2012,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         return
                     }
 
-                    val defaultTitlePromoButton = data?.getStringExtra(ARGS_CLEAR_PROMO_RESULT)
-                    if (defaultTitlePromoButton != null) {
-                        updatePromoCheckoutStickyButton(PromoUiModel(titleDescription = defaultTitlePromoButton))
+                    val clearPromoUiModel = data?.getParcelableExtra<ClearPromoUiModel>(ARGS_CLEAR_PROMO_RESULT)
+                    if (clearPromoUiModel != null) {
+                        updatePromoCheckoutStickyButton(PromoUiModel(titleDescription = clearPromoUiModel.successDataModel.defaultEmptyPromoMessage))
                     }
                 }
             }

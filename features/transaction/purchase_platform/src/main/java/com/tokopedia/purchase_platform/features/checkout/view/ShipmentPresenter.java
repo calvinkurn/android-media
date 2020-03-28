@@ -35,6 +35,7 @@ import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse;
+import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
@@ -1558,7 +1559,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodeList);
         compositeSubscription.add(
-                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe(new Subscriber<ClearCacheAutoApplyStackResponse>() {
+                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe(new Subscriber<ClearPromoUiModel>() {
                     @Override
                     public void onCompleted() {
 
@@ -1570,10 +1571,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     }
 
                     @Override
-                    public void onNext(ClearCacheAutoApplyStackResponse responseData) {
+                    public void onNext(ClearPromoUiModel responseData) {
                         if (getView() != null) {
-                            if (!TextUtils.isEmpty(responseData.getSuccessData().getTickerMessage())) {
-                                tickerAnnouncementHolderData.setMessage(responseData.getSuccessData().getTickerMessage());
+                            if (!TextUtils.isEmpty(responseData.getSuccessDataModel().getTickerMessage())) {
+                                tickerAnnouncementHolderData.setMessage(responseData.getSuccessDataModel().getTickerMessage());
                                 getView().updateTickerAnnouncementMessage();
                             }
                             boolean isLastAppliedPromo = isLastAppliedPromo(promoCode);

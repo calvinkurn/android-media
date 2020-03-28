@@ -1,5 +1,7 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.mapper
 
+import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
+import com.tokopedia.promocheckout.common.view.model.clearpromo.SuccessDataUiModel
 import com.tokopedia.purchase_platform.common.feature.tokopointstnc.TokoPointsTncUiModel
 import com.tokopedia.purchase_platform.features.promo.data.response.*
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
@@ -164,5 +166,15 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
             tokoPointsTncDetails.add(TokoPointsTncUiModel(imageUrl = it.iconImageUrl, description = it.description))
         }
         return tokoPointsTncDetails
+    }
+
+    fun mapClearPromoResponse(response: ClearPromoResponse): ClearPromoUiModel {
+        return ClearPromoUiModel().apply {
+            successDataModel = SuccessDataUiModel().apply {
+                success = response.successData.success
+                tickerMessage = response.successData.tickerMessage
+                defaultEmptyPromoMessage = response.successData.defaultEmptyPromoMessage
+            }
+        }
     }
 }
