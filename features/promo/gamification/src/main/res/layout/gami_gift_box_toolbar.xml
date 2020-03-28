@@ -20,8 +20,6 @@
             android:id="@+id/imageToolbarIcon"
             android:layout_width="@dimen/dp_48"
             android:layout_height="@dimen/dp_48"
-            android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginLeft="@dimen/dp_12"
             android:padding="@dimen/dp_12"
             app:srcCompat="@drawable/gami_gift_back_icon" />
 

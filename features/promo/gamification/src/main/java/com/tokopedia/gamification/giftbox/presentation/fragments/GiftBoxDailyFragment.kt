@@ -72,8 +72,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     var disableGiftBoxTap = false
     var autoApplyMessage = ""
 
-    var mAudiosManager: AudioManager? = null
-
     override fun getLayout() = R.layout.fragment_gift_box_daily
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,6 +102,11 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         bgSoundManager?.let {
             it.destroy()
             bgSoundManager = null
+        }
+
+        rewardSoundManager?.let {
+            it.destroy()
+            rewardSoundManager = null
         }
     }
 
@@ -154,7 +157,9 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
                 giftBoxRewardEntity?.let {
                     rewardContainer.setRewards(it, asyncCallback = { rewardState ->
-                        playPrizeSound()
+                        var soundDelay = 700L
+                        giftBoxDailyView.postDelayed({playPrizeSound()}, soundDelay)
+
                         when (rewardState) {
                             RewardContainer.RewardState.COUPON_WITH_POINTS -> {
 
@@ -254,6 +259,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                     tvReminderMessage.text = reminder?.text
                                     setInitialUiForReminder()
                                     setClickEventOnReminder()
+                                    GtmEvents.emptyBoxImpression(userSession?.userId)
                                 }
                                 else -> {
                                     hideLoader()
@@ -448,29 +454,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             super.playLoopSound()
         }
     }
-
-    private fun playTapSound() {
-        if (isSoundEnabled()) {
-            context?.let { soundIt ->
-                if (mAudiosManager == null) {
-                    mAudiosManager = AudioFactory.createAudio(soundIt)
-                }
-                mAudiosManager?.playAudio(R.raw.gf_giftbox_tap)
-            }
-        }
-    }
-
-    private fun playPrizeSound() {
-        if (isSoundEnabled()) {
-            context?.let { soundIt ->
-                if (mAudiosManager == null) {
-                    mAudiosManager = AudioFactory.createAudio(soundIt)
-                }
-                mAudiosManager?.playAudio(R.raw.gf_giftbox_prize)
-            }
-        }
-    }
-
 
     fun renderUiForReminderCheck(remindMeCheckEntity: RemindMeCheckEntity) {
         this.gameRemindMeCheck = remindMeCheckEntity?.gameRemindMeCheck

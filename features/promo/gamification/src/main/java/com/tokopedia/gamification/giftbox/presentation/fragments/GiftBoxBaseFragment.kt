@@ -56,6 +56,8 @@ open class GiftBoxBaseFragment : Fragment() {
     var statusBarHeight: Int = 0
 
     var bgSoundManager: AudioManager? = null
+    var rewardSoundManager: AudioManager? = null
+    var mAudiosManager: AudioManager? = null
     var defaultErrorMessage = ""
     var userSession: UserSession? = null
 
@@ -263,6 +265,28 @@ open class GiftBoxBaseFragment : Fragment() {
             context?.let { it ->
                 bgSoundManager = AudioFactory.createAudio(it)
                 bgSoundManager?.playAudio(R.raw.gf_giftbox_bg, true)
+            }
+        }
+    }
+
+    fun playTapSound() {
+        if (isSoundEnabled()) {
+            context?.let { soundIt ->
+                if (mAudiosManager == null) {
+                    mAudiosManager = AudioFactory.createAudio(soundIt)
+                }
+                mAudiosManager?.playAudio(R.raw.gf_giftbox_prize)
+            }
+        }
+    }
+
+    fun playPrizeSound() {
+        if (isSoundEnabled()) {
+            context?.let { soundIt ->
+                if (rewardSoundManager == null) {
+                    rewardSoundManager = AudioFactory.createAudio(soundIt)
+                }
+                rewardSoundManager?.playAudio(R.raw.gf_giftbox_prize)
             }
         }
     }

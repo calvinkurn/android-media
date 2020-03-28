@@ -39,4 +39,5 @@ object GiftBoxLabel {
     const val MAIN_PAGE = "main page"
     const val NOT_UPDATED = "not updated"
     const val CONNECTION_ERROR = "connection error"
+    const val ALREADY_OPENED = "already opened"
 }

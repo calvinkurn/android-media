@@ -22,7 +22,19 @@ object GtmEvents {
         getTracker().sendGeneralEvent(map)
     }
 
-    //4,13
+    fun emptyBoxImpression(userId: String?){
+        val map = mutableMapOf<String, Any>()
+        map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.VIEW_PRESENT_IRIS
+        map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
+        map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.VIEW_GIFT_BOX_PAGE
+        map[GiftBoxTrackerConstants.EVENT_LABEL] =  GiftBoxLabel.ALREADY_OPENED
+        userId?.let {
+            map[GiftBoxTrackerConstants.USER_ID] = userId
+        }
+        getTracker().sendGeneralEvent(map)
+    }
+
+    //5,14
     fun clickBackButton(userId: String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
@@ -35,7 +47,7 @@ object GtmEvents {
         getTracker().sendGeneralEvent(map)
     }
 
-    //5
+    //6
     fun clickShareButton(userId: String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
@@ -47,7 +59,7 @@ object GtmEvents {
         getTracker().sendGeneralEvent(map)
     }
 
-    //6
+    //7
     fun clickGiftBox(campaignSlug: String,userId: String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
@@ -60,7 +72,7 @@ object GtmEvents {
         getTracker().sendGeneralEvent(map)
     }
 
-    //7
+    //8
     fun viewRewards(catalogId: String,userId: String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.VIEW_PRESENT_IRIS
@@ -73,7 +85,7 @@ object GtmEvents {
         getTracker().sendGeneralEvent(map)
     }
 
-    //8
+    //9
     fun viewRewardsPoints(pointsAmount:String,userId: String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.VIEW_PRESENT_IRIS
@@ -86,7 +98,7 @@ object GtmEvents {
         getTracker().sendGeneralEvent(map)
     }
 
-    //9
+    //10
     fun clickClaimButton(buttonTitle:String,userId: String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
@@ -99,7 +111,7 @@ object GtmEvents {
         getTracker().sendGeneralEvent(map)
     }
 
-    //10
+    //11
     fun clickReminderButton(userId: String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
@@ -111,7 +123,7 @@ object GtmEvents {
         getTracker().sendGeneralEvent(map)
     }
 
-    //15
+    //16
     fun clickExitButton(userId: String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
@@ -124,7 +136,7 @@ object GtmEvents {
         getTracker().sendGeneralEvent(map)
     }
 
-    //16
+    //17
     fun clickTryAgainButton(userId: String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
@@ -136,7 +148,7 @@ object GtmEvents {
         getTracker().sendGeneralEvent(map)
     }
 
-    //17
+    //18
     fun clickSettingsButton(userId: String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
@@ -148,7 +160,7 @@ object GtmEvents {
         getTracker().sendGeneralEvent(map)
     }
 
-    //18
+    //19
     fun clickToaster(userId: String?) {
         val map = mutableMapOf<String, Any>()
         map[GiftBoxTrackerConstants.EVENT] = GiftBoxEvent.CLICK_PRESENT
