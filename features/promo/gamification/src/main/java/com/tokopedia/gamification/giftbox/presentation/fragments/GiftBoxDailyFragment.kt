@@ -211,7 +211,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
             override fun onBoxOpened() {
 
-                val startsAnimatorList = starsContainer.getStarsAnimationList()
+                val startsAnimatorList = starsContainer.getStarsAnimationList(giftBoxDailyView.fmGiftBox.top)
                 startsAnimatorList.forEach {
                     it.start()
                 }

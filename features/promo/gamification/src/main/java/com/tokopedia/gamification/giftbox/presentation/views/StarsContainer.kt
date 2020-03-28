@@ -22,6 +22,7 @@ class StarsContainer : FrameLayout {
     lateinit var images: Array<AppCompatImageView>
     var startY = 0f
     var startX = 0f
+    var isTablet = false
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         init(attrs)
@@ -50,12 +51,17 @@ class StarsContainer : FrameLayout {
         images = arrayOf(imageStar1, imageStar2, imageStar3, imageStar4)
         setupAlphaStars()
 
+        var deviceIsTablet = context?.resources?.getBoolean(R.bool.gami_is_tablet)
+        deviceIsTablet?.let {
+            isTablet = it
+        }
+
         doOnLayout {
             setStartPositionOfStars(width / 2f, height / 2f)
         }
     }
 
-    fun getStarsAnimationList(): List<Animator> {
+    fun getStarsAnimationList(giftBoxTop: Int): List<Animator> {
 
         val firstAnimationDuration = 1000L
         val finalAlpha = 1f
@@ -90,10 +96,23 @@ class StarsContainer : FrameLayout {
 
 
         val startEndPoints = arrayListOf<StarsCoord>()
-        var tlStarCoord = StarsCoord(-(images[0].width / 2f), height * 0.05f)
-        var trStarCoord = StarsCoord(width - images[1].width.toFloat() + dpToPx(20f), height * 0.18f)
-        var blStarCoord = StarsCoord(width * 0.04f, height * 0.54f)
-        var brStarCoord = StarsCoord(width - width * 0.20f, height * 0.56f)
+        var w = width
+        var h = height
+        var xOffset = 0
+
+        var tlStarEndY = 0f
+        if (isTablet) {
+            w = dpToPx(500f).toInt()
+            xOffset = (width - w) / 2
+            tlStarEndY = giftBoxTop - dpToPx(250f)
+        } else {
+            tlStarEndY = h * 0.05f
+        }
+
+        var tlStarCoord = StarsCoord(xOffset - (images[0].width / 2f), tlStarEndY)
+        var trStarCoord = StarsCoord(xOffset + w - images[1].width.toFloat() + dpToPx(20f), h * 0.18f)
+        var blStarCoord = StarsCoord(xOffset + (w * 0.04f), h * 0.54f)
+        var brStarCoord = StarsCoord(xOffset + (w - w * 0.20f), h * 0.56f)
 
         startEndPoints.add(tlStarCoord)
         startEndPoints.add(trStarCoord)
