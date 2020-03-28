@@ -29,7 +29,8 @@ object ProductMapper {
                 isFeatured = it.featured > 0,
                 url = it.url,
                 cashBack = it.cashback,
-                multiSelectActive = multiSelectActive
+                multiSelectActive = multiSelectActive,
+                isChecked = false
             )
         } ?: emptyList()
     }

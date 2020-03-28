@@ -215,10 +215,12 @@ class ProductManageViewModel @Inject constructor(
 
             if(isRefresh) refreshList()
             showProductList(productList)
+            hideProgressDialog()
         }, onError = {
             if(it is CancellationException) {
                 return@launchCatchError
             }
+            hideProgressDialog()
             _productListResult.value = Fail(it)
         }).let { getProductListJob = it }
     }

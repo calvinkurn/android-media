@@ -169,6 +169,7 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
     private fun observeStatus() {
         viewModel.status.observe(this, Observer {
             product = product.copy(status = it)
+            quickEditStockActivateSwitch.isChecked = product.isActive()
         })
     }
     
@@ -187,6 +188,7 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
                 && quickEditStockActivateSwitch != null
                 && quickEditStockQuantityEditor != null) {
             zeroStockInfo.visibility = View.GONE
+            quickEditStockActivateSwitch.isSelected = true
             quickEditStockActivateSwitch.isEnabled = true
             quickEditStockQuantityEditor.addButton.isEnabled = true
             quickEditStockQuantityEditor.subtractButton.isEnabled = true
@@ -195,6 +197,7 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
 
     private fun setMaxStockBehavior() {
         if(quickEditStockQuantityEditor != null) {
+            quickEditStockActivateSwitch.isSelected = true
             quickEditStockQuantityEditor.addButton.isEnabled = false
         }
     }

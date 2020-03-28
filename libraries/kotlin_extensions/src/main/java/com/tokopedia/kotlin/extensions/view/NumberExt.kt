@@ -25,3 +25,8 @@ fun Number.thousandFormatted(): String {
     val number = this.toDouble()/Math.pow(1000.00, exp.toDouble())
     return "${number.numberFormatted()}${listOf("rb", "jt", "M", "T")[exp-1]}"
 }
+
+fun Number.getNumberFormatted(): String {
+    val format =  DecimalFormat("###,###").format(this)
+    return format.replace(",",".")
+}
