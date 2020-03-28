@@ -569,7 +569,11 @@ dependencies {
     implementation(rootProject.ext.debugToolsDependencies.timber) {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
-    devImplementation project.ext.debugToolsDependencies.blockCanary
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(project.ext.debugToolsDependencies.blockCanary)
+    } else {
+        implementation project.ext.debugToolsDependencies.blockCanaryNoOp
+    }
     debugImplementation project.ext.debugToolsDependencies.leakCanary
 
     //[START] test and androidTest dependencies
