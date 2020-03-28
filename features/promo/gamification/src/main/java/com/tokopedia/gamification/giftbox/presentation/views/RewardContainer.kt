@@ -98,7 +98,7 @@ class RewardContainer : FrameLayout {
         }
 
         rvCoupons.addItemDecoration(CouponItemDecoration(isTablet, listItemWidthInTablet.toInt(), getScreenWidth()))
-        couponAdapter = CouponAdapter(couponList)
+        couponAdapter = CouponAdapter(couponList, isTablet)
         rvCoupons.adapter = couponAdapter
 
         userSession = UserSession(context)
