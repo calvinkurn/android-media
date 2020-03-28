@@ -35,5 +35,7 @@
     <color name="gf_loader_message_color">#AD31353B</color>
     <color name="gf_loader_title_color">#F531353B</color>
     <color name="gf_grey68">#ae31353b</color>
+    <color name="gf_constraint_borderColor">#50000000</color>
+
 
 </resources>

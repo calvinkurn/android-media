@@ -119,7 +119,7 @@ open class CardConstraintLayout : ConstraintLayout {
 
     private fun drawBorder(canvas: Canvas) {
 
-        val borderColor = ContextCompat.getColor(context, R.color.t_promo_borderColor)
+        val borderColor = ContextCompat.getColor(context, R.color.gf_constraint_borderColor)
 
         borderPaint.style = Paint.Style.STROKE
         borderPaint.color = borderColor

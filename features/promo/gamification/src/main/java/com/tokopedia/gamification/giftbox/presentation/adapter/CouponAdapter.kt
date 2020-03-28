@@ -39,10 +39,10 @@ class CouponListVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         itemView.layoutParams = lp
     }
 
-    private val imageView: AppCompatImageView = itemView.findViewById(com.tokopedia.promotionstarget.R.id.appCompatImageView)
-    private val imageIcon: AppCompatImageView = itemView.findViewById(com.tokopedia.promotionstarget.R.id.icon)
-    private val tvTitle: com.tokopedia.unifyprinciples.Typography = itemView.findViewById(com.tokopedia.promotionstarget.R.id.tvTitle)
-    private val tvSubTitle: com.tokopedia.unifyprinciples.Typography = itemView.findViewById(com.tokopedia.promotionstarget.R.id.tvSubTitle)
+    private val imageView: AppCompatImageView = itemView.findViewById(R.id.appCompatImageView)
+    private val imageIcon: AppCompatImageView = itemView.findViewById(R.id.icon)
+    private val tvTitle: com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.tvTitle)
+    private val tvSubTitle: com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.tvSubTitle)
 
     fun setData(data: GetCouponDetail) {
         tvTitle.text = data.minimumUsageLabel
