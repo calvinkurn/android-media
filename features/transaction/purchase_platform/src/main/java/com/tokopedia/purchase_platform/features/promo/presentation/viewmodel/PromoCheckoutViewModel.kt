@@ -382,7 +382,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 }
             }
 
-
             // Get all selected promo. Store to map where unique id as key and promo code as value
             val promoList = ArrayList<String>()
             promoListUiModel.value?.forEach {
@@ -396,23 +395,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     }
                 }
             }
-
-//            // Set selected promo code to current params
-//            promoList.forEach { promoItemMap ->
-//                if (promoItemMap.key == "") {
-//                    // Add selected promo global=
-//                    if (!validateUsePromoRequest.codes.contains(promoItemMap.value)) {
-//                        validateUsePromoRequest.codes.add(promoItemMap.value)
-//                    }
-//                } else {
-//                    // Add selected promo merchant
-//                    validateUsePromoRequest.orders.forEach {
-//                        if (promoItemMap.key == it?.uniqueId && !it.codes.contains(promoItemMap.value)) {
-//                            it.codes.add(promoItemMap.value)
-//                        }
-//                    }
-//                }
-//            }
 
             validateUsePromoRequest.skipApply = 0
 
@@ -476,14 +458,26 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                             }
                         }
                     } else {
-                        analytics.eventClickPilihPromoFailedTerjadiKesalahanServer(getPageSource())
-                        // Voucher orders is empty but the response is OK
+                        if (!responseValidatePromo.success) {
+                            // Error promo global
+                            throw PromoErrorException(responseValidatePromo.message.text)
+                        } else {
+                            // Error promo merchant
+                            if (responseValidatePromo.voucherOrders.isNotEmpty()) {
+                                responseValidatePromo.voucherOrders.forEach {
+                                    if (!it.success) {
+                                        throw PromoErrorException(it.message.text)
+                                    }
+                                }
+                            }
+                        }
+
+                        // Voucher global is empty and voucher orders are empty but the response is OK
                         // This section is added as fallback mechanism
                         throw PromoErrorException()
                     }
                 }
             } else {
-                analytics.eventClickPilihPromoFailedTerjadiKesalahanServer(getPageSource())
                 // Response is not OK, need to show error message
                 throw PromoErrorException(response.validateUsePromoRevamp.message.joinToString(". "))
             }
