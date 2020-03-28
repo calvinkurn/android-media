@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.settings.domain
 
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.sellerhome.settings.domain.entity.ReputationShopsResult
 import com.tokopedia.sellerhome.settings.domain.entity.ShopInfo
@@ -33,7 +34,7 @@ fun mapToSettingShopInfo(shopInfo: ShopInfo,
                 info?.shopAvatar.toEmptyStringIfNull(),
                 shopStatusType,
                 shopInfo.balance?.sellerBalance ?: "",
-                topAdsBalance.toDecimalRupiahCurrency(),
+                topAdsBalance.getCurrencyFormatted(),
                 isTopAdsAutoTopup,
                 shopBadge,
                 totalFollowers)
