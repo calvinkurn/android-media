@@ -14,19 +14,33 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class GraphqlCloudDataStore @Inject constructor(private val api: GraphqlApiSuspend,
-                                                private val cacheManager: GraphqlCacheManager,
-                                                private val fingerprintManager: FingerprintManager) : GraphqlDataStore {
+class GraphqlCloudDataStore @Inject constructor(
+        private val api: GraphqlApiSuspend,
+        private val cacheManager: GraphqlCacheManager,
+        private val fingerprintManager: FingerprintManager
+) : GraphqlDataStore {
 
-    override suspend fun getResponse(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponseInternal {
+    /*
+    * akamai wrapper for generating a sensor data
+    * the hash will be passing into header of
+    * X-acf-sensor-data;
+    * */
+    private suspend fun getResponse(requests: List<GraphqlRequest>): JsonArray {
         CYFMonitor.setLogLevel(CYFMonitor.INFO)
+        return api.getResponseSuspend(
+                requests.toMutableList(),
+                CYFMonitor.getSensorData() ?: ""
+        )
+    }
+
+    override suspend fun getResponse(
+            requests: List<GraphqlRequest>,
+            cacheStrategy: GraphqlCacheStrategy
+    ): GraphqlResponseInternal {
         return withContext(Dispatchers.Default) {
             var result = JsonArray()
             try {
-                result = api.getResponseSuspend(
-                        requests.toMutableList(),
-                        CYFMonitor.getSensorData() ?: ""
-                )
+                result = getResponse(requests.toMutableList())
             } catch (e: Throwable) {
                 if (e !is UnknownHostException && e!is SocketTimeoutException && e !is CancellationException) {
                     Timber.e(e, "P1#REQUEST_ERROR_GQL#$requests")
