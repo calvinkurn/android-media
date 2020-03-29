@@ -148,6 +148,7 @@ class ValidateUsePromoCheckoutMapper {
                 val summaryItemUiModel = SummariesItemUiModel(
                         description = desc,
                         type = type,
+                        amount = summary?.amount ?: 0,
                         amountStr = amountStr,
                         details = mapToDetailSummaryUiModel(summary?.details)
                 )
