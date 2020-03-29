@@ -76,6 +76,7 @@
                 android:id="@+id/label_promo_item_error_message"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_2"
                 android:layout_marginRight="@dimen/dp_12"
                 android:text="Tambah Rp10.000 untuk pakai promo aaaa aaa Tambah Rp10.000 untuk pakai promo. Tambah Rp10.000 untuk pakai promo."
                 app:layout_constraintEnd_toStartOf="@+id/image_select_promo"
