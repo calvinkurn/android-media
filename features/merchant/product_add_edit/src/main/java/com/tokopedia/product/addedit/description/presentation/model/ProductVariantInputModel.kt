@@ -12,7 +12,7 @@ import java.util.ArrayList
 data class ProductVariantInputModel (
         @SerializedName("variant")
         @Expose
-        var variantOptionParent: List<ProductVariantOptionParent> = ArrayList(),
+        var variantOptionParent: ArrayList<ProductVariantOptionParent> = ArrayList(),
         @SerializedName("product_variant")
         @Expose
         var productVariant: ArrayList<ProductVariantCombinationViewModel> = ArrayList(),
@@ -20,127 +20,98 @@ data class ProductVariantInputModel (
 ): Parcelable
 
 @Parcelize
-class ProductVariantOptionParent: Parcelable{
-
-    @SerializedName("v")
+data class ProductVariantOptionParent (
+    @SerializedName("v") //variant id, ex: 1: color
     @Expose
-    private var v: Int = 0 //variant id, ex: 1: color
-
-    @SerializedName("vu")
+    var v: Int = 0,
+    @SerializedName("vu") //variant unit, ex: 0 for no unit; 7 for ukuran
     @Expose
-    private var vu: Int = 0 //variant unit, ex: 0 for no unit; 7 for ukuran
-
+    var vu: Int = 0,
     @SerializedName(value = "pos", alternate = ["position"])
     @Expose
-    private var position: Int = 0
-
+    var position: Int = 0,
     @SerializedName(value = "opt", alternate = ["option"])
     @Expose
-    private var productVariantOptionChild: List<ProductVariantOptionChild>? = ArrayList()
-
-    @SerializedName("name")
+    var productVariantOptionChild: List<ProductVariantOptionChild>? = ArrayList(),
+    @SerializedName("name") // ex; warna
     @Expose
-    private var name: String? = null // ex; warna
-
-    @SerializedName("identifier")
+    var name: String? = null,
+    @SerializedName("identifier") // ex: color
     @Expose
-    private var identifier: String? = null // ex: color
-
+    var identifier: String? = null,
     @SerializedName("unit_name")
     @Expose
-    private var unitName: String? = null // ex: "" (for no unit),  "International"
-}
+    var unitName: String? = null // ex: "" (for no unit),  "International"
+): Parcelable
 
 @Parcelize
-class ProductVariantCombinationViewModel: Parcelable{
-
-    val ACTIVE_STATUS = 1 // from API
-    val NOT_ACTIVE_STATUS = 0 // from API
-
+data class ProductVariantCombinationViewModel (
     @SerializedName("st")
     @Expose
-    private var st: Int = 0
-
+    var st: Int = 0,
     @SerializedName("price_var")
     @Expose
-    private var priceVar: Double = 0.toDouble()
-
+    var priceVar: Double = 0.toDouble(),
     @SerializedName("stock")
     @Expose
-    private var stock: Long = 0
-
+    var stock: Long = 0,
     @SerializedName("sku")
     @Expose
-    private var sku: String? = null
-
+    var sku: String = "",
     @SerializedName("opt")
     @Expose
-    private var opt: List<Int>? = null // option combination of t_id of selected variants
-}
+    var opt: List<Int> = emptyList() // option combination of t_id of selected variants
+): Parcelable
 
 @Parcelize
-class ProductVariantOptionChild: Parcelable{
-    @SerializedName(value = "pvo", alternate = ["id"])
+data class ProductVariantOptionChild (
+    @SerializedName(value = "pvo", alternate = ["id"]) // id for this variant option
     @Expose
-    private var pvo: Int = 0 // id for this variant option
-
-    @SerializedName("vuv")
+    var pvo: Int = 0,
+    @SerializedName("vuv") //variant option id, ex: 19: Ungu
     @Expose
-    private var vuv: Int = 0 //variant option id, ex: 19: Ungu
-
-    @SerializedName("t_id")
+    var vuv: Int = 0,
+    @SerializedName("t_id") // temporary ID for submit
     @Expose
-    private var tId: Int = 0 // temporary ID for submit
-
-    @SerializedName("cstm")
+    var tId: Int = 0,
+    @SerializedName("cstm") // custom name for variant Option. ex; merah delima, also for original value, if vuv is 0
     @Expose
-    private var value: String? = null // custom name for variant Option. ex; merah delima, also for original value, if vuv is 0
-
+    var value: String = "",
     @SerializedName("image")
     @Expose
-    private var productPictureViewModelList: List<PictureViewModel>? = ArrayList()
-
+    var productPictureViewModelList: List<PictureViewModel>? = ArrayList(),
     @SerializedName("hex")
     @Expose
-    private var hex: String? = null // ex; "#bf00ff"
-}
+    var hex: String = "" // ex; "#bf00ff"
+): Parcelable
 
 @Parcelize
-class PictureViewModel: Parcelable {
-
+data class PictureViewModel (
     @SerializedName(value = "v_pic_id")
     @Expose
-    private var id: Long = 0
-
+    var id: Long = 0,
     @SerializedName("status")
     @Expose
-    private var status = 1
-
+    var status: Int= 1,
     @SerializedName("file_name")
     @Expose
-    private var fileName: String = ""
-
+    var fileName: String = "",
     @SerializedName("file_path")
     @Expose
-    private var filePath: String = ""
-
+    var filePath: String = "",
     @SerializedName("url_original")
     @Expose
-    private var urlOriginal: String = ""
-
+    var urlOriginal: String = "",
     @SerializedName("url_thumbnail")
     @Expose
-    private var urlThumbnail: String = ""
-
+    var urlThumbnail: String = "",
     @SerializedName("x")
     @Expose
-    private var x: Long = 0
-
+    var x: Long = 0,
     @SerializedName("y")
     @Expose
-    private var y: Long = 0
-
+    var y: Long = 0,
     @SerializedName("from_ig")
     @Expose
-    private var fromIg: Int = 0
-}
+    var fromIg: Int = 0
+): Parcelable

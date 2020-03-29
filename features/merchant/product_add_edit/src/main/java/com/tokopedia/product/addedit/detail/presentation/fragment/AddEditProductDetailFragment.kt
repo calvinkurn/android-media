@@ -34,12 +34,14 @@ import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DETAIL_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_INPUT
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextFloatOrZero
 import com.tokopedia.product.addedit.common.util.getTextIntOrZero
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.fragment.AddEditProductDescriptionFragment.Companion.REQUEST_CODE_DESCRIPTION
+import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailComponent
 import com.tokopedia.product.addedit.detail.presentation.adapter.NameRecommendationAdapter
 import com.tokopedia.product.addedit.detail.presentation.adapter.WholeSalePriceInputAdapter
@@ -568,7 +570,9 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
                             data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
                     val descriptionInputModel =
                             data.getParcelableExtra<DescriptionInputModel>(EXTRA_DESCRIPTION_INPUT)
-                    submitInput(shipmentInputModel, descriptionInputModel)
+                    val variantInputModel =
+                            data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
+                    submitInput(shipmentInputModel, descriptionInputModel, variantInputModel)
                 }
             }
         }
@@ -790,7 +794,8 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
     }
 
     private fun submitInput(shipmentInputModel: ShipmentInputModel,
-                            descriptionInputModel: DescriptionInputModel) {
+                            descriptionInputModel: DescriptionInputModel,
+                            variantInputModel: ProductVariantInputModel) {
         val detailInputModel = DetailInputModel(
                 productNameField.getText(),
                 productCategoryPickerButton?.getTag(R.id.category_id).toString(),
@@ -813,6 +818,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         intent.putExtra(EXTRA_DETAIL_INPUT, detailInputModel)
         intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
         intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
+        intent.putExtra(EXTRA_VARIANT_INPUT, variantInputModel)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }

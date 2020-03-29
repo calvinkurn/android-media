@@ -6,16 +6,16 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Selections (
+data class Selection (
 
-    @SerializedName("variantID")
+    @SerializedName("id")
     @Expose
-    var variantID: String? = null,
-    @SerializedName("unitID")
+    var id: Int = 0,
+    @SerializedName("unit_id")
     @Expose
-    var unitID: String? = null,
+    var unitId: Int = 0,
     @SerializedName("options")
     @Expose
-    var options: Options? = null
+    var options: List<Option> = emptyList()
 
 ) : Parcelable

@@ -13,10 +13,12 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductExtraConstant
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DETAIL_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_INPUT
 import com.tokopedia.product.addedit.common.domain.mapper.AddProductInputMapper
 import com.tokopedia.product.addedit.common.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
+import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
 import com.tokopedia.product.addedit.preview.di.DaggerAddEditProductPreviewComponent
@@ -47,6 +49,7 @@ class AddEditProductUploadService : JobIntentService(), CoroutineScope {
     private var shipmentInputModel: ShipmentInputModel = ShipmentInputModel()
     private var descriptionInputModel: DescriptionInputModel = DescriptionInputModel()
     private var detailInputModel: DetailInputModel = DetailInputModel()
+    private var variantInputModel: ProductVariantInputModel = ProductVariantInputModel()
 
     companion object {
         private const val JOB_ID = 13131314
@@ -54,11 +57,13 @@ class AddEditProductUploadService : JobIntentService(), CoroutineScope {
         fun startService(context: Context,
                          detailInputModel: DetailInputModel,
                          descriptionInputModel: DescriptionInputModel,
-                         shipmentInputModel: ShipmentInputModel) {
+                         shipmentInputModel: ShipmentInputModel,
+                         variantInputModel: ProductVariantInputModel) {
             val work = Intent(context, AddEditProductUploadService::class.java).apply {
                 putExtra(EXTRA_DETAIL_INPUT, detailInputModel)
                 putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
                 putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
+                putExtra(EXTRA_VARIANT_INPUT, variantInputModel)
             }
             enqueueWork(context, AddEditProductUploadService::class.java, JOB_ID, work)
         }
@@ -77,13 +82,14 @@ class AddEditProductUploadService : JobIntentService(), CoroutineScope {
         shipmentInputModel = intent.getParcelableExtra(EXTRA_SHIPMENT_INPUT)
         descriptionInputModel = intent.getParcelableExtra(EXTRA_DESCRIPTION_INPUT)
         detailInputModel = intent.getParcelableExtra(EXTRA_DETAIL_INPUT)
+        variantInputModel = intent.getParcelableExtra(EXTRA_VARIANT_INPUT)
         uploadImage(detailInputModel.imageUrlOrPathList)
     }
 
     private fun addProduct(uploadIdList: ArrayList<String>) {
         val shopId = userSession.shopId
         val param = addProductInputMapper.mapInputToParam(shopId, uploadIdList,
-                detailInputModel, descriptionInputModel, shipmentInputModel)
+                detailInputModel, descriptionInputModel, shipmentInputModel, variantInputModel)
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 productAddUseCase.params = ProductAddUseCase.createRequestParams(param)

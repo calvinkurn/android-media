@@ -20,8 +20,10 @@ import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DETAIL_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_INPUT
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
+import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.detail.presentation.activity.AddEditProductDetailActivity
 import com.tokopedia.product.addedit.detail.presentation.fragment.AddEditProductDetailFragment.Companion.REQUEST_CODE_DETAIL
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
@@ -100,7 +102,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
                         data.getParcelableExtra<DescriptionInputModel>(EXTRA_DESCRIPTION_INPUT)
                 val detailInputModel =
                         data.getParcelableExtra<DetailInputModel>(EXTRA_DETAIL_INPUT)
-                AddEditProductUploadService.startService(context!!, detailInputModel, descriptionInputModel, shipmentInputModel)
+                val variantInputModel =
+                        data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
+                AddEditProductUploadService.startService(context!!, detailInputModel,
+                        descriptionInputModel, shipmentInputModel, variantInputModel)
             }
         }
     }

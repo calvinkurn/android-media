@@ -8,14 +8,14 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Variant (
 
-        @SerializedName("sizeChart")
-        @Expose
-        var sizeChart: Pictures? = null,
-        @SerializedName("products")
-        @Expose
-        var products: Products? = null,
         @SerializedName("selections")
         @Expose
-        var selections: Selections? = null
+        var selections: List<Selection> = emptyList(),
+        @SerializedName("products")
+        @Expose
+        var products: List<Product> = emptyList(),
+        @SerializedName("sizeChart")
+        @Expose
+        var sizeChart: List<PictureVariant> = emptyList()
 
 ) : Parcelable

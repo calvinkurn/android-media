@@ -10,31 +10,21 @@ data class Product (
     
     @SerializedName("combination")
     @Expose
-    var combination: List<Int>? = null,
-    @SerializedName("isPrimary")
-    @Expose
-    var isPrimary: Boolean? = null,
+    var combination: List<Int> = emptyList(),
     @SerializedName("price")
     @Expose
-    var price: Int? = null,
+    var price: Double = 0.toDouble(),
     @SerializedName("sku")
     @Expose
-    var sku: String? = null,
+    var sku: String = "",
     @SerializedName("status")
     @Expose
-    var status: String? = null,
+    var status: String = "",
     @SerializedName("stock")
     @Expose
-    var stock: Int? = null,
-    @SerializedName("picture")
+    var stock: Long = 0,
+    @SerializedName("pictures")
     @Expose
-    var picture: Pictures? = null
+    var pictures: List<PictureVariant> = emptyList()
 
-) : Parcelable
-
-@Parcelize
-data class Products (
-        @SerializedName("data")
-        @Expose
-        var data: List<Product> = emptyList()
 ) : Parcelable

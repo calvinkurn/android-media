@@ -34,6 +34,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstan
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_VARIANT_SELECTION
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_STOCK_TYPE
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_PICKER_RESULT_CACHE_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_RESULT_CACHE_ID
 import com.tokopedia.product.addedit.common.util.getText
@@ -174,11 +175,9 @@ class AddEditProductDescriptionFragment(
                     val cacheManager = SaveInstanceCacheManager(context!!, variantCacheId)
                     if (data.hasExtra(EXTRA_PRODUCT_VARIANT_SELECTION)) {
                         val productVariantViewModel = cacheManager.get(EXTRA_PRODUCT_VARIANT_SELECTION,
-                                object : TypeToken<ProductVariantInputModel>() {}.type, ProductVariantInputModel())
-                        productVariantViewModel?.let {
-                            productVariantInputModel.variantOptionParent = it.variantOptionParent
-                            productVariantInputModel.productVariant = it.productVariant
-                        }
+                                object : TypeToken<ProductVariantInputModel>() {}.type) ?: ProductVariantInputModel()
+                        productVariantInputModel.variantOptionParent = productVariantViewModel.variantOptionParent
+                        productVariantInputModel.productVariant = productVariantViewModel.productVariant
                     }
                     if (data.hasExtra(EXTRA_PRODUCT_SIZECHART)) {
                         val productPictureViewModel = cacheManager.get(EXTRA_PRODUCT_SIZECHART,
@@ -280,6 +279,7 @@ class AddEditProductDescriptionFragment(
         val intent = Intent()
         intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
         intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
+        intent.putExtra(EXTRA_VARIANT_INPUT, productVariantInputModel)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }
