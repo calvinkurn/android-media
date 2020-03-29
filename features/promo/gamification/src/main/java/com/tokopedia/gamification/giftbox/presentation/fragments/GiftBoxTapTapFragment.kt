@@ -308,24 +308,32 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     }
 
     fun setPositionOfViewsAtBoxOpen(@TokenUserState state: String) {
+
+        giftBoxDailyView.fmGiftBox.doOnLayout { fmGiftBox ->
+            val heightOfRvCoupons = fmGiftBox.context.resources.getDimension(R.dimen.gami_rv_coupons_height)
+            val lidTop = fmGiftBox.top
+            val translationY = lidTop - heightOfRvCoupons + fmGiftBox.dpToPx(3)
+
+            rewardContainer.rvCoupons.translationY = translationY
+            val distanceFromLidTop = fmGiftBox.dpToPx(29)
+            rewardContainer.llRewardTextLayout.translationY = lidTop + distanceFromLidTop
+
+        }
+
         giftBoxDailyView.imageGiftBoxLid.doOnLayout { lid ->
-            val array = IntArray(2)
-            lid.getLocationInWindow(array)
-            rewardContainer.setFinalTranslationOfCirclesTap(array[1] - getStatusBarHeight(context))
+            //todo Rahul check later, it is replaced with getStatusBarHeight
+            val top = lid.top + giftBoxDailyView.fmGiftBox.top
+            rewardContainer.setFinalTranslationOfCirclesTap(top)
         }
 
         giftBoxDailyView.imageBoxFront.doOnLayout { imageBoxFront ->
-            val array = IntArray(2)
-            imageBoxFront.getLocationInWindow(array)
-            val translationY = array[1].toFloat() - getStatusBarHeight(context) - imageBoxFront.dpToPx(40)
+            val imageFrontTop = imageBoxFront.top + giftBoxDailyView.fmGiftBox.top
+            val translationY = imageFrontTop - imageBoxFront.dpToPx(40)
             starsContainer.setStartPositionOfStars(starsContainer.width / 2f, translationY)
 
             //todo Rahul have to refacor this below code
             giftBoxDailyView.adjustGlowImagePosition()
 
-            val tranY = (screenHeight * 0.385f) - statusBarHeight
-            rewardContainer.llRewardTextLayout.translationY = tranY
-            rewardContainer.rvCoupons.translationY = array[1].toFloat() - (screenHeight * 0.15f) - imageBoxFront.dpToPx(158) - statusBarHeight
         }
     }
 

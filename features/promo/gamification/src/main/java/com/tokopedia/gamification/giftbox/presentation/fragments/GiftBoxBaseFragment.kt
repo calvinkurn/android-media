@@ -53,7 +53,6 @@ open class GiftBoxBaseFragment : Fragment() {
     var screenWidth = 0
 
     val FADE_IN_DURATION = 500L
-    var statusBarHeight: Int = 0
 
     var bgSoundManager: AudioManager? = null
     var rewardSoundManager: AudioManager? = null
@@ -86,9 +85,6 @@ open class GiftBoxBaseFragment : Fragment() {
         imageToolbarIcon = v.findViewById(R.id.imageToolbarIcon)
         fmParent = v.findViewById(R.id.fmParent)
         imageSound = v.findViewById(R.id.imageSound)
-
-        statusBarHeight = getStatusBarHeight(context)
-
 
         context?.let {
             defaultErrorMessage = it.getString(R.string.gami_gift_default_error_msg)
@@ -152,20 +148,6 @@ open class GiftBoxBaseFragment : Fragment() {
         viewFlipper.displayedChild = CONTAINER_GIFT_BOX
         loader.visibility = View.GONE
     }
-
-    //todo Rahul remove this method
-    fun getStatusBarHeight(context: Context?): Int {
-        context?.let {
-            var result = (24 * it.resources.displayMetrics.density + 0.5f).toInt()
-            val resourceId = it.resources.getIdentifier("status_bar_height", "dimen", "android")
-            if (resourceId > 0) {
-                result = it.resources.getDimensionPixelSize(resourceId)
-            }
-            return result
-        }
-        return 0
-    }
-
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.gami_menu_share, menu)

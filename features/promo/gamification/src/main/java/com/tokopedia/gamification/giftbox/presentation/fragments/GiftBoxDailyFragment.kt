@@ -537,9 +537,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
         }
         giftBoxDailyView.imageBoxFront.doOnLayout { imageBoxFront ->
-            val array = IntArray(2)
-            imageBoxFront.getLocationInWindow(array)
-            val imageFrontTop = array[1].toFloat() - getStatusBarHeight(context)
+
+            val imageFrontTop = imageBoxFront.top + giftBoxDailyView.fmGiftBox.top
             val translationY = imageFrontTop - imageBoxFront.dpToPx(40)
             starsContainer.setStartPositionOfStars(starsContainer.width / 2f, translationY)
 
@@ -714,7 +713,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 })
                 animatorSet.start()
             } else {
-                //todo Rahul Show some error because resources are not loaded
+                //Do nothing
             }
         })
 

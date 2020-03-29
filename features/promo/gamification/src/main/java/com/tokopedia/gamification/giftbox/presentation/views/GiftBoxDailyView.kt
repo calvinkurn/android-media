@@ -4,7 +4,6 @@ import android.animation.*
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
@@ -201,9 +200,7 @@ open class GiftBoxDailyView : FrameLayout {
     }
 
     fun adjustGlowImagePosition() {
-        val array = IntArray(2)
-        imageBoxFront.getLocationInWindow(array)
-        imageFlatGlow.y = array[1].toFloat() - imageFlatGlow.height - getStatusBarHeight(context)
+        imageFlatGlow.y = (fmGiftBox.top + imageBoxFront.top - imageFlatGlow.height).toFloat()
     }
 
     fun stageGlowAnimation(): Animator {
@@ -264,15 +261,6 @@ open class GiftBoxDailyView : FrameLayout {
         }
         valueAnimator.duration = LID_ANIMATION_DURATION
         return valueAnimator
-    }
-
-    fun getStatusBarHeight(context: Context): Int {
-        var result = (24 * context.resources.displayMetrics.density + 0.5f).toInt()
-        val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
-        if (resourceId > 0) {
-            result = context.resources.getDimensionPixelSize(resourceId)
-        }
-        return result
     }
 
     enum class GiftBoxState {
