@@ -340,8 +340,8 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 promoListUiModel.value?.forEach {
                     if (it is PromoListItemUiModel) {
                         // Goes here if coupon state is expanded
-                        if (it.uiState.isSelected) {
-                            // If coupon is selected, add to request param.
+                        if (it.uiState.isSelected && !it.uiState.isDisabled && it.uiData.currentClashingPromo.isNullOrEmpty()) {
+                            // If coupon is selected, not disabled, and not clashing, add to request param.
                             // If unique_id = 0, means it's a coupon global, else it's a coupon merchant
                             if (it.uiData.uniqueId == order?.uniqueId && !order.codes.contains(it.uiData.promoCode)) {
                                 order.codes.add(it.uiData.promoCode)
@@ -349,7 +349,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                                 validateUsePromoRequest.codes.add(it.uiData.promoCode)
                             }
                         } else {
-                            // If coupon is unselected, remove from request param
+                            // If coupon is unselected, disabled, or clashing, remove from request param
                             // If unique_id = 0, means it's a coupon global, else it's a coupon merchant
                             if (it.uiData.uniqueId == order?.uniqueId && order.codes.contains(it.uiData.promoCode)) {
                                 order.codes.remove(it.uiData.promoCode)
@@ -360,8 +360,8 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     } else if (it is PromoListHeaderUiModel && it.uiData.tmpPromoItemList.isNotEmpty()) {
                         // Goes here if coupon state is collapsed
                         it.uiData.tmpPromoItemList.forEach {
-                            if (it.uiState.isSelected) {
-                                // If coupon is selected, add to request param
+                            if (it.uiState.isSelected && !it.uiState.isDisabled && it.uiData.currentClashingPromo.isNullOrEmpty()) {
+                                // If coupon is selected, not disabled, and not clashing, add to request param.
                                 // If unique_id = 0, means it's a coupon global, else it's a coupon merchant
                                 if (it.uiData.uniqueId == order?.uniqueId && !order.codes.contains(it.uiData.promoCode)) {
                                     order.codes.add(it.uiData.promoCode)
@@ -369,7 +369,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                                     validateUsePromoRequest.codes.add(it.uiData.promoCode)
                                 }
                             } else {
-                                // If coupon is unselected, remove from request param
+                                // If coupon is unselected, disabled, or clashing, remove from request param
                                 // If unique_id = 0, means it's a coupon global, else it's a coupon merchant
                                 if (it.uiData.uniqueId == order?.uniqueId && order.codes.contains(it.uiData.promoCode)) {
                                     order.codes.remove(it.uiData.promoCode)
