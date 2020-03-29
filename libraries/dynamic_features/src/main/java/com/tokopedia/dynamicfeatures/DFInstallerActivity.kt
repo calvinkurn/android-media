@@ -67,7 +67,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
     private var freeInternalStorageBeforeDownload = 0L
     private var startDownloadTimeStamp = 0L
     private var endDownloadTimeStamp = 0L
-    private var progressTextPercentStringFirstTime = ""
+    private var startDownloadPercentage = -1f
 
     private var errorList: MutableList<String> = mutableListOf()
     private var downloadTimes = 0
@@ -149,8 +149,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
             DFInstaller.fallbackUrl = fallbackUrl
         } else {
             launch {
-                progressTextPercentStringFirstTime = ""
-                moduleSize = 0
+                resetDFInfo()
 
                 // Skip loading if the module already is installed. Perform success action directly.
                 if (DFInstaller.isInstalled(this@DFInstallerActivity, moduleName)) {
@@ -184,6 +183,11 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
                 }
             }
         }
+    }
+
+    private fun resetDFInfo() {
+        moduleSize = 0
+        startDownloadPercentage = -1f
     }
 
     private fun onSuccessfulLoad(moduleName: String, launch: Boolean) {
@@ -359,10 +363,10 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         val progressText = String.format("%.2f KB / %.2f KB",
             (bytesDownloaded.toFloat() / CommonConstant.ONE_KB), totalBytesToDowload.toFloat() / CommonConstant.ONE_KB)
         Log.i(DOWNLOAD_MODE_PAGE, progressText)
-        val progressTextPercentString = String.format("%.0f%%", bytesDownloaded.toFloat() * 100 / totalBytesToDowload)
-        progressTextPercent.text = progressTextPercentString
-        if (progressTextPercentStringFirstTime.isEmpty()) {
-            progressTextPercentStringFirstTime = progressTextPercentString
+        val downloadProgress = bytesDownloaded.toFloat() * 100 / totalBytesToDowload
+        progressTextPercent.text = String.format("%.0f%%", downloadProgress)
+        if (startDownloadPercentage < 0) {
+            startDownloadPercentage = downloadProgress
         }
         button_download.visibility = View.INVISIBLE
     }
@@ -400,7 +404,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
                 moduleName, freeInternalStorageBeforeDownload, moduleSize,
                 errorList, downloadTimes, successInstall,
                 startDownloadTimeStamp, endDownloadTimeStamp,
-                progressTextPercentStringFirstTime,
+                startDownloadPercentage,
                 dfConfig.allowRunningServiceFromActivity(), deeplink, fallbackUrl)
             job.cancel()
         }

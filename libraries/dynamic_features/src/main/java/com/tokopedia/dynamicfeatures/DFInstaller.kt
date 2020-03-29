@@ -37,7 +37,7 @@ object DFInstaller {
     internal var previousState: SplitInstallSessionState? = null
     internal var moduleSize = 0L
     internal var freeInternalSpaceBeforeDownload: Long = 0L
-    internal var progressTextPercentStringFirstTime = ""
+    internal var startDownloadPercentage = -1f
     internal var deeplink = ""
     internal var fallbackUrl = ""
 
@@ -240,7 +240,7 @@ object DFInstaller {
         DFTracking.trackDownloadDF(moduleNameToDownload, null, tag == DOWNLOAD_MODE_BACKGROUND)
         DFInstallerLogUtil.logStatus(context, CommonConstant.DFM_TAG, tag, moduleNameToDownload.joinToString(),
             freeInternalSpaceBeforeDownload, moduleSize, emptyList(), 1, true,
-            startDownloadTimestamp, System.currentTimeMillis(), progressTextPercentStringFirstTime,
+            startDownloadTimestamp, System.currentTimeMillis(), startDownloadPercentage,
             true, deeplink, fallbackUrl)
     }
 
@@ -250,7 +250,7 @@ object DFInstaller {
         DFTracking.trackDownloadDF(moduleNameToDownload, errorCodeTemp, tag == DOWNLOAD_MODE_BACKGROUND)
         DFInstallerLogUtil.logStatus(context, CommonConstant.DFM_TAG, tag, moduleNameToDownload.joinToString(),
             freeInternalSpaceBeforeDownload, moduleSize, errorCodeTemp, 1, false,
-            startDownloadTimestamp, System.currentTimeMillis(), progressTextPercentStringFirstTime,
+            startDownloadTimestamp, System.currentTimeMillis(), startDownloadPercentage,
             true, deeplink, fallbackUrl)
     }
 
@@ -269,7 +269,7 @@ object DFInstaller {
     private fun resetDFInfo() {
         moduleSize = 0
         freeInternalSpaceBeforeDownload = 0L
-        progressTextPercentStringFirstTime = ""
+        startDownloadPercentage = -1f
         deeplink = ""
         fallbackUrl = ""
     }
@@ -293,12 +293,10 @@ object SplitInstallListener : SplitInstallStateUpdatedListener {
                 if (DFInstaller.moduleSize == 0L) {
                     DFInstaller.moduleSize = state.totalBytesToDownload()
                 }
-                if (DFInstaller.progressTextPercentStringFirstTime.isEmpty()) {
+                if (DFInstaller.startDownloadPercentage < 0) {
                     val totalBytesToDowload = state.totalBytesToDownload().toInt()
                     val bytesDownloaded = state.bytesDownloaded().toInt()
-                    val progressTextPercentString = String.format("%.0f%%",
-                        bytesDownloaded.toFloat() * 100 / totalBytesToDowload)
-                    DFInstaller.progressTextPercentStringFirstTime = progressTextPercentString
+                    DFInstaller.startDownloadPercentage = bytesDownloaded.toFloat() * 100 / totalBytesToDowload
                 }
             }
             SplitInstallSessionStatus.INSTALLED -> {

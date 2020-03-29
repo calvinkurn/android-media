@@ -4,13 +4,16 @@ import com.tokopedia.dynamicfeatures.constant.CommonConstant
 
 object Utils {
 
+    fun getFormattedNumber(number: Float, format: String = "%.2f") : String {
+        return String.format(format, number)
+    }
+
     fun getDownloadDuration(startDownloadTime:Long, endDownloadTime:Long): String {
-        val diffTime = if (startDownloadTime > 0) {
+        val diffTime = 0f
+        if (startDownloadTime in 1 until endDownloadTime) {
             (endDownloadTime - startDownloadTime).toFloat() / 1000
-        } else {
-            0f
         }
-        return String.format("%.2f", diffTime)
+        return getFormattedNumber(diffTime)
     }
 
     fun getSizeInMB(size: Long): String {

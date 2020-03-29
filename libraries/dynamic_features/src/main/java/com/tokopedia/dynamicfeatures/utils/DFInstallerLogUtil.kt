@@ -24,7 +24,7 @@ object DFInstallerLogUtil {
                            isSuccess: Boolean = false,
                            startDownloadTime: Long = 0L,
                            endDownloadTime: Long = 0L,
-                           startProgressPercentage: String = "",
+                           startDownloadPercentage: Float = -1f,
                            singletonService: Boolean = true,
                            deeplink: String = "",
                            fallbackUrl: String = "") {
@@ -70,10 +70,10 @@ object DFInstallerLogUtil {
             // Additional download information
             messageBuilder.append(";dl_duration=${Utils.getDownloadDuration(startDownloadTime, endDownloadTime)}")
             messageBuilder.append(";start_progress=")
-            if (startProgressPercentage.isEmpty()) {
+            if (startDownloadPercentage < 0) {
                 messageBuilder.append("0")
             } else {
-                messageBuilder.append(startProgressPercentage)
+                messageBuilder.append(Utils.getFormattedNumber(startDownloadPercentage))
             }
             messageBuilder.append(";dl_service=$singletonService")
             messageBuilder.append(";deeplink='$deeplink'")
