@@ -20,7 +20,7 @@ data class ValidateInactivePhone (
 
     @SerializedName("is_success")
     @Expose
-    val isSuccess: Boolean = false,
+    var isSuccess: Boolean = false,
 
     @SerializedName("error")
     @Expose

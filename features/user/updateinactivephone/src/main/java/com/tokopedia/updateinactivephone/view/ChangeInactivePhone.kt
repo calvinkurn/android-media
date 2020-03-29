@@ -1,7 +1,6 @@
 package com.tokopedia.updateinactivephone.view
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView
-import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 
 class ChangeInactivePhone {
 
@@ -35,10 +34,5 @@ class ChangeInactivePhone {
 
         fun onPhoneTooLong()
 
-    }
-
-    interface Presenter : CustomerPresenter<View> {
-
-        fun checkPhoneNumberStatus(text: String)
     }
 }

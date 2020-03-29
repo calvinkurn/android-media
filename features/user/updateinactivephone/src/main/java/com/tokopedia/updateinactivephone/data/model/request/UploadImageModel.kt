@@ -6,6 +6,5 @@ data class UploadImageModel (
     var isSuccess: Boolean = false,
     var uploadImageData: UploadImageData? = null,
     var errorMessage: String? = null,
-    var responseCode: Int = 0,
-    var isResponseSuccess: Boolean = false
+    var responseCode: Int = 0
 )

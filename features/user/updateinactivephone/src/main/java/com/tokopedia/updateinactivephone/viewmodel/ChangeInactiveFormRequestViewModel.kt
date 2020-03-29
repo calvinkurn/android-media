@@ -6,15 +6,13 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.core.app.MainApplication
 import com.tokopedia.core.gcm.GCMHandler
 import com.tokopedia.core.util.SessionHandler
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants
 import com.tokopedia.updateinactivephone.data.model.request.ChangePhoneNumberRequestModel
-import com.tokopedia.updateinactivephone.data.model.request.UploadHostModel
-import com.tokopedia.updateinactivephone.data.model.request.UploadImageModel
+import com.tokopedia.updateinactivephone.data.model.response.GqlUpdatePhoneStatusResponse
 import com.tokopedia.updateinactivephone.data.model.response.GqlValidateUserDataResponse
 import com.tokopedia.updateinactivephone.data.model.response.ValidateUserDataResponse
 import com.tokopedia.updateinactivephone.di.UpdateInActiveContext
@@ -37,7 +35,7 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
         private val getValidationUserDataUsecase: GetValidationUserDataUseCase,
         private val getUploadHostUseCase: GetUploadHostUseCase,
         private val uploadImageUseCase: UploadImageUseCase,
-        private val submitImageUseCase: SubmitImgUseCase,
+        private val submitImageUseCase: SubmitImageUseCase,
         dispatcher: CoroutineDispatcher
 ): BaseViewModel(dispatcher) {
 
@@ -48,8 +46,8 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
     val validateUserDataResponse: LiveData<Result<ValidateUserDataResponse>>
         get() = mutableValidateUserDataResponse
 
-    private val mutableSubmitImage = MutableLiveData<Result<GraphqlResponse>>()
-    val submitImageLiveData: LiveData<Result<GraphqlResponse>>
+    private val mutableSubmitImage = MutableLiveData<Result<GqlUpdatePhoneStatusResponse>>()
+    val submitImageLiveData: LiveData<Result<GqlUpdatePhoneStatusResponse>>
         get() = mutableSubmitImage
 
     private val changePhoneNumberRequestModel = ChangePhoneNumberRequestModel()
@@ -80,13 +78,11 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
 
     fun isValidEmail(email: String): Int {
         var isValid = 0
-
         if (TextUtils.isEmpty(email)) {
             isValid = R.string.email_field_empty
         } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             isValid = R.string.invalid_email_error
         }
-
         return isValid
     }
 
@@ -180,17 +176,15 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
         params.putInt(UpdateInactivePhoneConstants.Constants.SERVER_ID, requestParams.getInt(UpdateInactivePhoneConstants.Constants.SERVER_ID, 49))
         params.putInt(UpdateInactivePhoneConstants.Constants.RESOLUTION, requestParams.getInt(UpdateInactivePhoneConstants.Constants.RESOLUTION, 215))
         params.putString(UpdateInactivePhoneConstants.Constants.TOKEN, requestParams.getString(UpdateInactivePhoneConstants.Constants.TOKEN, ""))
-        Log.d("PARAMS-ID0", changePhoneNumberRequestModel.uploadHostModel?.uploadHostData?.generatedHost?.uploadHost)
         if (!TextUtils.isEmpty(changePhoneNumberRequestModel.uploadHostModel?.uploadHostData?.generatedHost?.uploadHost)) {
             params.putString(UpdateInactivePhoneConstants.Constants.IMAGE_UPLOAD_URL, changePhoneNumberRequestModel.uploadHostModel?.uploadHostData?.generatedHost?.uploadHost)
         }
-        Log.d("PARAMS-ID", params.getString(UpdateInactivePhoneConstants.Constants.IMAGE_UPLOAD_URL, "KOSONG"))
         return params
     }
 
     private fun getSubmitImageParam(requestParams: RequestParams): RequestParams {
         val params = RequestParams.create()
-        params.putString(SubmitImgUseCase.PARAM_FILE_UPLOADED,
+        params.putString(SubmitImageUseCase.PARAM_FILE_UPLOADED,
                 generateFileUploaded(requestParams, changePhoneNumberRequestModel))
         params.putString(UpdateInactivePhoneConstants.QueryConstants.PHONE, requestParams.getString(UpdateInactivePhoneConstants.QueryConstants.PHONE, ""))
         params.putString(UpdateInactivePhoneConstants.QueryConstants.EMAIL, requestParams.getString(UpdateInactivePhoneConstants.QueryConstants.EMAIL, ""))
@@ -215,8 +209,6 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
         return reviewPhotos.toString()
     }
 
-
-
     private suspend fun getUploadHost(email: String, phone: String, userId: String) {
         requestParams = getUploadChangePhoneNumberRequestParam(email, phone, userId)
         val uploadHostModel = getUploadHostUseCase.getUploadHost(getUploadHostParam())
@@ -224,8 +216,7 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
         changePhoneNumberRequestModel.isSuccess = uploadHostModel.isSuccess
 
         when {
-            (changePhoneNumberRequestModel.uploadHostModel?.isSuccess == false &&
-                    changePhoneNumberRequestModel.uploadHostModel?.errorMessage != null) -> { throw RuntimeException(changePhoneNumberRequestModel.uploadHostModel?.errorMessage) }
+            (changePhoneNumberRequestModel.uploadHostModel?.isSuccess == false) -> { throw RuntimeException(changePhoneNumberRequestModel.uploadHostModel?.errorMessage) }
             (changePhoneNumberRequestModel.uploadHostModel?.isSuccess == true) -> { uploadIdImage() }
         }
     }
@@ -240,8 +231,7 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
         changePhoneNumberRequestModel.isSuccess = uploadImageModel?.isSuccess ?: false
 
         when {
-            (changePhoneNumberRequestModel.uploadIdImageModel?.isSuccess == false &&
-                    changePhoneNumberRequestModel.uploadIdImageModel?.errorMessage != null) -> { throw RuntimeException(changePhoneNumberRequestModel.uploadIdImageModel?.errorMessage) }
+            (changePhoneNumberRequestModel.uploadIdImageModel?.isSuccess == false) -> { throw RuntimeException(changePhoneNumberRequestModel.uploadIdImageModel?.errorMessage) }
             (changePhoneNumberRequestModel.uploadIdImageModel?.isSuccess == true) -> { uploadBankBookImage() }
         }
     }
@@ -256,8 +246,7 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
         changePhoneNumberRequestModel.isSuccess = uploadImageAccountModel?.isSuccess ?: false
 
         when {
-            (changePhoneNumberRequestModel.uploadBankBookImageModel?.isSuccess == false &&
-                    changePhoneNumberRequestModel.uploadBankBookImageModel?.errorMessage != null) -> { throw RuntimeException(changePhoneNumberRequestModel.uploadBankBookImageModel?.errorMessage) }
+            (changePhoneNumberRequestModel.uploadBankBookImageModel?.isSuccess == false) -> { throw RuntimeException(changePhoneNumberRequestModel.uploadBankBookImageModel?.errorMessage) }
             (changePhoneNumberRequestModel.uploadBankBookImageModel?.isSuccess == true) -> { submitImage() }
         }
     }
@@ -287,7 +276,7 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
         }
     }
 
-    private fun onSuccessSubmitImage(): (GraphqlResponse) -> Unit {
+    private fun onSuccessSubmitImage(): (GqlUpdatePhoneStatusResponse) -> Unit {
         return { mutableSubmitImage.value = Success(it) }
     }
 

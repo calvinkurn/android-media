@@ -20,8 +20,12 @@ class UploadHostMapper @Inject constructor() : Func1<UploadHostResponse, UploadH
             model.uploadHostData = response.data
         } else {
             model.isSuccess = false
-            model.errorMessage = "Terjadi kesalahan, silakan coba lagi nanti."
+            model.errorMessage = errorMessage
         }
         return model
+    }
+
+    companion object {
+        val errorMessage = "Terjadi kesalahan, silakan coba lagi nanti."
     }
 }

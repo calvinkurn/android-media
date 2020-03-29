@@ -1,7 +1,6 @@
 package com.tokopedia.updateinactivephone.view
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView
-import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 
 class ChangeInactiveFormRequest {
 
@@ -53,11 +52,4 @@ class ChangeInactiveFormRequest {
 
         fun onUpdateDataRequestSuccess()
     }
-
-    interface Presenter : CustomerPresenter<View> {
-
-        fun uploadPhotoIdImage(email: String, phone: String, userId: String)
-        fun validateUserData(email: String, phone: String, userId: String)
-    }
-
 }

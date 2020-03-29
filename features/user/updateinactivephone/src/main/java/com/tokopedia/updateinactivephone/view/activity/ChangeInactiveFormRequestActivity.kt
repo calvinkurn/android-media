@@ -94,13 +94,18 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(),
             dismissLoading()
             when(it){
                 is Success -> {
-                    val gqlUpdatePhoneStatusResponse = it.data.getData<GqlUpdatePhoneStatusResponse>(GqlUpdatePhoneStatusResponse::class.java)
-                    when(gqlUpdatePhoneStatusResponse.changeInactivePhoneQuery?.isSuccess) {
+                    when(it.data.changeInactivePhoneQuery.isSuccess) {
                         true -> { onUpdateDataRequestSuccess() }
-                        false -> { gqlUpdatePhoneStatusResponse.changeInactivePhoneQuery?.error?.let { error -> resolveError(error) } }
+                        false -> { it.data.changeInactivePhoneQuery.error.let { error -> resolveError(error) } }
                     }
                 }
-                is Fail -> { onPhoneServerError() }
+                is Fail -> {
+                    if(it.throwable.message != null) {
+                        onChangePhoneNumberError(it.throwable.message?: getString(R.string.error_general))
+                    } else {
+                        onPhoneServerError()
+                    }
+                }
             }
         })
     }
@@ -255,6 +260,10 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(),
         NetworkErrorHelper.showSnackbar(this)
     }
 
+    private fun onChangePhoneNumberError(errorMessage: String) {
+        NetworkErrorHelper.showSnackbar(this, errorMessage)
+    }
+
     override fun onSameMsisdn() {
         if (updateNewPhoneEmailFragment != null) {
             updateNewPhoneEmailFragment?.showErrorPhone(R.string.old_new_phone_same)
@@ -360,6 +369,7 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(),
             UpdateInactivePhoneConstants.ResponseConstants.INVALID_EMAIL.equals(error, ignoreCase = true) -> onEmailError()
             UpdateInactivePhoneConstants.ResponseConstants.SERVER_ERROR.equals(error, ignoreCase = true) -> onPhoneServerError()
             UpdateInactivePhoneConstants.ResponseConstants.MAX_REACHED_MSISDN.equals(error, ignoreCase = true) -> onMaxReachedPhone()
+            else -> onChangePhoneNumberError(getString(R.string.error_general))
         }
     }
 

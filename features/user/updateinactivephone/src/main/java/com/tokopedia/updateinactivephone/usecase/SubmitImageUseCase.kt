@@ -1,17 +1,17 @@
 package com.tokopedia.updateinactivephone.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants
+import com.tokopedia.updateinactivephone.data.model.response.GqlUpdatePhoneStatusResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class SubmitImgUseCase @Inject constructor(
-        private val gqlUseCase: GraphqlUseCase<GraphqlResponse>,
+class SubmitImageUseCase @Inject constructor(
+        private val gqlUseCase: GraphqlUseCase<GqlUpdatePhoneStatusResponse>,
         private val rawQueries: Map<String, String>
 ){
     fun submitImage(
-            onSuccess: (GraphqlResponse) -> Unit,
+            onSuccess: (GqlUpdatePhoneStatusResponse) -> Unit,
             onError: (Throwable) -> Unit,
             requestParams: RequestParams
     ){
@@ -19,7 +19,7 @@ class SubmitImgUseCase @Inject constructor(
         val rawQuery = rawQueries[UpdateInactivePhoneConstants.UpdateInactivePhoneQueryConstant.QUERY_UPDATE_PHONE_EMAIL]
         if(!rawQuery.isNullOrEmpty()){
             gqlUseCase.apply {
-                setTypeClass(GraphqlResponse::class.java)
+                setTypeClass(GqlUpdatePhoneStatusResponse::class.java)
                 setRequestParams(params)
                 setGraphqlQuery(rawQuery)
                 execute({ result ->

@@ -6,19 +6,19 @@ import com.google.gson.annotations.SerializedName
 data class GqlUpdatePhoneStatusResponse (
     @SerializedName("changeInactivePhone")
     @Expose
-    var changeInactivePhoneQuery: ChangeInactivePhoneQuery? = null
+    var changeInactivePhoneQuery: ChangeInactivePhoneQuery = ChangeInactivePhoneQuery()
 )
 
 data class ChangeInactivePhoneQuery (
     @SerializedName("__typename")
     @Expose
-    var __typename: String? = "",
+    var __typename: String = "",
 
     @SerializedName("is_success")
     @Expose
-    val isSuccess: Boolean = false,
+    var isSuccess: Boolean = false,
 
     @SerializedName("error")
     @Expose
-    var error: String? = ""
+    var error: String = ""
 )
