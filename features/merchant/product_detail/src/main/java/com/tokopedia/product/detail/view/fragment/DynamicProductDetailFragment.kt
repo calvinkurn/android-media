@@ -1037,8 +1037,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun observeInitialVariantData() {
         viewModel.initialVariantData.observe(viewLifecycleOwner, Observer {
-            pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = it
-            dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, null)
+            if (it == null) {
+                dynamicAdapter.clearElement(pdpHashMapUtil?.productNewVariantDataModel)
+            } else {
+                pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = it
+                dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, null)
+            }
         })
     }
 
@@ -2054,8 +2058,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.buttonActionType = buttonAction
         context?.let {
             val isVariant = viewModel.getDynamicProductInfoP1?.data?.variant?.isVariant ?: false
-            val isPartialySelected = pdpHashMapUtil?.productNewVariantDataModel?.isPartialySelected()
-                    ?: false
+            val isPartialySelected = pdpHashMapUtil?.productNewVariantDataModel?.isPartialySelected() ?: false
 
             if (!viewModel.isUserSessionActive) {
                 doLoginWhenUserClickButton()
