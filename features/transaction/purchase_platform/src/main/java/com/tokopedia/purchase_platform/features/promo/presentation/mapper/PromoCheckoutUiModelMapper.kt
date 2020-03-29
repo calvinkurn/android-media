@@ -135,7 +135,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     if (tmpErrorMessage.isEmpty()) {
                         tmpErrorMessage.append(couponItem.message)
                     }
-                    errorMessage = if (couponItem.radioCheckState == PromoListItemUiModel.UiState.STATE_IS_DISABLED) tmpErrorMessage.toString() else ""
+                    errorMessage = if (tmpErrorMessage.isNotBlank()) tmpErrorMessage.toString() else ""
                 },
                 uiState = PromoListItemUiModel.UiState().apply {
                     isParentEnabled = parentEnabled

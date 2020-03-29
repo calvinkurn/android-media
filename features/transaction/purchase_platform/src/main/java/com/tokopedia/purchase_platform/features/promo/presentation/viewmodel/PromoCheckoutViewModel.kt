@@ -710,8 +710,10 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 } else if (it is PromoListHeaderUiModel && it.uiData.tmpPromoItemList.isNotEmpty()) {
                     // Calculate clash on collapsed promo item
                     it.uiData.tmpPromoItemList.forEach {
-                        val tmpClashResult = checkAndSetClashOnSelectionEvent(it, selectedItem)
-                        if (!clashResult) clashResult = tmpClashResult
+                        if (it.uiData.promoCode != selectedItem.uiData.promoCode && it.uiData.clashingInfo.isNotEmpty()) {
+                            val tmpClashResult = checkAndSetClashOnSelectionEvent(it, selectedItem)
+                            if (!clashResult) clashResult = tmpClashResult
+                        }
                     }
                     _tmpUiModel.value = Update(it)
                 }
