@@ -722,7 +722,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun unCheckProducts(productIds: List<String>) {
         productIds.forEach { productId ->
             val index = adapter.data.indexOfFirst { it.id == productId }
-            if(index > 0) { onClickProductCheckBox(false, index) }
+            if(index >= 0) { onClickProductCheckBox(false, index) }
         }
         productManageListAdapter.notifyDataSetChanged()
     }
