@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.RouteManager
@@ -33,13 +34,16 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstan
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_VARIANT_SELECTION
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_STOCK_TYPE
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_CACHE_ID
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_PICKER_RESULT_CACHE_ID
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_RESULT_CACHE_ID
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.di.AddEditProductDescriptionModule
 import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescriptionComponent
 import com.tokopedia.product.addedit.description.presentation.adapter.VideoLinkTypeFactory
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
+import com.tokopedia.product.addedit.description.presentation.model.PictureViewModel
+import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.description.presentation.viewmodel.AddEditProductDescriptionViewModel
 import com.tokopedia.product.addedit.shipment.presentation.activity.AddEditProductShipmentActivity
@@ -68,13 +72,16 @@ class AddEditProductDescriptionFragment(
         const val TYPE_IDR = 1
         const val TYPE_USD = 2
 
+        const val IS_ADD = 0
         const val REQUEST_CODE_DESCRIPTION = 0x03
 
         // TODO faisalramd
         const val TEST_IMAGE_URL = "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/9/16/36162992/36162992_778e5d1e-06fd-4e4a-b650-50c232815b24_1080_1080.jpg"
     }
 
+
     private var videoId = 0
+    private var productVariantInputModel = ProductVariantInputModel()
     private lateinit var descriptionViewModel: AddEditProductDescriptionViewModel
 
     @Inject
@@ -156,10 +163,29 @@ class AddEditProductDescriptionFragment(
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && data != null) {
-            if (requestCode == REQUEST_CODE_SHIPMENT) {
-                val shipmentInputModel =
-                        data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
-                submitInput(shipmentInputModel)
+            when (requestCode) {
+                REQUEST_CODE_SHIPMENT -> {
+                    val shipmentInputModel =
+                            data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
+                    submitInput(shipmentInputModel)
+                }
+                REQUEST_CODE_VARIANT -> {
+                    val variantCacheId = data.getStringExtra(EXTRA_VARIANT_PICKER_RESULT_CACHE_ID)
+                    val cacheManager = SaveInstanceCacheManager(context!!, variantCacheId)
+                    if (data.hasExtra(EXTRA_PRODUCT_VARIANT_SELECTION)) {
+                        val productVariantViewModel = cacheManager.get(EXTRA_PRODUCT_VARIANT_SELECTION,
+                                object : TypeToken<ProductVariantInputModel>() {}.type, ProductVariantInputModel())
+                        productVariantViewModel?.let {
+                            productVariantInputModel.variantOptionParent = it.variantOptionParent
+                            productVariantInputModel.productVariant = it.productVariant
+                        }
+                    }
+                    if (data.hasExtra(EXTRA_PRODUCT_SIZECHART)) {
+                        val productPictureViewModel = cacheManager.get(EXTRA_PRODUCT_SIZECHART,
+                                object : TypeToken<PictureViewModel>() {}.type, PictureViewModel())
+                        productVariantInputModel.productSizeChart = productPictureViewModel
+                    }
+                }
             }
         }
     }
@@ -219,22 +245,22 @@ class AddEditProductDescriptionFragment(
         activity?.let {
             val cacheManager = SaveInstanceCacheManager(it, true).apply {
                 put(EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, variants)
-                put(EXTRA_PRODUCT_VARIANT_SELECTION, "") // must using json
+                put(EXTRA_PRODUCT_VARIANT_SELECTION, productVariantInputModel)
+                put(EXTRA_PRODUCT_SIZECHART, productVariantInputModel.productSizeChart)
                 put(EXTRA_CURRENCY_TYPE, TYPE_IDR)
                 put(EXTRA_DEFAULT_PRICE, 0.0)
                 put(EXTRA_STOCK_TYPE, "")
                 put(EXTRA_IS_OFFICIAL_STORE, false)
                 put(EXTRA_DEFAULT_SKU, "")
                 put(EXTRA_NEED_RETAIN_IMAGE, false)
-                put(EXTRA_PRODUCT_SIZECHART, null) // must using json
                 put(EXTRA_HAS_ORIGINAL_VARIANT_LV1, true)
                 put(EXTRA_HAS_ORIGINAL_VARIANT_LV2, false)
                 put(EXTRA_HAS_WHOLESALE, false)
-                put(EXTRA_IS_ADD, false)
+                put(EXTRA_IS_ADD, IS_ADD)
             }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_VARIANT_DASHBOARD)
             intent?.run {
-                putExtra(EXTRA_VARIANT_CACHE_ID, cacheManager.id)
+                putExtra(EXTRA_VARIANT_RESULT_CACHE_ID, cacheManager.id)
                 putExtra(EXTRA_IS_USING_CACHE_MANAGER, true)
                 startActivityForResult(this, REQUEST_CODE_VARIANT)
             }

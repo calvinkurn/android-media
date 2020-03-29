@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AlertDialog;
 
+import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductPictureViewModel;
 import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant;
 import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel;
@@ -18,6 +19,8 @@ import com.tokopedia.product.manage.item.common.util.StockTypeDef;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDashboardFragment;
 
 import java.util.ArrayList;
+
+import static com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant.EXTRA_VARIANT_PICKER_RESULT_CACHE_ID;
 
 /**
  * Created by nathan on 8/2/17.
@@ -107,9 +110,17 @@ public class ProductVariantDashboardActivity extends BaseSimpleActivity
     @Override
     public void onProductVariantSaved(ProductVariantViewModel productVariantViewModel,
                                       ProductPictureViewModel productPictureViewModel) {
+        // Extras for using cache manager
+        SaveInstanceCacheManager cacheManager =
+                new SaveInstanceCacheManager(this, true);
+        cacheManager.put(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_SELECTION, productVariantViewModel);
+        cacheManager.put(ProductExtraConstant.EXTRA_PRODUCT_SIZECHART, productPictureViewModel);
+
+        // Extras for not using cache manager
         Intent intent = new Intent();
         intent.putExtra(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_SELECTION, productVariantViewModel);
         intent.putExtra(ProductExtraConstant.EXTRA_PRODUCT_SIZECHART, productPictureViewModel);
+        intent.putExtra(EXTRA_VARIANT_PICKER_RESULT_CACHE_ID, cacheManager.getId()); // set cache manager id
         setResult(RESULT_OK, intent);
         this.finish();
     }

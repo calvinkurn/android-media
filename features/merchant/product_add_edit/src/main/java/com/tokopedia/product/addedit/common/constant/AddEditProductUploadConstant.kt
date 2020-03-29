@@ -23,7 +23,8 @@ class AddEditProductUploadConstant {
         const val EXTRA_IS_ADD = "EXTRA_IS_ADD"
 
         const val EXTRA_CATEGORY_ID = "category_id"
-        const val EXTRA_VARIANT_CACHE_ID = "variant_cache_id"
+        const val EXTRA_VARIANT_RESULT_CACHE_ID = "variant_cache_id"
+        const val EXTRA_VARIANT_PICKER_RESULT_CACHE_ID = "variant_result_cache_id"
         const val EXTRA_IS_USING_CACHE_MANAGER = "is_using_cache_manager"
 
         const val EXTRA_DESCRIPTION_INPUT = "EXTRA_DESCRIPTION_INPUT"
