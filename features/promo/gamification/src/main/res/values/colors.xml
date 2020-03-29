@@ -36,6 +36,15 @@
     <color name="gf_loader_title_color">#F531353B</color>
     <color name="gf_grey68">#ae31353b</color>
     <color name="gf_constraint_borderColor">#50000000</color>
+    <color name="gf_small_benefit_color">#29596A</color>
+    <color name="gf_box_orange_1">#FB8255</color>
+    <color name="gf_box_orange_2">#FA591D</color>
+    <color name="gf_box_black_shadow">#40000000</color>
+    <color name="gf_box_green_1">#41D19D</color>
+    <color name="gf_box_green_2">#06C17C</color>
+    <color name="gf_box_disabled_1">#C7CCD4</color>
+    <color name="gf_box_disabled_2">#B5BBC5</color>
+    <color name="gf_box_white_80">#80FFFFFF</color>
 
 
 </resources>

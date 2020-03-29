@@ -20,10 +20,7 @@ import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.data.entities.GetCouponDetail
 import com.tokopedia.gamification.giftbox.data.entities.GiftBoxRewardEntity
 import com.tokopedia.gamification.giftbox.presentation.adapter.CouponAdapter
-import com.tokopedia.gamification.giftbox.presentation.helpers.CouponItemDecoration
-import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
-import com.tokopedia.gamification.giftbox.presentation.helpers.doOnLayout
-import com.tokopedia.gamification.giftbox.presentation.helpers.updateLayoutParams
+import com.tokopedia.gamification.giftbox.presentation.helpers.*
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardState.Companion.COUPON_ONLY
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardState.Companion.COUPON_WITH_POINTS
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardState.Companion.POINTS_ONLY
@@ -97,7 +94,12 @@ class RewardContainer : FrameLayout {
             listItemWidthInTablet = 0f
         }
 
-        rvCoupons.addItemDecoration(CouponItemDecoration(isTablet, listItemWidthInTablet.toInt(), getScreenWidth()))
+        rvCoupons.addItemDecoration(CouponItemDecoration(isTablet,
+                listItemWidthInTablet.toInt(),
+                getScreenWidth(),
+                rvCoupons.dpToPx(36).toInt(),
+                rvCoupons.dpToPx(13).toInt()
+        ))
         couponAdapter = CouponAdapter(couponList, isTablet)
         rvCoupons.adapter = couponAdapter
 
@@ -271,7 +273,7 @@ class RewardContainer : FrameLayout {
     }
 
     fun setFinalTranslationOfCirclesTap(giftBoxTop: Int) {
-        val largeY = giftBoxTop + dpToPx(30f) - imageGlowCircleLarge.height.toFloat()
+        val largeY = giftBoxTop + dpToPx(30) - imageGlowCircleLarge.height.toFloat()
         val smallY = largeY + (imageGlowCircleLarge.height - imageGlowCircleSmall.height) / 2f
         val circleRewardY = smallY + (imageGlowCircleSmall.height - imageCircleReward.height) / 2f
         imageGlowCircleLarge.translationY = largeY
@@ -302,12 +304,6 @@ class RewardContainer : FrameLayout {
 
     private fun concentricCircleAnimation(smallImage: View, largeImage: View, giftboxTop: Int, isInfinite: Boolean): Animator {
 
-//        val largeY = giftboxTop + dpToPx(30f) - largeImage.height.toFloat()
-//        val smallY = largeY + (largeImage.height - smallImage.height) / 2f
-//        val circleRewardY = smallY + (smallImage.height - imageCircleReward.height) / 2f
-//        largeImage.translationY = largeY
-//        smallImage.translationY = smallY
-//        imageCircleReward.translationY = circleRewardY
         setFinalTranslationOfCirclesTap(giftboxTop)
 
 
@@ -358,16 +354,6 @@ class RewardContainer : FrameLayout {
         return animatorSet
     }
 
-    fun setPositionOfViews(height: Float, statusBarHeight: Float) {
-        llRewardTextLayout.translationY = height * 0.385f
-//        rvCoupons.translationY = height * 0.1281125f
-//        rvCoupons.translationY = (height * 0.0969f) + statusBarHeight
-    }
-
-    private fun dpToPx(dp: Float): Float {
-        return dp * (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
-    }
-
     @Retention(AnnotationRetention.SOURCE)
     @IntDef(COUPON_ONLY, POINTS_ONLY, COUPON_WITH_POINTS)
     annotation class RewardState {
@@ -378,10 +364,10 @@ class RewardContainer : FrameLayout {
         }
     }
 
-    fun getScreenWidth():Int {
+    fun getScreenWidth(): Int {
         val displayMetrics = DisplayMetrics()
         var width = 0
-        if(context is Activity) {
+        if (context is Activity) {
             (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
             width = displayMetrics.widthPixels
         }

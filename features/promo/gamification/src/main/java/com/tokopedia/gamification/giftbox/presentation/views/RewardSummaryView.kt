@@ -14,6 +14,7 @@ import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.presentation.adapter.RewardSummaryAdapter
 import com.tokopedia.gamification.giftbox.presentation.entities.RewardSummaryItem
 import com.tokopedia.gamification.giftbox.presentation.helpers.RewardItemDecoration
+import com.tokopedia.gamification.giftbox.presentation.helpers.dpToPx
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
@@ -63,7 +64,7 @@ class RewardSummaryView : FrameLayout {
         rvAdapter = RewardSummaryAdapter(dataList)
 
         rvRewards.layoutManager = LinearLayoutManager(context)
-        rvRewards.addItemDecoration(RewardItemDecoration())
+        rvRewards.addItemDecoration(RewardItemDecoration(rvRewards.dpToPx(8).toInt(), rvRewards.dpToPx(12).toInt()))
     }
 
     fun playRewardItemAnimation() {

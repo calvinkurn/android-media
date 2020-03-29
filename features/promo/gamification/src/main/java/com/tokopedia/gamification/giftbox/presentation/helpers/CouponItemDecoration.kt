@@ -4,11 +4,14 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
-class CouponItemDecoration(val isTablet: Boolean = false, val listItemWidthInTablet: Int, val screenWidth: Int) : RecyclerView.ItemDecoration() {
+class CouponItemDecoration(val isTablet: Boolean = false,
+                           val listItemWidthInTablet: Int,
+                           val screenWidth: Int,
+                           var topSpace:Int,
+                           var rightSpace:Int
+) : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-        var topSpace = parent.dpToPx(36).toInt()
-        var rightSpace = parent.dpToPx(13).toInt()
 
         val adapter = parent.adapter
         if (adapter != null) {

@@ -31,13 +31,14 @@ class CouponView @JvmOverloads constructor(
 
     override fun drawChild(canvas: Canvas?, child: View?, drawingTime: Long): Boolean {
         val shouldDrawChild = super.drawChild(canvas, child, drawingTime)
-        val imageHeight = getImageViewHeight()
-        if (imageHeight <= 0) {
-            cutTwoCircles(canvas!!)
-        } else {
-            cutTwoCircles(canvas!!, imageHeight.toFloat() / 2)
+        canvas?.let {can->
+            val imageHeight = getImageViewHeight()
+            if (imageHeight <= 0) {
+                cutTwoCircles(can)
+            } else {
+                cutTwoCircles(can, imageHeight.toFloat() / 2)
+            }
         }
-
         return shouldDrawChild
     }
 
