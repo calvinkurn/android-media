@@ -396,6 +396,7 @@ public class MainParentActivity extends BaseActivity implements
         });
         handleAppLinkBottomNavigation(savedInstanceState);
         initNewFeedClickReceiver();
+        registerNewFeedClickedReceiver();
     }
 
     @NotNull
@@ -654,8 +655,6 @@ public class MainParentActivity extends BaseActivity implements
             }
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(addShortcutsWeave, RemoteConfigKey.ENABLE_ASYNC_ADDSHORTCUTS, getContext());
-
-        registerNewFeedClickedReceiver();
 
         WeaveInterface checkAppSignatureWeave = new WeaveInterface() {
             @NotNull
