@@ -459,17 +459,13 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                             }
                         }
                     } else {
-                        val redStateList = ArrayList<String>()
-                        var resStateMessage = ""
+                        val redStateMap = HashMap<String, String>()
                         if (!responseValidatePromo.success) {
                             // Error promo global
-                            if (resStateMessage.isBlank()) {
-                                resStateMessage = responseValidatePromo.message.text
-                            }
                             if (responseValidatePromo.codes.isNotEmpty()) {
                                 responseValidatePromo.codes.forEach {
-                                    if (!redStateList.contains(it)) {
-                                        redStateList.add(it)
+                                    if (!redStateMap.containsKey(it)) {
+                                        redStateMap[it] = responseValidatePromo.message.text
                                     }
                                 }
                             }
@@ -478,12 +474,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                             if (responseValidatePromo.voucherOrders.isNotEmpty()) {
                                 responseValidatePromo.voucherOrders.forEach {
                                     if (!it.success) {
-                                        if (resStateMessage.isEmpty()) {
-                                            resStateMessage = responseValidatePromo.message.text
-                                        }
                                         if (it.code.isNotBlank()) {
-                                            if (!redStateList.contains(it.code)) {
-                                                redStateList.add(it.code)
+                                            if (!redStateMap.containsKey(it.code)) {
+                                                redStateMap[it.code] = it.message.text
                                             }
                                         }
                                     }
@@ -491,25 +484,28 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                             }
                         }
 
-                        if (resStateMessage.isNotBlank()) {
+                        if (redStateMap.isNotEmpty()) {
                             promoListUiModel.value?.forEach {
                                 if (it is PromoListItemUiModel) {
-                                    if (resStateMessage.contains(it.uiData.promoCode)) {
+                                    if (redStateMap.containsKey(it.uiData.promoCode)) {
                                         it.uiState.isSelected = false
+                                        it.uiData.errorMessage = redStateMap[it.uiData.promoCode] ?: ""
                                         it.uiState.isDisabled = true
                                         _tmpUiModel.value = Update(it)
                                     }
                                 } else if (it is PromoListHeaderUiModel && it.uiData.tmpPromoItemList.isNotEmpty()) {
                                     it.uiData.tmpPromoItemList.forEach {
-                                        if (resStateMessage.contains(it.uiData.promoCode)) {
+                                        if (redStateMap.containsKey(it.uiData.promoCode)) {
                                             it.uiState.isSelected = false
+                                            it.uiData.errorMessage = redStateMap[it.uiData.promoCode] ?: ""
                                             it.uiState.isDisabled = true
                                             _tmpUiModel.value = Update(it)
                                         }
                                     }
                                 }
                             }
-                            throw PromoErrorException(responseValidatePromo.message.text)
+                            calculateAndRenderTotalBenefit()
+                            throw PromoErrorException(responseValidatePromo.additionalInfo.errorDetail.message)
                         } else {
                             // Voucher global is empty and voucher orders are empty but the response is OK
                             // This section is added as fallback mechanism
