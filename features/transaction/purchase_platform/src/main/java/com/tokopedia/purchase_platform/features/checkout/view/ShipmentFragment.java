@@ -2115,7 +2115,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     // Clear logistic voucher data when any duration is selected and voucher is not null
                     if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null &&
                             !TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode()) && isClearPromo) {
-                        shipmentPresenter.cancelAutoApplyPromoStackLogistic(0, shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                        String promoLogisticCode = shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode();
+                        shipmentPresenter.cancelAutoApplyPromoStackLogistic(0, promoLogisticCode);
+                        ValidateUsePromoRequest validateUsePromoRequest = shipmentPresenter.getLastValidateUseRequest();
+                        if (validateUsePromoRequest != null) {
+                            for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
+                                if (ordersItem != null && ordersItem.getCodes().size() > 0) {
+                                    ordersItem.getCodes().remove(promoLogisticCode);
+                                }
+                            }
+                        }
                         shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
                         setBenefitSummaryInfoUiModel(null);
                         shipmentAdapter.clearTotalPromoStackAmount();
