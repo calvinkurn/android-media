@@ -880,6 +880,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                                        @Override
                                        public void onNext(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
+                                           ShipmentPresenter.this.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel;
                                            setCouponStateChanged(true);
                                            if (!TextUtils.isEmpty(validateUsePromoRevampUiModel.getPromoUiModel().getTickerInfoUiModel().getMessage())) {
                                                if (tickerAnnouncementHolderData == null) {
