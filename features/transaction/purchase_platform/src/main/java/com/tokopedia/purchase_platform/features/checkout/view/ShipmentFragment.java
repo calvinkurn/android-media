@@ -2615,15 +2615,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 ordersItem.setCodes(listCodes);
                 ordersItem.setUniqueId(shipmentCartItemModel.getCartString());
                 ordersItem.setShopId(shipmentCartItemModel.getShopId());
+                ordersItem.setInsurancePrice(shipmentCartItemModel.isInsurance() ? 1 : 0);
                 if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
                     if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
                         ordersItem.setShippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperId());
                         ordersItem.setSpId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperProductId());
-//                        ordersItem.setInsurancePrice();
                     } else if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff() != null) {
                         ordersItem.setShippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShipperId());
                         ordersItem.setSpId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff().getShipperProductId());
-//                        ordersItem.setInsurancePrice();
                     }
                 }
                 listOrderItem.add(ordersItem);
