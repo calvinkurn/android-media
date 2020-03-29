@@ -107,6 +107,9 @@ class ShopPageFragment :
 
         private const val CART_LOCAL_CACHE_NAME = "CART"
         private const val TOTAL_CART_CACHE_KEY = "CACHE_TOTAL_CART"
+        private const val PATH_HOME = "home"
+        private const val QUERY_SHOP_REF = "shop_ref"
+        private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
 
         @JvmStatic
         fun createInstance() = ShopPageFragment()
@@ -291,9 +294,10 @@ class ShopPageFragment :
                     if (shopDomain.isNullOrEmpty()) {
                         shopDomain = getQueryParameter(SHOP_DOMAIN)
                     }
-                    if (shopAttribution.isNullOrEmpty()) {
-                        shopAttribution = getQueryParameter(SHOP_ATTRIBUTION)
-                    }
+                    if (lastPathSegment.orEmpty() == PATH_HOME)
+                        tabPosition = TAB_POSITION_HOME
+                    shopRef = getQueryParameter(QUERY_SHOP_REF) ?: ""
+                    shopAttribution = getQueryParameter(QUERY_SHOP_ATTRIBUTION) ?: ""
                 }
             }
             shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageViewModel::class.java)

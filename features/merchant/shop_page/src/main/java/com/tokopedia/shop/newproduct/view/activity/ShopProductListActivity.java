@@ -9,7 +9,6 @@ import android.widget.EditText;
 
 import androidx.fragment.app.Fragment;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -33,6 +32,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.SCREEN_SHOP_PAGE;
@@ -47,7 +47,10 @@ public class ShopProductListActivity extends BaseSimpleActivity
         ShopPageProductListResultFragment.ShopPageProductListResultFragmentListener {
 
     public static final String SAVED_KEYWORD = "svd_keyword";
-
+    private static final String QUERY_SHOP_REF = "shop_ref";
+    private static final String QUERY_SORT = "shop_ref";
+    private static final String QUERY_ATTRIBUTION = "shop_ref";
+    private static final String QUERY_SEARCH = "shop_ref";
     private ShopComponent component;
     private String shopId;
     private String shopRef = "";
@@ -90,30 +93,6 @@ public class ShopProductListActivity extends BaseSimpleActivity
         return intent;
     }
 
-    @DeepLink(ApplinkConst.SHOP_ETALASE)
-    public static Intent getCallingIntentEtalaseSelected(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ShopProductListActivity.class)
-                .setData(uri.build())
-                .putExtra(ShopParamConstant.EXTRA_SHOP_ID, extras.getString(ShopParamConstant.KEY_SHOP_ID))
-                .putExtra(ShopParamConstant.EXTRA_ATTRIBUTION, extras.getString(ShopPageActivity.APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
-                .putExtra(ShopParamConstant.EXTRA_ETALASE_ID, extras.getString(ShopParamConstant.KEY_ETALASE_ID))
-                .putExtra(ShopParamConstant.EXTRA_SHOP_REF, extras.getString(ShopParamConstant.KEY_SHOP_REF));
-    }
-
-    @DeepLink(ApplinkConst.SHOP_ETALASE_WITH_KEYWORD_AND_SORT)
-    public static Intent getCallingIntentEtalaseSelectedWithKeywordAndSort(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ShopProductListActivity.class)
-                .setData(uri.build())
-                .putExtra(ShopParamConstant.EXTRA_SHOP_ID, extras.getString(ShopParamConstant.KEY_SHOP_ID))
-                .putExtra(ShopParamConstant.EXTRA_ATTRIBUTION, extras.getString(ShopPageActivity.APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
-                .putExtra(ShopParamConstant.EXTRA_ETALASE_ID, extras.getString(ShopParamConstant.KEY_ETALASE_ID))
-                .putExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, extras.getString(ShopParamConstant.KEY_KEYWORD))
-                .putExtra(ShopParamConstant.EXTRA_SORT_ID, extras.getString(ShopParamConstant.KEY_SORT))
-                .putExtra(ShopParamConstant.EXTRA_SHOP_REF, extras.getString(ShopParamConstant.KEY_SHOP_REF));
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         remoteConfig = new FirebaseRemoteConfigImpl(this);
@@ -130,6 +109,22 @@ public class ShopProductListActivity extends BaseSimpleActivity
         } else {
             keyword = savedInstanceState.getString(SAVED_KEYWORD, "");
         }
+        Uri data = getIntent().getData();
+        if(null != data){
+            List<String> pathSegments = data.getPathSegments();
+            if(pathSegments.size() >= 4){
+                shopId = data.getPathSegments().get(1);
+                etalaseId = data.getPathSegments().get(3);
+            }else{
+                shopId = "";
+                etalaseId = "";
+            }
+            shopRef = data.getQueryParameter(QUERY_SHOP_REF) == null ? "" : data.getQueryParameter(QUERY_SHOP_REF);
+            sort = data.getQueryParameter(QUERY_SORT) == null ? "" : data.getQueryParameter(QUERY_SORT);
+            attribution = data.getQueryParameter(QUERY_ATTRIBUTION) == null ? "" : data.getQueryParameter(QUERY_ATTRIBUTION);
+            keyword = data.getQueryParameter(QUERY_SEARCH) == null ? "" : data.getQueryParameter(QUERY_SEARCH);
+        }
+
         if (shopRef == null) {
             shopRef = "";
         }

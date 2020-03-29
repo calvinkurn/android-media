@@ -21,6 +21,15 @@
                     android:pathPattern="@string/path_shop_page"
                     android:scheme="@string/internal_scheme" />
 
+                <data
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_shop_page_home"
+                    android:scheme="@string/internal_scheme" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_shop_page_info"
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
 
@@ -48,7 +57,20 @@
             android:exported="true"
             android:label="@string/shop_product_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_shop_page_product_list_result"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+
+        </activity>
 
         <activity
             android:name=".sort.view.activity.ShopProductSortActivity"
