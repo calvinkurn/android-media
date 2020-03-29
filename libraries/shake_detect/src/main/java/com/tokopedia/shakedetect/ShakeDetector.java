@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 /**
  * Detects phone shaking. If more than 75% of the samples taken in the past 0.5s are
@@ -73,7 +74,7 @@ public class ShakeDetector implements SensorEventListener {
         sensorManager.registerListener(ShakeDetector.this, accelerometer,
                 SensorManager.SENSOR_DELAY_FASTEST);
         return true;
-      }).subscribe(aBoolean -> {
+      }).subscribeOn(Schedulers.io()).subscribe(aBoolean -> {
         //IGNORE
       }, throwable -> {
         //IGNORE
