@@ -1168,6 +1168,10 @@ public class HomeFragment extends BaseDaggerFragment implements
                     LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
                     "");
                 return true;
+        }).subscribe(aBoolean -> {
+            //IGNORE
+        }, throwable -> {
+            //IGNORE
         });
     }
 

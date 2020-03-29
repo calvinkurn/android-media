@@ -73,6 +73,10 @@ public class ShakeDetector implements SensorEventListener {
         sensorManager.registerListener(ShakeDetector.this, accelerometer,
                 SensorManager.SENSOR_DELAY_FASTEST);
         return true;
+      }).subscribe(aBoolean -> {
+        //IGNORE
+      }, throwable -> {
+        //IGNORE
       });
     }
     return accelerometer != null;
