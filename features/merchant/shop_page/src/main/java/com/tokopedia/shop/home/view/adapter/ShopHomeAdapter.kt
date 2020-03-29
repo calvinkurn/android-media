@@ -11,7 +11,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
-import com.tokopedia.shop.newproduct.view.adapter.scrolllistener.DataEndlessScrollListener
+import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 
 /**
  * Created by rizqiaryansa on 2020-02-21.

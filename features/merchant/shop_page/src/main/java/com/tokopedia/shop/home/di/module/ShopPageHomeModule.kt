@@ -12,8 +12,8 @@ import com.tokopedia.shop.home.GqlQueryConstant.GQL_GET_SHOP_PAGE_HOME_LAYOUT
 import com.tokopedia.shop.home.di.scope.ShopPageHomeScope
 import com.tokopedia.shop.home.util.CoroutineDispatcherProviderImpl
 import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
-import com.tokopedia.shop.newproduct.data.GQLQueryConstant
-import com.tokopedia.shop.newproduct.domain.interactor.GqlGetShopProductUseCase
+import com.tokopedia.shop.product.data.GQLQueryConstant
+import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface

@@ -32,7 +32,7 @@ import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.*
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.newproduct.view.activity.ShopProductListActivity
+import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 import com.tokopedia.shop.search.data.model.UniverseSearchResponse
 import com.tokopedia.shop.search.di.component.DaggerShopSearchProductComponent
 import com.tokopedia.shop.search.di.module.ShopSearchProductModule

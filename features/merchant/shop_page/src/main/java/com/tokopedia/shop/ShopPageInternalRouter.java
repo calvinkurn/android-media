@@ -5,7 +5,7 @@ import android.content.Intent;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.shop.newproduct.view.activity.ShopProductListActivity;
+import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 
 /**
  * Created by hendry on 03/09/18.
