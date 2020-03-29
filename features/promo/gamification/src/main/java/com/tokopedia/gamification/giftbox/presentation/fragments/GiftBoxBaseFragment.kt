@@ -186,7 +186,7 @@ open class GiftBoxBaseFragment : Fragment() {
             var userName = ""
             var shareText = ""
             context?.let {
-                userName = UserSession(it).name
+                userName = UserSession(it).name.trim()
                 shareText = String.format(it.getString(R.string.gami_gift_share), userName)
             }
 
