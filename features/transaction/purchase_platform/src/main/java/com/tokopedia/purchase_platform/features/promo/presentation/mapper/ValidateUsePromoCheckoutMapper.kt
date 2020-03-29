@@ -172,6 +172,7 @@ class ValidateUsePromoCheckoutMapper {
                 val detailItemUiModel = DetailsItemUiModel(
                         description = desc,
                         amountStr = amountStr,
+                        amount = details?.amount ?: 0,
                         type = type
                 )
                 listDetailsItemUiModel.add(detailItemUiModel)
