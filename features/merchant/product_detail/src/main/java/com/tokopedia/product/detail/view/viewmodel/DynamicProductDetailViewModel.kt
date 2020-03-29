@@ -453,7 +453,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 it
             } else if (it.name() == ProductDetailConstant.VARIANT && !isVariant) {
                 it
-            } else if (it.name() == ProductDetailConstant.UPCOMING_DEALS && !isTeaser) {
+            } else if (it.name() == ProductDetailConstant.UPCOMING_DEALS && !isTeaser && !isVariant) {
                 it
             } else {
                 null
@@ -727,7 +727,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     fun toggleTeaserNotifyMe(campaignId: Int, productId: Int, action: String, source: String) {
         launchCatchError(block = {
             toggleNotifyMeUseCase.createParams(campaignId, productId, action, source)
-            _toggleTeaserNotifyMe.value = Success(toggleNotifyMeUseCase.executeOnBackground().result.isSuccess)
+            val isSuccess = toggleNotifyMeUseCase.executeOnBackground().result.isSuccess
+            if (!isSuccess) _toggleTeaserNotifyMe.value = Fail(Throwable()) else
+                _toggleTeaserNotifyMe.value = Success(isSuccess)
         }) {
             _toggleTeaserNotifyMe.value = Fail(it)
         }

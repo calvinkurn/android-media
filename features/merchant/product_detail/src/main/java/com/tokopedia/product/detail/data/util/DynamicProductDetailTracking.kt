@@ -6,6 +6,7 @@ import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
@@ -611,8 +612,9 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.CLICK_CART_BUTTON_VARIANT)
         }
 
-        fun eventNotifyMe(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?,
-                          action: String) {
+        fun eventNotifyMe(productInfo: DynamicProductInfoP1, componentTrackDataModel: ComponentTrackDataModel?, notifyMe: Boolean) {
+            val action = if (notifyMe) ProductDetailCommonConstant.VALUE_TEASER_TRACKING_UNREGISTER else
+                ProductDetailCommonConstant.VALUE_TEASER_TRACKING_REGISTER
             val mapEvent = TrackAppUtils.gtmData(
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,

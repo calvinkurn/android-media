@@ -16,7 +16,7 @@
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
-        android:text="Kejar Diskon"
+        android:text="@string/notify_me_title"
         android:textColor="@color/light_N700_96"
         app:layout_constraintBottom_toTopOf="@+id/product_notify_subtitle"
         app:layout_constraintLeft_toLeftOf="parent"

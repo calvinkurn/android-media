@@ -2525,15 +2525,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         try {
             activity?.let {
                 if (viewModel.isUserSessionActive) {
-                    val action = if (data.notifyMe) {
-                        pdpHashMapUtil?.notifyMeMap?.notifyMe = false
-                        trackToggleNotifyMe(componentTrackDataModel, ProductDetailCommonConstant.VALUE_TEASER_TRACKING_UNREGISTER)
-                        ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
-                    } else {
-                        pdpHashMapUtil?.notifyMeMap?.notifyMe = true
-                        trackToggleNotifyMe(componentTrackDataModel, ProductDetailCommonConstant.VALUE_TEASER_TRACKING_REGISTER)
+                    val action = if (data.notifyMe) ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER else
                         ProductDetailCommonConstant.VALUE_TEASER_ACTION_REGISTER
-                    }
+                    pdpHashMapUtil?.notifyMeMap?.notifyMe?.let { notifyMe -> trackToggleNotifyMe(componentTrackDataModel, notifyMe) }
+                    pdpHashMapUtil?.notifyMeMap?.notifyMe = !data.notifyMe
                     dynamicAdapter.notifyNotifyMe(pdpHashMapUtil?.notifyMeMap, ProductDetailConstant.PAYLOAD_NOTIFY_ME)
                     viewModel.toggleTeaserNotifyMe(data.campaignID.toInt(), productId?.toInt()
                             ?: 0, action, ProductDetailCommonConstant.VALUE_TEASER_SOURCE)
@@ -2547,8 +2542,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun trackToggleNotifyMe(componentTrackDataModel: ComponentTrackDataModel?, action: String) {
-        DynamicProductDetailTracking.Click.eventNotifyMe(viewModel.getDynamicProductInfoP1, componentTrackDataModel,
-                action)
+    private fun trackToggleNotifyMe(componentTrackDataModel: ComponentTrackDataModel?, notifyMe: Boolean) {
+        viewModel.getDynamicProductInfoP1?.let {
+            DynamicProductDetailTracking.Click.eventNotifyMe(it, componentTrackDataModel, notifyMe)
+        }
     }
 }

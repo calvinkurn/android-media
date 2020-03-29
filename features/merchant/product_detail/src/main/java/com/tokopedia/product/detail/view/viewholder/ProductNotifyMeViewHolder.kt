@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
@@ -37,16 +38,16 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
     }
 
     private fun bindTitle(data: ProductNotifyMeDataModel) {
-        itemView.product_notify_title.showWithAction(data.campaignTypeName.isNotEmpty()) {
+        itemView.product_notify_title?.showWithAction(data.campaignTypeName.isNotEmpty()) {
             it.text = data.campaignTypeName
         }
     }
 
-    private fun <T : View> T?.showWithAction(shouldShow: Boolean, action: (T) -> Unit) {
-        if (this == null) return
-
+    private fun TextView.showWithAction(shouldShow: Boolean, action: (TextView) -> Unit) {
         if (shouldShow) {
             action(this)
+        } else {
+            this.text = getString(R.string.notify_me_title)
         }
     }
 
