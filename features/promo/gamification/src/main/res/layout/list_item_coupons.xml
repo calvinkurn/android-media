@@ -39,15 +39,15 @@
                 android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/t_promo_min_transaction"
-                android:textColor="@color/t_promo_grey96"
+                android:text="@string/gami_min_transaction"
+                android:textColor="@color/gf_loader_title_color"
                 app:typographyType="small" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvSubTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/t_promo_grey96"
+                android:textColor="@color/gf_loader_title_color"
                 android:textSize="@dimen/sp_14"
                 app:typographyType="heading_5"
                 tools:text="Rp100.000" />
