@@ -132,6 +132,7 @@ object ProductTrackingConstant {
         const val CLICK_EDIT_PRODUCT = "click - edit product"
         const val CLICK_ATC_NON_LOGIN = "click - tambah ke keranjang on pdp - non login"
 
+        const val CLICK_REQUEST_PERMISSION_IMEI = "click - beli but show popup request IMEI"
         const val CLICK_ACCEPT_PERMISSION = "click -  berikan akses on access request bottomsheet"
         const val CLICK_GO_TO_SETTING = "click - ke pengaturan hp on access request pop up"
         const val CLICK_PERMISSION_LATER = "click - ke nanti saja on access request pop up"

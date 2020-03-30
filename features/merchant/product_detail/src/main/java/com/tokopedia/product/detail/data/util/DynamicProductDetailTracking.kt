@@ -47,6 +47,17 @@ object DynamicProductDetailTracking {
 
     object Click {
 
+        fun eventClickBuyAskForImei(userId: String, productInfo: DynamicProductInfoP1?) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.CLICK_REQUEST_PERMISSION_IMEI, "")
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = userId != "0"
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.CLICK_REQUEST_PERMISSION_IMEI)
+        }
+
         fun eventClickAcceptPhoneStatePermission(userId: String, productInfo: DynamicProductInfoP1?) {
             val mapEvent = TrackAppUtils.gtmData(
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
