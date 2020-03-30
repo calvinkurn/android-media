@@ -8,16 +8,16 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="176dp"
-        android:background="#f3f4f5">
+        android:layout_height="@dimen/setting_notif_dp_176"
+        android:background="@color/bg_big_divider">
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginStart="57dp"
-            android:layout_marginEnd="57dp"
+            android:layout_marginStart="@dimen/setting_notif_dp_57"
+            android:layout_marginEnd="@dimen/setting_notif_dp_57"
             android:src="@drawable/bg_notifsetting_information"/>
 
     </RelativeLayout>
