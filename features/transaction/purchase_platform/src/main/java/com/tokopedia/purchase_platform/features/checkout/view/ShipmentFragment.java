@@ -710,20 +710,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             recipientAddressModel.setDisableMultipleAddress(true);
         }
         shipmentAdapter.setShowOnboarding(shipmentPresenter.isShowOnboarding());
-        if (shipmentPresenter.getCampaignTimer() != null) {
-            CampaignTimerUi timer = shipmentPresenter.getCampaignTimer();
-
-            long diff = DateHelper.timeSince(timer.getTimerServer(), timer.getTimerExpired());
-
-            cdLayout.setVisibility(View.VISIBLE);
-            cdText.setText(timer.getTimerDescription());
-            cdView.setupTimerFromRemianingMillis(diff, () -> {
-                if (getFragmentManager() != null) {
-                    ExpiredTimeDialog dialog = ExpiredTimeDialog.newInstance(timer);
-                    dialog.show(getFragmentManager(), "expired dialog");
-                }
-            });
-        }
+        setCampaignTimer();
         initRecyclerViewData(
                 shipmentPresenter.getTickerAnnouncementHolderData(),
                 shipmentAdapter.getPromoGlobalStackData(),
@@ -3065,6 +3052,23 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         checkoutAnalyticsCourierSelection.eventClickUbahTitikDropoffButton();
         startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.DROPOFF_PICKER),
                 LogisticConstant.REQUEST_CODE_PICK_DROP_OFF_TRADE_IN);
+    }
+
+    private void setCampaignTimer() {
+        if (shipmentPresenter.getCampaignTimer() != null) {
+            CampaignTimerUi timer = shipmentPresenter.getCampaignTimer();
+
+            long diff = DateHelper.timeSince(timer.getTimerServer(), timer.getTimerExpired());
+
+            cdLayout.setVisibility(View.VISIBLE);
+            cdText.setText(timer.getTimerDescription());
+            cdView.setupTimerFromRemianingMillis(diff, () -> {
+                if (getFragmentManager() != null) {
+                    ExpiredTimeDialog dialog = ExpiredTimeDialog.newInstance(timer);
+                    dialog.show(getFragmentManager(), "expired dialog");
+                }
+            });
+        }
     }
 
     private void onResultFromSetTradeInPinpoint(Intent data) {
