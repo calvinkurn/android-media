@@ -36,10 +36,12 @@ class ProductManageQuickEditStockViewModelTest: ProductManageQuickEditStockViewM
     @Test
     fun `when_stock_is_valid_should_set_stock_to_desired_value`() {
         val validStock = 10
+        val expectedStatus = ProductStatus.ACTIVE
 
         viewModel.updateStock(validStock)
 
         verifyStockEquals(validStock)
+        verifyStatusEquals(expectedStatus)
     }
 
     @Test
@@ -49,6 +51,18 @@ class ProductManageQuickEditStockViewModelTest: ProductManageQuickEditStockViewM
         viewModel.updateStatus(validStatus)
 
         verifyStatusEquals(validStatus)
+    }
+
+    @Test
+    fun `when_update_sotck_is_submit_should_set_stock_to_desired_value_and_keep_status_the_same`() {
+        val validStatus = ProductStatus.INACTIVE
+        val validStock = 10
+
+        viewModel.updateStatus(validStatus)
+        viewModel.updateStock(validStock, true)
+
+        verifyStatusEquals(validStatus)
+        verifyStockEquals(validStock)
     }
 
     private fun verifyStockEquals(expectedStock: Int) {
