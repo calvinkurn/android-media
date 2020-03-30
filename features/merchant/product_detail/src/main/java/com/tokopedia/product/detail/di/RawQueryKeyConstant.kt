@@ -34,5 +34,4 @@ object RawQueryKeyConstant {
     const val QUERY_PDP_FINANCING_RECOMMENDATION = "pdpFinancingRecommendation"
     const val QUERY_PDP_FINANCING_CALCULATION = "pdpFinancingCalculation"
     const val MUTATION_NOTIFY_ME = "query_notify_me"
-    const val QUERY_GET_CART_TYPE = "pdpGetCartType"
 }
