@@ -26,7 +26,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
@@ -65,28 +64,23 @@ import com.tokopedia.product.manage.feature.etalase.view.fragment.EtalasePickerF
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
 import com.tokopedia.product.manage.feature.list.constant.ProductManageUrl
+import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
 import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
-import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.decoration.ProductListItemDecoration
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactory
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.FilterTabViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
-import com.tokopedia.product.manage.feature.list.view.model.SearchEmptyModel
-import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
-import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult
+import com.tokopedia.product.manage.feature.list.view.model.*
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
-import com.tokopedia.product.manage.feature.list.view.model.ProductEmptyModel
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.*
-import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageBottomSheet
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.StockInformationBottomSheet
-import com.tokopedia.product.manage.feature.multiedit.ui.bottomsheet.ProductMultiEditBottomSheet
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
+import com.tokopedia.product.manage.feature.multiedit.ui.bottomsheet.ProductMultiEditBottomSheet
 import com.tokopedia.product.manage.feature.multiedit.ui.toast.MultiEditToastMessage.getRetryMessage
 import com.tokopedia.product.manage.feature.multiedit.ui.toast.MultiEditToastMessage.getSuccessMessage
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
@@ -124,12 +118,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_product_manage.*
-import kotlinx.android.synthetic.main.fragment_product_manage.view.*
 import java.net.UnknownHostException
 import java.util.*
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductManageAdapterFactory>(),
         BaseListCheckableAdapter.OnCheckableAdapterListener<ProductViewModel>,
@@ -180,7 +172,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getFilterOptionsFromArguments()
         initView()
         loadInitialData()
     }
@@ -214,20 +205,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         getProductListFeaturedOnlySize()
         getTopAdsFreeClaim()
         getGoldMerchantStatus()
-        setOnPullToRefresh()
         context?.let { dialogFeaturedProduct = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ILLUSTRATION) }
-    }
-
-    private fun setOnPullToRefresh() = view?.run {
-        swipe_refresh_layout.setOnRefreshListener {
-            clearProductList()
-            clearSelectedProduct()
-            renderCheckedView()
-            getFiltersTab()
-            hideSnackBarRetry()
-            loadInitialData()
-            swipe_refresh_layout.isRefreshing = true
-        }
     }
 
     //set filter options if filterOptions is not null or empty
@@ -244,20 +222,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
     }
 
-    private fun getFilterOptionsFromArguments() {
-        val mFilterOptions = arguments?.getStringArrayList(FILTER_OPTIONS).orEmpty()
-        defaultFilterOptions = mFilterOptions.map {
-            return@map when (it) {
-                FilterOption.NEW_ONLY -> FilterByCondition.NewOnly
-                FilterOption.USED_ONLY -> FilterByCondition.UsedOnly
-                FilterOption.EMPTY_STOCK_ONLY -> FilterByCondition.EmptyStockOnly
-                FilterOption.VARIANT_ONLY -> FilterByCondition.VariantOnly
-                FilterOption.CASH_BACK_ONLY -> FilterByCondition.CashBackOnly
-                FilterOption.WHOLESALE_ONLY -> FilterByCondition.WholesaleOnly
-                FilterOption.PRE_ORDER_ONLY -> FilterByCondition.PreorderOnly
-                else -> FilterByCondition.FeaturedOnly //FilterOption.FEATURED_ONLY
-            }
-        }
+    fun setDefaultFilterOptions(filterOptions: List<FilterOption>) {
+        defaultFilterOptions = filterOptions
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -458,8 +424,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        ProductManageListInstance.getComponent((requireActivity().application))
-                .inject(this)
+        getComponent(ProductManageListComponent::class.java).inject(this)
     }
 
     override fun loadData(page: Int) {
@@ -506,11 +471,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         renderProductList(productList, hasNextPage)
         renderMultiSelectProduct()
         setDefaultFilterOption()
-        dismissRefresherLoadingIndicator()
-    }
-
-    private fun dismissRefresherLoadingIndicator() {
-        view?.swipe_refresh_layout?.isRefreshing = false
     }
 
     private fun renderMultiSelectProduct() {
@@ -757,6 +717,14 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 renderMultiSelectProduct()
             }
         }
+    }
+
+    override fun onSwipeRefresh() {
+        clearProductList()
+        clearSelectedProduct()
+        renderCheckedView()
+        getFiltersTab()
+        super.onSwipeRefresh()
     }
 
     private fun clearSearchBarInput() {
@@ -1424,15 +1392,5 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     companion object {
         private const val LOCAL_PATH_IMAGE_LIST = "loca_img_list"
         private const val DESC_IMAGE_LIST = "desc_img_list"
-        private const val FILTER_OPTIONS = "filter_options"
-
-        @JvmStatic
-        fun newInstance(filterOptions: ArrayList<String>): ProductManageFragment {
-            return ProductManageFragment().apply {
-                arguments = Bundle().apply {
-                    putStringArrayList(FILTER_OPTIONS, filterOptions)
-                }
-            }
-        }
     }
 }
