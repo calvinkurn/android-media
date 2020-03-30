@@ -7,7 +7,6 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.recharge_credit_card.R
-import com.tokopedia.recharge_credit_card.getColorFromResources
 import com.tokopedia.recharge_credit_card.util.RechargeCCUtil
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_cc_number.view.*
@@ -122,14 +121,10 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
 
     private fun disableBtnNext() {
         cc_button_next.isEnabled = false
-        cc_button_next.setBackgroundResource(com.tokopedia.design.R.drawable.grey_button_rounded)
-        cc_button_next.setTextColor(context.resources.getColorFromResources(context, R.color.cc_next_grey))
     }
 
     private fun enableBtnNext() {
         cc_button_next.isEnabled = true
-        cc_button_next.setBackgroundResource(com.tokopedia.design.R.drawable.bg_button_green)
-        cc_button_next.setTextColor(context.resources.getColorFromResources(context, com.tokopedia.design.R.color.white))
     }
 
     interface ActionListener {

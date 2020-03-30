@@ -35,12 +35,12 @@ class CreditCardBankAdapter(private val listBank: List<RechargeCCBank>) : Recycl
         fun bindView(rechargeCCBank: RechargeCCBank, position: Int) {
             if (position.rem(2) == 0) {
                 itemBankCC.text = rechargeCCBank.name
-                itemBankCC.setTextColor(context.resources.getColorFromResources(context, com.tokopedia.design.R.color.white))
-                itemBankCC.setBackgroundColor(context.resources.getColorFromResources(context, com.tokopedia.design.R.color.tkpd_main_green))
+                itemBankCC.setTextColor(context.resources.getColorFromResources(context, com.tokopedia.unifyprinciples.R.color.light_N0))
+                itemBankCC.setBackgroundColor(context.resources.getColorFromResources(context, com.tokopedia.unifyprinciples.R.color.light_G400))
             } else {
                 itemBankCC.text = rechargeCCBank.name
-                itemBankCC.setTextColor(context.resources.getColorFromResources(context, com.tokopedia.design.R.color.label_text_color))
-                itemBankCC.setBackgroundColor(context.resources.getColorFromResources(context, com.tokopedia.design.R.color.white))
+                itemBankCC.setTextColor(context.resources.getColorFromResources(context, com.tokopedia.unifyprinciples.R.color.light_N700_68))
+                itemBankCC.setBackgroundColor(context.resources.getColorFromResources(context, com.tokopedia.unifyprinciples.R.color.light_N0))
             }
         }
     }

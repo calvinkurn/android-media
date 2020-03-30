@@ -3,7 +3,6 @@ package com.tokopedia.recharge_credit_card
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.InputFilter
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +14,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -110,6 +110,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
             }
 
             override fun onShowErrorCreditCard(message: String) {
+                KeyboardHandler.hideSoftKeyboard(activity)
                 showErrorToaster(message)
             }
 
@@ -120,10 +121,12 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
         list_bank_btn.setOnClickListener {
             activity?.let {
-                val bottomSheetBankList = CCBankListBottomSheet()
+                val bottomSheetBankList = CCBankListBottomSheet(categoryId)
                 bottomSheetBankList.show(it.supportFragmentManager, "Bank list")
             }
         }
+
+        creditCardAnalytics.impressionInitialPage(categoryId, "")
     }
 
     private fun getDataBundle() {
@@ -147,7 +150,6 @@ class RechargeCCFragment : BaseDaggerFragment() {
         rechargeCCViewModel.tickers.observe(this, Observer {
             renderTicker(it)
             performanceMonitoring.stopTrace()
-            creditCardAnalytics.impressionInitialPage("", "")
         })
     }
 

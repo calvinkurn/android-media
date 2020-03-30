@@ -25,17 +25,16 @@
         app:layout_constraintGuide_begin="?actionBarSize"
         tools:layout_constraintGuide_begin="@dimen/cc_space_90" />
 
-    <Button
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/cc_button_next"
-        style="@style/Button.Submit.Orange"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginRight="0dp"
-        android:background="@drawable/grey_button_rounded"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="@string/cc_cta_btn_primary"
-        android:textColor="@color/cc_next_grey"
-        android:visibility="visible"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:unifyButtonVariant="filled"
+        app:unifyButtonSize="large"
+        app:unifyButtonType="main"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline" />
+        app:layout_constraintTop_toTopOf="@+id/guideline"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
