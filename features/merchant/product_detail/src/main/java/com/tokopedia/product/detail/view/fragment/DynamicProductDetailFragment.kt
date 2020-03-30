@@ -132,7 +132,6 @@ import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.variant_common.model.VariantOptionWithAttribute
@@ -2105,7 +2104,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             if (viewModel.getDynamicProductInfoP1?.checkImei(enableCheckImeiRemoteConfig) == true) {
                 activity?.run {
                     ImeiPermissionAsker.checkImeiPermission(this, {
-                        showImeiPermissionDialog()
+                        showImeiPermissionBottomSheet()
                     }, { hitAtc(buttonAction) }) { onNeverAskAgain() }
                 }
             } else hitAtc(buttonAction)
@@ -2593,8 +2592,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun showImeiPermissionDialog() {
+    private fun showImeiPermissionBottomSheet() {
         activity?.run {
+            DynamicProductDetailTracking.Click.eventClickBuyAskForImei(viewModel.userId, viewModel.getDynamicProductInfoP1)
             CheckImeiBottomSheet.showPermissionDialog(this) {
                 DynamicProductDetailTracking.Click.eventClickAcceptPhoneStatePermission(viewModel.userId, viewModel.getDynamicProductInfoP1)
                 ImeiPermissionAsker.askImeiPermissionFragment(this@DynamicProductDetailFragment)
