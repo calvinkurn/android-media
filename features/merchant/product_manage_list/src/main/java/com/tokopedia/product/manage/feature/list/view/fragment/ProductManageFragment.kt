@@ -237,6 +237,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     override fun onClickProductFilter(filter: FilterTabViewModel, viewHolder: FilterTabViewHolder, tabName: String) {
         showLoadingProgress()
+        setMultiSelectEnabled(false)
         clickStatusFilterTab(filter, viewHolder)
         ProductManageTracking.eventInventory(tabName)
     }
@@ -297,6 +298,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         searchBar.searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 searchBar.clearFocus()
+                showLoadingProgress()
                 getProductList(isRefresh = true)
                 return@setOnEditorActionListener true
             }
@@ -750,8 +752,9 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         isLoadingInitialData = true
         swipeToRefresh.isRefreshing = true
 
+        showPageLoading()
         hideSnackBarRetry()
-        resetMultiSelectProduct()
+        resetProductList()
         setMultiSelectEnabled(false)
 
         getFiltersTab(withDelay = true)
@@ -1277,6 +1280,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 }
                 is Fail -> showErrorToast()
             }
+            hidePageLoading()
         }
     }
 
@@ -1304,10 +1308,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
             if(multiSelectEnabled) {
                 showMultiSelectView()
-                clearProductList()
+                clearAllData()
             } else {
                 hideMultiSelectView()
-                resetMultiSelectProduct()
+                resetProductList()
             }
 
             showProductList(productList)
@@ -1327,8 +1331,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         btnMultiEdit.hide()
     }
 
-    private fun resetMultiSelectProduct() {
-        clearProductList()
+    private fun resetProductList() {
+        clearAllData()
         resetSelectAllCheckBox()
         clearSelectedProduct()
         renderCheckedView()
@@ -1370,9 +1374,19 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             when(it) {
                 is ShowProgressDialog -> showLoadingProgress()
                 is HideProgressDialog -> hideLoadingProgress()
-                is RefreshList -> clearProductList()
+                is RefreshList -> resetProductList()
             }
         }
+    }
+
+    private fun showPageLoading() {
+        mainContainer.hide()
+        pageLoading.show()
+    }
+
+    private fun hidePageLoading() {
+        mainContainer.show()
+        pageLoading.hide()
     }
     // endregion
 
@@ -1392,10 +1406,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             checkBoxSelectAll.isChecked = false
             checkBoxSelectAll.setIndeterminate(false)
         }
-    }
-
-    private fun clearProductList() {
-        adapter.clearAllElements()
     }
 
     private fun goToProductDraft(imageUrls: ArrayList<String>?, imageDescList: ArrayList<String>?) {
