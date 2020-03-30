@@ -25,6 +25,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.SeeMorePdpDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.typeFactory.FlashSaleCardViewTypeFactoryImpl
+import com.tokopedia.home.util.setGradientBackground
 import com.tokopedia.productcard.ProductCardFlashSaleModel
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.unifycomponents.Toaster
@@ -136,7 +137,7 @@ class MixTopBannerViewHolder(
         bannerDescription.text = bannerItem.description
         bannerDescription.visibility = if(bannerItem.description.isEmpty()) View.GONE else View.VISIBLE
 
-        background.setBackgroundColor(backColor)
+        background.setGradientBackground("#4fd15a","#12883d")
         bannerTitle.setTextColor(textColor)
         bannerDescription.setTextColor(textColor)
 
