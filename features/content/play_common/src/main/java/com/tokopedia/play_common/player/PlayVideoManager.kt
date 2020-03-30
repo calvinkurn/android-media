@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.database.ExoDatabaseProvider
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
@@ -14,6 +15,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.Loader.UnexpectedLoaderException
+import com.google.android.exoplayer2.upstream.cache.*
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.play_common.exception.PlayVideoErrorException
 import com.tokopedia.play_common.model.PlayBufferControl
@@ -23,16 +25,22 @@ import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.play_common.state.VideoPositionHandle
 import com.tokopedia.play_common.types.PlayVideoType
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
+import kotlinx.coroutines.*
+import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
+import kotlin.coroutines.CoroutineContext
 import kotlin.properties.Delegates
 
 /**
  * Created by jegul on 03/12/19
  */
-class PlayVideoManager private constructor(private val applicationContext: Context) {
+class PlayVideoManager private constructor(private val applicationContext: Context) : CoroutineScope {
 
     companion object {
+        private const val MAX_CACHE_BYTES: Long = 10 * 1024 * 1024
+        private const val CACHE_FOLDER_NAME = "play_video"
+
         private const val RETRY_COUNT_LIVE = 1
         private const val RETRY_COUNT_DEFAULT = 2
         private const val RETRY_DELAY = 2000L
@@ -60,6 +68,11 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
             }
         }
     }
+
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.Main
+
+    private val job = SupervisorJob()
 
     private val exoPlaybackExceptionParser = ExoPlaybackExceptionParser()
     private var currentPrepareState: PlayVideoPrepareState = getDefaultPrepareState()
@@ -194,6 +207,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     fun releasePlayer() {
         currentPrepareState = getDefaultPrepareState()
         videoPlayer.release()
+        releaseCache()
     }
 
     fun stopPlayer(resetState: Boolean = true) {
@@ -254,17 +268,17 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     //region private method
     private fun getMediaSourceBySource(context: Context, uri: Uri): MediaSource {
         val mDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "Play"))
+        val cacheDataSourceFactory = CacheDataSourceFactory(playerModel.cache, mDataSourceFactory)
         val errorHandlingPolicy = getErrorHandlingPolicy()
         val mediaSource = when (val type = Util.inferContentType(uri)) {
-            C.TYPE_SS -> SsMediaSource.Factory(mDataSourceFactory).setLoadErrorHandlingPolicy(errorHandlingPolicy)
-            C.TYPE_DASH -> DashMediaSource.Factory(mDataSourceFactory).setLoadErrorHandlingPolicy(errorHandlingPolicy)
-            C.TYPE_HLS -> HlsMediaSource.Factory(mDataSourceFactory).setLoadErrorHandlingPolicy(errorHandlingPolicy)
-            C.TYPE_OTHER -> ProgressiveMediaSource.Factory(mDataSourceFactory).setLoadErrorHandlingPolicy(errorHandlingPolicy)
+            C.TYPE_SS -> SsMediaSource.Factory(cacheDataSourceFactory).setLoadErrorHandlingPolicy(errorHandlingPolicy)
+            C.TYPE_DASH -> DashMediaSource.Factory(cacheDataSourceFactory).setLoadErrorHandlingPolicy(errorHandlingPolicy)
+            C.TYPE_HLS -> HlsMediaSource.Factory(cacheDataSourceFactory).setLoadErrorHandlingPolicy(errorHandlingPolicy)
+            C.TYPE_OTHER -> ProgressiveMediaSource.Factory(cacheDataSourceFactory).setLoadErrorHandlingPolicy(errorHandlingPolicy)
             else -> throw IllegalStateException("Unsupported type: $type")
         }
         return mediaSource.createMediaSource(uri)
     }
-    //endregion
 
     private fun getErrorHandlingPolicy(): LoadErrorHandlingPolicy {
         return object : DefaultLoadErrorHandlingPolicy() {
@@ -287,10 +301,33 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
                 .build()
                 .apply { addListener(playerEventListener) }
 
-        return PlayPlayerModel(videoPlayer, videoLoadControl)
+        return PlayPlayerModel(videoPlayer, videoLoadControl, initCache(playerModel))
     }
 
     private fun initCustomLoadControl(bufferControl: PlayBufferControl): PlayVideoLoadControl {
         return PlayVideoLoadControl(bufferControl)
     }
+
+    private fun initCache(playerModel: PlayPlayerModel?): Cache {
+        return if (playerModel?.cache == null) {
+            SimpleCache(
+                    File(applicationContext.filesDir, CACHE_FOLDER_NAME),
+                    LeastRecentlyUsedCacheEvictor(MAX_CACHE_BYTES),
+                    ExoDatabaseProvider(applicationContext)
+            )
+        } else playerModel.cache
+    }
+
+    /**
+     * If and only if this function causes leak, please contact the owner of this module
+     */
+    private fun releaseCache() {
+        launch {
+            withContext(Dispatchers.IO) {
+                playerModel.cache?.release()
+            }
+            playerModel.copy(cache = null)
+        }
+    }
+    //endregion
 }
