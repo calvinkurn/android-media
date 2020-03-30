@@ -11,6 +11,7 @@ import com.tokopedia.purchase_platform.features.checkout.view.viewholder.PromoCh
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentButtonPaymentViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentDonationViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentEmasViewHolder;
+import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentInsuranceTncViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentNotifierViewHolder;
 
 /**
@@ -44,6 +45,8 @@ public class ShipmentItemDecoration extends RecyclerView.ItemDecoration {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
         } else if (viewHolder.getAdapterPosition() == parent.getAdapter().getItemCount() - 1) {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_14);
+        } else if (viewHolder instanceof ShipmentInsuranceTncViewHolder) {
+            outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
         } else {
             outRect.bottom = verticalSpaceHeight;
         }

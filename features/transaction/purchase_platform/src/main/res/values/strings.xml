@@ -208,7 +208,7 @@
 
     <string name="label_total_cashback">Total Cashback</string>
     <string name="label_total_discount">Total Diskon</string>
-    <string name="label_shipping_discount">Total Potongan Ongkos Kirim</string>
+    <string name="label_shipping_discount">Total Diskon Ongkos Kirim</string>
     <string name="label_product_discount">Total Diskon Barang</string>
     <string name="activity_title_checkout_variant">Detail Produk</string>
     <string name="bottomsheet_title_no_pinpoint">Tandai Lokasi Pengiriman</string>
