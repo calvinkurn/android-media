@@ -6,8 +6,10 @@ import com.tokopedia.updateinactivephone.view.activity.ChangeInactiveFormRequest
 import com.tokopedia.updateinactivephone.di.module.UpdateInactivePhoneModule
 import com.tokopedia.updateinactivephone.di.module.UpdateInactivePhoneQueryModule
 import com.tokopedia.updateinactivephone.di.module.UpdateInactivePhoneViewModelModule
+import com.tokopedia.updateinactivephone.view.activity.ChangeInactivePhoneRequestSubmittedActivity
 import com.tokopedia.updateinactivephone.view.fragment.ChangeInactivePhoneFragment
 import com.tokopedia.updateinactivephone.view.fragment.SelectImageNewPhoneFragment
+import com.tokopedia.updateinactivephone.view.fragment.UpdateNewPhoneEmailFragment
 
 import dagger.Component
 
@@ -22,5 +24,7 @@ import dagger.Component
 interface UpdateInactivePhoneComponent {
     fun inject(changeInactivePhoneFragment: ChangeInactivePhoneFragment)
     fun inject(selectImageNewPhoneFragment: SelectImageNewPhoneFragment)
+    fun inject(updateNewPhoneEmailFragment: UpdateNewPhoneEmailFragment)
     fun inject(changeInactiveFormRequestActivity: ChangeInactiveFormRequestActivity)
+    fun inject(changeInactiveFormRequestSubmittedActivity: ChangeInactivePhoneRequestSubmittedActivity)
 }

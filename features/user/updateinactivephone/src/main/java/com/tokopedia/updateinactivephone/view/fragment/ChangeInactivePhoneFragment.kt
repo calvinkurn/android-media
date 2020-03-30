@@ -25,7 +25,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.core.analytics.ScreenTracking
-import com.tokopedia.core.app.MainApplication
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants
@@ -34,10 +33,11 @@ import com.tokopedia.updateinactivephone.view.activity.ChangeInactivePhoneReques
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.IS_DUPLICATE_REQUEST
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QueryConstants.Companion.OLD_PHONE
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QueryConstants.Companion.USER_ID
+import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneAnalytics
 import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventConstants
-import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventTracking
 import com.tokopedia.updateinactivephone.view.ChangeInactivePhone
 import com.tokopedia.updateinactivephone.di.component.DaggerUpdateInactivePhoneComponent
+import com.tokopedia.updateinactivephone.di.module.UpdateInactivePhoneModule
 import com.tokopedia.updateinactivephone.viewmodel.ChangeInactivePhoneViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -53,6 +53,9 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
     private var tkpdProgressDialog: TkpdProgressDialog? = null
 
     @Inject
+    lateinit var analytics: UpdateInactivePhoneAnalytics
+
+    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
@@ -61,6 +64,7 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
     override fun initInjector() {
         DaggerUpdateInactivePhoneComponent.builder()
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                .updateInactivePhoneModule(UpdateInactivePhoneModule(requireContext()))
                 .build().inject(this)
     }
 
@@ -133,7 +137,7 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
         buttonContinue?.setOnClickListener { v ->
             setErrorText("")
             hideKeyboard(v)
-            UpdateInactivePhoneEventTracking.eventInactivePhoneClick(v.context)
+            analytics.eventInactivePhoneClick()
             val status = viewModel.isValidPhoneNumber(inputMobileNumber?.text.toString())
             if(status == 0) {
                 showLoading()
@@ -195,13 +199,13 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
         dialog?.setDescription(getString(R.string.registered_email_dialog_message))
         dialog?.setPrimaryCTAText(getString(R.string.drawer_title_login))
         dialog?.setPrimaryCTAClickListener {
-            context?.let { UpdateInactivePhoneEventTracking.eventLoginDialogClick(it) }
+            analytics.eventLoginDialogClick()
             RouteManager.route(context, ApplinkConst.LOGIN)
             Unit
         }
         dialog?.setSecondaryCTAText(getString(R.string.title_cancel))
         dialog?.setSecondaryCTAClickListener {
-            context?.let { UpdateInactivePhoneEventTracking.eventCancelDialogClick(it) }
+            analytics.eventCancelDialogClick()
             dialog.dismiss()
         }
         dialog?.show()

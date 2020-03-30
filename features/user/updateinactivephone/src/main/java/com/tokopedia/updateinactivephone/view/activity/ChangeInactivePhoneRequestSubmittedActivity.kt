@@ -11,8 +11,11 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.core.analytics.ScreenTracking
@@ -20,14 +23,20 @@ import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.IS_DUPLICATE_REQUEST
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.USER_EMAIL
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.USER_PHONE
+import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneAnalytics
 import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventConstants
-import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventTracking
+import com.tokopedia.updateinactivephone.di.component.DaggerUpdateInactivePhoneComponent
+import com.tokopedia.updateinactivephone.di.module.UpdateInactivePhoneModule
+import javax.inject.Inject
 
-class ChangeInactivePhoneRequestSubmittedActivity : BaseSimpleActivity() {
+class ChangeInactivePhoneRequestSubmittedActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent> {
 
     private var isDuplicateRequest: Boolean = false
     private var email: String? = null
     private var phone: String? = null
+
+    @Inject
+    lateinit var analytics: UpdateInactivePhoneAnalytics
 
     private val successConfirmationScreenName: String
         get() = UpdateInactivePhoneEventConstants.Screen.SUBMIT_SUCCESS_REQUEST_PAGE
@@ -42,7 +51,16 @@ class ChangeInactivePhoneRequestSubmittedActivity : BaseSimpleActivity() {
     override fun setupLayout(savedInstanceState: Bundle?) {
         super.setupLayout(savedInstanceState)
         setupToolbar()
+        initInjector()
         initView()
+    }
+
+    private fun initInjector() {
+        DaggerUpdateInactivePhoneComponent.builder()
+                .baseAppComponent(component)
+                .updateInactivePhoneModule(UpdateInactivePhoneModule(this))
+                .build()
+                .inject(this)
     }
 
     override fun getLayoutRes(): Int {
@@ -65,12 +83,12 @@ class ChangeInactivePhoneRequestSubmittedActivity : BaseSimpleActivity() {
 
         if (isDuplicateRequest) {
             ScreenTracking.screen(this, waitingConfirmationScreenName)
-            UpdateInactivePhoneEventTracking.eventViewWaitingForConfirmationPage(this)
+            analytics.eventViewWaitingForConfirmationPage()
             newRequestDetailLayout.visibility = View.GONE
             duplicateRequestTV.visibility = View.VISIBLE
         } else {
             ScreenTracking.screen(this, successConfirmationScreenName)
-            UpdateInactivePhoneEventTracking.eventViewSubmitSuccessPage(this)
+            analytics.eventViewSubmitSuccessPage()
             newRequestDetailLayout.visibility = View.VISIBLE
             duplicateRequestTV.visibility = View.GONE
             emailTV.text = email
@@ -108,5 +126,9 @@ class ChangeInactivePhoneRequestSubmittedActivity : BaseSimpleActivity() {
             intent.putExtras(bundle)
             return intent
         }
+    }
+
+    override fun getComponent(): BaseAppComponent {
+        return (application as BaseMainApplication).baseAppComponent
     }
 }

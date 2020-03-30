@@ -1,12 +1,8 @@
 package com.tokopedia.updateinactivephone.data.repository
 
-import android.util.Log
 import com.tokopedia.updateinactivephone.data.factory.UploadImageSourceFactory
-import com.tokopedia.updateinactivephone.data.model.request.GeneratedHost
-import com.tokopedia.updateinactivephone.data.model.request.UploadHostData
 import com.tokopedia.updateinactivephone.data.model.request.UploadHostModel
 import com.tokopedia.updateinactivephone.data.model.request.UploadImageModel
-import com.tokopedia.updateinactivephone.data.model.response.UploadImageData
 
 import javax.inject.Inject
 

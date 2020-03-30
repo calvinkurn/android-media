@@ -12,17 +12,20 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.core.analytics.ScreenTracking
-import com.tokopedia.core.app.MainApplication
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QueryConstants.Companion.OLD_PHONE
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QueryConstants.Companion.USER_ID
+import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneAnalytics
 import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventConstants
-import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventTracking
+import com.tokopedia.updateinactivephone.di.component.DaggerUpdateInactivePhoneComponent
+import com.tokopedia.updateinactivephone.di.module.UpdateInactivePhoneModule
+import javax.inject.Inject
 
-class UpdateNewPhoneEmailFragment : TkpdBaseV4Fragment() {
+class UpdateNewPhoneEmailFragment : BaseDaggerFragment() {
 
     private var userId: String? = null
     private var oldPhoneNumber: String? = null
@@ -37,14 +40,24 @@ class UpdateNewPhoneEmailFragment : TkpdBaseV4Fragment() {
 
     private var updateNewPhoneEmailInteractor: UpdateNewPhoneEmailInteractor? = null
 
+    @Inject
+    lateinit var analytics: UpdateInactivePhoneAnalytics
+
     override fun getScreenName(): String {
         return UpdateInactivePhoneEventConstants.Screen.INPUT_NEW_PHONE_SCREEN
+    }
+
+    override fun initInjector() {
+        DaggerUpdateInactivePhoneComponent.builder()
+                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                .updateInactivePhoneModule(UpdateInactivePhoneModule(requireContext()))
+                .build().inject(this)
     }
 
     override fun onStart() {
         super.onStart()
         ScreenTracking.screen(requireContext(), screenName)
-        activity?.let { UpdateInactivePhoneEventTracking.eventViewKirimPengajuan(it) }
+        analytics.eventViewKirimPengajuan()
     }
 
     override fun onAttachActivity(context: Context) {
@@ -54,7 +67,6 @@ class UpdateNewPhoneEmailFragment : TkpdBaseV4Fragment() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -104,8 +116,8 @@ class UpdateNewPhoneEmailFragment : TkpdBaseV4Fragment() {
             override fun afterTextChanged(editable: Editable) {}
         })
 
-        submissionButton?.setOnClickListener { view1 ->
-            activity?.let { UpdateInactivePhoneEventTracking.eventClickKirimPengajuan(it) }
+        submissionButton?.setOnClickListener {
+            analytics.eventClickKirimPengajuan()
             updateNewPhoneEmailInteractor?.onSubmissionButtonClicked(
                     newEmailEditText?.text.toString(),
                     newPhoneEditText?.text.toString(),

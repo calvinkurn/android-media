@@ -1,5 +1,6 @@
 package com.tokopedia.updateinactivephone.view.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -7,6 +8,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -27,7 +29,6 @@ import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Con
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.USER_PHONE
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QueryConstants.Companion.OLD_PHONE
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QueryConstants.Companion.USER_ID
-import com.tokopedia.updateinactivephone.data.model.response.GqlUpdatePhoneStatusResponse
 import com.tokopedia.updateinactivephone.di.component.DaggerUpdateInactivePhoneComponent
 import com.tokopedia.updateinactivephone.di.module.UpdateInactivePhoneModule
 import com.tokopedia.updateinactivephone.view.fragment.SelectImageNewPhoneFragment
@@ -92,6 +93,7 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(),
 
         viewModel.submitImageLiveData.observe(this, Observer {
             dismissLoading()
+            hideKeyboard()
             when(it){
                 is Success -> {
                     when(it.data.changeInactivePhoneQuery.isSuccess) {
@@ -161,6 +163,11 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(),
         }
 
         toolbar.setNavigationOnClickListener { onBackPressed() }
+    }
+
+    private fun hideKeyboard() {
+        val imm = this.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager?
+        imm?.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
     }
 
     override fun getComponent(): BaseAppComponent {

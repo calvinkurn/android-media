@@ -12,8 +12,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 
-import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.core.analytics.ScreenTracking
@@ -21,7 +22,6 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventConstants
-import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventTracking
 
 import java.io.File
 
@@ -29,8 +29,12 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
+import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneAnalytics
+import com.tokopedia.updateinactivephone.di.component.DaggerUpdateInactivePhoneComponent
+import com.tokopedia.updateinactivephone.di.module.UpdateInactivePhoneModule
+import javax.inject.Inject
 
-class SelectImageNewPhoneFragment : TkpdBaseV4Fragment() {
+class SelectImageNewPhoneFragment : BaseDaggerFragment() {
     private var idPhotoViewRelativeLayout: RelativeLayout? = null
     private var accountViewRelativeLayout: RelativeLayout? = null
     private var idPhotoView: ImageView? = null
@@ -45,10 +49,13 @@ class SelectImageNewPhoneFragment : TkpdBaseV4Fragment() {
     private var accountIdPath: String? = null
     private var isValidPhotoPath = false
 
+    @Inject
+    lateinit var analytics: UpdateInactivePhoneAnalytics
+
     override fun onStart() {
         super.onStart()
         ScreenTracking.screen(requireContext(), screenName)
-        activity?.let { UpdateInactivePhoneEventTracking.eventViewPhotoUploadScreen(it) }
+        analytics.eventViewPhotoUploadScreen()
     }
 
     override fun onAttachActivity(context: Context) {
@@ -104,8 +111,8 @@ class SelectImageNewPhoneFragment : TkpdBaseV4Fragment() {
         accountViewRelativeLayout?.setOnClickListener(onUploadAccountBook())
         idPhotoViewRelativeLayout?.setOnClickListener(onUploadPhotoId())
 
-        continueButton?.setOnClickListener { view ->
-            UpdateInactivePhoneEventTracking.eventClickPhotoProceed(view.context)
+        continueButton?.setOnClickListener {
+            analytics.eventClickPhotoProceed()
             selectImageInterface?.onContinueButtonClick()
         }
     }
@@ -204,6 +211,13 @@ class SelectImageNewPhoneFragment : TkpdBaseV4Fragment() {
 
     override fun getScreenName(): String {
         return UpdateInactivePhoneEventConstants.Screen.SELECT_IMAGE_TO_UPLOAD
+    }
+
+    override fun initInjector() {
+        DaggerUpdateInactivePhoneComponent.builder()
+                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                .updateInactivePhoneModule(UpdateInactivePhoneModule(requireContext()))
+                .build().inject(this)
     }
 
     interface SelectImageInterface {

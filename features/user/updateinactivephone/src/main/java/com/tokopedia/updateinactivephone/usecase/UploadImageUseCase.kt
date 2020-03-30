@@ -19,11 +19,11 @@ import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Con
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.SERVER_ID
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.TOKEN
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.USERID
-import com.tokopedia.updateinactivephone.di.UpdateInActiveContext
+import com.tokopedia.updateinactivephone.di.UpdateInActiveQualifier
 import com.tokopedia.usecase.RequestParams
 
 class UploadImageUseCase(
-        @UpdateInActiveContext private val context: Context,
+        @UpdateInActiveQualifier private val context: Context,
         private val uploadImageRepository: UploadImageRepositoryImpl
 ) {
 

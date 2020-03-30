@@ -8,9 +8,9 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.core.gcm.network.StringResponseConverter
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.imageuploader.data.StringResponseConverter
 import com.tokopedia.imageuploader.data.entity.ImageUploaderResponseError
 import com.tokopedia.network.CoroutineCallAdapterFactory
 import com.tokopedia.network.NetworkRouter
@@ -18,7 +18,7 @@ import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneURL
 import com.tokopedia.updateinactivephone.data.repository.UploadImageRepositoryImpl
-import com.tokopedia.updateinactivephone.di.UpdateInActiveContext
+import com.tokopedia.updateinactivephone.di.UpdateInActiveQualifier
 import com.tokopedia.updateinactivephone.di.UpdateInactivePhoneScope
 import com.tokopedia.updateinactivephone.usecase.*
 import com.tokopedia.user.session.UserSession
@@ -42,7 +42,7 @@ import java.util.concurrent.TimeUnit
     private val NET_RETRY = 3
 
     @Provides
-    @UpdateInActiveContext
+    @UpdateInActiveQualifier
     fun provideInActivePhoneContext() = context
 
     @Provides
@@ -79,7 +79,7 @@ import java.util.concurrent.TimeUnit
     }
 
     @UpdateInactivePhoneScope
-    @UpdateInActiveContext
+    @UpdateInActiveQualifier
     @Provides
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
         val logging = HttpLoggingInterceptor()
@@ -141,7 +141,7 @@ import java.util.concurrent.TimeUnit
     }
 
     @UpdateInactivePhoneScope
-    @UpdateInActiveContext
+    @UpdateInActiveQualifier
     @Provides
     fun provideRetrofitBuilder(gson: Gson): Retrofit.Builder {
         return Retrofit.Builder()
@@ -162,6 +162,6 @@ import java.util.concurrent.TimeUnit
 
     @UpdateInactivePhoneScope
     @Provides
-    fun provideUserSessionInterface(@UpdateInActiveContext context: Context): UserSessionInterface = UserSession(context)
+    fun provideUserSessionInterface(@UpdateInActiveQualifier context: Context): UserSessionInterface = UserSession(context)
 
 }

@@ -2,4 +2,4 @@ package com.tokopedia.updateinactivephone.di
 
 import javax.inject.Qualifier
 
-@Qualifier annotation class UpdateInActiveContext
+@Qualifier annotation class UpdateInActiveQualifier

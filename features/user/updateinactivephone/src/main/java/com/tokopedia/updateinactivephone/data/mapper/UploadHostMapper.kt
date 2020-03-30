@@ -26,6 +26,6 @@ class UploadHostMapper @Inject constructor() : Func1<UploadHostResponse, UploadH
     }
 
     companion object {
-        val errorMessage = "Terjadi kesalahan, silakan coba lagi nanti."
+        const val errorMessage = "Terjadi kesalahan, silakan coba lagi nanti."
     }
 }

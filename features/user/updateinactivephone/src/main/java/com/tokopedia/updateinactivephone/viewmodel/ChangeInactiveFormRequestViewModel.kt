@@ -2,20 +2,18 @@ package com.tokopedia.updateinactivephone.viewmodel
 
 import android.content.Context
 import android.text.TextUtils
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.core.gcm.GCMHandler
 import com.tokopedia.core.util.SessionHandler
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants
 import com.tokopedia.updateinactivephone.data.model.request.ChangePhoneNumberRequestModel
 import com.tokopedia.updateinactivephone.data.model.response.GqlUpdatePhoneStatusResponse
 import com.tokopedia.updateinactivephone.data.model.response.GqlValidateUserDataResponse
 import com.tokopedia.updateinactivephone.data.model.response.ValidateUserDataResponse
-import com.tokopedia.updateinactivephone.di.UpdateInActiveContext
+import com.tokopedia.updateinactivephone.di.UpdateInActiveQualifier
 import com.tokopedia.updateinactivephone.usecase.*
 import com.tokopedia.updateinactivephone.viewmodel.ChangeInactivePhoneViewModel.Companion.PHONE_MATCHER
 import com.tokopedia.usecase.RequestParams
@@ -31,7 +29,7 @@ import java.util.regex.Pattern
 import javax.inject.Inject
 
 class ChangeInactiveFormRequestViewModel @Inject constructor(
-        @UpdateInActiveContext private val context: Context,
+        @UpdateInActiveQualifier private val context: Context,
         private val getValidationUserDataUsecase: GetValidationUserDataUseCase,
         private val getUploadHostUseCase: GetUploadHostUseCase,
         private val uploadImageUseCase: UploadImageUseCase,
