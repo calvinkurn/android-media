@@ -10,7 +10,7 @@
     <com.tokopedia.gamification.giftbox.presentation.views.GamificationRoundImageView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:scaleType="centerCrop"
+        android:scaleType="fitXY"
         app:srcCompat="@drawable/gf_bg_large_benefit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
