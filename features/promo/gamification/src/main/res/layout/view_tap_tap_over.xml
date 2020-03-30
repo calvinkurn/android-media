@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:gravity="center"
-        android:text="Terima kasih sudah ikutan serunya main Kotak Kejutan!"
+        android:text="@string/gami_terima_kasih_sudah_ikutan"
         android:textColor="@android:color/white" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:gravity="center"
-        android:text="Walaupun telah berakhir, tapi kamu tetap bisa seseruan dengan belanja di Tokopedia!"
+        android:text="@string/gami_walaupun_telah_berakhir"
         android:textColor="@android:color/white" />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -41,5 +41,5 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
-        android:text="Coba Serunya Belanja" />
+        android:text="@string/gami_coba_serunya_belanja" />
 </LinearLayout>

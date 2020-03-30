@@ -141,7 +141,7 @@
                 android:layout_marginEnd="@dimen/dp_18"
                 android:layout_marginRight="@dimen/dp_18"
                 android:gravity="center"
-                android:text="Beli ketupat, beli pepaya"
+                android:text="@string/gami_beli_ketupat"
                 android:textColor="@color/gf_loader_title_color"
                 app:typographyType="heading_3"
                 app:typographyWeight="bold" />
@@ -156,7 +156,7 @@
                 android:layout_marginEnd="@dimen/dp_18"
                 android:layout_marginRight="@dimen/dp_18"
                 android:gravity="center"
-                android:text="Penasaran bakal dapat hadiah apa, ya?"
+                android:text="@string/gami_penasaran_bakal_dapat"
                 android:textColor="@color/gf_loader_message_color"
                 app:typographyType="heading_5"
                 app:typographyWeight="reguler" />
