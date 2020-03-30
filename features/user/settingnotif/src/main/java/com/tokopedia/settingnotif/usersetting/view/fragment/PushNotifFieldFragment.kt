@@ -5,7 +5,6 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.core.app.NotificationManagerCompat
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.domain.pojo.SellerSection
 import com.tokopedia.settingnotif.usersetting.util.inflateView
@@ -67,14 +66,6 @@ class PushNotifFieldFragment : SettingFieldFragment() {
         pinnedData.addAll(data.data)
         data.data = pinnedData.toList()
         super.onSuccessGetUserSetting(data)
-    }
-
-    private fun isNotificationEnabled(): Boolean? {
-        return context?.let {
-            NotificationManagerCompat
-                    .from(it)
-                    .areNotificationsEnabled()
-        }
     }
 
     private fun showInformationDialog() {
