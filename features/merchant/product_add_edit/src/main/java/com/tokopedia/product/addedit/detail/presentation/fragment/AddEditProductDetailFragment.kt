@@ -101,7 +101,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
     }
 
     //Last typing product name
-    private val delay = 1000L
+    private val delayLastTextEdit = 1000L
     private var lastTextEdit = 0L
     private val handlerTypingProductName = Handler()
 
@@ -366,15 +366,8 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         productNameField?.textFieldInput?.addTextChangedListener(
                 object : TextWatcher {
                     override fun afterTextChanged(editable: Editable) {
-
-                        if (editable.isEmpty()) {
-                            productNameField?.textFieldInput?.error = getString(R.string.product_name_should_be_not_empty)
-                        } else {
-                            if (editable.isNotEmpty()) {
-                                lastTextEdit = System.currentTimeMillis()
-                                handlerTypingProductName.postDelayed(productNameFieldFinishChecker(editable.toString()), delay)
-                            }
-                        }
+                        viewModel.validateProductNameInput(editable.toString())
+                        lastTextEdit = System.currentTimeMillis()
                     }
 
                     override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -382,9 +375,6 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
                     override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
 
                         handlerTypingProductName.removeCallbacks(productNameFieldFinishChecker())
-
-                        val productNameInput = charSequence?.toString()
-                        productNameInput?.let { viewModel.validateProductNameInput(it) }
 
                         // hide recommendations if the text input is changed
                         val isTextChanged = start != before
@@ -420,7 +410,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
                 })
 
         // product whole sale checked change listener
-        productWholeSaleSwitch?.setOnCheckedChangeListener{ _, isChecked ->
+        productWholeSaleSwitch?.setOnCheckedChangeListener { _, isChecked ->
             viewModel.isWholeSalePriceActivated.value = isChecked
         }
 
@@ -463,7 +453,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
                 })
 
         // pre order checked change listener
-        preOrderSwitch?.setOnCheckedChangeListener{ _, isChecked ->
+        preOrderSwitch?.setOnCheckedChangeListener { _, isChecked ->
             viewModel.isPreOrderActivated.value = isChecked
         }
 
@@ -488,7 +478,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
                     }
                 })
 
-        continueButton?.setOnClickListener{
+        continueButton?.setOnClickListener {
 
             // input re-validation process in case the user click the button without entering the input
 
@@ -620,10 +610,14 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
     }
 
     private fun subscribeToProductNameInputStatus() {
-        viewModel.isProductNameInputError.observe(this, Observer {
-            productNameField?.setError(it)
-            productNameField?.setMessage(viewModel.productNameMessage)
-        })
+        observe(viewModel.isProductNameInputError) {
+            if (it) {
+                productNameField?.setError(it)
+                productNameField?.setMessage(viewModel.productNameMessage)
+            } else {
+                handlerTypingProductName.postDelayed(productNameFieldFinishChecker(productNameField?.getEditableValue().toString()), delayLastTextEdit)
+            }
+        }
     }
 
     private fun subscribeToProductPriceInputStatus() {
@@ -848,7 +842,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
     }
 
     fun productNameFieldFinishChecker(productNameInput: String = "") = Runnable {
-        if (System.currentTimeMillis() > (lastTextEdit + delay - 500)) {
+        if (System.currentTimeMillis() > (lastTextEdit + delayLastTextEdit - 500)) {
             onLoadingNameSuggestion()
             productNameRecAdapter?.setProductNameInput(productNameInput)
             viewModel.getSearchNameSuggestion(query = productNameInput)
