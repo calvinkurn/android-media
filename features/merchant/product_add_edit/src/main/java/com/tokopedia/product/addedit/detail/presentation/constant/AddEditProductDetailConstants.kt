@@ -12,6 +12,6 @@ class AddEditProductDetailConstants {
         const val CATEGORY_RESULT_ID = "CATEGORY_RESULT_ID"
         const val CATEGORY_RESULT_NAME = "CATEGORY_RESULT_NAME"
         const val UNIVERSE_SEARCH_QUERY = "gql_universe_search"
-        const val UNIVERSE_SEARCH_TYPE = "autocomplete"
+        const val UNIVERSE_SEARCH_TYPE = "AUTOCOMPLETE"
     }
 }
