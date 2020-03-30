@@ -124,6 +124,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_product_manage.*
+import kotlinx.android.synthetic.main.fragment_product_manage.view.*
 import java.net.UnknownHostException
 import java.util.*
 import java.util.concurrent.TimeoutException
@@ -213,7 +214,20 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         getProductListFeaturedOnlySize()
         getTopAdsFreeClaim()
         getGoldMerchantStatus()
+        setOnPullToRefresh()
         context?.let { dialogFeaturedProduct = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ILLUSTRATION) }
+    }
+
+    private fun setOnPullToRefresh() = view?.run {
+        swipe_refresh_layout.setOnRefreshListener {
+            clearProductList()
+            clearSelectedProduct()
+            renderCheckedView()
+            getFiltersTab()
+            hideSnackBarRetry()
+            loadInitialData()
+            swipe_refresh_layout.isRefreshing = true
+        }
     }
 
     //set filter options if filterOptions is not null or empty
@@ -492,6 +506,11 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         renderProductList(productList, hasNextPage)
         renderMultiSelectProduct()
         setDefaultFilterOption()
+        dismissRefresherLoadingIndicator()
+    }
+
+    private fun dismissRefresherLoadingIndicator() {
+        view?.swipe_refresh_layout?.isRefreshing = false
     }
 
     private fun renderMultiSelectProduct() {
@@ -738,14 +757,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 renderMultiSelectProduct()
             }
         }
-    }
-
-    override fun onSwipeRefresh() {
-        clearProductList()
-        clearSelectedProduct()
-        renderCheckedView()
-        getFiltersTab()
-        super.onSwipeRefresh()
     }
 
     private fun clearSearchBarInput() {
