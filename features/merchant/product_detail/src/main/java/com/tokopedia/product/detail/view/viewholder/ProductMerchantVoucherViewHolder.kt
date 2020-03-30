@@ -21,14 +21,13 @@ class ProductMerchantVoucherViewHolder(val view: View, val listener: DynamicProd
 
     override fun bind(element: ProductMerchantVoucherDataModel?) {
         if (element?.shouldRenderInitialData != false) {
-            view.loading_voucher.show()
-            element?.let {
+            element?.voucherData?.let {
+                view.merchantVoucherListWidget.setData(it)
 
                 view.addOnImpressionListener(element.impressHolder) {
                     listener.onImpressComponent(getComponentTrackData(element))
                 }
 
-                view.loading_voucher.hide()
                 view.merchantVoucherListWidget.setOnMerchantVoucherListWidgetListener(object : MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener {
                     override val isOwner: Boolean
                         get() = listener.isOwner()
@@ -46,10 +45,8 @@ class ProductMerchantVoucherViewHolder(val view: View, val listener: DynamicProd
                     }
 
                     override fun onVoucherItemImpressed(merchantVoucherViewModel: MerchantVoucherViewModel, voucherPosition: Int) {}
-
                 })
 
-                view.merchantVoucherListWidget.setData(it.voucherData)
                 element.shouldRenderInitialData = false
             }
         }

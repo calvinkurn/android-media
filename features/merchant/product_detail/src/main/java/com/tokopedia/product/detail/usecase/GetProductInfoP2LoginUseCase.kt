@@ -48,9 +48,6 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
         val isWishlistedRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_WISHLIST_STATUS],
                 ProductInfo.WishlistStatus::class.java, isWishlistedParams)
 
-        val getCheckoutTypeRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_CHECKOUTTYPE],
-                GetCheckoutTypeResponse::class.java)
-
         val affilateParams = mapOf(ProductDetailCommonConstant.PRODUCT_ID_PARAM to listOf(productId),
                 ProductDetailCommonConstant.SHOP_ID_PARAM to shopId,
                 ProductDetailCommonConstant.INCLUDE_UI_PARAM to true)
@@ -64,7 +61,7 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
 
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
 
-        val requests = mutableListOf(isWishlistedRequest, getCheckoutTypeRequest, affiliateRequest, topAdsManageRequest, getCartTypeRequest)
+        val requests = mutableListOf(isWishlistedRequest, affiliateRequest, topAdsManageRequest, getCartTypeRequest)
 
         try {
             val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
@@ -79,12 +76,6 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
                 p2Login.pdpAffiliate = gqlResponse
                         .getData<TopAdsPdpAffiliateResponse>(TopAdsPdpAffiliateResponse::class.java)
                         .topAdsPDPAffiliate.data.affiliate.firstOrNull()
-            }
-
-            if (gqlResponse.getError(GetCheckoutTypeResponse::class.java)?.isNotEmpty() != true) {
-                p2Login.cartType = gqlResponse
-                        .getData<GetCheckoutTypeResponse>(GetCheckoutTypeResponse::class.java)
-                        .getCartType.data.cartType
             }
 
             if (gqlResponse.getError(TopAdsGetProductManageResponse::class.java)?.isNotEmpty() != true) {

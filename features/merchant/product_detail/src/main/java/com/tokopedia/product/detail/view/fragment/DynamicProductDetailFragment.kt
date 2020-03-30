@@ -1037,7 +1037,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun updateButtonAfterClickVariant(indexOfVariantButton: Int?) {
         actionButtonView.renderData(viewModel.getDynamicProductInfoP1?.basic?.isActive() == false,
-                viewModel.p2Login.value?.isExpressCheckoutType ?: false,
                 hasTopAds(),
                 viewModel.cartTypeData?.getCartTypeAtPosition(indexOfVariantButton ?: -1))
     }
@@ -1103,8 +1102,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewLifecycleOwner.observe(viewModel.p2Login) {
             topAdsGetProductManage = it.topAdsGetProductManage
             it.pdpAffiliate?.let { renderAffiliate(it) }
-            actionButtonView.renderData(viewModel.getDynamicProductInfoP1?.basic?.isActive() == false,
-                    it.isExpressCheckoutType, hasTopAds(),
+            actionButtonView.renderData(viewModel.getDynamicProductInfoP1?.basic?.isActive() == false, hasTopAds(),
                     it.newCartTypeResponse.cartRedirection.data.firstOrNull())
 
             if (::performanceMonitoringFull.isInitialized)
@@ -2062,11 +2060,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             viewModel.buttonActionText = it
             // buy now / buy / preorder
             viewModel.getDynamicProductInfoP1?.let {
-                if (viewModel.p2Login.value?.isOcsCheckoutType == true) {
-                    doAtc(ProductDetailConstant.OCS_BUTTON)
-                } else {
-                    doAtc(ProductDetailConstant.BUY_BUTTON)
-                }
+                doAtc(ProductDetailConstant.BUY_BUTTON)
             }
         }
 

@@ -68,9 +68,8 @@ class PartialButtonActionView private constructor(private val view: View,
         renderButton()
     }
 
-    fun renderData(isWarehouseProduct: Boolean, isExpressCheckout: Boolean, hasTopAdsActive: Boolean, cartTypeData: CartTypeData? = null) {
+    fun renderData(isWarehouseProduct: Boolean, hasTopAdsActive: Boolean, cartTypeData: CartTypeData? = null) {
         this.isWarehouseProduct = isWarehouseProduct
-        this.isExpressCheckout = isExpressCheckout
         this.hasTopAdsActive = hasTopAdsActive
         this.cartTypeData = cartTypeData
         this.onSuccessGetCartType = cartTypeData != null
