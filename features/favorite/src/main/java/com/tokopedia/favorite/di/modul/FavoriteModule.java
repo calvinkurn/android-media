@@ -3,7 +3,7 @@ package com.tokopedia.favorite.di.modul;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.favorite.data.source.apis.service.TopAdsService;
