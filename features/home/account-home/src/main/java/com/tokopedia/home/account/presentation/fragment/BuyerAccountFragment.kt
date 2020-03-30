@@ -86,12 +86,6 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
 
         swipe_refresh_layout.setOnRefreshListener { this.getData() }
         sendBuyerAccountItemImpression()
-
-        scrollToTop()
-        context?.let {
-            GraphqlClient.init(it)
-            getData()
-        }
     }
 
     private fun sendBuyerAccountItemImpression() {
@@ -110,6 +104,15 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
         super.setUserVisibleHint(isVisibleToUser)
         if (isVisibleToUser) {
             TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        scrollToTop()
+        context?.let {
+            GraphqlClient.init(it)
+            getData()
         }
     }
 
