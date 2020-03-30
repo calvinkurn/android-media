@@ -19,6 +19,7 @@ import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.di.DaggerPlayComponent
+import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
@@ -71,13 +72,14 @@ class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
                 .baseAppComponent(
                         (requireContext().applicationContext as BaseMainApplication).baseAppComponent
                 )
+                .playModule(PlayModule(requireContext()))
                 .build()
                 .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        playViewModel = ViewModelProvider(parentFragment!!, viewModelFactory).get(PlayViewModel::class.java)
+        playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
         channelId  = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
     }
 
@@ -101,7 +103,7 @@ class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
         container = view.findViewById(R.id.container_global_error)
         globalError = view.findViewById(R.id.global_error)
         context?.let {
-            globalError.errorTitle.setTextColor(ContextCompat.getColor(it, R.color.Neutral_N0))
+            globalError.errorTitle.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
             globalError.errorDescription.setTextColor(ContextCompat.getColor(it, R.color.play_error_text_color))
         }
 
@@ -149,7 +151,7 @@ class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
                     }
                 }
             }
-            PlayAnalytics.errorState(channelId, globalError.errorDescription.text.toString(), playViewModel.isLive)
+            PlayAnalytics.errorState(channelId, globalError.errorDescription.text.toString(), playViewModel.channelType)
             container.visible()
         }
     }
