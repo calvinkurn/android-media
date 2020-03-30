@@ -71,7 +71,7 @@
         android:layout_gravity="center"
         android:layout_marginBottom="@dimen/dp_3"
         android:alpha="0"
-        app:srcCompat="@drawable/gf_ic_box_glow"
+        app:srcCompat="@color/white"
         tools:alpha="0" />
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -81,7 +81,7 @@
         android:layout_gravity="center"
         android:layout_marginBottom="@dimen/dp_3"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/gf_ic_box_white"
+        app:srcCompat="@color/white"
         tools:alpha="0" />
 
 
