@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.core.gcm.GCMHandler
-import com.tokopedia.core.util.SessionHandler
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants
 import com.tokopedia.updateinactivephone.data.model.request.ChangePhoneNumberRequestModel
@@ -21,6 +20,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import org.json.JSONException
 import org.json.JSONObject
@@ -30,6 +30,7 @@ import javax.inject.Inject
 
 class ChangeInactiveFormRequestViewModel @Inject constructor(
         @UpdateInActiveQualifier private val context: Context,
+        private val userSessionInterface: UserSessionInterface,
         private val getValidationUserDataUsecase: GetValidationUserDataUseCase,
         private val getUploadHostUseCase: GetUploadHostUseCase,
         private val uploadImageUseCase: UploadImageUseCase,
@@ -141,7 +142,7 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
 
         params.putString(UpdateInactivePhoneConstants.Constants.USERID,
                 requestParams.getString(UpdateInactivePhoneConstants.Constants.USERID,
-                        SessionHandler.getTempLoginSession(context)))
+                        userSessionInterface.temporaryUserId))
         params.putString(UpdateInactivePhoneConstants.Constants.PARAM_DEVICE_ID,
                 requestParams.getString(UpdateInactivePhoneConstants.Constants.PARAM_DEVICE_ID,
                         GCMHandler.getRegistrationId(context)))
@@ -165,7 +166,7 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
 
         params.putString(UpdateInactivePhoneConstants.Constants.USERID,
                 requestParams.getString(UpdateInactivePhoneConstants.Constants.USERID,
-                        SessionHandler.getTempLoginSession(context)))
+                        userSessionInterface.temporaryUserId))
         params.putString(UpdateInactivePhoneConstants.Constants.PARAM_DEVICE_ID,
                 requestParams.getString(UpdateInactivePhoneConstants.Constants.PARAM_DEVICE_ID,
                         GCMHandler.getRegistrationId(context)))

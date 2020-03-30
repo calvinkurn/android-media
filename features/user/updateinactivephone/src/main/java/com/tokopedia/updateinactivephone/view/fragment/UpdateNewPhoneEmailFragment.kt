@@ -15,7 +15,6 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 
-import com.tokopedia.core.analytics.ScreenTracking
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QueryConstants.Companion.OLD_PHONE
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QueryConstants.Companion.USER_ID
@@ -56,7 +55,7 @@ class UpdateNewPhoneEmailFragment : BaseDaggerFragment() {
 
     override fun onStart() {
         super.onStart()
-        ScreenTracking.screen(requireContext(), screenName)
+        analytics.screen(screenName)
         analytics.eventViewKirimPengajuan()
     }
 

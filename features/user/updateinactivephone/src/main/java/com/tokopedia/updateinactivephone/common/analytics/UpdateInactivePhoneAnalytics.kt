@@ -161,6 +161,13 @@ class UpdateInactivePhoneAnalytics @Inject constructor(private val userSessionIn
         TrackApp.getInstance().gtm.sendGeneralEvent(gtmData)
     }
 
+    fun screen(screen: String?) {
+        if (TextUtils.isEmpty(screen)) {
+            return
+        }
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screen)
+    }
+
     companion object {
         const val USER_ID = "userId"
     }

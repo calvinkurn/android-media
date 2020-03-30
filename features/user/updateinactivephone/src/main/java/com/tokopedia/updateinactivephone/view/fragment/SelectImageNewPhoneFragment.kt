@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.core.analytics.ScreenTracking
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.updateinactivephone.R
@@ -54,7 +53,7 @@ class SelectImageNewPhoneFragment : BaseDaggerFragment() {
 
     override fun onStart() {
         super.onStart()
-        ScreenTracking.screen(requireContext(), screenName)
+        analytics.screen(screenName)
         analytics.eventViewPhotoUploadScreen()
     }
 

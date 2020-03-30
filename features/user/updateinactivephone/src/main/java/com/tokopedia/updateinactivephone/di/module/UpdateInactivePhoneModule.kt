@@ -1,12 +1,10 @@
 package com.tokopedia.updateinactivephone.di.module
 
 import android.content.Context
-import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
-import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -14,7 +12,6 @@ import com.tokopedia.imageuploader.data.StringResponseConverter
 import com.tokopedia.imageuploader.data.entity.ImageUploaderResponseError
 import com.tokopedia.network.CoroutineCallAdapterFactory
 import com.tokopedia.network.NetworkRouter
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneURL
 import com.tokopedia.updateinactivephone.data.repository.UploadImageRepositoryImpl
@@ -105,30 +102,11 @@ import java.util.concurrent.TimeUnit
 
     @UpdateInactivePhoneScope
     @Provides
-    fun provideTkpdAuthInterceptor(@ApplicationContext context: Context,
-                                   networkRouter: NetworkRouter,
-                                   userSessionInterface: UserSessionInterface): TkpdAuthInterceptor {
-        return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
-    }
-
-    @UpdateInactivePhoneScope
-    @Provides
-    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
-        return ChuckerInterceptor(context)
-    }
-
-    @UpdateInactivePhoneScope
-    @Provides
-    fun provideOkHttpClient(tkpdAuthInterceptor: TkpdAuthInterceptor,
-                            retryPolicy: OkHttpRetryPolicy,
+    fun provideOkHttpClient(retryPolicy: OkHttpRetryPolicy,
                             loggingInterceptor: HttpLoggingInterceptor,
-                            errorHandlerInterceptor: ErrorResponseInterceptor,
-                            chuckerInterceptor: ChuckerInterceptor): OkHttpClient {
+                            errorHandlerInterceptor: ErrorResponseInterceptor): OkHttpClient {
         val builder = OkHttpClient.Builder()
         builder.addInterceptor(errorHandlerInterceptor)
-        builder.addInterceptor(tkpdAuthInterceptor)
-        builder.addInterceptor(chuckerInterceptor)
-        builder.addInterceptor(AkamaiBotInterceptor())
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY

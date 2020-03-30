@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.core.analytics.ScreenTracking
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.IS_DUPLICATE_REQUEST
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.USER_EMAIL
@@ -82,12 +81,12 @@ class ChangeInactivePhoneRequestSubmittedActivity : BaseSimpleActivity(), HasCom
         val duplicateRequestTV = findViewById<TextView>(R.id.duplicate_request_view)
 
         if (isDuplicateRequest) {
-            ScreenTracking.screen(this, waitingConfirmationScreenName)
+            analytics.screen(waitingConfirmationScreenName)
             analytics.eventViewWaitingForConfirmationPage()
             newRequestDetailLayout.visibility = View.GONE
             duplicateRequestTV.visibility = View.VISIBLE
         } else {
-            ScreenTracking.screen(this, successConfirmationScreenName)
+            analytics.screen(successConfirmationScreenName)
             analytics.eventViewSubmitSuccessPage()
             newRequestDetailLayout.visibility = View.VISIBLE
             duplicateRequestTV.visibility = View.GONE
