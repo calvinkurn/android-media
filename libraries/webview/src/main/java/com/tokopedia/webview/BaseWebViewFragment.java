@@ -477,6 +477,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         } else if (url.contains(PLAY_GOOGLE_URL)) {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(intent);
+            return true;
         } else if (BRANCH_IO_HOST.equalsIgnoreCase(uri.getHost())) {
             Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
             if (intent != null) {
