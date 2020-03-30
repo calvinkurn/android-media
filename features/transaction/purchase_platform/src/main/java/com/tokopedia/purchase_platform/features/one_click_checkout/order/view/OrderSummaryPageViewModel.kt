@@ -768,7 +768,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
                         override fun onNext(response: ValidateUsePromoRevampUiModel) {
                             validateUsePromoRevampUiModel = response
-                            // TODO : SAVE APPLIED LOGISTIC PROMO
                             if (response.status.equals("OK", true)) {
                                 for (voucherOrderUiModel in response.promoUiModel.voucherOrderUiModels) {
                                     if (voucherOrderUiModel != null && voucherOrderUiModel.code == logisticPromoUiModel.promoCode) {
@@ -1019,6 +1018,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                             }
 
                             override fun onNext(t: ClearPromoUiModel?) {
+                                doCheckout(orderProduct, orderShop, _orderPreference!!, onSuccessCheckout)
                             }
 
                             override fun onCompleted() {
