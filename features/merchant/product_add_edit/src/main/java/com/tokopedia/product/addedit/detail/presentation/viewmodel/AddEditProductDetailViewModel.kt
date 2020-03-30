@@ -97,19 +97,15 @@ class AddEditProductDetailViewModel @Inject constructor(val provider: ResourcePr
     private val maxPreOrderWeeks = 13
 
     fun getSearchNameSuggestion(shopId: Int = 0, query: String) {
-        launchCatchError(
-                block = {
+        launchCatchError(block = {
                     val result = withContext(Dispatchers.IO) {
-                        getSearchShopProductUseCase.requestParams =
-                                GetSearchShopProductUseCase.createRequestParam(shopId, query)
+                        getSearchShopProductUseCase.requestParams = GetSearchShopProductUseCase.createRequestParam(shopId, query)
                         getSearchShopProductUseCase.executeOnBackground()
                     }
-                    val getSuggestionName = AddEditProductDetailMapper.getProductNameAutoComplete(result)
+                    val getProductName = AddEditProductDetailMapper.getProductNameAutoComplete(result)
                     _searchProductSuggestionName.postValue(Success(
-                           AddEditProductDetailMapper.getProductNameStart(getSuggestionName, query)
-                    ))
-                }
-        ) {
+                            AddEditProductDetailMapper.getProductNameStart(getProductName, query)))
+        }) {
             _searchProductSuggestionName.postValue(Fail(it))
         }
     }
