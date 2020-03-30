@@ -26,7 +26,7 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
         cc_text_input.textFieldInput.clearFocus()
 
         cc_text_input.textFiedlLabelText.text = context.getString(R.string.cc_label_input_number)
-        cc_text_input.setSecondIcon(R.drawable.unify_clear_ic)
+        cc_text_input.setSecondIcon(com.tokopedia.unifycomponents.R.drawable.unify_clear_ic)
         cc_text_input.textFieldIcon2.visibility = View.GONE
 
         setLengthMaxTextField()
@@ -129,7 +129,7 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
     private fun enableBtnNext() {
         cc_button_next.isEnabled = true
         cc_button_next.setBackgroundResource(com.tokopedia.design.R.drawable.bg_button_green)
-        cc_button_next.setTextColor(context.resources.getColorFromResources(context, R.color.white))
+        cc_button_next.setTextColor(context.resources.getColorFromResources(context, com.tokopedia.design.R.color.white))
     }
 
     interface ActionListener {

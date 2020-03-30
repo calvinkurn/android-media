@@ -24,10 +24,14 @@ class RechargeCCActivity : BaseSimpleActivity() {
         return R.id.toolbar_credit_card
     }
 
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        toolbar_credit_card.addRightIcon(R.drawable.digital_common_ic_tagihan)
+        toolbar_credit_card.addRightIcon(com.tokopedia.common_digital.R.drawable.digital_common_ic_tagihan)
         toolbar_credit_card.rightIcons?.let {
             it[0].setOnClickListener {
                 RouteManager.route(this, ApplinkConst.DIGITAL_ORDER)
