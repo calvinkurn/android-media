@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
@@ -76,8 +78,6 @@ import com.tokopedia.home.beranda.listener.HomeFeedsListener;
 import com.tokopedia.home.beranda.listener.HomeInspirationListener;
 import com.tokopedia.home.beranda.listener.HomeReviewListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener;
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
@@ -93,7 +93,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView;
-import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel;
 import com.tokopedia.home.constant.BerandaUrl;
 import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.widget.FloatingTextButton;
@@ -194,9 +193,10 @@ public class HomeFragment extends BaseDaggerFragment implements
     private static final String SOURCE_ACCOUNT = "account";
     private MainParentStatusBarListener mainParentStatusBarListener;
     private ActivityStateListener activityStateListener;
+    private BerandaComponent component;
 
     @Inject
-    ViewModelProvider.Factory viewModelFactory;
+    public ViewModelProvider.Factory viewModelFactory;
 
     private HomeViewModel viewModel;
 
@@ -286,12 +286,17 @@ public class HomeFragment extends BaseDaggerFragment implements
         searchBarTransitionRange = getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
         startToTransitionOffset = (getResources().getDimensionPixelSize(R.dimen.banner_background_height)) / 2;
 
-        ViewModelProvider viewModelProvider = ViewModelProviders.of(this, viewModelFactory);
-        viewModel = viewModelProvider.get(HomeViewModel.class);
+        initViewModel();
         setGeolocationPermission();
         needToShowGeolocationComponent();
         getStickyContent();
         startHomeInitPerformanceMonitoring();
+    }
+
+    @VisibleForTesting
+    protected void initViewModel(){
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(HomeViewModel.class);
+        Log.d("testNoSkeleton", viewModel.toString());
     }
 
     @Override
@@ -320,10 +325,16 @@ public class HomeFragment extends BaseDaggerFragment implements
     @Override
     protected void initInjector() {
         if (getActivity() != null) {
-            BerandaComponent component = DaggerBerandaComponent.builder().baseAppComponent(((BaseMainApplication)
-                    getActivity().getApplication()).getBaseAppComponent()).build();
+            if(component == null){
+                component = initBuilderComponent().build();
+            }
             component.inject(this);
         }
+    }
+
+    protected DaggerBerandaComponent.Builder initBuilderComponent(){
+        return DaggerBerandaComponent.builder().baseAppComponent(((BaseMainApplication)
+                getActivity().getApplication()).getBaseAppComponent());
     }
 
     private void fetchRemoteConfig() {
@@ -668,27 +679,26 @@ public class HomeFragment extends BaseDaggerFragment implements
         });
     }
 
+    @VisibleForTesting
     private void observeRequestImagePlayBanner(){
-        viewModel.getRequestImageTestLiveData().observe(this, playCardViewModelEvent -> {
-            Glide.with(getContext())
-                    .asBitmap()
-                    .load(playCardViewModelEvent.peekContent().getPlayCardHome().getCoverUrl())
-                    .into(new CustomTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                            viewModel.setPlayBanner(playCardViewModelEvent.peekContent());
-                        }
+        viewModel.getRequestImageTestLiveData().observe(this, playCardViewModelEvent -> Glide.with(getContext())
+                .asBitmap()
+                .load(playCardViewModelEvent.peekContent().getPlayCardHome().getCoverUrl())
+                .into(new CustomTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        viewModel.setPlayBanner(playCardViewModelEvent.peekContent());
+                    }
 
-                        @Override
-                        public void onLoadCleared(@Nullable Drawable placeholder) {
-                        }
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                    }
 
-                        @Override
-                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                            viewModel.clearPlayBanner();
-                        }
-                    });
-        });
+                    @Override
+                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                        viewModel.clearPlayBanner();
+                    }
+                }));
     }
 
     private void setData(List<HomeVisitable> data, boolean isCache){
@@ -1005,7 +1015,7 @@ public class HomeFragment extends BaseDaggerFragment implements
                 }
                 break;
             case REQUEST_CODE_PLAY_ROOM:
-                if(data.hasExtra(EXTRA_TOTAL_VIEW)) viewModel.updateBannerTotalView(data.getStringExtra(EXTRA_TOTAL_VIEW));
+                if(data != null && data.hasExtra(EXTRA_TOTAL_VIEW)) viewModel.updateBannerTotalView(data.getStringExtra(EXTRA_TOTAL_VIEW));
                 break;
         }
     }
@@ -1817,6 +1827,11 @@ public class HomeFragment extends BaseDaggerFragment implements
         if(!TextUtils.isEmpty(applink)){
             RouteManager.route(getContext(),applink);
         }
+    }
+
+    @Override
+    public void onOpenPlayChannelList(String appLink) {
+        openApplink(appLink);
     }
 
     @Override

@@ -23,7 +23,6 @@ class GqlRawQueryModule {
     fun provideRawProductInfo(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_product_info)
 
-
     @ProductDetailScope
     @Provides
     @IntoMap
@@ -243,6 +242,14 @@ class GqlRawQueryModule {
     fun provideGetPdpLayout(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_pdp_layout)
     }
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_GET_CART_TYPE)
+    fun provideGetCartType(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_cart_type)
+
 
     @ProductDetailScope
     @Provides
