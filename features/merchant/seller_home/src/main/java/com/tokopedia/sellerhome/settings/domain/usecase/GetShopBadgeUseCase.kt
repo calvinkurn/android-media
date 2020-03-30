@@ -36,10 +36,7 @@ class GetShopBadgeUseCase @Inject constructor(private val gqlRepository: Graphql
         } else throw MessageErrorException(errors.firstOrNull()?.message)
     }
 
-    private fun ReputationShopsResult.mapReputationToBadgeUrl() : String {
-        with(reputationShops) {
-            return if (isNotEmpty()) get(0).badge
-            else ""
-        }
-    }
+    private fun ReputationShopsResult.mapReputationToBadgeUrl() : String =
+            reputationShops.getOrNull(0)?.badge ?: ""
+
 }
