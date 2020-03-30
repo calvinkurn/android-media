@@ -17,7 +17,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
-import com.tokopedia.kotlin.extensions.view.setupStatusBarUnderMarshmallow
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
@@ -262,11 +261,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
     private fun setupStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             this.requestStatusBarDark()
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-                sahContainer.requestApplyInsets()
-            }
-            this.setupStatusBarUnderMarshmallow()
         }
     }
 }

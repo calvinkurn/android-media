@@ -4,4 +4,8 @@
     <dimen name="centralized_promo_promo_creation_card_horizontal_margin">6dp</dimen>
     <dimen name="centralized_promo_promo_creation_icon_size">38dp</dimen>
     <dimen name="centralized_promo_promo_creation_card_icon_size">56dp</dimen>
+
+    <dimen name="setting_header_height_extra">82dp</dimen>
+    <dimen name="setting_header_height">80dp</dimen>
+
 </resources>

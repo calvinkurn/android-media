@@ -60,8 +60,8 @@
     <dimen name="setting_title_indented_height">34dp</dimen>
     <dimen name="setting_tc_height">58dp</dimen>
     <dimen name="setting_bottom_refer">5dp</dimen>
-    <dimen name="setting_header_height">80dp</dimen>
-    <dimen name="setting_header_height_extra">82dp</dimen>
+    <dimen name="setting_header_height">56dp</dimen>
+    <dimen name="setting_header_height_extra">58dp</dimen>
     <dimen name="setting_toolbar_height">56dp</dimen>
     <dimen name="setting_shop_error_background_height">150dp</dimen>
     <dimen name="setting_shop_error_margin">16dp</dimen>
