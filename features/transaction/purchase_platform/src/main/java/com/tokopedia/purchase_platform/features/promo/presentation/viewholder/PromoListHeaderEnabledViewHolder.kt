@@ -34,7 +34,7 @@ class PromoListHeaderEnabledViewHolder(private val view: View,
             itemView.label_promo_list_header_sub_title.text = "Promo dipilih"
             itemView.label_promo_list_header_sub_title.setTextColor(ContextCompat.getColor(itemView.context, R.color.light_T500))
         } else {
-            itemView.label_promo_list_header_sub_title.text = element.uiData.subTitle
+            itemView.label_promo_list_header_sub_title.text = "Hanya bisa pilih 1"
             itemView.label_promo_list_header_sub_title.setTextColor(ContextCompat.getColor(itemView.context, R.color.n_700_44))
         }
 
