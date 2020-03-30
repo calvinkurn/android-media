@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.text.format.DateUtils;
-import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -28,7 +26,6 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.view.DateFormatUtils;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -137,8 +134,7 @@ import com.tokopedia.purchase_platform.features.checkout.view.converter.RatesDat
 import com.tokopedia.purchase_platform.features.checkout.view.di.CheckoutModule;
 import com.tokopedia.purchase_platform.features.checkout.view.di.DaggerCheckoutComponent;
 import com.tokopedia.purchase_platform.features.checkout.view.dialog.ExpiredTimeDialog;
-import com.tokopedia.purchase_platform.features.checkout.view.helper.DateHelper;
-import com.tokopedia.purchase_platform.features.checkout.view.helper.RfcDateTimeParser;
+import com.tokopedia.abstraction.common.utils.time.DateHelper;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentButtonPaymentModel;
@@ -150,9 +146,7 @@ import com.tokopedia.unifyprinciples.Typography;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;

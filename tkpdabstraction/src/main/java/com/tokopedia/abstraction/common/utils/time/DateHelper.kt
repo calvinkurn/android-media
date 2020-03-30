@@ -1,6 +1,7 @@
-package com.tokopedia.purchase_platform.features.checkout.view.helper
+package com.tokopedia.abstraction.common.utils.time
 
-import com.tokopedia.purchase_platform.features.checkout.view.helper.RfcDateTimeParser.RFC_3339
+import com.tokopedia.abstraction.common.utils.time.RfcDateTimeParser
+import com.tokopedia.abstraction.common.utils.time.RfcDateTimeParser.RFC_3339
 
 object DateHelper {
 

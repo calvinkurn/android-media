@@ -1,4 +1,6 @@
-package com.tokopedia.purchase_platform.features.checkout.view.helper;
+package com.tokopedia.abstraction.common.utils.time;
+
+import androidx.annotation.Nullable;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -13,6 +15,7 @@ import java.util.Locale;
 // http://stackoverflow.com/questions/40369287/what-pattern-should-be-used-to-parse-rfc-3339-datetime-strings-in-java
 
 public class RfcDateTimeParser {
+
     // note I have excluded two valid 3339 patterns that contain the Z literal. This is because
     // java does not properly assume the Z literal indicates UTC so we have to manually handle it
     // in our parsing function instead. For reference the other two patterns would be:
@@ -31,6 +34,7 @@ public class RfcDateTimeParser {
             "EEE, dd MMM yyyy HH:mm:ss zzz"
     };
 
+    @Nullable
     public static Date parseDateString(String timestamp, String[] rfcPatterns) {
         if (timestamp == null || timestamp.isEmpty()) {
             return null;
