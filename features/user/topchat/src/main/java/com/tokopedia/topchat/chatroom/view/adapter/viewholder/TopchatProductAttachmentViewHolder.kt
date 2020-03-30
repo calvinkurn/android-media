@@ -70,6 +70,7 @@ class TopchatProductAttachmentViewHolder(
 
     private fun bindImageClick(product: ProductAttachmentViewModel) {
         itemView.iv_thumbnail?.setOnClickListener {
+            listener.trackClickProductThumbnail(product)
             it.context.startActivity(
                     ImagePreviewActivity.getCallingIntent(
                             it.context,

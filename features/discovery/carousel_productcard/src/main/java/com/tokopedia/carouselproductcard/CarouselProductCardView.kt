@@ -20,7 +20,6 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
     private var carouselLayoutManager: RecyclerView.LayoutManager? = null
     private val defaultRecyclerViewDecorator = CarouselProductCardDefaultDecorator()
     private var carouselProductCardAdapter: CarouselProductCardAdapter? = null
-    private val carouselProductCardListenerInfo = CarouselProductCardListenerInfo()
     private val snapHelper = StartSnapHelper()
     private var isUseDefaultItemDecorator = true
     private val masterJob = SupervisorJob()
@@ -83,17 +82,18 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
     ) {
         if (productCardModelList.isEmpty()) return
 
-        initBindCarousel(
+        initBindCarousel(true)
+
+        val carouselProductCardListenerInfo = createCarouselProductCardListenerInfo(
                 carouselProductCardOnItemClickListener,
                 carouselProductCardOnItemImpressedListener,
                 carouselProductCardOnItemAddToCartListener,
-                carouselProductCardOnItemThreeDotsClickListener,
-                true
+                carouselProductCardOnItemThreeDotsClickListener
         )
 
         launch {
             try {
-                tryBindCarousel(productCardModelList, recyclerViewPool, scrollToPosition, true)
+                tryBindCarousel(productCardModelList, carouselProductCardListenerInfo, recyclerViewPool, scrollToPosition, true)
             }
             catch (throwable: Throwable) {
                 throwable.printStackTrace()
@@ -101,38 +101,28 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
         }
     }
 
-    private fun initBindCarousel(
-            carouselProductCardOnItemClickListener: OnItemClickListener? = null,
-            carouselProductCardOnItemImpressedListener: OnItemImpressedListener? = null,
-            carouselProductCardOnItemAddToCartListener: OnItemAddToCartListener? = null,
-            carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null,
-            isGrid: Boolean
-    ) {
-        setCarouselProductCardListeners(
-                carouselProductCardOnItemClickListener,
-                carouselProductCardOnItemImpressedListener,
-                carouselProductCardOnItemAddToCartListener,
-                carouselProductCardOnItemThreeDotsClickListener
-        )
-
+    private fun initBindCarousel(isGrid: Boolean) {
         initLayoutManager()
 
         if (isGrid) initGridAdapter()
         else initListAdapter()
     }
 
-    fun setCarouselProductCardListeners(
+    private fun createCarouselProductCardListenerInfo(
             carouselProductCardOnItemClickListener: OnItemClickListener? = null,
             carouselProductCardOnItemImpressedListener: OnItemImpressedListener? = null,
             carouselProductCardOnItemAddToCartListener: OnItemAddToCartListener? = null,
-            carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null
-    ) {
-        carouselProductCardListenerInfo.run {
-            onItemClickListener = carouselProductCardOnItemClickListener
-            onItemImpressedListener = carouselProductCardOnItemImpressedListener
-            onItemAddToCartListener = carouselProductCardOnItemAddToCartListener
-            onItemThreeDotsClickListener = carouselProductCardOnItemThreeDotsClickListener
-        }
+            carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null)
+    : CarouselProductCardListenerInfo {
+
+        val carouselProductCardListenerInfo = CarouselProductCardListenerInfo()
+
+        carouselProductCardListenerInfo.onItemClickListener = carouselProductCardOnItemClickListener
+        carouselProductCardListenerInfo.onItemImpressedListener = carouselProductCardOnItemImpressedListener
+        carouselProductCardListenerInfo.onItemAddToCartListener = carouselProductCardOnItemAddToCartListener
+        carouselProductCardListenerInfo.onItemThreeDotsClickListener = carouselProductCardOnItemThreeDotsClickListener
+
+        return carouselProductCardListenerInfo
     }
 
     private fun initLayoutManager() {
@@ -140,21 +130,22 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
     }
 
     private fun initGridAdapter() {
-        carouselProductCardAdapter = CarouselProductCardGridAdapter(carouselProductCardListenerInfo)
+        carouselProductCardAdapter = CarouselProductCardGridAdapter()
     }
 
     private fun initListAdapter() {
-        carouselProductCardAdapter = CarouselProductCardListAdapter(carouselProductCardListenerInfo)
+        carouselProductCardAdapter = CarouselProductCardListAdapter()
     }
 
     private suspend fun tryBindCarousel(
             productCardModelList: List<ProductCardModel>,
+            carouselProductCardListenerInfo: CarouselProductCardListenerInfo,
             recyclerViewPool: RecyclerView.RecycledViewPool? = null,
             scrollToPosition: Int = 0,
             isGrid: Boolean
     ) {
         initRecyclerView(productCardModelList, recyclerViewPool, isGrid)
-        submitList(productCardModelList)
+        submitList(productCardModelList, carouselProductCardListenerInfo)
         scrollCarousel(scrollToPosition)
     }
 
@@ -201,7 +192,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
         }
     }
 
-    private fun submitList(productCardModelList: List<ProductCardModel>) {
+    private fun submitList(productCardModelList: List<ProductCardModel>, carouselProductCardListenerInfo: CarouselProductCardListenerInfo) {
         carouselProductCardAdapter?.submitCarouselProductCardModelList(productCardModelList.map {
             CarouselProductCardModel(
                     productCardModel = it,
@@ -233,22 +224,32 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
     ) {
         if (productCardModelList.isEmpty()) return
 
-        initBindCarousel(
+        initBindCarousel(false)
+
+        val carouselProductCardListenerInfo = createCarouselProductCardListenerInfo(
                 carouselProductCardOnItemClickListener,
                 carouselProductCardOnItemImpressedListener,
                 carouselProductCardOnItemAddToCartListener,
-                carouselProductCardOnItemThreeDotsClickListener,
-                false
+                carouselProductCardOnItemThreeDotsClickListener
         )
 
         launch {
             try {
-                tryBindCarousel(productCardModelList, recyclerViewPool, scrollToPosition, false)
+                tryBindCarousel(productCardModelList, carouselProductCardListenerInfo, recyclerViewPool, scrollToPosition, false)
             }
             catch (throwable: Throwable) {
                 throwable.printStackTrace()
             }
         }
+    }
+
+    @Deprecated("Not needed anymore.")
+    fun setCarouselProductCardListeners(
+            carouselProductCardOnItemClickListener: OnItemClickListener? = null,
+            carouselProductCardOnItemImpressedListener: OnItemImpressedListener? = null,
+            carouselProductCardOnItemAddToCartListener: OnItemAddToCartListener? = null,
+            carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null
+    ) {
     }
 
     fun recycle() {

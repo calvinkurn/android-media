@@ -34,8 +34,9 @@ class AddEditAddressPresenter
     }
 
     fun saveAddress(model: SaveAddressDataModel, typeForm: String) {
+        val formType = if (typeForm == AddressConstants.ANA_POSITIVE) "1" else "0"
         addAddressUseCase
-                .execute(model)
+                .execute(model, formType)
                 .subscribe(object : Subscriber<AddAddressResponse>() {
                     override fun onNext(response: AddAddressResponse) {
                         if (typeForm.equals(AddressConstants.ANA_POSITIVE, true)) {

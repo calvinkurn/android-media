@@ -12,13 +12,13 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel.WishlistResu
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase;
 import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
+import com.tokopedia.search.analytics.SearchEventTracking;
 import com.tokopedia.search.di.module.SearchContextModule;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
@@ -48,9 +48,6 @@ import com.tokopedia.topads.sdk.domain.model.LabelGroup;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.wishlist.common.listener.WishListActionListener;
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -465,18 +462,7 @@ final class ProductListPresenter
         List<Visitable> list = new ArrayList<>(convertToListOfVisitable(productViewModel));
         productList.addAll(list);
 
-        if (inspirationCarouselViewModel.size() > 0) {
-            Iterator<InspirationCarouselViewModel> inspirationCarouselViewModelIterator = inspirationCarouselViewModel.iterator();
-            while(inspirationCarouselViewModelIterator.hasNext()) {
-                InspirationCarouselViewModel data = inspirationCarouselViewModelIterator.next();
-                if (data.getPosition() < getView().getLastProductItemPositionFromCache()) {
-                    Visitable product = productList.get(data.getPosition());
-                    list.add(list.indexOf(product), data);
-                    getView().sendImpressionInspirationCarousel(data);
-                    inspirationCarouselViewModelIterator.remove();
-                }
-            }
-        }
+        processInspirationCarouselPosition(list);
 
         getView().removeLoading();
         getView().addProductList(list);
@@ -843,19 +829,7 @@ final class ProductListPresenter
         }
 
         inspirationCarouselViewModel = productViewModel.getInspirationCarouselViewModel();
-
-        if (inspirationCarouselViewModel.size() > 0) {
-            Iterator<InspirationCarouselViewModel> inspirationCarouselViewModelIterator = inspirationCarouselViewModel.iterator();
-            while(inspirationCarouselViewModelIterator.hasNext()) {
-                InspirationCarouselViewModel data = inspirationCarouselViewModelIterator.next();
-                if (data.getPosition() < list.size()) {
-                    Visitable product = productList.get(data.getPosition());
-                    list.add(list.indexOf(product), data);
-                    getView().sendImpressionInspirationCarousel(data);
-                    inspirationCarouselViewModelIterator.remove();
-                }
-            }
-        }
+        processInspirationCarouselPosition(list);
 
         getView().removeLoading();
         getView().setProductList(list);
@@ -913,6 +887,33 @@ final class ProductListPresenter
         return new BannedProductsTickerViewModel(htmlErrorMessage);
     }
 
+    private void processInspirationCarouselPosition(List<Visitable> list) {
+        if (inspirationCarouselViewModel.size() > 0) {
+            Iterator<InspirationCarouselViewModel> inspirationCarouselViewModelIterator = inspirationCarouselViewModel.iterator();
+
+            while(inspirationCarouselViewModelIterator.hasNext()) {
+                InspirationCarouselViewModel data = inspirationCarouselViewModelIterator.next();
+
+                if (data.getPosition() <= 0) {
+                    inspirationCarouselViewModelIterator.remove();
+                    continue;
+                }
+
+                if (data.getPosition() <= getView().getLastProductItemPositionFromCache()) {
+                    try {
+                        Visitable product = productList.get(data.getPosition() - 1);
+                        list.add(list.indexOf(product) + 1, data);
+                        getView().sendImpressionInspirationCarousel(data);
+                        inspirationCarouselViewModelIterator.remove();
+                    }
+                    catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
     private boolean isExistsFreeOngkirBadge(List<Visitable> productList) {
         for (Visitable product : productList) {
             if (product instanceof ProductItemViewModel) {
@@ -955,12 +956,71 @@ final class ProductListPresenter
 
     private GeneralSearchTrackingModel createGeneralSearchTrackingModel(ProductViewModel productViewModel, Map<String, String> category) {
         return new GeneralSearchTrackingModel(
+                createGeneralSearchTrackingEventLabel(productViewModel),
+                !productViewModel.getProductList().isEmpty(),
+                category,
+                createGeneralSearchTrackingRelatedKeyword(productViewModel)
+        );
+    }
+
+    private String createGeneralSearchTrackingEventLabel(ProductViewModel productViewModel) {
+        return String.format(
+                SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                 productViewModel.getQuery(),
                 productViewModel.getKeywordProcess(),
-                productViewModel.getResponseCode(),
-                !productViewModel.getProductList().isEmpty(),
-                category
+                productViewModel.getResponseCode()
         );
+    }
+
+    private String createGeneralSearchTrackingRelatedKeyword(ProductViewModel productViewModel) {
+        String previousKeyword = getPreviousKeywordForGeneralSearchTracking();
+        String alternativeKeyword = getAlternativeKeywordForGeneralSearchTracking(productViewModel);
+
+        return previousKeyword + " - " + alternativeKeyword;
+    }
+
+    private String getPreviousKeywordForGeneralSearchTracking() {
+        if (getView() == null) return SearchEventTracking.NONE;
+
+        String previousKeyword = getView().getPreviousKeyword();
+        if (previousKeyword.isEmpty()) return SearchEventTracking.NONE;
+
+        return previousKeyword;
+    }
+
+    private String getAlternativeKeywordForGeneralSearchTracking(ProductViewModel productViewModel) {
+        String alternativeKeyword = SearchEventTracking.NONE;
+
+        if (isAlternativeKeywordFromRelated(productViewModel)) {
+            alternativeKeyword = productViewModel.getRelatedSearchModel().getRelatedKeyword();
+        }
+        else if (isAlternativeKeywordFromSuggestion(productViewModel)) {
+            alternativeKeyword = productViewModel.getSuggestionModel().getSuggestion();
+        }
+
+        return alternativeKeyword;
+    }
+
+    private boolean isAlternativeKeywordFromRelated(ProductViewModel productViewModel) {
+        String responseCode = productViewModel.getResponseCode();
+
+        boolean isResponseCodeForRelatedKeyword = responseCode.equals("3") || responseCode.equals("6");
+        boolean relatedKeywordIsNotEmpty =
+                productViewModel.getRelatedSearchModel() != null
+                && !productViewModel.getRelatedSearchModel().getRelatedKeyword().isEmpty();
+
+        return isResponseCodeForRelatedKeyword && relatedKeywordIsNotEmpty;
+    }
+
+    private boolean isAlternativeKeywordFromSuggestion(ProductViewModel productViewModel) {
+        String responseCode = productViewModel.getResponseCode();
+
+        boolean isResponseCodeForSuggestion = responseCode.equals("7");
+        boolean suggestionIsNotEmpty =
+                productViewModel.getSuggestionModel() != null
+                && !productViewModel.getSuggestionModel().getSuggestion().isEmpty();
+
+        return isResponseCodeForSuggestion && suggestionIsNotEmpty;
     }
 
     private void enrichWithRelatedSearchParam(RequestParams requestParams) {
