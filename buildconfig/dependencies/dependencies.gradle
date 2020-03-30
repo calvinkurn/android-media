@@ -254,6 +254,7 @@ ext {
             junitJupiterApi       : "org.junit.jupiter:junit-jupiter-api:$JunitJupiterVersion",
             junitJupiterEngine    : "org.junit.jupiter:junit-jupiter-engine:$JunitJupiterVersion",
             mockk                 : "io.mockk:mockk:$MockkVersion",
+            mockkAndroid          : "io.mockk:mockk-android:$MockkVersion",
             mockitorCore          : "org.mockito:mockito-core:1.10.19",
             uiautomator           : 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2',
             spoon                 : 'com.squareup.spoon:spoon-client:1.6.4',
