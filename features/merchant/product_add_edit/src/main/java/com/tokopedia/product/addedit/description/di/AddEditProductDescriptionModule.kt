@@ -30,63 +30,12 @@ class AddEditProductDescriptionModule {
 
     @AddEditProductDescriptionScope
     @Provides
-    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
-        return ChuckerInterceptor(context)
-    }
-
-    @AddEditProductDescriptionScope
-    @Provides
-    fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
-        return context as NetworkRouter
-    }
-
-    @AddEditProductDescriptionScope
-    @Provides
-    fun provideTkpdAuthInterceptor(@ApplicationContext context: Context,
-                                   networkRouter: NetworkRouter,
-                                   userSession: UserSessionInterface
-    ): TkpdAuthInterceptor {
-        return TkpdAuthInterceptor(context, networkRouter, userSession)
-    }
-
-    @AddEditProductDescriptionScope
-    @Provides
-    fun provideFingerprintInterceptor(networkRouter: NetworkRouter, userSession: UserSessionInterface):
-            FingerprintInterceptor {
-        return FingerprintInterceptor(networkRouter, userSession)
-    }
-
-    @AddEditProductDescriptionScope
-    @Provides
-    fun provideOkHttpClient(chuckInterceptor: ChuckerInterceptor,
-                            httpLoggingInterceptor: HttpLoggingInterceptor,
-                            debugInterceptor: DebugInterceptor,
-                            fingerprintInterceptor: FingerprintInterceptor,
-                            tkpdAuthInterceptor: TkpdAuthInterceptor): OkHttpClient {
-        val builder: OkHttpClient.Builder = OkHttpClient.Builder()
-
-        builder.addInterceptor(fingerprintInterceptor)
-        builder.addInterceptor(tkpdAuthInterceptor)
-        builder.addInterceptor(HeaderErrorResponseInterceptor(HeaderErrorListResponse::class.java))
-
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            builder.addInterceptor(chuckInterceptor)
-            builder.addInterceptor(debugInterceptor)
-            builder.addInterceptor(httpLoggingInterceptor)
-        }
-        return builder.build()
-    }
-
-    @AddEditProductDescriptionScope
-    @Provides
     fun provideCoroutineDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
     @AddEditProductDescriptionScope
     @Provides
-    fun provideTickerRetrofit(builder: Retrofit.Builder,
-                              @AddEditProductDescriptionScope okHttpClient: OkHttpClient): Retrofit {
+    fun provideTickerRetrofit(builder: Retrofit.Builder): Retrofit {
         return builder.baseUrl(ProductVariantService.BASE_URL)
-                .client(okHttpClient)
                 .build()
     }
 
