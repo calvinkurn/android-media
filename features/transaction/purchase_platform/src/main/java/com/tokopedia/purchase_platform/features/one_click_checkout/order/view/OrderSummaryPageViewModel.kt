@@ -16,7 +16,10 @@ import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAuto
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_CHECKOUT
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_DEFAULT
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_OCC
 import com.tokopedia.purchase_platform.common.data.model.param.EditAddressParam
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.Message
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.PriceValidation
 import com.tokopedia.purchase_platform.features.checkout.domain.mapper.LastApplyUiMapper
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.EditAddressUseCase
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata
@@ -898,8 +901,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         }
     }
 
-    private fun doCheckout(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (Data) -> Unit) {
-        if (checkIneligiblePromo()) {
+    private fun doCheckout(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (Data) -> Unit, promo: List<com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.PromoRequest>? = null) {
+        if (promo != null || checkIneligiblePromo()) {
             val param = CheckoutOccRequest(Profile(pref.preference.profileId), ParamCart(data = listOf(ParamData(
                     pref.preference.address.addressId,
                     listOf(
@@ -924,7 +927,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                     )
                             )
                     )
-            )), promos = generateCheckoutPromos(pref)))
+            )), promos = promo ?: generateCheckoutPromos(pref)))
             checkoutOccUseCase.execute(param, { checkoutOccGqlResponse: CheckoutOccGqlResponse ->
                 if (checkoutOccGqlResponse.response.status.equals("OK", true)) {
                     if (checkoutOccGqlResponse.response.data.success == 1 || checkoutOccGqlResponse.response.data.paymentParameter.redirectParam.url.isNotEmpty()) {
@@ -934,10 +937,10 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     } else {
                         val errorCode = checkoutOccGqlResponse.response.data.error.code
                         orderSummaryAnalytics.eventClickBayarNotSuccess(errorCode)
-                        if (errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_STOCK_EMPTY || errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_SHOP_CLOSED) {
+                        if (errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_STOCK_EMPTY || errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_ERROR || errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_SHOP_CLOSED) {
                             globalEvent.value = OccGlobalEvent.CheckoutError(checkoutOccGqlResponse.response.data.error)
-                        } else if (checkoutOccGqlResponse.response.data.error.additionalInfo?.priceValidation?.isUpdated == true && checkoutOccGqlResponse.response.data.error.additionalInfo.priceValidation.message != null) {
-                            globalEvent.value = OccGlobalEvent.PriceChangeError(checkoutOccGqlResponse.response.data.error.additionalInfo.priceValidation)
+                        } else if (errorCode == "513") {
+                            globalEvent.value = OccGlobalEvent.PriceChangeError(PriceValidation(true, Message("Harga telah berubah", checkoutOccGqlResponse.response.data.error.message, "Cek Belanjaan")))
                         } else if (checkoutOccGqlResponse.response.data.error.message.isNotBlank()) {
                             globalEvent.value = OccGlobalEvent.Error(errorMessage = checkoutOccGqlResponse.response.data.error.message)
                         } else {
@@ -1009,7 +1012,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     fun cancelIneligiblePromoCheckout(notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>, onSuccessCheckout: (Data) -> Unit) {
         globalEvent.value = OccGlobalEvent.Loading
-        clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, ArrayList(notEligiblePromoHolderdataList.map { it.promoCode }))
+        val promoCodeList = ArrayList(notEligiblePromoHolderdataList.map { it.promoCode })
+        clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, promoCodeList)
         compositeSubscription.add(
                 clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY)
                         .subscribe(object : Observer<ClearPromoUiModel?> {
@@ -1018,7 +1022,9 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                             }
 
                             override fun onNext(t: ClearPromoUiModel?) {
-                                doCheckout(orderProduct, orderShop, _orderPreference!!, onSuccessCheckout)
+                                if (_orderPreference != null) {
+                                    doCheckout(orderProduct, orderShop, _orderPreference!!, onSuccessCheckout, generateCheckoutPromos(_orderPreference!!, promoCodeList))
+                                }
                             }
 
                             override fun onCompleted() {
@@ -1027,7 +1033,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         )
     }
 
-    private fun generateCheckoutPromos(pref: OrderPreference): List<com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.PromoRequest> {
+    private fun generateCheckoutPromos(pref: OrderPreference, notEligiblePromoList: ArrayList<String>? = null): List<com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.PromoRequest> {
         val list = ArrayList<com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.PromoRequest>()
 //        if (pref.shipping?.isApplyLogisticPromo == true && pref.shipping.logisticPromoShipping != null && pref.shipping.logisticPromoViewModel != null) {
 //            list.add(PromoRequest("logistic", pref.shipping.logisticPromoViewModel.promoCode))
@@ -1035,15 +1041,17 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         val finalPromo = validateUsePromoRevampUiModel
         if (finalPromo != null) {
             for (code in finalPromo.promoUiModel.codes) {
-                list.add(PromoRequest("global", code))
+                if (notEligiblePromoList == null || !notEligiblePromoList.contains(code)) {
+                    list.add(PromoRequest("global", code))
+                }
             }
             for (voucherOrderUiModel in finalPromo.promoUiModel.voucherOrderUiModels) {
                 if (voucherOrderUiModel != null) {
-                    list.add(PromoRequest(voucherOrderUiModel.type, voucherOrderUiModel.code))
+                    if (notEligiblePromoList == null || !notEligiblePromoList.contains(voucherOrderUiModel.code)) {
+                        list.add(PromoRequest(voucherOrderUiModel.type, voucherOrderUiModel.code))
+                    }
                 }
             }
-        } else if (orderPromo.value?.lastApply != null) {
-
         }
         return list
     }
@@ -1104,7 +1112,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
         promoRequest.orders = listOf(ordersItem)
         promoRequest.state = PARAM_CHECKOUT
-        promoRequest.cartType = PARAM_DEFAULT
+        promoRequest.cartType = PARAM_OCC
 
         val lastApply = orderPromo.value?.lastApply
         if (lastApply != null) {
@@ -1155,7 +1163,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
         validateUsePromoRequest.orders = listOf(ordersItem)
         validateUsePromoRequest.state = PARAM_CHECKOUT
-        validateUsePromoRequest.cartType = PARAM_DEFAULT
+        validateUsePromoRequest.cartType = PARAM_OCC
 
         if (lastRequest != null) {
             validateUsePromoRequest.codes = lastRequest.codes
