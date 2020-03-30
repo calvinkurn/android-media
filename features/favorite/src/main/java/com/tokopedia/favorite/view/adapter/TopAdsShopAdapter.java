@@ -27,11 +27,10 @@ import com.bumptech.glide.request.target.Target;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.favorite.R;
+import com.tokopedia.favorite.utils.TrackingConst;
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener;
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem;
-import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.track.TrackApp;
@@ -224,9 +223,9 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
 
     public void eventFavoriteViewRecommendation() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AppEventTracking.Event.FAVORITE,
-                AppEventTracking.Category.HOMEPAGE.toLowerCase(),
-                AppEventTracking.Action.CLICK_SHOP_FAVORITE,
+                TrackingConst.Event.FAVORITE,
+                TrackingConst.Category.HOMEPAGE.toLowerCase(),
+                TrackingConst.Action.CLICK_SHOP_FAVORITE,
                 "");
     }
 
