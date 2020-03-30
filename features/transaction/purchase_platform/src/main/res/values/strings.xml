@@ -294,5 +294,10 @@
     <string name="label_error_global_promo_checkout">Oops, terjadi kesalahan. Coba pilih promo lagi.</string>
     <string name="label_promo_page_summary_benefit_title">Kamu bisa hemat</string>
     <string name="label_button_buy_without_promo">Belanja Tanpa Promo</string>
+    <string name="label_subtitle_promo_eligibility_header">Kamu bisa gabungkan promo biar makin hemat</string>
+    <string name="label_title_promo_eligibility_header">Pilih promo</string>
+    <string name="label_promo_input_hint">Masukkan kode promo</string>
+    <string name="label_button_apply_manual_input_promo">Terapkan</string>
+    <string name="label_prefix_attempted_promo_code">Kode promo:&amp;</string>
 
 </resources>
