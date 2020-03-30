@@ -1,5 +1,5 @@
-query universe_search($navsource: String , $shopID: Int, $q: String ){
-    universe_search(navsource: $navsource, shopID : $shopID,q: $q){
+query universe_search($shopID: Int, $q: String ){
+    universe_search(shopID : $shopID,q: $q){
             data{
                 id
                 name

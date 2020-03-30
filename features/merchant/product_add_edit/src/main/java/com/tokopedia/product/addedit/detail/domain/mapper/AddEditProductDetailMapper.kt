@@ -13,7 +13,7 @@ object AddEditProductDetailMapper {
         val listProductName: MutableList<String> = mutableListOf()
         val maxSuggestionName = 5
         getProductNameAutoComplete.map {  data ->
-            data.items.map {
+            data.items.forEach {
                 if(listProductName.size <= maxSuggestionName) {
                     listProductName.add(it.keyword)
                 }

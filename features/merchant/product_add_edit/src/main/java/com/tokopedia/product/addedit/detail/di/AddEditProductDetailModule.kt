@@ -1,24 +1,19 @@
 package com.tokopedia.product.addedit.detail.di
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIVERSE_SEARCH_QUERY
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Named
 
 @Module(includes = [AddEditProductDetailViewModelModule::class])
 @AddEditProductDetailScope
 class AddEditProductDetailModule {
-
-    @AddEditProductDetailScope
-    @Provides
-    fun provideCoroutineDispatcher(): CoroutineDispatcher = Dispatchers.Main
-
-    @Provides
-    fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
 
     @AddEditProductDetailScope
     @Provides
@@ -29,15 +24,11 @@ class AddEditProductDetailModule {
 
     @AddEditProductDetailScope
     @Provides
-    fun provideGetSearchShopProductUseCase(graphqlUseCase: MultiRequestGraphqlUseCase,
-                                           @Named(UNIVERSE_SEARCH_QUERY) gqlQuery: String): GetSearchShopProductUseCase {
-        return GetSearchShopProductUseCase(graphqlUseCase, gqlQuery)
-    }
-
-    @AddEditProductDetailScope
-    @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context?): UserSessionInterface {
         return UserSession(context)
     }
+
+    @Provides
     fun provideUserSession(context: Context): UserSessionInterface = UserSession(context)
+
 }
