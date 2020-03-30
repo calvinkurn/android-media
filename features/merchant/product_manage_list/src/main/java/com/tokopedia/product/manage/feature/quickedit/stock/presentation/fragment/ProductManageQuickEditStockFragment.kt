@@ -37,6 +37,7 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
         const val MAXIMUM_LENGTH = 7
         private const val TOGGLE_ACTIVE = "active"
         private const val TOGGLE_NOT_ACTIVE = "not active"
+        private const val SUBMIT_FLAG = true
 
         fun createInstance(context: Context, product: ProductViewModel, onFinishedListener: OnFinishedListener) : ProductManageQuickEditStockFragment {
             return ProductManageQuickEditStockFragment(onFinishedListener, product).apply{
@@ -125,7 +126,7 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
         }
 
         quickEditStockSaveButton.setOnClickListener {
-            viewModel.updateStock(quickEditStockQuantityEditor.getValue())
+            viewModel.updateStock(quickEditStockQuantityEditor.getValue(), SUBMIT_FLAG)
             onFinishedListener.onFinishEditStock(product)
             removeObservers()
             super.dismiss()
