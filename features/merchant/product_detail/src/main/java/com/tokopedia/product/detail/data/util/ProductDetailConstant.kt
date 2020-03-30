@@ -76,6 +76,8 @@ object ProductDetailConstant {
     const val PAYLOAD_VARIANT_SELECTED = 5
     const val PAYLOAD_FULLFILLMENT = 192
     const val PAYLOAD_VARIANT_COMPONENT = 1
+    const val PAYLOAD_NOTIFY_ME = 1
+
 
     //Request Code
     const val REQUEST_CODE_TALK_PRODUCT = 1
@@ -108,6 +110,8 @@ object ProductDetailConstant {
     const val SEPARATOR = "separator"
     const val VALUE_PROPOSITION = "value_prop"
     const val PRODUCT_LIST = "product_list"
+    const val NOTIFY_ME = "teaser"
+    const val UPCOMING_DEALS = "upcoming_deals"
     const val VARIANT_OPTIONS = "variant_options"
     const val VARIANT = "variant"
     const val SOCIAL_PROOF_PV = "social_proof_pv"

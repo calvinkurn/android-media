@@ -15,6 +15,8 @@
  */
 package com.github.moduth.blockcanary;
 
+import android.os.Build;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.github.moduth.blockcanary.internal.BlockInfo;
@@ -25,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import android.os.Process;
 
 /**
  * Dumps cpu usage.
@@ -48,10 +51,14 @@ class CpuSampler extends AbstractSampler {
     private long mIoWaitLast = 0;
     private long mTotalLast = 0;
     private long mAppCpuTimeLast = 0;
+    private boolean mAboveAndroidO = false;
 
     public CpuSampler(long sampleInterval) {
         super(sampleInterval);
         BUSY_TIME = (int) (mSampleInterval * 1.2f);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mAboveAndroidO = true;
+        }
     }
 
     @Override
@@ -101,9 +108,16 @@ class CpuSampler extends AbstractSampler {
 
     @Override
     protected void doSample() {
+        if (mAboveAndroidO) {
+            getCPUDataForO();
+        } else {
+            getCPUData();
+        }
+    }
+
+    private void getCPUData() {
         BufferedReader cpuReader = null;
         BufferedReader pidReader = null;
-
         try {
             cpuReader = new BufferedReader(new InputStreamReader(
                     new FileInputStream("/proc/stat")), BUFFER_SIZE);
@@ -121,7 +135,6 @@ class CpuSampler extends AbstractSampler {
             if (pidCpuRate == null) {
                 pidCpuRate = "";
             }
-
             parse(cpuRate, pidCpuRate);
         } catch (Throwable throwable) {
             Log.e(TAG, "doSample: ", throwable);
@@ -137,6 +150,79 @@ class CpuSampler extends AbstractSampler {
                 Log.e(TAG, "doSample: ", exception);
             }
         }
+    }
+
+    /**
+     *   Android above O(26) can only get app rate
+     */
+    private void getCPUDataForO() {
+        java.lang.Process process = null;
+        try {
+            process = Runtime.getRuntime().exec("top -n 1");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            int cpuIndex = -1;
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+                if (TextUtils.isEmpty(line)) {
+                    continue;
+                }
+
+                int tempIndex = getCPUIndex(line);
+                if (tempIndex != -1) {
+                    cpuIndex = tempIndex;
+                    continue;
+                }
+                if (line.startsWith(String.valueOf(Process.myPid()))) {
+                    if (cpuIndex == -1) {
+                        continue;
+                    }
+                    String[] param = line.split("\\s+");
+
+                    if (param.length <= cpuIndex) {
+                        continue;
+                    }
+                    String cpu = param[cpuIndex];
+                    if (cpu.endsWith("%")) {
+                        cpu = cpu.substring(0, cpu.lastIndexOf("%"));
+                    }
+                    float rate = Float.parseFloat(cpu) / Runtime.getRuntime().availableProcessors();
+
+                    StringBuilder stringBuilder = new StringBuilder();
+
+                    stringBuilder.append(cpu).append("% ");
+
+                    synchronized (mCpuInfoEntries) {
+                        mCpuInfoEntries.put(System.currentTimeMillis(), stringBuilder.toString());
+                        if (mCpuInfoEntries.size() > MAX_ENTRY_COUNT) {
+                            for (Map.Entry<Long, String> entry : mCpuInfoEntries.entrySet()) {
+                                Long key = entry.getKey();
+                                mCpuInfoEntries.remove(key);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (process != null) {
+                process.destroy();
+            }
+        }
+    }
+
+    private int getCPUIndex(String line) {
+        if (line.contains("CPU")) {
+            String[] titles = line.split("\\s+");
+            for (int i = 0; i < titles.length; i++) {
+                if (titles[i].contains("CPU")) {
+                    return i;
+                }
+            }
+        }
+        return -1;
     }
 
     private void reset() {

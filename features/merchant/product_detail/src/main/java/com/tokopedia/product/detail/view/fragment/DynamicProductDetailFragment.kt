@@ -89,6 +89,7 @@ import com.tokopedia.product.detail.data.model.TradeinResponse
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
 import com.tokopedia.product.detail.data.model.description.DescriptionData
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
@@ -977,6 +978,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         observeP2General()
         observeP3()
         observeToggleFavourite()
+        observeToggleNotifyMe()
         observeMoveToWarehouse()
         observeMoveToEtalase()
         observeRecommendationProduct()
@@ -2501,6 +2503,52 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 show()
             }
             productDetailTracking.eventViewHelpPopUpWhenAtc()
+        }
+    }
+
+    private fun observeToggleNotifyMe() {
+        viewModel.toggleTeaserNotifyMe.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Fail -> onFailNotifyMe(it.throwable)
+            }
+        })
+    }
+
+    private fun onFailNotifyMe(t: Throwable) {
+        val dataModel = pdpHashMapUtil?.notifyMeMap
+        context?.let {
+            showToastError(t)
+        }
+        if (dataModel != null) {
+            pdpHashMapUtil?.notifyMeMap?.notifyMe = !dataModel.notifyMe
+            dynamicAdapter.notifyNotifyMe(pdpHashMapUtil?.notifyMeMap, ProductDetailConstant.PAYLOAD_NOTIFY_ME)
+        }
+    }
+
+    override fun onNotifyMeClicked(data: ProductNotifyMeDataModel, componentTrackDataModel: ComponentTrackDataModel) {
+        try {
+            activity?.let {
+                if (viewModel.isUserSessionActive) {
+                    val action = if (data.notifyMe) ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER else
+                        ProductDetailCommonConstant.VALUE_TEASER_ACTION_REGISTER
+                    pdpHashMapUtil?.notifyMeMap?.notifyMe?.let { notifyMe -> trackToggleNotifyMe(componentTrackDataModel, notifyMe) }
+                    pdpHashMapUtil?.notifyMeMap?.notifyMe = !data.notifyMe
+                    dynamicAdapter.notifyNotifyMe(pdpHashMapUtil?.notifyMeMap, ProductDetailConstant.PAYLOAD_NOTIFY_ME)
+                    viewModel.toggleTeaserNotifyMe(data.campaignID.toInt(), productId?.toInt()
+                            ?: 0, action, ProductDetailCommonConstant.VALUE_TEASER_SOURCE)
+                } else {
+                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                            ProductDetailConstant.REQUEST_CODE_LOGIN)
+                }
+            }
+        } catch (ex: Exception) {
+
+        }
+    }
+
+    private fun trackToggleNotifyMe(componentTrackDataModel: ComponentTrackDataModel?, notifyMe: Boolean) {
+        viewModel.getDynamicProductInfoP1?.let {
+            DynamicProductDetailTracking.Click.eventNotifyMe(it, componentTrackDataModel, notifyMe)
         }
     }
 }
