@@ -54,7 +54,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Category.PDP,
                     actionTitle, "")
             mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
-            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = userId != "0"
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId != "0").toString()
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, null, actionTitle)
         }
@@ -67,7 +67,7 @@ object DynamicProductDetailTracking {
                     actionTitle,
                     "")
             mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
-            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = userId != "0"
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId != "0").toString()
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, null, actionTitle)
         }
@@ -81,7 +81,7 @@ object DynamicProductDetailTracking {
                     "")
 
             mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
-            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = userId != "0"
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId != "0").toString()
             TrackingUtil.addComponentTracker(mapEvent, productInfo, null, actionTitle)
         }
 
@@ -93,7 +93,7 @@ object DynamicProductDetailTracking {
                     actionTitle, "")
 
             mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
-            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = userId != "0"
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId != "0").toString()
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, null, actionTitle)
         }
