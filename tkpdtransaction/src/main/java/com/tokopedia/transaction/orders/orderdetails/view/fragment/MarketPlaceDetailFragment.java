@@ -102,6 +102,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public static final String NO_SALIN = "No. Resi";
     public static final String NO_SANIN_NEXT_LINE = "\n\nSalin No. Resi";
     public static final String BELI_LAGI = "Beli Lagi";
+    public static final String KEY_TULIS_REVIEW = "give_review";
     public static final String INVOICE_URL = "invoiceUrl";
     public static final String TX_ASK_SELLER = "tx_ask_seller";
     public static final String STATUS_CODE_220 = "220";
@@ -582,6 +583,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 if (!TextUtils.isEmpty(actionButton.getUri())) {
                     textView.setOnClickListener(clickActionButton(actionButton));
                 }
+
+                if (actionButton.getKey().equalsIgnoreCase(KEY_TULIS_REVIEW)) {
+                    orderListAnalytics.sendTulisReviewEventData(this.status.status());
+                }
             }
             actionBtnLayout.addView(textView);
             if(!stickyButtonAdded){
@@ -675,7 +680,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         return view -> {
             if (actionButton.getActionButtonPopUp() != null && !TextUtils.isEmpty(actionButton.getActionButtonPopUp().getTitle())) {
                 if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Tanya Penjual")) {
-                    orderListAnalytics.sendActionButtonClickEvent(CLICK_REQUEST_CANCEL, "response API -" + "SUCCESS");
+                    orderListAnalytics.sendActionButtonClickEvent(CLICK_REQUEST_CANCEL, this.status.status());
                 } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Komplain")) {
                     orderListAnalytics.sendActionButtonClickEvent("click complain");
                 } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("selesai")) {
@@ -758,7 +763,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                                     });
                         } else {
                             startActivityForResult(RequestCancelActivity.getInstance(getContext(), getArguments().getString(KEY_ORDER_ID), actionButton.getUri(), 1), REQUEST_CANCEL_ORDER);
-                            orderListAnalytics.sendActionButtonClickEvent(CLICK_REQUEST_CANCEL, "response API -" + "SUCCESS");
+                            orderListAnalytics.sendActionButtonClickEvent(CLICK_REQUEST_CANCEL, this.status.status());
                         }
                     } else if (this.status.status().equals(STATUS_CODE_11)) {
                         startActivityForResult(RequestCancelActivity.getInstance(getContext(), getArguments().getString(KEY_ORDER_ID), actionButton.getUri(), 0), REQUEST_CANCEL_ORDER);

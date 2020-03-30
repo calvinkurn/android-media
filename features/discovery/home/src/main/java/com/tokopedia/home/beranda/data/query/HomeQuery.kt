@@ -70,6 +70,8 @@ object HomeQuery{
               layout
               type
               showPromoBadge
+              categoryID
+              perso_type
               header {
                 id
                 name
@@ -80,6 +82,7 @@ object HomeQuery{
                 expiredTime
                 backColor
                 backImage
+                textColor
               }
               hero {
                 id
@@ -108,6 +111,7 @@ object HomeQuery{
                   isActive
                   imageUrl
                 }
+                productViewCountFormatted
               }
               banner {
                 id

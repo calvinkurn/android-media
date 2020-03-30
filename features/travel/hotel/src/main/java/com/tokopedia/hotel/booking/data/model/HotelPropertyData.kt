@@ -8,7 +8,7 @@ class HotelPropertyData {
 
     @SerializedName("propertyID")
     @Expose
-    val propertyID: Int = 0
+    val propertyID: Long = 0
 
     @SerializedName("name")
     @Expose

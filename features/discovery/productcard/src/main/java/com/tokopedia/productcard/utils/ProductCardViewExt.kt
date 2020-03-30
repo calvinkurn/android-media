@@ -3,8 +3,6 @@ package com.tokopedia.productcard.utils
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
-import android.graphics.drawable.GradientDrawable
-import android.os.Build
 import android.view.TouchDelegate
 import android.view.View
 import android.widget.ImageView
@@ -20,6 +18,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.productcard.ProductCardFlashSaleModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.Label
@@ -140,9 +139,9 @@ private fun Label.showLabel(labelGroup: ProductCardModel.LabelGroup) {
 }
 
 private fun Label.determineLabelType(labelGroupType: String) {
-    val labelType = labelGroupType.toUnifyLabelType()
+    val unifyLabelType = labelGroupType.toUnifyLabelType()
 
-    if (labelType != -1) setLabelType(labelType)
+    if (unifyLabelType != -1) setLabelType(unifyLabelType)
     else setCustomLabelType(labelGroupType)
 }
 
@@ -163,23 +162,20 @@ private fun String?.toUnifyLabelType(): Int {
 }
 
 private fun Label.setCustomLabelType(labelGroupType: String) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        val drawable = ContextCompat.getDrawable(context, com.tokopedia.unifycomponents.R.drawable.label_bg)
-        setBackgroundDrawable(drawable)
-
-        val gradientDrawable = background as? GradientDrawable
-        gradientDrawable?.setColor(safeContextGetColor(context, labelGroupType.toUnifyLabelColor()))
+    try {
+        trySetCustomLabelType(labelGroupType)
+    } catch (throwable: Throwable) {
+        throwable.printStackTrace()
     }
 }
 
-private fun safeContextGetColor(context: Context, @ColorRes colorRes: Int): Int {
-    return try {
-        ContextCompat.getColor(context, colorRes)
-    }
-    catch (throwable: Throwable) {
-        throwable.printStackTrace()
-        0
-    }
+private fun Label.trySetCustomLabelType(labelGroupType: String) {
+    unlockFeature = true
+
+    val colorRes = labelGroupType.toUnifyLabelColor()
+    val colorHexInt = ContextCompat.getColor(context, colorRes)
+    val colorHexString = "#${Integer.toHexString(colorHexInt)}"
+    setLabelType(colorHexString)
 }
 
 @ColorRes
@@ -196,6 +192,18 @@ internal fun Typography.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?)
 }
 
 private fun Typography.showTypography(labelGroup: ProductCardModel.LabelGroup) {
+    shouldShowWithAction(labelGroup.title.isNotEmpty()) {
+        it.text = MethodChecker.fromHtml(labelGroup.title)
+        it.setTextColor(safeParseColor(labelGroup.type.toUnifyTextColor()))
+    }
+}
+
+internal fun Typography.initLabelGroup(labelGroup: ProductCardFlashSaleModel.LabelGroup?) {
+    if (labelGroup == null) hide()
+    else showTypography(labelGroup)
+}
+
+private fun Typography.showTypography(labelGroup: ProductCardFlashSaleModel.LabelGroup) {
     shouldShowWithAction(labelGroup.title.isNotEmpty()) {
         it.text = MethodChecker.fromHtml(labelGroup.title)
         it.setTextColor(safeParseColor(labelGroup.type.toUnifyTextColor()))

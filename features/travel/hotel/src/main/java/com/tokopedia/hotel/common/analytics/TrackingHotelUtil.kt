@@ -190,7 +190,7 @@ class TrackingHotelUtil {
     }
 
     fun hotelViewDetails(hotelHomepageModel: HotelHomepageModel,
-                         hotelName: String, hotelId: Int, available: Boolean,
+                         hotelName: String, hotelId: Long, available: Boolean,
                          price: String, directPayment: Boolean) {
 
         val roomCount = hotelHomepageModel.roomCount
@@ -223,17 +223,17 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun hotelClickHotelPhoto(hotelId: Int, price: String) {
+    fun hotelClickHotelPhoto(hotelId: Long, price: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, CLICK_HOTEL_PHOTO,
                 "$HOTEL_LABEL - $hotelId - $price")
     }
 
-    fun hotelClickHotelReviews(hotelId: Int, price: String) {
+    fun hotelClickHotelReviews(hotelId: Long, price: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, CLICK_HOTEL_REVIEWS,
                 "$HOTEL_LABEL - $hotelId - $price")
     }
 
-    fun hotelChooseViewRoom(hotelHomepageModel: HotelHomepageModel, hotelId: Int, hotelName: String) {
+    fun hotelChooseViewRoom(hotelHomepageModel: HotelHomepageModel, hotelId: Long, hotelName: String) {
         val roomCount = hotelHomepageModel.roomCount
         val guestCount = hotelHomepageModel.adultCount
         val duration = HotelUtils.countDayDifference(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
@@ -244,7 +244,7 @@ class TrackingHotelUtil {
                 "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(hotelHomepageModel.checkInDate)} - $duration - $hotelId")
     }
 
-    fun hotelViewRoomList(hotelId: Int, hotelRoomListPageModel: HotelRoomListPageModel, roomList: List<HotelRoom>) {
+    fun hotelViewRoomList(hotelId: Long, hotelRoomListPageModel: HotelRoomListPageModel, roomList: List<HotelRoom>) {
         val roomCount = hotelRoomListPageModel.room
         val guestCount = hotelRoomListPageModel.adult
         val duration = HotelUtils.countDayDifference(hotelRoomListPageModel.checkIn, hotelRoomListPageModel.checkOut)

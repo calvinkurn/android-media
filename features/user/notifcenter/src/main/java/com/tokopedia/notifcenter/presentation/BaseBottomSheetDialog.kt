@@ -7,7 +7,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 
 abstract class BaseBottomSheetDialog<T>(context: Context, fragmentManager: FragmentManager) {
 
-    private var bottomSheet: BottomSheetUnify = BottomSheetUnify()
+    protected var bottomSheet: BottomSheetUnify = BottomSheetUnify()
     protected var container: View? = null
 
     abstract fun resourceId(): Int
@@ -26,11 +26,14 @@ abstract class BaseBottomSheetDialog<T>(context: Context, fragmentManager: Fragm
         with(bottomSheet) {
             showCloseIcon = true
             showHeader = true
-            isFullpage = true
             setChild(onCreateView(context))
             show(fragmentManager, BOTTOM_SHEET_TAG)
             setCloseClickListener { dismiss() }
         }
+    }
+
+    protected fun setFullPage(isFullPage: Boolean) {
+        bottomSheet.isFullpage = isFullPage
     }
 
     companion object {
