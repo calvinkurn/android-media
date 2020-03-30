@@ -28,13 +28,13 @@ sealed class FilterOption(val id: String) {
         private const val KEYWORD = "keyword"
         private const val STATUS = "status"
 
-        const val NEW_ONLY = "isNewOnly"
-        const val USED_ONLY = "isUsedOnly"
-        const val EMPTY_STOCK_ONLY = "isEmptyStockOnly"
-        const val VARIANT_ONLY = "isVariantOnly"
-        const val CASH_BACK_ONLY = "isCashbackOnly"
-        const val WHOLESALE_ONLY = "isWholesaleOnly"
-        const val PRE_ORDER_ONLY = "isPreorderOnly"
-        const val FEATURED_ONLY = "isFeaturedOnly"
+        private const val NEW_ONLY = "isNewOnly"
+        private const val USED_ONLY = "isUsedOnly"
+        private const val EMPTY_STOCK_ONLY = "isEmptyStockOnly"
+        private const val VARIANT_ONLY = "isVariantOnly"
+        private const val CASH_BACK_ONLY = "isCashbackOnly"
+        private const val WHOLESALE_ONLY = "isWholesaleOnly"
+        private const val PRE_ORDER_ONLY = "isPreorderOnly"
+        private const val FEATURED_ONLY = "isFeaturedOnly"
     }
 }

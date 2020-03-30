@@ -19,6 +19,7 @@ import com.tokopedia.product.manage.oldlist.constant.DRAFT_PRODUCT
 import com.tokopedia.product.manage.oldlist.utils.ProductManageTracking
 import com.tokopedia.product.manage.oldlist.view.listener.ProductDraftListCountView
 import com.tokopedia.product.manage.oldlist.view.presenter.ProductDraftListCountPresenter
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterMapper
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import kotlinx.android.synthetic.main.fragment_product_manage_seller.*
 import java.util.ArrayList
@@ -79,20 +80,9 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
     }
 
     private fun getDefaultFilterOptionsFromArguments() {
-        val mFilterOptions = arguments?.getStringArrayList(FILTER_OPTIONS).orEmpty()
-        val defaultFilterOptions = mFilterOptions.map {
-            return@map when (it) {
-                FilterOption.NEW_ONLY -> FilterOption.FilterByCondition.NewOnly
-                FilterOption.USED_ONLY -> FilterOption.FilterByCondition.UsedOnly
-                FilterOption.EMPTY_STOCK_ONLY -> FilterOption.FilterByCondition.EmptyStockOnly
-                FilterOption.VARIANT_ONLY -> FilterOption.FilterByCondition.VariantOnly
-                FilterOption.CASH_BACK_ONLY -> FilterOption.FilterByCondition.CashBackOnly
-                FilterOption.WHOLESALE_ONLY -> FilterOption.FilterByCondition.WholesaleOnly
-                FilterOption.PRE_ORDER_ONLY -> FilterOption.FilterByCondition.PreorderOnly
-                else -> FilterOption.FilterByCondition.FeaturedOnly //FilterOption.FEATURED_ONLY
-            }
-        }
-        super.setDefaultFilterOptions(defaultFilterOptions)
+        val filterOptionKeys: List<String> = arguments?.getStringArrayList(FILTER_OPTIONS).orEmpty()
+        val filterOptions: List<FilterOption> = FilterMapper.mapKeysToFilterOptionList(filterOptionKeys)
+        super.setDefaultFilterOptions(filterOptions)
     }
 
     override fun initInjector() {

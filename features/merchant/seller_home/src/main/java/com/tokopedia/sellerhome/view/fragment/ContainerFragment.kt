@@ -171,8 +171,8 @@ class ContainerFragment : Fragment() {
     }
 
     private fun addProductFragment(fragment: Fragment, transaction: FragmentTransaction, page: PageFragment, fragmentName: String) {
-        val filterOptionEmptyStock = FilterOption.EMPTY_STOCK_ONLY
-        if (page.tabPage == filterOptionEmptyStock) {
+        val filterOptionEmptyStock = FilterOption.FilterByCondition.EmptyStockOnly.id
+        if (page.tabPage.isNotBlank() && page.tabPage == filterOptionEmptyStock) {
             val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(filterOptionEmptyStock))
             if (null != productManageFragment) {
                 addFragmentToTransaction(transaction, productManageFragment, fragmentName)
@@ -198,8 +198,8 @@ class ContainerFragment : Fragment() {
     }
 
     private fun showProductMangePage(fmt: Fragment, transaction: FragmentTransaction, page: PageFragment, fragmentName: String) {
-        val filterOptionEmptyStock = FilterOption.EMPTY_STOCK_ONLY
-        if (page.tabPage == filterOptionEmptyStock) {
+        val filterOptionEmptyStock = FilterOption.FilterByCondition.EmptyStockOnly.id
+        if (page.tabPage.isNotBlank() && page.tabPage == filterOptionEmptyStock) {
             val productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(filterOptionEmptyStock))
             if (null != productManageFragment) {
                 transaction.remove(fmt)
