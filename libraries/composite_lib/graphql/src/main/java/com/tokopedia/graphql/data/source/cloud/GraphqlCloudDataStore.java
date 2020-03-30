@@ -15,12 +15,17 @@ import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import timber.log.Timber;
+
+import static com.tokopedia.akamai_bot_lib.UtilsKt.isAkamai;
+import static com.tokopedia.graphql.util.Const.AKAMAI_SENSOR_DATA_HEADER;
 
 /**
  * Retrive the response from Cloud and dump the same in disk if cache was enable by consumer.
@@ -44,7 +49,13 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
     * */
     private Observable<JsonArray> getResponse(List<GraphqlRequest> requests) {
         CYFMonitor.setLogLevel(CYFMonitor.INFO);
-        return mApi.getResponse(requests, CYFMonitor.getSensorData());
+        if (isAkamai(requests.get(0).getQuery())) {
+            Map<String, String> header = new HashMap<>();
+            header.put(AKAMAI_SENSOR_DATA_HEADER, CYFMonitor.getSensorData());
+            return mApi.getResponse(requests, header);
+        } else {
+            return mApi.getResponse(requests, new HashMap<>());
+        }
     }
 
     @Override

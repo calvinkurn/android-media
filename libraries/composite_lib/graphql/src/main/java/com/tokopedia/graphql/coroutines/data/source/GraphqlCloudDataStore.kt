@@ -1,13 +1,18 @@
 package com.tokopedia.graphql.coroutines.data.source
 
 import com.akamai.botman.CYFMonitor
-import com.google.gson.JsonElement
 import com.google.gson.JsonArray
+import com.google.gson.JsonElement
+import com.tokopedia.akamai_bot_lib.isAkamai
 import com.tokopedia.graphql.FingerprintManager
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.graphql.GraphqlConstant
-import com.tokopedia.graphql.data.model.*
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponseInternal
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend
+import com.tokopedia.graphql.util.Const.AKAMAI_SENSOR_DATA_HEADER
 import kotlinx.coroutines.*
 import timber.log.Timber
 import java.net.SocketTimeoutException
@@ -27,10 +32,13 @@ class GraphqlCloudDataStore @Inject constructor(
     * */
     private suspend fun getResponse(requests: List<GraphqlRequest>): JsonArray {
         CYFMonitor.setLogLevel(CYFMonitor.INFO)
-        return api.getResponseSuspend(
-                requests.toMutableList(),
-                CYFMonitor.getSensorData() ?: ""
-        )
+        return if (isAkamai(requests.first().query)) {
+            val header = mutableMapOf<String, String>()
+            header[AKAMAI_SENSOR_DATA_HEADER] = CYFMonitor.getSensorData() ?: ""
+            api.getResponseSuspend(requests.toMutableList(), header)
+        } else {
+            api.getResponseSuspend(requests.toMutableList(), mapOf())
+        }
     }
 
     override suspend fun getResponse(
