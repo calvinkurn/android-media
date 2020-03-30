@@ -23,7 +23,7 @@
         android:layout_height="match_parent"
         android:gravity="center_vertical"
         android:textColor="@color/setting_black_text"
-        app:typographyType="heading_3"
+        app:typographyType="heading_4"
         app:typographyWeight="bold"
         app:layout_constraintStart_toEndOf="@id/settingTitleIcon"
         app:layout_constraintEnd_toEndOf="parent"

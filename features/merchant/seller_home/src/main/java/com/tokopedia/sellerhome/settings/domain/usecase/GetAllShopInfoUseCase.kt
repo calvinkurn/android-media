@@ -1,8 +1,9 @@
 package com.tokopedia.sellerhome.settings.domain.usecase
 
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhome.settings.domain.entity.ShopInfo
-import com.tokopedia.sellerhome.settings.domain.mapToSettingShopInfo
 import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
 import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.usecase.coroutines.UseCase
@@ -67,5 +68,25 @@ class GetAllShopInfoUseCase @Inject constructor(
     private suspend fun getSuspendTopAdsAutoTopup(shopId: String): Boolean {
         topAdsAutoTopupUseCase.params = TopAdsAutoTopupUseCase.createRequestParams(shopId)
         return topAdsAutoTopupUseCase.executeOnBackground()
+    }
+
+    private fun mapToSettingShopInfo(shopInfo: ShopInfo,
+                             shopStatusType: ShopType,
+                             topAdsBalance: Float,
+                             isTopAdsAutoTopup: Boolean,
+                             totalFollowers: Int,
+                             shopBadge: String): SettingShopInfoUiModel {
+        shopInfo.shopInfoMoengage?.run {
+            return SettingShopInfoUiModel(
+                    info?.shopName.toEmptyStringIfNull(),
+                    info?.shopAvatar.toEmptyStringIfNull(),
+                    shopStatusType,
+                    shopInfo.balance?.sellerBalance ?: "",
+                    topAdsBalance.getCurrencyFormatted(),
+                    isTopAdsAutoTopup,
+                    shopBadge,
+                    totalFollowers)
+        }
+        return SettingShopInfoUiModel()
     }
 }
