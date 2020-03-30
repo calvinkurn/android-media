@@ -49,8 +49,7 @@
                 android:id="@+id/lottie_particles"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                app:lottie_rawRes="@raw/gf_gift_confetti" />
+                android:layout_centerHorizontal="true" />
 
         </RelativeLayout>
 
