@@ -1,6 +1,5 @@
 package com.tokopedia.webview;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -15,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
 import android.webkit.GeolocationPermissions;
-import android.webkit.PermissionRequest;
 import android.webkit.SslErrorHandler;
 import android.webkit.URLUtil;
 import android.webkit.ValueCallback;
@@ -44,8 +42,7 @@ import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
 
-import java.util.Arrays;
-import java.util.List;
+import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.abstraction.common.utils.image.ImageHandler.encodeToBase64;
@@ -285,38 +282,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             checkLocationPermission(callback, origin);
         }
 
-        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-        @Override
-        public void onPermissionRequest(PermissionRequest request) {
-            for (String resource:
-                    request.getResources()) {
-                if (resource.equals(PermissionRequest.RESOURCE_VIDEO_CAPTURE)) {
-                    permissionCheckerHelper = new PermissionCheckerHelper();
-                    permissionCheckerHelper.checkPermission(BaseWebViewFragment.this, PermissionCheckerHelper.Companion.PERMISSION_CAMERA, new PermissionCheckerHelper.PermissionCheckListener() {
-                        @Override
-                        public void onPermissionDenied(String permissionText) {
-                            request.deny();
-                        }
-
-                        @Override
-                        public void onNeverAskAgain(String permissionText) {
-                            request.deny();
-                        }
-
-                        @Override
-                        public void onPermissionGranted() {
-                            request.grant(request.getResources());
-                        }
-                    }, getString(R.string.need_permission_camera));
-                }
-            }
-        }
-
-        @Override
-        public void onPermissionRequestCanceled(PermissionRequest request) {
-            super.onPermissionRequestCanceled(request);
-        }
-
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             if (newProgress == MAX_PROGRESS) {
@@ -508,9 +473,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 startActivity(intent);
             }
         }
-        if (!allowOverride) {
-            return false;
-        }
         if (url.contains(PARAM_EXTERNAL)) {
             try {
                 Intent destination = new Intent(Intent.ACTION_VIEW);
@@ -537,12 +499,23 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 }
                 return true;
             } else {
-                // logging here, url might return blank page
-                // ask user to update app
+                logApplinkErrorOpen(url);
             }
+        }
+        if (!allowOverride && isFirstRequest(url)) {
+            return false;
         }
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
         return hasMoveToNativePage;
+    }
+
+    private void logApplinkErrorOpen(String url) {
+        Timber.w("P1#APPLINK_OPEN_ERROR#%s;uri='%s'",
+                BaseWebViewFragment.this.getClass().getSimpleName(), url);
+    }
+
+    private boolean isFirstRequest(String url) {
+        return this.url.equals(url);
     }
 
     private void checkActivityFinish() {

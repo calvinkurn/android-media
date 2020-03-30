@@ -94,12 +94,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String FORMAT_UTF_8 = "UTF-8";
     private static final String AF_ONELINK_HOST = "tokopedia.onelink.me";
     private static final String OVERRIDE_URL = "override_url";
+    private static final String ALLOW_OVERRIDE = "allow_override";
     private static final String PARAM_TITLEBAR = "titlebar";
     private static final String PARAM_NEED_LOGIN = "need_login";
     private static final String PARAM_EXTRA_REVIEW = "rating";
     private static final String PARAM_EXTRA_UTM_SOURCE = "utm_source";
-
-    private static final String TAG_FRAGMENT_CATALOG_DETAIL = "TAG_FRAGMENT_CATALOG_DETAIL";
 
     private final Activity context;
     private final DeepLinkView viewListener;
@@ -546,8 +545,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void prepareOpenWebView(Uri uriData) {
         boolean isAllowOverride = false;
-        String allowOverride = uriData.getQueryParameter(OVERRIDE_URL);
-        if ("1".equalsIgnoreCase(allowOverride) || "true".equalsIgnoreCase(allowOverride)) {
+        String overrideUrl = uriData.getQueryParameter(OVERRIDE_URL);
+        String allowOverride = uriData.getQueryParameter(ALLOW_OVERRIDE);
+        if ("1".equalsIgnoreCase(overrideUrl) ||
+            "true".equalsIgnoreCase(overrideUrl) ||
+            "1".equalsIgnoreCase(allowOverride) ||
+            "true".equalsIgnoreCase(allowOverride)) {
             isAllowOverride = true;
         }
         openWebView(uriData, isAllowOverride,

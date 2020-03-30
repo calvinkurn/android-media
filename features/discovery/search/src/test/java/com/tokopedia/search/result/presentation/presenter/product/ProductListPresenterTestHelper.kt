@@ -4,15 +4,16 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey.*
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.spekframework.spek2.dsl.TestBody
 import org.spekframework.spek2.style.gherkin.FeatureBody
 
@@ -51,7 +52,11 @@ internal fun FeatureBody.createTestInstance() {
     }
 
     val remoteConfig by memoized {
-        mockk<RemoteConfig>(relaxed = true)
+        mockk<RemoteConfig>().also {
+            every { it.getBoolean(ENABLE_GLOBAL_NAV_WIDGET, true) } answers { secondArg() }
+            every { it.getBoolean(APP_CHANGE_PARAMETER_ROW, false) } answers { secondArg() }
+            every { it.getBoolean(ENABLE_BOTTOM_SHEET_FILTER, true) } answers { secondArg() }
+        }
     }
 
     val advertisingLocalCache by memoized {
@@ -71,16 +76,23 @@ internal fun TestBody.createProductListPresenter(): ProductListPresenter {
     val remoteConfig by memoized<RemoteConfig>()
     val advertisingLocalCache by memoized<LocalCacheHandler>()
 
-    return ProductListPresenter().also {
+    val presenter = ProductListPresenter(
+            searchProductFirstPageUseCase,
+            searchProductLoadMoreUseCase,
+            recommendationUseCase,
+            seamlessLoginUseCase,
+            userSession,
+            advertisingLocalCache,
+            getDynamicFilterUseCase,
+            searchLocalCacheHandler,
+            remoteConfig
+    ).also {
         it.attachView(productListView)
-        it.getDynamicFilterUseCase = getDynamicFilterUseCase
-        it.searchLocalCacheHandler = searchLocalCacheHandler
-        it.searchProductFirstPageUseCase = searchProductFirstPageUseCase
-        it.searchProductLoadMoreUseCase = searchProductLoadMoreUseCase
-        it.recommendationUseCase = recommendationUseCase
-        it.seamlessLoginUsecase = seamlessLoginUseCase
-        it.userSession = userSession
-        it.remoteConfig = remoteConfig
-        it.advertisingLocalCache = advertisingLocalCache
     }
+
+    verify {
+        productListView.abTestRemoteConfig
+    }
+
+    return presenter;
 }

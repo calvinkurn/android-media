@@ -83,7 +83,8 @@ object HomePageTrackingV2 : BaseTracking() {
                             channelId = channel.id,
                             isFreeOngkir = grid.freeOngkir.isActive,
                             persoType = channel.persoType,
-                            categoryId = channel.categoryID
+                            categoryId = channel.categoryID,
+                            isTopAds = grid.isTopads
                     )
                 },
                 list = String.format(
@@ -110,7 +111,8 @@ object HomePageTrackingV2 : BaseTracking() {
                                 channelId = channel.id,
                                 isFreeOngkir = grid.freeOngkir.isActive,
                                 persoType = channel.persoType,
-                                categoryId = channel.categoryID
+                                categoryId = channel.categoryID,
+                                isTopAds = grid.isTopads
                         )
                 ),
                 list = String.format(
@@ -176,11 +178,12 @@ object HomePageTrackingV2 : BaseTracking() {
                             channelId = channel.id,
                             isFreeOngkir = grid.freeOngkir.isActive,
                             persoType = channel.persoType,
-                            categoryId = channel.categoryID
+                            categoryId = channel.categoryID,
+                            isTopAds = grid.isTopads
                     )
                 },
                 list = String.format(
-                        Value.LIST_WITH_HEADER, "1", LIST_MIX_LEFT, channel.header.name
+                        Value.LIST_HEADER_NAME, "1", LIST_MIX_LEFT, channel.header.name
                 ),
                 channelId = channel.id
         )
@@ -195,9 +198,7 @@ object HomePageTrackingV2 : BaseTracking() {
                         Product(
                                 name = grid.name,
                                 id = grid.id,
-                                productPrice = convertRupiahToInt(
-                                        grid.price
-                                ).toString(),
+                                productPrice = grid.price,
                                 brand = Value.NONE_OTHER,
                                 category = Value.NONE_OTHER,
                                 variant = Value.NONE_OTHER,
@@ -205,11 +206,12 @@ object HomePageTrackingV2 : BaseTracking() {
                                 channelId = channel.id,
                                 isFreeOngkir = grid.freeOngkir.isActive,
                                 persoType = channel.persoType,
-                                categoryId = channel.categoryID
+                                categoryId = channel.categoryID,
+                                isTopAds = grid.isTopads
                         )
                 ),
                 list = String.format(
-                        Value.LIST_WITH_HEADER, "1", LIST_MIX_LEFT, channel.header.name
+                        Value.LIST_HEADER_NAME, "1", LIST_MIX_LEFT, channel.header.name
                 )
         )
 
@@ -302,7 +304,8 @@ object HomePageTrackingV2 : BaseTracking() {
                             channelId = channel.id,
                             isFreeOngkir = grid.freeOngkir.isActive,
                             persoType = channel.persoType,
-                            categoryId = channel.categoryID
+                            categoryId = channel.categoryID,
+                            isTopAds = grid.isTopads
                     )
                 },
                 list = String.format(
@@ -327,7 +330,8 @@ object HomePageTrackingV2 : BaseTracking() {
                                 channelId = channel.id,
                                 isFreeOngkir = grid.freeOngkir.isActive,
                                 persoType = channel.persoType,
-                                categoryId = channel.categoryID
+                                categoryId = channel.categoryID,
+                                isTopAds = grid.isTopads
                         )
                 ),
                 list = String.format(
