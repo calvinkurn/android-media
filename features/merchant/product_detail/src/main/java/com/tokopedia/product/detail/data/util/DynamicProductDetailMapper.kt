@@ -57,9 +57,6 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.SHOP_VOUCHER -> {
                     listOfComponent.add(ProductMerchantVoucherDataModel(type = component.type, name = component.componentName))
                 }
-                ProductDetailConstant.SEPARATOR -> {
-                    listOfComponent.add(SeparatorDataModel(type = component.type, name = component.componentName))
-                }
                 ProductDetailConstant.VALUE_PROPOSITION -> {
                     listOfComponent.add(ProductValuePropositionDataModel(type = component.type, name = component.componentName))
                 }

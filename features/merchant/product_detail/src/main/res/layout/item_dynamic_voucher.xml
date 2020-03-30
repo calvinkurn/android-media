@@ -18,8 +18,13 @@
         app:mvlwTitleString="@string/promo"
         app:mvlwTitleTextSize="@dimen/sp_16" />
 
-    <include
-        android:id="@+id/loading_voucher"
-        layout="@layout/partial_shimmering_grid_list_horizontal" />
+    <View
+        android:id="@+id/voucher_separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@color/grey_separator"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/merchantVoucherListWidget" />
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

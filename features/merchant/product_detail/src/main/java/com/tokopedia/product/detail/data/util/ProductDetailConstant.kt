@@ -102,7 +102,6 @@ object ProductDetailConstant {
     const val TRADE_IN = "tradein"
     const val INFO = "info"
     const val SHOP_VOUCHER = "shop_voucher"
-    const val SEPARATOR = "separator"
     const val VALUE_PROPOSITION = "value_prop"
     const val PRODUCT_LIST = "product_list"
     const val NOTIFY_ME = "teaser"
