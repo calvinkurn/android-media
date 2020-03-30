@@ -108,11 +108,11 @@ class AddEditProductDetailViewModel @Inject constructor(val provider: ResourcePr
                         getSearchShopProductUseCase.executeOnBackground()
                     }
                     val getProductName = AddEditProductDetailMapper.getProductNameAutoComplete(result)
-                    _searchProductSuggestionName.postValue(Success(
-                            AddEditProductDetailMapper.getFinalProductName(getProductName, query)))
-        }) {
-            _searchProductSuggestionName.postValue(Fail(it))
-        }
+                    _searchProductSuggestionName.value = Success(
+                            AddEditProductDetailMapper.getFinalProductName(getProductName, query))
+        }, onError = {
+            _searchProductSuggestionName.value = Fail(it)
+        })
     }
 
     private fun isInputValid(): Boolean {
