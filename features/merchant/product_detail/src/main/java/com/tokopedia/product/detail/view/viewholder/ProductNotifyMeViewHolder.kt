@@ -56,7 +56,7 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
             val now = System.currentTimeMillis()
             val startTime = data.startDate.toLong() * SECOND
             val startDate = Date(startTime)
-            val dayLeft = TimeUnit.MICROSECONDS.toDays(now - startTime)
+            val dayLeft = TimeUnit.MILLISECONDS.toDays(startTime - now)
             val delta = startDate.time - startTime
 
             itemView.layout_notify_me?.visible()
@@ -84,10 +84,12 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
                     )
                 }
                 else -> {
+                    itemView.layout_notify_me?.layoutParams?.height = 0
                     itemView.layout_notify_me?.gone()
                 }
             }
         } catch (ex: Exception) {
+            itemView.layout_notify_me?.layoutParams?.height = 0
             itemView.layout_notify_me?.gone()
         }
     }
