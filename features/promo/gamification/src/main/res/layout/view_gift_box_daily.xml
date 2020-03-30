@@ -9,8 +9,7 @@
         android:id="@+id/imageBg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        tools:srcCompat="@drawable/gf_ic_gift_background" />
+        android:scaleType="centerCrop" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageShadow"
@@ -50,7 +49,7 @@
                 android:layout_below="@id/image_gift_box_lid"
                 android:layout_centerHorizontal="true"
                 android:scaleType="centerCrop"
-                tools:src="@drawable/kejutan_box" />
+                tools:src="@color/green_200" />
 
 
         </RelativeLayout>

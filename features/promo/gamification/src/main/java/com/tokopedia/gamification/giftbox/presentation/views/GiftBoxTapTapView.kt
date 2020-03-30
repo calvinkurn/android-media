@@ -280,7 +280,7 @@ class GiftBoxTapTapView : GiftBoxDailyView {
                 .into(imageGiftBoxLid)
 
         Glide.with(this)
-                .load(R.drawable.gf_ic_gift_background)
+                .load(bgUrl)
                 .dontAnimate()
                 .addListener(object : RequestListener<Drawable> {
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {

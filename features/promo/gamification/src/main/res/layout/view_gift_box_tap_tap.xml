@@ -9,8 +9,7 @@
         android:id="@+id/imageBg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        app:srcCompat="@drawable/gf_ic_gift_background" />
+        android:scaleType="centerCrop" />
 
     <FrameLayout
         android:id="@+id/fm_gift_box"
@@ -44,7 +43,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal"
                 android:scaleType="centerCrop"
-                app:srcCompat="@drawable/kejutan_box" />
+                tools:src="@color/green_200" />
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/lottie_particles"
