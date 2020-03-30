@@ -107,6 +107,10 @@ class RechargeCCFragment : BaseDaggerFragment() {
                 dialogConfirmation()
             }
 
+            override fun onShowErrorCreditCard(message: String) {
+                showErrorToaster(message)
+            }
+
             override fun onCheckPrefix(clientNumber: String) {
                 checkPrefixCreditCardNumber(clientNumber)
             }
@@ -234,6 +238,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
             })
 
             rechargeSubmitCCViewModel.redirectUrl.observe(viewLifecycleOwner, Observer {
+                hideLoading()
                 val passData = DigitalCheckoutPassData.Builder()
                         .action(DigitalCheckoutPassData.DEFAULT_ACTION)
                         .categoryId(categoryId)

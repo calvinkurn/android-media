@@ -43,18 +43,21 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
                                     RechargeCCUtil.getDigitArray(input, TOTAL_DIGITS), DIVIDER_POSITION, DIVIDER))
                         }
 
+                        val inputDigit = it.toString().replace(" ", "")
                         if (it.length == TOTAL_SYMBOLS) {
-                            val inputDigit = it.toString().replace(" ", "")
                             if (!RechargeCCUtil.isCreditCardValid(inputDigit)) {
-                                setErrorTextField(context.getString(R.string.cc_error_invalid_number))
+                                listener.onShowErrorCreditCard(context.getString(R.string.cc_error_credit_number))
                             } else {
-                                listener.onCheckPrefix(inputDigit)
-                                cc_text_input.textFieldIcon1.visibility = View.VISIBLE
                                 cc_text_input.setError(false)
                                 enableBtnNext()
                             }
                         } else {
-                            cc_text_input.textFieldIcon1.visibility = View.GONE
+                            if (it.length > 7) {
+                                listener.onCheckPrefix(inputDigit)
+                                cc_text_input.textFieldIcon1.visibility = View.VISIBLE
+                            } else {
+                                cc_text_input.textFieldIcon1.visibility = View.GONE
+                            }
                             disableBtnNext()
                         }
                     }
@@ -132,6 +135,7 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
     interface ActionListener {
         fun onClickNextButton(clientNumber: String)
         fun onCheckPrefix(clientNumber: String)
+        fun onShowErrorCreditCard(message: String)
     }
 
     companion object {
