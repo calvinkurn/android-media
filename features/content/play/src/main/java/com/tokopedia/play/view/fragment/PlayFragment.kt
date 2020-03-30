@@ -21,6 +21,8 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.play.ERR_STATE_SOCKET
+import com.tokopedia.play.ERR_STATE_VIDEO
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
@@ -248,9 +250,9 @@ class PlayFragment : BaseDaggerFragment() {
         playViewModel.observableSocketInfo.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is PlaySocketInfo.Reconnect ->
-                    PlayAnalytics.errorState(channelId, getString(R.string.play_message_socket_reconnect), playViewModel.channelType)
+                    PlayAnalytics.errorState(channelId, "$ERR_STATE_SOCKET: ${getString(R.string.play_message_socket_reconnect)}", playViewModel.channelType)
                 is PlaySocketInfo.Error ->
-                    PlayAnalytics.errorState(channelId, String.format(getString(R.string.play_message_socket_error), it.throwable.localizedMessage), playViewModel.channelType)
+                    PlayAnalytics.errorState(channelId, "$ERR_STATE_SOCKET: ${it.throwable.localizedMessage}", playViewModel.channelType)
             }
         })
     }
@@ -268,7 +270,7 @@ class PlayFragment : BaseDaggerFragment() {
         playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
             if (it.state is PlayVideoState.Error) {
                 PlayAnalytics.errorState(channelId,
-                        it.state.error.message?:getString(com.tokopedia.play_common.R.string.play_common_video_error_message),
+                        "$ERR_STATE_VIDEO${it.state.error.message?:getString(com.tokopedia.play_common.R.string.play_common_video_error_message)}",
                         playViewModel.channelType)
             }
         })
