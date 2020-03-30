@@ -60,12 +60,12 @@ class MixTopBannerViewHolder(
         mappingView(channel)
     }
 
-    override fun setupContent(channel: DynamicHomeChannel.Channels, payloads: MutableList<Any>) {
-        super.setupContent(channel, payloads)
-        val visitables = mappingVisitablesFromChannel(channel)
-        mappingHeader(channel)
-        mappingItem(channel, visitables)
-    }
+//    override fun setupContent(channel: DynamicHomeChannel.Channels, payloads: MutableList<Any>) {
+//        super.setupContent(channel, payloads)
+//        val visitables = mappingVisitablesFromChannel(channel)
+//        mappingHeader(channel)
+//        mappingItem(channel, visitables)
+//    }
 
     override fun getViewHolderClassName(): String {
         return MixTopBannerViewHolder::class.java.simpleName
