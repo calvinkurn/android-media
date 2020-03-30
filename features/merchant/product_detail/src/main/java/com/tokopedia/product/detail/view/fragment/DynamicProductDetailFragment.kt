@@ -132,6 +132,7 @@ import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.variant_common.model.VariantCategory
@@ -1011,13 +1012,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun observeonVariantClickedData() {
-        viewLifecycleOwner.observe(viewModel.onVariantClickedData) {
-            val selectedChildAndPosition = VariantCommonMapper.selectedProductData(viewModel.variantData
-                    ?: ProductVariantCommon())
-            val selectedChild = selectedChildAndPosition?.second
-            val indexOfSelectedVariant = selectedChildAndPosition?.first
-            val updatedDynamicProductInfo = VariantMapper.updateDynamicProductInfo(viewModel.getDynamicProductInfoP1, selectedChild, viewModel.listOfParentMedia)
+    private fun updateVariantDataToExistingProductData(variantProcessedData: List<VariantCategory>?) {
+        val selectedChildAndPosition = VariantCommonMapper.selectedProductData(viewModel.variantData
+                ?: ProductVariantCommon())
+        val selectedChild = selectedChildAndPosition?.second
+        val indexOfSelectedVariant = selectedChildAndPosition?.first
+        val updatedDynamicProductInfo = VariantMapper.updateDynamicProductInfo(viewModel.getDynamicProductInfoP1, selectedChild, viewModel.listOfParentMedia)
 
         pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = variantProcessedData
         viewModel.multiOrigin[selectedChild?.productId.toString()]?.let {
@@ -1054,25 +1054,30 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 updateVariantDataToExistingProductData(it)
             }
             dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, null)
-        })
+        }
     }
 
     private fun observeAddToCart() {
-        viewLifecycleOwner.observe(viewModel.addToCartLiveData) {
+        viewLifecycleOwner.observe(viewModel.addToCartLiveData) { data ->
             hideProgressDialog()
+            data.doSuccessOrFail({
+                if (it.data.errorReporter.eligible) {
+                    logException(Throwable(it.data.errorReporter.texts.submitTitle))
+                    showDialogErrorAtc(it.data)
+                } else {
+                    onSuccessAtc(it.data.data.cartId.toString())
+                }
+            }, {
+                logException(it)
+                showToasterError(it.message ?: "")
+            })
+        }
+    }
+
+    private fun observeToggleNotifyMe() {
+        viewLifecycleOwner.observe(viewModel.toggleTeaserNotifyMe) {
             when (it) {
-                is Success -> {
-                    if (it.data.errorReporter.eligible) {
-                        logException(Throwable(it.data.errorReporter.texts.submitTitle))
-                        showDialogErrorAtc(it.data)
-                    } else {
-                        onSuccessAtc(it.data.data.cartId.toString())
-                    }
-                }
-                is Fail -> {
-                    logException(it.throwable)
-                    showToasterError(it.throwable.message ?: "")
-                }
+                is Fail -> onFailNotifyMe(it.throwable)
             }
         }
     }
@@ -2506,14 +2511,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
             productDetailTracking.eventViewHelpPopUpWhenAtc()
         }
-    }
-
-    private fun observeToggleNotifyMe() {
-        viewModel.toggleTeaserNotifyMe.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Fail -> onFailNotifyMe(it.throwable)
-            }
-        })
     }
 
     private fun onFailNotifyMe(t: Throwable) {

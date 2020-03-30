@@ -427,7 +427,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     productInfoP3.addressModel = p3Temp.addressModel
                     productInfoP3.rateEstSummarizeText = p3Temp.rateEstSummarizeText
                     productInfoP3.userCod = p3Temp.userCod
-                    shippingMinimumPrice = p3Temp.ratesModel?.getMinimumShippingPrice()
+                    //TODO YEHEZ
+                    shippingMinimumPrice = p3Temp.ratesModel?.getMinimumShippingPrice() ?: 30000
                 }
             }
 
@@ -731,10 +732,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         launchCatchError(block = {
             toggleNotifyMeUseCase.createParams(campaignId, productId, action, source)
             val isSuccess = toggleNotifyMeUseCase.executeOnBackground().result.isSuccess
-            if (!isSuccess) _toggleTeaserNotifyMe.value = Fail(Throwable()) else
-                _toggleTeaserNotifyMe.value = Success(isSuccess)
+            if (!isSuccess) _toggleTeaserNotifyMe.value = Throwable().asFail()
+                _toggleTeaserNotifyMe.value = isSuccess.asSuccess()
         }) {
-            _toggleTeaserNotifyMe.value = Fail(it)
+            _toggleTeaserNotifyMe.value = it.asFail()
         }
     }
 }
