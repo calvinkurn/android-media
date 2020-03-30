@@ -65,7 +65,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     @Inject
     lateinit var itemDecorator: PromoCheckoutDecoration
 
-    // Use single recycler view to prevent NPE cuased by nested recyclerview
+    // Use single recycler view to prevent NPE caused by nested recyclerview
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: PromoCheckoutAdapter
 
@@ -351,7 +351,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     activity?.setResult(Activity.RESULT_OK, intent)
                     activity?.finish()
                 }
-                it.state == ApplyPromoResponseAction.ACTION_RELOAD_PROMO -> {
+                it.state == ApplyPromoResponseAction.ACTION_SHOW_TOAST_AND_RELOAD_PROMO -> {
+                    it.exception?.let {
+                        showToastMessage(it)
+                    }
                     reloadData()
                 }
                 it.state == ApplyPromoResponseAction.ACTION_SHOW_TOAST_ERROR -> {

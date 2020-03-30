@@ -33,16 +33,20 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
     fun bindViewHolder(lastApplyUiModel: LastApplyUiModel) {
         var title = ""
 
-        if (lastApplyUiModel.additionalInfo.messageInfo.message.isNotEmpty()) {
-            title = lastApplyUiModel.additionalInfo.messageInfo.message
-            isApplied = true
-            actionListener.onSendAnalyticsViewPromoCheckoutApplied()
-        } else if (lastApplyUiModel.defaultEmptyPromoMessage.isNotBlank()) {
-            title = lastApplyUiModel.defaultEmptyPromoMessage
-            isApplied = false
-        } else {
-            title = itemView.context.getString(R.string.promo_funnel_label)
-            isApplied = false
+        when {
+            lastApplyUiModel.additionalInfo.messageInfo.message.isNotEmpty() -> {
+                title = lastApplyUiModel.additionalInfo.messageInfo.message
+                isApplied = true
+                actionListener.onSendAnalyticsViewPromoCheckoutApplied()
+            }
+            lastApplyUiModel.defaultEmptyPromoMessage.isNotBlank() -> {
+                title = lastApplyUiModel.defaultEmptyPromoMessage
+                isApplied = false
+            }
+            else -> {
+                title = itemView.context.getString(R.string.promo_funnel_label)
+                isApplied = false
+            }
         }
         itemView.promo_checkout_btn_shipment.title = title
         itemView.promo_checkout_btn_shipment.desc = lastApplyUiModel.additionalInfo.messageInfo.detail
@@ -62,6 +66,7 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
             itemView.ll_summary_transaction.gone()
         } else {
             itemView.ll_summary_transaction.visible()
+            if  (hasChildren(itemView.ll_summary_transaction)) itemView.ll_summary_transaction.removeAllViews()
             for ((i, lastApplyUsageSummary: LastApplyUsageSummariesUiModel) in lastApplyUiModel.additionalInfo.usageSummaries.withIndex()) {
                 val relativeLayout: RelativeLayout = RelativeLayout(itemView.context).apply {
                     layoutParams = params
@@ -110,5 +115,9 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
                 itemView.ll_summary_transaction.addView(relativeLayout)
             }
         }
+    }
+
+    private fun hasChildren(viewGroup: ViewGroup): Boolean {
+        return viewGroup.childCount > 0
     }
 }

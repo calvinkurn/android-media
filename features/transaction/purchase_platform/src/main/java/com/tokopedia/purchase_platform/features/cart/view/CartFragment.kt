@@ -47,6 +47,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.navigation_common.listener.CartNotifyListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
+import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
@@ -194,8 +195,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var isButtonAnimating = false
     private var _animator: Animator? = null
     private val ANIMATION_TYPE = "translationY"
-    private val ANIMATION_DURATION_IN_MILIS = 250L
-    private val TRANSLATION_LENGTH = 500f
+    private val ANIMATION_DURATION_IN_MILIS = 1000L
+    private val TRANSLATION_LENGTH = 1800f
 
     companion object {
 
@@ -1403,7 +1404,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         if (lastApplyData.additionalInfo.messageInfo.message.isNotEmpty()) {
             title = lastApplyData.additionalInfo.messageInfo.message
-        } else if(lastApplyData.defaultEmptyPromoMessage.isNotBlank()) {
+        } else if (lastApplyData.defaultEmptyPromoMessage.isNotBlank()) {
             title = lastApplyData.defaultEmptyPromoMessage
         } else {
             title = getString(R.string.promo_funnel_label)
@@ -2011,9 +2012,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         return
                     }
 
-                    val defaultTitlePromoButton = data?.getStringExtra(ARGS_CLEAR_PROMO_RESULT)
-                    if (defaultTitlePromoButton != null) {
-                        updatePromoCheckoutStickyButton(PromoUiModel(titleDescription = defaultTitlePromoButton))
+                    val clearPromoUiModel = data?.getParcelableExtra<ClearPromoUiModel>(ARGS_CLEAR_PROMO_RESULT)
+                    if (clearPromoUiModel != null) {
+                        updatePromoCheckoutStickyButton(PromoUiModel(titleDescription = clearPromoUiModel.successDataModel.defaultEmptyPromoMessage))
                     }
                 }
             }
@@ -2541,6 +2542,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    override fun showPromoCheckoutStickyButtonLoading() {
+        renderPromoCheckoutLoading()
+    }
+
     override fun updatePromoCheckoutStickyButton(promoUiModel: PromoUiModel) {
         doRenderPromoCheckoutButton(LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel))
     }
@@ -2591,5 +2596,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequest)
 
         startActivityForResult(intent, NAVIGATION_PROMO)
+    }
+
+    override fun generateGeneralParamValidateUse(): ValidateUsePromoRequest {
+        return generateParamValidateUsePromoRevamp(false, -1, -1, true)
     }
 }

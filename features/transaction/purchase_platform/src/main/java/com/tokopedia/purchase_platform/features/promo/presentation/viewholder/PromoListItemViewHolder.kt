@@ -73,13 +73,17 @@ class PromoListItemViewHolder(private val view: View,
         formatSubTitle(element)
 
         if (element.uiState.isParentEnabled && element.uiData.currentClashingPromo.isNullOrEmpty()) {
-            renderEnablePromoItem(element)
+            if (element.uiState.isDisabled) {
+                renderDisablePromoItem(element)
+            } else {
+                renderEnablePromoItem(element)
+            }
         } else {
             renderDisablePromoItem(element)
         }
 
         itemView.card_promo_item.setOnClickListener {
-            if (adapterPosition != RecyclerView.NO_POSITION && element.uiData.currentClashingPromo.isNullOrEmpty() && element.uiState.isParentEnabled) {
+            if (adapterPosition != RecyclerView.NO_POSITION && element.uiData.currentClashingPromo.isNullOrEmpty() && element.uiState.isParentEnabled && !element.uiState.isDisabled) {
                 listener.onClickPromoListItem(element)
             }
         }
@@ -105,6 +109,12 @@ class PromoListItemViewHolder(private val view: View,
                 setImageFilterNormal(child)
             }
         }
+
+        itemView.label_promo_item_title.setTextColor(ContextCompat.getColor(itemView.context, R.color.clr_f531353b))
+        itemView.label_promo_code_info.setTextColor(ContextCompat.getColor(itemView.context, R.color.black_70))
+        itemView.label_promo_code_value.setTextColor(ContextCompat.getColor(itemView.context, R.color.black_70))
+        itemView.label_promo_item_error_message.setTextColor(ContextCompat.getColor(itemView.context, R.color.black_70))
+        itemView.label_promo_item_sub_title.setTextColor(ContextCompat.getColor(itemView.context, R.color.black_70))
     }
 
     private fun renderDisablePromoItem(element: PromoListItemUiModel) {
@@ -126,11 +136,21 @@ class PromoListItemViewHolder(private val view: View,
                 setImageFilterGrayScale(child)
             }
         }
+
+        val disabledColor = ContextCompat.getColor(itemView.context, R.color.n_700_44)
+        itemView.label_promo_item_title.setTextColor(disabledColor)
+        itemView.label_promo_code_info.setTextColor(disabledColor)
+        itemView.label_promo_code_value.setTextColor(disabledColor)
+        itemView.label_promo_item_error_message.setTextColor(disabledColor)
+        itemView.label_promo_item_sub_title.setTextColor(disabledColor)
     }
 
     private fun formatSubTitle(element: PromoListItemUiModel) {
         if (!element.uiState.isAttempted) {
-            val clickableText = " Lihat detail"
+            var clickableText = "Lihat Detail"
+            if (element.uiData.subTitle.isNotEmpty()) {
+                clickableText = " $clickableText"
+            }
             if (!element.uiData.subTitle.contains(clickableText)) element.uiData.subTitle += clickableText
 
             val startSpan = element.uiData.subTitle.indexOf(clickableText)
@@ -152,7 +172,12 @@ class PromoListItemViewHolder(private val view: View,
             itemView.label_promo_item_sub_title.movementMethod = LinkMovementMethod.getInstance()
             itemView.label_promo_item_sub_title.text = formattedClickableText
         } else {
-            itemView.label_promo_item_sub_title.text = element.uiData.subTitle
+            if (element.uiData.subTitle.isNotBlank()) {
+                itemView.label_promo_item_sub_title.text = element.uiData.subTitle
+                itemView.label_promo_item_sub_title.show()
+            } else {
+                itemView.label_promo_item_sub_title.gone()
+            }
         }
     }
 

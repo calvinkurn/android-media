@@ -5,6 +5,7 @@ import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorExceptio
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.DeleteCartData
 import com.tokopedia.purchase_platform.features.cart.view.ICartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
+import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
 import rx.Subscriber
 
 /**
@@ -32,6 +33,7 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
         view?.let { view ->
             view.hideProgressLoading()
             view.renderLoadGetCartDataFinish()
+            view.showPromoCheckoutStickyButtonLoading()
 
             if (deleteCartData.isSuccess) {
                 if (removeInsurance) {
@@ -45,6 +47,7 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
                 } else {
                     view.onDeleteCartDataSuccess(toBeDeletedCartIds)
                 }
+                presenter.doUpdateCartAndValidateUse(view.generateGeneralParamValidateUse())
                 view.updateCartCounter(deleteCartData.cartCounter)
             } else {
                 view.showToastMessageRed(deleteCartData.message ?: "")

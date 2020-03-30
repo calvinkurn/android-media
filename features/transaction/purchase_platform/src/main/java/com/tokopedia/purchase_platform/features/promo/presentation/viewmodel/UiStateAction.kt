@@ -1,12 +1,13 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.viewmodel
 
+import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel
 
 data class ClearPromoResponseAction(
         var state: Int = 0,
         var exception: Throwable? = null,
-        var data: String? = null,
+        var data: ClearPromoUiModel? = null,
         var lastValidateUseRequest: ValidateUsePromoRequest? = null
 ) {
     companion object {
@@ -24,7 +25,7 @@ data class ApplyPromoResponseAction(
     companion object {
         val ACTION_NAVIGATE_TO_CART = 1
         val ACTION_SHOW_TOAST_ERROR = 2
-        val ACTION_RELOAD_PROMO = 3
+        val ACTION_SHOW_TOAST_AND_RELOAD_PROMO = 3
     }
 }
 
@@ -34,6 +35,6 @@ data class GetCouponRecommendationAction(
 ) {
     companion object {
         val ACTION_CLEAR_DATA = 1
-        val ACTION_SHOW_TOAST_ERROR =2
+        val ACTION_SHOW_TOAST_ERROR = 2
     }
 }
