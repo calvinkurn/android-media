@@ -80,7 +80,7 @@ public class PushNotification {
                     "createTime: " + applinkNotificationModel.getCreateTime() + ", " +
                     "transactionId: " + applinkNotificationModel.getTransactionId() + ", " +
                     "targetApp: " + applinkNotificationModel.getTargetApp();
-            Crashlytics.log(errorMessage);
+            Crashlytics.logException(new Exception(errorMessage));
         }
     }
 
