@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.NotificationManagerCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -160,6 +161,14 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     override fun onItemClicked() {
         activity?.let {
             (it as ParentActivity).openSellerFiled()
+        }
+    }
+
+    protected fun isNotificationEnabled(): Boolean? {
+        return context?.let {
+            NotificationManagerCompat
+                    .from(it)
+                    .areNotificationsEnabled()
         }
     }
 
