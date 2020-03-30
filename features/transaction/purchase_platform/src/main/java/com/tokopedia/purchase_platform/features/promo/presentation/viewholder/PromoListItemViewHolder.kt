@@ -148,9 +148,10 @@ class PromoListItemViewHolder(private val view: View,
     private fun formatSubTitle(element: PromoListItemUiModel) {
         if (!element.uiState.isAttempted) {
             var clickableText = itemView.context.getString(R.string.label_promo_show_detail)
-            if (element.uiData.subTitle.isNotEmpty()) {
+            if (element.uiData.subTitle.isNotBlank() && !element.uiData.subTitle.contains(clickableText)) {
                 clickableText = " $clickableText"
             }
+
             if (!element.uiData.subTitle.contains(clickableText)) element.uiData.subTitle += clickableText
 
             val startSpan = element.uiData.subTitle.indexOf(clickableText)
