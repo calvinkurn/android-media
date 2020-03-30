@@ -27,6 +27,8 @@ import com.tokopedia.flashsale.management.applink.FlashsaleDeeplinkModule;
 import com.tokopedia.flashsale.management.applink.FlashsaleDeeplinkModuleLoader;
 import com.tokopedia.gm.applink.GMApplinkModule;
 import com.tokopedia.gm.applink.GMApplinkModuleLoader;
+import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
+import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
@@ -85,7 +87,8 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
         FlashsaleDeeplinkModule.class,
         CreatePostModule.class,
         RNDevOptionsApplinkModule.class,
-        WebViewApplinkModule.class
+        WebViewApplinkModule.class,
+        HomeCreditAppLinkModule.class
 })
 /* **
  * Navigation will via RouteManager -> manifest instead.
@@ -116,7 +119,8 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new FlashsaleDeeplinkModuleLoader(),
                 new CreatePostModuleLoader(),
                 new RNDevOptionsApplinkModuleLoader(),
-                new WebViewApplinkModuleLoader()
+                new WebViewApplinkModuleLoader(),
+                new HomeCreditAppLinkModuleLoader()
         );
     }
 
