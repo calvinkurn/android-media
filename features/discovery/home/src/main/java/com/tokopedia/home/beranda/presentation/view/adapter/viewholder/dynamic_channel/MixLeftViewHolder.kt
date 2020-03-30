@@ -96,7 +96,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
         image.alpha = 1f
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
-        val typeFactoryImpl = FlashSaleCardViewTypeFactoryImpl(this, channel)
+        val typeFactoryImpl = FlashSaleCardViewTypeFactoryImpl(channel)
         val listData = mutableListOf<Visitable<*>>()
         listData.add(EmptyDataModel())
         val productDataList = convertDataToProductData(channel)
@@ -156,11 +156,13 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
                             discountPercentage = element.discount,
                             pdpViewCount = element.productViewCountFormatted,
                             stockBarLabel = element.label,
+                            isTopAds = element.isTopads,
                             stockBarPercentage = element.soldPercentage
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
-                    applink = element.applink
+                    applink = element.applink,
+                    listener = this
             ))
         }
         return list

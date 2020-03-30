@@ -135,6 +135,7 @@ object ProductTrackingConstant {
         const val CLICK_ACCEPT_PERMISSION = "click -  berikan akses on access request bottomsheet"
         const val CLICK_GO_TO_SETTING = "click - ke pengaturan hp on access request pop up"
         const val CLICK_PERMISSION_LATER = "click - ke nanti saja on access request pop up"
+        const val CLICK_NOTIFY_ME = "click - ingatkan saya on pdp campaign"
     }
 
     object Label {
