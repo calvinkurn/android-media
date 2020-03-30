@@ -15,7 +15,6 @@ object GiftBoxEvent {
 
 object GiftBoxCategory {
     const val GIFT_BOX_DAILY = "gift box daily"
-    const val PRODUCTS = "products"
 }
 
 object GiftBoxAction {
@@ -26,9 +25,6 @@ object GiftBoxAction {
     const val VIEW_REWARDS = "view rewards"
     const val CLICK_CLAIM_BUTTON = "click claim button"
     const val CLICK_REMINDER_BUTTON = "click reminder button"
-    const val CLICK_CREATE_ACCOUNT_BUTTON = "click create account button"
-    const val CLICK_LOGIN_BUTTON = "click login button"
-    const val CLICK_UPDATE_BUTTON = "click update button"
     const val CLICK_TOASTER_BUTTON = "click toaster button"
     const val CLICK_EXIT_BUTTON = "click exit button"
     const val CLICK_TRY_AGAIN_BUTTON = "click try again button"
@@ -37,7 +33,6 @@ object GiftBoxAction {
 
 object GiftBoxLabel {
     const val MAIN_PAGE = "main page"
-    const val NOT_UPDATED = "not updated"
     const val CONNECTION_ERROR = "connection error"
     const val ALREADY_OPENED = "already opened"
 }
