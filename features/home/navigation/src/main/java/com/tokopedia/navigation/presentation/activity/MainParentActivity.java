@@ -728,14 +728,16 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void renderNotification(Notification notification) {
         this.notification = notification;
-        bottomNavigation.setNotification(notification.getTotalCart(), CART_MENU);
-        if (notification.getHaveNewFeed()) {
-            bottomNavigation.setNotification(-1, FEED_MENU);
-            Intent intent = new Intent(BROADCAST_FEED);
-            intent.putExtra(PARAM_BROADCAST_NEW_FEED, notification.getHaveNewFeed());
-            LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
-        } else {
-            bottomNavigation.setNotification(0, FEED_MENU);
+        if(bottomNavigation != null) {
+            bottomNavigation.setNotification(notification.getTotalCart(), CART_MENU);
+            if (notification.getHaveNewFeed()) {
+                bottomNavigation.setNotification(-1, FEED_MENU);
+                Intent intent = new Intent(BROADCAST_FEED);
+                intent.putExtra(PARAM_BROADCAST_NEW_FEED, notification.getHaveNewFeed());
+                LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
+            } else {
+                bottomNavigation.setNotification(0, FEED_MENU);
+            }
         }
         if (currentFragment != null)
             setBadgeNotifCounter(currentFragment);
@@ -824,38 +826,41 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void onReadytoShowBoarding(ArrayList<ShowCaseObject> showCaseObjects) {
 
-        playAnimOsIcon(); // show animation icon
+        if(bottomNavigation != null) {
 
-        final String showCaseTag = MainParentActivity.class.getName() + ".bottomNavigation";
-        if (ShowCasePreference.hasShown(this, showCaseTag) || showCaseDialog != null
-                || showCaseObjects == null) {
-            return;
+            playAnimOsIcon(); // show animation icon
+
+            final String showCaseTag = MainParentActivity.class.getName() + ".bottomNavigation";
+            if (ShowCasePreference.hasShown(this, showCaseTag) || showCaseDialog != null
+                    || showCaseObjects == null) {
+                return;
+            }
+
+            showCaseDialog = createShowCase();
+
+            int bottomNavTopPos = bottomNavigation.getTop();
+            int bottomNavBottomPos = bottomNavigation.getBottom();
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                bottomNavBottomPos =
+                        bottomNavBottomPos - DisplayMetricUtils.getStatusBarHeight(this);
+                bottomNavTopPos =
+                        bottomNavTopPos - DisplayMetricUtils.getStatusBarHeight(this);
+            }
+            ArrayList<ShowCaseObject> showcases = new ArrayList<>();
+            showcases.add(new ShowCaseObject(
+                    bottomNavigation,
+                    getString(R.string.title_showcase),
+                    getString(R.string.desc_showcase))
+                    .withCustomTarget(new int[]{
+                            bottomNavigation.getLeft(),
+                            bottomNavTopPos,
+                            bottomNavigation.getRight(),
+                            bottomNavBottomPos}));
+            showcases.addAll(showCaseObjects);
+
+            showCaseDialog.show(this, showCaseTag, showcases);
         }
-
-        showCaseDialog = createShowCase();
-
-        int bottomNavTopPos = bottomNavigation.getTop();
-        int bottomNavBottomPos = bottomNavigation.getBottom();
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            bottomNavBottomPos =
-                    bottomNavBottomPos - DisplayMetricUtils.getStatusBarHeight(this);
-            bottomNavTopPos =
-                    bottomNavTopPos - DisplayMetricUtils.getStatusBarHeight(this);
-        }
-        ArrayList<ShowCaseObject> showcases = new ArrayList<>();
-        showcases.add(new ShowCaseObject(
-                bottomNavigation,
-                getString(R.string.title_showcase),
-                getString(R.string.desc_showcase))
-                .withCustomTarget(new int[]{
-                        bottomNavigation.getLeft(),
-                        bottomNavTopPos,
-                        bottomNavigation.getRight(),
-                        bottomNavBottomPos}));
-        showcases.addAll(showCaseObjects);
-
-        showCaseDialog.show(this, showCaseTag, showcases);
     }
 
     private Boolean isFirstTime() {
