@@ -64,6 +64,8 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     private var layoutManager: StaggeredGridLayoutManager = StaggeredGridLayoutManager(
             DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
 
+    private var shouldRefreshOnResume = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         fpmBuyer = PerformanceMonitoring.start(FPM_BUYER)
@@ -113,10 +115,16 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
 
     override fun onResume() {
         super.onResume()
-        scrollToTop()
-        context?.let {
-            GraphqlClient.init(it)
-            getData()
+
+        if (shouldRefreshOnResume) {
+            scrollToTop()
+            context?.let {
+                GraphqlClient.init(it)
+                getData()
+            }
+        }
+        else {
+            shouldRefreshOnResume = true
         }
     }
 
@@ -237,6 +245,8 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     }
 
     override fun onProductRecommendationThreeDotsClicked(product: RecommendationItem, adapterPosition: Int) {
+        shouldRefreshOnResume = false
+
         showProductCardOptions(
                 this,
                 ProductCardOptionsModel(
@@ -322,7 +332,7 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
                     it,
                     getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist),
                     Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_ERROR
+                    Toaster.TYPE_NORMAL
             )
         }
     }
@@ -332,7 +342,8 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
             Toaster.make(
                     it,
                     ErrorHandler.getErrorMessage(activity, null),
-                    Snackbar.LENGTH_LONG)
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR)
         }
     }
 
