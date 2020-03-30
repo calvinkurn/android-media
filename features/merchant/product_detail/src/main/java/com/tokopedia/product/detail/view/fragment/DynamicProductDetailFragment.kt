@@ -2402,7 +2402,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun scrollToPosition(position: Int) {
-        getRecyclerView(view).smoothScrollToPosition(position)
+        try {
+            getRecyclerView(view).smoothScrollToPosition(position)
+        } catch (e: Throwable) {
+
+        }
     }
 
     private fun showProgressDialog(onCancelClicked: (() -> Unit)? = null) {
