@@ -13,6 +13,7 @@ import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase.Companion.PARAM_VALUE_MARKETPLACE
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
+import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_CHECKOUT
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_DEFAULT
 import com.tokopedia.purchase_platform.common.data.model.param.EditAddressParam
@@ -530,12 +531,12 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, arrayListOf(shippingRecommendationData.logisticPromo?.promoCode
                         ?: ""))
                 compositeSubscription.add(
-                        clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe(object : Observer<ClearCacheAutoApplyStackResponse?> {
+                        clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe(object : Observer<ClearPromoUiModel?> {
                             override fun onError(e: Throwable?) {
                                 e?.printStackTrace()
                             }
 
-                            override fun onNext(t: ClearCacheAutoApplyStackResponse?) {
+                            override fun onNext(t: ClearPromoUiModel?) {
                             }
 
                             override fun onCompleted() {
@@ -612,12 +613,12 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, arrayListOf(shippingRecommendationData.logisticPromo?.promoCode
                         ?: ""))
                 compositeSubscription.add(
-                        clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe(object : Observer<ClearCacheAutoApplyStackResponse?> {
+                        clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe(object : Observer<ClearPromoUiModel?> {
                             override fun onError(e: Throwable?) {
                                 e?.printStackTrace()
                             }
 
-                            override fun onNext(t: ClearCacheAutoApplyStackResponse?) {
+                            override fun onNext(t: ClearPromoUiModel?) {
                             }
 
                             override fun onCompleted() {
@@ -1012,14 +1013,12 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, ArrayList(notEligiblePromoHolderdataList.map { it.promoCode }))
         compositeSubscription.add(
                 clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY)
-                        .subscribe(object : Observer<ClearCacheAutoApplyStackResponse> {
-                            override fun onError(e: Throwable) {
-                                e.printStackTrace()
-                                finalUpdate(onSuccessCheckout)
+                        .subscribe(object : Observer<ClearPromoUiModel?> {
+                            override fun onError(e: Throwable?) {
+                                e?.printStackTrace()
                             }
 
-                            override fun onNext(t: ClearCacheAutoApplyStackResponse) {
-                                finalUpdate(onSuccessCheckout)
+                            override fun onNext(t: ClearPromoUiModel?) {
                             }
 
                             override fun onCompleted() {
