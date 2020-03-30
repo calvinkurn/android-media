@@ -39,6 +39,7 @@ import com.tokopedia.shop.note.view.adapter.ShopNoteAdapterTypeFactory
 import com.tokopedia.shop.note.view.adapter.viewholder.ShopNoteViewHolder
 import com.tokopedia.shop.note.view.model.ShopNoteViewModel
 import com.tokopedia.shop.common.config.ShopPageConfig
+import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.SHOP_ID
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
@@ -53,8 +54,6 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
         ShopNoteViewHolder.OnNoteClicked {
 
     companion object {
-        const val SHOP_ID = "EXTRA_SHOP_ID"
-
         fun createInstance(
                 shopId: String? = null,
                 shopInfo: ShopInfoData? = null

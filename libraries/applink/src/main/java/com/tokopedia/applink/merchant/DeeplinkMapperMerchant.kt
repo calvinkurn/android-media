@@ -86,4 +86,92 @@ object DeeplinkMapperMerchant {
         return deeplink
     }
 
+    fun isShopPageDeeplink(deeplink: String): Boolean {
+        val uri = Uri.parse(deeplink) ?: return false
+        val pathSegment = uri.pathSegments ?: return false
+        val prefixShopPageApplink = "tokopedia://shop/"
+        return deeplink.startsWith(prefixShopPageApplink).and(pathSegment.size == 1)
+    }
+
+    fun getShopPageInternalApplink(deeplink: String): String {
+        val uri = Uri.parse(deeplink) ?: return deeplink
+        val pathSegment = uri.pathSegments ?: return deeplink
+        return if (pathSegment.size == 1) {
+            val shopId = pathSegment[0]
+            UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE, shopId)
+        }
+        else ""
+    }
+
+    fun isShopPageHomeDeeplink(deeplink: String): Boolean {
+        val uri = Uri.parse(deeplink) ?: return false
+        val pathSegment = uri.pathSegments ?: return false
+        val prefixShopPageHomeAppLink = "tokopedia://shop/"
+        val pathHome = "home"
+        return if (pathSegment.size == 2)
+            deeplink.startsWith(prefixShopPageHomeAppLink) and (pathSegment[1] == pathHome)
+        else false
+    }
+
+    fun getShopPageHomeInternalApplink(deeplink: String): String {
+        val uri = Uri.parse(deeplink) ?: return deeplink
+        val pathSegment = uri.pathSegments ?: return deeplink
+        return if (pathSegment.size == 2) {
+            val shopId = pathSegment[0]
+            UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_HOME, shopId)
+        }
+        else deeplink
+    }
+
+    fun isShopPageInfoDeeplink(deeplink: String): Boolean {
+        val uri = Uri.parse(deeplink) ?: return false
+        val pathSegment = uri.pathSegments ?: return false
+        val prefixShopPageHomeAppLink = "tokopedia://shop/"
+        val pathInfo = "info"
+        return if (pathSegment.size == 2)
+            deeplink.startsWith(prefixShopPageHomeAppLink) and (pathSegment[1] == pathInfo)
+        else false
+    }
+
+    fun isShopPageNoteDeeplink(deeplink: String): Boolean {
+        val uri = Uri.parse(deeplink) ?: return false
+        val pathSegment = uri.pathSegments ?: return false
+        val prefixShopPageHomeAppLink = "tokopedia://shop/"
+        val pathNote = "note"
+        return if (pathSegment.size == 2)
+            deeplink.startsWith(prefixShopPageHomeAppLink) and (pathSegment[1] == pathNote)
+        else false
+    }
+
+    fun getShopPageInfoInternalApplink(deeplink: String): String {
+        val uri = Uri.parse(deeplink) ?: return deeplink
+        val pathSegment = uri.pathSegments ?: return deeplink
+        return if (pathSegment.size == 2) {
+            val shopId = pathSegment[0]
+            UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_INFO, shopId)
+        }
+        else deeplink
+    }
+
+    fun isShopPageResultEtalaseDeepLink(deeplink: String): Boolean {
+        val uri = Uri.parse(deeplink) ?: return false
+        val pathSegment = uri.pathSegments ?: return false
+        val prefixShopPageHomeAppLink = "tokopedia://shop/"
+        val pathEtalase = "etalase"
+        return if (pathSegment.size == 3)
+            deeplink.startsWith(prefixShopPageHomeAppLink) and (pathSegment[1] == pathEtalase)
+        else false
+    }
+
+    fun getShopPageResultEtalaseInternalAppLink(deeplink: String): String {
+        val uri = Uri.parse(deeplink) ?: return deeplink
+        val pathSegment = uri.pathSegments ?: return deeplink
+        return if (pathSegment.size == 3) {
+            val shopId = pathSegment[0]
+            val etalaseId = pathSegment[2]
+            UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST, shopId, etalaseId)
+        }
+        else deeplink
+    }
+
 }

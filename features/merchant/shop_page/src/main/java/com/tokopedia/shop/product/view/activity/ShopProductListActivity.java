@@ -47,9 +47,9 @@ public class ShopProductListActivity extends BaseSimpleActivity
 
     public static final String SAVED_KEYWORD = "svd_keyword";
     private static final String QUERY_SHOP_REF = "shop_ref";
-    private static final String QUERY_SORT = "shop_ref";
-    private static final String QUERY_ATTRIBUTION = "shop_ref";
-    private static final String QUERY_SEARCH = "shop_ref";
+    private static final String QUERY_SORT = "sort";
+    private static final String QUERY_ATTRIBUTION = "tracker_attribution";
+    private static final String QUERY_SEARCH = "search";
     private ShopComponent component;
     private String shopId;
     private String shopRef = "";
@@ -109,15 +109,10 @@ public class ShopProductListActivity extends BaseSimpleActivity
             keyword = savedInstanceState.getString(SAVED_KEYWORD, "");
         }
         Uri data = getIntent().getData();
-        if(null != data){
+        if (null != data) {
             List<String> pathSegments = data.getPathSegments();
-            if(pathSegments.size() >= 4){
-                shopId = data.getPathSegments().get(1);
-                etalaseId = data.getPathSegments().get(3);
-            }else{
-                shopId = "";
-                etalaseId = "";
-            }
+            getShopIdFromUri(data, pathSegments);
+            getEtalaseIdFromUri(data, pathSegments);
             shopRef = data.getQueryParameter(QUERY_SHOP_REF) == null ? "" : data.getQueryParameter(QUERY_SHOP_REF);
             sort = data.getQueryParameter(QUERY_SORT) == null ? "" : data.getQueryParameter(QUERY_SORT);
             attribution = data.getQueryParameter(QUERY_ATTRIBUTION) == null ? "" : data.getQueryParameter(QUERY_ATTRIBUTION);
@@ -131,6 +126,22 @@ public class ShopProductListActivity extends BaseSimpleActivity
         super.onCreate(savedInstanceState);
         initSearchInputView();
         findViewById(R.id.mainLayout).requestFocus();
+    }
+
+    private void getShopIdFromUri(Uri data, List<String> pathSegments) {
+        if (pathSegments.size() >= 2) {
+            shopId = data.getPathSegments().get(1);
+        } else {
+            shopId = "0";
+        }
+    }
+
+    private void getEtalaseIdFromUri(Uri data, List<String> pathSegments) {
+        if (pathSegments.size() >= 4) {
+            etalaseId = data.getPathSegments().get(3);
+        } else {
+            etalaseId = "0";
+        }
     }
 
     @Override
