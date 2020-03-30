@@ -46,8 +46,8 @@ import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.activity.FlightClassesActivity;
 import com.tokopedia.flight.dashboard.view.activity.FlightSelectPassengerActivity;
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel;
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardPassDataModel;
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardPassDataModel;
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel;
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardContract;
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardPresenter;
@@ -172,7 +172,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         departureDateTextInputView = (TextInputView) view.findViewById(com.tokopedia.flight.R.id.text_input_view_date_departure);
         returnDateTextInputView = (TextInputView) view.findViewById(com.tokopedia.flight.R.id.text_input_view_date_return);
         returnDateSeparatorView = view.findViewById(com.tokopedia.flight.R.id.separator_date_return);
-        bannerLayout = view.findViewById(com.tokopedia.flight.R.id.banner_layout);
+        bannerLayout = view.findViewById(com.tokopedia.flight.R.id.bannerLayout);
         bannerView = view.findViewById(com.tokopedia.flight.R.id.banner);
         progressBar = view.findViewById(com.tokopedia.flight.R.id.progress_bar);
         formContainerLayout = view.findViewById(com.tokopedia.flight.R.id.dashboard_container);

@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.common.travel.utils.TravelDispatcherProvider;
 import com.tokopedia.flight.bookingV2.presentation.fragment.FlightInsuranceWebViewFragment;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.common.di.module.FlightModule;
@@ -60,6 +61,8 @@ public interface FlightComponent {
     Resources resources();
 
     FlightGetOrderUseCase flightGetOrderUseCase();
+
+    TravelDispatcherProvider dispatcherProvider();
 
     void inject(BaseFlightActivity baseFlightActivity);
 
