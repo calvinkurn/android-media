@@ -6,9 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.util.ResourceProvider
-import com.tokopedia.product.addedit.detail.domain.interactor.GetSearchShopProductUseCase
 import com.tokopedia.product.addedit.detail.domain.mapper.AddEditProductDetailMapper
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.GetSearchShopProductUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.unifycomponents.list.ListItemUnify
