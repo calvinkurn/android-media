@@ -8,6 +8,10 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
+private val getAnyPattern = Pattern.compile("\\{.*?([a-zA-Z_][a-zA-Z0-9_\\s]+)((?=\\()|(?=\\{)).*(?=\\{)")
+val getMutationPattern: Pattern = Pattern.compile("(?<=mutation )(\\w*)(?=\\s*\\()")
+
+val map = ConcurrentHashMap<String, String>()
 
 fun initAkamaiBotManager(app:Application?){
     app?.let { CYFMonitor.initialize(it) }
@@ -15,10 +19,32 @@ fun initAkamaiBotManager(app:Application?){
 
 fun getSensorData() = CYFMonitor.getSensorData()
 
-private val userAgentFormat = "TkpdConsumer/%s (%s;)"
+val registeredGqlFunctions = mapOf(
+        "login_token" to "login",
+        "register" to "register",
+        "pdpGetLayout" to "pdpGetLayout",
+        "checkout_general" to "checkout",
+        "atcOCS" to "atconeclickshipment",
+        "getPDPInfo" to "product_info",
+        "shopInfoByID" to "shop_info",
+        "followShop" to "followshop",
+        "validate_use_promo_revamp" to	"promorevamp",
+        "crackResult" to	"crackresult",
+        "gamiCrack" to	"gamicrack",
+        "add_to_cart_occ" to	"atcocc",
+        "one_click_checkout" to	"checkoutocc",
+        "add_to_cart_transactional" to "atc"
+)
 
-fun getUserAgent(): String {
-    return String.format(userAgentFormat, GlobalConfig.VERSION_NAME, "Android " + Build.VERSION.RELEASE)
+fun isAkamai(query: String): Boolean {
+    val isAkamai = getAny(query)
+            .asSequence()
+            .filter {
+                registeredGqlFunctions.containsKey(it)
+            }.take(1).map {
+                registeredGqlFunctions[it]
+            }.firstOrNull()
+    return !isAkamai.isNullOrEmpty()
 }
 
 fun getMutation(input: String, match:String) : Boolean{
@@ -32,21 +58,18 @@ fun getMutation(input: String, match:String) : Boolean{
     return false
 }
 
-val map = ConcurrentHashMap<String, String>()
-
 fun getAny(input:String) : MutableList<String>{
-    if(map.get(input)?.isEmpty()?:false )
-        return map.get(input)?.let { mutableListOf(it) } ?: mutableListOf()
+    if(map[input]?.isEmpty() == true) {
+        return map[input]?.let { mutableListOf(it) } ?: mutableListOf()
+    }
 
     val m = getAnyPattern.matcher(input.replace("\n", " "))
     val any = mutableListOf<String>()
+
     while (m.find()) {
         any.add(m.group(1))
         map.putIfAbsent(input, m.group(1))
     }
-    return any;
+
+    return any
 }
-
-val getAnyPattern = Pattern.compile("\\{.*?([a-zA-Z_][a-zA-Z0-9_\\s]+)((?=\\()|(?=\\{)).*(?=\\{)")
-
-val getMutationPattern: Pattern = Pattern.compile("(?<=mutation )(\\w*)(?=\\s*\\()")
