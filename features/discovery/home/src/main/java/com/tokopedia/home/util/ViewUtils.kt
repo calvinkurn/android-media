@@ -80,11 +80,11 @@ object ViewUtils {
         return drawable
 
     }
+}
 
-    fun View.setGradientBackground(hex1: String, hex2: String) {
-        val colors = intArrayOf(Color.parseColor(hex1), Color.parseColor(hex2))
-        val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
-        gradient.cornerRadius = 0f
-        this.background = gradient
-    }
+fun View.setGradientBackground(hex1: String, hex2: String) {
+    val colors = intArrayOf(Color.parseColor(hex1), Color.parseColor(hex2))
+    val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
+    gradient.cornerRadius = 0f
+    this.background = gradient
 }
