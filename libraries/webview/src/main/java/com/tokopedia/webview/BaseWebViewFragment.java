@@ -42,6 +42,8 @@ import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
 
+import timber.log.Timber;
+
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.abstraction.common.utils.image.ImageHandler.encodeToBase64;
 import static com.tokopedia.webview.ConstantKt.JS_TOKOPEDIA;
@@ -471,9 +473,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 startActivity(intent);
             }
         }
-        if (!allowOverride) {
-            return false;
-        }
         if (url.contains(PARAM_EXTERNAL)) {
             try {
                 Intent destination = new Intent(Intent.ACTION_VIEW);
@@ -500,12 +499,23 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 }
                 return true;
             } else {
-                // logging here, url might return blank page
-                // ask user to update app
+                logApplinkErrorOpen(url);
             }
+        }
+        if (!allowOverride && isFirstRequest(url)) {
+            return false;
         }
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
         return hasMoveToNativePage;
+    }
+
+    private void logApplinkErrorOpen(String url) {
+        Timber.w("P1#APPLINK_OPEN_ERROR#%s;uri='%s'",
+                BaseWebViewFragment.this.getClass().getSimpleName(), url);
+    }
+
+    private boolean isFirstRequest(String url) {
+        return this.url.equals(url);
     }
 
     private void checkActivityFinish() {
