@@ -166,7 +166,7 @@ class ProductManageFilterExpandChecklistFragment :
 
         filterSearchBar.searchBarTextField.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                processSearch(searchBar.searchBarTextField.text.toString())
+                processSearch(filterSearchBar.searchBarTextField.text.toString())
                 filterSearchBar.clearFocus()
                 return@setOnEditorActionListener true
             }
