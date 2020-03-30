@@ -40,7 +40,7 @@ class InactiveOvoActivity : BaseOvoActivationActivity() {
     }
 
     companion object {
-        val REGISTER_APPLINK = "applink_register"
+        val REGISTER_APPLINK = "applink_activation"
         val HELP_APPLINK = "applink_help"
         val TNC_APPLINK = "applink_tnc"
     }

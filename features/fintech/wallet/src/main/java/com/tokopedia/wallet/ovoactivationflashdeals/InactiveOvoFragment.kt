@@ -1,9 +1,16 @@
 package com.tokopedia.wallet.ovoactivationflashdeals
 
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
@@ -40,17 +47,38 @@ class InactiveOvoFragment : BaseDaggerFragment() {
                 btn_learn_more.setOnClickListener {
                     RouteManager.route(this, helpApplink)
                 }
+            }
+            setTncOvo(tncApplink)
+        }
+    }
 
-                tnc_ovo.setOnClickListener {
-                    RouteManager.route(this, tncApplink)
+    private fun setTncOvo(tncApplink: String) {
+        activity?.let {
+            val ss = SpannableString(it.getString(R.string.wallet_inactivate_ovo_text_tnc))
+            val clickableSpan = object : ClickableSpan() {
+                override fun onClick(view: View) {
+                    activity?.run {
+                        RouteManager.route(this, tncApplink)
+                    }
+                }
+
+                override fun updateDrawState(ds: TextPaint) {
+                    super.updateDrawState(ds)
+                    ds.isUnderlineText = false
+                    ds.color = ContextCompat.getColor(it, com.tokopedia.design.R.color.tkpd_main_green)
                 }
             }
+            ss.setSpan(ForegroundColorSpan(ContextCompat.getColor(it,
+                    com.tokopedia.design.R.color.tkpd_main_green)), 6, 26, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            ss.setSpan(clickableSpan, 6, 26, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            tnc_ovo.movementMethod = LinkMovementMethod.getInstance()
+            tnc_ovo.text = ss
         }
     }
 
     companion object {
 
-        private const val REGISTER_APPLINK = "register_applink"
+        private const val REGISTER_APPLINK = "activation_applink"
         private const val HELP_APPLINK = "help_applink"
         private const val TNC_APPLINK = "tnc_applink"
 
