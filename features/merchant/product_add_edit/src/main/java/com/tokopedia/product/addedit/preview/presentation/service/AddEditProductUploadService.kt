@@ -9,13 +9,14 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.domain.UploaderUseCase
+import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductExtraConstant.Companion.IMAGE_SOURCE_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DETAIL_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_INPUT
-import com.tokopedia.product.addedit.common.domain.mapper.AddProductInputMapper
-import com.tokopedia.product.addedit.common.domain.usecase.ProductAddUseCase
+import com.tokopedia.product.addedit.preview.domain.mapper.AddProductInputMapper
+import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
@@ -128,8 +129,9 @@ class AddEditProductUploadService : JobIntentService(), CoroutineScope {
     }
 
     private fun initInjector() {
+        val baseMainApplication = applicationContext as BaseMainApplication
         DaggerAddEditProductPreviewComponent.builder()
-                .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+                .addEditProductComponent(AddEditProductComponentBuilder.getComponent(baseMainApplication))
                 .addEditProductPreviewModule(AddEditProductPreviewModule())
                 .build()
                 .inject(this)

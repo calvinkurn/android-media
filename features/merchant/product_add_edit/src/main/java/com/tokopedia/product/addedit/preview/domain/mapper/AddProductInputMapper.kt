@@ -1,8 +1,8 @@
-package com.tokopedia.product.addedit.common.domain.mapper
+package com.tokopedia.product.addedit.preview.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product.addedit.common.domain.model.params.add.*
+import com.tokopedia.product.addedit.preview.data.model.params.add.*
 import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel

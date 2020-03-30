@@ -1,13 +1,12 @@
-package com.tokopedia.product.addedit.common.domain.usecase
+package com.tokopedia.product.addedit.preview.domain.usecase
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.product.addedit.common.domain.model.params.add.ProductAddParam
-import com.tokopedia.product.addedit.common.domain.model.params.edit.ProductEditPriceParam
-import com.tokopedia.product.addedit.common.domain.model.responses.ProductAddEditV3Response
+import com.tokopedia.product.addedit.preview.data.model.params.add.ProductAddParam
+import com.tokopedia.product.addedit.preview.data.model.responses.ProductAddEditV3Response
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package com.tokopedia.product.addedit.common.domain.model.params.add
+package com.tokopedia.product.addedit.preview.data.model.params.add
 
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
@@ -6,10 +6,10 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Catalog (
+data class Category (
 
-    @SerializedName("catalogID")
+    @SerializedName("id")
     @Expose
-    var catalogID: String? = null
+    var id: String? = null
 
 ) : Parcelable

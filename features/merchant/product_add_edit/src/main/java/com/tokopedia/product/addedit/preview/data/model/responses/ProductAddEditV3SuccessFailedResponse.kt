@@ -1,4 +1,4 @@
-package com.tokopedia.product.addedit.common.domain.model.responses
+package com.tokopedia.product.addedit.preview.data.model.responses
 
 data class ProductAddEditV3SuccessFailedResponse(
         var failedResponse: MutableList<ProductAddEditV3Response> = mutableListOf(),

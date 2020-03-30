@@ -1,4 +1,4 @@
-package com.tokopedia.product.addedit.common.domain.model.params.edit
+package com.tokopedia.product.addedit.preview.data.model.params.edit
 
 import android.os.Parcelable
 import com.google.gson.annotations.Expose

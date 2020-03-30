@@ -1,4 +1,4 @@
-package com.tokopedia.product.addedit.common.domain.model.responses
+package com.tokopedia.product.addedit.preview.data.model.responses
 
 
 import com.google.gson.annotations.Expose
