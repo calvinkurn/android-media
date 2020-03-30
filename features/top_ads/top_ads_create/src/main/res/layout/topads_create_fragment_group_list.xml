@@ -31,14 +31,18 @@
         app:layout_constraintTop_toBottomOf="@+id/typography12"
         app:typographyType="body_2" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/sp_17"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="left"
+        android:layout_marginTop="@dimen/dp_24"
+        android:visibility="invisible"
+        tools:visibility="visible"
+        android:text="@string/ketik_nama_group_iklan"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/typography18">
+        app:layout_constraintTop_toBottomOf="@+id/typography18"
+        app:typographyType="body_2" />
 
         <EditText
             android:id="@+id/group_name_input"
@@ -47,10 +51,10 @@
             android:lines="1"
             android:imeOptions="actionSearch"
             android:hint="@string/ketik_nama_group_iklan"
-            android:singleLine="true" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
+            android:singleLine="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/typography19"
@@ -60,7 +64,7 @@
         android:text="@string/contoh_spatu_lari_bando_wanita_gaun_pesta"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/group_name_input"
         app:typographyType="body_3" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -70,7 +74,7 @@
         android:textColor="@color/bright_red"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/group_name_input"
         app:typographyType="body_3"
         tools:text="errro....."
         tools:visibility="visible" />
