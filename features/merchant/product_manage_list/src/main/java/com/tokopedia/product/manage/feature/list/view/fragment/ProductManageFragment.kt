@@ -194,7 +194,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         getProductListFeaturedOnlySize()
         getTopAdsFreeClaim()
         getGoldMerchantStatus()
-        context?.let { dialogFeaturedProduct = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ILLUSTRATION) }
+
+        setupDialogFeaturedProduct()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -236,6 +237,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     override fun onClickProductFilter(filter: FilterTabViewModel, viewHolder: FilterTabViewHolder, tabName: String) {
         showLoadingProgress()
+        setMultiSelectEnabled(false)
         clickStatusFilterTab(filter, viewHolder)
         ProductManageTracking.eventInventory(tabName)
     }
@@ -296,6 +298,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         searchBar.searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 searchBar.clearFocus()
+                showLoadingProgress()
                 getProductList(isRefresh = true)
                 return@setOnEditorActionListener true
             }
@@ -328,6 +331,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         btnMultiEdit.setOnClickListener {
             multiEditBottomSheet?.show()
             ProductManageTracking.eventBulkSettings()
+        }
+    }
+
+    private fun setupDialogFeaturedProduct() {
+        context?.let {
+            dialogFeaturedProduct = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ILLUSTRATION)
         }
     }
 
@@ -415,7 +424,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                             ?: ""
                         viewModel.getPopupsInfo(productId)
                         getFiltersTab(withDelay = true)
-                        loadInitialData()
+                        getProductList(withDelay = true, isRefresh = true)
                     }
                 }
             }
@@ -478,7 +487,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun showProductList(productList: List<ProductViewModel>) {
         val hasNextPage = productList.isNotEmpty()
         renderProductList(productList, hasNextPage)
-        renderMultiSelectProduct()
     }
 
     private fun renderMultiSelectProduct() {
@@ -709,13 +717,15 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             }
         }
 
-        unCheckProducts(productIds)
+        if(productIds.isNotEmpty()) {
+            unCheckProducts(productIds)
+        }
     }
 
     private fun unCheckProducts(productIds: List<String>) {
         productIds.forEach { productId ->
             val index = adapter.data.indexOfFirst { it.id == productId }
-            if(index > 0) { onClickProductCheckBox(false, index) }
+            if(index >= 0) { onClickProductCheckBox(false, index) }
         }
         productManageListAdapter.notifyDataSetChanged()
     }
@@ -742,11 +752,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         isLoadingInitialData = true
         swipeToRefresh.isRefreshing = true
 
+        showPageLoading()
         hideSnackBarRetry()
-        clearProductList()
-        clearSelectedProduct()
-        resetSelectAllCheckBox()
-        renderCheckedView()
+        resetProductList()
+        setMultiSelectEnabled(false)
 
         getFiltersTab(withDelay = true)
         getProductList(withDelay = true)
@@ -1266,9 +1275,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 is Success -> {
                     initHeaderView(it.data)
                     showProductList(it.data)
+                    setMultiSelectEnabled(true)
+                    renderMultiSelectProduct()
                 }
                 is Fail -> showErrorToast()
             }
+            hidePageLoading()
         }
     }
 
@@ -1289,33 +1301,46 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun observeMultiSelect() {
-        val multiSelectText = getString(R.string.product_manage_multiple_select)
-        val cancelMultiSelectText = getString(R.string.product_manage_cancel_multiple_select)
-
         observe(viewModel.toggleMultiSelect) { multiSelectEnabled ->
             val productList = adapter.data.map {
-                it.copy(
-                    multiSelectActive = multiSelectEnabled,
-                    isChecked = false
-                )
+                it.copy(multiSelectActive = multiSelectEnabled, isChecked = false)
             }
 
             if(multiSelectEnabled) {
-                checkBoxSelectAll.show()
-                textMultipleSelect.text = cancelMultiSelectText
+                showMultiSelectView()
+                clearAllData()
             } else {
-                btnMultiEdit.hide()
-                checkBoxSelectAll.hide()
-                textMultipleSelect.text = multiSelectText
+                hideMultiSelectView()
+                resetProductList()
             }
 
-            clearProductList()
-            clearSelectedProduct()
-            resetSelectAllCheckBox()
-
-            renderCheckedView()
             showProductList(productList)
         }
+    }
+
+    private fun showMultiSelectView() {
+        val cancelMultiSelectText = getString(R.string.product_manage_cancel_multiple_select)
+        textMultipleSelect.text = cancelMultiSelectText
+        checkBoxSelectAll.show()
+    }
+
+    private fun hideMultiSelectView() {
+        val multiSelectText = getString(R.string.product_manage_multiple_select)
+        textMultipleSelect.text = multiSelectText
+        checkBoxSelectAll.hide()
+        btnMultiEdit.hide()
+    }
+
+    private fun resetProductList() {
+        clearAllData()
+        resetSelectAllCheckBox()
+        clearSelectedProduct()
+        renderCheckedView()
+    }
+
+    private fun setMultiSelectEnabled(enabled: Boolean) {
+        checkBoxSelectAll.isEnabled = enabled
+        textMultipleSelect.isEnabled = enabled
     }
 
     private fun observeDeleteProduct() {
@@ -1349,9 +1374,19 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             when(it) {
                 is ShowProgressDialog -> showLoadingProgress()
                 is HideProgressDialog -> hideLoadingProgress()
-                is RefreshList -> clearProductList()
+                is RefreshList -> resetProductList()
             }
         }
+    }
+
+    private fun showPageLoading() {
+        mainContainer.hide()
+        pageLoading.show()
+    }
+
+    private fun hidePageLoading() {
+        mainContainer.show()
+        pageLoading.hide()
     }
     // endregion
 
@@ -1367,12 +1402,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun resetSelectAllCheckBox() {
-        checkBoxSelectAll.isChecked = false
-        checkBoxSelectAll.setIndeterminate(false)
-    }
-
-    private fun clearProductList() {
-        adapter.clearAllElements()
+        if(checkBoxSelectAll.isChecked) {
+            checkBoxSelectAll.isChecked = false
+            checkBoxSelectAll.setIndeterminate(false)
+        }
     }
 
     private fun goToProductDraft(imageUrls: ArrayList<String>?, imageDescList: ArrayList<String>?) {
