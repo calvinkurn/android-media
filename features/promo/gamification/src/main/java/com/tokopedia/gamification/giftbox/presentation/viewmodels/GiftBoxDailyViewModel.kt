@@ -6,7 +6,6 @@ import com.tokopedia.gamification.giftbox.data.di.IO
 import com.tokopedia.gamification.giftbox.data.di.MAIN
 import com.tokopedia.gamification.giftbox.data.entities.*
 import com.tokopedia.gamification.giftbox.domain.*
-import com.tokopedia.gamification.giftbox.presentation.activities.GiftLauncherActivity
 import com.tokopedia.gamification.pdp.data.LiveDataResult
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
@@ -41,18 +40,11 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
         giftBoxLiveData.postValue(LiveDataResult.loading())
         launchCatchError(block = {
             val params = giftBoxDailyUseCase.getRequestParams(pageName)
-            if (GiftLauncherActivity.iS_STAGING) {
-                val response = giftBoxDailyUseCase.getResponse(params)
-                campaignSlug = response?.gamiLuckyHome.tokensUser?.campaignSlug
-                val remindMeCheckEntity = remindMeUseCase.getRemindMeCheckResponse(remindMeUseCase.getRequestParams(about))
+            val response = giftBoxDailyUseCase.getResponse(params)
+            campaignSlug = response?.gamiLuckyHome.tokensUser?.campaignSlug
+            val remindMeCheckEntity = remindMeUseCase.getRemindMeCheckResponse(remindMeUseCase.getRequestParams(about))
 
-                giftBoxLiveData.postValue(LiveDataResult.success(Pair(response, remindMeCheckEntity)))
-
-            } else {
-                val response = giftBoxDailyUseCase.getFakeResponseActive()
-                val remindMeCheckEntity = remindMeUseCase.getRemindMeCheckResponse(remindMeUseCase.getRequestParams(about))
-                giftBoxLiveData.postValue(LiveDataResult.success(Pair(response, remindMeCheckEntity)))
-            }
+            giftBoxLiveData.postValue(LiveDataResult.success(Pair(response, remindMeCheckEntity)))
 
         }, onError = {
             giftBoxLiveData.postValue(LiveDataResult.error(it))
@@ -63,12 +55,9 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
         if (rewardJob == null || rewardJob!!.isCompleted && campaignSlug != null) {
             rewardJob = launchCatchError(block = {
                 val response: GiftBoxRewardEntity
-                if (GiftLauncherActivity.iS_STAGING) {
-                    val params = giftBoxDailyRewardUseCase.getRequestParams(campaignSlug!!, uniqueCode)
-                    response = giftBoxDailyRewardUseCase.getResponse(params)
-                } else {
-                    response = giftBoxDailyRewardUseCase.getCouponsWithOvoPoints()
-                }
+                val params = giftBoxDailyRewardUseCase.getRequestParams(campaignSlug!!, uniqueCode)
+                response = giftBoxDailyRewardUseCase.getResponse(params)
+
                 val couponDetail = composeApi(response)
                 response.couponDetailResponse = couponDetail
                 rewardLiveData.postValue(LiveDataResult.success(response))
@@ -103,11 +92,7 @@ class GiftBoxDailyViewModel @Inject constructor(@Named(MAIN) uiDispatcher: Corou
         launchCatchError(block = {
             val map = autoApplyUseCase.getQueryParams(code)
             var response: AutoApplyResponse
-            if (GiftLauncherActivity.iS_STAGING) {
                 response = autoApplyUseCase.getResponse(map)
-            } else {
-                response = autoApplyUseCase.getFakeAutoApplyResponse()
-            }
             autoApplyLiveData.postValue(LiveDataResult.success(response))
         }, onError = {
             autoApplyLiveData.postValue(LiveDataResult.error(it))

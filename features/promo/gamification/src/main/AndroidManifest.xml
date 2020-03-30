@@ -64,14 +64,6 @@
                     android:pathPattern="@string/path_daily_gift"/>
             </intent-filter>
         </activity>
-        <activity android:name=".giftbox.presentation.activities.GiftLauncherActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask">
-            <intent-filter >
-                <action android:name="com.tokopedia.tkpd.gift" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
         <activity android:name=".giftbox.presentation.activities.GiftBoxTapTapActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTask">

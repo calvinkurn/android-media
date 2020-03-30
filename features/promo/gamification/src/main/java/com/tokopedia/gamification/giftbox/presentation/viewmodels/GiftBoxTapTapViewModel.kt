@@ -32,9 +32,7 @@ class GiftBoxTapTapViewModel @Inject constructor(@Named(IO) workerDispatcher: Co
     fun getGiftBoxHome() {
         giftHomeLiveData.postValue(LiveDataResult.loading())
         launchCatchError(block = {
-            //todo Rahul remove later
-//            val response = homeUseCase.getResponse(HashMap())
-            val response = homeUseCase.getFakeResponseActive()
+            val response = homeUseCase.getResponse(HashMap())
             giftHomeLiveData.postValue(LiveDataResult.success(response))
         }, onError = {
             giftHomeLiveData.postValue(LiveDataResult.error(it))
@@ -43,8 +41,7 @@ class GiftBoxTapTapViewModel @Inject constructor(@Named(IO) workerDispatcher: Co
 
     fun crackGiftBox() {
         launchCatchError(block = {
-            //            val response = crackUseCase.getResponse(crackUseCase.getQueryParams(tokenId, campaignId))
-            val response = crackUseCase.getFakeResponseActive()
+            val response = crackUseCase.getResponse(crackUseCase.getQueryParams(tokenId, campaignId))
             val couponDetail = composeApi(response)
             giftCrackLiveData.postValue(LiveDataResult.success(Pair(couponDetail, response)))
         }, onError = {

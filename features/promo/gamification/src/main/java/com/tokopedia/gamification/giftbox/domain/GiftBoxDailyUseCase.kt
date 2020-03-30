@@ -1,11 +1,7 @@
 package com.tokopedia.gamification.giftbox.domain
 
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.tokopedia.gamification.giftbox.data.di.GIFT_BOX_DAILY
 import com.tokopedia.gamification.giftbox.data.entities.GiftBoxEntity
-import com.tokopedia.gamification.giftbox.data.entities.GiftBoxRewardEntity
-import com.tokopedia.gamification.giftbox.presentation.helpers.FakeResponses
 import com.tokopedia.gamification.pdp.data.GqlUseCaseWrapper
 import javax.inject.Inject
 import javax.inject.Named
@@ -27,20 +23,5 @@ class GiftBoxDailyUseCase @Inject constructor(@Named(GIFT_BOX_DAILY) val querySt
         const val CAMPAIGN_SLUG = "campaignSlug"
         const val PAGE = "page"
     }
-
-    fun getFakeResponseActive(): GiftBoxEntity {
-        return getFakeEntity(FakeResponses.GamiLuckyHomeResponse.ACTIVE_3_PRIZE)
-    }
-
-    fun getFakeResponseEmpty(): GiftBoxEntity {
-        return getFakeEntity(FakeResponses.GamiLuckyHomeResponse.EMPTY)
-    }
-
-    private fun getFakeEntity(str: String): GiftBoxEntity {
-        val type = object : TypeToken<GiftBoxEntity>() {}.type
-        val entity = Gson().fromJson<GiftBoxEntity>(str, type)
-        return entity
-    }
-
 
 }
