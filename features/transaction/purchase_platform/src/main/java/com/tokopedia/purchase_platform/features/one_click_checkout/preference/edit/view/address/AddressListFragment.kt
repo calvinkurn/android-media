@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -235,7 +234,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
     /*OnActivityResult utk flow dari ana*/
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
+        preferenceListAnalytics.eventClickPilihDurasiInANAFlow()
         if (requestCode == REQUEST_FIRST_CREATE) {
             val saveAddressDataModel = data?.getParcelableExtra<SaveAddressDataModel>("EXTRA_ADDRESS_NEW")
             if (saveAddressDataModel != null) {
