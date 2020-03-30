@@ -399,6 +399,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         if (!fragmentUiModel.uiState.hasFailedToLoad) {
             if (fragmentUiModel.uiState.hasAnyPromoSelected) {
                 toolbar?.enableResetButton()
+                toolbar?.showResetButton()
                 activity?.let {
                     label_total_promo_info.show()
                     label_total_promo_amount.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentUiModel.uiData.totalBenefit, false)
@@ -410,6 +411,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 }
             } else {
                 toolbar?.disableResetButton()
+                toolbar?.showResetButton()
                 if (fragmentUiModel.uiState.hasPreAppliedPromo) {
                     label_total_promo_info.gone()
                     label_total_promo_amount.gone()
@@ -424,6 +426,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             layout_main_container.show()
         } else {
             toolbar?.disableResetButton()
+            toolbar?.hideResetButton()
             fragmentUiModel.uiData.exception?.let {
                 layout_global_error.setType(getGlobalErrorType(it))
             }

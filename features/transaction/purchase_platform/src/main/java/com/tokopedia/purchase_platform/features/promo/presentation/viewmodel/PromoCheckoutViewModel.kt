@@ -168,7 +168,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
             // Get response
             val response = withContext(Dispatchers.IO) {
-                //                                Gson().fromJson(MOCK_RESPONSE, CouponListRecommendationResponse::class.java)
+//                Gson().fromJson(MOCK_RESPONSE, CouponListRecommendationResponse::class.java)
                 val request = GraphqlRequest(mutation, CouponListRecommendationResponse::class.java, promo)
                 graphqlRepository.getReseponse(listOf(request))
                         .getSuccessData<CouponListRecommendationResponse>()
@@ -489,7 +489,8 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                                 if (it is PromoListItemUiModel) {
                                     if (redStateMap.containsKey(it.uiData.promoCode)) {
                                         it.uiState.isSelected = false
-                                        it.uiData.errorMessage = redStateMap[it.uiData.promoCode] ?: ""
+                                        it.uiData.errorMessage = redStateMap[it.uiData.promoCode]
+                                                ?: ""
                                         it.uiState.isDisabled = true
                                         _tmpUiModel.value = Update(it)
                                     }
@@ -497,7 +498,8 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                                     it.uiData.tmpPromoItemList.forEach {
                                         if (redStateMap.containsKey(it.uiData.promoCode)) {
                                             it.uiState.isSelected = false
-                                            it.uiData.errorMessage = redStateMap[it.uiData.promoCode] ?: ""
+                                            it.uiData.errorMessage = redStateMap[it.uiData.promoCode]
+                                                    ?: ""
                                             it.uiState.isDisabled = true
                                             _tmpUiModel.value = Update(it)
                                         }
