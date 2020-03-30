@@ -10,6 +10,7 @@ object VariantConstant {
 
 
     const val QUERY_MULTI_ORIGIN = "multiorigin"
+    const val QUERY_VARIANT = "variant"
 
 
     //State

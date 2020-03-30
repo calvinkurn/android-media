@@ -56,6 +56,7 @@ abstract class BaseTracking {
         const val NONE_OTHER = "none / other"
         const val LIST_WITH_HEADER = "/ - p%s - %s - %s"
         const val LIST = "/ - p%s - %s"
+        const val LIST_HEADER_NAME = "/ - p%s - %s - %s"
         const val EMPTY = ""
         const val FORMAT_2_ITEMS_UNDERSCORE = "%s_%s"
 
@@ -94,6 +95,7 @@ abstract class BaseTracking {
         private const val KEY_POSITION = "position"
         private const val KEY_LIST = "list"
         private const val KEY_ATTRIBUTION = "attribution"
+        private const val KEY_DIMENSION_40 = "dimension40"
         private const val KEY_DIMENSION_83 = "dimension83"
         private const val KEY_DIMENSION_84 = "dimension84"
         private const val KEY_DIMENSION_96 = "dimension96"
@@ -117,9 +119,9 @@ abstract class BaseTracking {
                     CURRENCY_CODE, IDR,
                     CLICK, DataLayer.mapOf(
                         ACTION_FIELD, DataLayer.mapOf(
-                            LIST, list
+                            LIST, list  + if(products.first().isTopAds) " - topads" else ""
                         ),
-                        PRODUCTS, getProducts(products)
+                        PRODUCTS, getProductsClick(products, list)
                     )
             )
         }
@@ -140,6 +142,12 @@ abstract class BaseTracking {
         private fun getProducts(products: List<Product>): List<Any>{
             val list = ArrayList<Map<String,Any>>()
             products.forEach { list.add(createProductMap(it)) }
+            return DataLayer.listOf(*list.toTypedArray<Any>())
+        }
+
+        private fun getProductsClick(products: List<Product>, listClick: String): List<Any>{
+            val list = ArrayList<Map<String,Any>>()
+            products.forEach { list.add(createProductMap(it, listClick)) }
             return DataLayer.listOf(*list.toTypedArray<Any>())
         }
 
@@ -171,9 +179,10 @@ abstract class BaseTracking {
             map[KEY_CATEGORY] = if(product.category.isNotBlank()) product.category else NONE
             map[KEY_POSITION] = product.productPosition
             map[KEY_DIMENSION_83] = if(product.isFreeOngkir) FREE_ONGKIR else NONE
+            map[KEY_DIMENSION_40] = list + if(product.isTopAds) " - topads" else ""
             if (product.channelId.isNotEmpty()) map[KEY_DIMENSION_84] = product.channelId else NONE
             if (product.categoryId.isNotEmpty() || product.persoType.isNotEmpty()) map[KEY_DIMENSION_96] = String.format(FORMAT_2_ITEMS_UNDERSCORE, product.persoType, product.categoryId) else NONE
-            if (list.isNotEmpty()) map[KEY_LIST] = list
+            if (list.isNotEmpty()) map[KEY_LIST] = list + if(product.isTopAds) " - topads" else ""
             return map
         }
     }
@@ -190,6 +199,7 @@ abstract class BaseTracking {
             val isFreeOngkir: Boolean,
             val channelId: String = "",
             val persoType: String = "",
+            val isTopAds: Boolean = false,
             val categoryId: String = ""): ImpressHolder()
 
     open fun getBasicPromotionView(

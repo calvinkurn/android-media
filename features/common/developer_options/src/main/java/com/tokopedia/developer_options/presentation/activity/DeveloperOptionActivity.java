@@ -33,6 +33,8 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.chuckerteam.chucker.api.Chucker;
+import com.github.moduth.blockcanary.BlockCanary;
+import com.github.moduth.blockcanary.BlockCanaryContext;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger;
@@ -80,6 +82,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     public static final String STAGING = "staging";
     public static final String LIVE = "live";
     public static final String DEVELOPEROPTION = "developeroption";
+    public static final int DEFAULT_DELAY_UI_BLOCK = 500;
 
     private String CACHE_FREE_RETURN = "CACHE_FREE_RETURN";
     private String API_KEY_TRANSLATOR = "trnsl.1.1.20190508T115205Z.10630ca1780c554e.a7a33e218b8e806e8d38cb32f0ef91ae07d7ae49";
@@ -131,6 +134,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private Button requestFcmToken;
 
     private PermissionCheckerHelper permissionCheckerHelper;
+    private EditText etUIBlockDelay;
 
     @Override
     public String getScreenName() {
@@ -205,6 +209,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         toggleFpmNotif = findViewById(R.id.toggle_fpm_notif);
         toggleFpmAutoLogFile = findViewById(R.id.toggle_fpm_auto_file_log);
 
+        etUIBlockDelay = findViewById(R.id.et_block_canary_delay);
         toggleUiBlockDebugger = findViewById(R.id.toggle_ui_block_debugger);
 
         remoteConfigPrefix = findViewById(R.id.remote_config_prefix);
@@ -430,10 +435,19 @@ public class DeveloperOptionActivity extends BaseActivity {
             IrisLogger.getInstance(DeveloperOptionActivity.this).openSendActivity();
         });
 
-        SharedPreferences uiBlockDebuggerPref = getSharedPreferences("UI_BLOCK_DEBUGGER");
-        toggleUiBlockDebugger.setChecked(uiBlockDebuggerPref.getBoolean("isEnabled", false));
         toggleUiBlockDebugger.setOnCheckedChangeListener((compoundButton, state) -> {
-            uiBlockDebuggerPref.edit().putBoolean("isEnabled", state).apply();
+            String delayStr = etUIBlockDelay.getText().toString();
+            int delay = toInt(delayStr);
+            if (delay <= 0) {
+                delay = DEFAULT_DELAY_UI_BLOCK;
+            }
+            if (state) {
+                Toast.makeText(DeveloperOptionActivity.this,
+                        "(TODO) UI Block is enabled with delay " + delay , Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(DeveloperOptionActivity.this,
+                        "(TODO) UI Block is disabled" , Toast.LENGTH_LONG).show();
+            }
         });
 
         saveIpGroupChat.setOnClickListener(v -> actionSaveIpGroupChat());
@@ -484,6 +498,14 @@ public class DeveloperOptionActivity extends BaseActivity {
             Intent intent = new Intent(this, DeleteFirebaseTokenService.class);
             startService(intent);
         });
+    }
+
+    private int toInt(String str) {
+        try {
+            return Integer.parseInt(str);
+        }catch (Exception e) {
+            return 0;
+        }
     }
 
     private void requestPermissionWriteFile() {
