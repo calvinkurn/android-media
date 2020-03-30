@@ -67,23 +67,25 @@ class AddProductInputMapper @Inject constructor() {
         return Variant(
                 mapVariantSelectionParam(variantInputModel.variantOptionParent),
                 mapVariantProducts(variantInputModel.productVariant),
-                mapVariantSizeShart(variantInputModel.productSizeChart)
+                mapVariantSizeChart(variantInputModel.productSizeChart)
         )
     }
 
-    private fun mapVariantSizeShart(productSizeChart: PictureViewModel?): List<PictureVariant> {
+    private fun mapVariantSizeChart(productSizeChart: PictureViewModel?): List<PictureVariant> {
         val sizeCharts: ArrayList<PictureVariant> = ArrayList()
         productSizeChart?.let {
-            val sizeChart = PictureVariant(
-                    it.id,
-                    "",
-                    it.filePath,
-                    it.fileName,
-                    it.x,
-                    it.y,
-                    it.fromIg > 0
-            )
-            sizeCharts.add(sizeChart)
+            if (productSizeChart.filePath.isNotEmpty()) {
+                val sizeChart = PictureVariant(
+                        it.id,
+                        "",
+                        it.filePath,
+                        it.fileName,
+                        it.x,
+                        it.y,
+                        it.fromIg > 0
+                )
+                sizeCharts.add(sizeChart)
+            }
         }
         return sizeCharts
     }
