@@ -1,6 +1,7 @@
 package com.tokopedia.akamai_bot_lib.interceptor
 
 import com.tokopedia.akamai_bot_lib.getAny
+import com.tokopedia.akamai_bot_lib.registeredGqlFunctions
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -13,25 +14,6 @@ import java.io.EOFException
 import java.io.IOException
 import java.nio.charset.Charset
 import kotlin.system.measureTimeMillis
-
-val registeredGqlFunctions = mapOf(
-        "login_token" to "login",
-        "register" to "register",
-        "pdpGetLayout" to "pdpGetLayout",
-        "checkout_general" to "checkout",
-        "atcOCS" to "atconeclickshipment",
-        "getPDPInfo" to "product_info",
-        "shopInfoByID" to "shop_info",
-        "followShop" to "followshop",
-        "validate_use_promo_revamp" to	"promorevamp",
-        "crackResult" to	"crackresult",
-        "gamiCrack" to	"gamicrack",
-        "add_to_cart_occ" to	"atcocc",
-        "one_click_checkout" to	"checkoutocc",
-        "add_to_cart_transactional" to "atc"
-)
-
-
 
 class GqlAkamaiBotInterceptor : Interceptor {
     @Throws(IOException::class)
@@ -53,10 +35,9 @@ class GqlAkamaiBotInterceptor : Interceptor {
             if (isPlaintext(buffer)) {
                 charset?.let {
                     readFromBuffer(buffer, it).let {
-
                         // start time
                         try {
-                            val time = measureTimeMillis {
+                            measureTimeMillis {
                                 val jsonArray = JSONArray(it)
                                 val jsonObject: JSONObject = jsonArray.getJSONObject(0)
                                 val query = jsonObject.getString("query")
