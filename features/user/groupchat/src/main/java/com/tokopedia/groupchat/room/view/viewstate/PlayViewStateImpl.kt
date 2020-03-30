@@ -12,14 +12,12 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.view.View.VISIBLE
-import android.view.WindowManager
 import android.webkit.URLUtil
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,6 +37,7 @@ import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.BackEditText
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.DynamicButtonsAdapter
@@ -135,7 +134,7 @@ open class PlayViewStateImpl(
     private var liveIndicator: View = toolbar.findViewById(R.id.toolbar_live)
     private var stickyComponent: RecyclerView = view.findViewById(R.id.sticky_component)
     private val webviewIcon = view.findViewById<ImageView>(R.id.webview_icon)
-    private var errorView: View = view.findViewById(R.id.card_retry)
+    private var errorView: GlobalError = view.findViewById(R.id.card_retry)
     private var loadingView: View = view.findViewById(R.id.loading_view)
     private var hideVideoToggle: View = view.findViewById(R.id.hide_video_toggle)
     private var showVideoToggle: View = view.findViewById(R.id.show_video_toggle)
@@ -1039,23 +1038,15 @@ open class PlayViewStateImpl(
 
     }
 
-    override fun onErrorGetInfo(it: String) {
-        setEmptyState(R.drawable.ic_play_overload,
-                getStringResource(R.string.error_overload_play),
-                it.replace("channelName", viewModel?.title ?: "", false),
-                getStringResource(com.tokopedia.abstraction.R.string.title_try_again),
-                listener::onRetryGetInfo)
+    override fun onErrorGetInfo(globalError: Int) {
+        setEmptyStateByType(globalError, action = listener::onRetryGetInfo)
         loadingView.hide()
         errorView.show()
         setToolbarWhite()
     }
 
     override fun onNoInternetConnection() {
-        setEmptyState(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection,
-                getStringResource(R.string.no_connection_play),
-                getStringResource(R.string.try_connection_play),
-                getStringResource(com.tokopedia.abstraction.R.string.title_try_again),
-                listener::onRetryGetInfo)
+        setEmptyStateByType(GlobalError.NO_CONNECTION, action = listener::onRetryGetInfo)
         loadingView.hide()
         errorView.show()
         setToolbarWhite()
@@ -1227,17 +1218,26 @@ open class PlayViewStateImpl(
         return view
     }
 
+    private fun setEmptyStateByType(globalErrorType: Int, action:() -> Unit) {
+        if (globalErrorType in 0..4)
+            errorView.setType(globalErrorType)
+        else
+            errorView.setType(GlobalError.SERVER_ERROR)
+        errorView.errorAction.setOnClickListener {
+            action()
+        }
+    }
+
     private fun setEmptyState(imageResId: Int, titleText: String, bodyText: String, buttonText: String, action: () -> Unit) {
-        val imageView = errorView.findViewById<ImageView>(R.id.image)
-        val title = errorView.findViewById<TextView>(R.id.title)
-        val body = errorView.findViewById<TextView>(R.id.body)
-        val button = errorView.findViewById<View>(R.id.button)
-        val buttonTxt = errorView.findViewById<TextView>(R.id.button_text)
+        val imageView = errorView.errorIllustration
+        val title = errorView.errorTitle
+        val body = errorView.errorDescription
+        val button = errorView.errorAction
 
         ImageHandler.loadImageWithId(imageView, imageResId)
         title.text = titleText
         body.text = bodyText
-        buttonTxt.text = buttonText
+        button.text = buttonText
         button.setOnClickListener {
             action()
         }
