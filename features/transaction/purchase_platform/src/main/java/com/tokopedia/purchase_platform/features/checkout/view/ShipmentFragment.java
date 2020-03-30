@@ -2574,6 +2574,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             validateUsePromoRequest.setOrders(listOrderItem);
             validateUsePromoRequest.setState(PARAM_CHECKOUT);
             validateUsePromoRequest.setCartType(PARAM_DEFAULT);
+            validateUsePromoRequest.setSkipApply(0);
             if (isTradeIn()) {
                 validateUsePromoRequest.setTradeIn(1);
                 validateUsePromoRequest.setTradeInDropOff(isTradeInByDropOff() ? 1 : 0);
