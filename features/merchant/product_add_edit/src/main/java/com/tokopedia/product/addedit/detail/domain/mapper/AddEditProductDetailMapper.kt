@@ -9,7 +9,7 @@ object AddEditProductDetailMapper {
         return universeSearchResponse.universeSearch.data.filter { it.name == UNIVERSE_SEARCH_TYPE }
     }
 
-    fun getProductNameStart(getProductNameAutoComplete: List<UniverseSearchResponse.UniverseSearch.Data>, keyword: String): List<String> {
+    fun getFinalProductName(getProductNameAutoComplete: List<UniverseSearchResponse.UniverseSearch.Data>, keyword: String): List<String> {
         val productNameList: MutableList<String> = mutableListOf()
         val maxSuggestionName = 5
         getProductNameAutoComplete.map {  data ->

@@ -109,7 +109,7 @@ class AddEditProductDetailViewModel @Inject constructor(val provider: ResourcePr
                     }
                     val getProductName = AddEditProductDetailMapper.getProductNameAutoComplete(result)
                     _searchProductSuggestionName.postValue(Success(
-                            AddEditProductDetailMapper.getProductNameStart(getProductName, query)))
+                            AddEditProductDetailMapper.getFinalProductName(getProductName, query)))
         }) {
             _searchProductSuggestionName.postValue(Fail(it))
         }
