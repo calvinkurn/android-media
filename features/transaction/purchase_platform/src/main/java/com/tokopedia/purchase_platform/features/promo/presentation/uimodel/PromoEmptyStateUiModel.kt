@@ -15,10 +15,15 @@ data class PromoEmptyStateUiModel(
     data class UiData(
             var title: String = "",
             var description: String = "",
-            var imageUrl: String= "",
+            var imageUrl: String = "",
             var buttonText: String = "",
             var emptyStateStatus: String = ""
-    )
+    ) {
+        companion object {
+            const val LABEL_BUTTON_PHONE_VERIFICATION = "Verifikasi Nomor HP"
+            const val LABEL_BUTTON_TRY_AGAIN = "Coba Lagi"
+        }
+    }
 
     data class UiState(
             var isShowButton: Boolean = false

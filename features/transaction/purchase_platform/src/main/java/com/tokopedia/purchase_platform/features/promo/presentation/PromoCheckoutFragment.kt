@@ -522,7 +522,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         var errorMessage = throwable.message
         if (throwable !is PromoErrorException) errorMessage = ErrorHandler.getErrorMessage(context, throwable)
         if (errorMessage.isNullOrBlank()) {
-            errorMessage = "Terjadi kesalahan. Ulangi beberapa saat lagi"
+            errorMessage = getString(R.string.label_error_global_promo_checkout)
         }
         return errorMessage
     }
@@ -530,10 +530,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     private fun showSavePromoDialog() {
         activity?.let {
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle("Simpan promo sebelum keluar?")
-                setDescription("Kamu baru saja mengubah pilihan promo. Mau disimpan?")
-                setPrimaryCTAText("Simpan Promo Baru")
-                setSecondaryCTAText("Keluar Halaman")
+                setTitle(getString(R.string.label_title_promo_dialog_backpressed))
+                setDescription(getString(R.string.label_description_promo_dialog_backpressed))
+                setPrimaryCTAText(getString(R.string.label_primary_cta_promo_dialog_backpressed))
+                setSecondaryCTAText(getString(R.string.label_secondary_cta_promo_dialog_backpressed))
                 setPrimaryCTAClickListener {
                     viewModel.sendAnalyticsClickSimpanPromoBaru()
                     if (viewModel.isHasAnySelectedPromoItem()) {

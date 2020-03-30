@@ -23,6 +23,8 @@ import com.tokopedia.purchase_platform.features.promo.presentation.analytics.Pro
 import com.tokopedia.purchase_platform.features.promo.presentation.mapper.PromoCheckoutUiModelMapper
 import com.tokopedia.purchase_platform.features.promo.presentation.mapper.ValidateUsePromoCheckoutMapper
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoEmptyStateUiModel.UiData.Companion.LABEL_BUTTON_PHONE_VERIFICATION
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoEmptyStateUiModel.UiData.Companion.LABEL_BUTTON_TRY_AGAIN
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -294,7 +296,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                                     analytics.eventViewAvailablePromoListNoPromo(getPageSource())
                                 }
                                 response.couponListRecommendation.data.resultStatus.code == STATUS_PHONE_NOT_VERIFIED -> {
-                                    emptyState.uiData.buttonText = "Verifikasi Nomor HP"
+                                    emptyState.uiData.buttonText = LABEL_BUTTON_PHONE_VERIFICATION
                                     emptyState.uiState.isShowButton = true
                                     analytics.eventViewPhoneVerificationMessage(getPageSource())
                                 }
@@ -304,7 +306,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                                 }
                                 else -> {
                                     emptyState.uiState.isShowButton = true
-                                    emptyState.uiData.buttonText = "Coba Lagi"
+                                    emptyState.uiData.buttonText = LABEL_BUTTON_TRY_AGAIN
                                 }
                             }
                             _promoEmptyStateUiModel.value = emptyState
@@ -420,7 +422,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     // Promo is clashing. Need to reload promo page
                     applyPromoResponse.value?.let {
                         it.state = ApplyPromoResponseAction.ACTION_SHOW_TOAST_AND_RELOAD_PROMO
-                        it.exception = PromoErrorException("Oops, terjadi kesalahan. Coba pilih promo lagi.")
+                        it.exception = PromoErrorException()
                         _applyPromoResponse.value = it
                     }
                 } else {
