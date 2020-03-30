@@ -19,7 +19,7 @@ import javax.inject.Inject
  */
 
 class HotelRoomListViewModel @Inject constructor(
-        private val dispatcher: HotelDispatcherProvider,
+        dispatcher: HotelDispatcherProvider,
         private val useCase: GetHotelRoomListUseCase,
         private val addToCartUsecase: HotelAddToCartUseCase)
     : BaseViewModel(dispatcher.io) {
@@ -33,9 +33,11 @@ class HotelRoomListViewModel @Inject constructor(
     var isFilter = false
 
     fun getRoomList(rawQuery: String, hotelRoomListPageModel: HotelRoomListPageModel, fromCloud: Boolean = true) {
-        isFilter = false
         launch {
-            roomListResult.postValue(useCase.execute(rawQuery, hotelRoomListPageModel, fromCloud))
+            isFilter = false
+            var result = useCase.execute(rawQuery, hotelRoomListPageModel, fromCloud)
+            roomListResult.postValue(result)
+            if (result is Success) roomList = result.data
             doFilter()
         }
     }

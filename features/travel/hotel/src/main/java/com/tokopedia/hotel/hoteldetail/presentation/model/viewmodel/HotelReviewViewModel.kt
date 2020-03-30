@@ -32,9 +32,9 @@ class HotelReviewViewModel @Inject constructor(private val dispatcher: HotelDisp
                 val graphqlRequest = GraphqlRequest(query, HotelReview.Response::class.java, dataParams, false)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<HotelReview.Response>()
-            reviewResult.value = Success(data = data.propertyReview)
+            reviewResult.postValue(Success(data = data.propertyReview))
         }) {
-            reviewResult.value = Fail(it)
+            reviewResult.postValue(Fail(it))
         }
     }
 
