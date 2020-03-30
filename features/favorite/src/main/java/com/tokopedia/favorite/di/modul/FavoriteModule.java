@@ -4,18 +4,18 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.core.network.di.module.NetModule;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
-import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
-import com.tokopedia.favorite.data.source.apis.service.TopAdsService;
-import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.favorite.data.FavoriteDataRepository;
 import com.tokopedia.favorite.data.FavoriteFactory;
+import com.tokopedia.favorite.data.source.apis.service.TopAdsService;
 import com.tokopedia.favorite.di.scope.FavoriteScope;
 import com.tokopedia.favorite.domain.FavoriteRepository;
 import com.tokopedia.favorite.domain.interactor.GetAllDataFavoriteUseCase;
 import com.tokopedia.favorite.domain.interactor.GetFavoriteShopUsecase;
 import com.tokopedia.favorite.domain.interactor.GetInitialDataPageUsecase;
 import com.tokopedia.favorite.domain.interactor.GetTopAdsShopUseCase;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 
 import dagger.Module;
@@ -26,7 +26,7 @@ import retrofit2.Retrofit;
  * @author Kulomady on 1/20/17.
  */
 
-@Module
+@Module(includes = {NetModule.class})
 public class FavoriteModule {
 
     @FavoriteScope
