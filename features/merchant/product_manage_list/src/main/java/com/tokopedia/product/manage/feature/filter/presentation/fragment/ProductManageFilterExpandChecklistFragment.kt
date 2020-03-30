@@ -238,7 +238,7 @@ class ProductManageFilterExpandChecklistFragment :
 
     private fun search(searchQuery: String): List<ChecklistViewModel> {
         val result = productManageFilterExpandChecklistViewModel.checklistData.value?.filter { data ->
-            data.name.toLowerCase(Locale.getDefault()) == searchQuery.toLowerCase(Locale.getDefault())
+            data.name.startsWith(searchQuery, true)
         }
         if(result.isNullOrEmpty()) {
             return emptyList()
@@ -271,6 +271,7 @@ class ProductManageFilterExpandChecklistFragment :
             productManageFilterExpandChecklistViewModel.checklistData.value?.toList()?.let {data ->
                 adapter?.updateChecklistData(data)
             }
+            hideError()
         }
     }
 
