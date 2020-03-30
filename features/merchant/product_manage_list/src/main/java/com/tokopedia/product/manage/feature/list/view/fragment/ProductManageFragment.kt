@@ -485,7 +485,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun showProductList(productList: List<ProductViewModel>) {
         val hasNextPage = productList.isNotEmpty()
         renderProductList(productList, hasNextPage)
-        renderMultiSelectProduct()
     }
 
     private fun renderMultiSelectProduct() {
@@ -716,7 +715,9 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             }
         }
 
-        unCheckProducts(productIds)
+        if(productIds.isNotEmpty()) {
+            unCheckProducts(productIds)
+        }
     }
 
     private fun unCheckProducts(productIds: List<String>) {
@@ -750,10 +751,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         swipeToRefresh.isRefreshing = true
 
         hideSnackBarRetry()
-        clearProductList()
-        clearSelectedProduct()
-        resetSelectAllCheckBox()
-        renderCheckedView()
+        resetMultiSelectProduct()
+        setMultiSelectEnabled(false)
 
         getFiltersTab(withDelay = true)
         getProductList(withDelay = true)
@@ -1273,6 +1272,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 is Success -> {
                     initHeaderView(it.data)
                     showProductList(it.data)
+                    setMultiSelectEnabled(true)
+                    renderMultiSelectProduct()
                 }
                 is Fail -> showErrorToast()
             }
@@ -1296,33 +1297,46 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun observeMultiSelect() {
-        val multiSelectText = getString(R.string.product_manage_multiple_select)
-        val cancelMultiSelectText = getString(R.string.product_manage_cancel_multiple_select)
-
         observe(viewModel.toggleMultiSelect) { multiSelectEnabled ->
             val productList = adapter.data.map {
-                it.copy(
-                    multiSelectActive = multiSelectEnabled,
-                    isChecked = false
-                )
+                it.copy(multiSelectActive = multiSelectEnabled, isChecked = false)
             }
 
             if(multiSelectEnabled) {
-                checkBoxSelectAll.show()
-                textMultipleSelect.text = cancelMultiSelectText
+                showMultiSelectView()
+                clearProductList()
             } else {
-                btnMultiEdit.hide()
-                checkBoxSelectAll.hide()
-                textMultipleSelect.text = multiSelectText
+                hideMultiSelectView()
+                resetMultiSelectProduct()
             }
 
-            clearProductList()
-            clearSelectedProduct()
-            resetSelectAllCheckBox()
-
-            renderCheckedView()
             showProductList(productList)
         }
+    }
+
+    private fun showMultiSelectView() {
+        val cancelMultiSelectText = getString(R.string.product_manage_cancel_multiple_select)
+        textMultipleSelect.text = cancelMultiSelectText
+        checkBoxSelectAll.show()
+    }
+
+    private fun hideMultiSelectView() {
+        val multiSelectText = getString(R.string.product_manage_multiple_select)
+        textMultipleSelect.text = multiSelectText
+        checkBoxSelectAll.hide()
+        btnMultiEdit.hide()
+    }
+
+    private fun resetMultiSelectProduct() {
+        clearProductList()
+        resetSelectAllCheckBox()
+        clearSelectedProduct()
+        renderCheckedView()
+    }
+
+    private fun setMultiSelectEnabled(enabled: Boolean) {
+        checkBoxSelectAll.isEnabled = enabled
+        textMultipleSelect.isEnabled = enabled
     }
 
     private fun observeDeleteProduct() {
@@ -1374,8 +1388,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun resetSelectAllCheckBox() {
-        checkBoxSelectAll.isChecked = false
-        checkBoxSelectAll.setIndeterminate(false)
+        if(checkBoxSelectAll.isChecked) {
+            checkBoxSelectAll.isChecked = false
+            checkBoxSelectAll.setIndeterminate(false)
+        }
     }
 
     private fun clearProductList() {
