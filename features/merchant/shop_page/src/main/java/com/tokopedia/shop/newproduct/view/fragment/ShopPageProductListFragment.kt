@@ -41,6 +41,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
 import com.tokopedia.shop.analytic.model.*
+import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.constant.ShopPageConstant.GO_TO_MEMBERSHIP_DETAIL
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.di.component.ShopComponent
@@ -620,6 +621,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
     }
 
+    override fun onVoucherItemImpressed(merchantVoucherViewModel: MerchantVoucherViewModel, voucherPosition: Int) {}
+
     override fun onEmptyContentItemTextClicked() {
     }
 
@@ -1051,10 +1054,15 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             if (viewModel.isMyShop(shopId)) {
                 viewModel.getSellerShopPageProductTabData(shopId, shopProductEtalaseListViewModel)
             } else {
-                viewModel.getBuyerShopPageProductTabData(shopId, shopProductEtalaseListViewModel)
+                viewModel.getBuyerShopPageProductTabData(shopId, shopProductEtalaseListViewModel, isShowNewShopHomeTab())
             }
         }
+    }
 
+    private fun isShowNewShopHomeTab(): Boolean {
+        return shopInfo?.shopHomeType?.let {
+            it == ShopHomeType.NATIVE
+        } ?: false
     }
 
     private fun createShopProductEtalaseListViewModel(

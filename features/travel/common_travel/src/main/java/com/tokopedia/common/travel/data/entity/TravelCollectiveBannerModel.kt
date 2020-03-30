@@ -15,29 +15,29 @@ class TravelCollectiveBannerModel(@SerializedName("banners")
 
     data class Banner(@SerializedName("id")
                       @Expose
-                      val id: String = "",
+                      var id: String = "0",
                       @SerializedName("product")
                       @Expose
-                      val product: String = "",
+                      var product: String = "",
                       @SerializedName("attributes")
                       @Expose
                       val attribute: Attribute = Attribute())
 
     data class Attribute(@SerializedName("description")
                          @Expose
-                         val description: String = "",
+                         var description: String = "",
                          @SerializedName("webURL")
                          @Expose
-                         val webUrl: String = "",
+                         var webUrl: String = "",
                          @SerializedName("appURL")
                          @Expose
-                         val appUrl: String = "",
+                         var appUrl: String = "",
                          @SerializedName("imageURL")
                          @Expose
-                         val imageUrl: String = "",
+                         var imageUrl: String = "",
                          @SerializedName("promoCode")
                          @Expose
-                         val promoCode: String = "")
+                         var promoCode: String = "")
 
     data class MetaModel(@SerializedName("title")
                          @Expose

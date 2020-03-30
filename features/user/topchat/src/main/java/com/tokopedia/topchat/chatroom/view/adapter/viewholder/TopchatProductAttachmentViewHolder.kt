@@ -15,6 +15,7 @@ import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
@@ -39,6 +40,7 @@ class TopchatProductAttachmentViewHolder(
         bindView()
         bindProductClick(product)
         bindImage(product)
+        bindImageClick(product)
         bindName(product)
         bindVariant(product)
         bindCampaign(product)
@@ -64,6 +66,19 @@ class TopchatProductAttachmentViewHolder(
                 product.productImage,
                 8f.toPx()
         )
+    }
+
+    private fun bindImageClick(product: ProductAttachmentViewModel) {
+        itemView.iv_thumbnail?.setOnClickListener {
+            it.context.startActivity(
+                    ImagePreviewActivity.getCallingIntent(
+                            it.context,
+                            ArrayList(product.images),
+                            null,
+                            0
+                    )
+            )
+        }
     }
 
     private fun bindName(product: ProductAttachmentViewModel) {

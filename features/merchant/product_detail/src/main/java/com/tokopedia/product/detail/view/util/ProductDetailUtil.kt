@@ -25,7 +25,6 @@ object ProductDetailUtil {
             MethodChecker.fromHtml(review)
         }
     }
-
 }
 
 fun Fragment.doActionOrLogin(isLoggedIn: Boolean, action: () -> Unit) {

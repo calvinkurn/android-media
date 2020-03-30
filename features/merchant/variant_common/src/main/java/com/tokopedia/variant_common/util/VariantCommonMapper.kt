@@ -11,16 +11,6 @@ import com.tokopedia.variant_common.model.*
 object VariantCommonMapper {
     var selectedOptionId = listOf<Int>()
 
-    fun mapVariantIdentifierWithDefaultSelectedToHashMap(variantData: ProductVariantCommon?, selectedOptionIds: List<Int>): MutableMap<String, Int> {
-        val hashMap: MutableMap<String, Int> = mutableMapOf()
-
-        variantData?.variant?.mapIndexed { index, variant ->
-            hashMap[variant.pv.toString()] = selectedOptionIds.getOrNull(index) ?: 0
-        }
-
-        return hashMap
-    }
-
     fun mapVariantIdentifierToHashMap(variantData: ProductVariantCommon?): MutableMap<String, Int> {
         return variantData?.variant?.associateBy({
             it.pv.toString()
