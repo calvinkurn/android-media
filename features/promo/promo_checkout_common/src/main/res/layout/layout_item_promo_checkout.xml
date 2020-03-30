@@ -38,7 +38,7 @@
             app:layout_constraintBottom_toBottomOf="@id/iv_promo_checkout_left"
             app:layout_constraintEnd_toStartOf="@id/iv_promo_checkout_right"
             android:paddingTop="@dimen/dp_6"
-            android:paddingBottom="@dimen/dp_6"
+            android:paddingBottom="@dimen/dp_9"
             android:orientation="vertical">
 
             <com.tokopedia.unifycomponents.LoaderUnify
@@ -70,7 +70,6 @@
                 android:layout_marginLeft="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_8"
                 android:layout_marginEnd="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/dp_6"
                 android:visibility="gone"
                 app:typographyType="body_3"
                 app:typographyWeight="reguler"/>
