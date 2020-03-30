@@ -230,6 +230,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
                                     inputs: Map<String, String>,
                                     transactionAmount: Long = 0,
                                     voucherCode: String = "",
+                                    checkOtp: Boolean = false,
                                     isInstantCheckout: Boolean = false,
                                     addToMyBills: Boolean = false): Map<String, Any> {
         val fields = mutableListOf<Map<String, String>>()
@@ -243,7 +244,8 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
                 EXPRESS_PARAM_VOUCHER_CODE to voucherCode,
                 EXPRESS_PARAM_PRODUCT_ID to productId,
                 EXPRESS_PARAM_DEVICE_ID to EXPRESS_PARAM_DEVICE_ID_DEFAULT_VALUE,
-                EXPRESS_PARAM_ADD_TO_BILLS to addToMyBills
+                EXPRESS_PARAM_ADD_TO_BILLS to addToMyBills,
+                EXPRESS_PARAM_CHECK_OTP to checkOtp
         )
         if (transactionAmount > 0) params[EXPRESS_PARAM_TRANSACTION_AMOUNT] = transactionAmount
         return mapOf(PARAM_CART to params)
@@ -283,6 +285,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         const val EXPRESS_PARAM_DEVICE_ID = "device_id"
         const val EXPRESS_PARAM_DEVICE_ID_DEFAULT_VALUE = "4"
         const val EXPRESS_PARAM_ADD_TO_BILLS = "add_to_my_bills"
+        const val EXPRESS_PARAM_CHECK_OTP = "check_otp"
 
         const val STATUS_DONE = "DONE"
         const val STATUS_PENDING = "PENDING"

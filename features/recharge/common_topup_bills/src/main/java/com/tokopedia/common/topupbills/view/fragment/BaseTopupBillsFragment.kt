@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common.payment.PaymentConstant
@@ -141,16 +142,21 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             it.run {
                 when (it) {
                     is Success -> {
-                        commonTopupBillsAnalytics.eventBuy(
-                                categoryName,
-                                operatorName,
-                                productId.toString(),
-                                productName,
-                                price.toString(),
-                                isInstantCheckout,
-                                promoCode.isNotEmpty()
-                        )
-                        navigateToPayment(it.data)
+                        // Navigate to otp if requested
+                        if (it.data.needsOtp) {
+                            requestOtp()
+                        } else {
+                            commonTopupBillsAnalytics.eventBuy(
+                                    categoryName,
+                                    operatorName,
+                                    productId.toString(),
+                                    productName,
+                                    price.toString(),
+                                    isInstantCheckout,
+                                    promoCode.isNotEmpty()
+                            )
+                            navigateToPayment(it.data)
+                        }
                     }
                     is Fail -> onExpressCheckoutError(it.throwable)
                 }
@@ -209,6 +215,9 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                             setupPromoTicker(promoData)
                         }
                     }
+                }
+                REQUEST_CODE_OTP -> {
+                    processExpressCheckout(true)
                 }
             }
         }
@@ -330,15 +339,19 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                 ?: 0))
     }
 
-    private fun processExpressCheckout() {
+    private fun processExpressCheckout(checkOtp: Boolean = false) {
         // Check if promo code is valid
         val voucherCode = promoTicker?.run {
             if (state == TickerPromoStackingCheckoutView.State.ACTIVE) promoCode else ""
         } ?: ""
         if (productId > 0) {
             topupBillsViewModel.processExpressCheckout(GraphqlHelper.loadRawString(resources, R.raw.query_recharge_express_checkout),
-                    topupBillsViewModel.createExpressCheckoutParams(productId, inputFields, price
-                            ?: 0, voucherCode))
+                    topupBillsViewModel.createExpressCheckoutParams(
+                            productId,
+                            inputFields,
+                            price ?: 0,
+                            voucherCode,
+                            checkOtp))
         }
     }
 
@@ -394,6 +407,20 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         startActivityForResult(intent, REQUEST_CODE_LOGIN)
     }
 
+    private fun requestOtp() {
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.COTP)
+
+        val bundle = Bundle()
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.phoneNumber)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.email)
+        bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_CHECKOUT_DIGITAL)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+
+        intent.putExtras(bundle)
+        startActivityForResult(intent, REQUEST_CODE_OTP)
+    }
+
     private fun navigateToPayment(checkoutData: RechargeExpressCheckoutData) {
         val paymentPassData = PaymentPassData()
         paymentPassData.convertToPaymenPassData(checkoutData)
@@ -406,6 +433,9 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     companion object {
         const val REQUEST_CODE_LOGIN = 1010
         const val REQUEST_CODE_CART_DIGITAL = 1090
+        const val REQUEST_CODE_OTP = 1001
+
+        const val OTP_TYPE_CHECKOUT_DIGITAL = 16
 
         const val EXTRA_CATEGORY_ID = "EXTRA_CATEGORY_ID"
         const val EXTRA_PRODUCT_ID = "EXTRA_PRODUCT_ID"
