@@ -73,7 +73,7 @@ class PartialButtonActionView private constructor(private val view: View,
         this.isExpressCheckout = isExpressCheckout
         this.hasTopAdsActive = hasTopAdsActive
         this.cartTypeData = cartTypeData
-        this.onSuccessGetCartType = cartTypeData != null && cartTypeData.availableButtons.isNotEmpty()
+        this.onSuccessGetCartType = cartTypeData != null
         renderButton()
     }
 
@@ -90,9 +90,6 @@ class PartialButtonActionView private constructor(private val view: View,
     }
 
     private fun showCartTypeButton() = with(view) {
-        hideButtonEmptyAndTopAds()
-        resetTopChatLayoutParams()
-
         val unavailableButton = cartTypeData?.unavailableButtons ?: listOf()
         val availableButton = cartTypeData?.availableButtons ?: listOf()
 
@@ -101,6 +98,7 @@ class PartialButtonActionView private constructor(private val view: View,
         btn_topchat.showWithCondition("chat" !in unavailableButton)
         btn_buy_now.showWithCondition(availableButton.firstOrNull() != null)
         btn_add_to_cart.showWithCondition(availableButton.getOrNull(1) != null)
+        btn_byme.showWithCondition("byme" !in unavailableButton)
 
         btn_buy_now.text = availableButton.getOrNull(0)?.text ?: ""
         btn_add_to_cart.text = availableButton.getOrNull(1)?.text ?: ""
@@ -120,7 +118,7 @@ class PartialButtonActionView private constructor(private val view: View,
     }
 
     private fun UnifyButton.generateTheme(colorDescription: String) {
-        if (colorDescription == "primary") {
+        if (colorDescription == "orange") {
             this.buttonVariant = UnifyButton.Variant.FILLED
             this.buttonType = UnifyButton.Type.TRANSACTION
         } else {
@@ -262,7 +260,7 @@ class PartialButtonActionView private constructor(private val view: View,
 
     fun showByMe(show: Boolean, pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate) {
         with(view) {
-            if (show && "byme" !in cartTypeData?.unavailableButtons ?: listOf()) {
+            if (show) {
                 btn_byme.setOnClickListener { byMeClick?.invoke(pdpAffiliate, true) }
                 btn_byme.visible()
             } else btn_byme.gone()

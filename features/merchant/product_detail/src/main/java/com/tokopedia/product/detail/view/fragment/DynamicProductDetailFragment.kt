@@ -1029,20 +1029,16 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             productId = updatedDynamicProductInfo?.basic?.productID
             viewModel.getDynamicProductInfoP1 = updatedDynamicProductInfo
             pdpHashMapUtil?.updateDataP1(updatedDynamicProductInfo)
-            updateButtonAfterClickVariant(indexOfSelectedVariant)
+
+            actionButtonView.renderData(viewModel.getDynamicProductInfoP1?.basic?.isActive() == false,
+                    viewModel.p2Login.value?.isExpressCheckoutType ?: false,
+                    hasTopAds(),
+                    viewModel.cartTypeData?.getCartTypeAtPosition(indexOfSelectedVariant ?: -1))
 
             renderFullfillment()
             dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap)
             dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, 1)
         }
-    }
-
-    private fun updateButtonAfterClickVariant(indexOfVariantButton: Int?) {
-        actionButtonView.renderData(viewModel.getDynamicProductInfoP1?.basic?.isActive() == false,
-                viewModel.p2Login.value?.isExpressCheckoutType ?: false,
-                hasTopAds(),
-                viewModel.cartTypeData?.getCartTypeAtPosition(indexOfVariantButton ?: -1))
-
     }
 
     private fun observeInitialVariantData() {
@@ -1053,20 +1049,22 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun observeAddToCart() {
-        viewLifecycleOwner.observe(viewModel.addToCartLiveData) { data ->
+        viewLifecycleOwner.observe(viewModel.addToCartLiveData) {
             hideProgressDialog()
-
-            data.doSuccessOrFail({
-                if (it.data.errorReporter.eligible) {
-                    logException(Throwable(it.data.errorReporter.texts.submitTitle))
-                    showDialogErrorAtc(it.data)
-                } else {
-                    onSuccessAtc(it.data.data.cartId.toString())
+            when (it) {
+                is Success -> {
+                    if (it.data.errorReporter.eligible) {
+                        logException(Throwable(it.data.errorReporter.texts.submitTitle))
+                        showDialogErrorAtc(it.data)
+                    } else {
+                        onSuccessAtc(it.data.data.cartId.toString())
+                    }
                 }
-            }, {
-                logException(it)
-                showToasterError(it.message ?: "")
-            })
+                is Fail -> {
+                    logException(it.throwable)
+                    showToasterError(it.throwable.message ?: "")
+                }
+            }
         }
     }
 
@@ -1090,11 +1088,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun observeP2Login() {
         viewLifecycleOwner.observe(viewModel.p2Login) {
             topAdsGetProductManage = it.topAdsGetProductManage
+            it.pdpAffiliate?.let { renderAffiliate(it) }
             actionButtonView.renderData(viewModel.getDynamicProductInfoP1?.basic?.isActive() == false,
                     it.isExpressCheckoutType, hasTopAds(),
                     it.newCartTypeResponse.cartRedirection.data.firstOrNull())
-
-            it.pdpAffiliate?.let { renderAffiliate(it) }
 
             if (::performanceMonitoringFull.isInitialized)
                 performanceMonitoringP2Login.stopTrace()
