@@ -393,10 +393,16 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
 
         productNameField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable) {
-                if (editable.isNotEmpty()) {
-                    lastTextEdit = System.currentTimeMillis()
-                    handlerTypingProductName.postDelayed(productNameFieldFinishChecker(editable.toString()), delay)
+
+                if(editable.isEmpty()) {
+                    productNameField?.textFieldInput?.error = getString(R.string.product_name_should_be_not_empty)
+                } else {
+                    if (editable.isNotEmpty()) {
+                        lastTextEdit = System.currentTimeMillis()
+                        handlerTypingProductName.postDelayed(productNameFieldFinishChecker(editable.toString()), delay)
+                    }
                 }
+
             }
 
             override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -874,5 +880,10 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
             productNameRecAdapter?.setProductNameRecommendations(dummyProductNameRecs)
             viewModel.getSearchNameSuggestion(query = productNameInput)
         }
+    }
+
+    fun isNotAllowingCharacter(productName: String): Boolean {
+        val notAllowingChar = charArrayOf('[', '{', '}', '<', '>', '}', ']')
+        return productName.indexOfAny(notAllowingChar) >= 0
     }
 }
