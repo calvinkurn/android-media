@@ -1,4 +1,4 @@
-package com.tokopedia.settingnotif.usersetting.view.fragment
+package com.tokopedia.settingnotif.usersetting.view.fragment.base
 
 import android.app.Activity
 import android.os.Bundle
@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.NotificationManagerCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -20,41 +21,49 @@ import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
 import com.tokopedia.settingnotif.usersetting.di.UserSettingModule
 import com.tokopedia.settingnotif.usersetting.domain.pojo.setusersetting.SetUserSettingResponse
+import com.tokopedia.settingnotif.usersetting.view.activity.ParentActivity
+import com.tokopedia.settingnotif.usersetting.view.listener.SectionItemListener
+import com.tokopedia.settingnotif.usersetting.view.activity.UserNotificationSettingActivity
+import com.tokopedia.settingnotif.usersetting.view.adapter.ItemAdapter
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldAdapter
-import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldTypeFactory
-import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldTypeFactoryImpl
+import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
+import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactoryImpl
 import com.tokopedia.settingnotif.usersetting.view.listener.SettingFieldContract
-import com.tokopedia.settingnotif.usersetting.view.viewmodel.UserSettingViewModel
+import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingViewModel
 import com.tokopedia.settingnotif.usersetting.widget.NotifSettingBigDividerDecoration
 import com.tokopedia.settingnotif.usersetting.widget.NotifSettingDividerDecoration
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         BaseAdapterTypeFactory>(),
         SettingFieldAdapter.SettingFieldAdapterListener,
-        SettingFieldContract.View {
+        SettingFieldContract.View,
+        SectionItemListener {
 
-    @Inject
-    lateinit var presenter: SettingFieldContract.Presenter
+    @Inject lateinit var presenter: SettingFieldContract.Presenter
+    @Inject lateinit var userSession: UserSessionInterface
 
-    override fun initInjector() {
-        if (activity != null && (activity as Activity).application != null) {
-            val baseAppComponent = ((activity as Activity).application as BaseMainApplication).baseAppComponent
-            val userSettingComponent = DaggerUserSettingComponent.builder()
-                    .baseAppComponent(baseAppComponent)
-                    .userSettingModule(UserSettingModule(context, getGqlRawQuery()))
-                    .build()
+    /*
+    * a flag for preventing request network if needed
+    * @example: SMS section item
+    * */
+    protected var isRequestData = true
 
-            userSettingComponent.inject(this)
-            presenter.attachView(this)
-        }
-    }
+    /*
+    * notificationType for graph query consume
+    * it will be use it into set user setting
+    *  */
+    abstract fun getNotificationType(): String
 
-    @RawRes
-    abstract fun getGqlRawQuery(): Int
+    @RawRes abstract fun getGqlRawQuery(): Int
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View? {
         return super.onCreateView(inflater, container, savedInstanceState).also {
             setupToolbar()
             setupRecyclerView(it)
@@ -68,17 +77,18 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     }
 
     private fun setupRecyclerView(view: View?) {
-        val recyclerView = getRecyclerView(view)
-        if (recyclerView is VerticalRecyclerView) {
-            recyclerView.clearItemDecoration()
-            recyclerView.addItemDecoration(NotifSettingDividerDecoration(context))
-            recyclerView.addItemDecoration(NotifSettingBigDividerDecoration(context))
-            recyclerView.setHasFixedSize(true)
+        getRecyclerView(view).also {
+            if (it is VerticalRecyclerView) {
+                it.clearItemDecoration()
+                it.addItemDecoration(NotifSettingDividerDecoration(context))
+                it.addItemDecoration(NotifSettingBigDividerDecoration(context))
+                it.setHasFixedSize(true)
+            }
         }
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
-        val adapter = SettingFieldAdapter<Visitable<SettingFieldTypeFactory>>(
+        val adapter = ItemAdapter(
                 getNotificationType(),
                 this,
                 adapterTypeFactory as SettingFieldTypeFactory,
@@ -87,28 +97,19 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         return adapter as BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>
     }
 
-    abstract fun getNotificationType(): String
-
     override fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>) {
+        if (!isRequestData) return
         presenter.requestUpdateUserSetting(notificationType, updatedSettingIds)
         presenter.requestUpdateMoengageUserSetting(updatedSettingIds)
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
-        return SettingFieldTypeFactoryImpl()
-    }
-
-    override fun onItemClicked(item: Visitable<*>?) {
-
+        return SettingFieldTypeFactoryImpl(this, userSession)
     }
 
     override fun loadData(page: Int) {
         if (page != defaultInitialPage) return
         presenter.loadUserSettings()
-    }
-
-    override fun isLoadMoreEnabledByDefault(): Boolean {
-        return false
     }
 
     override fun onSuccessGetUserSetting(data: UserSettingViewModel) {
@@ -130,18 +131,56 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         }
     }
 
-    protected fun showMessage(@StringRes messageRes: Int) {
+    private fun showMessage(@StringRes messageRes: Int) {
         activity?.let {
             val message = it.getString(messageRes)
-            view?.let { view ->
-                Toaster.showNormal(view, message, Snackbar.LENGTH_SHORT)
-            }
+            showMessage(message)
         }
     }
 
-    protected fun showMessage(message: String) {
+    private fun showMessage(message: String) {
         view?.let {
             Toaster.showNormal(it, message, Snackbar.LENGTH_SHORT)
         }
     }
+
+    override fun initInjector() {
+        if (activity != null && (activity as Activity).application != null) {
+            val application = (activity as Activity).application as BaseMainApplication
+            val baseAppComponent = application.baseAppComponent
+            val userSettingComponent = DaggerUserSettingComponent
+                    .builder()
+                    .baseAppComponent(baseAppComponent)
+                    .userSettingModule(UserSettingModule(context, getGqlRawQuery()))
+                    .build()
+            userSettingComponent.inject(this)
+            presenter.attachView(this)
+        }
+    }
+
+    override fun onItemClicked() {
+        activity?.let {
+            (it as ParentActivity).openSellerFiled()
+        }
+    }
+
+    protected fun isNotificationEnabled(): Boolean? {
+        return context?.let {
+            NotificationManagerCompat
+                    .from(it)
+                    .areNotificationsEnabled()
+        }
+    }
+
+    override fun isLoadMoreEnabledByDefault(): Boolean = false
+
+    override fun onItemClicked(item: Visitable<*>?) = Unit
+
+    companion object {
+        const val SELLER_NOTIF_TYPE = "sellernotif"
+        const val PUSH_NOTIF_TYPE = "pushnotif"
+        const val EMAIL_TYPE = "email"
+        const val SMS_TYPE = "sms"
+    }
+
 }
