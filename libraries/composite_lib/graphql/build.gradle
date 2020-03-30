@@ -31,7 +31,7 @@ android {
 project.ext {
     artifactId = 'graphql'
     groupId = 'com.tokopedia.graphql'
-    versionName = "1.1.3"
+    versionName = "1.1.4"
     artifactName = "graphql-debug"
 }
 
@@ -47,6 +47,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
+    implementation "AkamaiBMP:AkamaiBMP:2.1.2"
 
     //room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
