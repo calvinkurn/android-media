@@ -58,9 +58,15 @@ data class ProductVariantCombinationViewModel (
     @SerializedName("sku")
     @Expose
     var sku: String = "",
-    @SerializedName("opt")
+    @SerializedName("opt")// option combination of t_id of selected variants
     @Expose
-    var opt: List<Int> = emptyList() // option combination of t_id of selected variants
+    var opt: List<Int> = emptyList(),
+    @SerializedName("level1String")
+    @Expose
+    var level1String: String,
+    @SerializedName("level2String")
+    @Expose
+    var level2String: String
 ): Parcelable
 
 @Parcelize

@@ -59,10 +59,31 @@ class AddProductInputMapper @Inject constructor() {
         )
     }
 
+    private fun getProductVariantId(variantValue: String, variantOptionParent: List<ProductVariantOptionParent>): Int? {
+        variantOptionParent.forEach { productVariantOptionParent ->
+            productVariantOptionParent.productVariantOptionChild?.forEach {
+                if (it.value == variantValue) return it.vuv
+            }
+        }
+        return null
+    }
+
     private fun mapVariantParam(variantInputModel: ProductVariantInputModel): Variant? {
         if (variantInputModel.variantOptionParent.size == 0 &&
                 variantInputModel.productVariant.size == 0 &&
                 variantInputModel.productSizeChart == null) return null
+
+        // generate option id for each product variant
+        variantInputModel.productVariant.forEach { productVariant ->
+            val options: ArrayList<Int> = ArrayList()
+            val level1Id = getProductVariantId(productVariant.level1String,
+                    variantInputModel.variantOptionParent)
+            val level2Id = getProductVariantId(productVariant.level2String,
+                    variantInputModel.variantOptionParent)
+            level1Id?.let { options.add(it) }
+            level2Id?.let { options.add(it) }
+            productVariant.opt = options
+        }
 
         return Variant(
                 mapVariantSelectionParam(variantInputModel.variantOptionParent),
@@ -109,7 +130,7 @@ class AddProductInputMapper @Inject constructor() {
         val selections: ArrayList<Selection> = ArrayList()
         variantOptionParent.forEach {
             val selection = Selection(
-                    it.v,
+                    it.v.toString(),
                     it.vu,
                     mapVariantOptionParam(it.productVariantOptionChild ?: emptyList())
             )
@@ -123,7 +144,7 @@ class AddProductInputMapper @Inject constructor() {
         productVariantOptionChild.forEach {
             val option = Option(
                     it.value,
-                    it.vuv,
+                    it.vuv.toString(),
                     it.hex
 
             )

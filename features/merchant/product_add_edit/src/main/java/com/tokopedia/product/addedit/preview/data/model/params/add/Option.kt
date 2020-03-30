@@ -11,10 +11,10 @@ data class Option (
     @SerializedName("value")
     @Expose
     var value: String = "",
-    @SerializedName("unit_value_id")
+    @SerializedName("unitValueID")
     @Expose
-    var valueId: Int = 0,
-    @SerializedName("hex_code")
+    var valueId: String = "",
+    @SerializedName("hexCode")
     @Expose
     var hexCode: String = ""
 

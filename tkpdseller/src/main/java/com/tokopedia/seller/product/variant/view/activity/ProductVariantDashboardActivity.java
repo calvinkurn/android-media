@@ -4,9 +4,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AlertDialog;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductPictureViewModel;
 import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant;
@@ -18,6 +22,7 @@ import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
 import com.tokopedia.product.manage.item.common.util.StockTypeDef;
 import com.tokopedia.seller.product.variant.view.fragment.ProductVariantDashboardFragment;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 
 import static com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant.EXTRA_VARIANT_PICKER_RESULT_CACHE_ID;
@@ -110,10 +115,15 @@ public class ProductVariantDashboardActivity extends BaseSimpleActivity
     @Override
     public void onProductVariantSaved(ProductVariantViewModel productVariantViewModel,
                                       ProductPictureViewModel productPictureViewModel) {
+        // convert productVariantViewModel to json, so we can receive transient vars
+        Gson gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.STATIC).create();
+        String transientProductVariantViewModel = gson.toJson(productVariantViewModel);
+
         // Extras for using cache manager
         SaveInstanceCacheManager cacheManager =
                 new SaveInstanceCacheManager(this, true);
-        cacheManager.put(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_SELECTION, productVariantViewModel);
+        cacheManager.put(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_SELECTION,
+                transientProductVariantViewModel);
         cacheManager.put(ProductExtraConstant.EXTRA_PRODUCT_SIZECHART, productPictureViewModel);
 
         // Extras for not using cache manager

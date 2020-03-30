@@ -8,10 +8,10 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Selection (
 
-    @SerializedName("id")
+    @SerializedName("variantID")
     @Expose
-    var id: Int = 0,
-    @SerializedName("unit_id")
+    var id: String = "",
+    @SerializedName("unitID")
     @Expose
     var unitId: Int = 0,
     @SerializedName("options")
