@@ -1,13 +1,13 @@
 package com.tokopedia.purchase_platform.features.checkout.view.subscriber
 
-import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
+import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentContract
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentPresenter
 import rx.Subscriber
 
 
 class ClearShipmentCacheAutoApplyAfterClashSubscriber(val view: ShipmentContract.View?,
-                                                      val presenter: ShipmentPresenter) : Subscriber<ClearCacheAutoApplyStackResponse>() {
+                                                      val presenter: ShipmentPresenter) : Subscriber<ClearPromoUiModel>() {
 
     override fun onCompleted() {
 
@@ -17,7 +17,7 @@ class ClearShipmentCacheAutoApplyAfterClashSubscriber(val view: ShipmentContract
         // Nothing to do
     }
 
-    override fun onNext(response: ClearCacheAutoApplyStackResponse) {
+    override fun onNext(response: ClearPromoUiModel) {
         view?.showToastNormal("Ada perubahan pada promo yang kamu pakai")
     }
 

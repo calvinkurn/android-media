@@ -22,11 +22,6 @@ class PromoEligibilityHeaderViewHolder(private val view: View,
 
     override fun bind(element: PromoEligibilityHeaderUiModel) {
         itemView.label_promo_eligibility_header_title.text = element.uiData.title
-        if (element.uiState.isEnabled) {
-            itemView.label_promo_eligibility_header_title.setTextColor(ContextCompat.getColor(itemView.context, R.color.clr_f531353b))
-        } else {
-            itemView.label_promo_eligibility_header_title.setTextColor(ContextCompat.getColor(itemView.context, R.color.n_700_44))
-        }
         if (element.uiData.subTitle.isNotBlank()) {
             itemView.label_promo_eligibility_header_subtitle.text = element.uiData.subTitle
             itemView.label_promo_eligibility_header_subtitle.show()

@@ -35,6 +35,7 @@ import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse;
+import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
@@ -879,6 +880,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                                        @Override
                                        public void onNext(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
+                                           ShipmentPresenter.this.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel;
                                            setCouponStateChanged(true);
                                            if (!TextUtils.isEmpty(validateUsePromoRevampUiModel.getPromoUiModel().getTickerInfoUiModel().getMessage())) {
                                                if (tickerAnnouncementHolderData == null) {
@@ -1246,7 +1248,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
                     for (PromoCheckoutVoucherOrdersItemUiModel voucherOrder : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
                         if (!voucherOrder.getMessageUiModel().getState().equals("red") && shopProductCheckoutRequest.cartString.equals(voucherOrder.getUniqueId())) {
-                            if (shopProductCheckoutRequest.promoCodes != null && shopProductCheckoutRequest.promoCodes.size() > 0) {
+                            if (shopProductCheckoutRequest.promoCodes != null &&
+                                    shopProductCheckoutRequest.promoCodes.size() > 0 &&
+                                    !shopProductCheckoutRequest.promoCodes.contains(voucherOrder.getCode())) {
                                 shopProductCheckoutRequest.promoCodes.add(voucherOrder.getCode());
                             } else {
                                 ArrayList<String> codes = new ArrayList<>();
@@ -1558,7 +1562,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodeList);
         compositeSubscription.add(
-                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe(new Subscriber<ClearCacheAutoApplyStackResponse>() {
+                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe(new Subscriber<ClearPromoUiModel>() {
                     @Override
                     public void onCompleted() {
 
@@ -1570,10 +1574,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     }
 
                     @Override
-                    public void onNext(ClearCacheAutoApplyStackResponse responseData) {
+                    public void onNext(ClearPromoUiModel responseData) {
                         if (getView() != null) {
-                            if (!TextUtils.isEmpty(responseData.getSuccessData().getTickerMessage())) {
-                                tickerAnnouncementHolderData.setMessage(responseData.getSuccessData().getTickerMessage());
+                            if (!TextUtils.isEmpty(responseData.getSuccessDataModel().getTickerMessage())) {
+                                tickerAnnouncementHolderData.setMessage(responseData.getSuccessDataModel().getTickerMessage());
                                 getView().updateTickerAnnouncementMessage();
                             }
                             boolean isLastAppliedPromo = isLastAppliedPromo(promoCode);

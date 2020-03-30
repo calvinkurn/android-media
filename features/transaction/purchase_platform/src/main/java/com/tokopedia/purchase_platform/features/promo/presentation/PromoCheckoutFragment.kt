@@ -65,7 +65,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     @Inject
     lateinit var itemDecorator: PromoCheckoutDecoration
 
-    // Use single recycler view to prevent NPE cuased by nested recyclerview
+    // Use single recycler view to prevent NPE caused by nested recyclerview
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: PromoCheckoutAdapter
 
