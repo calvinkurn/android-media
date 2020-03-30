@@ -132,10 +132,10 @@ object ProductTrackingConstant {
         const val CLICK_EDIT_PRODUCT = "click - edit product"
         const val CLICK_ATC_NON_LOGIN = "click - tambah ke keranjang on pdp - non login"
 
-        const val CLICK_REQUEST_PERMISSION_IMEI = "click - beli then show popup {aktifkan akses telepon yuk/butuh akses ke hp mu} //pop up title"
-        const val CLICK_ACCEPT_PERMISSION = "click -  berikan akses on bottomsheet {aktifkan akses telepon yuk} //pop up title"
-        const val CLICK_GO_TO_SETTING = "click - ke pengaturan hp on popup {butuh akses ke hp mu} //pop up title"
-        const val CLICK_PERMISSION_LATER = "click - nanti saja on popup  {butuh akses ke hp mu} //pop up title"
+        const val CLICK_REQUEST_PERMISSION_IMEI = "click - beli then show popup"
+        const val CLICK_ACCEPT_PERMISSION = "click -  berikan akses on bottomsheet"
+        const val CLICK_GO_TO_SETTING = "click - ke pengaturan hp on popup"
+        const val CLICK_PERMISSION_LATER = "click - nanti saja on popup"
         const val CLICK_NOTIFY_ME = "click - ingatkan saya on pdp campaign"
     }
 
@@ -167,6 +167,11 @@ object ProductTrackingConstant {
 
     object ProductTalk {
         const val TALK = "Talk"
+    }
+
+    object ImeiChecker {
+        const val CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS = "butuh akses ke hp mu"
+        const val CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS_INFO = "aktifkan akses telepon yuk"
     }
 
     object ProductReview {

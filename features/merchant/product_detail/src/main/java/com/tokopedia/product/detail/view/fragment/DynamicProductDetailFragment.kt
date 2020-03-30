@@ -134,6 +134,7 @@ import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.variant_common.model.VariantOptionWithAttribute
@@ -2528,10 +2529,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun showRationaleDialog(){
+        DynamicProductDetailTracking.Click.eventClickBuyAskForImei(ProductTrackingConstant.ImeiChecker.CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS_INFO, viewModel.userId, viewModel.getDynamicProductInfoP1)
         CheckImeiRationaleDialog.showRationaleDialog(activity, {
-            DynamicProductDetailTracking.Click.eventClickGoToSetting(viewModel.userId, viewModel.getDynamicProductInfoP1)
+            DynamicProductDetailTracking.Click.eventClickGoToSetting(ProductTrackingConstant.ImeiChecker.CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS_INFO, viewModel.userId, viewModel.getDynamicProductInfoP1)
         }, {
-            DynamicProductDetailTracking.Click.eventClickLater(viewModel.userId, viewModel.getDynamicProductInfoP1)
+            DynamicProductDetailTracking.Click.eventClickLater(ProductTrackingConstant.ImeiChecker.CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS_INFO, viewModel.userId, viewModel.getDynamicProductInfoP1)
         })
     }
 
@@ -2583,9 +2585,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun showImeiPermissionBottomSheet() {
         activity?.run {
-            DynamicProductDetailTracking.Click.eventClickBuyAskForImei(viewModel.userId, viewModel.getDynamicProductInfoP1)
+            DynamicProductDetailTracking.Click.eventClickBuyAskForImei(ProductTrackingConstant.ImeiChecker.CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS, viewModel.userId, viewModel.getDynamicProductInfoP1)
             CheckImeiBottomSheet.showPermissionDialog(this) {
-                DynamicProductDetailTracking.Click.eventClickAcceptPhoneStatePermission(viewModel.userId, viewModel.getDynamicProductInfoP1)
+                DynamicProductDetailTracking.Click.eventClickGiveAccessPhoneStatePermission(ProductTrackingConstant.ImeiChecker.CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS_INFO, viewModel.userId, viewModel.getDynamicProductInfoP1)
                 ImeiPermissionAsker.askImeiPermissionFragment(this@DynamicProductDetailFragment)
             }
         }

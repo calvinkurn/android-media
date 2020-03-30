@@ -47,50 +47,55 @@ object DynamicProductDetailTracking {
 
     object Click {
 
-        fun eventClickBuyAskForImei(userId: String, productInfo: DynamicProductInfoP1?) {
+        fun eventClickBuyAskForImei(title: String, userId: String, productInfo: DynamicProductInfoP1?) {
+            val actionTitle = "${ProductTrackingConstant.Action.CLICK_REQUEST_PERMISSION_IMEI} $title"
             val mapEvent = TrackAppUtils.gtmData(
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK_REQUEST_PERMISSION_IMEI, "")
+                    actionTitle, "")
             mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
             mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = userId != "0"
 
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.CLICK_REQUEST_PERMISSION_IMEI)
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, actionTitle)
         }
 
-        fun eventClickAcceptPhoneStatePermission(userId: String, productInfo: DynamicProductInfoP1?) {
+        fun eventClickGiveAccessPhoneStatePermission(title: String, userId: String, productInfo: DynamicProductInfoP1?) {
+            val actionTitle = "${ProductTrackingConstant.Action.CLICK_ACCEPT_PERMISSION} $title"
             val mapEvent = TrackAppUtils.gtmData(
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK_ACCEPT_PERMISSION, "")
+                    actionTitle,
+                    "")
             mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
             mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = userId != "0"
 
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.CLICK_ACCEPT_PERMISSION)
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, actionTitle)
         }
 
-        fun eventClickGoToSetting(userId: String, productInfo: DynamicProductInfoP1?) {
+        fun eventClickGoToSetting(title: String, userId: String, productInfo: DynamicProductInfoP1?) {
+            val actionTitle = "${ProductTrackingConstant.Action.CLICK_GO_TO_SETTING} $title"
             val mapEvent = TrackAppUtils.gtmData(
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK_GO_TO_SETTING, "")
+                    actionTitle,
+                    "")
 
             mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
             mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = userId != "0"
-
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.CLICK_GO_TO_SETTING)
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, actionTitle)
         }
 
-        fun eventClickLater(userId: String, productInfo: DynamicProductInfoP1?) {
+        fun eventClickLater(title: String, userId: String, productInfo: DynamicProductInfoP1?) {
+            val actionTitle = "${ProductTrackingConstant.Action.CLICK_PERMISSION_LATER} $title"
             val mapEvent = TrackAppUtils.gtmData(
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK_PERMISSION_LATER, "")
+                    actionTitle, "")
 
             mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
             mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = userId != "0"
 
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.CLICK_PERMISSION_LATER)
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, actionTitle)
         }
 
         fun eventClickButtonNonLogin(actionButton: Int, productInfo: DynamicProductInfoP1?, userId: String, shopType: String, buttonActionText: String) {
