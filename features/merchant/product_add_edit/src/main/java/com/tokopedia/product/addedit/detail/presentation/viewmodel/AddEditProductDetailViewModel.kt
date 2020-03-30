@@ -4,14 +4,25 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
+import com.tokopedia.unifycomponents.list.ListItemUnify
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class AddEditProductDetailViewModel @Inject constructor(val provider: ResourceProvider, dispatcher: CoroutineDispatcher)
-    : BaseViewModel(dispatcher) {
+class AddEditProductDetailViewModel @Inject constructor(
+        val provider: ResourceProvider,
+        val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
+        dispatcher: CoroutineDispatcher
+) : BaseViewModel(dispatcher) {
 
     private val mIsProductPhotoError = MutableLiveData<Boolean>()
     val isProductPhotoInputError: LiveData<Boolean>
@@ -72,6 +83,8 @@ class AddEditProductDetailViewModel @Inject constructor(val provider: ResourcePr
     }
     val isInputValid: LiveData<Boolean>
         get() = mIsInputValid
+    var selectedCategoryId: Long = -1L
+    val productCategoryRecommendationLiveData = MutableLiveData<Result<List<ListItemUnify>>>()
 
     private val minProductPriceLimit = 100
     private val maxProductPriceLimit = 500000000
@@ -282,5 +295,16 @@ class AddEditProductDetailViewModel @Inject constructor(val provider: ResourcePr
     private fun isProductNameBanned(productNameInput: String): Boolean {
         // TODO: replace the validation with API check
         return productNameInput == "Shopee"
+    }
+
+    fun getCategoryRecommendation(productNameInput: String) {
+        launchCatchError(block = {
+            productCategoryRecommendationLiveData.value = Success(withContext(Dispatchers.IO) {
+                getCategoryRecommendationUseCase.params = GetCategoryRecommendationUseCase.createRequestParams(productNameInput)
+                getCategoryRecommendationUseCase.executeOnBackground()
+            })
+        }, onError = {
+            productCategoryRecommendationLiveData.postValue(Fail(it))
+        })
     }
 }
