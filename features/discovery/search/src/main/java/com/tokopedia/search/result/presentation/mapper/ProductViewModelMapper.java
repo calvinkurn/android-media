@@ -198,6 +198,7 @@ public class ProductViewModelMapper {
         productItem.setIsShopPowerBadge(productModel.getShop().isPowerBadge());
         productItem.setIsShopOfficialStore(productModel.getShop().isOfficial());
         productItem.setFreeOngkirViewModel(convertToFreeOngkirViewModel(productModel.getFreeOngkir()));
+        productItem.setBoosterList(productModel.getBoosterList());
         return productItem;
     }
 

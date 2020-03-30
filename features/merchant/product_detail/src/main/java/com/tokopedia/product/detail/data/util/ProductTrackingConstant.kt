@@ -129,6 +129,7 @@ object ProductTrackingConstant {
         const val IMPRESSION_CHOOSE_VARIANT_NOTIFICATION = "impression - choose variant notification"
         const val CLICK_EDIT_PRODUCT = "click - edit product"
         const val CLICK_ATC_NON_LOGIN = "click - tambah ke keranjang on pdp - non login"
+        const val CLICK_NOTIFY_ME = "click - ingatkan saya on pdp campaign"
     }
 
     object Label {
