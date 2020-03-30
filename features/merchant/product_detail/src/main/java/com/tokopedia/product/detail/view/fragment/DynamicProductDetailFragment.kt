@@ -2524,13 +2524,20 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         activity?.run {
             ImeiPermissionAsker.onImeiRequestPermissionsResult(this, requestCode, permissions, grantResults,
-                onUserDenied = {},
-                onUserDeniedAndDontAskAgain = {}, onUserAcceptPermission = {}
+                onUserDenied = {}, onUserDeniedAndDontAskAgain = {}, onUserAcceptPermission = {}
             )
         }
     }
 
     private fun onNeverAskAgain() {
+        activity?.run {
+            CheckImeiBottomSheet.showPermissionDialog(this) {
+                showRationaleDialog()
+            }
+        }
+    }
+
+    private fun showRationaleDialog(){
         CheckImeiRationaleDialog.showRationaleDialog(activity, {
             DynamicProductDetailTracking.Click.eventClickGoToSetting(viewModel.userId, viewModel.getDynamicProductInfoP1)
         }, {
