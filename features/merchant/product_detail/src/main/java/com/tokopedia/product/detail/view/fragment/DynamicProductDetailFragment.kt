@@ -2044,38 +2044,20 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
         actionButtonView.addToCartClick = {
             viewModel.buttonActionText = it
-            viewModel.getDynamicProductInfoP1?.run {
-                if (this.checkImei(enableCheckImeiRemoteConfig)) {
-                    activity?.run {
-                        ImeiPermissionAsker.checkImeiPermission(this, ::showImeiPermissionDialog, {
-                            doAtc(ProductDetailConstant.ATC_BUTTON)
-                        }, { onNeverAskAgain() })
-                    }
-                } else doAtc(ProductDetailConstant.ATC_BUTTON)
+            viewModel.getDynamicProductInfoP1?.let {
+                doAtc(ProductDetailConstant.ATC_BUTTON)
             }
         }
 
         actionButtonView.buyNowClick = {
             viewModel.buttonActionText = it
-            viewModel.getDynamicProductInfoP1?.run {
-                if (this.checkImei(enableCheckImeiRemoteConfig)) {
-                    activity?.run {
-                        ImeiPermissionAsker.checkImeiPermission(this, ::showImeiPermissionDialog, ::doBuy) {
-                            onNeverAskAgain()
-                        }
-                    }
-                } else doBuy()
-            }
-        }
-    }
-
-    private fun doBuy() {
-        // buy now / buy / preorder
-        viewModel.getDynamicProductInfoP1?.let {
-            if (viewModel.p2Login.value?.isOcsCheckoutType == true) {
-                doAtc(ProductDetailConstant.OCS_BUTTON)
-            } else {
-                doAtc(ProductDetailConstant.BUY_BUTTON)
+            // buy now / buy / preorder
+            viewModel.getDynamicProductInfoP1?.let {
+                if (viewModel.p2Login.value?.isOcsCheckoutType == true) {
+                    doAtc(ProductDetailConstant.OCS_BUTTON)
+                } else {
+                    doAtc(ProductDetailConstant.BUY_BUTTON)
+                }
             }
         }
 
@@ -2084,6 +2066,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             val atcKey = DynamicProductDetailMapper.generateButtonAction(cartType, isAtcButton, isLeasing)
             doAtc(atcKey)
         }
+
     }
 
     private fun doAtc(buttonAction: Int) {
@@ -2118,7 +2101,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     return@let
                 }
             }
-            hitAtc(buttonAction)
+
+            if (viewModel.getDynamicProductInfoP1?.checkImei(enableCheckImeiRemoteConfig) == true) {
+                activity?.run {
+                    ImeiPermissionAsker.checkImeiPermission(this, {
+                        showImeiPermissionDialog()
+                    }, { hitAtc(buttonAction) }) { onNeverAskAgain() }
+                }
+            } else hitAtc(buttonAction)
         }
     }
 
