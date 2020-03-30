@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
@@ -264,7 +265,7 @@ class PartialButtonActionView private constructor(private val view: View,
 
     fun showByMe(show: Boolean, pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate) {
         with(view) {
-            if (show && "byme" !in cartTypeData?.unavailableButtons ?: listOf()) {
+            if (show && ProductDetailConstant.KEY_BYME !in cartTypeData?.unavailableButtons ?: listOf()) {
                 btn_byme.setOnClickListener { byMeClick?.invoke(pdpAffiliate, true) }
                 btn_byme.visible()
             } else btn_byme.gone()

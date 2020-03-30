@@ -80,8 +80,8 @@ object DynamicProductDetailMapper {
 
     fun generateCartTypeVariantParams(dynamicProductInfoP1: DynamicProductInfoP1?, productVariant: ProductVariantCommon?): List<CartRedirectionParams> {
         val listOfFlags = mutableListOf<String>()
-        if (dynamicProductInfoP1?.data?.preOrder?.isActive == true) listOfFlags.add("preorder")
-        if (dynamicProductInfoP1?.basic?.isLeasing == true) listOfFlags.add("leasing")
+        if (dynamicProductInfoP1?.data?.preOrder?.isActive == true) listOfFlags.add(ProductDetailConstant.KEY_PREORDER)
+        if (dynamicProductInfoP1?.basic?.isLeasing == true) listOfFlags.add(ProductDetailConstant.KEY_LEASING)
 
         return productVariant?.children?.map {
             CartRedirectionParams(it.campaign?.campaignID?.toIntOrNull() ?: 0,
@@ -93,8 +93,8 @@ object DynamicProductDetailMapper {
         val campaignId = dynamicProductInfoP1?.data?.campaign?.campaignID?.toIntOrNull() ?: 0
         val campaignTypeId = dynamicProductInfoP1?.data?.campaign?.campaignType?.toIntOrNull() ?: 0
         val listOfFlags = mutableListOf<String>()
-        if (dynamicProductInfoP1?.data?.preOrder?.isActive == true) listOfFlags.add("preorder")
-        if (dynamicProductInfoP1?.basic?.isLeasing == true) listOfFlags.add("leasing")
+        if (dynamicProductInfoP1?.data?.preOrder?.isActive == true) listOfFlags.add(ProductDetailConstant.KEY_PREORDER)
+        if (dynamicProductInfoP1?.basic?.isLeasing == true) listOfFlags.add(ProductDetailConstant.KEY_LEASING)
 
         return listOf(CartRedirectionParams(campaignId, campaignTypeId, listOfFlags))
     }
@@ -103,10 +103,10 @@ object DynamicProductDetailMapper {
         if (atcButton) return ProductDetailConstant.ATC_BUTTON
         if (leasing) return ProductDetailConstant.LEASING_BUTTON
         return when (it) {
-            "normal" -> {
+            ProductDetailConstant.KEY_BUTTON_NORMAL -> {
                 ProductDetailConstant.BUY_BUTTON
             }
-            "ocs" -> {
+            ProductDetailConstant.KEY_BUTTON_OCS -> {
                 ProductDetailConstant.OCS_BUTTON
             }
             else -> ProductDetailConstant.BUY_BUTTON
