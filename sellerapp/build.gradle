@@ -91,8 +91,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 1320404;
-        defaultVersionName = "1.3.2";
+        defaultVersionCode = 165000000;
+        defaultVersionName = "1.65";
     }
 
     packagingOptions {
@@ -429,6 +429,9 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junit
 
     implementation rootProject.ext.miscDependencies.robust
+
+    implementation rootProject.ext.playServicesDependencies.tagManager
+    implementation rootProject.ext.playServicesDependencies.tagManagerImpl
 }
 
 apply plugin: 'com.google.gms.google-services'
