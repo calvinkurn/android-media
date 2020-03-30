@@ -11,9 +11,6 @@ import com.tokopedia.product.addedit.detail.domain.mapper.AddEditProductDetailMa
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -24,13 +21,9 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AddEditProductDetailViewModel @Inject constructor(val provider: ResourceProvider, dispatcher: CoroutineDispatcher,
-                                                        private val getSearchShopProductUseCase: GetSearchShopProductUseCase)
+                                                        private val getSearchShopProductUseCase: GetSearchShopProductUseCase,
+                                                        private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase)
     : BaseViewModel(dispatcher) {
-class AddEditProductDetailViewModel @Inject constructor(
-        val provider: ResourceProvider,
-        val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
-        dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher) {
 
     private val mIsProductPhotoError = MutableLiveData<Boolean>()
     val isProductPhotoInputError: LiveData<Boolean>
