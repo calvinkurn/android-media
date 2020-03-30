@@ -270,7 +270,7 @@ class PlayFragment : BaseDaggerFragment() {
         playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
             if (it.state is PlayVideoState.Error) {
                 PlayAnalytics.errorState(channelId,
-                        "$ERR_STATE_VIDEO${it.state.error.message?:getString(com.tokopedia.play_common.R.string.play_common_video_error_message)}",
+                        "$ERR_STATE_VIDEO: ${it.state.error.message?:getString(com.tokopedia.play_common.R.string.play_common_video_error_message)}",
                         playViewModel.channelType)
             }
         })
