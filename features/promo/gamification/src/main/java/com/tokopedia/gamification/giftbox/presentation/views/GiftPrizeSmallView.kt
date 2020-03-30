@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -47,7 +48,7 @@ class GiftPrizeSmallView : FrameLayout {
     }
 
     fun setShadows() {
-        val shadowColor = Color.parseColor("#4A000000")
+        val shadowColor = ContextCompat.getColor(context, R.color.gf_box_text_shadow)
         val shadowRadius = tvTitle.dpToPx(5)
         val shadowOffset = tvTitle.dpToPx(4)
         tvTitle.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)

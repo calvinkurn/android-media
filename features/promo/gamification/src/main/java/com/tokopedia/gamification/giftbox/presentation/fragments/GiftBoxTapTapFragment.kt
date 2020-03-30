@@ -387,12 +387,14 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
     }
 
     fun setShadows() {
-        val shadowColor = Color.parseColor("#4A000000")
-        val shadowRadius = tvProgressCount.dpToPx(5)
-        val shadowOffset = tvProgressCount.dpToPx(4)
+        context?.let {
+            val shadowColor = ContextCompat.getColor(it, R.color.gf_box_text_shadow)
+            val shadowRadius = tvProgressCount.dpToPx(5)
+            val shadowOffset = tvProgressCount.dpToPx(4)
 
-        tvProgressCount.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
-        tvTimer.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
+            tvProgressCount.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
+            tvTimer.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
+        }
     }
 
     fun showRewardSummary() {

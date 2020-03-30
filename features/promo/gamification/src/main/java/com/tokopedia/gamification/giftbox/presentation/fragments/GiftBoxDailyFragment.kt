@@ -140,12 +140,15 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
     fun setShadows() {
-        val shadowColor = Color.parseColor("#4A000000")
-        val shadowRadius = tvRewardFirstLine.dpToPx(5)
-        val shadowOffset = tvRewardFirstLine.dpToPx(4)
-        tvRewardFirstLine.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
-        tvRewardSecondLine.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
-        tvBenefits.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
+        context?.let {
+            val shadowColor = ContextCompat.getColor(it, R.color.gf_box_text_shadow)
+            val shadowRadius = tvRewardFirstLine.dpToPx(5)
+            val shadowOffset = tvRewardFirstLine.dpToPx(4)
+            tvRewardFirstLine.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
+            tvRewardSecondLine.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
+            tvBenefits.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
+        }
+
     }
 
     fun setTextSize() {
