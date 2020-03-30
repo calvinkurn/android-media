@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.text.Editable
 import android.text.InputType
 import android.text.TextUtils
@@ -32,6 +31,8 @@ import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
@@ -232,43 +233,6 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
             startActivityForResult(intent, REQUEST_CODE_GET_CATEGORY)
         }
 
-        // TODO: replace the hardcoded category recommendations with the appropriate one
-        val productCategoryRecs = ArrayList<ListItemUnify>()
-        // first category recommendation
-        val firstCategoryRec = ListItemUnify("Fashion Wanita/Batik Wanita/Dress", "")
-        firstCategoryRec.setVariant(null, ListItemUnify.RADIO_BUTTON, null)
-        productCategoryRecs.add(firstCategoryRec)
-        // second category recommendation
-        val secondCategoryRec = ListItemUnify("Fashion Wanita/Batik Wanita/Dress", "")
-        secondCategoryRec.setVariant(null, ListItemUnify.RADIO_BUTTON, null)
-        productCategoryRecs.add(secondCategoryRec)
-        // third category recommendation
-        val thirdCategoryRec = ListItemUnify("Fashion Wanita/Batik Wanita/Dress", "")
-        thirdCategoryRec.setVariant(null, ListItemUnify.RADIO_BUTTON, null)
-        productCategoryRecs.add(thirdCategoryRec)
-
-        productCategoryRecListView?.onLoadFinish {
-            firstCategoryRec.listRightRadiobtn?.isChecked = true
-            firstCategoryRec.listRightRadiobtn?.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) {
-                    secondCategoryRec.listRightRadiobtn?.isChecked = false
-                    thirdCategoryRec.listRightRadiobtn?.isChecked = false
-                }
-            }
-            secondCategoryRec.listRightRadiobtn?.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) {
-                    firstCategoryRec.listRightRadiobtn?.isChecked = false
-                    thirdCategoryRec.listRightRadiobtn?.isChecked = false
-                }
-            }
-            thirdCategoryRec.listRightRadiobtn?.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) {
-                    firstCategoryRec.listRightRadiobtn?.isChecked = false
-                    secondCategoryRec.listRightRadiobtn?.isChecked = false
-                }
-            }
-        }
-
         // add edit product catalog views
         productCatalogLayout = view.findViewById(R.id.add_edit_product_catalog_layout)
         productCatalogPickerButton = view.findViewById(R.id.tv_add_product_picker_button)
@@ -391,6 +355,16 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
 //            }
 //        }
 
+            if (!hasFocus) {
+                productNameRecAdapter?.setProductNameInput(productNameInput)
+                productNameRecAdapter?.setProductNameRecommendations(dummyProductNameRecs)
+                productNameRecLoader?.visibility = View.VISIBLE
+                productNameRecShimmering?.visibility = View.VISIBLE
+                viewModel.getCategoryRecommendation(productNameInput)
+            }
+        }
+
+        // product name text change listener
         productNameField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable) {
 
@@ -577,7 +551,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         subscribeToPreOrderSwitchStatus()
         subscribeToPreOrderDurationInputStatus()
         subscribeToInputStatus()
-        subscribeNameSuggestion()
+        subscribeToCategoryRecomendation()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -593,7 +567,8 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
                     val categoryId = data.getLongExtra(CATEGORY_RESULT_ID, 0)
                     val categoryName = data.getStringExtra(CATEGORY_RESULT_NAME)
                     productCategoryPickerButton?.text = categoryName
-                    productCategoryPickerButton?.setTag(R.id.category_id, categoryId)
+                    viewModel.selectedCategoryId = categoryId
+                    productCategoryRecListView?.getSelectedCategory()?.listRightRadiobtn?.isChecked = false
                 }
                 REQUEST_CODE_GET_CATALOG -> {
                     val jsonSelectedCatalog: String? = data.getStringExtra(EXTRA_JSON_CATALOG)
@@ -715,6 +690,15 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         viewModel.isInputValid.observe(this, Observer {
             if (it) enableContinueButton()
             else disableContinueButton()
+        })
+    }
+
+    private fun subscribeToCategoryRecomendation() {
+        viewModel.productCategoryRecommendationLiveData.observe(this, Observer {
+            when (it) {
+                is Success -> onGetCategoryRecommendationSuccess(it)
+                is Fail -> onGetCategoryRecommendationFailed()
+            }
         })
     }
 
@@ -885,5 +869,57 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
     fun isNotAllowingCharacter(productName: String): Boolean {
         val notAllowingChar = charArrayOf('[', '{', '}', '<', '>', '}', ']')
         return productName.indexOfAny(notAllowingChar) >= 0
+    }
+
+    private fun onGetCategoryRecommendationSuccess(result: Success<List<ListItemUnify>>) {
+        // TODO: remove this 4 lines from here
+        productNameRecLoader?.hide()
+        productNameRecShimmering?.hide()
+        productNameRecView?.show()
+        productCatalogLayout?.show()
+
+        productCategoryLayout?.show()
+        productCategoryRecListView?.show()
+        val items = ArrayList(result.data.take(3))
+        productCategoryRecListView?.setData(items)
+        productCategoryRecListView?.onLoadFinish {
+            (productCategoryRecListView?.adapter?.getItem(0) as? ListItemUnify)?.let {
+                it.listRightRadiobtn?.isChecked = true
+                viewModel.selectedCategoryId = it.categoryId
+            }
+            productCategoryRecListView?.setOnItemClickListener { _, _, position, _ ->
+                val clickedItem = productCategoryRecListView?.getItemAtPosition(position) as ListItemUnify
+                items.filter { it.listRightRadiobtn?.isChecked ?: false }
+                        .filterNot { it == clickedItem }
+                        .onEach { it.listRightRadiobtn?.isChecked = false }
+                clickedItem.listRightRadiobtn?.isChecked = true
+                viewModel.selectedCategoryId = clickedItem.categoryId
+            }
+        }
+    }
+
+    private fun onGetCategoryRecommendationFailed() {
+        // TODO: remove this 4 lines from here
+        productNameRecLoader?.hide()
+        productNameRecShimmering?.hide()
+        productNameRecView?.show()
+        productCatalogLayout?.show()
+
+        productCategoryLayout?.show()
+        productCategoryRecListView?.hide()
+    }
+
+    // category id is saved on listActionText property
+    private val ListItemUnify.categoryId: Long
+        get() = listActionText?.toLong().orZero()
+
+    @Suppress("UNCHECKED_CAST")
+    private fun ListUnify.getSelectedCategory(): ListItemUnify? {
+        ListUnify::class.java.getDeclaredField("array").let {
+            it.isAccessible = true
+            return (it.get(productCategoryRecListView) as ArrayList<ListItemUnify>).find {
+                it.listRightRadiobtn?.isChecked ?: false
+            }
+        }
     }
 }
