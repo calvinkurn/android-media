@@ -2602,7 +2602,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             DynamicProductDetailTracking.Click.eventNotifyMe(it, componentTrackDataModel, notifyMe)
         }
     }
-}
 
     private fun showImeiPermissionDialog() {
         activity?.run {
