@@ -3,13 +3,15 @@ package com.tokopedia.favorite.data.source.cloud;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.base.common.service.TopAdsService;
-import com.tokopedia.core.base.utils.HttpResponseValidator;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.favorite.data.mapper.TopAdsShopMapper;
+import com.tokopedia.favorite.data.source.apis.service.TopAdsService;
+import com.tokopedia.favorite.data.source.local.LocalTopAdsShopDataSource;
 import com.tokopedia.favorite.domain.model.TopAdsShop;
+import com.tokopedia.favorite.utils.HttpResponseValidator;
+
+import java.util.HashMap;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -28,7 +30,7 @@ public class CloudTopAdsShopDataSource {
         this.topAdsService = topAdsService;
     }
 
-    public Observable<TopAdsShop> getTopAdsShop(TKPDMapParam<String, Object> param) {
+    public Observable<TopAdsShop> getTopAdsShop(HashMap<String, Object> param) {
         return topAdsService.getShopTopAds(param)
                 .doOnNext(HttpResponseValidator
                         .validate(new HttpResponseValidator.HttpValidationListener() {
@@ -41,10 +43,7 @@ public class CloudTopAdsShopDataSource {
     }
 
     private void saveResponseToCache(Response<String> stringResponse) {
-        new GlobalCacheManager()
-                .setKey(TkpdCache.Key.TOP_ADS_SHOP)
-                .setValue(stringResponse.body())
-                .store();
+        PersistentCacheManager.instance.put(LocalTopAdsShopDataSource.CACHE_KEY_TOP_ADS_SHOP, stringResponse.body(), - System.currentTimeMillis());
     }
 
 }

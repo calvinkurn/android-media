@@ -4,8 +4,9 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.abstraction.constant.TkpdCache;
+import com.tokopedia.cachemanager.CacheManager;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.favorite.data.mapper.FavoriteShopMapper;
 import com.tokopedia.favorite.domain.model.FavoriteShop;
 
@@ -18,20 +19,21 @@ import rx.functions.Func1;
  */
 public class LocalFavoriteShopDataSource {
 
+    public static final String CACHE_KEY_FAVORITE_SHOP = "FAVORITE_SHOP";
+
     private Context context;
     private Gson gson;
-    private GlobalCacheManager cacheManager;
 
     public LocalFavoriteShopDataSource(Context context,
-                                       Gson gson, GlobalCacheManager cacheManager) {
+                                       Gson gson) {
         this.context = context;
         this.gson = gson;
-        this.cacheManager = cacheManager;
     }
 
     public Observable<FavoriteShop> getFavorite() {
+
         Response<String> data
-                = Response.success(cacheManager.getValueString(TkpdCache.Key.FAVORITE_SHOP));
+                = Response.success(PersistentCacheManager.instance.getString(CACHE_KEY_FAVORITE_SHOP, null));
         return Observable.just(data)
                 .map(new FavoriteShopMapper(context, gson))
                 .onErrorReturn(nullResponse());

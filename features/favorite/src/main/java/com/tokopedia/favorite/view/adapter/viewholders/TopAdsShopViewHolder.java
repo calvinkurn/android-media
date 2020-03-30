@@ -6,10 +6,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.favorite.R;
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener;
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopViewModel;
-import com.tokopedia.tkpd.R;
 import com.tokopedia.favorite.view.adapter.TopAdsShopAdapter;
 
 /**

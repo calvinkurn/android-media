@@ -10,13 +10,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.favorite.R;
+import com.tokopedia.favorite.utils.TrackingConst;
 import com.tokopedia.favorite.view.viewmodel.FavoriteShopViewModel;
-import com.tokopedia.tkpd.R;
 import com.tokopedia.track.TrackApp;
 
 /**
@@ -87,9 +87,9 @@ public class FavoriteShopViewHolder extends AbstractViewHolder<FavoriteShopViewM
 
     public void eventFavoriteShop() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AppEventTracking.Event.FAVORITE,
-                AppEventTracking.Category.HOMEPAGE.toLowerCase(),
-                AppEventTracking.Action.CLICK_SHOP_FAVORITE,
+                TrackingConst.Event.FAVORITE,
+                TrackingConst.Category.HOMEPAGE.toLowerCase(),
+                TrackingConst.Action.CLICK_SHOP_FAVORITE,
                 "");
     }
 }

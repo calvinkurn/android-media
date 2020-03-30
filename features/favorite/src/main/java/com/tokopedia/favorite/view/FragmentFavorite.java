@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,29 +15,29 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
-import com.google.android.gms.tagmanager.DataLayer;
-import com.tkpd.library.ui.view.LinearLayoutManager;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
-import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.favorite.R;
+import com.tokopedia.favorite.di.component.FavoriteComponent;
+import com.tokopedia.favorite.di.component.DaggerFavoriteComponent;
 import com.tokopedia.favorite.view.adapter.FavoriteAdapter;
-import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.favorite.di.component.DaggerFavoriteComponent;
 import com.tokopedia.favorite.view.adapter.FavoriteAdapterTypeFactory;
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener;
 import com.tokopedia.favorite.view.viewmodel.FavoriteShopViewModel;
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,6 +56,11 @@ public class FragmentFavorite extends BaseDaggerFragment
         SwipeRefreshLayout.OnRefreshListener {
 
     public static final String TAG = FragmentFavorite.class.getSimpleName();
+
+    private static final String LOGIN_STATUS = "logged_in_status";
+    private static final String IS_FAVORITE_EMPTY = "is_favorite_empty";
+    private static final String OPEN_FAVORITE = "Favorite_Screen_Launched";
+    private static final String SCREEN_UNIFY_HOME_SHOP_FAVORIT = "/fav-shop";
 
     private static final long DURATION_ANIMATOR = 1000;
     private static final String FAVORITE_TRACE = "mp_favourite_shop";
@@ -78,13 +84,14 @@ public class FragmentFavorite extends BaseDaggerFragment
     FavoritePresenter favoritePresenter;
 
     private FavoriteAdapter favoriteAdapter;
-    private EndlessRecyclerviewListener recylerviewScrollListener;
+    private EndlessRecyclerViewScrollListener recylerviewScrollListener;
     private SnackbarRetry messageSnackbar;
     private boolean isFavoriteShopNetworkFailed;
     private boolean isTopAdsShopNetworkFailed;
     private View favoriteShopViewSelected;
     private TopAdsShopItem shopItemSelected;
     private PerformanceMonitoring performanceMonitoring;
+    private UserSessionInterface userSession;
 
     public static Fragment newInstance() {
         return new FragmentFavorite();
@@ -92,6 +99,7 @@ public class FragmentFavorite extends BaseDaggerFragment
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        userSession = new UserSession(getContext());
         performanceMonitoring = PerformanceMonitoring.start(FAVORITE_TRACE);
         super.onCreate(savedInstanceState);
     }
@@ -109,7 +117,7 @@ public class FragmentFavorite extends BaseDaggerFragment
         wishlistNotLoggedIn = parentView.findViewById(R.id.partial_empty_wishlist);
         btnLogin = parentView.findViewById(R.id.btn_login);
 
-        if (SessionHandler.isV4Login(getActivity())) {
+        if (userSession.isLoggedIn()) {
             prepareView();
             favoritePresenter.attachView(this);
             favoritePresenter.loadInitialData();
@@ -134,10 +142,8 @@ public class FragmentFavorite extends BaseDaggerFragment
             btnLogin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (getActivity().getApplication() instanceof TkpdCoreRouter) {
-                        Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getLoginIntent(getContext());
-                        startActivity(intent);
-                    }
+                    Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
+                    startActivity(intent);
                 }
             });
         }
@@ -174,7 +180,7 @@ public class FragmentFavorite extends BaseDaggerFragment
                 } else {
                     favoritePresenter.loadInitialData();
                 }
-                ScreenTracking.screen(MainApplication.getAppContext(), getScreenName());
+                TrackApp.getInstance().getGTM().sendScreenAuthenticated(getScreenName());
             } else {
                 if (messageSnackbar != null && messageSnackbar.isShown()) {
                     messageSnackbar.hideRetrySnackbar();
@@ -221,16 +227,20 @@ public class FragmentFavorite extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        DaggerFavoriteComponent daggerFavoriteComponent
-                = (DaggerFavoriteComponent) DaggerFavoriteComponent.builder()
-                .appComponent(MainApplication.getInstance().getApplicationComponent())
+        FavoriteComponent daggerFavoriteComponent
+                = DaggerFavoriteComponent.builder()
+                .baseAppComponent(getBaseAppComponent())
                 .build();
         daggerFavoriteComponent.inject(this);
     }
 
+    public BaseAppComponent getBaseAppComponent() {
+        return ((BaseMainApplication)getActivity().getApplication()).getBaseAppComponent();
+    }
+
     @Override
     protected String getScreenName() {
-        return AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_SHOP_FAVORIT;
+        return SCREEN_UNIFY_HOME_SHOP_FAVORIT;
     }
 
     @Override
@@ -247,10 +257,10 @@ public class FragmentFavorite extends BaseDaggerFragment
         favoriteAdapter.clearData();
         favoriteAdapter.setElement(dataFavorite);
         Map<String, Object> value = DataLayer.mapOf(
-                AppEventTracking.MOENGAGE.LOGIN_STATUS, SessionHandler.isV4Login(getActivity()),
-                AppEventTracking.MOENGAGE.IS_FAVORITE_EMPTY, dataFavorite.size() == 0
+                LOGIN_STATUS, userSession.isLoggedIn(),
+                IS_FAVORITE_EMPTY, dataFavorite.size() == 0
         );
-        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.OPEN_FAVORITE);
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, OPEN_FAVORITE);
     }
 
     @Override
@@ -378,9 +388,9 @@ public class FragmentFavorite extends BaseDaggerFragment
         favoriteAdapter = new FavoriteAdapter(typeFactoryForList, new ArrayList<Visitable>());
         DefaultItemAnimator animator = new DefaultItemAnimator();
         animator.setAddDuration(DURATION_ANIMATOR);
-        recylerviewScrollListener = new EndlessRecyclerviewListener(layoutManager) {
+        recylerviewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+            public void onLoadMore(int page, int totalItemsCount) {
                 favoritePresenter.loadMoreFavoriteShop();
             }
         };

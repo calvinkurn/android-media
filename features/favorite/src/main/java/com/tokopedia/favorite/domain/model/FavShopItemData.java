@@ -2,7 +2,7 @@ package com.tokopedia.favorite.domain.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 
 import java.util.List;
 

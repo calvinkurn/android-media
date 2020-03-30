@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 
-import com.tokopedia.favorite.data.source.apis.service.ServiceV4;
 import com.tokopedia.favorite.data.source.apis.service.TopAdsService;
 import com.tokopedia.favorite.data.source.cloud.CloudFavoriteShopDataSource;
 import com.tokopedia.favorite.data.source.cloud.CloudTopAdsShopDataSource;
@@ -29,25 +28,20 @@ import rx.functions.Func1;
 public class FavoriteFactory {
     private Context context;
     private Gson gson;
-    private ServiceV4 serviceV4;
     private TopAdsService topAdsService;
-    private CacheManager cacheManager;
 
-    public FavoriteFactory(Context context, Gson gson, ServiceV4 serviceVersion4,
-                           TopAdsService topAdsService,
-                           GlobalCacheManager cacheManager) {
+    public FavoriteFactory(Context context, Gson gson,
+                           TopAdsService topAdsService) {
 
         this.context = context;
         this.gson = gson;
-        serviceV4 = serviceVersion4;
         this.topAdsService = topAdsService;
-        this.cacheManager = cacheManager;
     }
 
     Observable<FavoriteShop> getFavoriteShop(HashMap<String, String> param) {
 
         return new CloudFavoriteShopDataSource(
-                context, gson, serviceV4).getFavorite(param, false);
+                context, gson).getFavorite(param, false);
     }
 
 
@@ -74,10 +68,6 @@ public class FavoriteFactory {
                         getLocalTopAdsShopObservable().doOnNext(setTopAdsShopErrorNetwork()));
     }
 
-    Observable<FavShop> postFavShop(HashMap<String, String> param) {
-        return new CloudFavoriteShopDataSource(context, gson, serviceV4).postFavoriteShop(param);
-    }
-
     private Observable<TopAdsShop> getCloudTopAdsShopObservable(HashMap<String, Object> params) {
         CloudTopAdsShopDataSource topAdsShopDataSource
                 = new CloudTopAdsShopDataSource(context, gson, topAdsService);
@@ -87,17 +77,17 @@ public class FavoriteFactory {
 
 
     private Observable<TopAdsShop> getLocalTopAdsShopObservable() {
-        return new LocalTopAdsShopDataSource(context, gson, cacheManager).getTopAdsShop();
+        return new LocalTopAdsShopDataSource(context, gson).getTopAdsShop();
     }
 
 
     private Observable<FavoriteShop> getLocalFavoriteObservable() {
-        return new LocalFavoriteShopDataSource(context, gson, cacheManager).getFavorite();
+        return new LocalFavoriteShopDataSource(context, gson).getFavorite();
     }
 
     private Observable<FavoriteShop> getCloudFavoriteObservable(HashMap<String, String> param) {
         return new CloudFavoriteShopDataSource(
-                context, gson, serviceV4).getFavorite(param, true);
+                context, gson).getFavorite(param, true);
     }
 
     private Action1<FavoriteShop> setFavoriteErrorNetwork() {

@@ -2,8 +2,8 @@ package com.tokopedia.favorite.view.adapter;
 
 import android.view.View;
 
-import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.favorite.view.adapter.viewholders.FavoriteShopViewHolder;
 import com.tokopedia.favorite.view.adapter.viewholders.TopAdsShopViewHolder;
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener;
@@ -37,15 +37,15 @@ public class FavoriteAdapterTypeFactory
 
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
-        AbstractViewHolder creatViewHolder;
+        AbstractViewHolder createViewHolder;
         if (type == TopAdsShopViewHolder.LAYOUT) {
-            creatViewHolder = new TopAdsShopViewHolder(parent, favoriteClickListener);
+            createViewHolder = new TopAdsShopViewHolder(parent, favoriteClickListener);
         } else if (type == FavoriteShopViewHolder.LAYOUT) {
-            creatViewHolder = new FavoriteShopViewHolder(parent);
+            createViewHolder = new FavoriteShopViewHolder(parent);
         } else {
-            creatViewHolder = super.createViewHolder(parent, type);
+            createViewHolder = super.createViewHolder(parent, type);
         }
 
-        return creatViewHolder;
+        return createViewHolder;
     }
 }

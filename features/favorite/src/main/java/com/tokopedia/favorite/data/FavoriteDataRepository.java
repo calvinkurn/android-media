@@ -42,9 +42,4 @@ public class FavoriteDataRepository implements FavoriteRepository {
     public Observable<TopAdsShop> getTopAdsShop(HashMap<String, Object> params) {
         return favoriteFactory.getTopAdsShop(params);
     }
-
-    @Override
-    public Observable<FavShop> addFavoriteShop(HashMap<String, String> param) {
-        return favoriteFactory.postFavShop(param);
-    }
 }

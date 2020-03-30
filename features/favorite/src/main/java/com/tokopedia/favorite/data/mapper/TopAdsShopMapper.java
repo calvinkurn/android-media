@@ -3,7 +3,7 @@ package com.tokopedia.favorite.data.mapper;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tokopedia.home.account.R;
+import com.tokopedia.favorite.R;
 import com.tokopedia.favorite.domain.model.TopAdsHome;
 import com.tokopedia.favorite.domain.model.TopAdsShopItem;
 import com.tokopedia.favorite.domain.model.TopAdsShop;

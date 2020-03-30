@@ -1,6 +1,6 @@
 package com.tokopedia.favorite.view.viewmodel;
 
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.favorite.domain.model.FavoriteShopItem;
 import com.tokopedia.favorite.domain.model.FavoriteShop;
 import com.tokopedia.favorite.domain.model.TopAdsShop;

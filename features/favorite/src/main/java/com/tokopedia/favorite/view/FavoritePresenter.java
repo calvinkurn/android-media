@@ -5,9 +5,9 @@ import androidx.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.favorite.domain.interactor.GetInitialDataPageUsecase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.favorite.domain.interactor.GetAllDataFavoriteUseCase;
@@ -20,6 +20,7 @@ import com.tokopedia.favorite.domain.model.TopAdsShop;
 import com.tokopedia.favorite.view.viewmodel.DataFavoriteMapper;
 import com.tokopedia.favorite.view.viewmodel.FavoriteShopViewModel;
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.List;

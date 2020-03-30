@@ -2,33 +2,30 @@ package com.tokopedia.favorite.data.source.cloud;
 
 import android.content.Context;
 import android.content.res.Resources;
+
 import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.abstraction.common.utils.network.AuthUtil;
+import com.tokopedia.cachemanager.PersistentCacheManager;
+import com.tokopedia.favorite.R;
 import com.tokopedia.favorite.data.FavoriteShopResponseValidator;
-import com.tokopedia.favorite.data.mapper.AddFavoriteShopMapper;
 import com.tokopedia.favorite.data.mapper.FavoritShopGraphQlMapper;
 import com.tokopedia.favorite.data.source.apis.FavoriteShopAuthService;
-import com.tokopedia.favorite.domain.interactor.AddFavoriteShopUseCase;
+import com.tokopedia.favorite.data.source.local.LocalFavoriteShopDataSource;
 import com.tokopedia.favorite.domain.interactor.GetFavoriteShopUsecase;
-import com.tokopedia.network.data.model.response.GraphqlResponse;
-import com.tokopedia.core.base.common.service.ServiceV4;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.network.entity.home.FavoritShopResponseData;
-import com.tokopedia.core.network.entity.home.TopAdsHome;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.favorite.domain.model.FavShop;
+import com.tokopedia.favorite.domain.model.FavoritShopResponseData;
 import com.tokopedia.favorite.domain.model.FavoriteShop;
+import com.tokopedia.network.data.model.response.GraphqlResponse;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
-import com.tokopedia.tkpd.R;
+import java.util.HashMap;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -40,20 +37,24 @@ import rx.functions.Action1;
 public class CloudFavoriteShopDataSource {
     private Context context;
     private Gson gson;
-    private ServiceV4 serviceV4;
     private final FavoriteShopAuthService favoriteShopAuthService;
+    private UserSessionInterface userSession;
 
-    public CloudFavoriteShopDataSource(Context context, Gson gson, ServiceV4 serviceV4) {
+    public CloudFavoriteShopDataSource(Context context, Gson gson) {
         this.context = context;
         this.gson = gson;
-        this.serviceV4 = serviceV4;
         favoriteShopAuthService = new FavoriteShopAuthService();
+        userSession = new UserSession(context);
     }
 
     public Observable<FavoriteShop> getFavorite(
-            TKPDMapParam<String, String> param, boolean isMustSaveToCache) {
+            HashMap<String, String> param, boolean isMustSaveToCache) {
 
-        TKPDMapParam<String, String> paramWithAuth = AuthUtil.generateParamsNetwork(context, param);
+        TKPDMapParam<String, String> tkpdMapParam = new TKPDMapParam<>();
+        tkpdMapParam.putAll(param);
+
+        TKPDMapParam<String, String> paramWithAuth = AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), tkpdMapParam);
+
         if (isMustSaveToCache) {
             Observable<FavoriteShop> observable = favoriteShopAuthService.getApi()
                     .getFavoritShopsData(getRequestPayload(context, paramWithAuth))
@@ -110,46 +111,9 @@ public class CloudFavoriteShopDataSource {
         });
     }
 
-    public Observable<FavShop> postFavoriteShop(TKPDMapParam<String, String> param) {
-        String shopId = param.get(AddFavoriteShopUseCase.KEY_SHOP_ID);
-        TKPDMapParam<String, String> paramWithAuth = AuthUtil.generateParamsNetwork(context, param);
-        return serviceV4.postFavoriteShop(paramWithAuth)
-                .doOnNext(updateTopAdsShopCache(shopId))
-                .map(new AddFavoriteShopMapper(context, gson));
-    }
-
-    private Action1<? super Response<String>> updateTopAdsShopCache(final String shopId) {
-        return new Action1<Response<String>>() {
-            @Override
-            public void call(Response<String> stringResponse) {
-                try {
-                    String valueString
-                            = new GlobalCacheManager().getValueString(TkpdCache.Key.TOP_ADS_SHOP);
-                    TopAdsHome topAdsResponse = gson.fromJson(valueString, TopAdsHome.class);
-                    for (TopAdsHome.Data data : topAdsResponse.getData()) {
-                        if (data.getHeadline().getShop().getId().equalsIgnoreCase(shopId)) {
-                            data.isSelected = true;
-                        }
-                    }
-                    String topadsShopUpdated = gson.toJson(topAdsResponse);
-                    new GlobalCacheManager()
-                            .setKey(TkpdCache.Key.TOP_ADS_SHOP)
-                            .setValue(topadsShopUpdated)
-                            .store();
-                } catch (JsonSyntaxException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        };
-    }
-
 
     private void saveResponseToCache(Response<GraphqlResponse<FavoritShopResponseData>> response) {
-        new GlobalCacheManager()
-                .setKey(TkpdCache.Key.FAVORITE_SHOP)
-                .setValue(response.body().toString())
-                .store();
+        PersistentCacheManager.instance.put(LocalFavoriteShopDataSource.CACHE_KEY_FAVORITE_SHOP, response.body().toString(), - System.currentTimeMillis());
     }
 
 

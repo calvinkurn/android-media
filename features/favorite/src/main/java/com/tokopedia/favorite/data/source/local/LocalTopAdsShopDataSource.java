@@ -4,8 +4,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.favorite.data.mapper.TopAdsShopMapper;
 import com.tokopedia.favorite.domain.model.TopAdsShop;
 
@@ -18,19 +17,19 @@ import rx.functions.Func1;
  */
 public class LocalTopAdsShopDataSource {
 
+    public static final String CACHE_KEY_TOP_ADS_SHOP = "TOP_ADS_SHOP";
+
     private final Context context;
     private final Gson gson;
-    private final GlobalCacheManager cacheManager;
 
-    public LocalTopAdsShopDataSource(Context context, Gson gson, GlobalCacheManager cacheManager) {
+    public LocalTopAdsShopDataSource(Context context, Gson gson) {
         this.context = context;
         this.gson = gson;
-        this.cacheManager = cacheManager;
     }
 
     public Observable<TopAdsShop> getTopAdsShop() {
         Response<String> data
-                = Response.success(cacheManager.getValueString(TkpdCache.Key.TOP_ADS_SHOP));
+                = Response.success(PersistentCacheManager.instance.getString(CACHE_KEY_TOP_ADS_SHOP, null));
         return Observable.just(data)
                 .map(new TopAdsShopMapper(context, gson))
                 .onErrorReturn(nullResponse());

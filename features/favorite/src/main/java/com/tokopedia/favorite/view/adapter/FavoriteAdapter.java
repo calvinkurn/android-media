@@ -5,10 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.core.base.adapter.BaseAdapter;
-import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
-import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 
 import java.util.List;
 
@@ -16,12 +15,12 @@ import java.util.List;
  * @author kulomady on 1/24/17.
  */
 
-public class FavoriteAdapter extends BaseAdapter {
+public class FavoriteAdapter extends BaseAdapter<FavoriteTypeFactory> {
     private final FavoriteTypeFactory favoriteTypeFactory;
 
-    public FavoriteAdapter(BaseAdapterTypeFactory adapterTypeFactory, List<Visitable> data) {
+    public FavoriteAdapter(FavoriteTypeFactory adapterTypeFactory, List<Visitable> data) {
         super(adapterTypeFactory, data);
-        this.favoriteTypeFactory = (FavoriteTypeFactory) adapterTypeFactory;
+        this.favoriteTypeFactory = adapterTypeFactory;
     }
 
     @Override
@@ -43,40 +42,8 @@ public class FavoriteAdapter extends BaseAdapter {
         return visitables.get(position).type(favoriteTypeFactory);
     }
 
-    public void setElement(int position, Visitable element) {
-        visitables.set(position, element);
-        notifyDataSetChanged();
-    }
-
-    public void setElements(int position, List<Visitable> data) {
-        visitables.addAll(position, data);
-        notifyDataSetChanged();
-    }
-
-    public void addElement(int position, Visitable element) {
-        visitables.add(position, element);
-        notifyDataSetChanged();
-    }
-
-    public void addElement(Visitable element) {
-        visitables.add(element);
-        notifyDataSetChanged();
-    }
-
-    public void setElement(List<Visitable> data) {
-        visitables.addAll(data);
-        notifyDataSetChanged();
-    }
-
 
     public void clearData() {
         visitables.clear();
     }
-
-    public void addMoreData(List<Visitable> data) {
-        final int positionStart = visitables.size() + 1;
-        visitables.addAll(data);
-        notifyItemRangeInserted(positionStart, data.size());
-    }
-
 }

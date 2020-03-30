@@ -1,6 +1,6 @@
 package com.tokopedia.favorite.domain.model;
 
-import com.tokopedia.core.database.model.PagingHandler;
+import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 
 import java.util.List;
 

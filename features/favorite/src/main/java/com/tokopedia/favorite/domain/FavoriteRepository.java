@@ -23,6 +23,4 @@ public interface FavoriteRepository {
     Observable<TopAdsShop> getFreshTopAdsShop(HashMap<String, Object> params);
 
     Observable<TopAdsShop> getTopAdsShop(HashMap<String, Object> params);
-
-    Observable<FavShop> addFavoriteShop(HashMap<String, String> param);
 }
