@@ -36,7 +36,7 @@ class AttachInvoiceFragment : BaseListFragment<InvoiceViewModel, AttachInvoiceLi
     lateinit var activity: AttachInvoiceContract.Activity
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private lateinit var invoiceSearch: SearchInputView
-    private lateinit var invoices: List<InvoiceViewModel>
+    private  var invoices: List<InvoiceViewModel>? = null
     private var hasNextPage: Boolean = false
     private val EMPTY_STRING = ""
 
@@ -55,10 +55,10 @@ class AttachInvoiceFragment : BaseListFragment<InvoiceViewModel, AttachInvoiceLi
 
         invoiceSearch.setListener(object : SearchInputView.Listener {
             override fun onSearchSubmitted(text: String?) {
-                if (invoices.isNotEmpty()){
-                    val filteredList = invoices.filter { it.productTopName.contains(text.toString(), true) || it.invoiceNumber.contains(text.toString(),true) }
+                if (invoices?.isNotEmpty() == true) {
+                    val filteredList = invoices?.filter { it.productTopName.contains(text.toString(), true) || it.invoiceNumber.contains(text.toString(), true) }
                     isLoadingInitialData = true
-                    renderList(filteredList, false)
+                    renderList(filteredList ?: listOf(), false)
                 }
             }
 
@@ -68,7 +68,7 @@ class AttachInvoiceFragment : BaseListFragment<InvoiceViewModel, AttachInvoiceLi
         invoiceSearch.closeImageButton.setOnClickListener {
             invoiceSearch.searchText = EMPTY_STRING
             isLoadingInitialData = true
-            renderList(invoices, hasNextPage)
+            renderList(invoices ?: listOf(), hasNextPage)
         }
 
         return view
