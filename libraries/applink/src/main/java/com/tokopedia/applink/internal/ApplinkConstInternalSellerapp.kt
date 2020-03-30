@@ -16,12 +16,21 @@ object ApplinkConstInternalSellerapp {
     @JvmField
     val INTERNAL_SELLERAPP = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_SELLERAPP}"
 
+    @JvmField
+    val EXTERNAL_SELLERAPP = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://${HOST_SELLERAPP}"
+
     //SellerHomeActivity
     @JvmField
     val SELLER_HOME = "$INTERNAL_SELLERAPP/sellerhome"
 
     @JvmField
-    val SELLER_HOME_PRODUCT_MANAGE = "$INTERNAL_SELLERAPP/sellerhome-product"
+    val SELLER_HOME_PRODUCT_MANAGE_LIST = "$INTERNAL_SELLERAPP/sellerhome-product-list"
+
+    @JvmField
+    val SELLER_HOME_PRODUCT_MANAGE_FILTER_EMPTY_STOCK = "$INTERNAL_SELLERAPP/sellerhome-product-empty-stock"
+
+    @JvmField
+    val SELLER_HOME_PRODUCT_MANAGE_FILTER_EMPTY_STOCK_EXTERNAL = "$EXTERNAL_SELLERAPP/sellerhome-product-empty-stock"
 
     @JvmField
     val SELLER_HOME_CHAT = "$INTERNAL_SELLERAPP/sellerhome-chat"

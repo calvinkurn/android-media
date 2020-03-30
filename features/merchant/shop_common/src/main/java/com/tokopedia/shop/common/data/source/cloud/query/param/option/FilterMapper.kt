@@ -26,5 +26,20 @@ class FilterMapper {
             val option = sortOption.option.name
             return ProductListParam(sortId, option)
         }
+
+        fun mapKeysToFilterOptionList(filterKeys: List<String>): List<FilterOption> {
+            return filterKeys.map {
+                return@map when (it) {
+                    FilterByCondition.NewOnly.id -> FilterByCondition.NewOnly
+                    FilterByCondition.UsedOnly.id -> FilterByCondition.UsedOnly
+                    FilterByCondition.EmptyStockOnly.id -> FilterByCondition.EmptyStockOnly
+                    FilterByCondition.VariantOnly.id -> FilterByCondition.VariantOnly
+                    FilterByCondition.CashBackOnly.id -> FilterByCondition.CashBackOnly
+                    FilterByCondition.WholesaleOnly.id -> FilterByCondition.WholesaleOnly
+                    FilterByCondition.PreorderOnly.id -> FilterByCondition.PreorderOnly
+                    else -> FilterByCondition.FeaturedOnly //FilterOption.FEATURED_ONLY
+                }
+            }
+        }
     }
 }

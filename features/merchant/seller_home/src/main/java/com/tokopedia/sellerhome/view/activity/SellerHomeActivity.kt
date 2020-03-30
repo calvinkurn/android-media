@@ -71,6 +71,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     private var currentSelectedMenu = 0
     private var canExitApp = false
+    private var lastProductMangePage = PageFragment(FragmentType.PRODUCT)
     private var lastSomTab = PageFragment(FragmentType.ORDER) //by default show tab "Semua Pesanan"
 
     private var statusBarCallback: StatusBarCallback? = null
@@ -131,7 +132,10 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     private fun handleAppLink(intent: Intent?) {
         DeepLinkHandler.handleAppLink(intent) { page ->
-            lastSomTab = page
+            when(page.type) {
+                FragmentType.ORDER -> lastSomTab = page
+                FragmentType.PRODUCT -> lastProductMangePage = page
+            }
             sharedViewModel.setCurrentSelectedPage(page)
         }
     }
@@ -161,7 +165,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         sahBottomNav.setOnNavigationItemSelectedListener { menu ->
             when (menu.itemId) {
                 R.id.menu_sah_home -> showContainerFragment(PageFragment(FragmentType.HOME), TrackingConstant.CLICK_HOME)
-                R.id.menu_sah_product -> showContainerFragment(PageFragment(FragmentType.PRODUCT), TrackingConstant.CLICK_PRODUCT)
+                R.id.menu_sah_product -> showContainerFragment(lastProductMangePage, TrackingConstant.CLICK_PRODUCT)
                 R.id.menu_sah_chat -> showContainerFragment(PageFragment(FragmentType.CHAT), TrackingConstant.CLICK_CHAT)
                 R.id.menu_sah_order -> showContainerFragment(lastSomTab, TrackingConstant.CLICK_ORDER)
                 R.id.menu_sah_other -> showOtherSettingsFragment()
@@ -175,12 +179,18 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
         currentSelectedMenu = page.type
 
         setupStatusBar()
-
         sharedViewModel.setCurrentSelectedPage(page)
         showFragment(containerFragment)
-        lastSomTab = PageFragment(FragmentType.ORDER)
+        resetPages(page)
 
         NavigationTracking.sendClickBottomNavigationMenuEvent(trackingAction)
+    }
+
+    private fun resetPages(page: PageFragment) {
+        when(page.type) {
+            FragmentType.PRODUCT -> lastProductMangePage = PageFragment(FragmentType.PRODUCT)
+            FragmentType.ORDER -> lastSomTab = PageFragment(FragmentType.ORDER)
+        }
     }
 
     private fun showOtherSettingsFragment() {
