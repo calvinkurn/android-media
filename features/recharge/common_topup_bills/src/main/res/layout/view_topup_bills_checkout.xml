@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/buy_layout"
@@ -15,14 +15,17 @@
         android:id="@+id/recharge_checkout_promo_ticker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="@dimen/dp_12" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_recharge_checkout_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/recharge_checkout_promo_ticker"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/recharge_checkout_promo_ticker"
+        android:layout_marginTop="@dimen/dp_12"
         android:lines="1"
         android:text="Total Pembayaran"
         android:textColor="?attr/N700_96"
@@ -32,7 +35,8 @@
         android:id="@+id/txt_recharge_checkout_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txt_recharge_checkout_label"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_recharge_checkout_label"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:lines="1"
         android:textColor="?attr/Y400"
@@ -44,10 +48,10 @@
         android:id="@+id/btn_recharge_checkout_next"
         android:layout_width="@dimen/layout_lvl8"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/txt_recharge_checkout_label"
-        android:layout_alignBottom="@+id/txt_recharge_checkout_price"
-        android:layout_alignParentRight="true"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/txt_recharge_checkout_label"
+        app:layout_constraintBottom_toBottomOf="@id/txt_recharge_checkout_price"
         android:text="@string/common_topup_enquiry_default_label"
         app:unifyButtonType="transaction" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

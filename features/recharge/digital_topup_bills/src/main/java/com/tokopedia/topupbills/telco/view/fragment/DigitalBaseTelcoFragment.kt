@@ -35,6 +35,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifyprinciples.UnifyThemeHelper
 import javax.inject.Inject
 
 /**
@@ -59,6 +60,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
+            UnifyThemeHelper.setTheme(it)
+
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             customViewModel = viewModelProvider.get(DigitalTelcoCustomViewModel::class.java)
         }
