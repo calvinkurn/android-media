@@ -1,6 +1,6 @@
 mutation atcOCS($params: AtcOcsParams) {
  atcOCS(params: $params) {
-	error_message
+  error_message
   status
   data {
     success
@@ -17,7 +17,30 @@ mutation atcOCS($params: AtcOcsParams) {
       tracker_list_name
       uc_ut_param
       is_trade_in
-    }
+      ovo_insufficient_balance{
+         title
+         description
+         details{
+          product_price
+          shipping_estimation
+          ovo_balance
+          topup_balance
+         }
+         buttons{
+           ovo_topup_button{
+            text
+            applink
+            enable
+           }
+           other_methods_button{
+            text
+            applink
+            enable
+           }
+         }
+       }
+      }
+      refresh_prerequisite_page
   }
  }
 }

@@ -101,6 +101,7 @@ import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpAc
 import com.tokopedia.product.detail.view.activity.*
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.DynamicProductDetailAdapter
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
+import com.tokopedia.product.detail.view.bottomsheet.OvoFlashDealsBottomSheet
 import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.*
@@ -1191,7 +1192,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
 
-    private fun onSuccessAtc(cartId: String) {
+    private fun onSuccessAtc(result: AddToCartDataModel) {
+        val cartId = result.data.cartId.toString()
         DynamicProductDetailTracking.Click.eventEcommerceBuy(viewModel.buttonActionType,
                 viewModel.buttonActionText,
                 viewModel.userId,
@@ -1206,10 +1208,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
         when (viewModel.buttonActionType) {
             ProductDetailConstant.OCS_BUTTON -> {
-                goToCheckout(ShipmentFormRequest
-                        .BundleBuilder()
-                        .build()
-                        .bundle)
+                if (result.data.success == 0)
+                    validateOvo(result)
+                else
+                    goToCheckout(ShipmentFormRequest
+                            .BundleBuilder()
+                            .deviceId("")
+                            .build()
+                            .bundle)
             }
             ProductDetailConstant.BUY_BUTTON -> {
                 goToCartCheckout(cartId)
@@ -1223,6 +1229,23 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         .deviceId(viewModel.tradeinDeviceId)
                         .build()
                         .bundle)
+            }
+        }
+    }
+
+    private fun validateOvo(result: AddToCartDataModel) {
+        if (result.data.refreshPrerequisitePage) {
+            onSwipeRefresh()
+        } else {
+            if (result.data.ovoValidationDataModel.status == 1) {
+                activity?.let {
+                    RouteManager.route(it, result.data.ovoValidationDataModel.applink)
+                }
+            } else {
+                activity?.let {
+                    val bottomSheetOvoDeals = OvoFlashDealsBottomSheet(result.data.ovoValidationDataModel)
+                    bottomSheetOvoDeals.show(it.supportFragmentManager, "Ovo Deals")
+                }
             }
         }
     }
