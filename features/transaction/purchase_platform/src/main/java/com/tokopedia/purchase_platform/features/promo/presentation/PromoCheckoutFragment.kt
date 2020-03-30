@@ -130,10 +130,15 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) as ValidateUsePromoRequest
             viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.mutation_validate_use_promo_revamp), validateUsePromoRequest)
         }
+
         button_apply_no_promo.setOnClickListener {
             setButtonLoading(button_apply_no_promo, true)
             val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) as ValidateUsePromoRequest
             viewModel.clearPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo), validateUsePromoRequest)
+        }
+
+        swipe_refresh_layout.setOnRefreshListener {
+            reloadData()
         }
 
         val lastHeaderUiModel: PromoListHeaderUiModel? = null
@@ -394,6 +399,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             showLoading()
         } else {
             hideLoading()
+            swipe_refresh_layout.isRefreshing = false
         }
 
         if (!fragmentUiModel.uiState.hasFailedToLoad) {
