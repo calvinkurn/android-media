@@ -32,7 +32,7 @@ import android.os.Process;
 /**
  * Dumps cpu usage.
  */
-    class CpuSampler extends AbstractSampler {
+class CpuSampler extends AbstractSampler {
 
     private static final String TAG = "CpuSampler";
     private static final int BUFFER_SIZE = 1000;
