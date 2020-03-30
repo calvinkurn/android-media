@@ -176,7 +176,7 @@ open class HomeViewModel @Inject constructor(
 
     fun hitBannerImpression(slidesModel: BannerSlidesModel) {
         if (!slidesModel.isImpressed && slidesModel.topadsViewUrl.isNotEmpty()) {
-            compositeSubscription.add(Observable.just(ImpresionTask(object : ImpressionListener {
+            compositeSubscription.add(Observable.just(ImpresionTask(HomeViewModel::class.java, object : ImpressionListener {
                         override fun onSuccess() {
                             slidesModel.isImpressed = true
                         }
@@ -368,7 +368,7 @@ open class HomeViewModel @Inject constructor(
 
     fun onBannerClicked(slidesModel: BannerSlidesModel) {
         if (slidesModel.redirectUrl.isNotEmpty()) {
-            ImpresionTask().execute(slidesModel.redirectUrl)
+            ImpresionTask(HomeViewModel::class.java).execute(slidesModel.redirectUrl)
         }
     }
 

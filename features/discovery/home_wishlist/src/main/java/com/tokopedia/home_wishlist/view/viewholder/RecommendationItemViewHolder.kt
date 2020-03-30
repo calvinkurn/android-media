@@ -50,7 +50,7 @@ class RecommendationItemViewHolder(view: View) : SmartAbstractViewHolder<Recomme
             setImageProductViewHintListener(element.recommendationItem, object: ViewHintListener{
                 override fun onViewHint() {
                     if(element.recommendationItem.isTopAds){
-                        ImpresionTask().execute(element.recommendationItem.trackerImageUrl)
+                        ImpresionTask(RecommendationItemViewHolder::class.java).execute(element.recommendationItem.trackerImageUrl)
                     }
                     (listener as WishlistListener).onProductImpression(element, adapterPosition)
                 }
@@ -59,7 +59,7 @@ class RecommendationItemViewHolder(view: View) : SmartAbstractViewHolder<Recomme
             setOnClickListener {
                 (listener as WishlistListener).onProductClick(element, parentPositionDefault, adapterPosition)
                 if (element.recommendationItem.isTopAds) {
-                    ImpresionTask().execute(element.recommendationItem.clickUrl)
+                    ImpresionTask(RecommendationItemViewHolder::class.java).execute(element.recommendationItem.clickUrl)
                 }
             }
         }

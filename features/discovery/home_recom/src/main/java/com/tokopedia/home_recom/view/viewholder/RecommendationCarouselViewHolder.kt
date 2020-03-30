@@ -45,7 +45,7 @@ class RecommendationCarouselViewHolder(val view: View) : AbstractViewHolder<Reco
                                 productRecommendation.parentPosition,
                                 carouselProductCardPosition)
                         if (productRecommendation.productItem.isTopAds) {
-                            ImpresionTask().execute(productRecommendation.productItem.clickUrl)
+                            ImpresionTask(RecommendationCarouselViewHolder::class.java).execute(productRecommendation.productItem.clickUrl)
                         }
                     }
                 },
@@ -57,7 +57,7 @@ class RecommendationCarouselViewHolder(val view: View) : AbstractViewHolder<Reco
                     override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val productRecommendation = products.getOrNull(carouselProductCardPosition) ?: return
                         if(productRecommendation.productItem.isTopAds){
-                            ImpresionTask().execute(productRecommendation.productItem.trackerImageUrl)
+                            ImpresionTask(RecommendationCarouselViewHolder::class.java).execute(productRecommendation.productItem.trackerImageUrl)
                         }
                         productRecommendation.listener.onProductImpression(productRecommendation.productItem)
                     }

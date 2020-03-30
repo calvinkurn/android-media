@@ -203,7 +203,7 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
 
     override fun onProductRecommendationClicked(product: RecommendationItem, adapterPosition: Int, widgetTitle: String) {
         sendProductClickTracking(product, adapterPosition, widgetTitle)
-        if (product.isTopAds) ImpresionTask().execute(product.clickUrl)
+        if (product.isTopAds) ImpresionTask(BuyerAccountFragment::class.java).execute(product.clickUrl)
 
         RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, product.productId.toString()).run {
             putExtra(PDP_EXTRA_UPDATED_POSITION, adapterPosition)
@@ -214,7 +214,7 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     override fun onProductRecommendationImpression(product: RecommendationItem, adapterPosition: Int) {
         sendProductImpressionTracking(getTrackingQueue(), product, adapterPosition)
         if (product.isTopAds) {
-            ImpresionTask().execute(product.trackerImageUrl)
+            ImpresionTask(BuyerAccountFragment::class.java).execute(product.trackerImageUrl)
         }
     }
 

@@ -121,14 +121,14 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 shop_image.addOnImpressionListener(cpmData.cpm.cpmShop.imageShop) {
                     impressionListener?.let {
                         it.onImpressionHeadlineAdsItem(0, cpmData)
-                        ImpresionTask().execute(cpmData.cpm.cpmImage.fullUrl)
+                        ImpresionTask(TopAdsBannerView::class.java).execute(cpmData.cpm.cpmImage.fullUrl)
                     }
                 }
             }
             shop_image?.setOnClickListener {
                 if (topAdsBannerClickListener != null) {
                     topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)
-                    ImpresionTask().execute(cpmData?.adClickUrl)
+                    ImpresionTask(TopAdsBannerView::class.java).execute(cpmData?.adClickUrl)
                 }
             }
             if (cpmData.cpm.cpmShop.isPowerMerchant && !cpmData.cpm.cpmShop.isOfficial) {
@@ -159,19 +159,19 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             shop_badge?.setOnClickListener {
                 if (topAdsBannerClickListener != null) {
                     topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)
-                    ImpresionTask().execute(cpmData?.adClickUrl)
+                    ImpresionTask(TopAdsBannerView::class.java).execute(cpmData?.adClickUrl)
                 }
             }
             shop_name?.setOnClickListener {
                 if (topAdsBannerClickListener != null) {
                     topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)
-                    ImpresionTask().execute(cpmData?.adClickUrl)
+                    ImpresionTask(TopAdsBannerView::class.java).execute(cpmData?.adClickUrl)
                 }
             }
             kunjungi_toko?.setOnClickListener {
                 if (topAdsBannerClickListener != null) {
                     topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)
-                    ImpresionTask().execute(cpmData?.adClickUrl)
+                    ImpresionTask(TopAdsBannerView::class.java).execute(cpmData?.adClickUrl)
                 }
             }
             val items = ArrayList<Item<*>>()
@@ -220,7 +220,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                             if (image != null) {
                                 image.setImageBitmap(resource)
-                                ImpresionTask().execute(cpm.cpmImage.fullUrl)
+                                ImpresionTask(TopAdsBannerView::class.java).execute(cpm.cpmImage.fullUrl)
                             }
                         }
 
@@ -269,7 +269,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                         setOnClickListener {
                             if (topAdsBannerClickListener != null) {
                                 topAdsBannerClickListener!!.onBannerAdsClicked(0, data.applinks, data)
-                                ImpresionTask().execute(data.adClickUrl)
+                                ImpresionTask(TopAdsBannerView::class.java).execute(data.adClickUrl)
                             }
                         }
                     }

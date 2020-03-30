@@ -101,7 +101,7 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
                 if (topAdsBannerClickListener != null) {
                     topAdsBannerClickListener.onBannerAdsClicked((getAdapterPosition()),
                             element.getProduct().getApplinks(), element.getCpmData());
-                    new ImpresionTask().execute(element.getProduct().getImageProduct().getImageClickUrl());
+                    new ImpresionTask(BannerShopProductViewHolder.class).execute(element.getProduct().getImageProduct().getImageClickUrl());
                 }
             }
         });

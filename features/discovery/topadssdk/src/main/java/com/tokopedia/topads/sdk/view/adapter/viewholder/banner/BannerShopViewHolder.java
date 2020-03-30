@@ -57,7 +57,7 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
                 public void onClick(View view) {
                     if(topAdsBannerClickListener!=null) {
                         topAdsBannerClickListener.onBannerAdsClicked(getAdapterPosition(), element.getAppLink(), element.getCpmData());
-                        new ImpresionTask().execute(element.getAdsClickUrl());
+                        new ImpresionTask(BannerShopViewHolder.class).execute(element.getAdsClickUrl());
                     }
                 }
             });

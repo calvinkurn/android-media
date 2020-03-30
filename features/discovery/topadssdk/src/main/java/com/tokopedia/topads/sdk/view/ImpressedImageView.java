@@ -88,9 +88,9 @@ public class ImpressedImageView extends AppCompatImageView {
                             hintListener.onViewHint();
                         }
                         if(holder instanceof ProductImage){
-                            new ImpresionTask().execute(((ProductImage) holder).getM_url());
+                            new ImpresionTask(ImpressedImageView.class).execute(((ProductImage) holder).getM_url());
                         } else if(holder instanceof CpmImage){
-                            new ImpresionTask().execute(((CpmImage) holder).getFullUrl());
+                            new ImpresionTask(ImpressedImageView.class).execute(((CpmImage) holder).getFullUrl());
                         }
                         holder.invoke();
                     }

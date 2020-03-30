@@ -70,7 +70,7 @@ abstract class BaseRecommendationView(context: Context,
                         val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
                         val topAdsClickUrl = productRecommendation.clickUrl
                         if (productCardModel.isTopAds) {
-                            ImpresionTask().execute(topAdsClickUrl)
+                            ImpresionTask(BaseRecommendationView::class.java).execute(topAdsClickUrl)
                         }
                         productDetailTracking.eventRecommendationClick(
                                 productRecommendation,
@@ -94,7 +94,7 @@ abstract class BaseRecommendationView(context: Context,
                         val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
                         val topAdsImageUrl = productRecommendation.trackerImageUrl
                         if (productCardModel.isTopAds) {
-                            ImpresionTask().execute(topAdsImageUrl)
+                            ImpresionTask(BaseRecommendationView::class.java).execute(topAdsImageUrl)
                         }
                         productDetailTracking.eventRecommendationImpression(
                                 carouselProductCardPosition,

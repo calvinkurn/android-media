@@ -76,7 +76,7 @@ class RecommendationProductAdapter(private var recommendationWidget: Recommendat
                 setImageProductViewHintListener(product, object : ViewHintListener {
                     override fun onViewHint() {
                         if (product.isTopAds) {
-                            ImpresionTask().execute(product.trackerImageUrl)
+                            ImpresionTask(RecommendationProductAdapter::class.java).execute(product.trackerImageUrl)
                         }
                         productDetailTracking.eventRecommendationImpression(adapterPosition, product, userActiveListener.isUserSessionActive, pageName, recommendationWidget.title)
                     }
@@ -84,7 +84,7 @@ class RecommendationProductAdapter(private var recommendationWidget: Recommendat
 
                 setOnClickListener {
                     if (product.isTopAds) {
-                        ImpresionTask().execute(product.clickUrl)
+                        ImpresionTask(RecommendationProductAdapter::class.java).execute(product.clickUrl)
                     }
                     productDetailTracking.eventRecommendationClick(product, adapterPosition, userActiveListener.isUserSessionActive,pageName,recommendationWidget.title)
                     context?.run {

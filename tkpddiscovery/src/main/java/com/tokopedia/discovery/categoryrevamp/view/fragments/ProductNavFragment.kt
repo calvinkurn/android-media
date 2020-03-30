@@ -479,7 +479,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
             startActivityForResult(intent, 1002)
         }
         if (item.isTopAds) {
-            ImpresionTask().execute(item.productClickTrackingUrl)
+            ImpresionTask(ProductNavFragment::class.java).execute(item.productClickTrackingUrl)
         }
         catAnalyticsInstance.eventClickProductList(item.id.toString(),
                 mDepartmentId,
@@ -671,7 +671,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
     }
 
     override fun topAdsTrackerUrlTrigger(url: String) {
-        ImpresionTask().execute(url)
+        ImpresionTask(ProductNavFragment::class.java).execute(url)
     }
 
     override fun onPause() {

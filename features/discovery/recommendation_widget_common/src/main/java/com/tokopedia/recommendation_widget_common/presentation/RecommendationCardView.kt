@@ -45,7 +45,7 @@ open class RecommendationCardView : ProductCardView {
                 object: ViewHintListener {
                     override fun onViewHint() {
                         if(item.isTopAds){
-                            ImpresionTask().execute(item.trackerImageUrl)
+                            ImpresionTask(RecommendationCardView::class.java).execute(item.trackerImageUrl)
                             //Impression for topads item
                             trackingListener.onImpressionTopAds(item)
                         } else {
@@ -58,7 +58,7 @@ open class RecommendationCardView : ProductCardView {
 
         setOnClickListener {
             if (item.isTopAds) {
-                ImpresionTask().execute(item.clickUrl)
+                ImpresionTask(RecommendationCardView::class.java).execute(item.clickUrl)
                 //Click for topads item
                 trackingListener.onClickTopAds(item)
             } else {

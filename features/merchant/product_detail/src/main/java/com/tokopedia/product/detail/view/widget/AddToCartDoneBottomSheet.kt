@@ -211,7 +211,7 @@ class AddToCartDoneBottomSheet :
     }
 
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
-        if (item.isTopAds) ImpresionTask().execute(item.clickUrl)
+        if (item.isTopAds) ImpresionTask(AddToCartDoneBottomSheet::class.java).execute(item.clickUrl)
         productDetailTracking.eventAddToCartRecommendationClick(
                 item,
                 item.position,
@@ -228,7 +228,7 @@ class AddToCartDoneBottomSheet :
     }
 
     override fun onProductImpression(item: RecommendationItem) {
-        if (item.isTopAds) ImpresionTask().execute(item.trackerImageUrl)
+        if (item.isTopAds) ImpresionTask(AddToCartDoneBottomSheet::class.java).execute(item.trackerImageUrl)
         productDetailTracking.eventAddToCartRecommendationImpression(
                 item.position,
                 item,

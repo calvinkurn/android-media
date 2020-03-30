@@ -116,7 +116,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
                         @Override
                         public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                             if (coverUri.contains(PATH_VIEW) && !isFirstResource) {
-                                new ImpresionTask().execute(coverUri);
+                                new ImpresionTask(TopAdsShopAdapter.class).execute(coverUri);
                             }
                             return false;
                         }

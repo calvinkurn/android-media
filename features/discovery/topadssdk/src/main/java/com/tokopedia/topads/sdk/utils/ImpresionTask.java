@@ -2,6 +2,7 @@ package com.tokopedia.topads.sdk.utils;
 
 import android.os.AsyncTask;
 
+import com.tokopedia.entertainment.home.alert.ImpressionTaskAlert;
 import com.tokopedia.topads.sdk.listener.ImpressionListener;
 import com.tokopedia.topads.sdk.network.HttpMethod;
 import com.tokopedia.topads.sdk.network.HttpRequest;
@@ -15,12 +16,15 @@ import java.io.IOException;
 public class ImpresionTask extends AsyncTask<String, Void, String> {
 
     private ImpressionListener impressionListener;
+    private ImpressionTaskAlert taskAlert;
 
-    public ImpresionTask() {
+    public ImpresionTask(Class aClass) {
+        taskAlert = ImpressionTaskAlert.getInstance(aClass);
     }
 
-    public ImpresionTask(ImpressionListener impressionListener) {
+    public ImpresionTask(Class aClass, ImpressionListener impressionListener) {
         this.impressionListener = impressionListener;
+        taskAlert = ImpressionTaskAlert.getInstance(aClass);
     }
 
     @Override
@@ -36,6 +40,7 @@ public class ImpresionTask extends AsyncTask<String, Void, String> {
             } catch (IOException | RuntimeException e) {
                 e.printStackTrace();
             }
+            taskAlert.track(url);
         }
         return null;
     }

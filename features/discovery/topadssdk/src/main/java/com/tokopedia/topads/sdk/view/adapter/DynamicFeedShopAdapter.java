@@ -126,7 +126,7 @@ public class DynamicFeedShopAdapter
                         ivImageRight.setViewHintListener(new ImpressedImageView.ViewHintListener() {
                             @Override
                             public void onViewHint() {
-                                new ImpresionTask().execute(shop.getImageShop().getsUrl());
+                                new ImpresionTask(DynamicFeedShopAdapter.class).execute(shop.getImageShop().getsUrl());
                             }
                         });
                     }

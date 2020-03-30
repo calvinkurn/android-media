@@ -42,7 +42,7 @@ class RecommendationCarouselViewHolder(view: View, private val appExecutors: Sma
                         val element = dataModel.list.getOrNull(carouselProductCardPosition) ?: return
 
                         if(element.recommendationItem.isTopAds){
-                            ImpresionTask().execute(element.recommendationItem.trackerImageUrl)
+                            ImpresionTask(RecommendationCarouselItemViewHolder::class.java).execute(element.recommendationItem.trackerImageUrl)
                         }
 
                         (listener as WishlistListener).onProductImpression(element, carouselProductCardPosition)
@@ -58,7 +58,7 @@ class RecommendationCarouselViewHolder(view: View, private val appExecutors: Sma
 
                         (listener as WishlistListener).onProductClick(element, element.parentPosition, carouselProductCardPosition)
                         if (element.recommendationItem.isTopAds) {
-                            ImpresionTask().execute(element.recommendationItem.clickUrl)
+                            ImpresionTask(RecommendationCarouselItemViewHolder::class.java).execute(element.recommendationItem.clickUrl)
                         }
                     }
                 }

@@ -723,7 +723,7 @@ public class ProductListFragment
     @Override
     public void onProductImpressed(ProductItemViewModel item, int adapterPosition) {
         if (item.isTopAds()) {
-            new ImpresionTask().execute(item.getTopadsImpressionUrl());
+            new ImpresionTask(ProductListFragment.class).execute(item.getTopadsImpressionUrl());
             Product product = new Product();
             product.setId(item.getProductID());
             product.setName(item.getProductName());
@@ -790,7 +790,7 @@ public class ProductListFragment
     }
 
     private void sendItemClickTrackingEventForTopAdsItem(ProductItemViewModel item, int pos) {
-        new ImpresionTask().execute(item.getTopadsClickUrl());
+        new ImpresionTask(ProductListFragment.class).execute(item.getTopadsClickUrl());
 
         Product product = createTopAdsProductForTracking(item);
 

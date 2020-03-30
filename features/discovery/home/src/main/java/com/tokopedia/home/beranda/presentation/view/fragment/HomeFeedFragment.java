@@ -344,7 +344,7 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
     @Override
     public void onProductImpression(HomeFeedViewModel model, int position) {
         if (model.isTopAds()) {
-            new ImpresionTask().execute(model.getTrackerImageUrl());
+            new ImpresionTask(HomeFeedFragment.class).execute(model.getTrackerImageUrl());
             if(userSession.isLoggedIn()){
                 homeTrackingQueue.putEETracking((HashMap<String, Object>) HomeRecommendationTracking.INSTANCE.getRecommendationProductViewLoginTopAds(
                         tabName.toLowerCase(),
@@ -401,7 +401,7 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
                         homeFeedViewModel
                 ));
             } else {
-                new ImpresionTask().execute(homeFeedViewModel.getClickUrl());
+                new ImpresionTask(HomeFeedFragment.class).execute(homeFeedViewModel.getClickUrl());
                 TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationProductClickLoginTopAds(
                         tabName.toLowerCase(),
                         homeFeedViewModel
@@ -414,7 +414,7 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
                         homeFeedViewModel
                 ));
             } else {
-                new ImpresionTask().execute(homeFeedViewModel.getClickUrl());
+                new ImpresionTask(HomeFeedFragment.class).execute(homeFeedViewModel.getClickUrl());
                 TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationProductClickNonLoginTopAds(
                         tabName.toLowerCase(),
                         homeFeedViewModel

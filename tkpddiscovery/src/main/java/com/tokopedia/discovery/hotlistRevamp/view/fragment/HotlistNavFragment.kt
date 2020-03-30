@@ -491,7 +491,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
             startActivityForResult(intent, REQUEST_PRODUCT_ITEM_CLICK)
         }
         if (item.isTopAds) {
-            ImpresionTask().execute(item.productClickTrackingUrl)
+            ImpresionTask(HotlistNavFragment::class.java).execute(item.productClickTrackingUrl)
         }
     }
 

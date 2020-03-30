@@ -56,7 +56,7 @@ class RecommendationCarouselItemViewHolder(
             setImageProductViewHintListener(element.recommendationItem, object: ViewHintListener{
                 override fun onViewHint() {
                     if(element.recommendationItem.isTopAds){
-                        ImpresionTask().execute(element.recommendationItem.trackerImageUrl)
+                        ImpresionTask(RecommendationCarouselItemViewHolder::class.java).execute(element.recommendationItem.trackerImageUrl)
                     }
                     (listener as WishlistListener).onProductImpression(element, adapterPosition)
                 }
@@ -65,7 +65,7 @@ class RecommendationCarouselItemViewHolder(
             setOnClickListener {
                 (listener as WishlistListener).onProductClick(element, element.parentPosition, adapterPosition)
                 if (element.recommendationItem.isTopAds) {
-                    ImpresionTask().execute(element.recommendationItem.clickUrl)
+                    ImpresionTask(RecommendationCarouselItemViewHolder::class.java).execute(element.recommendationItem.clickUrl)
                 }
             }
         }

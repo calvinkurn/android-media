@@ -270,7 +270,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     @Override
     public void onProductClick(@NotNull RecommendationItem item, @org.jetbrains.annotations.Nullable String layoutType, @NotNull int... position) {
         if (item.isTopAds()) {
-            new ImpresionTask().execute(item.getClickUrl());
+            new ImpresionTask(InboxFragment.class).execute(item.getClickUrl());
             onClickTopAds(item);
         }else {
             onClickOrganic(item);
@@ -304,7 +304,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     @Override
     public void onProductImpression(@NotNull RecommendationItem item) {
         if(item.isTopAds()){
-            new ImpresionTask().execute(item.getTrackerImageUrl());
+            new ImpresionTask(InboxFragment.class).execute(item.getTrackerImageUrl());
             onImpressionTopAds(item);
         }else {
             onImpressionOrganic(item);
@@ -452,7 +452,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     private void onImpressionTopAds(RecommendationItem item) {
-        new ImpresionTask().execute(item.getTrackerImageUrl());
+        new ImpresionTask(InboxFragment.class).execute(item.getTrackerImageUrl());
         InboxGtmTracker.getInstance().addInboxProductViewImpressions(item, item.getPosition(), item.isTopAds());
     }
 
@@ -461,7 +461,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     private void onClickTopAds(RecommendationItem item) {
-        new ImpresionTask().execute(item.getClickUrl());
+        new ImpresionTask(InboxFragment.class).execute(item.getClickUrl());
         InboxGtmTracker.getInstance().eventInboxProductClick(getContext(), item, item.getPosition(), item.isTopAds());
     }
 
