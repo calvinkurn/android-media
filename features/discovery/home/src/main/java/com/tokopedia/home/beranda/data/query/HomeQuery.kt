@@ -62,6 +62,7 @@ object HomeQuery{
           dynamicHomeChannel {
             channels {
               id
+              group_id
               galaxy_attribution
               persona
               brand_id
@@ -106,6 +107,7 @@ object HomeQuery{
                 productClickUrl
                 impression
                 cashback
+                isTopads
                 freeOngkir {
                   isActive
                   imageUrl

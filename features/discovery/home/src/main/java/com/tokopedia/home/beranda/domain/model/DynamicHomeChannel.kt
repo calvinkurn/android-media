@@ -19,6 +19,9 @@ data class DynamicHomeChannel(
             @SerializedName("id")
             val id: String = "",
             @Expose
+            @SerializedName("group_id")
+            val groupId: String = "",
+            @Expose
             @SerializedName("galaxy_attribution")
             val galaxyAttribution: String = "",
             @Expose
@@ -617,6 +620,9 @@ data class DynamicHomeChannel(
             @Expose
             @SerializedName("productClickUrl")
             val productClickUrl: String = "",
+            @Expose
+            @SerializedName("isTopads")
+            val isTopads: Boolean = false,
             @Expose
             @SerializedName("freeOngkir")
             val freeOngkir: FreeOngkir = FreeOngkir(),

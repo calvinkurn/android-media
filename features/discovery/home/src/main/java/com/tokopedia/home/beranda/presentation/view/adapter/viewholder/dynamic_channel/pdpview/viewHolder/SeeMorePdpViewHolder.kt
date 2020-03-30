@@ -2,20 +2,13 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 
 import android.view.View
 import android.widget.ImageView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-import com.tokopedia.home.beranda.helper.glide.FPM_SEE_ALL_CARD_BACKGROUND
-import com.tokopedia.home.beranda.helper.glide.loadImage
 import com.tokopedia.home.beranda.helper.glide.loadImageWithoutPlaceholder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.SeeMorePdpDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
 
 class SeeMorePdpViewHolder(view: View,
-                           private val listener: FlashSaleCardListener,
                            private val channels: DynamicHomeChannel.Channels)
     : AbstractViewHolder<SeeMorePdpDataModel>(view){
 
@@ -24,11 +17,11 @@ class SeeMorePdpViewHolder(view: View,
 
     override fun bind(element: SeeMorePdpDataModel) {
         bannerBackgroundImage.setOnClickListener {
-            listener.onBannerSeeMoreClicked(applink = element.applink, channel = channels)
+            element.listener.onBannerSeeMoreClicked(applink = element.applink, channel = channels)
         }
         bannerBackgroundImage.loadImageWithoutPlaceholder(element.backgroundImage)
         container.setOnClickListener {
-            listener.onBannerSeeMoreClicked(applink = element.applink, channel = channels)
+            element.listener.onBannerSeeMoreClicked(applink = element.applink, channel = channels)
         }
     }
 
