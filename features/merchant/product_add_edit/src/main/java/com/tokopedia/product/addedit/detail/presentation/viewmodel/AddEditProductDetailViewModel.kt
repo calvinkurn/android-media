@@ -304,7 +304,7 @@ class AddEditProductDetailViewModel @Inject constructor(
                 getCategoryRecommendationUseCase.executeOnBackground()
             })
         }, onError = {
-            productCategoryRecommendationLiveData.postValue(Fail(it))
+            productCategoryRecommendationLiveData.value = Fail(it)
         })
     }
 }
