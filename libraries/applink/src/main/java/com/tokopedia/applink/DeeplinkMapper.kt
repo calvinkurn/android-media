@@ -30,9 +30,8 @@ import com.tokopedia.applink.recommendation.getRegisteredNavigationRecommendatio
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrah
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahOrderDetail
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahShop
-import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationOrder
-import com.tokopedia.applink.payment.DeepLinkThankYouPage.getThankYouPage
 import com.tokopedia.applink.search.DeeplinkMapperSearch.getRegisteredNavigationSearch
+import com.tokopedia.applink.payment.DeepLinkThankYouPage.getThankYouPage
 import com.tokopedia.config.GlobalConfig
 
 /**
@@ -65,7 +64,6 @@ object DeeplinkMapper {
                 var tempDeeplink = when {
                     deeplink.startsWith(ApplinkConst.QRSCAN, true) -> ApplinkConstInternalMarketplace.QR_SCANNEER
                     deeplink.startsWith(ApplinkConst.SALAM_UMRAH_SHOP, true) -> getRegisteredNavigationSalamUmrahShop(deeplink, context)
-                    deeplink.startsWith(ApplinkConst.THANK_YOU_PAGE_NATIVE, true) ->getThankYouPage(deeplink)
                     deeplink.startsWith(ApplinkConst.TOP_CHAT, true) && isChatBotTrue(deeplink) ->
                         getChatbotDeeplink(deeplink)
                     deeplink.startsWith(ApplinkConst.HOTEL, true) -> deeplink
@@ -113,6 +111,7 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.TALK, true) -> getRegisteredNavigationTalk(deeplink)
                     isProductTalkDeeplink(deeplink) -> getRegisteredNavigationProductTalk(deeplink)
                     isShopTalkDeeplink(deeplink) -> getRegisteredNavigationShopTalk(deeplink)
+                    deeplink.startsWith(ApplinkConst.THANK_YOU_PAGE_NATIVE, true) ->getThankYouPage(deeplink)
                     else -> {
                         if (specialNavigationMapper(deeplink, ApplinkConst.HOST_CATEGORY_P)) {
                             getRegisteredCategoryNavigation(getSegments(deeplink), deeplink)
@@ -231,7 +230,6 @@ object DeeplinkMapper {
             ApplinkConst.PRODUCT_ADD -> ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
             ApplinkConst.SETTING_PROFILE -> ApplinkConstInternalGlobal.SETTING_PROFILE
             ApplinkConst.ADD_CREDIT_CARD -> ApplinkConstInternalPayment.PAYMENT_ADD_CREDIT_CARD
-            ApplinkConst.THANK_YOU_PAGE_NATIVE -> ApplinkConstInternalPayment.PAYMENT_THANK_YOU_PAGE
             ApplinkConst.SETTING_NOTIFICATION -> ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
             ApplinkConst.GROUPCHAT_LIST -> ApplinkConstInternalPlay.GROUPCHAT_LIST
             ApplinkConst.KYC -> ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
@@ -257,6 +255,7 @@ object DeeplinkMapper {
             ApplinkConst.PRODUCT_MANAGE -> ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
             ApplinkConst.NOTIFICATION -> ApplinkConstInternalMarketplace.NOTIFICATION_CENTER
             ApplinkConst.CHANGE_PASSWORD -> return ApplinkConstInternalGlobal.CHANGE_PASSWORD
+            ApplinkConst.THANK_YOU_PAGE_NATIVE -> ApplinkConstInternalPayment.PAYMENT_THANK_YOU_PAGE
             else -> ""
         }
         if (mappedDeeplink.isNotEmpty()) {

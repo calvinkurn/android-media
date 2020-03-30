@@ -10,10 +10,13 @@ class ThankYouPageAnalytics {
 
     private val IDR = "IDR"
 
+    private lateinit var thanksPageData: ThanksPageData
+
     private val analyticTracker: ContextAnalytics
         get() = TrackApp.getInstance().gtm
 
     fun sendThankYouPageData(thanksPageData: ThanksPageData) {
+        this.thanksPageData = thanksPageData
         thanksPageData.shopOrder.forEach { shopOrder ->
             val data = getParentTrackingNode(thanksPageData)
             data[ParentTrackingKey.KEY_SHOP_ID] = shopOrder.storeId
@@ -51,7 +54,7 @@ class ThankYouPageAnalytics {
         return mapOf(
                 ActionFieldNodeTrackingKey.KEY_ID to orderedItem.orderId,
                 ActionFieldNodeTrackingKey.KEY_AFFILIATION to orderedItem.storeName,
-                ActionFieldNodeTrackingKey.KEY_REVENUE to null,//todo not clear...
+                ActionFieldNodeTrackingKey.KEY_REVENUE to thanksPageData.additionalInfo.revenue,
                 ActionFieldNodeTrackingKey.KEY_TAX to orderedItem.tax,
                 ActionFieldNodeTrackingKey.KEY_SHIPPING to orderedItem.shippingAmount,
                 ActionFieldNodeTrackingKey.KEY_COUPON to orderedItem.coupon

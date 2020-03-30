@@ -19,7 +19,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.v2.BlankSpaceConfig
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.thankyou_native.R

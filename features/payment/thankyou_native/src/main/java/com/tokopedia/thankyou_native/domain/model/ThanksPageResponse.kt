@@ -167,8 +167,9 @@ data class AdditionalInfo(
         @SerializedName("installment_info")
         val installmentInfo: String,
         @SerializedName("interest")
-        val interest: Float
-) : Parcelable {
+        val interest: Float,
+        @SerializedName("revenue")
+        val revenue: Float) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
@@ -176,8 +177,8 @@ data class AdditionalInfo(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
-            parcel.readFloat()) {
-    }
+            parcel.readFloat(),
+            parcel.readFloat())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(accountNumber)
@@ -187,6 +188,7 @@ data class AdditionalInfo(
         parcel.writeString(maskedNumber)
         parcel.writeString(installmentInfo)
         parcel.writeFloat(interest)
+        parcel.writeFloat(revenue)
     }
 
     override fun describeContents(): Int {

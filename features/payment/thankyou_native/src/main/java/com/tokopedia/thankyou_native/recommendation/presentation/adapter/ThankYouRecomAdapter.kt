@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.productcard.v2.BlankSpaceConfig
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.model.ThankYouRecommendationModel
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.viewholder.RecommendationViewHolder
 

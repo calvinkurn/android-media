@@ -90,6 +90,7 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
         masked_number
         installment_info
         interest
+        revenue
     }
     how_to_pay
     event

@@ -131,7 +131,7 @@ object PromoDataKey {
 
 object PaymentItemKey {
     const val MACRO_INSURANCE = "macroinsurance"
-    const val PROTECTION_PLAN = "protection_plan"
+    const val PROTECTION_PLAN = "purchase_plan_protection"
     const val E_GOLD = "egold"
     const val DONATION = "donation"
     const val SERVICE_FEE = "total_fee"
