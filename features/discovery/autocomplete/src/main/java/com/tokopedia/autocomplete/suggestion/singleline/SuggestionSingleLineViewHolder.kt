@@ -41,7 +41,7 @@ class SuggestionSingleLineViewHolder(
     private fun bindTextTitle(item: SuggestionSingleLineViewModel){
         val startIndex = indexOfSearchQuery(item.title, item.searchTerm)
         if (startIndex == -1) {
-            itemView.singleLineTitle?.text = item.title.toLowerCase()
+            itemView.singleLineTitle?.text = item.title
         } else {
             val highlightedTitle = SpannableString(item.title)
             highlightedTitle.safeSetSpan(TextAppearanceSpan(itemView.context, R.style.searchTextHiglight),
