@@ -16,11 +16,9 @@ import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapTo
 import com.tokopedia.product.manage.feature.list.view.model.*
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.*
-import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgressDialog
-import com.tokopedia.product.manage.feature.list.view.model.ViewState.RefreshList
-import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgressDialog
 import com.tokopedia.product.manage.feature.multiedit.data.param.MenuParam
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
+import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.multiedit.data.param.ProductParam
 import com.tokopedia.product.manage.feature.multiedit.data.param.ShopParam
 import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
@@ -119,7 +117,6 @@ class ProductManageViewModel @Inject constructor(
     private var getProductListJob: Job? = null
     private var getFilterTabJob: Job? = null
 
-    fun isIdlePowerMerchant(): Boolean = userSessionInterface.isPowerMerchantIdle
     fun isPowerMerchant(): Boolean = userSessionInterface.isGoldMerchant
 
     fun getGoldMerchantStatus() {
@@ -205,6 +202,8 @@ class ProductManageViewModel @Inject constructor(
         getProductListJob?.cancel()
 
         launchCatchError(block = {
+            if(isRefresh) { refreshList() }
+
             val productList = withContext(dispatchers.io) {
                 if(withDelay) { delay(REQUEST_DELAY) }
                 val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, filterOptions, sortOption)
@@ -213,7 +212,6 @@ class ProductManageViewModel @Inject constructor(
                 productListResponse?.data
             }
 
-            if(isRefresh) refreshList()
             showProductList(productList)
             hideProgressDialog()
         }, onError = {
@@ -367,6 +365,7 @@ class ProductManageViewModel @Inject constructor(
     }
 
     fun setFilterOptionWrapper(filterOptionWrapper: FilterOptionWrapper) {
+        showProgressDialog()
         _selectedFilterAndSort.value = filterOptionWrapper
     }
 
