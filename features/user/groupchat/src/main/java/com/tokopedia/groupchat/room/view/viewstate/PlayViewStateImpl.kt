@@ -127,7 +127,7 @@ open class PlayViewStateImpl(
     private var chatNotificationView = view.findViewById<View>(R.id.layout_new_chat)
     private var youTubePlayer: YouTubePlayer? = null
     private var replyEditText: BackEditText = view.findViewById(R.id.reply_edit_text)
-    private var login: View = view.findViewById(R.id.login)
+    private var loginChatButton: View = view.findViewById(R.id.login)
     private var inputTextWidget: View = view.findViewById(R.id.bottom)
     private var sendButton: View = view.findViewById(R.id.button_send)
     private var dynamicButtonRecyclerView: RecyclerView = view.findViewById(R.id.buttons)
@@ -239,7 +239,7 @@ open class PlayViewStateImpl(
 
         setBottomView()
 
-        login.setOnClickListener {
+        loginChatButton.setOnClickListener {
             listener.onLoginClicked(viewModel?.channelId)
         }
 
@@ -476,10 +476,10 @@ open class PlayViewStateImpl(
 
     private fun showLoginButton(show: Boolean) {
         if (show && isPortrait) {
-            login.visibility = View.VISIBLE
+            loginChatButton.visibility = View.VISIBLE
             inputTextWidget.visibility = View.GONE
         } else {
-            login.visibility = View.GONE
+            loginChatButton.visibility = View.GONE
             inputTextWidget.visibility = View.VISIBLE
         }
     }
@@ -950,7 +950,7 @@ open class PlayViewStateImpl(
     }
 
     private fun showNewMessageReceived(newMessageCounter: Int) {
-        if (login.visibility != VISIBLE && isPortrait) {
+        if (loginChatButton.visibility != VISIBLE && isPortrait) {
             chatNotificationView.visibility = VISIBLE
         }
     }
@@ -1039,6 +1039,7 @@ open class PlayViewStateImpl(
     }
 
     override fun onErrorGetInfo(globalError: Int) {
+        showLoginButton(false)
         setEmptyStateByType(globalError, action = listener::onRetryGetInfo)
         loadingView.hide()
         errorView.show()
@@ -1046,6 +1047,7 @@ open class PlayViewStateImpl(
     }
 
     override fun onNoInternetConnection() {
+        showLoginButton(false)
         setEmptyStateByType(GlobalError.NO_CONNECTION, action = listener::onRetryGetInfo)
         loadingView.hide()
         errorView.show()
@@ -1153,7 +1155,7 @@ open class PlayViewStateImpl(
             chatNotificationView.gone()
             stickyComponentHelper.hide()
             webviewIcon.gone()
-            login.gone()
+            loginChatButton.gone()
 
             backgroundHelper.setEmptyBackground()
         }
