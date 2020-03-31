@@ -36,7 +36,7 @@ class AttachInvoiceFragment : BaseListFragment<InvoiceViewModel, AttachInvoiceLi
     lateinit var activity: AttachInvoiceContract.Activity
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private lateinit var invoiceSearch: SearchInputView
-    private  var invoices: List<InvoiceViewModel>? = null
+    private val invoices: ArrayList<InvoiceViewModel> by lazy { ArrayList<InvoiceViewModel>() }
     private var hasNextPage: Boolean = false
     private val EMPTY_STRING = ""
 
@@ -55,10 +55,10 @@ class AttachInvoiceFragment : BaseListFragment<InvoiceViewModel, AttachInvoiceLi
 
         invoiceSearch.setListener(object : SearchInputView.Listener {
             override fun onSearchSubmitted(text: String?) {
-                if (invoices?.isNotEmpty() == true) {
-                    val filteredList = invoices?.filter { it.productTopName.contains(text.toString(), true) || it.invoiceNumber.contains(text.toString(), true) }
+                if (invoices.isNotEmpty()) {
+                    val filteredList = invoices.filter { it.productTopName.contains(text.toString(), true) || it.invoiceNumber.contains(text.toString(), true) }
                     isLoadingInitialData = true
-                    renderList(filteredList ?: listOf(), false)
+                    renderList(filteredList, false)
                 }
             }
 
@@ -68,7 +68,7 @@ class AttachInvoiceFragment : BaseListFragment<InvoiceViewModel, AttachInvoiceLi
         invoiceSearch.closeImageButton.setOnClickListener {
             invoiceSearch.searchText = EMPTY_STRING
             isLoadingInitialData = true
-            renderList(invoices ?: listOf(), hasNextPage)
+            renderList(invoices, hasNextPage)
         }
 
         return view
@@ -118,7 +118,7 @@ class AttachInvoiceFragment : BaseListFragment<InvoiceViewModel, AttachInvoiceLi
     }
 
     override fun addInvoicesToList(invoices: List<InvoiceViewModel>, hasNextPage: Boolean) {
-        this.invoices = invoices
+        this.invoices.addAll(invoices)
         this.hasNextPage = hasNextPage
         renderList(invoices, hasNextPage)
     }
