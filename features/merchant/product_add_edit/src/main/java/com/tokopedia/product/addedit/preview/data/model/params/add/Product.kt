@@ -25,6 +25,6 @@ data class Product (
     var stock: Long = 0,
     @SerializedName("pictures")
     @Expose
-    var pictures: List<PictureVariant> = emptyList()
+    var pictures: List<Picture> = emptyList()
 
 ) : Parcelable

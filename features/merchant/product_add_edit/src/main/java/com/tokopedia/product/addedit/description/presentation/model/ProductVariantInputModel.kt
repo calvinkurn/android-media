@@ -63,10 +63,10 @@ data class ProductVariantCombinationViewModel (
     var opt: List<Int> = emptyList(),
     @SerializedName("level1String")
     @Expose
-    var level1String: String,
+    var level1String: String? = null,
     @SerializedName("level2String")
     @Expose
-    var level2String: String
+    var level2String: String? = null
 ): Parcelable
 
 @Parcelize

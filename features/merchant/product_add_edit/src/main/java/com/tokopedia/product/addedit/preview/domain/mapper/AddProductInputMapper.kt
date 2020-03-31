@@ -28,6 +28,7 @@ class AddProductInputMapper @Inject constructor() {
 
     fun mapInputToParam(shopId: String,
                         uploadIdList: ArrayList<String>,
+                        sizeChartUploadId: String,
                         detailInputModel: DetailInputModel,
                         descriptionInputModel: DescriptionInputModel,
                         shipmentInputModel: ShipmentInputModel,
@@ -54,31 +55,35 @@ class AddProductInputMapper @Inject constructor() {
                 mapPreorderParam(detailInputModel.preorder),
                 mapWholesaleParam(detailInputModel.wholesaleList),
                 mapVideoParam(descriptionInputModel.videoLinkList),
-                mapVariantParam(variantInputModel)
+                mapVariantParam(variantInputModel, sizeChartUploadId)
 
         )
     }
 
-    private fun getProductVariantId(variantValue: String, variantOptionParent: List<ProductVariantOptionParent>): Int? {
+    private fun getProductVariantIndex(variantValue: String?,
+                                       variantOptionParent: List<ProductVariantOptionParent>): Int? {
         variantOptionParent.forEach { productVariantOptionParent ->
-            productVariantOptionParent.productVariantOptionChild?.forEach {
-                if (it.value == variantValue) return it.vuv
+            productVariantOptionParent.productVariantOptionChild?.let {
+                for (i in it.indices){
+                    if (it[i].value == variantValue) return i
+                }
             }
         }
         return null
     }
 
-    private fun mapVariantParam(variantInputModel: ProductVariantInputModel): Variant? {
+    private fun mapVariantParam(variantInputModel: ProductVariantInputModel,
+                                sizeChartUploadId: String): Variant? {
         if (variantInputModel.variantOptionParent.size == 0 &&
                 variantInputModel.productVariant.size == 0 &&
                 variantInputModel.productSizeChart == null) return null
 
-        // generate option id for each product variant
+        // generate option index for each product variant
         variantInputModel.productVariant.forEach { productVariant ->
             val options: ArrayList<Int> = ArrayList()
-            val level1Id = getProductVariantId(productVariant.level1String,
+            val level1Id = getProductVariantIndex(productVariant.level1String,
                     variantInputModel.variantOptionParent)
-            val level2Id = getProductVariantId(productVariant.level2String,
+            val level2Id = getProductVariantIndex(productVariant.level2String,
                     variantInputModel.variantOptionParent)
             level1Id?.let { options.add(it) }
             level2Id?.let { options.add(it) }
@@ -88,30 +93,24 @@ class AddProductInputMapper @Inject constructor() {
         return Variant(
                 mapVariantSelectionParam(variantInputModel.variantOptionParent),
                 mapVariantProducts(variantInputModel.productVariant),
-                mapVariantSizeChart(variantInputModel.productSizeChart)
+                mapVariantSizeChart(variantInputModel.productSizeChart, sizeChartUploadId)
         )
     }
 
-    private fun mapVariantSizeChart(productSizeChart: PictureViewModel?): List<PictureVariant> {
-        val sizeCharts: ArrayList<PictureVariant> = ArrayList()
+    private fun mapVariantSizeChart(productSizeChart: PictureViewModel?,
+                                    sizeChartUploadId: String): List<Picture> {
+        val sizeCharts: ArrayList<Picture> = ArrayList()
         productSizeChart?.let {
             if (productSizeChart.filePath.isNotEmpty()) {
-                val sizeChart = PictureVariant(
-                        it.id,
-                        "",
-                        it.filePath,
-                        it.fileName,
-                        it.x,
-                        it.y,
-                        it.fromIg > 0
-                )
+                val sizeChart = Picture(uploadId = sizeChartUploadId)
                 sizeCharts.add(sizeChart)
             }
         }
         return sizeCharts
     }
 
-    private fun mapVariantProducts(productVariant: ArrayList<ProductVariantCombinationViewModel>): List<Product> {
+    private fun mapVariantProducts(
+            productVariant: ArrayList<ProductVariantCombinationViewModel>): List<Product> {
         val products: ArrayList<Product> = ArrayList()
         productVariant.forEach {
             val product = Product(
@@ -126,12 +125,13 @@ class AddProductInputMapper @Inject constructor() {
         return products
     }
 
-    private fun mapVariantSelectionParam(variantOptionParent: List<ProductVariantOptionParent>): List<Selection> {
+    private fun mapVariantSelectionParam(
+            variantOptionParent: List<ProductVariantOptionParent>): List<Selection> {
         val selections: ArrayList<Selection> = ArrayList()
         variantOptionParent.forEach {
             val selection = Selection(
                     it.v.toString(),
-                    it.vu,
+                    it.vu.toString(),
                     mapVariantOptionParam(it.productVariantOptionChild ?: emptyList())
             )
             selections.add(selection)
@@ -139,7 +139,8 @@ class AddProductInputMapper @Inject constructor() {
         return selections
     }
 
-    private fun mapVariantOptionParam(productVariantOptionChild: List<ProductVariantOptionChild>): List<Option> {
+    private fun mapVariantOptionParam(
+            productVariantOptionChild: List<ProductVariantOptionChild>): List<Option> {
         val options: ArrayList<Option> = ArrayList()
         productVariantOptionChild.forEach {
             val option = Option(
@@ -186,9 +187,9 @@ class AddProductInputMapper @Inject constructor() {
     }
 
     private fun mapPictureParam(uploadIdList: java.util.ArrayList<String>): Pictures {
-        val data: ArrayList<PictureId> = ArrayList()
+        val data: ArrayList<Picture> = ArrayList()
         uploadIdList.forEach {
-            data.add(PictureId(it))
+            data.add(Picture(uploadId = it))
         }
         return Pictures(data)
     }

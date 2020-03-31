@@ -75,6 +75,15 @@ class AddEditProductUploadService : JobIntentService(), CoroutineScope {
         initInjector()
     }
 
+    private fun initInjector() {
+        val baseMainApplication = applicationContext as BaseMainApplication
+        DaggerAddEditProductPreviewComponent.builder()
+                .addEditProductComponent(AddEditProductComponentBuilder.getComponent(baseMainApplication))
+                .addEditProductPreviewModule(AddEditProductPreviewModule())
+                .build()
+                .inject(this)
+    }
+
     override val coroutineContext: CoroutineContext by lazy {
         Dispatchers.IO
     }
@@ -84,13 +93,15 @@ class AddEditProductUploadService : JobIntentService(), CoroutineScope {
         descriptionInputModel = intent.getParcelableExtra(EXTRA_DESCRIPTION_INPUT)
         detailInputModel = intent.getParcelableExtra(EXTRA_DETAIL_INPUT)
         variantInputModel = intent.getParcelableExtra(EXTRA_VARIANT_INPUT)
-        uploadImage(detailInputModel.imageUrlOrPathList)
+        uploadProductImages(detailInputModel.imageUrlOrPathList,
+                variantInputModel.productSizeChart?.filePath ?: "")
     }
 
-    private fun addProduct(uploadIdList: ArrayList<String>) {
+    private fun addProduct(uploadIdList: ArrayList<String>, sizeChartId: String) {
         val shopId = userSession.shopId
         val param = addProductInputMapper.mapInputToParam(shopId, uploadIdList,
-                detailInputModel, descriptionInputModel, shipmentInputModel, variantInputModel)
+                sizeChartId, detailInputModel, descriptionInputModel, shipmentInputModel,
+                variantInputModel)
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 productAddUseCase.params = ProductAddUseCase.createRequestParams(param)
@@ -102,39 +113,39 @@ class AddEditProductUploadService : JobIntentService(), CoroutineScope {
         })
     }
 
-    private fun uploadImage(imageUrlOrPathList: List<String>) {
+    private fun uploadProductImages(imageUrlOrPathList: List<String>, sizeChartPath: String) {
         val uploadIdList: ArrayList<String> = ArrayList()
-        val urlImageCount = imageUrlOrPathList.size
+        var urlImageCount = imageUrlOrPathList.size
+        var sizeChartUploadId: String
+        if (sizeChartPath.isNotBlank()) urlImageCount += 1 // if sizeChartPath valid the add to progress
         notificationManager = getNotificationManager(urlImageCount)
         notificationManager?.onSubmitPost()
         launch(coroutineContext) {
             repeat(urlImageCount) { i ->
-                val filePath = File(imageUrlOrPathList[i])
-                val params = uploaderUseCase.createParams(
-                        sourceId = IMAGE_SOURCE_ID,
-                        filePath = filePath
-                )
-                when (val result = uploaderUseCase(params)) {
-                    is UploadResult.Success -> {
-                        notificationManager?.onAddProgress(filePath)
-                        uploadIdList.add(result.uploadId)
-                    }
-                    is UploadResult.Error -> {
-                        notificationManager?.onFailedPost(result.reason.name)
-                    }
-                }
+                val imageId = uploadImageAndGetId(imageUrlOrPathList[i])
+                uploadIdList.add(imageId)
             }
-            addProduct(uploadIdList)
+            sizeChartUploadId = uploadImageAndGetId(sizeChartPath)
+            addProduct(uploadIdList, sizeChartUploadId)
         }
     }
 
-    private fun initInjector() {
-        val baseMainApplication = applicationContext as BaseMainApplication
-        DaggerAddEditProductPreviewComponent.builder()
-                .addEditProductComponent(AddEditProductComponentBuilder.getComponent(baseMainApplication))
-                .addEditProductPreviewModule(AddEditProductPreviewModule())
-                .build()
-                .inject(this)
+    private suspend fun uploadImageAndGetId(imagePath: String): String {
+        val filePath = File(imagePath)
+        val params = uploaderUseCase.createParams(
+                sourceId = IMAGE_SOURCE_ID,
+                filePath = filePath
+        )
+        return when (val result = uploaderUseCase(params)) {
+            is UploadResult.Success -> {
+                notificationManager?.onAddProgress(filePath)
+                result.uploadId
+            }
+            is UploadResult.Error -> {
+                notificationManager?.onFailedPost(result.reason.name)
+                ""
+            }
+        }
     }
 
     private fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager {

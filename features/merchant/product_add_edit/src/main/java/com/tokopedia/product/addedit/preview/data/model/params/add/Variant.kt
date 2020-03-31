@@ -16,6 +16,6 @@ data class Variant (
         var products: List<Product> = emptyList(),
         @SerializedName("sizeChart")
         @Expose
-        var sizeChart: List<PictureVariant> = emptyList()
+        var sizeChart: List<Picture> = emptyList()
 
 ) : Parcelable

@@ -13,7 +13,7 @@ data class Selection (
     var id: String = "",
     @SerializedName("unitID")
     @Expose
-    var unitId: Int = 0,
+    var unitId: String = "",
     @SerializedName("options")
     @Expose
     var options: List<Option> = emptyList()
