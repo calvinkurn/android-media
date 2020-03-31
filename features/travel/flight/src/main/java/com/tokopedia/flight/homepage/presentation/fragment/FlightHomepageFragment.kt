@@ -31,6 +31,7 @@ import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
 import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget
 import com.tokopedia.flight.homepage.di.FlightHomepageComponent
 import com.tokopedia.flight.homepage.presentation.viewmodel.FlightHomepageViewModel
+import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
@@ -162,7 +163,9 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     }
 
     override fun onSaveSearch(flightSearchData: FlightSearchPassDataModel) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        flightSearchData.linkUrl = arguments?.getString(EXTRA_FROM_DEEPLINK_URL) ?: ""
+        startActivityForResult(FlightSearchActivity.getCallingIntent(requireContext(), flightSearchData),
+                REQUEST_CODE_SEARCH)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -328,6 +331,7 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
         const val REQUEST_CODE_AIRPORT_DESTINATION = 2
         const val REQUEST_CODE_SELECT_PASSENGER = 3
         const val REQUEST_CODE_SELECT_CLASSES = 4
+        const val REQUEST_CODE_SEARCH = 5
 
         fun getInstance(linkUrl: String): FlightHomepageFragment =
                 FlightHomepageFragment().also {
