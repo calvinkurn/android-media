@@ -1264,6 +1264,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentPresenter.setCouponStateChanged(true);
             ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = data.getParcelableExtra(ARGS_VALIDATE_USE_DATA_RESULT);
             if (validateUsePromoRevampUiModel != null) {
+                String messageInfo = validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getErrorDetailUiModel().getMessage();
+                if (messageInfo.length() > 0) {
+                    showToastNormal(messageInfo);
+                }
                 shipmentPresenter.setValidateUsePromoRevampUiModel(validateUsePromoRevampUiModel);
                 updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel());
             }
