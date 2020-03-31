@@ -834,7 +834,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
     }
 
     private fun onNameSuggestionFailed() {
-        productNameRecLoader?.visible()
+        productNameRecLoader?.hide()
         productNameRecShimmering?.hide()
         productNameRecView?.hide()
         productCategoryLayout?.hide()

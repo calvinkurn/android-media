@@ -58,7 +58,7 @@ class AddEditProductDetailViewModel @Inject constructor(val provider: ResourcePr
         get() = mIsPreOrderDurationInputError
     var preOrderDurationMessage: String = ""
 
-    private var _searchProductSuggestionName = MutableLiveData<Result<List<String>>>()
+    private val _searchProductSuggestionName = MutableLiveData<Result<List<String>>>()
     val searchProductSuggestionName: LiveData<Result<List<String>>> = _searchProductSuggestionName
 
     private val mIsInputValid = MediatorLiveData<Boolean>().apply {
