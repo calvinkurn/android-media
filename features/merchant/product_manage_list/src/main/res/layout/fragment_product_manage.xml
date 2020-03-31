@@ -83,7 +83,6 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:text="@string/product_manage_bulk_count"
                     app:typographyType="body_3"
                     app:typographyWeight="reguler" />
 

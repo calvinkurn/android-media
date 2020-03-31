@@ -375,17 +375,22 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             tabFilters.setSelectedFilter(filter)
         }
 
+        renderCheckedView()
+        getFiltersTab(withDelay = true)
         getProductList(isRefresh = true, withDelay = true)
     }
 
     private fun renderCheckedView() {
-        if (itemsChecked.size > 0) {
-            btnMultiEdit.show()
+        val multiSelectEnabled = viewModel.toggleMultiSelect.value == true
+
+        if (multiSelectEnabled) {
+            val textSelectedProduct = getString(R.string.product_manage_bulk_count,
+                itemsChecked.size.toString())
+            textProductCount.text = textSelectedProduct
             textProductCount.show()
-            textProductCount.text = getString(R.string.product_manage_bulk_count, itemsChecked.size.toString())
         } else {
             btnMultiEdit.hide()
-            textProductCount.text = getString(R.string.product_manage_count_format, adapter.data.count())
+            renderProductCount()
         }
     }
 
@@ -1183,7 +1188,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun getFiltersTab(withDelay: Boolean = false) {
-        viewModel.getFiltersTab(userSession.shopId, withDelay)
+        val selectedFilterTab = tabFilters.selectedFilter
+        viewModel.getFiltersTab(selectedFilterTab, withDelay)
     }
 
     private fun setDialogFeaturedProduct(imageUrl: String, title: String, desc: String, primaryCta: String, secondaryCta: String) {
@@ -1306,7 +1312,11 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun observeFilterTabs() {
         observe(viewModel.productFiltersTab) {
             when(it) {
-                is Success -> tabFilters.setData(it.data)
+                is Success -> {
+                    val filtersTab = it.data.tabs
+                    tabFilters.setData(filtersTab)
+                    renderCheckedView()
+                }
             }
         }
     }
@@ -1331,6 +1341,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             } else {
                 hideMultiSelectView()
                 resetProductList()
+                renderProductCount()
             }
 
             showProductList(productList)
@@ -1425,6 +1436,15 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             checkBoxSelectAll.isChecked = false
             checkBoxSelectAll.setIndeterminate(false)
         }
+    }
+
+    private fun renderProductCount() {
+        val productCount = if(tabFilters.isActive()) {
+            tabFilters.selectedFilter?.count
+        } else {
+            viewModel.getTotalProductCount()
+        }
+        textProductCount.text = getString(R.string.product_manage_count_format, productCount)
     }
 
     private fun goToProductDraft(imageUrls: ArrayList<String>?, imageDescList: ArrayList<String>?) {

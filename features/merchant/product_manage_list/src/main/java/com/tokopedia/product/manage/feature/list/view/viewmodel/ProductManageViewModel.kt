@@ -11,11 +11,10 @@ import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.domain.GetProductListMetaUseCase
-import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToTabFilters
+import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToFilterTabResult
 import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToViewModels
 import com.tokopedia.product.manage.feature.list.view.model.*
-import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.*
 import com.tokopedia.product.manage.feature.multiedit.data.param.MenuParam
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
@@ -97,7 +96,7 @@ class ProductManageViewModel @Inject constructor(
         get() = _multiEditProductResult
     val selectedFilterAndSort: LiveData<FilterOptionWrapper>
         get() = _selectedFilterAndSort
-    val productFiltersTab: LiveData<Result<List<FilterTabViewModel>>>
+    val productFiltersTab: LiveData<Result<GetFilterTabResult>>
         get() = _productFiltersTab
 
     private val _viewState = MutableLiveData<ViewState>()
@@ -113,7 +112,7 @@ class ProductManageViewModel @Inject constructor(
     private val _toggleMultiSelect = MutableLiveData<Boolean>()
     private val _multiEditProductResult = MutableLiveData<Result<MultiEditResult>>()
     private val _selectedFilterAndSort = MutableLiveData<FilterOptionWrapper>()
-    private val _productFiltersTab = MutableLiveData<Result<List<FilterTabViewModel>>>()
+    private val _productFiltersTab = MutableLiveData<Result<GetFilterTabResult>>()
 
     private var getProductListJob: Job? = null
     private var getFilterTabJob: Job? = null
@@ -224,7 +223,7 @@ class ProductManageViewModel @Inject constructor(
         }).let { getProductListJob = it }
     }
 
-    fun getFiltersTab(shopId: String, withDelay: Boolean = false) {
+    fun getFiltersTab(selectedFilterTab: FilterTabViewModel? = null, withDelay: Boolean = false) {
         getFilterTabJob?.cancel()
 
         launchCatchError(block = {
@@ -234,11 +233,12 @@ class ProductManageViewModel @Inject constructor(
 
             val response = withContext(dispatchers.io) {
                 if(withDelay) { delay(REQUEST_DELAY) }
-                getProductListMetaUseCase.setParams(shopId)
+                getProductListMetaUseCase.setParams(userSessionInterface.shopId)
                 getProductListMetaUseCase.executeOnBackground()
             }
 
-            _productFiltersTab.value = Success(mapToTabFilters(response, filterCount))
+            val result = mapToFilterTabResult(response, selectedFilterTab, filterCount)
+            _productFiltersTab.value = Success(result)
         }, onError = {
             if(it is CancellationException) {
                 return@launchCatchError
@@ -401,6 +401,11 @@ class ProductManageViewModel @Inject constructor(
                 FilterOptionWrapper(null, selectedFilter, listOf(true, true, false, false))
             }
         }
+    }
+
+    fun getTotalProductCount(): Int {
+       return (productFiltersTab.value as? Success<GetFilterTabResult>)
+           ?.data?.totalProductCount.orZero()
     }
 
     fun toggleMultiSelect() {
