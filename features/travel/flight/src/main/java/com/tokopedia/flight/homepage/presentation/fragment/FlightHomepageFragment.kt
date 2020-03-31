@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
 import com.tokopedia.applink.RouteManager
@@ -50,6 +51,9 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var flightHomepageViewModel: FlightHomepageViewModel
 
+    private lateinit var performanceMonitoring: PerformanceMonitoring
+    private var isTraceStop: Boolean = false
+
     override fun getScreenName(): String = FlightHomepageFragment::class.java.simpleName
 
     override fun initInjector() {
@@ -58,6 +62,8 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        performanceMonitoring = PerformanceMonitoring.start(FLIGHT_HOMEPAGE_TRACE)
 
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -78,6 +84,7 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
                     hideBannerView()
                 }
             }
+            stopTrace()
         })
 
         flightHomepageViewModel.dashboardData.observe(viewLifecycleOwner, Observer {
@@ -315,6 +322,13 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
         NetworkErrorHelper.showRedCloseSnackbar(activity, getString(resourceId))
     }
 
+    private fun stopTrace() {
+        if (!isTraceStop) {
+            performanceMonitoring.stopTrace()
+            isTraceStop = true
+        }
+    }
+
     companion object {
         private const val TAG_DEPARTURE_CALENDAR = "flightCalendarDeparture"
         private const val TAG_RETURN_CALENDAR = "flightCalendarReturn"
@@ -327,11 +341,13 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
         private const val EXTRA_CLASS = "EXTRA_CLASS"
         private const val EXTRA_AUTO_SEARCH = "EXTRA_AUTO_SEARCH"
 
-        const val REQUEST_CODE_AIRPORT_DEPARTURE = 1
-        const val REQUEST_CODE_AIRPORT_DESTINATION = 2
-        const val REQUEST_CODE_SELECT_PASSENGER = 3
-        const val REQUEST_CODE_SELECT_CLASSES = 4
-        const val REQUEST_CODE_SEARCH = 5
+        private const val REQUEST_CODE_AIRPORT_DEPARTURE = 1
+        private const val REQUEST_CODE_AIRPORT_DESTINATION = 2
+        private const val REQUEST_CODE_SELECT_PASSENGER = 3
+        private const val REQUEST_CODE_SELECT_CLASSES = 4
+        private const val REQUEST_CODE_SEARCH = 5
+
+        private const val FLIGHT_HOMEPAGE_TRACE = "tr_flight_homepage"
 
         fun getInstance(linkUrl: String): FlightHomepageFragment =
                 FlightHomepageFragment().also {
