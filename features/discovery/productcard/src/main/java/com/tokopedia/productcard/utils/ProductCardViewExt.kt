@@ -3,8 +3,6 @@ package com.tokopedia.productcard.utils
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
-import android.graphics.drawable.GradientDrawable
-import android.os.Build
 import android.view.TouchDelegate
 import android.view.View
 import android.widget.ImageView
@@ -140,22 +138,10 @@ private fun Label.showLabel(labelGroup: ProductCardModel.LabelGroup) {
     }
 }
 
-internal fun Label.initLabelGroup(labelGroup: ProductCardFlashSaleModel.LabelGroup?) {
-    if (labelGroup == null) hide()
-    else showLabel(labelGroup)
-}
-
-private fun Label.showLabel(labelGroup: ProductCardFlashSaleModel.LabelGroup) {
-    shouldShowWithAction(labelGroup.title.isNotEmpty()) {
-        it.text = MethodChecker.fromHtml(labelGroup.title)
-        it.determineLabelType(labelGroup.type)
-    }
-}
-
 private fun Label.determineLabelType(labelGroupType: String) {
-    val labelType = labelGroupType.toUnifyLabelType()
+    val unifyLabelType = labelGroupType.toUnifyLabelType()
 
-    if (labelType != -1) setLabelType(labelType)
+    if (unifyLabelType != -1) setLabelType(unifyLabelType)
     else setCustomLabelType(labelGroupType)
 }
 
@@ -176,23 +162,20 @@ private fun String?.toUnifyLabelType(): Int {
 }
 
 private fun Label.setCustomLabelType(labelGroupType: String) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        val drawable = ContextCompat.getDrawable(context, com.tokopedia.unifycomponents.R.drawable.label_bg)
-        setBackgroundDrawable(drawable)
-
-        val gradientDrawable = background as? GradientDrawable
-        gradientDrawable?.setColor(safeContextGetColor(context, labelGroupType.toUnifyLabelColor()))
+    try {
+        trySetCustomLabelType(labelGroupType)
+    } catch (throwable: Throwable) {
+        throwable.printStackTrace()
     }
 }
 
-private fun safeContextGetColor(context: Context, @ColorRes colorRes: Int): Int {
-    return try {
-        ContextCompat.getColor(context, colorRes)
-    }
-    catch (throwable: Throwable) {
-        throwable.printStackTrace()
-        0
-    }
+private fun Label.trySetCustomLabelType(labelGroupType: String) {
+    unlockFeature = true
+
+    val colorRes = labelGroupType.toUnifyLabelColor()
+    val colorHexInt = ContextCompat.getColor(context, colorRes)
+    val colorHexString = "#${Integer.toHexString(colorHexInt)}"
+    setLabelType(colorHexString)
 }
 
 @ColorRes

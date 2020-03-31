@@ -16,6 +16,8 @@ dependencies {
     implementation(rootProject.ext.debugToolsDependencies.timber) {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
+
+    implementation project(rootProject.ext.libraries.encryption)
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     implementation rootProject.ext.dbDependencies.dbRoomKtx

@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics.Companion.LABEL_BOTTOM_SHEET_LOCATION
+import com.tokopedia.notifcenter.analytics.StockHandlerAnalytics
 import com.tokopedia.notifcenter.data.mapper.MultipleProductCardMapper
 import com.tokopedia.notifcenter.data.state.SourceMultipleProductView
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
@@ -34,9 +35,10 @@ class ProductCheckoutViewHolder(
 
     private var multiProductAdapter: MultipleProductCardAdapter? = null
 
+    private val productStockTracker by lazy { StockHandlerAnalytics() }
+
     override fun bindProductView(element: NotificationItemViewBean) {
         val product = element.getAtcProduct() ?: return
-        checkoutButtonValidation(element.getAtcProduct()?.typeButton?: 0)
         snapMultiProductItem()
         onProductCheckoutClick(element)
         productCardItemView(element)
@@ -62,9 +64,11 @@ class ProductCheckoutViewHolder(
             cardContainer.hide()
             lstProduct.show()
             listener.getAnalytic().trackProductListImpression(
+                    userId = element.userInfo.userId,
                     location = LABEL_BOTTOM_SHEET_LOCATION,
                     notification = element
             )
+            productStockTracker.productCardImpression(element, element.userInfo.userId)
             val factory = MultipleProductCardFactoryImpl(
                     sourceView = SourceMultipleProductView.NotificationCenter,
                     listener = listener
@@ -84,6 +88,7 @@ class ProductCheckoutViewHolder(
             cardContainer.show()
             lstProduct.hide()
             listener.getAnalytic().trackProductListImpression(
+                    userId = element.userInfo.userId,
                     notification = element
             )
         }
@@ -91,6 +96,7 @@ class ProductCheckoutViewHolder(
 
     override fun trackProduct(element: NotificationItemViewBean) {
         if (element.totalProduct == SINGLE_PRODUCT) {
+            productStockTracker.productCardClicked(element, element.userInfo.userId)
             listener.getAnalytic().trackSingleProductCheckoutCardClick(
                     notification = element
             )
@@ -102,10 +108,15 @@ class ProductCheckoutViewHolder(
     }
 
     private fun onProductCheckoutClick(element: NotificationItemViewBean) {
+        val product = element.getAtcProduct() ?: return
         btnCheckout.setOnClickListener {
             notificationItemMarkedClick(element)
             listener.getAnalytic().trackAtcOnSingleProductClick(notification = element)
-            listener.addProductToCheckout(element.userInfo, element)
+            if (product.stock < SINGLE_PRODUCT) {
+                listener.onItemStockHandlerClick(element)
+            } else {
+                listener.addProductToCheckout(element.userInfo, element)
+            }
         }
     }
 
@@ -114,10 +125,6 @@ class ProductCheckoutViewHolder(
             TYPE_BUY_BUTTON -> {
                 btnCheckout.text = itemView.context.getString(R.string.notifcenter_btn_buy)
                 btnCheckout.buttonType = UnifyButton.Type.TRANSACTION
-            }
-            TYPE_REMINDER_BUTTON -> {
-                btnCheckout.text = itemView.context.getString(R.string.notifcenter_btn_reminder)
-                btnCheckout.buttonType = UnifyButton.Type.MAIN
             }
             TYPE_OUT_OF_STOCK_BUTTON -> {
                 btnCheckout.text = itemView.context.getString(R.string.notifcenter_btn_out_of_stock)
