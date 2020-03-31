@@ -59,11 +59,10 @@ class ProductManageListAdapter(
         }
     }
 
-    fun updateInactiveProducts(productId: String) {
+    fun setProductStatus(productId: String, productStatus: ProductStatus) {
         data.forEachIndexed { index, product ->
             if (product.id.equals(productId, ignoreCase = true)) {
-                data[index] = product.copy(status = ProductStatus.INACTIVE)
-                notifyItemChanged(index)
+                data[index] = product.copy(status = productStatus)
                 return
             }
         }

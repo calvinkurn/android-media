@@ -375,18 +375,25 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             tabFilters.setSelectedFilter(filter)
         }
 
+        renderCheckedView()
+        getFiltersTab(withDelay = true)
         getProductList(isRefresh = true, withDelay = true)
     }
 
     private fun renderCheckedView() {
-        if (itemsChecked.size > 0) {
-            btnMultiEdit.show()
+        val multiSelectEnabled = viewModel.toggleMultiSelect.value == true
+
+        if (multiSelectEnabled) {
+            val textSelectedProduct = getString(R.string.product_manage_bulk_count,
+                itemsChecked.size.toString())
+            textProductCount.text = textSelectedProduct
             textProductCount.show()
-            textProductCount.text = getString(R.string.product_manage_bulk_count, itemsChecked.size.toString())
         } else {
             btnMultiEdit.hide()
-            textProductCount.text = getString(R.string.product_manage_count_format, adapter.data.count())
+            renderProductCount()
         }
+
+        btnMultiEdit.showWithCondition(itemsChecked.isNotEmpty())
     }
 
     private fun renderSelectAllCheckBox() {
@@ -538,6 +545,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 R.string.product_manage_quick_edit_stock_success, productName),
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
         productManageListAdapter.updateStock(productId, stock, status)
+
+        tabFilters.selectedFilter?.let {
+            filterProductListByStatus(it.status)
+        }
+
+        getProductList(withDelay = true)
         getFiltersTab(withDelay = true)
     }
 
@@ -590,6 +603,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
         productManageListAdapter.deleteProduct(productId)
         renderMultiSelectProduct()
+        getProductList(withDelay = true)
         getFiltersTab(withDelay = true)
     }
 
@@ -730,18 +744,26 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         val productIds = result.success.map { it.productID }
 
         when(result) {
-            is EditByStatus -> updateProductListStatus(productIds, result.status)
-            is EditByMenu -> if(result.failed.isEmpty()) {
-                viewModel.toggleMultiSelect()
+            is EditByStatus -> {
+                updateProductListStatus(productIds, result.status)
+
+                tabFilters.selectedFilter?.let {
+                    filterProductListByStatus(it.status)
+                }
+
+                getProductList(withDelay = true)
+                getFiltersTab(withDelay = true)
             }
         }
 
-        if(productIds.isNotEmpty()) {
-            unCheckProducts(productIds)
+        if(result.failed.isEmpty()) {
+            viewModel.toggleMultiSelect()
+        } else {
+            unCheckMultipleProducts(productIds)
         }
     }
 
-    private fun unCheckProducts(productIds: List<String>) {
+    private fun unCheckMultipleProducts(productIds: List<String>) {
         productIds.forEach { productId ->
             val index = adapter.data.indexOfFirst { it.id == productId }
             if(index >= 0) { onClickProductCheckBox(false, index) }
@@ -751,20 +773,20 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun updateProductListStatus(productIds: List<String>, status: ProductStatus) {
         productIds.forEach { productId ->
-            when (status) {
-                INACTIVE -> {
-                    productManageListAdapter.updateInactiveProducts(productId)
-                }
-                DELETED -> {
-                    productManageListAdapter.deleteProduct(productId)
-                    renderMultiSelectProduct()
-                }
-                else -> {
-                    // do nothing
-                }
+            when(status) {
+                DELETED -> productManageListAdapter.deleteProduct(productId)
+                INACTIVE -> productManageListAdapter.setProductStatus(productId, status)
+                else -> {}  // do nothing
             }
         }
-        getFiltersTab(withDelay = true)
+    }
+
+    private fun filterProductListByStatus(productStatus: ProductStatus?) {
+        val productList = adapter.data.filter {
+            it.status == productStatus
+        }
+        clearAllData()
+        showProductList(productList)
     }
 
     override fun onSwipeRefresh() {
@@ -1183,7 +1205,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun getFiltersTab(withDelay: Boolean = false) {
-        viewModel.getFiltersTab(userSession.shopId, withDelay)
+        val selectedFilterTab = tabFilters.selectedFilter
+        viewModel.getFiltersTab(selectedFilterTab, withDelay)
     }
 
     private fun setDialogFeaturedProduct(imageUrl: String, title: String, desc: String, primaryCta: String, secondaryCta: String) {
@@ -1306,7 +1329,11 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun observeFilterTabs() {
         observe(viewModel.productFiltersTab) {
             when(it) {
-                is Success -> tabFilters.setData(it.data)
+                is Success -> {
+                    val filtersTab = it.data.tabs
+                    tabFilters.setData(filtersTab)
+                    renderCheckedView()
+                }
             }
         }
     }
@@ -1333,6 +1360,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 resetProductList()
             }
 
+            renderCheckedView()
             showProductList(productList)
         }
     }
@@ -1425,6 +1453,15 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             checkBoxSelectAll.isChecked = false
             checkBoxSelectAll.setIndeterminate(false)
         }
+    }
+
+    private fun renderProductCount() {
+        val productCount = if(tabFilters.isActive()) {
+            tabFilters.selectedFilter?.count
+        } else {
+            viewModel.getTotalProductCount()
+        }
+        textProductCount.text = getString(R.string.product_manage_count_format, productCount)
     }
 
     private fun goToProductDraft(imageUrls: ArrayList<String>?, imageDescList: ArrayList<String>?) {
