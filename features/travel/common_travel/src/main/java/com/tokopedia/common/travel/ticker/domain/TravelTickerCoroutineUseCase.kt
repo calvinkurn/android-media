@@ -7,12 +7,14 @@ import com.tokopedia.common.travel.R
 import com.tokopedia.common.travel.ticker.data.response.TravelTickerAttribute
 import com.tokopedia.common.travel.ticker.data.response.TravelTickerEntity
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
@@ -31,14 +33,15 @@ class TravelTickerCoroutineUseCase @Inject constructor(
                 PARAM_INSTANCE_NAME to instanceName,
                 PARAM_PAGE to pageName
         )
-        try {
+        return try {
             val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_travel_ticker)
             val graphqlRequest = GraphqlRequest(query, TravelTickerEntity::class.java, params)
             useCase.addRequest(graphqlRequest)
 
-            val
+            val tickerData = useCase.executeOnBackground().getSuccessData<TravelTickerEntity>().travelTicker
+            Success(mapToTravelTickerViewModel(tickerData))
         } catch (throwable: Throwable) {
-            return Fail(throwable)
+            Fail(throwable)
         }
 
     }
