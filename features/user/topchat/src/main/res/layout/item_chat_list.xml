@@ -118,14 +118,17 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/unread_counter"
-        android:layout_width="@dimen/dp_topchat_10"
-        android:layout_height="@dimen/dp_topchat_10"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/dp_topchat_6"
         android:background="@drawable/circle_red_notification"
-        android:textColor="@color/Neutral_N700_44"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="@+id/time"
         app:layout_constraintTop_toBottomOf="@+id/time"
-        app:typographyType="body_3"
+        app:typographyType="small"
+        app:typographyWeight="bold"
         tools:text="1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
