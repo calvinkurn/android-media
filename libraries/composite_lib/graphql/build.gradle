@@ -47,7 +47,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
-    implementation "AkamaiBMP:AkamaiBMP:2.1.2"
+    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
 
     //room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
