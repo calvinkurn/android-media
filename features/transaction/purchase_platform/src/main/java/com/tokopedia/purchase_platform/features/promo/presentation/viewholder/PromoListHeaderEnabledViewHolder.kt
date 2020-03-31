@@ -31,10 +31,10 @@ class PromoListHeaderEnabledViewHolder(private val view: View,
 
         itemView.label_promo_list_header_title.text = element.uiData.title
         if (element.uiState.hasSelectedPromoItem) {
-            itemView.label_promo_list_header_sub_title.text = "Promo dipilih"
+            itemView.label_promo_list_header_sub_title.text = itemView.context.getString(R.string.label_subtitle_promo_selected)
             itemView.label_promo_list_header_sub_title.setTextColor(ContextCompat.getColor(itemView.context, R.color.light_T500))
         } else {
-            itemView.label_promo_list_header_sub_title.text = element.uiData.subTitle
+            itemView.label_promo_list_header_sub_title.text = itemView.context.getString(R.string.label_subtitle_only_one_promo)
             itemView.label_promo_list_header_sub_title.setTextColor(ContextCompat.getColor(itemView.context, R.color.n_700_44))
         }
 

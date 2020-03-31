@@ -19,16 +19,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:text_field_input_type="text"
-        app:text_field_label="Masukkan kode promo"
+        app:text_field_label="@string/label_promo_input_hint"
         app:text_field_label_static="false"
-        app:text_field_placeholder="Masukkan kode promo" />
+        app:text_field_placeholder="@string/label_promo_input_hint" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/button_apply_promo"
         android:layout_width="@dimen/dp_100"
         android:layout_height="wrap_content"
         android:enabled="false"
-        android:text="Terapkan"
+        android:text="@string/label_button_apply_manual_input_promo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:unifyButtonVariant="filled" />

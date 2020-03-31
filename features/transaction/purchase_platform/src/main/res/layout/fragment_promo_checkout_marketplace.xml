@@ -11,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:elevation="@dimen/dp_0">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -32,10 +33,17 @@
         android:layout_below="@+id/app_bar_layout"
         android:background="@color/checkout_module_color_background">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <LinearLayout
             android:id="@+id/header_promo_section"
@@ -67,23 +75,25 @@
                     android:id="@+id/section_label_promo_list_header_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_8"
                     android:layout_marginLeft="@dimen/dp_8"
                     android:ellipsize="end"
-                    android:text="Kupon saya 111"
                     app:layout_constraintStart_toEndOf="@+id/section_image_promo_list_header"
                     app:layout_constraintTop_toTopOf="parent"
                     app:typographyType="body_2"
-                    app:typographyWeight="bold" />
+                    app:typographyWeight="bold"
+                    tools:text="Kupon saya 111" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/section_label_promo_list_header_sub_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_8"
                     android:layout_marginLeft="@dimen/dp_8"
-                    android:text="Hanya bisa pilih satu aja"
                     app:layout_constraintStart_toEndOf="@+id/section_image_promo_list_header"
                     app:layout_constraintTop_toBottomOf="@+id/section_label_promo_list_header_title"
-                    app:typographyType="body_3" />
+                    app:typographyType="body_3"
+                    tools:text="Hanya bisa pilih satu aja" />
 
                 <ImageView
                     android:id="@+id/section_image_chevron"
@@ -131,7 +141,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_4"
             android:gravity="center_vertical"
-            android:text="Kamu bisa hemat"
+            android:text="@string/label_promo_page_summary_benefit_title"
             android:textColor="@color/clr_ae31353b"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -143,30 +153,30 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_4"
-            android:text="Rp66.000"
             android:textColor="@color/clr_f531353b"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:typographyType="heading_4"
-            app:typographyWeight="bold" />
+            app:typographyWeight="bold"
+            tools:text="Rp66.000" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/button_apply_promo"
             android:layout_width="@dimen/dp_153"
             android:layout_height="wrap_content"
             android:foreground="?selectableItemBackground"
-            android:text="Pakai Promo (3)"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:unifyButtonVariant="filled" />
+            app:unifyButtonVariant="filled"
+            tools:text="Pakai Promo (3)" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/button_apply_no_promo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:foreground="?selectableItemBackground"
-            android:text="Belanja Tanpa Promo"
+            android:text="@string/label_button_buy_without_promo"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:unifyButtonVariant="filled"

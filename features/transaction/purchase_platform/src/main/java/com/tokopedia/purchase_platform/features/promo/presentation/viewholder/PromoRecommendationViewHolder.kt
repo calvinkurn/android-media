@@ -30,13 +30,13 @@ class PromoRecommendationViewHolder(private val view: View,
             }
             itemView.image_check_promo_recommendation.gone()
             itemView.button_apply_promo_recommendation.isEnabled = true
-            itemView.button_apply_promo_recommendation.text = "Pilih"
+            itemView.button_apply_promo_recommendation.text = itemView.context.getString(R.string.label_promo_recommendation_select)
             itemView.label_promo_recommendation_title.text = String.format(itemView.context.getString(R.string.promo_checkout_label_promo_recommendation_title, element.uiData.promoCount))
         } else {
             itemView.button_apply_promo_recommendation.isLoading = false
             itemView.image_check_promo_recommendation.show()
             itemView.button_apply_promo_recommendation.isEnabled = false
-            itemView.button_apply_promo_recommendation.text = "Dipilih"
+            itemView.button_apply_promo_recommendation.text = itemView.context.getString(R.string.label_promo_recommendation_selected)
             itemView.label_promo_recommendation_title.text = String.format(itemView.context.getString(R.string.promo_checkout_label_promo_recommendation_title_after_apply, element.uiData.promoCount))
         }
         val totalBenefitFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.uiData.promoTotalBenefit, false)
