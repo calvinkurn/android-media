@@ -7,13 +7,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductListAttachmentViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
 
 /**
  * @author : Steven 02/01/19
  */
 class TopChatRoomAdapter(private val adapterTypeFactory: TopChatTypeFactoryImpl)
-    : BaseChatAdapter(adapterTypeFactory), ProductListAttachmentViewHolder.Listener {
+    : BaseChatAdapter(adapterTypeFactory), ProductCarouselListAttachmentViewHolder.Listener {
 
     private val productCarouselState: ArrayMap<Int, Parcelable> = ArrayMap()
 

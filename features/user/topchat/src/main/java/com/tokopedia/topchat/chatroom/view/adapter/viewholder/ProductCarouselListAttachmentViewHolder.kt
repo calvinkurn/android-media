@@ -13,7 +13,7 @@ import com.tokopedia.topchat.chatroom.view.custom.ProductListLayoutManager
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import kotlinx.android.synthetic.main.item_topchat_product_list_attachment.view.*
 
-class ProductListAttachmentViewHolder(
+class ProductCarouselListAttachmentViewHolder(
         itemView: View?,
         productListener: ProductAttachmentListener,
         private val listener: Listener
@@ -38,15 +38,15 @@ class ProductListAttachmentViewHolder(
     private fun initRecyclerView() {
         itemView.rv_product?.apply {
             setHasFixedSize(true)
-            layoutManager = this@ProductListAttachmentViewHolder.layoutManager
-            adapter = this@ProductListAttachmentViewHolder.adapter
+            layoutManager = this@ProductCarouselListAttachmentViewHolder.layoutManager
+            adapter = this@ProductCarouselListAttachmentViewHolder.adapter
             PagerSnapHelper().attachToRecyclerView(this)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         listener.saveProductCarouselState(
                                 adapterPosition,
-                                this@ProductListAttachmentViewHolder.layoutManager.onSaveInstanceState()
+                                this@ProductCarouselListAttachmentViewHolder.layoutManager.onSaveInstanceState()
                         )
                     }
                 }

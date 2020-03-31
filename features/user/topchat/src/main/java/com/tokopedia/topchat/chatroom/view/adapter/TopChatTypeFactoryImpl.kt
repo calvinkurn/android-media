@@ -96,7 +96,7 @@ open class TopChatTypeFactoryImpl(
     }
 
     override fun type(productCarouselUiModel: ProductCarouselUiModel): Int {
-        return ProductListAttachmentViewHolder.LAYOUT
+        return ProductCarouselListAttachmentViewHolder.LAYOUT
     }
 
     override fun type(productAttachmentViewModel: ProductAttachmentViewModel): Int {
@@ -108,7 +108,7 @@ open class TopChatTypeFactoryImpl(
     }
 
     // Check if chat bubble first, if not return default ViewHolder
-    override fun createViewHolder(parent: ViewGroup, type: Int, productListListener: ProductListAttachmentViewHolder.Listener): AbstractViewHolder<*> {
+    override fun createViewHolder(parent: ViewGroup, type: Int, productCarouselListListener: ProductCarouselListAttachmentViewHolder.Listener): AbstractViewHolder<*> {
         val layoutRes = when (type) {
             ChatMessageViewHolder.TYPE_LEFT -> LeftChatMessageViewHolder.LAYOUT
             ChatMessageViewHolder.TYPE_RIGHT -> RightChatMessageViewHolder.LAYOUT
@@ -117,16 +117,16 @@ open class TopChatTypeFactoryImpl(
             else -> type
         }
         val view = LayoutInflater.from(parent.context).inflate(layoutRes, parent, false)
-        return createViewHolder(view, layoutRes, productListListener)
+        return createViewHolder(view, layoutRes, productCarouselListListener)
     }
 
     private fun createViewHolder(
             parent: View,
             type: Int,
-            productListListener: ProductListAttachmentViewHolder.Listener
+            productCarouselListListener: ProductCarouselListAttachmentViewHolder.Listener
     ): AbstractViewHolder<*> {
         return when(type) {
-            ProductListAttachmentViewHolder.LAYOUT -> ProductListAttachmentViewHolder(parent, productAttachmentListener, productListListener)
+            ProductCarouselListAttachmentViewHolder.LAYOUT -> ProductCarouselListAttachmentViewHolder(parent, productAttachmentListener, productCarouselListListener)
             else -> createViewHolder(parent, type)
         }
     }
