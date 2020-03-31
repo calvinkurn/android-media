@@ -21,13 +21,6 @@ object PromoCreationStaticData {
                             "Tingkatkan penjualan dengan kirim pesan promosi ke pembeli",
                             "",
                             "tokopedia://webview?url=https://m.tokopedia.com/broadcast-chat/create"
-                    ),
-                    PromoCreationUiModel(
-                            R.drawable.ic_broadcast_chat,
-                            "Broadcast Chat",
-                            "Tingkatkan penjualan dengan kirim pesan promosi ke pembeli",
-                            "",
-                            "tokopedia://webview?url=https://m.tokopedia.com/broadcast-chat/create"
                     )
             ),
             errorMessage = ""

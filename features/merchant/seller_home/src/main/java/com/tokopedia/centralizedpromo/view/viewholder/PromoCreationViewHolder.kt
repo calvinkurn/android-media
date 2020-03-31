@@ -1,8 +1,6 @@
 package com.tokopedia.centralizedpromo.view.viewholder
 
-import android.graphics.Rect
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
@@ -57,17 +55,6 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
         with(itemView) {
             if (RouteManager.route(context, url)) {
                 CentralizedPromoTracking.sendClickPromoCreation(title)
-            }
-        }
-    }
-
-    class ItemDecoration(private val margin: Int) : RecyclerView.ItemDecoration() {
-        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-            with(outRect) {
-                if (parent.getChildAdapterPosition(view) > 1) {
-                    top = margin
-                }
-                bottom = margin
             }
         }
     }
