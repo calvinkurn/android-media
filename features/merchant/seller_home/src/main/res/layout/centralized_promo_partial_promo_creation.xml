@@ -22,10 +22,9 @@
         android:nestedScrollingEnabled="false"
         android:paddingStart="@dimen/centralized_promo_dimen_10dp"
         android:paddingLeft="@dimen/centralized_promo_dimen_10dp"
-        android:paddingTop="@dimen/layout_lvl2"
         android:paddingEnd="@dimen/centralized_promo_dimen_10dp"
         android:paddingRight="@dimen/centralized_promo_dimen_10dp"
-        android:paddingBottom="@dimen/layout_lvl2"
+        android:paddingBottom="@dimen/layout_lvl1"
         app:layout_constraintTop_toBottomOf="@id/partialSuccess"
         tools:targetApi="lollipop" />
 

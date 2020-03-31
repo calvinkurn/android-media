@@ -72,7 +72,7 @@ class CentralizedPromoViewModel @Inject constructor(
 
     private suspend fun getPostList(): Result<BaseUiModel> {
         return try {
-            getPostUseCase.params = GetPostUseCase.getRequestParams(if (shopId.isBlank()) 0 else shopId.toIntOrZero(), listOf("article"), startDate, endDate)
+            getPostUseCase.params = GetPostUseCase.getRequestParams(if (shopId.isBlank()) 0 else shopId.toIntOrZero(), listOf("sellerInfo"), startDate, endDate)
             Success(getPostUseCase.executeOnBackground())
         } catch (t: Throwable) {
             Fail(t)

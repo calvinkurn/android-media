@@ -3,6 +3,7 @@ package com.tokopedia.centralizedpromo.view.fragment.partialview
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapterTypeFactory
 import com.tokopedia.centralizedpromo.view.fragment.CoachMarkListener
 import com.tokopedia.centralizedpromo.view.model.PromoCreationListUiModel
@@ -32,7 +33,7 @@ class PartialCentralizedPromoCreationView(
 
     private fun setupPromoRecommendation() = with(view) {
         rvCentralizedPromoCreation.apply {
-            layoutManager = GridLayoutManager(context, SPAN_COUNT)
+            layoutManager = StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
             adapter = this@PartialCentralizedPromoCreationView.adapter.apply { setHasStableIds(true) }
             isNestedScrollingEnabled = false
             addItemDecoration(PromoCreationViewHolder.ItemDecoration(resources.getDimension(R.dimen.centralized_promo_dimen_4dp).toInt()))
