@@ -388,8 +388,6 @@ object ApplinkConstInternalGlobal {
     val DYNAMIC_FEATURE_INSTALL= DYNAMIC_FEATURE_INSTALL_BASE + "{module}/?" +
         "dfname={moduleTranslate}&" +
         "dfapplink={encodedApplink}&" +
-        "dfauto={isAutoDownload}&" +
-        "dfimage={imageUrl}&" +
         "dffallbackurl={fallbackUrl}"
 
     /**
@@ -439,5 +437,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/gamification2
     @JvmField
     val GAMIFICATION_TAP_TAP_MANTAP = "$INTERNAL_GLOBAL/gamification2"
+    val GAMIFICATION_DAILY_GIFT = "$INTERNAL_GLOBAL/gamification_gift_daily"
 
 }

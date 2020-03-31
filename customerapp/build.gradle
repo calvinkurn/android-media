@@ -326,6 +326,7 @@ dependencies {
     implementation project(rootProject.ext.features.tkpdtransaction)
     implementation project(rootProject.ext.features.tkpdseller)
     implementation project(rootProject.ext.features.productDetailCommon)
+    implementation project(rootProject.ext.features.variantCommon)
     implementation project(rootProject.ext.features.productDetail)
     implementation project(rootProject.ext.features.tkpddiscovery)
     implementation project(rootProject.ext.features.payment)
@@ -387,7 +388,6 @@ dependencies {
     implementation project(rootProject.ext.features.campaignShakeLanding)
     implementation project(rootProject.ext.features.officialStore)
     implementation project(rootProject.ext.features.brandlist)
-    implementation project(rootProject.ext.features.play)
     implementation project(rootProject.ext.features.playCommon)
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
     implementation project(rootProject.ext.libraries.iris)
@@ -450,6 +450,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.promotionsTarget)
     implementation project(rootProject.ext.features.promoGamificationCommon)
     implementation project(rootProject.ext.libraries.shakeDetect)
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(rootProject.ext.libraries.preReleaseInspector)
+    } else {
+        implementation project(rootProject.ext.libraries.preReleaseInspectorNoop)
+    }
     implementation project(rootProject.ext.features.atc_variant)
     implementation project(rootProject.ext.libraries.deviceInfo)
     implementation rootProject.ext.unifyDependencies.principles
@@ -477,6 +482,7 @@ dependencies {
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.serviceDependencies.anrWatchDogs
     implementation rootProject.ext.miscDependencies.lottie
+    implementation project(rootProject.ext.features.recharge_slice)
     implementation project(rootProject.ext.features.install_referral)
 
 
@@ -563,7 +569,11 @@ dependencies {
     implementation(rootProject.ext.debugToolsDependencies.timber) {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
-    devImplementation project.ext.debugToolsDependencies.blockCanary
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(project.ext.debugToolsDependencies.blockCanary)
+    } else {
+        implementation project.ext.debugToolsDependencies.blockCanaryNoOp
+    }
     debugImplementation project.ext.debugToolsDependencies.leakCanary
 
     //[START] test and androidTest dependencies

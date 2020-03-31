@@ -10,12 +10,13 @@ import com.tokopedia.search.result.shop.presentation.model.ShopTotalCountViewMod
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.shouldBe
 
-internal inline fun <reified T> Any?.shouldBeInstanceOf() {
+internal inline fun <reified T> Any?.shouldBeInstanceOf(customMessage: String = "") {
     if (this !is T) {
         val actualClassName = if (this == null) "null" else this::class.simpleName
         val expectedClassName = T::class.simpleName
 
-        throw AssertionError("$actualClassName should be instance of $expectedClassName")
+        val message = if (customMessage.isEmpty()) "$actualClassName should be instance of $expectedClassName" else customMessage
+        throw AssertionError(message)
     }
 }
 

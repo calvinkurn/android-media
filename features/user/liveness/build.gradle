@@ -83,8 +83,8 @@ dependencies {
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
     testImplementation rootProject.ext.testDependencies.retrofitMock
     testImplementation rootProject.ext.testDependencies.retrofitMockWebser
-    testImplementation "org.jetbrains.kotlin:kotlin-test:1.3.61"
-    testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    testImplementation rootProject.ext.testDependencies.kotlinTest
+    testImplementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
 }
 
 project.ext {

@@ -22,11 +22,19 @@ buildscript {
 
 android {
     defaultConfig {
+        multiDexEnabled true
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ['targetModuleName': 'TkpdHome']
             }
         }
+
+//        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.tokopedia.test.application.InstrumentationTestRunner"
+    }
+
+    packagingOptions {
+        exclude 'META-INF/**'
     }
 
     testOptions {
@@ -156,8 +164,18 @@ dependencies {
 
     implementation "com.google.android.exoplayer:exoplayer:$newExoPlayerVersion"
 
-    // Test
-    androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
+    // UI Test
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.testDependencies.junit
+    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
+
+    // Unit test
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.kotlinMockito2
