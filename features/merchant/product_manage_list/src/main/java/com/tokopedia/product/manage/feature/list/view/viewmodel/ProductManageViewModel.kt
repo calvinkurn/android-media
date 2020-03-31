@@ -371,7 +371,7 @@ class ProductManageViewModel @Inject constructor(
 
     fun setSelectedFilter(selectedFilter: List<FilterOption>?) {
         selectedFilter?.let {
-            _selectedFilterAndSort.value = if(_selectedFilterAndSort.value != null) {
+            _selectedFilterAndSort.value = if (_selectedFilterAndSort.value != null) {
                 _selectedFilterAndSort.value?.let { filters ->
                     val list = arrayListOf<Boolean>()
                     list.addAll(filters.filterShownState)

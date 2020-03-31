@@ -16,7 +16,7 @@ class FilterAdapterTypeFactory(
         private val showChipsListener: ShowChipsListener
 ): BaseAdapterTypeFactory(), FilterTypeFactory {
 
-    override fun type(filterViewModel: FilterViewModel): Int {
+    override fun type(filterUiModel: FilterUiModel): Int {
         return FilterViewHolder.LAYOUT
     }
 
