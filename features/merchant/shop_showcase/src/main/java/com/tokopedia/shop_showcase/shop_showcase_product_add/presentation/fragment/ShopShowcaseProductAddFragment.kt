@@ -1,0 +1,322 @@
+package com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.fragment
+
+import android.app.Activity
+import android.os.Bundle
+import android.view.KeyEvent
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.shop_showcase.R
+import com.tokopedia.shop_showcase.ShopShowcaseInstance
+import com.tokopedia.shop_showcase.common.ImageAssets
+import com.tokopedia.shop_showcase.shop_showcase_add.presentation.fragment.ShopShowcaseAddFragment
+import com.tokopedia.shop_showcase.shop_showcase_add.presentation.listener.ShopShowcasePreviewListener
+import com.tokopedia.shop_showcase.shop_showcase_product_add.di.component.DaggerShowcaseProductAddComponent
+import com.tokopedia.shop_showcase.shop_showcase_product_add.di.component.ShowcaseProductAddComponent
+import com.tokopedia.shop_showcase.shop_showcase_product_add.di.module.ShowcaseProductAddModule
+import com.tokopedia.shop_showcase.shop_showcase_product_add.di.module.ShowcaseProductAddUseCaseModule
+import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.model.GetProductListFilter
+import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.adapter.ShowcaseProductListAdapter
+import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.BaseShowcaseProduct
+import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.ShowcaseProduct
+import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.viewmodel.ShowcaseProductAddViewModel
+import com.tokopedia.trackingoptimizer.constant.Constant
+import com.tokopedia.unifycomponents.EmptyState
+import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_shop_showcase_product_add.view.*
+import javax.inject.Inject
+
+/**
+ * @author by Rafli Syam on 2020-03-09
+ */
+
+class ShopShowcaseProductAddFragment : BaseDaggerFragment(), HasComponent<ShowcaseProductAddComponent>, ShopShowcasePreviewListener {
+
+    companion object {
+        @JvmStatic
+        fun createInstance() = ShopShowcaseProductAddFragment()
+
+        const val SHOWCASE_PRODUCT_LIST = "product_list"
+    }
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+    private var productListFilter = GetProductListFilter()
+    private var isLoadNextPage: Boolean = false
+    private var showcaseProductListAdapter: ShowcaseProductListAdapter? = null
+
+
+    /**
+     * Setup Grid layout manager for mutliple item view type
+     * the span count will change to 1 if the item view is loading
+     */
+    private val gridLayoutManager by lazy {
+        GridLayoutManager(context, 2).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return try {
+                        val isShowcaseProductItem = showcaseProductListAdapter?.isShowCaseProductItem(position)
+                        if (isShowcaseProductItem == false) {
+                            spanCount
+                        } else {
+                            // Change span count to 1 if type of view is loading
+                            1
+                        }
+                    } catch (e: IndexOutOfBoundsException) {
+                        spanCount
+                    }
+                }
+            }
+        }
+    }
+
+    private val recyclerViewProductList: RecyclerView? by lazy {
+        view?.findViewById<RecyclerView>(R.id.rv_showcase_add_product)
+    }
+
+    private val headerUnify: HeaderUnify? by lazy {
+        view?.findViewById<HeaderUnify>(R.id.add_product_showcase_toolbar)?.apply {
+            backButtonView?.setOnClickListener {
+                activity?.onBackPressed()
+            }
+        }
+    }
+
+    /**
+     * Setup Scroll Listener for endless recycler view load.
+     */
+    private val scrollListener by lazy {
+        object : EndlessRecyclerViewScrollListener(gridLayoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                productListFilter.page = (page+1)
+                loadMoreProduct(productListFilter)
+            }
+        }
+    }
+
+    private val showcaseProductAddViewModel: ShowcaseProductAddViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(ShowcaseProductAddViewModel::class.java)
+    }
+
+    private val emptyState: EmptyState? by lazy {
+        view?.findViewById<EmptyState>(R.id.empty_state_product_search)
+    }
+
+    private val searchBar: SearchBarUnify? by lazy {
+        view?.findViewById<SearchBarUnify>(R.id.searchbar_add_product)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_shop_showcase_product_add, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initView(view)
+        initListener()
+    }
+
+    override fun getScreenName(): String {
+        return ""
+    }
+
+    override fun initInjector() {
+        component?.inject(this)
+    }
+
+    override fun getComponent(): ShowcaseProductAddComponent? {
+        return activity?.run {
+            DaggerShowcaseProductAddComponent
+                    .builder()
+                    .showcaseProductAddModule(ShowcaseProductAddModule())
+                    .showcaseProductAddUseCaseModule(ShowcaseProductAddUseCaseModule())
+                    .shopShowcaseComponent(ShopShowcaseInstance.getComponent(application))
+                    .build()
+        }
+    }
+
+    override fun deleteSelectedProduct(position: Int) {
+        // soon implement different adapter and viewholder
+    }
+
+    override fun showChooseProduct() {
+        // soon implement different adapter and viewholder
+    }
+
+    private fun initView(view: View?) {
+        initRecyclerView(view, this)
+        getProductList(productListFilter)
+
+        observeProductListData()
+        observeLoadingState()
+        observeFetchingState(view)
+
+        setSearchListener(searchBar)
+    }
+
+    private fun initListener() {
+        headerUnify?.actionTextView?.setOnClickListener {
+            goBackToPreviewShowcase()
+        }
+    }
+
+    private fun goBackToPreviewShowcase() {
+        val previewShowcaseIntent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_ADD)
+        previewShowcaseIntent.putParcelableArrayListExtra(SHOWCASE_PRODUCT_LIST, showcaseProductListAdapter?.getSelectedProduct())
+        activity?.setResult(Activity.RESULT_OK, previewShowcaseIntent)
+        activity?.finish()
+    }
+
+    private fun setSearchListener(searchBar: SearchBarUnify?) {
+
+        val searchTextField = searchBar?.searchBarTextField
+        val searchClearButton = searchBar?.searchBarIcon
+
+        searchTextField?.imeOptions = EditorInfo.IME_ACTION_SEARCH
+        searchTextField?.setOnEditorActionListener(object : TextView.OnEditorActionListener {
+            override fun onEditorAction(view: TextView?, actionId: Int, even: KeyEvent?): Boolean {
+                if(actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    productListFilter.setDefaultFilter()
+                    productListFilter.fkeyword = searchTextField.text.toString()
+                    getProductList(productListFilter)
+                    return true
+                }
+                return false
+            }
+        })
+
+        searchClearButton?.setOnClickListener {
+            productListFilter.setDefaultFilter()
+            searchTextField?.text?.clear()
+            getProductList(productListFilter)
+        }
+    }
+
+    private fun initRecyclerView(view: View?, previewListener: ShopShowcasePreviewListener) {
+        view?.run {
+            emptyState?.visibility = View.INVISIBLE
+            recyclerViewProductList?.apply {
+                setHasFixedSize(true)
+                layoutManager = gridLayoutManager
+                showcaseProductListAdapter = ShowcaseProductListAdapter(context, view, previewListener)
+                adapter = showcaseProductListAdapter
+                addOnScrollListener(scrollListener)
+            }
+        }
+    }
+
+    private fun showEmptyViewProductSearch(state: Boolean) {
+        emptyState?.setImageUrl(ImageAssets.SEARCH_SHOWCASE_NOT_FOUND)
+        if(state) {
+            recyclerViewProductList?.visibility = View.GONE
+            emptyState?.visibility = View.VISIBLE
+        }
+        else {
+            recyclerViewProductList?.visibility = View.VISIBLE
+            emptyState?.visibility = View.GONE
+        }
+    }
+
+    private fun observeProductListData() {
+        observe(showcaseProductAddViewModel.productList) {
+            when(it) {
+                is Success -> {
+
+                    val productList: MutableList<ShowcaseProduct> = it.data.toMutableList()
+                    if(productList.size == 0) {
+                        showEmptyViewProductSearch(true)
+                        showcaseProductListAdapter?.updateShopProductList(isLoadNextPage, productList)
+                    } else {
+                        showEmptyViewProductSearch(false)
+                        val selectedProductList = activity?.intent?.getParcelableArrayListExtra<BaseShowcaseProduct>(ShopShowcaseAddFragment.SELECTED_SHOWCASE_PRODUCT)?.filterIsInstance<ShowcaseProduct>()
+                        val filteredProductList: List<ShowcaseProduct>
+                        val productIdSet: MutableSet<String> = mutableSetOf()
+
+                        selectedProductList?.forEach { showcaseProduct ->
+                            productIdSet.add(showcaseProduct.productId)
+                        }
+                        filteredProductList = productList.filter { showcaseProduct->
+                            !productIdSet.contains(showcaseProduct.productId)
+                        }
+//                    selectedProductList?.forEach { selectedProduct ->
+//                        productList.forEach { showcaseProduct ->
+//                            if(selectedProduct.productId == showcaseProduct.productId) {
+//                                showcaseProduct.ishighlighted = true
+//                            }
+//                        }
+//                    }
+//                    showcaseProductListAdapter?.setSelectedProduct(selectedProductList as ArrayList<ShowcaseProduct>)
+                        showcaseProductListAdapter?.updateShopProductList(isLoadNextPage, filteredProductList)
+                        if (isLoadNextPage)
+                            scrollListener.updateStateAfterGetData()
+                    }
+                }
+                is Fail -> {
+                    println(it)
+                    // Do error handling here
+                }
+            }
+        }
+    }
+
+    private fun observeLoadingState() {
+        observe(showcaseProductAddViewModel.loadingState) {
+            if(it) showLoadingProgress()
+            else hideLoadingProgress()
+        }
+    }
+
+    private fun observeFetchingState(view: View?) {
+        observe(showcaseProductAddViewModel.fetchingState) {
+            if(it) showFetchingProgress(view)
+            else hideFetchingProgress(view)
+        }
+    }
+
+    private fun getProductList(filter: GetProductListFilter) {
+        isLoadNextPage = false
+        searchBar?.clearFocus()
+        showcaseProductAddViewModel.getProductList(filter, false)
+    }
+
+    private fun loadMoreProduct(filter: GetProductListFilter) {
+        isLoadNextPage = true
+        showcaseProductAddViewModel.getProductList(filter, true)
+    }
+
+    private fun showLoadingProgress() {
+        showcaseProductListAdapter?.showLoadingProgress()
+    }
+
+    private fun showFetchingProgress(view: View?) {
+        emptyState?.visibility = View.INVISIBLE
+        view?.loaderUnify?.visibility = View.VISIBLE
+        view?.rv_showcase_add_product?.visibility = View.GONE
+    }
+
+    private fun hideFetchingProgress(view: View?) {
+        view?.loaderUnify?.visibility = View.GONE
+        view?.rv_showcase_add_product?.visibility = View.VISIBLE
+    }
+
+    private fun hideLoadingProgress() {
+        showcaseProductListAdapter?.hideLoadingProgress()
+    }
+
+}

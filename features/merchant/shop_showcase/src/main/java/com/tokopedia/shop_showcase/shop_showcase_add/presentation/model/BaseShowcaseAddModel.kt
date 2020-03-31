@@ -1,0 +1,6 @@
+package com.tokopedia.shop_showcase.shop_showcase_add.presentation.model
+
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.shop_showcase.shop_showcase_add.presentation.adapter.ShopShowcaseAddTypeFactory
+
+interface BaseShowcaseAddModel: Visitable<ShopShowcaseAddTypeFactory>
