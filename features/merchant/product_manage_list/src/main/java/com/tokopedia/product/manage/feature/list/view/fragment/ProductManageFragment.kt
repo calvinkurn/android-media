@@ -392,6 +392,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             btnMultiEdit.hide()
             renderProductCount()
         }
+
+        btnMultiEdit.showWithCondition(itemsChecked.isNotEmpty())
     }
 
     private fun renderSelectAllCheckBox() {
@@ -543,6 +545,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 R.string.product_manage_quick_edit_stock_success, productName),
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
         productManageListAdapter.updateStock(productId, stock, status)
+
+        tabFilters.selectedFilter?.let {
+            filterProductListByStatus(it.status)
+        }
+
+        getProductList(withDelay = true)
         getFiltersTab(withDelay = true)
     }
 
@@ -595,6 +603,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
         productManageListAdapter.deleteProduct(productId)
         renderMultiSelectProduct()
+        getProductList(withDelay = true)
         getFiltersTab(withDelay = true)
     }
 
@@ -735,18 +744,26 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         val productIds = result.success.map { it.productID }
 
         when(result) {
-            is EditByStatus -> updateProductListStatus(productIds, result.status)
-            is EditByMenu -> if(result.failed.isEmpty()) {
-                viewModel.toggleMultiSelect()
+            is EditByStatus -> {
+                updateProductListStatus(productIds, result.status)
+
+                tabFilters.selectedFilter?.let {
+                    filterProductListByStatus(it.status)
+                }
+
+                getProductList(withDelay = true)
+                getFiltersTab(withDelay = true)
             }
         }
 
-        if(productIds.isNotEmpty()) {
-            unCheckProducts(productIds)
+        if(result.failed.isEmpty()) {
+            viewModel.toggleMultiSelect()
+        } else {
+            unCheckMultipleProducts(productIds)
         }
     }
 
-    private fun unCheckProducts(productIds: List<String>) {
+    private fun unCheckMultipleProducts(productIds: List<String>) {
         productIds.forEach { productId ->
             val index = adapter.data.indexOfFirst { it.id == productId }
             if(index >= 0) { onClickProductCheckBox(false, index) }
@@ -756,20 +773,20 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun updateProductListStatus(productIds: List<String>, status: ProductStatus) {
         productIds.forEach { productId ->
-            when (status) {
-                INACTIVE -> {
-                    productManageListAdapter.updateInactiveProducts(productId)
-                }
-                DELETED -> {
-                    productManageListAdapter.deleteProduct(productId)
-                    renderMultiSelectProduct()
-                }
-                else -> {
-                    // do nothing
-                }
+            when(status) {
+                DELETED -> productManageListAdapter.deleteProduct(productId)
+                INACTIVE -> productManageListAdapter.setProductStatus(productId, status)
+                else -> {}  // do nothing
             }
         }
-        getFiltersTab(withDelay = true)
+    }
+
+    private fun filterProductListByStatus(productStatus: ProductStatus?) {
+        val productList = adapter.data.filter {
+            it.status == productStatus
+        }
+        clearAllData()
+        showProductList(productList)
     }
 
     override fun onSwipeRefresh() {
@@ -1341,9 +1358,9 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             } else {
                 hideMultiSelectView()
                 resetProductList()
-                renderProductCount()
             }
 
+            renderCheckedView()
             showProductList(productList)
         }
     }
