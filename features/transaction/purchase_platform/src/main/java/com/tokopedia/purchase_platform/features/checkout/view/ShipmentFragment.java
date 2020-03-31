@@ -2733,15 +2733,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onButtonChooseOtherPromo() {
-        PromoRevampAnalytics.INSTANCE.eventCheckoutClickPilihPromoLainOnBottomsheetPromoError();
-        ValidateUsePromoRequest validateUseRequestParam = generateValidateUsePromoRequest();
-        PromoRequest promoRequestParam = generateCouponListRecommendationRequest();
-        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE);
-        intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.getPAGE_CHECKOUT());
-        intent.putExtra(ARGS_PROMO_REQUEST, promoRequestParam);
-        intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam);
+        if (promoNotEligibleBottomsheet != null) {
+            promoNotEligibleBottomsheet.dismiss();
+            PromoRevampAnalytics.INSTANCE.eventCheckoutClickPilihPromoLainOnBottomsheetPromoError();
+            ValidateUsePromoRequest validateUseRequestParam = generateValidateUsePromoRequest();
+            PromoRequest promoRequestParam = generateCouponListRecommendationRequest();
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE);
+            intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.getPAGE_CHECKOUT());
+            intent.putExtra(ARGS_PROMO_REQUEST, promoRequestParam);
+            intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam);
 
-        startActivityForResult(intent, REQUEST_CODE_PROMO);
+            startActivityForResult(intent, REQUEST_CODE_PROMO);
+        }
     }
 
     @Override

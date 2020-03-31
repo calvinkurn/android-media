@@ -182,8 +182,9 @@
     <string name="button_mengerti">Mengerti</string>
     <string name="gratis_ongkir">Gratis Ongkir</string>
     <string name="label_continue_to_payment">Tetap lanjut ke pembayaran?</string>
-    <string name="label_promo_not_eligible_info">Ada promo yang tidak bisa dipakai untuk transaksi ini></string>
+    <string name="label_promo_not_eligible_info">Ada promo yang tidak bisa dipakai untuk transaksi ini</string>
     <string name="label_button_continue">Lanjut Bayar</string>
+    <string name="label_button_select_other_promo">Pilih Promo Lain</string>
     <string name="checkout_module_title_wishlist">Wujudkan Wishlist kamu!</string>
     <string name="checkout_module_title_recent_view">Kamu sempat lihat-lihat ini</string>
     <string name="checkout_module_title_recommendation">Rekomendasi</string>

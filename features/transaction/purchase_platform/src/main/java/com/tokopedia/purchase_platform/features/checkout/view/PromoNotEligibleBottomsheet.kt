@@ -21,7 +21,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class PromoNotEligibleBottomsheet : BottomSheets() {
 
-    lateinit var tvInfo: TextView
+    lateinit var tvInfo: Typography
     lateinit var rvPromoList: RecyclerView
     lateinit var btnContinue: UnifyButton
     lateinit var btnChooseOtherPromo: UnifyButton
