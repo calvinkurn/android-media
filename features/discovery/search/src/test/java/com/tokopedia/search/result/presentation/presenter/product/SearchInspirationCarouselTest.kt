@@ -348,12 +348,12 @@ internal class SearchInspirationCarouselTest: Spek({
                 // 2 -> product
                 // 3 -> product
                 // 4 -> product
-                // 5 -> inspiration carousel
+                // 5 -> inspiration carousel (position 4)
                 // 6 -> product
                 // 7 -> product
                 // 8 -> product
                 // 9 -> product
-                // 10 -> inspiration carousel
+                // 10 -> inspiration carousel (position 8)
 
                 visitableList.size shouldBe 11
 
@@ -400,12 +400,12 @@ internal class SearchInspirationCarouselTest: Spek({
                 // 1 -> product
                 // 2 -> product
                 // 3 -> product
-                // 4 -> inspiration carousel
+                // 4 -> inspiration carousel (position 12)
                 // 5 -> product
                 // 6 -> product
                 // 7 -> product
                 // 8 -> product
-                // 9 -> inspiration carousel
+                // 9 -> inspiration carousel (position 16)
 
                 visitableList.size shouldBe 10
 
