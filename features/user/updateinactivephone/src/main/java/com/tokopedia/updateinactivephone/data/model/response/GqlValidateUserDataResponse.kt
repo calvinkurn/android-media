@@ -16,11 +16,11 @@ data class ValidateUserDataResponse (
 
     @SerializedName("is_success")
     @Expose
-    val isSuccess: Boolean = false,
+    var isSuccess: Boolean = false,
 
     @SerializedName("user_id")
     @Expose
-    val userId: Int = 0,
+    var userId: Int = 0,
 
     @SerializedName("error")
     @Expose

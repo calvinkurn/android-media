@@ -16,7 +16,7 @@ data class ChangeInactivePhoneQuery (
 
     @SerializedName("is_success")
     @Expose
-    var isSuccess: Boolean = false,
+    var isSuccess: Int = 0,
 
     @SerializedName("error")
     @Expose

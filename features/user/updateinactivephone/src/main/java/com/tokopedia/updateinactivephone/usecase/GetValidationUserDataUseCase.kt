@@ -17,16 +17,22 @@ class GetValidationUserDataUseCase @Inject constructor(
         val params = generateParams(phoneNumber, email, userId)
         val rawQuery = rawQueries[UpdateInactivePhoneConstants.UpdateInactivePhoneQueryConstant.QUERY_VALIDATE_USER_DATA]
         if(!rawQuery.isNullOrEmpty()){
-            gqlUseCase.apply {
-                setTypeClass(GqlValidateUserDataResponse::class.java)
-                setRequestParams(params)
-                setGraphqlQuery(rawQuery)
-                execute({ result ->
-                    onSuccess(result)
-                }, { error ->
-                    onError(error)
-                })
-            }
+//            gqlUseCase.apply {
+//                setTypeClass(GqlValidateUserDataResponse::class.java)
+//                setRequestParams(params)
+//                setGraphqlQuery(rawQuery)
+//                execute({ result ->
+//                    onSuccess(result)
+//                }, { error ->
+//                    onError(error)
+//                })
+//            }
+            val a = GqlValidateUserDataResponse()
+            a.validateUserDataResponse.isSuccess = true
+            a.validateUserDataResponse.error = ""
+            a.validateUserDataResponse.userId = 96452105
+            a.validateUserDataResponse.__typename = "ValidateInactiveNewPhoneResult"
+            onSuccess(a)
         }
     }
 

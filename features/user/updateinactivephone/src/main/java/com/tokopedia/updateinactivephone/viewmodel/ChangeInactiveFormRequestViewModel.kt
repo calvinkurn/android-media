@@ -5,7 +5,6 @@ import android.text.TextUtils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.core.gcm.GCMHandler
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants
 import com.tokopedia.updateinactivephone.data.model.request.ChangePhoneNumberRequestModel
@@ -66,8 +65,10 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
                 getUploadHost(email, phone, userId)
             }) {
                 it.printStackTrace()
-                mutableSubmitImage.value = Fail(it)
+                mutableSubmitImage.value = Fail(RuntimeException(changePhoneNumberRequestModel.uploadHostModel?.errorMessage?: context.getString(R.string.msg_network_error)))
             }
+        } else {
+            mutableSubmitImage.value = Fail(RuntimeException(context.getString(R.string.default_error_upload_image)))
         }
     }
 
@@ -145,7 +146,7 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
                         userSessionInterface.temporaryUserId))
         params.putString(UpdateInactivePhoneConstants.Constants.PARAM_DEVICE_ID,
                 requestParams.getString(UpdateInactivePhoneConstants.Constants.PARAM_DEVICE_ID,
-                        GCMHandler.getRegistrationId(context)))
+                        userSessionInterface.deviceId))
 
         params.putString(UpdateInactivePhoneConstants.Constants.PARAM_FILE_TO_UPLOAD,
                 requestParams.getString(UpdateInactivePhoneConstants.Constants.PARAM_BANK_BOOK_IMAGE_PATH, ""))
@@ -163,13 +164,13 @@ class ChangeInactiveFormRequestViewModel @Inject constructor(
 
     private fun getUploadIdImageParam(requestParams: RequestParams): RequestParams {
         val params = RequestParams.create()
-
+        userSessionInterface.deviceId
         params.putString(UpdateInactivePhoneConstants.Constants.USERID,
                 requestParams.getString(UpdateInactivePhoneConstants.Constants.USERID,
                         userSessionInterface.temporaryUserId))
         params.putString(UpdateInactivePhoneConstants.Constants.PARAM_DEVICE_ID,
                 requestParams.getString(UpdateInactivePhoneConstants.Constants.PARAM_DEVICE_ID,
-                        GCMHandler.getRegistrationId(context)))
+                        userSessionInterface.deviceId))
         params.putString(UpdateInactivePhoneConstants.Constants.PARAM_FILE_TO_UPLOAD,
                 requestParams.getString(UpdateInactivePhoneConstants.Constants.PARAM_KTP_IMAGE_PATH, ""))
         params.putInt(UpdateInactivePhoneConstants.Constants.SERVER_ID, requestParams.getInt(UpdateInactivePhoneConstants.Constants.SERVER_ID, 49))

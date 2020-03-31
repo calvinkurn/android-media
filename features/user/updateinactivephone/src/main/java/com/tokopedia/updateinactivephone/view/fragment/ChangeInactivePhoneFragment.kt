@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tkpd.library.ui.utilities.TkpdProgressDialog
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
@@ -219,7 +220,7 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
     }
 
     override fun onPhoneServerError() {
-        setErrorText("")
+        NetworkErrorHelper.showSnackbar(activity)
     }
 
     override fun onPhoneBlackListed() {

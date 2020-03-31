@@ -97,17 +97,11 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(),
             when(it){
                 is Success -> {
                     when(it.data.changeInactivePhoneQuery.isSuccess) {
-                        true -> { onUpdateDataRequestSuccess() }
-                        false -> { it.data.changeInactivePhoneQuery.error.let { error -> resolveError(error) } }
+                        1 -> { onUpdateDataRequestSuccess() }
+                        0 -> { it.data.changeInactivePhoneQuery.error.let { error -> resolveError(error) } }
                     }
                 }
-                is Fail -> {
-                    if(it.throwable.message != null) {
-                        onChangePhoneNumberError(it.throwable.message?: getString(R.string.error_general))
-                    } else {
-                        onPhoneServerError()
-                    }
-                }
+                is Fail -> { onPhoneServerError() }
             }
         })
     }
