@@ -143,11 +143,12 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
                 Timber.d("ScroogeActivity :: onPageFinished url " + inUrl);
             }
 
-            public synchronized void onReceivedError(WebView inView, int iniErrorCode, String inDescription, String inFailingUrl) {
-                super.onReceivedError(inView, iniErrorCode, inDescription, inFailingUrl);
-                Timber.d("ScroogeActivity :: Error occured while loading url " + inFailingUrl);
+            public synchronized void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                super.onReceivedError(view, errorCode, description, failingUrl);
+                Timber.d("ScroogeActivity :: Error occured while loading url " + failingUrl);
+                Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s'", failingUrl, errorCode, description);
                 Intent responseIntent = new Intent();
-                responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, inDescription);
+                responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, description);
                 setResult(ScroogePGUtil.RESULT_CODE_RECIEVED_ERROR, responseIntent);
                 finish();
             }

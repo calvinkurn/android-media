@@ -419,6 +419,12 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
 
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(project.ext.debugToolsDependencies.blockCanary)
+    } else {
+        implementation project.ext.debugToolsDependencies.blockCanaryNoOp
+    }
+
     debugImplementation project.ext.debugToolsDependencies.leakCanary
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
