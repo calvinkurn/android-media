@@ -7,10 +7,16 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.joinToStringWithLast
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
-import com.tokopedia.product.detail.data.model.*
+import com.tokopedia.product.detail.data.model.ProductInfoP2General
+import com.tokopedia.product.detail.data.model.ProductInfoP2Login
+import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
+import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationResponse
+import com.tokopedia.product.detail.data.model.variant.VariantDataModel
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.productcard.ProductCardModel
@@ -72,6 +78,15 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     val valuePropositionDataModel: ProductValuePropositionDataModel?
         get() = mapOfData[ProductDetailConstant.VALUE_PROP] as? ProductValuePropositionDataModel
 
+    val productNewVariantDataModel: VariantDataModel?
+        get() = mapOfData[ProductDetailConstant.VARIANT_OPTIONS] as? VariantDataModel
+
+    val productSocialProofPvDataModel: ProductSocialProofPvDataModel?
+        get() = mapOfData[ProductDetailConstant.SOCIAL_PROOF_PV] as? ProductSocialProofPvDataModel
+
+    val notifyMeMap: ProductNotifyMeDataModel?
+        get() = mapOfData[ProductDetailConstant.UPCOMING_DEALS] as? ProductNotifyMeDataModel
+
     val listProductRecomMap: List<ProductRecommendationDataModel>? = mapOfData.filterKeys {
         it == ProductDetailConstant.PDP_1 || it == ProductDetailConstant.PDP_2
                 || it == ProductDetailConstant.PDP_3 || it == ProductDetailConstant.PDP_4
@@ -82,14 +97,21 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     val getShopInfo: ProductShopInfoDataModel
         get() = shopInfoMap ?: ProductShopInfoDataModel()
 
-    fun updateDataP1(dataP1: DynamicProductInfoP1?, imageHeight: Int) {
+    fun updateDataP1(dataP1: DynamicProductInfoP1?) {
         dataP1?.let {
             snapShotMap?.run {
+                shouldRenderImageVariant = true
                 dynamicProductInfoP1 = it
-                screenHeight = imageHeight
-                media = it.data.media.map { media ->
-                    ProductMediaDataModel(media.type, media.uRL300, media.uRLOriginal, media.uRLThumbnail, media.description, media.videoURLAndroid, media.isAutoplay)
-                }
+                media = DynamicProductDetailMapper.convertMediaToDataModel(it.data.media.toMutableList())
+            }
+
+            notifyMeMap?.run {
+                campaignID = it.data.campaignId
+                campaignType = it.data.campaignType
+                campaignTypeName = it.data.campaignTypeName
+                endDate = it.data.endDate
+                startDate = it.data.startDate
+                notifyMe = it.data.notifyMe
             }
 
             valuePropositionDataModel?.run {
@@ -102,6 +124,12 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
             }
 
             socialProofMap?.run {
+                txStats = it.basic.txStats
+                stats = it.basic.stats
+                rating = it.basic.stats.rating
+            }
+
+            productSocialProofPvDataModel?.run {
                 txStats = it.basic.txStats
                 stats = it.basic.stats
                 rating = it.basic.stats.rating
@@ -168,13 +196,8 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                 shopInfo = it.shopInfo
             }
 
-            productFullfilmentMap?.run {
-                data.first().subtitle = context.getString(R.string.multiorigin_desc)
-            }
-
             snapShotMap?.run {
                 isAllowManage = it.shopInfo?.isAllowManage ?: 0
-                nearestWarehouse = it.nearestWarehouse
                 statusTitle = it.shopInfo?.statusInfo?.statusTitle ?: ""
                 statusMessage = it.shopInfo?.statusInfo?.statusMessage ?: ""
                 shopStatus = it.shopInfo?.statusInfo?.shopStatus ?: 1
@@ -219,6 +242,10 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                 wishListCount = it.wishlistCount.count
             }
 
+            productSocialProofPvDataModel?.run {
+                wishListCount = it.wishlistCount.count
+            }
+
             productDiscussionMap?.run {
                 latestTalk = it.latestTalk
             }
@@ -260,6 +287,12 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                     }
                 }
             }
+        }
+    }
+
+    fun updateImageAfterClickVariant(it: MutableList<Media>) {
+        snapShotMap?.run {
+            media = DynamicProductDetailMapper.convertMediaToDataModel(it)
         }
     }
 

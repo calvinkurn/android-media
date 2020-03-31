@@ -213,4 +213,7 @@ public class RemoteConfigKey {
 
     public static final String WHITELIST_USER_LOG_NOTIFICATION = "key_whitelist_user_log_notification";
     public static final String ENABLE_BRANCH_UTM_SUPPORT = "app_enable_branch_utm_support";
+
+    public static final String ENABLE_SLICE_ACTION_RECHARGE = "android_mainapp_enable_slice_recharge";
+    public static final String APP_ENABLE_BRANCH_INIT_DEEPLINKHANDLER = "app_enable_branch_init_deplinkhandler";
 }
