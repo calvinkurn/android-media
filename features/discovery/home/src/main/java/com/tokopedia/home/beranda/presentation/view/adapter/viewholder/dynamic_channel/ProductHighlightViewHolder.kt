@@ -71,10 +71,16 @@ class ProductHighlightViewHolder(
     private fun setDealsChannelBackground(it: DynamicHomeChannel.Banner) {
         if (it.backColor.isNotEmpty()) {
             val backColor = Color.parseColor(it.backColor)
-            itemView.deals_background.setGradientBackground("#4fd15a","#12883d")
+            itemView.deals_background.setGradientBackground("#4fd15a", "#12883d")
             itemView.deals_background.visibility = View.VISIBLE
         } else itemView.deals_background.visibility = View.GONE
+
+//        if (it.gradientColor.size == 2) {
+//            itemView.deals_background.setGradientBackground(it.gradientColor[0],it.gradientColor[1])
+//            itemView.deals_background.visibility = View.VISIBLE
+//        } else itemView.deals_background.visibility = View.GONE
     }
+
 
     private fun setDealsChannelTitle(it: DynamicHomeChannel.Header) {
         itemView.deals_channel_title.text = it.name

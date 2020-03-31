@@ -136,7 +136,9 @@ class MixTopBannerViewHolder(
         bannerTitle.visibility = if(bannerItem.title.isEmpty()) View.GONE else View.VISIBLE
         bannerDescription.text = bannerItem.description
         bannerDescription.visibility = if(bannerItem.description.isEmpty()) View.GONE else View.VISIBLE
-
+//        if (bannerItem.gradientColor.size ==2) {
+//            background.setGradientBackground(bannerItem.gradientColor[0], bannerItem.gradientColor[1])
+//        }
         background.setGradientBackground("#4fd15a","#12883d")
         bannerTitle.setTextColor(textColor)
         bannerDescription.setTextColor(textColor)

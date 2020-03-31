@@ -86,9 +86,13 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
 
     private fun setupBackground(channel: DynamicHomeChannel.Channels) {
         if (channel.banner.backColor.isNotEmpty()) {
-            parallaxBackground.setBackgroundColor(Color.parseColor(channel.banner.backColor))
             parallaxBackground.setGradientBackground("#4fd15a","#12883d")
         }
+
+//        if (channel.banner.gradientColor.size == 2) {
+//            parallaxBackground.setGradientBackground(channel.banner.gradientColor[0],channel.banner.gradientColor[1])
+//        }
+
         if (channel.banner.imageUrl.isNotEmpty()) {
             image.loadImage(channel.banner.imageUrl)
         }
