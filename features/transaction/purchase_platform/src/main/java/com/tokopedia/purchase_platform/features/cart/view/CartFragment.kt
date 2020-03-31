@@ -1478,16 +1478,17 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 cartListData?.shopGroupAvailableDataList?.get(i)?.let { it ->
                     cartItemHolderData = it
 
-                    /*cartItemHolderData.promoCodes?.forEach { code ->
-                        listPromoCodes.add(code)
-                    }*/
                     cartListData?.lastApplyShopGroupSimplifiedData?.voucherOrders?.forEach { lastApplyVoucherOrders ->
                         cartItemHolderData.cartString?.let { cartString ->
                             if (cartString.equals(lastApplyVoucherOrders.uniqueId, true)) {
                                 listPromoCodes.add(lastApplyVoucherOrders.code)
                             }
                         }
-
+                    }
+                    if (listPromoCodes.isEmpty()) {
+                        cartItemHolderData.promoCodes?.forEach { code ->
+                            listPromoCodes.add(code)
+                        }
                     }
 
                     var countListItem = 0
@@ -1527,14 +1528,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 val listProductDetail = arrayListOf<ProductDetailsItem>()
 
                 val listPromoCodes = arrayListOf<String>()
-                /*it.shopGroupAvailableData.promoCodes?.forEach { code ->
-                    listPromoCodes.add(code)
-                }*/
                 cartListData?.lastApplyShopGroupSimplifiedData?.voucherOrders?.forEach { lastApplyVoucherOrders ->
                     cartShop.shopGroupAvailableData.cartString?.let { cartString ->
                         if (cartString.equals(lastApplyVoucherOrders.uniqueId, true)) {
                             listPromoCodes.add(lastApplyVoucherOrders.code)
                         }
+                    }
+                }
+                if (listPromoCodes.isEmpty()) {
+                    cartShop.shopGroupAvailableData.promoCodes?.forEach { code ->
+                        listPromoCodes.add(code)
                     }
                 }
 
@@ -1558,14 +1561,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     cartItemHolderData = it
 
                     val listPromoCodes = arrayListOf<String>()
-                    /*cartItemHolderData.promoCodes?.forEach { code ->
-                        listPromoCodes.add(code)
-                    }*/
                     cartListData?.lastApplyShopGroupSimplifiedData?.voucherOrders?.forEach { lastApplyVoucherOrders ->
                         it.cartString?.let { cartString ->
                             if (cartString.equals(lastApplyVoucherOrders.uniqueId, true)) {
                                 listPromoCodes.add(lastApplyVoucherOrders.code)
                             }
+                        }
+                    }
+                    if (listPromoCodes.isEmpty()) {
+                        cartItemHolderData.promoCodes?.forEach { code ->
+                            listPromoCodes.add(code)
                         }
                     }
 
