@@ -13,7 +13,7 @@ import com.tokopedia.hotel.homepage.presentation.fragment.HotelHomepageFragment
 
 class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageComponent> {
 
-    private var id: Int = 0
+    private var id: Long = 0
     private var name: String = ""
     private var type: String = ""
     private var checkIn: String = ""
@@ -29,19 +29,19 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
         val uri = intent.data
         if (uri != null) {
             if (!uri.getQueryParameter(PARAM_HOTEL_ID).isNullOrEmpty()) {
-                id = uri.getQueryParameter(PARAM_HOTEL_ID).toInt()
+                id = uri.getQueryParameter(PARAM_HOTEL_ID).toLong()
                 name = uri.getQueryParameter(PARAM_HOTEL_NAME)
                 type = TYPE_PROPERTY
             } else if (!uri.getQueryParameter(PARAM_CITY_ID).isNullOrEmpty()) {
-                id = uri.getQueryParameter(PARAM_CITY_ID).toInt()
+                id = uri.getQueryParameter(PARAM_CITY_ID).toLong()
                 name = uri.getQueryParameter(PARAM_CITY_NAME)
                 type = TYPE_CITY
             } else if (!uri.getQueryParameter(PARAM_DISTRICT_ID).isNullOrEmpty()) {
-                id = uri.getQueryParameter(PARAM_DISTRICT_ID).toInt()
+                id = uri.getQueryParameter(PARAM_DISTRICT_ID).toLong()
                 name = uri.getQueryParameter(PARAM_DISTRICT_NAME)
                 type = TYPE_DISTRICT
             } else if (!uri.getQueryParameter(PARAM_REGION_ID).isNullOrEmpty()) {
-                id = uri.getQueryParameter(PARAM_REGION_ID).toInt()
+                id = uri.getQueryParameter(PARAM_REGION_ID).toLong()
                 name = uri.getQueryParameter(PARAM_REGION_NAME)
                 type = TYPE_REGION
             }

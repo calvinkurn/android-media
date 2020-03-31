@@ -42,28 +42,26 @@ abstract class BaseProductCampaignViewHolder(
     }
 
     override fun bindOnNotificationClick(element: NotificationItemViewBean) {
-        val product = element.getAtcProduct() ?: return
-        //single product container
-        productContainer.setOnClickListener {
-            notificationItemMarkedClick(element)
-            trackProduct(element)
-            getItemClickListener(product)
-        }
+        productContainer.setOnClickListener { onItemClicked(element) }
+        container.setOnClickListener { onItemClicked(element) }
+    }
 
-        //common notification container
-        container.setOnClickListener {
-            if (element.products.isSingleItem() && !element.isShowBottomSheet) {
-                getItemClickListener(product)
-            } else {
-                onBindDetailProductClick(element)
-            }
-            trackProduct(element)
-            listener.itemContainerClicked(element)
-            notificationItemMarkedClick(element)
+    private fun onItemClicked(element: NotificationItemViewBean) {
+        isProductStockHandler(element)
+        trackProduct(element)
+        notificationItemMarkedClick(element)
+    }
+
+    private fun isProductStockHandler(element: NotificationItemViewBean) {
+        val product = element.getAtcProduct() ?: return
+        if (element.products.isSingleItem() && !element.isShowBottomSheet) {
+            productDetailClicked(product)
+        } else {
+            onBindDetailProductClick(element)
         }
     }
 
-    private fun getItemClickListener(product: ProductData) {
+    private fun productDetailClicked(product: ProductData) {
         RouteManager.route(
                 itemView.context,
                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
@@ -73,8 +71,15 @@ abstract class BaseProductCampaignViewHolder(
 
     private fun onBindDetailProductClick(element: NotificationItemViewBean) {
         val bottomSheetType = BottomSheetType.map(element.typeBottomSheet)
-        if (element.isShowBottomSheet && bottomSheetType !== BottomSheetType.StockHandler) {
-            listener.showNotificationDetail(bottomSheetType, element)
+        if (element.isShowBottomSheet) {
+            when (bottomSheetType) {
+                is BottomSheetType.StockHandler -> {
+                    listener.onItemStockHandlerClick(element)
+                }
+                else -> {
+                    listener.showNotificationDetail(bottomSheetType, element)
+                }
+            }
         }
     }
 

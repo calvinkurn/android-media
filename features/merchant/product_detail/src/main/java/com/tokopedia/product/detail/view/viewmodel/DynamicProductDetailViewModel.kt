@@ -88,6 +88,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val addToCartUseCase: AddToCartUseCase,
                                                              private val addToCartOcsUseCase: AddToCartOcsUseCase,
                                                              private val getP3VariantUseCase: GetP3VariantUseCase,
+                                                             private val toggleNotifyMeUseCase: ToggleNotifyMeUseCase,
                                                              val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.ui()) {
 
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
@@ -134,13 +135,17 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val addToCartLiveData: LiveData<Result<AddToCartDataModel>>
         get() = _addToCartLiveData
 
-    private val _initialVariantData = MutableLiveData<List<VariantCategory>>()
-    val initialVariantData: LiveData<List<VariantCategory>>
+    private val _initialVariantData = MutableLiveData<List<VariantCategory>?>()
+    val initialVariantData: LiveData<List<VariantCategory>?>
         get() = _initialVariantData
 
     private val _onVariantClickedData = MutableLiveData<List<VariantCategory>?>()
     val onVariantClickedData: LiveData<List<VariantCategory>?>
         get() = _onVariantClickedData
+
+    private val _toggleTeaserNotifyMe = MutableLiveData<Result<Boolean>>()
+    val toggleTeaserNotifyMe: LiveData<Result<Boolean>>
+        get() = _toggleTeaserNotifyMe
 
     var multiOrigin: Map<String, VariantMultiOriginWarehouse> = mapOf()
     var selectedMultiOrigin: VariantMultiOriginWarehouse = VariantMultiOriginWarehouse()
@@ -184,6 +189,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         updateCartCounterSubscription?.unsubscribe()
         addToCartUseCase.unsubscribe()
         addToCartOcsUseCase.unsubscribe()
+        toggleNotifyMeUseCase.cancelJobs()
     }
 
     fun processVariant(data: ProductVariantCommon, mapOfSelectedVariant: MutableMap<String, Int>?) {
@@ -431,6 +437,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         val hasWholesale = getDynamicProductInfoP1?.data?.hasWholesale == true
         val isOfficialStore = getDynamicProductInfoP1?.data?.isOS == true
         val isVariant = getDynamicProductInfoP1?.data?.variant?.isVariant == true
+        val isTeaser = getDynamicProductInfoP1?.shouldShowNotifyMe() ?: false
         val shopId = getDynamicProductInfoP1?.basic?.shopID.toIntOrZero()
 
         val removedData = initialLayoutData.map {
@@ -445,6 +452,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             } else if (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO) {
                 it
             } else if (it.name() == ProductDetailConstant.VARIANT && !isVariant) {
+                it
+            } else if (it.name() == ProductDetailConstant.UPCOMING_DEALS && !isTeaser && !isVariant) {
                 it
             } else {
                 null
@@ -713,5 +722,16 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         getPdpLayoutUseCase.forceRefresh = forceRefresh
         getPdpLayoutUseCase.enableCaching = enableCaching
         return getPdpLayoutUseCase.executeOnBackground()
+    }
+
+    fun toggleTeaserNotifyMe(campaignId: Int, productId: Int, action: String, source: String) {
+        launchCatchError(block = {
+            toggleNotifyMeUseCase.createParams(campaignId, productId, action, source)
+            val isSuccess = toggleNotifyMeUseCase.executeOnBackground().result.isSuccess
+            if (!isSuccess) _toggleTeaserNotifyMe.value = Fail(Throwable()) else
+                _toggleTeaserNotifyMe.value = Success(isSuccess)
+        }) {
+            _toggleTeaserNotifyMe.value = Fail(it)
+        }
     }
 }

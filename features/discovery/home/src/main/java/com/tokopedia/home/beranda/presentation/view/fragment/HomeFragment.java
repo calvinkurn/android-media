@@ -144,6 +144,8 @@ import javax.inject.Inject;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
+import rx.Observable;
+import rx.schedulers.Schedulers;
 
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_BANNER;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_BANNER_CAROUSEL;
@@ -247,6 +249,9 @@ public class HomeFragment extends BaseDaggerFragment implements
     private boolean isLightThemeStatusBar = true;
     private static final String KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar";
     private Map<String,RecyclerView.OnScrollListener> impressionScrollListeners = new HashMap<>();
+
+    private long mLastClickTime = System.currentTimeMillis();
+    private static final long CLICK_TIME_INTERVAL = 500;
 
     @NonNull
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
@@ -1015,7 +1020,7 @@ public class HomeFragment extends BaseDaggerFragment implements
                 }
                 break;
             case REQUEST_CODE_PLAY_ROOM:
-                if(data.hasExtra(EXTRA_TOTAL_VIEW)) viewModel.updateBannerTotalView(data.getStringExtra(EXTRA_TOTAL_VIEW));
+                if(data != null && data.hasExtra(EXTRA_TOTAL_VIEW)) viewModel.updateBannerTotalView(data.getStringExtra(EXTRA_TOTAL_VIEW));
                 break;
         }
     }
@@ -1165,14 +1170,21 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private void detectAndSendLocation() {
-        LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
-                permissionCheckerHelper,
-                LocationServices.getFusedLocationProviderClient(getActivity()
-                        .getApplicationContext()),
-                getActivity().getApplicationContext());
-        locationDetectorHelper.getLocation(onGetLocation(), getActivity(),
-                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                "");
+        Observable.just(true).map(aBoolean -> {
+            LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
+                    permissionCheckerHelper,
+                    LocationServices.getFusedLocationProviderClient(getActivity()
+                            .getApplicationContext()),
+                    getActivity().getApplicationContext());
+            locationDetectorHelper.getLocation(onGetLocation(), getActivity(),
+                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                    "");
+                return true;
+        }).subscribeOn(Schedulers.io()).subscribe(aBoolean -> {
+            //IGNORE
+        }, throwable -> {
+            //IGNORE
+        });
     }
 
     private Function1<DeviceLocation, Unit> onGetLocation() {
@@ -1299,6 +1311,12 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private void onActionLinkClicked(String actionLink, String trackingAttribution) {
+        long now = System.currentTimeMillis();
+        if (now - mLastClickTime < CLICK_TIME_INTERVAL) {
+            return;
+        }
+        mLastClickTime = now;
+
         if (TextUtils.isEmpty(actionLink)) {
             return;
         }
@@ -1827,6 +1845,11 @@ public class HomeFragment extends BaseDaggerFragment implements
         if(!TextUtils.isEmpty(applink)){
             RouteManager.route(getContext(),applink);
         }
+    }
+
+    @Override
+    public void onOpenPlayChannelList(String appLink) {
+        openApplink(appLink);
     }
 
     @Override
