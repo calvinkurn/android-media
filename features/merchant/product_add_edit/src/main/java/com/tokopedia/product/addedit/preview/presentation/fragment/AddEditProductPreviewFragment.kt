@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -34,10 +33,7 @@ import com.tokopedia.product.addedit.preview.presentation.viewmodel.AddEditProdu
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tooltip.model.ImageTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class AddEditProductPreviewFragment : BaseDaggerFragment() {
@@ -104,7 +100,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
                         data.getParcelableExtra<DescriptionInputModel>(EXTRA_DESCRIPTION_INPUT)
                 val detailInputModel =
                         data.getParcelableExtra<DetailInputModel>(EXTRA_DETAIL_INPUT)
-                AddEditProductUploadService.startService(context!!, detailInputModel, descriptionInputModel, shipmentInputModel)
+                context?.let { AddEditProductUploadService.startService(it, detailInputModel, descriptionInputModel, shipmentInputModel) }
             }
         }
     }

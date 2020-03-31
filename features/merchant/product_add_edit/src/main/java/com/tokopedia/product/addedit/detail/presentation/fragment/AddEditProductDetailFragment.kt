@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.InputType
 import android.text.TextUtils
@@ -16,6 +17,8 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,10 +30,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DETAIL_INPUT
@@ -96,8 +96,17 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
                     UNIT_WEEK -> R.string.label_week
                     else -> -1
                 }
+
         const val REQUEST_CODE_DETAIL = 0x02
     }
+
+    //Last typing product name
+    private val delayLastTextEdit = 1000L
+    private var lastTextEdit = 0L
+    private val handlerTypingProductName = Handler()
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
     lateinit var viewModel: AddEditProductDetailViewModel
@@ -182,6 +191,9 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel = ViewModelProviders.of(this, viewModelFactory)
+                .get(AddEditProductDetailViewModel::class.java)
 
         // store the selected image paths from previous activity
         initialSelectedImagePathList?.let { productPhotoPaths.addAll(initialSelectedImagePathList) }
@@ -323,64 +335,80 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         addProductPhotoButton?.setOnClickListener(createAddProductPhotoButtonOnClickListener())
 
         productNameField?.textFieldInput?.setOnFocusChangeListener { _, hasFocus ->
+            //
+//            val productNameInput = productNameField?.getEditableValue().toString()
+//
+//            if (!hasFocus) {
+//                // TODO: refactor this code once the integration code is ready
+//                onLoadingNameSuggestion()
+//                productNameRecAdapter?.setProductNameInput(productNameInput)
+////                productNameRecAdapter?.setProductNameRecommendations(dummyProductNameRecs)
+//                viewModel.getSearchNameSuggestion(query = productNameInput)
+//
+////                Handler().postDelayed({
+////
+////                    productCategoryRecListView?.setData(productCategoryRecs)
+////                }, 1000)
+//            }
+//        }
 
-            val productNameInput = productNameField?.getEditableValue().toString()
-
-            if (!hasFocus) {
-                productNameRecAdapter?.setProductNameInput(productNameInput)
-                productNameRecAdapter?.setProductNameRecommendations(dummyProductNameRecs)
-                productNameRecLoader?.visibility = View.VISIBLE
-                productNameRecShimmering?.visibility = View.VISIBLE
-                viewModel.getCategoryRecommendation(productNameInput)
-            }
+//            if (!hasFocus) {
+//                productNameRecAdapter?.setProductNameInput(productNameInput)
+//                productNameRecAdapter?.setProductNameRecommendations(dummyProductNameRecs)
+//                productNameRecLoader?.visibility = View.VISIBLE
+//                productNameRecShimmering?.visibility = View.VISIBLE
+//                viewModel.getCategoryRecommendation(productNameInput)
+//            }
         }
 
+
         // product name text change listener
-        productNameField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(editable: Editable?) {
+        productNameField?.textFieldInput?.addTextChangedListener(
+                object : TextWatcher {
+                    override fun afterTextChanged(editable: Editable) {
+                        viewModel.validateProductNameInput(editable.toString())
+                        lastTextEdit = System.currentTimeMillis()
+                    }
 
-            }
+                    override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
 
-            }
+                        //TODO requires a refactor without delay and investigation without delay can be forced close due to ListUnify
+                        handlerTypingProductName.removeCallbacks(productNameFieldFinishChecker())
 
-            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-
-                val productNameInput = charSequence?.toString()
-                productNameInput?.let { viewModel.validateProductNameInput(it) }
-
-                // hide recommendations if the text input is changed
-                val isTextChanged = start != before
-                if (isTextChanged) hideRecommendations()
-            }
-        })
+                        // hide recommendations if the text input is changed
+                        val isTextChanged = start != before
+                        if (isTextChanged) hideRecommendations()
+                    }
+                })
 
         // product price text change listener
-        productPriceField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
+        productPriceField?.textFieldInput?.addTextChangedListener(
+                object : TextWatcher {
+                    override fun afterTextChanged(p0: Editable?) {
 
-            }
+                    }
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
-            }
+                    }
 
-            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-                // clean any kind of number formatting here
-                val productPriceInput = charSequence?.toString()?.replace(".", "")
-                productPriceInput?.let {
-                    // do the validation first
-                    viewModel.validateProductPriceInput(it)
-                    // format the number
-                    productPriceField?.textFieldInput?.removeTextChangedListener(this)
-                    val formattedText: String = NumberFormat.getNumberInstance(Locale.US).format(it.toLong()).toString().replace(",", ".")
-                    productPriceField?.textFieldInput?.setText(formattedText)
-                    productPriceField?.textFieldInput?.setSelection(formattedText.length)
-                    productPriceField?.textFieldInput?.addTextChangedListener(this)
-                }
-            }
-        })
+                    override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                        // clean any kind of number formatting here
+                        val productPriceInput = charSequence?.toString()?.replace(".", "")
+                        productPriceInput?.let {
+                            // do the validation first
+                            viewModel.validateProductPriceInput(it)
+                            // format the number
+                            productPriceField?.textFieldInput?.removeTextChangedListener(this)
+                            val formattedText: String = NumberFormat.getNumberInstance(Locale.US).format(it.toLong()).toString().replace(",", ".")
+                            productPriceField?.textFieldInput?.setText(formattedText)
+                            productPriceField?.textFieldInput?.setSelection(formattedText.length)
+                            productPriceField?.textFieldInput?.addTextChangedListener(this)
+                        }
+                    }
+                })
 
         // product whole sale checked change listener
         productWholeSaleSwitch?.setOnCheckedChangeListener { _, isChecked ->
@@ -388,40 +416,42 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         }
 
         // product stock text change listener
-        productStockField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
+        productStockField?.textFieldInput?.addTextChangedListener(
+                object : TextWatcher {
+                    override fun afterTextChanged(p0: Editable?) {
 
-            }
+                    }
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
-            }
+                    }
 
-            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-                val productStockInput = charSequence?.toString()
-                productStockInput?.let { viewModel.validateProductStockInput(it) }
-                val orderQuantityInput = productMinOrderField?.textFieldInput?.editableText.toString()
-                orderQuantityInput.let { productStockInput?.let { stockInput -> viewModel.validateProductMinOrderInput(stockInput, it) } }
-            }
-        })
+                    override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                        val productStockInput = charSequence?.toString()
+                        productStockInput?.let { viewModel.validateProductStockInput(it) }
+                        val orderQuantityInput = productMinOrderField?.textFieldInput?.editableText.toString()
+                        orderQuantityInput.let { productStockInput?.let { stockInput -> viewModel.validateProductMinOrderInput(stockInput, it) } }
+                    }
+                })
 
         // product minimum order text change listener
-        productMinOrderField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
+        productMinOrderField?.textFieldInput?.addTextChangedListener(
+                object : TextWatcher {
+                    override fun afterTextChanged(p0: Editable?) {
 
-            }
+                    }
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
-            }
+                    }
 
-            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-                val productStockInput = productStockField?.textFieldInput?.editableText.toString()
-                val orderQuantityInput = charSequence?.toString()
-                orderQuantityInput?.let { viewModel.validateProductMinOrderInput(productStockInput, it) }
-                productStockInput.let { viewModel.validateProductStockInput(it) }
-            }
-        })
+                    override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                        val productStockInput = productStockField?.textFieldInput?.editableText.toString()
+                        val orderQuantityInput = charSequence?.toString()
+                        orderQuantityInput?.let { viewModel.validateProductMinOrderInput(productStockInput, it) }
+                        productStockInput.let { viewModel.validateProductStockInput(it) }
+                    }
+                })
 
         // pre order checked change listener
         preOrderSwitch?.setOnCheckedChangeListener { _, isChecked ->
@@ -429,24 +459,25 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         }
 
         // product pre order duration text change listener
-        preOrderDurationField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
+        preOrderDurationField?.textFieldInput?.addTextChangedListener(
+                object : TextWatcher {
+                    override fun afterTextChanged(p0: Editable?) {
 
-            }
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
-
-            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-                viewModel.isPreOrderActivated.value?.let {
-                    if (it) {
-                        val preOrderDurationInput = charSequence?.toString()
-                        preOrderDurationInput?.let { duration -> viewModel.validatePreOrderDurationInput(selectedDurationPosition, duration) }
                     }
-                }
-            }
-        })
+
+                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                    }
+
+                    override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                        viewModel.isPreOrderActivated.value?.let {
+                            if (it) {
+                                val preOrderDurationInput = charSequence?.toString()
+                                preOrderDurationInput?.let { duration -> viewModel.validatePreOrderDurationInput(selectedDurationPosition, duration) }
+                            }
+                        }
+                    }
+                })
 
         continueButton?.setOnClickListener {
 
@@ -492,6 +523,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         subscribeToPreOrderSwitchStatus()
         subscribeToPreOrderDurationInputStatus()
         subscribeToInputStatus()
+        subscribeNameSuggestion()
         subscribeToCategoryRecomendation()
     }
 
@@ -579,10 +611,15 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
     }
 
     private fun subscribeToProductNameInputStatus() {
-        viewModel.isProductNameInputError.observe(this, Observer {
-            productNameField?.setError(it)
-            productNameField?.setMessage(viewModel.productNameMessage)
-        })
+        observe(viewModel.isProductNameInputError) {
+            if (it) {
+                productNameField?.setError(it)
+                productNameField?.setMessage(viewModel.productNameMessage)
+            } else {
+                //TODO requires a refactor without delay and investigation without delay can be forced close due to ListUnify
+                handlerTypingProductName.postDelayed(productNameFieldFinishChecker(productNameField?.getEditableValue().toString()), delayLastTextEdit)
+            }
+        }
     }
 
     private fun subscribeToProductPriceInputStatus() {
@@ -769,6 +806,56 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
+    }
+
+    private fun subscribeNameSuggestion() {
+        observe(viewModel.searchProductSuggestionName) {
+            when (it) {
+                is Success -> {
+                    productNameRecAdapter?.setProductNameRecommendations(it.data)
+                    onNameSuggestionSuccess()
+                }
+                is Fail -> {
+                    onNameSuggestionFailed()
+                }
+            }
+        }
+    }
+
+    private fun onLoadingNameSuggestion() {
+        productNameRecLoader?.visible()
+        productNameRecShimmering?.visible()
+    }
+
+    private fun onNameSuggestionSuccess() {
+        productNameRecLoader?.hide()
+        productNameRecShimmering?.hide()
+        productNameRecView?.visible()
+        productCategoryLayout?.visible()
+        productCatalogLayout?.visible()
+    }
+
+    private fun onNameSuggestionFailed() {
+        productNameRecLoader?.hide()
+        productNameRecShimmering?.hide()
+        productNameRecView?.hide()
+        productCategoryLayout?.hide()
+        productCatalogLayout?.hide()
+    }
+
+    //TODO requires a refactor without delay and investigation without delay can be forced close due to ListUnify
+    fun productNameFieldFinishChecker(productNameInput: String = "") = Runnable {
+        if (System.currentTimeMillis() > (lastTextEdit + delayLastTextEdit - 500)) {
+            onLoadingNameSuggestion()
+            productNameRecAdapter?.setProductNameInput(productNameInput)
+            viewModel.getSearchNameSuggestion(query = productNameInput)
+            viewModel.getCategoryRecommendation(productNameInput)
+        }
+    }
+
+    fun isNotAllowingCharacter(productName: String): Boolean {
+        val notAllowingChar = charArrayOf('[', '{', '}', '<', '>', '}', ']')
+        return productName.indexOfAny(notAllowingChar) >= 0
     }
 
     private fun onGetCategoryRecommendationSuccess(result: Success<List<ListItemUnify>>) {
