@@ -98,7 +98,7 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        flightDashboardSearchForm.listener = this
+        flightHomepageSearchForm.listener = this
     }
 
     override fun onDepartureAirportClicked() {
@@ -136,7 +136,7 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
                 override fun onDateSelected(dateSelected: Date) {
                     val errorResourceId = flightHomepageViewModel.validateDepartureDate(dateSelected)
                     if (errorResourceId == -1) {
-                        flightDashboardSearchForm.setDepartureDate(dateSelected)
+                        flightHomepageSearchForm.setDepartureDate(dateSelected)
                     } else {
                         showMessageErrorInSnackbar(errorResourceId)
                     }
@@ -211,22 +211,22 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     private fun renderBannerView(bannerList: List<TravelCollectiveBannerModel.Banner>) {
         if (bannerList.isNotEmpty()) {
             showBannerView()
-            flightDashboardBanner.customWidth = resources.getDimensionPixelSize(R.dimen.banner_width)
-            flightDashboardBanner.customHeight = resources.getDimensionPixelSize(R.dimen.banner_height)
-            flightDashboardBanner.setBannerSeeAllTextColor(resources.getColor(com.tokopedia.unifycomponents.R.color.Green_G500))
-            flightDashboardBanner.setBannerIndicator(Indicator.GREEN)
-            flightDashboardBanner.setOnPromoScrolledListener { position ->
+            flightHomepageBanner.customWidth = resources.getDimensionPixelSize(R.dimen.banner_width)
+            flightHomepageBanner.customHeight = resources.getDimensionPixelSize(R.dimen.banner_height)
+            flightHomepageBanner.setBannerSeeAllTextColor(resources.getColor(com.tokopedia.unifycomponents.R.color.Green_G500))
+            flightHomepageBanner.setBannerIndicator(Indicator.GREEN)
+            flightHomepageBanner.setOnPromoScrolledListener { position ->
                 // send impression if banner not null
             }
-            flightDashboardBanner.setOnPromoClickListener { position -> onBannerClicked(position) }
-            flightDashboardBanner.setOnPromoAllClickListener { onAllBannerClicked() }
+            flightHomepageBanner.setOnPromoClickListener { position -> onBannerClicked(position) }
+            flightHomepageBanner.setOnPromoAllClickListener { onAllBannerClicked() }
 
             val bannerUrls = arrayListOf<String>()
             for (banner in bannerList) {
                 bannerUrls.add(banner.attribute.imageUrl)
             }
-            flightDashboardBanner.setPromoList(bannerUrls)
-            flightDashboardBanner.buildView()
+            flightHomepageBanner.setPromoList(bannerUrls)
+            flightHomepageBanner.buildView()
             KeyboardHandler.hideSoftKeyboard(requireActivity())
             KeyboardHandler.DropKeyboard(requireContext(), requireView())
         } else {
@@ -235,13 +235,13 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     }
 
     private fun showBannerView() {
-        flightDashboardBannerLayout.visibility = View.VISIBLE
-        flightDashboardBanner.visibility = View.VISIBLE
+        flightHomepageBannerLayout.visibility = View.VISIBLE
+        flightHomepageBanner.visibility = View.VISIBLE
     }
 
     private fun hideBannerView() {
-        flightDashboardBannerLayout.visibility = View.GONE
-        flightDashboardBanner.visibility = View.GONE
+        flightHomepageBannerLayout.visibility = View.GONE
+        flightHomepageBanner.visibility = View.GONE
     }
 
     private fun onBannerClicked(position: Int) {
@@ -272,16 +272,16 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
 
     private fun renderSearchForm(dashboardData: FlightDashboardModel) {
         dashboardData.departureAirport?.let {
-            flightDashboardSearchForm.setOriginAirport(it)
+            flightHomepageSearchForm.setOriginAirport(it)
         }
         dashboardData.arrivalAirport?.let {
-            flightDashboardSearchForm.setDestinationAirport(it)
+            flightHomepageSearchForm.setDestinationAirport(it)
         }
         dashboardData.flightPassengerViewModel?.let {
-            flightDashboardSearchForm.setPassengerView(it)
+            flightHomepageSearchForm.setPassengerView(it)
         }
         dashboardData.flightClass?.let {
-            flightDashboardSearchForm.setClassView(it)
+            flightHomepageSearchForm.setClassView(it)
         }
     }
 
@@ -302,14 +302,14 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
             override fun onDateClick(dateIn: Date, dateOut: Date) {
                 val departureErrorResourceId = flightHomepageViewModel.validateDepartureDate(dateIn)
                 if (departureErrorResourceId == -1) {
-                    flightDashboardSearchForm.setDepartureDate(dateIn)
+                    flightHomepageSearchForm.setDepartureDate(dateIn)
                 } else {
                     showMessageErrorInSnackbar(departureErrorResourceId)
                 }
 
                 val returnErrorResourceId = flightHomepageViewModel.validateReturnDate(dateIn, dateOut)
                 if (returnErrorResourceId == -1) {
-                    flightDashboardSearchForm.setReturnDate(dateOut)
+                    flightHomepageSearchForm.setReturnDate(dateOut)
                 } else {
                     showMessageErrorInSnackbar(returnErrorResourceId)
                 }

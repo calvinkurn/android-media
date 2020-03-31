@@ -11,19 +11,29 @@
         android:background="@color/white"
         android:paddingBottom="@dimen/spacing_lvl4">
 
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/flightHomepageTicker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tickerShapeType="full"
+            app:tickerType="announcement" />
+
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivFlightDashboardBanner"
+            android:id="@+id/ivFlightHomepageBanner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/flightHomepageTicker"
             app:srcCompat="@drawable/ic_flight_dashboard_banner" />
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/flightDashboardSearchFormContainer"
+            android:id="@+id/flightHomepageSearchFormContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_lvl4"
@@ -35,10 +45,10 @@
             app:cardUseCompatPadding="true"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/ivFlightDashboardBanner">
+            app:layout_constraintTop_toTopOf="@+id/ivFlightHomepageBanner">
 
             <com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
-                android:id="@+id/flightDashboardSearchForm"
+                android:id="@+id/flightHomepageSearchForm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing_lvl4"
@@ -48,7 +58,7 @@
 
         <!--Banner disini-->
         <LinearLayout
-            android:id="@+id/flightDashboardBannerLayout"
+            android:id="@+id/flightHomepageBannerLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_20"
@@ -59,11 +69,11 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/flightDashboardSearchFormContainer"
+            app:layout_constraintTop_toBottomOf="@+id/flightHomepageSearchFormContainer"
             tools:visibility="visible">
 
             <com.tokopedia.banner.Banner
-                android:id="@+id/flightDashboardBanner"
+                android:id="@+id/flightHomepageBanner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone" />
