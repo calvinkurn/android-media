@@ -59,7 +59,6 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     }
 
     private var progressDialog: AlertDialog? = null
-    private var headerTitle: String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_preference_summary, container, false)
@@ -311,8 +310,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                         }
                     }
                 }
-                headerTitle = getString(R.string.lbl_summary_preference_with_number_title) + " " + parent.preferenceIndex
-                parent.setHeaderTitle(headerTitle)
+                parent.setHeaderTitle(getString(R.string.lbl_summary_preference_with_number_title) + " " + parent.preferenceIndex)
                 parent.hideStepper()
             } else {
                 parent.hideDeleteButton()

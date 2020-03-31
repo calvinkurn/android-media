@@ -212,7 +212,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
         btn_preference_list_action.setOnClickListener {
             preferencelistAnalytics.eventAddPreferenceFromPurchaseSetting()
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
-            intent.putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, adapter.itemCount + 1)
+            intent.putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, getString(R.string.preference_number_summary) + " " + (adapter.itemCount + 1))
             startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
         }
         rv_preference_list.adapter = adapter
@@ -242,7 +242,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
         preferencelistAnalytics.eventClickSettingPreferenceGearInPreferenceListPage()
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
         intent.apply {
-            putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, position)
+            putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, getString(R.string.lbl_summary_preference_option) + " " + position)
             putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.profileId)
             putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.addressModel?.addressId)
             putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, preference.shipmentModel?.serviceId)

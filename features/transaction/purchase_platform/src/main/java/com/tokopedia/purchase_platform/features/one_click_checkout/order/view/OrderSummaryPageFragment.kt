@@ -330,7 +330,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         button_atur_pilihan.setOnClickListener {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
-            intent.putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, 1)
+            intent.putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, getString(R.string.preference_number_summary) + " " + 1)
             startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
         }
     }
@@ -609,10 +609,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                             orderSummaryAnalytics.eventClickGunakanPilihanIniFromGantiPilihanOSP()
                         }
 
-                        override fun onEditPreference(preference: ProfilesItemModel, adapterPosition: Int) {
+                        override fun onEditPreference(preference: ProfilesItemModel, position: Int) {
                             orderSummaryAnalytics.eventClickGearLogoInPreferenceFromGantiPilihanOSP()
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
-                            val preferenceIndex = getString(R.string.lbl_summary_preference_option) + " " + adapterPosition
+                            val preferenceIndex = getString(R.string.lbl_summary_preference_option) + " " + position
                             intent.apply {
                                 putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, preferenceIndex)
                                 putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.profileId)
