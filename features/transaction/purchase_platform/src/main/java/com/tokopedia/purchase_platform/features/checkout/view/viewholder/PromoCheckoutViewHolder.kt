@@ -51,6 +51,7 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
         itemView.promo_checkout_btn_shipment.title = title
         itemView.promo_checkout_btn_shipment.desc = lastApplyUiModel.additionalInfo.messageInfo.detail
         itemView.promo_checkout_btn_shipment.state = ButtonPromoCheckoutView.State.ACTIVE
+        itemView.promo_checkout_btn_shipment.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
         itemView.promo_checkout_btn_shipment.setOnClickListener {
             actionListener.onClickPromoCheckout(lastApplyUiModel)
             actionListener.onSendAnalyticsClickPromoCheckout(isApplied, lastApplyUiModel.listAllPromoCodes)
