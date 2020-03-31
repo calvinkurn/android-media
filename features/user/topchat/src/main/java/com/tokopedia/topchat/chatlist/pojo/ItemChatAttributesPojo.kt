@@ -20,6 +20,9 @@ data class ItemChatAttributesPojo(
         @SerializedName("unreads")
         @Expose
         var unreads: Int = 1,
+        @SerializedName("unreadsreply")
+        @Expose
+        var unreadReply: Int = 0,
         @SerializedName("fraudStatus")
         @Expose
         var fraudStatus: Int = 0,
@@ -36,11 +39,13 @@ data class ItemChatAttributesPojo(
             lastReplyTimeStr: String,
             contact: ItemChatAttributesContactPojo?
     ) : this(
-            lastReplyMessage,
-            lastReplyTimeStr,
-            ChatItemListViewHolder.STATE_CHAT_UNREAD,
-            1,
-            0,
-            0,
-            contact)
+            lastReplyMessage = lastReplyMessage,
+            lastReplyTimeStr = lastReplyTimeStr,
+            readStatus = ChatItemListViewHolder.STATE_CHAT_UNREAD,
+            unreads = 1,
+            unreadReply = 0,
+            fraudStatus = 0,
+            pinStatus = 0,
+            contact = contact
+    )
 }

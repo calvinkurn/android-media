@@ -17,6 +17,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.pojo.ChatStateItem
+import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesContactPojo
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.widget.LongClickMenu
 import com.tokopedia.unifycomponents.Label
@@ -43,34 +44,57 @@ class ChatItemListViewHolder(
     private val pin: ImageView = itemView.findViewById(R.id.ivPin)
 
     private val statusPinned = 1
-    private val statusUnpinned = 0
 
     private val menu = LongClickMenu()
 
     override fun bind(element: ItemChatListPojo) {
         val attributes = element.attributes
-        val data = attributes?.contact
+        val contact = attributes?.contact ?: return
+        bindItemChatClick(element)
+        bindItemChatLongClick(element)
+        bindName(contact)
+        bindProfilePicture(contact)
+        bindReadState(element)
+        bindMessageState(attributes.lastReplyMessage)
+        bindTimeStamp(attributes.lastReplyTimeStr)
+        bindLabel(contact.tag)
+        bindPin(attributes.pinStatus)
+    }
 
-        data?.let { contact ->
-            itemView.setOnClickListener {
-                onChatItemClicked(element)
-            }
-
-            itemView.setOnLongClickListener {
-                showLongClickMenu(element)
-                true
-            }
-
-            userName.text = contact.contactName
-            ImageHandler.loadImageCircle2(itemView.context, thumbnail, contact.thumbnail)
-
-            bindReadState(attributes.readStatus, attributes.unreads)
-            bindMessageState(attributes.lastReplyMessage)
-            bindTimeStamp(attributes.lastReplyTimeStr)
-            bindLabel(contact.tag)
-            bindPin(attributes.pinStatus)
+    override fun bind(element: ItemChatListPojo, payloads: MutableList<Any>) {
+        super.bind(element, payloads)
+        when (getFirstPayload(payloads)) {
+            PAYLOAD_READ_STATE -> bindReadState(element)
+            PAYLOAD_TYPING_STATE -> bindTypingState()
+            PAYLOAD_STOP_TYPING_STATE -> bindMessageState(element.attributes?.lastReplyMessage.toBlankOrString())
+            else -> bind(element)
         }
+    }
 
+    private fun getFirstPayload(payloads: MutableList<Any>): Int? {
+        if (payloads.isNotEmpty() && payloads.first() is Int) return payloads.first() as Int
+        return null
+    }
+
+    private fun bindItemChatClick(element: ItemChatListPojo) {
+        itemView.setOnClickListener {
+            onChatItemClicked(element)
+        }
+    }
+
+    private fun bindItemChatLongClick(element: ItemChatListPojo) {
+        itemView.setOnLongClickListener {
+            showLongClickMenu(element)
+            true
+        }
+    }
+
+    private fun bindName(contact: ItemChatAttributesContactPojo) {
+        userName.text = contact.contactName
+    }
+
+    private fun bindProfilePicture(contact: ItemChatAttributesContactPojo) {
+        ImageHandler.loadImageCircle2(itemView.context, thumbnail, contact.thumbnail)
     }
 
     private fun bindPin(pinStatus: Int) {
@@ -84,7 +108,7 @@ class ChatItemListViewHolder(
         if (chat.isUnread() && attributes != null) {
             chat.markAsRead()
             listener.decreaseNotificationCounter()
-            bindReadState(attributes.readStatus, attributes.unreads)
+            bindReadState(chat)
         }
 
         listener.chatItemClicked(chat, adapterPosition)
@@ -151,7 +175,7 @@ class ChatItemListViewHolder(
         element.attributes?.let {
             with(it) {
                 readStatus = STATE_CHAT_READ
-                bindReadState(readStatus, unreads)
+                bindReadState(element)
                 listener.decreaseNotificationCounter()
                 listener.trackChangeReadStatus(element)
             }
@@ -170,7 +194,7 @@ class ChatItemListViewHolder(
         element.attributes?.let {
             with(it) {
                 readStatus = STATE_CHAT_UNREAD
-                bindReadState(readStatus, unreads)
+                bindReadState(element)
                 listener.increaseNotificationCounter()
                 listener.trackChangeReadStatus(element)
             }
@@ -195,18 +219,6 @@ class ChatItemListViewHolder(
         }
     }
 
-    override fun bind(element: ItemChatListPojo, payloads: MutableList<Any>) {
-        super.bind(element, payloads)
-        if (payloads.isEmpty() || payloads.first() !is Int) return
-
-        when (payloads.first() as Int) {
-            PAYLOAD_READ_STATE -> bindReadState(element.attributes?.readStatus, element.attributes?.unreads)
-            PAYLOAD_TYPING_STATE -> bindTypingState()
-            PAYLOAD_STOP_TYPING_STATE -> bindMessageState(element.attributes?.lastReplyMessage.toBlankOrString())
-            else -> bind(element)
-        }
-    }
-
     private fun bindTypingState() {
         message.setText(R.string.is_typing)
         message.setTypeface(null, ITALIC)
@@ -219,8 +231,8 @@ class ChatItemListViewHolder(
         message.setTextColor(MethodChecker.getColor(message.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
     }
 
-    private fun bindReadState(readStatus: Int?, unreads: Int?) {
-        when (readStatus) {
+    private fun bindReadState(chatItem: ItemChatListPojo) {
+        when (chatItem.attributes?.readStatus) {
             STATE_CHAT_UNREAD -> {
                 userName.setWeight(Typography.BOLD)
                 unreadCounter.show()
