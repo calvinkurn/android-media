@@ -158,12 +158,15 @@ class ProductManageFilterExpandChecklistFragment :
     private fun initSearchView() {
         filterSearchBar.clearFocus()
         filterSearchBar.showIcon = false
+        context?.let {
+            filterSearchBar.searchBarPlaceholder = it.resources.getString(R.string.filter_search_bar)
+        }
         val searchTextWatcher = SearchTextWatcher(filterSearchBar.searchBarTextField, DELAY_TEXT_CHANGE, this)
         filterSearchBar.searchBarTextField.addTextChangedListener(searchTextWatcher)
 
         filterSearchBar.searchBarTextField.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                processSearch(searchBar.searchBarTextField.text.toString())
+                processSearch(filterSearchBar.searchBarTextField.text.toString())
                 filterSearchBar.clearFocus()
                 return@setOnEditorActionListener true
             }

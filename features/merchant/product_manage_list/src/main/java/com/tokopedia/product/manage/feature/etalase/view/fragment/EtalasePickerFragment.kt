@@ -85,8 +85,8 @@ class EtalasePickerFragment: Fragment(), EtalaseViewHolder.OnClickListener,
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_ADD_ETALASE && resultCode == Activity.RESULT_OK) {
             if (data != null && data.getBooleanExtra(PARAM_ADD_ETALASE_SUCCESS, false)) {
-                clearEtalaseCache()
-                getEtalaseList()
+                viewModel.clearGetEtalaseCache()
+                getEtalaseList(withDelay = true)
             }
         }
     }
@@ -162,13 +162,9 @@ class EtalasePickerFragment: Fragment(), EtalaseViewHolder.OnClickListener,
         startActivityForResult(intent, REQUEST_CODE_ADD_ETALASE)
     }
 
-    private fun getEtalaseList() {
+    private fun getEtalaseList(withDelay: Boolean = false) {
         val shopId = userSession.shopId
-        viewModel.getEtalaseList(shopId)
-    }
-
-    private fun clearEtalaseCache() {
-        viewModel.clearGetEtalaseCache()
+        viewModel.getEtalaseList(shopId, withDelay)
     }
 
     private fun setupSaveButton() {
