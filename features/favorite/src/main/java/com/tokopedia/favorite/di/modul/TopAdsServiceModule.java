@@ -8,6 +8,7 @@ import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.favorite.data.source.apis.interceptor.TopAdsAuthInterceptor;
 import com.tokopedia.favorite.data.source.apis.response.TopAdsResponseError;
 import com.tokopedia.favorite.data.source.apis.service.TopAdsService;
+import com.tokopedia.favorite.data.source.apis.validator.CacheApiTKPDResponseValidator;
 import com.tokopedia.favorite.di.qualifier.TopAdsQualifier;
 import com.tokopedia.favorite.di.scope.FavoriteScope;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;

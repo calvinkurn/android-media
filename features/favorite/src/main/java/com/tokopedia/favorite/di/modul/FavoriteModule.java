@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.core.network.di.module.NetModule;
 import com.tokopedia.favorite.data.FavoriteDataRepository;
 import com.tokopedia.favorite.data.FavoriteFactory;
 import com.tokopedia.favorite.data.source.apis.service.TopAdsService;
