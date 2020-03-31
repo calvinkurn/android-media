@@ -59,7 +59,7 @@
 
         <com.tokopedia.unifycomponents.QuantityEditorUnify
             android:id="@+id/quickEditStockQuantityEditor"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/layout_lvl8"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

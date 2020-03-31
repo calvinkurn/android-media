@@ -68,6 +68,8 @@ class ProductManageViewModel @Inject constructor(
         // Currently update data on server is not realtime.
         // Client need to add request delay in order to receive updated data.
         private const val REQUEST_DELAY = 1000L
+        private const val PRODUCT_IN_CAMPAIGN_ERROR_MESSAGE = "Produk yang sedang mengikuti campaign tidak bisa diedit."
+        private const val PRODUCT_PRICE_GROSIR_ERROR_MESSAGE = "Harga produk harus lebih tinggi dibandingkan harga grosir."
     }
 
     val viewState: LiveData<ViewState>
@@ -271,7 +273,7 @@ class ProductManageViewModel @Inject constructor(
             if (result.productUpdateV3Data.isSuccess) {
                 _editPriceResult.postValue(Success(EditPriceResult(productName, productId, price)))
             } else {
-                _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, NetworkErrorException())))
+                _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, Throwable(message = result.productUpdateV3Data.header.errorMessage.last()))))
             }
         }) {
             _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, NetworkErrorException())))
@@ -289,7 +291,7 @@ class ProductManageViewModel @Inject constructor(
             if (result.productUpdateV3Data.isSuccess) {
                 _editStockResult.postValue(Success(EditStockResult(productName, productId, stock, status)))
             } else {
-                _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, NetworkErrorException())))
+                _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, Throwable(message = result.productUpdateV3Data.header.errorMessage.last()))))
             }
         }) {
             _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, NetworkErrorException())))
@@ -344,7 +346,7 @@ class ProductManageViewModel @Inject constructor(
             if(result.productUpdateV3Data.isSuccess) {
                 _deleteProductResult.postValue(Success(DeleteProductResult(productName, productId)))
             } else {
-                _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, NetworkErrorException())))
+                _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, Throwable(message = PRODUCT_IN_CAMPAIGN_ERROR_MESSAGE))))
             }
         }) {
             _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, NetworkErrorException())))
