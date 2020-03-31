@@ -1073,7 +1073,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     logException(Throwable(it.data.errorReporter.texts.submitTitle))
                     showDialogErrorAtc(it.data)
                 } else {
-                    onSuccessAtc(it.data.data.cartId.toString())
+                    onSuccessAtc(it.data)
                 }
             }, {
                 logException(it)
