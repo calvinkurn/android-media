@@ -4,13 +4,25 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.detail.domain.mapper.AddEditProductDetailMapper
+import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.GetSearchShopProductUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
+import com.tokopedia.unifycomponents.list.ListItemUnify
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class AddEditProductDetailViewModel @Inject constructor(val provider: ResourceProvider, dispatcher: CoroutineDispatcher)
+class AddEditProductDetailViewModel @Inject constructor(val provider: ResourceProvider, dispatcher: CoroutineDispatcher,
+                                                        private val getSearchShopProductUseCase: GetSearchShopProductUseCase,
+                                                        private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase)
     : BaseViewModel(dispatcher) {
 
     private val mIsProductPhotoError = MutableLiveData<Boolean>()
@@ -46,6 +58,9 @@ class AddEditProductDetailViewModel @Inject constructor(val provider: ResourcePr
         get() = mIsPreOrderDurationInputError
     var preOrderDurationMessage: String = ""
 
+    private val _searchProductSuggestionName = MutableLiveData<Result<List<String>>>()
+    val searchProductSuggestionName: LiveData<Result<List<String>>> = _searchProductSuggestionName
+
     private val mIsInputValid = MediatorLiveData<Boolean>().apply {
 
         addSource(mIsProductPhotoError) {
@@ -72,6 +87,8 @@ class AddEditProductDetailViewModel @Inject constructor(val provider: ResourcePr
     }
     val isInputValid: LiveData<Boolean>
         get() = mIsInputValid
+    var selectedCategoryId: Long = -1L
+    val productCategoryRecommendationLiveData = MutableLiveData<Result<List<ListItemUnify>>>()
 
     private val minProductPriceLimit = 100
     private val maxProductPriceLimit = 500000000
@@ -83,6 +100,20 @@ class AddEditProductDetailViewModel @Inject constructor(val provider: ResourcePr
     private val minPreOrderDuration = 1
     private val maxPreOrderDays = 90
     private val maxPreOrderWeeks = 13
+
+    fun getSearchNameSuggestion(shopId: Int = 0, query: String) {
+        launchCatchError(block = {
+                    val result = withContext(Dispatchers.IO) {
+                        getSearchShopProductUseCase.requestParams = GetSearchShopProductUseCase.createRequestParam(shopId, query)
+                        getSearchShopProductUseCase.executeOnBackground()
+                    }
+                    val getProductName = AddEditProductDetailMapper.getProductNameAutoComplete(result)
+                    _searchProductSuggestionName.value = Success(
+                            AddEditProductDetailMapper.getFinalProductName(getProductName, query))
+        }, onError = {
+            _searchProductSuggestionName.value = Fail(it)
+        })
+    }
 
     private fun isInputValid(): Boolean {
 
@@ -282,5 +313,16 @@ class AddEditProductDetailViewModel @Inject constructor(val provider: ResourcePr
     private fun isProductNameBanned(productNameInput: String): Boolean {
         // TODO: replace the validation with API check
         return productNameInput == "Shopee"
+    }
+
+    fun getCategoryRecommendation(productNameInput: String) {
+        launchCatchError(block = {
+            productCategoryRecommendationLiveData.value = Success(withContext(Dispatchers.IO) {
+                getCategoryRecommendationUseCase.params = GetCategoryRecommendationUseCase.createRequestParams(productNameInput)
+                getCategoryRecommendationUseCase.executeOnBackground()
+            })
+        }, onError = {
+            productCategoryRecommendationLiveData.value = Fail(it)
+        })
     }
 }
