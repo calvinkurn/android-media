@@ -108,8 +108,9 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
                 categoryAnalytics.eventBannerCategoryLevelTwoClick(item, position)
             }
         }
+        // product border Logic
 
-        if (isLeafElement(item.sameCategoryTotalCount, item.categoryPosition)) {
+        if (isLastRowElement(item.sameCategoryTotalCount, item.categoryPosition)) {
             productViewHolder.bottomBorder.hide()
         }
         when (item.categoryPosition % totalColumns) {
@@ -127,9 +128,14 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
         }
     }
 
-    private fun isLeafElement(sameCategoryTotalCount: Int, categoryPosition: Int): Boolean {
-        val x = sameCategoryTotalCount / totalColumns
-        return (categoryPosition - totalColumns * x > 0) || (categoryPosition > sameCategoryTotalCount - totalColumns)
+    private fun isLastRowElement(sameCategoryTotalCount: Int, categoryPosition: Int): Boolean {
+        val div = sameCategoryTotalCount / totalColumns
+        val mod = sameCategoryTotalCount % totalColumns
+        return if (mod == 0) {
+            categoryPosition > (sameCategoryTotalCount - totalColumns)
+        } else {
+            categoryPosition > div * totalColumns
+        }
     }
 
 
@@ -247,7 +253,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
                     yangLangHitTrackerList.add(item)
                 }
                 Constants.ProductHeaderView -> {
-                    categoryAnalytics.eventCategoryLevelOneBannerView( item, position)
+                    categoryAnalytics.eventCategoryLevelOneBannerView(item, position)
                 }
             }
         }
