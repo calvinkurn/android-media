@@ -33,7 +33,8 @@ val registeredGqlFunctions = mapOf(
         "gamiCrack" to	"gamicrack",
         "add_to_cart_occ" to	"atcocc",
         "one_click_checkout" to	"checkoutocc",
-        "add_to_cart_transactional" to "atc"
+        "add_to_cart_transactional" to "atc",
+        "add_to_cart" to "atc"
 )
 
 fun isAkamai(query: String): Boolean {
