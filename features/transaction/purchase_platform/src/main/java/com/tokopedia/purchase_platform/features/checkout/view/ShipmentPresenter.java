@@ -1259,7 +1259,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             if (dataCheckoutRequest.shopProducts != null && dataCheckoutRequest.shopProducts.size() > 0) {
                 for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
                     for (PromoCheckoutVoucherOrdersItemUiModel voucherOrder : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
-                        if (!voucherOrder.getMessageUiModel().getState().equals("red") && shopProductCheckoutRequest.cartString.equals(voucherOrder.getUniqueId())) {
+                        if (shopProductCheckoutRequest.cartString.equals(voucherOrder.getUniqueId())) {
                             if (shopProductCheckoutRequest.promoCodes != null &&
                                     shopProductCheckoutRequest.promoCodes.size() > 0 &&
                                     !shopProductCheckoutRequest.promoCodes.contains(voucherOrder.getCode())) {
