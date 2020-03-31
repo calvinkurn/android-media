@@ -1208,6 +1208,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             ProductDetailConstant.OCS_BUTTON -> {
                 goToCheckout(ShipmentFormRequest
                         .BundleBuilder()
+                        .deviceId("")
                         .build()
                         .bundle)
             }
@@ -1369,7 +1370,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap, ProductDetailConstant.PAYLOAD_P3)
     }
 
-    private fun autoSelectVariant(){
+    private fun autoSelectVariant() {
         viewModel.variantData?.let {
             val isOnlyHaveOneVariantLeftData = it.autoSelectedOptionIds()
             if (!isOnlyHaveOneVariantLeftData.isEmpty() && viewModel.cartTypeData != null) {
@@ -1928,6 +1929,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
+    private fun showToasterWithAction(message: String, buttonMessage: String, clickListener: () -> Unit) {
+        view?.let {
+            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, buttonMessage, clickListener = View.OnClickListener {
+                clickListener.invoke()
+            })
+        }
+    }
+
     private fun showToasterError(message: String) {
         view?.let {
             Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.label_oke_pdp), clickListener = View.OnClickListener {})
@@ -2096,7 +2105,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
 
             if (isVariant && isPartialySelected) {
-                showErrorVariantUnselected()
+                if (pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory == null) {
+                    showToasterWithAction("Variant gagal diload", "Refresh") {
+                        onSwipeRefresh()
+                    }
+                } else {
+                    showErrorVariantUnselected()
+                }
                 return@let
             }
 
@@ -2419,7 +2434,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun scrollToPosition(position: Int) {
-        getRecyclerView(view).smoothScrollToPosition(position)
+        if (position != -1)
+            getRecyclerView(view).smoothScrollToPosition(position)
     }
 
     private fun showProgressDialog(onCancelClicked: (() -> Unit)? = null) {

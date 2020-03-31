@@ -128,6 +128,8 @@ class PartialButtonActionView private constructor(private val view: View,
                     ?: false)
         }
 
+        btn_topchat.setOnClickListener(this@PartialButtonActionView)
+        btn_apply_leasing.setOnClickListener(this@PartialButtonActionView)
         btn_buy_now.generateTheme(availableButton.getOrNull(0)?.color ?: "")
         btn_add_to_cart.generateTheme(availableButton.getOrNull(1)?.color ?: "")
     }
