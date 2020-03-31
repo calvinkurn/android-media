@@ -1084,14 +1084,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun observeToggleNotifyMe() {
-        viewLifecycleOwner.observe(viewModel.toggleTeaserNotifyMe) {
-            when (it) {
-                is Fail -> onFailNotifyMe(it.throwable)
-            }
-        }
-    }
-
     private fun observeP1() {
         viewLifecycleOwner.observe(viewModel.productLayout) { data ->
             if (::performanceMonitoringP1.isInitialized)
@@ -2567,11 +2559,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun observeToggleNotifyMe() {
-        viewModel.toggleTeaserNotifyMe.observe(viewLifecycleOwner, Observer {
+        viewLifecycleOwner.observe(viewModel.toggleTeaserNotifyMe) {
             when (it) {
                 is Fail -> onFailNotifyMe(it.throwable)
             }
-        })
+        }
     }
 
     private fun onFailNotifyMe(t: Throwable) {
