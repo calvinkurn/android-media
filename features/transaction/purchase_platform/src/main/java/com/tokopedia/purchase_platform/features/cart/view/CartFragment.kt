@@ -1437,6 +1437,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    private fun setLastApplyDataToShopGroup(lastApplyData: LastApplyUiModel) {
+        cartListData?.lastApplyShopGroupSimplifiedData = lastApplyData
+    }
+
     private fun getAllPromosApplied(lastApplyData: LastApplyUiModel): List<String> {
         val listPromos = arrayListOf<String>()
         lastApplyData.codes.forEach {
@@ -1473,8 +1477,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 cartListData?.shopGroupAvailableDataList?.get(i)?.let { it ->
                     cartItemHolderData = it
 
-                    cartItemHolderData.promoCodes?.forEach { code ->
+                    /*cartItemHolderData.promoCodes?.forEach { code ->
                         listPromoCodes.add(code)
+                    }*/
+                    cartListData?.lastApplyShopGroupSimplifiedData?.voucherOrders?.forEach { lastApplyVoucherOrders ->
+                        cartItemHolderData.cartString?.let { cartString ->
+                            if (cartString.equals(lastApplyVoucherOrders.uniqueId, true)) {
+                                listPromoCodes.add(lastApplyVoucherOrders.code)
+                            }
+                        }
+
                     }
 
                     var countListItem = 0
@@ -1510,24 +1522,31 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
             }
         } else if (!ignoreIsChecked && parentPosition == -1) {
-            cartAdapter.selectedCartShopHolderData.forEach {
+            cartAdapter.selectedCartShopHolderData.forEach { cartShop ->
                 val listProductDetail = arrayListOf<ProductDetailsItem>()
 
                 val listPromoCodes = arrayListOf<String>()
-                it.shopGroupAvailableData.promoCodes?.forEach { code ->
+                /*it.shopGroupAvailableData.promoCodes?.forEach { code ->
                     listPromoCodes.add(code)
+                }*/
+                cartListData?.lastApplyShopGroupSimplifiedData?.voucherOrders?.forEach { lastApplyVoucherOrders ->
+                    cartShop.shopGroupAvailableData.cartString?.let { cartString ->
+                        if (cartString.equals(lastApplyVoucherOrders.uniqueId, true)) {
+                            listPromoCodes.add(lastApplyVoucherOrders.code)
+                        }
+                    }
                 }
 
                 var countItemList: Int
-                it.shopGroupAvailableData.cartItemDataList?.let { listCartItemHolderData ->
+                cartShop.shopGroupAvailableData.cartItemDataList?.let { listCartItemHolderData ->
                     countItemList = listCartItemHolderData.size
                     for (j in 0 until countItemList) {
                         if (listCartItemHolderData[j].isSelected) {
-                            doAddToListProducts(it.shopGroupAvailableData, j, listProductDetail)
+                            doAddToListProducts(cartShop.shopGroupAvailableData, j, listProductDetail)
                         }
                     }
                     if (listProductDetail.isNotEmpty()) {
-                        doAddtoOrderListRequest(it.shopGroupAvailableData, listProductDetail, listPromoCodes, listOrder)
+                        doAddtoOrderListRequest(cartShop.shopGroupAvailableData, listProductDetail, listPromoCodes, listOrder)
                     }
                 }
             }
@@ -1538,8 +1557,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     cartItemHolderData = it
 
                     val listPromoCodes = arrayListOf<String>()
-                    cartItemHolderData.promoCodes?.forEach { code ->
+                    /*cartItemHolderData.promoCodes?.forEach { code ->
                         listPromoCodes.add(code)
+                    }*/
+                    cartListData?.lastApplyShopGroupSimplifiedData?.voucherOrders?.forEach { lastApplyVoucherOrders ->
+                        it.cartString?.let { cartString ->
+                            if (cartString.equals(lastApplyVoucherOrders.uniqueId, true)) {
+                                listPromoCodes.add(lastApplyVoucherOrders.code)
+                            }
+                        }
                     }
 
                     var countListItem = 0
@@ -2548,6 +2574,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun updatePromoCheckoutStickyButton(promoUiModel: PromoUiModel) {
         doRenderPromoCheckoutButton(LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel))
+        setLastApplyDataToShopGroup(LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel))
     }
 
     private fun showToaster(msg: String, isShowOk: Boolean) {
