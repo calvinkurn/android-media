@@ -12,8 +12,25 @@ import com.tokopedia.flight.homepage.presentation.fragment.FlightHomepageFragmen
 
 class FlightHomepageActivity : BaseFlightActivity(), HasComponent<FlightHomepageComponent> {
 
-    override fun getNewFragment(): Fragment? =
-            FlightHomepageFragment.getInstance("")
+    override fun getNewFragment(): Fragment =
+            if (intent.hasExtra(EXTRA_TRIP) &&
+                    intent.hasExtra(EXTRA_ADULT) &&
+                    intent.hasExtra(EXTRA_CHILD) &&
+                    intent.hasExtra(EXTRA_INFANT) &&
+                    intent.hasExtra(EXTRA_CLASS)) {
+                FlightHomepageFragment.getInstance(
+                        intent.getStringExtra(EXTRA_TRIP),
+                        intent.getStringExtra(EXTRA_ADULT),
+                        intent.getStringExtra(EXTRA_CHILD),
+                        intent.getStringExtra(EXTRA_INFANT),
+                        intent.getStringExtra(EXTRA_CLASS),
+                        if (intent.hasExtra(EXTRA_AUTO_SEARCH)) intent.getStringExtra(EXTRA_AUTO_SEARCH)
+                        else "0",
+                        intent.data?.toString() ?: ""
+                )
+            } else {
+                FlightHomepageFragment.getInstance(intent.data?.toString() ?: "")
+            }
 
     override fun getComponent(): FlightHomepageComponent =
             DaggerFlightHomepageComponent.builder()
