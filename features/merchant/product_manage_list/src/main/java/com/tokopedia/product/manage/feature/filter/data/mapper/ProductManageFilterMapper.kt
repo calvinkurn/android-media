@@ -202,7 +202,7 @@ class ProductManageFilterMapper {
             return FilterUiModel(SORT_HEADER, data, SHOW_CHIPS)
         }
 
-        private fun mapEtalaseResponseToEtalaseOptions(etalaseResponse: ArrayList<ShopEtalaseModel>): FilterViewModel {
+        private fun mapEtalaseResponseToEtalaseOptions(etalaseResponse: ArrayList<ShopEtalaseModel>): FilterUiModel {
             val data = mutableListOf<FilterDataUiModel>()
             etalaseResponse.filter { it.name.isNotEmpty() }.forEach {
                 data.add(FilterDataUiModel(it.id,it.name))
