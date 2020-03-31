@@ -2,8 +2,10 @@ package com.tokopedia.sellerhome.settings.view.viewholder
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -247,7 +249,13 @@ class OtherMenuViewHolder(private val itemView: View,
         }
         powerMerchantStatusText?.text = statusText
         powerMerchantStatusText?.setTextColor(ResourcesCompat.getColor(resources, textColor, null))
-        powerMerchantLeftStatus?.background = ResourcesCompat.getDrawable(resources, statusDrawable, null)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            powerMerchantLeftStatus?.background = ResourcesCompat.getDrawable(resources, statusDrawable, null)
+        } else {
+            powerMerchantLeftStatus?.let {
+                (it as? ImageView)?.setImageDrawable(ResourcesCompat.getDrawable(resources, statusDrawable, null))
+            }
+        }
         powerMerchantIcon?.setImageDrawable(ResourcesCompat.getDrawable(resources, powerMerchantDrawableIcon, null))
         return this
     }

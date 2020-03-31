@@ -59,6 +59,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
         activity?.let {
             viewModel = ViewModelProviders.of(it, viewModelFactory).get(KeywordAdsViewModel::class.java)
+            it.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
         }
         keywordListAdapter = KeywordListAdapter(KeywordListAdapterTypeFactoryImpl(this::onKeywordSelected))
 

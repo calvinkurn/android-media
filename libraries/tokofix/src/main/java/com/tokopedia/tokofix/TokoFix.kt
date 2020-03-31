@@ -1,7 +1,7 @@
 package com.tokopedia.tokofix
 
 import android.app.Application
-import android.util.Log
+import android.content.Intent
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
@@ -16,17 +16,11 @@ import com.tokopedia.tokofix.patch.PatchLogger
  */
 class TokoFix private constructor(private val app: Application, val version: String) : LifecycleObserver {
 
-    private val repository: PatchRepository = PatchRepository()
-
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     private fun onForegroud() {
-        repository.getPatch(version, this::onSuccessGetPatch)
-    }
-
-    private fun onSuccessGetPatch(data: DataResponse){
-        val context = app.applicationContext
-        repository.donwloadPatch(context, data.data.downloadUrl, PatchLogger(context))
+        val intent = Intent(app, PatchService::class.java)
+        intent.putExtra("version", version)
+        app.startService(intent)
     }
 
     companion object {

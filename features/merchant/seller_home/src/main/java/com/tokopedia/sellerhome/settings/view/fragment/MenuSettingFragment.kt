@@ -24,7 +24,10 @@ import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant
 import com.tokopedia.sellerhome.settings.analytics.SettingTrackingListener
 import com.tokopedia.sellerhome.settings.analytics.sendShopInfoImpressionData
 import com.tokopedia.sellerhome.settings.view.typefactory.OtherMenuAdapterTypeFactory
-import com.tokopedia.sellerhome.settings.view.uimodel.*
+import com.tokopedia.sellerhome.settings.view.uimodel.DividerUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.IndentedSettingTitleUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.MenuItemUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.SettingTitleMenuUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.base.DividerType
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingShopInfoImpressionTrackable
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiModel
@@ -48,7 +51,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
         private var MOBILE_DOMAIN = getInstance().MOBILEWEB
 
-        private const val DEVELOPER_OPTION_INDEX = 20
+        private const val DEVELOPER_OPTION_INDEX = 19
 
         @JvmStatic
         fun createInstance(): MenuSettingFragment = MenuSettingFragment()
@@ -96,7 +99,6 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         recycler_view.layoutManager = LinearLayoutManager(context)
         val settingList = mutableListOf(
                 SettingTitleMenuUiModel(resources.getString(R.string.setting_menu_shop_setting), R.drawable.ic_pengaturan_toko),
-                SpacingUiModel(),
                 IndentedSettingTitleUiModel(resources.getString(R.string.setting_menu_shop_profile)),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_basic_info),

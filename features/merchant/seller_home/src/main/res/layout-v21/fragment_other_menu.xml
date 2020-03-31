@@ -49,7 +49,6 @@
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:overScrollMode="never"
                 android:background="@color/white"/>
 
             <View
@@ -58,5 +57,13 @@
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
+
+    <View
+        android:id="@+id/statusBarBackground"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/sah_status_bar_height"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/white"
+        android:visibility="invisible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

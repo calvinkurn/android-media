@@ -85,7 +85,7 @@ import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
-import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageFragment;
+import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.product.manage.item.common.di.component.DaggerProductComponent;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.item.common.di.module.ProductModule;
@@ -983,8 +983,8 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @NotNull
     @Override
-    public Fragment getProductManageFragment() {
-        return ProductManageFragment.newInstance();
+    public Fragment getProductManageFragment(@NotNull ArrayList<String> filterOptions) {
+        return ProductManageSellerFragment.newInstance(filterOptions);
     }
 
     @NotNull

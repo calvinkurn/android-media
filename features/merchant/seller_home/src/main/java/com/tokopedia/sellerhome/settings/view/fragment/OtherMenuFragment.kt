@@ -276,15 +276,15 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                         eventActionSuffix = SettingTrackingConstant.SHOP_ADS_AND_PROMOTION),
                 SettingTitleUiModel(resources.getString(R.string.setting_menu_buyer_info)),
                 MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_review),
-                        R.drawable.ic_star_setting,
-                        ApplinkConst.REPUTATION,
-                        eventActionSuffix = SettingTrackingConstant.REVIEW),
-                MenuItemUiModel(
                         resources.getString(R.string.setting_menu_discussion),
                         R.drawable.ic_setting_discussion,
                         ApplinkConst.TALK,
                         eventActionSuffix = SettingTrackingConstant.DISCUSSION),
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_review),
+                        R.drawable.ic_star_setting,
+                        ApplinkConst.REPUTATION,
+                        eventActionSuffix = SettingTrackingConstant.REVIEW),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_complaint),
                         R.drawable.ic_complaint,
@@ -384,8 +384,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
             } else {
                 activity?.requestStatusBarLight()
             }
+            observeRecyclerViewScrollListener()
         }
-        observeRecyclerViewScrollListener()
     }
 
     private fun setupOffset() {
@@ -398,12 +398,14 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         statusInfoTransitionOffset = statusBarHeight ?: HEIGHT_OFFSET
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun observeRecyclerViewScrollListener() {
         this.otherMenuScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { scrollView, _, _, _, _ ->
             calculateSearchBarView(scrollView.scrollY)
         })
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun calculateSearchBarView(offset: Int) {
         val endToTransitionOffset = startToTransitionOffset + statusInfoTransitionOffset
         val maxTransitionOffset = endToTransitionOffset - startToTransitionOffset
@@ -425,21 +427,21 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun setLightStatusBar() {
-        if (!isDefaultDarkStatusBar){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!isDefaultDarkStatusBar){
                 activity?.requestStatusBarLight()
             }
+            setStatusBarStateInitialIsLight(true)
+            statusBarBackground?.hide()
         }
-        setStatusBarStateInitialIsLight(true)
-        statusBarBackground?.hide()
     }
 
     private fun setDarkStatusBar() {
-        setStatusBarStateInitialIsLight(false)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            setStatusBarStateInitialIsLight(false)
             activity?.requestStatusBarDark()
+            statusBarBackground?.show()
         }
-        statusBarBackground?.show()
     }
 
 }

@@ -14,31 +14,26 @@ import timber.log.Timber
  */
 class PatchLogger(val context: Context) : RobustCallBack {
     override fun onPatchListFetched(result: Boolean, isNet: Boolean, patches: List<Patch>) {
-        Timber.d(TAG, "onPatchListFetched result: $result")
-        Timber.d(TAG, "onPatchListFetched isNet: $isNet")
+        Timber.w("P1#ROBUST#onPatchListFetched result: $result isNet: $isNet")
         for (patch in patches) {
-            Timber.d(TAG, "onPatchListFetched patch: " + patch.name)
+            Timber.w("P1#ROBUST#onPatchListFetched patch: " + patch.name)
         }
     }
 
     override fun onPatchFetched(result: Boolean, isNet: Boolean, patch: Patch) {
-        Timber.d(TAG, "onPatchFetched result: $result")
-        Timber.d(TAG, "onPatchFetched isNet: $isNet")
-        Timber.d(TAG, "onPatchFetched patch: " + patch.name)
+        Timber.w("P1#ROBUST#onPatchFetched isNet: $isNet patch: "+patch.name+" result: $result")
     }
 
     override fun onPatchApplied(result: Boolean, patch: Patch) {
-        Timber.d(TAG, "onPatchApplied result: $result")
-        Timber.d(TAG, "onPatchApplied patch: " + patch.name)
+        Timber.w("P1#ROBUST#onPatchApplied patch name: " + patch.name+ " result: $result")
     }
 
     override fun logNotify(log: String, where: String) {
-        Timber.d(TAG, "logNotify log: $log")
-        Timber.d(TAG, "logNotify where: $where")
+        Timber.w("P1#ROBUST#logNotify log: $log where: $where")
     }
 
     override fun exceptionNotify(throwable: Throwable, where: String) {
-        Log.e(TAG, "exceptionNotify where: $where", throwable)
+        Timber.e(throwable, "P1#ROBUST#exceptionNotify where: $where")
     }
 
     companion object {

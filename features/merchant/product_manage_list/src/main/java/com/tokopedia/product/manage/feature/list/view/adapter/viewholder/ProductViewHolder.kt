@@ -1,10 +1,10 @@
 package com.tokopedia.product.manage.feature.list.view.adapter.viewholder
 
 import android.view.View
-import android.widget.CompoundButton
 import androidx.annotation.LayoutRes
-import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFitCenter
+import com.tokopedia.kotlin.extensions.view.getNumberFormatted
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -14,10 +14,8 @@ import kotlinx.android.synthetic.main.item_manage_product_list.view.*
 
 class ProductViewHolder(
     view: View,
-    checkableListener: CheckableInteractionListener,
     private val listener: ProductViewHolderView
-): BaseCheckableViewHolder<ProductViewModel>(view, checkableListener),
-    CompoundButton.OnCheckedChangeListener, View.OnClickListener {
+): AbstractViewHolder<ProductViewModel>(view) {
 
     companion object {
         @LayoutRes
@@ -25,8 +23,6 @@ class ProductViewHolder(
     }
 
     override fun bind(product: ProductViewModel) {
-        super.bind(product)
-
         setTitleAndPrice(product)
         showProductStock(product)
 
@@ -41,12 +37,6 @@ class ProductViewHolder(
         setOnClickListeners(product)
     }
 
-    override fun onClick(v: View?) = toggle()
-
-    override fun getCheckable(): CompoundButton? {
-        return itemView.checkBoxSelect
-    }
-
     private fun setTitleAndPrice(product: ProductViewModel) {
         itemView.textTitle.text = product.title
         itemView.textPrice.text = product.priceFormatted
@@ -54,7 +44,7 @@ class ProductViewHolder(
 
     private fun showProductStock(product: ProductViewModel) {
         if(product.isNotVariant()) {
-            itemView.textStockCount.text = product.stock.toString()
+            itemView.textStockCount.text = product.stock?.getNumberFormatted()
             itemView.textStockCount.show()
             itemView.textStock.show()
         } else {
@@ -99,7 +89,8 @@ class ProductViewHolder(
     }
 
     private fun setOnClickListeners(product: ProductViewModel) {
-        itemView.setOnClickListener { listener.onClickProductItem(product) }
+        setOnItemClickListener(product)
+        itemView.checkBoxSelect.setOnClickListener { onClickCheckBox() }
         itemView.btnMoreOptions.setOnClickListener { listener.onClickMoreOptionsButton(product) }
         itemView.imageStockInformation.setOnClickListener { listener.onClickStockInformation() }
         itemView.btnEditPrice.setOnClickListener { listener.onClickEditPriceButton(product) }
@@ -108,14 +99,40 @@ class ProductViewHolder(
         itemView.btnContactCS.setOnClickListener { listener.onClickContactCsButton(product)}
     }
 
+    private fun setOnItemClickListener(product: ProductViewModel) {
+        itemView.setOnClickListener {
+            if (product.multiSelectActive) {
+                toggleCheckBox()
+                onClickCheckBox()
+            } else {
+                onClickProductItem(product)
+            }
+        }
+    }
+
     private fun showProductCheckBox(product: ProductViewModel) {
+        itemView.checkBoxSelect.isChecked = product.isChecked
         itemView.checkBoxSelect.showWithCondition(product.multiSelectActive)
+    }
+
+    private fun toggleCheckBox() {
+        itemView.checkBoxSelect.apply { isChecked = !isChecked }
+    }
+
+    private fun onClickCheckBox() {
+        val isChecked = itemView.checkBoxSelect.isChecked
+        listener.onClickProductCheckBox(isChecked, adapterPosition)
+    }
+
+    private fun onClickProductItem(product: ProductViewModel) {
+        listener.onClickProductItem(product)
     }
 
     interface ProductViewHolderView {
         fun onClickStockInformation()
         fun onClickMoreOptionsButton(product: ProductViewModel)
         fun onClickProductItem(product: ProductViewModel)
+        fun onClickProductCheckBox(isChecked: Boolean, position: Int)
         fun onClickEditPriceButton(product: ProductViewModel)
         fun onClickEditStockButton(product: ProductViewModel)
         fun onClickEditVariantButton(product: ProductViewModel)

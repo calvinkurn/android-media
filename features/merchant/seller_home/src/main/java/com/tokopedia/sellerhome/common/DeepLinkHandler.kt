@@ -2,6 +2,7 @@ package com.tokopedia.sellerhome.common
 
 import android.content.Intent
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 
 /**
  * Created By @ilhamsuaib on 2020-03-05
@@ -39,7 +40,15 @@ object DeepLinkHandler {
             }
 
             //Product Manage
-            data.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE) -> {
+            data.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_FILTER_EMPTY_STOCK) -> {
+                callback(PageFragment(FragmentType.PRODUCT,  FilterOption.FilterByCondition.EmptyStockOnly.id))
+            }
+
+            data.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_FILTER_EMPTY_STOCK_EXTERNAL) -> {
+                callback(PageFragment(FragmentType.PRODUCT,  FilterOption.FilterByCondition.EmptyStockOnly.id))
+            }
+
+            data.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST) -> {
                 callback(PageFragment(FragmentType.PRODUCT))
             }
 

@@ -61,7 +61,9 @@ class ProductManageBottomSheet(
         if(product.isFeatured == true) {
             menuList.add(RemoveFeaturedProduct(product))
         } else {
-            menuList.add(SetFeaturedProduct(product))
+            if(product.isActive()) {
+                menuList.add(SetFeaturedProduct(product))
+            }
         }
 
         return menuList
