@@ -7,7 +7,6 @@ import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapterTypeFa
 import com.tokopedia.centralizedpromo.view.fragment.CoachMarkListener
 import com.tokopedia.centralizedpromo.view.model.PromoCreationListUiModel
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
-import com.tokopedia.centralizedpromo.view.viewholder.PromoCreationViewHolder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -35,7 +34,6 @@ class PartialCentralizedPromoCreationView(
             layoutManager = GridLayoutManager(context, SPAN_COUNT)
             adapter = this@PartialCentralizedPromoCreationView.adapter.apply { setHasStableIds(true) }
             isNestedScrollingEnabled = false
-            addItemDecoration(PromoCreationViewHolder.ItemDecoration(resources.getDimension(R.dimen.centralized_promo_dimen_4dp).toInt()))
         }
     }
 

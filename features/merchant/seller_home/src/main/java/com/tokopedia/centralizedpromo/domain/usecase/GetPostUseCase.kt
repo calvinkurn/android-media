@@ -32,6 +32,8 @@ class GetPostUseCase @Inject constructor(
     }
 
     companion object {
+        const val DATA_KEY_SELLER_INFO_POST = "sellerInfo"
+
         private const val SHOP_ID = "shopId"
         private const val DATA_KEY = "dataKey"
         private const val START_DATE = "startDate"
