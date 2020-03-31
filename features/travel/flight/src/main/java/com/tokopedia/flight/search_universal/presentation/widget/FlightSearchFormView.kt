@@ -104,20 +104,18 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         tvFlightDepartureDate.text = FlightDateUtil.dateToString(departureDate, FlightDateUtil.DEFAULT_VIEW_FORMAT)
 
         // check return date
-        if (isRoundTrip()) {
-            if (::returnDate.isInitialized && returnDate < departureDate) {
-                val oneYear = FlightDateUtil.addTimeToSpesificDate(
-                        FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 1),
-                        Calendar.DATE,
-                        -1)
-                if (returnDate.after(oneYear)) {
-                    setReturnDate(departureDate)
-                } else {
-                    setReturnDate(generateDefaultReturnDate(departureDate))
-                }
+        if (::returnDate.isInitialized && returnDate < departureDate) {
+            val oneYear = FlightDateUtil.addTimeToSpesificDate(
+                    FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 1),
+                    Calendar.DATE,
+                    -1)
+            if (returnDate.after(oneYear)) {
+                setReturnDate(departureDate)
             } else {
                 setReturnDate(generateDefaultReturnDate(departureDate))
             }
+        } else {
+            setReturnDate(generateDefaultReturnDate(departureDate))
         }
     }
 
