@@ -3,26 +3,33 @@ package com.tokopedia.productcard
 import android.graphics.Paint
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import kotlinx.android.synthetic.main.product_card_flashsale_content_layout.view.*
+import kotlinx.android.synthetic.main.product_card_flashsale_layout.view.*
 
 internal fun ProductCardFlashSaleView.renderProductCardFlashSaleContent(productCardModel: ProductCardFlashSaleModel) {
     renderPdpCountView(productCardModel)
     renderTextProductName(productCardModel)
+    renderTopAds(productCardModel)
     renderDiscount(productCardModel)
-    renderLabelPrice(productCardModel)
     renderTextPrice(productCardModel)
-    renderStockLabel(productCardModel)
     renderStockPercentage(productCardModel)
+    renderStockLabel(productCardModel)
 }
 
 private fun ProductCardFlashSaleView.renderPdpCountView(productCardModel: ProductCardFlashSaleModel) {
+    ivPdpView.hide()
     tvPdpView?.shouldShowWithAction(productCardModel.pdpViewCount.isNotEmpty()) {
         it.text = MethodChecker.fromHtml(productCardModel.pdpViewCount)
         ivPdpView.show()
     }
+}
+
+private fun ProductCardFlashSaleView.renderTopAds(productCardModel: ProductCardFlashSaleModel){
+    tv_top_ads.shouldShowWithAction(productCardModel.isTopAds){}
 }
 
 private fun ProductCardFlashSaleView.renderTextProductName(productCardModel: ProductCardFlashSaleModel) {
@@ -40,10 +47,6 @@ private fun ProductCardFlashSaleView.renderDiscount(productCardModel: ProductCar
         it.text = productCardModel.slashedPrice
         it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     }
-}
-
-private fun ProductCardFlashSaleView.renderLabelPrice(productCardModel: ProductCardFlashSaleModel) {
-    labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
 }
 
 private fun ProductCardFlashSaleView.renderTextPrice(productCardModel: ProductCardFlashSaleModel) {
@@ -65,7 +68,6 @@ private fun ProductCardFlashSaleView.renderStockLabel(productCardModel: ProductC
         it.text = productCardModel.stockBarLabel
     }
 }
-
 
 private fun ProductCardFlashSaleModel.getPriceToRender(): String {
     return if (priceRange.isNotEmpty()) priceRange else formattedPrice

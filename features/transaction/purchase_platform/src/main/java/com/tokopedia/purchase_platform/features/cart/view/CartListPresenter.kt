@@ -251,7 +251,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             requestParams.putObject(DeleteCartUseCase.PARAM_TO_BE_REMOVED_PROMO_CODES, tmpAppliedPromoCodeList)
 
             compositeSubscription.add(deleteCartUseCase?.createObservable(requestParams)
-                    ?.subscribe(DeleteCartItemSubscriber(view, this, toBeDeletedCartIds, removeAllItem, removeInsurance)))
+                    ?.subscribe(DeleteCartItemSubscriber(view, this, toBeDeletedCartIds,
+                            removeAllItem, removeInsurance)))
         }
     }
 
@@ -889,7 +890,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             setShopName(cartWishlistItemHolderData.shopName)
             setPicture(cartWishlistItemHolderData.imageUrl)
             setUrl(cartWishlistItemHolderData.url)
-            setDimension45(addToCartDataResponseModel.data.cartId.toString())
+            setDimension45(addToCartDataResponseModel.data.cartId)
             setBrand("")
             setCategoryId("")
             setVariant("")
@@ -917,7 +918,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             setDimension52(cartRecentViewItemHolderData.shopId)
             setDimension57(cartRecentViewItemHolderData.shopName)
             setDimension59(cartRecentViewItemHolderData.shopType)
-            setDimension77(addToCartDataResponseModel.data.cartId.toString())
+            setDimension77(addToCartDataResponseModel.data.cartId)
             setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setCategoryId("")
             setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
@@ -946,7 +947,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             setShopId(cartRecommendationItemHolderData.recommendationItem.shopId.toString())
             setShopType(cartRecommendationItemHolderData.recommendationItem.shopType)
             setShopName(cartRecommendationItemHolderData.recommendationItem.shopName)
-            setDimension45(addToCartDataResponseModel.data.cartId.toString())
+            setDimension45(addToCartDataResponseModel.data.cartId)
             setDimension53(cartRecommendationItemHolderData.recommendationItem.discountPercentageInt > 0)
             setDimension40(addToCartDataResponseModel.data.trackerListName)
             setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)

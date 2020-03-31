@@ -6,7 +6,8 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
-import com.tokopedia.product.detail.common.data.model.carttype.*
+import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionParams
+import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionResponse
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManageResponse
@@ -23,7 +24,8 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
 ) : UseCase<ProductInfoP2Login>() {
 
     companion object {
-        fun createParams(shopId: Int, productId: Int, cartTypeParam: List<CartRedirectionParams>): RequestParams = RequestParams.create().apply {
+        fun createParams(shopId: Int, productId: Int,
+                         cartTypeParam: List<CartRedirectionParams>): RequestParams = RequestParams.create().apply {
             putInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, shopId)
             putInt(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
             putObject(ProductDetailCommonConstant.PARAM_CART_TYPE, cartTypeParam)
@@ -38,13 +40,13 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
         val shopId = requestParams.getInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, 0)
         val cartTypeParam = requestParams.getObject(ProductDetailCommonConstant.PARAM_CART_TYPE)
 
-        val isWishlistedParams = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId.toString())
-        val isWishlistedRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_WISHLIST_STATUS],
-                ProductInfo.WishlistStatus::class.java, isWishlistedParams)
-
         val getCartTypeParams = mapOf(ProductDetailCommonConstant.PARAMS to cartTypeParam)
         val getCartTypeRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_CART_TYPE],
                 CartRedirectionResponse::class.java, getCartTypeParams)
+
+        val isWishlistedParams = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId.toString())
+        val isWishlistedRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_WISHLIST_STATUS],
+                ProductInfo.WishlistStatus::class.java, isWishlistedParams)
 
         val getCheckoutTypeRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_CHECKOUTTYPE],
                 GetCheckoutTypeResponse::class.java)
@@ -62,8 +64,7 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
 
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
 
-        val requests = mutableListOf(isWishlistedRequest, getCheckoutTypeRequest, affiliateRequest, topAdsManageRequest,
-                getCartTypeRequest)
+        val requests = mutableListOf(isWishlistedRequest, getCheckoutTypeRequest, affiliateRequest, topAdsManageRequest, getCartTypeRequest)
 
         try {
             val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
@@ -92,13 +93,7 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
             }
 
             if (gqlResponse.getError(CartRedirectionResponse::class.java)?.isNotEmpty() != true) {
-//                p2Login.newCartTypeResponse = gqlResponse.getData<CartRedirectionResponse>(CartRedirectionResponse::class.java)
-                p2Login.newCartTypeResponse = CartRedirectionResponse(CartRedirection(status = "OK", data = listOf(
-                        CartTypeData(configName = "occ", availableButtons = listOf(
-                                AvailableButton("occ", "secondary", "Sikat bos!", false),
-                                AvailableButton("normal", "primary", "Tambah ke Keranjang", true)
-                        ))
-                )))
+                p2Login.newCartTypeResponse = gqlResponse.getData<CartRedirectionResponse>(CartRedirectionResponse::class.java)
             }
 
         } catch (t: Throwable) {

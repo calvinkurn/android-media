@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
 import android.graphics.Color
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
@@ -11,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -21,7 +19,6 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mixleft.model.MixLeftAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.EmptyDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.SeeMorePdpDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.typeFactory.FlashSaleCardViewTypeFactoryImpl
 import com.tokopedia.productcard.ProductCardFlashSaleModel
@@ -36,9 +33,8 @@ import kotlinx.coroutines.launch
  * @author by yoasfs on 2020-03-05
  */
 class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryListener,
-                         val countDownListener: CountDownView.CountDownListener,
                          private val parentRecycledViewPool: RecyclerView.RecycledViewPool)
-    : DynamicChannelViewHolder(itemView, homeCategoryListener, countDownListener), CoroutineScope, FlashSaleCardListener {
+    : DynamicChannelViewHolder(itemView, homeCategoryListener), CoroutineScope, FlashSaleCardListener {
 
     private lateinit var adapter: MixLeftAdapter
 
@@ -74,7 +70,6 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
     }
 
     override fun onBannerSeeMoreClicked(applink: String, channel: DynamicHomeChannel.Channels) {
-        RouteManager.route(itemView.context, applink)
         HomePageTrackingV2.MixLeft.sendMixLeftClickLoadMore(channel)
     }
 
@@ -98,9 +93,10 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
 
     private fun setupList(channel: DynamicHomeChannel.Channels) {
         image.alpha = 1f
+        recyclerView.resetLayout()
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
-        val typeFactoryImpl = FlashSaleCardViewTypeFactoryImpl(this, channel)
+        val typeFactoryImpl = FlashSaleCardViewTypeFactoryImpl(channel)
         val listData = mutableListOf<Visitable<*>>()
         listData.add(EmptyDataModel())
         val productDataList = convertDataToProductData(channel)
@@ -108,7 +104,6 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
 
         adapter = MixLeftAdapter(listData,typeFactoryImpl)
         recyclerView.adapter = adapter
-        recyclerView.setHasFixedSize(true)
         launch {
             try {
                 recyclerView.setHeightBasedOnProductCardMaxHeight(productDataList.map {it.productModel})
@@ -160,14 +155,22 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
                             discountPercentage = element.discount,
                             pdpViewCount = element.productViewCountFormatted,
                             stockBarLabel = element.label,
+                            isTopAds = element.isTopads,
                             stockBarPercentage = element.soldPercentage
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
-                    applink = element.applink
+                    applink = element.applink,
+                    listener = this
             ))
         }
         return list
+    }
+
+    private fun RecyclerView.resetLayout() {
+        val carouselLayoutParams = this.layoutParams
+        carouselLayoutParams?.height = RecyclerView.LayoutParams.WRAP_CONTENT
+        this.layoutParams = carouselLayoutParams
     }
 
     private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(

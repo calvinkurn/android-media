@@ -33,10 +33,6 @@ public interface ProductListSectionContract {
 
         void addRecommendationList(List<Visitable> list);
 
-        void disableWishlistButton(String productId);
-
-        void enableWishlistButton(String productId);
-
         void showNetworkError(int startRow);
 
         String getQueryKey();
@@ -54,16 +50,6 @@ public interface ProductListSectionContract {
         void addLoading();
 
         void removeLoading();
-
-        void successAddWishlist(ProductItemViewModel productItemViewModel);
-
-        void errorAddWishList(String errorMessage, String productId);
-
-        void successRemoveWishlist(ProductItemViewModel productItemViewModel);
-
-        void errorRemoveWishlist(String errorMessage, String productId);
-
-        void notifyAdapter();
 
         void stopTracePerformanceMonitoring();
 
@@ -93,19 +79,11 @@ public interface ProductListSectionContract {
 
         void showAdultRestriction();
 
-        void sendTrackingWishlistNonLogin(ProductItemViewModel productItemViewModel);
-
         void redirectSearchToAnotherPage(String applink);
 
         void sendTrackingForNoResult(String resultCode, String alternativeKeyword, String keywordProcess);
 
         void setDefaultLayoutType(int defaultView);
-
-        void successRemoveRecommendationWishlist(String productId);
-
-        void successAddRecommendationWishlist(String productId);
-
-        void errorRecommendationWishlist(String errorMessage, String productId);
 
         void showFreeOngkirShowCase(boolean hasFreeOngkirBadge);
 
@@ -128,8 +106,6 @@ public interface ProductListSectionContract {
         void setTotalSearchResultCount(String formattedResultCount);
 
         BaseAppComponent getBaseAppComponent();
-
-        void logDebug(String tag, String message);
 
         void renderDynamicFilter(DynamicFilterModel dynamicFilterModel);
 
@@ -164,11 +140,11 @@ public interface ProductListSectionContract {
         void showMessageFailedWishlistAction(boolean isWishlisited);
 
         String getPreviousKeyword();
+
+        boolean isLandingPage();
     }
 
     interface Presenter extends CustomerPresenter<View> {
-
-        void initInjector(View view);
 
         void requestDynamicFilter(Map<String, Object> searchParameter);
 

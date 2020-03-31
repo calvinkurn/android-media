@@ -1,6 +1,8 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model
 
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PromoCheckoutErrorDefault
@@ -15,7 +17,8 @@ data class OrderData(
 
 data class OrderPromo(
         var lastApply: LastApplyUiModel? = null,
-        var promoErrorDefault: PromoCheckoutErrorDefault? = null
+        var promoErrorDefault: PromoCheckoutErrorDefault? = null,
+        var state: ButtonBayarState = ButtonBayarState.DISABLE
 )
 
 data class Shipment(
@@ -34,11 +37,29 @@ data class Shipment(
         val shippingPrice: Int? = null,
         val logisticPromoTickerMessage: String? = null,
         val logisticPromoViewModel: LogisticPromoUiModel? = null, // BBO ?
+        val logisticPromoShipping: ShippingCourierUiModel? = null, // BBO ?
         val isApplyLogisticPromo: Boolean = false, // BBO ?
         val shippingRecommendationData: ShippingRecommendationData? = null,
         val insuranceData: InsuranceData? = null,
         val isCheckInsurance: Boolean = false
-)
+) {
+    fun getRealShipperProductId(): Int {
+        return logisticPromoShipping?.productData?.shipperProductId ?: shipperProductId.toZeroIfNull()
+    }
+
+    fun getRealShipperId(): Int {
+        return logisticPromoShipping?.productData?.shipperId ?: shipperId.toZeroIfNull()
+    }
+    fun getRealRatesId(): String {
+        return logisticPromoShipping?.ratesId ?: ratesId ?: ""
+    }
+    fun getRealUt(): String {
+        return logisticPromoShipping?.productData?.unixTime ?: ut ?: ""
+    }
+    fun getRealChecksum(): String {
+        return logisticPromoShipping?.productData?.checkSum ?: checksum ?: ""
+    }
+}
 
 data class Payment(
         val image: String? = null,
@@ -104,11 +125,11 @@ data class OrderCost(
 //        val discountAmount: Int,
 //        val hasDiscountDetails: Boolean,
 //        val shippingDiscountLabel: String,
-        val shippingDiscountAmount: Int = 0
+        val shippingDiscountAmount: Int = 0,
 //        val productDiscountLabel: String,
 //        val productDiscountAmount: Int,
-//        val cashbackLabel: String,
-//        val cashbackAmount: Int
+        val cashbackLabel: String = "",
+        val cashbackAmount: Int = 0
 )
 
 enum class ButtonBayarState { NORMAL, LOADING, DISABLE }

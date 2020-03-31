@@ -16,10 +16,10 @@ data class ValidateUsePromoRequest(
         var isSuggested: Int = 1,
 
         @field:SerializedName("is_trade_in")
-        var isTradeIn: Int = 1,
+        var isTradeIn: Int = 0,
 
         @field:SerializedName("is_trade_in_drop_off")
-        var isTradeInDropOff: Int = 1,
+        var isTradeInDropOff: Int = 0,
 
         @field:SerializedName("orders")
         var orders: List<OrdersItem?> = listOf(),
@@ -28,8 +28,8 @@ data class ValidateUsePromoRequest(
         var skipApply: Int = 1,
 
         @field:SerializedName("cart_type")
-        var cartType: String = "", // ocs & default
+        var cartType: String = "", // ocs & default & occ
 
         @field:SerializedName("state")
-        var state: String = "" // cart & checkout & occ
+        var state: String = "" // cart & checkout
 ) : Parcelable

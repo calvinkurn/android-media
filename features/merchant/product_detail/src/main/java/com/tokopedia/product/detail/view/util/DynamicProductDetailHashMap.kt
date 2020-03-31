@@ -81,6 +81,12 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     val productNewVariantDataModel: VariantDataModel?
         get() = mapOfData[ProductDetailConstant.VARIANT_OPTIONS] as? VariantDataModel
 
+    val productSocialProofPvDataModel: ProductSocialProofPvDataModel?
+        get() = mapOfData[ProductDetailConstant.SOCIAL_PROOF_PV] as? ProductSocialProofPvDataModel
+
+    val notifyMeMap: ProductNotifyMeDataModel?
+        get() = mapOfData[ProductDetailConstant.UPCOMING_DEALS] as? ProductNotifyMeDataModel
+
     val listProductRecomMap: List<ProductRecommendationDataModel>? = mapOfData.filterKeys {
         it == ProductDetailConstant.PDP_1 || it == ProductDetailConstant.PDP_2
                 || it == ProductDetailConstant.PDP_3 || it == ProductDetailConstant.PDP_4
@@ -94,8 +100,18 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     fun updateDataP1(dataP1: DynamicProductInfoP1?) {
         dataP1?.let {
             snapShotMap?.run {
+                shouldRenderImageVariant = true
                 dynamicProductInfoP1 = it
                 media = DynamicProductDetailMapper.convertMediaToDataModel(it.data.media.toMutableList())
+            }
+
+            notifyMeMap?.run {
+                campaignID = it.data.campaignId
+                campaignType = it.data.campaignType
+                campaignTypeName = it.data.campaignTypeName
+                endDate = it.data.endDate
+                startDate = it.data.startDate
+                notifyMe = it.data.notifyMe
             }
 
             valuePropositionDataModel?.run {
@@ -108,6 +124,12 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
             }
 
             socialProofMap?.run {
+                txStats = it.basic.txStats
+                stats = it.basic.stats
+                rating = it.basic.stats.rating
+            }
+
+            productSocialProofPvDataModel?.run {
                 txStats = it.basic.txStats
                 stats = it.basic.stats
                 rating = it.basic.stats.rating
@@ -174,10 +196,6 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                 shopInfo = it.shopInfo
             }
 
-            productFullfilmentMap?.run {
-                data.first().subtitle = context.getString(R.string.multiorigin_desc)
-            }
-
             snapShotMap?.run {
                 isAllowManage = it.shopInfo?.isAllowManage ?: 0
                 statusTitle = it.shopInfo?.statusInfo?.statusTitle ?: ""
@@ -221,6 +239,10 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
             }
 
             socialProofMap?.run {
+                wishListCount = it.wishlistCount.count
+            }
+
+            productSocialProofPvDataModel?.run {
                 wishListCount = it.wishlistCount.count
             }
 

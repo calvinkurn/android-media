@@ -79,7 +79,7 @@ class PromoInputViewHolder(private val view: View,
     private fun renderPromoInputError(element: PromoInputUiModel) {
         itemView.text_field_input_promo.setError(true)
         if (element.uiData.exception != null) {
-            itemView.text_field_input_promo.setMessage(ErrorHandler.getErrorMessage(itemView.context, element.uiData.exception))
+            itemView.text_field_input_promo.setMessage(element.uiData.exception?.message ?: "Terjadi kesalahan. Ulangi beberapa saat lagi")
             setPaddingViewHasError()
         } else {
             setPaddingViewHasNoError()

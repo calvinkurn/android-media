@@ -46,6 +46,7 @@ class ErrorCheckoutBottomSheet {
 
     companion object {
         const val ERROR_CODE_PRODUCT_STOCK_EMPTY = "511"
+        const val ERROR_CODE_PRODUCT_ERROR = "510"
         const val ERROR_CODE_SHOP_CLOSED = "520"
 
         const val TITLE_PRODUCT_STOCK_EMPTY = "Yaah, barangnya habis"

@@ -63,7 +63,7 @@ class AddToCartDataMapper @Inject constructor() {
             addToCartDataModel.data = DataModel().apply {
                 success = it.data.success
                 message = it.data.message
-                cartId = it.data.detail.cartId
+                cartId = it.data.detail.cartId.toString()
                 productId = it.data.detail.productId
                 quantity = it.data.detail.quantity
                 notes = it.data.detail.notes

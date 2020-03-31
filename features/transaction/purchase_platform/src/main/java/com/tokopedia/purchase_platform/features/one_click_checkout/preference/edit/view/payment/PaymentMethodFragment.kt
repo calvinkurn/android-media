@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.preference.e
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.net.Uri
+import android.net.http.SslError
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -132,6 +133,12 @@ class PaymentMethodFragment : BaseDaggerFragment() {
     }
 
     inner class PaymentMethodWebViewClient : WebViewClient() {
+
+        override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
+            super.onReceivedSslError(view, handler, error)
+            handler?.cancel()
+            progress_bar?.gone()
+        }
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)

@@ -102,15 +102,23 @@ data class Order(
         @SerializedName("codes")
         var codes: MutableList<String> = mutableListOf(),
         @SerializedName("is_checked")
-        var isChecked: Boolean = false
+        var isChecked: Boolean = false,
+        @SerializedName("shipping_id")
+        var shippingId: Int = 0,
+        @SerializedName("sp_id")
+        var spId: Int = 0,
+        @SerializedName("is_insurance_price")
+        var isInsurancePrice: Int = 0
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readLong(),
             parcel.readString() ?: "",
             parcel.createTypedArrayList(ProductDetail) ?: emptyList(),
             parcel.createStringArrayList() ?: ArrayList(),
-            parcel.readByte() != 0.toByte()) {
-    }
+            parcel.readByte() != 0.toByte(),
+            parcel.readInt(),
+            parcel.readInt(),
+            parcel.readInt())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeLong(shopId)
@@ -118,6 +126,9 @@ data class Order(
         parcel.writeTypedList(product_details)
         parcel.writeStringList(codes)
         parcel.writeByte(if (isChecked) 1 else 0)
+        parcel.writeInt(shippingId)
+        parcel.writeInt(spId)
+        parcel.writeInt(isInsurancePrice)
     }
 
     override fun describeContents(): Int {

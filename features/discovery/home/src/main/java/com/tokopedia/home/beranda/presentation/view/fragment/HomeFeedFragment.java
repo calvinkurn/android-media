@@ -344,7 +344,7 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
     @Override
     public void onProductImpression(HomeFeedViewModel model, int position) {
         if (model.isTopAds()) {
-            new ImpresionTask().execute(model.getClickUrl());
+            new ImpresionTask().execute(model.getTrackerImageUrl());
             if(userSession.isLoggedIn()){
                 homeTrackingQueue.putEETracking((HashMap<String, Object>) HomeRecommendationTracking.INSTANCE.getRecommendationProductViewLoginTopAds(
                         tabName.toLowerCase(),

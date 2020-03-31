@@ -113,13 +113,14 @@
             android:orientation="horizontal">
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/ticker_occ_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_8"
                 android:layout_weight="1"
-                android:text="Baru! Selesaikan transaksimu dalam 1 langkah saja."
+                tools:text="Baru! Selesaikan transaksimu dalam 1 langkah saja."
                 android:textColor="@color/white"
                 app:typographyType="body_3" />
 

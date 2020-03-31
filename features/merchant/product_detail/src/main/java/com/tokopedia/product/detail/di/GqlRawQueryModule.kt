@@ -23,7 +23,6 @@ class GqlRawQueryModule {
     fun provideRawProductInfo(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_product_info)
 
-
     @ProductDetailScope
     @Provides
     @IntoMap
@@ -239,18 +238,18 @@ class GqlRawQueryModule {
     @ProductDetailScope
     @Provides
     @IntoMap
-    @StringKey(RawQueryKeyConstant.QUERY_GET_CART_TYPE)
-    fun provideGetCartType(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_cart_type)
-
-
-    @ProductDetailScope
-    @Provides
-    @IntoMap
     @StringKey(RawQueryKeyConstant.QUERY_GET_PDP_LAYOUT)
     fun provideGetPdpLayout(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_pdp_layout)
     }
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_GET_CART_TYPE)
+    fun provideGetCartType(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_cart_type)
+
 
     @ProductDetailScope
     @Provides
@@ -284,4 +283,11 @@ class GqlRawQueryModule {
     fun provideAtcOccMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_one_click_checkout)
     }
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.MUTATION_NOTIFY_ME)
+    fun provideNotifyMeStatus(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_check_campaign_notify_me)
 }

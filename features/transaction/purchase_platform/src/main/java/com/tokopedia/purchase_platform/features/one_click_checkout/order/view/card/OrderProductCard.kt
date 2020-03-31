@@ -5,6 +5,8 @@ import android.view.View
 import android.widget.EditText
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewholder.QuantityViewHolder
@@ -69,8 +71,8 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                     }
                     if (zeroCount == quantity.editable.length) {
                         product.quantity!!.orderQuantity = 0
-                        listener.onProductChange(product)
                         validateQuantity()
+                        listener.onProductChange(product)
                         return@QuantityTextwatcherListener
                     } else if (quantity.editable[0] == '0') {
                         etQty.setText(quantity.editable.toString()
@@ -79,8 +81,8 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                     }
                 } else if (TextUtils.isEmpty(etQty.text)) {
                     product.quantity!!.orderQuantity = 0
-                    listener.onProductChange(product)
                     validateQuantity()
+                    listener.onProductChange(product)
                     return@QuantityTextwatcherListener
                 }
 
@@ -175,6 +177,13 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             }
         }
         view.tv_product_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(productPrice, false)
+
+        if(product.isFreeOngkir && product.freeOngkirImg.isNotEmpty()) {
+            view.iv_free_shipping.visible()
+            ImageHandler.LoadImage(view.iv_free_shipping, product.freeOngkirImg)
+        } else {
+            view.iv_free_shipping.gone()
+        }
     }
 
     fun setShop(orderShop: OrderShop) {

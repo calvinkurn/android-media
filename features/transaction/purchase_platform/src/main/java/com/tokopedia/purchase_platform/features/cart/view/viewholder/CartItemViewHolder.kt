@@ -181,7 +181,6 @@ class CartItemViewHolder constructor(itemView: View,
 
                     override fun onNext(quantity: QuantityWrapper) {
                         itemQuantityTextWatcherAction(quantity)
-                        actionListener?.onCartItemQuantityChangedThenHitUpdateCartAndValidateUse()
                     }
                 })
 
@@ -763,6 +762,7 @@ class CartItemViewHolder constructor(itemView: View,
             cartItemHolderData!!.cartItemData!!.updatedData!!.quantity = qty
             validateWithAvailableQuantity(cartItemHolderData!!, qty)
             if (needToUpdateView) {
+                actionListener?.onCartItemQuantityChangedThenHitUpdateCartAndValidateUse()
                 handleRefreshType(cartItemHolderData!!, viewHolderListener, parentPosition)
             }
         }

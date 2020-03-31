@@ -51,12 +51,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_6"
             android:layout_marginLeft="@dimen/dp_6"
-            tools:text="Kamu bisa hemat Rpxx.000"
             android:textColor="@color/white"
             app:layout_constraintEnd_toStartOf="@+id/button_apply_promo_recommendation"
             app:layout_constraintStart_toEndOf="@+id/image_check_promo_recommendation"
             app:layout_constraintTop_toBottomOf="@+id/label_promo_recommendation_title"
-            app:typographyType="body_3" />
+            app:typographyType="body_3"
+            tools:text="Kamu bisa hemat Rpxx.000" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/button_apply_promo_recommendation"
@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:enabled="true"
             android:foreground="?selectableItemBackground"
-            android:text="Pilih"
+            android:text="@string/label_promo_recommendation_select"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -79,6 +79,7 @@
         android:layout_width="@dimen/dp_80"
         android:layout_height="@dimen/dp_80"
         android:layout_gravity="center_vertical|end"
+        android:layout_marginEnd="@dimen/dp_12"
         android:layout_marginRight="@dimen/dp_12"
         android:scaleType="fitCenter"
         android:visibility="visible"

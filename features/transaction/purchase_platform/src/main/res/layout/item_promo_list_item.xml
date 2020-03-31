@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="-4dp"
@@ -14,6 +15,8 @@
         android:id="@+id/card_promo_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="-4dp"
+        android:layout_marginRight="-4dp"
         android:background="@color/white"
         android:orientation="vertical"
         android:padding="@dimen/dp_12">
@@ -21,6 +24,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_constraintCircleRadius="@dimen/dp_4"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -37,13 +41,15 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_12"
                 android:layout_marginRight="@dimen/dp_12"
-                android:text="Gratis Ongkir hingga Rp1.200.000"
+                android:textColor="@color/n_700_96"
                 app:layout_constraintEnd_toStartOf="@+id/image_select_promo"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/container_image_promo_item"
                 app:typographyType="body_2"
-                app:typographyWeight="bold" />
+                app:typographyWeight="bold"
+                tools:text="Gratis Ongkir hingga Rp1.200.000" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/label_promo_code_info"
@@ -52,7 +58,7 @@
                 android:layout_marginTop="@dimen/dp_2"
                 android:layout_marginRight="@dimen/dp_12"
                 android:layout_marginBottom="@dimen/dp_8"
-                android:text="Kode promo: "
+                android:text="@string/label_prefix_attempted_promo_code"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/label_promo_item_title"
                 app:typographyType="body_3" />
@@ -62,33 +68,37 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_2"
-                android:text="HHBSFDUJKSBS"
                 app:layout_constraintStart_toEndOf="@+id/label_promo_code_info"
                 app:layout_constraintTop_toBottomOf="@+id/label_promo_item_title"
                 app:typographyType="body_3"
-                app:typographyWeight="bold" />
+                app:typographyWeight="bold"
+                tools:text="HHBSFDUJKSBS" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/label_promo_item_error_message"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_2"
+                android:layout_marginEnd="@dimen/dp_12"
                 android:layout_marginRight="@dimen/dp_12"
-                android:text="Tambah Rp10.000 untuk pakai promo aaaa aaa Tambah Rp10.000 untuk pakai promo. Tambah Rp10.000 untuk pakai promo."
                 app:layout_constraintEnd_toStartOf="@+id/image_select_promo"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/label_promo_code_info"
-                app:typographyType="body_3" />
+                app:lineHeight="@dimen/dp_18"
+                app:typographyType="body_3"
+                tools:text="Tambah Rp10.000 untuk pakai promo aaaa aaa Tambah Rp10.000 untuk pakai promo. Tambah Rp10.000 untuk pakai promo." />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/label_promo_item_sub_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_12"
                 android:layout_marginRight="@dimen/dp_12"
-                android:text="Berakhir 20 menit lagi! Lihat Detail"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/label_promo_item_error_message"
-                app:typographyType="body_3" />
+                app:typographyType="body_3"
+                tools:text="Berakhir 20 menit lagi! Lihat Detail" />
 
             <ImageView
                 android:id="@+id/image_select_promo"

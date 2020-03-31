@@ -19,8 +19,7 @@ import kotlinx.android.synthetic.main.home_dc_deals.view.*
 
 class ProductHighlightViewHolder(
         val view: View,
-        val listener: HomeCategoryListener,
-        val countDownViewListener: CountDownView.CountDownListener
+        val listener: HomeCategoryListener
 ): AbstractViewHolder<DynamicChannelViewModel>(view) {
 
     companion object {
@@ -32,6 +31,10 @@ class ProductHighlightViewHolder(
             setDealsChannelInfo(it)
             setDealsProductGrid(it)
         }
+    }
+
+    override fun bind(element: DynamicChannelViewModel?, payloads: MutableList<Any>) {
+        bind(element)
     }
 
     private fun setDealsChannelInfo(channel: DynamicChannelViewModel) {
@@ -57,9 +60,10 @@ class ProductHighlightViewHolder(
             if (!DateHelper.isExpired(channel.serverTimeOffset, expiredTime)) {
                 itemView.deals_count_down.setup(
                         channel.serverTimeOffset,
-                        expiredTime,
-                        countDownViewListener
-                )
+                        expiredTime
+                ){
+                    listener.updateExpiredChannel(channel, adapterPosition)
+                }
                 itemView.deals_count_down.visibility = View.VISIBLE
             }
         } else {

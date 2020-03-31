@@ -47,14 +47,17 @@ class ProductSnapshotViewHolder(private val view: View,
             }
 
             renderWishlist(element.isAllowManage, element.isWishlisted)
-
             renderTradein(element.showTradeIn())
             renderCod(element.showCod())
 
             element.media?.let {
                 view_picture_search_bar.renderData(it, listener::onImageClicked, listener::onSwipePicture, listener.getProductFragmentManager(),
                         getComponentTrackData(element), listener::onImageClickedTrack, listener.getLifecycleFragment())
+                if (element.shouldRenderImageVariant) {
+                    view.view_picture_search_bar.updateImage(element.media)
+                }
                 element.shouldRefreshViewPager = false
+                element.shouldRenderImageVariant = false
             }
         }
     }
@@ -73,7 +76,9 @@ class ProductSnapshotViewHolder(private val view: View,
                         ?: false)
                 renderCod(element.showCod())
             }
-            ProductDetailConstant.PAYLOAD_VARIANT_SELECTED -> view.view_picture_search_bar.updateImage(element.media)
+            ProductDetailConstant.PAYLOAD_VARIANT_SELECTED -> {
+                view.view_picture_search_bar.updateImage(element.media)
+            }
         }
     }
 

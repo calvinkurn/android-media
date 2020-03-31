@@ -65,7 +65,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     @Inject
     lateinit var itemDecorator: PromoCheckoutDecoration
 
-    // Use single recycler view to prevent NPE cuased by nested recyclerview
+    // Use single recycler view to prevent NPE caused by nested recyclerview
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: PromoCheckoutAdapter
 
@@ -122,6 +122,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupToolbar(view)
+        setToolbarShadowVisibility(false)
         viewModel.initFragmentUiModel(arguments?.getInt(ARGS_PAGE_SOURCE, 0) ?: 0)
 
         button_apply_promo.setOnClickListener {
@@ -129,10 +130,15 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) as ValidateUsePromoRequest
             viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.mutation_validate_use_promo_revamp), validateUsePromoRequest)
         }
+
         button_apply_no_promo.setOnClickListener {
             setButtonLoading(button_apply_no_promo, true)
             val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) as ValidateUsePromoRequest
             viewModel.clearPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo), validateUsePromoRequest)
+        }
+
+        swipe_refresh_layout.setOnRefreshListener {
+            reloadData()
         }
 
         val lastHeaderUiModel: PromoListHeaderUiModel? = null
@@ -142,6 +148,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             }
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (recyclerView.canScrollVertically(-1)) {
+                    setToolbarShadowVisibility(true)
+                } else {
+                    setToolbarShadowVisibility(false)
+                }
                 handleStickyPromoHeader(recyclerView, lastHeaderUiModel)
             }
         })
@@ -238,7 +249,6 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 setToolbarShadowVisibility(false)
             } else {
                 header_promo_section.gone()
-                setToolbarShadowVisibility(true)
             }
         }
     }
@@ -346,7 +356,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     activity?.setResult(Activity.RESULT_OK, intent)
                     activity?.finish()
                 }
-                it.state == ApplyPromoResponseAction.ACTION_RELOAD_PROMO -> {
+                it.state == ApplyPromoResponseAction.ACTION_SHOW_TOAST_AND_RELOAD_PROMO -> {
+                    it.exception?.let {
+                        showToastMessage(it)
+                    }
                     reloadData()
                 }
                 it.state == ApplyPromoResponseAction.ACTION_SHOW_TOAST_ERROR -> {
@@ -386,11 +399,13 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             showLoading()
         } else {
             hideLoading()
+            swipe_refresh_layout.isRefreshing = false
         }
 
         if (!fragmentUiModel.uiState.hasFailedToLoad) {
             if (fragmentUiModel.uiState.hasAnyPromoSelected) {
                 toolbar?.enableResetButton()
+                toolbar?.showResetButton()
                 activity?.let {
                     label_total_promo_info.show()
                     label_total_promo_amount.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentUiModel.uiData.totalBenefit, false)
@@ -402,6 +417,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 }
             } else {
                 toolbar?.disableResetButton()
+                toolbar?.showResetButton()
                 if (fragmentUiModel.uiState.hasPreAppliedPromo) {
                     label_total_promo_info.gone()
                     label_total_promo_amount.gone()
@@ -416,6 +432,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             layout_main_container.show()
         } else {
             toolbar?.disableResetButton()
+            toolbar?.hideResetButton()
             fragmentUiModel.uiData.exception?.let {
                 layout_global_error.setType(getGlobalErrorType(it))
             }
@@ -511,7 +528,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         var errorMessage = throwable.message
         if (throwable !is PromoErrorException) errorMessage = ErrorHandler.getErrorMessage(context, throwable)
         if (errorMessage.isNullOrBlank()) {
-            errorMessage = "Terjadi kesalahan. Ulangi beberapa saat lagi"
+            errorMessage = getString(R.string.label_error_global_promo_checkout)
         }
         return errorMessage
     }
@@ -519,10 +536,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     private fun showSavePromoDialog() {
         activity?.let {
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle("Simpan promo sebelum keluar?")
-                setDescription("Kamu baru saja mengubah pilihan promo. Mau disimpan?")
-                setPrimaryCTAText("Simpan Promo Baru")
-                setSecondaryCTAText("Keluar Halaman")
+                setTitle(getString(R.string.label_title_promo_dialog_backpressed))
+                setDescription(getString(R.string.label_description_promo_dialog_backpressed))
+                setPrimaryCTAText(getString(R.string.label_primary_cta_promo_dialog_backpressed))
+                setSecondaryCTAText(getString(R.string.label_secondary_cta_promo_dialog_backpressed))
                 setPrimaryCTAClickListener {
                     viewModel.sendAnalyticsClickSimpanPromoBaru()
                     if (viewModel.isHasAnySelectedPromoItem()) {
@@ -561,7 +578,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     override fun onClickApplyRecommendedPromo() {
-        viewModel.applyPromoSuggestion()
+        viewModel.applyRecommendedPromo()
     }
 
     override fun onClickApplyManualInputPromo(promoCode: String) {
@@ -588,7 +605,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     override fun onClickPromoItemDetail(element: PromoListItemUiModel) {
         viewModel.sendAnalyticsClickLihatDetailKupon(element.uiData.promoCode)
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_MARKETPLACE).apply {
-            val promoCodeLink = element.uiData.promoCode + element.uiData.promoCode
+            val promoCodeLink = element.uiData.couponAppLink + element.uiData.promoCode
             putExtra(EXTRA_KUPON_CODE, promoCodeLink)
             putExtra(EXTRA_IS_USE, true)
             putExtra(ONE_CLICK_SHIPMENT, false)

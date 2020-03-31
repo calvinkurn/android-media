@@ -737,12 +737,12 @@ public class SearchTracking {
         );
     }
 
-    public static void trackImpressionInspirationCarousel(String keyword, List<Object> shopItemProductList) {
+    public static void trackImpressionInspirationCarousel(String type, String keyword, List<Object> shopItemProductList) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
                         EVENT_CATEGORY,  SearchEventTracking.Category.SEARCH_RESULT,
                         EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_INSPIRATION_CAROUSEL_PRODUCT,
-                        EVENT_LABEL, keyword,
+                        EVENT_LABEL, type + " - " + keyword,
                         ECOMMERCE, DataLayer.mapOf(
                                 "currencyCode", "IDR",
                                 "impressions", DataLayer.listOf(
@@ -752,23 +752,24 @@ public class SearchTracking {
         );
     }
 
-    public static void trackEventClickInspirationCarouselOptionSeeAll(String keywordBefore, String keywordAfter) {
+    public static void trackEventClickInspirationCarouselOptionSeeAll(String type, String keywordBefore, String keywordAfter) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, SearchEventTracking.Event.SEARCH_RESULT,
                         EVENT_CATEGORY,  SearchEventTracking.Category.SEARCH_RESULT,
                         EVENT_ACTION, SearchEventTracking.Action.CLICK_INSPIRATION_CAROUSEL_SEARCH,
-                        EVENT_LABEL, keywordBefore + " - " + keywordAfter
+                        EVENT_LABEL, type + " - " + keywordBefore + " - " + keywordAfter
                 )
         );
     }
 
-    public static void trackEventClickInspirationCarouselOptionProduct(String keyword,
+    public static void trackEventClickInspirationCarouselOptionProduct(String type,
+                                                                       String keyword,
                                                                        List<Object> products) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
                         EVENT_CATEGORY,  SearchEventTracking.Category.SEARCH_RESULT,
                         EVENT_ACTION, SearchEventTracking.Action.CLICK_INSPIRATION_CAROUSEL_PRODUCT,
-                        EVENT_LABEL, keyword,
+                        EVENT_LABEL, type + " - " + keyword,
                         ECOMMERCE, DataLayer.mapOf("click",
                                 DataLayer.mapOf("actionField",
                                         DataLayer.mapOf("list", "/search - carousel"),

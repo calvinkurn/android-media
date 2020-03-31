@@ -35,6 +35,7 @@ import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse;
+import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
@@ -855,6 +856,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest) {
+        setCouponStateChanged(true);
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest);
 
@@ -878,6 +880,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                                        @Override
                                        public void onNext(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
+                                           ShipmentPresenter.this.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel;
                                            setCouponStateChanged(true);
                                            if (!TextUtils.isEmpty(validateUsePromoRevampUiModel.getPromoUiModel().getTickerInfoUiModel().getMessage())) {
                                                if (tickerAnnouncementHolderData == null) {
@@ -1074,6 +1077,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void doValidateuseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest) {
+        setCouponStateChanged(true);
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest);
 
@@ -1119,6 +1123,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void processCheckPromoCheckoutCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast) {
+        setCouponStateChanged(true);
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, getView().generateValidateUsePromoRequest());
 
@@ -1243,7 +1248,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
                     for (PromoCheckoutVoucherOrdersItemUiModel voucherOrder : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
                         if (!voucherOrder.getMessageUiModel().getState().equals("red") && shopProductCheckoutRequest.cartString.equals(voucherOrder.getUniqueId())) {
-                            if (shopProductCheckoutRequest.promoCodes != null && shopProductCheckoutRequest.promoCodes.size() > 0) {
+                            if (shopProductCheckoutRequest.promoCodes != null &&
+                                    shopProductCheckoutRequest.promoCodes.size() > 0 &&
+                                    !shopProductCheckoutRequest.promoCodes.contains(voucherOrder.getCode())) {
                                 shopProductCheckoutRequest.promoCodes.add(voucherOrder.getCode());
                             } else {
                                 ArrayList<String> codes = new ArrayList<>();
@@ -1549,12 +1556,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     // Clear promo BBO after choose other / non BBO courier
     @Override
     public void cancelAutoApplyPromoStackLogistic(int itemPosition, String promoCode) {
+        setCouponStateChanged(true);
         ArrayList<String> promoCodeList = new ArrayList<>();
         promoCodeList.add(promoCode);
 
         clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodeList);
         compositeSubscription.add(
-                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe(new Subscriber<ClearCacheAutoApplyStackResponse>() {
+                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe(new Subscriber<ClearPromoUiModel>() {
                     @Override
                     public void onCompleted() {
 
@@ -1566,10 +1574,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     }
 
                     @Override
-                    public void onNext(ClearCacheAutoApplyStackResponse responseData) {
+                    public void onNext(ClearPromoUiModel responseData) {
                         if (getView() != null) {
-                            if (!TextUtils.isEmpty(responseData.getSuccessData().getTickerMessage())) {
-                                tickerAnnouncementHolderData.setMessage(responseData.getSuccessData().getTickerMessage());
+                            if (!TextUtils.isEmpty(responseData.getSuccessDataModel().getTickerMessage())) {
+                                tickerAnnouncementHolderData.setMessage(responseData.getSuccessDataModel().getTickerMessage());
                                 getView().updateTickerAnnouncementMessage();
                             }
                             boolean isLastAppliedPromo = isLastAppliedPromo(promoCode);
@@ -1586,6 +1594,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     // Clear promo red state before checkout
     @Override
     public void cancelNotEligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList, int checkoutType) {
+        setCouponStateChanged(true);
         ArrayList<String> notEligiblePromoCodes = new ArrayList<>();
         for (NotEligiblePromoHolderdata notEligiblePromoHolderdata : notEligiblePromoHolderdataArrayList) {
             notEligiblePromoCodes.add(notEligiblePromoHolderdata.getPromoCode());
@@ -1604,6 +1613,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     // Clear promo after clash (rare, almost zero probability)
     @Override
     public void cancelAutoApplyPromoStackAfterClash(ArrayList<String> promoCodesToBeCleared) {
+        setCouponStateChanged(true);
         getView().showLoading();
         clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodesToBeCleared);
         compositeSubscription.add(

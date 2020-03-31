@@ -24,7 +24,12 @@ data class CartRedirection(
         val errorMessage: List<Any> = listOf(),
         @SerializedName("status")
         val status: String = ""
-)
+) {
+
+    fun getCartTypeAtPosition(position: Int): CartTypeData? {
+        return data.getOrNull(position)
+    }
+}
 
 data class AvailableButton(
         @SerializedName("cart_type")
@@ -34,5 +39,7 @@ data class AvailableButton(
         @SerializedName("text")
         val text: String = "",
         @SerializedName("show_recommendation")
-        val showRecommendation: Boolean = false
+        val showRecommendation: Boolean = false,
+        @SerializedName("onboarding_message")
+        val onboardingMessage: String = ""
 )

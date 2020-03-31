@@ -1,6 +1,7 @@
 package com.tokopedia.payment.activity;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -72,6 +73,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 import static com.tokopedia.common.payment.PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA;
 import static com.tokopedia.common.payment.PaymentConstant.EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE;
@@ -516,10 +518,12 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
             if (progressBar != null) progressBar.setVisibility(View.GONE);
         }
 
+        @TargetApi(android.os.Build.VERSION_CODES.M)
         @Override
         public void onReceivedError(WebView view, WebResourceRequest request,
                                     WebResourceError error) {
             super.onReceivedError(view, request, error);
+            Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s'", request.getUrl(), error.getErrorCode(), error.getDescription());
         }
 
         @Override
