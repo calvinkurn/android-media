@@ -374,6 +374,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
 
                     override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
 
+                        //TODO requires a refactor without delay and investigation without delay can be forced close due to ListUnify
                         handlerTypingProductName.removeCallbacks(productNameFieldFinishChecker())
 
                         // hide recommendations if the text input is changed
@@ -615,6 +616,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
                 productNameField?.setError(it)
                 productNameField?.setMessage(viewModel.productNameMessage)
             } else {
+                //TODO requires a refactor without delay and investigation without delay can be forced close due to ListUnify
                 handlerTypingProductName.postDelayed(productNameFieldFinishChecker(productNameField?.getEditableValue().toString()), delayLastTextEdit)
             }
         }
@@ -841,6 +843,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         productCatalogLayout?.hide()
     }
 
+    //TODO requires a refactor without delay and investigation without delay can be forced close due to ListUnify
     fun productNameFieldFinishChecker(productNameInput: String = "") = Runnable {
         if (System.currentTimeMillis() > (lastTextEdit + delayLastTextEdit - 500)) {
             onLoadingNameSuggestion()
