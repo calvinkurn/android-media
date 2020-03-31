@@ -947,7 +947,7 @@ object DynamicProductDetailTracking {
                     DataLayer.mapOf(
                             ProductTrackingConstant.Tracking.NAME, productInfo?.getProductName,
                             ProductTrackingConstant.Tracking.ID, productInfo?.basic?.getProductId(),
-                            ProductTrackingConstant.Tracking.PRICE, productInfo?.data?.price?.value,
+                            ProductTrackingConstant.Tracking.PRICE, productInfo?.finalPrice,
                             ProductTrackingConstant.Tracking.BRAND, productInfo?.getProductName,
                             ProductTrackingConstant.Tracking.CATEGORY, TrackingUtil.getEnhanceCategoryFormatted(productInfo?.basic?.category?.detail),
                             ProductTrackingConstant.Tracking.VARIANT, ProductTrackingConstant.Tracking.DEFAULT_VALUE,
