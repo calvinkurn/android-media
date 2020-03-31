@@ -104,7 +104,7 @@ dependencies {
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    androidTestApi(project(rootProject.ext.libraries.instrumentation_test)) {
+    androidTestImplementation(project(rootProject.ext.libraries.instrumentation_test)) {
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
         exclude group: 'org.jetbrains.kotlin:kotlin-reflect'
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
