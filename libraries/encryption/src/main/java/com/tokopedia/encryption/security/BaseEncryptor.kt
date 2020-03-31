@@ -1,12 +1,23 @@
 package com.tokopedia.encryption.security
 
+import com.tokopedia.encryption.utils.Utils
 import javax.crypto.SecretKey
 
-interface BaseEncryptor {
+abstract class BaseEncryptor {
 
-    fun generateKey(key: String): SecretKey
+    abstract fun generateKey(key: String): SecretKey
 
-    fun encrypt(message: String, secretKey: SecretKey): String
+    abstract fun encrypt(message: String, secretKey: SecretKey,
+                encoder: ((ByteArray) -> (String)) = Utils::byteToHex): String
 
-    fun decrypt(message: String, secretKey: SecretKey): String
+    abstract fun decrypt(message: String, secretKey: SecretKey,
+                decoder: ((String) -> (ByteArray)) = Utils::decodeHex): String
+
+    open fun encrypt(message: String, secretKey: SecretKey): String {
+        return encrypt(message, secretKey, Utils::byteToHex)
+    }
+
+    open fun decrypt(message: String, secretKey: SecretKey): String {
+        return decrypt(message, secretKey, Utils::decodeHex)
+    }
 }

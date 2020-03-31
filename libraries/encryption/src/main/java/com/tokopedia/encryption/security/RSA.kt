@@ -1,14 +1,11 @@
 package com.tokopedia.encryption.security
 
 import com.tokopedia.encryption.utils.Constants
-import com.tokopedia.encryption.utils.Utils.byteToHex
-import com.tokopedia.encryption.utils.Utils.decodeHex
 import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.PrivateKey
 import java.security.PublicKey
 import javax.crypto.Cipher
-import javax.crypto.SecretKey
 
 class RSA {
 
@@ -24,16 +21,18 @@ class RSA {
         this.publicKey = kp.public
     }
 
-    fun encrypt(message: String, key: PublicKey): String {
+    fun encrypt(message: String, key: PublicKey,
+                encoder: ((ByteArray) -> (String))): String {
         val cipher: Cipher = Cipher.getInstance(Constants.RSA_ALGORITHM)
         cipher.init(Cipher.ENCRYPT_MODE, key)
         val encryptedBytes = cipher.doFinal(message.toByteArray(Charsets.UTF_8))
-        return byteToHex(encryptedBytes)
+        return encoder(encryptedBytes)
     }
 
-    fun decrypt(message: String, key: PrivateKey): String {
+    fun decrypt(message: String, key: PrivateKey,
+                decoder: ((String) -> (ByteArray))): String {
         val cipher: Cipher = Cipher.getInstance(Constants.RSA_ALGORITHM)
         cipher.init(Cipher.DECRYPT_MODE, key)
-        return String(cipher.doFinal(decodeHex(message)), Charsets.UTF_8)
+        return String(cipher.doFinal(decoder(message)), Charsets.UTF_8)
     }
 }

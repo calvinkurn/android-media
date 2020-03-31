@@ -7,11 +7,11 @@ import android.app.job.JobScheduler
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import com.tokopedia.encryption.security.AESEncryptorECB
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDatasource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudScalyrDataSource
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.datasource.db.LoggerRoomDatabase
-import com.tokopedia.logger.datasource.security.Encryptor
 import com.tokopedia.logger.repository.LoggerRepository
 import com.tokopedia.logger.service.ServerJobService
 import com.tokopedia.logger.service.ServerService
@@ -79,7 +79,7 @@ class LogManager(val application: Application) : CoroutineScope {
                 val logsDao = LoggerRoomDatabase.getDatabase(context).logDao()
                 val server = LoggerCloudDatasource()
                 val scalyrLogger = LoggerCloudScalyrDataSource(context)
-                val encryptor = Encryptor(Constants.ENCRYPTION_ALGORITHM, Constants.ENCRYPTION_MODE)
+                val encryptor = AESEncryptorECB()
                 val secretKey = encryptor.generateKey(Constants.ENCRYPTION_KEY)
                 loggerRepository = LoggerRepository(logsDao, server, scalyrLogger, encryptor, secretKey)
             }

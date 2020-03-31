@@ -1,10 +1,10 @@
 package com.tokopedia.logger.repository
 
+import com.tokopedia.encryption.security.BaseEncryptor
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDatasource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudScalyrDataSource
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.datasource.db.LoggerDao
-import com.tokopedia.logger.datasource.security.Encryptor
 import com.tokopedia.logger.model.ScalyrEvent
 import com.tokopedia.logger.model.ScalyrEventAttrs
 import com.tokopedia.logger.utils.Constants
@@ -14,7 +14,7 @@ import javax.crypto.SecretKey
 class LoggerRepository(private val logDao: LoggerDao,
                        private val server: LoggerCloudDatasource,
                        private val scalyrLogger: LoggerCloudScalyrDataSource,
-                       private val encryptor: Encryptor,
+                       private val encryptor: BaseEncryptor,
                        private val secretKey: SecretKey) : LoggerRepositoryContract {
 
     override suspend fun insert(logger: Logger) {
