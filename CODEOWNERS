@@ -2,12 +2,12 @@
 /features/content/affiliate_common/     				@tokopedia/minion-dave
 /features/content/createpost/           				@tokopedia/minion-dave
 /features/content/explore/              				@tokopedia/minion-dave
-/features/content/feed/                 				@tokopedia/minion-dave
+/features/content/feed/                 				@tokopedia/minion-darth
 /features/content/interest_pick/        				@tokopedia/minion-dave
 /features/content/kol/                  				@tokopedia/minion-dave
 /features/content/kol_common/           				@tokopedia/minion-dave
 /features/content/profile/              				@tokopedia/minion-dave
-/features/content/feed_component/       				@tokopedia/minion-dave
+/features/content/feed_component/       				@tokopedia/minion-darth
 /features/user/groupchat/                       		@tokopedia/minion-dave
 /features/discovery/topadssdk/                      	@tokopedia/minion-dave
 /features/discovery/home/                           	@tokopedia/minion-dave
@@ -21,7 +21,7 @@
 /features/discovery/image_search/                   	@tokopedia/minion-dave
 /features/discovery/similarsearch/                  	@tokopedia/minion-dave
 /features/discovery/autocomplete/                   	@tokopedia/minion-dave
-/features/digital/digital_browse/                   	@tokopedia/minion-dave
+/features/digital/digital_browse/                   	@tokopedia/minion-darth
 /features/discovery/global_nav_widget/              	@tokopedia/minion-dave
 /features/discovery/global_nav_widget_samples/      	@tokopedia/minion-dave
 /features/home/navigation/                          	@tokopedia/minion-dave
@@ -69,6 +69,7 @@
 /features/merchant/shop_open/                           @tokopedia/minion-stuart
 /features/merchant/shop_page/                           @tokopedia/minion-stuart
 /features/merchant/shop_settings/                       @tokopedia/minion-stuart
+/features/merchant/variant_common/                      @tokopedia/minion-stuart
 
 /libraries/kotlin_extensions/                           @tokopedia/minion-stuart
 
@@ -103,6 +104,7 @@
 
 /features/salam/umrah                                   @tokopedia/minion-mark
 /libraries/travel_calendar                              @tokopedia/minion-mark
+/features/recharge_slice                                @tokopedia/minion-mark
 
 /features/payment/payment/                      		@tokopedia/minion-bob
 /features/payment/payment_setting/              		@tokopedia/minion-bob
@@ -236,6 +238,7 @@
 /libraries/williamchart/								@tokopedia/core-team
 /libraries/youtubeutil/									@tokopedia/core-team
 /libraries/imagepreviewslider                           @tokopedia/core-team
+/libraries/blockcanary                                  @tokopedia/core-team
 
 /tkpddiscovery/                                        	@tokopedia/core-team
 /tkpdsession/                                       	@tokopedia/core-team
@@ -250,7 +253,7 @@
 /tkpdabstraction/                                   	@nathaniel09 @hendrysetiadi89
 
 /customerapp/                                       	@tokopedia/core-team
-/sellerapp/                                         	@tokopedia/core-team
+/sellerapp/                                         	@tokopedia/minion-stuart
 /testapp/                                               @tokopedia/core-team
 
 

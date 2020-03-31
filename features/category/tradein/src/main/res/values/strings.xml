@@ -74,4 +74,5 @@
     <string name="tradein_imei_label_4">4.</string>
     <string name="tradein_imei_txt_4"><![CDATA[Tempel ke halaman Cek IMEI. Lalu klik <b>Cek Fungsi IMEI</b>]]></string>
     <string name="tradein_terms_and_conditions">Syarat dan Ketentuan</string>
+    <string name="tradein_check_imei">Cara Cek IMEI HP-mu</string>
 </resources>

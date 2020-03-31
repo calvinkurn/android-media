@@ -28,6 +28,9 @@ import java.util.Map;
 import okhttp3.Response;
 
 public class InstrumentationTestApp extends BaseMainApplication implements TkpdCoreRouter, NetworkRouter {
+    public static final String MOCK_ADS_ID = "2df9e57a-849d-4259-99ea-673107469eef";
+    public static final String MOCK_FINGERPRINT_HASH = "eyJjYXJyaWVyIjoiQW5kcm9pZCIsImN1cnJlbnRfb3MiOiI4LjAuMCIsImRldmljZV9tYW51ZmFjdHVyZXIiOiJHb29nbGUiLCJkZXZpY2VfbW9kZWwiOiJBbmRyb2lkIFNESyBidWlsdCBmb3IgeDg2IiwiZGV2aWNlX25hbWUiOiJBbmRyb2lkIFNESyBidWlsdCBmb3IgeDg2IiwiZGV2aWNlX3N5c3RlbSI6ImFuZHJvaWQiLCJpc19lbXVsYXRvciI6dHJ1ZSwiaXNfamFpbGJyb2tlbl9yb290ZWQiOmZhbHNlLCJpc190YWJsZXQiOmZhbHNlLCJsYW5ndWFnZSI6ImVuX1VTIiwibG9jYXRpb25fbGF0aXR1ZGUiOiItNi4xNzU3OTQiLCJsb2NhdGlvbl9sb25naXR1ZGUiOiIxMDYuODI2NDU3Iiwic2NyZWVuX3Jlc29sdXRpb24iOiIxMDgwLDE3OTQiLCJzc2lkIjoiXCJBbmRyb2lkV2lmaVwiIiwidGltZXpvbmUiOiJHTVQrNyIsInVzZXJfYWdlbnQiOiJEYWx2aWsvMi4xLjAgKExpbnV4OyBVOyBBbmRyb2lkIDguMC4wOyBBbmRyb2lkIFNESyBidWlsdCBmb3IgeDg2IEJ1aWxkL09TUjEuMTcwOTAxLjA0MykifQ==";
+    public static final String MOCK_DEVICE_ID="cx68b1CtPII:APA91bEV_bdZfq9qPB-xHn2z34ccRQ5M8y9c9pfqTbpIy1AlOrJYSFMKzm_GaszoFsYcSeZY-bTUbdccqmW8lwPQVli3B1fCjWnASz5ZePCpkh9iEjaWjaPovAZKZenowuo4GMD68hoR";
 
     @Override
     public void onCreate() {
@@ -297,11 +300,19 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
 
     @Override
     public FingerprintModel getFingerprintModel() {
-        return new FingerprintModel();
+        return generateFingerprintModel();
     }
 
     @Override
     public void doRelogin(String newAccessToken) {
 
+    }
+
+    public static FingerprintModel generateFingerprintModel() {
+        FingerprintModel fingerprintModel = new FingerprintModel();
+        fingerprintModel.setFingerprintHash(MOCK_FINGERPRINT_HASH);
+        fingerprintModel.setAdsId(MOCK_ADS_ID);
+        fingerprintModel.setRegistrarionId(MOCK_DEVICE_ID);
+        return fingerprintModel;
     }
 }
