@@ -210,7 +210,10 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
         chatItemListViewModel.deleteChat.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
-                is Success -> adapter?.deleteItem(itemPositionLongClicked)
+                is Success -> {
+                    adapter?.deleteItem(itemPositionLongClicked)
+                    decreaseNotificationCounter()
+                }
                 is Fail -> view?.let {
                     Toaster.make(it, getString(R.string.delete_chat_default_error_message), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
                 }
@@ -252,6 +255,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                     val item = ItemChatListPojo(newChat.messageId, attributes, "")
                     adapter.list.add(0, item)
                     adapter.notifyItemInserted(0)
+                    increaseNotificationCounter()
                     animateWhenOnTop()
                 }
                 //found on list, not the first
@@ -280,6 +284,9 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             if (index >= adapter.list.size) return
             adapter.list[index].apply {
                 if (this is ItemChatListPojo) {
+                    if (attributes?.readStatus == ChatItemListViewHolder.STATE_CHAT_READ) {
+                        increaseNotificationCounter()
+                    }
                     attributes?.lastReplyMessage = newChat.message
                     attributes?.unreads = attributes?.unreads.toZeroIfNull() + 1
                     attributes?.unreadReply = attributes?.unreadReply.toZeroIfNull() + 1
