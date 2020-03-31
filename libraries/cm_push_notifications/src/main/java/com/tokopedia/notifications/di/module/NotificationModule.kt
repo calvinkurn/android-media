@@ -53,17 +53,6 @@ import javax.inject.Named
     }
 
     @Provides
-    @Named(NOTIFICATION_ATTRIBUTION)
-    fun provideAttributionQuery(
-            @CMNotificationContext context: Context
-    ): String {
-        return GraphqlHelper.loadRawString(
-                context.resources,
-                R.raw.query_notification_attribution
-        )
-    }
-
-    @Provides
     @CMNotificationScope
     fun provideDataManager(
             attributionUseCase: AttributionUseCase,
