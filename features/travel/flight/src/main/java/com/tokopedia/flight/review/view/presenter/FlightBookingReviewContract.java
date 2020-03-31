@@ -4,7 +4,7 @@ import android.content.Context;
 
 import androidx.annotation.StringRes;
 
-import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel;
 import com.tokopedia.flight.bookingV2.presentation.model.BaseCartData;
 import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingPassengerModel;
 import com.tokopedia.flight.bookingV2.presentation.model.FlightInsuranceModel;
@@ -75,7 +75,7 @@ public interface FlightBookingReviewContract {
 
         void renderAutoApplyPromo(PromoData promoData);
 
-        void renderTickerView(TravelTickerViewModel travelTickerViewModel);
+        void renderTickerView(TravelTickerModel travelTickerModel);
 
         String getComboKey();
 

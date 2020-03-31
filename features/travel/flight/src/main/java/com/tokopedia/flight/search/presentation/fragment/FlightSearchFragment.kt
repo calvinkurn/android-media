@@ -19,7 +19,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.common.travel.ticker.TravelTickerUtils
-import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
@@ -320,8 +320,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         }
     }
 
-    override fun renderTickerView(travelTickerViewModel: TravelTickerViewModel) {
-        TravelTickerUtils.buildTravelTicker(context, travelTickerViewModel, flight_ticker_view)
+    override fun renderTickerView(travelTickerModel: TravelTickerModel) {
+        TravelTickerUtils.buildTravelTicker(context, travelTickerModel, flight_ticker_view)
     }
 
     override fun addToolbarElevation() {

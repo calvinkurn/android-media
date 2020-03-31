@@ -2,7 +2,7 @@ package com.tokopedia.flight.bookingV2.presentation.contract
 
 import android.content.Context
 import androidx.annotation.StringRes
-import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.flight.bookingV2.presentation.model.*
 import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel
@@ -120,7 +120,7 @@ interface FlightBookingContract {
 
         fun setCartId(id: String)
 
-        fun renderTickerView(travelTickerViewModel: TravelTickerViewModel)
+        fun renderTickerView(travelTickerModel: TravelTickerModel)
 
         fun showContactDataProgressBar()
 

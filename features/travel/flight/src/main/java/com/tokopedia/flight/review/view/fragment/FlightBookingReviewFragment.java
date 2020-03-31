@@ -35,7 +35,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.common.payment.model.PaymentCode;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.common.travel.ticker.TravelTickerUtils;
-import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel;
 import com.tokopedia.common.travel.widget.CountdownTimeView;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.flight.R;
@@ -781,8 +781,8 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void renderTickerView(TravelTickerViewModel travelTickerViewModel) {
-        TravelTickerUtils.INSTANCE.buildTravelTicker(getContext(), travelTickerViewModel, tickerView);
+    public void renderTickerView(TravelTickerModel travelTickerModel) {
+        TravelTickerUtils.INSTANCE.buildTravelTicker(getContext(), travelTickerModel, tickerView);
     }
 
 

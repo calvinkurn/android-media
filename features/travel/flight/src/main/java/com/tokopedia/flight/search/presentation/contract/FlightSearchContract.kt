@@ -2,7 +2,7 @@ package com.tokopedia.flight.search.presentation.contract
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.common.travel.constant.TravelSortOption
-import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.flight.search.presentation.model.*
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 
@@ -33,7 +33,7 @@ interface FlightSearchContract {
 
         fun renderSearchList(list: List<FlightJourneyModel>, needRefresh: Boolean)
 
-        fun renderTickerView(travelTickerViewModel: TravelTickerViewModel)
+        fun renderTickerView(travelTickerModel: TravelTickerModel)
 
         fun addToolbarElevation()
 

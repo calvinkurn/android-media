@@ -5,11 +5,11 @@ import androidx.annotation.StringRes;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel;
-import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel;
 import com.tokopedia.flight.airport.view.model.FlightAirportModel;
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel;
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardPassDataModel;
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardPassDataModel;
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel;
 
 import java.util.Date;
@@ -64,7 +64,7 @@ public interface FlightDashboardContract {
 
         void hideBannerView();
 
-        void renderTickerView(TravelTickerViewModel travelTickerViewModel);
+        void renderTickerView(TravelTickerModel travelTickerModel);
 
         String getScreenName();
 

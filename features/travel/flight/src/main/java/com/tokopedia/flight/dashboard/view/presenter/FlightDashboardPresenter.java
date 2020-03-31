@@ -12,7 +12,7 @@ import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase;
 import com.tokopedia.common.travel.ticker.TravelTickerFlightPage;
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId;
 import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase;
-import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel;
 import com.tokopedia.flight.airport.view.model.FlightAirportModel;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
@@ -21,8 +21,8 @@ import com.tokopedia.flight.dashboard.domain.GetFlightClassByIdUseCase;
 import com.tokopedia.flight.dashboard.view.fragment.cache.FlightDashboardCache;
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel;
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardAirportAndClassWrapper;
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardPassDataModel;
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardPassDataModel;
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel;
 import com.tokopedia.flight.dashboard.view.fragment.model.mapper.FlightClassModelMapper;
 import com.tokopedia.flight.dashboard.view.validator.FlightDashboardValidator;
@@ -743,7 +743,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     public void fetchTickerData() {
         travelTickerUseCase.execute(travelTickerUseCase.createRequestParams(
                 TravelTickerInstanceId.Companion.getFLIGHT(), TravelTickerFlightPage.Companion.getHOME()),
-                new Subscriber<TravelTickerViewModel>() {
+                new Subscriber<TravelTickerModel>() {
                     @Override
                     public void onCompleted() {
 
@@ -755,9 +755,9 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                     }
 
                     @Override
-                    public void onNext(TravelTickerViewModel travelTickerViewModel) {
-                        if (travelTickerViewModel.getMessage().length() > 0) {
-                            getView().renderTickerView(travelTickerViewModel);
+                    public void onNext(TravelTickerModel travelTickerModel) {
+                        if (travelTickerModel.getMessage().length() > 0) {
+                            getView().renderTickerView(travelTickerModel);
                         }
                     }
                 });

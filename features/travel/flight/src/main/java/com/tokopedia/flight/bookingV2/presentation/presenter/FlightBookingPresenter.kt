@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase
-import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger
 import com.tokopedia.flight.bookingV2.data.entity.AddToCartEntity
 import com.tokopedia.flight.bookingV2.domain.FlightAddToCartV11UseCase
@@ -379,7 +379,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
     override fun fetchTickerData() {
         travelTickerUseCase.execute(travelTickerUseCase.createRequestParams(
                 TravelTickerInstanceId.FLIGHT, TravelTickerFlightPage.BOOK),
-                object : Subscriber<TravelTickerViewModel>() {
+                object : Subscriber<TravelTickerModel>() {
                     override fun onCompleted() {
 
                     }
@@ -388,9 +388,9 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                         e.printStackTrace()
                     }
 
-                    override fun onNext(travelTickerViewModel: TravelTickerViewModel) {
-                        if (travelTickerViewModel.message.isNotEmpty()) {
-                            view.renderTickerView(travelTickerViewModel)
+                    override fun onNext(travelTickerModel: TravelTickerModel) {
+                        if (travelTickerModel.message.isNotEmpty()) {
+                            view.renderTickerView(travelTickerModel)
                         }
                     }
                 })

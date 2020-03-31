@@ -33,7 +33,7 @@ import com.tokopedia.banner.Banner;
 import com.tokopedia.banner.Indicator;
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel;
 import com.tokopedia.common.travel.ticker.TravelTickerUtils;
-import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel;
 import com.tokopedia.common.travel.utils.TravelDateUtil;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.flight.R;
@@ -610,8 +610,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public void renderTickerView(TravelTickerViewModel travelTickerViewModel) {
-        TravelTickerUtils.INSTANCE.buildTravelTicker(getContext(), travelTickerViewModel, tickerView);
+    public void renderTickerView(TravelTickerModel travelTickerModel) {
+        TravelTickerUtils.INSTANCE.buildTravelTicker(getContext(), travelTickerModel, tickerView);
     }
 
     @Override

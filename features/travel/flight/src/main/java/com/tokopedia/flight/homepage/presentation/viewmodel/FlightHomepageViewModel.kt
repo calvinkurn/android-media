@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.constant.TravelType
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
+import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
@@ -26,6 +27,7 @@ import javax.inject.Inject
  */
 class FlightHomepageViewModel @Inject constructor(
         private val flightAnalytics: FlightAnalytics,
+        private val travelTickerUseCase: TravelTickerUseCase,
         private val getTravelCollectiveBannerUseCase: GetTravelCollectiveBannerUseCase,
         private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {

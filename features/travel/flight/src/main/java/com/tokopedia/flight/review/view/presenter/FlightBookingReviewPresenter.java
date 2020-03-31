@@ -3,7 +3,7 @@ package com.tokopedia.flight.review.view.presenter;
 import com.tokopedia.common.travel.ticker.TravelTickerFlightPage;
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId;
 import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase;
-import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel;
 import com.tokopedia.flight.bookingV2.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.bookingV2.presentation.model.BaseCartData;
 import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingPassengerModel;
@@ -304,7 +304,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
     public void fetchTickerData() {
         travelTickerUseCase.execute(travelTickerUseCase.createRequestParams(
                 TravelTickerInstanceId.Companion.getFLIGHT(), TravelTickerFlightPage.Companion.getSUMMARY()),
-                new Subscriber<TravelTickerViewModel>() {
+                new Subscriber<TravelTickerModel>() {
                     @Override
                     public void onCompleted() {
 
@@ -316,9 +316,9 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                     }
 
                     @Override
-                    public void onNext(TravelTickerViewModel travelTickerViewModel) {
-                        if (travelTickerViewModel.getMessage().length() > 0) {
-                            getView().renderTickerView(travelTickerViewModel);
+                    public void onNext(TravelTickerModel travelTickerModel) {
+                        if (travelTickerModel.getMessage().length() > 0) {
+                            getView().renderTickerView(travelTickerModel);
                         }
                     }
                 });

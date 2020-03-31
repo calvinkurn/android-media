@@ -19,13 +19,13 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.common.travel.ticker.TravelTickerUtils
-import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.flight.bookingV2.di.FlightBookingComponent
 import com.tokopedia.flight.bookingV2.presentation.activity.FlightInsuranceWebviewActivity
 import com.tokopedia.flight.bookingV2.presentation.adapter.*
 import com.tokopedia.flight.bookingV2.presentation.contract.FlightBookingContract
-import com.tokopedia.flight.bookingV2.presentation.presenter.FlightBookingPresenter
 import com.tokopedia.flight.bookingV2.presentation.model.*
+import com.tokopedia.flight.bookingV2.presentation.presenter.FlightBookingPresenter
 import com.tokopedia.flight.bookingV2.presentation.widget.FlightInsuranceView
 import com.tokopedia.flight.common.constant.FlightFlowConstant
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
@@ -461,8 +461,8 @@ class FlightBookingFragment : BaseDaggerFragment(),
         getCurrentBookingParamViewModel().id = id
     }
 
-    override fun renderTickerView(travelTickerViewModel: TravelTickerViewModel) {
-        TravelTickerUtils.buildTravelTicker(context, travelTickerViewModel, flight_ticker_view)
+    override fun renderTickerView(travelTickerModel: TravelTickerModel) {
+        TravelTickerUtils.buildTravelTicker(context, travelTickerModel, flight_ticker_view)
     }
 
     override fun showSoldOutDialog() {
