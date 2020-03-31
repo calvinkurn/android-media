@@ -23,7 +23,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.item_topchat_product_card.view.*
 
-class TopchatProductAttachmentViewHolder(
+open class TopchatProductAttachmentViewHolder(
         itemView: View?,
         private val listener: ProductAttachmentListener
 ) : BaseChatViewHolder<ProductAttachmentViewModel>(itemView) {

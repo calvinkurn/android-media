@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 
@@ -23,8 +24,8 @@ class ProductListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopchatProductAttachmentViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(TopchatProductAttachmentViewHolder.LAYOUT, parent, false)
-        return TopchatProductAttachmentViewHolder(view, listener)
+                .inflate(ProductCarouselAttachmentViewHolder.LAYOUT, parent, false)
+        return ProductCarouselAttachmentViewHolder(view, listener)
     }
 
     override fun onBindViewHolder(holder: TopchatProductAttachmentViewHolder, position: Int) {
