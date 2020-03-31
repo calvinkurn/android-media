@@ -19,8 +19,8 @@ interface TickerService {
         const val PATH_API_V1_ANNOUNCEMENT_TICKER = "/api/v1/tickers"
 
         const val SIZE = "50"
-        const val HEADER_PAGE_QUERY = "page"
-        const val HEADER_PAGE_VALUE = "seller"
+        const val PAGE_HEADER_QUERY = "page"
+        const val PAGE_HEADER_VALUE = "seller"
         const val HEADER_USER_ID = "Tkpd-UserId"
         const val PAGE_SIZE = "page[size]"
         const val FILTER_DEVICE = "filter[device]"
@@ -30,6 +30,6 @@ interface TickerService {
     @GET(PATH_API_V1_ANNOUNCEMENT_TICKER)
     suspend fun getTicker(
             @Header(HEADER_USER_ID) userId: String,
-            @Query(HEADER_PAGE_QUERY) size: String,
+            @Query(PAGE_HEADER_QUERY) size: String,
             @QueryMap requestParams: Map<String, Any>): TickerResponse
 }

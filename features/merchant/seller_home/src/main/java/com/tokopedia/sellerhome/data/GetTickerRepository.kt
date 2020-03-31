@@ -25,7 +25,7 @@ class GetTickerRepository @Inject constructor(
 
             val response = service.getTicker(
                     userSession.userId,
-                    TickerService.HEADER_PAGE_VALUE,
+                    TickerService.PAGE_HEADER_VALUE,
                     requestParams
             )
             if (null != response.data?.tickers) {
