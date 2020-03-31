@@ -167,6 +167,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private var submitTicketSubscription: Subscription? = null
     private var updateCartCounterSubscription: Subscription? = null
 
+    fun hasShopAuthority(): Boolean {
+        return isShopOwner(getDynamicProductInfoP1?.basic?.getShopId() ?: 0) || shopInfo?.allowManage == true
+    }
     fun isShopOwner(shopId: Int): Boolean = userSessionInterface.shopId.toIntOrNull() == shopId
     val isUserSessionActive: Boolean
         get() = userSessionInterface.isLoggedIn
@@ -693,14 +696,15 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                           warehouseId: String,
                                           forceRefresh: Boolean = false): Deferred<ProductInfoP2ShopData> {
         return async {
-            getProductInfoP2ShopUseCase.requestParams = GetProductInfoP2ShopUseCase.createParams(shopId, productId, forceRefresh, createTradeinParam(getDynamicProductInfoP1, deviceId))
+            getProductInfoP2ShopUseCase.requestParams = GetProductInfoP2ShopUseCase.createParams(shopId, productId, forceRefresh, createTradeinParam(getDynamicProductInfoP1, deviceId),
+                    DynamicProductDetailMapper.generateCartTypeParam(getDynamicProductInfoP1))
             getProductInfoP2ShopUseCase.executeOnBackground()
         }
     }
 
     private fun getProductInfoP2LoginAsync(shopId: Int, productId: Int): Deferred<ProductInfoP2Login> {
         return async {
-            getProductInfoP2LoginUseCase.requestParams = GetProductInfoP2LoginUseCase.createParams(shopId, productId, DynamicProductDetailMapper.generateCartTypeParam(getDynamicProductInfoP1))
+            getProductInfoP2LoginUseCase.requestParams = GetProductInfoP2LoginUseCase.createParams(shopId, productId)
             getProductInfoP2LoginUseCase.executeOnBackground()
         }
     }
@@ -733,7 +737,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             toggleNotifyMeUseCase.createParams(campaignId, productId, action, source)
             val isSuccess = toggleNotifyMeUseCase.executeOnBackground().result.isSuccess
             if (!isSuccess) _toggleTeaserNotifyMe.value = Throwable().asFail()
-                _toggleTeaserNotifyMe.value = isSuccess.asSuccess()
+            _toggleTeaserNotifyMe.value = isSuccess.asSuccess()
         }) {
             _toggleTeaserNotifyMe.value = it.asFail()
         }

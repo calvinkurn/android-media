@@ -1036,9 +1036,17 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun updateButtonAfterClickVariant(indexOfVariantButton: Int?) {
-        actionButtonView.renderData(viewModel.getDynamicProductInfoP1?.basic?.isActive() == false,
-                hasTopAds(),
-                viewModel.cartTypeData?.getCartTypeAtPosition(indexOfVariantButton ?: -1))
+        if (viewModel.shopInfo == null) {
+            actionButtonView.visibility = !isAffiliate
+        } else {
+            actionButtonView.visibility = !isAffiliate && viewModel.shopInfo?.statusInfo?.shopStatus == 1
+        }
+
+        viewModel.getDynamicProductInfoP1?.basic?.let {
+            actionButtonView.renderData(!it.isActive(),
+                    hasTopAds(), viewModel.hasShopAuthority(),
+                    viewModel.cartTypeData?.getCartTypeAtPosition(indexOfVariantButton ?: -1))
+        }
     }
 
     private fun observeInitialVariantData() {
@@ -1102,8 +1110,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewLifecycleOwner.observe(viewModel.p2Login) {
             topAdsGetProductManage = it.topAdsGetProductManage
             it.pdpAffiliate?.let { renderAffiliate(it) }
-            actionButtonView.renderData(viewModel.getDynamicProductInfoP1?.basic?.isActive() == false, hasTopAds(),
-                    it.newCartTypeResponse.cartRedirection.data.firstOrNull())
+            actionButtonView.setTopAdsButton(hasTopAds())
 
             if (::performanceMonitoringFull.isInitialized)
                 performanceMonitoringP2Login.stopTrace()
@@ -1243,17 +1250,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             pdpHashMapUtil?.updateDataP1(productInfo)
             viewModel.listOfParentMedia = productInfo.data.media.toMutableList()
             shouldShowCodP1 = productInfo.data.isCOD
-            actionButtonView.isLeasing = productInfo.basic.isLeasing
-            actionButtonView.renderData(!productInfo.basic.isActive(),
-                    (viewModel.isShopOwner(productInfo.basic.getShopId())
-                            || viewModel.shopInfo?.allowManage == true),
-                    productInfo.data.preOrder)
+            actionButtonView.setButtonP1(productInfo.data.preOrder, productInfo.basic.isLeasing)
 
             if (productInfo.basic.category.isAdult) {
                 AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_PDP, productInfo.basic.productID)
             }
 
-            actionButtonView.visibility = !isAffiliate
             if (affiliateString.hasValue()) {
                 viewModel.hitAffiliateTracker(affiliateString
                         ?: "", viewModel.deviceId)
@@ -1266,11 +1268,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun onSuccessGetDataP2Shop(it: ProductInfoP2ShopData) {
         viewModel.getDynamicProductInfoP1?.let { p1 ->
-            actionButtonView.renderData(!p1.basic.isActive(),
-                    (viewModel.isShopOwner(p1.basic.getShopId())
-                            || it.shopInfo?.allowManage ?: false),
-                    p1.data.preOrder)
-            actionButtonView.visibility = !isAffiliate && it.shopInfo?.statusInfo?.shopStatus == 1
+            actionButtonView.renderData(!p1.basic.isActive(), viewModel.hasShopAuthority(),
+                    hasTopAds(), it.newCartTypeResponse.cartRedirection.data.firstOrNull())
+
+            if (viewModel.shopInfo == null) {
+                actionButtonView.visibility = !isAffiliate
+            } else {
+                actionButtonView.visibility = !isAffiliate && viewModel.shopInfo?.statusInfo?.shopStatus == 1
+            }
 
             viewModel.shopInfo?.let { shopInfo ->
                 DynamicProductDetailTracking.Moengage.sendMoEngageOpenProduct(p1, shopInfo.shopCore.name)
@@ -1803,7 +1808,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             base_btn_affiliate_dynamic.gone()
             actionButtonView.byMeClick = this::onAffiliateClick
             actionButtonView.showByMe(true, pdpAffiliate)
-            actionButtonView.visibility = viewModel.shopInfo?.statusInfo?.shopStatus == 1
         }
     }
 
@@ -2438,8 +2442,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun hasTopAds() =
-            topAdsGetProductManage.data.adId.isNotEmpty() && topAdsGetProductManage.data.adId != "0"
+    private fun hasTopAds() = topAdsGetProductManage.data.adId.isNotEmpty() && topAdsGetProductManage.data.adId != "0"
 
     private fun setupTradeinDialog(): ProductAccessRequestDialogFragment {
         val accessDialog = ProductAccessRequestDialogFragment()

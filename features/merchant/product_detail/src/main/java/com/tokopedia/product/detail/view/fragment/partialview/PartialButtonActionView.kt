@@ -53,6 +53,7 @@ class PartialButtonActionView private constructor(private val view: View,
         private const val KEY_AB_TOPCHAT = "TopChat Icon at PDP 2"
     }
 
+    //OLD PDP
     fun renderData(isWarehouseProduct: Boolean, hasShopAuthority: Boolean, preOrder: PreOrder?) {
         this.isWarehouseProduct = isWarehouseProduct
         this.hasShopAuthority = hasShopAuthority
@@ -68,8 +69,18 @@ class PartialButtonActionView private constructor(private val view: View,
         renderButton()
     }
 
-    fun renderData(isWarehouseProduct: Boolean, hasTopAdsActive: Boolean, cartTypeData: CartTypeData? = null) {
+    fun setButtonP1(preOrder: PreOrder?, isLeasing: Boolean) {
+        this.preOrder = preOrder
+        this.isLeasing = isLeasing
+    }
+
+    fun setTopAdsButton(hasTopAdsActive: Boolean) {
+        this.hasTopAdsActive = hasTopAdsActive
+    }
+
+    fun renderData(isWarehouseProduct: Boolean, hasShopAuthority: Boolean, hasTopAdsActive: Boolean, cartTypeData: CartTypeData? = null) {
         this.isWarehouseProduct = isWarehouseProduct
+        this.hasShopAuthority = hasShopAuthority
         this.hasTopAdsActive = hasTopAdsActive
         this.cartTypeData = cartTypeData
         this.onSuccessGetCartType = cartTypeData != null
