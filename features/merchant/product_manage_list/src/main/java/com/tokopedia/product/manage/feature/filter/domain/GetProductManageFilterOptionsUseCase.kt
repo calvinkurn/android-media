@@ -28,8 +28,8 @@ class GetProductManageFilterOptionsUseCase @Inject constructor(
     var params: RequestParams = RequestParams.EMPTY
 
     companion object {
-        const val DEFAULT_HIDE_NO_COUNT = true
-        const val DEFAULT_HIDE_SHOWCASE_GROUP = false
+        const val DEFAULT_HIDE_NO_COUNT = false
+        const val DEFAULT_HIDE_SHOWCASE_GROUP = true
         private const val DEFAULT_CATEGORIES_FILTER = "seller"
 
         fun createRequestParams(shopId: String, isOwner: Boolean): RequestParams {

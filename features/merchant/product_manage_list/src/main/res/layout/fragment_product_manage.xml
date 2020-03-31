@@ -7,7 +7,8 @@
     android:layout_height="match_parent">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/coordinator_layout"
+        android:id="@+id/mainContainer"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/btnMultiEdit"
@@ -146,6 +147,11 @@
             android:text="@string/product_manage_button_multi_edit"
             app:unifyButtonSize="large" />
     </androidx.cardview.widget.CardView>
+
+    <include
+        android:id="@+id/pageLoading"
+        layout="@layout/layout_product_manage_shimmer"
+        tools:visibility="gone" />
 
     <FrameLayout
         android:id="@+id/interceptor"

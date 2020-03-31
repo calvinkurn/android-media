@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">top_ads_create</string>
     <string name="mulai_beriklan">Mulai Beriklan</string>
-    <string name="apa_itu_group_iklan">Apa itu Group Iklan?</string>
+    <string name="apa_itu_group_iklan">Apa itu Grup Iklan?</string>
     <string name="atur_dan_pilih_produkmu_untuk_diiklankan_sekaligus">Atur dan pilih produkmu untuk diiklankan sekaligus.</string>
     <string name="isi_group_iklan_dengan_produk_dalam_kategori_serupa">Isi group iklan dengan produk dalam kategori serupa</string>
     <string name="produk_dalam_1_group_akan_menggunakan_kata_kunci_yang_sama">Produk dalam 1 group akan menggunakan kata kunci yang sama</string>
@@ -30,11 +30,13 @@
     <string name="pilih_produk_terpopuler">Pilih produk terpopuler</string>
     <string name="lanjutkan">Lanjutkan</string>
     <string name="tip_memilih_kata_kunci">Tip memilih kata kunci</string>
-    <string name="buat_group_iklan">Buat Group Iklan</string>
+    <string name="buat_group_iklan">Buat Grup Iklan</string>
     <string name="contoh_spatu_lari_bando_wanita_gaun_pesta">Contoh: Spatu Lari, Bando Wanita, Gaun Pesta</string>
-    <string name="ketik_nama_group_iklan">Ketik nama group iklan</string>
-    <string name="atur_beberapa_iklan_sekaligus_ke_dalam_satu_group_sesuai_kategori_produk">Atur beberapa iklan sekaligus ke dalam satu group sesuai kategori produk.</string>
-    <string name="group_iklan">Group Iklan</string>
+    <string name="ketik_nama_group_iklan">Ketik nama grup iklan</string>
+    <string name="duplicate_group_name_error">Nama grup iklan telah digunakan</string>
+    <string name="duplicate_group_name_error_wrong">Nama Grup Anda telah digunakan</string>
+    <string name="atur_beberapa_iklan_sekaligus_ke_dalam_satu_group_sesuai_kategori_produk">Atur beberapa iklan sekaligus ke dalam satu grup sesuai kategori produk.</string>
+    <string name="group_iklan">Grup Iklan</string>
     <string name="pencarian_bulan">Pencarian / bulan</string>
     <string name="oops_produk_ntidak_ditemukan">Oops, produk tidak ditemukan</string>
     <string name="tip_biaya_iklan">Tip Biaya Iklan</string>
@@ -81,9 +83,10 @@
     <string name="add_keywords">Tambah Kata Kunci</string>
     <string name="format_selected_produk">%d produk dipilih</string>
     <string name="_0_kata_kunci_dipilih">0 kata kunci dipilih</string>
-    <string name="bid_range">Rp %d - Rp %d</string>
+    <string name="bid_range">Rp %s - Rp %s</string>
     <string name="kata_kunci_count">Kata Kunci (%d)</string>
     <string name="min_bid_error">Biaya minimum %d rupiah</string>
+    <string name="max_bid_error">Biaya maximum %d rupiah</string>
     <string name="recommendated_bid_message">Biaya rata-rata kompetitor Rp %d</string>
     <string name="_0_produk">0 produk dipilih</string>
     <string name="sesuaikan_kata_kunci_dengan_nama_produk">Sesuaikan kata kunci dengan nama produk</string>
@@ -101,18 +104,21 @@
     <string name="daily_budget_error">Biaya minimum %d rupiah</string>
     <string name="group_name_empty_error">"group name can't be empty"</string>
     <string name="more_info">https://seller.tokopedia.com/edu/cara-topads-mendeteksi-klik-tampil-yang-tidak-valid/</string>
-
+    <string name="grup_iklan">Grup iklan</string>
+    <string name="tidak_dibatasi">Tidak Dibatasi</string>
+    <string name="info_text_summary">Sistem TopAds akan melindungi iklanmu dari klik\nyang tidak valid. Info Selengkapnya</string>
+    <string name="anggaran_dibatasi">Anggaran harian Dibatasi</string>
     <string name="ads_active">Aktif</string>
     <string name="ads_deactive">Tidak Aktif</string>
     <string name="ads_inprogress">Dalam Proses</string>
-    <string name="ads_not_delivered">Tidak tampil</string>
+    <string name="ads_not_delivered">Tidak Tampil</string>
     <string name="confirmation_switch_manual">Yakin beralih dari Iklan Otomatis?</string>
     <string name="confirmation_switch_auto">Siap beriklan dengan Iklan Otomatis?</string>
     <string name="confirmation_switch_manual_description">Dengan Iklan Otomatis, pasti lebih mudah dan cepat untuk promosikan produkmu di halaman teratas.</string>
     <string name="confirmation_switch_auto_description">Semua grup iklanmu akan dihapus dan diganti dengan Iklan Otomatis</string>
     <string name="active">Aktif</string>
     <string name="cancel_btn">Batalkan</string>
-    <string name="select_ad_creation_option_auto">Sistem akan memilihkan produk dan kata kunci yang tepat sehingga iklan lebih efektif</string>
+    <string name="select_ad_creation_option_auto"> Sistem akan memilihkan produk dan biaya per klik yg tepat sehingga iklan lebih efektif</string>
     <string name="select_ad_creation_option_manual">Pilih produk, kata kunci, dan atur biaya iklanmu sendiri secara manual</string>
     <string name="ticker_title">Iklan Otomatis akan dinonaktifkan</string>
     <string name="ticker_desc">Proses menonaktifkan Iklan Otomatis butuh waktu. Cek beberapa saat lagi, ya</string>
