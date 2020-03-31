@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.feature.list.view.fragment
 
+import android.accounts.NetworkErrorException
 import android.app.Activity
 import android.app.Dialog
 import android.content.BroadcastReceiver
@@ -498,7 +499,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun onErrorEditPrice(editPriceResult: EditPriceResult) {
-        editPriceResult.error?.message?.let {
+        val message = if(editPriceResult.error is NetworkErrorException) {
+            getString(editPriceResult.error.message.toIntOrZero())
+        } else {
+            editPriceResult.error?.message
+        }
+        message?.let {
             Toaster.make(coordinatorLayout, it,
                     Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
                     View.OnClickListener {
@@ -508,7 +514,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun onErrorEditStock(editStockResult: EditStockResult) {
-        editStockResult.error?.message?.let {
+        val message = if(editStockResult.error is NetworkErrorException) {
+            getString(editStockResult.error.message.toIntOrZero())
+        } else {
+            editStockResult.error?.message
+        }
+        message?.let {
             Toaster.make(coordinatorLayout, it,
                     Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
                     View.OnClickListener {
@@ -562,7 +573,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun onErrorDeleteProduct(deleteProductResult: DeleteProductResult) {
-        deleteProductResult.error?.message?.let {
+        val message = if(deleteProductResult.error is NetworkErrorException) {
+            getString(deleteProductResult.error.message.toIntOrZero())
+        } else {
+            deleteProductResult.error?.message
+        }
+        message?.let {
             Toaster.make(coordinatorLayout, it,
                     Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
                     View.OnClickListener {

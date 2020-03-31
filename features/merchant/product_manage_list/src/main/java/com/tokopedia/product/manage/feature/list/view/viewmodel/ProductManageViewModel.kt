@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.domain.GetProductListMetaUseCase
@@ -274,7 +275,7 @@ class ProductManageViewModel @Inject constructor(
                 _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, Throwable(message = result.productUpdateV3Data.header.errorMessage.last()))))
             }
         }) {
-            _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, NetworkErrorException())))
+            _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, NetworkErrorException(R.string.product_stock_reminder_toaster_failed_desc.toString()))))
         }
         hideProgressDialog()
     }
@@ -292,7 +293,7 @@ class ProductManageViewModel @Inject constructor(
                 _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, Throwable(message = result.productUpdateV3Data.header.errorMessage.last()))))
             }
         }) {
-            _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, NetworkErrorException())))
+            _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, NetworkErrorException(R.string.product_stock_reminder_toaster_failed_desc.toString()))))
         }
         hideProgressDialog()
     }
@@ -347,7 +348,7 @@ class ProductManageViewModel @Inject constructor(
                 _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, Throwable(message = result.productUpdateV3Data.header.errorMessage.last()))))
             }
         }) {
-            _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, NetworkErrorException())))
+            _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, NetworkErrorException(R.string.product_stock_reminder_toaster_failed_desc.toString()))))
         }
         hideProgressDialog()
     }
