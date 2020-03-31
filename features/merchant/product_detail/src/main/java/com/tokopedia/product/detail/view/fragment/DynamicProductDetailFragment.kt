@@ -1241,7 +1241,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 activity?.let {
                     RouteManager.route(it, result.data.ovoValidationDataModel.applink)
                 }
-            } else {
+            } else if (result.data.ovoValidationDataModel.status == 2) {
                 activity?.let {
                     val bottomSheetOvoDeals = OvoFlashDealsBottomSheet(result.data.ovoValidationDataModel)
                     bottomSheetOvoDeals.show(it.supportFragmentManager, "Ovo Deals")
