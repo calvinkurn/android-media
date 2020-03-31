@@ -22,6 +22,7 @@ data class PlayCardViewModel(
             return channel.id == b.channel.id
                     && channel.name == b.channel.name
                     && channel.header.name == b.channel.header.name
+                    && channel.header.applink == b.channel.header.applink
                     && playCardHome == b.playCardHome
                     && playCardHome?.channelId == b.playCardHome?.channelId
                     && playCardHome?.coverUrl == b.playCardHome?.coverUrl

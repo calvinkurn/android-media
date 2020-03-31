@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
+import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.common_digital.cart.data.datasource.DigitalAddToCartDataSource
 import com.tokopedia.common_digital.cart.data.datasource.DigitalInstantCheckoutDataSource
@@ -102,6 +103,8 @@ class DigitalCommonModule {
         builder.addInterceptor(digitalInterceptor)
         builder.addInterceptor(FingerprintInterceptor(networkRouter, userSession))
         builder.addInterceptor(ErrorResponseInterceptor(TkpdDigitalResponse.DigitalErrorResponse::class.java))
+        builder.addInterceptor(AkamaiBotInterceptor())
+
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(httpLoggingInterceptor)
                     .addInterceptor(chuckerInterceptor)

@@ -17,9 +17,7 @@ import com.tokopedia.home.beranda.presentation.view.helper.ExoPlayerListener
 import com.tokopedia.home.beranda.presentation.view.helper.HomePlayWidgetHelper
 import com.tokopedia.home.beranda.presentation.view.helper.setSafeOnClickListener
 import com.tokopedia.home.beranda.presentation.view.helper.setValue
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -36,6 +34,7 @@ class PlayCardViewHolder(
     private val viewer = view.findViewById<TextView>(R.id.viewer)
     private val live = view.findViewById<View>(R.id.live)
     private val titlePlay = view.findViewById<TextView>(R.id.title_play)
+    private val seeAll = view.findViewById<TextView>(R.id.play_txt_see_all)
     private val broadcasterName = view.findViewById<TextView>(R.id.title_description)
     private val title = view.findViewById<TextView>(R.id.title)
     private var isClickable = false
@@ -97,6 +96,12 @@ class PlayCardViewHolder(
             handlingTracker(model)
             title.setValue(model.channel.name)
 
+            if (model.channel.header.applink.isNotEmpty()) {
+                seeAll.visible()
+            } else {
+                seeAll.gone()
+            }
+
             thumbnailView.show()
             thumbnailView.loadImageNoRounded(playChannel.coverUrl)
 
@@ -126,6 +131,10 @@ class PlayCardViewHolder(
             play.setSafeOnClickListener {
                 goToPlayChannel(model)
             }
+
+            seeAll.setOnClickListener {
+                goToChannelList(model.channel.header.applink)
+            }
         }
     }
 
@@ -145,6 +154,10 @@ class PlayCardViewHolder(
             listener.onOpenPlayActivity(frameLayout, model.playCardHome?.channelId)
             HomePageTracking.eventClickPlayBanner(model)
         }
+    }
+
+    private fun goToChannelList(appLink: String) {
+        listener.onOpenPlayChannelList(appLink)
     }
 
     fun resume(){
