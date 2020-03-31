@@ -1271,7 +1271,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             }
 
                             if (voucherOrder.getCode().length() > 0 && voucherOrder.getType().length() > 0) {
-                                if (shopProductCheckoutRequest.promos != null && shopProductCheckoutRequest.promos.size() > 0) {
+                                if (shopProductCheckoutRequest.promos != null && shopProductCheckoutRequest.promos.size() > 0 &&
+                                        !hasInsertPromo(shopProductCheckoutRequest.promos, voucherOrder.getCode())) {
+                                    PromoRequest promoRequest = new PromoRequest();
+                                    promoRequest.setCode(voucherOrder.getCode());
+                                    promoRequest.setType(voucherOrder.getType());
+
+                                    shopProductCheckoutRequest.promos.add(promoRequest);
+                                } else {
                                     PromoRequest promoRequest = new PromoRequest();
                                     promoRequest.setCode(voucherOrder.getCode());
                                     promoRequest.setType(voucherOrder.getType());
@@ -1280,12 +1287,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     promoRequests.add(promoRequest);
 
                                     shopProductCheckoutRequest.promos = promoRequests;
-                                } else {
-                                    PromoRequest promoRequest = new PromoRequest();
-                                    promoRequest.setCode(voucherOrder.getCode());
-                                    promoRequest.setType(voucherOrder.getType());
-
-                                    shopProductCheckoutRequest.promos.add(promoRequest);
                                 }
                             }
                         }
@@ -1293,6 +1294,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 }
             }
         }
+    }
+
+    private boolean hasInsertPromo(List<PromoRequest> promoRequests, String promoCode) {
+        for (PromoRequest promoRequest : promoRequests) {
+            if (promoRequest.getCode().equals(promoCode)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
