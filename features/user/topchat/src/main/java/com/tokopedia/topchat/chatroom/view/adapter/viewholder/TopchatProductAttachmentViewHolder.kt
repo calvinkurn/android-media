@@ -21,7 +21,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.synthetic.main.item_topchat_product_attachment.view.*
+import kotlinx.android.synthetic.main.item_topchat_product_card.view.*
 
 class TopchatProductAttachmentViewHolder(
         itemView: View?,
