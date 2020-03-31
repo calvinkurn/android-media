@@ -109,11 +109,6 @@ class RechargeCCFragment : BaseDaggerFragment() {
                 dialogConfirmation()
             }
 
-            override fun onShowErrorCreditCard(message: String) {
-                KeyboardHandler.hideSoftKeyboard(activity)
-                showErrorToaster(message)
-            }
-
             override fun onCheckPrefix(clientNumber: String) {
                 checkPrefixCreditCardNumber(clientNumber)
             }
@@ -125,7 +120,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
                 bottomSheetBankList.show(it.supportFragmentManager, "Bank list")
             }
         }
-
+        observeData()
         creditCardAnalytics.impressionInitialPage(categoryId, "")
     }
 
@@ -144,13 +139,59 @@ class RechargeCCFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun getTickerData() {
-        rechargeCCViewModel.getMenuDetail(
-                GraphqlHelper.loadRawString(resources, R.raw.query_cc_menu_detail), menuId)
+    private fun observeData() {
+        rechargeCCViewModel.creditCardSelected.observe(viewLifecycleOwner, Observer {
+            operatorIdSelected = it.operatorId.toString()
+            productIdSelected = it.defaultProductId.toString()
+            cc_widget_client_number.setImageIcon(it.imageUrl)
+        })
+
+        rechargeCCViewModel.errorPrefix.observe(viewLifecycleOwner, Observer {
+            showErrorToaster(it)
+        })
+
+        rechargeCCViewModel.bankNotSupported.observe(viewLifecycleOwner, Observer {
+            cc_widget_client_number.setErrorTextField(getString(R.string.cc_bank_is_not_supported))
+        })
+
         rechargeCCViewModel.tickers.observe(this, Observer {
             renderTicker(it)
             performanceMonitoring.stopTrace()
         })
+
+        rechargeSubmitCCViewModel.errorSignature.observe(viewLifecycleOwner, Observer {
+            hideLoading()
+            showErrorToaster(it)
+        })
+
+        rechargeSubmitCCViewModel.redirectUrl.observe(viewLifecycleOwner, Observer {
+            hideLoading()
+            val passData = DigitalCheckoutPassData.Builder()
+                    .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+                    .categoryId(categoryId)
+                    .clientNumber(it.clientNumber)
+                    .instantCheckout("0")
+                    .isPromo("0")
+                    .operatorId(it.operatorId)
+                    .productId(it.productId)
+                    .idemPotencyKey(RechargeCCUtil.generateIdemPotencyCheckout(userSession.userId))
+                    .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
+                    .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
+                    .needGetCart(true)
+                    .build()
+            checkoutPassDataState = passData
+            navigateToCart(passData)
+        })
+
+        rechargeSubmitCCViewModel.errorSubmitCreditCard.observe(viewLifecycleOwner, Observer {
+            hideLoading()
+            showErrorToaster(it)
+        })
+    }
+
+    private fun getTickerData() {
+        rechargeCCViewModel.getMenuDetail(
+                GraphqlHelper.loadRawString(resources, R.raw.query_cc_menu_detail), menuId)
     }
 
     private fun renderTicker(tickers: List<TickerCreditCard>) {
@@ -179,23 +220,10 @@ class RechargeCCFragment : BaseDaggerFragment() {
         rechargeCCViewModel.getPrefixes(
                 GraphqlHelper.loadRawString(resources, R.raw.query_cc_prefix_operator),
                 clientNumber, menuId)
-
-        rechargeCCViewModel.creditCardSelected.observe(viewLifecycleOwner, Observer {
-            operatorIdSelected = it.operatorId.toString()
-            productIdSelected = it.defaultProductId.toString()
-            cc_widget_client_number.setImageIcon(it.imageUrl)
-        })
-
-        rechargeCCViewModel.errorPrefix.observe(viewLifecycleOwner, Observer {
-            showErrorToaster(it)
-        })
-
-        rechargeCCViewModel.bankNotSupported.observe(viewLifecycleOwner, Observer {
-            cc_widget_client_number.setErrorTextField(getString(R.string.cc_bank_is_not_supported))
-        })
     }
 
     private fun showErrorToaster(message: String) {
+        KeyboardHandler.hideSoftKeyboard(activity)
         view?.run {
             Toaster.make(this, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
         }
@@ -236,36 +264,6 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
             rechargeSubmitCCViewModel.postCreditCard(GraphqlHelper.loadRawString(resources,
                     R.raw.query_cc_signature), categoryId, mapParam)
-
-            rechargeSubmitCCViewModel.errorSignature.observe(viewLifecycleOwner, Observer {
-                hideLoading()
-                showErrorToaster(it)
-            })
-
-            rechargeSubmitCCViewModel.redirectUrl.observe(viewLifecycleOwner, Observer {
-                hideLoading()
-                val passData = DigitalCheckoutPassData.Builder()
-                        .action(DigitalCheckoutPassData.DEFAULT_ACTION)
-                        .categoryId(categoryId)
-                        .clientNumber(clientNumber)
-                        .instantCheckout("0")
-                        .isPromo("0")
-                        .operatorId(operatorId)
-                        .productId(productId)
-                        .idemPotencyKey(RechargeCCUtil.generateIdemPotencyCheckout(userSession.userId))
-                        .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
-                        .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
-                        .needGetCart(true)
-                        .build()
-                checkoutPassDataState = passData
-                navigateToCart(passData)
-            })
-
-            rechargeSubmitCCViewModel.errorSubmitCreditCard.observe(viewLifecycleOwner, Observer {
-                hideLoading()
-                showErrorToaster(it)
-            })
-
         } else {
             navigateUserLogin()
         }

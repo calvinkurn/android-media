@@ -34,6 +34,7 @@
         app:unifyButtonVariant="filled"
         app:unifyButtonSize="large"
         app:unifyButtonType="main"
+        android:enabled="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline"/>
 

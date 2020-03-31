@@ -15,5 +15,8 @@ class CCRedirectUrl(
         val messageError: String = "",
         @SerializedName("redirect_url")
         @Expose
-        val redirectUrl: String = ""
+        val redirectUrl: String = "",
+        var clientNumber: String = "",
+        var operatorId: String = "",
+        var productId: String = ""
 )

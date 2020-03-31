@@ -2,7 +2,10 @@ package com.tokopedia.recharge_credit_card.di
 
 import android.content.Context
 import com.google.gson.Gson
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
+import com.tokopedia.common_digital.common.di.DigitalCommonScope
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.NetworkRouter
@@ -60,9 +63,11 @@ class RechargeCCModule {
     @RechargeCCScope
     internal fun provideOkHttpClient(fingerprintInterceptor: FingerprintInterceptor,
                                      httpLoggingInterceptor: HttpLoggingInterceptor,
+                                     digitalInterceptor: DigitalInterceptor,
                                      okHttpRetryPolicy: OkHttpRetryPolicy): OkHttpClient {
         val builder = OkHttpClient.Builder()
         return builder
+                .addInterceptor(digitalInterceptor)
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
                 .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
@@ -75,6 +80,13 @@ class RechargeCCModule {
     @RechargeCCScope
     internal fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
         return context as NetworkRouter
+    }
+
+    @Provides
+    @RechargeCCScope
+    fun provideDigitalInterceptor(@ApplicationContext context: Context,
+                                  networkRouter: AbstractionRouter): DigitalInterceptor {
+        return DigitalInterceptor(context, networkRouter)
     }
 
     @Provides

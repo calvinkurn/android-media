@@ -45,7 +45,7 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
                         val inputDigit = it.toString().replace(" ", "")
                         if (it.length == TOTAL_SYMBOLS) {
                             if (!RechargeCCUtil.isCreditCardValid(inputDigit)) {
-                                listener.onShowErrorCreditCard(context.getString(R.string.cc_error_credit_number))
+                                setErrorTextField(context.getString(R.string.cc_error_invalid_number))
                             } else {
                                 cc_text_input.setError(false)
                                 enableBtnNext()
@@ -53,8 +53,8 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
                         } else {
                             if (it.length > 7) {
                                 listener.onCheckPrefix(inputDigit)
-                                cc_text_input.textFieldIcon1.visibility = View.VISIBLE
                             } else {
+                                cc_text_input.setFirstIcon("")
                                 cc_text_input.textFieldIcon1.visibility = View.GONE
                             }
                             disableBtnNext()
@@ -109,6 +109,7 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
         cc_text_input.textFieldIcon1.layoutParams.width = 150
         cc_text_input.textFieldIcon1.requestLayout()
         cc_text_input.textFieldIcon1.adjustViewBounds = true
+        cc_text_input.textFieldIcon1.visibility = View.VISIBLE
     }
 
     fun getClientNumber(): String {
@@ -130,7 +131,6 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
     interface ActionListener {
         fun onClickNextButton(clientNumber: String)
         fun onCheckPrefix(clientNumber: String)
-        fun onShowErrorCreditCard(message: String)
     }
 
     companion object {

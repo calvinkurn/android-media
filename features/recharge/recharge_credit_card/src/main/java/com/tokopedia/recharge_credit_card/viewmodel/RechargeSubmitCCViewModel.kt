@@ -7,6 +7,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.recharge_credit_card.data.CCRedirectUrl
 import com.tokopedia.recharge_credit_card.data.RechargeCCRepository
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCSignatureReponse
 import kotlinx.coroutines.CoroutineDispatcher
@@ -19,11 +20,11 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
     : BaseViewModel(dispatcher) {
 
     private val _errorSubmitCreditCard = MutableLiveData<String>()
-    private val _redirectUrl = MutableLiveData<String>()
+    private val _redirectUrl = MutableLiveData<CCRedirectUrl>()
     private val _errorSignature = MutableLiveData<String>()
 
     val errorSubmitCreditCard: LiveData<String> = _errorSubmitCreditCard
-    val redirectUrl: LiveData<String> = _redirectUrl
+    val redirectUrl: LiveData<CCRedirectUrl> = _redirectUrl
     val errorSignature: LiveData<String> = _errorSignature
 
     fun postCreditCard(rawQuery: String, categoryId: String, paramSubmitCC: HashMap<String, String>) {
@@ -53,8 +54,11 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
                 repository.postCreditCardNumber(mapParam)
             }
 
-            if (data.redirectUrl.isNotEmpty()) {
-                _redirectUrl.postValue(data.redirectUrl)
+            if (data.redirectUrl != "") {
+                data.clientNumber = mapParam[PARAM_CLIENT_NUMBER]?: ""
+                data.operatorId = mapParam[PARAM_OPERATOR_ID]?: ""
+                data.productId = mapParam[PARAM_PRODUCT_ID]?: ""
+                _redirectUrl.postValue(data)
             } else {
                 _errorSubmitCreditCard.postValue(data.messageError)
             }
