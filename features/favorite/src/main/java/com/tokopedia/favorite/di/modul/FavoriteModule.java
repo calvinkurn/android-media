@@ -5,10 +5,10 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.module.NetModule;
-import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.favorite.data.FavoriteDataRepository;
 import com.tokopedia.favorite.data.FavoriteFactory;
 import com.tokopedia.favorite.data.source.apis.service.TopAdsService;
+import com.tokopedia.favorite.di.qualifier.TopAdsQualifier;
 import com.tokopedia.favorite.di.scope.FavoriteScope;
 import com.tokopedia.favorite.domain.FavoriteRepository;
 import com.tokopedia.favorite.domain.interactor.GetAllDataFavoriteUseCase;
@@ -26,7 +26,7 @@ import retrofit2.Retrofit;
  * @author Kulomady on 1/20/17.
  */
 
-@Module(includes = {NetModule.class})
+@Module(includes = {TopAdsServiceModule.class})
 public class FavoriteModule {
 
     @FavoriteScope
