@@ -19,7 +19,6 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.Sh
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.*
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.math.min
 
 class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Context, val graphqlUseCase: GraphqlUseCase<GetOccCartGqlResponse>) : UseCase<OrderData>() {
@@ -34,6 +33,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
             if (response.response.data.cartList.isNotEmpty()) {
                 val orderCart = OrderCart()
                 val cart = response.response.data.cartList[0]
+                val profileIndex = response.response.data.profileIndex
                 val orderProduct = generateOrderProduct(cart.product)
                 orderCart.product = orderProduct
                 val orderShop = generateOrderShop(cart.shop)
@@ -42,7 +42,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
                 orderCart.shop = orderShop
                 orderCart.kero = Kero(response.response.data.keroToken, response.response.data.keroDiscomToken, response.response.data.keroUnixTime)
                 val promo = response.response.data.promo
-                return OrderData(orderCart, response.response.data.profileResponse, mapPromo(promo))
+                return OrderData(orderCart, profileIndex, response.response.data.profileResponse, mapPromo(promo))
             } else if (response.response.data.errors.isNotEmpty()) {
                 throw MessageErrorException(response.response.data.errors[0])
             } else {

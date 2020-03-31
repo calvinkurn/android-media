@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -585,7 +584,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         override fun onPreferenceEditClicked(preference: OrderPreference) {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
             intent.apply {
-                putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, 1)
+                putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, preference.profileIndex)
                 putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.preference.profileId)
                 putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.preference.address.addressId)
                 putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, preference.preference.shipment.serviceId)
@@ -613,8 +612,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         override fun onEditPreference(preference: ProfilesItemModel, adapterPosition: Int) {
                             orderSummaryAnalytics.eventClickGearLogoInPreferenceFromGantiPilihanOSP()
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
+                            val preferenceIndex = getString(R.string.lbl_summary_preference_option) + " " + adapterPosition
                             intent.apply {
-                                putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, adapterPosition)
+                                putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, preferenceIndex)
                                 putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.profileId)
                                 putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.addressModel?.addressId)
                                 putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, preference.shipmentModel?.serviceId)
@@ -629,7 +629,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         override fun onAddPreference(itemCount: Int) {
                             orderSummaryAnalytics.eventAddPreferensiFromOSP()
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
-                            intent.putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, itemCount + 1)
+                            val value = itemCount + 1
+                            val preferenceIndex = getString(R.string.preference_number_summary) + " " + value
+                            intent.putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, preferenceIndex)
                             startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
                         }
                     }).show(this@OrderSummaryPageFragment, profileId)

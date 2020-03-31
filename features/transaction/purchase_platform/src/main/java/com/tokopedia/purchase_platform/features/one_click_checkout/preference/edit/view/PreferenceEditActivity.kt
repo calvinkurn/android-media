@@ -26,7 +26,7 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
     @Inject
     lateinit var preferenceListAnalytics: PreferenceListAnalytics
 
-    var preferenceIndex = -1
+    var preferenceIndex = ""
     var profileId = 0
     var addressId = -1
     var shippingId = -1
@@ -59,7 +59,7 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
             onBackPressed()
         }
 
-        preferenceIndex = intent.getIntExtra(EXTRA_PREFERENCE_INDEX, -1)
+        preferenceIndex = intent.getStringExtra(EXTRA_PREFERENCE_INDEX) ?: ""
         profileId = intent.getIntExtra(EXTRA_PROFILE_ID, 0)
         addressId = intent.getIntExtra(EXTRA_ADDRESS_ID, -1)
         shippingId = intent.getIntExtra(EXTRA_SHIPPING_ID, -1)

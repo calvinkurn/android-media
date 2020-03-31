@@ -14,6 +14,8 @@ data class GetOccCartData(
         val errors: List<String> = emptyList(),
         @SerializedName("cart_list")
         val cartList: List<CartDataResponse> = emptyList(),
+        @SerializedName("profile_index_wording")
+        val profileIndex: String = "",
         @SerializedName("profile")
         val profileResponse: ProfileResponse = ProfileResponse(),
         @SerializedName("promo")

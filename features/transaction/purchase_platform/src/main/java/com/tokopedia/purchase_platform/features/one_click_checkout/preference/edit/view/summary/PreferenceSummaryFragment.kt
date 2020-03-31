@@ -59,6 +59,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     }
 
     private var progressDialog: AlertDialog? = null
+    private var headerTitle: String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_preference_summary, container, false)
@@ -156,8 +157,8 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             val parent = activity
             if (parent is PreferenceEditActivity) {
                 val preferenceIndex = parent.preferenceIndex
-                if (preferenceIndex > 0) {
-                    tv_preference_name.text = getString(R.string.preference_number, preferenceIndex)
+                if (preferenceIndex.isNotEmpty()) {
+                    tv_preference_name.text = preferenceIndex
                     tv_preference_name.visible()
                 }
             }
@@ -310,7 +311,8 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                         }
                     }
                 }
-                parent.setHeaderTitle(getString(R.string.lbl_summary_preference_with_number_title, parent.preferenceIndex))
+                headerTitle = getString(R.string.lbl_summary_preference_with_number_title) + " " + parent.preferenceIndex
+                parent.setHeaderTitle(headerTitle)
                 parent.hideStepper()
             } else {
                 parent.hideDeleteButton()
