@@ -475,7 +475,7 @@ open class PlayViewStateImpl(
     }
 
     private fun showLoginButton(show: Boolean) {
-        if (show && isPortrait) {
+        if (show && isPortrait && !errorView.isVisible) {
             loginChatButton.visibility = View.VISIBLE
             inputTextWidget.visibility = View.GONE
         } else {
@@ -1225,8 +1225,16 @@ open class PlayViewStateImpl(
             errorView.setType(globalErrorType)
         else
             errorView.setType(GlobalError.SERVER_ERROR)
-        errorView.errorAction.setOnClickListener {
-            action()
+        if (globalErrorType == GlobalError.SERVER_ERROR
+                || globalErrorType == GlobalError.PAGE_FULL) {
+            errorView.errorAction.setOnClickListener {
+                loadingView.show()
+                action()
+            }
+        } else {
+            errorView.errorAction.setOnClickListener {
+                listener.backToChannelList()
+            }
         }
     }
 
