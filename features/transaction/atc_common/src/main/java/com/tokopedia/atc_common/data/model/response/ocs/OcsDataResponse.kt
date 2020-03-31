@@ -24,7 +24,7 @@ class OcsDataResponse(
 class OcsData(
         @SerializedName("cart_id")
         @Expose
-        val cartId: Int = 0,
+        val cartId: String = "",
 
         @SerializedName("product_id")
         @Expose
