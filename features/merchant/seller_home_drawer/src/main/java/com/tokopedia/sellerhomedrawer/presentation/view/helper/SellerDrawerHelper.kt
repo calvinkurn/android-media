@@ -18,10 +18,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalContent
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.*
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -168,7 +165,8 @@ class SellerDrawerHelper @Inject constructor(val context: Activity,
                 }
                 SellerHomeState.DrawerPosition.MANAGE_ETALASE -> {
                     eventDrawerClick(EventLabel.PRODUCT_DISPLAY)
-                    RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ETALASE)
+                    RouteManager.route(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
+                    // RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ETALASE)
                 }
                 SellerHomeState.DrawerPosition.SELLER_GM_STAT -> {
                     eventClickGMStat(Category.HAMBURGER,

@@ -65,6 +65,18 @@ constructor(@ApplicationContext context: Context) : UseCase<ArrayList<ShopEtalas
         val HIDE_SHOWCASE_GROUP = "hideShowcaseGroup"
         val IS_OWNER = "isOwner"
 
+        object BuyerQueryParam {
+            const val HIDE_NO_COUNT_VALUE = true
+            const val HIDE_SHOWCASE_GROUP_VALUE = false
+            const val IS_OWNER_VALUE = false
+        }
+
+        object SellerQueryParam {
+            const val HIDE_NO_COUNT_VALUE = false
+            const val HIDE_SHOWCASE_GROUP_VALUE = false
+            const val IS_OWNER_VALUE = true
+        }
+
         @JvmStatic
         fun createRequestParams(shopId: String, hideNoCount: Boolean, hideShowCaseGroup: Boolean, isOwner: Boolean): RequestParams {
             val requestParams = RequestParams.create()

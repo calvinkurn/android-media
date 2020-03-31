@@ -374,7 +374,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     private fun loadShopPageList(shopInfo: ShopInfo, page: Int, forceNoEtalase: Boolean = false) {
         if (viewModel.isEtalaseEmpty && !forceNoEtalase) {
-            viewModel.getEtalaseData(shopInfo.shopCore.shopID)
+//            viewModel.getEtalaseData(shopInfo.shopCore.shopID)
+
+            val _isMyShop = viewModel.isMyShop(shopInfo.shopCore.shopID)
+            viewModel.getEtalaseData(shopInfo.shopCore.shopID, _isMyShop)
         } else {
             // continue to load ProductData
             viewModel.getShopProduct(shopInfo.shopCore.shopID, page,
@@ -437,9 +440,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     CustomDimensionShopPage.create(it.shopCore.shopID,
                             it.goldOS.isOfficial == 1, it.goldOS.isGold == 1))
             context?.let { context ->
-                val shopEtalaseIntent = ShopEtalasePickerActivity.createIntent(context, it.shopCore.shopID, selectedEtalaseId,
-                        true, false)
-                startActivityForResult(shopEtalaseIntent, REQUEST_CODE_ETALASE)
+                val shopShowcaseListIntent = ShopShowcaseListActivity.createIntent(
+                        activity, it.shopCore.shopID, selectedEtalaseId, true, false)
+                context.startActivity(shopShowcaseListIntent)
+//                val shopEtalaseIntent = ShopEtalasePickerActivity.createIntent(context, it.shopCore.shopID, selectedEtalaseId,
+//                        true, false)
+//                startActivityForResult(shopEtalaseIntent, REQUEST_CODE_ETALASE)
             }
         }
     }

@@ -23,4 +23,13 @@ object ApplinkConstInternalMechant {
     @JvmField
     val BRANDLIST_SEARCH = "${INTERNAL_MERCHANT}/official-store/brand-search"
 
+    @JvmField
+    val MERCHANT_SHOP_SHOWCASE_LIST = "${INTERNAL_MERCHANT}/shop-showcase-list"
+
+    @JvmField
+    val MERCHANT_SHOP_SHOWCASE_ADD = "${INTERNAL_MERCHANT}/shop-showcase-add"
+
+    @JvmField
+    val MERCHANT_SHOP_SHOWCASE_EDIT = "${INTERNAL_MERCHANT}/shop-showcase-edit"
+
 }
