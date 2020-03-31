@@ -15,9 +15,11 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
+import com.tokopedia.flight.dashboard.view.fragment.cache.FlightDashboardCache
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardModel
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
+import com.tokopedia.flight.dashboard.view.validator.FlightSelectPassengerValidator
 import com.tokopedia.flight.search_universal.presentation.viewmodel.FlightSearchUniversalViewModel
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -32,6 +34,8 @@ class FlightHomepageViewModel @Inject constructor(
         private val flightAnalytics: FlightAnalytics,
         private val travelTickerUseCase: TravelTickerCoroutineUseCase,
         private val getTravelCollectiveBannerUseCase: GetTravelCollectiveBannerUseCase,
+        private val dashboardCache: FlightDashboardCache,
+        private val passengerValidator: FlightSelectPassengerValidator,
         private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
 
@@ -47,8 +51,13 @@ class FlightHomepageViewModel @Inject constructor(
     val tickerData: LiveData<Result<TravelTickerModel>>
         get() = mutableTickerData
 
+    private val mutableAutoSearch = MutableLiveData<Boolean>()
+    val autoSearch: LiveData<Boolean>
+        get() = mutableAutoSearch
+
     init {
         mutableDashboardData.value = FlightDashboardModel()
+        mutableAutoSearch.value = false
     }
 
     fun fetchBannerData(query: String, isFromCloud: Boolean) {
@@ -63,6 +72,54 @@ class FlightHomepageViewModel @Inject constructor(
             val tickerData = travelTickerUseCase.execute(TravelTickerInstanceId.FLIGHT, TravelTickerFlightPage.HOME)
             mutableTickerData.postValue(tickerData)
         }
+    }
+
+    /**
+     * tokopedia://pesawat/search?dest=CGK_Jakarta_DPS_Denpasar_2020-11-11,CGK_Jakarta_DPS_Denpasar_2020-12-11&a=3&c=2&i=1&s=1&auto_search=0
+     */
+    fun setupApplinkParams(extrasTrip: String, extrasAdult: String, extrasChild: String,
+                           extrasInfant: String, extrasClass: String, extrasAutoSearch: String): Int {
+        var errorStringResourceId = -1
+        try {
+            // transform trip extras
+            val tempExtras = extrasTrip.split(",")
+            val extrasTripDeparture = tempExtras[INDEX_DEPARTURE_TRIP].split("_")
+
+            dashboardCache.putDepartureAirport(extrasTripDeparture[INDEX_ID_AIRPORT_DEPARTURE_TRIP])
+            dashboardCache.putDepartureCityName(extrasTripDeparture[INDEX_NAME_CITY_DEPARTURE_TRIP])
+            dashboardCache.putDepartureCityCode("")
+            dashboardCache.putArrivalAirport(extrasTripDeparture[INDEX_ID_AIRPORT_ARRIVAL_TRIP])
+            dashboardCache.putArrivalCityName(extrasTripDeparture[INDEX_NAME_CITY_ARRIVAL_TRIP])
+            dashboardCache.putRoundTrip(false)
+            dashboardCache.putDepartureDate(extrasTripDeparture[INDEX_DATE_TRIP])
+            dashboardCache.putReturnDate("")
+
+            // if applink params is roundtrip
+            if (tempExtras.size > 1) {
+                val extrasTripReturn = tempExtras[INDEX_RETURN_TRIP].split("_")
+                dashboardCache.putRoundTrip(true)
+                dashboardCache.putReturnDate(extrasTripReturn[INDEX_DATE_TRIP])
+            }
+
+            // transform passenger
+            if (!passengerValidator.validateInfantNotGreaterThanAdult(extrasAdult.toInt(), extrasInfant.toInt())) {
+                errorStringResourceId = R.string.select_passenger_infant_greater_than_adult_error_message
+            } else if (!passengerValidator.validateTotalPassenger(extrasAdult.toInt(), extrasChild.toInt())) {
+                errorStringResourceId = R.string.select_passenger_total_passenger_error_message
+            } else {
+                dashboardCache.putPassengerCount(extrasAdult.toInt(), extrasChild.toInt(), extrasInfant.toInt())
+            }
+
+            // transform class
+            dashboardCache.putClassCache(extrasClass.toInt())
+
+            if (extrasAutoSearch.toInt() == 1) {
+                mutableAutoSearch.value = true
+            }
+        } catch (t: Throwable) {
+            t.printStackTrace()
+        }
+        return errorStringResourceId
     }
 
     fun getBannerData(position: Int): TravelCollectiveBannerModel.Banner? {
@@ -145,7 +202,7 @@ class FlightHomepageViewModel @Inject constructor(
     fun validateDepartureDate(departureDate: Date): Int {
         var resultStringResourceId = -1
         val oneYears = FlightDateUtil.addTimeToSpesificDate(FlightDateUtil.addTimeToCurrentDate(
-                Calendar.YEAR, MAX_YEAR_FOR_FLIGHT), Calendar.DATE, -1)
+                Calendar.YEAR, MAX_YEAR_FOR_FLIGHT), Calendar.DATE, MINUS_ONE_DAY)
 
         if (departureDate.after(oneYears)) {
             resultStringResourceId = R.string.flight_dashboard_departure_max_one_years_from_today_error
@@ -161,7 +218,7 @@ class FlightHomepageViewModel @Inject constructor(
 
         var oneYears = FlightDateUtil.addTimeToSpesificDate(
                 FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, FlightSearchUniversalViewModel.MAX_YEAR_FOR_FLIGHT),
-                Calendar.DATE, -1)
+                Calendar.DATE, MINUS_ONE_DAY)
 
         if (returnDate.after(oneYears)) {
             resultStringResourceId = R.string.flight_dashboard_return_max_one_years_from_today_error
@@ -184,11 +241,20 @@ class FlightHomepageViewModel @Inject constructor(
     }
 
     companion object {
-        const val MAX_YEAR_FOR_FLIGHT = 1
-        const val MINUS_ONE_DAY = -1
-        const val DEFAULT_LAST_HOUR_IN_DAY = 23
-        const val DEFAULT_LAST_MIN = 59
-        const val DEFAULT_LAST_SEC = 59
+        private const val MAX_YEAR_FOR_FLIGHT = 1
+        private const val MINUS_ONE_DAY = -1
+        private const val DEFAULT_LAST_HOUR_IN_DAY = 23
+        private const val DEFAULT_LAST_MIN = 59
+        private const val DEFAULT_LAST_SEC = 59
+
+        // applink params index
+        private const val INDEX_DEPARTURE_TRIP: Int = 0
+        private const val INDEX_RETURN_TRIP = 1
+        private const val INDEX_ID_AIRPORT_DEPARTURE_TRIP = 0
+        private const val INDEX_NAME_CITY_DEPARTURE_TRIP = 1
+        private const val INDEX_ID_AIRPORT_ARRIVAL_TRIP = 2
+        private const val INDEX_NAME_CITY_ARRIVAL_TRIP = 3
+        private const val INDEX_DATE_TRIP = 4
     }
 
 }

@@ -2,6 +2,7 @@ package com.tokopedia.flight.homepage.presentation.activity
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.flight.FlightComponentInstance
@@ -12,20 +13,43 @@ import com.tokopedia.flight.homepage.presentation.fragment.FlightHomepageFragmen
 
 class FlightHomepageActivity : BaseFlightActivity(), HasComponent<FlightHomepageComponent> {
 
+    private var extrasTrip = ""
+    private var extrasAdult = ""
+    private var extrasChild = ""
+    private var extrasInfant = ""
+    private var extrasClass = ""
+    private var extrasAutoSearch = ""
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        intent.data?.let {
+            if (!it.getQueryParameter(EXTRA_TRIP).isNullOrEmpty() &&
+                    !it.getQueryParameter(EXTRA_ADULT).isNullOrEmpty() &&
+                    !it.getQueryParameter(EXTRA_CHILD).isNullOrEmpty() &&
+                    !it.getQueryParameter(EXTRA_INFANT).isNullOrEmpty() &&
+                    !it.getQueryParameter(EXTRA_CLASS).isNullOrEmpty()) {
+                extrasTrip = it.getQueryParameter(EXTRA_TRIP) ?: ""
+                extrasAdult = it.getQueryParameter(EXTRA_ADULT) ?: ""
+                extrasChild = it.getQueryParameter(EXTRA_CHILD) ?: ""
+                extrasInfant = it.getQueryParameter(EXTRA_INFANT) ?: ""
+                extrasClass = it.getQueryParameter(EXTRA_CLASS) ?: ""
+                extrasAutoSearch = if (!it.getQueryParameter(EXTRA_AUTO_SEARCH).isNullOrEmpty())
+                    it.getQueryParameter(EXTRA_AUTO_SEARCH) ?: "0" else "0"
+            }
+        }
+
+        super.onCreate(savedInstanceState)
+    }
+
     override fun getNewFragment(): Fragment =
-            if (intent.hasExtra(EXTRA_TRIP) &&
-                    intent.hasExtra(EXTRA_ADULT) &&
-                    intent.hasExtra(EXTRA_CHILD) &&
-                    intent.hasExtra(EXTRA_INFANT) &&
-                    intent.hasExtra(EXTRA_CLASS)) {
+            if (extrasTrip.isNotEmpty() && extrasAdult.isNotEmpty() && extrasChild.isNotEmpty() &&
+                    extrasInfant.isNotEmpty() && extrasClass.isNotEmpty() && extrasAutoSearch.isNotEmpty()) {
                 FlightHomepageFragment.getInstance(
-                        intent.getStringExtra(EXTRA_TRIP),
-                        intent.getStringExtra(EXTRA_ADULT),
-                        intent.getStringExtra(EXTRA_CHILD),
-                        intent.getStringExtra(EXTRA_INFANT),
-                        intent.getStringExtra(EXTRA_CLASS),
-                        if (intent.hasExtra(EXTRA_AUTO_SEARCH)) intent.getStringExtra(EXTRA_AUTO_SEARCH)
-                        else "0",
+                        extrasTrip,
+                        extrasAdult,
+                        extrasChild,
+                        extrasInfant,
+                        extrasClass,
+                        extrasAutoSearch,
                         intent.data?.toString() ?: ""
                 )
             } else {

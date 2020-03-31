@@ -56,6 +56,7 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
 
     private lateinit var performanceMonitoring: PerformanceMonitoring
     private var isTraceStop: Boolean = false
+    private var applinkErrorTextResource = -1
 
     override fun getScreenName(): String = FlightHomepageFragment::class.java.simpleName
 
@@ -71,6 +72,25 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             flightHomepageViewModel = viewModelProvider.get(FlightHomepageViewModel::class.java)
+
+            arguments?.let {
+                if (it.getString(EXTRA_TRIP, "").isNotEmpty() &&
+                        it.getString(EXTRA_ADULT, "").isNotEmpty() &&
+                        it.getString(EXTRA_CHILD, "").isNotEmpty() &&
+                        it.getString(EXTRA_INFANT, "").isNotEmpty() &&
+                        it.getString(EXTRA_CLASS, "").isNotEmpty() &&
+                        it.getString(EXTRA_AUTO_SEARCH, "").isNotEmpty()) {
+                    applinkErrorTextResource = flightHomepageViewModel.setupApplinkParams(
+                            it.getString(EXTRA_TRIP, ""),
+                            it.getString(EXTRA_ADULT, ""),
+                            it.getString(EXTRA_CHILD, ""),
+                            it.getString(EXTRA_INFANT, ""),
+                            it.getString(EXTRA_CLASS, ""),
+                            it.getString(EXTRA_AUTO_SEARCH, "")
+                    )
+                }
+            }
+
             flightHomepageViewModel.fetchBannerData(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_travel_collective_banner), true)
             flightHomepageViewModel.fetchTickerData()
         }
@@ -109,6 +129,12 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
                 }
             }
         })
+
+        flightHomepageViewModel.autoSearch.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                // auto search
+            }
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -118,6 +144,10 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
         super.onViewCreated(view, savedInstanceState)
 
         flightHomepageSearchForm.listener = this
+
+        if (applinkErrorTextResource != -1) {
+            showMessageErrorInSnackbar(applinkErrorTextResource)
+        }
     }
 
     override fun onDepartureAirportClicked() {

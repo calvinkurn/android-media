@@ -12,5 +12,4 @@ import dagger.Component
         dependencies = [FlightComponent::class])
 interface FlightHomepageComponent {
     fun inject(flightHomepageFragment: FlightHomepageFragment)
-
 }
