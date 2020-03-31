@@ -327,6 +327,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         btn_order_detail.gone()
         btn_pay.gone()
         btn_promo_checkout.gone()
+        group_insurance.gone()
 
         button_atur_pilihan.setOnClickListener {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)

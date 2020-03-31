@@ -104,6 +104,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             }
 //            _orderPreference = OrderPreference(preference)
             orderPreference.value = OccState.FirstLoad(_orderPreference!!)
+            validateUsePromoRevampUiModel = null
+            lastValidateUsePromoRequest = null
             orderPromo.value = orderData.promo.copy(state = ButtonBayarState.NORMAL)
             if (orderProduct.productId > 0 && preference.shipment.serviceId > 0) {
                 orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.LOADING)
