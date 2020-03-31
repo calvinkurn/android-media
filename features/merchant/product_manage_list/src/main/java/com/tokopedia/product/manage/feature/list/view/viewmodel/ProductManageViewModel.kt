@@ -68,8 +68,6 @@ class ProductManageViewModel @Inject constructor(
         // Currently update data on server is not realtime.
         // Client need to add request delay in order to receive updated data.
         private const val REQUEST_DELAY = 1000L
-        private const val PRODUCT_IN_CAMPAIGN_ERROR_MESSAGE = "Produk yang sedang mengikuti campaign tidak bisa diedit."
-        private const val PRODUCT_PRICE_GROSIR_ERROR_MESSAGE = "Harga produk harus lebih tinggi dibandingkan harga grosir."
     }
 
     val viewState: LiveData<ViewState>
@@ -346,7 +344,7 @@ class ProductManageViewModel @Inject constructor(
             if(result.productUpdateV3Data.isSuccess) {
                 _deleteProductResult.postValue(Success(DeleteProductResult(productName, productId)))
             } else {
-                _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, Throwable(message = PRODUCT_IN_CAMPAIGN_ERROR_MESSAGE))))
+                _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, Throwable(message = result.productUpdateV3Data.header.errorMessage.last()))))
             }
         }) {
             _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, NetworkErrorException())))
