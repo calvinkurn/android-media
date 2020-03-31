@@ -269,10 +269,16 @@ class ProductManageViewModel @Inject constructor(
                 editPriceUseCase.setParams(userSessionInterface.shopId, productId, price.toFloatOrZero())
                 editPriceUseCase.executeOnBackground()
             }
-            if (result.productUpdateV3Data.isSuccess) {
-                _editPriceResult.postValue(Success(EditPriceResult(productName, productId, price)))
-            } else {
-                _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, Throwable(message = result.productUpdateV3Data.header.errorMessage.last()))))
+            when {
+                result.productUpdateV3Data.isSuccess -> {
+                    _editPriceResult.postValue(Success(EditPriceResult(productName, productId, price)))
+                }
+                result.productUpdateV3Data.header.errorMessage.isNotEmpty() -> {
+                    _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, Throwable(message = result.productUpdateV3Data.header.errorMessage.last()))))
+                }
+                else -> {
+                    _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, NetworkErrorException(R.string.product_stock_reminder_toaster_failed_desc.toString()))))
+                }
             }
         }) {
             _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, NetworkErrorException(R.string.product_stock_reminder_toaster_failed_desc.toString()))))
@@ -287,10 +293,16 @@ class ProductManageViewModel @Inject constructor(
                 editStockUseCase.setParams(userSessionInterface.shopId, productId, stock, status)
                 editStockUseCase.executeOnBackground()
             }
-            if (result.productUpdateV3Data.isSuccess) {
-                _editStockResult.postValue(Success(EditStockResult(productName, productId, stock, status)))
-            } else {
-                _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, Throwable(message = result.productUpdateV3Data.header.errorMessage.last()))))
+            when {
+                result.productUpdateV3Data.isSuccess -> {
+                    _editStockResult.postValue(Success(EditStockResult(productName, productId, stock, status)))
+                }
+                result.productUpdateV3Data.header.errorMessage.isNotEmpty() -> {
+                    _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, Throwable(message = result.productUpdateV3Data.header.errorMessage.last()))))
+                }
+                else -> {
+                    _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, NetworkErrorException(R.string.product_stock_reminder_toaster_failed_desc.toString()))))
+                }
             }
         }) {
             _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, NetworkErrorException(R.string.product_stock_reminder_toaster_failed_desc.toString()))))
@@ -342,10 +354,16 @@ class ProductManageViewModel @Inject constructor(
                 deleteProductUseCase.setParams(userSessionInterface.shopId, productId)
                 deleteProductUseCase.executeOnBackground()
             }
-            if(result.productUpdateV3Data.isSuccess) {
-                _deleteProductResult.postValue(Success(DeleteProductResult(productName, productId)))
-            } else {
-                _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, Throwable(message = result.productUpdateV3Data.header.errorMessage.last()))))
+            when {
+                result.productUpdateV3Data.isSuccess -> {
+                    _deleteProductResult.postValue(Success(DeleteProductResult(productName, productId)))
+                }
+                result.productUpdateV3Data.header.errorMessage.isNotEmpty() -> {
+                    _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, Throwable(message = result.productUpdateV3Data.header.errorMessage.last()))))
+                }
+                else -> {
+                    _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, NetworkErrorException(R.string.product_stock_reminder_toaster_failed_desc.toString()))))
+                }
             }
         }) {
             _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, NetworkErrorException(R.string.product_stock_reminder_toaster_failed_desc.toString()))))

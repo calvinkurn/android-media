@@ -505,11 +505,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             editPriceResult.error?.message
         }
         message?.let {
-            Toaster.make(coordinatorLayout, it,
-                    Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
-                    View.OnClickListener {
-                        viewModel.editPrice(editPriceResult.productId, editPriceResult.price, editPriceResult.productName)
-                    })
+            val retryMessage = getString(R.string.product_manage_snack_bar_retry)
+            showErrorToast(it, retryMessage) {
+                viewModel.editPrice(editPriceResult.productId, editPriceResult.price, editPriceResult.productName)
+            }
         }
     }
 
@@ -520,11 +519,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             editStockResult.error?.message
         }
         message?.let {
-            Toaster.make(coordinatorLayout, it,
-                    Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
-                    View.OnClickListener {
-                        viewModel.editStock(editStockResult.productId, editStockResult.stock, editStockResult.productName, editStockResult.status)
-                    })
+            val retryMessage = getString(R.string.product_manage_snack_bar_retry)
+            showErrorToast(it, retryMessage) {
+                viewModel.editStock(editStockResult.productId, editStockResult.stock, editStockResult.productName, editStockResult.status)
+            }
         }
     }
 
@@ -579,11 +577,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             deleteProductResult.error?.message
         }
         message?.let {
-            Toaster.make(coordinatorLayout, it,
-                    Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
-                    View.OnClickListener {
-                        viewModel.deleteSingleProduct(deleteProductResult.productName, deleteProductResult.productId)
-                    })
+            val retryMessage = getString(R.string.product_manage_snack_bar_retry)
+            showErrorToast(it, retryMessage) {
+                viewModel.deleteSingleProduct(deleteProductResult.productName, deleteProductResult.productId)
+            }
         }
     }
 
