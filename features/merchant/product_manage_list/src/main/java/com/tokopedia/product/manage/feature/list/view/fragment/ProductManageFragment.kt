@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.feature.list.view.fragment
 
+import android.accounts.NetworkErrorException
 import android.app.Activity
 import android.app.Dialog
 import android.content.BroadcastReceiver
@@ -498,19 +499,31 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun onErrorEditPrice(editPriceResult: EditPriceResult) {
-        Toaster.make(coordinatorLayout, getString(R.string.product_manage_snack_bar_fail),
-                Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
-                View.OnClickListener {
-                    viewModel.editPrice(editPriceResult.productId, editPriceResult.price, editPriceResult.productName)
-                })
+        val message = if(editPriceResult.error is NetworkErrorException) {
+            getString(editPriceResult.error.message.toIntOrZero())
+        } else {
+            editPriceResult.error?.message
+        }
+        message?.let {
+            val retryMessage = getString(R.string.product_manage_snack_bar_retry)
+            showErrorToast(it, retryMessage) {
+                viewModel.editPrice(editPriceResult.productId, editPriceResult.price, editPriceResult.productName)
+            }
+        }
     }
 
     private fun onErrorEditStock(editStockResult: EditStockResult) {
-        Toaster.make(coordinatorLayout, getString(R.string.product_manage_snack_bar_fail),
-                Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
-                View.OnClickListener {
-                    viewModel.editStock(editStockResult.productId, editStockResult.stock, editStockResult.productName, editStockResult.status)
-                })
+        val message = if(editStockResult.error is NetworkErrorException) {
+            getString(editStockResult.error.message.toIntOrZero())
+        } else {
+            editStockResult.error?.message
+        }
+        message?.let {
+            val retryMessage = getString(R.string.product_manage_snack_bar_retry)
+            showErrorToast(it, retryMessage) {
+                viewModel.editStock(editStockResult.productId, editStockResult.stock, editStockResult.productName, editStockResult.status)
+            }
+        }
     }
 
     private fun onSuccessEditPrice(productId: String, price: String, productName: String) {
@@ -558,11 +571,17 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun onErrorDeleteProduct(deleteProductResult: DeleteProductResult) {
-        Toaster.make(coordinatorLayout, getString(R.string.product_manage_delete_product_fail),
-                Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
-                View.OnClickListener {
-                    viewModel.deleteSingleProduct(deleteProductResult.productName, deleteProductResult.productId)
-                })
+        val message = if(deleteProductResult.error is NetworkErrorException) {
+            getString(deleteProductResult.error.message.toIntOrZero())
+        } else {
+            deleteProductResult.error?.message
+        }
+        message?.let {
+            val retryMessage = getString(R.string.product_manage_snack_bar_retry)
+            showErrorToast(it, retryMessage) {
+                viewModel.deleteSingleProduct(deleteProductResult.productName, deleteProductResult.productId)
+            }
+        }
     }
 
     private fun onSuccessDeleteProduct(productName: String, productId: String) {

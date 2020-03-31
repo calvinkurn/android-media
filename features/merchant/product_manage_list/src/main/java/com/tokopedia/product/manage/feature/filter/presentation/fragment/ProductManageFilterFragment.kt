@@ -12,6 +12,10 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
+import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper.Companion.CATEGORY_HEADER
+import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper.Companion.ETALASE_HEADER
+import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper.Companion.OTHER_FILTER_HEADER
+import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper.Companion.SORT_HEADER
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.di.DaggerProductManageFilterComponent
 import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterComponent
@@ -110,7 +114,7 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
                 intent.putExtra(ACTIVITY_EXPAND_FLAG, SORT_CACHE_MANAGER_KEY)
                 ProductManageTracking.eventSortingFilter()
             }
-            ProductManageFilterMapper.ETALASE_HEADER -> {
+            ETALASE_HEADER -> {
                 cacheManager?.put(ETALASE_CACHE_MANAGER_KEY, element)
                 intent.putExtra(ACTIVITY_EXPAND_FLAG, ETALASE_CACHE_MANAGER_KEY)
             }
@@ -165,12 +169,12 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
     override fun onChipClicked(element: FilterDataUiModel, canSelectMany: Boolean, title: String) {
         if(canSelectMany) {
             productManageFilterViewModel.updateSelect(element)
-            if(title == ProductManageFilterMapper.OTHER_FILTER_HEADER) {
+            if(title == OTHER_FILTER_HEADER) {
                 ProductManageTracking.eventOthersFilterName(element.name)
             }
         } else {
             productManageFilterViewModel.updateSelect(element, title)
-            if(title == ProductManageFilterMapper.ETALASE_HEADER) {
+            if(title == ETALASE_HEADER) {
                 if(element.name == getString(R.string.product_manage_filter_product_sold)) {
                     ProductManageTracking.eventEtalaseFilter(element.name)
                 }
@@ -182,6 +186,12 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
 
     override fun onShowChips(element: FilterUiModel) {
         productManageFilterViewModel.updateShow(element)
+        when(element.title) {
+            SORT_HEADER -> filterRecyclerView.scrollToPosition(ITEM_SORT_INDEX)
+            ETALASE_HEADER -> filterRecyclerView.scrollToPosition(ITEM_ETALASE_INDEX)
+            CATEGORY_HEADER -> filterRecyclerView.scrollToPosition(ITEM_CATEGORIES_INDEX)
+            else -> filterRecyclerView.scrollToPosition(ITEM_OTHER_FILTER_INDEX)
+        }
     }
 
     private fun initInjector() {
@@ -285,7 +295,7 @@ class ProductManageFilterFragment(private val onFinishedListener: OnFinishedList
             }
             ProductManageFilterMapper.mapFilterOptionWrapperToSelectedEtalase(it)?.let { selectedEtalase ->
                 productManageFilterViewModel.updateSelect(selectedEtalase,
-                        ProductManageFilterMapper.ETALASE_HEADER)
+                        ETALASE_HEADER)
             }
             ProductManageFilterMapper.mapFilterOptionWrapperToSelectedCategories(it).forEach { data ->
                 productManageFilterViewModel.updateSelect(data)
