@@ -899,7 +899,7 @@ final class ProductListPresenter
                     continue;
                 }
 
-                if (data.getPosition() <= getView().getLastProductItemPositionFromCache()) {
+                if (data.getPosition() <= productList.size()) {
                     try {
                         Visitable product = productList.get(data.getPosition() - 1);
                         list.add(list.indexOf(product) + 1, data);
