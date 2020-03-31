@@ -1,4 +1,4 @@
-package com.tokopedia.flight.dashboardV2.di
+package com.tokopedia.flight.homepage.di
 
 import javax.inject.Scope
 
@@ -7,4 +7,4 @@ import javax.inject.Scope
  */
 @Scope
 @Retention(AnnotationRetention.RUNTIME)
-annotation class FlightDashboardV2Scope
+annotation class FlightHomepageScope

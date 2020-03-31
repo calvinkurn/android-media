@@ -1,10 +1,10 @@
-package com.tokopedia.flight.dashboardV2.di
+package com.tokopedia.flight.homepage.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.flight.dashboardV2.presentation.viewmodel.FlightDashboardViewModel
+import com.tokopedia.flight.homepage.presentation.viewmodel.FlightHomepageViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -13,15 +13,15 @@ import dagger.multibindings.IntoMap
  * @author by furqan on 27/03/2020
  */
 @Module
-@FlightDashboardV2Scope
-abstract class FlightDashboardV2ViewModelModule {
+@FlightHomepageScope
+abstract class FlightHomepageViewModelModule {
 
     @Binds
     abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
     @IntoMap
-    @ViewModelKey(FlightDashboardViewModel::class)
-    abstract fun flightDashboardViewModel(flightDashboardViewModel: FlightDashboardViewModel): ViewModel
+    @ViewModelKey(FlightHomepageViewModel::class)
+    abstract fun flightDashboardViewModel(flightHomepageViewModel: FlightHomepageViewModel): ViewModel
 
 }

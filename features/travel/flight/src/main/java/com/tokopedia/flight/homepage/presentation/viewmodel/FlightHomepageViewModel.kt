@@ -1,4 +1,4 @@
-package com.tokopedia.flight.dashboardV2.presentation.viewmodel
+package com.tokopedia.flight.homepage.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,20 +7,24 @@ import com.tokopedia.common.travel.constant.TravelType
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
+import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardModel
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
+import com.tokopedia.flight.search_universal.presentation.viewmodel.FlightSearchUniversalViewModel
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 /**
  * @author by furqan on 27/03/2020
  */
-class FlightDashboardViewModel @Inject constructor(
+class FlightHomepageViewModel @Inject constructor(
         private val flightAnalytics: FlightAnalytics,
         private val getTravelCollectiveBannerUseCase: GetTravelCollectiveBannerUseCase,
         private val dispatcherProvider: TravelDispatcherProvider)
@@ -94,6 +98,64 @@ class FlightDashboardViewModel @Inject constructor(
         }
     }
 
+    fun generatePairOfMinAndMaxDateForDeparture(): Pair<Date, Date> {
+        val minDate = FlightDateUtil.getCurrentDate()
+        val maxDate = FlightDateUtil.addTimeToSpesificDate(
+                FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, FlightSearchUniversalViewModel.MAX_YEAR_FOR_FLIGHT),
+                Calendar.DATE,
+                FlightSearchUniversalViewModel.MINUS_ONE_DAY)
+        val maxDateCalendar = FlightDateUtil.getCurrentCalendar()
+        maxDateCalendar.time = maxDate
+        maxDateCalendar.set(Calendar.HOUR_OF_DAY, FlightSearchUniversalViewModel.DEFAULT_LAST_HOUR_IN_DAY)
+        maxDateCalendar.set(Calendar.MINUTE, FlightSearchUniversalViewModel.DEFAULT_LAST_MIN)
+        maxDateCalendar.set(Calendar.SECOND, FlightSearchUniversalViewModel.DEFAULT_LAST_SEC)
+        return Pair(minDate, maxDateCalendar.time)
+    }
+
+    fun generatePairOfMinAndMaxDateForReturn(departureDate: Date): Pair<Date, Date> {
+        val minDate = departureDate
+        val maxDate = FlightDateUtil.addTimeToSpesificDate(
+                FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, FlightSearchUniversalViewModel.MAX_YEAR_FOR_FLIGHT),
+                Calendar.DATE,
+                FlightSearchUniversalViewModel.MINUS_ONE_DAY)
+        val maxDateCalendar = FlightDateUtil.getCurrentCalendar()
+        maxDateCalendar.time = maxDate
+        maxDateCalendar.set(Calendar.HOUR_OF_DAY, FlightSearchUniversalViewModel.DEFAULT_LAST_HOUR_IN_DAY)
+        maxDateCalendar.set(Calendar.MINUTE, FlightSearchUniversalViewModel.DEFAULT_LAST_MIN)
+        maxDateCalendar.set(Calendar.SECOND, FlightSearchUniversalViewModel.DEFAULT_LAST_SEC)
+        return Pair(minDate, maxDateCalendar.time)
+    }
+
+    fun validateDepartureDate(departureDate: Date): Int {
+        var resultStringResourceId = -1
+        val oneYears = FlightDateUtil.addTimeToSpesificDate(FlightDateUtil.addTimeToCurrentDate(
+                Calendar.YEAR, MAX_YEAR_FOR_FLIGHT), Calendar.DATE, -1)
+
+        if (departureDate.after(oneYears)) {
+            resultStringResourceId = R.string.flight_dashboard_departure_max_one_years_from_today_error
+        } else if (departureDate.before(FlightDateUtil.getCurrentDate())) {
+            resultStringResourceId = R.string.flight_dashboard_departure_should_atleast_today_error
+        }
+
+        return resultStringResourceId
+    }
+
+    fun validateReturnDate(departureDate: Date, returnDate: Date): Int {
+        var resultStringResourceId = -1
+
+        var oneYears = FlightDateUtil.addTimeToSpesificDate(
+                FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, FlightSearchUniversalViewModel.MAX_YEAR_FOR_FLIGHT),
+                Calendar.DATE, -1)
+
+        if (returnDate.after(oneYears)) {
+            resultStringResourceId = R.string.flight_dashboard_return_max_one_years_from_today_error
+        } else if (returnDate.before(departureDate)) {
+            resultStringResourceId = R.string.flight_dashboard_return_should_greater_equal_error
+        }
+
+        return resultStringResourceId
+    }
+
     private fun cloneViewModel(currentDashboardData: FlightDashboardModel): FlightDashboardModel {
         val dashboardModel: FlightDashboardModel
         try {
@@ -103,6 +165,14 @@ class FlightDashboardViewModel @Inject constructor(
             throw RuntimeException("Failed to Clone FlightDashboardModel")
         }
         return dashboardModel
+    }
+
+    companion object {
+        const val MAX_YEAR_FOR_FLIGHT = 1
+        const val MINUS_ONE_DAY = -1
+        const val DEFAULT_LAST_HOUR_IN_DAY = 23
+        const val DEFAULT_LAST_MIN = 59
+        const val DEFAULT_LAST_SEC = 59
     }
 
 }

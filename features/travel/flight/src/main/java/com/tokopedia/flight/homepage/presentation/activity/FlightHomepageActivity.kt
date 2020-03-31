@@ -1,4 +1,4 @@
-package com.tokopedia.flight.dashboardV2.presentation.activity
+package com.tokopedia.flight.homepage.presentation.activity
 
 import android.content.Context
 import android.content.Intent
@@ -6,17 +6,17 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.common.view.BaseFlightActivity
-import com.tokopedia.flight.dashboardV2.di.DaggerFlightDashboardV2Component
-import com.tokopedia.flight.dashboardV2.di.FlightDashboardV2Component
-import com.tokopedia.flight.dashboardV2.presentation.fragment.FlightDashboardV2Fragment
+import com.tokopedia.flight.homepage.di.DaggerFlightHomepageComponent
+import com.tokopedia.flight.homepage.di.FlightHomepageComponent
+import com.tokopedia.flight.homepage.presentation.fragment.FlightHomepageFragment
 
-class FlightDashboardV2Activity : BaseFlightActivity(), HasComponent<FlightDashboardV2Component> {
+class FlightHomepageActivity : BaseFlightActivity(), HasComponent<FlightHomepageComponent> {
 
     override fun getNewFragment(): Fragment? =
-            FlightDashboardV2Fragment.getInstance("")
+            FlightHomepageFragment.getInstance("")
 
-    override fun getComponent(): FlightDashboardV2Component =
-            DaggerFlightDashboardV2Component.builder()
+    override fun getComponent(): FlightHomepageComponent =
+            DaggerFlightHomepageComponent.builder()
                     .flightComponent(FlightComponentInstance.getFlightComponent(application))
                     .build()
 
@@ -29,7 +29,7 @@ class FlightDashboardV2Activity : BaseFlightActivity(), HasComponent<FlightDashb
         private const val EXTRA_AUTO_SEARCH = "auto_search"
 
         fun getCallingIntent(context: Context): Intent =
-                Intent(context, FlightDashboardV2Activity::class.java)
+                Intent(context, FlightHomepageActivity::class.java)
 
     }
 }

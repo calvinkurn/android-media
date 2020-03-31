@@ -1,4 +1,4 @@
-package com.tokopedia.flight.dashboardV2.di
+package com.tokopedia.flight.homepage.di
 
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -9,10 +9,10 @@ import dagger.Provides
  * @author by furqan on 27/03/2020
  */
 @Module
-@FlightDashboardV2Scope
-class FlightDashboardV2Module {
+@FlightHomepageScope
+class FlightHomepageModule {
 
-    @FlightDashboardV2Scope
+    @FlightHomepageScope
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository =
             GraphqlInteractor.getInstance().graphqlRepository

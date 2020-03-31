@@ -1,4 +1,4 @@
-package com.tokopedia.flight.dashboardV2.presentation.fragment
+package com.tokopedia.flight.homepage.presentation.fragment
 
 import android.app.Activity
 import android.content.Intent
@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
@@ -21,34 +22,37 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity
 import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
+import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.dashboard.view.activity.FlightClassesActivity
 import com.tokopedia.flight.dashboard.view.activity.FlightSelectPassengerActivity
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardModel
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
-import com.tokopedia.flight.dashboardV2.di.FlightDashboardV2Component
-import com.tokopedia.flight.dashboardV2.presentation.viewmodel.FlightDashboardViewModel
+import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget
+import com.tokopedia.flight.homepage.di.FlightHomepageComponent
+import com.tokopedia.flight.homepage.presentation.viewmodel.FlightHomepageViewModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
+import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_flight_dashboard_new.*
+import kotlinx.android.synthetic.main.fragment_flight_homepage.*
 import java.util.*
 import javax.inject.Inject
 
 /**
  * @author by furqan on 27/03/2020
  */
-class FlightDashboardV2Fragment : BaseDaggerFragment(), FlightSearchFormView.FlightSearchFormListener {
+class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.FlightSearchFormListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var flightDashboardViewModel: FlightDashboardViewModel
+    private lateinit var flightHomepageViewModel: FlightHomepageViewModel
 
-    override fun getScreenName(): String = FlightDashboardV2Fragment::class.java.simpleName
+    override fun getScreenName(): String = FlightHomepageFragment::class.java.simpleName
 
     override fun initInjector() {
-        getComponent(FlightDashboardV2Component::class.java).inject(this)
+        getComponent(FlightHomepageComponent::class.java).inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,15 +60,15 @@ class FlightDashboardV2Fragment : BaseDaggerFragment(), FlightSearchFormView.Fli
 
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            flightDashboardViewModel = viewModelProvider.get(FlightDashboardViewModel::class.java)
-            flightDashboardViewModel.fetchBannerData(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_travel_collective_banner), true)
+            flightHomepageViewModel = viewModelProvider.get(FlightHomepageViewModel::class.java)
+            flightHomepageViewModel.fetchBannerData(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_travel_collective_banner), true)
         }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        flightDashboardViewModel.bannerList.observe(viewLifecycleOwner, Observer {
+        flightHomepageViewModel.bannerList.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     renderBannerView(it.data.banners)
@@ -75,13 +79,13 @@ class FlightDashboardV2Fragment : BaseDaggerFragment(), FlightSearchFormView.Fli
             }
         })
 
-        flightDashboardViewModel.dashboardData.observe(viewLifecycleOwner, Observer {
+        flightHomepageViewModel.dashboardData.observe(viewLifecycleOwner, Observer {
             renderSearchForm(it)
         })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_flight_dashboard_new, container, false)
+            inflater.inflate(R.layout.fragment_flight_homepage, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -99,20 +103,62 @@ class FlightDashboardV2Fragment : BaseDaggerFragment(), FlightSearchFormView.Fli
         startActivityForResult(intent, REQUEST_CODE_AIRPORT_DESTINATION)
     }
 
-    override fun onDepartureDateClicked(departureAirport: String, arrivalAirport: String, flightClassId: Int, departureDate: Date, returnDate: Date, isRoundTrip: Boolean) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onDepartureDateClicked(departureAirport: String, arrivalAirport: String, flightClassId: Int,
+                                        departureDate: Date, returnDate: Date, isRoundTrip: Boolean) {
+        val minMaxDate = flightHomepageViewModel.generatePairOfMinAndMaxDateForDeparture()
+        if (isRoundTrip) {
+            // if round trip, use selected date as a mindate and return date as selected date
+            setCalendarDatePicker(
+                    returnDate,
+                    departureDate,
+                    minMaxDate.second,
+                    getString(com.tokopedia.travelcalendar.R.string.travel_calendar_label_choose_departure_trip_date),
+                    TAG_DEPARTURE_CALENDAR
+            )
+        } else {
+            val flightCalendarDialog = FlightCalendarOneWayWidget.newInstance(
+                    FlightDateUtil.dateToString(minMaxDate.first, FlightDateUtil.DEFAULT_FORMAT),
+                    FlightDateUtil.dateToString(minMaxDate.second, FlightDateUtil.DEFAULT_FORMAT),
+                    FlightDateUtil.dateToString(departureDate, FlightDateUtil.DEFAULT_FORMAT),
+                    departureAirport,
+                    arrivalAirport,
+                    flightClassId
+            )
+            flightCalendarDialog.setListener(object : FlightCalendarOneWayWidget.ActionListener {
+                override fun onDateSelected(dateSelected: Date) {
+                    val errorResourceId = flightHomepageViewModel.validateDepartureDate(dateSelected)
+                    if (errorResourceId == -1) {
+                        flightDashboardSearchForm.setDepartureDate(dateSelected)
+                    } else {
+                        showMessageErrorInSnackbar(errorResourceId)
+                    }
+                }
+
+            })
+            flightCalendarDialog.show(requireFragmentManager(), TAG_DEPARTURE_CALENDAR)
+        }
     }
 
     override fun onReturnDateClicked(departureDate: Date, returnDate: Date) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val minMaxDate = flightHomepageViewModel.generatePairOfMinAndMaxDateForReturn(departureDate)
+        setCalendarDatePicker(null,
+                minMaxDate.first,
+                minMaxDate.second,
+                getString(com.tokopedia.travelcalendar.R.string.travel_calendar_label_choose_return_trip_date),
+                TAG_RETURN_CALENDAR
+        )
     }
 
     override fun onPassengerClicked(passengerModel: FlightPassengerModel?) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        passengerModel?.let {
+            val intent = FlightSelectPassengerActivity.getCallingIntent(requireContext(), it)
+            startActivityForResult(intent, REQUEST_CODE_SELECT_PASSENGER)
+        }
     }
 
     override fun onClassClicked(flightClassId: Int) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val intent = FlightClassesActivity.getCallingIntent(requireContext(), flightClassId)
+        startActivityForResult(intent, REQUEST_CODE_SELECT_CLASSES)
     }
 
     override fun onSaveSearch(flightSearchData: FlightSearchPassDataModel) {
@@ -127,25 +173,25 @@ class FlightDashboardV2Fragment : BaseDaggerFragment(), FlightSearchFormView.Fli
                 REQUEST_CODE_AIRPORT_DEPARTURE -> {
                     val departureAirport = data?.getParcelableExtra<FlightAirportModel>(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT)
                     departureAirport?.let {
-                        flightDashboardViewModel.onDepartureAirportChanged(it)
+                        flightHomepageViewModel.onDepartureAirportChanged(it)
                     }
                 }
                 REQUEST_CODE_AIRPORT_DESTINATION -> {
                     val destinationAirport = data?.getParcelableExtra<FlightAirportModel>(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT)
                     destinationAirport?.let {
-                        flightDashboardViewModel.onArrivalAirportChanged(it)
+                        flightHomepageViewModel.onArrivalAirportChanged(it)
                     }
                 }
                 REQUEST_CODE_SELECT_CLASSES -> {
                     val classModel = data?.getParcelableExtra<FlightClassModel>(FlightClassesActivity.EXTRA_FLIGHT_CLASS)
                     classModel?.let {
-                        flightDashboardViewModel.onClassChanged(it)
+                        flightHomepageViewModel.onClassChanged(it)
                     }
                 }
                 REQUEST_CODE_SELECT_PASSENGER -> {
                     val passengerModel = data?.getParcelableExtra<FlightPassengerModel>(FlightSelectPassengerActivity.EXTRA_PASS_DATA)
                     passengerModel?.let {
-                        flightDashboardViewModel.onPassengerChanged(it)
+                        flightHomepageViewModel.onPassengerChanged(it)
                     }
                 }
             }
@@ -190,9 +236,9 @@ class FlightDashboardV2Fragment : BaseDaggerFragment(), FlightSearchFormView.Fli
 
     private fun onBannerClicked(position: Int) {
         context?.let {
-            val bannerData = flightDashboardViewModel.getBannerData(position)
+            val bannerData = flightHomepageViewModel.getBannerData(position)
             bannerData?.let { banner ->
-                flightDashboardViewModel.onBannerClicked(position, banner)
+                flightHomepageViewModel.onBannerClicked(position, banner)
                 when {
                     RouteManager.isSupportApplink(it, banner.attribute.appUrl) -> {
                         RouteManager.route(it, banner.attribute.appUrl)
@@ -229,7 +275,46 @@ class FlightDashboardV2Fragment : BaseDaggerFragment(), FlightSearchFormView.Fli
         }
     }
 
+    private fun setCalendarDatePicker(selectedDate: Date?, minDate: Date, maxDate: Date, title: String, tag: String) {
+        val minDateStr = FlightDateUtil.dateToString(minDate, FlightDateUtil.DEFAULT_FORMAT)
+        val selectedDateStr = if (selectedDate != null) FlightDateUtil.dateToString(selectedDate, FlightDateUtil.DEFAULT_FORMAT) else null
+
+        val flightCalendarDialog = SelectionRangeCalendarWidget.getInstance(
+                minDateStr, selectedDateStr,
+                SelectionRangeCalendarWidget.DEFAULT_RANGE_CALENDAR_YEAR,
+                SelectionRangeCalendarWidget.DEFAULT_RANGE_DATE_SELECTED.toLong(),
+                getString(R.string.flight_min_date_label),
+                getString(R.string.flight_max_date_label),
+                SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_TODAY,
+                true
+        )
+        flightCalendarDialog.listener = object : SelectionRangeCalendarWidget.OnDateClickListener {
+            override fun onDateClick(dateIn: Date, dateOut: Date) {
+                val departureErrorResourceId = flightHomepageViewModel.validateDepartureDate(dateIn)
+                if (departureErrorResourceId == -1) {
+                    flightDashboardSearchForm.setDepartureDate(dateIn)
+                } else {
+                    showMessageErrorInSnackbar(departureErrorResourceId)
+                }
+
+                val returnErrorResourceId = flightHomepageViewModel.validateReturnDate(dateIn, dateOut)
+                if (returnErrorResourceId == -1) {
+                    flightDashboardSearchForm.setReturnDate(dateOut)
+                } else {
+                    showMessageErrorInSnackbar(returnErrorResourceId)
+                }
+            }
+        }
+        flightCalendarDialog.show(requireFragmentManager(), tag)
+    }
+
+    private fun showMessageErrorInSnackbar(resourceId: Int) {
+        NetworkErrorHelper.showRedCloseSnackbar(activity, getString(resourceId))
+    }
+
     companion object {
+        private const val TAG_DEPARTURE_CALENDAR = "flightCalendarDeparture"
+        private const val TAG_RETURN_CALENDAR = "flightCalendarReturn"
 
         private const val EXTRA_FROM_DEEPLINK_URL = "EXTRA_FROM_DEEPLINK_URL"
         private const val EXTRA_TRIP = "EXTRA_TRIP"
@@ -244,8 +329,8 @@ class FlightDashboardV2Fragment : BaseDaggerFragment(), FlightSearchFormView.Fli
         const val REQUEST_CODE_SELECT_PASSENGER = 3
         const val REQUEST_CODE_SELECT_CLASSES = 4
 
-        fun getInstance(linkUrl: String): FlightDashboardV2Fragment =
-                FlightDashboardV2Fragment().also {
+        fun getInstance(linkUrl: String): FlightHomepageFragment =
+                FlightHomepageFragment().also {
                     it.arguments = Bundle().apply {
                         putString(EXTRA_FROM_DEEPLINK_URL, linkUrl)
                     }
@@ -257,8 +342,8 @@ class FlightDashboardV2Fragment : BaseDaggerFragment(), FlightSearchFormView.Fli
                         extrasInfantPassenger: String,
                         extrasClass: String,
                         extrasAutoSearch: String,
-                        linkUrl: String): FlightDashboardV2Fragment =
-                FlightDashboardV2Fragment().also {
+                        linkUrl: String): FlightHomepageFragment =
+                FlightHomepageFragment().also {
                     it.arguments = Bundle().apply {
                         putString(EXTRA_TRIP, extrasTrip)
                         putString(EXTRA_ADULT, extrasAdultPassenger)
