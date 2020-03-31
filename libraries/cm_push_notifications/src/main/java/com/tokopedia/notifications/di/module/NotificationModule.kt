@@ -2,8 +2,11 @@ package com.tokopedia.notifications.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.domain.GraphqlUseCase as RxUseCase
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.data.AttributionManager
 import com.tokopedia.notifications.data.model.AttributionNotifier
@@ -40,6 +43,16 @@ import javax.inject.Named
     }
 
     @Provides
+    @CMNotificationScope
+    fun provideAtcUseCase(
+            @Named(ATC_MUTATION_QUERY) query: String,
+            useCase: RxUseCase,
+            mapper: AddToCartDataMapper
+    ): AddToCartUseCase {
+        return AddToCartUseCase(query, useCase, mapper)
+    }
+
+    @Provides
     @Named(NOTIFICATION_ATTRIBUTION)
     fun provideAttributionQuery(
             @CMNotificationContext context: Context
@@ -52,12 +65,19 @@ import javax.inject.Named
 
     @Provides
     @CMNotificationScope
-    fun provideAttributionManager(useCase: AttributionUseCase): AttributionManager {
-        return AttributionManager(useCase)
+    fun provideAttributionManager(
+            attributionUseCase: AttributionUseCase,
+            atcProductUseCase: AddToCartUseCase
+    ): AttributionManager {
+        return AttributionManager(
+                attributionUseCase,
+                atcProductUseCase
+        )
     }
 
     companion object {
         const val NOTIFICATION_ATTRIBUTION = "notification_attribution"
+        const val ATC_MUTATION_QUERY = "atcMutation"
     }
 
 }
