@@ -9,7 +9,7 @@ class RechargeCCRepositoryImpl @Inject constructor(private val rechargeCCApi: Re
         mapParam[PARAM_ACTION] = VALUE_ACTION
         val response = rechargeCCApi.postCreditCard(mapParam)
         if (response.isSuccessful) {
-            return response.body()!!.ccRedirectUrl
+            return response.body()!!.data
         }
         throw IOException(ERROR_DEFAULT)
     }
