@@ -1036,6 +1036,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             renderFullfillment()
             dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap)
             dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, 1)
+            dynamicAdapter.notifyNotifyMe(pdpHashMapUtil?.notifyMeMap, null)
         })
     }
 

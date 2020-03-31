@@ -33,7 +33,7 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
             bindButton(element)
             bindListener(element, ComponentTrackDataModel(element.type, element.name, adapterPosition + 1))
         } else {
-            itemView.layout_notify_me?.layoutParams?.height = 0
+            hideContainer()
         }
     }
 
@@ -61,6 +61,9 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
 
             itemView.layout_notify_me?.visible()
             when {
+                dayLeft < 0 -> {
+                    hideContainer()
+                }
                 dayLeft < 1 -> itemView.notify_count_down?.setup(delta, startDate) {
                     itemView.notify_count_down?.visible()
                     itemView.product_notify_subtitle?.text = getString(R.string.notify_me_subtitle)
@@ -84,14 +87,16 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
                     )
                 }
                 else -> {
-                    itemView.layout_notify_me?.layoutParams?.height = 0
-                    itemView.layout_notify_me?.gone()
+                    hideContainer()
                 }
             }
         } catch (ex: Exception) {
-            itemView.layout_notify_me?.layoutParams?.height = 0
-            itemView.layout_notify_me?.gone()
+            hideContainer()
         }
+    }
+
+    private fun hideContainer() {
+        itemView.layout_notify_me?.layoutParams?.height = 0
     }
 
     private fun bindButton(data: ProductNotifyMeDataModel) {
