@@ -8,20 +8,20 @@
     android:background="@color/white"
     android:paddingTop="@dimen/product_manage_list_padding_top">
 
-    <androidx.appcompat.widget.AppCompatCheckBox
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/checkBoxSelect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/product_manage_checkbox_select_horizontal_spacing"
         android:layout_marginRight="@dimen/product_manage_checkbox_select_horizontal_spacing"
-        app:layout_constraintTop_toTopOf="@id/imageProduct"
+        android:checked="false"
+        android:visibility="gone"
+        app:indeterminate="false"
         app:layout_constraintBottom_toBottomOf="@id/imageProduct"
         app:layout_constraintLeft_toLeftOf="@id/leftGuideline"
         app:layout_constraintRight_toLeftOf="@id/imageProduct"
-        android:theme="@style/ProductManageCheckBoxStyle"
-        android:visibility="gone"
-        tools:visibility="visible"
-        />
+        app:layout_constraintTop_toTopOf="@id/imageProduct"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imageProduct"

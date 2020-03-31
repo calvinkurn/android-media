@@ -1,10 +1,12 @@
 package com.tokopedia.product.manage.feature.list.view.mapper
 
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaResponse
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel.*
+import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
@@ -29,7 +31,8 @@ object ProductMapper {
                 isFeatured = it.featured > 0,
                 url = it.url,
                 cashBack = it.cashback,
-                multiSelectActive = multiSelectActive
+                multiSelectActive = multiSelectActive,
+                isChecked = false
             )
         } ?: emptyList()
     }
@@ -41,7 +44,12 @@ object ProductMapper {
         }
     }
 
-    fun mapToTabFilters(response: ProductListMetaResponse, filterCount: Int = 0): List<FilterTabViewModel> {
+    fun mapToFilterTabResult(
+        response: ProductListMetaResponse,
+        selectedFilterTab: FilterTabViewModel?,
+        filterCount: Int = 0
+    ): GetFilterTabResult {
+        var totalProductCount = 0
         val filterTabs = response.productListMetaWrapper.productListMetaData.tabs
         val productFilters = mutableListOf<FilterTabViewModel>(MoreFilter(filterCount))
 
@@ -56,18 +64,27 @@ object ProductMapper {
         if(activeFilterCount > 0) {
             val activeFilter = Active(activeFilterCount)
             productFilters.add(activeFilter)
+            totalProductCount += activeFilterCount
         }
 
         if(inActiveFilterCount > 0) {
             val inActiveFilter = InActive(inActiveFilterCount)
             productFilters.add(inActiveFilter)
+            totalProductCount += inActiveFilterCount
         }
 
         if(violationFilterCount > 0) {
             val violationFilter = Violation(violationFilterCount)
             productFilters.add(violationFilter)
+            totalProductCount += violationFilterCount
         }
 
-        return productFilters
+        selectedFilterTab?.let { selectedTab ->
+            totalProductCount = productFilters.firstOrNull {
+                it.titleId == selectedTab.titleId
+            }?.count.orZero()
+        }
+
+        return GetFilterTabResult(productFilters, totalProductCount)
     }
 }

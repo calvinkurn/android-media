@@ -1,8 +1,6 @@
 package com.tokopedia.centralizedpromo.view.viewholder
 
-import android.graphics.Rect
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
@@ -11,6 +9,7 @@ import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.R.layout.centralized_promo_item_promo_creation
 import kotlinx.android.synthetic.main.centralized_promo_item_promo_creation.view.*
 
@@ -29,9 +28,19 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
             if (element.extra.isNotBlank()) {
                 tvRecommendedPromoExtra.text = element.extra
                 tvRecommendedPromoExtra.show()
+                tvRecommendedPromoDescription.setPadding(
+                        context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
+                        context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
+                        context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
+                        context.resources.getDimension(R.dimen.layout_lvl4).toInt())
             } else {
                 tvRecommendedPromoExtra.text = ""
                 icRecommendedPromoExtra.gone()
+                tvRecommendedPromoDescription.setPadding(
+                        context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
+                        context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
+                        context.resources.getDimension(R.dimen.layout_lvl0).toInt(),
+                        context.resources.getDimension(R.dimen.layout_lvl2).toInt())
             }
 
             addOnImpressionListener(element.impressHolder) {
@@ -46,17 +55,6 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
         with(itemView) {
             if (RouteManager.route(context, url)) {
                 CentralizedPromoTracking.sendClickPromoCreation(title)
-            }
-        }
-    }
-
-    class ItemDecoration(private val margin: Int) : RecyclerView.ItemDecoration() {
-        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-            with(outRect) {
-                if (parent.getChildAdapterPosition(view) > 1) {
-                    top = margin
-                }
-                bottom = margin
             }
         }
     }

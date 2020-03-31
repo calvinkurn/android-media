@@ -8,9 +8,9 @@ class FilterAdapter(
         adapterTypeFactory: FilterAdapterTypeFactory
 ) : BaseAdapter<FilterAdapterTypeFactory>(adapterTypeFactory) {
 
-    fun updateData(filterViewModels: List<FilterViewModel>) {
+    fun updateData(filterUiModels: List<FilterUiModel>) {
         visitables.clear()
-        visitables.addAll(filterViewModels)
+        visitables.addAll(filterUiModels)
         notifyDataSetChanged()
     }
 }

@@ -1,15 +1,14 @@
 package com.tokopedia.product.manage.feature.list.view.adapter
 
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
-import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactory
+import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactoryImpl
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 class ProductManageListAdapter(
-    baseListAdapterTypeFactory: ProductManageAdapterFactory,
-    onCheckableAdapterListener: OnCheckableAdapterListener<ProductViewModel>
-) : BaseListCheckableAdapter<ProductViewModel, ProductManageAdapterFactory>(baseListAdapterTypeFactory, onCheckableAdapterListener) {
+    baseListAdapterTypeFactory: ProductManageAdapterFactoryImpl
+) : BaseListAdapter<ProductViewModel, ProductManageAdapterFactoryImpl>(baseListAdapterTypeFactory) {
 
     fun updatePrice(productId: String, price: String) {
         data.forEachIndexed { index, it ->
@@ -60,11 +59,10 @@ class ProductManageListAdapter(
         }
     }
 
-    fun updateInactiveProducts(productId: String) {
+    fun setProductStatus(productId: String, productStatus: ProductStatus) {
         data.forEachIndexed { index, product ->
             if (product.id.equals(productId, ignoreCase = true)) {
-                data[index] = product.copy(status = ProductStatus.INACTIVE)
-                notifyItemChanged(index)
+                data[index] = product.copy(status = productStatus)
                 return
             }
         }

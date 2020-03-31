@@ -2,14 +2,18 @@ package com.tokopedia.product.manage.feature.quickedit.stock.presentation.fragme
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.InputFilter
+import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
@@ -30,8 +34,10 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
 
         const val MAXIMUM_STOCK = 999999
         const val MINIMUM_STOCK = 0
+        const val MAXIMUM_LENGTH = 7
         private const val TOGGLE_ACTIVE = "active"
         private const val TOGGLE_NOT_ACTIVE = "not active"
+        private const val SUBMIT_FLAG = true
 
         fun createInstance(context: Context, product: ProductViewModel, onFinishedListener: OnFinishedListener) : ProductManageQuickEditStockFragment {
             return ProductManageQuickEditStockFragment(onFinishedListener, product).apply{
@@ -76,26 +82,51 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
         quickEditStockQuantityEditor.apply {
             maxValue = MAXIMUM_STOCK
             minValue = MINIMUM_STOCK
+            editText.filters = arrayOf(InputFilter.LengthFilter(MAXIMUM_LENGTH))
             editText.setOnEditorActionListener { _, actionId, _ ->
                 if(actionId == EditorInfo.IME_ACTION_DONE){
+                    if(quickEditStockQuantityEditor.editText.text.isEmpty()) {
+                        quickEditStockQuantityEditor.setValue(MINIMUM_STOCK)
+                    }
                     quickEditStockQuantityEditor.clearFocus()
                     val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(quickEditStockQuantityEditor.editText.windowToken, 0)
                 }
                 true
             }
-            setValueChangedListener { newValue, _, _ ->
-                if(newValue > MINIMUM_STOCK) {
-                    setNormalBehavior()
+            editText.setOnFocusChangeListener { v, hasFocus ->
+                if(hasFocus) {
+                    activity?.let { KeyboardHandler.showSoftKeyboard(it) }
                 } else {
-                    onZeroStock()
+                    context?.let { KeyboardHandler.DropKeyboard(it, view) }
                 }
-                viewModel.updateStock(newValue)
             }
+            editText.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    val newValue = s.toString()
+                    if(newValue.isNotEmpty()) {
+                        val stock = newValue.replace(".","").toIntOrZero()
+                        when {
+                            stock >= MAXIMUM_STOCK -> setMaxStockBehavior()
+                            stock <= MINIMUM_STOCK -> setZeroStockBehavior()
+                            else -> setNormalBehavior()
+                        }
+                        viewModel.updateStock(stock)
+                    }
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    // No Op
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    // No Op
+                }
+            })
         }
 
         quickEditStockSaveButton.setOnClickListener {
-            viewModel.updateStock(quickEditStockQuantityEditor.getValue())
+            viewModel.updateStock(quickEditStockQuantityEditor.getValue(), SUBMIT_FLAG)
             onFinishedListener.onFinishEditStock(product)
             removeObservers()
             super.dismiss()
@@ -139,20 +170,36 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
     private fun observeStatus() {
         viewModel.status.observe(this, Observer {
             product = product.copy(status = it)
+            quickEditStockActivateSwitch.isChecked = product.isActive()
         })
     }
     
-    private fun onZeroStock() {
-        if(zeroStockInfo != null && quickEditStockActivateSwitch != null) {
+    private fun setZeroStockBehavior() {
+        if(zeroStockInfo != null
+                && quickEditStockActivateSwitch != null
+                && quickEditStockQuantityEditor != null) {
             zeroStockInfo.visibility = View.VISIBLE
             quickEditStockActivateSwitch.isEnabled = false
+            quickEditStockQuantityEditor.subtractButton.isEnabled = false
         }
     }
 
     private fun setNormalBehavior() {
-        if(zeroStockInfo != null && quickEditStockActivateSwitch != null) {
+        if(zeroStockInfo != null
+                && quickEditStockActivateSwitch != null
+                && quickEditStockQuantityEditor != null) {
             zeroStockInfo.visibility = View.GONE
+            quickEditStockActivateSwitch.isSelected = true
             quickEditStockActivateSwitch.isEnabled = true
+            quickEditStockQuantityEditor.addButton.isEnabled = true
+            quickEditStockQuantityEditor.subtractButton.isEnabled = true
+        }
+    }
+
+    private fun setMaxStockBehavior() {
+        if(quickEditStockQuantityEditor != null) {
+            quickEditStockActivateSwitch.isSelected = true
+            quickEditStockQuantityEditor.addButton.isEnabled = false
         }
     }
 
