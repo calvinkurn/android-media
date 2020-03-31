@@ -176,7 +176,6 @@ ext {
             moengage   : "com.moengage:moe-android-sdk:9.8.02",
             moengageAmp: "com.moengage:push-amp-plus:0.3.00",
             branch     : "io.branch.sdk.android:library:4.1.1",
-            newRelic   : "com.newrelic.agent.android:android-agent:5.23.0"
     ]
 
     deeplinkDispatchDependencies = [
@@ -237,7 +236,7 @@ ext {
             viewPager2            : "androidx.viewpager2:viewpager2:$viewPager2",
             workManager           : "android.arch.work:work-runtime-ktx:$workManagerVersion",
             stfalconImageViewer   : "com.github.stfalcon:stfalcon-imageviewer:$stfalconVersion",
-            robust                : "com.meituan.robust:robust:0.4.91",
+            robust                : "com.meituan.robust:robust:0.4.95",
             liveness              : "ai.advance.liveness:guardian_core_v1.6@aar"
     ]
 

@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -96,7 +95,12 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
     fun saveAddEditEtalase() {
         if (isValid) {
             etalase.name = edit_text_title.text.toString().trim()
-            presenter.saveEtalase(etalase, isEdit)
+            getEtalaseList()
+            if (!presenter.isEtalaseDuplicate(etalase.name)) {
+                presenter.saveEtalase(etalase, isEdit)
+            } else {
+                edit_text_title.error = context?.getString(R.string.shop_etalase_title_already_exist)
+            }
         }
     }
 

@@ -42,9 +42,8 @@ class PatchRepository {
                     response.body()?.let{
                         val writtenToDisk: Boolean = writeResponseBodyToDisk(context, it)
                         if(writtenToDisk){
-                            PatchExecutor(context, PatchManipulatedImp(), robustCallBack).start()
+                            PatchExecutor(context, PatchManipulatedImp(robustCallBack), robustCallBack).start()
                         }
-                        Timber.d(TAG, "file download was a success? " + writtenToDisk);
                     }
                 }
             }
@@ -77,6 +76,7 @@ class PatchRepository {
                     Log.d(TAG, "file download: $fileSizeDownloaded of $fileSize")
                 }
                 outputStream?.flush()
+                Timber.w("P2#ROBUST#patch file download was success written to disk: " + file.absolutePath);
                 true
             } catch (e: IOException) {
                 false
