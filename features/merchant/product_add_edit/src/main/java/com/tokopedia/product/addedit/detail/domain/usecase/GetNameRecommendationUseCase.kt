@@ -6,23 +6,25 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.product.addedit.detail.domain.UniverseSearchResponse
+import com.tokopedia.product.addedit.detail.domain.mapper.AddEditProductDetailMapper
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GetSearchShopProductUseCase @Inject constructor(
+class GetNameRecommendationUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
-): UseCase<UniverseSearchResponse>() {
+): UseCase<List<String>>() {
 
     var requestParams = mapOf<String, Any>()
 
-    override suspend fun executeOnBackground(): UniverseSearchResponse {
+    override suspend fun executeOnBackground(): List<String> {
 
         val gqlRequest = GraphqlRequest(QUERY, UniverseSearchResponse::class.java, requestParams)
         val gqlResponse: GraphqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest))
 
         val errors: List<GraphqlError>? = gqlResponse.getError(UniverseSearchResponse::class.java)
         if (errors.isNullOrEmpty()) {
-            return gqlResponse.getData(UniverseSearchResponse::class.java)
+            val resultMapper = AddEditProductDetailMapper.getProductNameAutoComplete(gqlResponse.getData(UniverseSearchResponse::class.java))
+            return AddEditProductDetailMapper.getFinalProductName(resultMapper)
         } else {
             throw MessageErrorException(errors.joinToString(", ") { it.message })
         }

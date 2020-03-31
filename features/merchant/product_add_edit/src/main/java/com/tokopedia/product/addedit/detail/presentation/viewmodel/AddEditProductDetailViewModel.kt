@@ -6,9 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.util.ResourceProvider
-import com.tokopedia.product.addedit.detail.domain.mapper.AddEditProductDetailMapper
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
-import com.tokopedia.product.addedit.detail.domain.usecase.GetSearchShopProductUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.unifycomponents.list.ListItemUnify
@@ -21,7 +20,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AddEditProductDetailViewModel @Inject constructor(val provider: ResourceProvider, dispatcher: CoroutineDispatcher,
-                                                        private val getSearchShopProductUseCase: GetSearchShopProductUseCase,
+                                                        private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
                                                         private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase)
     : BaseViewModel(dispatcher) {
 
@@ -104,12 +103,10 @@ class AddEditProductDetailViewModel @Inject constructor(val provider: ResourcePr
     fun getSearchNameSuggestion(shopId: Int = 0, query: String) {
         launchCatchError(block = {
                     val result = withContext(Dispatchers.IO) {
-                        getSearchShopProductUseCase.requestParams = GetSearchShopProductUseCase.createRequestParam(shopId, query)
-                        getSearchShopProductUseCase.executeOnBackground()
+                        getNameRecommendationUseCase.requestParams = GetNameRecommendationUseCase.createRequestParam(shopId, query)
+                        getNameRecommendationUseCase.executeOnBackground()
                     }
-                    val getProductName = AddEditProductDetailMapper.getProductNameAutoComplete(result)
-                    _searchProductSuggestionName.value = Success(
-                            AddEditProductDetailMapper.getFinalProductName(getProductName, query))
+                    _searchProductSuggestionName.value = Success(result)
         }, onError = {
             _searchProductSuggestionName.value = Fail(it)
         })
