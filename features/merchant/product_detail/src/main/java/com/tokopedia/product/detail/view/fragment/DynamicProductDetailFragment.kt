@@ -1044,7 +1044,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
         viewModel.getDynamicProductInfoP1?.basic?.let {
             actionButtonView.renderData(!it.isActive(),
-                    hasTopAds(), viewModel.hasShopAuthority(),
+                    viewModel.hasShopAuthority(), hasTopAds(),
                     viewModel.cartTypeData?.getCartTypeAtPosition(indexOfVariantButton ?: -1))
         }
     }
@@ -1362,12 +1362,22 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             dynamicAdapter.notifyShipingInfo(productShippingInfoMap)
         }
 
-
         pdpHashMapUtil?.snapShotMap?.nearestWarehouseDataModel = ProductSnapshotDataModel.NearestWarehouseDataModel(nearestWarehouse.warehouseInfo.id, nearestWarehouse.price, nearestWarehouse.stockWording)
         pdpHashMapUtil?.snapShotMap?.shouldShowCod = shouldShowCodP1 && shouldShowCodP3
-
         renderFullfillment()
+        autoSelectVariant()
         dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap, ProductDetailConstant.PAYLOAD_P3)
+    }
+
+    private fun autoSelectVariant(){
+        viewModel.variantData?.let {
+            val isOnlyHaveOneVariantLeftData = it.autoSelectedOptionIds()
+            if (!isOnlyHaveOneVariantLeftData.isEmpty() && viewModel.cartTypeData != null) {
+                //If empty means child is more than 1 , so render initial variant data without selected any of them
+                pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(it, isOnlyHaveOneVariantLeftData)
+                viewModel.processVariant(it, pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant)
+            }
+        }
     }
 
     private fun renderFullfillment() {
@@ -1469,15 +1479,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             return
         }
 
-        val isOnlyHaveOneVariantLeftData = data.autoSelectedOptionIds()
-
-        if (isOnlyHaveOneVariantLeftData.isEmpty()) {
-            //If empty means child is more than 1 , so render initial variant data without selected any of them
-            pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierToHashMap(data)
-        } else {
-            pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(data, isOnlyHaveOneVariantLeftData)
-        }
-
+        pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierToHashMap(data)
         viewModel.processVariant(data, pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant)
     }
 
