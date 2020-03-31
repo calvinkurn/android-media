@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
@@ -83,7 +84,7 @@ class PartialButtonActionView private constructor(private val view: View,
         this.hasShopAuthority = hasShopAuthority
         this.hasTopAdsActive = hasTopAdsActive
         this.cartTypeData = cartTypeData
-        this.onSuccessGetCartType = cartTypeData != null
+        this.onSuccessGetCartType = cartTypeData != null && cartTypeData.availableButtons.isNotEmpty()
         renderButton()
     }
 
@@ -108,10 +109,9 @@ class PartialButtonActionView private constructor(private val view: View,
 
         bindAbTestChatButton(btn_topchat)
 
-        btn_topchat.showWithCondition("chat" !in unavailableButton)
+        btn_topchat.showWithCondition(ProductDetailConstant.KEY_CHAT !in unavailableButton)
         btn_buy_now.showWithCondition(availableButton.firstOrNull() != null)
         btn_add_to_cart.showWithCondition(availableButton.getOrNull(1) != null)
-        btn_byme.showWithCondition("byme" !in unavailableButton)
 
         btn_buy_now.text = availableButton.getOrNull(0)?.text ?: ""
         btn_add_to_cart.text = availableButton.getOrNull(1)?.text ?: ""
@@ -277,7 +277,7 @@ class PartialButtonActionView private constructor(private val view: View,
 
     fun showByMe(show: Boolean, pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate) {
         with(view) {
-            if (show) {
+            if (show && ProductDetailConstant.KEY_BYME !in cartTypeData?.unavailableButtons ?: listOf()) {
                 btn_byme.setOnClickListener { byMeClick?.invoke(pdpAffiliate, true) }
                 btn_byme.visible()
             } else btn_byme.gone()
