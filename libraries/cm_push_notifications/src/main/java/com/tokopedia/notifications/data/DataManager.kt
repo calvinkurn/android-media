@@ -11,7 +11,7 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import javax.inject.Inject
 
-class AttributionManager @Inject constructor(
+class DataManager @Inject constructor(
         private val attributionUseCase: AttributionUseCase,
         private val atcProductUseCase: AddToCartUseCase
 ) {

@@ -10,7 +10,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.*
-import com.tokopedia.notifications.data.AttributionManager
+import com.tokopedia.notifications.data.DataManager
 import com.tokopedia.notifications.di.DaggerCMNotificationComponent
 import com.tokopedia.notifications.di.module.NotificationModule
 import com.tokopedia.notifications.factory.CarouselNotification
@@ -28,7 +28,7 @@ import kotlin.coroutines.CoroutineContext
  */
 class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
 
-    @Inject lateinit var attributionManager: AttributionManager
+    @Inject lateinit var dataManager: DataManager
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
@@ -68,7 +68,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                     CMConstant.ReceiverAction.ACTION_BUTTON -> {
                         if (baseNotificationModel != null) {
                             handleActionButtonClick(context, intent, notificationId, baseNotificationModel)
-                            attributionManager.atcProduct("745024392", baseNotificationModel.shopId?.toInt())
+                            dataManager.atcProduct("745024392", baseNotificationModel.shopId?.toInt())
                         }
                     }
 
@@ -252,7 +252,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
             baseNotificationModel: BaseNotificationModel?
     ) {
         // Notification attribution
-        attributionManager.attribution(baseNotificationModel)
+        dataManager.attribution(baseNotificationModel)
 
         handleMainClick(context, intent, notificationId)
         if (intent.hasExtra(CMConstant.CouponCodeExtra.COUPON_CODE)) {

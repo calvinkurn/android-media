@@ -8,7 +8,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCase as RxUseCase
 import com.tokopedia.notifications.R
-import com.tokopedia.notifications.data.AttributionManager
+import com.tokopedia.notifications.data.DataManager
 import com.tokopedia.notifications.data.model.AttributionNotifier
 import com.tokopedia.notifications.di.scope.CMNotificationContext
 import com.tokopedia.notifications.di.scope.CMNotificationScope
@@ -65,11 +65,11 @@ import javax.inject.Named
 
     @Provides
     @CMNotificationScope
-    fun provideAttributionManager(
+    fun provideDataManager(
             attributionUseCase: AttributionUseCase,
             atcProductUseCase: AddToCartUseCase
-    ): AttributionManager {
-        return AttributionManager(
+    ): DataManager {
+        return DataManager(
                 attributionUseCase,
                 atcProductUseCase
         )
