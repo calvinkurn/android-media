@@ -153,6 +153,10 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         tvFlightClass.clearFocus()
     }
 
+    fun autoSearch() {
+        onSaveSearch()
+    }
+
     private fun setViewClickListener() {
         switchFlightRoundTrip.setOnCheckedChangeListener { compoundButton, isChecked -> toggleOneWay(isChecked) }
         imgFlightReverseAirport.setOnClickListener { onReverseAirportClicked() }

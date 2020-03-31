@@ -132,7 +132,7 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
 
         flightHomepageViewModel.autoSearch.observe(viewLifecycleOwner, Observer {
             if (it) {
-                // auto search
+                flightHomepageSearchForm.autoSearch()
             }
         })
     }
