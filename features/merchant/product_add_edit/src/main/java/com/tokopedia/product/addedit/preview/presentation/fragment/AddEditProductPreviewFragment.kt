@@ -107,6 +107,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
                         data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
                 AddEditProductUploadService.startService(context!!, detailInputModel,
                         descriptionInputModel, shipmentInputModel, variantInputModel)
+                context?.let { AddEditProductUploadService.startService(it, detailInputModel, descriptionInputModel, shipmentInputModel) }
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.detail.di
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -12,5 +13,11 @@ class AddEditProductDetailModule {
 
     @AddEditProductDetailScope
     @Provides
+    fun provideUserSessionInterface(@ApplicationContext context: Context?): UserSessionInterface {
+        return UserSession(context)
+    }
+
+    @Provides
     fun provideUserSession(context: Context): UserSessionInterface = UserSession(context)
+
 }

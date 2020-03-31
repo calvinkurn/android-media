@@ -11,5 +11,6 @@ class AddEditProductDetailConstants {
         const val UNIT_WEEK = 1
         const val CATEGORY_RESULT_ID = "CATEGORY_RESULT_ID"
         const val CATEGORY_RESULT_NAME = "CATEGORY_RESULT_NAME"
+        const val UNIVERSE_SEARCH_TYPE = "AUTOCOMPLETE"
     }
 }
