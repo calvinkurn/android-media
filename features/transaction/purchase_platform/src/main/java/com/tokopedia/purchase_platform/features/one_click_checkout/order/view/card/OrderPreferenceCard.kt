@@ -95,7 +95,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     }
 
                     //BBO APPLY
-                    if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null) {
+                    if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
                         view.tv_shipping_name.text = "Pengiriman Bebas Ongkir"
                         val tempServiceDuration = shipping.logisticPromoViewModel.title
                         val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
@@ -104,12 +104,12 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                             "Durasi tergantung kurir"
                         }
                         view.tv_shipping_duration.text = serviceDur
-                        if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoViewModel.shippingRate) {
+                        if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoShipping.productData.price.price.toDouble()) {
                             view.tv_shipping_price.text = "Rp 0"
                             view.tv_shipping_slash_price.gone()
                         } else {
-                            view.tv_shipping_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.discountedRate, false)
-                            view.tv_shipping_slash_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.shippingRate, false)
+                            view.tv_shipping_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoShipping.productData.price.price - shipping.logisticPromoViewModel.benefitAmount, false)
+                            view.tv_shipping_slash_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoShipping.productData.price.price, false)
                             view.tv_shipping_slash_price.paintFlags = view.tv_shipping_slash_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                             view.tv_shipping_slash_price.visible()
                         }

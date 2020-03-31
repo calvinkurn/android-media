@@ -71,8 +71,8 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                     }
                     if (zeroCount == quantity.editable.length) {
                         product.quantity!!.orderQuantity = 0
-                        listener.onProductChange(product)
                         validateQuantity()
+                        listener.onProductChange(product)
                         return@QuantityTextwatcherListener
                     } else if (quantity.editable[0] == '0') {
                         etQty.setText(quantity.editable.toString()
@@ -81,8 +81,8 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                     }
                 } else if (TextUtils.isEmpty(etQty.text)) {
                     product.quantity!!.orderQuantity = 0
-                    listener.onProductChange(product)
                     validateQuantity()
+                    listener.onProductChange(product)
                     return@QuantityTextwatcherListener
                 }
 
