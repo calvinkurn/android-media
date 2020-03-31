@@ -75,6 +75,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     var orderProduct: OrderProduct = OrderProduct()
     var orderShop: OrderShop = OrderShop()
     var kero: Kero = Kero()
+    var profileIndex: String? = null
     var _orderPreference: OrderPreference? = null
 
     var orderPromo: MutableLiveData<OrderPromo> = MutableLiveData(OrderPromo())
@@ -96,9 +97,10 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             orderProduct = orderData.cart.product
             orderShop = orderData.cart.shop
             kero = orderData.cart.kero
+            profileIndex = orderData.profileIndex
             val preference = orderData.preference
             _orderPreference = if (isFullRefresh || _orderPreference == null) {
-                OrderPreference(preference)
+                OrderPreference(profileIndex, preference)
             } else {
                 _orderPreference?.copy(preference = preference)
             }

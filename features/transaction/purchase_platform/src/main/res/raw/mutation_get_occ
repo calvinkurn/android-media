@@ -262,6 +262,7 @@ query get_occ_cart_page {
           is_fulfillment
         }
       }
+      profile_index_wording
       profile {
         has_preference
         is_changed_profile

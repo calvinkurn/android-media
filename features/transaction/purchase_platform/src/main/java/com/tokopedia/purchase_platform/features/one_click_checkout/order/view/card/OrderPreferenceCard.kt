@@ -47,7 +47,8 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     }
 
     private fun showHeader() {
-        view.tv_card_header.text = "Pilihan"
+        val profileIndex = preference.profileIndex
+        view.tv_card_header.text = profileIndex
 
         view.iv_edit_preference.setOnClickListener {
             listener.onPreferenceEditClicked(preference)
