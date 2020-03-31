@@ -19,6 +19,8 @@ import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.banner.Indicator
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
+import com.tokopedia.common.travel.ticker.TravelTickerUtils
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity
 import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment
@@ -36,6 +38,7 @@ import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_flight_homepage.*
@@ -69,6 +72,7 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             flightHomepageViewModel = viewModelProvider.get(FlightHomepageViewModel::class.java)
             flightHomepageViewModel.fetchBannerData(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_travel_collective_banner), true)
+            flightHomepageViewModel.fetchTickerData()
         }
     }
 
@@ -89,6 +93,21 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
 
         flightHomepageViewModel.dashboardData.observe(viewLifecycleOwner, Observer {
             renderSearchForm(it)
+        })
+
+        flightHomepageViewModel.tickerData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data.message.isNotEmpty()) {
+                        renderTickerView(it.data)
+                    } else {
+                        hideTickerView()
+                    }
+                }
+                is Fail -> {
+                    hideTickerView()
+                }
+            }
         })
     }
 
@@ -242,6 +261,26 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     private fun hideBannerView() {
         flightHomepageBannerLayout.visibility = View.GONE
         flightHomepageBanner.visibility = View.GONE
+    }
+
+    private fun renderTickerView(travelTickerModel: TravelTickerModel) {
+        TravelTickerUtils.buildUnifyTravelTicker(travelTickerModel,
+                flightHomepageTicker, object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                RouteManager.route(requireContext(), linkUrl.toString())
+            }
+
+            override fun onDismiss() {}
+        })
+        showTickerView()
+    }
+
+    private fun showTickerView() {
+        flightHomepageTicker.visibility = View.VISIBLE
+    }
+
+    private fun hideTickerView() {
+        flightHomepageTicker.visibility = View.GONE
     }
 
     private fun onBannerClicked(position: Int) {

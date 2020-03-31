@@ -6,7 +6,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.constant.TravelType
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
-import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase
+import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
+import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
+import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
@@ -27,7 +30,7 @@ import javax.inject.Inject
  */
 class FlightHomepageViewModel @Inject constructor(
         private val flightAnalytics: FlightAnalytics,
-        private val travelTickerUseCase: TravelTickerUseCase,
+        private val travelTickerUseCase: TravelTickerCoroutineUseCase,
         private val getTravelCollectiveBannerUseCase: GetTravelCollectiveBannerUseCase,
         private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
@@ -40,6 +43,10 @@ class FlightHomepageViewModel @Inject constructor(
     val dashboardData: LiveData<FlightDashboardModel>
         get() = mutableDashboardData
 
+    private val mutableTickerData = MutableLiveData<Result<TravelTickerModel>>()
+    val tickerData: LiveData<Result<TravelTickerModel>>
+        get() = mutableTickerData
+
     init {
         mutableDashboardData.value = FlightDashboardModel()
     }
@@ -48,6 +55,13 @@ class FlightHomepageViewModel @Inject constructor(
         launch(dispatcherProvider.ui()) {
             val bannerList = getTravelCollectiveBannerUseCase.execute(query, TravelType.FLIGHT, isFromCloud)
             mutableBannerList.postValue(bannerList)
+        }
+    }
+
+    fun fetchTickerData() {
+        launch(dispatcherProvider.ui()) {
+            val tickerData = travelTickerUseCase.execute(TravelTickerInstanceId.FLIGHT, TravelTickerFlightPage.HOME)
+            mutableTickerData.postValue(tickerData)
         }
     }
 

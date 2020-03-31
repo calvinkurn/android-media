@@ -6,14 +6,16 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.common.travel.R
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.design.component.ticker.TickerView
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import java.util.*
 
 /**
  * @author by furqan on 25/02/19
  */
 object TravelTickerUtils {
-    private val ANNOUNCEMENT_TYPE = 1
-    private val DANGER_TYPE = 2
+    private const val ANNOUNCEMENT_TYPE = 1
+    private const val DANGER_TYPE = 2
 
     fun buildTravelTicker(context: Context?, travelTickerModel: TravelTickerModel, tickerView: TickerView) {
         val messages = ArrayList<String>()
@@ -34,5 +36,20 @@ object TravelTickerUtils {
 
         tickerView.buildView()
         tickerView.visibility = View.VISIBLE
+    }
+
+    fun buildUnifyTravelTicker(travelTickerModel: TravelTickerModel, tickerView: Ticker, tickerCallback: TickerCallback) {
+        tickerView.setHtmlDescription(travelTickerModel.message)
+        when(travelTickerModel.type) {
+            ANNOUNCEMENT_TYPE -> {
+                tickerView.tickerType = Ticker.TYPE_ANNOUNCEMENT
+            }
+            DANGER_TYPE -> {
+                tickerView.tickerType = Ticker.TYPE_ERROR
+            }
+        }
+        if (travelTickerModel.url.isNotEmpty()) {
+            tickerView.setDescriptionClickEvent(tickerCallback)
+        }
     }
 }
