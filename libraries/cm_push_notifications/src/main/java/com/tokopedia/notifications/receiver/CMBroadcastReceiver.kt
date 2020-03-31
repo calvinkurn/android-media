@@ -56,16 +56,13 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                     }
 
                     CMConstant.ReceiverAction.ACTION_BANNER_CLICK -> {
-                        handleNotificationClick(context, intent, notificationId)
+                        handleNotificationClick(context, intent, notificationId, baseNotificationModel)
                         sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
                     }
 
                     CMConstant.ReceiverAction.ACTION_NOTIFICATION_CLICK -> {
-                        handleNotificationClick(context, intent, notificationId)
+                        handleNotificationClick(context, intent, notificationId, baseNotificationModel)
                         sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
-
-                        //post notification attribution
-                        attributionManager.post(baseNotificationModel)
                     }
 
                     CMConstant.ReceiverAction.ACTION_BUTTON -> {
@@ -247,7 +244,18 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                 , Toast.LENGTH_LONG).show()
     }
 
-    private fun handleNotificationClick(context: Context, intent: Intent, notificationId: Int) {
+    private fun handleNotificationClick(
+            context: Context,
+            intent: Intent,
+            notificationId: Int,
+            baseNotificationModel: BaseNotificationModel?
+    ) {
+        /*
+        * Notification attribution;
+        * Measure push notification order attribution which clicked by user
+        * */
+        attributionManager.post(baseNotificationModel)
+
         handleMainClick(context, intent, notificationId)
         if (intent.hasExtra(CMConstant.CouponCodeExtra.COUPON_CODE)) {
             val coupon = intent.getStringExtra(CMConstant.CouponCodeExtra.COUPON_CODE)
