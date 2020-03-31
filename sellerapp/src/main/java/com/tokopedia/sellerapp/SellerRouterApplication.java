@@ -119,7 +119,6 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.utils.DeferredResourceInitializer;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
-import com.tokopedia.sellerapp.webview.SellerappWebViewActivity;
 import com.tokopedia.sellerapp.welcome.WelcomeActivity;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.shop.ShopModuleRouter;
@@ -683,7 +682,8 @@ public abstract class SellerRouterApplication extends MainApplication
         if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false)) {
             RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT);
         } else {
-            context.startActivity(SellerappWebViewActivity.createIntent(context, ApplinkConst.WebViewUrl.SALDO_DETAIL));
+            Intent intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, ApplinkConst.WebViewUrl.SALDO_DETAIL);
+            context.startActivity(intent);
         }
     }
 
@@ -735,7 +735,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getSellerWebViewIntent(Context context, String webviewUrl) {
-        return SellerappWebViewActivity.createIntent(context, webviewUrl);
+        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, webviewUrl);
     }
 
     @Override
