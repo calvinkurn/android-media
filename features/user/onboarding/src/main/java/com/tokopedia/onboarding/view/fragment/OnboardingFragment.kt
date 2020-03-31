@@ -35,6 +35,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.WeaverFirebaseConditionCheck
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.jetbrains.annotations.NotNull
 import java.util.*
 import javax.inject.Inject
@@ -90,10 +93,12 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
     }
 
     @NotNull
-    private fun executeViewCreateFlow() : Boolean{
-        initAbTesting()
-        trackPreinstall()
-        initView()
+    private fun executeViewCreateFlow() : Boolean {
+        GlobalScope.launch(Dispatchers.Main) {
+            initAbTesting()
+            trackPreinstall()
+            initView()
+        }
         return true
     }
 
