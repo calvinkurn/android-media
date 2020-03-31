@@ -26,14 +26,12 @@ data class ItemChatListPojo(
         var messageKey: String = ""
 ) : Visitable<ChatListTypeFactory>{
 
-    private val statusPinned = 1
-
     val tag: String get() = attributes?.contact?.tag ?: ""
     val lastReplyTimeStr: String get() = attributes?.lastReplyMessage ?: ""
     val lastReplyMessage: String get() = attributes?.lastReplyMessage ?: ""
     val thumbnail: String get() = attributes?.contact?.thumbnail ?: ""
-    val name: CharSequence get() = attributes?.contact?.contactName ?: ""
-    val isPinned: Boolean get() = attributes?.pinStatus == statusPinned
+    val name: String get() = attributes?.contact?.contactName ?: ""
+    val isPinned: Boolean get() = attributes?.pinStatus == 1
 
     override fun type(typeFactory: ChatListTypeFactory): Int {
         return typeFactory.type(this)
