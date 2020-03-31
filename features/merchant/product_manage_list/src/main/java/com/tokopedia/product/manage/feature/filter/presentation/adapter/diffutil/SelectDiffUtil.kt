@@ -1,9 +1,9 @@
 package com.tokopedia.product.manage.feature.filter.presentation.adapter.diffutil
 
 import androidx.recyclerview.widget.DiffUtil
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistViewModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistUiModel
 
-class SelectDiffUtil(private val oldList: List<ChecklistViewModel>, private val newList: List<ChecklistViewModel>)
+class SelectDiffUtil(private val oldList: List<ChecklistUiModel>, private val newList: List<ChecklistUiModel>)
     : DiffUtil.Callback() {
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {

@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.feature.cashback.presentation.adapter
 
-import com.tokopedia.product.manage.feature.cashback.presentation.adapter.viewmodel.SetCashbackViewModel
+import com.tokopedia.product.manage.feature.cashback.presentation.adapter.viewmodel.SetCashbackUiModel
 
 interface SetCashbackTypeFactory {
-    fun type(setCashbackViewModel: SetCashbackViewModel): Int
+    fun type(setCashbackUiModel: SetCashbackUiModel): Int
 }

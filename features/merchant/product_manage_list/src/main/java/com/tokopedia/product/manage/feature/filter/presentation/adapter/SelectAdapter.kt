@@ -1,35 +1,33 @@
 package com.tokopedia.product.manage.feature.filter.presentation.adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.diffutil.SelectDiffUtil
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.factory.SelectAdapterTypeFactory
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistViewModel
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectViewModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistUiModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectUiModel
 
 class SelectAdapter(
         adapterTypeFactory: SelectAdapterTypeFactory
 ) : BaseAdapter<SelectAdapterTypeFactory>(adapterTypeFactory) {
 
-    fun updateSelectData(selectViewModels: List<SelectViewModel>) {
+    fun updateSelectData(selectUiModels: List<SelectUiModel>) {
         visitables.clear()
-        visitables.addAll(selectViewModels)
+        visitables.addAll(selectUiModels)
         notifyDataSetChanged()
     }
 
-    fun updateChecklistData(checklistViewModels: List<ChecklistViewModel>) {
-        val diffUtilCallback = SelectDiffUtil(visitables.filterIsInstance(ChecklistViewModel::class.java), checklistViewModels)
+    fun updateChecklistData(checklistUiModels: List<ChecklistUiModel>) {
+        val diffUtilCallback = SelectDiffUtil(visitables.filterIsInstance(ChecklistUiModel::class.java), checklistUiModels)
         val result = DiffUtil.calculateDiff(diffUtilCallback)
         visitables.clear()
-        visitables.addAll(checklistViewModels)
+        visitables.addAll(checklistUiModels)
         result.dispatchUpdatesTo(this)
     }
 
     fun reset() {
         visitables.forEach {
-            (it as? ChecklistViewModel)?.isSelected = false
+            (it as? ChecklistUiModel)?.isSelected = false
         }
         notifyDataSetChanged()
     }

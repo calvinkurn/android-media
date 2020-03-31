@@ -7,14 +7,14 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.domain.GetProductListMetaUseCase
-import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToTabFilters
+import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToFilterTabResult
 import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToViewModels
 import com.tokopedia.product.manage.feature.list.view.model.*
-import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.*
 import com.tokopedia.product.manage.feature.multiedit.data.param.MenuParam
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
@@ -96,7 +96,7 @@ class ProductManageViewModel @Inject constructor(
         get() = _multiEditProductResult
     val selectedFilterAndSort: LiveData<FilterOptionWrapper>
         get() = _selectedFilterAndSort
-    val productFiltersTab: LiveData<Result<List<FilterTabViewModel>>>
+    val productFiltersTab: LiveData<Result<GetFilterTabResult>>
         get() = _productFiltersTab
 
     private val _viewState = MutableLiveData<ViewState>()
@@ -112,7 +112,7 @@ class ProductManageViewModel @Inject constructor(
     private val _toggleMultiSelect = MutableLiveData<Boolean>()
     private val _multiEditProductResult = MutableLiveData<Result<MultiEditResult>>()
     private val _selectedFilterAndSort = MutableLiveData<FilterOptionWrapper>()
-    private val _productFiltersTab = MutableLiveData<Result<List<FilterTabViewModel>>>()
+    private val _productFiltersTab = MutableLiveData<Result<GetFilterTabResult>>()
 
     private var getProductListJob: Job? = null
     private var getFilterTabJob: Job? = null
@@ -223,7 +223,7 @@ class ProductManageViewModel @Inject constructor(
         }).let { getProductListJob = it }
     }
 
-    fun getFiltersTab(shopId: String, withDelay: Boolean = false) {
+    fun getFiltersTab(selectedFilterTab: FilterTabViewModel? = null, withDelay: Boolean = false) {
         getFilterTabJob?.cancel()
 
         launchCatchError(block = {
@@ -233,11 +233,12 @@ class ProductManageViewModel @Inject constructor(
 
             val response = withContext(dispatchers.io) {
                 if(withDelay) { delay(REQUEST_DELAY) }
-                getProductListMetaUseCase.setParams(shopId)
+                getProductListMetaUseCase.setParams(userSessionInterface.shopId)
                 getProductListMetaUseCase.executeOnBackground()
             }
 
-            _productFiltersTab.value = Success(mapToTabFilters(response, filterCount))
+            val result = mapToFilterTabResult(response, selectedFilterTab, filterCount)
+            _productFiltersTab.value = Success(result)
         }, onError = {
             if(it is CancellationException) {
                 return@launchCatchError
@@ -268,13 +269,19 @@ class ProductManageViewModel @Inject constructor(
                 editPriceUseCase.setParams(userSessionInterface.shopId, productId, price.toFloatOrZero())
                 editPriceUseCase.executeOnBackground()
             }
-            if (result.productUpdateV3Data.isSuccess) {
-                _editPriceResult.postValue(Success(EditPriceResult(productName, productId, price)))
-            } else {
-                _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, NetworkErrorException())))
+            when {
+                result.productUpdateV3Data.isSuccess -> {
+                    _editPriceResult.postValue(Success(EditPriceResult(productName, productId, price)))
+                }
+                result.productUpdateV3Data.header.errorMessage.isNotEmpty() -> {
+                    _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, Throwable(message = result.productUpdateV3Data.header.errorMessage.last()))))
+                }
+                else -> {
+                    _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, NetworkErrorException(R.string.product_stock_reminder_toaster_failed_desc.toString()))))
+                }
             }
         }) {
-            _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, NetworkErrorException())))
+            _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, NetworkErrorException(R.string.product_stock_reminder_toaster_failed_desc.toString()))))
         }
         hideProgressDialog()
     }
@@ -286,13 +293,19 @@ class ProductManageViewModel @Inject constructor(
                 editStockUseCase.setParams(userSessionInterface.shopId, productId, stock, status)
                 editStockUseCase.executeOnBackground()
             }
-            if (result.productUpdateV3Data.isSuccess) {
-                _editStockResult.postValue(Success(EditStockResult(productName, productId, stock, status)))
-            } else {
-                _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, NetworkErrorException())))
+            when {
+                result.productUpdateV3Data.isSuccess -> {
+                    _editStockResult.postValue(Success(EditStockResult(productName, productId, stock, status)))
+                }
+                result.productUpdateV3Data.header.errorMessage.isNotEmpty() -> {
+                    _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, Throwable(message = result.productUpdateV3Data.header.errorMessage.last()))))
+                }
+                else -> {
+                    _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, NetworkErrorException(R.string.product_stock_reminder_toaster_failed_desc.toString()))))
+                }
             }
         }) {
-            _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, NetworkErrorException())))
+            _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, NetworkErrorException(R.string.product_stock_reminder_toaster_failed_desc.toString()))))
         }
         hideProgressDialog()
     }
@@ -341,13 +354,19 @@ class ProductManageViewModel @Inject constructor(
                 deleteProductUseCase.setParams(userSessionInterface.shopId, productId)
                 deleteProductUseCase.executeOnBackground()
             }
-            if(result.productUpdateV3Data.isSuccess) {
-                _deleteProductResult.postValue(Success(DeleteProductResult(productName, productId)))
-            } else {
-                _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, NetworkErrorException())))
+            when {
+                result.productUpdateV3Data.isSuccess -> {
+                    _deleteProductResult.postValue(Success(DeleteProductResult(productName, productId)))
+                }
+                result.productUpdateV3Data.header.errorMessage.isNotEmpty() -> {
+                    _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, Throwable(message = result.productUpdateV3Data.header.errorMessage.last()))))
+                }
+                else -> {
+                    _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, NetworkErrorException(R.string.product_stock_reminder_toaster_failed_desc.toString()))))
+                }
             }
         }) {
-            _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, NetworkErrorException())))
+            _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, NetworkErrorException(R.string.product_stock_reminder_toaster_failed_desc.toString()))))
         }
         hideProgressDialog()
     }
@@ -371,7 +390,7 @@ class ProductManageViewModel @Inject constructor(
 
     fun setSelectedFilter(selectedFilter: List<FilterOption>?) {
         selectedFilter?.let {
-            _selectedFilterAndSort.value = if(_selectedFilterAndSort.value != null) {
+            _selectedFilterAndSort.value = if (_selectedFilterAndSort.value != null) {
                 _selectedFilterAndSort.value?.let { filters ->
                     val list = arrayListOf<Boolean>()
                     list.addAll(filters.filterShownState)
@@ -382,6 +401,11 @@ class ProductManageViewModel @Inject constructor(
                 FilterOptionWrapper(null, selectedFilter, listOf(true, true, false, false))
             }
         }
+    }
+
+    fun getTotalProductCount(): Int {
+       return (productFiltersTab.value as? Success<GetFilterTabResult>)
+           ?.data?.totalProductCount.orZero()
     }
 
     fun toggleMultiSelect() {

@@ -1,52 +1,114 @@
 package com.tokopedia.product.manage.feature.cashback
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.product.manage.feature.cashback.domain.SetCashbackUseCase
-import com.tokopedia.product.manage.feature.cashback.presentation.viewmodel.ProductManageSetCashbackViewModel
-import io.mockk.MockKAnnotations
+import com.tokopedia.product.manage.feature.cashback.data.GoldSetProductCashback
+import com.tokopedia.product.manage.feature.cashback.data.SetCashbackHeader
+import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResponse
+import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockkObject
-import kotlinx.coroutines.Dispatchers
-import org.junit.Before
-import org.junit.Rule
+import junit.framework.Assert.assertEquals
+import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
-class ProductManageSetCashbackViewModelTest {
+class ProductManageSetCashbackViewModelTest: ProductManageSetCashbackViewModelTestFixture() {
 
-    @RelaxedMockK
-    lateinit var setCashbackUseCase: SetCashbackUseCase
+    @Test
+    fun `when_set_cashback_success__should_return_succes_result`() {
+        runBlocking {
+            val productId = "0"
+            val cashback = 0
+            val productName = "Amazing Product"
+            val setCashbackResponse = SetCashbackResponse(
+                    GoldSetProductCashback(
+                            SetCashbackHeader(
+                                  errorCode = "200"
+                            )
+                    )
+            )
 
-    @get:Rule
-    val rule = InstantTaskExecutorRule()
+            onSetCashback_thenReturn(setCashbackResponse)
 
-    private val dispatcher by lazy {
-        Dispatchers.Unconfined
-    }
+            viewModel.setCashback(productId, productName, cashback)
 
-    private val viewModel by lazy {
-        ProductManageSetCashbackViewModel(setCashbackUseCase, dispatcher)
-    }
+            val expectedSetCashbackResult = Success(SetCashbackResult(productId, productName, cashback))
 
-    @Before
-    fun setup() {
-        MockKAnnotations.init(this)
+            verifySetCashbackUseCaseCalled()
+            verifySetCashbackSuccessResult(expectedSetCashbackResult)
+        }
     }
 
     @Test
-    fun `setCashback should execute setCashback use case`() {
-        mockkObject(setCashbackUseCase)
-        coEvery {
-            setCashbackUseCase.executeOnBackground()
+    fun `when_set_cashback_limit_reached__should_return_succes_result`() {
+        runBlocking {
+            val productId = "0"
+            val cashback = 0
+            val productName = "Amazing Product"
+            val setCashbackResponse = SetCashbackResponse(
+                    GoldSetProductCashback(
+                            SetCashbackHeader(
+                                    errorCode = "422"
+                            )
+                    )
+            )
+
+            onSetCashback_thenReturn(setCashbackResponse)
+
+            viewModel.setCashback(productId, productName, cashback)
+
+            val expectedSetCashbackResult = Success(SetCashbackResult(limitExceeded = true))
+
+            verifySetCashbackUseCaseCalled()
+            verifySetCashbackLimitReached(expectedSetCashbackResult)
         }
-        val productId = "0"
-        val cashback = 0
-        val productName = "Amazing Product"
-        viewModel.setCashback(productId, productName, cashback)
-        coVerify {
-            setCashbackUseCase.executeOnBackground()
+    }
+
+    @Test
+    fun `when_set_cashback_fail__should_return_succes_result`() {
+        runBlocking {
+            val productId = "0"
+            val cashback = 0
+            val productName = "Amazing Product"
+            val setCashbackResponse = SetCashbackResponse(
+                    GoldSetProductCashback(
+                            SetCashbackHeader(
+                                    errorCode = "404"
+                            )
+                    )
+            )
+
+            onSetCashback_thenReturn(setCashbackResponse)
+
+            viewModel.setCashback(productId, productName, cashback)
+
+            val expectedSetCashbackResult = Fail(SetCashbackResult(productId, productName, cashback))
+
+            verifySetCashbackUseCaseCalled()
+            verifySetCashbackFailed(expectedSetCashbackResult)
         }
+    }
+
+    private fun onSetCashback_thenReturn(setCashbackResponse: SetCashbackResponse)  {
+        coEvery { setCashbackUseCase.executeOnBackground() } returns setCashbackResponse
+    }
+
+    private fun verifySetCashbackUseCaseCalled() {
+        coVerify { setCashbackUseCase.executeOnBackground() }
+    }
+
+    private fun verifySetCashbackSuccessResult(expectedResult: Success<SetCashbackResult>) {
+        val actualResult = viewModel.setCashbackResult.value as Success<SetCashbackResult>
+        assertEquals(expectedResult, actualResult)
+    }
+
+    private fun verifySetCashbackLimitReached(expectedResult: Success<SetCashbackResult>) {
+        val actualResult = viewModel.setCashbackResult.value as Success<SetCashbackResult>
+        assertEquals(expectedResult, actualResult)
+    }
+
+    private fun verifySetCashbackFailed(expectedResult: Fail) {
+        val actualResult = viewModel.setCashbackResult.value as Fail
+        assertEquals(expectedResult.throwable, actualResult.throwable)
     }
 }

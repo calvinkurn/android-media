@@ -34,7 +34,8 @@ fun createProductViewModel(
     stock: Int? = 1,
     featured: Boolean = false,
     isVariant: Boolean? = false,
-    multiSelectActive: Boolean = false
+    multiSelectActive: Boolean = false,
+    isChecked: Boolean = false
 ): ProductViewModel {
     return ProductViewModel(
         id,
@@ -48,6 +49,7 @@ fun createProductViewModel(
         stock,
         featured,
         isVariant,
-        multiSelectActive
+        multiSelectActive,
+        isChecked
     )
 }
