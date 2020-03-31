@@ -30,7 +30,9 @@ object VariantCommonMapper {
     }
 
     fun processVariant(variantData: ProductVariantCommon?, mapOfSelectedVariant: MutableMap<String, Int>? = mutableMapOf(), level: Int = -1, isPartialySelected: Boolean = false): List<VariantCategory>? {
+        val variantChilderValidation = validateVariantChildren(variantData?.children ?: listOf(), variantData?.variant?.size ?: 0)
         if (variantData == null) return null
+        if (!variantChilderValidation) return null
 
         val listOfVariant: MutableList<VariantCategory> = mutableListOf()
         var updatedSelectedOptionsId: List<Int>
@@ -227,5 +229,20 @@ object VariantCommonMapper {
             it.optionIds == selectedOptionIds
         }
     }
+
+    /**
+     * Example validation:
+     * each child should have the same size option with the variant size.
+     * Example: option[red,XL] has size 2, should same with the variant size (color and size)
+     */
+    private fun validateVariantChildren(childList: List<VariantChildCommon>, variantSize: Int): Boolean {
+        for (childModel: VariantChildCommon in childList) {
+            if (childModel.optionIds.size != variantSize) {
+                return false
+            }
+        }
+        return true
+    }
+
 
 }

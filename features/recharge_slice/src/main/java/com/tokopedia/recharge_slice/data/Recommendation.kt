@@ -4,6 +4,9 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class Recommendation(
+    @SerializedName("productId")
+    @Expose
+    val productId: Int = 0,
     @SerializedName("iconUrl")
     @Expose
     val iconUrl: String = "",
@@ -33,5 +36,8 @@ data class Recommendation(
     val productName: String = "",
     @SerializedName("type")
     @Expose
-    val type: String = ""
+    val type: String = "",
+    @SerializedName("productPrice")
+    @Expose
+    val productPrice: Int = 0
 )
