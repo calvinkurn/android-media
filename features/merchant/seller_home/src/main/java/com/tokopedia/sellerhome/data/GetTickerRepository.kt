@@ -18,10 +18,15 @@ class GetTickerRepository @Inject constructor(
 
     suspend fun getTicker(): List<TickerUiModel> {
         try {
+            val requestParams = mapOf<String, Any>().apply {
+                TickerService.PAGE_SIZE to TickerService.SIZE
+                TickerService.FILTER_DEVICE to TickerService.FILTER_SELLERAPP_ANDROID_DEVICE
+            }
+
             val response = service.getTicker(
                     userSession.userId,
-                    TickerService.SIZE,
-                    TickerService.FILTER_SELLERAPP_ANDROID_DEVICE
+                    TickerService.HEADER_PAGE_VALUE,
+                    requestParams
             )
             if (null != response.data?.tickers) {
                 val data = response.data.tickers.orEmpty()
