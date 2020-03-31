@@ -551,6 +551,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
                     jsonSelectedCatalog?.let {
                         val selectedCatalog: ProductCatalog = Gson().fromJson(jsonSelectedCatalog, ProductCatalog::class.java)
                         val selectedCatalogName = selectedCatalog.catalogName
+                        viewModel.selectedCatalogId = selectedCatalog.catalogId.toString()
                         if (!TextUtils.isEmpty(selectedCatalogName)) {
                             productCategoryPickerButton?.text = selectedCatalogName
                             productCategoryPickerButton?.setTag(R.id.selected_catalog, selectedCatalog)
@@ -793,40 +794,10 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
     }
 
     private fun moveToDescriptionActivity() {
-        val categoryId = productCategoryPickerButton?.getTag(R.id.category_id).toString()
-        val intent = Intent(context, AddEditProductDescriptionActivity::class.java)
-        intent.putExtra(EXTRA_CATEGORY_ID, categoryId)
+        val categoryId = viewModel.selectedCategoryId
+        val intent = AddEditProductDescriptionActivity.createInstance(context)
+        intent.putExtra(EXTRA_CATEGORY_ID, categoryId.toString())
         startActivityForResult(intent, REQUEST_CODE_DESCRIPTION)
-    }
-
-    private fun submitInput(shipmentInputModel: ShipmentInputModel,
-                            descriptionInputModel: DescriptionInputModel,
-                            variantInputModel: ProductVariantInputModel) {
-        val detailInputModel = DetailInputModel(
-                productNameField.getText(),
-                productCategoryPickerButton?.getTag(R.id.category_id).toString(),
-                "", //TODO faisalramd fill the catalog id based on input
-                productPriceField.getTextFloatOrZero(),
-                productStockField.getTextIntOrZero(),
-                productMinOrderField.getTextIntOrZero(),
-                if (isProductConditionNew) "NEW" else "USED",
-                productSkuField.getText(),
-                productPhotoPaths,
-                PreorderInputModel(
-                        preOrderDurationField.getTextIntOrZero(),
-                        selectedDurationPosition,
-                        preOrderSwitch?.isChecked ?: false
-                ),
-                getWholesaleInput()
-        )
-
-        val intent = Intent()
-        intent.putExtra(EXTRA_DETAIL_INPUT, detailInputModel)
-        intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
-        intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
-        intent.putExtra(EXTRA_VARIANT_INPUT, variantInputModel)
-        activity?.setResult(Activity.RESULT_OK, intent)
-        activity?.finish()
     }
 
     private fun subscribeNameSuggestion() {
@@ -915,6 +886,36 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
 
         productCategoryLayout?.show()
         productCategoryRecListView?.hide()
+    }
+
+    private fun submitInput(shipmentInputModel: ShipmentInputModel,
+                            descriptionInputModel: DescriptionInputModel,
+                            variantInputModel: ProductVariantInputModel) {
+        val detailInputModel = DetailInputModel(
+                productNameField.getText(),
+                viewModel.selectedCategoryId.toString(),
+                viewModel.selectedCatalogId,
+                productPriceField.getTextFloatOrZero(),
+                productStockField.getTextIntOrZero(),
+                productMinOrderField.getTextIntOrZero(),
+                if (isProductConditionNew) "NEW" else "USED",
+                productSkuField.getText(),
+                productPhotoPaths,
+                PreorderInputModel(
+                        preOrderDurationField.getTextIntOrZero(),
+                        selectedDurationPosition,
+                        preOrderSwitch?.isChecked ?: false
+                ),
+                getWholesaleInput()
+        )
+
+        val intent = Intent()
+        intent.putExtra(EXTRA_DETAIL_INPUT, detailInputModel)
+        intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
+        intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
+        intent.putExtra(EXTRA_VARIANT_INPUT, variantInputModel)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
 
     // category id is saved on listActionText property

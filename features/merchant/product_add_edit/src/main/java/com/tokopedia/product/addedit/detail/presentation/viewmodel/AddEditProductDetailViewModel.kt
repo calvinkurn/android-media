@@ -88,6 +88,7 @@ class AddEditProductDetailViewModel @Inject constructor(val provider: ResourcePr
     val isInputValid: LiveData<Boolean>
         get() = mIsInputValid
     var selectedCategoryId: Long = -1L
+    var selectedCatalogId = ""
     val productCategoryRecommendationLiveData = MutableLiveData<Result<List<ListItemUnify>>>()
 
     private val minProductPriceLimit = 100

@@ -97,27 +97,11 @@ class AddEditProductUploadService : JobIntentService(), CoroutineScope {
                 variantInputModel.productSizeChart?.filePath ?: "")
     }
 
-    private fun addProduct(uploadIdList: ArrayList<String>, sizeChartId: String) {
-        val shopId = userSession.shopId
-        val param = addProductInputMapper.mapInputToParam(shopId, uploadIdList,
-                sizeChartId, detailInputModel, descriptionInputModel, shipmentInputModel,
-                variantInputModel)
-        launchCatchError(block = {
-            withContext(Dispatchers.IO) {
-                productAddUseCase.params = ProductAddUseCase.createRequestParams(param)
-                notificationManager?.onSuccessPost()
-                return@withContext productAddUseCase.executeOnBackground()
-            }
-        }, onError = {
-            notificationManager?.onFailedPost(it.message!!)
-        })
-    }
-
     private fun uploadProductImages(imageUrlOrPathList: List<String>, sizeChartPath: String) {
         val uploadIdList: ArrayList<String> = ArrayList()
         var urlImageCount = imageUrlOrPathList.size
-        var sizeChartUploadId: String
-        if (sizeChartPath.isNotBlank()) urlImageCount += 1 // if sizeChartPath valid the add to progress
+        var sizeChartUploadId = ""
+        if (sizeChartPath.isNotEmpty()) urlImageCount += 1 // if sizeChartPath valid then add to progress
         notificationManager = getNotificationManager(urlImageCount)
         notificationManager?.onSubmitPost()
         launch(coroutineContext) {
@@ -125,7 +109,9 @@ class AddEditProductUploadService : JobIntentService(), CoroutineScope {
                 val imageId = uploadImageAndGetId(imageUrlOrPathList[i])
                 uploadIdList.add(imageId)
             }
-            sizeChartUploadId = uploadImageAndGetId(sizeChartPath)
+            if (sizeChartPath.isNotEmpty()){ // if sizeChartPath valid then upload the image
+                sizeChartUploadId = uploadImageAndGetId(sizeChartPath)
+            }
             addProduct(uploadIdList, sizeChartUploadId)
         }
     }
@@ -146,6 +132,22 @@ class AddEditProductUploadService : JobIntentService(), CoroutineScope {
                 ""
             }
         }
+    }
+
+    private fun addProduct(uploadIdList: ArrayList<String>, sizeChartId: String) {
+        val shopId = userSession.shopId
+        val param = addProductInputMapper.mapInputToParam(shopId, uploadIdList,
+                sizeChartId, detailInputModel, descriptionInputModel, shipmentInputModel,
+                variantInputModel)
+        launchCatchError(block = {
+            withContext(Dispatchers.IO) {
+                productAddUseCase.params = ProductAddUseCase.createRequestParams(param)
+                notificationManager?.onSuccessPost()
+                return@withContext productAddUseCase.executeOnBackground()
+            }
+        }, onError = {
+            notificationManager?.onFailedPost(it.message!!)
+        })
     }
 
     private fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager {

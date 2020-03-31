@@ -105,9 +105,8 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
                         data.getParcelableExtra<DetailInputModel>(EXTRA_DETAIL_INPUT)
                 val variantInputModel =
                         data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
-                AddEditProductUploadService.startService(context!!, detailInputModel,
-                        descriptionInputModel, shipmentInputModel, variantInputModel)
-                context?.let { AddEditProductUploadService.startService(it, detailInputModel, descriptionInputModel, shipmentInputModel) }
+                context?.let { AddEditProductUploadService.startService(it, detailInputModel,
+                        descriptionInputModel, shipmentInputModel, variantInputModel) }
             }
         }
     }
