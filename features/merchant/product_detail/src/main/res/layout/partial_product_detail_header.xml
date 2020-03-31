@@ -241,7 +241,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:singleLine="true"
-            android:textColor="@color/sale_stock_available_text"
+            android:textColor="@color/light_N700_AE"
             app:typographyType="body_3"
             app:typographyWeight="bold"
             android:visibility="gone"

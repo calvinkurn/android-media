@@ -13,6 +13,7 @@ import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigati
 import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationPlay
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigationDigital
+import com.tokopedia.applink.feed.DeepLinkMapperFeed.getRegisteredFeed
 import com.tokopedia.applink.find.DeepLinkMapperFind.getRegisteredFind
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech.getRegisteredNavigationForFintech
 import com.tokopedia.applink.gamification.DeeplinkMapperGamification
@@ -40,7 +41,7 @@ import com.tokopedia.config.GlobalConfig
  */
 object DeeplinkMapper {
 
-    val TOKOPOINTS="tokopoints"
+    val TOKOPOINTS = "tokopoints"
     /**
      * Get registered deeplink navigation in manifest
      * In conventional term, convert deeplink (http or tokopedia) to applink (tokopedia:// or tokopedia-android-internal://)
@@ -102,12 +103,15 @@ object DeeplinkMapper {
                         getBrandlistInternal(deeplink)
                     deeplink.startsWith(ApplinkConst.Gamification.CRACK, true) -> DeeplinkMapperGamification.getGamificationDeeplink(deeplink)
                     deeplink.startsWith(ApplinkConst.Gamification.TAP_TAP_MANTAP, true) -> DeeplinkMapperGamification.getGamificationTapTapDeeplink(deeplink)
+                    deeplink.startsWith(ApplinkConst.Gamification.DAILY_GIFT_BOX, true) -> DeeplinkMapperGamification.getDailyGiftBoxDeeplink(deeplink)
                     deeplink.startsWith(ApplinkConst.SELLER_ORDER_DETAIL, true) -> getRegisteredNavigationOrder(deeplink)
                     isShopReview(deeplink) -> getRegisteredNavigationShopReview(deeplink)
                     deeplink.startsWith(ApplinkConst.TOPCHAT_IDLESS) -> getRegisteredNavigationTopChat(deeplink)
                     deeplink.startsWith(ApplinkConst.TALK, true) -> getRegisteredNavigationTalk(deeplink)
                     isProductTalkDeeplink(deeplink) -> getRegisteredNavigationProductTalk(deeplink)
                     isShopTalkDeeplink(deeplink) -> getRegisteredNavigationShopTalk(deeplink)
+                    deeplink.startsWithPattern(ApplinkConst.FEED_DETAILS) ->
+                        getRegisteredFeed(deeplink)
                     else -> {
                         if (specialNavigationMapper(deeplink, ApplinkConst.HOST_CATEGORY_P)) {
                             getRegisteredCategoryNavigation(getSegments(deeplink), deeplink)
@@ -163,7 +167,7 @@ object DeeplinkMapper {
         val query = uri.query ?: ""
         val path = uri.lastPathSegment ?: ""
         var deepLinkInternal = ApplinkConstInternalGlobal.INBOX_TALK
-        if (path.isNotEmpty()){
+        if (path.isNotEmpty()) {
             deepLinkInternal = "${ApplinkConstInternalGlobal.DETAIL_TALK_BASE}$path/"
         }
         if (query.isNotEmpty()) {
@@ -193,7 +197,7 @@ object DeeplinkMapper {
         val query = Uri.parse(deeplink).query
         val path = Uri.parse(deeplink).path
         var deepLinkInternal = ApplinkConstInternalGlobal.TOPCHAT
-        if(query?.isNotEmpty() == true || path?.isNotEmpty() == true){
+        if (query?.isNotEmpty() == true || path?.isNotEmpty() == true) {
             deepLinkInternal = "$deepLinkInternal$path?$query"
             return deepLinkInternal
         } else {
@@ -215,6 +219,7 @@ object DeeplinkMapper {
         }
         return ""
     }
+
     /**
      * Mapping tokopedia link to registered deplink in manifest if necessary
      * eg: tokopedia://product/add to tokopedia-android-internal://marketplace/product-add-item
@@ -301,6 +306,7 @@ object DeeplinkMapper {
         val completedURI = UriUtil.buildUri(ApplinkConstInternalMechant.BRANDLIST, categoryId)
         return completedURI
     }
+
     /**
      * Mapping sellerapp link to registered deplink in manifest if necessary
      * eg: sellerapp://product/add to tokopedia-android-internal://marketplace/product-add-item
