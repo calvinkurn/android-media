@@ -852,13 +852,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             Dialog(it, Dialog.Type.LONG_PROMINANCE).apply {
                 setTitle(getString(R.string.campaign_expired_title))
                 setDesc(getString(R.string.campaign_expired_descr))
-                setBtnOk(getString(R.string.exp_dialog_ok))
                 setBtnCancel(getString(R.string.close))
                 setOnCancelClickListener {
                     onSwipeRefresh()
-                    dismiss()
-                }
-                setOnOkClickListener {
                     dismiss()
                 }
             }.show()
@@ -1045,8 +1041,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun observeInitialVariantData() {
         viewModel.initialVariantData.observe(viewLifecycleOwner, Observer {
-            pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = it
-            dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, null)
+            if (it == null) {
+                dynamicAdapter.clearElement(pdpHashMapUtil?.productNewVariantDataModel)
+            } else {
+                pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = it
+                dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, null)
+            }
         })
     }
 
@@ -2062,8 +2062,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.buttonActionType = buttonAction
         context?.let {
             val isVariant = viewModel.getDynamicProductInfoP1?.data?.variant?.isVariant ?: false
-            val isPartialySelected = pdpHashMapUtil?.productNewVariantDataModel?.isPartialySelected()
-                    ?: false
+            val isPartialySelected = pdpHashMapUtil?.productNewVariantDataModel?.isPartialySelected() ?: false
 
             if (!viewModel.isUserSessionActive) {
                 doLoginWhenUserClickButton()
@@ -2131,7 +2130,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 ProductDetailConstant.OCS_BUTTON -> {
                     val addToCartOcsRequestParams = AddToCartOcsRequestParams().apply {
                         productId = data.basic.productID.toLongOrNull() ?: 0
-                        shopId = viewModel.shopInfo?.shopCore?.shopID.toIntOrZero()
+                        shopId = data.basic.shopID.toIntOrZero()
                         quantity = data.basic.minOrder
                         notes = ""
                         warehouseId = selectedWarehouseId
@@ -2144,7 +2143,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 else -> {
                     val addToCartRequestParams = AddToCartRequestParams().apply {
                         productId = data.basic.productID.toLongOrNull() ?: 0
-                        shopId = viewModel.shopInfo?.shopCore?.shopID.toIntOrZero()
+                        shopId = data.basic.shopID.toIntOrZero()
                         quantity = data.basic.minOrder
                         notes = ""
                         attribution = trackerAttributionPdp ?: ""
@@ -2417,7 +2416,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun scrollToPosition(position: Int) {
-        getRecyclerView(view).smoothScrollToPosition(position)
+        try {
+            getRecyclerView(view).post {
+                getRecyclerView(view).smoothScrollToPosition(position)
+            }
+        } catch (e: Throwable) {
+
+        }
     }
 
     private fun showProgressDialog(onCancelClicked: (() -> Unit)? = null) {

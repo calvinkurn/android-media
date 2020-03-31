@@ -606,48 +606,50 @@ open class WishlistViewModel @Inject constructor(
      * This function will remove selected wishlist data based on selected position
      */
     fun removeWishlistedProduct(position: Int) {
-        val selectedVisitable = wishlistData.value[position]
-        selectedVisitable.let {
-            if (it is WishlistItemDataModel) {
-                val productId = it.productItem.id
-                removeWishListUseCase.createObservable(
-                        productId,
-                        userSessionInterface.userId,
-                        object : WishListActionListener {
-                            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                                //no-op
+        if(position != -1 && position < wishlistData.value.size && wishlistData.value.isNotEmpty()) {
+            val selectedVisitable = wishlistData.value[position]
+            selectedVisitable.let {
+                if (it is WishlistItemDataModel) {
+                    val productId = it.productItem.id
+                    removeWishListUseCase.createObservable(
+                            productId,
+                            userSessionInterface.userId,
+                            object : WishListActionListener {
+                                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                                    //no-op
+                                }
+
+                                override fun onSuccessAddWishlist(productId: String?) {
+                                    //no-op
+                                }
+
+                                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                                    removeWishlistActionData.value = Event(
+                                            RemoveWishlistActionData(
+                                                    message = errorMessage ?: "",
+                                                    isSuccess = false,
+                                                    productId = productId?.toInt() ?: 0
+                                            )
+                                    )
+                                }
+
+                                override fun onSuccessRemoveWishlist(productId: String?) {
+                                    val updatedList = removeWishlistItems(selectedVisitable)
+
+                                    removeWishlistActionData.value = Event(
+                                            RemoveWishlistActionData(
+                                                    message = "",
+                                                    isSuccess = true,
+                                                    productId = productId?.toInt() ?: 0
+                                            )
+                                    )
+                                    if (updatedList.isEmpty()) updatedList.add(EmptyWishlistDataModel())
+                                    wishlistData.value = updatedList
+                                }
+
                             }
-
-                            override fun onSuccessAddWishlist(productId: String?) {
-                                //no-op
-                            }
-
-                            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                                removeWishlistActionData.value = Event(
-                                        RemoveWishlistActionData(
-                                                message = errorMessage ?: "",
-                                                isSuccess = false,
-                                                productId = productId?.toInt() ?: 0
-                                        )
-                                )
-                            }
-
-                            override fun onSuccessRemoveWishlist(productId: String?) {
-                                val updatedList = removeWishlistItems(selectedVisitable)
-
-                                removeWishlistActionData.value = Event(
-                                        RemoveWishlistActionData(
-                                                message = "",
-                                                isSuccess = true,
-                                                productId = productId?.toInt() ?: 0
-                                        )
-                                )
-                                if(updatedList.isEmpty()) updatedList.add(EmptyWishlistDataModel())
-                                wishlistData.value = updatedList
-                            }
-
-                        }
-                )
+                    )
+                }
             }
         }
     }

@@ -250,6 +250,9 @@ public class HomeFragment extends BaseDaggerFragment implements
     private static final String KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar";
     private Map<String,RecyclerView.OnScrollListener> impressionScrollListeners = new HashMap<>();
 
+    private long mLastClickTime = System.currentTimeMillis();
+    private static final long CLICK_TIME_INTERVAL = 500;
+
     @NonNull
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
@@ -1308,6 +1311,12 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private void onActionLinkClicked(String actionLink, String trackingAttribution) {
+        long now = System.currentTimeMillis();
+        if (now - mLastClickTime < CLICK_TIME_INTERVAL) {
+            return;
+        }
+        mLastClickTime = now;
+
         if (TextUtils.isEmpty(actionLink)) {
             return;
         }
