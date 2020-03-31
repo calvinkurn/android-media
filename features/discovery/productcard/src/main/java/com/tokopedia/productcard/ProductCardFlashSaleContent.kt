@@ -17,6 +17,7 @@ internal fun ProductCardFlashSaleView.renderProductCardFlashSaleContent(productC
     renderDiscount(productCardModel)
     renderTextPrice(productCardModel)
     renderStockPercentage(productCardModel)
+    renderProductFlashSaleLabel(productCardModel)
     renderStockLabel(productCardModel)
 }
 
@@ -66,6 +67,12 @@ private fun ProductCardFlashSaleView.renderStockPercentage(productCardModel: Pro
 private fun ProductCardFlashSaleView.renderStockLabel(productCardModel: ProductCardFlashSaleModel) {
     tvLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
         it.text = productCardModel.stockBarLabel
+    }
+}
+
+private fun ProductCardFlashSaleView.renderProductFlashSaleLabel(productCardModel: ProductCardFlashSaleModel) {
+    labelProductStatus?.shouldShowWithAction(productCardModel.stockBarPercentage == 100) {
+        it.text = "Stok Habis"
     }
 }
 
