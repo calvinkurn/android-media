@@ -55,6 +55,7 @@ dependencies {
     implementation project(rootProject.ext.features.shopSettings)
     implementation project(rootProject.ext.features.layanan)
 
+
     //Content
 //    implementation project(rootProject.ext.features.profile)
 
