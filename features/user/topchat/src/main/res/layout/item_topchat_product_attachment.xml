@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <include layout="@layout/item_chatcommon_chat_header" />
-    https://www.evernote.com/shard/s495/nl/183878474/c95aa581-1769-4c9b-a5d7-4ca3a7b0d085/
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
