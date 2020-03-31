@@ -12,12 +12,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.Menus
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.pojo.ChatStateItem
-import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesContactPojo
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.widget.LongClickMenu
 import com.tokopedia.unifycomponents.Label
@@ -43,22 +45,18 @@ class ChatItemListViewHolder(
     private val label: Label = itemView.findViewById(R.id.user_label)
     private val pin: ImageView = itemView.findViewById(R.id.ivPin)
 
-    private val statusPinned = 1
-
     private val menu = LongClickMenu()
 
     override fun bind(element: ItemChatListPojo) {
-        val attributes = element.attributes
-        val contact = attributes?.contact ?: return
         bindItemChatClick(element)
         bindItemChatLongClick(element)
-        bindName(contact)
-        bindProfilePicture(contact)
         bindReadState(element)
-        bindMessageState(attributes.lastReplyMessage)
-        bindTimeStamp(attributes.lastReplyTimeStr)
-        bindLabel(contact.tag)
-        bindPin(attributes.pinStatus)
+        bindName(element)
+        bindProfilePicture(element)
+        bindMessageState(element)
+        bindTimeStamp(element)
+        bindLabel(element)
+        bindPin(element)
     }
 
     override fun bind(element: ItemChatListPojo, payloads: MutableList<Any>) {
@@ -66,7 +64,7 @@ class ChatItemListViewHolder(
         when (getFirstPayload(payloads)) {
             PAYLOAD_READ_STATE -> bindReadState(element)
             PAYLOAD_TYPING_STATE -> bindTypingState()
-            PAYLOAD_STOP_TYPING_STATE -> bindMessageState(element.attributes?.lastReplyMessage.toBlankOrString())
+            PAYLOAD_STOP_TYPING_STATE -> bindMessageState(element)
             else -> bind(element)
         }
     }
@@ -89,17 +87,16 @@ class ChatItemListViewHolder(
         }
     }
 
-    private fun bindName(contact: ItemChatAttributesContactPojo) {
-        userName.text = contact.contactName
+    private fun bindName(chat: ItemChatListPojo) {
+        userName.text = chat.name
     }
 
-    private fun bindProfilePicture(contact: ItemChatAttributesContactPojo) {
-        ImageHandler.loadImageCircle2(itemView.context, thumbnail, contact.thumbnail)
+    private fun bindProfilePicture(chat: ItemChatListPojo) {
+        ImageHandler.loadImageCircle2(itemView.context, thumbnail, chat.thumbnail)
     }
 
-    private fun bindPin(pinStatus: Int) {
-        val shouldShowPin = pinStatus == statusPinned
-        pin.showWithCondition(shouldShowPin)
+    private fun bindPin(chat: ItemChatListPojo) {
+        pin.showWithCondition(chat.isPinned)
     }
 
     private fun onChatItemClicked(chat: ItemChatListPojo) {
@@ -225,8 +222,8 @@ class ChatItemListViewHolder(
         message.setTextColor(MethodChecker.getColor(message.context, com.tokopedia.unifyprinciples.R.color.Green_G500))
     }
 
-    private fun bindMessageState(lastReplyMessage: String) {
-        message.text = MethodChecker.fromHtml(lastReplyMessage)
+    private fun bindMessageState(chat: ItemChatListPojo) {
+        message.text = MethodChecker.fromHtml(chat.lastReplyMessage)
         message.setTypeface(null, NORMAL)
         message.setTextColor(MethodChecker.getColor(message.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
     }
@@ -245,25 +242,24 @@ class ChatItemListViewHolder(
         }
     }
 
-    private fun bindTimeStamp(lastReplyTimeStr: String) {
-        time.text = convertToRelativeDate(lastReplyTimeStr)
+    private fun bindTimeStamp(chat: ItemChatListPojo) {
+        time.text = convertToRelativeDate(chat.lastReplyTimeStr)
     }
 
-    private fun bindLabel(tag: String) {
-        when (tag) {
+    private fun bindLabel(chat: ItemChatListPojo) {
+        when (chat.tag) {
             OFFICIAL_TAG -> {
-                label.text = tag
+                label.text = chat.tag
                 label.setLabelType(Label.GENERAL_LIGHT_BLUE)
                 label.show()
             }
             SELLER_TAG -> {
-                label.text = tag
+                label.text = chat.tag
                 label.setLabelType(Label.GENERAL_LIGHT_GREEN)
                 label.show()
             }
             else -> label.hide()
         }
-
     }
 
     private fun convertToRelativeDate(timeStamp: String): String {

@@ -26,6 +26,15 @@ data class ItemChatListPojo(
         var messageKey: String = ""
 ) : Visitable<ChatListTypeFactory>{
 
+    private val statusPinned = 1
+
+    val tag: String get() = attributes?.contact?.tag ?: ""
+    val lastReplyTimeStr: String get() = attributes?.lastReplyMessage ?: ""
+    val lastReplyMessage: String get() = attributes?.lastReplyMessage ?: ""
+    val thumbnail: String get() = attributes?.contact?.thumbnail ?: ""
+    val name: CharSequence get() = attributes?.contact?.contactName ?: ""
+    val isPinned: Boolean get() = attributes?.pinStatus == statusPinned
+
     override fun type(typeFactory: ChatListTypeFactory): Int {
         return typeFactory.type(this)
     }
