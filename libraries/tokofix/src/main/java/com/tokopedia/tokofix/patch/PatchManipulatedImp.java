@@ -6,6 +6,7 @@ import android.util.Log;
 import com.meituan.robust.Patch;
 import com.meituan.robust.PatchManipulate;
 import com.meituan.robust.RobustApkHashUtils;
+import com.meituan.robust.RobustCallBack;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,6 +28,12 @@ public class PatchManipulatedImp extends PatchManipulate {
      * @return
      */
 
+    private final RobustCallBack robustCallBack;
+
+    public PatchManipulatedImp(RobustCallBack robustCallBack) {
+        this.robustCallBack = robustCallBack;
+    }
+
     @Override
     protected List<Patch> fetchPatchList(final Context context) {
         // Report the app's own robustApkHash to the server, and the server distinguishes each apk build to issue a patch to the app based on the robustApkHash
@@ -40,6 +47,7 @@ public class PatchManipulatedImp extends PatchManipulate {
         List patches = new ArrayList<Patch>();
         patch.setLocalPath(context.getDir("patch", Context.MODE_PRIVATE).getAbsolutePath() + File.separator + "patch");
         patches.add(patch);
+        robustCallBack.onPatchFetched(true, true, patch);
         return patches;
     }
 

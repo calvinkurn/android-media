@@ -56,7 +56,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView5"
         app:layout_constraintTop_toBottomOf="@+id/typography31"
-        app:typographyType="body_3" />
+        app:typographyType="body_2" />
 
     <ImageView
         android:id="@+id/imageView6"
@@ -79,7 +79,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView6"
         app:layout_constraintTop_toBottomOf="@+id/typography32"
-        app:typographyType="body_3" />
+        app:typographyType="body_2" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

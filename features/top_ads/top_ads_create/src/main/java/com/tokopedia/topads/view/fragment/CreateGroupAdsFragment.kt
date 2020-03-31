@@ -84,7 +84,7 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         tip_btn.setOnClickListener {
             InfoSheetGroupList.newInstance(it.context).show()
         }
-        group_name_input.addTextChangedListener(object:TextWatcher{
+        group_name_input.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
 
@@ -92,12 +92,20 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                btn_submit.isEnabled = s.toString().trim().isNotEmpty()
+                error_text.visibility = View.GONE
+                typography19.visibility = View.VISIBLE
+                if (s.toString().trim().isEmpty()) {
+                    title.visibility = View.INVISIBLE
+                    btn_submit.isEnabled = false
+                } else {
+                    title.visibility = View.VISIBLE
+                    btn_submit.isEnabled = true
+                }
             }
 
         })
         group_name_input.setOnEditorActionListener { v, actionId, _ ->
-            when(actionId){
+            when (actionId) {
                 EditorInfo.IME_ACTION_SEARCH -> validateGroup(v?.text.toString())
             }
             Utils.dismissKeyboard(context, v)
@@ -112,25 +120,34 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     }
 
     private fun onError(t: Throwable) {
-        error_text.visibility = View.VISIBLE
-        error_text.text = t.message
-        typography19.visibility = View.GONE
-        btn_submit.isEnabled = false
+        errorTextVisibility(true)
+        if (t.localizedMessage == resources.getString(R.string.duplicate_group_name_error_wrong))
+            error_text.text = resources.getString(R.string.duplicate_group_name_error)
         NetworkErrorHelper.createSnackbarRedWithAction(activity, t.localizedMessage) {
             validateGroup(group_name_input.text.toString())
         }
     }
 
     private fun onSuccess(data: TopAdsGroupValidateName.Data) {
-        error_text.visibility = View.GONE
-        typography19.visibility = View.VISIBLE
-        btn_submit.isEnabled = true
+        errorTextVisibility(false)
         gotoNextPage()
 
     }
 
     override fun updateToolBar() {
         (activity as StepperActivity).updateToolbarTitle(getString(R.string.group_name_step))
+    }
+
+    private fun errorTextVisibility(visible: Boolean) {
+        if (visible) {
+            error_text.visibility = View.VISIBLE
+            typography19.visibility = View.GONE
+            btn_submit.isEnabled = false
+        } else {
+            error_text.visibility = View.GONE
+            typography19.visibility = View.VISIBLE
+            btn_submit.isEnabled = true
+        }
     }
 
 }

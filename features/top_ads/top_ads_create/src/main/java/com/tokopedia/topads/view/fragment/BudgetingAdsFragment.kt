@@ -1,8 +1,6 @@
 package com.tokopedia.topads.view.fragment
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.design.text.watcher.NumberTextWatcher
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.data.response.DataSuggestions
@@ -43,10 +42,13 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     private var maxBid = 0
     private var minBid = 0
     private var minSuggestKeyword = 0
+    private var maxSuggestKeyword = 0
     private var suggestBidPerClick = 0
+    private var bidMap = mutableMapOf<String, Int>()
 
     companion object {
-
+        private const val MAX_BID = "max"
+        private const val MIN_BID = "min"
         fun createInstance(): Fragment {
             val fragment = BudgetingAdsFragment()
             val args = Bundle()
@@ -66,8 +68,11 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     private fun actionEnable(flag: Boolean) {
         btn_next.isEnabled = flag
     }
-    private fun onEdit(): Int {
-        return minSuggestKeyword
+
+    private fun onEdit(): MutableMap<String, Int> {
+        bidMap[MIN_BID] = minSuggestKeyword
+        bidMap[MAX_BID] = maxSuggestKeyword
+        return bidMap
     }
 
     private fun onClickCloseButton(pos: Int) {
@@ -87,7 +92,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     override fun gotoNextPage() {
         try {
-            stepperModel?.finalBidPerClick = Integer.parseInt(budget.textWithoutPrefix.toString())
+            stepperModel?.finalBidPerClick = Integer.parseInt(budget.textFieldInput.text.toString().replace(",", ""))
         } catch (e: NumberFormatException) {
             e.printStackTrace()
         }
@@ -131,15 +136,17 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     private fun onDefaultSuccessSuggestion(data: List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) {
         suggestBidPerClick = data[0].suggestionBid
-        recom_txt.text = String.format(getString(R.string.recommendated_bid_message), suggestBidPerClick)
-        if (stepperModel?.finalBidPerClick != -1)
-            budget.setText(stepperModel?.finalBidPerClick.toString())
-        else
-            budget.setText(suggestBidPerClick.toString())
         maxBid = data[0].maxBid
         minBid = data[0].minBid
-        error_text.text = String.format(getString(R.string.min_bid_error), minBid)
+        if (stepperModel?.finalBidPerClick != -1)
+            budget.textFieldInput.setText(stepperModel?.finalBidPerClick.toString())
+        else
+            budget.textFieldInput.setText(suggestBidPerClick.toString())
 
+        if (budget.textFieldInput.text.toString().replace(",", "").toInt() in (minBid + 1) until maxBid) {
+            setMessageErrorField(getString(R.string.recommendated_bid_message), suggestBidPerClick, false)
+            actionEnable(true)
+        }
     }
 
     private fun onEmptySuggestion() {
@@ -156,7 +163,9 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
             bidInfoAdapter.items.add(BidInfoItemViewModel(data[0]))
         }
         minSuggestKeyword = data[0].minBid
+        maxSuggestKeyword = data[0].maxBid
         bidInfoAdapter.notifyDataSetChanged()
+        loading.visibility = View.GONE
         updateString()
     }
 
@@ -169,6 +178,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        loading.visibility = View.VISIBLE
         btn_next.setOnClickListener {
             gotoNextPage()
         }
@@ -178,37 +188,37 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         btn_info.setOnClickListener {
             InfoSheetBudgetList.newInstance(it.context).show()
         }
-        budget.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                try {
-                    val result = Integer.parseInt(budget.textWithoutPrefix.toString())
-                    stepperModel?.finalBidPerClick = result
-                    if (result < minBid) {
-                        error_text.visibility = View.VISIBLE
-                        recom_txt.visibility = View.GONE
+        budget.textFieldInput.addTextChangedListener(object : NumberTextWatcher(budget.textFieldInput, "0") {
+            override fun onNumberChanged(number: Double) {
+                super.onNumberChanged(number)
+                val result = number.toInt()
+                stepperModel?.finalBidPerClick = result
+                when {
+                    result < minBid -> {
+                        setMessageErrorField(getString(R.string.min_bid_error), minBid, true)
                         actionEnable(false)
-                    } else {
-                        actionEnable(true)
-                        error_text.visibility = View.GONE
-                        recom_txt.visibility = View.VISIBLE
                     }
-                } catch (e: NumberFormatException) {
-                    e.printStackTrace()
-
+                    result > maxBid -> {
+                        actionEnable(false)
+                        setMessageErrorField(getString(R.string.max_bid_error), maxBid, true)
+                    }
+                    else -> {
+                        actionEnable(true)
+                        setMessageErrorField(getString(R.string.recommendated_bid_message), suggestBidPerClick, false)
+                    }
                 }
-
             }
-            override fun afterTextChanged(s: Editable?) {
-
-            }
-
         })
-
         bid_list.adapter = bidInfoAdapter
         bid_list.layoutManager = LinearLayoutManager(context)
+    }
+
+
+    private fun setMessageErrorField(error: String, bid: Int, bool: Boolean) {
+        budget.setError(bool)
+        budget.setMessage(String.format(error, bid))
+
     }
 
     override fun updateToolBar() {
