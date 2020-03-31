@@ -12,10 +12,8 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase.Companion.PARAM_VALUE_MARKETPLACE
-import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_CHECKOUT
-import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_DEFAULT
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_OCC
 import com.tokopedia.purchase_platform.common.data.model.param.EditAddressParam
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.Message
@@ -901,8 +899,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         }
     }
 
-    private fun doCheckout(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (Data) -> Unit, promo: List<com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.PromoRequest>? = null) {
-        if (promo != null || checkIneligiblePromo()) {
+    private fun doCheckout(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (Data) -> Unit) {
+        if (checkIneligiblePromo()) {
             val param = CheckoutOccRequest(Profile(pref.preference.profileId), ParamCart(data = listOf(ParamData(
                     pref.preference.address.addressId,
                     listOf(
@@ -924,10 +922,11 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                             pref.shipping.getRealRatesId(),
                                             pref.shipping.getRealUt(),
                                             pref.shipping.getRealChecksum()
-                                    )
+                                    ),
+                                    promos = generateShopPromos()
                             )
                     )
-            )), promos = promo ?: generateCheckoutPromos(pref)))
+            )), promos = generateCheckoutPromos()))
             checkoutOccUseCase.execute(param, { checkoutOccGqlResponse: CheckoutOccGqlResponse ->
                 if (checkoutOccGqlResponse.response.status.equals("OK", true)) {
                     if (checkoutOccGqlResponse.response.data.success == 1 || checkoutOccGqlResponse.response.data.paymentParameter.redirectParam.url.isNotEmpty()) {
@@ -959,6 +958,22 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 globalEvent.value = OccGlobalEvent.Error(throwable)
             })
         }
+    }
+
+    private fun generateShopPromos(): List<com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.PromoRequest> {
+        val finalPromo = validateUsePromoRevampUiModel
+        if (finalPromo != null) {
+            val list: ArrayList<com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.PromoRequest> = ArrayList()
+            for (voucherOrder in finalPromo.promoUiModel.voucherOrderUiModels) {
+                if (voucherOrder?.messageUiModel?.state != "red" && orderShop.cartResponse.cartString == voucherOrder?.uniqueId) {
+                    if (voucherOrder.code.isNotEmpty() && voucherOrder.type.isNotEmpty()) {
+                        list.add(PromoRequest(voucherOrder.type, voucherOrder.code))
+                    }
+                }
+            }
+            return list
+        }
+        return emptyList()
     }
 
     private fun checkIneligiblePromo(): Boolean {
@@ -1023,7 +1038,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
                             override fun onNext(t: ClearPromoUiModel?) {
                                 if (_orderPreference != null) {
-                                    doCheckout(orderProduct, orderShop, _orderPreference!!, onSuccessCheckout, generateCheckoutPromos(_orderPreference!!, promoCodeList))
+                                    doCheckout(orderProduct, orderShop, _orderPreference!!, onSuccessCheckout)
                                 }
                             }
 
@@ -1033,24 +1048,12 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         )
     }
 
-    private fun generateCheckoutPromos(pref: OrderPreference, notEligiblePromoList: ArrayList<String>? = null): List<com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.PromoRequest> {
+    private fun generateCheckoutPromos(): List<com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.PromoRequest> {
         val list = ArrayList<com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.PromoRequest>()
-//        if (pref.shipping?.isApplyLogisticPromo == true && pref.shipping.logisticPromoShipping != null && pref.shipping.logisticPromoViewModel != null) {
-//            list.add(PromoRequest("logistic", pref.shipping.logisticPromoViewModel.promoCode))
-//        }
         val finalPromo = validateUsePromoRevampUiModel
-        if (finalPromo != null) {
+        if (finalPromo != null && finalPromo.promoUiModel.codes.isNotEmpty() && finalPromo.promoUiModel.messageUiModel.state != "red") {
             for (code in finalPromo.promoUiModel.codes) {
-                if (notEligiblePromoList == null || !notEligiblePromoList.contains(code)) {
-                    list.add(PromoRequest("global", code))
-                }
-            }
-            for (voucherOrderUiModel in finalPromo.promoUiModel.voucherOrderUiModels) {
-                if (voucherOrderUiModel != null) {
-                    if (notEligiblePromoList == null || !notEligiblePromoList.contains(voucherOrderUiModel.code)) {
-                        list.add(PromoRequest(voucherOrderUiModel.type, voucherOrderUiModel.code))
-                    }
-                }
+                list.add(PromoRequest("global", code))
             }
         }
         return list
