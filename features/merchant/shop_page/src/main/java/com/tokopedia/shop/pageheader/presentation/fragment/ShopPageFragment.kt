@@ -319,7 +319,7 @@ class ShopPageFragment :
         stickyLoginView.setOnDismissListener(View.OnClickListener {
             stickyLoginView.tracker.clickOnDismiss(StickyLoginConstant.Page.SHOP)
             stickyLoginView.dismiss(StickyLoginConstant.Page.SHOP)
-            updateFloatingChatButtonMargin()
+            updateStickyContent()
         })
         updateStickyContent()
     }
@@ -844,12 +844,13 @@ class ShopPageFragment :
     }
 
     private fun updateFloatingChatButtonMargin() {
+        val stickyLoginViewHeight = stickyLoginView.height.takeIf { stickyLoginView.isShowing() } ?: 0
         val buttonChatLayoutParams = (button_chat.layoutParams as ViewGroup.MarginLayoutParams)
         buttonChatLayoutParams.setMargins(
                 buttonChatLayoutParams.leftMargin,
                 buttonChatLayoutParams.topMargin,
                 buttonChatLayoutParams.rightMargin,
-                initialFloatingChatButtonMarginBottom + stickyLoginView.height
+                initialFloatingChatButtonMarginBottom + stickyLoginViewHeight
         )
         button_chat.layoutParams = buttonChatLayoutParams
     }
