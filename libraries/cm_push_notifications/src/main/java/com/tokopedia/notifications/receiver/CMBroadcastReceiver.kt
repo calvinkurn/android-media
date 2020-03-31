@@ -68,6 +68,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                     CMConstant.ReceiverAction.ACTION_BUTTON -> {
                         if (baseNotificationModel != null) {
                             handleActionButtonClick(context, intent, notificationId, baseNotificationModel)
+                            attributionManager.atcProduct("745024392", baseNotificationModel.shopId?.toInt())
                         }
                     }
 
@@ -250,11 +251,8 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
             notificationId: Int,
             baseNotificationModel: BaseNotificationModel?
     ) {
-        /*
-        * Notification attribution;
-        * Measure push notification order attribution which clicked by user
-        * */
-        attributionManager.post(baseNotificationModel)
+        // Notification attribution
+        attributionManager.attribution(baseNotificationModel)
 
         handleMainClick(context, intent, notificationId)
         if (intent.hasExtra(CMConstant.CouponCodeExtra.COUPON_CODE)) {
