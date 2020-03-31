@@ -6,10 +6,12 @@ import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant.VIEW_
 
 interface SettingShopInfoImpressionTrackable {
     val impressHolder: ImpressHolder
+        get() = ImpressHolder()
     val impressionEventName: String
         get() = VIEW_NAVIGATION_IRIS
     val impressionEventCategory: String
         get() = OTHERS_TAB
     val impressionEventAction: String
     val impressionEventLabel: String
+        get() = ""
 }

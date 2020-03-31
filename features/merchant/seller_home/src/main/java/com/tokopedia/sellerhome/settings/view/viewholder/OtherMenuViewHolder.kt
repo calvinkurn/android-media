@@ -91,7 +91,6 @@ class OtherMenuViewHolder(private val itemView: View,
             setOnClickListener {
                 shopBadgeUiModel.sendSettingShopInfoClickTracking()
             }
-            // TODO : Add impression if PM agrees
         }
     }
 
