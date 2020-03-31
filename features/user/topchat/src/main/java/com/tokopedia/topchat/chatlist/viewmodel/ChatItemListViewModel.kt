@@ -71,8 +71,6 @@ class ChatItemListViewModel @Inject constructor(
     val broadCastButtonUrl: LiveData<String>
         get() = _broadCastButtonUrl
 
-    private val recentMessage: HashMap<String, String> = hashMapOf()
-
     companion object {
         val arrayFilterParam = arrayListOf(
                 PARAM_FILTER_ALL,
@@ -187,13 +185,5 @@ class ChatItemListViewModel @Inject constructor(
 
     fun getReplyTimeStampFrom(lastItem: ReplyParcelableModel): String {
         return (lastItem.replyTime.toLongOrZero() / 1000000L).toString()
-    }
-
-    fun updateLastReply(newChat: IncomingChatWebSocketModel) {
-        recentMessage[newChat.msgId] = newChat.time
-    }
-
-    fun hasBeenUpdated(newChat: IncomingChatWebSocketModel): Boolean {
-        return recentMessage[newChat.msgId] == newChat.time
     }
 }

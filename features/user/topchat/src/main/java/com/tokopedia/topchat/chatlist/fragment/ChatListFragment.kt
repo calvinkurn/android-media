@@ -226,15 +226,11 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 return
             } else if (filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_READ)) {
                 return
-            } else if (chatItemListViewModel.hasBeenUpdated(newChat)) {
-                return
             }
 
-            val existingThread = adapter.list.find {
-                it is ItemChatListPojo && it.msgId == newChat.messageId
+            val index = adapter.list.indexOfFirst { chat ->
+                return@indexOfFirst chat is ItemChatListPojo && chat.msgId == newChat.messageId
             }
-
-            val index = adapter.list.indexOf(existingThread)
 
             updateItemOnIndex(index, newChat)
         }
@@ -246,7 +242,6 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             readStatus: Int = ChatItemListViewHolder.STATE_CHAT_UNREAD
     ) {
         adapter?.let { adapter ->
-            chatItemListViewModel.updateLastReply(newChat)
             when {
                 //not found on list
                 index == -1 -> {
@@ -287,6 +282,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 if (this is ItemChatListPojo) {
                     attributes?.lastReplyMessage = newChat.message
                     attributes?.unreads = attributes?.unreads.toZeroIfNull() + 1
+                    attributes?.unreadReply = attributes?.unreadReply.toZeroIfNull() + 1
                     attributes?.readStatus = readStatus
                     attributes?.lastReplyTimeStr = newChat.time
                 }
