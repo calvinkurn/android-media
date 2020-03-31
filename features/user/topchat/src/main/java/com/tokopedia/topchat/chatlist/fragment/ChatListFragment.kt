@@ -284,7 +284,10 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             if (index >= adapter.list.size) return
             adapter.list[index].apply {
                 if (this is ItemChatListPojo) {
-                    if (attributes?.readStatus == ChatItemListViewHolder.STATE_CHAT_READ) {
+                    if (
+                            attributes?.readStatus == ChatItemListViewHolder.STATE_CHAT_READ &&
+                                    readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD
+                    ) {
                         increaseNotificationCounter()
                     }
                     attributes?.lastReplyMessage = newChat.message
