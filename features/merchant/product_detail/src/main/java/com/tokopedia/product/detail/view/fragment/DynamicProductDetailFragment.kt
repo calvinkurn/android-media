@@ -1237,14 +1237,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         if (result.data.refreshPrerequisitePage) {
             onSwipeRefresh()
         } else {
-            if (result.data.ovoValidationDataModel.status == 1) {
-                activity?.let {
-                    RouteManager.route(it, result.data.ovoValidationDataModel.applink)
-                }
-            } else if (result.data.ovoValidationDataModel.status == 2) {
-                activity?.let {
-                    val bottomSheetOvoDeals = OvoFlashDealsBottomSheet(result.data.ovoValidationDataModel)
-                    bottomSheetOvoDeals.show(it.supportFragmentManager, "Ovo Deals")
+            activity?.let {
+                when (result.data.ovoValidationDataModel.status) {
+                    1 -> RouteManager.route(it, result.data.ovoValidationDataModel.applink)
+                    2 -> {
+                            val bottomSheetOvoDeals = OvoFlashDealsBottomSheet(result.data.ovoValidationDataModel)
+                            bottomSheetOvoDeals.show(it.supportFragmentManager, "Ovo Deals")
+                        }
+                    else -> showToastError(Throwable(getString(R.string.default_request_error_unknown)))
                 }
             }
         }
