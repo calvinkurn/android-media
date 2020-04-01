@@ -1836,7 +1836,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
 
                 if (notEligiblePromoHolderdataList.size() > 0) {
-                    removeIneligiblePromo(requestCode, notEligiblePromoHolderdataList);
+                    shipmentPresenter.cancelNotEligiblePromo(notEligiblePromoHolderdataList, requestCode);
                 } else {
                     doCheckout(requestCode);
                 }
