@@ -2601,4 +2601,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
         }
     }
+
+    override fun showAlertUpcomingEnded() {
+        activity?.let {
+            onSwipeRefresh()
+        }
+    }
 }

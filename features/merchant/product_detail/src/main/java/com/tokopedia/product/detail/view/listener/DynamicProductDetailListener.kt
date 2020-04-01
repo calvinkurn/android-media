@@ -111,4 +111,5 @@ interface DynamicProductDetailListener {
      * ProductNotifyMeViewHolder
      */
     fun onNotifyMeClicked(data: ProductNotifyMeDataModel, componentTrackDataModel: ComponentTrackDataModel)
+    fun showAlertUpcomingEnded()
 }
