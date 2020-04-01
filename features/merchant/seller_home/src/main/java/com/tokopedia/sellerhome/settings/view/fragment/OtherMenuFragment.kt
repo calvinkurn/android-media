@@ -62,6 +62,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     companion object {
         const val URL_KEY = "url"
 
+        private const val APPLINK_FORMAT = "%s?url=%s%s"
+
         private const val START_OFFSET = 56 // Pixels when scrolled past toolbar height
         private const val HEIGHT_OFFSET = 24 // Pixels of status bar height, the view that could be affected by scroll change
         private const val MAXIMUM_ALPHA = 255f
@@ -290,9 +292,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                         R.drawable.ic_complaint,
                         null,
                         eventActionSuffix = SettingTrackingConstant.COMPLAINT) {
-                    val url = ApplinkConst.WEBVIEW + "?url=" + SellerBaseUrl.HOSTNAME + SellerBaseUrl.RESO_INBOX_SELLER
-                    val intent = RouteManager.getIntent(context, url)
-//                    intent.putExtra(URL_KEY, SellerBaseUrl.HOSTNAME + SellerBaseUrl.RESO_INBOX_SELLER)
+                    val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, SellerBaseUrl.HOSTNAME, SellerBaseUrl.RESO_INBOX_SELLER)
+                    val intent = RouteManager.getIntent(context, applink)
                     context?.startActivity(intent)
                 },
                 DividerUiModel(),
@@ -306,9 +307,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                         resources.getString(R.string.setting_menu_seller_education_center),
                         R.drawable.ic_seller_edu,
                         eventActionSuffix = SettingTrackingConstant.SELLER_CENTER) {
-                    val url = ApplinkConst.WEBVIEW + "?url=" + SellerBaseUrl.SELLER_HOSTNAME + SellerBaseUrl.SELLER_EDU
-                    val intent = RouteManager.getIntent(context, url)
-//                    intent.putExtra(URL_KEY, SellerBaseUrl.SELLER_HOSTNAME + SellerBaseUrl.SELLER_EDU)
+                    val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, SellerBaseUrl.SELLER_HOSTNAME, SellerBaseUrl.SELLER_EDU)
+                    val intent = RouteManager.getIntent(context, applink)
                     context?.startActivity(intent)
                 },
                 MenuItemUiModel(
