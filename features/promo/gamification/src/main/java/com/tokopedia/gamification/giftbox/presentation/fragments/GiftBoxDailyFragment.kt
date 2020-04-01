@@ -4,7 +4,6 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
-import android.graphics.Color
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.TypedValue
@@ -356,30 +355,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                             if (actionButtonList != null && actionButtonList.isNotEmpty()) {
                                 btnAction.text = actionButtonList[0].text
                                 btnAction.setOnClickListener {
-                                    val applink = actionButtonList[0].applink
-                                    if (!applink.isNullOrEmpty()) {
-
-                                        //check for auto-apply
-                                        var isAutoApply = false
-                                        var dummyCode = ""
-                                        val list = giftBoxRewardEntity?.gamiCrack?.benefits
-                                        if (!list.isNullOrEmpty()) {
-                                            for (item in list) {
-                                                if (item.isAutoApply) {
-                                                    isAutoApply = true
-                                                    autoApplyMessage = item.autoApplyMsg
-                                                    dummyCode = item.dummyCode
-                                                    break
-                                                }
-                                            }
-                                        }
-
-                                        if (isAutoApply && !autoApplyMessage.isNullOrEmpty() && !dummyCode.isNullOrEmpty()) {
-                                            viewModel.autoApply(dummyCode)
-                                        }
-                                        RouteManager.route(context, applink)
-                                        GtmEvents.clickClaimButton(btnAction.text.toString(), userSession?.userId)
-                                    }
+                                    checkInternetOnButtonActionAndRedirect()
                                 }
                             }
 
@@ -449,6 +425,39 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             }
 
         })
+    }
+
+    fun handleButtonAction() {
+        val actionButtonList = giftBoxRewardEntity?.gamiCrack?.actionButton
+        if (actionButtonList != null && actionButtonList.isNotEmpty()) {
+            val applink = actionButtonList[0].applink
+            if (!applink.isNullOrEmpty()) {
+
+                //check for auto-apply
+                var isAutoApply = false
+                var dummyCode = ""
+                val list = giftBoxRewardEntity?.gamiCrack?.benefits
+                if (!list.isNullOrEmpty()) {
+                    for (item in list) {
+                        if (item.isAutoApply) {
+                            isAutoApply = true
+                            autoApplyMessage = item.autoApplyMsg
+                            dummyCode = item.dummyCode
+                            break
+                        }
+                    }
+                }
+
+                if (isAutoApply && !autoApplyMessage.isNullOrEmpty() && !dummyCode.isNullOrEmpty()) {
+                    viewModel.autoApply(dummyCode)
+                }
+                RouteManager.route(context, applink)
+                GtmEvents.clickClaimButton(btnAction.text.toString(), userSession?.userId)
+            }
+        }
+
+
+
     }
 
     fun setClickEventOnReminder() {
@@ -561,7 +570,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             if (isTablet) {
                 var offsetY = fm.dpToPx(62)
                 giftBoxDailyView.imageShadow.translationX = 0f
-                giftBoxDailyView.imageShadow.translationY  = fm.bottom.toFloat() - offsetY
+                giftBoxDailyView.imageShadow.translationY = fm.bottom.toFloat() - offsetY
             } else {
                 giftBoxDailyView.imageShadow.translationX = fm.left.toFloat()
                 giftBoxDailyView.imageShadow.translationY = fm.bottom.toFloat() - fm.dpToPx(50)
@@ -719,8 +728,17 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 //Do nothing
             }
         })
+    }
 
-
+    fun checkInternetOnButtonActionAndRedirect(){
+        if (context != null) {
+            var internetAvailable = DeviceConnectionInfo.isInternetAvailable(context!!, checkWifi = true, checkCellular = true)
+            if (!internetAvailable) {
+                showNoInterNetDialog(this::checkInternetOnButtonActionAndRedirect, context!!)
+            } else {
+                handleButtonAction()
+            }
+        }
     }
 
     fun renderGiftBoxError(message: String, actionText: String) {
