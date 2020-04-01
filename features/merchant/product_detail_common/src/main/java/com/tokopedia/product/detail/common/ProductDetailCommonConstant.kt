@@ -66,4 +66,14 @@ object ProductDetailCommonConstant{
     const val PARAM_TRADEIN_TRADE_USED_PRICE = "usedPrice"
     const val PARAM_TRADEIN_TRADE_USER_ID = "UserId"
 
+    //notify me (teaser campaign)
+    const val PARAM_TEASER_CAMPAIGN_ID = "campaignId"
+    const val PARAM_TEASER_PRODUCT_ID = "productId"
+    const val PARAM_TEASER_ACTION = "action"
+    const val PARAM_TEASER_SOURCE = "source"
+    const val VALUE_TEASER_ACTION_REGISTER = "REGISTER"
+    const val VALUE_TEASER_ACTION_UNREGISTER = "UNREGISTER"
+    const val VALUE_TEASER_TRACKING_REGISTER = "on"
+    const val VALUE_TEASER_TRACKING_UNREGISTER = "off"
+    const val VALUE_TEASER_SOURCE = "pdp"
 }

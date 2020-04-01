@@ -643,6 +643,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
 
     override fun onSuccessLoginEmail() {
         setSmartLock()
+        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
         if (ScanFingerprintDialog.isFingerprintAvailable(activity)) presenter.getUserInfoFingerprint()
         else presenter.getUserInfo()
     }

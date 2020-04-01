@@ -115,6 +115,7 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
             isAppsOnly
             isActive
             hideGimmick
+            isCheckImei
           }
           stock {
             useStock
@@ -173,6 +174,14 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
             icon
             text
           }
+        }
+        ...on pdpDataUpcomingCampaign {
+          campaignID
+          campaignType
+          campaignTypeName
+          endDate
+          startDate
+		  notifyMe
         }
       }
     }

@@ -62,10 +62,9 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                 showTitleBar = it.toBoolean();
             }
 
-           try {
-                allowOverride = getQueryParameter(KEY_ALLOW_OVERRIDE)?.toBoolean() ?: true
-            } catch (e: Exception) {
-
+            val override = getQueryParameter(KEY_ALLOW_OVERRIDE)
+            override?.let {
+                allowOverride = it.toBoolean();
             }
 
             val isLoginRequire = getQueryParameter(KEY_NEED_LOGIN)

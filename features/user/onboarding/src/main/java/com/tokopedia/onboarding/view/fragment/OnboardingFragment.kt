@@ -1,6 +1,7 @@
 package com.tokopedia.onboarding.view.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.TextUtils
@@ -16,6 +17,7 @@ import com.tokopedia.applink.DeeplinkDFMapper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dynamicfeatures.DFInstaller
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -35,9 +37,11 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.WeaverFirebaseConditionCheck
+import kotlinx.coroutines.*
 import org.jetbrains.annotations.NotNull
 import java.util.*
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 
 /**
@@ -45,7 +49,7 @@ import javax.inject.Inject
  * ade.hadian@tokopedia.com
  */
 
-class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
+class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed, CoroutineScope {
 
     private lateinit var screenViewpager: ViewPager
     private lateinit var skipAction: Typography
@@ -213,16 +217,24 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
         return View.OnClickListener {
             context?.let {
                 onboardingAnalytics.eventOnboardingSkip(screenViewpager.currentItem)
-                val intent = if (TextUtils.isEmpty(TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)) {
+                val applink = if (TextUtils.isEmpty(TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)) {
                     when(abTestVariant) {
-                        ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_REGISTER -> RouteManager.getIntent(it, ApplinkConst.OFFICIAL_STORE)
-                        else -> RouteManager.getIntent(it, ApplinkConst.HOME)
+                        ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_REGISTER -> ApplinkConst.OFFICIAL_STORE
+                        else -> ApplinkConst.HOME
                     }
                 } else {
-                    RouteManager.getIntent(it, TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)
+                    TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists
                 }
-                startActivity(intent)
-                finishOnBoarding()
+
+                launchCatchError(
+                        block = {
+                            val intent = getIntentforApplink(it, applink)
+                            startActivity(intent)
+                            finishOnBoarding()
+                        },
+                        onError = {
+                        }
+                )
             }
         }
     }
@@ -241,15 +253,22 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
 
     private fun startActivityWithBackTask() {
         context?.let {
-            finishOnBoarding()
-            val taskStackBuilder = TaskStackBuilder.create(it)
-            val homeIntent = RouteManager.getIntent(it, ApplinkConst.HOME)
-            taskStackBuilder.addNextIntent(homeIntent)
-            val intent = RouteManager.getIntent(it, ApplinkConst.REGISTER)
-            taskStackBuilder.addNextIntent(intent)
-            taskStackBuilder.startActivities()
+            launchCatchError(
+                    block = {
+                        val taskStackBuilder = TaskStackBuilder.create(it)
+                        val homeIntent = getIntentforApplink(it, ApplinkConst.HOME)
+                        taskStackBuilder.addNextIntent(homeIntent)
+                        val intent = getIntentforApplink(it, ApplinkConst.REGISTER)
+                        taskStackBuilder.addNextIntent(intent)
+                        taskStackBuilder.startActivities()
+                        finishOnBoarding()
+                    },
+                    onError = {
+                    }
+            )
         }
     }
+
 
     private fun hideJoinButton() {
         joinButton.hide()
@@ -290,6 +309,13 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
         }
     }
 
+    /**
+     * Get Intent for Applink using suspend function
+     */
+    suspend fun getIntentforApplink(context: Context, applink: String): Intent = withContext(Dispatchers.IO){
+        return@withContext RouteManager.getIntent(context, applink)
+    }
+
     override fun onBackPressed(): Boolean {
         finishOnBoarding()
         return true
@@ -317,4 +343,7 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             return fragment
         }
     }
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main
 }

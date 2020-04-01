@@ -26,11 +26,11 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
     private lateinit var remoteConfig: RemoteConfig
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         remoteConfig = FirebaseRemoteConfigImpl(this)
 
         selectedDepartureID = intent.getStringExtra(EXTRA_DEPARTURE_ID)
         selectedDepartureTerm = intent.getStringExtra(EXTRA_DEPARTURE_TERM)
+        super.onCreate(savedInstanceState)
     }
 
     override fun getNewFragment(): Fragment {
