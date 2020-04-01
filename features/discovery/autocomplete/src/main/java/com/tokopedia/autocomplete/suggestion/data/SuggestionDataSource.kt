@@ -20,4 +20,9 @@ class SuggestionDataSource(
                 }
                 .map(suggestionMapper)
     }
+
+    fun hitSuggestionUrlTracker(url: String): Observable<Void?> {
+        return suggestionApi.hitSuggestionUrlTracker(url)
+                .map { response -> response?.body() }
+    }
 }

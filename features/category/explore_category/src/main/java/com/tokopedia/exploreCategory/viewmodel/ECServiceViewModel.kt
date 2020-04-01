@@ -58,9 +58,10 @@ class ECServiceViewModel @Inject constructor(
 
     fun onAccordionClicked(categoryIndex: Int) {
         val newCurrentCG = (visitable[categoryIndex] as ECAccordionVHViewModel).categoryGroup
-        if (newCurrentCG?.isOpen == false)
+        if (newCurrentCG?.isOpen == false) {
             ECAnalytics.trackEventImpressionIcon(newCurrentCG, trackingQueue)
-
+            ECAnalytics.trackEventClickAccordion(newCurrentCG.title)
+        }
         notifyAdapter.value = currentActiveCategory
         if (categoryIndex != currentActiveCategory) {
             (visitable[currentActiveCategory] as ECAccordionVHViewModel).categoryGroup?.isOpen = false
@@ -73,7 +74,6 @@ class ECServiceViewModel @Inject constructor(
         notifyAdapter.value = categoryIndex
 
         ECAnalytics.trackEventClickFeature(newCurrentCG, categoryIndex)
-        ECAnalytics.trackEventClickAccordion(newCurrentCG?.title)
     }
 
 

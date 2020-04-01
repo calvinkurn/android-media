@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.feedplus.view.presenter.FeedDetailViewModel
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import dagger.Binds
 import dagger.Module
@@ -25,5 +26,10 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(FeedViewModel::class)
     internal abstract fun feedViewModel(viewModel: FeedViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FeedDetailViewModel::class)
+    internal abstract fun feedDetailViewModel(viewModel: FeedDetailViewModel): ViewModel
 
 }

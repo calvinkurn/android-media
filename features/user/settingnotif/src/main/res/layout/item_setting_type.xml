@@ -14,6 +14,15 @@
     android:paddingRight="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_18">
 
+    <ImageView
+        android:id="@+id/img_main_setting"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
+        android:layout_gravity="center_vertical"
+        app:srcCompat="@drawable/ic_notifsetting_notification" />
+
     <TextView
         android:id="@+id/tv_setting_type"
         android:layout_width="@dimen/dp_0"

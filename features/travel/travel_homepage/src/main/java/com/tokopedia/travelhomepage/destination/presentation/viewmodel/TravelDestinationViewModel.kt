@@ -165,7 +165,7 @@ class TravelDestinationViewModel  @Inject constructor(
         }
     }
 
-    private fun checkIfAllError() {
+    fun checkIfAllError() {
         travelDestinationItemList.value?.let {
             var isSuccess = false
             for (item in it) {
@@ -174,7 +174,7 @@ class TravelDestinationViewModel  @Inject constructor(
                     break
                 }
             }
-            if (!isSuccess) isAllErrorMutable.postValue(true)
+            isAllErrorMutable.postValue(!isSuccess)
         }
     }
 

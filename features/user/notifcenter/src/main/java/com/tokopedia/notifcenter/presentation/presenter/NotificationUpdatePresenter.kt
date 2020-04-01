@@ -114,7 +114,7 @@ class NotificationUpdatePresenter @Inject constructor(
             }
 
             override fun onError(e: Throwable?) {
-                view.showMessageAtcError(e)
+                view.showToastMessageError(e)
             }
         }
     }
