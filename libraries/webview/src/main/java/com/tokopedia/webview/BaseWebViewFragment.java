@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
 import android.webkit.GeolocationPermissions;
+import android.webkit.JavascriptInterface;
 import android.webkit.SslErrorHandler;
 import android.webkit.URLUtil;
 import android.webkit.ValueCallback;
@@ -26,6 +27,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -43,6 +45,8 @@ import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
+
+import java.lang.ref.WeakReference;
 
 import timber.log.Timber;
 
@@ -170,6 +174,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         CookieManager.getInstance().setAcceptCookie(true);
 
         webView.clearCache(true);
+        webView.addJavascriptInterface(new WebToastInterface(getActivity()),"Android");
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
@@ -211,6 +216,36 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             webView.loadAuthUrl(getUrl(), new UserSession(getContext()));
         } else {
             webView.loadAuthUrl(getUrl(), null);
+        }
+    }
+
+
+    private final class WebToastInterface {
+
+        private WeakReference<Activity> mContextRef;
+        private Toast toast;
+
+        public WebToastInterface(Activity context) {
+            this.mContextRef = new WeakReference<Activity>(context);
+        }
+
+        @JavascriptInterface
+        public void showToast(final String toastMsg) {
+
+            if (TextUtils.isEmpty(toastMsg) || mContextRef.get() == null) {
+                return;
+            }
+            mContextRef.get().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (toast != null) {
+                        toast.cancel();
+                    }
+                    toast = Toast.makeText(mContextRef.get(), toastMsg, Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+            });
+
         }
     }
 
