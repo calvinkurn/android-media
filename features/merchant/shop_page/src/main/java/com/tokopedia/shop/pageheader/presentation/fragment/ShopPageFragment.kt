@@ -691,13 +691,16 @@ class ShopPageFragment :
     }
 
     private fun onErrorToggleFavourite(e: Throwable) {
-        activity?.run {
-            shopPageFragmentHeaderViewHolder.updateFavoriteButton()
+        shopPageFragmentHeaderViewHolder.updateFavoriteButton()
+        context?.let {
             if (e is UserNotLoginException) {
-                val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
+                val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
                 startActivityForResult(intent, REQUEST_CODER_USER_LOGIN)
                 return
             }
+        }
+
+        activity?.run {
             NetworkErrorHelper.showCloseSnackbar(this, ErrorHandler.getErrorMessage(this, e))
         }
     }
@@ -844,7 +847,8 @@ class ShopPageFragment :
     }
 
     private fun updateFloatingChatButtonMargin() {
-        val stickyLoginViewHeight = stickyLoginView.height.takeIf { stickyLoginView.isShowing() } ?: 0
+        val stickyLoginViewHeight = stickyLoginView.height.takeIf { stickyLoginView.isShowing() }
+                ?: 0
         val buttonChatLayoutParams = (button_chat.layoutParams as ViewGroup.MarginLayoutParams)
         buttonChatLayoutParams.setMargins(
                 buttonChatLayoutParams.leftMargin,
@@ -858,30 +862,40 @@ class ShopPageFragment :
     private fun updateStickyState() {
         if (this.tickerDetail == null) {
             stickyLoginView.hide()
+            updateViewPagerPadding()
+            updateFloatingChatButtonMargin()
             return
         }
 
         val isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_SHOP, true)
         if (!isCanShowing) {
             stickyLoginView.hide()
+            updateViewPagerPadding()
+            updateFloatingChatButtonMargin()
             return
         }
 
         val userSession = UserSession(context)
         if (userSession.isLoggedIn) {
             stickyLoginView.hide()
+            updateViewPagerPadding()
+            updateFloatingChatButtonMargin()
             return
         }
 
         this.tickerDetail?.let { stickyLoginView.setContent(it) }
         stickyLoginView.show(StickyLoginConstant.Page.SHOP)
         stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.SHOP)
+        updateViewPagerPadding()
+        updateFloatingChatButtonMargin()
 
+    }
+
+    private fun updateViewPagerPadding() {
         if (stickyLoginView.isShowing()) {
             viewPager.setPadding(0, 0, 0, stickyLoginView.height)
         } else {
             viewPager.setPadding(0, 0, 0, 0)
         }
-        updateFloatingChatButtonMargin()
     }
 }
