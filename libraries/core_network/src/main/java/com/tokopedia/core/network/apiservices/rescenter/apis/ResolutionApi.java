@@ -7,10 +7,8 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import java.util.HashMap;
 import java.util.Map;
 
-import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Response;
-import retrofit2.http.Body;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -31,7 +29,6 @@ import rx.Observable;
 public interface ResolutionApi {
 
     String PATH_RESOLUTION_ID = "resolution_id";
-    String PATH_ORDER_ID = "order_id";
     String PATH_TROUBLE_ID = "trouble_id";
     String PATH_CONVERSATION_ID = "conversation_id";
     //Version 2
@@ -46,19 +43,6 @@ public interface ResolutionApi {
     @GET(TkpdBaseURL.ResCenterV2.GET_INBOX_RESOLUTION_V2_SINGLE_ITEM)
     Observable<Response<TkpdResponse>> getInboxSingleItem(@Path(PATH_RESOLUTION_ID) int resolutionId,
                                                                @QueryMap HashMap<String, Object> params);
-
-    @POST(TkpdBaseURL.ResCenterV2.BASE_RESOLUTION_VALIDATE)
-    Observable<Response<TkpdResponse>> postCreateValidateResolution(@Path(PATH_ORDER_ID) String orderId,
-                                                            @Body String object);
-
-    @POST(TkpdBaseURL.ResCenterV2.BASE_RESOLUTION_SUBMIT)
-    Observable<Response<TkpdResponse>> postCreateSubmitResolution(@Path(PATH_ORDER_ID) String orderId,
-                                                                    @Body String object);
-
-    @POST(TkpdBaseURL.ResCenterV2.BASE_RESOLUTION_CREATE)
-    Observable<Response<TkpdResponse>> postCreateResolutionCache(@Path(PATH_ORDER_ID) String orderId,
-                                                            @Body String object);
-
     @Multipart
     @POST("")
     Observable<Response<TkpdResponse>> uploadImage(@Url String url,
@@ -106,12 +90,6 @@ public interface ResolutionApi {
     @POST(TkpdBaseURL.ResCenterV2.ACTION_ASK_HELP_RESOLUTION)
     Observable<Response<TkpdResponse>> askHelpResolution(@Path(PATH_RESOLUTION_ID) String resolutionID,
                                                          @FieldMap TKPDMapParam<String, Object> params);
-
-    @Multipart
-    @POST("")
-    Observable<Response<TkpdResponse>> uploadVideo(@Url String url,
-                                                   @PartMap Map<String, RequestBody> params,
-                                                   @Part MultipartBody.Part file);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.ResCenterV2.POST_RESOLUTION_CONVERSATION_ADDRESS)

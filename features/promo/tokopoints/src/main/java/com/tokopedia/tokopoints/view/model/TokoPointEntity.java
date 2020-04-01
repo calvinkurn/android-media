@@ -2,6 +2,7 @@ package com.tokopedia.tokopoints.view.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.tokopoints.notification.model.PopupNotification;
 
 public class TokoPointEntity {
     @Expose
@@ -11,10 +12,6 @@ public class TokoPointEntity {
     @Expose
     @SerializedName("status")
     private TokoPointStatusEntity status;
-
-    @Expose
-    @SerializedName("ticker")
-    private TickerBase ticker;
 
     @Expose
     @SerializedName("sheetHowToGet")
@@ -28,13 +25,6 @@ public class TokoPointEntity {
         this.lobs = lobs;
     }
 
-    public TickerBase getTicker() {
-        return ticker;
-    }
-
-    public void setTicker(TickerBase ticker) {
-        this.ticker = ticker;
-    }
 
     public ResultStatusEntity getResultStatus() {
         return resultStatus;
@@ -57,7 +47,6 @@ public class TokoPointEntity {
         return "TokoPointEntity{" +
                 "resultStatus=" + resultStatus +
                 ", status=" + status +
-                ", ticker=" + ticker +
                 ", lobs=" + lobs +
                 '}';
     }

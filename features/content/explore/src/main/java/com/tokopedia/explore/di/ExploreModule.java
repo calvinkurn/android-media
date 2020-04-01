@@ -8,6 +8,7 @@ import com.tokopedia.affiliatecommon.data.network.TopAdsApi;
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase;
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference;
 import com.tokopedia.explore.R;
+import com.tokopedia.explore.analytics.ContentExploreAnalytics;
 import com.tokopedia.explore.data.CoroutineThread;
 import com.tokopedia.explore.data.ExploreConstant;
 import com.tokopedia.explore.domain.entity.GetExploreData;
@@ -80,5 +81,10 @@ public class ExploreModule {
     @Provides
     TopAdsApi provideTopAdsApi(Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.build().create(TopAdsApi.class);
+    }
+
+    @Provides
+    public ContentExploreAnalytics providesFeedAnalyticTracker(UserSessionInterface userSessionInterface)  {
+        return new ContentExploreAnalytics(userSessionInterface);
     }
 }

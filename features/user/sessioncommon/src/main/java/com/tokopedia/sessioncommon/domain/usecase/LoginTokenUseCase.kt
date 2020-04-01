@@ -42,6 +42,12 @@ class LoginTokenUseCase @Inject constructor(val resources: Resources,
         execute(requestParams, subscriber, R.raw.mutation_login_social_media)
     }
 
+    fun executeLoginSocialMediaPhone(requestParams: Map<String, Any>, subscriber:
+    Subscriber<GraphqlResponse>) {
+        userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
+        execute(requestParams, subscriber, R.raw.mutation_login_social_media_phone)
+    }
+
     fun executeLoginPhoneNumber(requestParams: Map<String, Any>, subscriber:
     Subscriber<GraphqlResponse>) {
         userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
@@ -111,6 +117,18 @@ class LoginTokenUseCase @Inject constructor(val resources: Resources,
 
             requestParams[PARAM_SOCIAL_TYPE] = socialType
             requestParams[PARAM_ACCESS_TOKEN] = accessToken
+            requestParams[PARAM_GRANT_TYPE] = TokenGenerator().encode(TYPE_EXTENSION)
+            requestParams[PARAM_SUPPORTED] = "true"
+
+            return requestParams
+        }
+
+        fun generateParamSocialMediaPhone(accessToken: String, email: String, socialType : String): Map<String, Any> {
+            val requestParams = HashMap<String, Any>()
+
+            requestParams[PARAM_USERNAME] = TokenGenerator().encode(email)
+            requestParams[PARAM_SOCIAL_TYPE] = socialType
+            requestParams[PARAM_VALIDATE_TOKEN] = accessToken
             requestParams[PARAM_GRANT_TYPE] = TokenGenerator().encode(TYPE_EXTENSION)
             requestParams[PARAM_SUPPORTED] = "true"
 

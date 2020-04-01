@@ -7,8 +7,6 @@ import android.content.DialogInterface;
 import android.view.Window;
 import android.widget.DatePicker;
 
-import com.tokopedia.design.R;
-
 import java.util.Calendar;
 
 public class SaldoDatePickerUtil {
@@ -35,16 +33,6 @@ public class SaldoDatePickerUtil {
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH) + 1;
         day = calendar.get(Calendar.DAY_OF_MONTH);
-    }
-
-    public SaldoDatePickerUtil(Activity activity, int day, int month, int year) {
-        this.activity = activity;
-        dialog = new Dialog(activity);
-        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(com.tokopedia.design.R.layout.dialog_calendar);
-        this.year = year;
-        this.month = month;
-        this.day = day;
     }
 
     public interface onDateSelectedListener {
@@ -133,61 +121,5 @@ public class SaldoDatePickerUtil {
         if (!IS_PICKING_DATE) {
             DatePickerSpinner(Listener);
         }
-    }
-
-    public void DatePickerCalendarShopClose(onDateSelectedListener Listener) {
-        if (!IS_PICKING_DATE) {
-            DatePickerSpinnerShopClose(Listener);
-        }
-    }
-
-    public void DatePickerSpinnerShopClose(onDateSelectedListener Listener) {
-        IS_PICKING_DATE = true;
-        listener = Listener;
-        DatePickerDialog dpd = new DatePickerDialog(activity, new DatePickerDialog.OnDateSetListener() {
-
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                listener.onDateSelected(year, monthOfYear, dayOfMonth);
-            }
-        }, year, month - 1, day);
-        dpd.setCanceledOnTouchOutside(false);
-        dpd.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        if (maxYear != 0) {
-            Calendar maxDate = Calendar.getInstance();
-            maxDate.set(maxDate.get(Calendar.YEAR) - maxYear, maxDate.getMaximum(Calendar.MONTH), maxDate.getMaximum(Calendar.DATE));
-            dpd.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
-        }
-        if (minYear != 0) {
-            Calendar minDate = Calendar.getInstance();
-            minDate.set(minDate.get(Calendar.YEAR) - minYear, minDate.getMinimum(Calendar.MONTH), minDate.getMinimum(Calendar.DATE));
-            dpd.getDatePicker().setMinDate(minDate.getTimeInMillis());
-        }
-
-        if (minDate != 0) {
-            dpd.getDatePicker().setMinDate(minDate);
-        }
-        if (maxDate != 0) {
-            dpd.getDatePicker().setMaxDate(maxDate);
-        }
-        dpd.setOnDismissListener(new DialogInterface.OnDismissListener() {
-
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                IS_PICKING_DATE = false;
-            }
-        });
-
-        dpd.setOnCancelListener(new DialogInterface.OnCancelListener() {
-
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                IS_PICKING_DATE = false;
-            }
-        });
-
-        dpd.setTitle(null);
-        dpd.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dpd.show();
     }
 }

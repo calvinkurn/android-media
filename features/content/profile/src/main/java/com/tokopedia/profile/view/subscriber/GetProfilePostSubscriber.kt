@@ -1,8 +1,7 @@
 package com.tokopedia.profile.view.subscriber
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
-import com.tokopedia.kol.feature.post.domain.model.ContentListDomain
 import com.tokopedia.profile.view.listener.ProfileContract
 import rx.Subscriber
 

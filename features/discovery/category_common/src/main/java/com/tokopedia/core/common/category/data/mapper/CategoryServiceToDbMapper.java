@@ -37,10 +37,8 @@ public class CategoryServiceToDbMapper implements Func1<CategoryServiceModel, Li
 
         CategoryDataBase dbModel = new CategoryDataBase();
         dbModel.setId(Long.parseLong(category.getId()));
-        dbModel.setIdentifier(category.getIdentifier());
         dbModel.setName(category.getName());
         dbModel.setParentId((long)parent);
-        dbModel.setWeight(category.getWeight());
         boolean hasChild = category.getChild() != null && !category.getChild().isEmpty();
         dbModel.setHasChild(hasChild);
         if (hasChild){

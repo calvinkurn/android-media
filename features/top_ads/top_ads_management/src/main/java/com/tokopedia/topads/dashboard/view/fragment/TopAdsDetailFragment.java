@@ -76,7 +76,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter, V ex
     @Override
     protected void initialVar() {
         super.initialVar();
-        new RefreshHandler(getActivity(), getView(), new RefreshHandler.OnRefreshHandlerListener() {
+        new RefreshHandler(getActivity(), getView().findViewById(R.id.swipe_refresh_layout), new RefreshHandler.OnRefreshHandlerListener() {
             @Override
             public void onRefresh(View view) {
                 loadData();

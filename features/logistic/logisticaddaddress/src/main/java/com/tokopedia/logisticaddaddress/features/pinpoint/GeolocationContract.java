@@ -87,15 +87,7 @@ public interface GeolocationContract {
 
         void setUpVariables(LocationPass locationPass, boolean hasLocation);
 
-        void onGoogleApiConnected(Bundle bundle);
-
-        void onGoogleApiSuspended(int cause);
-
-        void onGoogleApiFailed(ConnectionResult connectionResult);
-
         void onResult(LocationSettingsResult locationSettingsResult);
-
-        LatLng getLastLocation();
 
         void requestLocationUpdate();
 
@@ -105,15 +97,11 @@ public interface GeolocationContract {
 
         void removeLocationUpdate();
 
-        void initDefaultLocation();
-
         void getReverseGeoCoding(String latitude, String longitude);
 
         void prepareAutoCompleteView();
 
         void onSuggestionItemClick(AdapterView<?> adapter, int position);
-
-        void onSubmitPointer(Activity activity);
 
         void onDestroy();
 

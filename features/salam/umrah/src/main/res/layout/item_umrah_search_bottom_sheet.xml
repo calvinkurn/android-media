@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="?attr/selectableItemBackgroundBorderless"
+    android:clickable="true"
+    android:focusable="true"
+    android:id="@+id/rl_umrah_home_page_bottom_sheet"
+    tools:targetApi="m"
+    tools:ignore="UnusedAttribute">
+    <com.tokopedia.unifyprinciples.Typography
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/tv_umrah_home_page_bottom_sheet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/umrah_home_page_search_spinner_price_label"
+        android:textColor="@color/Neutral_N700_96"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        android:layout_marginTop="@dimen/dp_16"/>
+    
+    <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+        app:layout_constraintTop_toTopOf="@+id/tv_umrah_home_page_bottom_sheet"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_umrah_home_page_bottom_sheet"
+        app:layout_constraintRight_toRightOf="parent"
+        android:id="@+id/radio_umrah_home_page_bottom_sheet"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32" />
+
+    <View
+        android:id="@+id/bs_umrah_search_separator"
+        app:layout_constraintTop_toBottomOf="@+id/tv_umrah_home_page_bottom_sheet"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_umrah_home_page_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/Neutral_N75"
+        android:layout_marginTop="@dimen/dp_16"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

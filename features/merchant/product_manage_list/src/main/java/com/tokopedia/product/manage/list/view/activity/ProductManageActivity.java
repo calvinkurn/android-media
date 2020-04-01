@@ -1,57 +1,63 @@
 package com.tokopedia.product.manage.list.view.activity;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.abstraction.constant.TkpdState;
+import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
-import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
-import com.tokopedia.product.manage.list.R;
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.product.manage.list.constant.AppScreen;
 import com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragment;
-import com.tokopedia.seller.ProductEditItemComponentInstance;
+import com.tokopedia.sellerhomedrawer.presentation.view.BaseSellerReceiverDrawerActivity;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 /**
  * Created by zulfikarrahman on 9/25/17.
  */
-public class ProductManageActivity extends BaseTemporaryDrawerActivity implements HasComponent<ProductComponent> {
+public class ProductManageActivity extends BaseSellerReceiverDrawerActivity {
 
     public static final String TAG = ProductManageActivity.class.getSimpleName();
-    public UserSessionInterface userSession;
 
-    @DeepLink(ApplinkConst.PRODUCT_MANAGE)
-    public static Intent getApplinkIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ProductManageActivity.class)
-                .setData(uri.build())
-                .putExtras(extras);
-    }
+    private static final int MANAGE_PRODUCT = 8;
+
+    public UserSessionInterface userSession;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userSession = new UserSession(this);
-        inflateView(R.layout.activity_simple_fragment);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, new ProductManageSellerFragment(), TAG).commit();
-        }
+        if (!GlobalConfig.isSellerApp())
+            setupLayout(savedInstanceState);
+    }
+
+    @Nullable
+    @Override
+    protected Fragment getNewFragment() {
+        return new ProductManageSellerFragment();
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(newBase);
+        SplitCompat.installActivity(this);
     }
 
     @Override
     public void onStart() {
         super.onStart();
         checkLogin();
+    }
+
+    @Override
+    public void onBackPressed() {
+        goToSellerAppDashboard();
+        super.onBackPressed();
     }
 
     private void checkLogin() {
@@ -65,78 +71,8 @@ public class ProductManageActivity extends BaseTemporaryDrawerActivity implement
     }
 
     @Override
-    public void onErrorGetDeposit(String errorMessage) {
-        // no op
-    }
-
-    @Override
-    public void onErrorGetNotificationDrawer(String errorMessage) {
-        // no op
-    }
-
-    @Override
-    public void onErrorGetProfile(String errorMessage) {
-        // no op
-    }
-
-    @Override
-    public void onErrorGetTokoCash(String errorMessage) {
-        // no op
-    }
-
-    @Override
-    public void onErrorGetTopPoints(String errorMessage) {
-        // no op
-    }
-
-    @Override
-    public void onServerError() {
-        // no op
-    }
-
-    @Override
-    public void onTimezoneError() {
-        // no op
-    }
-
-    @Override
     protected int setDrawerPosition() {
-        return TkpdState.DrawerPosition.MANAGE_PRODUCT;
-    }
-
-    @Override
-    protected void setupURIPass(Uri data) {
-        // no op
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-        // no op
-    }
-
-    @Override
-    protected void initialPresenter() {
-        // no op
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return 0;
-    }
-
-    @Override
-    protected void setViewListener() {
-        // no op
-    }
-
-    @Override
-    protected void initVar() {
-        // no op
-    }
-
-    @Override
-    protected void setActionVar() {
-        // no op
+        return MANAGE_PRODUCT;
     }
 
     @Override
@@ -144,8 +80,9 @@ public class ProductManageActivity extends BaseTemporaryDrawerActivity implement
         return AppScreen.SCREEN_MANAGE_PROD;
     }
 
-    @Override
-    public ProductComponent getComponent() {
-        return ProductEditItemComponentInstance.getComponent(getApplication());
+    private void goToSellerAppDashboard() {
+        if(GlobalConfig.isSellerApp()) {
+            RouteManager.route(this, ApplinkConstInternalSellerapp.SELLER_HOME);
+        }
     }
 }

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dp_16">
+
+    <ImageView
+        android:id="@+id/iv_support"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_shop_page_setting_information"
+        tools:ignore="ContentDescription" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        app:typographyType="heading_5"
+        android:id="@+id/tv_support"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:text="@string/shop_page_setting_support"
+        android:textColor="@color/clr_f531353b"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintLeft_toRightOf="@id/iv_support"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/support_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_support">
+
+        <com.tokopedia.unifyprinciples.Typography
+            app:typographyType="body_3"
+            android:id="@+id/tv_support_center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_14"
+            android:lineSpacingExtra="@dimen/sp_6"
+            android:text="@string/shop_page_setting_support_center"
+            android:textColor="@color/clr_f531353b"
+            android:textSize="@dimen/sp_12" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            app:typographyType="body_3"
+            android:id="@+id/tv_get_support"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
+            android:lineSpacingExtra="@dimen/sp_6"
+            android:text="@string/shop_page_setting_action_get_support"
+            android:textColor="@color/clr_ae31353b"
+            android:textSize="@dimen/sp_12" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/seller_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/support_layout">
+
+        <com.tokopedia.unifyprinciples.Typography
+            app:typographyType="body_3"
+            android:id="@+id/tv_seller_center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:lineSpacingExtra="@dimen/sp_6"
+            android:text="@string/shop_page_setting_seller_center"
+            android:textColor="@color/clr_f531353b"
+            android:textSize="@dimen/sp_12" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            app:typographyType="body_3"
+            android:id="@+id/tv_get_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
+            android:lineSpacingExtra="@dimen/sp_6"
+            android:text="@string/shop_page_setting_action_get_tips"
+            android:textColor="@color/clr_ae31353b"
+            android:textSize="@dimen/sp_12" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

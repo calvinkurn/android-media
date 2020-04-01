@@ -95,7 +95,7 @@
     <string name="product_maximum_pre_order_week">13</string>
     <string name="product_error_product_pre_order_not_valid">Waktu Proses Preorder harus antara %1$s &#8212; %2$s</string>
     <string name="product_minimum_total_stock">1</string>
-    <string name="product_maximum_total_stock">10,000</string>
+    <string name="product_maximum_total_stock">999,999</string>
     <string name="product_error_total_stock_not_valid">Jumlah stok harus diisi antara %1$s &#8212; %2$s</string>
     <string name="product_title_confirmation_change_wholesale_price">Harga Produk Terkunci</string>
     <string name="product_confirmation_change_wholesale_price">Harga grosir akan otomatis terhapus. Anda yakin untuk mengubah harga Produk?</string>
@@ -172,14 +172,5 @@
     <string name="product_variant_max_variant_has_been_reached">Jumlah variant yang ditambahkan sudah mencapai maksimum</string>
     <string name="product_variant_search_x">Cari %1$s</string>
 
-    <string name="product_manage_filter_menu_both_catalog">Dengan &amp; Tanpa Katalog</string>
-    <string name="product_manage_filter_menu_with_catalog">Dengan Katalog</string>
-    <string name="product_manage_filter_menu_without_catalog">Tanpa Katalog</string>
-    <string name="product_manage_filter_menu_both_condition">Semua Kondisi</string>
-    <string name="product_manage_filter_menu_condition_new">Baru</string>
-    <string name="product_manage_filter_menu_condition_old">Bekas</string>
-    <string name="product_manage_filter_menu_picture_both">Dengan &amp; Tanpa Gambar</string>
-    <string name="product_manage_filter_menu_with_picture">Dengan Gambar</string>
-    <string name="product_manage_filter_menu_without_picture">Tanpa Gambar</string>
 
 </resources>

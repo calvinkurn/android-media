@@ -24,10 +24,10 @@
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:gravity="center"
+            app:layout_constraintBottom_toTopOf="@+id/iv_cmImage"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_close"
-            app:layout_constraintBottom_toTopOf="@+id/iv_cmImage"
             tools:text="Title" />
 
         <ImageView
@@ -92,5 +92,25 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/iv_secondary_close"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:contentDescription="@string/app_name"
+        android:layout_alignTop="@id/blank_iv"
+        android:src="@drawable/ic_cross_inapp"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/blank_iv"
+        android:layout_width="0dp"
+        android:layout_height="10dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:contentDescription="@string/app_name"
+        android:visibility="gone" />
 
 </RelativeLayout>

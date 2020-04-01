@@ -12,7 +12,7 @@ import com.tokopedia.settingbank.banklist.view.fragment.SettingBankFragment
  * For navigating to this class
  * {@link com.tokopedia.applink.internal.ApplinkConstInternalGlobal#SETTING_BANK}
  */
-class SettingBankActivity : BaseSimpleActivity() {
+open class SettingBankActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()

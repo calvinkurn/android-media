@@ -4,13 +4,10 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -23,16 +20,15 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.applink.ApplinkConst;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.tokopedia.abstraction.common.utils.HexValidator;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.R;
-import com.tokopedia.gamification.applink.ApplinkUtil;
-import com.tokopedia.gamification.cracktoken.activity.CrackTokenActivity;
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
-import com.tokopedia.gamification.util.HexValidator;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
@@ -327,14 +323,14 @@ public class WidgetRewardCrackResult extends FrameLayout implements View.OnClick
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if(id == R.id.rl_points || id == R.id.rl_loyalty) {
+        if (id == R.id.rl_points || id == R.id.rl_loyalty) {
             RouteManager.route(getContext(), ApplinkConstInternalPromo.TOKOPOINTS_HOME);
-            if(id == R.id.rl_points)
+            if (id == R.id.rl_points)
                 trackPointsIconClick();
             else
                 trackLoyaltyIconClick();
-        } else if(id == R.id. rl_coupons) {
-            RouteManager.route(getContext(),ApplinkConstInternalPromo.TOKOPOINTS_COUPON);
+        } else if (id == R.id.rl_coupons) {
+            RouteManager.route(getContext(), ApplinkConstInternalPromo.TOKOPOINTS_COUPON);
             trackKuponIconClick();
         }
     }

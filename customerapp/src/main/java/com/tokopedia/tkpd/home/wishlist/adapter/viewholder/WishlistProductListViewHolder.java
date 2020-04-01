@@ -175,7 +175,7 @@ public class WishlistProductListViewHolder extends AbstractViewHolder<WishlistPr
                     container.addView(view);
                 } else {
                     labelText.setBackgroundResource(R.drawable.bg_label);
-                    labelText.setTextColor(ContextCompat.getColor(context, R.color.tkpd_dark_gray_toolbar));
+                    labelText.setTextColor(ContextCompat.getColor(context, R.color.tkpd_dark_gray));
                     ColorStateList tint = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.gray_background));
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         labelText.setBackgroundTintList(tint);

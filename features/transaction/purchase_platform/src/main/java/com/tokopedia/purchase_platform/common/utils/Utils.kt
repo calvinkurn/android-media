@@ -55,3 +55,9 @@ internal fun convertToString(stringList: List<String>?): String {
 internal fun isNullOrEmpty(string: String?): Boolean = string.isNullOrEmpty()
 
 internal fun <T> isNullOrEmpty(list: List<T>?): Boolean = list.isNullOrEmpty()
+
+internal fun <T : Any> List<T>.each(action: T.() -> Unit) {
+    for (item in this) {
+        item.action()
+    }
+}

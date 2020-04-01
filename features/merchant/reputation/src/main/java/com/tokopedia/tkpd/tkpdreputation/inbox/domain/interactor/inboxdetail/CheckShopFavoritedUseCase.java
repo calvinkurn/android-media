@@ -1,11 +1,9 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.CheckShopFavoriteDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 
@@ -19,10 +17,8 @@ public class CheckShopFavoritedUseCase extends UseCase<CheckShopFavoriteDomain> 
     public static final String PARAM_SHOP_ID = "PARAM_SHOP_ID";
     private ReputationRepository reputationRepository;
 
-    public CheckShopFavoritedUseCase(ThreadExecutor threadExecutor,
-                                     PostExecutionThread postExecutionThread,
-                                     ReputationRepository reputationRepository) {
-        super(threadExecutor, postExecutionThread);
+    public CheckShopFavoritedUseCase(ReputationRepository reputationRepository) {
+        super();
         this.reputationRepository = reputationRepository;
     }
 
@@ -37,4 +33,5 @@ public class CheckShopFavoritedUseCase extends UseCase<CheckShopFavoriteDomain> 
         params.putString(PARAM_SHOP_ID, String.valueOf(shopId));
         return params;
     }
+
 }

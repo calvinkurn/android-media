@@ -60,7 +60,10 @@ open class GetExistingChatMapper @Inject constructor() {
                 interlocutor.thumbnail,
                 interlocutor.status.timestampStr,
                 interlocutor.status.isOnline,
-                interlocutor.shopId
+                interlocutor.shopId,
+                interlocutor.isOfficial,
+                interlocutor.isGold,
+                interlocutor.badge
         )
     }
 
@@ -132,7 +135,7 @@ open class GetExistingChatMapper @Inject constructor() {
 
     private fun convertToFallBackModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
         var fallbackMessage = ""
-        chatItemPojoByDateByTime.attachment?.fallback?.let{
+        chatItemPojoByDateByTime.attachment?.fallback?.let {
             fallbackMessage = it.message
         }
         return FallbackAttachmentViewModel(
@@ -172,6 +175,12 @@ open class GetExistingChatMapper @Inject constructor() {
         val pojoAttribute = GsonBuilder().create().fromJson<ProductAttachmentAttributes>(chatItemPojoByDateByTime.attachment?.attributes,
                 ProductAttachmentAttributes::class.java)
 
+        val variant: List<AttachmentVariant> = if (pojoAttribute.productProfile.variant == null) {
+            emptyList()
+        } else {
+            pojoAttribute.productProfile.variant
+        }
+
         if (pojoAttribute.isBannedProduct()) {
             return BannedProductAttachmentViewModel(
                     chatItemPojoByDateByTime.msgId.toString(),
@@ -194,13 +203,17 @@ open class GetExistingChatMapper @Inject constructor() {
                     chatItemPojoByDateByTime.blastId,
                     pojoAttribute.productProfile.priceInt,
                     pojoAttribute.productProfile.category,
-                    pojoAttribute.productProfile.variant.toString(),
+                    variant,
                     pojoAttribute.productProfile.dropPercentage,
                     pojoAttribute.productProfile.priceBefore,
                     pojoAttribute.productProfile.shopId,
                     pojoAttribute.productProfile.freeShipping,
                     pojoAttribute.productProfile.categoryId,
-                    pojoAttribute.productProfile.playStoreData
+                    pojoAttribute.productProfile.playStoreData,
+                    pojoAttribute.productProfile.minOrder,
+                    pojoAttribute.productProfile.remainingStock,
+                    pojoAttribute.productProfile.status,
+                    pojoAttribute.productProfile.wishList
             )
         }
 
@@ -225,13 +238,17 @@ open class GetExistingChatMapper @Inject constructor() {
                 chatItemPojoByDateByTime.blastId,
                 pojoAttribute.productProfile.priceInt,
                 pojoAttribute.productProfile.category,
-                pojoAttribute.productProfile.variant.toString(),
+                variant,
                 pojoAttribute.productProfile.dropPercentage,
                 pojoAttribute.productProfile.priceBefore,
                 pojoAttribute.productProfile.shopId,
                 pojoAttribute.productProfile.freeShipping,
                 pojoAttribute.productProfile.categoryId,
-                pojoAttribute.productProfile.playStoreData
+                pojoAttribute.productProfile.playStoreData,
+                pojoAttribute.productProfile.minOrder,
+                pojoAttribute.productProfile.remainingStock,
+                pojoAttribute.productProfile.status,
+                pojoAttribute.productProfile.wishList
         )
     }
 
@@ -255,7 +272,8 @@ open class GetExistingChatMapper @Inject constructor() {
                 invoiceSentPojo.invoiceLink.attributes.statusId,
                 invoiceSentPojo.invoiceLink.attributes.status,
                 invoiceSentPojo.invoiceLink.attributes.code,
-                invoiceSentPojo.invoiceLink.attributes.hrefUrl
+                invoiceSentPojo.invoiceLink.attributes.hrefUrl,
+                invoiceSentPojo.invoiceLink.attributes.createTime
         )
 
     }

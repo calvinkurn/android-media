@@ -26,6 +26,7 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 
@@ -61,3 +62,4 @@ project.ext {
 }
 
 apply from: '../../publish_local.gradle'
+apply from: '../../tools/set_debug_tools.gradle'

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/greyish_bg"
+    tools:context=".activity.OpportunityDetailActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.tokopedia.opportunity.customview.OpportunityDetailStatusView
+                android:id="@+id/customview_opportunity_detail_status_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small_sm" />
+
+            <com.tokopedia.opportunity.customview.OpportunityDetailProductView
+                android:id="@+id/customview_opportunity_detail_product_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small_sm"
+                android:layout_marginBottom="@dimen/margin_small_sm" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/price_info_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small_sm"
+                android:layout_marginBottom="@dimen/margin_small_sm"
+                app:cardElevation="@dimen/cardview_default_elevation"
+                app:cardPreventCornerOverlap="false"
+                app:cardUseCompatPadding="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@drawable/bg_line_separator"
+                    android:orientation="vertical"
+                    android:showDividers="middle">
+
+                    <com.tokopedia.opportunity.customview.PriceDifferentInfoView
+                        android:id="@+id/price_item"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:pdiv_title="@string/opportunity_detail_info_product_price_title" />
+
+                    <com.tokopedia.opportunity.customview.PriceDifferentInfoView
+                        android:id="@+id/shipping_fee"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:pdiv_title="@string/opportunity_detail_info_shipping_price_title" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+
+            <com.tokopedia.opportunity.customview.OpportunityDetailSummaryView
+                android:id="@+id/customview_opportunity_detail_summary_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small_sm"
+                android:layout_marginBottom="@dimen/margin_small_sm" />
+
+            <Button
+                android:id="@+id/button_take_opportunity"
+                style="@style/Button.Submit.Green"
+                android:layout_marginTop="@dimen/margin_small_sm"
+                android:text="@string/take_opportunity"
+                android:visibility="visible" />
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

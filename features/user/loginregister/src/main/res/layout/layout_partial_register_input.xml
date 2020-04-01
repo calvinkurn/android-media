@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_24"
         android:layout_marginRight="@dimen/dp_24"
-        android:layout_marginTop="@dimen/dp_30">
+        android:layout_marginTop="@dimen/dp_16">
 
         <RelativeLayout
             android:id="@+id/email_phone_layout"
@@ -25,7 +25,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_3"
-                android:layout_marginTop="@dimen/dp_8"
                 android:hint="@string/phone_or_email_input"
                 android:inputType="phone"
                 android:paddingLeft="-5dp">

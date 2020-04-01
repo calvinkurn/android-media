@@ -29,8 +29,6 @@ public abstract class BaseNetworkErrorHandler {
 
     public abstract void showEmptyState(Context context, final View rootview);
 
-    public abstract void showDialogCustomMSG(Context context, String message);
-
     public void setListener(NetworkErrorHelper.RetryClickedListener listener) {
         this.listener = listener;
     }

@@ -50,7 +50,7 @@ public class OmsModule {
                 .addInterceptor(errorResponseInterceptor)
                 .addInterceptor(new OmsInterceptor(context, (NetworkRouter) context, userSession))
                 .addInterceptor(new FingerprintInterceptor((NetworkRouter) context, userSession))
-                .addInterceptor(((OmsModuleRouter) context).getChuckInterceptor())
+                .addInterceptor(((OmsModuleRouter) context).getChuckerInterceptor())
                 .build();
     }
 

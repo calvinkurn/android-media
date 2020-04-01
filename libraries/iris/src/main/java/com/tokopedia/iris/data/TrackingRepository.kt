@@ -1,20 +1,22 @@
 package com.tokopedia.iris.data
 
 import android.content.Context
+import android.content.Intent
+import android.net.ConnectivityManager
+import com.tokopedia.analyticsdebugger.debugger.IrisLogger
+import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.iris.data.db.IrisDb
 import com.tokopedia.iris.data.db.dao.TrackingDao
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.data.db.table.Tracking
 import com.tokopedia.iris.data.network.ApiService
-import com.tokopedia.iris.util.Cache
-import com.tokopedia.iris.util.DATABASE_NAME
-import com.tokopedia.iris.util.Session
-import com.tokopedia.iris.util.logIris
+import com.tokopedia.iris.util.*
+import com.tokopedia.iris.worker.IrisService
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.File
-import android.net.ConnectivityManager
-import com.tokopedia.iris.data.network.ApiInterface
+import timber.log.Timber
 
 
 /**
@@ -26,19 +28,64 @@ class TrackingRepository(
 
     private val cache: Cache = Cache(context)
     private val trackingDao: TrackingDao = IrisDb.getInstance(context).trackingDao()
+    private var firebaseRemoteConfig: RemoteConfig? = null
+
     private val apiService by lazy {
         ApiService(context).makeRetrofitService()
     }
 
-    suspend fun saveEvent(data: String, session: Session) = withContext(Dispatchers.IO) {
-        try {
-            if (isSizeOver()) { // check if db over 2 MB
-                trackingDao.flush()
-                logIris(cache, "Database Local Over 2mb")
+    fun getRemoteConfig(): RemoteConfig {
+        if (firebaseRemoteConfig == null) {
+            firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
+        }
+        return firebaseRemoteConfig!!
+    }
+
+    private fun getLineDBFlush()= getRemoteConfig().getLong(REMOTE_CONFIG_IRIS_DB_FLUSH, 5000)
+    private fun getLineDBSend() = getRemoteConfig().getLong(REMOTE_CONFIG_IRIS_DB_SEND, 400)
+    private fun getBatchPerPeriod()= getRemoteConfig().getLong(REMOTE_CONFIG_IRIS_BATCH_SEND, 5)
+
+    suspend fun saveEvent(data: String, session: Session,
+                          eventName: String?, eventCategory: String?, eventAction: String?) =
+        withContext(Dispatchers.IO) {
+            try {
+                val tracking = Tracking(data, session.getUserId(), session.getDeviceId())
+                trackingDao.insert(tracking)
+                logIrisStoreAnalytics(eventName, eventCategory, eventAction)
+                IrisLogger.getInstance(context).putSaveIrisEvent(tracking.toString())
+
+                val dbCount = trackingDao.getCount()
+                if (dbCount >= getLineDBFlush()) {
+                    Timber.e("P1#IRIS#dbCountFlush %d lines", dbCount)
+                    trackingDao.flush()
+                } else if (dbCount >= getLineDBSend()) {
+                    // if the line is big, send it
+                    if (dbCount % 5 == 0) {
+                        val i = Intent(context, IrisService::class.java)
+                        i.putExtra(MAX_ROW, DEFAULT_MAX_ROW)
+                        IrisService.enqueueWork(context, i)
+
+                        IrisAnalytics.getInstance(context).setAlarm(true, force = true)
+                        Timber.w("P1#IRIS#dbCountSend %d lines", dbCount)
+                    }
+                }
+            } catch (e: Throwable) {
+                Timber.e("P1#IRIS#saveEvent %s", e.toString())
             }
-            trackingDao.insert(Tracking(data, session.getUserId(),
-                session.getDeviceId() ?: ""))
-        } catch (e: Throwable) {
+        }
+
+    private fun logIrisStoreAnalytics(eventName: String?, eventCategory: String?, eventAction: String?) {
+        try {
+            if ("clickTopNav" == eventName &&
+                eventCategory?.startsWith("top nav") == true &&
+                "click search box" == eventAction) {
+                Timber.w("P1#IRIS_COLLECT#IRISSTORE_CLICKSEARCHBOX")
+            } else if ("clickPDP" == eventName && "product detail page" == eventCategory &&
+                "click - tambah ke keranjang" == eventAction) {
+                Timber.w("P1#IRIS_COLLECT#IRISSTORE_PDP_ATC")
+            }
+        } catch (e: Exception) {
+            Timber.e("P1#IRIS#logIrisAnalyticsStore %s", e.toString())
         }
     }
 
@@ -46,6 +93,7 @@ class TrackingRepository(
         return try {
             trackingDao.getFromOldest(maxRow)
         } catch (e: Throwable) {
+            Timber.e("P1#IRIS#getFromOldest %s", e.toString())
             ArrayList()
         }
     }
@@ -53,28 +101,20 @@ class TrackingRepository(
     fun delete(data: List<Tracking>) {
         try {
             trackingDao.delete(data)
-            logIris(cache, "Discard: $data")
-        } catch (e: Throwable) {
+        } catch (ignored: Throwable) {
+            Timber.e("P1#IRIS#deletingData %s", ignored.toString())
         }
     }
 
     suspend fun sendSingleEvent(data: String, session: Session): Boolean {
         val dataRequest = TrackingMapper().transformSingleEvent(data, session.getSessionId(), session.getUserId(), session.getDeviceId())
         val requestBody = ApiService.parse(dataRequest)
-        val request = apiService.sendSingleEventAsync(requestBody)
-        val response = request.await()
-        return response.isSuccessful
-    }
-
-    private fun isSizeOver(): Boolean {
-        val f: File? = context.getDatabasePath(DATABASE_NAME)
-        if (f != null) {
-            val lengthDb = f.length()
-            logIris(cache, "Length Database: $lengthDb")
-            val sizeDbInMb = (lengthDb / 1024) / 1024
-            return sizeDbInMb >= 2
+        val response = apiService.sendSingleEventAsync(requestBody)
+        val isSuccessFul = response.isSuccessful
+        if (!isSuccessFul) {
+            Timber.e("P1#IRIS#sendSingleEventNotSuccess %s", data)
         }
-        return false
+        return isSuccessFul
     }
 
     /**
@@ -87,7 +127,7 @@ class TrackingRepository(
             return -1
 
         var counterLoop = 0
-        val maxLoop = 5
+        val maxLoop = getBatchPerPeriod()
         var totalSentData = 0
 
         var lastSuccessSent = true
@@ -106,16 +146,19 @@ class TrackingRepository(
             // transform and send the data to server
             val request: String = TrackingMapper().transformListEvent(data)
             val requestBody = ApiService.parse(request)
-            val response = apiService.sendMultiEventAsync(requestBody).await()
+            val response = apiService.sendMultiEventAsync(requestBody)
             if (response.isSuccessful && response.code() == 200) {
+                IrisLogger.getInstance(context).putSendIrisEvent(request, data.size)
                 delete(data)
                 totalSentData += data.size
+
                 // no need to loop, because it is already less than max row
                 if (data.size < maxRow) {
                     break
                 }
             } else {
                 lastSuccessSent = false
+                Timber.e("P1#IRIS#failedSendData %s", requestBody.toString())
                 break
             }
             counterLoop++

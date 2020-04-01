@@ -26,6 +26,6 @@ public interface ContentExloreEventTracking {
     }
 
     interface EventLabel {
-        String CLICK_GRID_CONTENT_LABEL = "%s - %s";
+        String CLICK_GRID_CONTENT_LABEL = "%s - %s - %s";
     }
 }

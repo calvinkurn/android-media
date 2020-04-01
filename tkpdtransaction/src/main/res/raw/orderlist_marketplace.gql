@@ -23,6 +23,7 @@ query ORDERLIST ($orderCategory: OrderCategory, $Page: Int, $PerPage: Int,$Searc
     totalInvoices
     title
     items {
+      id
       imageUrl
       name
     }

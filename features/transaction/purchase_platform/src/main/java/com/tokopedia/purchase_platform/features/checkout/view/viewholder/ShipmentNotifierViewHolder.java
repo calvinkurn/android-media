@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentAdapterActionListener;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentNotifierModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentNotifierModel;
 
 /**
  * Created by fajarnuha on 06/12/18.

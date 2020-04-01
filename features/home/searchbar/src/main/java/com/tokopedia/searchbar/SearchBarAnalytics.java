@@ -6,24 +6,18 @@ import java.util.HashMap;
 import java.util.Map;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.iris.util.IrisSession;
+import com.tokopedia.iris.util.ConstantKt;
 
 /**
  * Created by meta on 04/08/18.
  */
 public class SearchBarAnalytics {
 
+    private final IrisSession irisSession;
+
     SearchBarAnalytics(Context context) {
-
-    }
-
-    public void eventTrackingSqanQr() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                SearchBarConstant.CLICK_HOME_PAGE,
-                SearchBarConstant.TOP_NAV,
-                String.format("%s %s", SearchBarConstant.CLICK,
-                        SearchBarConstant.SCAN_QR),
-                ""
-        ));
+        irisSession = new IrisSession(context);
     }
 
     public void eventTrackingWishlist(String item, String screenName) {
@@ -43,6 +37,19 @@ public class SearchBarAnalytics {
                                 SearchBarConstant.NOTIFICATION)));
     }
 
+    public void eventTrackingNotifCenter() {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(dataNotifCenter());
+    }
+
+    private Map<String, Object> dataNotifCenter() {
+        Map<String, Object> trackerMap = new HashMap<>();
+        trackerMap.put(SearchBarConstant.EVENT, SearchBarConstant.CLICK_NOTIF_CENTER);
+        trackerMap.put(SearchBarConstant.EVENT_CATEGORY, SearchBarConstant.NOTIF_CENTER);
+        trackerMap.put(SearchBarConstant.EVENT_ACTION, SearchBarConstant.NOTIF_CENTER_ACTION);
+        trackerMap.put(SearchBarConstant.EVENT_LABEL, "");
+        return trackerMap;
+    }
+
     private Map<String, Object> getDataEvent(String screenName, String event,
                                              String category, String action) {
         Map<String, Object> eventTracking = new HashMap<>();
@@ -55,11 +62,13 @@ public class SearchBarAnalytics {
     }
 
     public void eventTrackingSearchBar(String screenName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+        Map<String, Object> stringObjectMap = TrackAppUtils.gtmData(
                 SearchBarConstant.CLICK_TOP_NAV,
                 SearchBarConstant.TOP_NAV + " - " + screenName,
                 SearchBarConstant.CLICK_SEARCH_BOX,
                 ""
-        ));
+        );
+        stringObjectMap.put(ConstantKt.KEY_SESSION_IRIS, irisSession.getSessionId());
+        TrackApp.getInstance().getGTM().sendGeneralEvent(stringObjectMap);
     }
 }

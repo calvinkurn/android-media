@@ -3,6 +3,8 @@ package com.tokopedia.purchase_platform.features.express_checkout.view.variant.d
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.logisticcart.domain.executor.MainScheduler
+import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet
 import com.tokopedia.purchase_platform.R
@@ -16,7 +18,7 @@ import com.tokopedia.purchase_platform.features.express_checkout.view.variant.Ch
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantItemDecorator
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantPresenter
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.analytics.ExpressCheckoutAnalyticsTracker
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.FragmentViewModel
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.FragmentUiModel
 import dagger.Module
 import dagger.Provides
 import rx.subscriptions.CompositeSubscription
@@ -46,8 +48,14 @@ class CheckoutVariantModule {
 
     @CheckoutVariantScope
     @Provides
-    fun provideFragmentViewModel(): FragmentViewModel {
-        return FragmentViewModel()
+    fun prorvideScheduler(): SchedulerProvider {
+        return MainScheduler()
+    }
+
+    @CheckoutVariantScope
+    @Provides
+    fun provideFragmentViewModel(): FragmentUiModel {
+        return FragmentUiModel()
     }
 
     @CheckoutVariantScope

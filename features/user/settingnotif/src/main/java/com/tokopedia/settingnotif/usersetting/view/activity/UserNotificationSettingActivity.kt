@@ -5,9 +5,6 @@ import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import android.widget.FrameLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.view.fragment.SettingTypeFragment
 import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingType
 
@@ -23,11 +20,11 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
     }
 
     private fun bindView() {
-        fragmentContainer = findViewById(R.id.parent_view)
+        fragmentContainer = findViewById(parentViewResourceID)
     }
 
     private fun setupView() {
-        val color = ContextCompat.getColor(this, R.color.white)
+        val color = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0)
         fragmentContainer?.setBackgroundColor(color)
     }
 
@@ -41,8 +38,12 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
 
         supportFragmentManager.beginTransaction()
                 .addToBackStack(null)
-                .replace(R.id.parent_view, fragment, settingType.name)
+                .replace(parentViewResourceID, fragment, settingType.name)
                 .commit()
     }
+
+    override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view
+
+    override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple
 
 }

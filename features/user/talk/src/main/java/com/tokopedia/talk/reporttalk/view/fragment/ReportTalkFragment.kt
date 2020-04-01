@@ -174,14 +174,14 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
 
     private fun disableSendButton(context: Context) {
         sendButton.isEnabled = false
-        sendButton.setTextColor(MethodChecker.getColor(context, R.color.black_12))
-        MethodChecker.setBackground(sendButton, MethodChecker.getDrawable(context, R.drawable.bg_button_disabled))
+        sendButton.setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.black_12))
+        MethodChecker.setBackground(sendButton, MethodChecker.getDrawable(context, com.tokopedia.design.R.drawable.bg_button_disabled))
     }
 
     private fun enableSendButton(context: Context) {
         sendButton.isEnabled = true
-        sendButton.setTextColor(MethodChecker.getColor(context, R.color.white))
-        MethodChecker.setBackground(sendButton, MethodChecker.getDrawable(context, R.drawable
+        sendButton.setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.white))
+        MethodChecker.setBackground(sendButton, MethodChecker.getDrawable(context, com.tokopedia.design.R.drawable
                 .bg_button_green))
     }
 

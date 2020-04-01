@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.ticker.Ticker xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/searchResultBannedProductsTicker"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_16"
+    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginStart="@dimen/dp_16"
+    android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginEnd="@dimen/dp_16"
+    android:visibility="gone"
+    app:titleText="@string/banned_products_ticker_title"
+    app:closeButtonVisibility="gone"
+    app:tickerShapeType="loose"
+    app:tickerType="warning" />

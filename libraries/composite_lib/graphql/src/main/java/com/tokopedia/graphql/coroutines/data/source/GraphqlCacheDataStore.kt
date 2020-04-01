@@ -27,7 +27,7 @@ class GraphqlCacheDataStore(private val mCacheManager: GraphqlCacheManager,
                         listOfCached.add(rawJson)
                     }
                 }
-                GraphqlResponseInternal(JsonParser().parse(listOfCached.toString()).asJsonArray, true, indexOfEmptyCached)
+                GraphqlResponseInternal(JsonParser().parse(listOfCached.toString()).asJsonArray, indexOfEmptyCached)
             }else{
                 val rawJson = mCacheManager.get(mFingerprintManager.generateFingerPrint(requests.toString(),
                         cacheStrategy.isSessionIncluded))

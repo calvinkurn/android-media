@@ -3,7 +3,7 @@ package com.tokopedia.tokopoints.view.util;
 import android.app.Activity;
 import android.content.Context;
 
-import com.tokopedia.analytic_constant.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
@@ -29,6 +29,8 @@ public class AnalyticsTrackerUtil {
         String TOKOPOINTS_ON_BOARDING_LABEL = "tokopoints on boarding";
         String TOKOPOINTS_LUCKY_EGG_CLOSE_LABEL = "close cara mendapatkan lucky egg";
         String BACK_ARROW_LABEL = "back arrow detail kupon";
+        String KEY_EVENT_PROFILE_VALUE = "clickProfile";
+
     }
 
     public interface CategoryKeys {
@@ -50,6 +52,7 @@ public class AnalyticsTrackerUtil {
         String POPUP_KONFIRMASI_GUNAKAN_KUPON = "pop up konfirmasi gunakan kupon";
         String POPUP_KIRIM_KUPON = "pop up kirim kupon";
         String POPUP_TERIMA_HADIAH = "pop up terima hadiah kupon";
+        String KEY_EVENT_CATEGORY_PROFILE_VALUE = "phone number verification";
     }
 
     public interface ActionKeys {
@@ -106,7 +109,6 @@ public class AnalyticsTrackerUtil {
         String CLICK_OK_ON_FAILED = "click ok on failed";
         String CLICK_GUNAKAN_KUPON = "click gunakan kupon";
         String VIEW_REDEEM_SUCCESS = "view redeem success";
-        String CLICK_LEADERBOARD = "click leaderboard";
         String CLICK_COUNTER_KUPON_SAYA = "click counter kupon saya";
         String CLICK_TICKER = "click ticker";
         String CLICK_SEE_ALL_EXPLORE_CATALOG = "click lihat semua coupon catalog";
@@ -114,18 +116,20 @@ public class AnalyticsTrackerUtil {
         String VIEW_BANNERS_ON_HOME_TOKOPOINTS = "view banner on home tokopoints";
         String CLICK_BANNERS_ON_HOME_TOKOPOINTS = "click banner on home tokopoints";
         String CLICK_COUPON_ON_CATALOG = "view coupon on catalog";
+        String KEY_EVENT_ACTION_PROFILE_VALUE = "click on button verifikasi";
+        String KEY_EVENT_ACTION_PROFILE_VALUE_BATAL = "click on button batal";
     }
 
-    public interface EcommerceKeys{
-        String POSITION="position";
-        String NAME="name";
-        String CREATIVE="creative";
-        String PROMOTIONS="promotions";
+    public interface EcommerceKeys {
+        String POSITION = "position";
+        String NAME = "name";
+        String CREATIVE = "creative";
+        String PROMOTIONS = "promotions";
 
     }
 
     public static void sendScreenEvent(Activity context, String screenName) {
-        TrackApp.getInstance().getGTM().sendScreenAuthenticated( screenName);
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName);
     }
 
     public static void sendEvent(Context context, String event, String category,

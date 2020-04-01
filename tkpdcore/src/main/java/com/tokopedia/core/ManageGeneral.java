@@ -6,12 +6,12 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
-import com.google.android.material.tabs.TabLayout;
+
 import androidx.legacy.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.fragment.AboutFragment;
 import com.tokopedia.core.fragment.FragmentSettingPeople;
@@ -22,6 +22,8 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core2.R;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,10 +54,15 @@ public class ManageGeneral extends TkpdActivity implements NotificationReceivedL
         return AppScreen.SCREEN_MANAGE_GENERAL;
     }
 
+    @Nullable
+    @Override
+    protected Integer getParentViewLayoutId() {
+        return R.layout.activity_manage_general;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        inflateView(R.layout.activity_manage_general);
 
         mViewPager = (ViewPager) findViewById(R.id.pager);
         indicator = (TabLayout) findViewById(R.id.indicator);

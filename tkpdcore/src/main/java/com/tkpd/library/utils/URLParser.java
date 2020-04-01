@@ -3,22 +3,22 @@ package com.tkpd.library.utils;
 import android.content.Context;
 import android.net.Uri;
 
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+
+import timber.log.Timber;
 
 public class URLParser {
 
 	private Uri uri;
 
 	public URLParser (String url) {
-		CommonUtils.dumper(url);
+		Timber.d(url);
 		uri = Uri.parse(url);
 	}
 

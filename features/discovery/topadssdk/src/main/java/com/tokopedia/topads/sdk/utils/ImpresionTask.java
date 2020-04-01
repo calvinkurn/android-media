@@ -33,7 +33,7 @@ public class ImpresionTask extends AsyncTask<String, Void, String> {
                     .build();
             try {
                 return RawHttpRequestExecutor.newInstance(request).executeAsGetRequest();
-            } catch (IOException e) {
+            } catch (IOException | RuntimeException e) {
                 e.printStackTrace();
             }
         }

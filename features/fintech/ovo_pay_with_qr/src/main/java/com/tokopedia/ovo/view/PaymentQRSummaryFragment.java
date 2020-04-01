@@ -22,18 +22,20 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
-import com.tokopedia.ovo.OvoPayWithQrRouter;
-import com.tokopedia.ovo.R;
 import com.tokopedia.ovo.analytics.OvoPayByQrTrackerUtil;
 import com.tokopedia.ovo.model.BarcodeResponseData;
 import com.tokopedia.ovo.model.ImeiConfirmResponse;
 import com.tokopedia.ovo.model.Wallet;
 import com.tokopedia.ovo.presenter.PaymentQrSummaryContract;
 import com.tokopedia.ovo.presenter.PaymentQrSummaryPresenterImpl;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -78,6 +80,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
     private TextView pointCash;
     private Wallet wallet;
     private SaveInstanceCacheManager cacheManager;
+    private FirebaseRemoteConfigImpl remoteConfig;
 
     public static Fragment createInstance(String qrData, String imei) {
         Bundle bundle = new Bundle();
@@ -106,41 +109,49 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
         presenter = new PaymentQrSummaryPresenterImpl(getActivity());
         presenter.attachView(this);
         presenter.fetchWalletDetails();
-        cacheManager = new SaveInstanceCacheManager(getActivity().getApplicationContext(), savedInstanceState);
+        cacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
         if (savedInstanceState == null)
-            cacheManager = new SaveInstanceCacheManager(getActivity().getApplicationContext(), id);
+            cacheManager = new SaveInstanceCacheManager(getActivity(), id);
 
-        responseData = cacheManager.get(QR_RESPONSE, new TypeToken<BarcodeResponseData>() {
+        JsonObject response = cacheManager.get(QR_RESPONSE, new TypeToken<JsonObject>() {
         }.getType());
+        if (response != null) {
+            responseData = new GsonBuilder().create().fromJson(response, BarcodeResponseData.class);
 
+        }
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.oqr_payment_qr_summary_fragment, container, false);
+        View view = inflater.inflate(com.tokopedia.ovo.R.layout.oqr_payment_qr_summary_fragment, container, false);
+        initRemoteConfig();
         initViews(view);
         setDataAndListeners();
-        MAX_AMOUNT = ((OvoPayWithQrRouter) getActivity().getApplicationContext()).getMaxAmountFromRemoteConfig();
-        MIN_AMOUNT = ((OvoPayWithQrRouter) getActivity().getApplicationContext()).getMinAmountFromRemoteConfig();
+        MAX_AMOUNT = remoteConfig.getLong(RemoteConfigKey.OVO_QR_MAX_AMOUNT, MAX_AMOUNT);
+        MIN_AMOUNT = remoteConfig.getLong(RemoteConfigKey.OVO_QR_MIN_AMOUNT, MIN_AMOUNT);
         return view;
     }
 
+    private void initRemoteConfig() {
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
+    }
+
     private void initViews(View view) {
-        shopName = view.findViewById(R.id.shop_name);
-        shopDetail = view.findViewById(R.id.merchant_name);
-        inputAmount = view.findViewById(R.id.input_amount);
-        inputError = view.findViewById(R.id.info_error_text);
-        switchLayout = view.findViewById(R.id.switch_layout);
-        bayarLayout = view.findViewById(R.id.btn_text_layout);
-        ovoDetailLayout = view.findViewById(R.id.ovo_detail_layout);
-        pointCash = view.findViewById(R.id.ovo_cash_point);
-        ovoPoints = view.findViewById(R.id.ovo_points);
-        ovoCash = view.findViewById(R.id.ovo_cash);
-        switchButton = view.findViewById(R.id.switch_ovo);
-        bayarBtn = view.findViewById(R.id.bayar_btn);
-        cancelBtn = view.findViewById(R.id.cancel_btn);
-        progressBar = view.findViewById(R.id.pay_progress);
+        shopName = view.findViewById(com.tokopedia.ovo.R.id.shop_name);
+        shopDetail = view.findViewById(com.tokopedia.ovo.R.id.merchant_name);
+        inputAmount = view.findViewById(com.tokopedia.ovo.R.id.input_amount);
+        inputError = view.findViewById(com.tokopedia.ovo.R.id.info_error_text);
+        switchLayout = view.findViewById(com.tokopedia.ovo.R.id.switch_layout);
+        bayarLayout = view.findViewById(com.tokopedia.ovo.R.id.btn_text_layout);
+        ovoDetailLayout = view.findViewById(com.tokopedia.ovo.R.id.ovo_detail_layout);
+        pointCash = view.findViewById(com.tokopedia.ovo.R.id.ovo_cash_point);
+        ovoPoints = view.findViewById(com.tokopedia.ovo.R.id.ovo_points);
+        ovoCash = view.findViewById(com.tokopedia.ovo.R.id.ovo_cash);
+        switchButton = view.findViewById(com.tokopedia.ovo.R.id.switch_ovo);
+        bayarBtn = view.findViewById(com.tokopedia.ovo.R.id.bayar_btn);
+        cancelBtn = view.findViewById(com.tokopedia.ovo.R.id.cancel_btn);
+        progressBar = view.findViewById(com.tokopedia.ovo.R.id.pay_progress);
     }
 
     private void setDataAndListeners() {
@@ -165,7 +176,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
             }
             cancelBtn.setOnClickListener(view1 -> getActivity().finish());
         }
-        OvoPayByQrTrackerUtil.sendEvent(getActivity(),
+        OvoPayByQrTrackerUtil.sendEvent(
                 OvoPayByQrTrackerUtil.EVENT.viewOvoPayEvent,
                 OvoPayByQrTrackerUtil.CATEGORY.ovoPayByQr,
                 OvoPayByQrTrackerUtil.ACTION.viewPagePaymentSummary,
@@ -191,7 +202,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
     @Override
     public void setWalletBalance(Wallet walletData) {
         wallet = walletData;
-        pointCash.setText(String.format(getString(R.string.oqr_cash_point), walletData.getCashBalance(),
+        pointCash.setText(String.format(getString(com.tokopedia.ovo.R.string.oqr_cash_point), walletData.getCashBalance(),
                 walletData.getPointBalance()));
         bayarBtn.setOnClickListener(this);
     }
@@ -208,9 +219,8 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
                     cacheManager.put(TRANSFER_ID, response.getTransferId());
                     localCacheHandler.putString(CACHE_ID, cacheManager.getId());
                     localCacheHandler.applyEditor();
-                    Intent intent = OvoWebViewActivity
-                            .getWebViewIntent(getActivity(), URLDecoder.decode(
-                                    response.getPinUrl(), "UTF-8"), getString(R.string.oqr_pin_page_title));
+                    Intent intent = OvoWebViewActivity.getWebViewIntent(getActivity(), URLDecoder.decode(
+                                    response.getPinUrl(), "UTF-8"), getString(com.tokopedia.ovo.R.string.oqr_pin_page_title));
 
                     startActivity(intent);
                 } catch (UnsupportedEncodingException e) {
@@ -236,7 +246,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
 
     @Override
     public String getErrorMessage() {
-        return getString(R.string.oqr_error_message);
+        return getString(com.tokopedia.ovo.R.string.oqr_error_message);
     }
 
     public void setProgressButton() {
@@ -255,7 +265,7 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
 
     @Override
     public void onFocusChange(View view, boolean hasFocus) {
-        if (view.getId() == R.id.input_amount && hasFocus) {
+        if (view.getId() == com.tokopedia.ovo.R.id.input_amount && hasFocus) {
             getActivity().getWindow().setSoftInputMode(
                     WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }
@@ -268,8 +278,8 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        inputError.setTextColor(getResources().getColor(R.color.oqr_grey_error));
-        inputError.setText(getString(R.string.oqr_min_input_hint));
+        inputError.setTextColor(getResources().getColor(com.tokopedia.ovo.R.color.oqr_grey_error));
+        inputError.setText(getString(com.tokopedia.ovo.R.string.oqr_min_input_hint));
     }
 
     @Override
@@ -285,39 +295,38 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
                 amountInLong = amountInLong / 10L;
             }
             inputAmount.setText(Utils.convertToCurrencyStringWithoutRp(amountInLong));
-            if (wallet != null && amountInLong <= Utils.convertToCurrencyLongFromString(wallet.getPointBalance())) {
+            if (wallet != null && TextUtils.isEmpty(wallet.getPointBalance())
+                    && amountInLong <= Utils.convertToCurrencyLongFromString(wallet.getPointBalance())) {
                 long balanceOvoCash = amountInLong - Utils.convertToCurrencyLongFromString(wallet.getPointBalance());
-                ovoPoints.setText(String.format(getString(R.string.oqr_ovo_cash_point_amnt),
+                ovoPoints.setText(String.format(getString(com.tokopedia.ovo.R.string.oqr_ovo_cash_point_amnt),
                         wallet.getPointBalance()));
-                ovoCash.setText(String.format(getString(R.string.oqr_ovo_cash_point_amnt),
+                ovoCash.setText(String.format(getString(com.tokopedia.ovo.R.string.oqr_ovo_cash_point_amnt),
                         String.valueOf(Utils.convertToCurrencyStringWithoutRp(balanceOvoCash))));
             } else {
-                ovoCash.setText(String.format(getString(R.string.oqr_ovo_cash_point_amnt), String.valueOf(0)));
+                ovoCash.setText(String.format(getString(com.tokopedia.ovo.R.string.oqr_ovo_cash_point_amnt), String.valueOf(0)));
                 ovoPoints.setText(formattedString);
             }
             inputAmount.addTextChangedListener(this);
             inputAmount.setSelection(inputAmount.getText().length());
-
-
         }
     }
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.bayar_btn) {
+        if (view.getId() == com.tokopedia.ovo.R.id.bayar_btn) {
             hideKeyboard(getView(), getActivity());
             if (TextUtils.isEmpty(inputAmount.getText())
                     || Utils.convertToCurrencyLongFromString(inputAmount.getText().toString()) < MIN_AMOUNT) {
-                setErrorMessage(getString(R.string.oqr_min_input_hint));
+                setErrorMessage(getString(com.tokopedia.ovo.R.string.oqr_min_input_hint));
             } else if (Utils.convertToCurrencyLongFromString(inputAmount.getText().toString()) > MAX_AMOUNT) {
-                setErrorMessage(getString(R.string.oqr_max_input_hint));
+                setErrorMessage(getString(com.tokopedia.ovo.R.string.oqr_max_input_hint));
             } else if (Utils.convertToCurrencyLongFromString(
                     inputAmount.getText().toString()) > wallet.getRawCashBalance()) {
-                setErrorMessage(getString(R.string.oqr_balance_exceed_error));
+                setErrorMessage(getString(com.tokopedia.ovo.R.string.oqr_balance_exceed_error));
             } else {
                 confirmQrRequest();
             }
-            OvoPayByQrTrackerUtil.sendEvent(getActivity(),
+            OvoPayByQrTrackerUtil.sendEvent(
                     OvoPayByQrTrackerUtil.EVENT.clickOvoPayEvent,
                     OvoPayByQrTrackerUtil.CATEGORY.ovoPayByQr,
                     OvoPayByQrTrackerUtil.ACTION.clickBayar,
@@ -340,6 +349,6 @@ public class PaymentQRSummaryFragment extends BaseDaggerFragment implements
 
     public void setErrorMessage(String message) {
         inputError.setText(message);
-        inputError.setTextColor(getResources().getColor(R.color.oqr_error_color));
+        inputError.setTextColor(getResources().getColor(com.tokopedia.ovo.R.color.oqr_error_color));
     }
 }

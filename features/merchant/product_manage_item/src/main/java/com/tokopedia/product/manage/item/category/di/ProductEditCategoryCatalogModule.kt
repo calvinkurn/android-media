@@ -1,34 +1,32 @@
 package com.tokopedia.product.manage.item.category.di
 
 import android.content.Context
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.core.base.di.qualifier.ApplicationContext
-import com.tokopedia.core.common.category.data.repository.CategoryRepositoryImpl
-import com.tokopedia.core.common.category.data.source.CategoryDataSource
-import com.tokopedia.core.common.category.data.source.CategoryVersionDataSource
-import com.tokopedia.core.common.category.data.source.FetchCategoryDataSource
-import com.tokopedia.core.common.category.data.source.cloud.api.HadesCategoryApi
 import com.tokopedia.core.common.category.data.source.db.CategoryDB
 import com.tokopedia.core.common.category.data.source.db.CategoryDao
-import com.tokopedia.core.common.category.domain.CategoryRepository
+import com.tokopedia.core.common.category.di.module.CategoryPickerModule
 import com.tokopedia.core.network.di.qualifier.AceQualifier
-import com.tokopedia.core.network.di.qualifier.HadesQualifier
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier
+import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.catalog.data.repository.CatalogRepositoryImpl
 import com.tokopedia.product.manage.item.catalog.data.source.CatalogDataSource
 import com.tokopedia.product.manage.item.catalog.domain.CatalogRepository
 import com.tokopedia.product.manage.item.category.data.repository.CategoryRecommRepositoryImpl
 import com.tokopedia.product.manage.item.category.data.source.CategoryRecommDataSource
 import com.tokopedia.product.manage.item.category.domain.CategoryRecommRepository
+import com.tokopedia.product.manage.item.common.constant.ProductAddParamConstant
 import com.tokopedia.product.manage.item.main.add.di.ProductAddScope
 import com.tokopedia.product.manage.item.main.base.data.source.cloud.api.MerlinApi
 import com.tokopedia.product.manage.item.main.base.data.source.cloud.api.SearchApi
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
+import javax.inject.Named
 
 @ProductAddScope
-@Module
-class ProductEditCategoryCatalogModule{
+@Module(includes = arrayOf(CategoryPickerModule::class))
+class ProductEditCategoryCatalogModule {
 
     @ProductAddScope
     @Provides
@@ -48,25 +46,12 @@ class ProductEditCategoryCatalogModule{
 
     @ProductAddScope
     @Provides
-    fun provideCategoryDao(@ApplicationContext context: Context): CategoryDao {
-        return CategoryDB.getInstance(context).getCategoryDao()
-    }
-
-    @ProductAddScope
-    @Provides
-    fun provideCategoryRepository(categoryVersionDataSource: CategoryVersionDataSource,
-                                           categoryDataSource: CategoryDataSource,
-                                           fetchCategoryDataSource: FetchCategoryDataSource): CategoryRepository {
-        return CategoryRepositoryImpl(categoryVersionDataSource, categoryDataSource, fetchCategoryDataSource)
-    }
-
-    @ProductAddScope
-    @Provides
-    fun provideHadesCategoryApi(@HadesQualifier retrofit: Retrofit): HadesCategoryApi {
-        return retrofit.create(HadesCategoryApi::class.java)
-    }
-
-    @ProductAddScope
-    @Provides
     fun provideSearchApi(@AceQualifier retrofit: Retrofit) = retrofit.create(SearchApi::class.java)
+
+    @ProductAddScope
+    @Provides
+    @Named(ProductAddParamConstant.RAW_JARVIS_RECOMMENDATION)
+    fun provideJarvisRecommendationRaw(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_jarvis_recommendation)
+    }
 }

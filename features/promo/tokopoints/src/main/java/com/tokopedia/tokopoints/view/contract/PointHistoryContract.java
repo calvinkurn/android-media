@@ -19,11 +19,4 @@ public interface PointHistoryContract {
 
         Context getActivityContext();
     }
-
-    interface Presenter extends CustomerPresenter<View> {
-        void destroyView();
-
-        void getPointsDetail();
-
-    }
 }

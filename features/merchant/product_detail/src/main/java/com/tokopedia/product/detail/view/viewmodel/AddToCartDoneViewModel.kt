@@ -2,17 +2,9 @@ package com.tokopedia.product.detail.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.debugTrace
-import com.tokopedia.product.detail.data.util.getSuccessData
-import com.tokopedia.product.detail.di.RawQueryKeyConstant
-import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
-import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.usecase.coroutines.Fail
@@ -22,7 +14,10 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -56,7 +51,7 @@ class AddToCartDoneViewModel @Inject constructor(
     fun getRecommendationProduct(productId: String) {
         launchCatchError(block = {
             val recommendationWidget = withContext(Dispatchers.IO) {
-                if (GlobalConfig.isCustomerApp())
+                if (!GlobalConfig.isSellerApp())
                     loadRecommendationProduct(productId)
                 else listOf()
             }
@@ -76,7 +71,7 @@ class AddToCartDoneViewModel @Inject constructor(
             )).toBlocking()
             return data.first()?: emptyList()
         } catch (e: Throwable) {
-            e.debugTrace()
+            Timber.d(e)
             throw e
         }
     }

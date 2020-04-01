@@ -6,8 +6,8 @@ import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
-import com.tokopedia.logisticcart.shipping.model.ShippingDurationViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentContract;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
@@ -31,13 +31,14 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
     private final ShipmentCartItemModel shipmentCartItemModel;
     private final List<ShopShipment> shopShipmentList;
     private final boolean isInitialLoad;
+    private final boolean isTradeInDropOff;
 
     public GetCourierRecommendationSubscriber(ShipmentContract.View view, ShipmentContract.Presenter presenter,
                                               int shipperId, int spId, int itemPosition,
                                               ShippingCourierConverter shippingCourierConverter,
                                               ShipmentCartItemModel shipmentCartItemModel,
                                               List<ShopShipment> shopShipmentList,
-                                              boolean isInitialLoad) {
+                                              boolean isInitialLoad, boolean isTradeInDropOff) {
         this.view = view;
         this.presenter = presenter;
         this.shipperId = shipperId;
@@ -47,6 +48,7 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
         this.shipmentCartItemModel = shipmentCartItemModel;
         this.shopShipmentList = shopShipmentList;
         this.isInitialLoad = isInitialLoad;
+        this.isTradeInDropOff = isTradeInDropOff;
     }
 
     @Override
@@ -58,7 +60,7 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
     public void onError(Throwable e) {
         e.printStackTrace();
         if (isInitialLoad) {
-            view.renderCourierStateFailed(itemPosition);
+            view.renderCourierStateFailed(itemPosition, isTradeInDropOff);
         } else {
             view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel, shopShipmentList);
         }
@@ -70,23 +72,23 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
             if (shippingRecommendationData != null &&
                     shippingRecommendationData.getShippingDurationViewModels() != null &&
                     shippingRecommendationData.getShippingDurationViewModels().size() > 0) {
-                for (ShippingDurationViewModel shippingDurationViewModel : shippingRecommendationData.getShippingDurationViewModels()) {
-                    if (shippingDurationViewModel.getShippingCourierViewModelList() != null &&
-                            shippingDurationViewModel.getShippingCourierViewModelList().size() > 0) {
-                        for (ShippingCourierViewModel shippingCourierViewModel : shippingDurationViewModel.getShippingCourierViewModelList()) {
-                            shippingCourierViewModel.setSelected(false);
+                for (ShippingDurationUiModel shippingDurationUiModel : shippingRecommendationData.getShippingDurationViewModels()) {
+                    if (shippingDurationUiModel.getShippingCourierViewModelList() != null &&
+                            shippingDurationUiModel.getShippingCourierViewModelList().size() > 0) {
+                        for (ShippingCourierUiModel shippingCourierUiModel : shippingDurationUiModel.getShippingCourierViewModelList()) {
+                            shippingCourierUiModel.setSelected(false);
                         }
-                        for (ShippingCourierViewModel shippingCourierViewModel : shippingDurationViewModel.getShippingCourierViewModelList()) {
-                            if (shippingCourierViewModel.getProductData().getShipperProductId() == spId &&
-                                    shippingCourierViewModel.getProductData().getShipperId() == shipperId) {
-                                if (shippingCourierViewModel.getProductData().getError() != null &&
-                                        !TextUtils.isEmpty(shippingCourierViewModel.getProductData().getError().getErrorMessage())) {
-                                    view.renderCourierStateFailed(itemPosition);
+                        for (ShippingCourierUiModel shippingCourierUiModel : shippingDurationUiModel.getShippingCourierViewModelList()) {
+                            if (isTradeInDropOff || (shippingCourierUiModel.getProductData().getShipperProductId() == spId &&
+                                    shippingCourierUiModel.getProductData().getShipperId() == shipperId)) {
+                                if (shippingCourierUiModel.getProductData().getError() != null &&
+                                        !TextUtils.isEmpty(shippingCourierUiModel.getProductData().getError().getErrorMessage())) {
+                                    view.renderCourierStateFailed(itemPosition, isTradeInDropOff);
                                     return;
                                 } else {
-                                    shippingCourierViewModel.setSelected(true);
-                                    presenter.setShippingCourierViewModelsState(shippingDurationViewModel.getShippingCourierViewModelList(), itemPosition);
-                                    CourierItemData courierItemData = shippingCourierConverter.convertToCourierItemData(shippingCourierViewModel);
+                                    shippingCourierUiModel.setSelected(true);
+                                    presenter.setShippingCourierViewModelsState(shippingDurationUiModel.getShippingCourierViewModelList(), itemPosition);
+                                    CourierItemData courierItemData = shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel);
                                     if (shippingRecommendationData.getLogisticPromo() != null) {
                                         String disableMsg = shippingRecommendationData.getLogisticPromo().getDisableText();
                                         courierItemData.setLogPromoMsg(disableMsg);
@@ -104,7 +106,7 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                                             courierItemData.setHideShipperName(shippingRecommendationData.getLogisticPromo().getHideShipperName());
                                         }
                                     }
-                                    view.renderCourierStateSuccess(courierItemData, itemPosition);
+                                    view.renderCourierStateSuccess(courierItemData, itemPosition, isTradeInDropOff);
                                     return;
                                 }
                             }
@@ -112,16 +114,16 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                     }
                 }
             }
-            view.renderCourierStateFailed(itemPosition);
+            view.renderCourierStateFailed(itemPosition, isTradeInDropOff);
         } else {
             if (shippingRecommendationData != null &&
                     shippingRecommendationData.getShippingDurationViewModels() != null &&
                     shippingRecommendationData.getShippingDurationViewModels().size() > 0) {
-                for (ShippingDurationViewModel shippingDurationViewModel : shippingRecommendationData.getShippingDurationViewModels()) {
-                    for (ProductData productData : shippingDurationViewModel.getServiceData().getProducts()) {
+                for (ShippingDurationUiModel shippingDurationUiModel : shippingRecommendationData.getShippingDurationViewModels()) {
+                    for (ProductData productData : shippingDurationUiModel.getServiceData().getProducts()) {
                         if (productData.getShipperId() == shipperId && productData.getShipperProductId() == spId) {
                             view.updateCourierBottomssheetHasData(
-                                    shippingDurationViewModel.getShippingCourierViewModelList(),
+                                    shippingDurationUiModel.getShippingCourierViewModelList(),
                                     itemPosition, shipmentCartItemModel, shopShipmentList
                             );
                             return;

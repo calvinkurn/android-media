@@ -2,7 +2,7 @@ package com.tokopedia.topchat.chattemplate.view.listener;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel;
+import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateUiModel;
 
 /**
  * Created by stevenfredian on 12/22/17.
@@ -11,7 +11,7 @@ import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel;
 public class EditTemplateChatContract {
 
     public interface View extends CustomerView {
-        void onResult(EditTemplateViewModel editTemplateViewModel, int index, String s);
+        void onResult(EditTemplateUiModel editTemplateViewModel, int index, String s);
 
         void finish();
 
@@ -19,7 +19,7 @@ public class EditTemplateChatContract {
 
         void showError(Throwable error);
 
-        void onResult(EditTemplateViewModel editTemplateViewModel, int index);
+        void onResult(EditTemplateUiModel editTemplateViewModel, int index);
     }
 
     public interface Presenter extends CustomerPresenter<View> {

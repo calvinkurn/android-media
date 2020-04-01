@@ -1,13 +1,20 @@
 <resources>
     <string name="similar_search_app_name">similarsearch</string>
-    <string name="title_similar_search">Pencarian Serupa</string>
+    <string name="title_similar_search">Produk Serupa</string>
 
-    <string name="view_similar_item">Lihat Barang Serupa</string>
-    <string name="press_to_see_similar">Tekan dan tahan produk pilihan Anda untuk melihat produk serupa.</string>
-    <string name="similar_product_not_found">Hasil produk serupa tidak dapat ditemukan. Silahkan pilih produk lain.</string>
-    <string name="title_product_not_found">Produk serupa tidak ditemukan</string>
-    <string name="produk_serupa">Produk Serupa</string>
-    <string name="msg_remove_wishlist">Sukses menghapus wishlist</string>
-    <string name="msg_add_wishlist">Sukses menambah wishlist</string>
+    <string name="similar_search_original_product_review_count">(%s)</string>
+    <string name="similar_search_original_product_buy">Beli</string>
+    <string name="similar_search_original_product_add_to_cart">Tambah ke Keranjang</string>
+    <string name="similar_search_original_product_add_to_cart_collapsed">+ Keranjang</string>
+    <string name="similar_search_title">Mungkin kamu suka</string>
+    <string name="similar_search_remove_wishlist_success">Sukses menghapus wishlist</string>
+    <string name="similar_search_add_wishlist_success">Sukses menambah wishlist</string>
+    <string name="similar_search_remove_wishlist_failed">Gagal menghapus wishlist</string>
+    <string name="similar_search_add_wishlist_failed">Gagal menambah wishlist</string>
+    <string name="similar_search_add_to_cart_success">Sukses menambah ke keranjang</string>
+    <string name="similar_search_add_to_cart_failed">Gagal menambah ke keranjang</string>
+    <string name="similar_search_empty_title">Oops, nggak ada yang mirip</string>
+    <string name="similar_search_empty_content">Lagi nggak ada Produk Serupa, nih. Yuk, cek hasil pencarian lainnya!</string>
+    <string name="similar_search_empty_button">Cek Hasil Pencarian</string>
 
 </resources>

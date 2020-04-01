@@ -23,7 +23,7 @@ public interface InAppDataDao {
     @Query("DELETE FROM inapp_data where id = :id")
     void deleteRecord(long id);
 
-    @Query("SELECT * from inapp_data where s = :screenName")
+    @Query("SELECT * from inapp_data where s = :screenName or s = '*'")
     List<CMInApp> getDataForScreen(String screenName);
 
     @Query("SELECT * from inapp_data where id = :id LIMIT 1")

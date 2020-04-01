@@ -14,9 +14,13 @@ data class ChatRoomHeaderViewModel(
         var mode: Int = 1,
         var keyword: String = "",
         var image: String = "",
-        var lastTimeOnline : String = "",
-        var isOnline : Boolean = false,
-        var shopId : Int = 0) : Parcelable {
+        var lastTimeOnline: String = "",
+        var isOnline: Boolean = false,
+        var shopId: Int = 0,
+        val isOfficial: Boolean = false,
+        val isGold: Boolean = false,
+        val badge: String = ""
+) : Parcelable {
 
     constructor(parcel: Parcel) : this() {
         name = parcel.readString()

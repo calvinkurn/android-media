@@ -2,7 +2,7 @@ package com.tokopedia.purchase_platform.features.express_checkout.view.variant.a
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.*
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.*
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -10,21 +10,21 @@ import com.tokopedia.purchase_platform.features.express_checkout.view.variant.vi
 
 interface CheckoutVariantTypeFactory {
 
-    fun type(viewModel: NoteViewModel): Int
+    fun type(uiModel: NoteUiModel): Int
 
-    fun type(viewModel: ProductViewModel): Int
+    fun type(uiModel: ProductUiModel): Int
 
-    fun type(viewModel: ProfileViewModel): Int
+    fun type(uiModel: ProfileUiModel): Int
 
-    fun type(viewModel: QuantityViewModel): Int
+    fun type(uiModel: QuantityUiModel): Int
 
-    fun type(viewModel: SummaryViewModel): Int
+    fun type(uiModel: SummaryUiModel): Int
 
-    fun type(viewModel: TypeVariantViewModel): Int
+    fun type(uiModel: TypeVariantUiModel): Int
 
-    fun type(viewModel: InsuranceViewModel): Int
+    fun type(uiModel: InsuranceUiModel): Int
 
-    fun type(viewModel: InsuranceRecommendationViewModel): Int
+    fun type(uiModel: InsuranceRecommendationUiModel): Int
 
     fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
 

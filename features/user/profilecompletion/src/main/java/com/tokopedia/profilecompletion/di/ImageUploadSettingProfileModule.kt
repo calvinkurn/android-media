@@ -4,7 +4,6 @@ import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageuploader.data.*
@@ -20,6 +19,7 @@ import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.profilecompletion.data.UploadProfileImageModel
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module

@@ -7,18 +7,6 @@ public class CatalogFilterPointRange {
     @SerializedName("id")
     private int id;
 
-    @SerializedName("index")
-    private int index;
-
-    @SerializedName("maxPoint")
-    private int maxPoint;
-
-    @SerializedName("minPoint")
-    private int minPoint;
-
-    @SerializedName("myPoint")
-    private int myPoint;
-
     @SerializedName("text")
     private String text;
 
@@ -33,37 +21,9 @@ public class CatalogFilterPointRange {
         this.id = id;
     }
 
-    public int getIndex() {
-        return index;
-    }
 
-    public void setIndex(int index) {
-        this.index = index;
-    }
 
-    public int getMaxPoint() {
-        return maxPoint;
-    }
 
-    public void setMaxPoint(int maxPoint) {
-        this.maxPoint = maxPoint;
-    }
-
-    public int getMinPoint() {
-        return minPoint;
-    }
-
-    public void setMinPoint(int minPoint) {
-        this.minPoint = minPoint;
-    }
-
-    public int getMyPoint() {
-        return myPoint;
-    }
-
-    public void setMyPoint(int myPoint) {
-        this.myPoint = myPoint;
-    }
 
     public String getText() {
         return text;
@@ -85,10 +45,6 @@ public class CatalogFilterPointRange {
     public String toString() {
         return "CatalogFilterPointRange{" +
                 "id=" + id +
-                ", index=" + index +
-                ", maxPoint=" + maxPoint +
-                ", minPoint=" + minPoint +
-                ", myPoint=" + myPoint +
                 ", text='" + text + '\'' +
                 '}';
     }

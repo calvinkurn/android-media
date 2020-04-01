@@ -1,0 +1,26 @@
+{
+  "meta": {
+    "total_data": 2
+  },
+  "data": {
+    "tickers": [
+      {
+        "id": 198,
+        "title": "spam",
+        "message": "spam",
+        "ticker_type": 1,
+        "color": "#cde4c3",
+        "layout": "default"
+      },
+      {
+        "id": 199,
+        "title": "spam",
+        "message": "spam",
+        "ticker_type": 1,
+        "color": "#cde4c3",
+        "layout": "default"
+      }
+    ]
+  },
+  "process_time": 0.002433
+}

@@ -11,17 +11,11 @@ import com.tokopedia.core.util.RouterUtils;
 
 @Deprecated
 public class TransactionCartRouter {
-    private final static String CART_ACTIVITY_OLD
-            = "com.tokopedia.transaction.cart.activity.CartActivity";
 
     private final static String CART_ACTIVITY_NEW
             = "com.tokopedia.purchase_platform.features.cart.view.CartActivity";
 
     public static Intent createInstanceCartActivity(Context context) {
         return RouterUtils.getActivityIntent(context, CART_ACTIVITY_NEW);
-    }
-
-    public static Class<?> createInstanceCartClass() throws ClassNotFoundException {
-        return RouterUtils.getActivityClass(CART_ACTIVITY_NEW);
     }
 }

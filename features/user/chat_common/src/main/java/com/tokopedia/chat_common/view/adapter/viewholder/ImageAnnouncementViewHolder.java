@@ -26,7 +26,6 @@ public class ImageAnnouncementViewHolder extends BaseChatViewHolder<ImageAnnounc
         super(itemView);
         attachment = itemView.findViewById(R.id.image);
         this.listener = listener;
-
     }
 
     @Override
@@ -42,5 +41,10 @@ public class ImageAnnouncementViewHolder extends BaseChatViewHolder<ImageAnnounc
         if (attachment != null) {
             ImageHandler.clearImage(attachment);
         }
+    }
+
+    @Override
+    protected int getDateId() {
+        return R.id.tvDate;
     }
 }

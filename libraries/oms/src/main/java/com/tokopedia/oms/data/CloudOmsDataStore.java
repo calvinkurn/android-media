@@ -1,8 +1,8 @@
 package com.tokopedia.oms.data;
 
 import com.google.gson.JsonObject;
-import com.tokopedia.abstraction.common.network.mapper.DataResponseMapper;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.network.mapper.DataResponseMapper;
 import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartResponse;
 import com.tokopedia.oms.data.source.OmsApi;
 

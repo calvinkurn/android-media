@@ -1,7 +1,6 @@
 package com.tokopedia.base.list.seller.view.old;
 
 import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,11 +8,14 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.base.list.seller.R;
 
 import java.util.List;
+
+import timber.log.Timber;
 
 /**
  * Created by Nisie on 19/06/15.
@@ -146,7 +148,7 @@ public class BaseRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CommonUtils.dumper("NISIETAGCONNECTION : RETRY CLICKED");
+                Timber.d("NISIETAGCONNECTION : RETRY CLICKED");
                 setIsRetry(false);
                 setIsLoading(true);
                 notifyDataSetChanged();

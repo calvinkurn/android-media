@@ -1,8 +1,8 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
-import androidx.annotation.IdRes;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import android.text.Editable;
@@ -16,13 +16,13 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.analytic.AppScreen;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationReportActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationReport;
@@ -37,11 +37,11 @@ import javax.inject.Inject;
 public class InboxReputationReportFragment extends BaseDaggerFragment
         implements InboxReputationReport.View {
 
-    Button sendButton;
-    RadioGroup reportRadioGroup;
-    RadioButton otherRadioButton;
-    EditText otherReason;
-    TkpdProgressDialog progressDialog;
+    private Button sendButton;
+    private RadioGroup reportRadioGroup;
+    private RadioButton otherRadioButton;
+    private EditText otherReason;
+    private ProgressDialog progressDialog;
 
     @Inject
     InboxReputationReportPresenter presenter;
@@ -62,11 +62,11 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
+        BaseAppComponent baseAppComponent = ((BaseMainApplication) requireContext().getApplicationContext()).getBaseAppComponent();
         DaggerReputationComponent reputationComponent =
                 (DaggerReputationComponent) DaggerReputationComponent
                         .builder()
-                        .appComponent(appComponent)
+                        .baseAppComponent(baseAppComponent)
                         .build();
         reputationComponent.inject(this);
     }
@@ -88,12 +88,7 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
     }
 
     private void prepareView() {
-        reportRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-                setSendButton();
-            }
-        });
+        reportRadioGroup.setOnCheckedChangeListener((group, checkedId) -> setSendButton());
         otherReason.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -112,23 +107,15 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
             }
         });
 
-        otherReason.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                otherRadioButton.setChecked(true);
-            }
-        });
+        otherReason.setOnClickListener(view -> otherRadioButton.setChecked(true));
 
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.reportReview(
-                        getArguments().getString(InboxReputationReportActivity.ARGS_REVIEW_ID, ""),
-                        String.valueOf(getArguments().getInt(InboxReputationReportActivity.ARGS_SHOP_ID)),
-                        reportRadioGroup.getCheckedRadioButtonId(),
-                        otherReason.getText().toString());
-            }
-        });
+        sendButton.setOnClickListener(view -> presenter.reportReview(
+                getArguments().getString(InboxReputationReportActivity.ARGS_REVIEW_ID, ""),
+                String.valueOf(getArguments().getInt(InboxReputationReportActivity.ARGS_SHOP_ID)),
+                reportRadioGroup.getCheckedRadioButtonId(),
+                otherReason.getText().toString()));
+
+        initProgressDialog();
     }
 
     private void setSendButton() {
@@ -149,6 +136,15 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
         }
     }
 
+    private void initProgressDialog() {
+        if(getContext() != null) {
+            progressDialog = new ProgressDialog(getContext());
+            progressDialog.setTitle("");
+            progressDialog.setMessage(getContext().getString(R.string.progress_dialog_loading));
+            progressDialog.setCancelable(false);
+        }
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -158,12 +154,8 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
 
     @Override
     public void showLoadingProgress() {
-        if (progressDialog == null && getActivity() != null)
-            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog
-                    .NORMAL_PROGRESS);
-
-        if (progressDialog != null)
-            progressDialog.showDialog();
+        if (!progressDialog.isShowing() && getContext() != null && progressDialog != null)
+            progressDialog.show();
     }
 
     @Override
@@ -179,7 +171,7 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
 
     @Override
     public void removeLoadingProgress() {
-        if (progressDialog != null)
+        if (progressDialog.isShowing() && getContext() != null && progressDialog != null)
             progressDialog.dismiss();
     }
 }

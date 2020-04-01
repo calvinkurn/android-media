@@ -40,7 +40,23 @@ class GqlAkamaiBotInterceptor : Interceptor {
                             newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
                                     ?: "")
                             newRequest.addHeader("X-TKPD-AKAMAI","register")
-                        }else{
+                        }else if (it.contains("getPDPInfo") ) {
+                            newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
+                                    ?: "")
+                            newRequest.addHeader("X-TKPD-AKAMAI", "product_info")
+                        }else if (it.contains("shopInfoByID") ) {
+                            newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
+                                    ?: "")
+                            newRequest.addHeader("X-TKPD-AKAMAI", "shop_info")
+                        } else if(it.contains("followShop")){
+                            newRequest.addHeader("X-TKPD-AKAMAI", "followshop")
+                            newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
+                                    ?: "")
+                        } else if (it.contains("add_to_cart") || it.contains("atcOCS") || it.contains("AddToCartTransactional")) {
+                            newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
+                                    ?: "")
+                            newRequest.addHeader("X-TKPD-AKAMAI", "atc")
+                        } else {
                             // none
                         }
 

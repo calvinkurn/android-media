@@ -1,6 +1,7 @@
 package com.tokopedia.browse.categoryNavigation.domain.usecase
 
 import android.content.Context
+import android.preference.PreferenceManager
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.browse.R
 import com.tokopedia.browse.categoryNavigation.data.model.category.CategoryAllList
@@ -16,12 +17,13 @@ import com.tokopedia.usecase.UseCase
 import rx.Observable
 import javax.inject.Inject
 
+private const val KEY_SAFE_SEARCH = "safeSearch"
+
 class GetCategoryLevelOneUseCase
 @Inject constructor(private val context: Context,
                     private val graphqlUseCase: GraphqlUseCase)
     : UseCase<CategoryAllList>() {
 
-    private  val KEY_SAFE_SEARCH = "safeSearch"
 
     fun createRequestParams(safeSearch: Boolean): RequestParams {
         val requestParams = RequestParams.create()
@@ -33,19 +35,29 @@ class GetCategoryLevelOneUseCase
     override fun createObservable(requestParams: RequestParams?): Observable<CategoryAllList> {
 
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                R.raw.category_list), Data::class.java, requestParams!!.parameters, false)
+                R.raw.category_list), Data::class.java, requestParams?.parameters)
         graphqlUseCase.clearRequest()
-
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                 .setExpiryTime(GraphqlConstant.ExpiryTimes.HOUR.`val`() * 2).setSessionIncluded(true).build()
 
         graphqlUseCase.setCacheStrategy(cacheStrategy)
         graphqlUseCase.addRequest(graphqlRequest)
+        val cacheCleared = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(context.getString(R.string.clear_cache), true)
+        if (!cacheCleared) {
+            graphqlUseCase.clearCache()
+            saveSettingValue(context.getString(R.string.clear_cache), true)
+        }
         return graphqlUseCase.createObservable(requestParams).map {
 
             CategoryListOneModelMapper().transform((it.getData(Data::class.java)) as Data)
         }
+    }
 
+    private fun saveSettingValue(key: String, isChecked: Boolean) {
+        val settings = PreferenceManager.getDefaultSharedPreferences(context)
+        val editor = settings.edit()
+        editor.putBoolean(key, isChecked)
+        editor.apply()
     }
 
 }

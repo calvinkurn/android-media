@@ -37,13 +37,6 @@ public class NetworkCalculator {
     public static final String HASH = "hash";
     public static final String DEVICE_TIME = "device_time";
 
-    // flag to determine if api need login or not
-    int isNeedLogin;
-    // flag that indicate if all things needed to process already gathered.
-    int isAllParamSupply;
-    // flag that indicate that listener for returned value from server
-    boolean isListenerSet;
-
     // value for GET or POST
     // reduce amount of memory using integer for Network Type flag
     private int NetworkType;
@@ -212,27 +205,7 @@ public class NetworkCalculator {
         return deviceId;
     }
 
-    public static String getHash(NetworkCalculator networkCalculator){
-        return networkCalculator.getContent().get(HASH);
-    }
-
-    public static String getDeviceTime(NetworkCalculator networkCalculator){
-        return networkCalculator.getContent().get(DEVICE_TIME);
-    }
-
-    public static String getContentMd5(NetworkCalculator networkCalculator){
-        return networkCalculator.getHeader().get(CONTENT_MD5);
-    }
-
     public static String getDate(NetworkCalculator networkCalculator){
         return networkCalculator.getHeader().get(DATE);
-    }
-
-    public static String getAuthorization(NetworkCalculator networkCalculator){
-        return networkCalculator.getHeader().get(AUTHORIZATION);
-    }
-
-    public static String getxMethod(NetworkCalculator networkCalculator){
-        return networkCalculator.getHeader().get(X_METHOD);
     }
 }

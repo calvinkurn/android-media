@@ -2,7 +2,7 @@ package com.tokopedia.nps.presentation.presenter;
 
 import android.os.Build;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.nps.domain.Feedback;
 import com.tokopedia.nps.domain.interactor.PostFeedbackUseCase;
 import com.tokopedia.nps.presentation.view.FeedbackView;

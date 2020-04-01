@@ -9,19 +9,22 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class ProfileCompletionData(
-    @SerializedName("fullName") @Expose
-    var fullName: String = "",
-    @SerializedName("birthDay") @Expose
-    var birthDay: String = "",
-    @SerializedName("gender") @Expose
-    var gender: Int = 0,
-    @SerializedName("email") @Expose
-    var email: String = "",
-    @SerializedName("msisdn") @Expose
-    var phone: String = "",
-    @SerializedName("isMsisdnVerified")
-    var isPhoneVerified: Boolean = false,
-    @SerializedName("isEmailDone")
-    var isEmailDone: Boolean = false,
-    var profilePicture: String = ""
+        @Expose @SerializedName("isActive") var isActive: Boolean = false,
+        @Expose @SerializedName("fullName") var fullName: String = "",
+        @Expose @SerializedName("birthDate") var birthDate: String = "",
+        @Expose @SerializedName("birthDay") var birthDay: String = "",
+        @Expose @SerializedName("birthMonth") var birthMonth: String = "",
+        @Expose @SerializedName("birthYear") var birthYear: String = "",
+        @Expose @SerializedName("gender") var gender: Int = 0,
+        @Expose @SerializedName("email") var email: String = "",
+        @Expose @SerializedName("msisdn") var msisdn: String = "",
+        @Expose @SerializedName("isMsisdnVerified") var isMsisdnVerified: Boolean = false,
+        @Expose @SerializedName("isCreatedPassword") var isCreatedPassword: Boolean = false,
+        @Expose @SerializedName("isBiodataDone") var isBiodataDone: Boolean = false,
+        @Expose @SerializedName("isEmailDone") var isEmailDone: Boolean = false,
+        @Expose @SerializedName("isPasswordDone") var isPasswordDone: Boolean = false,
+        @Expose @SerializedName("isMsisdnDone") var isMsisdnDone: Boolean = false,
+        @Expose @SerializedName("completionDone") var completionDone: Boolean = false,
+        @Expose @SerializedName("completionScore") var completionScore: Int = 0,
+        var profilePicture: String = ""
 )

@@ -1,0 +1,3 @@
+package com.tokopedia.smart_recycler_helper
+
+interface SmartListener

@@ -3,7 +3,7 @@ package com.tokopedia.recentview.data.mapper;
 
 import androidx.annotation.NonNull;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.recentview.data.entity.Badge;
 import com.tokopedia.recentview.data.entity.Label;
 import com.tokopedia.recentview.data.entity.ProductItem;

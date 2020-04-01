@@ -24,7 +24,7 @@ import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 import com.tokopedia.sellerapp.SellerMainApplication;
 
 import java.util.Map;
-
+import timber.log.Timber;
 import rx.Observable;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
@@ -54,7 +54,7 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
     }
 
     public void onNotificationReceived(String from, Bundle data){
-        CommonUtils.dumper("onNotificationReceived");
+        Timber.d("onNotificationReceived");
         if (isApplinkNotification(data)) {
             if (!isInExcludedActivity(data)) {
                 PushNotification.notify(mContext, data);

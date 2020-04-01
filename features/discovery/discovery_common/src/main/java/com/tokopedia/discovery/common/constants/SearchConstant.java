@@ -33,6 +33,7 @@ public interface SearchConstant {
     interface Wishlist {
         String WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition";
         String WISHLIST_STATUS_IS_WISHLIST = "isWishlist";
+        String WISHLIST_PRODUCT_ID = "product_id";
         String PRODUCT_WISHLIST_URL = "product_wishlist_url";
         String PRODUCT_WISHLIST_URL_USE_CASE = "product_wishlist_url_use_case";
     }
@@ -87,6 +88,7 @@ public interface SearchConstant {
         String ADS_SOURCE = "search";
         String SEARCH_SHOP_VIEW_MODEL_FACTORY = "search_shop_view_model_factory";
         int SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT = 3;
+        int HEADLINE_PRODUCT_COUNT = 3;
     }
 
     interface ShopStatus {
@@ -137,5 +139,12 @@ public interface SearchConstant {
 
     interface SimilarSearch {
         String QUERY = "SIMILAR_SEARCH_QUERY";
+    }
+
+    interface Advertising {
+        String ADVERTISING_ID = "ADVERTISINGID";
+        String KEY_ADVERTISING_ID = "KEY_ADVERTISINGID";
+        String ADVERTISING_LOCAL_CACHE = "ADVERTISING_LOCAL_CACHE";
+        String APP_CLIENT_ID = "appClientId";
     }
 }

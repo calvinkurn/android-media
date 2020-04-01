@@ -62,7 +62,7 @@
                 android:lineSpacingExtra="4sp"
                 android:maxLines="1"
                 android:textColor="@color/Neutral_N700_96"
-                app:typographyType="body_3"
+                app:typographyType="heading_5"
                 tools:text="Enfagrow A+ Susu Anak 1-3 Tahun - Vanilla Enak Sekali Diminum Setiap hari" />
 
             <com.tokopedia.unifyprinciples.Typography

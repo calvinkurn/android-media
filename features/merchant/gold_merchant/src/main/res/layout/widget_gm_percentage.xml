@@ -11,8 +11,7 @@
         android:layout_gravity="center_vertical"
         android:layout_marginEnd="@dimen/dp_5"
         android:layout_marginRight="@dimen/dp_5"
-        android:scaleType="fitXY"
-        tools:src="@drawable/ic_rectangle_up" />
+        android:scaleType="fitXY" />
 
     <TextView
         android:id="@+id/tv_percentage"

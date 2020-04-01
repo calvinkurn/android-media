@@ -4,7 +4,7 @@ package com.tokopedia.topchat.chatlist.listener
  * @author : Steven 2019-08-06
  */
 interface ChatListContract {
-    interface Activity {
+    interface TabFragment {
         fun notifyViewCreated()
         fun loadNotificationCounter()
         fun increaseUserNotificationCounter()

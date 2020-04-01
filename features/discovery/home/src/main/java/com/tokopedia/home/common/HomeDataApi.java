@@ -1,6 +1,6 @@
 package com.tokopedia.home.common;
 
-import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.network.data.model.response.GraphqlResponse;
 import com.tokopedia.home.beranda.domain.model.HomeData;
 import com.tokopedia.home.explore.domain.model.DataResponseModel;
 

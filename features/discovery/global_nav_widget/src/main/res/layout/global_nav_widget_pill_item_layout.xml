@@ -14,7 +14,7 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="@dimen/dp_72"
             android:layout_height="@dimen/dp_72"
-            android:src="@drawable/squircle"
+            android:src="@drawable/global_nav_ic_squircle"
             android:scaleType="fitXY"/>
 
         <ImageView

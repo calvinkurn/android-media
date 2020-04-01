@@ -10,14 +10,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantActionListener
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.ProfileViewModel
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.ProfileUiModel
 import kotlinx.android.synthetic.main.item_profile_detail_product_page.view.*
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class ProfileViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<ProfileViewModel>(view) {
+class ProfileViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<ProfileUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_profile_detail_product_page
@@ -29,7 +29,7 @@ class ProfileViewHolder(val view: View, val listener: CheckoutVariantActionListe
         val ANIM_REPEAT_COUNT = 3
     }
 
-    override fun bind(element: ProfileViewModel?) {
+    override fun bind(element: ProfileUiModel?) {
         if (element != null) {
             if (element.isStateHasRemovedProfile) {
                 itemView.ll_profile_container.visibility = View.GONE

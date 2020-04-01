@@ -38,6 +38,7 @@ public class CheckoutUseCase extends UseCase<CheckoutData> {
     public static final String PARAM_ONE_CLICK_SHIPMENT = "is_one_click_shipment";
     public static final String PARAM_IS_EXPRESS = "is_express";
     public static final String PARAM_IS_TRADEIN = "is_trade_in";
+    public static final String PARAM_IS_TRADE_IN_DROP_OFF = "is_trade_in_drop_off";
     public static final String PARAM_DEVICE_ID = "dev_id";
 
     private final ICommonPurchaseRepository commonPurchaseRepository;

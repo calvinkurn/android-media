@@ -2,13 +2,12 @@ package com.tokopedia.core.app;
 
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.tokopedia.core2.R;
-import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
+import com.tokopedia.core2.R;
+import com.tokopedia.sellerhomedrawer.presentation.view.BaseSellerReceiverDrawerActivity;
 
 /**
  * Created by Nisie on 31/08/15.
@@ -18,7 +17,7 @@ import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
  * Extends one of BaseActivity from tkpd abstraction eg:BaseSimpleActivity, BaseStepperActivity, BaseTabActivity, etc
  */
 @Deprecated
-public abstract class TkpdActivity extends BaseTemporaryDrawerActivity implements
+public abstract class TkpdActivity extends BaseSellerReceiverDrawerActivity implements
         CartBadgeNotificationReceiver.ActionListener {
 
     private CartBadgeNotificationReceiver cartBadgeNotificationReceiver;
@@ -38,8 +37,8 @@ public abstract class TkpdActivity extends BaseTemporaryDrawerActivity implement
     }
 
     @Override
-    protected int getContentId() {
-        return R.layout.drawer_activity;
+    protected int getLayoutRes() {
+        return R.layout.sh_drawer_activity;
     }
 
     @Override
@@ -66,49 +65,10 @@ public abstract class TkpdActivity extends BaseTemporaryDrawerActivity implement
         invalidateOptionsMenu();
     }
 
-    public void setDrawerEnabled(boolean isEnabled) {
-        this.drawerHelper.setEnabled(isEnabled);
-    }
-
     public abstract int getDrawerPosition();
 
     @Override
     protected int setDrawerPosition() {
         return getDrawerPosition();
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return 0;
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected void setViewListener() {
-
     }
 }

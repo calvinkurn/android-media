@@ -23,7 +23,6 @@ public interface CatalogListItemContract {
 
         void hideLoader();
 
-        void populateCatalog(List<CatalogsValueEntity> items);
 
         Context getActivityContext();
 
@@ -31,7 +30,6 @@ public interface CatalogListItemContract {
 
         Resources getResources();
 
-        int getCurrentSortType();
 
         int getCurrentCategoryId();
 
@@ -54,10 +52,8 @@ public interface CatalogListItemContract {
         void populateCatalog(int categoryId, int subCategoryId, int pointRange, boolean showLoader);
     }
 
-    interface Presenter extends CustomerPresenter<View> {
-        void destroyView();
+    interface Presenter {
 
-        void getCatalog(int categoryId, int subCategoryId, boolean showLoader);
 
         void fetchLatestStatus(List<Integer> catalogsIds);
     }

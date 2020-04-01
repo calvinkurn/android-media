@@ -2,12 +2,13 @@ package com.tokopedia.vote.di;
 
 import android.content.Context;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerCollector;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.AccountsAuthorizationInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.vote.data.VoteApi;
 import com.tokopedia.vote.data.VoteUrl;
 import com.tokopedia.vote.domain.source.VotingSource;
@@ -41,13 +42,17 @@ public class VoteModule {
 
     @VoteQualifier
     @Provides
-    public ChuckInterceptor provideChuckInterceptor(@ApplicationContext Context context) {
-        return new ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools());
+    public ChuckerInterceptor provideChuckerInterceptor(@ApplicationContext Context context) {
+        ChuckerCollector collector = new ChuckerCollector(
+                context, GlobalConfig.isAllowDebuggingTools());
+
+        return new ChuckerInterceptor(
+                context, collector);
     }
 
     @VoteQualifier
     @Provides
-    public OkHttpClient provideOkHttpClient(@VoteQualifier ChuckInterceptor chuckInterceptor,
+    public OkHttpClient provideOkHttpClient(@VoteQualifier ChuckerInterceptor chuckInterceptor,
                                             HttpLoggingInterceptor httpLoggingInterceptor,
                                             TkpdAuthInterceptor tkpdAuthInterceptor,
                                             @VoteQualifier AccountsAuthorizationInterceptor accountsAuthorizationInterceptor) {

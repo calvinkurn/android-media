@@ -1,6 +1,6 @@
 package com.tokopedia.wishlist.common.data.source;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.wishlist.common.data.source.cloud.WishListCommonCloudDataSource;
 import com.tokopedia.wishlist.common.data.source.cloud.model.WishListData;
 

@@ -11,10 +11,10 @@ import android.view.MenuItem;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.tokopedia.core.app.DrawerPresenterActivity;
-import com.tokopedia.core.drawer2.service.DrawerGetNotificationService;
 import com.tokopedia.core.gcm.intentservices.PushNotificationIntentService;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core2.R;
+import com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService;
+import com.tokopedia.config.GlobalConfig;
 
 /**
  * Created by meta on 23/07/18.
@@ -34,7 +34,7 @@ public class BaseTemporaryDrawerActivity extends DrawerPresenterActivity{
             }
 
             if (intent.getAction().equals(PushNotificationIntentService.UPDATE_NOTIFICATION_DATA)){
-                DrawerGetNotificationService.startService(BaseTemporaryDrawerActivity.this, true, true);
+                SellerDrawerGetNotificationService.startService(BaseTemporaryDrawerActivity.this, true, true);
             }
         }
     };
@@ -54,7 +54,7 @@ public class BaseTemporaryDrawerActivity extends DrawerPresenterActivity{
     }
 
     protected void startDrawerGetNotificationServiceOnResume(){
-        DrawerGetNotificationService.startService(this,true,false);
+        SellerDrawerGetNotificationService.startService(this,true,false);
     }
 
     @Override
@@ -120,7 +120,7 @@ public class BaseTemporaryDrawerActivity extends DrawerPresenterActivity{
 
     @Override
     protected boolean isLightToolbarThemes() {
-        return GlobalConfig.isCustomerApp();
+        return !GlobalConfig.isSellerApp();
     }
 
     @Override

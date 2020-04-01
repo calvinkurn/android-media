@@ -9,6 +9,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.profilecompletion.changename.data.analytics.ChangeNameTracker
 import com.tokopedia.profilecompletion.di.DaggerProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
+import com.tokopedia.profilecompletion.di.ProfileCompletionSettingModule
 
 /**
  * created by rival 23/10/19
@@ -21,19 +22,24 @@ class ChangeNameActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionS
             bundle.putAll(intent.extras)
         }
         var oldName = ""
+        var chances = ""
 
         try {
             oldName = intent.data?.getQueryParameter(ApplinkConstInternalGlobal.PARAM_FULL_NAME).toString()
+            chances = intent.data?.getQueryParameter(ApplinkConstInternalGlobal.PARAM_CHANCE_CHANGE_NAME).toString()
         } finally {
             bundle.putString(ApplinkConstInternalGlobal.PARAM_FULL_NAME, oldName)
+            bundle.putString(ApplinkConstInternalGlobal.PARAM_CHANCE_CHANGE_NAME, chances)
         }
 
         return ChangeNameFragment.createInstance(bundle)
     }
 
     override fun getComponent(): ProfileCompletionSettingComponent {
-        return DaggerProfileCompletionSettingComponent.builder().baseAppComponent(
-                (application as BaseMainApplication).baseAppComponent).build()
+        return DaggerProfileCompletionSettingComponent.builder()
+                    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                    .profileCompletionSettingModule(ProfileCompletionSettingModule(this))
+                    .build()
     }
 
     override fun onBackPressed() {

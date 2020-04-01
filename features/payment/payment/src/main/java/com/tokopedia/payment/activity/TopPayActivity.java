@@ -11,8 +11,6 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.view.KeyEvent;
@@ -36,6 +34,7 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient;
 import com.tokopedia.abstraction.base.view.webview.FilePickerInterface;
+import com.tokopedia.webview.WebViewHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
@@ -53,7 +52,7 @@ import com.tokopedia.payment.presenter.TopPayContract;
 import com.tokopedia.payment.presenter.TopPayPresenter;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.payment.utils.Constant;
-import com.tokopedia.payment.utils.ErrorNetMessage;
+import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -66,6 +65,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -235,7 +236,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
 
     @Override
     public void renderWebViewPostUrl(String url, byte[] postData) {
-        scroogeWebView.postUrl(url, postData);
+        scroogeWebView.postUrl(WebViewHelper.appendGAClientIdAsQueryParam(url, this), postData);
     }
 
     @Override
@@ -426,7 +427,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                 return true;
             } else if (url.contains(LOGIN_URL)) {
                 view.stopLoading();
-                showToastMessageWithForceCloseView(ErrorNetMessage.MESSAGE_ERROR_TOPPAY);
+                showToastMessageWithForceCloseView(getString(R.string.toppay_error_login));
                 return true;
             } else if (url.contains(HCI_CAMERA_KTP)) {
                 view.stopLoading();

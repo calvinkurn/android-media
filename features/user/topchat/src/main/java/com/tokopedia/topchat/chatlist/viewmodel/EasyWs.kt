@@ -1,13 +1,13 @@
 package com.tokopedia.topchat.chatlist.viewmodel
 
 import com.google.gson.GsonBuilder
-import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.websocket.WebSocketResponse
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.runBlocking
 import okhttp3.*
 import okio.ByteString
+import timber.log.Timber
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -33,33 +33,33 @@ suspend fun OkHttpClient.easyWebSocket(url: String, accessToken: String) = suspe
                     easyWs?.let{ws ->
                         it.resume(ws)
                     }
-                    debug(TAG," Open")
+                    Timber.d(" Open")
                 }
 
                 override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-                    debug(TAG, "Failure $t")
+                    Timber.d( "Failure $t")
 //                    it.resumeWithException(t)
                 }
 
                 override fun onClosing(webSocket: WebSocket, code: Int, reason: String?) {
-                    debug(TAG," Closing")
+                    Timber.d(" Closing")
                     webSocket.close(1000, "Bye!")
                 }
 
                 override fun onMessage(webSocket: WebSocket, text: String) {
                     runBlocking {
-                        debug(TAG, " Message $text")
+                        Timber.d( " Message $text")
                         val data = GsonBuilder().create().fromJson(text, WebSocketResponse::class.java)
                         easyWs?.textChannel?.send(data)
                     }
                 }
 
                 override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
-                    debug(TAG, " Bytes $bytes")
+                    Timber.d( " Bytes $bytes")
                 }
 
                 override fun onClosed(webSocket: WebSocket, code: Int, reason: String?) {
-                    debug(TAG," Closed $reason")
+                    Timber.d(" Closed $reason")
                     easyWs?.textChannel?.close()
                 }
             }

@@ -58,6 +58,10 @@ query displayTopAds($params: String) {
           type
           title
         }
+      free_ongkir{
+        is_active
+        img_url
+      }
         top_label
         bottom_label
       }

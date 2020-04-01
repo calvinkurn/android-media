@@ -1,6 +1,6 @@
 package com.tokopedia.topads.keyword.data.source;
 
-import com.tokopedia.abstraction.common.data.model.request.DataRequest;
+import com.tokopedia.topads.common.model.request.DataRequest;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
 import com.tokopedia.topads.keyword.data.model.cloud.Datum;
 import com.tokopedia.topads.keyword.data.model.cloud.bulkkeyword.DataBulkKeyword;

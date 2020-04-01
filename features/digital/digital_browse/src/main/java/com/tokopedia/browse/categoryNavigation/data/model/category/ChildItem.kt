@@ -1,10 +1,8 @@
 package com.tokopedia.browse.categoryNavigation.data.model.category
 
-import javax.annotation.Generated
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.model.ImpressHolder
 
-@Generated("com.robohorse.robopojogenerator")
 data class ChildItem(
 
         @field:SerializedName("template")

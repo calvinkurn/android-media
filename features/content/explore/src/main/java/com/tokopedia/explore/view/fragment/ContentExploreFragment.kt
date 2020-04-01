@@ -12,7 +12,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.track.TrackApp
-import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
@@ -22,12 +21,15 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.explore.R
 import com.tokopedia.explore.analytics.ContentExloreEventTracking
+import com.tokopedia.explore.analytics.ContentExploreAnalytics
 import com.tokopedia.explore.di.DaggerExploreComponent
 import com.tokopedia.explore.view.adapter.ExploreCategoryAdapter
 import com.tokopedia.explore.view.adapter.ExploreImageAdapter
@@ -37,8 +39,6 @@ import com.tokopedia.explore.view.viewmodel.ExploreCategoryViewModel
 import com.tokopedia.explore.view.viewmodel.ExploreImageViewModel
 import com.tokopedia.explore.view.viewmodel.ExploreViewModel
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
-import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity
 import com.tokopedia.user.session.UserSessionInterface
 
 import javax.inject.Inject
@@ -56,14 +56,14 @@ class ContentExploreFragment :
 
     companion object {
 
-        var PARAM_CATEGORY_ID = "category_id"
-        var DEFAULT_CATEGORY = "0"
-        var PEFORMANCE_EXPLORE = "mp_explore"
-        var CATEGORY_POSITION_NONE = -1
+        const val PARAM_CATEGORY_ID = "category_id"
+        private const val DEFAULT_CATEGORY = "0"
+        private const val PEFORMANCE_EXPLORE = "mp_explore"
+        private const val CATEGORY_POSITION_NONE = -1
 
-        private val IMAGE_SPAN_COUNT = 3
-        private val IMAGE_SPAN_SINGLE = 1
-        private val LOAD_MORE_THRESHOLD = 2
+        private const val IMAGE_SPAN_COUNT = 3
+        private const val IMAGE_SPAN_SINGLE = 1
+        private const val LOAD_MORE_THRESHOLD = 2
 
         @JvmStatic
         fun newInstance(bundle: Bundle?): ContentExploreFragment {
@@ -86,6 +86,8 @@ class ContentExploreFragment :
     lateinit var affiliatePreference: AffiliatePreference
     @Inject
     lateinit var userSession: UserSessionInterface
+    @Inject
+    lateinit var analytics: ContentExploreAnalytics
 
     private lateinit var searchInspiration: SearchInputView
     private lateinit var exploreCategoryRv: RecyclerView
@@ -107,7 +109,7 @@ class ContentExploreFragment :
     }
 
     override fun initInjector() {
-        val baseAppComponent = (requireActivity().application as BaseMainApplication).baseAppComponent
+        val baseAppComponent = (requireContext().applicationContext as BaseMainApplication).baseAppComponent
         DaggerExploreComponent.builder()
                 .baseAppComponent(baseAppComponent)
                 .build()
@@ -198,7 +200,7 @@ class ContentExploreFragment :
                 presenter.getExploreData(true)
                 hasLoadedOnce = !hasLoadedOnce
             }
-            TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+            analytics.sendScreenName(screenName)
         }
     }
 
@@ -208,12 +210,7 @@ class ContentExploreFragment :
     }
 
     override fun onSuccessGetExploreData(exploreViewModel: ExploreViewModel, clearData: Boolean) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                ContentExloreEventTracking.Event.EXPLORE,
-                ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
-                ContentExloreEventTracking.Action.LOAD_MORE,
-                ""
-        ))
+        analytics.eventImpressionSuccessGetData()
 
         if (!exploreViewModel.exploreImageViewModelList.isEmpty()) {
             loadImageData(exploreViewModel.exploreImageViewModelList)
@@ -276,21 +273,11 @@ class ContentExploreFragment :
         val isSameCategory = setAllCategoriesInactive(position)
         if (isSameCategory) {
             updateCategoryId(0)
-            TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                    ContentExloreEventTracking.Event.EXPLORE,
-                    ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
-                    ContentExloreEventTracking.Action.DESELECT_CATEGORY,
-                    categoryName
-            ))
+            analytics.eventDeselectCategory(categoryName)
 
         } else {
             updateCategoryId(categoryId)
-            TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                    ContentExloreEventTracking.Event.EXPLORE,
-                    ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
-                    ContentExloreEventTracking.Action.FILTER_CATEGORY,
-                    categoryName
-            ))
+            analytics.eventSelectCategory(categoryName)
 
             if (position > 0) {
                 categoryAdapter.list[position].isActive = true
@@ -345,22 +332,13 @@ class ContentExploreFragment :
         imageAdapter.showEmpty()
     }
 
-    override fun goToKolPostDetail(kolPostViewModel: KolPostViewModel) {
-        val intent = KolPostDetailActivity.getInstance(
-                context,
-                kolPostViewModel.contentId.toString()
+    override fun goToKolPostDetail(postId: Int, name: String, recomId: Int) {
+        RouteManager.route(
+                requireContext(),
+                ApplinkConst.CONTENT_DETAIL,
+                postId.toString()
         )
-        startActivity(intent)
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                ContentExloreEventTracking.Event.EXPLORE,
-                ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
-                ContentExloreEventTracking.Action.CLICK_GRID_CONTENT,
-                String.format(
-                        ContentExloreEventTracking.EventLabel.CLICK_GRID_CONTENT_LABEL,
-                        kolPostViewModel.name,
-                        kolPostViewModel.contentId
-                )
-        ))
+        analytics.eventTrackExploreItem(name, postId, recomId)
     }
 
     override fun addExploreItemCoachmark(view: View) {
@@ -400,12 +378,7 @@ class ContentExploreFragment :
 
         updateSearch(text)
         presenter.getExploreData(true)
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                ContentExloreEventTracking.Event.EXPLORE,
-                ContentExloreEventTracking.Category.EXPLORE_INSPIRATION,
-                ContentExloreEventTracking.Action.SEARCH,
-                text
-        ))
+        analytics.eventSubmitSearch(text)
     }
 
     override fun onSearchTextChanged(text: String) {
@@ -420,6 +393,7 @@ class ContentExploreFragment :
     }
 
     override fun onRefresh() {
+        presenter.onPullToRefreshTriggered()
         presenter.updateCursor("")
         presenter.getExploreData(true)
     }

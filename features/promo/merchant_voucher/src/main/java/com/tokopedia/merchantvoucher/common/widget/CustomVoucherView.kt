@@ -14,13 +14,12 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.SpannableStringBuilder
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.StyleSpan
 import android.text.style.TypefaceSpan
-import android.widget.TextView
 import android.graphics.Typeface
 import android.text.TextPaint
+import androidx.annotation.ColorInt
 
 
 /*
@@ -60,7 +59,6 @@ open class CustomVoucherView : FrameLayout {
     private var canvasCleanHeight = -1
     private var totalJaggedAndStraight = -1
     private var diameter = -1f
-
 
     companion object {
         private const val DEFAULT_TOTAL_JAGGED_EDGE = 8
@@ -112,10 +110,14 @@ open class CustomVoucherView : FrameLayout {
         paint.strokeWidth = 0f
         paint.style = Paint.Style.FILL_AND_STROKE
         paint.strokeJoin = Paint.Join.BEVEL
-        paint.setShadowLayer(10f, 0f, 5f, Color.GRAY)
+        paint.setShadowLayer(10f, 0f, 5f, getShadowColor())
         canvas.drawPath(pathSmoothJaggedEdgeBackgroundLayout, paint)
         super.onDraw(canvas)
+    }
 
+    @ColorInt
+    protected open fun getShadowColor(): Int {
+        return Color.GRAY
     }
 
     private fun initDimensionData() {
@@ -124,11 +126,13 @@ open class CustomVoucherView : FrameLayout {
         minX = paddingLeft
         maxX = canvasWidth - paddingRight
         minY = paddingTop
-        maxY = canvasHeight - paddingBottom
+        maxY = canvasHeight - paddingBottom - maxYModifier()
         canvasCleanHeight = maxY - minY
         totalJaggedAndStraight = totalJaggedEdge * 2 + 1
         diameter = canvasCleanHeight / totalJaggedAndStraight.toFloat()
     }
+
+    protected open fun maxYModifier(): Int = 0
 
     override fun dispatchDraw(canvas: Canvas) {
         val savedCanvas = canvas.saveLayer(0f, 0f, width.toFloat(), height.toFloat(), null, Canvas.ALL_SAVE_FLAG)
@@ -204,8 +208,8 @@ open class CustomVoucherView : FrameLayout {
             pathSmoothJaggedEdgeBackgroundLayout.moveTo(minX.toFloat(), minY.toFloat())
             pathSmoothJaggedEdgeBackgroundLayout.lineTo(maxX.toFloat(), minY.toFloat())
             drawSmoothJagged(pathSmoothJaggedEdgeBackgroundLayout, RIGHT_JAGGED_TOP_TO_BOTTOM)
-            pathSmoothJaggedEdgeBackgroundLayout.lineTo(maxX.toFloat(), maxY.toFloat())
-            pathSmoothJaggedEdgeBackgroundLayout.lineTo(minX.toFloat(), maxY.toFloat())
+            pathSmoothJaggedEdgeBackgroundLayout.lineTo(maxX.toFloat(), maxY.toFloat() + maxYModifier())
+            pathSmoothJaggedEdgeBackgroundLayout.lineTo(minX.toFloat(), maxY.toFloat() + maxYModifier())
             drawSmoothJagged(pathSmoothJaggedEdgeBackgroundLayout, LEFT_JAGGED_BOTTOM_TO_TOP)
             pathSmoothJaggedEdgeBackgroundLayout.lineTo(minX.toFloat(), minY.toFloat())
             pathSmoothJaggedEdgeBackgroundLayout.close()
@@ -215,8 +219,8 @@ open class CustomVoucherView : FrameLayout {
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
         initDimensionData()
-        initSmoothJaggedEdgePathBackground()
-        initSmoothJaggedEdgePathOverlay()
+        initSmoothJaggedEdgePathBackground() // draw shadow
+        initSmoothJaggedEdgePathOverlay() // draw jagged path
         if (changed) {
             this.requiresShapeUpdate = true
             postInvalidate()

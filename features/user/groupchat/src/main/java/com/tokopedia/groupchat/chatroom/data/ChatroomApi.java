@@ -1,6 +1,6 @@
 package com.tokopedia.groupchat.chatroom.data;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.StickyComponentPojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.VideoStreamParent;

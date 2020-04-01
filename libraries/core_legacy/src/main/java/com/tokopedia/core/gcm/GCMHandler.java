@@ -2,16 +2,12 @@ package com.tokopedia.core.gcm;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Build;
-import androidx.core.util.Preconditions;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.GoogleApiActivity;
-import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.gcm.data.RegisterDeviceInteractor;
 import com.tokopedia.core.gcm.model.DeviceRegistrationDataResponse;
@@ -53,7 +49,7 @@ public class GCMHandler {
 
     private void registerDeviceToFCM() {
         regid = getRegistrationId(context);
-        CommonUtils.dumper(TAG + "start FCM get");
+        Timber.d(TAG + "start FCM get");
         if (TextUtils.isEmpty(regid)) {
             final RegisterDeviceInteractor interactor = new RegisterDeviceInteractor(context);
             interactor.registerDevice(new Subscriber<DeviceRegistrationDataResponse>() {

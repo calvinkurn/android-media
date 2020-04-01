@@ -6,8 +6,9 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.feedplus.R
-import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingDataViewModel
+import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
+import com.tokopedia.interest_pick_common.view.adapter.InterestPickAdapter
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_layout_onboarding.view.*
 
@@ -18,8 +19,8 @@ import kotlinx.android.synthetic.main.item_layout_onboarding.view.*
 class OnboardingViewHolder(
         v : View,
         val userSession: UserSessionInterface,
-        val listener: OnboardingAdapter.InterestPickItemListener)
-    : AbstractViewHolder<OnboardingViewModel>(v), OnboardingAdapter.InterestPickItemListener by listener {
+        val listener: InterestPickAdapter.InterestPickItemListener)
+    : AbstractViewHolder<OnboardingViewModel>(v), InterestPickAdapter.InterestPickItemListener by listener {
 
     var countMinimumPick = 0
 
@@ -29,7 +30,7 @@ class OnboardingViewHolder(
         val LAYOUT = R.layout.item_layout_onboarding
     }
 
-    lateinit var adapter: OnboardingAdapter
+    lateinit var adapter: InterestPickAdapter
 
     override fun bind(element: OnboardingViewModel) {
         initView(element)
@@ -58,10 +59,10 @@ class OnboardingViewHolder(
 
         itemView.rv_interest_pick.layoutManager = GridLayoutManager(itemView.context, 3)
 
-        adapter = OnboardingAdapter(this, OnboardingAdapter.SOURCE_FEED)
+        adapter = InterestPickAdapter(this, InterestPickAdapter.SOURCE_FEED)
         adapter.setList(element.dataList)
         itemView.rv_interest_pick.adapter = adapter
-        itemView.rv_interest_pick.addItemDecoration(OnboardingAdapter.getItemDecoration())
+        itemView.rv_interest_pick.addItemDecoration(InterestPickAdapter.getItemDecoration())
         updateButtonCheckRecommendation()
     }
 
@@ -76,7 +77,7 @@ class OnboardingViewHolder(
     }
 
 
-    override fun onInterestPickItemClicked(item: OnboardingDataViewModel) {
+    override fun onInterestPickItemClicked(item: InterestPickDataViewModel) {
         updateButtonCheckRecommendation()
         listener.onInterestPickItemClicked(item)
     }

@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Seller Home</string>
+    <string name="sah_more">Selengkapnya</string>
+    <string name="sah_description_error">Oops, informasi gagal ditampilkan</string>
+    <string name="sah_card_on_error">Gagal memuat</string>
+    <string name="sah_line_graph_error_message">Oops, informasi gagal ditampilkan</string>
+    <string name="sah_widget_error_message">Oops, informasi gagal ditampilkan</string>
+    <string name="sah_score">Skor</string>
+    <string name="sah_max_progress">/100</string>
+    <string name="sah_failed_to_get_information">Informasi gagal dimuat</string>
+    <string name="sah_reload">Muat ulang</string>
+
+    <string name="sah_ticker_warning">#ecdb77</string>
+</resources>

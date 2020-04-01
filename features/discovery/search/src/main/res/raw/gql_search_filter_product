@@ -30,6 +30,7 @@ filter_sort_product(params: $params) {
               icon
               inputType
               totalData
+              isPopular
               child {
                 key
                 value
@@ -37,6 +38,7 @@ filter_sort_product(params: $params) {
                 icon
                 inputType
                 totalData
+                isPopular
               }
             }
           }

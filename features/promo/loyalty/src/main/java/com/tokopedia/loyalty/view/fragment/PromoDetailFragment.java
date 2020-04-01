@@ -147,7 +147,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_promo_detail, container, false);
 
-        this.refreshHandler = new RefreshHandler(getActivity(), view, this);
+        this.refreshHandler = new RefreshHandler(getActivity(), view.findViewById(R.id.swipe_refresh_layout), this);
 
         this.rlContainerLayout = view.findViewById(R.id.container);
         this.llPromoDetailBottomLayout = view.findViewById(R.id.ll_promo_detail_bottom_layout);
@@ -308,9 +308,6 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
         this.tvPromoDetailAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                promoDetailPresenter.cachePromoCodeData(promoData.getPromoCode(), getResources());
-
                 promoDetailAnalytics.userClickCta(
                         promoData.getTitle(),
                         promoData.getId(),

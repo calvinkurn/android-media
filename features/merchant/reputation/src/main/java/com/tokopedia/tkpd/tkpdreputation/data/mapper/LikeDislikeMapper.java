@@ -2,13 +2,10 @@ package com.tokopedia.tkpd.tkpdreputation.data.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.tkpd.tkpdreputation.data.pojo.likedislike.LikeDislikePojo;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
+import com.tokopedia.tkpd.tkpdreputation.network.ErrorMessageException;
 
 import retrofit2.Response;
 import rx.functions.Func1;
@@ -17,9 +14,9 @@ import rx.functions.Func1;
  * @author by nisie on 9/29/17.
  */
 
-public class LikeDislikeMapper implements Func1<Response<TkpdResponse>, LikeDislikeDomain> {
+public class LikeDislikeMapper implements Func1<Response<TokopediaWsV4Response>, LikeDislikeDomain> {
     @Override
-    public LikeDislikeDomain call(Response<TkpdResponse> response) {
+    public LikeDislikeDomain call(Response<TokopediaWsV4Response> response) {
         if (response.isSuccessful()) {
             if ((!response.body().isNullData()
                     && response.body().getErrorMessageJoined().equals(""))
@@ -37,7 +34,10 @@ public class LikeDislikeMapper implements Func1<Response<TkpdResponse>, LikeDisl
                 }
             }
         } else {
-            String messageError = ErrorHandler.getErrorMessage(response);
+            String messageError = "";
+            if (response.body() != null) {
+                messageError = response.body().getErrorMessageJoined();
+            }
             if (!TextUtils.isEmpty(messageError)) {
                 throw new ErrorMessageException(messageError);
             } else {

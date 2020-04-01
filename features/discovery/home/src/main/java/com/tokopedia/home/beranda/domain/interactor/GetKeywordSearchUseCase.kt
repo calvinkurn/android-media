@@ -1,21 +1,26 @@
 package com.tokopedia.home.beranda.domain.interactor
 
-import android.content.Context
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.home.R
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.home.beranda.data.model.KeywordSearchData
+import com.tokopedia.home.beranda.domain.gql.searchHint.KeywordSearchHintQuery
+import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class GetKeywordSearchUseCase @Inject constructor(
-        private val context: Context
-) : GraphqlUseCase() {
+        private val graphqlUseCase: GraphqlUseCase<KeywordSearchData>
+): UseCase<KeywordSearchData>(){
 
-    fun getRequest(): GraphqlRequest {
-        return GraphqlRequest(
-                GraphqlHelper.loadRawString(context.resources, R.raw.home_gql_keyword_search),
-                KeywordSearchData::class.java
-        )
+    init {
+        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        graphqlUseCase.setTypeClass(KeywordSearchData::class.java)
+    }
+
+    override suspend fun executeOnBackground(): KeywordSearchData {
+        graphqlUseCase.clearCache()
+        graphqlUseCase.setGraphqlQuery(KeywordSearchHintQuery.query)
+        graphqlUseCase.setRequestParams(mapOf())
+        return graphqlUseCase.executeOnBackground()
     }
 }

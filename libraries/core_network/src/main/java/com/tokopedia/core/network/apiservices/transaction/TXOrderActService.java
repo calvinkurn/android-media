@@ -12,7 +12,6 @@ import retrofit2.Retrofit;
 
 @Deprecated
 public class TXOrderActService extends AuthService<TXOrderActApi> {
-    private static final String TAG = TXOrderActService.class.getSimpleName();
 
     @Override
     protected void initApiService(Retrofit retrofit) {

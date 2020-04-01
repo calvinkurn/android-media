@@ -18,9 +18,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.explore.R
 import com.tokopedia.explore.domain.entity.PostKol
 import com.tokopedia.explore.domain.entity.Tracking
+import com.tokopedia.explore.view.type.ExploreCardType
 import com.tokopedia.explore.view.uimodel.PostKolUiModel
 import com.tokopedia.feedcomponent.util.TagConverter
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.item_explore_hashtag_landing_item.view.*
 import java.net.URLEncoder
@@ -185,7 +185,7 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
                             badge.loadImageDrawable(R.drawable.ic_affiliate_multi)
                             badge.visible()
                         }
-                        thumbnail.type == KolPostViewModel.TYPE_VIDEO -> {
+                        thumbnail.type == ExploreCardType.Video.typeString -> {
                             badge.loadImageDrawable(R.drawable.ic_affiliate_video)
                             badge.visible()
                         }

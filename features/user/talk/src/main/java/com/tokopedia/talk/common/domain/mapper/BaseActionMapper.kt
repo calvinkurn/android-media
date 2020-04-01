@@ -1,6 +1,6 @@
 package com.tokopedia.talk.common.domain.mapper
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse
+import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.common.domain.pojo.BaseActionTalkPojo
 import com.tokopedia.talk.common.view.BaseActionTalkViewModel

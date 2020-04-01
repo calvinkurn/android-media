@@ -15,6 +15,16 @@ data class Footer (
     var buttonCta: ButtonCta = ButtonCta(),
     @SerializedName("share")
     @Expose
-    var share: Share = Share()
-
-)
+    var share: Share = Share(),
+    @SerializedName("stats")
+    @Expose
+    val stats: Stats = Stats()
+) {
+    fun copy(): Footer {
+        return Footer(like.copy(),
+                comment.copy(),
+                buttonCta.copy(),
+                share.copy(),
+                stats.copy())
+    }
+}

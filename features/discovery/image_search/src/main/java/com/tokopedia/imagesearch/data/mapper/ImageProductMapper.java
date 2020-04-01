@@ -6,6 +6,8 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.imagesearch.analytics.ImageSearchTracking;
 import com.tokopedia.imagesearch.domain.viewmodel.BadgeItem;
 import com.tokopedia.imagesearch.domain.viewmodel.CategoryFilterModel;
+import com.tokopedia.imagesearch.domain.viewmodel.FreeOngkir;
+import com.tokopedia.imagesearch.domain.viewmodel.LabelGroup;
 import com.tokopedia.imagesearch.domain.viewmodel.ProductItem;
 import com.tokopedia.imagesearch.domain.viewmodel.ProductViewModel;
 import com.tokopedia.imagesearch.network.response.ImageSearchProductResponse;
@@ -87,7 +89,23 @@ public class ImageProductMapper implements Func1<GraphqlResponse, ProductViewMod
         productItem.setCategoryID(product.getCategoryId());
         productItem.setCategoryBreadcrumb(product.getCategoryBreadcrumb());
         productItem.setCategoryName(product.getCategoryName());
+        productItem.setLabelGroupList(convertToLabelGroupList(product.getLabelGroups()));
+        productItem.setFreeOngkir(convertToFreeOngkirModel(product.getFreeOngkir()));
         return productItem;
+    }
+
+    private static FreeOngkir convertToFreeOngkirModel(SearchProductResponse.Data.Products.FreeOngkir freeOngkir) {
+        return new FreeOngkir(freeOngkir.isActive(), freeOngkir.getImageUrl());
+    }
+
+    private static List<LabelGroup> convertToLabelGroupList(List<SearchProductResponse.Data.Products.LabelGroup> labelGroups) {
+        List<LabelGroup> labelGroupList = new ArrayList<>();
+
+        for (SearchProductResponse.Data.Products.LabelGroup response : labelGroups) {
+            labelGroupList.add(new LabelGroup(response.getPosition(), response.getType(), response.getTitle()));
+        }
+
+        return labelGroupList;
     }
 
     private static List<BadgeItem> convertToBadgesItemList(List<SearchProductResponse.Data.Products.Badges> badgesList) {

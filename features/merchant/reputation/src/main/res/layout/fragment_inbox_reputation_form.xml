@@ -18,11 +18,11 @@
             android:orientation="horizontal"
             android:padding="@dimen/padding_activity">
 
-            <com.tokopedia.core.customView.RoundedCornerImageView
+            <ImageView
                 android:id="@+id/product_avatar"
                 android:layout_width="@dimen/product_avatar"
                 android:layout_height="@dimen/product_avatar"
-                android:layout_marginRight="@dimen/dp_8"/>
+                android:layout_marginRight="@dimen/dp_8" />
 
             <TextView
                 android:id="@+id/product_name"

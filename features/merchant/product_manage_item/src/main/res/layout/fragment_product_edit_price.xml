@@ -6,48 +6,21 @@
     android:orientation="vertical"
     android:background="@color/white">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        style="@style/TextView.Small"
-        android:text="@string/product_label_product_price"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16" />
-
-    <LinearLayout
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/counterEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <com.tokopedia.design.component.TextViewCompat
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_currency_rp"
-            android:layout_marginTop="@dimen/dp_24"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginRight="@dimen/dp_12"
-            app:fontSize="title"
-            app:textViewTheme="lightPrimary"/>
-
-        <com.tokopedia.design.text.CounterInputView
-            android:id="@+id/counterEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:layout_marginStart="@dimen/dp_10"
-            app:counter_show_counter_button="false"
-            app:counter_max_length="@integer/product_max_counter_length"
-            app:counter_enabled="true"/>
-
-        <ImageView
-            android:id="@+id/imageViewEdit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_edit_product"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_gravity="center_vertical"/>
-
-    </LinearLayout>
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        app:text_field_counter="@integer/max_length_price_input"
+        app:text_field_label_static="true"
+        app:text_field_input_type="number"
+        app:text_field_label="@string/product_label_product_price"
+        app:text_field_append_drawable_icon_1="@drawable/ic_edit_product"
+        app:text_field_prepend_text="Rp"
+        />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/textRecommendationPrice"
@@ -64,7 +37,7 @@
     <androidx.appcompat.widget.AppCompatTextView
         style="@style/TextView.TitleBig.Bold"
         android:text="@string/product_label_additional_info"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16" />
 

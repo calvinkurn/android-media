@@ -31,6 +31,5 @@ public interface CouponActivityContract {
     interface Presenter extends CustomerPresenter<View> {
         void destroyView();
 
-        void getFilter(String slug);
     }
 }

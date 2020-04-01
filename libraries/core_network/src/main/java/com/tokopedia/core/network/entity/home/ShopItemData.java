@@ -33,10 +33,6 @@ public class ShopItemData {
         return pagingHandlerModel;
     }
 
-    public void setPagingHandlerModel(PagingHandler.PagingHandlerModel pagingHandlerModel) {
-        this.pagingHandlerModel = pagingHandlerModel;
-    }
-
     @Override
     public String toString() {
         return "ShopItemData{" +

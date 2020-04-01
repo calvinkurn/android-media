@@ -6,7 +6,7 @@ interface CategoryNavigationListener {
 
     fun setUpVisibleFragmentListener(visibleClickListener: VisibleClickListener)
 
-    abstract fun hideBottomNavigation()
+    fun hideBottomNavigation()
 
 
     interface ClickListener {

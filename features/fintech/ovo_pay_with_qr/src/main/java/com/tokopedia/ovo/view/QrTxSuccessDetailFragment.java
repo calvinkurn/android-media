@@ -17,8 +17,8 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils;
-import com.tokopedia.ovo.OvoPayWithQrRouter;
-import com.tokopedia.ovo.R;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.ovo.analytics.OvoPayByQrTrackerUtil;
 import com.tokopedia.ovo.model.GoalQRThanks;
 import com.tokopedia.ovo.presenter.QrOvoPayTxDetailContract;
@@ -77,28 +77,28 @@ public class QrTxSuccessDetailFragment extends BaseDaggerFragment implements QrO
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.oqr_qr_pay_tx_detail_success, container, false);
-        date = view.findViewById(R.id.tx_date);
-        amount = view.findViewById(R.id.transaction_amount);
-        merchantName = view.findViewById(R.id.merchant_name);
-        merchantDescription = view.findViewById(R.id.merchant_description);
-        transactionCode = view.findViewById(R.id.transaction_code);
-        pasteToClipboard = view.findViewById(R.id.paste_top_clipboard);
-        backToMain = view.findViewById(R.id.back_to_main);
+        View view = inflater.inflate(com.tokopedia.ovo.R.layout.oqr_qr_pay_tx_detail_success, container, false);
+        date = view.findViewById(com.tokopedia.ovo.R.id.tx_date);
+        amount = view.findViewById(com.tokopedia.ovo.R.id.transaction_amount);
+        merchantName = view.findViewById(com.tokopedia.ovo.R.id.merchant_name);
+        merchantDescription = view.findViewById(com.tokopedia.ovo.R.id.merchant_description);
+        transactionCode = view.findViewById(com.tokopedia.ovo.R.id.transaction_code);
+        pasteToClipboard = view.findViewById(com.tokopedia.ovo.R.id.paste_top_clipboard);
+        backToMain = view.findViewById(com.tokopedia.ovo.R.id.back_to_main);
         transferId = getArguments().getInt(TRANSFER_ID);
         backToMain.setOnClickListener(view1 -> {
-            OvoPayByQrTrackerUtil.sendEvent(getActivity(),
+            OvoPayByQrTrackerUtil.sendEvent(
                     OvoPayByQrTrackerUtil.EVENT.clickOvoPayEvent,
                     OvoPayByQrTrackerUtil.CATEGORY.ovoPayByQr,
                     OvoPayByQrTrackerUtil.ACTION.clickKembaliBerhasil,
                     OvoPayByQrTrackerUtil.LABEL.defaultLabel);
-            startActivity(((OvoPayWithQrRouter)getActivity().getApplicationContext()).getHomeIntent(getActivity()));
+            startActivity(RouteManager.getIntent(getActivity(), ApplinkConst.HOME));
         });
         pasteToClipboard.setOnClickListener(view1 -> {
             ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText(getString(R.string.oqr_copied_to_clipboard), transactionCode.getText().toString());
+            ClipData clip = ClipData.newPlainText(getString(com.tokopedia.ovo.R.string.oqr_copied_to_clipboard), transactionCode.getText().toString());
             clipboard.setPrimaryClip(clip);
-            Snackbar.make(getView(), getString(R.string.oqr_copied_to_clipboard), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(getView(), getString(com.tokopedia.ovo.R.string.oqr_copied_to_clipboard), Snackbar.LENGTH_SHORT).show();
         });
         presenter.requestForThankYouPage(getActivity(), transferId);
         return view;
@@ -114,7 +114,7 @@ public class QrTxSuccessDetailFragment extends BaseDaggerFragment implements QrO
         merchantName.setText(data.getMerchant().getName());
         merchantDescription.setText(data.getMerchant().getDescription());
         transactionCode.setText(String.valueOf(getArguments().getInt(TRANSACTION_ID)));
-        OvoPayByQrTrackerUtil.sendEvent(getActivity(),
+        OvoPayByQrTrackerUtil.sendEvent(
                 OvoPayByQrTrackerUtil.EVENT.viewOvoPayEvent,
                 OvoPayByQrTrackerUtil.CATEGORY.ovoPayByQr,
                 OvoPayByQrTrackerUtil.ACTION.viewPageTransaksiBerhasil,
@@ -133,6 +133,6 @@ public class QrTxSuccessDetailFragment extends BaseDaggerFragment implements QrO
 
     @Override
     public String getErrorMessage() {
-        return getString(R.string.oqr_error_message);
+        return getString(com.tokopedia.ovo.R.string.oqr_error_message);
     }
 }

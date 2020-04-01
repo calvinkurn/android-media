@@ -38,20 +38,22 @@ class UploadMultipleImageUseCase @Inject constructor(
     }
 
     private fun uploadVideo(medium: SubmitPostMedium): Observable<SubmitPostMedium> {
-        return uploadVideoUseCase.createObservable(UploadVideoUseCase.createParam(medium.mediaURL))
+        return (if (urlIsFile(medium.mediaURL)) {
+            uploadVideoUseCase.createObservable(UploadVideoUseCase.createParam(medium.mediaURL))
                     .map(mapToUrlVideo(medium))
-                    .map(updateNotification())
-                    .subscribeOn(Schedulers.io())
-
+        } else {
+            Observable.just(medium)
+        }).map(updateNotification())
+                .subscribeOn(Schedulers.io())
     }
 
     private fun uploadSingleImage(medium: SubmitPostMedium): Observable<SubmitPostMedium> {
         return (if (urlIsFile(medium.mediaURL)) {
-                uploadImageUseCase.createObservable(createUploadParams(medium.mediaURL))
-                        .map(mapToUrl(medium))
-            } else {
-                Observable.just(medium)
-            }).map(updateNotification())
+            uploadImageUseCase.createObservable(createUploadParams(medium.mediaURL))
+                    .map(mapToUrl(medium))
+        } else {
+            Observable.just(medium)
+        }).map(updateNotification())
     }
 
     private fun mapToUrl(
@@ -71,7 +73,8 @@ class UploadMultipleImageUseCase @Inject constructor(
             SubmitPostMedium> {
         return Func1 { uploadDomainModel ->
             val videoId: String = uploadDomainModel?.dataResultVideoUpload?.videoId ?: ""
-            val videoUrl: String = uploadDomainModel?.dataResultVideoUpload?.playbackList?.get(0)?.url ?: ""
+            val videoUrl: String = uploadDomainModel?.dataResultVideoUpload?.playbackList?.get(0)?.url
+                    ?: ""
             medium.videoID = videoId
             medium.mediaURL = videoUrl
             medium

@@ -25,6 +25,9 @@ public class InboxReputationDetailPojo {
     @SerializedName("invoice_time")
     @Expose
     private String invoiceTime;
+    @SerializedName("order_id")
+    @Expose
+    private String orderId;
 
     public int getReputationId() {
         return reputationId;
@@ -74,4 +77,11 @@ public class InboxReputationDetailPojo {
         this.invoiceTime = invoiceTime;
     }
 
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
 }

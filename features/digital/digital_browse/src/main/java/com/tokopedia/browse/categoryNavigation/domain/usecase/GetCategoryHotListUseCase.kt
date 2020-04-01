@@ -34,11 +34,11 @@ class GetCategoryHotListUseCase @Inject constructor(private val context: Context
 
     override fun createObservable(requestParams: RequestParams?): Observable<CategoryHotlist> {
 
-        val categoryName = requestParams!!.getString(KEY_CATEGORY_NAME, "")
-        requestParams.clearValue(KEY_CATEGORY_NAME)
+        val categoryName = requestParams?.getString(KEY_CATEGORY_NAME, "")
+        requestParams?.clearValue(KEY_CATEGORY_NAME)
 
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                R.raw.category_hotlist), Data::class.java, requestParams.parameters, false)
+                R.raw.category_hotlist), Data::class.java, requestParams?.parameters)
         graphqlUseCase.clearRequest()
 
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
@@ -48,7 +48,8 @@ class GetCategoryHotListUseCase @Inject constructor(private val context: Context
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(requestParams).map {
 
-            CategoryHotlistMapper().transform(((it.getData(Data::class.java) as Data).categoryHotlist), categoryName)
+            CategoryHotlistMapper().transform(((it.getData(Data::class.java) as Data).categoryHotlist), categoryName
+                    ?: "")
         }
 
     }

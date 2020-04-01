@@ -4,11 +4,10 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 
-
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
-
 import java.net.URLEncoder;
 import java.util.Iterator;
+
+import timber.log.Timber;
 
 /**
  * Created by Vishal Gupta on 10/27/17.
@@ -69,7 +68,7 @@ public class ScroogePGUtil {
 
     private static String getPostData(Bundle mPostParams) {
         try {
-            CommonUtils.dumper("ScroogeActivity :: Extracting Strings from Bundle...");
+            Timber.d("ScroogeActivity :: Extracting Strings from Bundle...");
             boolean isFirstKey = true;
             StringBuffer stringBuffer = new StringBuffer();
             Iterator iterator = mPostParams.keySet().iterator();
@@ -88,7 +87,7 @@ public class ScroogePGUtil {
                 }
             }
 
-            CommonUtils.dumper("ScroogeActivity :: URL encoded String is " + stringBuffer.toString());
+            Timber.d("ScroogeActivity :: URL encoded String is " + stringBuffer.toString());
             return stringBuffer.toString();
         } catch (Exception ex) {
             ex.printStackTrace();

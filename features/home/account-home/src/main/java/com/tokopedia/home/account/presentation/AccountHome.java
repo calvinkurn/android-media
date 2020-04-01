@@ -12,9 +12,11 @@ import com.tokopedia.home.account.presentation.listener.BaseAccountView;
 public interface AccountHome {
     interface Presenter extends CustomerPresenter<View> {
         void sendUserAttributeTracker();
+        void openTabByParam(String param);
     }
 
     interface View extends BaseAccountView {
         Context getContext();
+        void openSellerTab();
     }
 }

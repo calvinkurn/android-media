@@ -16,5 +16,7 @@
         <domain includeSubdomains="false">ecs.tokopedia.com</domain>
         <domain includeSubdomains="false">cdn.tokopedia.com</domain>
         <domain includeSubdomains = "true">wst.laku6.com</domain>
+        <domain includeSubdomains="true">gojek.com</domain>
+        <domain includeSubdomains="true">grab.com</domain>
     </domain-config>
 </network-security-config>

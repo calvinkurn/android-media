@@ -1,20 +1,22 @@
 package com.tokopedia.product.detail.view.adapter
 
 import android.content.Context
+import android.view.View
+import android.view.ViewGroup
+import androidx.collection.SparseArrayCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.collection.SparseArrayCompat
-import android.view.View
-import android.view.ViewGroup
-import com.tokopedia.product.detail.common.data.model.product.Media
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.view.fragment.VideoPictureFragment
 
 class VideoPicturePagerAdapter(val context: Context,
-                               private val media: MutableList<Media> = mutableListOf(),
-                               val urlTemp: String? = null,
-                               val onPictureClickListener: ((Int) -> Unit)?,
-                               val fragmentManager: FragmentManager) : FragmentStatePagerAdapter(fragmentManager) {
+                               private val media: MutableList<ProductMediaDataModel> = mutableListOf(),
+                               private val onPictureClickListener: ((Int) -> Unit)?,
+                               fragmentManager: FragmentManager,
+                               private val componentTrackData: ComponentTrackDataModel,
+                               private val onPictureClickTrackListener: ((ComponentTrackDataModel?) -> Unit)?) : FragmentStatePagerAdapter(fragmentManager) {
 
     private val registeredFragment = SparseArrayCompat<Fragment>()
 
@@ -27,6 +29,8 @@ class VideoPicturePagerAdapter(val context: Context,
         }
         val f = VideoPictureFragment.createInstance(urlMedia, mediaItem.type, position)
         f.onPictureClickListener = onPictureClickListener
+        f.onPictureClickTrackListener = onPictureClickTrackListener
+        f.componentTrackDataModel = componentTrackData
         return f
     }
 

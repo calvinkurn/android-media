@@ -1,8 +1,0 @@
-query kaiSearchAvb($avbKeys: String!) {
-  kaiSearchAvailability(avbKeys: $avbKeys) {
-      availabilities {
-            id
-            available
-      }
-  }
-}

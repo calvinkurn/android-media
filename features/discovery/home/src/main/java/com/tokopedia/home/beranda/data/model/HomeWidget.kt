@@ -36,6 +36,36 @@ class HomeWidget(
             val errors: List<GraphqlError> = listOf()
     )
 
+    data class PopularKeyword(
+            @SerializedName("mobile_url")
+            @Expose
+            val url: String = "",
+            @SerializedName("image_url")
+            @Expose
+            val imageUrl: String = "",
+            @SerializedName("keyword")
+            @Expose
+            val keyword: String = "",
+            @SerializedName("product_count")
+            @Expose
+            val productCountInt: Int = 0,
+            @SerializedName("product_count_formatted")
+            @Expose
+            val productCount: String = ""
+    )
+
+    data class PopularKeywordQuery(
+            @Expose
+            @SerializedName("popular_keywords")
+            val data: PopularKeywordList = PopularKeywordList()
+    )
+
+    data class PopularKeywordList(
+            @Expose
+            @SerializedName("keywords")
+            val keywords: List<PopularKeyword> = listOf()
+    )
+
     data class TabItem(
             @SerializedName("id")
             @Expose

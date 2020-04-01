@@ -13,7 +13,8 @@ import rx.Subscriber;
 public class GetUserProjectInfoSubcriber extends Subscriber<GraphqlResponse> {
 
     public interface GetUserProjectInfoListener {
-        void isUserBlacklist(boolean isBlacklist);
+        void onUserBlacklist();
+        void onSuccessGetUserProjectInfo(int status);
         void onErrorGetUserProjectInfo(Throwable throwable);
         void onErrorGetUserProjectInfoWithErrorCode(String errorCode);
     }
@@ -53,12 +54,13 @@ public class GetUserProjectInfoSubcriber extends Subscriber<GraphqlResponse> {
     private void routingOnNext(KycUserProjectInfoPojo pojo) {
         if (pojo.getKycProjectInfo() != null) {
             if (pojo.getKycProjectInfo().getStatus() == KYCConstant.STATUS_BLACKLISTED) {
-                listener.isUserBlacklist(true);
+                listener.onUserBlacklist();
             } else {
-                listener.isUserBlacklist(false);
+                listener.onSuccessGetUserProjectInfo(pojo.getKycProjectInfo().getStatus());
             }
         } else {
             listener.onErrorGetUserProjectInfoWithErrorCode(KYCConstant.ERROR_MESSAGE_EMPTY);
         }
     }
+
 }

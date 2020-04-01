@@ -88,9 +88,6 @@ public class CatalogListFragment extends SearchSectionFragment implements
     @Inject
     CatalogListSectionContract.Presenter presenter;
 
-    @Inject
-    UserSessionInterface userSession;
-
     public static CatalogListFragment newInstance(SearchParameter searchParameter) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);

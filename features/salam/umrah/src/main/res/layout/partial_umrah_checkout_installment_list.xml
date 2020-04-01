@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_18"
+    android:background="@drawable/umrah_bg_checkout_gray"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackgroundBorderless"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_12"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_12"
+    tools:ignore="UnusedAttribute"
+    tools:targetApi="m">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_umrah_checkout_installment_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/umrah_checkout_summary_installment_label"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_umrah_checkout_installment_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Neutral_N700"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tg_umrah_checkout_installment_label"
+        app:typographyType="body_2"
+        tools:text="3x Cicilan - Rp7.333.333" />
+
+    <View
+        android:id="@+id/divider_umrah_checkout_installment"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginStart="@dimen/dp_32"
+        android:layout_marginLeft="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_12"
+        android:background="@color/Neutral_N100"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tg_umrah_checkout_installment_list" />
+
+
+    <ImageView
+        android:id="@+id/iv_umrah_checkout_installment_arrow_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tg_umrah_checkout_installment_label"
+        app:srcCompat="@drawable/umrah_ic_home_page_down"
+        tools:ignore="ContentDescription" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_umrah_checkout_installment_first_due_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider_umrah_checkout_installment"
+        app:typographyType="small"
+        tools:text="Tagihan selanjutnya 25 Agustus 2019" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

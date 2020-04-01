@@ -19,72 +19,76 @@ object MockResponseProvider {
 
 }
 
-val responseAtcSuccess = "{\n" +
-        "\"add_to_cart\":{\n" +
-        "\"error_message\":[\n" +
-        "\"Jumlah barang melebihi stok di toko. Kurangi pembelianmu, ya!\"\n" +
-        "],\n" +
-        "\"status\":\"OK\",\n" +
-        "\"data\":{\n" +
-        "\"success\":0,\n" +
-        "\"cart_id\":\"0\",\n" +
-        "\"product_id\":0,\n" +
-        "\"quantity\":0,\n" +
-        "\"notes\":\"\",\n" +
-        "\"shop_id\":0,\n" +
-        "\"customer_id\":0,\n" +
-        "\"warehouse_id\":0,\n" +
-        "\"tracker_attribution\":\"\",\n" +
-        "\"tracker_list_name\":\"\",\n" +
-        "\"uc_ut_param\":\"\",\n" +
-        "\"is_trade_in\":false,\n" +
-        "\"message\":[\n" +
-        "\"Jumlah barang melebihi stok di toko. Kurangi pembelianmu, ya!\"\n" +
-        "]\n" +
-        "},\n" +
-        "\"error_reporter\":{\n" +
-        "\"eligible\":false,\n" +
-        "\"texts\":{\n" +
-        "\"submit_title\":\"Barang belum bisa dimasukkan ke keranjang\",\n" +
-        "\"submit_description\":\"Ayo beri tahu kami tentang gangguan ini biar bisa segera diperbaiki!\",\n" +
-        "\"submit_button\":\"Laporkan Gangguan\",\n" +
-        "\"cancel_button\":\"Batal\"\n" +
-        "}\n" +
-        "}\n" +
-        "}\n" +
-        "}"
+val responseAtcSuccess = """
+    {
+     "add_to_cart": {
+       "error_message": [
+         "Produk berhasil dimasukkan ke Keranjang Belanja"
+       ],
+       "status": "OK",
+       "data": {
+         "success": 1,
+         "cart_id": "33398482",
+         "product_id": 15244838,
+         "quantity": 1,
+         "notes": "",
+         "shop_id": 480579,
+         "customer_id": 3297896,
+         "warehouse_id": 2240,
+         "tracker_attribution": "",
+         "tracker_list_name": "",
+         "uc_ut_param": "",
+         "is_trade_in": false,
+         "message": [
+           "Produk berhasil dimasukkan ke Keranjang Belanja"
+         ]
+       },
+       "error_reporter": {
+         "eligible": false,
+         "texts": {
+           "submit_title": "Barang belum bisa dimasukkan ke keranjang",
+           "submit_description": "Ayo beri tahu kami tentang gangguan ini biar bisa segera diperbaiki!",
+           "submit_button": "Laporkan Gangguan",
+           "cancel_button": "Batal"
+         }
+       }
+     }
+   }
+""".trimIndent()
 
-val responseAtcError = "{\n" +
-        "\"add_to_cart\":{\n" +
-        "\"error_message\":[\n" +
-        "\"Jumlah barang tidak valid.\"\n" +
-        "],\n" +
-        "\"status\":\"OK\",\n" +
-        "\"data\":{\n" +
-        "\"success\":0,\n" +
-        "\"cart_id\":\"0\",\n" +
-        "\"product_id\":0,\n" +
-        "\"quantity\":0,\n" +
-        "\"notes\":\"\",\n" +
-        "\"shop_id\":0,\n" +
-        "\"customer_id\":0,\n" +
-        "\"warehouse_id\":0,\n" +
-        "\"tracker_attribution\":\"\",\n" +
-        "\"tracker_list_name\":\"\",\n" +
-        "\"uc_ut_param\":\"\",\n" +
-        "\"is_trade_in\":false,\n" +
-        "\"message\":[\n" +
-        "\"Jumlah barang tidak valid.\"\n" +
-        "]\n" +
-        "},\n" +
-        "\"error_reporter\":{\n" +
-        "\"eligible\":false,\n" +
-        "\"texts\":{\n" +
-        "\"submit_title\":\"Barang belum bisa dimasukkan ke keranjang\",\n" +
-        "\"submit_description\":\"Ayo beri tahu kami tentang gangguan ini biar bisa segera diperbaiki!\",\n" +
-        "\"submit_button\":\"Laporkan Gangguan\",\n" +
-        "\"cancel_button\":\"Batal\"\n" +
-        "}\n" +
-        "}\n" +
-        "}\n" +
-        "}"
+val responseAtcError = """
+    {
+    "add_to_cart": {
+      "error_message": [
+        "Yaah, barang ini sudah nggak tersedia. Move on ke barang lainnya, yuk!"
+      ],
+      "status": "OK",
+      "data": {
+        "success": 0,
+        "cart_id": "0",
+        "product_id": 0,
+        "quantity": 0,
+        "notes": "",
+        "shop_id": 0,
+        "customer_id": 0,
+        "warehouse_id": 0,
+        "tracker_attribution": "",
+        "tracker_list_name": "",
+        "uc_ut_param": "",
+        "is_trade_in": false,
+        "message": [
+          "Yaah, barang ini sudah nggak tersedia. Move on ke barang lainnya, yuk!"
+        ]
+      },
+      "error_reporter": {
+        "eligible": false,
+        "texts": {
+          "submit_title": "Barang belum bisa dimasukkan ke keranjang",
+          "submit_description": "Ayo beri tahu kami tentang gangguan ini biar bisa segera diperbaiki!",
+          "submit_button": "Laporkan Gangguan",
+          "cancel_button": "Batal"
+        }
+      }
+    }
+  }
+""".trimIndent()

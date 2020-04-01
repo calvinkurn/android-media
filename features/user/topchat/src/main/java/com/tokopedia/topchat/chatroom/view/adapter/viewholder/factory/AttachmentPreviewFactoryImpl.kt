@@ -4,17 +4,23 @@ import android.view.View
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.previewattachment.AttachmentPreviewViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.previewattachment.InvoicePreviewViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.previewattachment.ProductPreviewViewHolder
-import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreviewViewModel
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.previewattachment.VoucherPreviewViewHolder
+import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendableVoucherPreview
 
 class AttachmentPreviewFactoryImpl : AttachmentPreviewFactory {
 
-    override fun type(productPreviewViewModel: ProductPreviewViewModel): Int {
+    override fun type(sendableProductPreview: SendableProductPreview): Int {
         return ProductPreviewViewHolder.LAYOUT
     }
 
-    override fun type(productPreviewViewModel: InvoicePreviewViewModel): Int {
+    override fun type(productPreviewViewModel: InvoicePreviewUiModel): Int {
         return InvoicePreviewViewHolder.LAYOUT
+    }
+
+    override fun type(sendableVoucherPreview: SendableVoucherPreview): Int {
+        return VoucherPreviewViewHolder.LAYOUT
     }
 
     override fun create(
@@ -25,6 +31,7 @@ class AttachmentPreviewFactoryImpl : AttachmentPreviewFactory {
         return when (viewType) {
             ProductPreviewViewHolder.LAYOUT -> ProductPreviewViewHolder(view, itemListener)
             InvoicePreviewViewHolder.LAYOUT -> InvoicePreviewViewHolder(view, itemListener)
+            VoucherPreviewViewHolder.LAYOUT -> VoucherPreviewViewHolder(view, itemListener)
             else -> throw IllegalStateException("Unknown View Type: $viewType")
         }
     }

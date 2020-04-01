@@ -23,7 +23,7 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
@@ -256,6 +256,12 @@ public class ImageSearchActivity extends BaseActivity
 
     private void loadThumbnailImage(String imagePath) {
         ImageHandler.loadImageCircle2(this, thumbnailImage, imagePath);
+        thumbnailImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     private void configureToolbarOnClickListener() {

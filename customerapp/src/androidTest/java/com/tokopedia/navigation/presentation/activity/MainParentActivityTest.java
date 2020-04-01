@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.network.data.model.response.GraphqlResponse;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.module.TestAppModule;
@@ -41,7 +41,6 @@ import com.tokopedia.home.account.di.component.TestAccountHomeComponent;
 import com.tokopedia.home.account.di.module.TestAccountHomeModule;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.home.account.presentation.viewmodel.base.AccountViewModel;
-import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.domain.model.HomeData;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;

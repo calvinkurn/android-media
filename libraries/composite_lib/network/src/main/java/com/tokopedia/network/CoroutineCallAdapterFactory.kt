@@ -7,6 +7,21 @@ import retrofit2.adapter.rxjava.HttpException
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
+/**
+ * Retrofit 2.6.0 is now coroutine support.
+ * https://proandroiddev.com/suspend-what-youre-doing-retrofit-has-now-coroutines-support-c65bd09ba067
+ * Change the interface to suspend (instead of Deferred<T>) and this can be removed from retrofit addCallAdapterFactory
+ * example:
+ *
+ * @GET("api/me")
+ * fun getUser(): Deferred<User>
+ *
+ *     to
+ *
+ * @GET("api/me")
+ * suspend fun getUser(): User
+ */
+@Deprecated("Retrofit 2.6.0 is now coroutine support.")
 class CoroutineCallAdapterFactory private constructor(): CallAdapter.Factory() {
 
     companion object {

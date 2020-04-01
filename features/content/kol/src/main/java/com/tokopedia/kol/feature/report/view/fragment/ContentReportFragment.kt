@@ -3,10 +3,11 @@ package com.tokopedia.kol.feature.report.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -19,8 +20,8 @@ import com.tokopedia.kol.feature.report.view.listener.ContentReportContract
 import com.tokopedia.kol.feature.report.view.model.ReportReasonViewModel
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.hideLoading
-import com.tokopedia.kotlin.extensions.view.showErrorToaster
 import com.tokopedia.kotlin.extensions.view.showLoading
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_content_report.*
 import javax.inject.Inject
 
@@ -103,8 +104,10 @@ class ContentReportFragment : BaseDaggerFragment(), ContentReportContract.View {
     }
 
     override fun onErrorSendReport(message: String) {
-        mainView.showErrorToaster(message) {
-            sendReport()
+        mainView?.let {
+            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, clickListener = View.OnClickListener {
+                sendReport()
+            })
         }
     }
 

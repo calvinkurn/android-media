@@ -1,12 +1,12 @@
 package com.tokopedia.core.base.adapter;
 
 import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.core.base.adapter.model.ErrorNetworkModel;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 
@@ -23,7 +23,6 @@ import java.util.List;
 public class BaseAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     private LoadingModel loadingModel = new LoadingModel();
-    private ErrorNetworkModel errorNetworkModel = new ErrorNetworkModel();
     protected List<Visitable> visitables;
     protected BaseAdapterTypeFactory adapterTypeFactory;
 
@@ -73,16 +72,5 @@ public class BaseAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
             visitables.remove(loadingModel);
             notifyItemRemoved(visitables.size());
         }
-    }
-
-    public void showErrorNetwork() {
-        visitables.clear();
-        visitables.add(errorNetworkModel);
-        notifyDataSetChanged();
-    }
-
-    public void removeErrorNetwork() {
-        visitables.remove(errorNetworkModel);
-        notifyDataSetChanged();
     }
 }

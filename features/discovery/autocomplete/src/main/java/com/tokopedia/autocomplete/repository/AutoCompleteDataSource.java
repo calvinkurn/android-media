@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import retrofit2.Response;
 import rx.Observable;
 
 public class AutoCompleteDataSource {
@@ -35,9 +34,5 @@ public class AutoCompleteDataSource {
                     cacheManager.put(AutocompleteCache.Key.UNIVERSEARCH, response.body(), tenMinute);
                 })
                 .map(autoCompleteMapper);
-    }
-
-    public Observable<Response<Void>> deleteRecentSearch(HashMap<String, Object> parameters) {
-        return browseApi.deleteRecentSearch(parameters);
     }
 }

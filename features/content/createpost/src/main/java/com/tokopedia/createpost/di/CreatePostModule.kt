@@ -2,9 +2,7 @@ package com.tokopedia.createpost.di
 
 import android.app.NotificationManager
 import android.content.Context
-
 import com.google.gson.Gson
-import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics
@@ -24,6 +22,7 @@ import com.tokopedia.imageuploader.domain.GenerateHostRepository
 import com.tokopedia.imageuploader.domain.UploadImageRepository
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
+import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.twitter_share.TwitterManager
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -33,7 +32,6 @@ import com.tokopedia.videouploader.di.VideoUploaderQualifier
 import com.tokopedia.videouploader.domain.pojo.DefaultUploadVideoResponse
 import com.tokopedia.videouploader.domain.usecase.GenerateVideoTokenUseCase
 import com.tokopedia.videouploader.domain.usecase.UploadVideoUseCase
-
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -41,7 +39,7 @@ import javax.inject.Named
 /**
  * @author by milhamj on 9/26/18.
  */
-@Module(includes = [ImageUploaderModule::class, VideoUploaderModule::class])
+@Module(includes = [ImageUploaderModule::class, VideoUploaderModule::class, ShopCommonModule::class])
 class CreatePostModule(private val context: Context) {
 
     @Provides
@@ -72,12 +70,6 @@ class CreatePostModule(private val context: Context) {
     @CreatePostScope
     fun providePresenter(createPostPresenter: CreatePostPresenter): CreatePostContract.Presenter {
         return createPostPresenter
-    }
-
-    @Provides
-    @CreatePostScope
-    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
-        return UserSession(context)
     }
 
     @Provides
@@ -134,5 +126,11 @@ class CreatePostModule(private val context: Context) {
     @CreatePostScope
     fun provideTwitterManager(userSession: UserSessionInterface): TwitterManager {
         return TwitterManager(userSession)
+    }
+
+    @Provides
+    @CreatePostScope
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
     }
 }

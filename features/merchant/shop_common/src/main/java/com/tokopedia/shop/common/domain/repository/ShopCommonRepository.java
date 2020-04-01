@@ -10,8 +10,8 @@ import rx.Observable;
 
 public interface ShopCommonRepository {
 
-    Observable<ShopInfo> getShopInfo(String shopId);
+    Observable<ShopInfo> getShopInfo(String shopId, String userId, String deviceId);
 
-    Observable<ShopInfo> getShopInfoByDomain(String shopDomain);
+    Observable<ShopInfo> getShopInfoByDomain(String shopDomain, String userId, String deviceId);
 
 }

@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.LinearLayout
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentAdapterActionListener
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentButtonPaymentModel
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentButtonPaymentModel
 import kotlinx.android.synthetic.main.item_shipment_button_payment.view.*
 
 /**

@@ -91,10 +91,11 @@ class AddTalkFragment : BaseDaggerFragment(),
         val adapterTypeFactory = QuickReplyTypeFactoryImpl(this)
         adapter = QuickReplyAdapter(adapterTypeFactory)
         val quickReplyItemDecoration = QuickReplyItemDecoration(activity!!
-                .resources.getDimension(R.dimen.dp_16).toInt())
+                .resources.getDimension(com.tokopedia.design.R.dimen.dp_16).toInt())
         list_template.addItemDecoration(quickReplyItemDecoration)
         send_new_talk.setOnClickListener {
             send_progress.visibility = View.VISIBLE
+            analytics.trackClickSendNewTalk(productId)
             presenter.send(productId, message_talk.text.toString())
         }
     }
@@ -109,7 +110,7 @@ class AddTalkFragment : BaseDaggerFragment(),
             } else if (parent.getChildAdapterPosition(view) == parent.adapter?.itemCount?.minus(1) ?: -1) {
                 outRect.right = space
             }
-            outRect.top = view.context.resources.getDimension(R.dimen.dp_8).toInt()
+            outRect.top = view.context.resources.getDimension(com.tokopedia.design.R.dimen.dp_8).toInt()
         }
     }
 

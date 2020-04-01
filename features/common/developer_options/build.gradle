@@ -29,6 +29,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.analytics)
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(rootProject.ext.libraries.analyticsDebugger)
+    } else {
+        implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
+    }
     implementation project(rootProject.ext.libraries.pushNotification)
     implementation project(rootProject.ext.features.tkpdcore)
 
@@ -43,13 +48,14 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.viewDependencies.appIntro
+
 
     implementation rootProject.ext.firebase.messaging
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     debugImplementation project(rootProject.ext.libraries.translator)
+    debugImplementation rootProject.ext.debugToolsDependencies.stetho
 }
 
 project.ext {

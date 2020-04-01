@@ -3,11 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_40"
+    android:id="@+id/fmOuter"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/gf_redeem_from_background_btn_bg"
     android:paddingBottom="@dimen/dp_3">
 
 <FrameLayout
+    android:id="@+id/fmInner"
     android:background="@drawable/gf_redeem_from_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"/>

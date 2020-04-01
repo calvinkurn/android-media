@@ -1,13 +1,13 @@
 package com.tokopedia.purchase_platform.features.express_checkout.view.variant.subscriber
 
-import com.tokopedia.abstraction.common.utils.view.CommonUtils
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantContract
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT
 import com.tokopedia.purchase_platform.features.express_checkout.data.entity.response.checkout.CheckoutExpressGqlResponse
 import com.tokopedia.purchase_platform.features.express_checkout.domain.mapper.checkout.CheckoutDomainModelMapper
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantContract
 import rx.Subscriber
+import timber.log.Timber
 
 /**
  * Created by Irfan Khoirul on 11/01/19.
@@ -53,7 +53,7 @@ class DoCheckoutExpressSubscriber(val view: CheckoutVariantContract.View?,
             try {
                 dataErrorCode = checkoutResponseModel.checkoutDataModel?.error?.toInt() ?: 0
             } catch (exception: NumberFormatException) {
-                CommonUtils.dumper(exception)
+                Timber.d(exception)
             }
         }
 

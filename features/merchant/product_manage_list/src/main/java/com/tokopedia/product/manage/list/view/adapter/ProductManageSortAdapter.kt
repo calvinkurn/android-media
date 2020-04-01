@@ -26,7 +26,7 @@ class ProductManageSortAdapter(val listener: ProductManageSortViewHolder.Product
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductManageSortViewHolder {
         val itemView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_manage_sort, parent, false)
+                .inflate(com.tokopedia.product.manage.list.R.layout.item_manage_sort, parent, false)
         val viewHolder = ProductManageSortViewHolder(itemView, listener)
         viewHolder.setAdapterListener(this)
         return viewHolder

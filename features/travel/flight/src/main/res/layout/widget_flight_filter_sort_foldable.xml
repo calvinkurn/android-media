@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/layout_lvl2">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvFlightFilterSortWidgetTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/layout_lvl1"
+        android:layout_marginRight="@dimen/layout_lvl1"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintEnd_toStartOf="@+id/icFlightFilterSortWidgetFoldIcon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_4"
+        tools:text="Urutkan berdasarkan"
+        />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icFlightFilterSortWidgetFoldIcon"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        app:layout_constraintBottom_toBottomOf="@+id/tvFlightFilterSortWidgetTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvFlightFilterSortWidgetTitle"
+        app:srcCompat="@drawable/ic_system_action_arrow_up_gray_24" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/child_view"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvFlightFilterSortWidgetTitle"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvFlightFilterSortWidget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:background="@color/Green_G500"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvFlightFilterSortWidgetSeeAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:text="Lihat Semua"
+            android:textColor="@color/Green_G500"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rvFlightFilterSortWidget"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:background="@color/Neutral_N75"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/child_view" />
+</androidx.constraintlayout.widget.ConstraintLayout>

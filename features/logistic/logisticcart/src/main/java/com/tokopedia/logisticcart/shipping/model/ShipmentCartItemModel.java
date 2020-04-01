@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
-import com.tokopedia.transaction.common.data.pickuppoint.Store;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -59,7 +58,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private String destinationDistrictName;
     private String tokenPickup;
     private String unixTime;
-    private Store store;
 
     // View state
     private boolean stateDetailSubtotalViewExpanded;
@@ -68,6 +66,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private boolean stateDropshipperHasError;
     private boolean stateLoadingCourierState;
     private boolean stateHasLoadCourierState;
+    private boolean stateHasLoadCourierTradeInDropOffState;
     private boolean stateHasExtraMarginTop;
 
     // Address Model for multiple address shipment, null if single address shipment
@@ -96,6 +95,8 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     private boolean isDropshipperDisable;
     private boolean isOrderPrioritasDisable;
+
+    private boolean hasSetDropOffLocation;
 
     public ShipmentCartItemModel() {
     }
@@ -132,13 +133,13 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         destinationDistrictName = in.readString();
         tokenPickup = in.readString();
         unixTime = in.readString();
-        store = in.readParcelable(Store.class.getClassLoader());
         stateDetailSubtotalViewExpanded = in.readByte() != 0;
         stateAllItemViewExpanded = in.readByte() != 0;
         stateDropshipperDetailExpanded = in.readByte() != 0;
         stateDropshipperHasError = in.readByte() != 0;
         stateLoadingCourierState = in.readByte() != 0;
         stateHasLoadCourierState = in.readByte() != 0;
+        stateHasLoadCourierTradeInDropOffState = in.readByte() != 0;
         stateHasExtraMarginTop = in.readByte() != 0;
         recipientAddressModel = in.readParcelable(RecipientAddressModel.class.getClassLoader());
         useCourierRecommendation = in.readByte() != 0;
@@ -154,6 +155,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         voucherLogisticItemUiModel = in.readParcelable(VoucherLogisticItemUiModel.class.getClassLoader());
         isLeasingProduct = in.readByte() != 0;
         bookingFee = in.readInt();
+        hasSetDropOffLocation = in.readByte() != 0;
     }
 
     @Override
@@ -189,13 +191,13 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeString(destinationDistrictName);
         dest.writeString(tokenPickup);
         dest.writeString(unixTime);
-        dest.writeParcelable(store, flags);
         dest.writeByte((byte) (stateDetailSubtotalViewExpanded ? 1 : 0));
         dest.writeByte((byte) (stateAllItemViewExpanded ? 1 : 0));
         dest.writeByte((byte) (stateDropshipperDetailExpanded ? 1 : 0));
         dest.writeByte((byte) (stateDropshipperHasError ? 1 : 0));
         dest.writeByte((byte) (stateLoadingCourierState ? 1 : 0));
         dest.writeByte((byte) (stateHasLoadCourierState ? 1 : 0));
+        dest.writeByte((byte) (stateHasLoadCourierTradeInDropOffState ? 1: 0));
         dest.writeByte((byte) (stateHasExtraMarginTop ? 1 : 0));
         dest.writeParcelable(recipientAddressModel, flags);
         dest.writeByte((byte) (useCourierRecommendation ? 1 : 0));
@@ -211,6 +213,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeParcelable(voucherLogisticItemUiModel, flags);
         dest.writeByte((byte) (isLeasingProduct ? 1 : 0));
         dest.writeInt(bookingFee);
+        dest.writeByte((byte) (hasSetDropOffLocation ? 1 : 0));
     }
 
     @Override
@@ -244,7 +247,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setWarning(shipmentCartItemModel.isWarning());
         newShipmentCartItemModel.setUnixTime(shipmentCartItemModel.getUnixTime());
         newShipmentCartItemModel.setTokenPickup(shipmentCartItemModel.getTokenPickup());
-        newShipmentCartItemModel.setStore(shipmentCartItemModel.getStore());
         newShipmentCartItemModel.setStateDetailSubtotalViewExpanded(shipmentCartItemModel.isStateDetailSubtotalViewExpanded());
         newShipmentCartItemModel.setStateAllItemViewExpanded(shipmentCartItemModel.isStateAllItemViewExpanded());
         newShipmentCartItemModel.setStateDropshipperDetailExpanded(shipmentCartItemModel.isStateDropshipperDetailExpanded());
@@ -422,14 +424,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.unixTime = unixTime;
     }
 
-    public Store getStore() {
-        return store;
-    }
-
-    public void setStore(Store store) {
-        this.store = store;
-    }
-
     public int getWeightUnit() {
         return weightUnit;
     }
@@ -594,6 +588,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.stateHasLoadCourierState = stateHasLoadCourierState;
     }
 
+    public boolean isStateHasLoadCourierTradeInDropOffState() {
+        return stateHasLoadCourierTradeInDropOffState;
+    }
+
+    public void setStateHasLoadCourierTradeInDropOffState(boolean stateHasLoadCourierTradeInDropOffState) {
+        this.stateHasLoadCourierTradeInDropOffState = stateHasLoadCourierTradeInDropOffState;
+    }
+
     public boolean isStateHasExtraMarginTop() {
         return stateHasExtraMarginTop;
     }
@@ -708,6 +710,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         isOrderPrioritasDisable = orderPrioritasDisable;
     }
 
+    public boolean isHasSetDropOffLocation() {
+        return hasSetDropOffLocation;
+    }
+
+    public void setHasSetDropOffLocation(boolean hasSetDropOffLocation) {
+        this.hasSetDropOffLocation = hasSetDropOffLocation;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -737,7 +747,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(getDestinationDistrictName(), that.getDestinationDistrictName())
                 .append(getTokenPickup(), that.getTokenPickup())
                 .append(getUnixTime(), that.getUnixTime())
-                .append(getStore(), that.getStore())
                 .append(getRecipientAddressModel(), that.getRecipientAddressModel())
                 .append(isUseCourierRecommendation(), that.isUseCourierRecommendation())
                 .append(getIsBlackbox(), that.getIsBlackbox())
@@ -768,7 +777,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(getDestinationDistrictName())
                 .append(getTokenPickup())
                 .append(getUnixTime())
-                .append(getStore())
                 .append(getRecipientAddressModel())
                 .append(isUseCourierRecommendation())
                 .append(getIsBlackbox())

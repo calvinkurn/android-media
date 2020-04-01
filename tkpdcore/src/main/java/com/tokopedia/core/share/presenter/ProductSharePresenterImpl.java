@@ -35,7 +35,7 @@ import java.io.FileInputStream;
  * Created by Angga.Prasetiyo on 11/12/2015.
  */
 public class ProductSharePresenterImpl implements ProductSharePresenter {
-    private static final String TAG = ProductSharePresenterImpl.class.getSimpleName();
+
 
     private final Activity activity;
     // private final ProductShareFragment fragment;

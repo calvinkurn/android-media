@@ -25,9 +25,6 @@ public class PointHistoryItem extends BaseItem {
     @SerializedName("rewardPoints")
     public int rewardPoints;
 
-    @SerializedName("historyType")
-    public int historyType;
-
     @SerializedName("icon")
     public String icon;
 
@@ -37,14 +34,6 @@ public class PointHistoryItem extends BaseItem {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public String getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(String createTime) {
-        this.createTime = createTime;
     }
 
     public String getCreateTimeDesc() {
@@ -87,14 +76,6 @@ public class PointHistoryItem extends BaseItem {
         this.rewardPoints = rewardPoints;
     }
 
-    public int getHistoryType() {
-        return historyType;
-    }
-
-    public void setHistoryType(int historyType) {
-        this.historyType = historyType;
-    }
-
     public String getIcon() {
         return icon;
     }
@@ -113,7 +94,6 @@ public class PointHistoryItem extends BaseItem {
                 ", notes='" + notes + '\'' +
                 ", memberPoints=" + memberPoints +
                 ", rewardPoints=" + rewardPoints +
-                ", historyType=" + historyType +
                 ", icon='" + icon + '\'' +
                 '}';
     }

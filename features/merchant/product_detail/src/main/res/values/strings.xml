@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">product_detail</string>
     <string name="label_flash_sale">Flash Sale</string>
@@ -23,7 +24,7 @@
     <string name="template_weight">%1$s %2$s</string>
     <string name="template_campaign_off">%1$s%% OFF </string>
     <string name="template_review">%1$d Ulasan</string>
-    <string name="template_success_rate">%1$s%% (%2$s produk)</string>
+    <string name="template_success_rate">%1$s%% (%2$s)</string>
     <string name="template_talk">%1$d Diskusi</string>
     <string name="template_preorder_time">%1$d %2$s</string>
     <string name="template_min_order">%1$d Buah</string>
@@ -36,7 +37,7 @@
     <string name="rincian_topads">Rincian Iklan</string>
     <string name="no_stock">Stok Kosong</string>
     <string name="action_preorder">PREORDER</string>
-    <string name="product_from">Produk</string>
+    <string name="product_from">Produk dari</string>
     <string name="from_official_store_label">Official Store</string>
     <string name="from_power_badge_label">Power Merchant</string>
 
@@ -64,6 +65,7 @@
     <string name="product_shop_label">Penjual</string>
     <string name="label_chat_seller">Chat Penjual</string>
     <string name="label_favorite">Favoritkan</string>
+    <string name="label_follow">Follow</string>
     <string name="label_favorited">Followed</string>
     <string name="template_shop_last_login">\u2022 %s</string>
     <string name="campaign_expired_title">Waktu sudah berakhir</string>
@@ -124,6 +126,7 @@
     <string name="success_to_report">Laporanmu sudah tercatat dan akan segera diproses.</string>
     <string name="pdp_search_hint">Cari %s di Tokopedia</string>
     <string name="label_prescription">Obat Keras</string>
+    <string name="label_no_description">TIDAK ADA DESKRIPSI</string>
 
     <string name="value_proposition_learn_more">Pelajari Selengkapnya</string>
     <string name="value_proposition_title_guarantee">Garansi Harga Termurah</string>
@@ -146,6 +149,9 @@
     <string name="txt_most_helpfull">terbantu dengan ulasan ini</string>
     <string name="txt_more_item_plus">%1$d +</string>
     <string name="counter_pattern_string">%1$s / %2$d</string>
+    <string name="shipping_pattern_string">%1$d Kurir • </string>
+    <string name="ongkir_pattern_string">%1s dari <b>%2s</b></string>
+    <string name="ongkir_pattern_string_dynamic_pdp"><![CDATA[%1s <br>ke <b>%2s</b>]]></string>
     <string name="review_counter">• %1$d ulasan</string>
     <string name="label_see_all_with_counter">Lainnya \n %2$d</string>
 
@@ -160,6 +166,9 @@
     <string name="ft_max_installment_amount">Maks Pembelanjaan %s</string>
     <string name="pdp_installment_desc">Lihat Semua Metode</string>
 
+    <string name="pdp_etalase_applink_builder">https://www.tokopedia.com/%s/etalase</string>
+    <string name="pdp_category_applink">https://www.tokopedia.com/p/</string>
+
     <string-array name="ft_installment_type_title">
         <item>@string/ft_label_without_credit_card</item>
         <item>@string/ft_label_with_credit_card</item>
@@ -169,4 +178,11 @@
     <string name="image_preview_remove_wishlist">Hapus dari Wishlist</string>
     <string name="image_preview_add_wishlist_success">Berhasil menambahkan ke Wishlist</string>
     <string name="image_preview_remove_wishlist_success">Berhasil menghapus dari Wishlist</string>
+    <string name="on_error_p1_string_builder">Error getPdpLayout. userId: %1$s | userEmail: %2$s | %3$s</string>
+
+    //Error section
+    <string name="banned_product_title">Barang ini dilarang</string>
+    <string name="banned_product_description">Barang ini tidak diperjual belikan \nkarena melanggar syarat dan ketentuan Tokopedia</string>
+
+
 </resources>

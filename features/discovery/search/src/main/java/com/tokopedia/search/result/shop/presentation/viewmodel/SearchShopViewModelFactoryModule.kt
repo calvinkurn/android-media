@@ -8,7 +8,6 @@ import com.tokopedia.discovery.common.coroutines.ProductionDispatcherProvider
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.di.module.GCMLocalCacheHandlerModule
 import com.tokopedia.search.di.scope.SearchScope
-import com.tokopedia.search.result.common.UseCase
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterCoroutineUseCaseModule
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandlerModule
@@ -18,6 +17,7 @@ import com.tokopedia.search.result.shop.presentation.mapper.ShopViewModelMapperM
 import com.tokopedia.search.result.shop.presentation.model.ShopCpmViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopTotalCountViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
+import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides

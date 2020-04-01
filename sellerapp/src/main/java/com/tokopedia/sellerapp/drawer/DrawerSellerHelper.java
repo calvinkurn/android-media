@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
@@ -41,11 +42,9 @@ import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
-import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.sellerapp.R;
-import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
+import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.tracking.view.SimpleWebViewActivity;
 
 import java.util.ArrayList;
 
@@ -57,7 +56,7 @@ public class DrawerSellerHelper extends DrawerHelper
         implements DrawerItemDataBinder.DrawerItemListener,
         DrawerSellerHeaderDataBinder.DrawerHeaderListener {
 
-    private static final String DIGITAL_PATH_MITRA = "mitra";
+    private static final String DIGITAL_PATH_MITRA = "https://pulsa.tokopedia.com/mitra/";
     private TextView shopName;
     private TextView shopLabel;
     private ImageView shopIcon;
@@ -127,7 +126,7 @@ public class DrawerSellerHelper extends DrawerHelper
                 R.drawable.icon_setting,
                 TkpdState.DrawerPosition.SETTINGS,
                 true));
-        data.add(new DrawerItem(context.getString(R.string.title_activity_contact_us),
+        data.add(new DrawerItem(context.getString(R.string.title_activity_contact_us_drawer),
                 R.drawable.ic_contactus,
                 TkpdState.DrawerPosition.CONTACT_US,
                 true));
@@ -301,7 +300,7 @@ public class DrawerSellerHelper extends DrawerHelper
             switch (item.getId()) {
                 case TkpdState.DrawerPosition.INDEX_HOME:
                     eventDrawerClick(AppEventTracking.EventLabel.SELLER_HOME);
-                    context.startActivity(DashboardActivity.createInstance(context));
+                    context.startActivity(SellerHomeActivity.createIntent(context));
                     break;
                 case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND:
                     if (context.getApplication() instanceof AbstractionRouter) {
@@ -350,11 +349,11 @@ public class DrawerSellerHelper extends DrawerHelper
                     }
                     break;
                 case TkpdState.DrawerPosition.MANAGE_PAYMENT_AND_TOPUP:
-                    context.startActivity(SimpleWebViewActivity.createIntent(context, TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN + DIGITAL_PATH_MITRA));
+                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, DIGITAL_PATH_MITRA);
                     eventClickPaymentAndTopupOnDrawer();
                     break;
                 case TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL:
-                    context.startActivity(SimpleWebViewActivity.createIntent(context, TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN + DIGITAL_PATH_MITRA));
+                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, DIGITAL_PATH_MITRA);
                     eventClickDigitalTransactionListOnDrawer();
                     break;
                 case TkpdState.DrawerPosition.DRAFT_PRODUCT:
@@ -390,8 +389,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     break;
                 case TkpdState.DrawerPosition.SELLER_INFO:
                     eventSellerInfo(AppEventTracking.Action.CLICK_HAMBURGER_ICON, AppEventTracking.EventLabel.SELLER_INFO);
-                    intent = new Intent(context, SellerInfoActivity.class);
-                    context.startActivity(intent);
+                    RouteManager.route(context, ApplinkConst.SELLER_INFO);
                     break;
                 case TkpdState.DrawerPosition.RESOLUTION_CENTER:
                     if (context.getApplication() instanceof TkpdCoreRouter) {

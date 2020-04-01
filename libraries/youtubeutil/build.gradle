@@ -20,9 +20,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
-    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
 
 project.ext {

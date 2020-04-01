@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.features.checkout.view.viewholder
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.NotEligiblePromoHolderdata
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata
 import kotlinx.android.synthetic.main.item_promo_not_eligible.view.*
 
 /**

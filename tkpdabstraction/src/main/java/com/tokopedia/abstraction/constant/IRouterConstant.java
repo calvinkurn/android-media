@@ -7,7 +7,6 @@ package com.tokopedia.abstraction.constant;
 public interface IRouterConstant {
 
     interface LoyaltyModule {
-        int LOYALTY_ACTIVITY_REQUEST_CODE = 12345;
 
         interface ExtraLoyaltyActivity {
             String EXTRA_COUPON_ACTIVE = "EXTRA_COUPON_ACTIVE";

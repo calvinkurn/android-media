@@ -2,6 +2,7 @@ package com.tokopedia.core.network.core;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.DigitalResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
@@ -31,6 +32,7 @@ public class RetrofitFactory {
                 .addConverterFactory(new GeneratedHostConverter())
                 .addConverterFactory(new TkpdResponseConverter())
                 .addConverterFactory(new StringResponseConverter())
+                .addConverterFactory(new TokopediaWsV4ResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
     }
@@ -47,45 +49,6 @@ public class RetrofitFactory {
                 .addConverterFactory(new DigitalResponseConverter())
                 .addConverterFactory(new StringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
-    }
-
-    public static Retrofit.Builder createRetrofitTokoCashConfig(String baseUrl) {
-
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
-                .setPrettyPrinting()
-                .serializeNulls()
-                .create();
-        return new Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .addConverterFactory(new DigitalResponseConverter())
-                .addConverterFactory(new TkpdResponseConverter())
-                .addConverterFactory(new StringResponseConverter())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
-    }
-
-    public static Retrofit.Builder createDaggerRetrofitDefaultConfig(
-            String baseUrl,
-            Gson gson,
-            GeneratedHostConverter hostConverter,
-            TkpdResponseConverter tkpdConverter,
-            StringResponseConverter stringConverter) {
-
-        return new Retrofit.Builder()
-                .addConverterFactory(stringConverter)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .addConverterFactory(hostConverter)
-                .addConverterFactory(tkpdConverter)
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .baseUrl(baseUrl);
-    }
-
-    public static Retrofit.Builder createBasicRetrofit(String baseUrl) {
-        return new Retrofit.Builder()
-                .addConverterFactory(new StringResponseConverter())
-                .baseUrl(baseUrl)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
     }
 }

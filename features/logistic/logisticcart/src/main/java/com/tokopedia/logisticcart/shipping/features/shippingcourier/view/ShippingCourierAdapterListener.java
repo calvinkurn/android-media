@@ -1,7 +1,7 @@
 package com.tokopedia.logisticcart.shipping.features.shippingcourier.view;
 
 
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 
 /**
  * Created by Irfan Khoirul on 08/08/18.
@@ -9,7 +9,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
 
 public interface ShippingCourierAdapterListener {
 
-    void onCourierChoosen(ShippingCourierViewModel shippingCourierViewModel, int cartPosition, boolean isNeedPinpoint);
+    void onCourierChoosen(ShippingCourierUiModel shippingCourierUiModel, int cartPosition, boolean isNeedPinpoint);
 
     boolean isToogleYearEndPromotionOn();
 

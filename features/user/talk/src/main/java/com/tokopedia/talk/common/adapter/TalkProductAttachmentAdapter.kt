@@ -20,9 +20,9 @@ class TalkProductAttachmentAdapter(private val listener: ProductAttachmentItemCl
     : RecyclerView.Adapter<TalkProductAttachmentAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val productImage: ImageView = itemView.findViewById(R.id.attach_product_chat_image)
-        val productName: TextView = itemView.findViewById(R.id.attach_product_chat_name)
-        val productPrice: TextView = itemView.findViewById(R.id.attach_product_chat_price)
+        val productImage: ImageView = itemView.findViewById(com.tokopedia.attachproduct.R.id.attach_product_chat_image)
+        val productName: TextView = itemView.findViewById(com.tokopedia.attachproduct.R.id.attach_product_chat_name)
+        val productPrice: TextView = itemView.findViewById(com.tokopedia.attachproduct.R.id.attach_product_chat_price)
     }
 
     interface ProductAttachmentItemClickListener {

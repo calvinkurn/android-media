@@ -7,16 +7,6 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application>
-        <activity
-            android:name=".debugger.ui.activity.AnalyticsDebuggerActivity"
-            android:launchMode="singleTask"
-            android:label="Analytics Debugger"
-            android:taskAffinity="com.tokopedia.analytics.task"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:exported="true"/>
-        <activity
-            android:name=".debugger.ui.activity.AnalyticsDebuggerDetailActivity"
-            android:theme="@style/Theme.Green" />
     </application>
 
 </manifest>

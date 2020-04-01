@@ -3,6 +3,7 @@ package com.tokopedia.otp.validator.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.otp.common.analytics.TrackingValidatorUtil
 import com.tokopedia.user.session.UserSession
@@ -21,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 @Module
 class ValidatorModule{
 
+    @ValidatorScope
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
@@ -32,6 +34,11 @@ class ValidatorModule{
     @Provides
     fun provideTrackingValidatorUtil(): TrackingValidatorUtil = TrackingValidatorUtil()
 
+    @ValidatorScope
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
+
+    @ValidatorScope
+    @Provides
+    fun provideMultiRequestGraphql(): MultiRequestGraphqlUseCase = GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
 }

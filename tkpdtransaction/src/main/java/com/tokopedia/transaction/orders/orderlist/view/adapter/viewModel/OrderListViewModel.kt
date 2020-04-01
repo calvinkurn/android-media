@@ -67,6 +67,14 @@ class OrderListViewModel(var order: Order) : Visitable<OrderListTypeFactory> {
         } else {
             orderListLiveData.value = SetConditionalInfo(View.GONE, null, null)
         }
+        if (order.conditionalInfoBottom() != null) {
+            if (!TextUtils.isEmpty(order.conditionalInfoBottom().text())) {
+                val conditionalInfoBottom = order.conditionalInfoBottom()
+                orderListLiveData.value = SetConditionalInfoBottom(View.VISIBLE, conditionalInfoBottom.text(), conditionalInfoBottom.color())
+            } else {
+                orderListLiveData.value = SetConditionalInfoBottom(View.GONE, null, null)
+            }
+        }
         orderListLiveData.value = SetInvoice(order.invoiceRefNum())
         var date: String? = order.createdAt()
         if (date?.contains(DATE_WIB_T) == true) {

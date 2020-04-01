@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/container_widget_umrah_travel_agent"
+    android:background="@drawable/umrah_bg_checkout_gray"
+    android:orientation="horizontal">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:id="@+id/tg_umrah_travel_agent_established"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        app:typographyType="small"
+        app:typographyWeight="reguler"
+        tools:text="Tahun Berdiri \n2001" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_umrah_travel_agent_pilgrims"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        app:typographyType="small"
+        tools:text="Jamaah \n1000/tahun"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"
+        app:typographyWeight="reguler"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:id="@+id/tg_umrah_travel_agent_availabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        app:typographyType="small"
+        app:typographyWeight="reguler"
+        tools:text="Kuota Paket \nTerbatas  5" />
+
+
+</LinearLayout>

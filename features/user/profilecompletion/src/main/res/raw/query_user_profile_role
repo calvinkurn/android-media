@@ -3,5 +3,7 @@ query userProfileRole(){
         isAllowedChangeDob
         isAllowedChangeName
         isAllowedChangeGender
+        chancesChangeName
+        chancesChangeGender
     }
 }

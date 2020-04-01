@@ -14,7 +14,7 @@ public class SearchProductMapperModule {
 
     @SearchScope
     @Provides
-    Func1<GraphqlResponse, SearchProductModel> provideSearchProductModelMapper() {
+    public Func1<GraphqlResponse, SearchProductModel> provideSearchProductModelMapper() {
         return new SearchProductMapper();
     }
 }

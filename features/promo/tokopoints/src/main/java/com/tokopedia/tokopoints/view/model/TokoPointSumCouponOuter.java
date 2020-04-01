@@ -3,7 +3,8 @@ package com.tokopedia.tokopoints.view.model;
 import com.google.gson.annotations.SerializedName;
 
 public class TokoPointSumCouponOuter {
-    @SerializedName("tokopointsSumCoupon")
+
+    @SerializedName("tokopointsSumNewCoupon")
     private TokoPointSumCoupon tokopointsSumCoupon;
 
     public TokoPointSumCoupon getTokopointsSumCoupon() {

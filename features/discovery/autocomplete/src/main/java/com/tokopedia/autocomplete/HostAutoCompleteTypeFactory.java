@@ -3,12 +3,13 @@ package com.tokopedia.autocomplete;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.autocomplete.initialstate.InitialStateViewModel;
 
 public interface HostAutoCompleteTypeFactory {
 
-    int type(DefaultAutoCompleteViewModel viewModel);
+    int type(InitialStateViewModel viewModel);
 
-    int type(TabAutoCompleteViewModel viewModel);
+    int type(TabSuggestionViewModel viewModel);
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 }

@@ -15,7 +15,7 @@
         android:theme="@style/AppBarTheme"
         app:titleTextAppearance="@style/ToolbarText"
         app:subtitleTextAppearance="@style/ToolbarSubtitleText"/>
-    
+
     <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
         android:id="@+id/stepper_progress"
         android:layout_width="match_parent"

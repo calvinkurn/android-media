@@ -26,46 +26,6 @@ import rx.Observable;
 public interface ResCenterActApi {
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenter.PATH_ACCEPT_ADMIN_RESOLUTION)
-    Observable<Response<TkpdResponse>> acceptAdminResolution(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenter.PATH_ACCEPT_RESOLUTION)
-    Observable<Response<TkpdResponse>> acceptResolution(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenter.PATH_CANCEL_RESOLUTION)
-    Observable<Response<TkpdResponse>> cancelResolution(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenter.PATH_CREATE_RES_SUBMIT)
-    Observable<Response<TkpdResponse>> createResolutionSubmit(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenter.PATH_CREATE_RES_VALIDATION)
-    Observable<Response<TkpdResponse>> createResolutionValidation(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenter.PATH_EDIT_RESI_RESOLUTION_VALIDATION)
-    Observable<Response<TkpdResponse>> editResiResolutionValidation(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenter.PATH_EDIT_RESI_RESOLUTION_SUBMIT)
-    Observable<Response<TkpdResponse>> editResiResolutionSubmit(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenter.PATH_FINISH_RES_RETURN)
-    Observable<Response<TkpdResponse>> finishResolutionReturn(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenter.PATH_INPUT_RESI_RESOLUTION_VALIDATION)
-    Observable<Response<TkpdResponse>> inputResiResolutionValidation(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenter.PATH_INPUT_RESI_RESOLUTION_SUBMIT)
-    Observable<Response<TkpdResponse>> inputResiResolutionSubmit(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
     @POST(TkpdBaseURL.ResCenter.PATH_REJECT_ADMIN_RES_SUBMIT)
     Observable<Response<TkpdResponse>> rejectAdminResolutionSubmit(@FieldMap Map<String, String> params);
 
@@ -78,24 +38,8 @@ public interface ResCenterActApi {
     Observable<Response<TkpdResponse>> replyConversationSubmit(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenter.PATH_REPLY_CONVERSATION_VALIDATION)
-    Observable<Response<TkpdResponse>> replyConversationValidation(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
     @POST(TkpdBaseURL.ResCenter.PATH_REPLY_CONVERSATION_VALIDATION_NEW)
     Observable<Response<TkpdResponse>> replyConversationValidationNew(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenter.PATH_REPORT_REOLUTION)
-    Observable<Response<TkpdResponse>> reportResolution(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenter.PATH_INPUT_ADDRESS_RESOLUTION)
-    Observable<Response<TkpdResponse>> inputAddressResolution(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenter.PATH_EDIT_ADDRESS_RESOLUTION)
-    Observable<Response<TkpdResponse>> editAddressResolution(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.ResCenter.PATH_CANCEL_RESOLUTION_V2)
@@ -112,10 +56,6 @@ public interface ResCenterActApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.ResCenter.PATH_ACCEPT_ADMIN_RESOLUTION_V2)
     Observable<Response<TkpdResponse>> acceptAdminResolution2(@FieldMap Map<String, Object> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenter.PATH_ACCEPT_RESOLUTION_V2)
-    Observable<Response<TkpdResponse>> acceptResolution2(@FieldMap Map<String, Object> params);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.ResCenter.PATH_INPUT_ADDRESS_RESOLUTION_V2)
@@ -154,10 +94,5 @@ public interface ResCenterActApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.ResCenter.PATH_GENERATE_TOKEN_HOST)
     Observable<Response<TkpdResponse>> generateTokenHost(@FieldMap TKPDMapParam<String, Object> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenter.PATH_GENERATE_TOKEN_HOST_WITHOUT_HEADER)
-    Observable<Response<TkpdResponse>> generateTokenHostWithoutHeader(@FieldMap TKPDMapParam<String, Object> params);
-
 }
 

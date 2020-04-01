@@ -2,6 +2,7 @@ package com.tokopedia.discovery.categoryrevamp.data.typefactory.product
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.HotlistLoadMoreViewHolder
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.product.BigGridProductCardViewHolder
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.product.ListProductCardViewHolder
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.product.SmallGridProductCardViewHolder
@@ -48,6 +49,7 @@ class ProductTypeFactoryImpl(var productCardListener: ProductCardListener) : Bas
             GridListShimmerViewHolder.LAYOUT -> viewHolder = GridListShimmerViewHolder(view)
             ListShimmerViewHolder.LAYOUT -> viewHolder = ListShimmerViewHolder(view)
             BigListShimmerViewHolder.LAYOUT -> viewHolder = BigListShimmerViewHolder(view)
+            HotlistLoadMoreViewHolder.LAYOUT -> viewHolder = HotlistLoadMoreViewHolder(view)
             else -> viewHolder = super.createViewHolder(view, type)
         }
         return viewHolder

@@ -5,17 +5,18 @@ import android.content.Intent
 import android.net.ParseException
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.core.app.TaskStackBuilder
 import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
+import androidx.core.app.TaskStackBuilder
+import androidx.fragment.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.webview.download.BaseDownloadAppLinkActivity
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
 
@@ -81,18 +82,14 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         val query = intentUri.query
         return if (query != null && query.contains("$KEY_URL=")) {
             url = query.substringAfter("$KEY_URL=").decode()
-            val slashIndex = url.indexOf("/&")
-            if (slashIndex > -1) {
-                url = url.substring(0, slashIndex + 1)
-            }
+            url = validateSymbol(url)
             if (!url.contains("$KEY_URL=")) {
                 return url
             }
-            val url2 = url.substringAfter("$KEY_URL=")
+            val url2 = url.substringAfter("$KEY_URL=", "")
             if (url2.isNotEmpty()) {
                 val url2BeforeAnd = url2.substringBefore("&")
-                val uriFromUrl = Uri.parse(url.replaceFirst("$KEY_URL=$url2BeforeAnd", "")
-                    .replaceFirst("&&", "&").replaceFirst("?&", "&"))
+                val uriFromUrl = Uri.parse(url.replaceFirst("$KEY_URL=$url2BeforeAnd", "").validateAnd() )
                 uriFromUrl.buildUpon()
                     .appendQueryParameter(KEY_URL, url2.encodeOnce())
                     .build().toString()
@@ -102,6 +99,59 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         } else {
             ""
         }
+    }
+
+    /**
+     * Validate the & and ? symbol
+     * Example input/output
+     * https://www.tokopedia.com/events/hiburan
+     * https://www.tokopedia.com/events/hiburan
+     *
+     * https://www.tokopedia.com/events/hiburan?parama=a&paramb=b
+     * https://www.tokopedia.com/events/hiburan?parama=a&paramb=b
+     *
+     * https://www.tokopedia.com/events/hiburan&utm_source=7teOvA
+     * https://www.tokopedia.com/events/hiburan
+     */
+    private fun validateSymbol(url: String): String {
+        val indexAnd = url.indexOf("&")
+        return if (indexAnd == -1) {
+            url
+        } else {
+            val urlBeforeAnd = url.substringBefore("&", "")
+            val indexQuestion = urlBeforeAnd.indexOf("?")
+            if (indexQuestion == -1) {
+                urlBeforeAnd
+            } else {
+                url
+            }
+        }
+    }
+
+    /**
+     * trim invalid &
+     * Example:
+     * https://www.tokopedia.com/help?&a=b
+     * https://www.tokopedia.com/help?a=b
+     *
+     * https://www.tokopedia.com/help?a=b&&c=d
+     * https://www.tokopedia.com/help?a=b&c=d
+     *
+     * https://www.tokopedia.com/help?a=b?&c=d
+     * https://www.tokopedia.com/help?a=b&c=d
+     */
+    private fun String.validateAnd(): String {
+        var url = replace("&&", "&")
+        val indexQuestionAnd = url.indexOf("?&")
+        if (indexQuestionAnd > -1) {
+            val indexQuestion = url.indexOf("?")
+            if (indexQuestion == indexQuestionAnd) {
+                url = url.replaceFirst("?&", "?")
+            } else {
+                url = url.replaceFirst("?&", "&")
+            }
+        }
+        return url
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -216,7 +266,13 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                 webUrl = TokopediaUrl.Companion.getInstance().WEB
             }
 
-            return getStartIntent(context, webUrl, showToolbar, needLogin, allowOverride)
+            return getStartIntent(context, webUrl, showToolbar, allowOverride, needLogin)
+        }
+
+        @DeepLink(ApplinkConst.SellerApp.WEBVIEW, ApplinkConst.SELLER_INFO_DETAIL)
+        @JvmStatic
+        fun createApplinkIntent(context: Context, bundle: Bundle): Intent {
+            return getStartIntent(context, bundle.getString(BaseDownloadAppLinkActivity.KEY_APP_LINK_QUERY_URL, TokopediaUrl.getInstance().MOBILEWEB))
         }
     }
 

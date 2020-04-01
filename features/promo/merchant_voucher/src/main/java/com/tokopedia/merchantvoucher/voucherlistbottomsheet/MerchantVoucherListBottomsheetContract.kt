@@ -21,9 +21,9 @@ interface MerchantVoucherListBottomsheetContract {
 
         fun onErrorGetMerchantVoucherList(e: Throwable)
 
-        fun onErrorCheckPromoFirstStep(message: String)
+        fun onErrorCheckPromoFirstStep(message: String, promoId: String, isFromList: Boolean)
 
-        fun onSuccessCheckPromoFirstStep(model: ResponseGetPromoStackUiModel, promoCode: String, isFromList: Boolean)
+        fun onSuccessCheckPromoFirstStep(model: ResponseGetPromoStackUiModel, promoCode: String, isFromList: Boolean, promoId: String)
 
         fun onClashCheckPromoFirstStep(model: ClashingInfoDetailUiModel, type: String)
 
@@ -43,7 +43,7 @@ interface MerchantVoucherListBottomsheetContract {
 
         fun getVoucherList(shopId: String, numVoucher: Int, cartItemDataVoucherList: List<CartItemDataVoucher>)
 
-        fun checkPromoFirstStep(promoMerchantCode: String, currentCartString: String, promo: Promo?, isFromList: Boolean)
+        fun checkPromoFirstStep(voucherId: String, promoMerchantCode: String, currentCartString: String, promo: Promo?, isFromList: Boolean)
 
         fun clearCache()
 

@@ -29,6 +29,7 @@ import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailViewListener;
 import com.tokopedia.topads.dashboard.view.model.Ad;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailViewPresenter;
 
+import timber.log.Timber;
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -196,7 +197,7 @@ public abstract class TopAdsDetailViewFragment<T extends TopAdsDetailViewPresent
         name.setContent(ad.getName());
         Log.d(TAG, "status -> " + ad.getStatus());
 
-        CommonUtils.dumper("status -> " + ad.getStatus());
+        Timber.d("status -> " + ad.getStatus());
         switch (ad.getStatus()) {
             case TopAdsConstant.STATUS_AD_ACTIVE:
             case TopAdsConstant.STATUS_AD_NOT_SENT:

@@ -16,6 +16,8 @@ public class VoteStatisticDomainModel {
         this.listOptions = listOptions;
     }
 
+    public VoteStatisticDomainModel() {}
+
     public List<VoteItemDomainModel> getListOptions() {
         return listOptions;
     }

@@ -4,17 +4,14 @@ package com.tokopedia.core.network.entity.intermediary;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Deprecated
 public class Data implements Parcelable {
-
-    public static final int GRID_2_VIEW_TYPE = 1;
-    public static final int GRID_1_VIEW_TYPE = 2;
-    public static final int LIST_VIEW_TYPE = 3;
 
     @SerializedName("child")
     @Expose
@@ -87,10 +84,6 @@ public class Data implements Parcelable {
         return curatedProduct;
     }
 
-    public void setCuratedProduct(CuratedProduct curatedProduct) {
-        this.curatedProduct = curatedProduct;
-    }
-
     public String getId() {
         return id;
     }
@@ -115,36 +108,12 @@ public class Data implements Parcelable {
         this.description = description;
     }
 
-    public String getTitleTag() {
-        return titleTag;
-    }
-
-    public void setTitleTag(String titleTag) {
-        this.titleTag = titleTag;
-    }
-
-    public String getMetaDescription() {
-        return metaDescription;
-    }
-
-    public void setMetaDescription(String metaDescription) {
-        this.metaDescription = metaDescription;
-    }
-
     public int getIsAdult() {
         return isAdult;
     }
 
-    public void setIsAdult(int isAdult) {
-        this.isAdult = isAdult;
-    }
-
     public String getHeaderImage() {
         return headerImage;
-    }
-
-    public void setHeaderImage(String headerImage) {
-        this.headerImage = headerImage;
     }
 
     public Integer getHidden() {
@@ -167,24 +136,12 @@ public class Data implements Parcelable {
         return isRevamp;
     }
 
-    public void setIsRevamp(Boolean isRevamp) {
-        this.isRevamp = isRevamp;
-    }
-
     public Boolean getIsIntermediary() {
         return isIntermediary;
     }
 
-    public void setIsIntermediary(Boolean isIntermediary) {
-        this.isIntermediary = isIntermediary;
-    }
-
     public Boolean getRevamp() {
         return isRevamp;
-    }
-
-    public void setRevamp(Boolean revamp) {
-        isRevamp = revamp;
     }
 
     public Boolean getIntermediary() {
@@ -231,16 +188,8 @@ public class Data implements Parcelable {
         return rootCategoryId;
     }
 
-    public void setRootCategoryId(Integer rootCategoryId) {
-        this.rootCategoryId = rootCategoryId;
-    }
-
     public String getHeaderHexColor() {
         return headerHexColor;
-    }
-
-    public void setHeaderHexColor(String headerHexColor) {
-        this.headerHexColor = headerHexColor;
     }
 
     protected Data(Parcel in) {

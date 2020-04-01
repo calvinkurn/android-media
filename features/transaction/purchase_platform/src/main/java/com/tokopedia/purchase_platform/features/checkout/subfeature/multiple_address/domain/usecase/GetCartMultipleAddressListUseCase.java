@@ -20,6 +20,10 @@ import rx.functions.Func1;
  * @author Irfan Khoirul on 31/08/18.
  */
 public class GetCartMultipleAddressListUseCase extends UseCase<CartListData> {
+    public static final String PARAM_KEY_LANG = "lang";
+    public static final String PARAM_VALUE_LANG_ID = "id";
+    public static final String PARAM_CART_IDS = "cart_ids";
+
     public static final String PARAM_REQUEST_AUTH_MAP_STRING = "PARAM_REQUEST_AUTH_MAP_STRING";
     private final IMultipleAddressRepository multipleAddressRepository;
     private final ICartMapper cartMapper;

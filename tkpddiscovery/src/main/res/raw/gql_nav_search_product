@@ -4,6 +4,8 @@ query SearchProduct($params: String) {
     totalData: count
     count_text
     additionalParams: additional_params
+    errorMessage
+    lite_url
     redirection {
       redirectionURL: redirect_url
       departmentID: department_id
@@ -94,6 +96,10 @@ query SearchProduct($params: String) {
       GAKey: ga_key
       preorder: is_preorder
       wishlist
+      free_ongkir{
+        is_active
+        img_url
+      }
       shop {
         id
         name

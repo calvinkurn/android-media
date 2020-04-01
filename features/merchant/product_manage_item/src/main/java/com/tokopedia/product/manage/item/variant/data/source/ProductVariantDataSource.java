@@ -1,6 +1,6 @@
 package com.tokopedia.product.manage.item.variant.data.source;
 
-import com.tokopedia.abstraction.common.network.mapper.DataResponseMapper;
+import com.tokopedia.network.mapper.DataResponseMapper;
 import com.tokopedia.product.manage.item.common.data.source.cloud.ProductVariantCloud;
 import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprdold.ProductVariantByPrdModel;

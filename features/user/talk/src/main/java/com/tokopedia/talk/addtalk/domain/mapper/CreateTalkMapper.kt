@@ -1,7 +1,7 @@
 package com.tokopedia.talk.addtalk.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.data.model.response.DataResponse
+import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.addtalk.domain.CreateTalkPojo
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkItemViewModel

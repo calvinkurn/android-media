@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.useridentification.subscriber.GetApprovalStatusSubscriber;
 import com.tokopedia.useridentification.subscriber.GetUserProjectInfoSubcriber;
 
 /**
@@ -21,13 +20,10 @@ public interface UserIdentificationInfo {
 
         GetUserProjectInfoSubcriber.GetUserProjectInfoListener getUserProjectInfoListener();
 
-        GetApprovalStatusSubscriber.GetApprovalStatusListener getApprovalStatusListener();
-
         Context getContext();
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void getInfo(int projectId);
-        void getStatus(int projectId);
     }
 }

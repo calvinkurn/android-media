@@ -1,7 +1,5 @@
 package com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.view.viewholder;
 
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -11,12 +9,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.purchase_platform.common.utils.Utils;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.purchase_platform.R;
-import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.domain.model.MultipleAddressItemData;
 import com.tokopedia.purchase_platform.common.utils.NoteTextWatcher;
 import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher;
 import com.tokopedia.purchase_platform.common.utils.QuantityWrapper;
+import com.tokopedia.purchase_platform.common.utils.Utils;
+import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.domain.model.MultipleAddressItemData;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.view.MultipleAddressItemAdapter;
 import com.tokopedia.unifyprinciples.Typography;
 
@@ -43,8 +44,6 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
 
     private static final String FONT_FAMILY_SANS_SERIF_MEDIUM = "sans-serif-medium";
     private static final int SINGLE_DATA_SIZE = 1;
-    private static final int QTY_MIN = 1;
-    private static final int QTY_MAX = 10000;
     private static final int TEXTWATCHER_NOTE_DEBOUNCE_TIME = 100;
 
     private TextView shippingIndex;
@@ -242,7 +241,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
 
     private void validateQuantity(MultipleAddressItemData data, int qty) {
         checkQtyMustDisabled(data, qty);
-        if (data.getMaxQuantity() != 0 && qty > data.getMaxQuantity()) {
+        if (qty > data.getMaxQuantity()) {
             String errorMessage = data.getErrorProductMaxQuantity();
             NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
             String numberAsString = numberFormat.format(data.getMaxQuantity());
@@ -254,33 +253,24 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
             tvErrorQtyValidation.setText(errorMessage.replace("{{value}}",
                     String.valueOf(data.getMinQuantity())));
             tvErrorQtyValidation.setVisibility(View.VISIBLE);
-        } else if (qty > QTY_MAX) {
-            NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
-            String numberAsString = numberFormat.format(data.getMaxQuantity());
-            String maxValue = numberAsString.replace(",", ".");
-            String errorMessage = data.getErrorProductMaxQuantity();
-            tvErrorQtyValidation.setText(errorMessage.replace("{{value}}", maxValue));
-            tvErrorQtyValidation.setVisibility(View.VISIBLE);
         } else {
             tvErrorQtyValidation.setVisibility(View.GONE);
         }
     }
 
     private void checkQtyMustDisabled(MultipleAddressItemData cartItemHolderData, int qty) {
-        if ((qty <= QTY_MIN || qty <= cartItemHolderData.getMinQuantity()) &&
-                (qty >= QTY_MAX || (cartItemHolderData.getMaxQuantity() != 0 &&
-                        qty >= cartItemHolderData.getMaxQuantity()))) {
+        if (qty <= cartItemHolderData.getMinQuantity() &&
+                qty >= cartItemHolderData.getMaxQuantity()) {
             btnQtyMin.setEnabled(false);
             btnQtyPlus.setEnabled(false);
             btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), R.drawable.bg_button_counter_minus_checkout_disabled));
             btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), R.drawable.bg_button_counter_plus_checkout_disabled));
-        } else if (qty <= QTY_MIN || qty <= cartItemHolderData.getMinQuantity()) {
+        } else if (qty <= cartItemHolderData.getMinQuantity()) {
             btnQtyMin.setEnabled(false);
             btnQtyPlus.setEnabled(true);
             btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), R.drawable.bg_button_counter_minus_checkout_disabled));
             btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), R.drawable.bg_button_counter_plus_checkout));
-        } else if (qty >= QTY_MAX || (cartItemHolderData.getMaxQuantity() != 0 &&
-                qty >= cartItemHolderData.getMaxQuantity())) {
+        } else if (qty >= cartItemHolderData.getMaxQuantity()) {
             btnQtyPlus.setEnabled(false);
             btnQtyMin.setEnabled(true);
             btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), R.drawable.bg_button_counter_plus_checkout_disabled));

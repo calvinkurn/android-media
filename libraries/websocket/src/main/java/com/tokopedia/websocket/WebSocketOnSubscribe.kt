@@ -1,6 +1,5 @@
 package com.tokopedia.websocket
 
-import android.util.Log
 import com.tokopedia.url.TokopediaUrl
 import okhttp3.*
 import okio.ByteString
@@ -14,8 +13,6 @@ class WebSocketOnSubscribe internal constructor(private val client: OkHttpClient
 
     private var webSocket: WebSocket? = null
 
-    private val showLog = true
-    private val logTag = "RxWebSocket"
 
     override fun call(subscriber: Subscriber<in WebSocketInfo>) {
         initWebSocket(subscriber, accessToken)
@@ -32,9 +29,6 @@ class WebSocketOnSubscribe internal constructor(private val client: OkHttpClient
     private fun initWebSocket(subscriber: Subscriber<in WebSocketInfo>, accessToken: String) {
         webSocket = client.newWebSocket(getRequest(url, accessToken), object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response?) {
-                if (showLog) {
-                    Log.d(logTag, "$url --> onOpen")
-                }
                 if (!subscriber.isUnsubscribed) {
                     subscriber.onNext(WebSocketInfo(webSocket!!, true))
                 }
@@ -52,9 +46,7 @@ class WebSocketOnSubscribe internal constructor(private val client: OkHttpClient
                 }
             }
 
-            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) { if (showLog) {
-                    Log.e(logTag, t!!.toString() + webSocket.request().url().uri().path)
-                }
+            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 if (!subscriber.isUnsubscribed) {
                     subscriber.onNext(WebSocketInfo.createReconnect())
                     subscriber.onError(t)
@@ -62,24 +54,19 @@ class WebSocketOnSubscribe internal constructor(private val client: OkHttpClient
             }
 
             override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
-                webSocket.close(1000, "onClosing")
+                webSocket.close(1000, "onclosing")
             }
 
             override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-                if (showLog) {
-                    Log.d(logTag, "$url --> onClosed:code = $code, reason = $reason")
-                    subscriber.onNext(WebSocketInfo.createReconnect())
-                }
+                subscriber.onNext(WebSocketInfo.createReconnect())
             }
 
         })
 
         subscriber.add(object : MainThreadSubscription() {
             override fun onUnsubscribe() {
-                webSocket?.close(3000, "close WebSocket")
-                if (showLog) {
-                    Log.d(logTag, "$url --> onUnsubscribe ")
-                }
+                webSocket?.close(3000, "close websocket")
+
             }
         })
     }

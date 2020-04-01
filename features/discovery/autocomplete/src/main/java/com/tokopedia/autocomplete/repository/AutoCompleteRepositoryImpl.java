@@ -21,8 +21,4 @@ public class AutoCompleteRepositoryImpl implements AutoCompleteRepository {
         return autoCompleteDataSource.getUniverseAutoComplete(parameters);
     }
 
-    @Override
-    public Observable<Response<Void>> deleteRecentSearch(HashMap<String, Object> parameters) {
-        return autoCompleteDataSource.deleteRecentSearch(parameters);
-    }
 }

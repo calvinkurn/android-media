@@ -14,6 +14,8 @@ import rx.Observable;
 public class GetShopInfoByDomainUseCase extends UseCase<ShopInfo> {
 
     private static final String SHOP_DOMAIN = "SHOP_DOMAIN";
+    private static final String USER_ID = "USER_ID";
+    private static final String DEVICE_ID = "DEVICE_ID";
 
     private ShopCommonRepository shopRepository;
 
@@ -23,13 +25,17 @@ public class GetShopInfoByDomainUseCase extends UseCase<ShopInfo> {
 
     @Override
     public Observable<ShopInfo> createObservable(RequestParams requestParams) {
-        String shopDomain = requestParams.getString(SHOP_DOMAIN, null);
-        return shopRepository.getShopInfoByDomain(shopDomain);
+        String shopDomain = requestParams.getString(SHOP_DOMAIN, "");
+        String userId = requestParams.getString(USER_ID, "0");
+        String deviceId = requestParams.getString(DEVICE_ID, "");
+        return shopRepository.getShopInfoByDomain(shopDomain, userId, deviceId);
     }
 
-    public static RequestParams createRequestParam(String shopDomain) {
+    public static RequestParams createRequestParam(String shopDomain, String userId, String deviceId) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(SHOP_DOMAIN, shopDomain);
+        requestParams.putString(USER_ID, userId);
+        requestParams.putString(DEVICE_ID, deviceId);
         return requestParams;
     }
 }

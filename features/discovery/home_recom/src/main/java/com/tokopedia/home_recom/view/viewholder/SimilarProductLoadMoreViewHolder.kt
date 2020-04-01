@@ -4,9 +4,10 @@ import androidx.annotation.LayoutRes
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
-import com.tokopedia.abstraction.R
+
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.home_recom.R
 
 /**
  * Created by Lukas on 31/08/19

@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantActionListener
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.QuantityViewModel
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.QuantityUiModel
 import kotlinx.android.synthetic.main.item_quantity_detail_product_page.view.*
 import rx.Observable
 import rx.Subscriber
@@ -20,11 +20,11 @@ import java.util.concurrent.TimeUnit
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class QuantityViewHolder(view: View, listener: CheckoutVariantActionListener) : AbstractViewHolder<QuantityViewModel>(view) {
+class QuantityViewHolder(view: View, listener: CheckoutVariantActionListener) : AbstractViewHolder<QuantityUiModel>(view) {
 
     private var actionListener: CheckoutVariantActionListener = listener
     private var quantityChangeDebounceListener: QuantityChangeDebounceListener? = null
-    private lateinit var element: QuantityViewModel
+    private lateinit var element: QuantityUiModel
 
     companion object {
         const val QUANTITY_PLACEHOLDER = "{{value}}"
@@ -58,7 +58,7 @@ class QuantityViewHolder(view: View, listener: CheckoutVariantActionListener) : 
 
     private val textWatcher by lazy { QuantityTextWatcher() }
 
-    override fun bind(element: QuantityViewModel?) {
+    override fun bind(element: QuantityUiModel?) {
         if (element != null) {
             this.element = element
             if (element.orderQuantity == 0) {
@@ -90,7 +90,7 @@ class QuantityViewHolder(view: View, listener: CheckoutVariantActionListener) : 
         }
     }
 
-    fun updateQuantityText(element: QuantityViewModel) {
+    fun updateQuantityText(element: QuantityUiModel) {
         itemView.et_qty.setText(element.orderQuantity.toString())
         itemView.et_qty.text?.let {
             itemView.et_qty.setSelection(it.length)
@@ -99,7 +99,7 @@ class QuantityViewHolder(view: View, listener: CheckoutVariantActionListener) : 
         setupPlusButton(element)
     }
 
-    private fun setupMinButton(element: QuantityViewModel) {
+    private fun setupMinButton(element: QuantityUiModel) {
         if (element.orderQuantity > element.minOrderQuantity && element.orderQuantity > 0) {
             itemView.btn_qty_min.setImageDrawable(MethodChecker
                     .getDrawable(itemView.btn_qty_min.getContext(),R.drawable.bg_button_counter_minus_enabled))
@@ -109,7 +109,7 @@ class QuantityViewHolder(view: View, listener: CheckoutVariantActionListener) : 
         }
     }
 
-    private fun setupPlusButton(element: QuantityViewModel) {
+    private fun setupPlusButton(element: QuantityUiModel) {
         if (element.orderQuantity < element.maxOrderQuantity) {
             itemView.btn_qty_plus.setImageDrawable(MethodChecker
                     .getDrawable(itemView.btn_qty_plus.getContext(),R.drawable.bg_button_counter_plus_enabled))
@@ -119,7 +119,7 @@ class QuantityViewHolder(view: View, listener: CheckoutVariantActionListener) : 
         }
     }
 
-    private fun commitQuantityChange(element: QuantityViewModel) {
+    private fun commitQuantityChange(element: QuantityUiModel) {
         setupMinButton(element)
         setupPlusButton(element)
         if (validateQuantity(element) && adapterPosition != RecyclerView.NO_POSITION) {
@@ -128,7 +128,7 @@ class QuantityViewHolder(view: View, listener: CheckoutVariantActionListener) : 
         actionListener.onNeedToValidateButtonBuyVisibility()
     }
 
-    private fun validateQuantity(element: QuantityViewModel): Boolean {
+    private fun validateQuantity(element: QuantityUiModel): Boolean {
         var error: String? = null
         var needToUpdateView = false
 

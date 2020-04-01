@@ -1,25 +1,21 @@
 package com.tokopedia.home.account.data.util
 
 import android.content.Context
-import android.view.View
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.home.account.AccountConstants
 import com.tokopedia.home.account.AccountHomeRouter
 import com.tokopedia.home.account.AccountHomeUrl
 import com.tokopedia.home.account.R
 import com.tokopedia.home.account.data.model.AccountModel
-import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel
-import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel
-import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel
-import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel
-import com.tokopedia.home.account.presentation.viewmodel.MenuTitleViewModel
+import com.tokopedia.home.account.presentation.viewmodel.*
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
 class StaticBuyerModelGenerator private constructor() {
 
     companion object {
-        fun getModel(context: Context, accountModel: AccountModel?): List<ParcelableViewModel<*>> {
+        fun getModel(context: Context, accountModel: AccountModel?, remoteConfig: RemoteConfig): List<ParcelableViewModel<*>> {
             val homeRouter: AccountHomeRouter = context.applicationContext as AccountHomeRouter
             val viewItems = arrayListOf<ParcelableViewModel<*>>()
 
@@ -95,7 +91,7 @@ class StaticBuyerModelGenerator private constructor() {
             viewItems.add(MenuListViewModel().apply {
                 menu = context.getString(R.string.title_menu_wishlist)
                 menuDescription = context.getString(R.string.label_menu_wishlist)
-                applink = ApplinkConst.WISHLIST
+                applink = if(!remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_WISHLIST_PAGE, true))ApplinkConst.WISHLIST else ApplinkConst.NEW_WISHLIST
                 titleTrack = AccountConstants.Analytics.PEMBELI
                 sectionTrack = context.getString(R.string.title_menu_favorites)
             })

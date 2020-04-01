@@ -108,7 +108,7 @@ class ShopSettingsNotesAddEditFragment: BaseDaggerFragment(), ShopSettingsNotesA
         val content = edit_text_desc.text.toString().trim()
         if (TextUtils.isEmpty(content)){
             isValid = false
-            text_input_layout_title.error = getString(R.string.shop_notes_content_required)
+            text_input_layout_desc.error = getString(R.string.shop_notes_content_required)
         } else if (content.length > MAX_CONTENT_CHARACTER) {
             isValid = false
             text_input_layout_desc.error = getString(R.string.shop_notes_content_max_length_error, MAX_CONTENT_CHARACTER)

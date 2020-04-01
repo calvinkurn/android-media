@@ -71,5 +71,16 @@ data class Product(
         val productWholesale: Boolean? = null,
 
         @field:SerializedName("product_rating")
-        val productRating: Int? = null
+        val productRating: Int? = null,
+
+        @field:SerializedName("free_ongkir")
+        val freeOngkir: FreeOngkir? = null
+)
+
+
+data class FreeOngkir(
+        @SerializedName("is_active")
+        val isActive: Boolean,
+        @SerializedName("img_url")
+        val imageUrl: String
 )

@@ -22,13 +22,11 @@ import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi;
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase;
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase;
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.shop.common.domain.repository.ShopCommonRepository;
 import com.tokopedia.shop.common.util.CacheApiTKPDResponseValidator;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Named;
 
@@ -64,12 +62,6 @@ public class ShopCommonModule {
         return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_shop_badge);
     }
 
-    /** NON-GQL, Plan to be removed **/
-    @Provides
-    public GetShopInfoUseCase provideGetShopInfoUseCase(ShopCommonRepository shopCommonRepository) {
-        return new GetShopInfoUseCase(shopCommonRepository);
-    }
-
     @Provides
     public GetShopInfoByDomainUseCase provideGetShopInfoByDomainUseCase(ShopCommonRepository shopCommonRepository) {
         return new GetShopInfoByDomainUseCase(shopCommonRepository);
@@ -85,8 +77,8 @@ public class ShopCommonModule {
         return new ShopCommonRepositoryImpl(shopInfoDataSource);
     }
     @Provides
-    public ShopCommonCloudDataSource provideShopCommonCloudDataSource(ShopCommonApi shopCommonApi, UserSessionInterface userSession) {
-        return new ShopCommonCloudDataSource(shopCommonApi, userSession);
+    public ShopCommonCloudDataSource provideShopCommonCloudDataSource(ShopCommonApi shopCommonApi) {
+        return new ShopCommonCloudDataSource(shopCommonApi);
     }
 
     @Provides
@@ -144,11 +136,6 @@ public class ShopCommonModule {
     }
 
     @Provides
-    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
-        return new UserSession(context);
-    }
-
-    @Provides
     @Named(ShopCommonParamApiConstant.QUERY_SHOP_SCORE)
     public String provideQueryShopScore(@ApplicationContext Context context) {
         return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_query_shop_score);
@@ -165,5 +152,12 @@ public class ShopCommonModule {
                                                            @Named(GQLQueryNamedConstant.FAVORITE_STATUS_GQL)
                                                                    String gqlQuery) {
         return new GQLGetShopFavoriteStatusUseCase(gqlQuery, graphqlUseCase);
+    }
+
+    @Provides
+    public GQLGetShopInfoUseCase provideGqlGetShopInfoUseCase(MultiRequestGraphqlUseCase graphqlUseCase,
+                                                              @Named(GQLQueryNamedConstant.SHOP_INFO)
+                                                                    String gqlQuery) {
+        return new GQLGetShopInfoUseCase(gqlQuery, graphqlUseCase);
     }
 }

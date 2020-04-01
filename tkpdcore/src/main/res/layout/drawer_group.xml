@@ -16,8 +16,7 @@
         android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="@dimen/margin_small"
-        android:padding="@dimen/padding_vs"
-        tools:src="@drawable/forums" />
+        android:padding="@dimen/padding_vs" />
 
     <TextView
         android:id="@+id/toggle_notif"

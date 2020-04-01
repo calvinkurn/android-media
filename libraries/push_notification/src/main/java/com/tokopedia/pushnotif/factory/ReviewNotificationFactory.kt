@@ -14,13 +14,13 @@ import androidx.core.app.NotificationManagerCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.pushnotif.ApplinkNotificationHelper
 import com.tokopedia.pushnotif.Constant
 import com.tokopedia.pushnotif.R
 import com.tokopedia.pushnotif.db.model.ReviewNotificationModel
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel
+import com.tokopedia.pushnotif.util.PendingIntentUtil
 import com.tokopedia.pushnotif.util.ReviewNotificationBroadcastReceiver
 import java.util.concurrent.TimeUnit
 
@@ -32,7 +32,7 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
     }
 
     private val packageName = context.applicationContext.packageName
-    private val cacheManager = PersistentCacheManager(context)
+    private val cacheManager: PersistentCacheManager = PersistentCacheManager(context)
     private var resultReviewModel: ReviewNotificationModel = ReviewNotificationModel()
     private lateinit var notificationLayout: RemoteViews
 
@@ -71,11 +71,13 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
         else resultReviewModel.applinkNotificationModel.title
 
         notificationBuilder
-                .setContentIntent(PendingIntent.getActivity(
-                        context,
-                        0,
-                        generateRoutingIntent(),
-                        PendingIntent.FLAG_UPDATE_CURRENT))
+                .setContentIntent(
+                        PendingIntentUtil.createPendingIntent(
+                                context,
+                                resultReviewModel.applinkNotificationModel.applinks,
+                                resultReviewModel.notificationType,
+                                resultReviewModel.notificationId)
+                )
                 .setCustomBigContentView(
                         setupRemoteLayout(
                                 title,
@@ -96,15 +98,6 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
         resultReviewModel = cacheManager.get(TAG, ReviewNotificationModel::class.java)
                 ?: ReviewNotificationModel()
         loadImageBitmap(resultReviewModel.applinkNotificationModel.thumbnail, reviewPosition)
-    }
-
-    private fun generateRoutingIntent(): Intent {
-        val routeIntent = RouteManager.getIntent(context, resultReviewModel.applinkNotificationModel.applinks)
-        routeIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        routeIntent.putExtra(ReviewNotificationBroadcastReceiver.REVIEW_CLICK_AT, 5)
-        routeIntent.putExtra(ReviewNotificationBroadcastReceiver.REVIEW_NOTIFICATION_ID, resultReviewModel.notificationId)
-
-        return routeIntent
     }
 
     // This function is use for load review for the first time, (getBitmap should run on another thread)
@@ -149,8 +142,13 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
         notificationLayout.setTextViewText(R.id.rate_title, title)
         notificationLayout.setTextViewText(R.id.rate_message, desc)
         notificationLayout.setImageViewBitmap(R.id.img_notif, getBitmap(imageUrl))
-        notificationLayout.setOnClickPendingIntent(R.id.notif_review_container,
-                PendingIntent.getActivity(context, 0, generateRoutingIntent(), 0)
+        notificationLayout.setOnClickPendingIntent(
+                R.id.notif_review_container,
+                PendingIntentUtil.createPendingIntent(
+                        context,
+                        resultReviewModel.applinkNotificationModel.applinks,
+                        resultReviewModel.notificationType,
+                        resultReviewModel.notificationId)
         )
 
         val listOfStars = listOf(R.id.rate_1, R.id.rate_2, R.id.rate_3, R.id.rate_4, R.id.rate_5)
@@ -158,14 +156,6 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
             val truePosition = index + 1
 
             intent.action = "$truePosition"
-            intent.putExtra(
-                    ReviewNotificationBroadcastReceiver.REVIEW_APPLINK_EXTRA,
-                    resultReviewModel.applinkNotificationModel.applinks
-            )
-            intent.putExtra(
-                    ReviewNotificationBroadcastReceiver.REVIEW_NOTIFICATION_ID,
-                    resultReviewModel.notificationId
-            )
 
             notificationLayout.setOnClickPendingIntent(starId,
                     PendingIntent.getBroadcast(

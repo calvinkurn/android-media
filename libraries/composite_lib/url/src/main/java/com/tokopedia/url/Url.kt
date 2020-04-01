@@ -41,6 +41,9 @@ data class Url(
         val TIKET: String,
         val IMT: String,
         val LAKU6: String,
-        val SELLER: String
+        val SELLER: String,
+        val PLAY: String,
+        val WS_PLAY: String,
+        val HUB: String
 )
 

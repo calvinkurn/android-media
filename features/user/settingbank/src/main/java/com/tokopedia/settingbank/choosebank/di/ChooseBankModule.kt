@@ -1,10 +1,10 @@
 package com.tokopedia.settingbank.choosebank.di
 
 import android.content.Context
-import com.readystatesoftware.chuck.ChuckInterceptor
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.DebugInterceptor
@@ -71,8 +71,8 @@ class ChooseBankModule{
 
     @ChooseBankScope
     @Provides
-    fun provideChuckInterceptor(@ApplicationContext context: Context): ChuckInterceptor
-            = ChuckInterceptor(context)
+    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor
+            = ChuckerInterceptor(context)
 
     @ChooseBankScope
     @Provides
@@ -83,7 +83,7 @@ class ChooseBankModule{
     fun provideOkHttpClient(fingerprintInterceptor: FingerprintInterceptor,
                             tkpdAuthInterceptor: TkpdAuthInterceptor,
                             headerErrorResponseInterceptor: HeaderErrorResponseInterceptor,
-                            chuckInterceptor: ChuckInterceptor,
+                            chuckInterceptor: ChuckerInterceptor,
                             debugInterceptor: DebugInterceptor,
                             httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient{
         val builder = OkHttpClient.Builder()

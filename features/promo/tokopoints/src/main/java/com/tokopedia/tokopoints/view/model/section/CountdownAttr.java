@@ -10,10 +10,6 @@ public class CountdownAttr {
     @Expose
     private boolean showTimer;
 
-    @SerializedName("activeCountDown")
-    @Expose
-    private long activeCountDown;
-
     @SerializedName("expiredCountDown")
     @Expose
     private long expiredCountDown;
@@ -26,13 +22,6 @@ public class CountdownAttr {
         this.showTimer = showTimer;
     }
 
-    public long getActiveCountDown() {
-        return activeCountDown;
-    }
-
-    public void setActiveCountDown(long activeCountDown) {
-        this.activeCountDown = activeCountDown;
-    }
 
     public long getExpiredCountDown() {
         return expiredCountDown;

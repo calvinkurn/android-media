@@ -1,10 +1,7 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
 import com.tokopedia.imagepicker.common.util.ImageUtils
-import com.tokopedia.kotlin.extensions.view.debug
-import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import rx.Observable
-import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import javax.inject.Inject

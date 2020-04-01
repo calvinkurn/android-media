@@ -1,10 +1,10 @@
 package com.tokopedia.product.manage.item.common.data.source.cloud;
 
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.product.manage.item.common.util.ProductUrl;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
 import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprdold.ProductVariantByPrdModel;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 
 import java.util.List;
 

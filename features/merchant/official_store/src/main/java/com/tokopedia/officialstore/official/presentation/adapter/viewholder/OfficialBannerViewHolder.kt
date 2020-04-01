@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.banner.BannerView
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.officialstore.ApplinkConstant
 import com.tokopedia.officialstore.R
@@ -30,7 +31,7 @@ class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerVi
     }
 
     override fun bind(element: OfficialBannerViewModel?) {
-            elementBanner = element
+        elementBanner = element
         banner?.setPromoList(element?.getBannerImgUrl())
         banner?.onPromoAllClickListener = this
         banner?.onPromoScrolledListener = this
@@ -65,23 +66,25 @@ class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerVi
 
     override fun onPromoDragStart() {}
 
-    override fun onPromoScrolled(position: Int) {}
+    override fun onPromoScrolled(position: Int) {
+        if (position < elementBanner?.banner?.size.orZero()) {
+            val bannerItem = elementBanner?.banner?.get(position)
+            bannerItem?.let {
+                officialStoreTracking?.eventImpressionBanner(
+                        elementBanner?.categoryName.toEmptyStringIfNull(),
+                        position,
+                        it
+                )
+            }
+        }
+    }
 
     override fun onPromoLoaded() {
         this.banner?.bannerIndicator?.visibility = View.VISIBLE
-
-        val bannerItem = elementBanner?.banner?.getOrNull(0)
-        bannerItem?.let {
-            officialStoreTracking?.eventImpressionBanner(
-                    elementBanner?.categoryName.toEmptyStringIfNull(),
-                    0,
-                    it)
-        }
     }
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.viewmodel_official_banner
     }
-
 }

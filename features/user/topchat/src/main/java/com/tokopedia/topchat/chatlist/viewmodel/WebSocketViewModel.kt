@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.chat_common.network.ChatUrl
-import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -22,8 +21,10 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.websocket.WebSocketResponse
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -42,7 +43,7 @@ class WebSocketViewModel
             "&device_id=" + userSession.deviceId +
             "&user_id=" + userSession.userId
     private var easyWS: EasyWS? = null
-
+    private var isOnStop = false
     private val _itemChat = MutableLiveData<Result<BaseIncomingItemWebSocketModel>>()
     val itemChat: LiveData<Result<BaseIncomingItemWebSocketModel>>
         get() = _itemChat
@@ -53,12 +54,13 @@ class WebSocketViewModel
                                      .addInterceptor(fingerprintInterceptor) }
             easyWS = client.easyWebSocket(webSocketUrl, userSession.accessToken)
 
-            debug(TAG," Open: ${easyWS?.response}")
+            Timber.d(" Open: ${easyWS?.response}")
 
             easyWS?.let {
                 for (response in it.textChannel) {
-                    debug(TAG," Response: $response")
-                    when(response.getCode()) {
+                    Timber.d(" Response: $response")
+                    if (isOnStop) continue
+                    when(response.code) {
                         EVENT_TOPCHAT_REPLY_MESSAGE ->  {
                             val chat = Success(mapToIncomingChat(response))
                             _itemChat.value = chat
@@ -78,7 +80,7 @@ class WebSocketViewModel
     }
 
     private fun mapToIncomingChat(response: WebSocketResponse): IncomingChatWebSocketModel {
-        val json = response.getData()
+        val json = response.jsonObject
         val responseData = Gson().fromJson(json, WebSocketResponseData::class.java)
         val msgId = responseData.msgId.toString()
         val message = responseData.message.censoredReply.trim().toEmptyStringIfNull()
@@ -97,7 +99,7 @@ class WebSocketViewModel
     }
 
     private fun mapToIncomingTypeState(response: WebSocketResponse, isTyping: Boolean): IncomingTypingWebSocketModel {
-        val json = response.getData()
+        val json = response.jsonObject
         val responseData = Gson().fromJson(json, WebSocketResponseData::class.java)
         val msgId = responseData?.msgId.toString()
 
@@ -117,7 +119,19 @@ class WebSocketViewModel
     override fun onCleared() {
         super.onCleared()
         easyWS?.webSocket?.close(1000, "Bye!")
-        debug(TAG," OnCleared")
+        Timber.d(" OnCleared")
+    }
+
+    fun clearItemChatValue() {
+        _itemChat.value = null
+    }
+
+    fun onStop() {
+        isOnStop = true
+    }
+
+    fun onStart() {
+        isOnStop = false
     }
 
     companion object {

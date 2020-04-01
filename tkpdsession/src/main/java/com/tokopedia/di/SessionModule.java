@@ -4,8 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
-import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -146,7 +146,7 @@ public class SessionModule {
 
     @SessionScope
     @Provides
-    OkHttpClient provideRegisterOkHttpClient(TkpdAuthInterceptor authInterceptor, AccountsAuthInterceptor accountsAuthInterceptor, ChuckInterceptor chuckInterceptor) {
+    OkHttpClient provideRegisterOkHttpClient(TkpdAuthInterceptor authInterceptor, AccountsAuthInterceptor accountsAuthInterceptor, ChuckerInterceptor chuckInterceptor) {
         return new OkHttpClient.Builder()
                 .addInterceptor(authInterceptor)
                 .addInterceptor(accountsAuthInterceptor)

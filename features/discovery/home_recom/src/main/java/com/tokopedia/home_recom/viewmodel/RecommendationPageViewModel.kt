@@ -2,16 +2,7 @@ package com.tokopedia.home_recom.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.home_recom.PARAM_PRODUCT_ID
-import com.tokopedia.home_recom.PARAM_X_SOURCE
-import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
-import com.tokopedia.home_recom.model.entity.PrimaryProductEntity
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -23,8 +14,6 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import rx.Subscriber
 import javax.inject.Inject
 import javax.inject.Named
@@ -48,50 +37,15 @@ open class RecommendationPageViewModel @Inject constructor(
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
-        @Named("Main") val dispatcher: CoroutineDispatcher,
-        @Named("primaryQuery") private val primaryProductQuery: String
+        @Named("Main") val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
     /**
      * public variable
      */
     val recommendationListModel = MutableLiveData<List<RecommendationWidget>>()
-    val productInfoDataModel = MutableLiveData<ProductInfoDataModel>()
 
     val xSource = "recom_landing_page"
     val pageName = "recom_1,recom_2,recom_3"
-
-    /**
-     * [getPrimaryProduct] is the void for get detail primary product data from network
-     * @param productId product Id from deeplink
-     */
-    fun getPrimaryProduct(productId: String) {
-        launchCatchError(block = {
-            val gqlData = withContext(Dispatchers.IO) {
-                val cacheStrategy =
-                        GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-
-                val params = mapOf(
-                        PARAM_PRODUCT_ID to productId.toInt(),
-                        PARAM_X_SOURCE to xSource
-                )
-
-                val gqlRecommendationRequest = GraphqlRequest(
-                        primaryProductQuery,
-                        PrimaryProductEntity::class.java,
-                        params
-                )
-
-                graphqlRepository.getReseponse(listOf(gqlRecommendationRequest), cacheStrategy)
-            }
-            gqlData.getSuccessData<PrimaryProductEntity>().productRecommendationProductDetail?.let {
-                if(it.data[0].recommendation.isNotEmpty()){
-                    val productDetailResponse = it.data[0].recommendation[0]
-                    productInfoDataModel.value = ProductInfoDataModel(productDetailResponse)
-                }
-            }
-        }) {
-        }
-    }
 
     /**
      * [getRecommendationList] is the void for get recommendation widgets from the network

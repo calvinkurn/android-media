@@ -11,7 +11,21 @@
             android:name=".presentation.activity.DeveloperOptionActivity"
             android:label="@string/app_name"
             android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/tokopedia_scheme"
+                    android:host="@string/host_devopt"
+                    android:pathPattern="@string/path_change_env_url"/>
+            </intent-filter>
+
+        </activity>
+
         <activity
             android:name=".remote_config.RemoteConfigFragmentActivity"
             android:label="@string/remote_config_title"

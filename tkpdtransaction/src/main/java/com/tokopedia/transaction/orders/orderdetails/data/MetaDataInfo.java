@@ -56,8 +56,65 @@ public class MetaDataInfo {
     @Expose
     private String seoUrl;
 
+    @SerializedName("insurance_type")
+    @Expose
+    private String insuranceType;
+
+    @SerializedName("product_quantity_fmt")
+    @Expose
+    private String productQuantity;
+
+    @SerializedName("insurance_length_fmt")
+    @Expose
+    private String insuranceLength;
+
+    @SerializedName("premium_price_fmt")
+    @Expose
+    private String premiumPrice;
+
+    @SerializedName("product_image_url")
+    @Expose
+    private String prouductImage;
+
+    @SerializedName("product_name")
+    @Expose
+    private String productName;
+    @SerializedName("product_price_fmt")
+    @Expose
+    private String productPrice;
+
+
     public String getEndDate() {
         return endDate;
+    }
+
+    public String getProductQuantity() {
+        return productQuantity;
+    }
+
+    public String getInsuranceLength() {
+        return insuranceLength;
+    }
+
+    public String getInsuranceType() {
+        return insuranceType;
+    }
+
+    public String getPremiumPrice() {
+        return premiumPrice;
+    }
+
+
+    public String getProuductImage() {
+        return prouductImage;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public String getProductPrice() {
+        return productPrice;
     }
 
     public void setEndDate(String endDate) {

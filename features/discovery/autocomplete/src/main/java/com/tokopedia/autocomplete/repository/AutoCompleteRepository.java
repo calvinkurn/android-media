@@ -10,6 +10,4 @@ import rx.Observable;
 
 public interface AutoCompleteRepository {
     Observable<List<SearchData>> getSearchData(HashMap<String, Object> parameters);
-
-    Observable<Response<Void>> deleteRecentSearch(HashMap<String, Object> parameters);
 }

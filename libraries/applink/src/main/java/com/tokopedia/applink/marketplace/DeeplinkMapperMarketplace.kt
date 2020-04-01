@@ -12,12 +12,17 @@ object DeeplinkMapperMarketplace {
 
     fun getRegisteredNavigationMarketplace(deeplink: String): String {
         val uri = Uri.parse(deeplink)
-        if (deeplink.startsWith(ApplinkConst.CART)) {
-            return ApplinkConstInternalMarketplace.CART
-        } else if (deeplink.startsWith(ApplinkConst.CHECKOUT)) {
-            return deeplink.replace(ApplinkConst.CHECKOUT, ApplinkConstInternalMarketplace.CHECKOUT)
+        return when {
+            deeplink.startsWith(ApplinkConst.CART) ->
+                ApplinkConstInternalMarketplace.CART
+            deeplink.startsWith(ApplinkConst.CHECKOUT) ->
+                deeplink.replace(ApplinkConst.CHECKOUT, ApplinkConstInternalMarketplace.CHECKOUT)
+            deeplink.startsWith(ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD) ->
+                deeplink.replace(ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD, ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD)
+            deeplink.startsWith(ApplinkConst.SHOP_SCORE_DETAIL) ->
+                deeplink.replace(ApplinkConst.SHOP_SCORE_DETAIL, ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL)
+            else -> return deeplink
         }
-        return deeplink
     }
 
 }

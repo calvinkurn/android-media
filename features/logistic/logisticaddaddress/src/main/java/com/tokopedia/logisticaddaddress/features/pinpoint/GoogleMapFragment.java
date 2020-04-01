@@ -3,6 +3,7 @@ package com.tokopedia.logisticaddaddress.features.pinpoint;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -44,11 +45,13 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.logisticaddaddress.R;
+import com.tokopedia.logisticaddaddress.common.AddressConstants;
 import com.tokopedia.logisticaddaddress.data.IMapsRepository;
 import com.tokopedia.logisticaddaddress.di.DaggerGeolocationComponent;
 import com.tokopedia.logisticaddaddress.di.GeolocationModule;
 import com.tokopedia.logisticaddaddress.utils.LocationUtilsKt;
 import com.tokopedia.logisticaddaddress.utils.RequestPermissionUtil;
+import com.tokopedia.logisticdata.data.constant.LogisticConstant;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.user.session.UserSession;
 
@@ -147,12 +150,17 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
         submitPointer = view.findViewById(R.id.pointer_submit);
         fab = view.findViewById(R.id.fab);
 
-        submitPointer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.onSubmitPointer(getActivity());
-                analyticsGeoLocationListener.sendAnalyticsOnSetCurrentMarkerAsCurrentPosition();
+        submitPointer.setOnClickListener(view1 -> {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass);
+            Intent intent = new Intent();
+            intent.putExtras(bundle);
+            intent.putExtra(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass);
+            if (getActivity() != null) {
+                getActivity().setResult(Activity.RESULT_OK, intent);
+                getActivity().finish();
             }
+            analyticsGeoLocationListener.sendAnalyticsOnSetCurrentMarkerAsCurrentPosition();
         });
 
         presenter.setUpVariables(locationPass, hasLocation);
@@ -406,19 +414,13 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        presenter.onGoogleApiConnected(bundle);
-    }
+    public void onConnected(@Nullable Bundle bundle) { }
 
     @Override
-    public void onConnectionSuspended(int cause) {
-        presenter.onGoogleApiSuspended(cause);
-    }
+    public void onConnectionSuspended(int cause) { }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        presenter.onGoogleApiFailed(connectionResult);
-    }
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) { }
 
     @Override
     public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
@@ -431,10 +433,8 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
         initMapView();
         initMapListener();
 
-        //This to fulfill 4th condition when no coordinate, no district, and no GPS
-        //TODO remove this if annoys UX or inefficient fending off GPS Error
-        presenter.initDefaultLocation();
-
+        LatLng defLatLng = new LatLng(AddressConstants.DEFAULT_LAT, AddressConstants.DEFAULT_LONG);
+        moveMap(defLatLng);
         presenter.onMapReady();
     }
 

@@ -1,9 +1,9 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.profile
 
 import android.graphics.drawable.Drawable
-import androidx.constraintlayout.widget.ConstraintSet
 import android.text.TextUtils
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -18,8 +18,8 @@ class ProfileViewHolder(itemView: View, val profileListListener: ProfileListener
         val LAYOUT = R.layout.search_search_result_profile
     }
     override fun bind(profileData: ProfileViewModel) {
-        when(!TextUtils.isEmpty(profileData?.imgUrl?:"")){
-            true -> ImageHandler.loadImageCircle2(itemView.context, itemView.img_profile, profileData!!.imgUrl)
+        when(!TextUtils.isEmpty(profileData.imgUrl)){
+            true -> ImageHandler.loadImageCircle2(itemView.context, itemView.img_profile, profileData.imgUrl)
         }
         itemView.tv_username.text = profileData.username
         itemView.tv_name.text = profileData.name

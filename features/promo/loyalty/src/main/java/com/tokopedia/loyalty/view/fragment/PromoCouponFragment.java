@@ -100,7 +100,7 @@ public class PromoCouponFragment extends BaseDaggerFragment
     }
 
     protected void initView(View view) {
-        refreshHandler = new RefreshHandler(getActivity(), view, this);
+        refreshHandler = new RefreshHandler(getActivity(), view.findViewById(R.id.swipe_refresh_layout), this);
         refreshHandler.startRefresh();
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));

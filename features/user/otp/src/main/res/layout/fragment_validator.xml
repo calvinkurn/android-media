@@ -115,7 +115,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/llotp"/>
 
-        <com.tokopedia.design.component.ButtonCompat
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/verify_button"
             android:layout_width="@dimen/dp_250"
             android:layout_height="@dimen/dp_44"
@@ -124,26 +124,39 @@
             android:enabled="false"
             android:gravity="center"
             android:text="@string/title_validation_otp"
-            app:buttonCompatSize="big"
-            app:buttonCompatType="primary_disabled"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/llotp" />
-
-        <TextView
-            android:id="@+id/footer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_20"
-            android:layout_marginLeft="@dimen/dp_20"
-            android:gravity="center"
-            android:text="@string/validation_resend_email"
-            android:textColor="@color/black_38"
-            android:textSize="@dimen/sp_12"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/verify_button"/>
+  
+      <TextView
+        android:id="@+id/countDownText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_20"
+        android:gravity="center"
+        android:text="@string/please_wait_in"
+        android:textColor="@color/black_38"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/verify_button"/>
+  
+      <TextView
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_20"
+        android:gravity="center"
+        android:text="@string/validation_resend_email"
+        android:textColor="@color/black_38"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/countDownText" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

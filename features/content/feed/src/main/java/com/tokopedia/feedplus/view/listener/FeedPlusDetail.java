@@ -30,7 +30,7 @@ public interface FeedPlusDetail {
 
         void onWishlistClicked(int adapterPosition, Integer productId, boolean wishlist);
 
-        void onGoToShopDetail(Integer shopId);
+        void onGoToShopDetail(String activityId, Integer shopId);
 
         void onErrorGetFeedDetail(String errorMessage);
 

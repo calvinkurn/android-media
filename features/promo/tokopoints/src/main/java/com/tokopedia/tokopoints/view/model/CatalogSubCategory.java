@@ -9,8 +9,7 @@ public class CatalogSubCategory implements Parcelable {
     @SerializedName("id")
     private int id;
 
-    @SerializedName("parentID")
-    private int parentID;
+
 
     @SerializedName("name")
     private String name;
@@ -77,29 +76,6 @@ public class CatalogSubCategory implements Parcelable {
         this.name = name;
     }
 
-    public String getImageId() {
-        return imageId;
-    }
-
-    public void setImageId(String imageId) {
-        this.imageId = imageId;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public int getParentID() {
-        return parentID;
-    }
-
-    public void setParentID(int parentID) {
-        this.parentID = parentID;
-    }
 
     public String getSlug() {
         return slug;
@@ -113,7 +89,6 @@ public class CatalogSubCategory implements Parcelable {
     public String toString() {
         return "CatalogCategory{" +
                 "id=" + id +
-                ", parentID=" + parentID +
                 ", name='" + name + '\'' +
                 ", imageId='" + imageId + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
@@ -136,7 +111,6 @@ public class CatalogSubCategory implements Parcelable {
         parcel.writeString(imageUrl);
         parcel.writeLong(timeRemainingSeconds);
         parcel.writeString(slug);
-        parcel.writeInt(parentID);
         parcel.writeByte((byte) (isSelected ? 1 : 0));
     }
 

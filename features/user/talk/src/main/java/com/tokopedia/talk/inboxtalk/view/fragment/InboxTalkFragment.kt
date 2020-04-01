@@ -4,11 +4,11 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -16,12 +16,11 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.talk.R
-import com.tokopedia.talk.common.TalkRouter
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
@@ -162,7 +161,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
 
         filterMenuList = ArrayList()
         filterMenuList.add(Menus.ItemMenus(getString(R.string.filter_all_talk), -1))
-        filterMenuList[0].iconEnd = R.drawable.ic_check
+        filterMenuList[0].iconEnd = com.tokopedia.design.R.drawable.ic_check
         filterMenuList.add(Menus.ItemMenus(getString(R.string.filter_not_read), -1))
 
     }
@@ -178,7 +177,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
             context?.run {
                 if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
                 bottomMenu.itemMenuList = filterMenuList
-                bottomMenu.setActionText(getString(R.string.button_cancel))
+                bottomMenu.setActionText(getString(com.tokopedia.design.R.string.button_cancel))
                 bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
                 bottomMenu.setOnItemMenuClickListener { _, pos ->
                     onFilterClicked(pos, bottomMenu)
@@ -198,7 +197,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
             itemMenu.iconEnd = 0
             itemMenu.icon = -1
         }
-        filterMenuList[pos].iconEnd = R.drawable.ic_check
+        filterMenuList[pos].iconEnd = com.tokopedia.design.R.drawable.ic_check
         presenter.getInboxTalkWithFilter(filter, viewModel.screen)
         analytics.trackClickFilter(filter)
         filterMenu.dismiss()
@@ -496,7 +495,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
 
             if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
             bottomMenu.itemMenuList = listMenu
-            bottomMenu.setActionText(getString(R.string.button_cancel))
+            bottomMenu.setActionText(getString(com.tokopedia.design.R.string.button_cancel))
             bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
             bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
                 onMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, productId)
@@ -538,7 +537,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
 
             if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
             bottomMenu.itemMenuList = listMenu
-            bottomMenu.setActionText(getString(R.string.button_cancel))
+            bottomMenu.setActionText(getString(com.tokopedia.design.R.string.button_cancel))
             bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
             bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
                 onCommentMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, commentId, productId)
@@ -598,9 +597,9 @@ open class InboxTalkFragment : BaseDaggerFragment(),
     }
 
     private fun onGoToPdp(productId: String) {
-        activity?.applicationContext?.run {
+        activity?.run {
             val intent: Intent? = getProductIntent(productId)
-            this@InboxTalkFragment.startActivity(intent)
+            startActivity(intent)
         }
     }
 
@@ -614,16 +613,14 @@ open class InboxTalkFragment : BaseDaggerFragment(),
 
     override fun onGoToUserProfile(userId: String) {
         analytics.trackClickUserProfile()
-        activity?.applicationContext?.run {
-            val intent: Intent = (this as TalkRouter).getTopProfileIntent(this, userId)
-            this@InboxTalkFragment.startActivity(intent)
+        activity?.run {
+            RouteManager.route(activity, ApplinkConst.PROFILE.replace("{user_id}", userId))
         }
     }
 
     override fun onGoToShopPage(shopId: String) {
-        activity?.applicationContext?.run {
-            val intent: Intent = (this as TalkRouter).getShopPageIntent(this, shopId)
-            this@InboxTalkFragment.startActivity(intent)
+        activity?.run {
+            RouteManager.route(this, ApplinkConst.SHOP, shopId)
         }
     }
 
@@ -655,10 +652,16 @@ open class InboxTalkFragment : BaseDaggerFragment(),
     private fun goToDetailTalk(talkId: String, shopId: String, allowReply: Boolean) {
         if (allowReply) {
             context?.run {
+                val intent = RouteManager.getIntent(
+                        context,
+                        ApplinkConstInternalGlobal.DETAIL_TALK,
+                        talkId,
+                        shopId,
+                        "",
+                        TalkDetailsActivity.SOURCE_INBOX
+                )
                 this@InboxTalkFragment.startActivityForResult(
-                        TalkDetailsActivity.getCallingIntent(talkId, shopId, this,
-                                TalkDetailsActivity.SOURCE_INBOX)
-                        , REQUEST_GO_TO_DETAIL)
+                        intent, REQUEST_GO_TO_DETAIL)
             }
         } else {
             showErrorReplyTalk()
@@ -713,8 +716,7 @@ open class InboxTalkFragment : BaseDaggerFragment(),
 
     override fun handleBranchIOLinkClick(url: String) {
         activity?.run {
-            val talkRouter = this.applicationContext as TalkRouter
-            val intent = talkRouter.getSplashScreenIntent(this)
+            val intent = RouteManager.getIntent(this, ApplinkConst.CONSUMER_SPLASH_SCREEN)
             intent.putExtra("branch", url)
             intent.putExtra("branch_force_new_session", true)
             startActivity(intent)

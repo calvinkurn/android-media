@@ -1,6 +1,6 @@
 package com.tokopedia.logisticaddaddress.data.repository;
 
-import com.tokopedia.logisticaddaddress.data.mapper.DistrictRecommendationEntityMapper;
+import com.tokopedia.logisticaddaddress.domain.mapper.DistrictRecommendationEntityMapper;
 import com.tokopedia.logisticaddaddress.data.entity.AddressResponseEntity;
 import com.tokopedia.logisticaddaddress.data.source.DistrictRecommendationDataStore;
 import com.tokopedia.logisticaddaddress.domain.model.AddressResponse;

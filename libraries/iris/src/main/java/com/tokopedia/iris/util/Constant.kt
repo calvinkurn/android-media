@@ -4,12 +4,7 @@ package com.tokopedia.iris.util
  * @author okasurya on 10/18/18.
  */
 
-const val LIVE = "https://hub.tokopedia.com/"
-const val STAGING = "https://hub-staging.tokopedia.com/"
-
 const val VERSION = "iris/v1/"
-
-const val BASE_URL ="$LIVE$VERSION"
 
 const val TAG = "P3IRIS-ANDROID"
 
@@ -31,6 +26,7 @@ const val KEY_DOMAIN_HASH = "domain_hash"
 const val KEY_USER_ID = "user_id"
 const val KEY_DEVICE_ID = "device_id"
 const val KEY_SESSION_ID = "session_id"
+const val KEY_SESSION_IRIS = "sessionIris"
 const val KEY_TIMESTAMP_PREVIOUS = "timestamp_previous"
 const val KEY_UUID = "uuid"
 const val KEY_INITIAL_VISIT = "initial_visit"
@@ -39,11 +35,13 @@ const val WORKER_SEND_DATA = "com.tokopedia.iris.WORKER_SEND_DATA"
 const val MAX_ROW = "MAX_ROW"
 
 const val IRIS_ENABLED = "iris_enabled"
-const val IRIS_LOG_ENABLED = "iris_log_enabled"
-const val IRIS_IS_ALARM_ON = "iris_is_alarm_on"
+const val REMOTE_CONFIG_IRIS_DB_FLUSH = "android_main_app_line_iris_db_flush"
+const val REMOTE_CONFIG_IRIS_DB_SEND = "android_main_app_line_iris_db_send"
+const val REMOTE_CONFIG_IRIS_BATCH_SEND = "android_main_app_line_iris_batch_send"
 
 const val KEY_CONTAINER = "gtm"
 const val KEY_EVENT = "default_app"
+const val KEY_EVENT_SELLERAPP = "default_sellerapp"
 
 const val DEFAULT_CONFIG = "{\"row_limit\":25,\"interval\":2}"
 const val JOB_IRIS_ID = 1500

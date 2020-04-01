@@ -3,22 +3,22 @@ package com.tokopedia.settingbank.addeditaccount.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
 import android.widget.ImageView
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TkpdHintTextInputLayout
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.settingbank.R
+import com.tokopedia.settingbank.addeditaccount.di.DaggerAddEditAccountComponent
 import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivity
 import com.tokopedia.settingbank.addeditaccount.view.listener.AddEditBankContract
 import com.tokopedia.settingbank.addeditaccount.view.presenter.AddEditBankPresenter
@@ -27,7 +27,6 @@ import com.tokopedia.settingbank.banklist.analytics.SettingBankAnalytics
 import com.tokopedia.settingbank.banklist.data.SettingBankUrl
 import com.tokopedia.settingbank.choosebank.view.activity.ChooseBankActivity
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankViewModel
-import com.tokopedia.settingbank.addeditaccount.di.DaggerAddEditAccountComponent
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_add_edit_bank_form.*
 import javax.inject.Inject
@@ -52,7 +51,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     lateinit var userSession : UserSessionInterface
 
     lateinit var bottomInfoDialog: BottomSheetDialog
-    lateinit var alertDialog: Dialog
+    private var alertDialog: DialogUnify? = null
     lateinit var analyticTracker: SettingBankAnalytics
 
     private var bankFormModel = BankFormModel()
@@ -100,43 +99,45 @@ class AddEditBankFormFragment : AddEditBankContract.View,
         setHasOptionsMenu(true)
         setMode(savedInstanceState)
 
-        submit_button.setOnClickListener({
+        submit_button.setOnClickListener {
             setupBankFormModel()
             if (!bankFormModel.status.isBlank()) {
                 presenter.validateBank(bankFormModel)
             }
-        })
+        }
         bank_name_et.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                MethodChecker.getDrawable(activity, com.tokopedia.design.R.drawable.ic_arrow_down_grey), null);
-        bank_name_et.setOnClickListener({
+                MethodChecker.getDrawable(activity, R.drawable.ic_settingbank_arrow_down_grey), null);
+        bank_name_et.setOnClickListener {
             goToAddBank()
-        })
+        }
+
+        activity?.let {
+            alertDialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+        }
     }
 
     override fun onSuccessValidateForm(bankFormModel: BankFormModel) {
 
-        if (!::alertDialog.isInitialized) {
-            alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
-        }
-
-        alertDialog.setTitle(getString(com.tokopedia.settingbank.R.string.add_bank_account_prompt_title))
-        alertDialog.setDesc(composeMakeMainDescription())
-        alertDialog.setBtnCancel(getString(com.tokopedia.design.R.string.edit))
-        alertDialog.setBtnOk(getString(com.tokopedia.settingbank.R.string.yes_correct))
-        alertDialog.setOnCancelClickListener({
-            alertDialog.dismiss()
-        })
-        alertDialog.setOnOkClickListener({
-            if (bankFormModel.status == BankFormModel.Companion.STATUS_ADD) {
-                analyticTracker.trackConfirmYesAddBankAccount()
-            } else {
-                analyticTracker.trackConfirmYesEditBankAccount()
+        alertDialog?.apply {
+            setTitle(getString(R.string.add_bank_account_prompt_title))
+            setDescription(composeMakeMainDescription())
+            setSecondaryCTAText(getString(R.string.menu_edit))
+            setPrimaryCTAText(getString(R.string.yes_correct))
+            setSecondaryCTAClickListener {
+                dismiss()
             }
-            onGoToCOTP()
-            alertDialog.dismiss()
-        })
+            setPrimaryCTAClickListener{
+                if (bankFormModel.status == BankFormModel.Companion.STATUS_ADD) {
+                    analyticTracker.trackConfirmYesAddBankAccount()
+                } else {
+                    analyticTracker.trackConfirmYesEditBankAccount()
+                }
+                onGoToCOTP()
+                dismiss()
+            }
 
-        alertDialog.show()
+            show()
+        }
     }
 
 
@@ -318,16 +319,16 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     }
 
     private fun enableSubmitButton() {
-        MethodChecker.setBackground(submit_button, MethodChecker.getDrawable(context, com.tokopedia.design.R.drawable
-                .bg_button_green_enabled))
-        submit_button.setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.white))
+        MethodChecker.setBackground(submit_button, MethodChecker.getDrawable(context, R.drawable
+                .bg_settingbank_button_green_enabled))
+        submit_button.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
         submit_button.isEnabled = true
     }
 
     private fun disableSubmitButton() {
-        MethodChecker.setBackground(submit_button, MethodChecker.getDrawable(context, com.tokopedia.design.R.drawable
-                .bg_button_disabled))
-        submit_button.setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.black_38))
+        MethodChecker.setBackground(submit_button, MethodChecker.getDrawable(context, R.drawable
+                .bg_settingbank_button_disabled))
+        submit_button.setTextColor(MethodChecker.getColor(context, R.color.settingbank_black_38))
         submit_button.isEnabled = false
     }
 

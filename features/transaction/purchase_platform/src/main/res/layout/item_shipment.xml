@@ -48,6 +48,10 @@
                 tools:visibility="visible" />
 
             <include
+                layout="@layout/item_shipment_trade_in_pickup"
+                tools:visibility="visible" />
+
+            <include
                 layout="@layout/item_shipment_courier_recommendation"
                 tools:visibility="visible" />
 

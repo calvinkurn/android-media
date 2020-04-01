@@ -4,6 +4,8 @@ public interface SearchNavigationListener {
 
     void setupSearchNavigation(ClickListener clickListener, boolean isSortEnabled);
 
+    void showBottomNavigation();
+
     void hideBottomNavigation();
 
     void refreshMenuItemGridIcon(int titleResId, int iconResId);

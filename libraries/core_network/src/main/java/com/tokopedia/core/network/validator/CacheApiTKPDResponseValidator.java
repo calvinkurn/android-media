@@ -2,7 +2,7 @@ package com.tokopedia.core.network.validator;
 
 import com.google.gson.Gson;
 import com.tokopedia.cacheapi.util.CacheApiResponseValidator;
-import com.tokopedia.core.network.retrofit.response.BaseResponseError;
+import com.tokopedia.network.data.model.response.BaseResponseError;
 
 import okhttp3.Response;
 import okhttp3.ResponseBody;

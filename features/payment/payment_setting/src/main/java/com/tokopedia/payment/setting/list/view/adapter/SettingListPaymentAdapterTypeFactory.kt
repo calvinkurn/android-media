@@ -9,10 +9,8 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.payment.setting.list.model.SettingListAddCardModel
 import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
-import com.tokopedia.payment.setting.util.PaymentSettingRouter
 
-class SettingListPaymentAdapterTypeFactory(val paymentSettingRouter: PaymentSettingRouter,
-                                           val listenerEmptyViewHolder: SettingListEmptyViewHolder.ListenerEmptyViewHolder) : BaseAdapterTypeFactory() {
+class SettingListPaymentAdapterTypeFactory(val listenerEmptyViewHolder: SettingListEmptyViewHolder.ListenerEmptyViewHolder) : BaseAdapterTypeFactory() {
 
     fun type(settingListPaymentModel: SettingListPaymentModel) : Int {
         return SettingListPaymentViewHolder.LAYOUT;
@@ -28,7 +26,7 @@ class SettingListPaymentAdapterTypeFactory(val paymentSettingRouter: PaymentSett
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         if(type == SettingListPaymentViewHolder.LAYOUT){
-            return SettingListPaymentViewHolder(parent, paymentSettingRouter)
+            return SettingListPaymentViewHolder(parent)
         }else if(type == SettingListEmptyViewHolder.LAYOUT){
             return SettingListEmptyViewHolder(parent, listenerEmptyViewHolder)
         }else if(type == SettingListAddCardViewHolder.LAYOUT){

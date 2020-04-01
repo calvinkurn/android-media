@@ -8,7 +8,7 @@ import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.express_checkout.view.profile.CheckoutProfileActionListener
-import com.tokopedia.purchase_platform.features.express_checkout.view.profile.viewmodel.ProfileViewModel
+import com.tokopedia.purchase_platform.features.express_checkout.view.profile.uimodel.ProfileUiModel
 import kotlinx.android.synthetic.main.item_profile_profile_list_page.view.*
 
 /**
@@ -21,7 +21,7 @@ class ProfileViewHolder(val view: View, val listener: CheckoutProfileActionListe
         val LAYOUT = R.layout.item_profile_profile_list_page
     }
 
-    fun bind(element: ProfileViewModel?) {
+    fun bind(element: ProfileUiModel?) {
         if (element != null) {
             if (element.isSelected) {
                 itemView.img_selected.visibility = View.VISIBLE

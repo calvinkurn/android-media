@@ -12,7 +12,7 @@
         android:layout_marginRight="@dimen/margin_vs"
         android:padding="2dp"
         android:scaleType="centerInside"
-        android:background="@drawable/shape_dash_rectangle"
+        android:background="@drawable/reputation_shape_dash_rectangle"
         app:srcCompat="@drawable/ic_green_add" />
 
 </RelativeLayout>

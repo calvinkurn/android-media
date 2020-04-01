@@ -14,6 +14,9 @@ interface TrackingDao {
     @Query("SELECT * FROM tracking ORDER BY timeStamp, userId ASC LIMIT :limit")
     fun getFromOldest(limit: Int): List<Tracking>
 
+    @Query("SELECT COUNT(timeStamp) FROM tracking")
+    fun getCount(): Int
+
     @Delete
     fun delete(trackingList: List<Tracking>): Int
 

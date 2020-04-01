@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavRouter;
@@ -252,10 +253,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
                                         "click on diskusi product",
                                         ""));
 
-                    if (getActivity().getApplication() instanceof GlobalNavRouter) {
-                        startActivity(((GlobalNavRouter) getActivity().getApplication())
-                                .getInboxTalkCallingIntent(getActivity()));
-                    }
+                    RouteManager.route(getActivity(), ApplinkConstInternalGlobal.INBOX_TALK);
                 }
                 break;
             case REVIEW_MENU:

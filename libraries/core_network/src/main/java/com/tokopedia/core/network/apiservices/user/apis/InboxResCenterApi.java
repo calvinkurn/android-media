@@ -17,8 +17,6 @@ import rx.Observable;
 @Deprecated
 public interface InboxResCenterApi {
 
-    @GET(TkpdBaseURL.User.PATH_GET_CREATE_RESOLUTION_FORM)
-    Observable<Response<TkpdResponse>> getCreateResForm(@QueryMap Map<String, String> params);
 
     @GET(TkpdBaseURL.User.PATH_GET_CREATE_RESOLUTION_FORM_NEW)
     Observable<Response<TkpdResponse>> getCreateResFormNew(@QueryMap Map<String, String> params);
@@ -31,18 +29,6 @@ public interface InboxResCenterApi {
 
     @GET(TkpdBaseURL.User.PATH_GET_KURIR_LIST)
     Observable<Response<TkpdResponse>> getCourierList(@QueryMap Map<String, String> params);
-
-    @GET(TkpdBaseURL.User.PATH_GET_RESOLUTION_CENTER)
-    Observable<Response<TkpdResponse>> getResCenter(@QueryMap Map<String, String> params);
-
-    @GET(TkpdBaseURL.User.PATH_GET_RESOLUTION_CENTER_DETAIL)
-    Observable<Response<TkpdResponse>> getResCenterDetail(@QueryMap Map<String, String> params);
-
-    @GET(TkpdBaseURL.User.PATH_GET_RESOLUTION_CENTER_SHOW_MORE)
-    Observable<Response<TkpdResponse>> getResCenterMore(@QueryMap Map<String, String> params);
-
-    @GET(TkpdBaseURL.User.PATH_TRACK_SHIPPING_REF)
-    Observable<Response<TkpdResponse>> trackShippingRef(@QueryMap Map<String, String> params);
 
     @GET(TkpdBaseURL.User.PATH_GET_EDIT_RESOLUTION_FORM)
     Observable<Response<TkpdResponse>> getEditResolutionForm(@QueryMap Map<String, String> params);

@@ -8,6 +8,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/kol_rv"
-        tools:listitem="@layout/kol_post_layout">
+    >
     </androidx.recyclerview.widget.RecyclerView>
 </FrameLayout>

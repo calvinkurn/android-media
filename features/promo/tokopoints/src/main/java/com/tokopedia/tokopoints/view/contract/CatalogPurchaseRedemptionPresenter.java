@@ -9,7 +9,6 @@ public interface CatalogPurchaseRedemptionPresenter {
 
     void startSaveCoupon(CatalogsValueEntity item);
 
-    void navigateToWebView(String url);
 
     void showRedeemCouponDialog(String cta, String code, String title);
 }

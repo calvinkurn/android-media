@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sort_option">
+        <item>Posisi</item>
+        <item>Produk Baru</item>
+        <item>Pembaruan Terakhir</item>
+        <item>Nama Produk</item>
+        <item>Dilihat Terbanyak</item>
+        <item>Diskusi Terbanyak</item>
+        <item>Ulasan Terbanyak</item>
+        <item>Pembelian Terbanyak</item>
+        <item>Harga Terendah</item>
+        <item>Harga Tertinggi</item>
+    </string-array>
+</resources>

@@ -15,7 +15,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
@@ -64,7 +64,7 @@ public class ShopOpenCreateSuccessFragment extends BasePresenterFragment impleme
         loadingStateView = view.findViewById(com.tokopedia.design.R.id.loading_state_view);
         shopIconImageView = view.findViewById(com.tokopedia.seller.R.id.image_view_shop_icon);
         tvShopName = view.findViewById(com.tokopedia.seller.R.id.text_view_shop_title);
-        View buttonAddProduct = view.findViewById(com.tokopedia.core2.R.id.button_add_product);
+        View buttonAddProduct = view.findViewById(com.tokopedia.seller.R.id.button_add_product);
         View buttonToShopPage = view.findViewById(com.tokopedia.seller.R.id.button_shop_page);
         buttonAddProduct.setOnClickListener(new View.OnClickListener() {
             @Override

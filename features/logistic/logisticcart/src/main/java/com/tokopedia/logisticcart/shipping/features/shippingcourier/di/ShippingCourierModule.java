@@ -1,9 +1,7 @@
 package com.tokopedia.logisticcart.shipping.features.shippingcourier.di;
 
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierAdapter;
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierContract;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierPresenter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -25,12 +23,6 @@ public class ShippingCourierModule {
     @ShippingCourierScope
     ShippingCourierConverter provideShippingCourierConverter() {
         return new ShippingCourierConverter();
-    }
-
-    @Provides
-    @ShippingCourierScope
-    ShippingCourierContract.Presenter provideShippingCourierPresenter(ShippingCourierConverter shippingCourierConverter) {
-        return new ShippingCourierPresenter(shippingCourierConverter);
     }
 
 }

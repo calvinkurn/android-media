@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_8"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_8">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_hotel_widget_global_search_pref"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        app:typographyType="body_3"
+        tools:text="28 Des - 20 Jan, 20 kamar, 20 tamu" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_hotel_widget_global_search_change"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_change"
+        android:textColor="@color/g_500"
+        app:typographyType="body_3" />
+
+</LinearLayout>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/input_field_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/input_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_5"
+        android:layout_marginEnd="@dimen/dp_5"
+        android:layout_marginRight="@dimen/dp_8"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@id/input_info"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        tools:text="Nomor HP"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/input_info"
+        android:layout_width="@dimen/dp_14"
+        android:layout_height="@dimen/dp_14"
+        android:layout_marginRight="@dimen/dp_5"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/ac_input"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/input_label"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_info_black"
+        tools:visibility="visible" />
+
+    <com.tokopedia.design.text.BackEditText
+        android:id="@+id/ac_input"
+        style="@style/HintTextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_5"
+        android:hint="id_field"
+        android:imeOptions="actionDone"
+        android:inputType="number"
+        android:maxLines="1"
+        android:popupBackground="@color/white"
+        android:textColor="@color/Neutral_N700_96"
+        android:textColorHint="@color/grey_400"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/input_label" />
+
+    <Button
+        android:id="@+id/btn_clear_input"
+        android:layout_width="@dimen/dp_25"
+        android:layout_height="@dimen/dp_25"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
+        android:background="@drawable/common_topup_bg_topup_close"
+        android:paddingBottom="@dimen/dp_5"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/ac_input"
+        app:layout_constraintEnd_toEndOf="@+id/ac_input"
+        app:layout_constraintTop_toTopOf="@+id/ac_input"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/iv_input_dropdown"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/ac_input"
+        app:layout_constraintEnd_toEndOf="@+id/ac_input"
+        app:layout_constraintTop_toTopOf="@+id/ac_input"
+        app:srcCompat="@drawable/ic_dropdown_arrow"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/error_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:paddingBottom="@dimen/dp_4"
+        android:text="@string/digital_common_title_empty_stock"
+        android:textColor="@color/red_600"
+        android:textSize="@dimen/sp_14"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ac_input"
+        app:typographyType="body_3"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

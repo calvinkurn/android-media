@@ -2,9 +2,9 @@ package com.tokopedia.tkpd.thankyou.data.source.api;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
-import com.tokopedia.core.network.core.OkHttpRetryPolicy;
 import com.tokopedia.core.network.core.RetrofitFactory;
 import com.tokopedia.core.network.retrofit.services.BaseService;
+import com.tokopedia.network.utils.OkHttpRetryPolicy;
 
 import retrofit2.Retrofit;
 

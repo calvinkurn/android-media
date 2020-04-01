@@ -6,14 +6,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -25,6 +17,15 @@ import android.widget.PopupMenu;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
@@ -33,14 +34,13 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
-import com.tokopedia.core.drawer2.service.DrawerGetNotificationService;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.session.baseFragment.BaseFragment;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.core2.R;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.facade.FacadeActionShopTransaction;
 import com.tokopedia.seller.selling.model.SellingStatusTxModel;
 import com.tokopedia.seller.selling.presenter.SellingStatusTransaction;
@@ -49,6 +49,7 @@ import com.tokopedia.seller.selling.presenter.SellingStatusTransactionView;
 import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
 import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
 import com.tokopedia.seller.selling.view.viewHolder.StatusViewHolder;
+import com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService;
 import com.tokopedia.transaction.common.TransactionRouter;
 
 import org.jetbrains.annotations.NotNull;
@@ -271,7 +272,7 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
             @Override
             public void onRefresh(View view) {
                 if (GlobalConfig.isSellerApp()) {
-                    DrawerGetNotificationService.startService(MainApplication.getAppContext(), true, true);
+                    SellerDrawerGetNotificationService.startService(MainApplication.getAppContext(), true, true);
                 }
                 presenter.onRefreshView();
             }
@@ -365,6 +366,16 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
     @Override
     public void addRetry() {
         adapter.setIsRetry(true);
+    }
+
+    @Override
+    public void addRetryMessage(String message) {
+        adapter.addRetryMessage(message);
+    }
+
+    @Override
+    public void removeRetryMessage() {
+        adapter.removeRetryMessage();
     }
 
     @Override

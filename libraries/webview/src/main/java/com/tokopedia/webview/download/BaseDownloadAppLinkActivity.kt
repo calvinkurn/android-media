@@ -31,11 +31,6 @@ open class BaseDownloadAppLinkActivity : BaseSimpleWebViewActivity() {
                     .putExtra(KEY_SHOW_TOOLBAR, showToolbar)
                     .putExtra(KEY_EXT, extensions)
         }
-
-        @JvmStatic
-        public fun createDownlableAppLink(url:String,ext:String,showToolbar: Boolean = true):String {
-            return String.format("%s?url=%s&ext=%s", ApplinkConst.WEBVIEW_DOWNLOAD, url,ext)
-        }
     }
 
 

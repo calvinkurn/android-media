@@ -4,18 +4,17 @@ import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_DUAL_ANNOUNCEMENT
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUOTATION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
-import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
-import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.merchantvoucher.common.gql.data.*
-import com.tokopedia.topchat.chatlist.data.TopChatUrl
 import com.tokopedia.topchat.chatroom.domain.pojo.ImageDualAnnouncementPojo
+import com.tokopedia.topchat.chatroom.domain.pojo.QuotationAttributes
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
-import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.SecurityInfoViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 import javax.inject.Inject
 
 /**
@@ -24,26 +23,16 @@ import javax.inject.Inject
 
 open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingChatMapper() {
 
-    override fun map(pojo: GetExistingChatPojo): ChatroomViewModel {
-        val chatroomViewModel = super.map(pojo)
-        if (!pojo.chatReplies.hasNext) {
-            chatroomViewModel.listChat.add(chatroomViewModel.listChat.size,
-                    SecurityInfoViewModel(TopChatUrl.SECURITY_INFO_URL))
-        }
-
-        return chatroomViewModel
-    }
-
     override fun mapAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
         return when (chatItemPojoByDateByTime.attachment?.type.toString()) {
             TYPE_IMAGE_DUAL_ANNOUNCEMENT -> convertToDualAnnouncement(chatItemPojoByDateByTime)
             TYPE_VOUCHER -> convertToVoucher(chatItemPojoByDateByTime)
+            TYPE_QUOTATION -> convertToQuotation(chatItemPojoByDateByTime)
             else -> super.mapAttachment(chatItemPojoByDateByTime)
         }
     }
 
     private fun convertToVoucher(item: Reply): Visitable<*> {
-
         var temp = item.attachment?.attributes
 
         val pojo = GsonBuilder().create().fromJson<TopChatVoucherPojo>(MethodChecker.fromHtml(temp).toString(),
@@ -66,7 +55,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 merchantVoucherStatus = MerchantVoucherStatus()
         )
 
-        return TopChatVoucherViewModel(
+        return TopChatVoucherUiModel(
                 item.msgId.toString(),
                 item.senderId.toString(),
                 item.senderName,
@@ -87,7 +76,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     private fun convertToDualAnnouncement(item: Reply): Visitable<*> {
         val pojoAttribute = GsonBuilder().create().fromJson<ImageDualAnnouncementPojo>(item.attachment?.attributes,
                 ImageDualAnnouncementPojo::class.java)
-        return ImageDualAnnouncementViewModel(
+        return ImageDualAnnouncementUiModel(
                 item.msgId.toString(),
                 item.senderId.toString(),
                 item.senderName,
@@ -101,6 +90,28 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 pojoAttribute.imageUrl2,
                 pojoAttribute.url2,
                 item.blastId
+        )
+    }
+
+    private fun convertToQuotation(message: Reply): Visitable<*> {
+        val quotationAttributes = GsonBuilder()
+                .create()
+                .fromJson<QuotationAttributes>(
+                        message.attachment?.attributes,
+                        QuotationAttributes::class.java
+                )
+        return QuotationUiModel(
+                quotationPojo = quotationAttributes.quotation,
+                messageId = message.msgId.toString(),
+                fromUid = message.senderId.toString(),
+                from = message.senderName,
+                fromRole = message.role,
+                attachmentId = message.attachment?.id ?: "",
+                attachmentType = message.attachment?.type.toString(),
+                replyTime = message.replyTime,
+                isSender = !message.isOpposite,
+                message = message.msg,
+                isRead = message.isRead
         )
     }
 }

@@ -24,8 +24,10 @@ import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseList
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseTitleViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductListEmptyViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductsEmptyViewHolder;
 import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
+import com.tokopedia.shop.product.view.model.EmptyOwnShopModel;
 import com.tokopedia.shop.product.view.model.EtalaseHighlightCarouselViewModel;
 import com.tokopedia.shop.product.view.model.HideViewModel;
 import com.tokopedia.shop.product.view.model.MembershipStampProgressViewModel;
@@ -86,6 +88,10 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
 
     public int type(EmptyModel emptyModel) {
         return ShopProductListEmptyViewHolder.LAYOUT;
+    }
+
+    public int type(EmptyOwnShopModel emptyOwnShopModel) {
+        return ShopProductsEmptyViewHolder.LAYOUT;
     }
 
     public int type(ShopProductEtalaseHighlightViewModel shopProductEtalaseHighlightViewModel) {
@@ -191,6 +197,8 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
             return new LoadingShimmeringGridViewHolder(parent);
         } else if (type == ShopProductListEmptyViewHolder.LAYOUT) {
             return new ShopProductListEmptyViewHolder(parent, emptyProductOnClickListener);
+        } else if (type == ShopProductsEmptyViewHolder.LAYOUT) {
+            return new ShopProductsEmptyViewHolder(parent);
         } else if (type == ErrorNetworkWrapViewHolder.LAYOUT) {
             return new ErrorNetworkWrapViewHolder(parent);
         } else if (type == ShopProductEtalaseTitleViewHolder.LAYOUT) {

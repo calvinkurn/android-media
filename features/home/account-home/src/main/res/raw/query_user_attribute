@@ -1,23 +1,11 @@
 query BuyerUserAttribute($userID: Int!) {
   status
-  shopInfoMoengage(userID: $userID) {
+  userShopInfo {
     info {
-      date_shop_created
       shop_id
-      shop_location
       shop_name
-      shop_score
-      total_active_product
-      shop_avatar
-      shop_cover
-      shop_domain
-    }
-    owner {
-      is_gold_merchant
-      is_seller
     }
     stats {
-      shop_total_transaction
       shop_item_sold
     }
   }
@@ -34,27 +22,6 @@ query BuyerUserAttribute($userID: Int!) {
     profile_picture
     completion
   }
-  wallet {
-    linked
-    balance
-    rawBalance
-    text
-    total_balance
-    raw_total_balance
-    hold_balance
-    raw_hold_balance
-    redirect_url
-    applinks
-    ab_tags {
-      tag
-    }
-    action {
-      text
-      redirect_url
-      applinks
-      visibility
-    }
-  }
   paymentAdminProfile {
     is_purchased_marketplace
     is_purchased_digital
@@ -66,8 +33,6 @@ query BuyerUserAttribute($userID: Int!) {
     is_topads_user
   }
   notifications {
-    total_cart
-    total_notif
     resolution
     shop_id
     inbox {
@@ -89,10 +54,6 @@ query BuyerUserAttribute($userID: Int!) {
       paymentConfirm
       orderStatus
       deliveryConfirm
-    }
-    resolution_as {
-      buyer
-      seller
     }
     chat {
       unreads

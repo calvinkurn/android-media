@@ -6,7 +6,7 @@ import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
 import com.tokopedia.product.manage.item.main.draft.domain.SaveDraftProductUseCase;
 import com.tokopedia.product.manage.item.main.edit.view.listener.ProductEditView;
 import com.tokopedia.product.manage.item.variant.domain.FetchProductVariantByCatUseCase;
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
@@ -23,11 +23,11 @@ public class ProductEditPresenterImpl extends ProductAddPresenterImpl<ProductEdi
 
     @Inject
     public ProductEditPresenterImpl(SaveDraftProductUseCase saveDraftProductUseCase,
-                                    GetShopInfoUseCase getShopInfoUseCase,
+                                    GQLGetShopInfoUseCase gqlGetShopInfoUseCase,
                                     UserSessionInterface userSession,
                                     FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase,
                                     GetProductDetailUseCase getProductDetailUseCase) {
-        super(saveDraftProductUseCase, getShopInfoUseCase, userSession, fetchProductVariantByCatUseCase);
+        super(saveDraftProductUseCase, gqlGetShopInfoUseCase, userSession, fetchProductVariantByCatUseCase);
         this.getProductDetailUseCase = getProductDetailUseCase;
     }
 

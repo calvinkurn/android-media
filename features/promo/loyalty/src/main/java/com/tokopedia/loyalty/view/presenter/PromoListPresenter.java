@@ -3,8 +3,8 @@ package com.tokopedia.loyalty.view.presenter;
 import android.content.res.Resources;
 import android.util.Log;
 
-import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
+import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;

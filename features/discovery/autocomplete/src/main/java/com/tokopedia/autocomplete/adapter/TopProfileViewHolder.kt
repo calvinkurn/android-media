@@ -14,7 +14,7 @@ import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.viewmodel.TopProfileSearch
 import kotlinx.android.synthetic.main.layout_profile_item_autocomplete.view.*
 
-class TopProfileViewHolder(val view: View, val clickListener : ItemClickListener) : AbstractViewHolder<TopProfileSearch>(view) {
+class TopProfileViewHolder(val view: View, val clickListener : ItemClickListener?) : AbstractViewHolder<TopProfileSearch>(view) {
 
     private val context = view.context
     private lateinit var boundedProfileSearch : TopProfileSearch
@@ -80,7 +80,7 @@ class TopProfileViewHolder(val view: View, val clickListener : ItemClickListener
         itemView.setOnClickListener {
             AutocompleteTracking.eventClickTopProfile(itemView.context, getFormattedStringForAutoCompleteTracking())
 
-            clickListener.onItemClicked(boundedProfileSearch.applink, boundedProfileSearch.url)
+            clickListener?.onItemClicked(boundedProfileSearch.applink, boundedProfileSearch.url)
         }
     }
 

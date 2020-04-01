@@ -12,7 +12,6 @@ import retrofit2.Retrofit;
 
 @Deprecated
 public class ContactUsService extends AuthService<ContactUsApi> {
-    private static final String TAG = ContactUsService.class.getSimpleName();
 
     @Override
     protected void initApiService(Retrofit retrofit) {

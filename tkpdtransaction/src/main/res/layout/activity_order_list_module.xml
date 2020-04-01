@@ -17,6 +17,14 @@ android:orientation="vertical">
     app:subtitleTextAppearance="?subtitleTextAppearance"
     app:titleTextAppearance="?titleTextAppearance" />
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_announcement"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:tickerType="announcement"
+        app:tickerShapeType="full"/>
+
 <include layout="@layout/order_list_layout_tab_indicator"/>
 
 <androidx.viewpager.widget.ViewPager

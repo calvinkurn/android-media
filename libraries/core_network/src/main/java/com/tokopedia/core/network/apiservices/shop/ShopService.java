@@ -12,7 +12,6 @@ import retrofit2.Retrofit;
 
 @Deprecated
 public class ShopService extends AuthService<ShopApi> {
-    private static final String TAG = ShopService.class.getSimpleName();
 
     @Override
     protected void initApiService(Retrofit retrofit) {

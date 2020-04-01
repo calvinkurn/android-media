@@ -6,4 +6,5 @@ package com.tokopedia.locationmanager
 data class DeviceLocation(val latitude: Double = 0.0,
                           val longitude: Double = 0.0,
                           val lastTimeRetrieved: Long = 0) {
+    fun hasLocation() = latitude != 0.0 && longitude != 0.0
 }

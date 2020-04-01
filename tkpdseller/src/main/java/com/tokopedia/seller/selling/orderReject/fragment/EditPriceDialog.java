@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,11 +15,12 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.tokopedia.core2.R;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.core.myproduct.utils.VerificationUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.Pair;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.selling.model.orderShipping.OrderProduct;
 import com.tokopedia.seller.selling.orderReject.adapter.ProductListAdapter;
 import com.tokopedia.seller.selling.orderReject.model.ModelEditPrice;

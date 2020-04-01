@@ -1,13 +1,8 @@
 package com.tokopedia.groupchat.room.view.activity
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.groupchat.room.view.fragment.PlayWebviewFragment
 
 /**
@@ -22,28 +17,4 @@ class PlayWebviewActivity : BaseSimpleActivity() {
         }
         return PlayWebviewFragment.createInstance(bundle)
     }
-
-    companion object {
-
-        fun getCallingIntent(context: Context, hasTitlebar: Boolean, url : String): Intent {
-            var intent = Intent(context, PlayWebviewActivity::class.java)
-            val bundle = Bundle()
-            bundle.putBoolean(ApplinkConst.Play.PARAM_HAS_TITLEBAR, hasTitlebar)
-            bundle.putString(ApplinkConst.Play.PARAM_URL, url)
-            intent.putExtras(bundle)
-            return intent
-        }
-    }
-
-    object DeepLinkIntents {
-        @JvmStatic
-        @DeepLink(ApplinkConst.PLAY_WEBVIEW)
-        fun getCallingIntent(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-            return Intent(context, PlayWebviewActivity::class.java)
-                    .setData(uri.build())
-                    .putExtras(extras)
-        }
-    }
-
 }
