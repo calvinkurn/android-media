@@ -22,9 +22,6 @@ class TopupBillsMenuDetail(
         @SerializedName("banners")
         @Expose
         val banners: List<TopupBillsBanner> = listOf(),
-        @SerializedName("onboardingDescriptions")
-        @Expose
-        val onboardingDescriptions: List<String> = listOf(),
         @SerializedName("express_checkout")
         @Expose
         val isExpressCheckout: Boolean = false

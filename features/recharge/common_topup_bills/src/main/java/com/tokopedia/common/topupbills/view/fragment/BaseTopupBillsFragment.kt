@@ -359,7 +359,6 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
 
     open fun processMenuDetail(data: TopupBillsMenuDetail) {
         isExpressCheckout = data.isExpressCheckout
-//        isExpressCheckout = true
     }
 
     abstract fun processFavoriteNumbers(data: TopupBillsFavNumber)
