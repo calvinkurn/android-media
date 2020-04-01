@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 
-import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 
@@ -17,6 +16,8 @@ import static android.content.Context.SENSOR_SERVICE;
 public class ShakeDetectManager implements ShakeDetector.Listener {
 
     private static String SHAKE_DETECT_CAMPAIGN_ACTIVITY_SCREEN_NAME = "ShakeDetectCampaignActivity";
+    private static final String SP_REACT_ENABLE_SHAKE = "SP_REACT_ENABLE_SHAKE";
+    private static final String IS_ENABLE_SHAKE_REACT = "IS_ENABLE_SHAKE_REACT";
 
     private static ShakeDetectManager shakeDetectManager = new ShakeDetectManager();
     ShakeDetector sd;
@@ -105,8 +106,8 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     }
 
     private boolean isReactNativeOnReleaseMode() {
-        SharedPreferences reactSharedPreferences = mContext.getSharedPreferences(DeveloperOptionActivity.SP_REACT_ENABLE_SHAKE, Context.MODE_PRIVATE);
-        return reactSharedPreferences.getBoolean(DeveloperOptionActivity.IS_ENABLE_SHAKE_REACT, true);
+        SharedPreferences reactSharedPreferences = mContext.getSharedPreferences(SP_REACT_ENABLE_SHAKE, Context.MODE_PRIVATE);
+        return reactSharedPreferences.getBoolean(IS_ENABLE_SHAKE_REACT, true);
     }
 
     @Override

@@ -197,7 +197,7 @@
 /libraries/bottom_sheet_builder/						@tokopedia/core-team
 /libraries/cache_api/									@tokopedia/core-team
 /libraries/cameraview/									@tokopedia/core-team
-/libraries/circular_view_pager/				    		@lukaskris
+/libraries/circular_view_pager/				    		@tokopedia/core-team
 /libraries/cm_push_notifications/						@tokopedia/minion-yoda
 /libraries/collapsing_tab_layout/						@tokopedia/core-team
 /libraries/common_network/								@tokopedia/core-team
@@ -250,9 +250,9 @@
 /tkpdtransaction-common/                                @tokopedia/core-team
 /tkpdseller/                                        	@tokopedia/core-team
 
-/tkpddesign/                                        	@nathaniel09 @hendrysetiadi89
-/tkpdcore/                                          	@nathaniel09 @hendrysetiadi89
-/tkpdabstraction/                                   	@nathaniel09 @hendrysetiadi89
+/tkpddesign/                                        	@tokopedia/android-gatekeeper-legacy-code
+/tkpdcore/                                          	@tokopedia/android-gatekeeper-legacy-code
+/tkpdabstraction/                                   	@tokopedia/android-gatekeeper-legacy-code
 
 /customerapp/                                       	@tokopedia/core-team
 /sellerapp/                                         	@tokopedia/minion-stuart
