@@ -240,9 +240,9 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
     }
 
     override fun onPreferenceEditClicked(preference: ProfilesItemModel, position: Int, profileSize: Int) {
-        val showDelete = true
+        var showDelete = true
         if (profileSize > 1) showDelete
-        else !showDelete
+        else showDelete = false
         Log.d("jumlah_profile_3", showDelete.toString())
         preferencelistAnalytics.eventClickSettingPreferenceGearInPreferenceListPage()
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
