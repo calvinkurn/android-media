@@ -152,6 +152,8 @@
     <string name="message_notif_product_upload">Mengupload produk</string>
     <string name="message_notif_product_upload_success">Produk berhasil di-upload</string>
     <string name="message_notif_product_upload_error">Product gagal di-upload. Coba lagi</string>
+    <string name="product_name_is_more_than_seventy_character">Nama Produk lebih dari 70 karakter</string>
+    <string name="product_name_should_be_not_empty">Nama produk tidak boleh kosong</string>
 
     <!-- id -->
     <item name="name" type="id" />
