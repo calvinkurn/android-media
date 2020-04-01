@@ -37,11 +37,11 @@ class PlayInteractionLayoutManager(
         layoutVideoControl(id = videoControlComponentId, sizeContainerComponentId = sizeContainerComponentId, likeComponentId = likeComponentId)
         layoutLike(id = likeComponentId, videoControlComponentId = videoControlComponentId, sizeContainerComponentId = sizeContainerComponentId)
         layoutChat(id = sendChatComponentId, likeComponentId = likeComponentId, sizeContainerComponentId = sizeContainerComponentId, videoControlComponentId = videoControlComponentId)
-        layoutChatList(id = chatListComponentId, quickReplyComponentId = quickReplyComponentId, likeComponentId = likeComponentId, toolbarComponentId = toolbarComponentId)
-        layoutPinned(id = pinnedComponentId, chatListComponentId = chatListComponentId, likeComponentId = likeComponentId, toolbarComponentId = toolbarComponentId)
+        layoutChatList(id = chatListComponentId, quickReplyComponentId = quickReplyComponentId, likeComponentId = likeComponentId, sizeContainerComponentId = sizeContainerComponentId)
+        layoutPinned(id = pinnedComponentId, chatListComponentId = chatListComponentId, likeComponentId = likeComponentId, sizeContainerComponentId = sizeContainerComponentId)
         layoutPlayButton(id = playButtonComponentId)
         layoutImmersiveBox(id = immersiveBoxComponentId, toolbarComponentId = toolbarComponentId, pinnedComponentId = pinnedComponentId)
-        layoutQuickReply(id = quickReplyComponentId, sendChatComponentId = sendChatComponentId, toolbarComponentId = toolbarComponentId)
+        layoutQuickReply(id = quickReplyComponentId, sendChatComponentId = sendChatComponentId, sizeContainerComponentId = sizeContainerComponentId)
         layoutGradientBackground(id = gradientBackgroundComponentId)
         layoutEndLiveComponent(id = endLiveInfoComponentId)
         layoutStatsInfo(id = statsInfoComponentId, sizeContainerComponentId = sizeContainerComponentId, toolbarComponentId = toolbarComponentId)
@@ -71,17 +71,17 @@ class PlayInteractionLayoutManager(
         }
     }
 
-    private fun layoutChatList(@IdRes id: Int, @IdRes quickReplyComponentId: Int, @IdRes likeComponentId: Int, @IdRes toolbarComponentId: Int) {
+    private fun layoutChatList(@IdRes id: Int, @IdRes quickReplyComponentId: Int, @IdRes likeComponentId: Int, @IdRes sizeContainerComponentId: Int) {
         changeConstraint {
-            connect(id, ConstraintSet.START, toolbarComponentId, ConstraintSet.START)
+            connect(id, ConstraintSet.START, sizeContainerComponentId, ConstraintSet.START, offset16)
             connect(id, ConstraintSet.END, likeComponentId, ConstraintSet.START, offset8)
             connect(id, ConstraintSet.BOTTOM, quickReplyComponentId, ConstraintSet.TOP, offset8)
         }
     }
 
-    private fun layoutPinned(@IdRes id: Int, @IdRes chatListComponentId: Int, @IdRes likeComponentId: Int, @IdRes toolbarComponentId: Int) {
+    private fun layoutPinned(@IdRes id: Int, @IdRes chatListComponentId: Int, @IdRes likeComponentId: Int, @IdRes sizeContainerComponentId: Int) {
         changeConstraint {
-            connect(id, ConstraintSet.START, toolbarComponentId, ConstraintSet.START)
+            connect(id, ConstraintSet.START, sizeContainerComponentId, ConstraintSet.START, offset16)
             connect(id, ConstraintSet.END, likeComponentId, ConstraintSet.START, offset8)
             connect(id, ConstraintSet.BOTTOM, chatListComponentId, ConstraintSet.TOP, offset8)
         }
@@ -137,10 +137,10 @@ class PlayInteractionLayoutManager(
         }
     }
 
-    private fun layoutQuickReply(@IdRes id: Int, sendChatComponentId: Int, @IdRes toolbarComponentId: Int) {
+    private fun layoutQuickReply(@IdRes id: Int, sendChatComponentId: Int, @IdRes sizeContainerComponentId: Int) {
         changeConstraint {
-            connect(id, ConstraintSet.START, toolbarComponentId, ConstraintSet.START)
-            connect(id, ConstraintSet.END, toolbarComponentId, ConstraintSet.END)
+            connect(id, ConstraintSet.START, sizeContainerComponentId, ConstraintSet.START, offset16)
+            connect(id, ConstraintSet.END, sizeContainerComponentId, ConstraintSet.END, offset16)
             connect(id, ConstraintSet.BOTTOM, sendChatComponentId, ConstraintSet.TOP, offset8)
         }
     }
