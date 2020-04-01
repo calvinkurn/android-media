@@ -199,7 +199,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     fun doClickChat() {
-        SomAnalytics.eventClickChatOnHeaderDetail(detailResponse.statusText)
+        SomAnalytics.eventClickChatOnHeaderDetail(detailResponse.statusCode.toString())
         goToAskBuyer()
     }
 
@@ -220,7 +220,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             }
             putExtra(ApplinkConst.Chat.INVOICE_DATE, detailResponse.paymentDate)
             putExtra(ApplinkConst.Chat.INVOICE_URL, detailResponse.invoiceUrl)
-            putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, detailResponse.statusId.toString())
+            putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, detailResponse.statusCode.toString())
             putExtra(ApplinkConst.Chat.INVOICE_STATUS, detailResponse.statusText)
             putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, detailResponse.paymentSummary.totalPriceText)
         }
@@ -436,7 +436,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     private fun renderHeader() {
         // header
         val dataHeader = SomDetailHeader(
-                detailResponse.statusId,
+                detailResponse.statusCode,
                 detailResponse.statusText,
                 detailResponse.buyerRequestCancel.isRequestCancel,
                 detailResponse.invoice,
@@ -918,16 +918,16 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             val reasonBuyer = detailResponse.buyerRequestCancel.reason
             buyer_request_cancel_notes?.text = reasonBuyer.replace("\\n", System.getProperty("line.separator"))
 
-            if (detailResponse.statusId != 220 && detailResponse.statusId != 400) {
+            if (detailResponse.statusCode != 220 && detailResponse.statusCode != 400) {
                 ll_buyer_req_cancel_buttons?.visibility = View.GONE
             } else {
                 ll_buyer_req_cancel_buttons?.visibility = View.VISIBLE
                 btn_chat_buyer?.setOnClickListener {
-                    SomAnalytics.eventClickButtonChatPembeliPopup("${detailResponse.statusId}")
+                    SomAnalytics.eventClickButtonChatPembeliPopup("${detailResponse.statusCode}")
                     goToAskBuyer()
                 }
                 btn_tolak_pesanan?.setOnClickListener {
-                    SomAnalytics.eventClickButtonTolakPesananPopup("${detailResponse.statusId}")
+                    SomAnalytics.eventClickButtonTolakPesananPopup("${detailResponse.statusCode}")
                     bottomSheetReqCancel.dismiss()
                     val orderRejectRequest = SomRejectRequest(
                             orderId = detailResponse.orderId.toString(),
@@ -974,11 +974,11 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     override fun onSeeInvoice(url: String) {
-        SomAnalytics.eventClickViewInvoice()
+        SomAnalytics.eventClickViewInvoice(detailResponse.statusCode.toString())
         Intent(activity, SomSeeInvoiceActivity::class.java).apply {
             putExtra(KEY_URL, url)
             putExtra(KEY_TITLE, resources.getString(R.string.title_som_invoice))
-            putExtra(PARAM_ORDER_CODE, detailResponse.statusId.toString())
+            putExtra(PARAM_ORDER_CODE, detailResponse.statusCode.toString())
             startActivity(this)
         }
     }
