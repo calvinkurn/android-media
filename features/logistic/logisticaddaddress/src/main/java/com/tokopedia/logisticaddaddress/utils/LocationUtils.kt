@@ -3,6 +3,9 @@ package com.tokopedia.logisticaddaddress.utils
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.text.Editable
+import android.text.TextWatcher
+import android.widget.EditText
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.GoogleMap
@@ -13,9 +16,11 @@ import com.tokopedia.logisticaddaddress.features.dropoff_picker.model.DropoffNea
 import rx.Emitter
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
 const val REVERSE_GEOCODE_DELAY = 1000L
+const val AUTOCOMPLETE_DELAY = 500L
 
 internal fun String.toKilometers(): String {
     var number = 0.0
@@ -51,6 +56,27 @@ internal fun rxPinPoint(maps: GoogleMap): Observable<Boolean> =
         }, Emitter.BackpressureMode.LATEST)
                 .debounce(REVERSE_GEOCODE_DELAY, TimeUnit.MILLISECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+
+internal fun rxEditText(et: EditText): Observable<String> =
+        Observable.create({ emitter: Emitter<String> ->
+            et.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    emitter.onNext(s?.toString() ?: "")
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    // no op
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    // no op
+                }
+            })
+        }, Emitter.BackpressureMode.LATEST)
+                .debounce(AUTOCOMPLETE_DELAY, TimeUnit.MILLISECONDS)
+                .distinctUntilChanged()
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
 
 internal fun DropoffNearbyModel.getDescription(): String =
