@@ -6,6 +6,7 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -54,7 +55,7 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
     private fun bindSubTitle(data: ProductNotifyMeDataModel) {
         try {
             val now = System.currentTimeMillis()
-            val startTime = data.startDate.toLong() * SECOND
+            val startTime = data.startDate.toLongOrZero() * SECOND
             val startDate = Date(startTime)
             val dayLeft = TimeUnit.MILLISECONDS.toDays(startTime - now)
             val delta = startDate.time - startTime
