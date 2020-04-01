@@ -446,6 +446,32 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
             .verifyValueEquals(false)
     }
 
+    @Test
+    fun `get featured product count should excecute expected usecase`() {
+        runBlocking {
+            val shopId = "1500"
+
+            val price = "10000"
+            val priceFormatted = "Rp10.000"
+            val pictures = listOf(Picture("imageUrl"))
+
+            val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000), pictures = pictures))
+            val productListData = ProductListData(ProductList(header = null, data = productList))
+
+            productListData.productList?.data?.let {
+                onGetFeaturedProduct_thenReturn(it.size)
+            }
+
+            viewModel.getFeaturedProductCount(shopId)
+
+            val productViewModelList = listOf(createProductViewModel(name = "Tolak Angin Madu", price = price, priceFormatted = priceFormatted))
+            val expectedProductList = Success(productViewModelList.size)
+
+            verifyGetFeaturedProductCalled()
+            verifyGetFeaturedProductListResultEquals(expectedProductList)
+        }
+    }
+
     private fun onMultiEditProducts_thenError(exception: NullPointerException) {
         coEvery { multiEditProductUseCase.execute(any()) } coAnswers { throw exception }
     }
@@ -478,6 +504,10 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
         coEvery { getProductListUseCase.execute(any()) } coAnswers { throw error }
     }
 
+    private suspend fun onGetFeaturedProduct_thenReturn(productListSize: Int) {
+        coEvery { getProductListUseCase.execute(any()).productList?.data?.size } returns productListSize
+    }
+
     private fun onGetFiltersTab_thenReturn(response: ProductListMetaResponse) {
         coEvery { getProductListMetaUseCase.executeOnBackground() } returns response
     }
@@ -508,6 +538,10 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
 
     private fun verifySetFeaturedProductUseCaseCalled() {
         coVerify { setFeaturedProductUseCase.executeOnBackground() }
+    }
+
+    private fun verifyGetFeaturedProductCalled() {
+        coVerify { getProductListUseCase.execute(any()).productList?.data?.size }
     }
 
     private fun verifyEditPriceResponseSuccess(expectedResponse: Success<EditPriceResult>) {
@@ -556,5 +590,10 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     private fun verifyFilterOptionWrapperEquals(expectedFilterOptionWrapper: FilterOptionWrapper) {
         val actualFilterOptionWrapper = viewModel.selectedFilterAndSort.value
         assertEquals(expectedFilterOptionWrapper, actualFilterOptionWrapper)
+    }
+
+    private fun verifyGetFeaturedProductListResultEquals(expectedResult: Success<Int>) {
+        val actualResult = viewModel.productListFeaturedOnlyResult.value
+        assertEquals(expectedResult, actualResult)
     }
 }
