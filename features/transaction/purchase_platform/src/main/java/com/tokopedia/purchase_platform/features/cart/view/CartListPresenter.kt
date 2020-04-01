@@ -1168,7 +1168,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         return lastValidateUseResponse
     }
 
-    override fun setValidateUseLastResponse(response: ValidateUsePromoRevampUiModel) {
+    override fun setValidateUseLastResponse(response: ValidateUsePromoRevampUiModel?) {
         lastValidateUseResponse = response
     }
 

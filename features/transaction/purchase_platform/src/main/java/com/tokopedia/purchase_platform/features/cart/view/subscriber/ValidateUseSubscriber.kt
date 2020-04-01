@@ -20,7 +20,7 @@ class ValidateUseSubscriber(private val view: ICartListView?,
         response?.promoUiModel?.let {
             view?.updateListRedPromos(response)
             presenter.isLastApplyResponseStillValid = false
-            presenter.lastValidateUseResponse = response
+//            presenter.lastValidateUseResponse = response
             view?.updatePromoCheckoutStickyButton(it)
         }
     }

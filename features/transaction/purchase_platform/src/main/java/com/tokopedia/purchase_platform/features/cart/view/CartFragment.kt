@@ -1591,6 +1591,39 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
         }
 
+        val lastValidateUseResponse = dPresenter.getValidateUseLastResponse()
+        if (lastValidateUseResponse?.promoUiModel != null) {
+            // Goes here if user has applied / un applied promo code from promo page and there's still promo code applied
+
+            // Clear promo first
+            globalPromo.clear()
+            for (ordersItem in listOrder) {
+                ordersItem.codes.clear()
+            }
+
+            // Then set promo codes
+            lastValidateUseResponse.promoUiModel.codes.forEach {
+                if (!globalPromo.contains(it)) globalPromo.add(it)
+            }
+            lastValidateUseResponse.promoUiModel.voucherOrderUiModels.forEach { voucherOrder ->
+                listOrder.forEach { order ->
+                    if (voucherOrder?.uniqueId == order.uniqueId) {
+                        if (!order.codes.contains(voucherOrder.code)) {
+                            order.codes.add(voucherOrder.code)
+                        }
+                    }
+                }
+            }
+        } else {
+            if (!dPresenter.isLastApplyValid()) {
+                // Goes here if user has reset promo code from promo page
+                // We should be not send any promo code
+                globalPromo.clear()
+                for (ordersItem in listOrder) {
+                    ordersItem.codes.clear()
+                }
+            }
+        }
 
         return ValidateUsePromoRequest(
                 codes = globalPromo.toMutableList(),
@@ -2041,11 +2074,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         dPresenter.setValidateUseLastResponse(validateUseUiModel)
                         dPresenter.setLastApplyNotValid()
                         updatePromoCheckoutStickyButton(validateUseUiModel.promoUiModel)
-                        return
                     }
 
                     val clearPromoUiModel = data?.getParcelableExtra<ClearPromoUiModel>(ARGS_CLEAR_PROMO_RESULT)
                     if (clearPromoUiModel != null) {
+                        if (validateUseUiModel == null) {
+                            dPresenter.setLastApplyNotValid()
+                            dPresenter.setValidateUseLastResponse(null)
+                        }
                         updatePromoCheckoutStickyButton(PromoUiModel(titleDescription = clearPromoUiModel.successDataModel.defaultEmptyPromoMessage))
                     }
                 }
