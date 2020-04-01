@@ -158,7 +158,10 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
     }
 
     private fun setViewClickListener() {
-        switchFlightRoundTrip.setOnCheckedChangeListener { compoundButton, isChecked -> toggleOneWay(isChecked) }
+        switchFlightRoundTrip.setOnCheckedChangeListener { compoundButton, isChecked ->
+            listener?.onRoundTripSwitchChanged(isChecked)
+            toggleOneWay(isChecked)
+         }
         imgFlightReverseAirport.setOnClickListener { onReverseAirportClicked() }
         tvFlightOriginLabel.setOnClickListener { listener?.onDepartureAirportClicked() }
         tvFlightOriginAirport.setOnClickListener { listener?.onDepartureAirportClicked() }
@@ -435,6 +438,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
     }
 
     interface FlightSearchFormListener {
+        fun onRoundTripSwitchChanged(isRoundTrip: Boolean)
         fun onDepartureAirportClicked()
         fun onDestinationAirportClicked()
         fun onDepartureDateClicked(departureAirport: String, arrivalAirport: String, flightClassId: Int,

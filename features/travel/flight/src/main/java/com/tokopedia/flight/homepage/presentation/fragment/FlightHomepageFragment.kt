@@ -25,6 +25,7 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity
 import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
+import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.dashboard.view.activity.FlightClassesActivity
 import com.tokopedia.flight.dashboard.view.activity.FlightSelectPassengerActivity
@@ -148,11 +149,20 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
         if (applinkErrorTextResource != -1) {
             showMessageErrorInSnackbar(applinkErrorTextResource)
         }
+
+        if (::flightHomepageViewModel.isInitialized)
+            flightHomepageViewModel.sendTrackingOpenScreen(FlightAnalytics.Screen.HOMEPAGE)
+    }
+
+    override fun onRoundTripSwitchChanged(isRoundTrip: Boolean) {
+        flightHomepageViewModel.sendTrackingRoundTripSwitchChanged(getString(
+                if (isRoundTrip) R.string.flight_dashboard_analytic_round_trip
+                else R.string.flight_dashboard_analytic_one_way))
     }
 
     override fun onDepartureAirportClicked() {
-        val intent = FlightAirportPickerActivity.createInstance(requireContext(), getString(R.string.flight_airportpicker_departure_title))
-        startActivityForResult(intent, REQUEST_CODE_AIRPORT_DEPARTURE)
+        startActivityForResult(FlightAirportPickerActivity.createInstance(requireContext(),
+                getString(R.string.flight_airportpicker_departure_title)), REQUEST_CODE_AIRPORT_DEPARTURE)
     }
 
     override fun onDestinationAirportClicked() {
@@ -208,17 +218,18 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
 
     override fun onPassengerClicked(passengerModel: FlightPassengerModel?) {
         passengerModel?.let {
-            val intent = FlightSelectPassengerActivity.getCallingIntent(requireContext(), it)
-            startActivityForResult(intent, REQUEST_CODE_SELECT_PASSENGER)
+            startActivityForResult(FlightSelectPassengerActivity.getCallingIntent(requireContext(), it),
+                    REQUEST_CODE_SELECT_PASSENGER)
         }
     }
 
     override fun onClassClicked(flightClassId: Int) {
-        val intent = FlightClassesActivity.getCallingIntent(requireContext(), flightClassId)
-        startActivityForResult(intent, REQUEST_CODE_SELECT_CLASSES)
+        startActivityForResult(FlightClassesActivity.getCallingIntent(requireContext(), flightClassId),
+                REQUEST_CODE_SELECT_CLASSES)
     }
 
     override fun onSaveSearch(flightSearchData: FlightSearchPassDataModel) {
+        flightHomepageViewModel.onSearchTicket(flightSearchData)
         flightSearchData.linkUrl = arguments?.getString(EXTRA_FROM_DEEPLINK_URL) ?: ""
         startActivityForResult(FlightSearchActivity.getCallingIntent(requireContext(), flightSearchData),
                 REQUEST_CODE_SEARCH)
@@ -265,7 +276,7 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
             flightHomepageBanner.setBannerSeeAllTextColor(resources.getColor(com.tokopedia.unifycomponents.R.color.Green_G500))
             flightHomepageBanner.setBannerIndicator(Indicator.GREEN)
             flightHomepageBanner.setOnPromoScrolledListener { position ->
-                // send impression if banner not null
+                flightHomepageViewModel.sendTrackingPromoScrolled(position)
             }
             flightHomepageBanner.setOnPromoClickListener { position -> onBannerClicked(position) }
             flightHomepageBanner.setOnPromoAllClickListener { onAllBannerClicked() }

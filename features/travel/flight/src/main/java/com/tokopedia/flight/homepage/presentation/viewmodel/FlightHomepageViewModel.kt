@@ -20,9 +20,12 @@ import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardModel
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
 import com.tokopedia.flight.dashboard.view.validator.FlightSelectPassengerValidator
+import com.tokopedia.flight.search.domain.FlightDeleteAllFlightSearchDataUseCase
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.presentation.viewmodel.FlightSearchUniversalViewModel
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -35,7 +38,9 @@ class FlightHomepageViewModel @Inject constructor(
         private val travelTickerUseCase: TravelTickerCoroutineUseCase,
         private val getTravelCollectiveBannerUseCase: GetTravelCollectiveBannerUseCase,
         private val dashboardCache: FlightDashboardCache,
+        private val deleteAllFlightSearchDataUseCase: FlightDeleteAllFlightSearchDataUseCase,
         private val passengerValidator: FlightSelectPassengerValidator,
+        private val userSessionInterface: UserSessionInterface,
         private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
 
@@ -75,6 +80,7 @@ class FlightHomepageViewModel @Inject constructor(
     }
 
     /**
+     * search applink format example :
      * tokopedia://pesawat/search?dest=CGK_Jakarta_DPS_Denpasar_2020-11-11,CGK_Jakarta_DPS_Denpasar_2020-12-11&a=3&c=2&i=1&s=1&auto_search=0
      */
     fun setupApplinkParams(extrasTrip: String, extrasAdult: String, extrasChild: String,
@@ -132,11 +138,11 @@ class FlightHomepageViewModel @Inject constructor(
     }
 
     fun onBannerClicked(position: Int, banner: TravelCollectiveBannerModel.Banner) {
-        //                flightAnalytics.eventPromotionClick(position + 1, banner)
+        flightAnalytics.eventPromotionClick(position + 1, banner)
     }
 
     fun onDepartureAirportChanged(departureAirport: FlightAirportModel) {
-//        flightAnalytics.eventOriginClick(departureAirport.cityName, departureAirport.airportCode)
+        flightAnalytics.eventOriginClick(departureAirport.cityName, departureAirport.airportCode)
         dashboardData.value?.let {
             val newDashboardData = cloneViewModel(it)
             newDashboardData.departureAirport = departureAirport
@@ -145,7 +151,7 @@ class FlightHomepageViewModel @Inject constructor(
     }
 
     fun onArrivalAirportChanged(arrivalAirport: FlightAirportModel) {
-//        flightAnalytics.eventDestinationClick(arrivalAirport.cityName, arrivalAirport.airportCode)
+        flightAnalytics.eventDestinationClick(arrivalAirport.cityName, arrivalAirport.airportCode)
         dashboardData.value?.let {
             val newDashboardData = cloneViewModel(it)
             newDashboardData.arrivalAirport = arrivalAirport
@@ -154,7 +160,7 @@ class FlightHomepageViewModel @Inject constructor(
     }
 
     fun onClassChanged(classModel: FlightClassModel) {
-//        flightAnalytics.eventClassClick(classModel.title)
+        flightAnalytics.eventClassClick(classModel.title)
         dashboardData.value?.let {
             val newDashboardData = cloneViewModel(it)
             newDashboardData.flightClass = classModel
@@ -163,7 +169,7 @@ class FlightHomepageViewModel @Inject constructor(
     }
 
     fun onPassengerChanged(passengerModel: FlightPassengerModel) {
-//        flightAnalytics.eventPassengerClick(passengerModel.adult, passengerModel.children, passengerModel.infant)
+        flightAnalytics.eventPassengerClick(passengerModel.adult, passengerModel.children, passengerModel.infant)
         dashboardData.value?.let {
             val newDashboardData = cloneViewModel(it)
             newDashboardData.flightPassengerViewModel = passengerModel
@@ -229,6 +235,39 @@ class FlightHomepageViewModel @Inject constructor(
         return resultStringResourceId
     }
 
+    fun onSearchTicket(flightSearchData: FlightSearchPassDataModel) {
+        flightAnalytics.eventSearchClick(mapSearchPassDataToDashboardModel(flightSearchData))
+        deleteAllFlightSearchDataUseCase.executeCoroutine()
+    }
+
+    fun sendTrackingOpenScreen(screenName: String) {
+        flightAnalytics.eventOpenScreen(screenName, userSessionInterface.isLoggedIn)
+    }
+
+    fun sendTrackingRoundTripSwitchChanged(tripType: String) {
+        flightAnalytics.eventTripTypeClick(tripType)
+    }
+
+    fun sendTrackingPromoScrolled(position: Int) {
+        getBannerData(position)?.let {
+            flightAnalytics.eventPromoImpression(position, it)
+        }
+    }
+
+    private fun mapSearchPassDataToDashboardModel(flightSearchData: FlightSearchPassDataModel): FlightDashboardModel {
+        val dashboardModel = FlightDashboardModel()
+
+        dashboardModel.departureAirport = flightSearchData.departureAirport
+        dashboardModel.arrivalAirport = flightSearchData.arrivalAirport
+        dashboardModel.isOneWay = flightSearchData.isOneWay
+        dashboardModel.flightPassengerViewModel = flightSearchData.flightPassengerViewModel
+        dashboardModel.flightClass = flightSearchData.flightClass
+        dashboardModel.departureDate = flightSearchData.departureDate
+        dashboardModel.returnDate = flightSearchData.returnDate
+
+        return dashboardModel
+    }
+
     private fun cloneViewModel(currentDashboardData: FlightDashboardModel): FlightDashboardModel {
         val dashboardModel: FlightDashboardModel
         try {
@@ -243,9 +282,6 @@ class FlightHomepageViewModel @Inject constructor(
     companion object {
         private const val MAX_YEAR_FOR_FLIGHT = 1
         private const val MINUS_ONE_DAY = -1
-        private const val DEFAULT_LAST_HOUR_IN_DAY = 23
-        private const val DEFAULT_LAST_MIN = 59
-        private const val DEFAULT_LAST_SEC = 59
 
         // applink params index
         private const val INDEX_DEPARTURE_TRIP: Int = 0
