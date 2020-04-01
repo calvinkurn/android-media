@@ -41,6 +41,7 @@ object SearchMapper {
                 lokasi_kegiatan = event.cityName,
                 image_url = event.imageApp,
                 isLiked = event.isLiked,
+                app_url = event.appUrl,
                 category = event.childCategoryIds
         )
     }
