@@ -8,6 +8,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.track.TrackApp
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
+import timber.log.Timber
 import java.net.URLDecoder
 
 /**
@@ -60,7 +61,7 @@ object WebViewHelper {
      */
      @JvmStatic
     fun appendGAClientIdAsQueryParam(url: String?, context: Context): String? {
-        Log.d("WebviewHelper-before" , url)
+        Timber.d("WebviewHelper before $url")
         var returnURl = url
 
         if (url?.contains("ta.tokopedia.com") == true)
@@ -95,7 +96,7 @@ object WebViewHelper {
             }
         }
 
-        Log.d("WebviewHelper-after" , returnURl)
+        Timber.d("WebviewHelper after $returnURl")
         return returnURl
     }
 
@@ -133,12 +134,12 @@ object WebViewHelper {
      * Input: tokopedia://webview?url=https://js.tokopedia.com?url=http://www.tokopedia.com/help?id=4&target=5&title=3
      * Output:https://js.tokopedia.com?target=5&title=3&url=http%3A%2F%2Fwww.tokopedia.com%2Fhelp%3Fid%3D4%26target%3D5%26title%3D3
      */
-    fun getEncodedParameterUrl(intentUri: Uri, defaultUrl: String): String {
+    fun getEncodedUrlCheckSecondUrl(intentUri: Uri, defaultUrl: String): String {
         val query = intentUri.query
         return if (query != null && query.contains("$KEY_URL=")) {
             var url = query.substringAfter("$KEY_URL=").decode()
             url = validateSymbol(url)
-            return getEncodedParameterUrl2(url)
+            return getEncodedurl(url)
         } else {
             defaultUrl
         }
@@ -147,7 +148,7 @@ object WebViewHelper {
     /**
      * make &url= or ?url= to be encoded
      */
-    private fun getEncodedParameterUrl2(url: String): String {
+    private fun getEncodedurl(url: String): String {
         val url2 = getUrlParam(url)
         return if (url2.isNullOrEmpty()) {
             url
@@ -176,7 +177,7 @@ object WebViewHelper {
         if (indexKeyUrl < 0) {
             return null
         }
-        return url.substring(indexKeyUrl + delimiterLength, url.length)
+        return validateSymbol(url.substring(indexKeyUrl + delimiterLength, url.length))
     }
 
     /**

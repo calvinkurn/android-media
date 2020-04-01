@@ -55,7 +55,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         }
 
         intent.data?.run {
-            url = WebViewHelper.getEncodedParameterUrl(this, url)
+            url = WebViewHelper.getEncodedUrlCheckSecondUrl(this, url)
 
             val needTitleBar = getQueryParameter(KEY_TITLEBAR)
             needTitleBar?.let {

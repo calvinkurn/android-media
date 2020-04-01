@@ -12,6 +12,13 @@ buildscript {
     }
 }
 
+android {
+    //for android test
+    defaultConfig {
+        multiDexEnabled true
+    }
+}
+
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
@@ -38,6 +45,8 @@ dependencies {
     }
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    implementation rootProject.ext.miscDependencies.multiDex
 }
 
 project.ext {
