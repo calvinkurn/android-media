@@ -2,6 +2,8 @@ package com.tokopedia.purchase_platform.features.checkout.view.viewholder;
 
 import android.content.Context;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -149,7 +151,8 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void renderShippingDiscount(ShipmentCostModel shipmentCost) {
-        mTvShippingDiscountLabel.setText(mTvShippingDiscountLabel.getContext().getString(R.string.label_shipping_discount));
+        String defaultLabel = mTvShippingDiscountLabel.getContext().getString(R.string.label_shipping_discount);
+        mTvShippingDiscountLabel.setText(!TextUtils.isEmpty(shipmentCost.getShippingDiscountLabel()) ? shipmentCost.getShippingDiscountLabel() : defaultLabel);
         if (shipmentCost.getShippingDiscountAmount() > 0) {
             if (shipmentCost.getShippingDiscountAmount() >= shipmentCost.getShippingFee()) {
                 mTvShippingFee.setText(mTvShippingFee.getContext().getString(R.string.label_free_shipping));
