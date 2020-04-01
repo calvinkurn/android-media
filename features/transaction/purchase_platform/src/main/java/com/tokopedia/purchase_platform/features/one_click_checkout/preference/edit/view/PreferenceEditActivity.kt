@@ -34,6 +34,7 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
     var paymentQuery = ""
     var shippingParam: ShippingParam? = null
     var listShopShipment: ArrayList<ShopShipment>? = null
+    var should_show_delete_button: Boolean = true
 
     override fun getComponent(): PreferenceEditComponent {
         return DaggerPreferenceEditComponent.builder()
@@ -66,6 +67,7 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         gatewayCode = intent.getStringExtra(EXTRA_GATEWAY_CODE) ?: ""
         shippingParam = intent.getParcelableExtra(EXTRA_SHIPPING_PARAM)
         listShopShipment = intent.getParcelableArrayListExtra(EXTRA_LIST_SHOP_SHIPMENT)
+        should_show_delete_button = intent.getBooleanExtra(EXTRA_PREFERENCE_INDEX, true)
 
         if (addressId == -1 || shippingId == -1 || gatewayCode.isBlank() || profileId == 0) {
             supportFragmentManager.beginTransaction().replace(R.id.container, AddressListFragment.newInstance()).commit()
@@ -173,6 +175,7 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         const val EXTRA_ADDRESS_ID = "address_id"
         const val EXTRA_SHIPPING_ID = "shipping_id"
         const val EXTRA_GATEWAY_CODE = "gateway_code"
+        const val EXTRA_SHOW_DELETE_BUTTON = "show_delete_button"
 
         const val EXTRA_SHIPPING_PARAM = "shipping_param"
         const val EXTRA_LIST_SHOP_SHIPMENT = "list_shop_shipment"

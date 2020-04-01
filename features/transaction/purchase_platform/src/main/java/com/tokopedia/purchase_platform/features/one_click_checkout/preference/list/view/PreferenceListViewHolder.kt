@@ -32,8 +32,16 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
     private val tvPaymentName = itemView.tv_payment_name
     private val tvPaymentDetail = itemView.tv_payment_detail
 
-    fun bind(preference: ProfilesItemModel, currentProfileId: Int) {
+    private var show_delete_button: Boolean = true
+
+    fun bind(preference: ProfilesItemModel, currentProfileId: Int, profileSize: Int) {
         tvCardHeader.text = itemView.context.getString(R.string.preference_number, adapterPosition + 1)
+        if(profileSize > 1) {
+            show_delete_button //true
+        } else {
+            !show_delete_button //false
+        }
+
         if (currentProfileId < 0) {
             tvChosenPreference.gone()
             if (preference.status == 2) {

@@ -241,14 +241,19 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
     override fun onPreferenceEditClicked(preference: ProfilesItemModel, position: Int) {
         preferencelistAnalytics.eventClickSettingPreferenceGearInPreferenceListPage()
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
-        intent.apply {
-            putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, getString(R.string.lbl_summary_preference_option) + " " + position)
-            putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.profileId)
-            putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.addressModel?.addressId)
-            putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, preference.shipmentModel?.serviceId)
-            putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, preference.paymentModel?.gatewayCode)
+        val parent = activity
+        if (parent is PreferenceEditActivity) {
+            val showDelete = parent.should_show_delete_button
+            intent.apply {
+                putExtra(PreferenceEditActivity.EXTRA_SHOW_DELETE_BUTTON, showDelete)
+                putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, getString(R.string.lbl_summary_preference_option) + " " + position)
+                putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.profileId)
+                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.addressModel?.addressId)
+                putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, preference.shipmentModel?.serviceId)
+                putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, preference.paymentModel?.gatewayCode)
+            }
+            startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
         }
-        startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
     }
 
     companion object {
