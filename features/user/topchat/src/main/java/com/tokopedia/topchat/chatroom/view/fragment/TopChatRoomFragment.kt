@@ -442,10 +442,16 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewThumbnailKey) == variantNewThumbnail
         } catch (e: Exception) {
             e.printStackTrace()
-            if (!BuildConfig.DEBUG) {
-                Crashlytics.logException(e)
-            }
+            logUnknownError(e)
             defaultUseNewCard
+        }
+    }
+
+    private fun logUnknownError(exception: Exception) {
+        try {
+            if (!BuildConfig.DEBUG) Crashlytics.logException(exception)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
