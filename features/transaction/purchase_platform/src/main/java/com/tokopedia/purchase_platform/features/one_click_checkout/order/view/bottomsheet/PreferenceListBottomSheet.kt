@@ -138,9 +138,9 @@ class PreferenceListBottomSheet(
             listener.onChangePreference(preference)
         }
 
-        override fun onPreferenceEditClicked(preference: ProfilesItemModel, position: Int) {
+        override fun onPreferenceEditClicked(preference: ProfilesItemModel, position: Int, profileSize: Int) {
             bottomSheet?.dismiss()
-            listener.onEditPreference(preference, position)
+            listener.onEditPreference(preference, position, profileSize)
         }
     }
 
@@ -175,7 +175,7 @@ class PreferenceListBottomSheet(
 
         fun onChangePreference(preference: ProfilesItemModel)
 
-        fun onEditPreference(preference: ProfilesItemModel, position: Int)
+        fun onEditPreference(preference: ProfilesItemModel, position: Int, profileSize: Int)
 
         fun onAddPreference(itemCount: Int)
     }

@@ -238,11 +238,12 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
         viewModel.changeDefaultPreference(preference)
     }
 
-    override fun onPreferenceEditClicked(preference: ProfilesItemModel, position: Int) {
+    override fun onPreferenceEditClicked(preference: ProfilesItemModel, position: Int, profileSize: Int) {
         preferencelistAnalytics.eventClickSettingPreferenceGearInPreferenceListPage()
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
         intent.apply {
-            putExtra(PreferenceEditActivity.EXTRA_SHOW_DELETE_BUTTON, false)
+            if(profileSize > 1) putExtra(PreferenceEditActivity.EXTRA_SHOW_DELETE_BUTTON, true)
+            else putExtra(PreferenceEditActivity.EXTRA_SHOW_DELETE_BUTTON, false)
             putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, getString(R.string.lbl_summary_preference_option) + " " + position)
             putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.profileId)
             putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.addressModel?.addressId)

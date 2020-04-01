@@ -36,11 +36,6 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
 
     fun bind(preference: ProfilesItemModel, currentProfileId: Int, profileSize: Int) {
         tvCardHeader.text = itemView.context.getString(R.string.preference_number, adapterPosition + 1)
-        if(profileSize > 1) {
-            show_delete_button //true
-        } else {
-            !show_delete_button //false
-        }
 
         if (currentProfileId < 0) {
             tvChosenPreference.gone()
@@ -106,7 +101,7 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
             listener.onPreferenceSelected(preference)
         }
         ivEditPreference.setOnClickListener {
-            listener.onPreferenceEditClicked(preference, adapterPosition + 1)
+            listener.onPreferenceEditClicked(preference, adapterPosition + 1, profileSize)
         }
     }
 }
