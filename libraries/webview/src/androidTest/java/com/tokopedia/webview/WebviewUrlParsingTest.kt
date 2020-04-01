@@ -115,7 +115,7 @@ class WebviewUrlParsingTest {
         val resultUri = Uri.parse(result)
         assertEquals("https", resultUri.scheme)
         assertEquals("www.tokopedia.com", resultUri.host)
-        assertEquals("abc", resultUri.path)
+        assertEquals("/abc", resultUri.path)
         assertNull(resultUri.getQueryParameter("target"))
         assertNull(resultUri.getQueryParameter("title"))
     }
