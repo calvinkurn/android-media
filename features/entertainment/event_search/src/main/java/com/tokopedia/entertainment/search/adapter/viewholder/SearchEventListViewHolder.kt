@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.entertainment.search.R
 import com.tokopedia.entertainment.search.adapter.SearchEventViewHolder
 import com.tokopedia.entertainment.search.adapter.viewmodel.SearchEventViewModel
@@ -46,6 +47,7 @@ class SearchEventListViewHolder(val view: View) : SearchEventViewHolder<SearchEv
             val tanggal_kegiatan : String,
             val lokasi_kegiatan : String,
             val image_url : String,
+            val app_url : String,
             val isLiked: Boolean,
             val category: String
     ) : ImpressHolder()
@@ -76,6 +78,7 @@ class SearchEventListViewHolder(val view: View) : SearchEventViewHolder<SearchEv
             })
 
             holder.view.setOnClickListener {
+                RouteManager.route(holder.view.context, element.app_url)
                 //Tracking
                 EventSearchPageTracking.getInstance().onClickedEventSearchSuggestion(element, listKegiatan, position+1)
             }
