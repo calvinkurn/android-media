@@ -202,8 +202,6 @@ class ProductManageViewModel @Inject constructor(
         getProductListJob?.cancel()
 
         launchCatchError(block = {
-            if(isRefresh) { refreshList() }
-
             val productList = withContext(dispatchers.io) {
                 if(withDelay) { delay(REQUEST_DELAY) }
                 val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, filterOptions, sortOption)
@@ -212,6 +210,7 @@ class ProductManageViewModel @Inject constructor(
                 productListResponse?.data
             }
 
+            if(isRefresh) { refreshList() }
             showProductList(productList)
             hideProgressDialog()
         }, onError = {
