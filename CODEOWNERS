@@ -249,9 +249,9 @@
 /tkpdtransaction-common/                                @tokopedia/core-team
 /tkpdseller/                                        	@tokopedia/core-team
 
-/tkpddesign/                                        	@nathaniel09 @hendrysetiadi89
-/tkpdcore/                                          	@nathaniel09 @hendrysetiadi89
-/tkpdabstraction/                                   	@nathaniel09 @hendrysetiadi89
+/tkpddesign/                                        	@tokopedia/android-gatekeeper-legacy-code
+/tkpdcore/                                          	@tokopedia/android-gatekeeper-legacy-code
+/tkpdabstraction/                                   	@tokopedia/android-gatekeeper-legacy-code
 
 /customerapp/                                       	@tokopedia/core-team
 /sellerapp/                                         	@tokopedia/minion-stuart
