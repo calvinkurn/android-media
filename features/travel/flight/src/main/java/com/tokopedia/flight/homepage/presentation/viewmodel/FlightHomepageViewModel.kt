@@ -236,8 +236,10 @@ class FlightHomepageViewModel @Inject constructor(
     }
 
     fun onSearchTicket(flightSearchData: FlightSearchPassDataModel) {
-        flightAnalytics.eventSearchClick(mapSearchPassDataToDashboardModel(flightSearchData))
-        deleteAllFlightSearchDataUseCase.executeCoroutine()
+        launch(dispatcherProvider.ui()) {
+            flightAnalytics.eventSearchClick(mapSearchPassDataToDashboardModel(flightSearchData))
+            deleteAllFlightSearchDataUseCase.executeCoroutine()
+        }
     }
 
     fun sendTrackingOpenScreen(screenName: String) {

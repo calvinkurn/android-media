@@ -265,8 +265,8 @@ open class FlightSearchRepository @Inject constructor(
         }
     }
 
-    fun deleteAllFlightSearchDataCoroutine() {
-        deleteFlightSearchData()
+    suspend fun deleteAllFlightSearchDataCoroutine() {
+        deleteFlightSearchDataCoroutine()
     }
 
     fun getComboKey(onwardJourneyId: String, returnJourneyId: String): Observable<String> =
@@ -286,6 +286,11 @@ open class FlightSearchRepository @Inject constructor(
     private fun deleteFlightSearchData() {
         flightSearchSingleDataDbSource.deleteAllFlightSearchData()
         flightSearchCombinedDataDbSource.deleteAllFlightSearchCombinedData()
+    }
+
+    private suspend fun deleteFlightSearchDataCoroutine() {
+        flightSearchSingleDataDbSource.deleteAllFlightSearchDataCoroutine()
+        flightSearchCombinedDataDbSource.deleteAllFlightSearchCombinedDataCoroutine()
     }
 
     private fun isJourneyNeedToUpdate(journeyTable: FlightJourneyTable, comboPrice: Int): Boolean =
