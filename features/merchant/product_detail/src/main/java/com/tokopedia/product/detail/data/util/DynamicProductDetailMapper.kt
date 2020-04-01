@@ -13,6 +13,18 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.PRODUCT_SNAPSHOT -> {
                     listOfComponent.add(ProductSnapshotDataModel(type = component.type, name = component.componentName))
                 }
+                ProductDetailConstant.NOTIFY_ME -> {
+                    listOfComponent.add(ProductNotifyMeDataModel(
+                            type = component.type,
+                            name = component.componentName,
+                            campaignID = component.componentData.firstOrNull()?.campaignId ?: "",
+                            campaignType = component.componentData.firstOrNull()?.campaignType ?: "",
+                            campaignTypeName = component.componentData.firstOrNull()?.campaignTypeName ?: "",
+                            endDate = component.componentData.firstOrNull()?.endDate ?: "",
+                            startDate = component.componentData.firstOrNull()?.startDate ?: "",
+                            notifyMe = component.componentData.firstOrNull()?.notifyMe ?: false
+                    ))
+                }
                 ProductDetailConstant.DISCUSSION -> {
                     listOfComponent.add(ProductDiscussionDataModel(type = component.type, name = component.componentName))
                 }
@@ -65,7 +77,20 @@ object DynamicProductDetailMapper {
             it.type == ProductDetailConstant.PRODUCT_SNAPSHOT
         }?.componentData?.firstOrNull() ?: ComponentData()
 
-        return DynamicProductInfoP1(layoutName = data.generalName, basic = data.basicInfo, data = componentData)
+        val upcomingData = data.components.find {
+            it.type == ProductDetailConstant.NOTIFY_ME
+        }?.componentData?.firstOrNull() ?: ComponentData()
+
+        val newData = componentData.copy(
+                campaignId = upcomingData.campaignId,
+                campaignType = upcomingData.campaignType,
+                campaignTypeName = upcomingData.campaignTypeName,
+                endDate = upcomingData.endDate,
+                startDate = upcomingData.startDate,
+                notifyMe = upcomingData.notifyMe
+        )
+
+        return DynamicProductInfoP1(layoutName = data.generalName, basic = data.basicInfo, data = newData)
     }
 
     fun hashMapLayout(data: List<DynamicPdpDataModel>): Map<String, DynamicPdpDataModel> {

@@ -83,6 +83,7 @@ object HomeQuery{
                 expiredTime
                 backColor
                 backImage
+                textColor
               }
               hero {
                 id
@@ -107,6 +108,7 @@ object HomeQuery{
                 productClickUrl
                 impression
                 cashback
+                isTopads
                 freeOngkir {
                   isActive
                   imageUrl

@@ -4,13 +4,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
-import com.tokopedia.play.ui.chatlist.ChatListComponent
-import com.tokopedia.play.ui.chatlist.ChatListComponentTest
-import com.tokopedia.play.ui.chatlist.ChatListView
+import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play.view.type.PlayRoomEvent
-import com.tokopedia.play.view.uimodel.TotalLikeUiModel
-import com.tokopedia.play.view.uimodel.TotalViewUiModel
 import io.mockk.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,13 +13,12 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.*
 
 /**
  * Created by jegul on 30/01/20
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class EndLiveInfoComponentTest {
 
     private lateinit var component: EndLiveInfoComponent
@@ -33,7 +27,9 @@ class EndLiveInfoComponentTest {
     private val testDispatcher = TestCoroutineDispatcher()
     private val coroutineScope = CoroutineScope(testDispatcher)
 
-    @Before
+    private val modelBuilder = ModelBuilder()
+
+    @BeforeEach
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         every { owner.lifecycle } returns mockk(relaxed = true)
@@ -41,42 +37,32 @@ class EndLiveInfoComponentTest {
         component = EndLiveInfoComponentMock(mockk(relaxed = true), EventBusFactory.get(owner), coroutineScope)
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         Dispatchers.resetMain()
     }
 
     @Test
-    fun `test set total views`() = runBlockingTest(testDispatcher) {
-        val mockTotalView = TotalViewUiModel(
-                totalView = "1.2"
-        )
+    fun `when there is new total view, then info should show it`() = runBlockingTest(testDispatcher) {
+        val mockTotalView = modelBuilder.buildTotalViewUiModel()
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetTotalViews(mockTotalView))
-        verify { component.uiView.statsView.setTotalViews(mockTotalView) }
+        verify { component.uiView.setTotalViews(mockTotalView) }
         confirmVerified(component.uiView)
     }
 
     @Test
-    fun `test set total likes`() = runBlockingTest(testDispatcher) {
-        val mockTotalLike = TotalLikeUiModel(
-                totalLike = 1200,
-                totalLikeFormatted = "1.2k"
-        )
+    fun `when there is new total like, then info should show it`() = runBlockingTest(testDispatcher) {
+        val mockTotalLike = modelBuilder.buildTotalLikeUiModel()
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.SetTotalLikes(mockTotalLike))
-        verify { component.uiView.statsView.setTotalLikes(mockTotalLike) }
+        verify { component.uiView.setTotalLikes(mockTotalLike) }
         confirmVerified(component.uiView)
     }
 
     @Test
-    fun `test when channel is freeze`() = runBlockingTest(testDispatcher) {
-        val mockPlayRoomEvent = PlayRoomEvent.Freeze(
-                "Channel telah berakhir",
-                "Silahkan pilih channel lain",
-                "Keluar",
-                ""
-        )
+    fun `when channel is frozen, then info should be shown`() = runBlockingTest(testDispatcher) {
+        val mockPlayRoomEvent = modelBuilder.buildPlayRoomFreezeEvent()
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockPlayRoomEvent))
         verifyAll {
@@ -92,12 +78,8 @@ class EndLiveInfoComponentTest {
     }
 
     @Test
-    fun `test when user is banned`() = runBlockingTest(testDispatcher) {
-        val mockPlayRoomEvent = PlayRoomEvent.Banned(
-                "Channel telah berakhir",
-                "Silahkan pilih channel lain",
-                "Keluar"
-        )
+    fun `when user is banned, then info should be shown`() = runBlockingTest(testDispatcher) {
+        val mockPlayRoomEvent = modelBuilder.buildPlayRoomBannedEvent()
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockPlayRoomEvent))
         verify { component.uiView.hide() }

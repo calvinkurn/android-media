@@ -85,7 +85,7 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '1.1.1'
-    unifyComponentsVersion = '1.1.26'
+    unifyComponentsVersion = '1.1.27'
     unifyCoachMarkVersion = '1.2.3'
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.4'
@@ -96,7 +96,7 @@ ext {
     unifyHeaderVersion = '1.1.1'
     unifySortFilterVersion = '1.0.1'
     unifyIconNotificationVersion = '1.0.0'
-    unifyCarouselVersion = '1.0.0'
+    unifyCarouselVersion = '1.0.2'
 
     gradlePlugin = [
             crashlytics   : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
@@ -254,6 +254,7 @@ ext {
             junitJupiterApi       : "org.junit.jupiter:junit-jupiter-api:$JunitJupiterVersion",
             junitJupiterEngine    : "org.junit.jupiter:junit-jupiter-engine:$JunitJupiterVersion",
             mockk                 : "io.mockk:mockk:$MockkVersion",
+            mockkAndroid          : "io.mockk:mockk-android:$MockkVersion",
             mockitorCore          : "org.mockito:mockito-core:1.10.19",
             uiautomator           : 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2',
             spoon                 : 'com.squareup.spoon:spoon-client:1.6.4',

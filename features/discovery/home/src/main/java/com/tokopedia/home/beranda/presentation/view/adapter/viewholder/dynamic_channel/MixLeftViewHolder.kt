@@ -70,7 +70,6 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
     }
 
     override fun onBannerSeeMoreClicked(applink: String, channel: DynamicHomeChannel.Channels) {
-        RouteManager.route(itemView.context, applink)
         HomePageTrackingV2.MixLeft.sendMixLeftClickLoadMore(channel)
     }
 
@@ -94,9 +93,10 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
 
     private fun setupList(channel: DynamicHomeChannel.Channels) {
         image.alpha = 1f
+        recyclerView.resetLayout()
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
-        val typeFactoryImpl = FlashSaleCardViewTypeFactoryImpl(this, channel)
+        val typeFactoryImpl = FlashSaleCardViewTypeFactoryImpl(channel)
         val listData = mutableListOf<Visitable<*>>()
         listData.add(EmptyDataModel())
         val productDataList = convertDataToProductData(channel)
@@ -104,7 +104,6 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
 
         adapter = MixLeftAdapter(listData,typeFactoryImpl)
         recyclerView.adapter = adapter
-        recyclerView.setHasFixedSize(true)
         launch {
             try {
                 recyclerView.setHeightBasedOnProductCardMaxHeight(productDataList.map {it.productModel})
@@ -156,14 +155,22 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
                             discountPercentage = element.discount,
                             pdpViewCount = element.productViewCountFormatted,
                             stockBarLabel = element.label,
+                            isTopAds = element.isTopads,
                             stockBarPercentage = element.soldPercentage
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
-                    applink = element.applink
+                    applink = element.applink,
+                    listener = this
             ))
         }
         return list
+    }
+
+    private fun RecyclerView.resetLayout() {
+        val carouselLayoutParams = this.layoutParams
+        carouselLayoutParams?.height = RecyclerView.LayoutParams.WRAP_CONTENT
+        this.layoutParams = carouselLayoutParams
     }
 
     private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(

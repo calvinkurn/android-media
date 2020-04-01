@@ -622,6 +622,9 @@ data class DynamicHomeChannel(
             @SerializedName("productClickUrl")
             val productClickUrl: String = "",
             @Expose
+            @SerializedName("isTopads")
+            val isTopads: Boolean = false,
+            @Expose
             @SerializedName("freeOngkir")
             val freeOngkir: FreeOngkir = FreeOngkir(),
             @Expose

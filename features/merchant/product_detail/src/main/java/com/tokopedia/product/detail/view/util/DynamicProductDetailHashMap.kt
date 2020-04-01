@@ -84,6 +84,9 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     val productSocialProofPvDataModel: ProductSocialProofPvDataModel?
         get() = mapOfData[ProductDetailConstant.SOCIAL_PROOF_PV] as? ProductSocialProofPvDataModel
 
+    val notifyMeMap: ProductNotifyMeDataModel?
+        get() = mapOfData[ProductDetailConstant.UPCOMING_DEALS] as? ProductNotifyMeDataModel
+
     val listProductRecomMap: List<ProductRecommendationDataModel>? = mapOfData.filterKeys {
         it == ProductDetailConstant.PDP_1 || it == ProductDetailConstant.PDP_2
                 || it == ProductDetailConstant.PDP_3 || it == ProductDetailConstant.PDP_4
@@ -100,6 +103,15 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                 shouldRenderImageVariant = true
                 dynamicProductInfoP1 = it
                 media = DynamicProductDetailMapper.convertMediaToDataModel(it.data.media.toMutableList())
+            }
+
+            notifyMeMap?.run {
+                campaignID = it.data.campaignId
+                campaignType = it.data.campaignType
+                campaignTypeName = it.data.campaignTypeName
+                endDate = it.data.endDate
+                startDate = it.data.startDate
+                notifyMe = it.data.notifyMe
             }
 
             valuePropositionDataModel?.run {
@@ -137,21 +149,8 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                  * Sometimes this lastUpdateUnix doesn't has Long value like "123"
                  * If P1 updated by selected variant this value will be formatted dated "dd-mm-yyy , hh:mm"
                  */
-                val isLongFormat = try {
-                    it.data.price.lastUpdateUnix.toLong()
-                    true
-                } catch (e: Throwable) {
-                    false
-                }
-
-                lastSeen = if (isLongFormat) {
-                    val date = Date(it.data.price.lastUpdateUnix.toLong() * 1000)
-                    val dateString = date.toFormattedString("dd-MM-yyyy , HH:mm")
-                    "$dateString WIB"
-                } else {
-                    it.data.price.lastUpdateUnix
-                }
-
+                val dateFormatted = it.data.price.lastUpdateUnix toDate "dd-MM-yyy , HH:mm"
+                lastSeen = "$dateFormatted WIB"
             }
         }
     }
