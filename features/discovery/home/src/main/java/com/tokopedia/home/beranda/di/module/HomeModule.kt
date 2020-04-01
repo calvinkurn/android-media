@@ -30,7 +30,6 @@ import dagger.Provides
 @Module(includes = [
     HomeDataSourceModule::class,
     HomeDatabaseModule::class,
-    HomePresenterModule::class,
     HomeMapperModule::class,
     HomeUseCaseModule::class
 ])

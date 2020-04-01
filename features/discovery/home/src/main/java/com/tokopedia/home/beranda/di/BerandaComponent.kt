@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.home.beranda.di.module.HomeModule
 import com.tokopedia.home.beranda.di.module.ViewModelModule
-import com.tokopedia.home.beranda.presentation.presenter.HomeFeedPresenter
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRecommendationFragment
 import com.tokopedia.home.common.ApiModule
