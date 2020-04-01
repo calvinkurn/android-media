@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.flight.bookingV2.presentation.fragment.FlightInsuranceWebViewFragment;
@@ -47,8 +46,6 @@ public interface FlightComponent {
     Gson gson();
 
     UserSessionInterface userSessionInterface();
-
-    CacheManager cacheManager();
 
     FlightDateUtil flightdateutlil();
 

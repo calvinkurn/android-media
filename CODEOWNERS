@@ -206,6 +206,7 @@
 /libraries/cpm/											@tokopedia/core-team
 /libraries/date_picker_range/							@tokopedia/core-team
 /libraries/dynamic_features/							@tokopedia/core-team
+/libraries/encryption/							        @tokopedia/core-team
 /libraries/fingerprint/									@tokopedia/core-team
 /libraries/graph_view/									@tokopedia/core-team
 /libraries/image_picker/								@tokopedia/core-team
