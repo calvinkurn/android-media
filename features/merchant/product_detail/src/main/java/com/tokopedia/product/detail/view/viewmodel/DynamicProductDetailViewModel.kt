@@ -529,8 +529,12 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         val productImageUrl = productInfo?.data?.getProductImageUrl() ?: ""
         val productName = productInfo?.getProductName ?: ""
         val productPrice = productInfo?.finalPrice?.getCurrencyFormatted() ?: ""
-        val priceBefore = productInfo?.priceBeforeInt?.getCurrencyFormatted() ?: ""
         val priceBeforeInt = productInfo?.priceBeforeInt ?: 0
+        val priceBefore = if (priceBeforeInt > 0) {
+            priceBeforeInt.getCurrencyFormatted()
+        } else {
+            ""
+        }
         val dropPercentage = productInfo?.dropPercentage ?: ""
         val productUrl = productInfo?.basic?.url ?: ""
         val isActive = productInfo?.basic?.isActive() ?: true
