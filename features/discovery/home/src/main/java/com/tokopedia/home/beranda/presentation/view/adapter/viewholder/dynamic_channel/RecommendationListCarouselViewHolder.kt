@@ -15,6 +15,7 @@ import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SimpleHorizontalLinearLayoutDecoration
+import com.tokopedia.home.util.setGradientBackground
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifyprinciples.Typography
@@ -54,6 +55,11 @@ class RecommendationListCarouselViewHolder(itemView: View,
             if (banner.backColor.isNotEmpty()) {
                 val backColor = Color.parseColor(banner.backColor)
                 listCarouselView.setBackgroundColor(backColor)
+                listCarouselView.visibility = View.VISIBLE
+            } else listCarouselView.visibility = View.GONE
+
+            if (banner.gradientColor.size == 2) {
+                listCarouselView.setGradientBackground(it.gradientColor[0],it.gradientColor[1])
                 listCarouselView.visibility = View.VISIBLE
             } else listCarouselView.visibility = View.GONE
 
