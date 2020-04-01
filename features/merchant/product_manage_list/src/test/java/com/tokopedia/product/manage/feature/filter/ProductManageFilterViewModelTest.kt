@@ -61,7 +61,11 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
         val expectedData = FilterUiModel(ProductManageFilterMapper.SORT_HEADER,
                 mutableListOf(
                         getSortDataModel(),
-                        FilterDataUiModel("706", "Some Other Sort", "ASC", false)
+                        FilterDataUiModel("706", "Some Other Sort", "ASC", false),
+                        FilterDataUiModel("707", "Some Other Sort", "ASC", false),
+                        FilterDataUiModel("708", "Some Other Sort", "ASC", false),
+                        FilterDataUiModel("709", "Some Other Sort", "ASC", false),
+                        FilterDataUiModel("710", "Some Other Sort", "ASC", false)
                 ), true)
         verifyFilterViewModel(expectedData)
     }
@@ -127,6 +131,42 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
     }
 
     @Test
+    fun `when_updateSelect_for_Category_and_Other_Filter_last_element_should_update_filter_data_model_accordingly`() {
+        val sortViewModel = getSortFilterViewModel()
+        val etalaseViewModel = getEtalaseFilterViewModel()
+        val categoryViewModel = getCategoryFilterViewModel()
+        val otherFilterViewModel = getOtherFilterFilterViewModel()
+
+        viewModel.updateData(listOf(sortViewModel, etalaseViewModel, categoryViewModel, otherFilterViewModel))
+        viewModel.updateSelect(categoryViewModel.data.last())
+        viewModel.updateSelect(otherFilterViewModel.data.last())
+
+        val expectedCategoryModel = FilterUiModel(ProductManageFilterMapper.CATEGORY_HEADER,
+                mutableListOf(
+                        FilterDataUiModel("456", "Some Other Category", "", true),
+                        getCategoryDataModel(),
+                        FilterDataUiModel("452", "Some Other Category", "", false),
+                        FilterDataUiModel("453", "Some Other Category", "", false),
+                        FilterDataUiModel("454", "Some Other Category", "", false),
+                        FilterDataUiModel("455", "Some Other Category", "", false)
+                ), false)
+        val expectedCategoryIndex = ProductManageFilterFragment.ITEM_CATEGORIES_INDEX
+        val expectedOtherFilterModel = FilterUiModel(ProductManageFilterMapper.OTHER_FILTER_HEADER,
+                mutableListOf(
+                        FilterDataUiModel("615", "Some Other Filter", "", true),
+                        getOtherFilterDataModel(),
+                        FilterDataUiModel("611", "Some Other Filter", "", false),
+                        FilterDataUiModel("612", "Some Other Filter", "", false),
+                        FilterDataUiModel("613", "Some Other Filter", "", false),
+                        FilterDataUiModel("614", "Some Other Filter", "", false)
+                ), false)
+        val expectedOtherFilterIndex = ProductManageFilterFragment.ITEM_OTHER_FILTER_INDEX
+
+        verifyFilterDataAtIndex(expectedCategoryModel, expectedCategoryIndex)
+        verifyFilterDataAtIndex(expectedOtherFilterModel, expectedOtherFilterIndex)
+    }
+
+    @Test
     fun `when_updateShow_should_update_filter_ui_model_show_sate_accordingly`() {
         val desiredShow = listOf(true, true, false ,true)
         val sortViewModel = getSortFilterViewModel(getSortDataModel())
@@ -173,7 +213,15 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
         viewModel.updateSelect(selectedSort.data.last(), ProductManageFilterMapper.SORT_HEADER)
         viewModel.updateSelect(selectedSort.data.last(), ProductManageFilterMapper.ETALASE_HEADER)
 
-        val expectedSortModel = getSortFilterViewModel()
+        val expectedSortModel = FilterUiModel(ProductManageFilterMapper.SORT_HEADER,
+                mutableListOf(
+                        FilterDataUiModel("710", "Some Other Sort", "ASC", true),
+                        getSortDataModel(),
+                        FilterDataUiModel("706", "Some Other Sort", "ASC", false),
+                        FilterDataUiModel("707", "Some Other Sort", "ASC", false),
+                        FilterDataUiModel("708", "Some Other Sort", "ASC", false),
+                        FilterDataUiModel("709", "Some Other Sort", "ASC", false)
+                ), false)
         val expectedSortIndex = ProductManageFilterFragment.ITEM_SORT_INDEX
         val expectedEtalaseModel = getEtalaseFilterViewModel()
         val expectedEtalaseIndex = ProductManageFilterFragment.ITEM_ETALASE_INDEX
