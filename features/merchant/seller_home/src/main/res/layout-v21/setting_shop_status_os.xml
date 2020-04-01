@@ -52,7 +52,7 @@
                 app:layout_constraintDimensionRatio="1:1"
                 android:background="@drawable/setting_image_circular"/>
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_margin="@dimen/setting_shop_badge_border_os_margin"
