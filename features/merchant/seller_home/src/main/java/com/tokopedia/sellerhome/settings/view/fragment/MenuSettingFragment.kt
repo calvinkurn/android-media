@@ -43,6 +43,8 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         private const val REQUEST_CHANGE_PASSWORD = 123
         private const val REQUEST_ADD_PASSWORD = 1234
 
+        private const val APPLINK_FORMAT = "%s?url=%s%s"
+
         private const val URL_PLAY_STORE_HOST = "https://play.google.com/store/apps/details?id="
         private const val MARKET_DETAIL_HOST = "market://details?id="
         private const val PATH_TERM_CONDITION = "terms.pl"
@@ -270,18 +272,14 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     }
 
     private fun showTermsAndConditions() {
-        val termUrl = String.format("%s%s", MOBILE_DOMAIN, PATH_TERM_CONDITION)
-        val url = ApplinkConst.WEBVIEW + "?url=" + termUrl
-        val intent = RouteManager.getIntent(context, url)
-//        intent.putExtra(OtherMenuFragment.URL_KEY, termUrl)
+        val termUrl = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, MOBILE_DOMAIN, PATH_TERM_CONDITION)
+        val intent = RouteManager.getIntent(context, termUrl)
         context?.startActivity(intent)
     }
 
     private fun showPrivacyPolicy() {
-        val termUrl = String.format("%s%s", MOBILE_DOMAIN, PATH_PRIVACY_POLICY)
-        val url = ApplinkConst.WEBVIEW + "?url=" + termUrl
-        val intent = RouteManager.getIntent(context, url)
-//        intent.putExtra(OtherMenuFragment.URL_KEY, termUrl)
+        val privacyUrl = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, MOBILE_DOMAIN, PATH_PRIVACY_POLICY)
+        val intent = RouteManager.getIntent(context, privacyUrl)
         context?.startActivity(intent)
     }
 
