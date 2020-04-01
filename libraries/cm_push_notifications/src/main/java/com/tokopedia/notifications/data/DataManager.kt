@@ -62,7 +62,7 @@ class DataManager @Inject constructor(
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(atcSubscriber { tracker(it) })
+                    .subscribe(atcSubscriber(::tracker))
         }
     }
 
