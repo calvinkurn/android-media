@@ -12,14 +12,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class EncoderUtilTest {
-    companion object {
-
-    }
-
-    @Before
-    fun init() {
-
-    }
 
     @Test
     fun testEncodeOnce() {
