@@ -90,7 +90,8 @@
                     android:id="@+id/textMultipleSelect"
                     android:textColor="@color/g_500"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
                     app:typographyType="heading_6"
                     app:typographyWeight="bold"
                     android:text="@string/product_manage_multiple_select" />

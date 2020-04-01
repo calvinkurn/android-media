@@ -1209,8 +1209,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun getFiltersTab(withDelay: Boolean = false) {
-        val selectedFilterTab = tabFilters.selectedFilter
-        viewModel.getFiltersTab(selectedFilterTab, withDelay)
+        viewModel.getFiltersTab(withDelay)
     }
 
     private fun setDialogFeaturedProduct(imageUrl: String, title: String, desc: String, primaryCta: String, secondaryCta: String) {
@@ -1468,7 +1467,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun renderProductCount() {
         val productCount = if(tabFilters.isActive()) {
-            tabFilters.selectedFilter?.count
+            tabFilters.getProductCount()
         } else {
             viewModel.getTotalProductCount()
         }

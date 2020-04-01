@@ -222,7 +222,7 @@ class ProductManageViewModel @Inject constructor(
         }).let { getProductListJob = it }
     }
 
-    fun getFiltersTab(selectedFilterTab: FilterTabViewModel? = null, withDelay: Boolean = false) {
+    fun getFiltersTab(withDelay: Boolean = false) {
         getFilterTabJob?.cancel()
 
         launchCatchError(block = {
@@ -236,7 +236,7 @@ class ProductManageViewModel @Inject constructor(
                 getProductListMetaUseCase.executeOnBackground()
             }
 
-            val result = mapToFilterTabResult(response, selectedFilterTab, filterCount)
+            val result = mapToFilterTabResult(response, filterCount)
             _productFiltersTab.value = Success(result)
         }, onError = {
             if(it is CancellationException) {
