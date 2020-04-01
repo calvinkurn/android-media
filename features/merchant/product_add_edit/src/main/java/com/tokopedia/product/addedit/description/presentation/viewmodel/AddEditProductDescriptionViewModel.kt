@@ -3,27 +3,33 @@ package com.tokopedia.product.addedit.description.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
-import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeResponse
+import com.tokopedia.product.addedit.description.domain.usecase.GetYoutubeVideoUseCase
+import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeVideoModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.lang.reflect.Type
 import javax.inject.Inject
 
 class AddEditProductDescriptionViewModel @Inject constructor(
         coroutineDispatcher: CoroutineDispatcher,
-        private val getProductVariantUseCase: GetProductVariantUseCase
+        private val getProductVariantUseCase: GetProductVariantUseCase,
+        private val getYoutubeVideoUseCase: GetYoutubeVideoUseCase
 ) : BaseViewModel(coroutineDispatcher) {
 
     private val _homeTicker = MutableLiveData<Success<List<ProductVariantByCatModel>>>()
     val homeTicker: LiveData<Success<List<ProductVariantByCatModel>>>
         get() = _homeTicker
 
-    private val _videoYoutube = MutableLiveData<Result<YoutubeResponse>>()
-    val youtubeVideo: LiveData<Result<YoutubeResponse>> = _videoYoutube
+    private val _videoYoutube = MutableLiveData<Result<YoutubeVideoModel>>()
+    val videoYoutube: LiveData<Result<YoutubeVideoModel>> = _videoYoutube
 
     fun getVariants(categoryId: String) {
         launchCatchError(block = {
@@ -39,9 +45,18 @@ class AddEditProductDescriptionViewModel @Inject constructor(
 
     fun getVideoYoutube(videoId: String) {
         launchCatchError( block = {
-
+            getYoutubeVideoUseCase.setVideoId(videoId)
+            val result = withContext(Dispatchers.IO) {
+                convertToYoutubeResponse(getYoutubeVideoUseCase.executeOnBackground())
+            }
+            _videoYoutube.value = Success(result)
         }, onError = {
-
+            _videoYoutube.value = Fail(it)
         })
+    }
+
+    private fun convertToYoutubeResponse(typeRestResponseMap: Map<Type, RestResponse>): YoutubeVideoModel {
+        val restResponse = typeRestResponseMap[YoutubeVideoModel::class.java]
+        return restResponse?.getData() as YoutubeVideoModel
     }
 }

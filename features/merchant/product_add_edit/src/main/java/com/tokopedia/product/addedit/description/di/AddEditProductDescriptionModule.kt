@@ -3,7 +3,6 @@ package com.tokopedia.product.addedit.description.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.product.addedit.description.data.remote.ProductVariantService
-import com.tokopedia.product.addedit.description.data.source.YoutubeVideoApiService
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -34,12 +33,6 @@ class AddEditProductDescriptionModule {
     @Provides
     fun provideTickerService(retrofit: Retrofit): ProductVariantService {
         return retrofit.create(ProductVariantService::class.java)
-    }
-
-    @AddEditProductDescriptionScope
-    @Provides
-    fun provideYoutubeVideoApi(retrofit: Retrofit): YoutubeVideoApiService {
-        return retrofit.create(YoutubeVideoApiService::class.java)
     }
 
 }
