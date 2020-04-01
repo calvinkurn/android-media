@@ -7,10 +7,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:elevation="@dimen/dp_4"
-        android:background="@color/white"
-        android:elevation="@dimen/dp_4">
+        android:background="@color/white">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -18,7 +15,6 @@
             android:layout_height="?actionBarSize"
             app:elevation="0dp"
             android:elevation="0dp"
-            android:theme="?toolbarTheme"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp"

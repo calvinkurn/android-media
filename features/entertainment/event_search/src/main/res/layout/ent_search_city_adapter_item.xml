@@ -12,7 +12,7 @@
         android:id="@+id/imgCity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/city"
+        android:src="@drawable/ent_ic_city_icon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -1,8 +1,8 @@
 package com.tokopedia.entertainment.search.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
-import com.tokopedia.entertainment.search.adapter.viewholder.CategoryTextViewHolder
-import com.tokopedia.entertainment.search.adapter.viewholder.SearchEventGridViewHolder
+import com.tokopedia.entertainment.search.adapter.viewholder.CategoryTextBubbleAdapter
+import com.tokopedia.entertainment.search.adapter.viewholder.EventGridAdapter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 
@@ -48,8 +48,8 @@ class EventCategoryPageTracking {
         val POSITION = "position"
     }
 
-    fun onClickGridViewProduct(event: SearchEventGridViewHolder.EventGrid,
-                               listsEvent: List<SearchEventGridViewHolder.EventGrid>,
+    fun onClickGridViewProduct(event: EventGridAdapter.EventGrid,
+                               listsEvent: List<EventGridAdapter.EventGrid>,
                                position: Int){
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "productClick",
@@ -65,7 +65,7 @@ class EventCategoryPageTracking {
         ))
     }
 
-    private fun getProductGridView(listsEvent: List<SearchEventGridViewHolder.EventGrid>): Any{
+    private fun getProductGridView(listsEvent: List<EventGridAdapter.EventGrid>): Any{
         val list = mutableListOf<Any>()
         listsEvent.forEachIndexed { index, eventGrid ->
             list.add(DataLayer.mapOf(
@@ -82,7 +82,7 @@ class EventCategoryPageTracking {
         return list
     }
 
-    fun onClickCategoryBubble(category: CategoryTextViewHolder.CategoryTextBubble){
+    fun onClickCategoryBubble(category: CategoryTextBubbleAdapter.CategoryTextBubble){
         getTracker().sendGeneralEvent(DataLayer.mapOf(
                 Event.KEY, "clickEvent",
                 Event.CATEGORY, "digital - event",
@@ -91,8 +91,8 @@ class EventCategoryPageTracking {
         ))
     }
 
-    fun impressionGridViewProduct(event: SearchEventGridViewHolder.EventGrid,
-                                  listsEvent: List<SearchEventGridViewHolder.EventGrid>,
+    fun impressionGridViewProduct(event: EventGridAdapter.EventGrid,
+                                  listsEvent: List<EventGridAdapter.EventGrid>,
                                   position: Int){
         getTracker().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 Event.KEY, "productView",

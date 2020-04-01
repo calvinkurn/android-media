@@ -6,11 +6,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.entertainment.search.R
 import com.tokopedia.entertainment.search.adapter.DetailEventItem
-import com.tokopedia.entertainment.search.adapter.viewholder.CategoryTextViewHolder
-import com.tokopedia.entertainment.search.adapter.viewholder.SearchEventGridViewHolder
-import com.tokopedia.entertainment.search.adapter.viewmodel.CategoryTextViewModel
-import com.tokopedia.entertainment.search.adapter.viewmodel.ResetFilterViewModel
-import com.tokopedia.entertainment.search.adapter.viewmodel.SearchEventGridViewModel
+import com.tokopedia.entertainment.search.adapter.viewholder.CategoryTextBubbleAdapter
+import com.tokopedia.entertainment.search.adapter.viewholder.EventGridAdapter
+import com.tokopedia.entertainment.search.data.CategoryModel
 import com.tokopedia.entertainment.search.data.EventDetailResponse
 import com.tokopedia.entertainment.search.data.mapper.DetailMapper
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -22,7 +20,6 @@ import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
@@ -34,31 +31,40 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
         private val TAG = EventDetailViewModel::class.java.simpleName
         private val CATEGORYID = "category_ids"
         private val CITIES = "cities"
+        private val PAGE = "page"
     }
 
     val hashSet = HashSet<String>()
     lateinit var resources: Resources
-    var cityID: String = ""
-    var category : String = ""
+    var cityID = ""
+    var category = ""
     var initCategory = false
+    var categoryModel =  CategoryModel()
+    var page = "1"
 
     val isItRefreshing : MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
-
-    val catLiveData: MutableLiveData<List<DetailEventItem<*>>> by lazy { MutableLiveData<List<DetailEventItem<*>>>() }
-    val eventLiveData : MutableLiveData<List<DetailEventItem<*>>> by lazy { MutableLiveData<List<DetailEventItem<*>>>() }
+    val isItShimmering : MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
+    val showParentView : MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
+    val showResetFilter : MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
     val errorReport : MutableLiveData<String> by lazy { MutableLiveData<String>() }
-    val categoryData : MutableList<CategoryTextViewHolder.CategoryTextBubble> = mutableListOf()
 
-    val categoryList : MutableList<DetailEventItem<*>> = mutableListOf()
-    val eventList : MutableList<DetailEventItem<*>> = mutableListOf()
+    val catLiveData: MutableLiveData<CategoryModel> by lazy { MutableLiveData<CategoryModel>() }
+    val categoryData : MutableList<CategoryTextBubbleAdapter.CategoryTextBubble> = mutableListOf()
+
+    val eventLiveData: MutableLiveData<MutableList<EventGridAdapter.EventGrid>> by lazy { MutableLiveData<MutableList<EventGridAdapter.EventGrid>>() }
 
     fun getData(){
         if(category.isBlank()) hashSet.clear()
 
         launchCatchError(
                  block = {
-                     val eventData : MutableList<SearchEventGridViewHolder.EventGrid> = mutableListOf()
-                     val data = getQueryData(this.cityID, category)
+                     if(page == "1") {
+                         isItShimmering.value = true
+                         showParentView.value = false
+                     }
+                     showResetFilter.value = false
+                     val eventData : MutableList<EventGridAdapter.EventGrid> = mutableListOf()
+                     val data = getQueryData()
                      data.let {
                          it.eventChildCategory.let {
                              if(categoryIsDifferentOrEmpty(it)){
@@ -68,26 +74,38 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
                                          categoryData.add(DetailMapper.mapToCategory(it))
                                      }
                                  }
-                                 categoryList.clear()
-                                 //If there is initial category from the app link, need to pass the hashset to the viewmodel to turn the category green else no
-                                 categoryList.add(CategoryTextViewModel(categoryData, if(initCategory) hashSet else HashSet()))
-                                 catLiveData.value = categoryList
-                                 if(initCategory) initCategory=false
+                                 categoryModel.listCategory = categoryData
+
+                                 if(initCategory) {
+                                     categoryModel.hashSet = hashSet
+                                     categoryData.forEachIndexed{index, it ->
+                                         if(hashSet.contains(it.id)){
+                                             categoryModel.position = index
+                                             return@forEachIndexed
+                                         }
+                                     }
+                                     initCategory=false
+                                 } else {
+                                     categoryModel.hashSet = HashSet()
+                                     categoryModel.position = -1
+                                 }
+
+                                 catLiveData.value = categoryModel
                              }
                          }
 
                          it.eventSearch.let {
-                             eventList.clear()
-                             if(it.products.size  > 0){
+                             if(it.products.isNotEmpty()){
                                  it.products.forEach {
                                      eventData.add(DetailMapper.mapToGrid(it))
                                  }
-                                 eventList.add(SearchEventGridViewModel(eventData))
-                             }else{
-                                 eventList.add(ResetFilterViewModel())
                              }
-                             eventLiveData.value = eventList
+
+                             eventLiveData.value = eventData
                              isItRefreshing.value = false
+                             isItShimmering.value = false
+                             if(eventData.isNotEmpty()) showParentView.value = true
+                             else if(page == "1" && eventData.isEmpty()) showResetFilter.value = true
                          }
                      }
                  },
@@ -115,18 +133,22 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
     }
 
     fun clearFilter(){
+        resetPage()
         hashSet.clear()
         hashToString()
         getData()
     }
 
     fun putCategoryToQuery(id : String){
+        resetPage()
         if(hashSet.contains(id)) hashSet.remove(id)
         else hashSet.add(id)
 
         hashToString()
         getData()
     }
+
+    private fun resetPage() { page = "1" }
 
     private fun hashToString(){
         var stringHash = ""
@@ -141,11 +163,11 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
         this.cityID = cityID
     }
 
-    suspend fun getQueryData(cityID: String, category: String = "") : EventDetailResponse.Data{
+    suspend fun getQueryData() : EventDetailResponse.Data{
         return withContext(Dispatchers.IO){
             val req = GraphqlRequest(
                     GraphqlHelper.loadRawString(resources, R.raw.query_event_search_category),
-                    EventDetailResponse.Data::class.java, mapOf(CATEGORYID to category, CITIES to cityID))
+                    EventDetailResponse.Data::class.java, mapOf(CATEGORYID to category, CITIES to cityID, PAGE to page))
             val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
             gqlRepository.getReseponse(listOf(req), cacheStrategy).getSuccessData<EventDetailResponse.Data>()
         }

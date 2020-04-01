@@ -9,12 +9,15 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
+import com.tokopedia.entertainment.search.Link
 import com.tokopedia.entertainment.search.R
 import com.tokopedia.entertainment.search.di.DaggerEventSearchComponent
 import com.tokopedia.entertainment.search.di.EventSearchComponent
 import com.tokopedia.entertainment.search.fragment.EventCategoryFragment
+import kotlinx.android.synthetic.main.ent_search_activity.*
 import kotlinx.android.synthetic.main.ent_search_detail_activity.*
+import kotlinx.android.synthetic.main.ent_search_detail_activity.txt_search
+import timber.log.Timber
 
 /**
  * Author errysuprayogi on 27,February,2020
@@ -48,7 +51,6 @@ class EventCategoryActivity : BaseSimpleActivity(), HasComponent<EventSearchComp
         txt_search.searchBarIcon.setOnClickListener {
             txt_search.searchBarTextField.text.clear()
             INIT_QUERY_TEXT = ""
-            openSearchActivity()
         }
     }
 
@@ -68,7 +70,7 @@ class EventCategoryActivity : BaseSimpleActivity(), HasComponent<EventSearchComp
     }
 
     private fun openSearchActivity(): Boolean {
-        val intent = RouteManager.getIntent(this, ApplinkConstInternalEntertainment.EVENT_SEARCH + "?query_text={query_text}", getQueryText())
+        val intent = RouteManager.getIntent(this, Link.EVENT_SEARCH + "?query_text={query_text}", getQueryText())
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_NO_ANIMATION
         startActivity(intent)
         return true

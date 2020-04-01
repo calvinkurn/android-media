@@ -1,4 +1,4 @@
-query searchEventCategory($category_ids:String!, $cities:String!){
+query searchEventCategory($category_ids:String!, $cities:String!, $page:String!){
   event_child_category(categoryName: "event", categoryID: 1, verticalID: 3){
     categories{
         id
@@ -11,7 +11,8 @@ query searchEventCategory($category_ids:String!, $cities:String!){
   }
   event_search(searchParams: [
     {key: "category", value: "event"},
-    {key: "page_size", value: "10"},
+    {key: "page", value: $page},
+    {key: "page_size", value: "20"},
     {key: "cities", value: $cities},
     {key: "child_category_ids", value: $category_ids}
   ]) {
