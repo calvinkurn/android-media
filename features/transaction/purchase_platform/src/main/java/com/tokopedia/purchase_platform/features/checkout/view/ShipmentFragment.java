@@ -2955,6 +2955,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         updateLogisticPromoData(promoUiModel);
         if (shipmentAdapter.hasSetAllCourier()) {
             setPromoBenefit(promoUiModel.getBenefitSummaryInfoUiModel().getSummaries());
+            shipmentAdapter.updateShipmentCostModel();
         }
     }
 
