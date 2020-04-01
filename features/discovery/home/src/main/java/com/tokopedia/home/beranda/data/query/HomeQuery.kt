@@ -131,7 +131,7 @@ object HomeQuery{
                 text_color
                 image_url
                 attribution
-
+                gradient_color
               }
             }
           }
