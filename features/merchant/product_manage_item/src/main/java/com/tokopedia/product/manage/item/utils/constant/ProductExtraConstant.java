@@ -26,6 +26,7 @@ public class ProductExtraConstant {
     public static final String EXTRA_IS_ADD = "EXTRA_IS_ADD";
     public static final String SAVED_VARIANT_CHANGE_FROM_RESULT = "sdv_var_chg";
 
-    public static final String EXTRA_VARIANT_CACHE_ID = "variant_cache_id";
+    public static final String EXTRA_VARIANT_RESULT_CACHE_ID = "variant_cache_id";
+    public static final String EXTRA_VARIANT_PICKER_RESULT_CACHE_ID = "variant_result_cache_id";
     public static final String EXTRA_IS_USING_CACHE_MANAGER = "is_using_cache_manager";
 }

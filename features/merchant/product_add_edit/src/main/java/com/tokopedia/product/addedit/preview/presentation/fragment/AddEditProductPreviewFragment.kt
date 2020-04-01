@@ -24,12 +24,17 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
+import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DETAIL_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
 import com.tokopedia.product.addedit.description.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionActivity
 import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionFragment
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_INPUT
+import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity
+import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
+import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.detail.presentation.activity.AddEditProductDetailActivity
 import com.tokopedia.product.addedit.detail.presentation.fragment.AddEditProductDetailFragment.Companion.REQUEST_CODE_DETAIL
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
@@ -209,7 +214,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
                         data.getParcelableExtra<DescriptionInputModel>(EXTRA_DESCRIPTION_INPUT)
                 val detailInputModel =
                         data.getParcelableExtra<DetailInputModel>(EXTRA_DETAIL_INPUT)
-                context?.let { AddEditProductUploadService.startService(it, detailInputModel, descriptionInputModel, shipmentInputModel) }
+                val variantInputModel =
+                        data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
+                context?.let { AddEditProductUploadService.startService(it, detailInputModel,
+                        descriptionInputModel, shipmentInputModel, variantInputModel) }
             }
         }
     }
@@ -219,8 +227,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
+        val baseMainApplication = requireContext().applicationContext as BaseMainApplication
         DaggerAddEditProductPreviewComponent.builder()
-                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+                .addEditProductComponent(AddEditProductComponentBuilder.getComponent(baseMainApplication))
                 .addEditProductPreviewModule(AddEditProductPreviewModule())
                 .build()
                 .inject(this)
