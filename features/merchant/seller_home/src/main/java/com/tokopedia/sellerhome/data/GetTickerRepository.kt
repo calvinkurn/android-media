@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.data
 
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.sellerhome.data.remote.TickerService
 import com.tokopedia.sellerhome.domain.mapper.TickerMapper
 import com.tokopedia.sellerhome.view.model.TickerUiModel
@@ -18,9 +19,11 @@ class GetTickerRepository @Inject constructor(
 
     suspend fun getTicker(): List<TickerUiModel> {
         try {
+            val versionName = "android-${GlobalConfig.VERSION_NAME}"
             val response = service.getTicker(
-                    userSession.userId,
-                    createRequestParams()
+                    userId = userSession.userId,
+                    device = versionName,
+                    requestParams = createRequestParams()
             )
             if (null != response.data?.tickers) {
                 val data = response.data.tickers.orEmpty()
@@ -33,8 +36,8 @@ class GetTickerRepository @Inject constructor(
         }
     }
 
-    private fun createRequestParams(): Map<String, Any> {
-        return mapOf<String, Any>().apply {
+    private fun createRequestParams(): Map<String, String> {
+        return mapOf<String, String>().apply {
             TickerService.PAGE_HEADER_QUERY to TickerService.PAGE_HEADER_VALUE
             TickerService.PAGE_SIZE to TickerService.SIZE
             TickerService.FILTER_DEVICE to TickerService.FILTER_SELLERAPP_ANDROID_DEVICE
