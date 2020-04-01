@@ -1264,8 +1264,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         for (DataCheckoutRequest dataCheckoutRequest : dataCheckoutRequestList) {
             if (dataCheckoutRequest.shopProducts != null && dataCheckoutRequest.shopProducts.size() > 0) {
                 for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
-                    shopProductCheckoutRequest.promoCodes.clear();
-                    shopProductCheckoutRequest.promos.clear();
+                    if (shopProductCheckoutRequest.promoCodes != null) {
+                        shopProductCheckoutRequest.promoCodes.clear();
+                    }
+                    if (shopProductCheckoutRequest.promos != null) {
+                        shopProductCheckoutRequest.promos.clear();
+                    }
                 }
             }
         }
@@ -1634,9 +1638,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     // Clear promo red state before checkout
     @Override
-    public void cancelNotEligiblePromo
-    (ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList,
-     int checkoutType) {
+    public void cancelNotEligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList,
+                                       int checkoutType) {
         setCouponStateChanged(true);
         ArrayList<String> notEligiblePromoCodes = new ArrayList<>();
         for (NotEligiblePromoHolderdata notEligiblePromoHolderdata : notEligiblePromoHolderdataArrayList) {
