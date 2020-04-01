@@ -793,6 +793,14 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         showProductList(productList)
     }
 
+    private fun filterProductListByFeatured() {
+        val productList = adapter.data.filter {
+            it.isFeatured == true
+        }
+        clearAllData()
+        showProductList(productList)
+    }
+
     override fun onSwipeRefresh() {
         isLoadingInitialData = true
         swipeToRefresh.isRefreshing = true
@@ -1017,7 +1025,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         setFeaturedProduct(productManageViewModel.id, ProductManageListConstant.FEATURED_PRODUCT_REMOVE_STATUS)
 
         tabFilters.selectedFilter?.let {
-            filterProductListByStatus(it.status)
+            filterProductListByFeatured()
             renderMultiSelectProduct()
         }
 
