@@ -309,12 +309,10 @@ public class MainParentActivity extends BaseActivity implements
             }
         }
 
-//        if (DFInstaller.isInstalled(this.getApplication(), DeeplinkDFMapper.DFM_ONBOARDING)) {
-//            Intent intent = RouteManager.getIntent(this,
-//                    ApplinkConstInternalMarketplace.ONBOARDING);
-//            startActivity(intent);
-//            finish();
-//        }
+        Intent intent = RouteManager.getIntent(this,
+                ApplinkConstInternalMarketplace.ONBOARDING);
+        startActivity(intent);
+        finish();
     }
 
     private void setDefaultShakeEnable() {
@@ -644,7 +642,7 @@ public class MainParentActivity extends BaseActivity implements
     @NotNull
     private boolean checkAppSignature(){
         if (!((BaseMainApplication) getApplication()).checkAppSignature()) {
-//            finish();
+            finish();
         }
         return true;
     }

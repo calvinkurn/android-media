@@ -457,7 +457,6 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         }
 
 
-
     }
 
     fun setClickEventOnReminder() {
@@ -730,7 +729,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         })
     }
 
-    fun checkInternetOnButtonActionAndRedirect(){
+    fun checkInternetOnButtonActionAndRedirect() {
         if (context != null) {
             var internetAvailable = DeviceConnectionInfo.isInternetAvailable(context!!, checkWifi = true, checkCellular = true)
             if (!internetAvailable) {
