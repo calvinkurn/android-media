@@ -13,7 +13,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataMode
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.synthetic.main.item_dynamic_general_info.view.*
 import kotlinx.android.synthetic.main.partial_product_notify_me.view.*
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -28,6 +27,7 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
     override fun bind(element: ProductNotifyMeDataModel) {
         if (element.campaignID.isNotEmpty()) {
             itemView.layout_notify_me?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            itemView.layout_notify_me?.requestLayout()
             bindTitle(element)
             bindSubTitle(element)
             bindButton(element)
@@ -97,6 +97,8 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
 
     private fun hideContainer() {
         itemView.layout_notify_me?.layoutParams?.height = 0
+        itemView.layout_notify_me?.requestLayout()
+
     }
 
     private fun bindButton(data: ProductNotifyMeDataModel) {
