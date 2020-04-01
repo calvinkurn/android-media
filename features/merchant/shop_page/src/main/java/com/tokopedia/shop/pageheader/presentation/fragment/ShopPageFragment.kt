@@ -730,6 +730,7 @@ class ShopPageFragment :
             }
         } else if (requestCode == REQUEST_CODE_USER_LOGIN_CART) {
             if (resultCode == Activity.RESULT_OK) {
+                refreshData()
                 goToCart()
             }
         }
@@ -753,7 +754,7 @@ class ShopPageFragment :
         }
     }
 
-    private fun refreshData() {
+    fun refreshData() {
         val f: Fragment? = viewPagerAdapter.getRegisteredFragment(if (isOfficialStore) TAB_POSITION_HOME + 1 else TAB_POSITION_HOME)
         if (f != null && f is ShopPageProductListFragment) {
             f.clearCache()

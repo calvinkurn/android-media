@@ -496,6 +496,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             REQUEST_CODE_MEMBERSHIP_STAMP -> {
                 loadMembership()
             }
+            REQUEST_CODE_USER_LOGIN -> {
+                (parentFragment as? ShopPageFragment)?.refreshData()
+            }
             else -> {
             }
         }
@@ -722,12 +725,14 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun onErrorAddToWishList(e: Throwable) {
-        activity?.let {
+        context?.let{
             if (!viewModel.isLogin || e is UserNotLoginException) {
                 val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
                 startActivityForResult(intent, REQUEST_CODE_USER_LOGIN)
                 return
             }
+        }
+        activity?.let {
             NetworkErrorHelper.showCloseSnackbar(it, ErrorHandler.getErrorMessage(it, e))
         }
     }
