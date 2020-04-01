@@ -13,12 +13,18 @@ import com.tokopedia.analytics.performance.util.PerformanceData
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
 import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
+import java.io.File
 
-class InstrumentationHomeTestActivity : AppCompatActivity(), MainParentStatusBarListener, JankyFrameMonitoringUtil.OnFrameListener, JankyFramesMonitoringListener {
+class InstrumentationHomeTestActivity : AppCompatActivity(),
+        MainParentStatusBarListener,
+        JankyFrameMonitoringUtil.OnFrameListener,
+        JankyFramesMonitoringListener,
+        EspressoPerformanceActivity {
     override fun getMainJankyFrameMonitoringUtil(): JankyFrameMonitoringUtil? {
         return jankyFramePerformanceUtil
     }
 
+    private var performanceData: PerformanceData? = null
     private var jankyFramePerformanceUtil: JankyFrameMonitoringUtil? = null
 
     override fun requestStatusBarDark() {
@@ -54,27 +60,6 @@ class InstrumentationHomeTestActivity : AppCompatActivity(), MainParentStatusBar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_instrumentation_home_test)
-//        val currentRelativePath = Paths.get("")
-//        val s = currentRelativePath.toAbsolutePath().toString()
-//        println("Current relative path is: $s")
-//
-//        val classLoader = javaClass.classLoader
-//        val t = classLoader.getResource("InstrumentationHomeTestActivity.kt")
-//        println("Classloader name is: $t")
-//
-//        try {
-//            val myObj = File("/Users/nakama/Documents/TokoRepo/android-tokopedia-core/features/discovery/home/src/androidTest/java/com/tokopedia/home/devara.txt")
-//            if (myObj.createNewFile()) {
-//                System.out.println("File created: " + myObj.getName())
-//            } else {
-//                println("File already exists.")
-//            }
-//        } catch (e: IOException) {
-//            println("An error occurred.")
-//            e.printStackTrace()
-//        }
-//
-
         jankyFramePerformanceUtil = TestJankyFrameMonitoringUtil()
         jankyFramePerformanceUtil?.init(this, this)
 
@@ -93,13 +78,10 @@ class InstrumentationHomeTestActivity : AppCompatActivity(), MainParentStatusBar
         Log.d("HomeTestIntrumentedTest", "jankyPercentage: "+performanceData.jankyFramePercentage)
         Log.d("HomeTestIntrumentedTest", "Index Performance: "+(100 - performanceData.jankyFramePercentage))
         Log.d("HomeTestIntrumentedTest", "------------------------------")
+        this.performanceData = performanceData
     }
 
-    override fun onBackPressed() {
-        finish()
-    }
-
-    override fun onResume() {
-        super.onResume()
+    override fun getPerformanceResultData(): PerformanceData? {
+        return performanceData
     }
 }

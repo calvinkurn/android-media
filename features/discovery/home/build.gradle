@@ -183,7 +183,6 @@ dependencies {
     androidTestImplementation project(rootProject.ext.libraries.core_legacy)
     androidTestImplementation 'junit:junit:4.12'
     androidTestImplementation project(rootProject.ext.libraries.commonNetwork)
-    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.network
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.authentication
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)

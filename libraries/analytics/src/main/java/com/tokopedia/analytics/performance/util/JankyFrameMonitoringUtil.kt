@@ -156,6 +156,7 @@ open class JankyFrameMonitoringUtil {
                     if (totalDurationMs > DEFAULT_WARNING_LEVEL_MS) {
                         mainPerformanceData.incremenetJankyFrames()
                     }
+                    onFrameListener?.onFrameRendered(mainPerformanceData)
                 }
             }
             onFrameMetricAvailableListener?.let {

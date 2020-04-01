@@ -56,15 +56,19 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
         GraphqlClient.init(this);
         if (GlobalConfig.DEBUG) {
             HashMap<String, String> responseList = new HashMap<>();
-            responseList.put("dynamicHomeChannel", getHomeGqlMockResponse());
+            responseList.put("dynamicHomeChannel", getRawString(R.raw.response_mock_data_dynamic_home_channel));
+            responseList.put("widget_tab", getRawString(R.raw.response_mock_data_home_widget_tab));
+            responseList.put("widget_grid", getRawString(R.raw.response_mock_data_home_widget_grid));
+            responseList.put("suggestedProductReview", getRawString(R.raw.response_mock_data_suggested_review));
+            responseList.put("playGetLiveDynamicChannels", getRawString(R.raw.response_mock_data_play_widget));
             GraphqlClient.addTestInterceptor(responseList, this);
         }
         com.tokopedia.config.GlobalConfig.DEBUG = true;
         super.onCreate();
     }
 
-    private String getHomeGqlMockResponse() {
-        InputStream rawResource = this.getResources().openRawResource(R.raw.home_response_mock_data);
+    private String getRawString(int res) {
+        InputStream rawResource = this.getResources().openRawResource(res);
         String content = streamToString(rawResource);
         try {
             rawResource.close();
