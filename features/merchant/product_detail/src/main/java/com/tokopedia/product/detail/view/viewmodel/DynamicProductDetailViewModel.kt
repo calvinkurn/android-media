@@ -135,8 +135,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val addToCartLiveData: LiveData<Result<AddToCartDataModel>>
         get() = _addToCartLiveData
 
-    private val _initialVariantData = MutableLiveData<List<VariantCategory>>()
-    val initialVariantData: LiveData<List<VariantCategory>>
+    private val _initialVariantData = MutableLiveData<List<VariantCategory>?>()
+    val initialVariantData: LiveData<List<VariantCategory>?>
         get() = _initialVariantData
 
     private val _onVariantClickedData = MutableLiveData<List<VariantCategory>?>()

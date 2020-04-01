@@ -14,4 +14,6 @@
     <color name="bg_countdown_red">#fd412b</color>
     <color name="bg_notify_me">#4c03ac0e</color>
 
+    <color name="gray_text_color">#f531353b</color>
+
 </resources>
