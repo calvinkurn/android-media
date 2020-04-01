@@ -12,16 +12,15 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.DeeplinkDFMapper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.dynamicfeatures.DFInstaller
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
 import com.tokopedia.onboarding.common.IOnBackPressed
+import com.tokopedia.onboarding.common.OnboardingIoDispatcher
 import com.tokopedia.onboarding.data.OnboardingScreenItem
 import com.tokopedia.onboarding.di.OnboardingComponent
 import com.tokopedia.onboarding.view.adapter.OnboardingViewPagerAdapter
@@ -34,13 +33,14 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
-import com.tokopedia.weaver.WeaverFirebaseConditionCheck
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.NotNull
 import java.util.*
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 
 /**
@@ -48,7 +48,7 @@ import javax.inject.Inject
  * ade.hadian@tokopedia.com
  */
 
-class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
+class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed {
 
     private lateinit var screenViewpager: ViewPager
     private lateinit var skipAction: Typography
@@ -58,12 +58,22 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
 
     private var abTestVariant = ""
 
+    private val job = SupervisorJob()
+
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var onboardingAnalytics: OnboardingAnalytics
+
     @Inject
     lateinit var remoteConfig: RemoteConfig
+
+    @Inject
+    lateinit var dispatcher: OnboardingIoDispatcher
+
+    override val coroutineContext: CoroutineContext
+        get() = job + dispatcher.main
 
     private lateinit var onboardingViewPagerAdapter: OnboardingViewPagerAdapter
     private lateinit var sharedPrefs: SharedPreferences
@@ -93,8 +103,8 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
     }
 
     @NotNull
-    private fun executeViewCreateFlow() : Boolean {
-        GlobalScope.launch(Dispatchers.Main) {
+    private fun executeViewCreateFlow(): Boolean {
+        GlobalScope.launch(coroutineContext) {
             initAbTesting()
             trackPreinstall()
             initView()
@@ -134,7 +144,7 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             onboardingViewPagerAdapter = OnboardingViewPagerAdapter(it, listItem)
             if (::screenViewpager.isInitialized) {
                 screenViewpager.adapter = onboardingViewPagerAdapter
-                if(onboardingViewPagerAdapter.count > 1)
+                if (onboardingViewPagerAdapter.count > 1)
                     screenViewpager.offscreenPageLimit = onboardingViewPagerAdapter.count - 1
             }
             tabIndicator.setupWithViewPager(screenViewpager)
@@ -219,7 +229,7 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             context?.let {
                 onboardingAnalytics.eventOnboardingSkip(screenViewpager.currentItem)
                 val intent = if (TextUtils.isEmpty(TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)) {
-                    when(abTestVariant) {
+                    when (abTestVariant) {
                         ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_REGISTER -> RouteManager.getIntent(it, ApplinkConst.OFFICIAL_STORE)
                         else -> RouteManager.getIntent(it, ApplinkConst.HOME)
                     }
