@@ -13,12 +13,12 @@
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
+        android:text="Toko: "
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_header"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        android:text="Toko: " />
+        app:typographyWeight="reguler" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_shop_name"
@@ -32,12 +32,24 @@
         android:ellipsize="end"
         android:lines="1"
         android:textColor="@color/Neutral_N700_96"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/label_error"
         app:layout_constraintStart_toEndOf="@+id/tv_shop"
         app:layout_constraintTop_toBottomOf="@+id/tv_header"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="Toko Sepeda A" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/label_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:visibility="gone"
+        app:labelType="general_dark_red"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_shop_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:labelTitle="Toko Tutup" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_shop_location"
@@ -100,19 +112,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_8"
-        app:layout_constraintTop_toTopOf="@id/tv_product_price"
-        app:layout_constraintStart_toEndOf="@id/tv_product_price"
         app:layout_constraintBottom_toBottomOf="@id/tv_product_price"
-        tools:src="@drawable/ic_close_default"/>
+        app:layout_constraintStart_toEndOf="@id/tv_product_price"
+        app:layout_constraintTop_toTopOf="@id/tv_product_price"
+        tools:src="@drawable/ic_close_default" />
 
-<!--    <androidx.recyclerview.widget.RecyclerView-->
-<!--        android:id="@+id/rv_product_variant"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="@dimen/dp_16"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="@+id/iv_product_image"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/tv_product_price" />-->
+    <!--    <androidx.recyclerview.widget.RecyclerView-->
+    <!--        android:id="@+id/rv_product_variant"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="@dimen/dp_16"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="@+id/iv_product_image"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/tv_product_price" />-->
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_quantity_stock_available"

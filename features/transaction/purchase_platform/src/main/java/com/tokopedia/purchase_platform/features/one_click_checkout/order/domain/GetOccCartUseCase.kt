@@ -39,6 +39,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
                 val orderShop = generateOrderShop(cart.shop)
                 generateShopShipment(orderShop, cart.shop.shopShipments)
                 orderShop.cartResponse = cart
+                orderShop.errors = cart.errors
                 orderCart.shop = orderShop
                 orderCart.kero = Kero(response.response.data.keroToken, response.response.data.keroDiscomToken, response.response.data.keroUnixTime)
                 val promo = response.response.data.promo

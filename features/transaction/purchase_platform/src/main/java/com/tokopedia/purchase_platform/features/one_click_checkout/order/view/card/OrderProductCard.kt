@@ -189,6 +189,13 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     fun setShop(orderShop: OrderShop) {
         view.tv_shop_name.text = orderShop.shopName
         view.tv_shop_location.text = orderShop.cityName
+        val error = orderShop.errors.firstOrNull()
+        if (error?.isNotEmpty() == true) {
+            view.label_error.setLabel(error)
+            view.label_error.visible()
+        } else {
+            view.label_error.gone()
+        }
 
         this.shop = orderShop
     }

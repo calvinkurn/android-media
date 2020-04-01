@@ -8,7 +8,8 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.Pr
 data class OrderCart(
         var product: OrderProduct = OrderProduct(),
         var shop: OrderShop = OrderShop(),
-        var kero: Kero = Kero()
+        var kero: Kero = Kero(),
+        var errors: List<String> = emptyList()
 )
 
 data class Kero(
@@ -40,7 +41,8 @@ data class OrderShop(
         var cityId: Int = 0,
         var cityName: String = "",
         var shopShipment: List<ShopShipment> = emptyList(),
-        var cartResponse: CartDataResponse = CartDataResponse()
+        var cartResponse: CartDataResponse = CartDataResponse(),
+        var errors: List<String> = emptyList()
 )
 
 data class OrderProduct(

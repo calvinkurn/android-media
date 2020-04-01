@@ -414,7 +414,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                     if (shipping?.serviceErrorMessage.isNullOrEmpty()) {
                                         validateUsePromo()
                                     } else {
-                                        orderTotal.value = orderTotal.value?.copy(buttonState = if (shipping?.serviceErrorMessage.isNullOrEmpty() && orderProduct.quantity?.isStateError == false) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
+                                        orderTotal.value = orderTotal.value?.copy(buttonState = if (shipping?.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && orderProduct.quantity?.isStateError == false) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
                                     }
                                     if (!hasSentViewOspEe) {
                                         orderSummaryAnalytics.eventViewOrderSummaryPage(generateOspEe(1, "order summary page loaded"))
@@ -525,7 +525,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     ?: "", validateUsePromoRevampUiModel?.promoUiModel?.benefitSummaryInfoUiModel?.finalBenefitAmount
                     ?: 0)
             var currentState = orderTotal.value?.buttonState ?: ButtonBayarState.NORMAL
-            if (currentState == ButtonBayarState.NORMAL && quantity.isStateError) {
+            if (currentState == ButtonBayarState.NORMAL && quantity.isStateError && orderShop.errors.isNotEmpty()) {
                 currentState = ButtonBayarState.DISABLE
             }
             if (minimumAmount > subtotal) {
@@ -701,7 +701,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             if (shipping1.serviceErrorMessage.isNullOrEmpty()) {
                 validateUsePromo()
             } else {
-                orderTotal.value = orderTotal.value?.copy(buttonState = if (shipping1.serviceErrorMessage.isNullOrEmpty() && orderProduct.quantity?.isStateError == false) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
+                orderTotal.value = orderTotal.value?.copy(buttonState = if (shipping1.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && orderProduct.quantity?.isStateError == false) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
             }
             calculateTotal()
         }
@@ -1249,7 +1249,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     override fun onNext(t: ValidateUsePromoRevampUiModel) {
                         validateUsePromoRevampUiModel = t
                         updatePromoState(t.promoUiModel)
-                        orderTotal.value = orderTotal.value?.copy(buttonState = if (_orderPreference?.shipping?.serviceErrorMessage.isNullOrEmpty() && orderProduct.quantity?.isStateError == false) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
+                        orderTotal.value = orderTotal.value?.copy(buttonState = if (_orderPreference?.shipping?.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && orderProduct.quantity?.isStateError == false) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
                     }
 
                     override fun onCompleted() {
