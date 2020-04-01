@@ -141,7 +141,6 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     isParentEnabled = parentEnabled
                     isSelected = couponItem.isSelected
                     isAttempted = couponItem.isAttempted
-                    isAlreadyApplied = couponItem.isSelected
                     isCausingOtherPromoClash = false
                 }
         )
