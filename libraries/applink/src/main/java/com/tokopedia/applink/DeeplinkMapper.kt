@@ -60,6 +60,7 @@ object DeeplinkMapper {
                 }
             }
             deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH, true) -> {
+                val uri = Uri.parse(deeplink)
                 val query = Uri.parse(deeplink).query
                 var tempDeeplink = when {
                     deeplink.startsWith(ApplinkConst.QRSCAN, true) -> ApplinkConstInternalMarketplace.QR_SCANNEER
@@ -111,11 +112,11 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.TALK, true) -> getRegisteredNavigationTalk(deeplink)
                     isProductTalkDeeplink(deeplink) -> getRegisteredNavigationProductTalk(deeplink)
                     isShopTalkDeeplink(deeplink) -> getRegisteredNavigationShopTalk(deeplink)
-                    DeeplinkMapperMerchant.isShopPageDeeplink(deeplink) -> DeeplinkMapperMerchant.getShopPageInternalApplink(deeplink)
-                    DeeplinkMapperMerchant.isShopPageHomeDeeplink(deeplink) -> DeeplinkMapperMerchant.getShopPageHomeInternalApplink(deeplink)
-                    DeeplinkMapperMerchant.isShopPageInfoDeeplink(deeplink) -> DeeplinkMapperMerchant.getShopPageInfoInternalApplink(deeplink)
-                    DeeplinkMapperMerchant.isShopPageNoteDeeplink(deeplink) -> DeeplinkMapperMerchant.getShopPageInfoInternalApplink(deeplink)
-                    DeeplinkMapperMerchant.isShopPageResultEtalaseDeepLink(deeplink) -> DeeplinkMapperMerchant.getShopPageResultEtalaseInternalAppLink(deeplink)
+                    DeeplinkMapperMerchant.isShopPageDeeplink(uri) -> DeeplinkMapperMerchant.getShopPageInternalApplink(uri)
+                    DeeplinkMapperMerchant.isShopPageHomeDeeplink(uri) -> DeeplinkMapperMerchant.getShopPageHomeInternalApplink(uri)
+                    DeeplinkMapperMerchant.isShopPageInfoDeeplink(uri) -> DeeplinkMapperMerchant.getShopPageInfoInternalApplink(uri)
+                    DeeplinkMapperMerchant.isShopPageNoteDeeplink(uri) -> DeeplinkMapperMerchant.getShopPageInfoInternalApplink(uri)
+                    DeeplinkMapperMerchant.isShopPageResultEtalaseDeepLink(uri) -> DeeplinkMapperMerchant.getShopPageResultEtalaseInternalAppLink(uri)
                     else -> {
                         if (specialNavigationMapper(deeplink, ApplinkConst.HOST_CATEGORY_P)) {
                             getRegisteredCategoryNavigation(getSegments(deeplink), deeplink)
