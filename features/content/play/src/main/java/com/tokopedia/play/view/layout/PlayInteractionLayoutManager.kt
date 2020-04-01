@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.layout
 
+import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -35,7 +36,7 @@ class PlayInteractionLayoutManager(
         layoutToolbar(id = toolbarComponentId, sizeContainerComponentId = sizeContainerComponentId)
         layoutVideoControl(id = videoControlComponentId, sizeContainerComponentId = sizeContainerComponentId, likeComponentId = likeComponentId)
         layoutLike(id = likeComponentId, videoControlComponentId = videoControlComponentId, sizeContainerComponentId = sizeContainerComponentId)
-        layoutChat(id = sendChatComponentId, likeComponentId = likeComponentId, toolbarComponentId = toolbarComponentId, videoControlComponentId = videoControlComponentId)
+        layoutChat(id = sendChatComponentId, likeComponentId = likeComponentId, sizeContainerComponentId = sizeContainerComponentId, videoControlComponentId = videoControlComponentId)
         layoutChatList(id = chatListComponentId, quickReplyComponentId = quickReplyComponentId, likeComponentId = likeComponentId, toolbarComponentId = toolbarComponentId)
         layoutPinned(id = pinnedComponentId, chatListComponentId = chatListComponentId, likeComponentId = likeComponentId, toolbarComponentId = toolbarComponentId)
         layoutPlayButton(id = playButtonComponentId)
@@ -55,9 +56,9 @@ class PlayInteractionLayoutManager(
         }
     }
 
-    private fun layoutChat(@IdRes id: Int, @IdRes likeComponentId: Int, @IdRes toolbarComponentId: Int, @IdRes videoControlComponentId: Int) {
+    private fun layoutChat(@IdRes id: Int, @IdRes likeComponentId: Int, @IdRes sizeContainerComponentId: Int, @IdRes videoControlComponentId: Int) {
         changeConstraint {
-            connect(id, ConstraintSet.START, toolbarComponentId, ConstraintSet.START)
+            connect(id, ConstraintSet.START, sizeContainerComponentId, ConstraintSet.START, offset16)
             connect(id, ConstraintSet.END, likeComponentId, ConstraintSet.START, offset8)
             connect(id, ConstraintSet.BOTTOM, videoControlComponentId, ConstraintSet.TOP)
         }
