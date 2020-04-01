@@ -72,6 +72,7 @@ class TravelHomepageMapper {
             sectionItem.prefix = item.prefix
             sectionItem.prefixStyling = item.prefixStyle
             sectionItem.value = item.value
+            sectionItem.appUrl = item.appUrl
             sectionItem.imageUrl = item.imageUrl
             sectionItem.product = item.product
 

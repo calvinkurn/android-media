@@ -59,14 +59,14 @@ class PartialSnapshotView(private val view: View,
             sale_text_stock_available.gone()
         }
 
-        renderStockAvailable(campaign, data.variant.isVariant, data.stock.getFinalStockWording(nearestWarehouseStockWording))
+        renderStockAvailable(campaign, data.variant.isVariant, data.stock.getFinalStockWording(nearestWarehouseStockWording), basic.isActive())
         label_prescription.showWithCondition(basic.needPrescription)
         divider.show()
     }
 
-    private fun renderStockAvailable(campaign: CampaignModular, isVariant: Boolean, stockWording: String) = with(view) {
+    private fun renderStockAvailable(campaign: CampaignModular, isVariant: Boolean, stockWording: String, isProductActive: Boolean) = with(view) {
         text_stock_available.text = MethodChecker.fromHtml(stockWording)
-        text_stock_available.showWithCondition(!campaign.activeAndHasId && !isVariant && stockWording.isNotEmpty())
+        text_stock_available.showWithCondition(!campaign.activeAndHasId && !isVariant && stockWording.isNotEmpty() && isProductActive)
     }
 
     private fun hideGimmick(campaign: CampaignModular) = with(view) {

@@ -26,8 +26,9 @@ class DynamicChannelViewModel : HomeVisitable {
 
     override fun equalsWith(b: Any?): Boolean {
         if (b is DynamicChannelViewModel) {
-            if (channel?.grids?.size != b.channel?.grids?.size?:0) return false
-            if(channel?.layout ?: "" != b.channel?.layout ?: "") return false
+            if (isExpiredTimeChanged(b)) return false
+            if (isGridSizeChanged(b)) return false
+            if (isLayoutChanged(b)) return false
             channel?.grids?.let {
                 it.forEachIndexed {position, grid->
                     b.channel?.grids?.let {newGrid->
@@ -39,6 +40,18 @@ class DynamicChannelViewModel : HomeVisitable {
                         && channel?.banner == b.channel?.banner
             }
         }
+        return false
+    }
+
+    private fun isLayoutChanged(b: DynamicChannelViewModel) =
+            channel?.layout ?: "" != b.channel?.layout ?: ""
+
+    private fun isGridSizeChanged(b: DynamicChannelViewModel) =
+            channel?.grids?.size != b.channel?.grids?.size ?: 0
+
+    private fun isExpiredTimeChanged(b: DynamicChannelViewModel): Boolean {
+        if (channel?.header?.expiredTime?.isNotEmpty() == true && channel?.header?.expiredTime != b.channel?.header?.expiredTime)
+            return true
         return false
     }
 
