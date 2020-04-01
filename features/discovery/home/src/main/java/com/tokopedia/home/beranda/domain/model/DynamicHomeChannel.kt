@@ -634,7 +634,7 @@ data class DynamicHomeChannel(
             val isOutOfStock: Boolean = false,
             @Expose
             @SerializedName("labelGroup")
-            val labelGroup: LabelGroup = LabelGroup()
+            val labelGroup: Array<LabelGroup> = arrayOf()
     )
 
     data class Header(

@@ -231,11 +231,14 @@ class MixTopBannerViewHolder(
                             stockBarLabel = element.label,
                             isTopAds = element.isTopads,
                             stockBarPercentage = element.soldPercentage,
-                            labelGroupList = listOf(ProductCardFlashSaleModel.LabelGroup(
-                                    position = element.labelGroup.position,
-                                    type = element.labelGroup.type,
-                                    title = element.labelGroup.title
-                            ))
+                            labelGroupList = element.labelGroup.map {
+                                ProductCardFlashSaleModel.LabelGroup(
+                                        position = it.position,
+                                        title = it.title,
+                                        type = it.type
+                                )
+                            },
+                            isOutOfStock = element.isOutOfStock
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
