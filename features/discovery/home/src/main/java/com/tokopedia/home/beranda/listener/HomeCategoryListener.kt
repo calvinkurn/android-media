@@ -3,11 +3,14 @@ package com.tokopedia.home.beranda.listener
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analytics.performance.util.JankyFrameMonitoringUtil
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
+import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReviewResponse
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 import java.util.HashMap
@@ -43,6 +46,10 @@ interface HomeCategoryListener {
     fun openShop()
 
     fun onOpenPlayChannelList(appLink: String)
+
+    fun onPlayChannelImpressed(channel: DynamicHomeChannel.Channels, model: PlayCardViewModel, position: Int)
+
+    fun onReviewItemListener(reviewData: SuggestedProductReviewResponse, position: Int, orderId: String, productId: String)
 
     fun onOpenPlayActivity(root: android.view.View, channelId: String?)
 

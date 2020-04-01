@@ -95,22 +95,22 @@ data class PlayCardViewModel(
 
     }
 
-    val enhanceImpressionPlayBanner: Map<String, Any>
-        get() {
-            val list: List<Any> = convertPromoEnhancePlayBanner(playCardHome)
-            return DataLayer.mapOf(
-                    "event", "promoView",
-                    "eventCategory", "homepage-cmp",
-                    "eventAction", "impression on play dynamic banner",
-                    "eventLabel", "Play-CMP_OTHERS_${playCardHome?.slug} - ${playCardHome?.channelId} - ${getLiveOrVod(playCardHome?.videoStream?.isLive)}",
-                    "ecommerce", DataLayer.mapOf(
-                    "promoView", DataLayer.mapOf(
-                    "promotions", DataLayer.listOf(
-                    *list.toTypedArray()
-            )
-            )
-            )
-            )
+
+    fun getEnhanceImpressionPlayBanner(isToIris: Boolean = false): Map<String, Any> {
+        val list: List<Any> = convertPromoEnhancePlayBanner(playCardHome)
+        return DataLayer.mapOf(
+                "event", if (isToIris) "promoViewIris" else "promoView",
+                "eventCategory", "homepage-cmp",
+                "eventAction", "impression on play dynamic banner",
+                "eventLabel", "Play-CMP_OTHERS_${playCardHome?.slug} - ${playCardHome?.channelId} - ${getLiveOrVod(playCardHome?.videoStream?.isLive)}",
+                "ecommerce", DataLayer.mapOf(
+                "promoView", DataLayer.mapOf(
+                "promotions", DataLayer.listOf(
+                *list.toTypedArray()
+        )
+        )
+        )
+        )
     }
 
     private fun getLiveOrVod(isLive: Boolean?): String {

@@ -60,6 +60,11 @@ class ReviewViewHolder(
                             element.suggestedProductReview.suggestedProductReview.orderId,
                             element.suggestedProductReview.suggestedProductReview.productId
                     )
+                    categoryListener.onReviewItemListener(
+                            element.suggestedProductReview.suggestedProductReview,
+                            adapterPosition,
+                            element.suggestedProductReview.suggestedProductReview.orderId,
+                            element.suggestedProductReview.suggestedProductReview.productId)
                 }
             })
 

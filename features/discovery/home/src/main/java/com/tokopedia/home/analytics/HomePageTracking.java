@@ -1193,7 +1193,11 @@ public class HomePageTracking {
     }
 
     public static void eventEnhanceImpressionPlayBanner(TrackingQueue trackingQueue, PlayCardViewModel playCardViewModel) {
-        trackingQueue.putEETracking((HashMap<String, Object>) playCardViewModel.getEnhanceImpressionPlayBanner());
+        trackingQueue.putEETracking((HashMap<String, Object>) playCardViewModel.getEnhanceImpressionPlayBanner(false));
+    }
+
+    public static HashMap<String, Object> eventEnhanceImpressionIrisPlayBanner(PlayCardViewModel playCardViewModel) {
+        return  (HashMap<String, Object>) playCardViewModel.getEnhanceImpressionPlayBanner(true);
     }
 
     public static void eventClickPlayBanner(PlayCardViewModel playCardViewModel) {
@@ -1751,6 +1755,22 @@ public class HomePageTracking {
             String orderId,
             String productId
     ) {
+        trackingQueue.putEETracking(getHomeReviewImpression(reviewData, position, orderId, productId, false));
+    }
+
+    public static HashMap<String, Object>  getHomeReviewImpressionIris(
+            SuggestedProductReviewResponse reviewData,
+            int position,
+            String orderId,
+            String productId) {
+        return getHomeReviewImpression(reviewData, position, orderId, productId, true);
+    }
+
+    private static HashMap<String, Object> getHomeReviewImpression(SuggestedProductReviewResponse reviewData,
+                                                                   int position,
+                                                                   String orderId,
+                                                                   String productId,
+                                                                  boolean isToIris) {
         List<Object> promotionBody = DataLayer.listOf(DataLayer.mapOf(
                 "id", orderId + " - " + productId,
                 "name", "product review notification - " + orderId + " - " + productId,
@@ -1761,19 +1781,18 @@ public class HomePageTracking {
                 "promo_id", null,
                 "promo_code", null
         ));
-
-
-        trackingQueue.putEETracking((HashMap<String, Object>) DataLayer.mapOf(
-                EVENT, "promoView",
+        return (HashMap<String, Object>) DataLayer.mapOf(
+                EVENT, isToIris? "promoViewIris" : "promoView",
                 EVENT_CATEGORY, "homepage-pdp",
                 EVENT_ACTION, "view - product review notification",
                 EVENT_LABEL, orderId + " - " + productId,
                 ECOMMERCE, DataLayer.mapOf(
-                    "promoView", DataLayer.mapOf(
-                        "promotions", promotionBody
+                        "promoView", DataLayer.mapOf(
+                                "promotions", promotionBody
+                        )
                 )
-            )
-        ));
+        );
+
     }
 
     public static void homeReviewOnCloseTracker(String orderId, String productId) {

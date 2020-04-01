@@ -69,6 +69,7 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.HomeFlag;
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
+import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReviewResponse;
 import com.tokopedia.home.beranda.helper.Result;
 import com.tokopedia.home.beranda.helper.ViewHelper;
 import com.tokopedia.home.beranda.listener.ActivityStateListener;
@@ -78,6 +79,7 @@ import com.tokopedia.home.beranda.listener.HomeFeedsListener;
 import com.tokopedia.home.beranda.listener.HomeInspirationListener;
 import com.tokopedia.home.beranda.listener.HomeReviewListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel;
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
@@ -1487,6 +1489,16 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     @Override
+    public void onReviewItemListener(@NotNull SuggestedProductReviewResponse reviewData, int position, @NotNull String orderId, @NotNull String productId) {
+        putEEToIris(HomePageTracking.getHomeReviewImpressionIris(reviewData, position, orderId, productId));
+    }
+
+    @Override
+    public void onPlayChannelImpressed(@NotNull DynamicHomeChannel.Channels channel, @NotNull PlayCardViewModel model, int position) {
+        putEEToIris(HomePageTracking.eventEnhanceImpressionIrisPlayBanner(model));
+    }
+
+    @Override
     public void onPopularKeywordSectionReloadClicked(int position, @NotNull DynamicHomeChannel.Channels channel) {
         viewModel.getPopularKeywordData();
         HomePageTrackingV2.PopularKeyword.INSTANCE.sendPopularKeywordClickReload(channel);
@@ -1494,7 +1506,8 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     @Override
     public void onPopularKeywordItemImpressed(@NotNull DynamicHomeChannel.Channels channel, int position, @NotNull String keyword) {
-        trackingQueue.putEETracking((HashMap<String, Object>) HomePageTrackingV2.PopularKeyword.INSTANCE.getPopularKeywordImpressionItem(channel, position, keyword));
+        trackingQueue.putEETracking((HashMap<String, Object>) HomePageTrackingV2.PopularKeyword.INSTANCE.getPopularKeywordImpressionItem(channel, position, keyword, false));
+        putEEToIris((HashMap<String, Object>) HomePageTrackingV2.PopularKeyword.INSTANCE.getPopularKeywordImpressionItem(channel, position, keyword, true));
     }
 
     @Override
