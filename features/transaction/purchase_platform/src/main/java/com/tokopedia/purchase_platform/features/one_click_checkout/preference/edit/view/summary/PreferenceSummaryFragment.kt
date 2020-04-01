@@ -289,7 +289,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             val profileId = parent.profileId
             if (arguments?.getBoolean(ARG_IS_EDIT) == true && profileId > -1) {
                 if(parent.should_show_delete_button) {
-                    parent.showDeleteButton()
+                    parent.hideDeleteButton()
                     parent.setDeleteButtonOnClickListener {
                         preferenceListAnalytics.eventClickTrashBinInEditPreference()
                         context?.let {
@@ -312,7 +312,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                         }
                     }
                 } else {
-                    parent.hideDeleteButton()
+                    parent.showDeleteButton()
                 }
 
                 parent.setHeaderTitle(getString(R.string.lbl_summary_preference_with_number_title) + " " + parent.preferenceIndex)

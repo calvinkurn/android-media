@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.preference.l
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -239,6 +240,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
     }
 
     override fun onPreferenceEditClicked(preference: ProfilesItemModel, position: Int, profileSize: Int) {
+        Log.d("jumlah_profile_preference", profileSize.toString())
         preferencelistAnalytics.eventClickSettingPreferenceGearInPreferenceListPage()
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
         intent.apply {

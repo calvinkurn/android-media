@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -609,6 +610,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         override fun onPreferenceEditClicked(preference: OrderPreference) {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
             intent.apply {
+                putExtra(PreferenceEditActivity.EXTRA_SHOW_DELETE_BUTTON, false)
                 putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, preference.profileIndex)
                 putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.preference.profileId)
                 putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.preference.address.addressId)
@@ -635,6 +637,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         }
 
                         override fun onEditPreference(preference: ProfilesItemModel, position: Int, profileSize: Int) {
+                            Log.d("jumlah_profile", profileSize.toString())
                             orderSummaryAnalytics.eventClickGearLogoInPreferenceFromGantiPilihanOSP()
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
                             val preferenceIndex = getString(R.string.lbl_summary_preference_option) + " " + position
