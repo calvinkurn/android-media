@@ -24,6 +24,7 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationAddWishlistLogin
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationAddWishlistNonLogin
+import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationProductClickLogin
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationProductClickLoginTopAds
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationProductClickNonLogin
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationProductClickNonLoginTopAds
@@ -269,7 +270,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
             }
         }else {
             if (userSessionInterface.isLoggedIn) {
-                TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(getRecommendationProductClickNonLoginTopAds(
+                TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(getRecommendationProductClickLogin(
                         tabName.toLowerCase(Locale.ROOT),
                         homeRecommendationItemDataModel
                 ))
