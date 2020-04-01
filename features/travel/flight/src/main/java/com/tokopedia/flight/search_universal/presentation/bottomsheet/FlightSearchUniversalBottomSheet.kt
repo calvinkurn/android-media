@@ -56,6 +56,10 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
         initBottomSheet()
     }
 
+    override fun onRoundTripSwitchChanged(isRoundTrip: Boolean) {
+        // do nothing
+    }
+
     override fun onDepartureAirportClicked() {
         val intent = FlightAirportPickerActivity.createInstance(requireContext(), getString(R.string.flight_airportpicker_departure_title))
         startActivityForResult(intent, REQUEST_CODE_AIRPORT_DEPARTURE)
