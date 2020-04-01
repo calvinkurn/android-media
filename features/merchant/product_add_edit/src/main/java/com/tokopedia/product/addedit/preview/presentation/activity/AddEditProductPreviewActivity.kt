@@ -18,7 +18,7 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        productId = intent.getStringExtra(EXTRA_PRODUCT_ID)
+        productId = intent?.getStringExtra(EXTRA_PRODUCT_ID) ?: ""
         super.onCreate(savedInstanceState)
     }
 
