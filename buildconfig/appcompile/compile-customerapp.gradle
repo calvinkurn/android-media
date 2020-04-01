@@ -118,6 +118,7 @@ include "features:merchant:official_store"
 include "features:merchant:brandlist"
 include "features:merchant:atc_variant"
 include ':features:merchant:variant_common'
+include 'features:merchant:favorite'
 
 include "features:operational:contact_us"
 include "features:operational:csat_rating"
@@ -204,7 +205,6 @@ include "features:user:liveness"
 include 'features:fcm_common'
 include 'features:user:campaign_shake_landing'
 include 'features:recharge_slice'
-include 'features:favorite'
 
 include 'tkpdcore'
 include 'tkpdinbox'
