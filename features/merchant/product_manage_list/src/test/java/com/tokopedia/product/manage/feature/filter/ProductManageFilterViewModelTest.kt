@@ -25,7 +25,7 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
                 shopEtalase =  arrayListOf(ShopEtalaseModel()),
                 categoriesResponse = CategoriesResponse()
         )
-        onGetProductManageFilterOptions_thenReturn(filterOptionsResponse)
+        onGetProductManageFilterOptionsthenReturn(filterOptionsResponse)
 
         viewModel.getData("0")
 
@@ -36,7 +36,7 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
     }
 
     @Test
-    fun `when_clearSelected_should_make_all_elements_unselected`() {
+    fun `when clearSelected should make all elements unselected`() {
         val sortViewModel = getSortFilterViewModel()
         val etalaseViewModel = getEtalaseFilterViewModel()
         val categoryViewModel = getCategoryFilterViewModel()
@@ -49,7 +49,7 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
     }
 
     @Test
-    fun `when_updateShow_should_update_element_isChipsShown_accordingly`() {
+    fun `when updateShow should update element isChipsShown accordingly`() {
         val sortViewModel = getSortFilterViewModel()
         val etalaseViewModel = getEtalaseFilterViewModel()
         val categoryViewModel = getCategoryFilterViewModel()
@@ -71,7 +71,7 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
     }
 
     @Test
-    fun `when_updateSpecific_should_update_element_at_a_given_index_accordingly`() {
+    fun `when updateSpecific should update element at a given index accordingly`() {
         val sortViewModel = getSortFilterViewModel()
         val etalaseViewModel = getEtalaseFilterViewModel()
         val categoryViewModel = getCategoryFilterViewModel()
@@ -87,7 +87,7 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
     }
 
     @Test
-    fun `when_updateSelect_for_Sort_and_Etalase_should_update_filter_data_model_accordingly`() {
+    fun `when updateSelect for Sort and Etalase should update filter data model accordingly`() {
         val sortViewModel = getSortFilterViewModel()
         val etalaseViewModel = getEtalaseFilterViewModel()
         val categoryViewModel = getCategoryFilterViewModel()
@@ -109,7 +109,7 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
     }
 
     @Test
-    fun `when_updateSelect_for_Category_and_Other_Filter_should_update_filter_data_model_accordingly`() {
+    fun `when updateSelect for Category and Other Filter should update filter data model accordingly`() {
         val sortViewModel = getSortFilterViewModel()
         val etalaseViewModel = getEtalaseFilterViewModel()
         val categoryViewModel = getCategoryFilterViewModel()
@@ -131,7 +131,7 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
     }
 
     @Test
-    fun `when_updateSelect_for_Category_and_Other_Filter_last_element_should_update_filter_data_model_accordingly`() {
+    fun `when updateSelect for Category and Other Filter last element should update filter data model accordingly`() {
         val sortViewModel = getSortFilterViewModel()
         val etalaseViewModel = getEtalaseFilterViewModel()
         val categoryViewModel = getCategoryFilterViewModel()
@@ -167,7 +167,7 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
     }
 
     @Test
-    fun `when_updateShow_should_update_filter_ui_model_show_sate_accordingly`() {
+    fun `when updateShow should update filter ui model show sate accordingly`() {
         val desiredShow = listOf(true, true, false ,true)
         val sortViewModel = getSortFilterViewModel(getSortDataModel())
         val etalaseViewModel = getEtalaseFilterViewModel(getEtalaseDataModel())
@@ -181,7 +181,7 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
     }
 
     @Test
-    fun `when_there_is_selected_sort_or_etalase_should_unselect_old_and_select_new_sort_or_etalase`() {
+    fun `when there is selected sort or etalase should unselect old and select new sort or etalase`() {
         val selectedSort = getSelectedSortData()
         val selectedEtalase = getSelectedEtalaseData()
         val categoryViewModel = getCategoryFilterViewModel(getCategoryDataModel())
@@ -203,7 +203,7 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
     }
 
     @Test
-    fun `when_select_selected_sort_or_etalase_should_unselect_selected_value`() {
+    fun `when select selected sort or etalase should unselect selected value and select new value`() {
         val selectedSort = getSelectedSortData()
         val selectedEtalase = getSelectedEtalaseData()
         val categoryViewModel = getCategoryFilterViewModel(getCategoryDataModel())
@@ -231,7 +231,27 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
     }
 
     @Test
-    fun `when_data_is_null_all_operations_should_do_nothing`() {
+    fun `when select selected sort or etalase should unselect selected value`() {
+        val selectedSort = getSelectedSortData()
+        val selectedEtalase = getSelectedEtalaseData()
+        val categoryViewModel = getCategoryFilterViewModel(getCategoryDataModel())
+        val otherFilterViewModel = getOtherFilterFilterViewModel(getOtherFilterDataModel())
+
+        viewModel.updateData(listOf(selectedSort, selectedEtalase, categoryViewModel, otherFilterViewModel))
+        viewModel.updateSelect(selectedSort.data[1], ProductManageFilterMapper.SORT_HEADER)
+        viewModel.updateSelect(selectedSort.data[1], ProductManageFilterMapper.ETALASE_HEADER)
+
+        val expectedSortModel = getSortFilterViewModel()
+        val expectedSortIndex = ProductManageFilterFragment.ITEM_SORT_INDEX
+        val expectedEtalaseModel = getEtalaseFilterViewModel()
+        val expectedEtalaseIndex = ProductManageFilterFragment.ITEM_ETALASE_INDEX
+
+        verifyFilterDataAtIndex(expectedSortModel, expectedSortIndex)
+        verifyFilterDataAtIndex(expectedEtalaseModel, expectedEtalaseIndex)
+    }
+
+    @Test
+    fun `when data is null all operations should do nothing`() {
         val desiredShow = listOf(true, true, false ,true)
         val sortDataModel = getSortDataModel()
         val filterUiModel = getSortFilterViewModel(sortDataModel)
@@ -246,7 +266,7 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
         verifyDataIsNull()
     }
 
-    private fun onGetProductManageFilterOptions_thenReturn(filterOptionsResponse: FilterOptionsResponse) {
+    private fun onGetProductManageFilterOptionsthenReturn(filterOptionsResponse: FilterOptionsResponse) {
         coEvery { getProductManageFilterOptionsUseCase.executeOnBackground() } returns filterOptionsResponse
     }
 
