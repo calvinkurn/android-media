@@ -432,6 +432,8 @@ final class ProductListPresenter
                 getViewToShowMoreData(productViewModel);
             }
 
+            testThrowError();
+
             setTotalData(productViewModel.getTotalData());
         }
     }
@@ -636,12 +638,20 @@ final class ProductListPresenter
 
     private void loadDataSubscriberOnNextIfViewAttached(SearchProductModel searchProductModel) {
         if (isViewAttached()) {
+            testThrowError();
+
             if (isSearchRedirected(searchProductModel)) {
                 getViewToRedirectSearch(searchProductModel);
             } else {
                 getViewToProcessSearchResult(searchProductModel);
             }
         }
+    }
+
+    private void testThrowError() {
+        double randomError = Math.random();
+        boolean shouldThrow = randomError < 0.7;
+        if (shouldThrow) throw new RuntimeException("throw error purposely for testing, random value: " + randomError);
     }
 
     private boolean isSearchRedirected(SearchProductModel searchProductModel) {
