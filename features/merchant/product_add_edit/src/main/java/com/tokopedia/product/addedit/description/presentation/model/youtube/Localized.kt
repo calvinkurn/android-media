@@ -1,0 +1,14 @@
+package com.tokopedia.product.addedit.description.presentation.model.youtube
+
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+
+class Localized {
+    @SerializedName("title")
+    @Expose
+    var title: String? = null
+    @SerializedName("description")
+    @Expose
+    var description: String? = null
+
+}
