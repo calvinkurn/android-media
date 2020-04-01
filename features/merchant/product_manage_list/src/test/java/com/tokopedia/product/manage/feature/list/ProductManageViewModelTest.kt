@@ -46,7 +46,7 @@ import org.junit.Test
 class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
 
     @Test
-    fun `when_editPrice_success__should_return_edit_price_success_result`() {
+    fun `when editPrice success should return_edit price success result`() {
         runBlocking {
             val productId = "0"
             val price = "10000"
@@ -67,7 +67,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `when_editStock_success__should_return_edit_stock_success_result`() {
+    fun `when editStock success should return edit stock success result`() {
         runBlocking {
             val productId = "0"
             val stock = 0
@@ -89,7 +89,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `when_deleteProduct_success__should_return_delete_product_success_result`() {
+    fun `when deleteProduct success should return delete product success result`() {
         runBlocking {
             val productId = "0"
             val productName = "Amazing Product"
@@ -109,7 +109,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `when_editPrice_fail__should_return_edit_price_fail_result`() {
+    fun `when editPrice fail should return edit price fail result`() {
         runBlocking {
             val productId = "0"
             val price = "10000"
@@ -131,7 +131,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `when_editStock_fail__should_return_edit_stock_fail_result`() {
+    fun `when editStock fail should return edit stock fail result`() {
         runBlocking {
             val productId = "0"
             val stock = 0
@@ -154,7 +154,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `when_deleteProduct_fail__should_return_delete_product_fail_result`() {
+    fun `when deleteProduct fail should return delete product fail result`() {
         runBlocking {
             val productId = "0"
             val productName = "Amazing Product"
@@ -175,7 +175,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `when_setFilter_should_update_filter_accordingly`() {
+    fun `when setFilter should update filter accordingly`() {
         val selectedFilter = listOf(CashBackOnly, NewOnly)
 
         viewModel.setSelectedFilter(selectedFilter)
@@ -184,7 +184,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `when_setFilterOptionWrapper_should_update_filterOptionWrapper_accordingly`() {
+    fun `when setFilterOptionWrapper should update filterOptionWrapper accordingly`() {
         val filterOptionWrapper = FilterOptionWrapper(
                 SortByName(ASC),
                 listOf(CashBackOnly, NewOnly),
