@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.entertainment.search.R
 import com.tokopedia.entertainment.search.analytics.EventCategoryPageTracking
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -44,6 +45,7 @@ class EventGridAdapter : RecyclerView.Adapter<EventGridAdapter.EventGridViewHold
             })
 
             setOnClickListener {
+                RouteManager.route(holder.view.context, event.app_url)
                 //TODO Open new Activity
                 EventCategoryPageTracking.getInstance().onClickGridViewProduct(event, listEvent, position + 1)
             }
@@ -58,7 +60,8 @@ class EventGridAdapter : RecyclerView.Adapter<EventGridAdapter.EventGridViewHold
             val location: String,
             val nama_event: String,
             val harga_start: String,
-            val harga_now: String
+            val harga_now: String,
+            val app_url: String
     ) : ImpressHolder()
 
     companion object {

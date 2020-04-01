@@ -17,7 +17,8 @@ object DetailMapper {
                 location = event.cityName,
                 nama_event = event.title,
                 harga_start = "Mulai dari",
-                harga_now = event.price
+                harga_now = event.price,
+                app_url = event.appUrl
         )
     }
 }
