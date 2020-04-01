@@ -46,6 +46,11 @@ dependencies {
     implementation project(rootProject.ext.features.seamlesslogin)
     implementation project(rootProject.ext.features.purchase_platform_common)
 
+    implementation "com.example.annotation:annotation:0.0.1-alpha"
+    implementation "com.example.firebaseanalyticrules.rules:rules:0.0.1-alpha"
+    implementation "com.example.analyticparam:analyticparam:0.0.1-alpha"
+    kapt "com.example.processor:processor:0.0.1-alpha"
+
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)

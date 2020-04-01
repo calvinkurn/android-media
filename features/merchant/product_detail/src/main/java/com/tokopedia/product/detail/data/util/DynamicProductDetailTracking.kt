@@ -7,6 +7,9 @@ import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.product.util.processor.Product
+import com.tokopedia.product.util.processor.ProductBundler
+import com.tokopedia.product.util.processor.ProductDetailViewsBundler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
@@ -778,6 +781,64 @@ object DynamicProductDetailTracking {
             val productImageUrl = productInfo?.data?.media?.filter {
                 it.type == "image"
             }?.firstOrNull()?.uRLOriginal ?: ""
+
+            TrackApp
+                    .getInstance()
+                    .gtm
+                    .sendEnhanceEcommerceEvent(
+                            ProductDetailViewsBundler.KEY,
+                            ProductDetailViewsBundler
+                                    .getBundle(
+                                            if (trackerListName?.isNotEmpty() == true) {
+                                                trackerListName
+                                            } else {
+                                                ""
+                                            },
+                                            arrayListOf(
+                                                    Product(
+                                                            productInfo?.getProductName ?: "",
+                                                            productInfo?.basic?.getProductId().toString(),
+                                                            productInfo?.data?.price?.value?.toDouble()
+                                                                    ?: 0.0,
+                                                            "",
+                                                            productInfo?.getProductName ?: "",
+                                                            TrackingUtil.getEnhanceCategoryFormatted(productInfo?.basic?.category?.detail),
+                                                            ProductTrackingConstant.Tracking.DEFAULT_VALUE,
+                                                            trackerAttribution
+                                                                    ?: ProductTrackingConstant.Tracking.DEFAULT_VALUE,
+                                                            dimension55,
+                                                            TrackingUtil.getMultiOriginAttribution(multiOrigin),
+                                                            dimension83 ?: "",
+                                                            shopInfo?.goldOS?.shopTypeString ?: "",
+                                                            if (isStockAvailable == "0") "not available" else "available",
+                                                            0
+                                                    )
+
+                                            ),
+                                            TrackingUtil.getEnhanceUrl(productInfo?.basic?.url),
+                                            shopInfo?.shopCore?.name,
+                                            productInfo?.basic?.shopID,
+                                            shopInfo?.shopCore?.domain,
+                                            shopInfo?.location,
+                                            shopInfo?.goldOS?.isGoldBadge.toString(),
+                                            productInfo?.basic?.category?.id,
+                                            TrackingUtil.getEnhanceShopType(shopInfo?.goldOS),
+                                            "/productpage",
+                                            subCategoryName,
+                                            subCategoryId,
+                                            productInfo?.basic?.url,
+                                            deeplinkUrl,
+                                            productImageUrl,
+                                            shopInfo?.goldOS?.isOfficial ?: 0,
+                                            TrackingUtil.getFormattedPrice(productInfo?.data?.price?.value
+                                                    ?: 0),
+                                            productInfo?.basic?.productID
+                                                    ?: "",
+                                            "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id}",
+                                            "",
+                                            irisSessionId
+                                    )
+                    )
 
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
                     KEY_SESSION_IRIS,  irisSessionId,
