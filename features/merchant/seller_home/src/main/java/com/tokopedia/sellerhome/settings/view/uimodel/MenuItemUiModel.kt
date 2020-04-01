@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhome.settings.view.uimodel
 
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant
 import com.tokopedia.sellerhome.settings.view.typefactory.OtherMenuTypeFactory
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingShopInfoClickTrackable
@@ -13,9 +12,6 @@ class MenuItemUiModel(val title: String = "",
                       private val clickApplink: String? = null,
                       eventActionSuffix: String = "",
                       settingTypeInfix: String = "",
-                      override val impressionEventLabel: String = "",
-                      override val clickEventLabel: String = "",
-                      override val impressHolder: ImpressHolder = ImpressHolder(),
                       val clickAction: () -> Unit = {})
     : SettingUiModel, SettingShopInfoImpressionTrackable, SettingShopInfoClickTrackable {
 
@@ -27,21 +23,25 @@ class MenuItemUiModel(val title: String = "",
 
     override val impressionEventName: String =
             if (isNoIcon) {
-                ""
+                SettingTrackingConstant.VIEW_SHOP_SETTING_IRIS
             } else {
                 super.impressionEventName
             }
 
     override val impressionEventCategory: String =
             if (isNoIcon) {
-                ""
+                SettingTrackingConstant.SETTINGS
             } else {
                 super.impressionEventCategory
             }
 
     override val impressionEventAction: String =
             if (isNoIcon) {
-                ""
+                var settingType = settingTypeInfix
+                if (settingTypeInfix == SettingTrackingConstant.APP_SETTING) {
+                    settingType = SettingTrackingConstant.APPLICATION_SETTING
+                }
+                "${SettingTrackingConstant.IMPRESSION} $settingType - $title"
             } else {
                 "${SettingTrackingConstant.IMPRESSION} $eventActionSuffix"
             }

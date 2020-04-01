@@ -1,13 +1,9 @@
 package com.tokopedia.sellerhome.settings.view.uimodel.shopinfo
 
-import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant
 import com.tokopedia.sellerhome.settings.view.uimodel.base.*
 
-class ShopStatusUiModel(val shopType: ShopType,
-                        override val impressionEventLabel: String = "",
-                        override val clickEventLabel: String = "",
-                        override val impressHolder: ImpressHolder = ImpressHolder()) :
+class ShopStatusUiModel(val shopType: ShopType) :
         SettingShopInfoImpressionTrackable,
         SettingShopInfoClickTrackable
 {
