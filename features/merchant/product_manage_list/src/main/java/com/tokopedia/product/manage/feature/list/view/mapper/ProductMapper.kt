@@ -43,7 +43,7 @@ object ProductMapper {
         }
     }
 
-    fun mapToFilterTabResult(response: ProductListMetaResponse, filterCount: Int = 0): GetFilterTabResult {
+    fun mapToFilterTabResult(response: ProductListMetaResponse, filterCount: Int): GetFilterTabResult {
         var totalProductCount = 0
         val filterTabs = response.productListMetaWrapper.productListMetaData.tabs
         val productFilters = mutableListOf<FilterTabViewModel>(MoreFilter(filterCount))
