@@ -793,14 +793,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         showProductList(productList)
     }
 
-    private fun filterProductListByFeatured() {
-        val productList = adapter.data.filter {
-            it.isFeatured == true
-        }
-        clearAllData()
-        showProductList(productList)
-    }
-
     override fun onSwipeRefresh() {
         isLoadingInitialData = true
         swipeToRefresh.isRefreshing = true
@@ -1023,14 +1015,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         productListFeaturedOnlySize -= 1
         showLoadingProgress()
         setFeaturedProduct(productManageViewModel.id, ProductManageListConstant.FEATURED_PRODUCT_REMOVE_STATUS)
-
-        tabFilters.selectedFilter?.let {
-            filterProductListByFeatured()
-            renderMultiSelectProduct()
-        }
-
-        getFiltersTab(withDelay = true)
-        getProductList(isRefresh = true, withDelay = true)
     }
 
     private fun onSetStockReminderClicked(productManageViewModel: ProductViewModel) {
@@ -1240,7 +1224,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun observeSetFeaturedProduct() {
         observe(viewModel.setFeaturedProductResult) {
             when (it) {
-                is Success -> onSuccessChangeFeaturedProduct(it.data.productId, it.data.status)
+                is Success -> {
+                    onSuccessChangeFeaturedProduct(it.data.productId, it.data.status)
+                    if(it.data.status == 0) {
+                        getProductList(isRefresh = true, withDelay = true)
+                    }
+                }
                 is Fail -> onFailedChangeFeaturedProduct(it.throwable)
             }
         }
