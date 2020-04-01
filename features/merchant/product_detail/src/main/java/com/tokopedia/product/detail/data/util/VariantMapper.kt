@@ -65,6 +65,7 @@ object VariantMapper {
                 price = newPrice,
                 name= newData?.name ?: "",
                 media = newMedia,
+        //upcoming campaign data
                 campaignId = newData?.upcoming?.campaignId ?: "",
                 campaignType = newData?.upcoming?.campaignType ?: "",
                 campaignTypeName = newData?.upcoming?.campaignTypeName ?: "",
