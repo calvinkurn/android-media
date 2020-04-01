@@ -1490,12 +1490,12 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     @Override
     public void onReviewItemListener(@NotNull SuggestedProductReviewResponse reviewData, int position, @NotNull String orderId, @NotNull String productId) {
-        putEEToIris(HomePageTracking.getHomeReviewImpressionIris(reviewData, position, orderId, productId));
+        sendIrisTracker(HomePageTracking.getHomeReviewImpressionIris(reviewData, position, orderId, productId));
     }
 
     @Override
     public void onPlayChannelImpressed(@NotNull DynamicHomeChannel.Channels channel, @NotNull PlayCardViewModel model, int position) {
-        putEEToIris(HomePageTracking.eventEnhanceImpressionIrisPlayBanner(model));
+        sendIrisTracker(HomePageTracking.eventEnhanceImpressionIrisPlayBanner(model));
     }
 
     @Override
@@ -1507,7 +1507,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     @Override
     public void onPopularKeywordItemImpressed(@NotNull DynamicHomeChannel.Channels channel, int position, @NotNull String keyword) {
         trackingQueue.putEETracking((HashMap<String, Object>) HomePageTrackingV2.PopularKeyword.INSTANCE.getPopularKeywordImpressionItem(channel, position, keyword, false));
-        putEEToIris((HashMap<String, Object>) HomePageTrackingV2.PopularKeyword.INSTANCE.getPopularKeywordImpressionItem(channel, position, keyword, true));
+        sendIrisTracker((HashMap<String, Object>) HomePageTrackingV2.PopularKeyword.INSTANCE.getPopularKeywordImpressionItem(channel, position, keyword, true));
     }
 
     @Override
@@ -1903,6 +1903,10 @@ public class HomeFragment extends BaseDaggerFragment implements
             impressionScrollListeners.put(dynamicChannelViewModel.getChannel().getId(), impressionScrollListener);
             homeRecyclerView.addOnScrollListener(impressionScrollListener);
         }
+    }
+
+    private void sendIrisTracker(HashMap<String, Object> irisTracker) {
+        putEEToIris(irisTracker);
     }
 
     private void sendIrisTracker(int layoutType, DynamicHomeChannel.Channels channel, int position) {
