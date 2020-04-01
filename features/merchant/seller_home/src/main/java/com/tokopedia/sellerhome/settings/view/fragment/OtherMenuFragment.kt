@@ -290,8 +290,9 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                         R.drawable.ic_complaint,
                         null,
                         eventActionSuffix = SettingTrackingConstant.COMPLAINT) {
-                    val intent = RouteManager.getIntent(context, ApplinkConst.SellerApp.WEBVIEW)
-                    intent.putExtra(URL_KEY, SellerBaseUrl.HOSTNAME + SellerBaseUrl.RESO_INBOX_SELLER)
+                    val url = ApplinkConst.WEBVIEW + "?url=" + SellerBaseUrl.HOSTNAME + SellerBaseUrl.RESO_INBOX_SELLER
+                    val intent = RouteManager.getIntent(context, url)
+//                    intent.putExtra(URL_KEY, SellerBaseUrl.HOSTNAME + SellerBaseUrl.RESO_INBOX_SELLER)
                     context?.startActivity(intent)
                 },
                 DividerUiModel(),
@@ -305,8 +306,9 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                         resources.getString(R.string.setting_menu_seller_education_center),
                         R.drawable.ic_seller_edu,
                         eventActionSuffix = SettingTrackingConstant.SELLER_CENTER) {
-                    val intent = RouteManager.getIntent(context, ApplinkConst.WEBVIEW)
-                    intent.putExtra(URL_KEY, SellerBaseUrl.SELLER_HOSTNAME + SellerBaseUrl.SELLER_EDU)
+                    val url = ApplinkConst.WEBVIEW + "?url=" + SellerBaseUrl.SELLER_HOSTNAME + SellerBaseUrl.SELLER_EDU
+                    val intent = RouteManager.getIntent(context, url)
+//                    intent.putExtra(URL_KEY, SellerBaseUrl.SELLER_HOSTNAME + SellerBaseUrl.SELLER_EDU)
                     context?.startActivity(intent)
                 },
                 MenuItemUiModel(
