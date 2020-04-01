@@ -182,7 +182,8 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:visibility="gone"
         app:srcCompat="@drawable/ic_attention"
-        app:layout_constraintTop_toBottomOf="@id/textPrice"
+        app:layout_constraintTop_toTopOf="@id/labelInactive"
+        app:layout_constraintBottom_toBottomOf="@id/labelInactive"
         app:layout_constraintLeft_toRightOf="@id/labelInactive"
         app:layout_constraintRight_toLeftOf="@id/imageStockInformation"
         tools:ignore="ContentDescription"
@@ -191,7 +192,7 @@
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnEditPrice"
         android:layout_width="0dp"
-        android:layout_height="@dimen/product_manage_button_height"
+        android:layout_height="@dimen/layout_lvl4"
         android:text="@string/product_manage_menu_edit_price"
         android:visibility="gone"
         app:layout_constraintHorizontal_chainStyle="spread"
@@ -208,7 +209,7 @@
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnEditStock"
         android:layout_width="0dp"
-        android:layout_height="@dimen/product_manage_button_height"
+        android:layout_height="@dimen/layout_lvl4"
         android:layout_marginLeft="@dimen/product_manage_button_horizontal_spacing_long"
         android:layout_marginStart="@dimen/product_manage_button_horizontal_spacing_long"
         android:layout_marginRight="@dimen/spacing_lvl3"
@@ -228,7 +229,7 @@
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnEditVariant"
         android:layout_width="0dp"
-        android:layout_height="@dimen/product_manage_button_height"
+        android:layout_height="@dimen/layout_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:text="@string/product_manage_menu_edit_variant"
@@ -246,7 +247,7 @@
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnContactCS"
         android:layout_width="0dp"
-        android:layout_height="@dimen/product_manage_button_height"
+        android:layout_height="@dimen/layout_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:visibility="gone"
@@ -263,8 +264,8 @@
 
     <ImageView
         android:id="@+id/btnMoreOptions"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/product_manage_button_height"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_width="@dimen/product_manage_button_width"
         android:layout_marginTop="@dimen/product_manage_more_option_vertical_spacing"
         android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
         android:layout_gravity="center_horizontal"
