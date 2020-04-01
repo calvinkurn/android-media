@@ -31,12 +31,12 @@ data class DynamicProductInfoP1(
             }
         }
 
-    val priceBeforeInt: Int
+    val priceBeforeInt: Int?
         get() {
             return if (data.campaign.isActive) {
                 data.campaign.originalPrice
             } else {
-                0
+                null
             }
         }
 
