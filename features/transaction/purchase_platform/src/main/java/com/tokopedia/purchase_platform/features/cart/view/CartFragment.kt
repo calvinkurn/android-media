@@ -1429,14 +1429,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun doRenderPromoCheckoutButton(lastApplyData: LastApplyUiModel) {
-        var isApplied = false
-        if (lastApplyData.additionalInfo.errorDetail.message.isNotEmpty()) {
+        val isApplied: Boolean
+        /*if (lastApplyData.additionalInfo.errorDetail.message.isNotEmpty()) {
             showToaster(lastApplyData.additionalInfo.errorDetail.message, isShowOk = false)
             PromoRevampAnalytics.eventCartViewPromoChanged(lastApplyData.additionalInfo.errorDetail.message)
-        }
+        }*/
 
         var title = ""
         promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
+        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
 
         if (lastApplyData.additionalInfo.messageInfo.message.isNotEmpty()) {
             title = lastApplyData.additionalInfo.messageInfo.message
