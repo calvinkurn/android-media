@@ -33,8 +33,8 @@ class PlayInteractionLayoutManager(
     ) {
         layoutSizeContainer(id = sizeContainerComponentId)
         layoutToolbar(id = toolbarComponentId, sizeContainerComponentId = sizeContainerComponentId)
-        layoutVideoControl(id = videoControlComponentId, toolbarComponentId = toolbarComponentId, sizeContainerComponentId = sizeContainerComponentId, likeComponentId = likeComponentId)
-        layoutLike(id = likeComponentId, videoControlComponentId = videoControlComponentId, toolbarComponentId = toolbarComponentId)
+        layoutVideoControl(id = videoControlComponentId, sizeContainerComponentId = sizeContainerComponentId, likeComponentId = likeComponentId)
+        layoutLike(id = likeComponentId, videoControlComponentId = videoControlComponentId, sizeContainerComponentId = sizeContainerComponentId)
         layoutChat(id = sendChatComponentId, likeComponentId = likeComponentId, toolbarComponentId = toolbarComponentId, videoControlComponentId = videoControlComponentId)
         layoutChatList(id = chatListComponentId, quickReplyComponentId = quickReplyComponentId, likeComponentId = likeComponentId, toolbarComponentId = toolbarComponentId)
         layoutPinned(id = pinnedComponentId, chatListComponentId = chatListComponentId, likeComponentId = likeComponentId, toolbarComponentId = toolbarComponentId)
@@ -63,9 +63,9 @@ class PlayInteractionLayoutManager(
         }
     }
 
-    private fun layoutLike(@IdRes id: Int, @IdRes videoControlComponentId: Int, @IdRes toolbarComponentId: Int) {
+    private fun layoutLike(@IdRes id: Int, @IdRes videoControlComponentId: Int, @IdRes sizeContainerComponentId: Int) {
         changeConstraint {
-            connect(id, ConstraintSet.END, toolbarComponentId, ConstraintSet.END)
+            connect(id, ConstraintSet.END, sizeContainerComponentId, ConstraintSet.END, offset16)
             connect(id, ConstraintSet.BOTTOM, videoControlComponentId, ConstraintSet.BOTTOM)
         }
     }
@@ -86,9 +86,9 @@ class PlayInteractionLayoutManager(
         }
     }
 
-    private fun layoutVideoControl(@IdRes id: Int, @IdRes toolbarComponentId: Int, @IdRes sizeContainerComponentId: Int, @IdRes likeComponentId: Int) {
+    private fun layoutVideoControl(@IdRes id: Int, @IdRes sizeContainerComponentId: Int, @IdRes likeComponentId: Int) {
         changeConstraint {
-            connect(id, ConstraintSet.START, toolbarComponentId, ConstraintSet.START)
+            connect(id, ConstraintSet.START, sizeContainerComponentId, ConstraintSet.START, offset16)
             connect(id, ConstraintSet.END, likeComponentId, ConstraintSet.START, offset8)
             connect(id, ConstraintSet.BOTTOM, sizeContainerComponentId, ConstraintSet.BOTTOM)
         }
