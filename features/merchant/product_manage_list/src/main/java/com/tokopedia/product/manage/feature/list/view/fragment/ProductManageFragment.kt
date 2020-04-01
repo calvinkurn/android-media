@@ -793,6 +793,14 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         showProductList(productList)
     }
 
+    private fun filterProductListByFeatured(isFeatured: Boolean) {
+        val productList = adapter.data.filter {
+            it.isFeatured == isFeatured
+        }
+        clearAllData()
+        showProductList(productList)
+    }
+
     override fun onSwipeRefresh() {
         isLoadingInitialData = true
         swipeToRefresh.isRefreshing = true
@@ -821,6 +829,9 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             isFeaturedProduct = true
         }
         productManageListAdapter.updateFeaturedProduct(productId, isFeaturedProduct)
+        if(viewModel.selectedFilterAndSort.value?.filterOptions == listOf(FilterByCondition.FeaturedOnly)) {
+            filterProductListByFeatured(true)
+        }
         hideLoadingProgress()
         showMessageToastWithoutAction(successMessage)
     }
