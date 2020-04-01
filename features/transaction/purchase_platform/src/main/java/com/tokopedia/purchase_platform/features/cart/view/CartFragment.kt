@@ -707,12 +707,48 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun checkGoToShipment(message: String?) {
         if (message.isNullOrEmpty()) {
-            cartListData?.lastApplyShopGroupSimplifiedData?.listRedPromos?.let {
-                if (it.isNotEmpty()) {
-                    dPresenter.doClearRedPromosBeforeGoToCheckout(cartListData?.lastApplyShopGroupSimplifiedData?.listRedPromos as ArrayList<String>)
-                } else {
-                    goToCheckoutPage()
+            val redStatePromo = ArrayList<String>()
+            if (dPresenter.isLastApplyValid()) {
+                val lastApplyUiModel = cartListData?.lastApplyShopGroupSimplifiedData
+                lastApplyUiModel?.let {
+                    if (it.message.state.equals("red")) {
+                        it.codes.forEach {
+                            if (!redStatePromo.contains(it)) {
+                                redStatePromo.add(it)
+                            }
+                        }
+                    }
+
+                    it.voucherOrders.forEach {
+                        if (it.message.state.equals("red") && !redStatePromo.contains(it.code)) {
+                            redStatePromo.add(it.code)
+                        }
+                    }
                 }
+            } else {
+                val lastValidateUseData = dPresenter.getValidateUseLastResponse()
+                lastValidateUseData?.promoUiModel?.let {
+                    if (it.messageUiModel.state.equals("red")) {
+                        it.codes.forEach {
+                            if (!redStatePromo.contains(it)) {
+                                redStatePromo.add(it)
+                            }
+                        }
+                    }
+
+                    it.voucherOrderUiModels.forEach {
+                        val promoCode = it?.code ?: ""
+                        if (promoCode.isNotBlank() && it?.messageUiModel?.state.equals("red") && !redStatePromo.contains(promoCode)) {
+                            redStatePromo.add(promoCode)
+                        }
+                    }
+                }
+            }
+
+            if (redStatePromo.isNotEmpty()) {
+                dPresenter.doClearRedPromosBeforeGoToCheckout(redStatePromo)
+            } else {
+                goToCheckoutPage()
             }
 
         } else {

@@ -9,12 +9,14 @@ import rx.Subscriber
  */
 class ClearRedPromosBeforeGoToCheckoutSubscriber(val view: ICartListView?) : Subscriber<ClearPromoUiModel>() {
     override fun onNext(t: ClearPromoUiModel?) {
+        view?.hideProgressLoading()
         view?.onSuccessClearRedPromosThenGoToCheckout()
     }
 
     override fun onCompleted() {}
 
     override fun onError(e: Throwable?) {
+        view?.hideProgressLoading()
         view?.onSuccessClearRedPromosThenGoToCheckout()
     }
 }

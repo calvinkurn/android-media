@@ -1157,6 +1157,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     }
 
     override fun doClearRedPromosBeforeGoToCheckout(promoCodeList: ArrayList<String>) {
+        view?.showItemLoading()
         clearCacheAutoApplyStackUseCase?.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, promoCodeList)
         compositeSubscription.add(
                 clearCacheAutoApplyStackUseCase?.createObservable(RequestParams.create())
