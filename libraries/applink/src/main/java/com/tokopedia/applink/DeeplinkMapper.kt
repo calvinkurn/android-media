@@ -23,6 +23,7 @@ import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNaviga
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationShopReview
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.isShopReview
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationOrder
+import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.promo.getRegisteredNavigationTokopoints
 import com.tokopedia.applink.recommendation.getRegisteredNavigationRecommendation
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrah
@@ -81,6 +82,7 @@ object DeeplinkMapper {
                         getRegisteredNavigationPlay(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.HOME_HOTLIST) ->
                         getRegisteredHotlist(deeplink)
+                    deeplink.startsWithPattern(ApplinkConst.PRODUCT_EDIT) -> DeepLinkMapperProductManage.getEditProductInternalAppLink(deeplink)
                     GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) ->
                        ApplinkConstInternalSellerapp.SELLER_HOME
                     deeplink.startsWith(ApplinkConst.PRODUCT_CREATE_REVIEW, true) -> getRegisteredNavigationProductReview(deeplink)

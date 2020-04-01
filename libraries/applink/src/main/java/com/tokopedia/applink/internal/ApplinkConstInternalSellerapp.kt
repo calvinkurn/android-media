@@ -24,13 +24,7 @@ object ApplinkConstInternalSellerapp {
     val SELLER_HOME = "$INTERNAL_SELLERAPP/sellerhome"
 
     @JvmField
-    val SELLER_HOME_PRODUCT_MANAGE_LIST = "$INTERNAL_SELLERAPP/sellerhome-product-list"
-
-    @JvmField
-    val SELLER_HOME_PRODUCT_MANAGE_FILTER_EMPTY_STOCK = "$INTERNAL_SELLERAPP/sellerhome-product-empty-stock"
-
-    @JvmField
-    val SELLER_HOME_PRODUCT_MANAGE_FILTER_EMPTY_STOCK_EXTERNAL = "$EXTERNAL_SELLERAPP/sellerhome-product-empty-stock"
+    val SELLER_HOME_PRODUCT_MANAGE_LIST = "$INTERNAL_SELLERAPP/sellerhome-product-list?filter={filter_id}"
 
     @JvmField
     val SELLER_HOME_CHAT = "$INTERNAL_SELLERAPP/sellerhome-chat"

@@ -40,14 +40,6 @@ object DeepLinkHandler {
             }
 
             //Product Manage
-            data.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_FILTER_EMPTY_STOCK) -> {
-                callback(PageFragment(FragmentType.PRODUCT,  FilterOption.FilterByCondition.EmptyStockOnly.id))
-            }
-
-            data.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_FILTER_EMPTY_STOCK_EXTERNAL) -> {
-                callback(PageFragment(FragmentType.PRODUCT,  FilterOption.FilterByCondition.EmptyStockOnly.id))
-            }
-
             data.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST) -> {
                 callback(PageFragment(FragmentType.PRODUCT))
             }
