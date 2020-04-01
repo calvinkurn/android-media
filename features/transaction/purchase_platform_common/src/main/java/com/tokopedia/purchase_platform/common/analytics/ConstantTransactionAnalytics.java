@@ -494,6 +494,8 @@ public interface ConstantTransactionAnalytics {
         String PHONE_VERIFICATION_MESSAGE = "phone verification message";
 
         String NEW_OCC = "new occ";
+        String SHOP_CLOSED = "shop closed";
+        String EMPTY_STOCK = "empty_stock";
     }
 
     interface ScreenName {

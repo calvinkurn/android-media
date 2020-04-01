@@ -35,13 +35,12 @@ class ErrorCheckoutBottomSheet {
         esCheckout.setDescription(error.error.message)
         esCheckout.setPrimaryCTAText("Cari Barang Serupa")
         esCheckout.setPrimaryCTAClickListener {
-            listener?.onClickSimilarProduct()
+            listener?.onClickSimilarProduct(error.error.code)
         }
     }
 
     interface Listener {
-
-        fun onClickSimilarProduct()
+        fun onClickSimilarProduct(errorCode: String)
     }
 
     companion object {

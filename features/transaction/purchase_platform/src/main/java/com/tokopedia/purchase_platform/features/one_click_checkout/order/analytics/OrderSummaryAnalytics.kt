@@ -84,12 +84,21 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         )
     }
 
-    fun eventClickSimilarProduct(eventLabel: String) {
+    fun eventClickSimilarProductEmptyStock() {
         sendEventCategoryActionLabel(
                 EventName.CLICK_CHECKOUT_EXPRESS,
                 EventCategory.ORDER_SUMMARY,
                 EventAction.FIND_SIMILAR_PRODUCT,
-                eventLabel
+                EventLabel.EMPTY_STOCK
+        )
+    }
+
+    fun eventClickSimilarProductShopClosed() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.FIND_SIMILAR_PRODUCT,
+                EventLabel.SHOP_CLOSED
         )
     }
 

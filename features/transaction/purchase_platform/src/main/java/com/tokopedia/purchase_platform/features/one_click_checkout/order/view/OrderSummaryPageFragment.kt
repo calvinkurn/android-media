@@ -242,7 +242,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     progressDialog?.dismiss()
                     view?.let { v ->
                         ErrorCheckoutBottomSheet().show(this, it, object : ErrorCheckoutBottomSheet.Listener {
-                            override fun onClickSimilarProduct() {
+                            override fun onClickSimilarProduct(errorCode: String) {
+                                if (errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_STOCK_EMPTY) {
+                                    orderSummaryAnalytics.eventClickSimilarProductEmptyStock()
+                                } else  {
+                                    orderSummaryAnalytics.eventClickSimilarProductShopClosed()
+                                }
                                 RouteManager.route(context, ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT, viewModel.orderProduct.productId.toString())
                                 activity?.finish()
                             }
