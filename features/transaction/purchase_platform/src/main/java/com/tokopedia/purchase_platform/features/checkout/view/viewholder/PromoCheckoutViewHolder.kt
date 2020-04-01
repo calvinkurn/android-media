@@ -74,7 +74,11 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
 
                     if (i > 0) {
                         displayMetrics?.let {
-                            setMargin(0, 12.dpToPx(it), 0, 0)
+                            setMargin(0, 4.dpToPx(it), 0, 0)
+                        }
+                    } else if (i == 0) {
+                        displayMetrics?.let {
+                            setMargin(0, 0, 0, 0)
                         }
                     }
                 }
