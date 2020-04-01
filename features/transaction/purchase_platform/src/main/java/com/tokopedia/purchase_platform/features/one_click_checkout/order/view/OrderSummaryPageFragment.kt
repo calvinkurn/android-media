@@ -3,7 +3,11 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.order.view
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -518,14 +522,16 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun showMessage(preference: ProfileResponse) {
         tv_header.text = "Barang yang dibeli"
-        if (preference.hasPreference) {
+        if (preference.hasPreference && preference.profileId > 0) {
             tv_header_2.text = "Pengiriman dan pembayaran"
             tv_header_2.visible()
+            tv_header_3.gone()
             tv_subheader.gone()
             tv_subheader_action.gone()
             iv_subheader.gone()
-        } else {
+        } else if (preference.profileId > 0) {
             tv_header_2.gone()
+            tv_header_3.gone()
             ImageHandler.LoadImage(iv_subheader, BELI_LANGSUNG_CART_IMAGE)
             iv_subheader.visible()
             tv_subheader.text = preference.onboardingHeaderMessage
@@ -535,6 +541,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
             tv_subheader_action.visible()
             tv_subheader.visible()
+        } else {
+            tv_header_2.text = "Hai!"
+            val spannableString = SpannableString(preference.onboardingHeaderMessage + " Info")
+            spannableString.setSpan(ForegroundColorSpan(Color.parseColor("#03AC0E")), preference.onboardingHeaderMessage.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+            tv_header_3.text = spannableString
+            tv_header_3.setOnClickListener {
+                orderSummaryAnalytics.eventClickInfoOnOSP()
+                OccInfoBottomSheet().show(this, preference.onboardingComponent)
+            }
+            tv_header_2.visible()
+            tv_header_3.visible()
+            tv_subheader.gone()
+            tv_subheader_action.gone()
+            iv_subheader.gone()
         }
         ticker_preference_info.visibility = if (preference.isChangedProfile) View.VISIBLE else View.GONE
     }

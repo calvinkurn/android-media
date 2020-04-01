@@ -271,6 +271,10 @@ query get_occ_cart_page {
           header_title
           body_image
           body_message
+          info_component {
+            text
+            link
+          }
         }
         profile_id
         status
