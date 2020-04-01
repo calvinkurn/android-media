@@ -1015,6 +1015,14 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         productListFeaturedOnlySize -= 1
         showLoadingProgress()
         setFeaturedProduct(productManageViewModel.id, ProductManageListConstant.FEATURED_PRODUCT_REMOVE_STATUS)
+
+        tabFilters.selectedFilter?.let {
+            filterProductListByStatus(it.status)
+            renderMultiSelectProduct()
+        }
+
+        getFiltersTab(withDelay = true)
+        getProductList(isRefresh = true, withDelay = true)
     }
 
     private fun onSetStockReminderClicked(productManageViewModel: ProductViewModel) {
