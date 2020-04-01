@@ -73,9 +73,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
-import com.tokopedia.feedplus.KEY_FEED
-import com.tokopedia.feedplus.KEY_FEED_FIRSTPAGE_CURSOR
-import com.tokopedia.feedplus.KEY_FEED_FIRSTPAGE_LAST_CURSOR
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.profilerecommendation.view.activity.FollowRecomActivity
@@ -90,6 +87,9 @@ import com.tokopedia.feedplus.view.analytics.FeedAnalytics
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel
 import com.tokopedia.feedplus.view.analytics.ProductEcommerce
+import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.KEY_FEED
+import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.KEY_FEED_FIRST_PAGE_CURSOR
+import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.KEY_FEED_FIRST_PAGE_LAST_CURSOR
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent
 import com.tokopedia.feedplus.view.di.FeedPlusComponent
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
@@ -1387,7 +1387,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun getFirstPageCursor(): String {
         context?.let {
             val cache = LocalCacheHandler(it, KEY_FEED)
-            return cache.getString(KEY_FEED_FIRSTPAGE_CURSOR, "")
+            return cache.getString(KEY_FEED_FIRST_PAGE_CURSOR, "")
         }
         return ""
     }
@@ -1698,7 +1698,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun setLastCursorOnFirstPage(lastCursor: String) {
         activity?.applicationContext?.let {
             val cache = LocalCacheHandler(it, KEY_FEED)
-            cache.putString(KEY_FEED_FIRSTPAGE_LAST_CURSOR, lastCursor)
+            cache.putString(KEY_FEED_FIRST_PAGE_LAST_CURSOR, lastCursor)
             cache.applyEditor()
         }
     }
@@ -1706,7 +1706,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun setFirstPageCursor(firstPageCursor: String) {
         activity?.applicationContext?.let {
             val cache = LocalCacheHandler(it, KEY_FEED)
-            cache.putString(KEY_FEED_FIRSTPAGE_CURSOR, firstPageCursor)
+            cache.putString(KEY_FEED_FIRST_PAGE_CURSOR, firstPageCursor)
             cache.applyEditor()
         }
     }

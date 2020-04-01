@@ -8,10 +8,12 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import kotlinx.android.synthetic.main.product_card_flashsale_content_layout.view.*
+import kotlinx.android.synthetic.main.product_card_flashsale_layout.view.*
 
 internal fun ProductCardFlashSaleView.renderProductCardFlashSaleContent(productCardModel: ProductCardFlashSaleModel) {
     renderPdpCountView(productCardModel)
     renderTextProductName(productCardModel)
+    renderTopAds(productCardModel)
     renderDiscount(productCardModel)
     renderTextPrice(productCardModel)
     renderStockPercentage(productCardModel)
@@ -24,6 +26,10 @@ private fun ProductCardFlashSaleView.renderPdpCountView(productCardModel: Produc
         it.text = MethodChecker.fromHtml(productCardModel.pdpViewCount)
         ivPdpView.show()
     }
+}
+
+private fun ProductCardFlashSaleView.renderTopAds(productCardModel: ProductCardFlashSaleModel){
+    tv_top_ads.shouldShowWithAction(productCardModel.isTopAds){}
 }
 
 private fun ProductCardFlashSaleView.renderTextProductName(productCardModel: ProductCardFlashSaleModel) {

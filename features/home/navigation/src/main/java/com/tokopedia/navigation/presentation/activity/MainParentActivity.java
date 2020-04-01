@@ -273,7 +273,7 @@ public class MainParentActivity extends BaseActivity implements
         if (userSession.hasShop() && !DFInstaller.isInstalled(getApplication(), DFM_MERCHANT_SELLER_CUSTOMERAPP)) {
             ArrayList<String> list = new ArrayList<>();
             list.add(DFM_MERCHANT_SELLER_CUSTOMERAPP);
-            new DFInstaller().installOnBackground(this.getApplication(), list, null, null, "Home");
+            DFInstaller.installOnBackground(this.getApplication(), list, "Home");
         }
     }
 
@@ -309,12 +309,10 @@ public class MainParentActivity extends BaseActivity implements
             }
         }
 
-        if (DFInstaller.isInstalled(this.getApplication(), DeeplinkDFMapper.DFM_ONBOARDING)) {
-            Intent intent = RouteManager.getIntent(this,
-                    ApplinkConstInternalMarketplace.ONBOARDING);
-            startActivity(intent);
-            finish();
-        }
+        Intent intent = RouteManager.getIntent(this,
+                ApplinkConstInternalMarketplace.ONBOARDING);
+        startActivity(intent);
+        finish();
     }
 
     private void setDefaultShakeEnable() {

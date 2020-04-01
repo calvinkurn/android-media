@@ -96,7 +96,12 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
     fun saveAddEditEtalase() {
         if (isValid) {
             etalase.name = edit_text_title.text.toString().trim()
-            presenter.saveEtalase(etalase, isEdit)
+            getEtalaseList()
+            if(!presenter.isEtalaseDuplicate(etalase.name)) {
+                presenter.saveEtalase(etalase, isEdit)
+            } else {
+                edit_text_title.error = context?.getString(R.string.shop_etalase_title_already_exist)
+            }
         }
     }
 
