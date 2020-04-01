@@ -447,7 +447,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         shippingParam.insurance = 1
         shippingParam.isPreorder = orderShop.cartResponse.product.isPreorder != 0
         shippingParam.categoryIds = orderShop.cartResponse.product.categoryId.toString()
-        shippingParam.uniqueId = orderShop.cartResponse.cartId.toString()
+        shippingParam.uniqueId = orderShop.cartResponse.cartString
         shippingParam.addressId = _orderPreference?.preference?.address?.addressId ?: 0
         shippingParam.products = listOf(Product(orderProduct.productId.toLong(), orderProduct.isFreeOngkir))
 
