@@ -402,8 +402,8 @@ final class ProductListPresenter
             }
 
             @Override
-            public void onError(Throwable e) {
-                loadMoreDataSubscriberOnErrorIfViewAttached(searchParameter);
+            public void onError(Throwable error) {
+                loadMoreDataSubscriberOnErrorIfViewAttached(searchParameter, error);
             }
         };
     }
@@ -554,11 +554,12 @@ final class ProductListPresenter
         }
     }
 
-    private void loadMoreDataSubscriberOnErrorIfViewAttached(Map<String, Object> searchParameter) {
+    private void loadMoreDataSubscriberOnErrorIfViewAttached(Map<String, Object> searchParameter, Throwable error) {
         if (isViewAttached()) {
             getView().removeLoading();
             getView().hideRefreshLayout();
             getView().showNetworkError(getIntegerFromSearchParameter(searchParameter, SearchApiConst.START));
+            getView().logWarning(UrlParamUtils.generateUrlParamString(searchParameter), error);
         }
     }
 
@@ -599,8 +600,8 @@ final class ProductListPresenter
             }
 
             @Override
-            public void onError(Throwable e) {
-                loadDataSubscriberOnErrorIfViewAttached();
+            public void onError(Throwable error) {
+                loadDataSubscriberOnErrorIfViewAttached(searchParameter, error);
             }
 
             @Override
@@ -624,11 +625,12 @@ final class ProductListPresenter
         }
     }
 
-    private void loadDataSubscriberOnErrorIfViewAttached() {
+    private void loadDataSubscriberOnErrorIfViewAttached(Map<String, Object> searchParameter, Throwable throwable) {
         if (isViewAttached()) {
             getView().removeLoading();
             getView().showNetworkError(0);
             getView().hideRefreshLayout();
+            getView().logWarning(UrlParamUtils.generateUrlParamString(searchParameter), throwable);
         }
     }
 

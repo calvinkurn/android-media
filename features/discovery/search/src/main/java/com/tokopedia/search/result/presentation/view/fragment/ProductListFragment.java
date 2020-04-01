@@ -94,10 +94,12 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -106,6 +108,7 @@ import javax.inject.Inject;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
+import timber.log.Timber;
 
 import static com.tokopedia.discovery.common.constants.SearchApiConst.PREVIOUS_KEYWORD;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.BIG_GRID;
@@ -1621,5 +1624,18 @@ public class ProductListFragment
     @Override
     public void onSaveInstanceState(@NotNull Bundle savedInstanceState) {
         savedInstanceState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
+    }
+
+    @Override
+    public void logWarning(String message, @Nullable Throwable throwable) {
+        Timber.w("P2#DISCOVERY_SEARCH_ERROR#%s;error=%s", message, getStackTrace(throwable));
+    }
+
+    private String getStackTrace(@Nullable Throwable throwable) {
+        if (throwable != null) {
+            return ExceptionUtils.getStackTrace(throwable);
+        }
+
+        return "";
     }
 }
