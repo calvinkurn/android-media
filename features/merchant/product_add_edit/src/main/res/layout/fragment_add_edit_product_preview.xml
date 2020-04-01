@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_add_edit_product_step_sub"
@@ -81,14 +85,15 @@
         app:layout_constraintTop_toBottomOf="@id/add_product_description_step_layout" />
 
     <include
-        android:id="@+id/add_product_shipment_step_layout"
-        layout="@layout/add_edit_product_shipment_step_layout"
+        android:id="@+id/add_product_variant_step_layout"
+        layout="@layout/add_edit_product_variant_step_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
+        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/du_third" />
 
@@ -98,6 +103,64 @@
         android:layout_height="@dimen/spacing_lvl1"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/add_product_variant_step_layout" />
+
+    <include
+        android:id="@+id/add_product_shipment_step_layout"
+        layout="@layout/add_edit_product_shipment_step_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/du_fourth" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/du_fifth"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_lvl1"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
         app:layout_constraintTop_toBottomOf="@id/add_product_shipment_step_layout" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <include
+        android:id="@+id/edit_product_promotion_step_layout"
+        layout="@layout/add_edit_product_promotion_step_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/du_fifth" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/du_sixth"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_lvl1"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/edit_product_promotion_step_layout" />
+
+    <include
+        android:id="@+id/edit_product_status_layout"
+        layout="@layout/edit_product_status_step_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/du_sixth" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

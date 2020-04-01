@@ -8,10 +8,17 @@
     <string name="label_add_product_photo">Foto Produk</string>
     <string name="label_add_product_detail">Detail Produk</string>
     <string name="label_add_product_description">Deskripsi Produk</string>
+    <string name="label_add_product_variant">Varian</string>
     <string name="label_add_product_shipment">Detail Pengiriman</string>
+    <string name="label_add_product_promotion">Promosi</string>
+    <string name="label_edit_product_status">Status Produk</string>
+    <string name="label_product_status_description">Jika status aktif, berarti produkmu\n dapat dicari pembeli</string>
     <string name="preview_label_add_product_photo_tips">Tips Memilih foto produk yang benar</string>
+    <string name="preview_label_add_product_variant_tips">Tips atur stok &amp; harga dengan fitur Varian</string>
     <string name="action_start">Mulai</string>
     <string name="action_change">Ubah</string>
+    <string name="action_add">Tambah</string>
+    <string name="action_done">Selesai</string>
 
     <!-- add edit product photo -->
     <string name="add_product_photo_header">Foto Produk</string>
@@ -150,5 +157,5 @@
     <item name="name" type="id" />
     <item name="category_id" type="id" />
     <item name="selected_catalog" type="id" />
-  
+
 </resources>

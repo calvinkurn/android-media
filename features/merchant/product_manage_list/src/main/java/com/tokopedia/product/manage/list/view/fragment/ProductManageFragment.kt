@@ -102,6 +102,7 @@ import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenter
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.abstraction.common.utils.KMNumbers
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.data.model.FreeDeposit.CREATOR.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
@@ -991,7 +992,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     private fun goToEditProduct(productId: String) {
-        val intent = ProductEditActivity.createInstance(activity, productId)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
+        intent.putExtra(EXTRA_PRODUCT_ID, productId)
         startActivity(intent)
     }
 
@@ -1136,5 +1138,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     companion object {
         private const val LOCAL_PATH_IMAGE_LIST = "loca_img_list"
         private const val DESC_IMAGE_LIST = "desc_img_list"
+        const val EXTRA_PRODUCT_ID = "PRODUCT_ID"
     }
 }
