@@ -1136,9 +1136,11 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     override fun doUpdateCartAndValidateUse(promoRequestValidateUse: ValidateUsePromoRequest) {
         view?.let { cartListView ->
             val cartItemDataList = ArrayList<CartItemData>()
-            for (data in cartListView.getAllAvailableCartDataList()) {
-                if (!data.isError) {
-                    cartItemDataList.add(data)
+            cartListView.getAllSelectedCartDataList()?.let { listCartItemData ->
+                for (data in listCartItemData) {
+                    if (!data.isError) {
+                        cartItemDataList.add(data)
+                    }
                 }
             }
 

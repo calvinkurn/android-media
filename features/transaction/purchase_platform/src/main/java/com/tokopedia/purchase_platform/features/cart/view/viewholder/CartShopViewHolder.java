@@ -138,16 +138,16 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         renderErrorItemHeader(cartShopHolderData);
         renderWarningItemHeader(cartShopHolderData);
 
-        String labelShop = tvShopName.getContext().getResources().getString(R.string.label_toko) + " ";
-        int startLabelShop = labelShop.length();
+        /*String labelShop = tvShopName.getContext().getResources().getString(R.string.label_toko) + " ";
+        int startLabelShop = labelShop.length();*/
         String shopName = cartShopHolderData.getShopGroupAvailableData().getShopName();
 
-        SpannableStringBuilder completeLabelShop = new SpannableStringBuilder();
+        /*SpannableStringBuilder completeLabelShop = new SpannableStringBuilder();
         completeLabelShop.append(labelShop);
         completeLabelShop.append(shopName);
-        completeLabelShop.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), startLabelShop, completeLabelShop.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        completeLabelShop.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), startLabelShop, completeLabelShop.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);*/
 
-        tvShopName.setText(completeLabelShop);
+        tvShopName.setText(shopName);
         tvShopName.setOnClickListener(v -> actionListener.onCartShopNameClicked(cartShopHolderData));
 
         if (cartShopHolderData.getShopGroupAvailableData().isOfficialStore() || cartShopHolderData.getShopGroupAvailableData().isGoldMerchant()) {
