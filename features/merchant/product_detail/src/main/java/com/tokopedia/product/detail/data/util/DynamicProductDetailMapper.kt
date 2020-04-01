@@ -106,6 +106,7 @@ object DynamicProductDetailMapper {
         val listOfFlags = mutableListOf<String>()
         if (dynamicProductInfoP1?.data?.preOrder?.isActive == true) listOfFlags.add(ProductDetailConstant.KEY_PREORDER)
         if (dynamicProductInfoP1?.basic?.isLeasing == true) listOfFlags.add(ProductDetailConstant.KEY_LEASING)
+        if (dynamicProductInfoP1?.data?.campaign?.isUsingOvo == true) listOfFlags.add(ProductDetailConstant.KEY_OVO_DEALS)
 
         return productVariant?.children?.map {
             CartRedirectionParams(it.campaign?.campaignID?.toIntOrNull() ?: 0,
@@ -119,6 +120,7 @@ object DynamicProductDetailMapper {
         val listOfFlags = mutableListOf<String>()
         if (dynamicProductInfoP1?.data?.preOrder?.isActive == true) listOfFlags.add(ProductDetailConstant.KEY_PREORDER)
         if (dynamicProductInfoP1?.basic?.isLeasing == true) listOfFlags.add(ProductDetailConstant.KEY_LEASING)
+        if (dynamicProductInfoP1?.data?.campaign?.isUsingOvo == true) listOfFlags.add(ProductDetailConstant.KEY_OVO_DEALS)
 
         return listOf(CartRedirectionParams(campaignId, campaignTypeId, listOfFlags))
     }

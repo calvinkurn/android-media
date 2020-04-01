@@ -60,7 +60,7 @@ object ProductDetailConstant {
     const val KEY_NORMAL_BUTTON = "normal"
     const val KEY_OCS_BUTTON = "ocs"
     const val KEY_OCC_BUTTON = "occ"
-    const val KEY_OVO_DEALS = "ovodeals"
+    const val KEY_OVO_DEALS = "ovo_deals"
     const val KEY_CHAT = "chat"
     const val KEY_BYME = "byme"
     const val DEFAULT_PAGE_NUMBER = 1
