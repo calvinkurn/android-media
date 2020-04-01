@@ -4,6 +4,7 @@ import com.tokopedia.home_wishlist.InstantTaskExecutorRuleSpek
 import com.tokopedia.home_wishlist.domain.GetWishlistDataUseCase
 import com.tokopedia.home_wishlist.domain.SendTopAdsUseCase
 import com.tokopedia.home_wishlist.model.entity.WishlistItem
+import com.tokopedia.home_wishlist.viewModel.createWishlistTestInstance
 import com.tokopedia.home_wishlist.viewModel.createWishlistViewModel
 import com.tokopedia.home_wishlist.viewModel.givenGetWishlistDataReturnsThis
 import com.tokopedia.home_wishlist.viewModel.givenRepositoryGetRecommendationDataReturnsThis
@@ -19,6 +20,7 @@ class TopAdsTestWishlist : Spek({
     InstantTaskExecutorRuleSpek(this)
     Feature("Impression Task"){
         lateinit var viewModel: WishlistViewModel
+        createWishlistTestInstance()
         val sendTopAdsUseCase by memoized<SendTopAdsUseCase>()
         val getWishlistDataUseCase by memoized<GetWishlistDataUseCase>()
         val getRecommendationUseCase by memoized<GetRecommendationUseCase>()
@@ -65,6 +67,7 @@ class TopAdsTestWishlist : Spek({
 
     Feature("Click Task"){
         lateinit var viewModel: WishlistViewModel
+        createWishlistTestInstance()
         val sendTopAdsUseCase by memoized<SendTopAdsUseCase>()
         val getWishlistDataUseCase by memoized<GetWishlistDataUseCase>()
         val getRecommendationUseCase by memoized<GetRecommendationUseCase>()
