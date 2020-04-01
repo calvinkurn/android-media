@@ -507,7 +507,18 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             val benefitAmount = if (shipping?.logisticPromoViewModel != null && shipping.isApplyLogisticPromo) shipping.logisticPromoViewModel.benefitAmount else 0
             val fee = _orderPreference?.preference?.payment?.fee?.toDouble() ?: 0.0
             val finalShippingPrice = if ((totalShippingPrice - benefitAmount) < 0) 0.0 else (totalShippingPrice - benefitAmount)
-            val subtotal = totalProductPrice + finalShippingPrice + insurancePrice + fee
+            var discountAmount = 0
+            val list1 = validateUsePromoRevampUiModel?.promoUiModel?.benefitSummaryInfoUiModel?.summaries
+                    ?: emptyList()
+            for (summary in list1) {
+                if (summary.type == "discount") {
+                    discountAmount += summary.amount
+                }
+            }
+            if (discountAmount > 0 && benefitAmount > 0 && discountAmount >= benefitAmount) {
+                discountAmount -= benefitAmount
+            }
+            val subtotal = totalProductPrice + finalShippingPrice + insurancePrice + fee - discountAmount
             val minimumAmount = _orderPreference?.preference?.payment?.minimumAmount ?: 0
             val maximumAmount = _orderPreference?.preference?.payment?.maximumAmount ?: 0
             val orderCost = OrderCost(totalProductPrice, subtotal, totalShippingPrice, insurancePrice, fee, benefitAmount, validateUsePromoRevampUiModel?.promoUiModel?.benefitSummaryInfoUiModel?.finalBenefitText
@@ -928,7 +939,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     }
 
     private fun doCheckout(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (Data) -> Unit) {
-//        if (checkIneligiblePromo()) {
+        if (checkIneligiblePromo()) {
             val param = CheckoutOccRequest(Profile(pref.preference.profileId), ParamCart(data = listOf(ParamData(
                     pref.preference.address.addressId,
                     listOf(
@@ -985,7 +996,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 throwable.printStackTrace()
                 globalEvent.value = OccGlobalEvent.Error(throwable)
             })
-//        }
+        }
     }
 
     private fun generateShopPromos(): List<com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.PromoRequest> {

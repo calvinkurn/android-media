@@ -39,6 +39,7 @@ import com.tokopedia.logisticdata.data.constant.InsuranceConstant
 import com.tokopedia.logisticdata.data.constant.LogisticConstant
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.constant.*
@@ -125,11 +126,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 viewModel.lastValidateUsePromoRequest = validateUsePromoRequest
 //                shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest)
             }
-            val defaultTitlePromoButton: String? = data?.getStringExtra(ARGS_CLEAR_PROMO_RESULT)
-            if (defaultTitlePromoButton != null) {
+            val clearPromoUiModel: ClearPromoUiModel? = data?.getParcelableExtra(ARGS_CLEAR_PROMO_RESULT)
+            if (clearPromoUiModel != null) {
                 //reset
                 viewModel.updatePromoState(PromoUiModel().apply {
-                    titleDescription = defaultTitlePromoButton
+                    titleDescription = clearPromoUiModel.successDataModel.defaultEmptyPromoMessage
                 })
 //                shipmentAdapter.checkHasSelectAllCourier(false)
             }
@@ -414,19 +415,21 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private fun setupButtonBayar(orderTotal: OrderTotal) {
         if (orderTotal.isButtonChoosePayment) {
             if (orderTotal.buttonState == ButtonBayarState.NORMAL) {
+                btn_pay.setText(R.string.label_choose_payment)
                 btn_pay.layoutParams.width = convertDpToPixel(160f, context!!)
                 btn_pay.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                btn_pay.setText(R.string.label_choose_payment)
                 btn_pay.isLoading = false
                 btn_pay.isEnabled = true
                 btn_pay.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+                btn_pay.setText(R.string.label_choose_payment)
             } else if (orderTotal.buttonState == ButtonBayarState.DISABLE) {
+                btn_pay.setText(R.string.label_choose_payment)
                 btn_pay.layoutParams.width = convertDpToPixel(160f, context!!)
                 btn_pay.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                btn_pay.setText(R.string.label_choose_payment)
                 btn_pay.isLoading = false
                 btn_pay.isEnabled = false
                 btn_pay.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+                btn_pay.setText(R.string.label_choose_payment)
             } else {
                 btn_pay.layoutParams.width = convertDpToPixel(160f, context!!)
                 btn_pay.layoutParams.height = convertDpToPixel(48f, context!!)
@@ -441,6 +444,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 btn_pay.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_btn_pay_shield, 0, 0, 0)
                 btn_pay.isLoading = false
                 btn_pay.isEnabled = true
+                btn_pay.setText(R.string.pay)
             } else if (orderTotal.buttonState == ButtonBayarState.DISABLE) {
                 btn_pay.setText(R.string.pay)
                 btn_pay.layoutParams.width = convertDpToPixel(140f, context!!)
@@ -448,6 +452,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 btn_pay.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_btn_pay_shield, 0, 0, 0)
                 btn_pay.isLoading = false
                 btn_pay.isEnabled = false
+                btn_pay.setText(R.string.pay)
             } else {
                 btn_pay.layoutParams.width = convertDpToPixel(140f, context!!)
                 btn_pay.layoutParams.height = convertDpToPixel(48f, context!!)
