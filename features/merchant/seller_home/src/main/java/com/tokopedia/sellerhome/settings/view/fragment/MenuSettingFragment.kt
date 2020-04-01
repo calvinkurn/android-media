@@ -270,16 +270,18 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     }
 
     private fun showTermsAndConditions() {
-        val intent = RouteManager.getIntent(context, ApplinkConst.WEBVIEW)
         val termUrl = String.format("%s%s", MOBILE_DOMAIN, PATH_TERM_CONDITION)
-        intent.putExtra(OtherMenuFragment.URL_KEY, termUrl)
+        val url = ApplinkConst.WEBVIEW + "?url=" + termUrl
+        val intent = RouteManager.getIntent(context, url)
+//        intent.putExtra(OtherMenuFragment.URL_KEY, termUrl)
         context?.startActivity(intent)
     }
 
     private fun showPrivacyPolicy() {
-        val intent = RouteManager.getIntent(context, ApplinkConst.WEBVIEW)
         val termUrl = String.format("%s%s", MOBILE_DOMAIN, PATH_PRIVACY_POLICY)
-        intent.putExtra(OtherMenuFragment.URL_KEY, termUrl)
+        val url = ApplinkConst.WEBVIEW + "?url=" + termUrl
+        val intent = RouteManager.getIntent(context, url)
+//        intent.putExtra(OtherMenuFragment.URL_KEY, termUrl)
         context?.startActivity(intent)
     }
 
