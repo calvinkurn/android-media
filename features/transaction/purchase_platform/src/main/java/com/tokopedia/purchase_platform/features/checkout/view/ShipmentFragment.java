@@ -3063,7 +3063,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void setCampaignTimer() {
-        if (shipmentPresenter.getCampaignTimer() != null) {
+        if (shipmentPresenter.getCampaignTimer() != null && shipmentPresenter.getCampaignTimer().getShowTimer()) {
             CampaignTimerUi timer = shipmentPresenter.getCampaignTimer();
 
             long diff = DateHelper.timeSince(timer.getTimerServer(), timer.getTimerExpired());
