@@ -159,7 +159,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         @JvmStatic
         fun getInstanceIntentAppLink(context: Context, extras: Bundle): Intent {
             var webUrl = extras.getString(
-                KEY_URL, TokopediaUrl.Companion.getInstance().WEB
+                KEY_URL, TokopediaUrl.getInstance().WEB
             )
             var showToolbar: Boolean
             var needLogin: Boolean
