@@ -15,8 +15,10 @@ import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.logisticaddaddress.features.dropoff_picker.model.DropoffNearbyModel
 import rx.Emitter
 import rx.Observable
+import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import rx.subscriptions.CompositeSubscription
 import java.util.concurrent.TimeUnit
 
 const val REVERSE_GEOCODE_DELAY = 1000L
@@ -78,6 +80,10 @@ internal fun rxEditText(et: EditText): Observable<String> =
                 .distinctUntilChanged()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+
+internal fun Subscription.toCompositeSubs(subs: CompositeSubscription) {
+    subs.add(this)
+}
 
 internal fun DropoffNearbyModel.getDescription(): String =
         "${this.districtName}, ${this.cityName}, ${this.provinceName}"

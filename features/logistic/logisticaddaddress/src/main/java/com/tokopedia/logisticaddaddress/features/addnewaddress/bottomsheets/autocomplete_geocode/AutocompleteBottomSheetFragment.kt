@@ -20,7 +20,9 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.loca
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
 import com.tokopedia.logisticaddaddress.features.autocomplete.model.SuggestedPlace
 import com.tokopedia.logisticaddaddress.utils.rxEditText
+import com.tokopedia.logisticaddaddress.utils.toCompositeSubs
 import rx.Subscriber
+import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 
 /**
@@ -43,6 +45,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     private lateinit var adapter: AutocompleteBottomSheetAdapter
     private lateinit var actionListener: ActionListener
     private lateinit var icCloseBtn: ImageView
+    private val compositeSubs: CompositeSubscription by lazy { CompositeSubscription() }
 
     @Inject
     lateinit var presenter: AutocompleteBottomSheetPresenter
@@ -144,7 +147,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
                 override fun onError(e: Throwable?) {
                     // no op
                 }
-            })
+            }).toCompositeSubs(compositeSubs)
 
             isFocusableInTouchMode = true
             isFocusable = true
