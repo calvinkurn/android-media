@@ -8,8 +8,8 @@ ext {
             qrscanner                       : ":features:common:qr_scanner",
             developerOptions                : ":features:common:developer_options",
             nps                             : ":features:common:nps",
-            commonTradein                   : ":features:common:common_tradein",
 
+            commonTradein                   : ":features:category:common_tradein",
             agerestriction                  : ":features:category:age_restriction",
             tradeIn                         : ":features:category:tradein",
             basemvvm                        : ":features:category:basemvvm",
