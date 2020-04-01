@@ -1226,7 +1226,8 @@ open class PlayViewStateImpl(
         else
             errorView.setType(GlobalError.SERVER_ERROR)
         if (globalErrorType == GlobalError.SERVER_ERROR
-                || globalErrorType == GlobalError.PAGE_FULL) {
+                || globalErrorType == GlobalError.PAGE_FULL
+                || globalErrorType == GlobalError.NO_CONNECTION) {
             errorView.errorAction.setOnClickListener {
                 loadingView.show()
                 action()
