@@ -46,6 +46,13 @@ class ProductManageTabFilter: RecyclerView {
         tabFilterAdapter?.addElement(filters)
     }
 
+    fun getProductCount(): Int {
+        return tabFilterAdapter?.list
+            ?.filterIsInstance<FilterTabViewModel>()
+            ?.firstOrNull { it.status == selectedFilter?.status }
+            ?.count.orZero()
+    }
+
     fun setFilterCount(filterCount: Int) {
         tabFilterAdapter?.list?.set(TAB_MORE_FILTER_POSITION, MoreFilter(filterCount))
         tabFilterAdapter?.notifyItemChanged(TAB_MORE_FILTER_POSITION)
