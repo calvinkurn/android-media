@@ -47,9 +47,7 @@ interface HomeCategoryListener {
 
     fun onOpenPlayChannelList(appLink: String)
 
-    fun onPlayChannelImpressed(channel: DynamicHomeChannel.Channels, model: PlayCardViewModel, position: Int)
-
-    fun onReviewItemListener(reviewData: SuggestedProductReviewResponse, position: Int, orderId: String, productId: String)
+    fun sendIrisTrackerHashMap(tracker: HashMap<String, Any>)
 
     fun onOpenPlayActivity(root: android.view.View, channelId: String?)
 
