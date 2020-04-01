@@ -18,14 +18,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="ContentDescription"/>
+            tools:ignore="ContentDescription" />
 
         <View
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_1"
             android:background="@color/Neutral_N100"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_card_header"/>
+            app:layout_constraintTop_toBottomOf="@id/iv_card_header" />
 
 
         <com.tokopedia.unifyprinciples.Typography
@@ -120,13 +120,16 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shipping_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
             android:lines="1"
             android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_address_detail"
             app:typographyType="body_3"
@@ -135,11 +138,14 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shipping_duration"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:lines="1"
             android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:lines="1"
             android:textColor="@color/Neutral_N700_68"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tv_shipping_name"
             app:layout_constraintTop_toBottomOf="@+id/tv_shipping_name"
             app:typographyType="body_3"
@@ -167,9 +173,12 @@
             android:layout_marginStart="@dimen/dp_6"
             android:layout_marginLeft="@dimen/dp_6"
             android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
             android:lines="1"
             android:paddingBottom="@dimen/dp_2"
             android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_payment"
             app:layout_constraintTop_toBottomOf="@+id/tv_shipping_duration"
             app:typographyType="body_3"
@@ -178,12 +187,15 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_payment_detail"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
             android:lines="1"
-            android:visibility="gone"
             android:textColor="@color/Neutral_N700_68"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tv_payment_name"
             app:layout_constraintTop_toBottomOf="@+id/tv_payment_name"
             app:typographyType="body_3"
@@ -194,12 +206,12 @@
             android:id="@+id/diviver_bottom"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_1"
-            android:background="@color/Neutral_N100"
             android:layout_marginTop="@dimen/dp_12"
-            app:layout_constraintLeft_toLeftOf="parent"
+            android:background="@color/Neutral_N100"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_payment"/>
+            app:layout_constraintTop_toBottomOf="@id/iv_payment" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_choose_preference"

@@ -49,6 +49,11 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
     private fun showHeader() {
         val profileIndex = preference.profileIndex
         view.tv_card_header.text = profileIndex
+        if (preference.preference.status == 2) {
+            view.lbl_main_preference.visible()
+        } else {
+            view.lbl_main_preference.gone()
+        }
 
         view.iv_edit_preference.setOnClickListener {
             listener.onPreferenceEditClicked(preference)
