@@ -15,11 +15,16 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl7"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
             android:text="@string/create_pin"
             android:textAlignment="center"
             app:typographyType="heading_2"
             app:typographyWeight="bold"
+            android:textColor="@color/Neutral_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -32,6 +37,10 @@
             android:textAlignment="center"
             app:typographyType="body_2"
             android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginStart="@dimen/spacing_lvl4"
             app:layout_constraintTop_toBottomOf="@+id/title" />
 
         <com.tokopedia.pin.PinUnify

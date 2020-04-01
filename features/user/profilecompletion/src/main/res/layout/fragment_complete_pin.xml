@@ -26,6 +26,7 @@
             android:layout_height="wrap_content"
             android:text="@string/title_complete_add_pin"
             app:typographyWeight="bold"
+            android:textColor="@color/Neutral_N700_96"
             app:typographyType="heading_2"
             android:textAlignment="center"
             android:layout_marginTop="@dimen/spacing_lvl3"
