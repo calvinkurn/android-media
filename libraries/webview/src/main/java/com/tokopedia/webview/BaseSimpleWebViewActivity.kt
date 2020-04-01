@@ -55,7 +55,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         }
 
         intent.data?.run {
-            url = getEncodedParameterUrl(this)
+            url = getEncodedParameterUrl(this, url)
 
             val needTitleBar = getQueryParameter(KEY_TITLEBAR)
             needTitleBar?.let {
@@ -90,25 +90,30 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
      * Input: tokopedia://webview?url=https://js.tokopedia.com?url=http://www.tokopedia.com/help?id=4&target=5&title=3
      * Output:https://js.tokopedia.com?target=5&title=3&url=http%3A%2F%2Fwww.tokopedia.com%2Fhelp%3Fid%3D4%26target%3D5%26title%3D3
      */
-    private fun getEncodedParameterUrl(intentUri: Uri): String {
+    private fun getEncodedParameterUrl(intentUri: Uri, defaultUrl: String): String {
         val query = intentUri.query
         return if (query != null && query.contains("$KEY_URL=")) {
-            url = query.substringAfter("$KEY_URL=").decode()
+            var url = query.substringAfter("$KEY_URL=").decode()
             url = validateSymbol(url)
-            if (!url.contains("$KEY_URL=")) {
-                return url
-            }
             return getEncodedParameterUrl2(url)
         } else {
-            ""
+            defaultUrl
         }
     }
 
+    /**
+     * make &url= or ?url= to be encoded
+     */
     private fun getEncodedParameterUrl2(url: String): String {
-        if (!url. contains("&$KEY_URL=") && !url.contains("?$KEY_URL=")) {
+        val delimiterLength = "&$KEY_URL=".length
+        var indexKeyUrl = url.indexOf("&$KEY_URL=")
+        if (indexKeyUrl < 0) {
+            indexKeyUrl = url.indexOf("?$KEY_URL=")
+        }
+        if (indexKeyUrl < 0) {
             return url
         }
-        val url2 = url.substringAfter("$KEY_URL=", "")
+        val url2 = url.substring(indexKeyUrl + delimiterLength, url.length)
         return if (url2.isNotEmpty()) {
             val url2BeforeAnd = url2.substringBefore("&")
             val uriFromUrl = Uri.parse(url.replaceFirst("$KEY_URL=$url2BeforeAnd", "").validateAnd())
