@@ -1,16 +1,19 @@
 package com.tokopedia.productcard
 
 import android.graphics.Paint
+import android.view.View
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.utils.TRANSPARENT_BLACK
+import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.Label
 import kotlinx.android.synthetic.main.product_card_flashsale_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_flashsale_layout.view.*
+import kotlinx.android.synthetic.main.product_card_flashsale_layout.view.labelProductStatus
 
 internal fun ProductCardFlashSaleView.renderProductCardFlashSaleContent(productCardModel: ProductCardFlashSaleModel) {
     renderPdpCountView(productCardModel)
@@ -19,8 +22,8 @@ internal fun ProductCardFlashSaleView.renderProductCardFlashSaleContent(productC
     renderDiscount(productCardModel)
     renderTextPrice(productCardModel)
     renderStockPercentage(productCardModel)
-    renderProductFlashSaleLabel(productCardModel)
     renderStockLabel(productCardModel)
+    renderOutOfStockView(productCardModel)
 }
 
 private fun ProductCardFlashSaleView.renderPdpCountView(productCardModel: ProductCardFlashSaleModel) {
@@ -72,9 +75,12 @@ private fun ProductCardFlashSaleView.renderStockLabel(productCardModel: ProductC
     }
 }
 
-private fun ProductCardFlashSaleView.renderProductFlashSaleLabel(productCardModel: ProductCardFlashSaleModel) {
-    labelProductStatus?.shouldShowWithAction(productCardModel.stockBarPercentage == 100) {
-        setOutOfStock(it)
+private fun ProductCardFlashSaleView.renderOutOfStockView(productCardModel: ProductCardFlashSaleModel) {
+    if (productCardModel.isOutOfStock) {
+        labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
+        oosOverlay.visibility = View.VISIBLE
+    } else {
+        oosOverlay.visibility = View.GONE
     }
 }
 

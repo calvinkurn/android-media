@@ -186,7 +186,12 @@ class DynamicChannelSprintViewHolder(sprintView: View,
                     discountPercentage = element.discount,
                     pdpViewCount = element.productViewCountFormatted,
                     stockBarLabel = element.label,
-                    stockBarPercentage = element.soldPercentage
+                    stockBarPercentage = element.soldPercentage,
+                    labelGroupList = listOf(ProductCardFlashSaleModel.LabelGroup(
+                            position = element.labelGroup.position,
+                            type = element.labelGroup.type,
+                            title = element.labelGroup.title
+                    ))
             )
         }
     }
