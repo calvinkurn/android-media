@@ -3,9 +3,19 @@ package com.tokopedia.product.manage.feature.list
 import android.accounts.NetworkErrorException
 import com.tokopedia.product.manage.data.createProduct
 import com.tokopedia.product.manage.data.createProductViewModel
-import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.list.view.model.SetFeaturedProductResult
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
+import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaData
+import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaResponse
+import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaWrapper
+import com.tokopedia.product.manage.feature.filter.data.model.Tab
+import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel.*
+import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult
+import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.*
+import com.tokopedia.product.manage.feature.list.view.model.ShopInfoResult
+import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProduct
+import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProductResult
+import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProductResult.*
 import com.tokopedia.product.manage.feature.quickedit.common.data.model.ProductUpdateV3Data
 import com.tokopedia.product.manage.feature.quickedit.common.data.model.ProductUpdateV3Response
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
@@ -21,19 +31,22 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductList
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
-import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
-import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOrderOption
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.FilterByCondition.*
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption.*
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOrderOption.*
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCore
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
-import junit.framework.Assert.*
+import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
 
     @Test
-    fun `when_editPrice_success__should_return_edit_price_success_result`() {
+    fun `when editPrice success should return_edit price success result`() {
         runBlocking {
             val productId = "0"
             val price = "10000"
@@ -54,7 +67,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `when_editStock_success__should_return_edit_stock_success_result`() {
+    fun `when editStock success should return edit stock success result`() {
         runBlocking {
             val productId = "0"
             val stock = 0
@@ -76,7 +89,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `when_deleteProduct_success__should_return_delete_product_success_result`() {
+    fun `when deleteProduct success should return delete product success result`() {
         runBlocking {
             val productId = "0"
             val productName = "Amazing Product"
@@ -96,7 +109,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `when_editPrice_fail__should_return_edit_price_fail_result`() {
+    fun `when editPrice fail should return edit price fail result`() {
         runBlocking {
             val productId = "0"
             val price = "10000"
@@ -118,7 +131,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `when_editStock_fail__should_return_edit_stock_fail_result`() {
+    fun `when editStock fail should return edit stock fail result`() {
         runBlocking {
             val productId = "0"
             val stock = 0
@@ -141,7 +154,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `when_deleteProduct_fail__should_return_delete_product_fail_result`() {
+    fun `when deleteProduct fail should return delete product fail result`() {
         runBlocking {
             val productId = "0"
             val productName = "Amazing Product"
@@ -162,8 +175,8 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `when_setFilter_should_update_filter_accordingly`() {
-        val selectedFilter = listOf(FilterOption.FilterByCondition.CashBackOnly, FilterOption.FilterByCondition.NewOnly)
+    fun `when setFilter should update filter accordingly`() {
+        val selectedFilter = listOf(CashBackOnly, NewOnly)
 
         viewModel.setSelectedFilter(selectedFilter)
 
@@ -171,10 +184,10 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `when_setFilterOptionWrapper_should_update_filterOptionWrapper_accordingly`() {
+    fun `when setFilterOptionWrapper should update filterOptionWrapper accordingly`() {
         val filterOptionWrapper = FilterOptionWrapper(
-                SortOption.SortByName(SortOrderOption.ASC),
-                listOf(FilterOption.FilterByCondition.CashBackOnly, FilterOption.FilterByCondition.NewOnly),
+                SortByName(ASC),
+                listOf(CashBackOnly, NewOnly),
                 listOf(true, true, false, true))
 
         viewModel.setFilterOptionWrapper(filterOptionWrapper)
@@ -225,8 +238,8 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
                 name = "Tolak Angin Madu", price = price, priceFormatted = priceFormatted))
             val expectedProductList = Success(productViewModelList)
 
-            verifyGetProductListCalled()
-            verifyGetProductListResultEquals(expectedProductList)
+            viewModel.productListResult
+                .verifySuccessEquals(expectedProductList)
         }
     }
 
@@ -241,9 +254,204 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
 
             val expectedError = Fail(exception)
 
-            verifyGetProductListCalled()
-            verifyGetProductListErrorEquals(expectedError)
+            viewModel.productListResult
+                .verifyErrorEquals(expectedError)
         }
+    }
+
+    @Test
+    fun `get filters tab should map response to filter tab result`() {
+        val tabs = listOf(Tab(id = "ACTIVE", name = "Active", value = "10"))
+        val productListMetaData = ProductListMetaData(tabs = tabs)
+        val productListMeta = ProductListMetaWrapper(productListMetaData = productListMetaData)
+        val productListMetaResponse = ProductListMetaResponse(productListMeta)
+
+        val filterList = listOf(CashBackOnly, FeaturedOnly)
+        val filterOptions = FilterOptionWrapper(filterOptions = filterList, sortOption = SortByName(ASC))
+
+        onGetFiltersTab_thenReturn(productListMetaResponse)
+
+        viewModel.setFilterOptionWrapper(filterOptions)
+        viewModel.getFiltersTab()
+
+        val filterTabList = listOf(MoreFilter(3),Active(10))
+        val expectedResult = Success(GetFilterTabResult(filterTabList, 10))
+
+        viewModel.productFiltersTab
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `get filters tab should fail with exception`() {
+        runBlocking {
+            val exception = NullPointerException()
+
+            onGetFiltersTab_thenError(exception)
+
+            viewModel.getFiltersTab()
+
+            val expectedError = Fail(exception)
+
+            viewModel.productFiltersTab
+                .verifyErrorEquals(expectedError)
+        }
+    }
+
+    @Test
+    fun `get gold merchant status should set shop info result success`() {
+        runBlocking {
+            val isGoldMerchant = true
+            val isOfficialStore = true
+            val shopDomain = "http://www.tokopedia.com/#1"
+            val shopCore = ShopCore(domain = shopDomain)
+            val goldOS = ShopInfo.GoldOS(isGold = 1, isOfficial = 1)
+            val shopInfoResponse = ShopInfo(shopCore = shopCore, goldOS = goldOS)
+
+            onGetShopInfo_thenReturn(shopInfoResponse)
+
+            viewModel.getGoldMerchantStatus()
+
+            val expectedResult = Success(ShopInfoResult(shopDomain, isGoldMerchant, isOfficialStore))
+
+            viewModel.shopInfoResult
+                .verifySuccessEquals(expectedResult)
+        }
+    }
+
+    @Test
+    fun `get gold merchant status should fail with exception`() {
+        runBlocking {
+            val exception = NullPointerException()
+
+            onGetShopInfo_thenError(exception)
+
+            viewModel.getGoldMerchantStatus()
+
+            val expectedError = Fail(exception)
+
+            viewModel.shopInfoResult
+                .verifyErrorEquals(expectedError)
+        }
+    }
+
+    @Test
+    fun `edit multiple products by status should return success and failed response`() {
+        val status = ProductStatus.ACTIVE
+        val successResponse = MultiEditProductResult(productID = "1", result = Result(isSuccess = true))
+        val failedResponse =  MultiEditProductResult(productID = "2", result = Result(isSuccess = false))
+        val response = MultiEditProduct(listOf(successResponse, failedResponse))
+
+        onMultiEditProducts_thenReturn(response)
+
+        viewModel.editProductsByStatus(listOf("1", "2"), status)
+
+        val expectedResult = Success(EditByStatus(status, listOf(successResponse), listOf(failedResponse)))
+
+        viewModel.multiEditProductResult
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `edit multiple products by status should fail with exception`() {
+        val status = ProductStatus.ACTIVE
+        val exception = NullPointerException()
+
+        onMultiEditProducts_thenError(exception)
+
+        viewModel.editProductsByStatus(listOf("1", "2"), status)
+
+        val expectedError = Fail(exception)
+
+        viewModel.multiEditProductResult
+            .verifyErrorEquals(expectedError)
+    }
+
+    @Test
+    fun `edit multiple products by etalase should return success and failed response`() {
+        val menuId = "1"
+        val menuName = "Etalase Toko"
+        val successResponse = MultiEditProductResult(productID = "1", result = Result(isSuccess = true))
+        val failedResponse =  MultiEditProductResult(productID = "2", result = Result(isSuccess = false))
+        val response = MultiEditProduct(listOf(successResponse, failedResponse))
+
+        onMultiEditProducts_thenReturn(response)
+
+        viewModel.editProductsEtalase(listOf("1", "2"), menuId, menuName)
+
+        val expectedResult = Success(EditByMenu(menuId, menuName, listOf(successResponse), listOf(failedResponse)))
+
+        viewModel.multiEditProductResult
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `edit multiple products by etalase should fail with exception`() {
+        val menuId = "1"
+        val menuName = "Etalase Toko"
+        val exception = NullPointerException()
+
+        onMultiEditProducts_thenError(exception)
+
+        viewModel.editProductsEtalase(listOf("1", "2"), menuId, menuName)
+
+        val expectedError = Fail(exception)
+
+        viewModel.multiEditProductResult
+            .verifyErrorEquals(expectedError)
+    }
+
+    @Test
+    fun `get free claim should fail with exception`() {
+        val menuId = "1"
+        val menuName = "Etalase Toko"
+        val exception = NullPointerException()
+
+        onMultiEditProducts_thenError(exception)
+
+        viewModel.editProductsEtalase(listOf("1", "2"), menuId, menuName)
+
+        val expectedError = Fail(exception)
+
+        viewModel.multiEditProductResult
+            .verifyErrorEquals(expectedError)
+    }
+
+    @Test
+    fun `get total product count should return total product count from filters tab`() {
+        val tabs = listOf(Tab(id = "ACTIVE", name = "Active", value = "10"))
+        val productListMetaData = ProductListMetaData(tabs = tabs)
+        val productListMeta = ProductListMetaWrapper(productListMetaData = productListMetaData)
+        val productListMetaResponse = ProductListMetaResponse(productListMeta)
+
+        onGetFiltersTab_thenReturn(productListMetaResponse)
+
+        viewModel.getFiltersTab()
+
+        val expectedProductCount = 10
+        val actualProductCount = viewModel.getTotalProductCount()
+
+        assertEquals(expectedProductCount, actualProductCount)
+    }
+
+    @Test
+    fun `toggle multi select should switch multi select enabled state`() {
+        viewModel.toggleMultiSelect()
+
+        viewModel.toggleMultiSelect
+            .verifyValueEquals(true)
+
+        viewModel.toggleMultiSelect()
+
+        viewModel.toggleMultiSelect
+            .verifyValueEquals(false)
+    }
+
+    private fun onMultiEditProducts_thenError(exception: NullPointerException) {
+        coEvery { multiEditProductUseCase.execute(any()) } coAnswers { throw exception }
+    }
+
+    private fun onMultiEditProducts_thenReturn(response: MultiEditProduct) {
+        coEvery { multiEditProductUseCase.execute(any()) } returns response
     }
 
     private suspend fun onEditPrice_thenReturn(productUpdateV3Response: ProductUpdateV3Response) {
@@ -270,6 +478,22 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
         coEvery { getProductListUseCase.execute(any()) } coAnswers { throw error }
     }
 
+    private fun onGetFiltersTab_thenReturn(response: ProductListMetaResponse) {
+        coEvery { getProductListMetaUseCase.executeOnBackground() } returns response
+    }
+
+    private fun onGetFiltersTab_thenError(error: Throwable) {
+        coEvery { getProductListMetaUseCase.executeOnBackground() } coAnswers { throw error }
+    }
+
+    private fun onGetShopInfo_thenReturn(shopInfoResponse: ShopInfo) {
+        coEvery { gqlGetShopInfoUseCase.executeOnBackground() } returns shopInfoResponse
+    }
+
+    private fun onGetShopInfo_thenError(error: Throwable) {
+        coEvery { gqlGetShopInfoUseCase.executeOnBackground() } coAnswers { throw error }
+    }
+
     private fun verifyEditPriceUseCaseCalled() {
         coVerify { editPriceUseCase.executeOnBackground() }
     }
@@ -284,10 +508,6 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
 
     private fun verifySetFeaturedProductUseCaseCalled() {
         coVerify { setFeaturedProductUseCase.executeOnBackground() }
-    }
-
-    private fun verifyGetProductListCalled() {
-        coVerify { getProductListUseCase.execute(any()) }
     }
 
     private fun verifyEditPriceResponseSuccess(expectedResponse: Success<EditPriceResult>) {
@@ -336,15 +556,5 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     private fun verifyFilterOptionWrapperEquals(expectedFilterOptionWrapper: FilterOptionWrapper) {
         val actualFilterOptionWrapper = viewModel.selectedFilterAndSort.value
         assertEquals(expectedFilterOptionWrapper, actualFilterOptionWrapper)
-    }
-
-    private fun verifyGetProductListResultEquals(expectedResult: Success<List<ProductViewModel>>) {
-        val actualResult = viewModel.productListResult.value
-        assertEquals(expectedResult, actualResult)
-    }
-
-    private fun verifyGetProductListErrorEquals(expectedError: Fail) {
-        val actualResult = viewModel.productListResult.value as Fail
-        assertEquals(expectedError.throwable::class.java, actualResult.throwable::class.java)
     }
 }

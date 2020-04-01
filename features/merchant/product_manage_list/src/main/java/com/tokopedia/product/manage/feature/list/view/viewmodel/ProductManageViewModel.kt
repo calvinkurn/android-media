@@ -122,7 +122,7 @@ class ProductManageViewModel @Inject constructor(
     fun getGoldMerchantStatus() {
         launchCatchError(block = {
             val status = withContext(dispatchers.io) {
-                val shopId: List<Int> = listOf(userSessionInterface.shopId.toInt())
+                val shopId: List<Int> = listOf(userSessionInterface.shopId.toIntOrZero())
                 gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(shopId)
 
                 val shopInfo = gqlGetShopInfoUseCase.executeOnBackground()
@@ -323,9 +323,7 @@ class ProductManageViewModel @Inject constructor(
                 override fun onError(e: Throwable) {
                     _getFreeClaimResult.value = Fail(e)
                 }
-
             })
-
     }
 
     fun getPopupsInfo(productId: String) {
