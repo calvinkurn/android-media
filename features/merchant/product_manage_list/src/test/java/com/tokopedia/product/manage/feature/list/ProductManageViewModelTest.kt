@@ -175,9 +175,23 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `when setFilter should update filter accordingly`() {
+    fun `when setFilter with no filter option wrapper should update filter accordingly`() {
         val selectedFilter = listOf(CashBackOnly, NewOnly)
 
+        viewModel.setSelectedFilter(selectedFilter)
+
+        verifySelectedFiltersEquals(selectedFilter)
+    }
+
+    @Test
+    fun `when setFilter should update filter accordingly`() {
+        val filterOptionWrapper = FilterOptionWrapper(
+                SortByName(ASC),
+                listOf(CashBackOnly, NewOnly),
+                listOf(true, true, false, true))
+        val selectedFilter = listOf(CashBackOnly, NewOnly)
+
+        viewModel.setFilterOptionWrapper(filterOptionWrapper)
         viewModel.setSelectedFilter(selectedFilter)
 
         verifySelectedFiltersEquals(selectedFilter)
