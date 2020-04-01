@@ -20,7 +20,7 @@ import org.json.JSONObject
  * https://docs.google.com/spreadsheets/d/1AZjuQ_dg25EvEEWmE8MPMo0f1_DT4IyZPaNpt4cxidA/edit#gid=0
  */
 
-fun <R, T : SettingShopInfoImpressionTrackable> R.sendSettingShopInfoImpressionTracking(uiModel: T, action: (T) -> Unit) {
+inline fun <R, T : SettingShopInfoImpressionTrackable> R.sendSettingShopInfoImpressionTracking(uiModel: T, crossinline action: (T) -> Unit) {
     when(this) {
         is ImageView -> {
             addOnImpressionListener(uiModel.impressHolder) { action.invoke(uiModel) }

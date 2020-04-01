@@ -10,4 +10,5 @@ interface SettingShopInfoClickTrackable {
         get() = OTHERS_TAB
     val clickEventAction: String
     val clickEventLabel: String
+        get() = ""
 }

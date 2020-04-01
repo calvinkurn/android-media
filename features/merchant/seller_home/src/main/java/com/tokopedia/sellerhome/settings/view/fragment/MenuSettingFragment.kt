@@ -20,9 +20,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
-import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant
-import com.tokopedia.sellerhome.settings.analytics.SettingTrackingListener
-import com.tokopedia.sellerhome.settings.analytics.sendShopInfoImpressionData
+import com.tokopedia.sellerhome.settings.analytics.*
 import com.tokopedia.sellerhome.settings.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.sellerhome.settings.view.uimodel.DividerUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.IndentedSettingTitleUiModel
@@ -31,6 +29,7 @@ import com.tokopedia.sellerhome.settings.view.uimodel.SettingTitleMenuUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.base.DividerType
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingShopInfoImpressionTrackable
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.OtherSettingsUiModel
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_menu_setting.*
@@ -53,6 +52,10 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
         private const val DEVELOPER_OPTION_INDEX = 19
 
+        private const val LOGOUT_BUTTON_NAME = "Logout"
+        private const val TERM_CONDITION_BUTTON_NAME = "Syarat dan Ketentuan"
+        private const val PRIVACY_POLICY_BUTTON_NAME = "Kebijakan Privasi"
+
         @JvmStatic
         fun createInstance(): MenuSettingFragment = MenuSettingFragment()
     }
@@ -62,6 +65,16 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
     @DrawableRes
     private val logoutIconDrawable = R.drawable.sah_qc_launcher2
+
+    private val logoutUiModel by lazy {
+        OtherSettingsUiModel(LOGOUT_BUTTON_NAME)
+    }
+    private val termsAndConditionUiModel by lazy {
+        OtherSettingsUiModel(TERM_CONDITION_BUTTON_NAME)
+    }
+    private val privacyPolicyUiModel by lazy {
+        OtherSettingsUiModel(PRIVACY_POLICY_BUTTON_NAME)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_menu_setting, container, false)
@@ -157,14 +170,43 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         adapter.notifyDataSetChanged()
         renderList(settingList)
 
-        logoutLayout.run {
-            appVersionText.text = getString(R.string.setting_application_version, GlobalConfig.VERSION_NAME)
-            setOnClickListener { showLogoutDialog() }
-        }
+        setupLogoutView()
+        setupExtraSettingView()
+    }
 
-        tcLayout.run {
-            settingTC.setOnClickListener { showTermsAndConditions() }
-            settingPrivacy.setOnClickListener { showPrivacyPolicy() }
+    private fun setupLogoutView() {
+        logoutLayout?.run {
+            sendSettingShopInfoImpressionTracking(logoutUiModel) {
+                context?.run { it.sendShopInfoImpressionData(this, userSession) }
+            }
+            appVersionText.text = getString(R.string.setting_application_version, GlobalConfig.VERSION_NAME)
+            setOnClickListener {
+                logoutUiModel.sendSettingShopInfoClickTracking()
+                showLogoutDialog()
+            }
+        }
+    }
+
+    private fun setupExtraSettingView() {
+        tcLayout?.run {
+            settingTC?.run {
+                this.sendSettingShopInfoImpressionTracking(termsAndConditionUiModel) {
+                    context?.run { it.sendShopInfoImpressionData(this, userSession) }
+                }
+                setOnClickListener {
+                    termsAndConditionUiModel.sendSettingShopInfoClickTracking()
+                    showTermsAndConditions()
+                }
+            }
+            settingPrivacy?.run {
+                this.sendSettingShopInfoImpressionTracking(privacyPolicyUiModel) {
+                    context?.run { it.sendShopInfoImpressionData(this, userSession) }
+                }
+                setOnClickListener {
+                    privacyPolicyUiModel.sendSettingShopInfoClickTracking()
+                    showPrivacyPolicy()
+                }
+            }
         }
     }
 

@@ -7,6 +7,7 @@ object SettingTrackingConstant {
     const val CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer"
     const val CLICK_SHOP_SETTING = "clickShopSetting"
     const val VIEW_NAVIGATION_IRIS = "viewNavigationIris"
+    const val VIEW_SHOP_SETTING_IRIS = "viewShopSettingIris"
     const val OTHERS_TAB = "others tab"
 
     const val GOLD_MERCHANT = "gold_merchant"
@@ -39,5 +40,7 @@ object SettingTrackingConstant {
     const val SHOP_SETTING = "shop settings"
     const val ACCOUNT_SETTING = "account settings"
     const val APP_SETTING = "app settings"
+    const val APPLICATION_SETTING = "application settings"
+    const val OTHER_SETTING = "other settings"
     
 }
