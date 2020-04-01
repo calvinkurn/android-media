@@ -237,8 +237,9 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun onClickProductFilter(filter: FilterTabViewModel, viewHolder: FilterTabViewHolder, tabName: String) {
+        clearAllData()
         showLoadingProgress()
-        setMultiSelectEnabled(false)
+        disableMultiSelect()
         clickStatusFilterTab(filter, viewHolder)
         ProductManageTracking.eventInventory(tabName)
     }
@@ -316,9 +317,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
         searchBar.searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                searchBar.clearFocus()
+                clearAllData()
                 showLoadingProgress()
-                getProductList(isRefresh = true)
+                getProductList()
+                searchBar.clearFocus()
                 return@setOnEditorActionListener true
             }
             false
@@ -395,7 +397,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
         renderCheckedView()
         getFiltersTab(withDelay = true)
-        getProductList(isRefresh = true, withDelay = true)
+        getProductList(withDelay = true)
     }
 
     private fun renderCheckedView() {
@@ -568,10 +570,11 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
         tabFilters.selectedFilter?.let {
             filterProductListByStatus(it.status)
+            renderMultiSelectProduct()
         }
 
-        getProductList(withDelay = true)
         getFiltersTab(withDelay = true)
+        getProductList(isRefresh = true, withDelay = true)
     }
 
     private fun onSuccessSetCashback(setCashbackResult: SetCashbackResult) {
@@ -623,8 +626,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
         productManageListAdapter.deleteProduct(productId)
         renderMultiSelectProduct()
-        getProductList(withDelay = true)
         getFiltersTab(withDelay = true)
+        getProductList(isRefresh = true, withDelay = true)
     }
 
     private fun showMessageToast(message: String) {
@@ -769,10 +772,11 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
                 tabFilters.selectedFilter?.let {
                     filterProductListByStatus(it.status)
+                    renderMultiSelectProduct()
                 }
 
-                getProductList(withDelay = true)
                 getFiltersTab(withDelay = true)
+                getProductList(isRefresh = true, withDelay = true)
             }
         }
 
@@ -816,7 +820,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         showPageLoading()
         hideSnackBarRetry()
         resetProductList()
-        setMultiSelectEnabled(false)
+        disableMultiSelect()
 
         getFiltersTab(withDelay = true)
         getProductList(withDelay = true)
@@ -1337,7 +1341,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 is Success -> {
                     initHeaderView(it.data)
                     showProductList(it.data)
-                    setMultiSelectEnabled(true)
+                    enableMultiSelect()
                     renderMultiSelectProduct()
                 }
                 is Fail -> showErrorToast()
@@ -1405,9 +1409,15 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         renderCheckedView()
     }
 
-    private fun setMultiSelectEnabled(enabled: Boolean) {
-        checkBoxSelectAll.isEnabled = enabled
-        textMultipleSelect.isEnabled = enabled
+    private fun enableMultiSelect() {
+        setupMultiSelect()
+        checkBoxSelectAll.isEnabled = true
+        textMultipleSelect.isEnabled = true
+    }
+
+    private fun disableMultiSelect() {
+        checkBoxSelectAll.isEnabled = false
+        textMultipleSelect.isEnabled = false
     }
 
     private fun observeDeleteProduct() {
@@ -1421,8 +1431,9 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun observeFilter() {
         observe(viewModel.selectedFilterAndSort) {
+            clearAllData()
+            getProductList()
             setTabFilterCount(it)
-            getProductList(isRefresh = true)
         }
     }
 

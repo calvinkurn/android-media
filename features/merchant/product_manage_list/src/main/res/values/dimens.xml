@@ -13,7 +13,7 @@
     <dimen name="product_manage_list_image_horizontal_spacing">14dp</dimen>
     <dimen name="product_manage_vertical_spacing">12dp</dimen>
     <dimen name="product_manage_text_stock_vertical_spacing">6dp</dimen>
-    <dimen name="product_manage_button_height">32dp</dimen>
+    <dimen name="product_manage_button_width">28dp</dimen>
     <dimen name="product_manage_button_horizontal_spacing_long">12dp</dimen>
     <dimen name="product_manage_more_option_vertical_spacing">37dp</dimen>
     <dimen name="product_manage_container_spacing">17dp</dimen>
