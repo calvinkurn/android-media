@@ -267,16 +267,16 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
             context: Context,
             intent: Intent,
             notificationId: Int,
-            baseNotificationModel: BaseNotificationModel
+            notificationData: BaseNotificationModel
     ) {
         intent.getParcelableExtra<ActionButton?>(ACTION_BUTTON_EXTRA)?.apply {
             pdActions?.let {
-                handleShareActionButtonClick(context, it, baseNotificationModel)
+                handleShareActionButtonClick(context, it, notificationData)
             }?: let {
                 // validate if the action button is ATC
                 it.type?.let { type ->
                     if (type == ADD_TO_CART) {
-                        handleAddToCartProduct(it.addToCart)
+                        handleAddToCartProduct(notificationData, it.addToCart)
                     }
                 }
 
@@ -290,7 +290,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                 sendElementClickPushEvent(
                         context,
                         IrisAnalyticsEvents.PUSH_CLICKED,
-                        baseNotificationModel,
+                        notificationData,
                         CMConstant.NotificationType.GENERAL,
                         it.element_id
                 )
@@ -300,11 +300,11 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
     }
 
-    private fun handleAddToCartProduct(addToCart: AddToCart?) {
-        addToCart?.let {
-            val productId = it.productId.toString()
-            val shopId = it.shopId
-            dataManager.atcProduct(productId, shopId)
+    private fun handleAddToCartProduct(data: BaseNotificationModel?, addToCart: AddToCart?) {
+        data?.let {
+            val templateKey = it.campaignId.toString()
+            val userId = it.userId?: ""
+            dataManager.atcProduct(templateKey, userId, addToCart)
         }
     }
 
