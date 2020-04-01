@@ -126,13 +126,13 @@ object DynamicProductDetailMapper {
     }
 
     fun generateButtonAction(it: String, atcButton: Boolean, leasing: Boolean): Int {
-        if (atcButton) return ProductDetailConstant.ATC_BUTTON
-        if (leasing) return ProductDetailConstant.LEASING_BUTTON
-        return when (it) {
-            ProductDetailConstant.KEY_NORMAL_BUTTON -> {
+        return when {
+            atcButton -> ProductDetailConstant.ATC_BUTTON
+            leasing -> ProductDetailConstant.LEASING_BUTTON
+            it == ProductDetailConstant.KEY_NORMAL_BUTTON -> {
                 ProductDetailConstant.BUY_BUTTON
             }
-            ProductDetailConstant.KEY_OCS_BUTTON -> {
+            it == ProductDetailConstant.KEY_OCS_BUTTON -> {
                 ProductDetailConstant.OCS_BUTTON
             }
             else -> ProductDetailConstant.BUY_BUTTON
