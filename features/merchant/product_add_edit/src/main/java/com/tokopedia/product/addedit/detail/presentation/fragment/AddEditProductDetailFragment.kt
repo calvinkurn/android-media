@@ -48,6 +48,8 @@ import com.tokopedia.product.addedit.detail.presentation.adapter.NameRecommendat
 import com.tokopedia.product.addedit.detail.presentation.adapter.WholeSalePriceInputAdapter
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_NAME
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_NEW
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_USED
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_GET_CATALOG
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_GET_CATEGORY
@@ -898,7 +900,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
                 productPriceField.getTextFloatOrZero(),
                 productStockField.getTextIntOrZero(),
                 productMinOrderField.getTextIntOrZero(),
-                if (isProductConditionNew) "NEW" else "USED",
+                if (isProductConditionNew) CONDITION_NEW else CONDITION_USED,
                 productSkuField.getText(),
                 productPhotoPaths,
                 PreorderInputModel(

@@ -9,11 +9,7 @@ class GetProductVariantRepository @Inject constructor(
         private val service: ProductVariantService
 ) {
     suspend fun getVariant(categoryId: String): List<ProductVariantByCatModel> {
-        try {
-            val response = service.getVariant(categoryId)
-            return response.data
-        } catch (e: Exception) {
-            throw e
-        }
+        val response = service.getVariant(categoryId)
+        return response.data
     }
 }

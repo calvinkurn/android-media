@@ -127,6 +127,7 @@
     <string name="message_tooltip_variant_tips_2">Klik ‘Tambah Varian Produk’.</string>
     <string name="message_tooltip_variant_tips_3">Atur kategori varian dan lengkapi informasinya.</string>
     <string name="message_tooltip_variant_tips_4">Klik ‘Terapkan’.</string>
+    <string name="error_cannot_get_variants">Tidak bisa mendapatkan data variant</string>
 
     <!--Shipment-->
     <string name="label_shipment_insurance">Asuransi pengiriman</string>

@@ -52,6 +52,9 @@ import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProdu
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.add_edit_product_description_input_layout.*
 import kotlinx.android.synthetic.main.add_edit_product_variant_input_layout.*
 import kotlinx.android.synthetic.main.add_edit_product_video_input_layout.*
@@ -156,9 +159,23 @@ class AddEditProductDescriptionFragment(
             moveToDescriptionActivity()
         }
 
-        descriptionViewModel.homeTicker.observe(viewLifecycleOwner, Observer { result ->
-            showVariantDialog(result.data)
+        descriptionViewModel.productVariant.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Success -> showVariantDialog(result.data)
+                is Fail -> showVariantErrorToast(getString(R.string.title_tooltip_description_tips))
+            }
         })
+    }
+
+    private fun showVariantErrorToast(errorMessage: String) {
+        view?.let {
+            Toaster.make(it, errorMessage,
+                    type =  Toaster.TYPE_ERROR,
+                    actionText = getString(R.string.title_try_again),
+                    clickListener =  View.OnClickListener {
+                descriptionViewModel.getVariants(categoryId)
+            })
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

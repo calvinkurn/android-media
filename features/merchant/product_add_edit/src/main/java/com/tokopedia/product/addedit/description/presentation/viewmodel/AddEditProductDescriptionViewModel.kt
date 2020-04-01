@@ -7,6 +7,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -17,19 +19,19 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         private val getProductVariantUseCase: GetProductVariantUseCase
 ) : BaseViewModel(coroutineDispatcher) {
 
-    private val _homeTicker = MutableLiveData<Success<List<ProductVariantByCatModel>>>()
-    val homeTicker: LiveData<Success<List<ProductVariantByCatModel>>>
-        get() = _homeTicker
+    private val _productVariant = MutableLiveData<Result<List<ProductVariantByCatModel>>>()
+    val productVariant: LiveData<Result<List<ProductVariantByCatModel>>>
+        get() = _productVariant
 
     fun getVariants(categoryId: String) {
         launchCatchError(block = {
-            _homeTicker.value = Success(withContext(Dispatchers.IO) {
+            _productVariant.value = Success(withContext(Dispatchers.IO) {
                 getProductVariantUseCase.params =
                         GetProductVariantUseCase.createRequestParams(categoryId)
                 getProductVariantUseCase.executeOnBackground()
             })
         }, onError = {
-            // no-op
+            _productVariant.value = Fail(it)
         })
     }
 }
