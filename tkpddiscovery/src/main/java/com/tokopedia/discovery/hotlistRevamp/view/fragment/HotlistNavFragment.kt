@@ -701,6 +701,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun topAdsTrackerUrlTrigger(url: String) {
+        ImpresionTask().execute(url)
     }
 
     override fun onDestroyView() {
