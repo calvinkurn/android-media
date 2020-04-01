@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.features.checkout.view.viewholder
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata
 import kotlinx.android.synthetic.main.item_promo_red_state.view.*
@@ -29,8 +30,19 @@ class PromoNotEligibleViewHolder(val view: View) : RecyclerView.ViewHolder(view)
             itemView.image_merchant.gone()
         }
         itemView.label_merchant.text = model.shopName
-        itemView.label_promo_title.text = model.promoTitle
-        itemView.label_promo_error_message.text = model.errorMessage
+        if (model.promoTitle.isNotBlank()) {
+            itemView.label_promo_title.text = model.promoTitle
+            itemView.label_promo_title.show()
+        } else {
+            itemView.label_promo_title.gone()
+        }
+
+        if (model.errorMessage.isNotBlank()) {
+            itemView.label_promo_error_message.text = model.errorMessage
+            itemView.label_promo_error_message.show()
+        } else {
+            itemView.label_promo_error_message.gone()
+        }
     }
 
 }

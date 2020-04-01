@@ -36,7 +36,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                                       private val tickerAnnouncementActionListener: TickerAnnouncementActionListener?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val cartDataList = ArrayList<Any>()
-    private val compositeSubscription = CompositeSubscription()
+    private var compositeSubscription = CompositeSubscription()
 
     val insuranceCartShops = ArrayList<InsuranceCartShops>()
     private val insuranceRecommendationList = ArrayList<InsuranceCartShops>()
@@ -305,6 +305,9 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         when (viewType) {
             CartShopViewHolder.TYPE_VIEW_ITEM_SHOP -> {
+                if (compositeSubscription.isUnsubscribed) {
+                    compositeSubscription = CompositeSubscription()
+                }
                 val view = LayoutInflater.from(parent.context)
                         .inflate(CartShopViewHolder.TYPE_VIEW_ITEM_SHOP, parent, false)
                 return CartShopViewHolder(view, actionListener, cartItemActionListener, compositeSubscription)

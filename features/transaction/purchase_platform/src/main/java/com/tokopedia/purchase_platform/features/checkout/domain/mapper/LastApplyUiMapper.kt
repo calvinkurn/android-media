@@ -28,11 +28,12 @@ class LastApplyUiMapper {
         }
 
         private fun mapVoucherOrdersItem(promoCheckoutVoucherOrdersItemUiModel: PromoCheckoutVoucherOrdersItemUiModel): LastApplyVoucherOrdersItemUiModel {
-            var code = ""
-            promoCheckoutVoucherOrdersItemUiModel.code?.let { code = it }
+            var code: String
+            promoCheckoutVoucherOrdersItemUiModel.code.let { code = it }
 
             return LastApplyVoucherOrdersItemUiModel(
                     code = code,
+                    uniqueId = promoCheckoutVoucherOrdersItemUiModel.uniqueId,
                     message = mapMessageUiModel(promoCheckoutVoucherOrdersItemUiModel.messageUiModel)
             )
         }

@@ -1,6 +1,5 @@
 package com.tokopedia.promocheckout.common.view.widget
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
@@ -36,14 +35,20 @@ class ButtonPromoCheckoutView @JvmOverloads constructor(
             field = value
             initView()
         }
+    var margin: Margin = Margin.WITH_BOTTOM
+        set(value) {
+            field = value
+            initView()
+        }
 
     init {
         inflate(context, getLayout(), this)
         val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.PromoCheckoutButtonView)
         try {
-            state = State.fromId(styledAttributes.getInteger(R.styleable.PromoCheckoutButtonView_stateButton, 4))
+            state = State.fromId(styledAttributes.getInteger(R.styleable.PromoCheckoutButtonView_stateButton, 1))
             title = styledAttributes.getString(R.styleable.PromoCheckoutButtonView_title) ?: ""
             desc = styledAttributes.getString(R.styleable.PromoCheckoutButtonView_desc) ?: ""
+            margin = Margin.fromId(styledAttributes.getInteger(R.styleable.PromoCheckoutButtonView_marginButton, 0))
 
         } finally {
             styledAttributes.recycle()
@@ -56,6 +61,11 @@ class ButtonPromoCheckoutView @JvmOverloads constructor(
             State.LOADING -> setViewLoading()
             State.ACTIVE -> setViewActive()
             State.INACTIVE -> setViewInactive()
+        }
+
+        when (margin) {
+            Margin.WITH_BOTTOM -> setViewWithMarginBottom()
+            Margin.NO_BOTTOM -> setViewWIthNoMarginBottom()
         }
 
         invalidate()
@@ -96,6 +106,14 @@ class ButtonPromoCheckoutView @JvmOverloads constructor(
         iv_promo_checkout_right?.setImageResource(R.drawable.ic_promo_checkout_refresh)
     }
 
+    private fun setViewWithMarginBottom() {
+        view_margin_bottom?.visibility = View.VISIBLE
+    }
+
+    private fun setViewWIthNoMarginBottom() {
+        view_margin_bottom?.visibility = View.GONE
+    }
+
     enum class State(val id: Int) : Parcelable {
 
         LOADING(0),
@@ -126,6 +144,40 @@ class ButtonPromoCheckoutView @JvmOverloads constructor(
             }
 
             override fun newArray(size: Int): Array<State?> {
+                return arrayOfNulls(size)
+            }
+        }
+    }
+
+    enum class Margin(val id: Int) : Parcelable {
+
+        WITH_BOTTOM(0),
+        NO_BOTTOM(1);
+
+        override fun writeToParcel(parcel: Parcel, flags: Int) {
+            parcel.writeInt(id)
+        }
+
+        override fun describeContents(): Int {
+            return 0
+        }
+
+        companion object CREATOR : Parcelable.Creator<Margin> {
+
+            fun fromId(id: Int): Margin {
+                for (margin: Margin in values()) {
+                    if (id == margin.id) {
+                        return margin
+                    }
+                }
+                return WITH_BOTTOM
+            }
+
+            override fun createFromParcel(parcel: Parcel): Margin {
+                return values()[parcel.readInt()]
+            }
+
+            override fun newArray(size: Int): Array<Margin?> {
                 return arrayOfNulls(size)
             }
         }

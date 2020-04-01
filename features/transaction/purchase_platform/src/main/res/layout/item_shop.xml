@@ -51,17 +51,6 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tv_shop_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dp_4"
-                    android:layout_marginRight="@dimen/dp_4"
-                    tools:text="Loaa Store df"
-                    android:textColor="@color/text_black"
-                    app:typographyType="body_2"
-                    app:typographyWeight="reguler"/>
-
                 <ImageView
                     android:id="@+id/img_shop_badge"
                     android:layout_width="@dimen/dp_18"
@@ -77,6 +66,20 @@
                     android:layout_marginLeft="@dimen/dp_4"
                     android:scaleType="centerCrop"
                     app:srcCompat="@drawable/ic_logistic_logistic_fulfillment_normal_16" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_shop_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_4"
+                    android:layout_marginStart="@dimen/dp_4"
+                    android:layout_marginEnd="@dimen/dp_4"
+                    android:layout_marginRight="@dimen/dp_4"
+                    tools:text="Loaa Store df"
+                    android:textColor="@color/text_black"
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold"/>
+
             </LinearLayout>
 
             <com.tokopedia.unifyprinciples.Typography

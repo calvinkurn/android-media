@@ -25,6 +25,10 @@
             <enum name="active" value="1"/>
             <enum name="inactive" value="2"/>
         </attr>
+        <attr name="marginButton" format="enum">
+            <enum name="withBottom" value="0"/>
+            <enum name="noBottom" value="1"/>
+        </attr>
         <attr name="title"/>
         <attr name="desc"/>
         <attr name="icon_left"/>
