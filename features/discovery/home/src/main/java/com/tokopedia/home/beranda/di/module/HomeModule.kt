@@ -21,6 +21,7 @@ import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -58,6 +59,10 @@ class HomeModule {
             homeRemoteDataSource,
             homeDefaultDataSource,
             geolocationRemoteDataSource)
+
+    @HomeScope
+    @Provides
+    fun provideExecutors(): SmartExecutors = SmartExecutors()
 
     @HomeScope
     @Provides
