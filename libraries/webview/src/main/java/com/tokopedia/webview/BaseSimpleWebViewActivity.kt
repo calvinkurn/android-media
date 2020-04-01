@@ -55,7 +55,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         }
 
         intent.data?.run {
-            url = getEncodedParameterUrl(this, url)
+            url = WebViewHelper.getEncodedParameterUrl(this, url)
 
             val needTitleBar = getQueryParameter(KEY_TITLEBAR)
             needTitleBar?.let {
@@ -73,109 +73,6 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             val needTitle = getQueryParameter(KEY_TITLE)
             needTitle?.let { title = it }
         }
-    }
-
-    /**
-     * This function is to get the url from the Uri
-     * Example:
-     * Input: tokopedia://webview?url=http://www.tokopedia.com/help
-     * Output:http://www.tokopedia.com/help
-     *
-     * Input: tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fhelp%2F
-     * Output:http://www.tokopedia.com/help
-     *
-     * Input: tokopedia://webview?url=https://js.tokopedia.com?url=http://www.tokopedia.com/help
-     * Output:https://js.tokopedia.com?url=https%3A%2F%2Fwww.tokopedia.com%2Fhelp%2F
-     *
-     * Input: tokopedia://webview?url=https://js.tokopedia.com?url=http://www.tokopedia.com/help?id=4&target=5&title=3
-     * Output:https://js.tokopedia.com?target=5&title=3&url=http%3A%2F%2Fwww.tokopedia.com%2Fhelp%3Fid%3D4%26target%3D5%26title%3D3
-     */
-    private fun getEncodedParameterUrl(intentUri: Uri, defaultUrl: String): String {
-        val query = intentUri.query
-        return if (query != null && query.contains("$KEY_URL=")) {
-            var url = query.substringAfter("$KEY_URL=").decode()
-            url = validateSymbol(url)
-            return getEncodedParameterUrl2(url)
-        } else {
-            defaultUrl
-        }
-    }
-
-    /**
-     * make &url= or ?url= to be encoded
-     */
-    private fun getEncodedParameterUrl2(url: String): String {
-        val delimiterLength = "&$KEY_URL=".length
-        var indexKeyUrl = url.indexOf("&$KEY_URL=")
-        if (indexKeyUrl < 0) {
-            indexKeyUrl = url.indexOf("?$KEY_URL=")
-        }
-        if (indexKeyUrl < 0) {
-            return url
-        }
-        val url2 = url.substring(indexKeyUrl + delimiterLength, url.length)
-        return if (url2.isNotEmpty()) {
-            val url2BeforeAnd = url2.substringBefore("&")
-            val uriFromUrl = Uri.parse(url.replaceFirst("$KEY_URL=$url2BeforeAnd", "").validateAnd())
-            uriFromUrl.buildUpon()
-                .appendQueryParameter(KEY_URL, url2.encodeOnce())
-                .build().toString()
-        } else {
-            url
-        }
-    }
-
-    /**
-     * Validate the & and ? symbol
-     * Example input/output
-     * https://www.tokopedia.com/events/hiburan
-     * https://www.tokopedia.com/events/hiburan
-     *
-     * https://www.tokopedia.com/events/hiburan?parama=a&paramb=b
-     * https://www.tokopedia.com/events/hiburan?parama=a&paramb=b
-     *
-     * https://www.tokopedia.com/events/hiburan&utm_source=7teOvA
-     * https://www.tokopedia.com/events/hiburan
-     */
-    private fun validateSymbol(url: String): String {
-        val indexAnd = url.indexOf("&")
-        return if (indexAnd == -1) {
-            url
-        } else {
-            val urlBeforeAnd = url.substringBefore("&", "")
-            val indexQuestion = urlBeforeAnd.indexOf("?")
-            if (indexQuestion == -1) {
-                urlBeforeAnd
-            } else {
-                url
-            }
-        }
-    }
-
-    /**
-     * trim invalid &
-     * Example:
-     * https://www.tokopedia.com/help?&a=b
-     * https://www.tokopedia.com/help?a=b
-     *
-     * https://www.tokopedia.com/help?a=b&&c=d
-     * https://www.tokopedia.com/help?a=b&c=d
-     *
-     * https://www.tokopedia.com/help?a=b?&c=d
-     * https://www.tokopedia.com/help?a=b&c=d
-     */
-    private fun String.validateAnd(): String {
-        var url = replace("&&", "&")
-        val indexQuestionAnd = url.indexOf("?&")
-        if (indexQuestionAnd > -1) {
-            val indexQuestion = url.indexOf("?")
-            if (indexQuestion == indexQuestionAnd) {
-                url = url.replaceFirst("?&", "?")
-            } else {
-                url = url.replaceFirst("?&", "&")
-            }
-        }
-        return url
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
