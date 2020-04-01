@@ -1,4 +1,4 @@
-package com.tokopedia.home.viewModel
+package com.tokopedia.home.viewModel.homepage
 
 import androidx.lifecycle.Observer
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase

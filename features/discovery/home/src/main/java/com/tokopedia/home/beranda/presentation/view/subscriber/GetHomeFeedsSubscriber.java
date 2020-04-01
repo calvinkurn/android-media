@@ -1,7 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.subscriber;
 
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedContract;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeFeedListModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel;
 
 import rx.Subscriber;
 
@@ -9,7 +9,7 @@ import rx.Subscriber;
  * Created by henrypriyono on 1/3/18.
  */
 
-public class GetHomeFeedsSubscriber extends Subscriber<HomeFeedListModel> {
+public class GetHomeFeedsSubscriber extends Subscriber<HomeRecommendationDataModel> {
 
     private final HomeFeedContract.View viewListener;
 
@@ -28,7 +28,7 @@ public class GetHomeFeedsSubscriber extends Subscriber<HomeFeedListModel> {
     }
 
     @Override
-    public void onNext(HomeFeedListModel model) {
-        viewListener.renderList(model.getHomeFeedViewModels(), model.isHasNextPage());
+    public void onNext(HomeRecommendationDataModel model) {
+//        viewListener.renderList(model.getHomeRecommendations(), model.isHasNextPage());
     }
 }

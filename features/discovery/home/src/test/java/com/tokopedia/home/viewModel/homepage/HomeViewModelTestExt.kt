@@ -1,4 +1,4 @@
-package com.tokopedia.home.viewModel
+package com.tokopedia.home.viewModel.homepage
 
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.model.HomeWidget

@@ -296,7 +296,6 @@ public class HomeFragment extends BaseDaggerFragment implements
     @VisibleForTesting
     protected void initViewModel(){
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(HomeViewModel.class);
-        Log.d("testNoSkeleton", viewModel.toString());
     }
 
     @Override

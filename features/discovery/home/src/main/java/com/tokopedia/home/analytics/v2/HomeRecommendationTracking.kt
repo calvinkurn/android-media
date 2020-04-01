@@ -1,7 +1,7 @@
 package com.tokopedia.home.analytics.v2
 
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeFeedViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 
 object HomeRecommendationTracking : BaseTracking(){
 
@@ -33,76 +33,76 @@ object HomeRecommendationTracking : BaseTracking(){
         val RECOMMENDATION_ACTION_FIELD_LOGIN_TOP_ADS = BASE.format("", "%s", "%s - product topads")
     }
 
-    fun getRecommendationProductClickNonLogin(tabName: String, homeFeedViewModel: HomeFeedViewModel) = getBasicProductClick(
+    fun getRecommendationProductClickNonLogin(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = getBasicProductClick(
             event = Event.PRODUCT_CLICK,
             eventCategory = Category.HOMEPAGE,
             eventAction = CustomAction.RECOMMENDATION_CLICK_NON_LOGIN_NON_TOPADS,
             eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN.format(tabName, homeFeedViewModel.recommendationType),
-            products = listOf(mapToProductTracking(homeFeedViewModel))
+            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN.format(tabName, homeRecommendationItemDataModel.product.recommendationType),
+            products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
     )
 
-    fun getRecommendationProductClickLogin(tabName: String, homeFeedViewModel: HomeFeedViewModel) = getBasicProductClick(
+    fun getRecommendationProductClickLogin(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = getBasicProductClick(
             event = Event.PRODUCT_CLICK,
             eventCategory = Category.HOMEPAGE,
             eventAction = CustomAction.RECOMMENDATION_CLICK_LOGIN_NON_TOPADS,
             eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN.format(tabName, homeFeedViewModel.recommendationType),
-            products = listOf(mapToProductTracking(homeFeedViewModel))
+            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN.format(tabName, homeRecommendationItemDataModel.product.recommendationType),
+            products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
     )
 
-    fun getRecommendationProductClickLoginTopAds(tabName: String, homeFeedViewModel: HomeFeedViewModel) = getBasicProductClick(
+    fun getRecommendationProductClickLoginTopAds(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = getBasicProductClick(
             event = Event.PRODUCT_CLICK,
             eventCategory = Category.HOMEPAGE,
             eventAction = CustomAction.RECOMMENDATION_CLICK_LOGIN_TOPADS,
             eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN_TOP_ADS.format(tabName, homeFeedViewModel.recommendationType),
-            products = listOf(mapToProductTracking(homeFeedViewModel))
+            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN_TOP_ADS.format(tabName, homeRecommendationItemDataModel.product.recommendationType),
+            products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
     )
 
-    fun getRecommendationProductClickNonLoginTopAds(tabName: String, homeFeedViewModel: HomeFeedViewModel) = getBasicProductClick(
+    fun getRecommendationProductClickNonLoginTopAds(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = getBasicProductClick(
             event = Event.PRODUCT_CLICK,
             eventCategory = Category.HOMEPAGE,
             eventAction = CustomAction.RECOMMENDATION_CLICK_NON_LOGIN_TOPADS,
             eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN_TOP_ADS.format(tabName, homeFeedViewModel.recommendationType),
-            products = listOf(mapToProductTracking(homeFeedViewModel))
+            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN_TOP_ADS.format(tabName, homeRecommendationItemDataModel.product.recommendationType),
+            products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
     )
 
-    fun getRecommendationProductViewLogin(tabName: String, homeFeedViewModel: HomeFeedViewModel) = getBasicProductView(
+    fun getRecommendationProductViewLogin(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = getBasicProductView(
             event = Event.PRODUCT_VIEW,
             eventCategory = Category.HOMEPAGE,
             eventAction = CustomAction.RECOMMENDATION_VIEW_LOGIN_NON_TOPADS,
             eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN.format(tabName, homeFeedViewModel.recommendationType),
-            products = listOf(mapToProductTracking(homeFeedViewModel))
+            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN.format(tabName, homeRecommendationItemDataModel.product.recommendationType),
+            products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
     )
 
-    fun getRecommendationProductViewLoginTopAds(tabName: String, homeFeedViewModel: HomeFeedViewModel) = getBasicProductView(
+    fun getRecommendationProductViewLoginTopAds(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = getBasicProductView(
             event = Event.PRODUCT_VIEW,
             eventCategory = Category.HOMEPAGE,
             eventAction = CustomAction.RECOMMENDATION_VIEW_LOGIN_TOPADS,
             eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN_TOP_ADS.format(tabName, homeFeedViewModel.recommendationType),
-            products = listOf(mapToProductTracking(homeFeedViewModel))
+            list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN_TOP_ADS.format(tabName, homeRecommendationItemDataModel.product.recommendationType),
+            products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
     )
 
-    fun getRecommendationProductViewNonLogin(tabName: String, homeFeedViewModel: HomeFeedViewModel) = getBasicProductView(
+    fun getRecommendationProductViewNonLogin(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = getBasicProductView(
             event = Event.PRODUCT_VIEW,
             eventCategory = Category.HOMEPAGE,
             eventAction = CustomAction.RECOMMENDATION_VIEW_NON_LOGIN_NON_TOPADS,
             eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN.format(tabName, homeFeedViewModel.recommendationType),
-            products = listOf(mapToProductTracking(homeFeedViewModel))
+            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN.format(tabName, homeRecommendationItemDataModel.product.recommendationType),
+            products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
     )
 
-    fun getRecommendationProductViewNonLoginTopAds(tabName: String, homeFeedViewModel: HomeFeedViewModel) = getBasicProductView(
+    fun getRecommendationProductViewNonLoginTopAds(tabName: String, homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = getBasicProductView(
             event = Event.PRODUCT_VIEW,
             eventCategory = Category.HOMEPAGE,
             eventAction = CustomAction.RECOMMENDATION_VIEW_NON_LOGIN_TOPADS,
             eventLabel = tabName,
-            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN_TOP_ADS.format(tabName, homeFeedViewModel.recommendationType),
-            products = listOf(mapToProductTracking(homeFeedViewModel))
+            list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN_TOP_ADS.format(tabName, homeRecommendationItemDataModel.product.recommendationType),
+            products = listOf(mapToProductTracking(homeRecommendationItemDataModel))
     )
 
     fun getRecommendationAddWishlistLogin(productId: String, tabName: String): Map<String, Any> = DataLayer.mapOf(
@@ -126,14 +126,14 @@ object HomeRecommendationTracking : BaseTracking(){
             Label.KEY, "$productId - $tabName"
     )
 
-    private fun mapToProductTracking(homeFeedViewModel: HomeFeedViewModel) = Product(
-            id = homeFeedViewModel.productId,
-            name = homeFeedViewModel.productName,
+    private fun mapToProductTracking(homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = Product(
+            id = homeRecommendationItemDataModel.product.id,
+            name = homeRecommendationItemDataModel.product.name,
             variant = "",
-            productPrice = homeFeedViewModel.priceNumber.toString(),
-            productPosition = homeFeedViewModel.position.toString(),
-            isFreeOngkir = homeFeedViewModel.isFreeOngkirActive,
-            category = homeFeedViewModel.categoryBreadcrumbs,
+            productPrice = homeRecommendationItemDataModel.product.priceInt.toString(),
+            productPosition = homeRecommendationItemDataModel.position.toString(),
+            isFreeOngkir = homeRecommendationItemDataModel.product.freeOngkirInformation.isActive,
+            category = homeRecommendationItemDataModel.product.categoryBreadcrumbs,
             brand = ""
     )
 }
