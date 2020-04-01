@@ -11,6 +11,7 @@ import android.view.WindowManager
 import com.tokopedia.analytics.performance.util.JankyFrameMonitoringUtil
 import com.tokopedia.analytics.performance.util.PerformanceData
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
+import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener
 import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import java.io.File
@@ -19,11 +20,15 @@ class InstrumentationHomeTestActivity : AppCompatActivity(),
         MainParentStatusBarListener,
         JankyFrameMonitoringUtil.OnFrameListener,
         JankyFramesMonitoringListener,
-        EspressoPerformanceActivity {
+        EspressoPerformanceActivity,
+        HomePerformanceMonitoringListener {
     override fun getMainJankyFrameMonitoringUtil(): JankyFrameMonitoringUtil? {
         return jankyFramePerformanceUtil
     }
 
+    private var endActivityTime: Long = 0
+    private var startActivityTime: Long = 0
+    private var pageLoadTime: Long = 0
     private var performanceData: PerformanceData? = null
     private var jankyFramePerformanceUtil: JankyFrameMonitoringUtil? = null
 
@@ -56,8 +61,8 @@ class InstrumentationHomeTestActivity : AppCompatActivity(),
         win.attributes = winParams
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
+        startHomePerformanceMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_instrumentation_home_test)
         jankyFramePerformanceUtil = TestJankyFrameMonitoringUtil()
@@ -66,7 +71,7 @@ class InstrumentationHomeTestActivity : AppCompatActivity(),
         val fragmentTransaction = supportFragmentManager
                 .beginTransaction()
         fragmentTransaction
-                .replace(R.id.container, HomeFragment())//R.id.content_frame is the layout you want to replace
+                .replace(R.id.container, HomeFragment())
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
@@ -83,5 +88,17 @@ class InstrumentationHomeTestActivity : AppCompatActivity(),
 
     override fun getPerformanceResultData(): PerformanceData? {
         return performanceData
+    }
+
+    override fun getPageLoadTime(): Long {
+        return endActivityTime - startActivityTime
+    }
+
+    override fun stopHomePerformanceMonitoring() {
+        endActivityTime = System.currentTimeMillis()
+    }
+
+    override fun startHomePerformanceMonitoring() {
+        startActivityTime = System.currentTimeMillis()
     }
 }

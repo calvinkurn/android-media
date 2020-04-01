@@ -9,7 +9,6 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceData
-import org.hamcrest.Matchers.not
 import org.junit.Rule
 import org.junit.Test
 import java.io.File
@@ -21,6 +20,7 @@ import java.io.File
  * @see [Testing documentation](http://d.android.com/tools/testing)
  */
 class HomeDynamicChannelPerformanceTest {
+    val TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE = "test_case_page_load_time"
     val TEST_CASE_INITIAL_INFLATE_PERFORMANCE = "test_case_initial_inflate"
     val TEST_CASE_DYNAMIC_CHANNEL_SCROLL_PERFORMANCE = "test_case_dynamic_channel_scroll"
     val TEST_CASE_OVERALL_SCROLL_PERFORMANCE = "test_case_overall_scroll"
@@ -35,9 +35,15 @@ class HomeDynamicChannelPerformanceTest {
 //    }
 
     @Test
+    fun testPageLoadTimePerformance() {
+        waitForData()
+        savePLTPerformanceResultData(TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE, activityRule.activity.getPageLoadTime())
+    }
+
+    @Test
     fun testInitialInflatePerformance() {
         waitForData()
-        savePerformanceResultData(TEST_CASE_INITIAL_INFLATE_PERFORMANCE)
+        saveFPIPerformanceResultData(TEST_CASE_INITIAL_INFLATE_PERFORMANCE)
     }
 
     @Test
@@ -46,7 +52,7 @@ class HomeDynamicChannelPerformanceTest {
         while (!isHomeRecommendationVisible()){
             scrollWithDelay()
         }
-        savePerformanceResultData(TEST_CASE_DYNAMIC_CHANNEL_SCROLL_PERFORMANCE)
+        saveFPIPerformanceResultData(TEST_CASE_DYNAMIC_CHANNEL_SCROLL_PERFORMANCE)
     }
 
     @Test
@@ -55,7 +61,7 @@ class HomeDynamicChannelPerformanceTest {
         for (i in 1..20) {
             scrollWithDelay()
         }
-        savePerformanceResultData(TEST_CASE_OVERALL_SCROLL_PERFORMANCE)
+        saveFPIPerformanceResultData(TEST_CASE_OVERALL_SCROLL_PERFORMANCE)
     }
 
     private fun waitForData() {
@@ -81,38 +87,77 @@ class HomeDynamicChannelPerformanceTest {
                 .perform(ViewActions.swipeUp())
     }
 
-    private fun savePerformanceResultData(tag: String) {
+    private fun saveFPIPerformanceResultData(tag: String) {
         val performanceData = activityRule.activity.getPerformanceResultData()
         performanceData?.let {
-            writeToFile(tag, performanceData)
+            writeFPIPerformanceFile(tag, performanceData)
         }
     }
 
-    private fun writeToFile(testCaseName: String, performanceData: PerformanceData) {
-        val testcase = "Test Case"
-        val allframes = "All Frames"
-        val jankyframes = "Janky Frames"
-        val jankyframespercentage = "Janky Frames (%)"
-        val indexperformance = "Index Performance (FPI)"
+    private fun savePLTPerformanceResultData(tag: String, pageLoadTime: Long) {
+        val performanceData = activityRule.activity.getPerformanceResultData()
+        performanceData?.let {
+            writePLTPerformanceFile(tag, performanceData, pageLoadTime)
+        }
+    }
 
+    private fun writeFPIPerformanceFile(testCaseName: String, performanceData: PerformanceData) {
         val path = activityRule.activity.getExternalFilesDir(null)
         val perfDataDir = File(path, "perf_data")
         if (!perfDataDir.exists()) {
-            perfDataDir.mkdirs()
-            val perfReport = File(perfDataDir, "report.csv")
-            perfReport.appendText("" +
-                    "$testcase," +
-                    "$allframes," +
-                    "$jankyframes," +
-                    "$jankyframespercentage," +
-                    "$indexperformance\n")
+            makeInitialPerfDir(perfDataDir)
         }
-        val perfReport = File(perfDataDir, "report.csv")
+        val perfReport = File(perfDataDir, "report-fpi.csv")
         perfReport.appendText(
                 "$testCaseName," +
                         "${performanceData.allFrames}," +
                         "${performanceData.jankyFrames}," +
                         "${performanceData.jankyFramePercentage}," +
                         "${(100 - performanceData.jankyFramePercentage)}\n")
+    }
+
+    private fun writePLTPerformanceFile(testCaseName: String, performanceData: PerformanceData, duration: Long) {
+        val path = activityRule.activity.getExternalFilesDir(null)
+        val perfDataDir = File(path, "perf_data")
+        if (!perfDataDir.exists()) {
+            makeInitialPerfDir(perfDataDir)
+        }
+        val perfReport = File(perfDataDir, "report-plt.csv")
+        perfReport.appendText(
+                "$testCaseName," +
+                        "${duration}," +
+                        "${(100 - performanceData.jankyFramePercentage)}\n")
+    }
+
+    private fun makeInitialPerfDir(perfDataDir: File) {
+        val testcase = "Test Case"
+        val plt = "PLT (ms)"
+        val initialfpi = "Initial FPI"
+        val allframes = "All Frames"
+        val jankyframes = "Janky Frames"
+        val jankyframespercentage = "Janky Frames (%)"
+        val indexperformance = "Index Performance (FPI)"
+        val homeFpi = "Home FPI"
+        val homePlt = "Home PLT"
+
+        perfDataDir.mkdirs()
+        val perfReportPlt = File(perfDataDir, "report-plt.csv")
+        perfReportPlt.appendText("" +
+                "$testcase," +
+                "$plt," +
+                "$initialfpi\n")
+
+        val perfReportFpi = File(perfDataDir, "report-fpi.csv")
+        perfReportFpi.appendText("" +
+                "$testcase," +
+                "$allframes," +
+                "$jankyframes," +
+                "$jankyframespercentage," +
+                "$indexperformance\n")
+
+        val perfReport = File(perfDataDir, "report.csv")
+        perfReport.appendText("" +
+                "$homeFpi," +
+                "$homePlt\n")
     }
 }
