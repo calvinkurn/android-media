@@ -184,7 +184,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     override fun sendImpressionDataIris(settingShopInfoImpressionTrackable: SettingShopInfoImpressionTrackable) {
-        context?.run { settingShopInfoImpressionTrackable.sendShopInfoImpressionData(this, userSession) }
+        settingShopInfoImpressionTrackable.sendShopInfoImpressionData()
     }
 
     @RequiresApi(Build.VERSION_CODES.M)

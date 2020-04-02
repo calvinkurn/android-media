@@ -8,8 +8,7 @@ import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingShopInfoImpres
 open class BalanceUiModel(balanceType: BalanceType,
                      val balanceValue: String = "",
                      override val impressionEventName: String = "",
-                     override val impressionEventCategory: String = "",
-                     override val impressionEventAction: String = "")
+                     override val impressionEventAction: String = "${SettingTrackingConstant.IMPRESSION} ${SettingTrackingConstant.ON_SALDO}")
     : SettingShopInfoClickTrackable, SettingShopInfoImpressionTrackable
 {
 

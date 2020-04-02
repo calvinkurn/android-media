@@ -107,7 +107,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     }
 
     override fun sendImpressionDataIris(settingShopInfoImpressionTrackable: SettingShopInfoImpressionTrackable) {
-        context?.run { settingShopInfoImpressionTrackable.sendShopInfoImpressionData(this, userSession) }
+        settingShopInfoImpressionTrackable.sendShopInfoImpressionData()
     }
 
     private fun setupView() {
@@ -179,7 +179,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     private fun setupLogoutView() {
         logoutLayout?.run {
             sendSettingShopInfoImpressionTracking(logoutUiModel) {
-                context?.run { it.sendShopInfoImpressionData(this, userSession) }
+                it.sendShopInfoImpressionData()
             }
             appVersionText.text = getString(R.string.setting_application_version, GlobalConfig.VERSION_NAME)
             setOnClickListener {
@@ -193,7 +193,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         tcLayout?.run {
             settingTC?.run {
                 this.sendSettingShopInfoImpressionTracking(termsAndConditionUiModel) {
-                    context?.run { it.sendShopInfoImpressionData(this, userSession) }
+                    it.sendShopInfoImpressionData()
                 }
                 setOnClickListener {
                     termsAndConditionUiModel.sendSettingShopInfoClickTracking()
@@ -202,7 +202,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
             }
             settingPrivacy?.run {
                 this.sendSettingShopInfoImpressionTracking(privacyPolicyUiModel) {
-                    context?.run { it.sendShopInfoImpressionData(this, userSession) }
+                    it.sendShopInfoImpressionData()
                 }
                 setOnClickListener {
                     privacyPolicyUiModel.sendSettingShopInfoClickTracking()
