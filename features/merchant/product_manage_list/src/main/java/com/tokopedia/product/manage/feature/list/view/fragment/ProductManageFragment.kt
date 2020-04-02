@@ -831,6 +831,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         productManageListAdapter.updateFeaturedProduct(productId, isFeaturedProduct)
         if(viewModel.selectedFilterAndSort.value?.filterOptions == listOf(FilterByCondition.FeaturedOnly)) {
             filterProductListByFeatured(true)
+            renderMultiSelectProduct()
         }
         hideLoadingProgress()
         showMessageToastWithoutAction(successMessage)
