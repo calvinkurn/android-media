@@ -51,7 +51,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="end"
-            android:text="@string/flight_search_origin_label"
+            android:text="@string/flight_search_airport_arrival_title"
             android:textColor="@color/Neutral_N700_68"
             app:layout_constraintLeft_toRightOf="@+id/imgFlightReverseAirport"
             app:layout_constraintRight_toRightOf="parent"
