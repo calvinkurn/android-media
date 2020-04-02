@@ -86,5 +86,6 @@ ext {
             translator              : ":libraries:translator",
             traceroute              : ":libraries:traceroute",
             imagePreviewSlider      : ":libraries:imagepreviewslider",
+            lint                    : ":libraries:lint"
     ]
 }

@@ -43,7 +43,9 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.0"
 
-
+    lintOptions {
+        abortOnError false
+    }
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 29
