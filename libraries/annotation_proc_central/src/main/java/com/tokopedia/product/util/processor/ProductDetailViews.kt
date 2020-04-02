@@ -4,8 +4,8 @@ import com.example.annotation.AnalyticEvent
 import com.example.annotation.Key
 import com.example.firebaseanalyticrules.rules.ProductDetailViewsRules
 import com.tokopedia.analytic_constant.Event
-import com.tokopedia.iris.util.KEY_SESSION_IRIS
-import com.tokopedia.product.detail.data.util.ProductTrackingConstant
+
+const val KEY_SESSION_IRIS = "sessionIris"
 
 @AnalyticEvent(false, Event.VIEW_ITEM, ProductDetailViewsRules::class)
 data class ProductDetailViews(
