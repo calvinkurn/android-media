@@ -10,21 +10,24 @@ class InactiveOvoActivity : BaseOvoActivationActivity() {
         var registerApplink = ""
         var helpApplink = ""
         var tncApplink = ""
+        var productId = ""
 
         intent.data?.let {
             registerApplink = it.getQueryParameter(REGISTER_APPLINK) ?: ""
             helpApplink = it.getQueryParameter(HELP_APPLINK) ?: ""
             tncApplink = it.getQueryParameter(TNC_APPLINK) ?: ""
+            productId = it.getQueryParameter(PRODUCT_ID) ?: ""
         }
         if (registerApplink.isNullOrBlank() && helpApplink.isNullOrBlank() && tncApplink.isNullOrBlank()) {
             intent.extras?.let {
                 registerApplink = it.getString(REGISTER_APPLINK) ?: ""
                 helpApplink = it.getString(HELP_APPLINK) ?: ""
                 tncApplink = it.getString(TNC_APPLINK) ?: ""
+                productId = it.getString(PRODUCT_ID) ?: ""
             }
         }
 
-        return InactiveOvoFragment.newInstance(registerApplink, helpApplink, tncApplink)
+        return InactiveOvoFragment.newInstance(registerApplink, helpApplink, tncApplink, productId)
     }
 
     override fun getLayoutRes(): Int {
@@ -43,5 +46,6 @@ class InactiveOvoActivity : BaseOvoActivationActivity() {
         val REGISTER_APPLINK = "applink_activation"
         val HELP_APPLINK = "applink_help"
         val TNC_APPLINK = "applink_tnc"
+        val PRODUCT_ID = "product_id"
     }
 }

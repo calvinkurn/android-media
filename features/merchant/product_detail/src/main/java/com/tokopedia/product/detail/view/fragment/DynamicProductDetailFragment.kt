@@ -1225,9 +1225,18 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         } else {
             activity?.let {
                 when (result.data.ovoValidationDataModel.status) {
-                    1 -> RouteManager.route(it, result.data.ovoValidationDataModel.applink)
+                    1 -> {
+                        val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${viewModel.getDynamicProductInfoP1?.parentProductId ?: ""}"
+                        DynamicProductDetailTracking.Click.eventActivationOvo(
+                                viewModel.getDynamicProductInfoP1?.parentProductId ?: "",
+                                viewModel.userSessionInterface.userId)
+                        RouteManager.route(it, applink)
+                    }
                     2 -> {
-                            val bottomSheetOvoDeals = OvoFlashDealsBottomSheet(result.data.ovoValidationDataModel)
+                            val bottomSheetOvoDeals = OvoFlashDealsBottomSheet(
+                                    viewModel.getDynamicProductInfoP1?.parentProductId ?: "",
+                                    viewModel.userSessionInterface.userId,
+                                    result.data.ovoValidationDataModel)
                             bottomSheetOvoDeals.show(it.supportFragmentManager, "Ovo Deals")
                         }
                     else -> showToastError(Throwable(getString(R.string.default_request_error_unknown)))

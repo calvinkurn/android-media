@@ -14,10 +14,17 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wallet.R
 import kotlinx.android.synthetic.main.fragment_inactive_ovo.*
+import javax.inject.Inject
 
 class InactiveOvoFragment : BaseDaggerFragment() {
+
+    @Inject
+    lateinit var tracking: InactiveOvoAnalytics
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     override fun getScreenName(): String {
         return ""
@@ -38,26 +45,30 @@ class InactiveOvoFragment : BaseDaggerFragment() {
             val registerApplink = it.getString(REGISTER_APPLINK)
             val helpApplink = it.getString(HELP_APPLINK)
             val tncApplink = it.getString(TNC_APPLINK)
+            val productId = it.getString(PRODUCT_ID)
 
             activity?.run {
                 btn_topup_activation.setOnClickListener {
+                    tracking.eventClickActivationOvoNow(productId, userSession.userId)
                     RouteManager.route(this, registerApplink)
                 }
 
                 btn_learn_more.setOnClickListener {
+                    tracking.eventClickOvoLearnMore(productId, userSession.userId)
                     RouteManager.route(this, helpApplink)
                 }
             }
-            setTncOvo(tncApplink)
+            setTncOvo(tncApplink, productId)
         }
     }
 
-    private fun setTncOvo(tncApplink: String) {
+    private fun setTncOvo(tncApplink: String, productId: String) {
         activity?.let {
             val ss = SpannableString(it.getString(R.string.wallet_inactivate_ovo_text_tnc))
             val clickableSpan = object : ClickableSpan() {
                 override fun onClick(view: View) {
                     activity?.run {
+                        tracking.eventClickTnc(productId, userSession.userId)
                         RouteManager.route(this, tncApplink)
                     }
                 }
@@ -81,13 +92,15 @@ class InactiveOvoFragment : BaseDaggerFragment() {
         private const val REGISTER_APPLINK = "activation_applink"
         private const val HELP_APPLINK = "help_applink"
         private const val TNC_APPLINK = "tnc_applink"
+        private const val PRODUCT_ID = "product_id"
 
-        fun newInstance(registerApplink: String, helpApplink: String, tncApplink: String): Fragment {
+        fun newInstance(registerApplink: String, helpApplink: String, tncApplink: String, productId: String): Fragment {
             val fragment = InactiveOvoFragment()
             val bundle = Bundle()
             bundle.putString(REGISTER_APPLINK, registerApplink)
             bundle.putString(HELP_APPLINK, helpApplink)
             bundle.putString(TNC_APPLINK, tncApplink)
+            bundle.putString(PRODUCT_ID, productId)
             fragment.arguments = bundle
             return fragment
         }

@@ -6,11 +6,16 @@ import android.widget.TextView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.atc_common.domain.model.response.OvoValidationDataModel
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
+import com.tokopedia.product.detail.data.util.ProductTrackingConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
-class OvoFlashDealsBottomSheet(private val ovoValidationDataModel: OvoValidationDataModel) : BottomSheetUnify() {
+class OvoFlashDealsBottomSheet(val productId: String,
+                               val userId: String,
+                               val ovoValidationDataModel: OvoValidationDataModel)
+    : BottomSheetUnify() {
 
     private lateinit var childView: View
     private lateinit var titleBottomSheet: TextView
@@ -61,6 +66,8 @@ class OvoFlashDealsBottomSheet(private val ovoValidationDataModel: OvoValidation
         btnTopupInstant.visibility = if (ovoInsufficientBalanceModel.buttons.topupButton.enable) View.VISIBLE else View.GONE
         btnTopupInstant.setOnClickListener {
             activity?.let {
+                DynamicProductDetailTracking.Click.eventBottomSheetOvo(
+                        ProductTrackingConstant.Action.CLICK_TOPUP_BOTTOMSHEET_OVO, productId, userId)
                 RouteManager.route(it, ovoInsufficientBalanceModel.buttons.topupButton.applink)
                 dismiss()
             }
@@ -70,9 +77,13 @@ class OvoFlashDealsBottomSheet(private val ovoValidationDataModel: OvoValidation
         btnTopupOtherMethod.visibility = if (ovoInsufficientBalanceModel.buttons.otherMethodButton.enable) View.VISIBLE else View.GONE
         btnTopupOtherMethod.setOnClickListener {
             activity?.let {
+                DynamicProductDetailTracking.Click.eventBottomSheetOvo(
+                        ProductTrackingConstant.Action.CLICK_OTHER_METHOD_BOTTOMSHEET_OVO, productId, userId)
                 RouteManager.route(it, ovoInsufficientBalanceModel.buttons.otherMethodButton.applink)
                 dismiss()
             }
         }
+        DynamicProductDetailTracking.Click.eventBottomSheetOvo(
+                ProductTrackingConstant.Action.CLICK_SEE_BOTTOMSHEET_OVO, productId, userId)
     }
 }
