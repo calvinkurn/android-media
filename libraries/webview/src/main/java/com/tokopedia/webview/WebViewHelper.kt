@@ -2,7 +2,6 @@ package com.tokopedia.webview
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.track.TrackApp
@@ -138,7 +137,7 @@ object WebViewHelper {
         val query = intentUri.query
         return if (query != null && query.contains("$KEY_URL=")) {
             var url = query.substringAfter("$KEY_URL=").decode()
-            url = validateSymbol(url)
+            url = url.normalizeSymbol()
             return getEncodedurl(url)
         } else {
             defaultUrl
@@ -154,7 +153,7 @@ object WebViewHelper {
             url
         } else {
             val url2BeforeAnd = url2.substringBefore("&")
-            val uriFromUrl = Uri.parse(url.replaceFirst("$KEY_URL=$url2BeforeAnd", "").validateAnd())
+            val uriFromUrl = Uri.parse(url.replaceFirst("$KEY_URL=$url2BeforeAnd", "").normalizeDoubleSymbol())
             uriFromUrl.buildUpon()
                 .appendQueryParameter(KEY_URL, url2.encodeOnce())
                 .build().toString()
@@ -177,7 +176,7 @@ object WebViewHelper {
         if (indexKeyUrl < 0) {
             return null
         }
-        return validateSymbol(url.substring(indexKeyUrl + delimiterLength, url.length))
+        return url.substring(indexKeyUrl + delimiterLength, url.length).normalizeSymbol()
     }
 
     /**
@@ -192,17 +191,17 @@ object WebViewHelper {
      * https://www.tokopedia.com/events/hiburan&utm_source=7teOvA
      * https://www.tokopedia.com/events/hiburan
      */
-    private fun validateSymbol(url: String): String {
-        val indexAnd = url.indexOf("&")
+    private fun String.normalizeSymbol(): String {
+        val indexAnd = indexOf("&")
         return if (indexAnd == -1) {
-            url
+            this
         } else {
-            val urlBeforeAnd = url.substringBefore("&", "")
+            val urlBeforeAnd = substringBefore("&", "")
             val indexQuestion = urlBeforeAnd.indexOf("?")
             if (indexQuestion == -1) {
                 urlBeforeAnd
             } else {
-                url
+                this
             }
         }
     }
@@ -219,7 +218,7 @@ object WebViewHelper {
      * https://www.tokopedia.com/help?a=b?&c=d
      * https://www.tokopedia.com/help?a=b&c=d
      */
-    private fun String.validateAnd(): String {
+    private fun String.normalizeDoubleSymbol(): String {
         var url = replace("&&", "&")
         val indexQuestionAnd = url.indexOf("?&")
         if (indexQuestionAnd > -1) {

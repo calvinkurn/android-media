@@ -7,7 +7,6 @@ import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 

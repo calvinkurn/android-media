@@ -1,12 +1,10 @@
 package com.tokopedia.webview
 
 
-import android.net.Uri
 import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
 import org.junit.Assert.assertEquals
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
