@@ -128,6 +128,7 @@ ext {
             shopEtalasePicker               : ":features:merchant:shop_etalase_picker",
 //            shopEtalasePicker               : ":features:merchant:shop_etalase_picker_no_op",
             shopOpen                        : ":features:merchant:shop_open",
+            shopShowcase                    : ":features:merchant:shop_showcase",
             shopPage                        : ":features:merchant:shop_page",
 //            shopPage                        : ":features:merchant:shop_page_no_op",
             shopSettings                    : ":features:merchant:shop_settings",
