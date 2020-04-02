@@ -19,8 +19,6 @@ class WebSocketInfo {
 
     var isOnOpen: Boolean = false
     var isOnReconnect: Boolean = false
-        private set
-
 
     private constructor()
 
@@ -34,7 +32,7 @@ class WebSocketInfo {
         this.byteString = byteString
     }
 
-    internal constructor(webSocket: WebSocket, data: String) {
+    constructor(webSocket: WebSocket, data: String) {
         this.webSocket = webSocket
         this.string = data
         this.response = GsonBuilder().create().fromJson(data, WebSocketResponse::class.java)

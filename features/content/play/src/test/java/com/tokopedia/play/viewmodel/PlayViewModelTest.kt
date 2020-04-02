@@ -4,6 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.play.data.PlaySocketTest
 import com.tokopedia.play.data.TotalLike
 import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.domain.*
@@ -45,8 +47,8 @@ class PlayViewModelTest {
     private val mockGetIsLikeUseCase: GetIsLikeUseCase = mockk(relaxed = true)
     private val mockGetCartCountUseCase: GetCartCountUseCase = mockk(relaxed = true)
     private val mockGetProductTagItemsUseCase: GetProductTagItemsUseCase = mockk(relaxed = true)
-    private val mockPlaySocket: PlaySocket = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
+    private val mockPlaySocket: PlaySocketTest = mockk(relaxed = true)
     private val dispatchers: CoroutineDispatcherProvider = TestCoroutineDispatchersProvider
 
     private val modelBuilder = ModelBuilder()
@@ -395,4 +397,18 @@ class PlayViewModelTest {
                 .assertThat(playViewModel.totalView)
                 .isEqualTo(expectedResult)
     }
+
+//    @Test
+//    fun `test observe total like from socket`() {
+//        val expectedModel = TotalLikeUiModel(
+//                totalLike = mockTotalLike.totalLike,
+//                totalLikeFormatted = mockTotalLike.totalLikeFormatted
+//        )
+//
+//        playViewModel.getChannelInfo(mockChannel.channelId)
+//
+//        Assertions
+//                .assertThat(playViewModel.observableTotalLikes.getOrAwaitValue())
+//                .isEqualTo(expectedModel)
+//    }
 }
