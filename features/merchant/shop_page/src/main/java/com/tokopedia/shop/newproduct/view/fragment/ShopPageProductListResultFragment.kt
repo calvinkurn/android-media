@@ -58,6 +58,7 @@ import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.listener.OnShopProductListFragmentListener
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
+import com.tokopedia.shop_showcase.shop_showcase_management.presentation.activity.ShopShowcaseListActivity
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
@@ -440,12 +441,9 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     CustomDimensionShopPage.create(it.shopCore.shopID,
                             it.goldOS.isOfficial == 1, it.goldOS.isGold == 1))
             context?.let { context ->
-                val shopShowcaseListIntent = ShopShowcaseListActivity.createIntent(
-                        activity, it.shopCore.shopID, selectedEtalaseId, true, false)
+                val shopShowcaseListIntent = ShopShowcaseListActivity.createIntentListShopShowcase(
+                        context, it.shopCore.shopID, selectedEtalaseId, true, false)
                 context.startActivity(shopShowcaseListIntent)
-//                val shopEtalaseIntent = ShopEtalasePickerActivity.createIntent(context, it.shopCore.shopID, selectedEtalaseId,
-//                        true, false)
-//                startActivityForResult(shopEtalaseIntent, REQUEST_CODE_ETALASE)
             }
         }
     }
