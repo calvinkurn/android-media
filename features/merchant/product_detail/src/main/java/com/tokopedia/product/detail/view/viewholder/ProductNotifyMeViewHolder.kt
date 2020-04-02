@@ -65,10 +65,12 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
                 dayLeft < 0 -> {
                     hideContainer()
                 }
-                dayLeft < 1 -> itemView.notify_count_down?.setup(delta, startDate) {
+                dayLeft < 1 -> {
+                    itemView.notify_count_down?.setup(delta, startDate) {
+                        listener.showAlertUpcomingEnded()
+                    }
                     itemView.notify_count_down?.visible()
-                    itemView.product_notify_subtitle?.text = getString(R.string.notify_me_subtitle)
-                    listener.showAlertUpcomingEnded()
+                    itemView.product_notify_subtitle?.text = getString(R.string.notify_me_subtitle_main)
                 }
                 dayLeft < 2 -> {
                     itemView.notify_count_down?.gone()
