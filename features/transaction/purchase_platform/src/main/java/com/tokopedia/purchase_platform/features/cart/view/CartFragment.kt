@@ -320,8 +320,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onStart() {
         super.onStart()
-        if (!::cartAdapter.isInitialized || (::cartAdapter.isInitialized && cartAdapter.itemCount == 0)) {
-            dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
+        if (refreshHandler?.isRefreshing == false) {
+            if (!::cartAdapter.isInitialized || (::cartAdapter.isInitialized && cartAdapter.itemCount == 0)) {
+                dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
+            }
         }
     }
 
