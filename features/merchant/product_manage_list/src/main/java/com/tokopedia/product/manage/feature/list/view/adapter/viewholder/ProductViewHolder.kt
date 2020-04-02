@@ -75,7 +75,7 @@ class ProductViewHolder(
             itemView.btnEditVariant.showWithCondition(product.isVariant() && product.isNotViolation())
             itemView.btnEditPrice.showWithCondition(product.isNotVariant() && product.isNotViolation())
             itemView.btnEditStock.showWithCondition(product.isNotVariant() && product.isNotViolation())
-            itemView.btnMoreOptions.show()
+            itemView.btnMoreOptions.showWithCondition(product.isNotViolation())
         }
     }
 
