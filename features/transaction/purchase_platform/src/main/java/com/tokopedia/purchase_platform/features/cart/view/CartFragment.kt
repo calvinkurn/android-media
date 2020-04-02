@@ -707,12 +707,48 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun checkGoToShipment(message: String?) {
         if (message.isNullOrEmpty()) {
-            cartListData?.lastApplyShopGroupSimplifiedData?.listRedPromos?.let {
-                if (it.isNotEmpty()) {
-                    dPresenter.doClearRedPromosBeforeGoToCheckout(cartListData?.lastApplyShopGroupSimplifiedData?.listRedPromos as ArrayList<String>)
-                } else {
-                    goToCheckoutPage()
+            val redStatePromo = ArrayList<String>()
+            if (dPresenter.isLastApplyValid()) {
+                val lastApplyUiModel = cartListData?.lastApplyShopGroupSimplifiedData
+                lastApplyUiModel?.let {
+                    if (it.message.state.equals("red")) {
+                        it.codes.forEach {
+                            if (!redStatePromo.contains(it)) {
+                                redStatePromo.add(it)
+                            }
+                        }
+                    }
+
+                    it.voucherOrders.forEach {
+                        if (it.message.state.equals("red") && !redStatePromo.contains(it.code)) {
+                            redStatePromo.add(it.code)
+                        }
+                    }
                 }
+            } else {
+                val lastValidateUseData = dPresenter.getValidateUseLastResponse()
+                lastValidateUseData?.promoUiModel?.let {
+                    if (it.messageUiModel.state.equals("red")) {
+                        it.codes.forEach {
+                            if (!redStatePromo.contains(it)) {
+                                redStatePromo.add(it)
+                            }
+                        }
+                    }
+
+                    it.voucherOrderUiModels.forEach {
+                        val promoCode = it?.code ?: ""
+                        if (promoCode.isNotBlank() && it?.messageUiModel?.state.equals("red") && !redStatePromo.contains(promoCode)) {
+                            redStatePromo.add(promoCode)
+                        }
+                    }
+                }
+            }
+
+            if (redStatePromo.isNotEmpty()) {
+                dPresenter.doClearRedPromosBeforeGoToCheckout(redStatePromo)
+            } else {
+                goToCheckoutPage()
             }
 
         } else {
@@ -1393,14 +1429,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun doRenderPromoCheckoutButton(lastApplyData: LastApplyUiModel) {
-        var isApplied = false
-        if (lastApplyData.additionalInfo.errorDetail.message.isNotEmpty()) {
+        val isApplied: Boolean
+        /*if (lastApplyData.additionalInfo.errorDetail.message.isNotEmpty()) {
             showToaster(lastApplyData.additionalInfo.errorDetail.message, isShowOk = false)
             PromoRevampAnalytics.eventCartViewPromoChanged(lastApplyData.additionalInfo.errorDetail.message)
-        }
+        }*/
 
         var title = ""
         promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
+        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
 
         if (lastApplyData.additionalInfo.messageInfo.message.isNotEmpty()) {
             title = lastApplyData.additionalInfo.messageInfo.message
@@ -1591,6 +1628,39 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
         }
 
+        val lastValidateUseResponse = dPresenter.getValidateUseLastResponse()
+        if (lastValidateUseResponse?.promoUiModel != null) {
+            // Goes here if user has applied / un applied promo code from promo page and there's still promo code applied
+
+            // Clear promo first
+            globalPromo.clear()
+            for (ordersItem in listOrder) {
+                ordersItem.codes.clear()
+            }
+
+            // Then set promo codes
+            lastValidateUseResponse.promoUiModel.codes.forEach {
+                if (!globalPromo.contains(it)) globalPromo.add(it)
+            }
+            lastValidateUseResponse.promoUiModel.voucherOrderUiModels.forEach { voucherOrder ->
+                listOrder.forEach { order ->
+                    if (voucherOrder?.uniqueId == order.uniqueId) {
+                        if (!order.codes.contains(voucherOrder.code)) {
+                            order.codes.add(voucherOrder.code)
+                        }
+                    }
+                }
+            }
+        } else {
+            if (!dPresenter.isLastApplyValid()) {
+                // Goes here if user has reset promo code from promo page
+                // We should be not send any promo code
+                globalPromo.clear()
+                for (ordersItem in listOrder) {
+                    ordersItem.codes.clear()
+                }
+            }
+        }
 
         return ValidateUsePromoRequest(
                 codes = globalPromo.toMutableList(),
@@ -2041,11 +2111,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         dPresenter.setValidateUseLastResponse(validateUseUiModel)
                         dPresenter.setLastApplyNotValid()
                         updatePromoCheckoutStickyButton(validateUseUiModel.promoUiModel)
-                        return
                     }
 
                     val clearPromoUiModel = data?.getParcelableExtra<ClearPromoUiModel>(ARGS_CLEAR_PROMO_RESULT)
                     if (clearPromoUiModel != null) {
+                        if (validateUseUiModel == null) {
+                            dPresenter.setLastApplyNotValid()
+                            dPresenter.setValidateUseLastResponse(null)
+                        }
                         updatePromoCheckoutStickyButton(PromoUiModel(titleDescription = clearPromoUiModel.successDataModel.defaultEmptyPromoMessage))
                     }
                 }

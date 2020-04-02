@@ -1227,6 +1227,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         if (validateUsePromoRevampUiModel != null) {
+            // Clear data first
+            builder.promos(null);
+            builder.promoCodes(null);
+
+            // Then set the data promo global
             PromoUiModel promoUiModel = validateUsePromoRevampUiModel.getPromoUiModel();
             if (promoUiModel.getCodes().size() > 0 && !promoUiModel.getMessageUiModel().getState().equals("red")) {
                 ArrayList<String> codes = new ArrayList<>(promoUiModel.getCodes());
@@ -1255,6 +1260,21 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     private void setCheckoutRequestPromoData(List<DataCheckoutRequest> dataCheckoutRequestList) {
+        // Clear data first
+        for (DataCheckoutRequest dataCheckoutRequest : dataCheckoutRequestList) {
+            if (dataCheckoutRequest.shopProducts != null && dataCheckoutRequest.shopProducts.size() > 0) {
+                for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
+                    if (shopProductCheckoutRequest.promoCodes != null) {
+                        shopProductCheckoutRequest.promoCodes.clear();
+                    }
+                    if (shopProductCheckoutRequest.promos != null) {
+                        shopProductCheckoutRequest.promos.clear();
+                    }
+                }
+            }
+        }
+
+        // Then set the data promo merchant & logistic
         for (DataCheckoutRequest dataCheckoutRequest : dataCheckoutRequestList) {
             if (dataCheckoutRequest.shopProducts != null && dataCheckoutRequest.shopProducts.size() > 0) {
                 for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
@@ -1341,7 +1361,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .subscribe(new SaveShipmentStateSubscriber(getView())));
     }
 
-    private JsonArray getShipmentItemSaveStateData(List<ShipmentCartItemModel> shipmentCartItemModels) {
+    private JsonArray getShipmentItemSaveStateData
+            (List<ShipmentCartItemModel> shipmentCartItemModels) {
         SaveShipmentStateRequest saveShipmentStateRequest;
         if (recipientAddressModel != null) {
             saveShipmentStateRequest = generateSaveShipmentStateRequestSingleAddress(shipmentCartItemModels);
@@ -1394,7 +1415,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .build();
     }
 
-    private void setSaveShipmentStateData(ShipmentCartItemModel shipmentCartItemModel, List<ShipmentStateShopProductData> shipmentStateShopProductDataList) {
+    private void setSaveShipmentStateData(ShipmentCartItemModel
+                                                  shipmentCartItemModel, List<ShipmentStateShopProductData> shipmentStateShopProductDataList) {
         // todo: refactor to converter class
         CourierItemData courierData = null;
         if (getView().isTradeInByDropOff()) {
@@ -1517,7 +1539,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @NonNull
-    private RequestParams generateEditAddressRequestParams(ShipmentCartItemModel shipmentCartItemModel,
+    private RequestParams generateEditAddressRequestParams(ShipmentCartItemModel
+                                                                   shipmentCartItemModel,
                                                            String addressLatitude, String addressLongitude) {
         Map<String, String> params = getGeneratedAuthParamNetwork(null);
 
@@ -1615,7 +1638,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     // Clear promo red state before checkout
     @Override
-    public void cancelNotEligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList, int checkoutType) {
+    public void cancelNotEligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList,
+                                       int checkoutType) {
         setCouponStateChanged(true);
         ArrayList<String> notEligiblePromoCodes = new ArrayList<>();
         for (NotEligiblePromoHolderdata notEligiblePromoHolderdata : notEligiblePromoHolderdataArrayList) {
@@ -1837,8 +1861,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void setShippingCourierViewModelsState(List<ShippingCourierUiModel> shippingCourierUiModelsState,
-                                                  int itemPosition) {
+    public void setShippingCourierViewModelsState
+            (List<ShippingCourierUiModel> shippingCourierUiModelsState,
+             int itemPosition) {
         if (this.shippingCourierViewModelsState == null) {
             this.shippingCourierViewModelsState = new HashMap<>();
         }
@@ -1856,7 +1881,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void setHasDeletePromoAfterChecKPromoCodeFinal(boolean hasDeletePromoAfterChecKPromoCodeFinal) {
+    public void setHasDeletePromoAfterChecKPromoCodeFinal(
+            boolean hasDeletePromoAfterChecKPromoCodeFinal) {
         this.hasDeletePromoAfterChecKPromoCodeFinal = hasDeletePromoAfterChecKPromoCodeFinal;
     }
 
@@ -1942,7 +1968,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void setValidateUsePromoRevampUiModel(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
+    public void setValidateUsePromoRevampUiModel(ValidateUsePromoRevampUiModel
+                                                         validateUsePromoRevampUiModel) {
         this.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel;
     }
 

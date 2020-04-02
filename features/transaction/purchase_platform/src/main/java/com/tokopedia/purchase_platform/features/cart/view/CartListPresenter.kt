@@ -1157,6 +1157,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     }
 
     override fun doClearRedPromosBeforeGoToCheckout(promoCodeList: ArrayList<String>) {
+        view?.showItemLoading()
         clearCacheAutoApplyStackUseCase?.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, promoCodeList)
         compositeSubscription.add(
                 clearCacheAutoApplyStackUseCase?.createObservable(RequestParams.create())
@@ -1168,7 +1169,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         return lastValidateUseResponse
     }
 
-    override fun setValidateUseLastResponse(response: ValidateUsePromoRevampUiModel) {
+    override fun setValidateUseLastResponse(response: ValidateUsePromoRevampUiModel?) {
         lastValidateUseResponse = response
     }
 

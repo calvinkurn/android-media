@@ -109,7 +109,7 @@ interface ICartListPresenter {
 
     fun getValidateUseLastResponse(): ValidateUsePromoRevampUiModel?
 
-    fun setValidateUseLastResponse(response: ValidateUsePromoRevampUiModel)
+    fun setValidateUseLastResponse(response: ValidateUsePromoRevampUiModel?)
 
     fun isLastApplyValid(): Boolean
 

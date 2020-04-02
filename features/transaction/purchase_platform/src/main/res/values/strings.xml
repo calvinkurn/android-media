@@ -299,7 +299,7 @@
     <string name="label_title_promo_eligibility_header">Pilih promo</string>
     <string name="label_promo_input_hint">Masukkan kode promo</string>
     <string name="label_button_apply_manual_input_promo">Terapkan</string>
-    <string name="label_prefix_attempted_promo_code">Kode promo:&amp;</string>
+    <string name="label_prefix_attempted_promo_code">Kode promo:&#160;</string>
 
     <string name="occ_preference">Pengaturan Beli Langsung</string>
     <string name="preference_list_empty_header">Kamu belum punya pengaturan Beli Langsung</string>

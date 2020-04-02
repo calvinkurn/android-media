@@ -170,7 +170,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
             // Get response
             val response = withContext(Dispatchers.IO) {
-//                Gson().fromJson(MOCK_RESPONSE, CouponListRecommendationResponse::class.java)
+                //                Gson().fromJson(MOCK_RESPONSE, CouponListRecommendationResponse::class.java)
                 val request = GraphqlRequest(mutation, CouponListRecommendationResponse::class.java, promo)
                 graphqlRepository.getReseponse(listOf(request))
                         .getSuccessData<CouponListRecommendationResponse>()
@@ -543,20 +543,21 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             }
 
             // Set param
-            val promoCodes = ArrayList<String>()
+            val toBeRemovedPromoCodes = ArrayList<String>()
             var tmpMutation = mutation
             promoListUiModel.value?.forEach {
-                if (it is PromoListItemUiModel && it.uiState.isParentEnabled && it.uiState.isAlreadyApplied) {
-                    promoCodes.add(it.uiData.promoCode)
+                if (it is PromoListItemUiModel && it.uiState.isParentEnabled) {
+                    toBeRemovedPromoCodes.add(it.uiData.promoCode)
                 } else if (it is PromoListHeaderUiModel && it.uiState.isEnabled && it.uiData.tmpPromoItemList.isNotEmpty()) {
                     it.uiData.tmpPromoItemList.forEach {
-                        if (it.uiState.isParentEnabled && it.uiState.isAlreadyApplied) {
-                            promoCodes.add(it.uiData.promoCode)
+                        if (it.uiState.isParentEnabled) {
+                            toBeRemovedPromoCodes.add(it.uiData.promoCode)
                         }
                     }
                 }
             }
-            val promoCodesJson = Gson().toJson(promoCodes)
+
+            val promoCodesJson = Gson().toJson(toBeRemovedPromoCodes)
             tmpMutation = tmpMutation.replace("#promoCode", promoCodesJson)
 
             // Get response
@@ -569,7 +570,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             if (response.successData.success) {
                 // Remove promo code on validate use params after clear promo success
                 val tmpValidateUsePromoRequest = validateUsePromoRequest
-                promoCodes.forEach { promo ->
+                toBeRemovedPromoCodes.forEach { promo ->
                     if (tmpValidateUsePromoRequest.codes.contains(promo)) {
                         tmpValidateUsePromoRequest.codes.remove(promo)
                     }
