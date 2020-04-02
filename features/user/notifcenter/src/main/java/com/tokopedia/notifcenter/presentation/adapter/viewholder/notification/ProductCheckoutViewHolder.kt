@@ -64,6 +64,7 @@ class ProductCheckoutViewHolder(
             cardContainer.hide()
             lstProduct.show()
             listener.getAnalytic().trackProductListImpression(
+                    userId = element.userInfo.userId,
                     location = LABEL_BOTTOM_SHEET_LOCATION,
                     notification = element
             )
@@ -87,6 +88,7 @@ class ProductCheckoutViewHolder(
             cardContainer.show()
             lstProduct.hide()
             listener.getAnalytic().trackProductListImpression(
+                    userId = element.userInfo.userId,
                     notification = element
             )
         }

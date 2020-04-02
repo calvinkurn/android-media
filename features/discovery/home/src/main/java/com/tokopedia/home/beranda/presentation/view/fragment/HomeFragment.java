@@ -144,6 +144,8 @@ import javax.inject.Inject;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
+import rx.Observable;
+import rx.schedulers.Schedulers;
 
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_BANNER;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_BANNER_CAROUSEL;
@@ -1168,14 +1170,21 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private void detectAndSendLocation() {
-        LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
-                permissionCheckerHelper,
-                LocationServices.getFusedLocationProviderClient(getActivity()
-                        .getApplicationContext()),
-                getActivity().getApplicationContext());
-        locationDetectorHelper.getLocation(onGetLocation(), getActivity(),
-                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                "");
+        Observable.just(true).map(aBoolean -> {
+            LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
+                    permissionCheckerHelper,
+                    LocationServices.getFusedLocationProviderClient(getActivity()
+                            .getApplicationContext()),
+                    getActivity().getApplicationContext());
+            locationDetectorHelper.getLocation(onGetLocation(), getActivity(),
+                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                    "");
+                return true;
+        }).subscribeOn(Schedulers.io()).subscribe(aBoolean -> {
+            //IGNORE
+        }, throwable -> {
+            //IGNORE
+        });
     }
 
     private Function1<DeviceLocation, Unit> onGetLocation() {

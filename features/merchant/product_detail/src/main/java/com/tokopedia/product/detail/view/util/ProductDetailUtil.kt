@@ -9,6 +9,8 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.kotlin.extensions.toFormattedString
+import java.util.*
 
 object ProductDetailUtil {
 
@@ -25,7 +27,25 @@ object ProductDetailUtil {
             MethodChecker.fromHtml(review)
         }
     }
+}
 
+infix fun String?.toDate(format: String): String {
+    this?.let {
+        val isLongFormat = try {
+            it.toLong()
+            true
+        } catch (e: Throwable) {
+            false
+        }
+
+        return if (isLongFormat) {
+            val date = Date(it.toLong() * 1000)
+            date.toFormattedString(format)
+        } else {
+            this
+        }
+    }
+    return ""
 }
 
 fun Fragment.doActionOrLogin(isLoggedIn: Boolean, action: () -> Unit) {
