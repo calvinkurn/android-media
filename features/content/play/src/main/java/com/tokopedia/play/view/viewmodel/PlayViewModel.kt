@@ -22,6 +22,7 @@ import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
+import com.tokopedia.play.view.uimodel.mocker.PlayUiMocker
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.player.PlayVideoManager
@@ -229,13 +230,6 @@ class PlayViewModel @Inject constructor(
         }
 
         _observableBottomInsetsState.value = getLatestBottomInsetsMapState()
-
-//        startMockFreeze()
-//        setMockProductSocket()
-//        setMockVoucherSocket()
-//        setMockProductSheetContent()
-//        setMockVariantSheetContent()
-//        setMockProductPinned()
     }
 
     //region lifecycle
@@ -317,7 +311,6 @@ class PlayViewModel @Inject constructor(
                 )
 
         _observableBottomInsetsState.value = insetsMap
-//        setMockVariantSheetContent(action)
     }
 
     fun onHideVariantSheet() {
@@ -665,37 +658,7 @@ class PlayViewModel @Inject constructor(
         launch(dispatchers.io) {
             delay(10000)
             withContext(dispatchers.main) {
-                val productSheet = _observableProductSheetContent.value
-                val currentProduct = if (productSheet is PlayResult.Success) productSheet.data else ProductSheetUiModel.empty()
-                _observableProductSheetContent.value = PlayResult.Success(currentProduct.copy(
-                        productList = List(5) {
-                            ProductLineUiModel(
-                                    id = it.toString(),
-                                    shopId = "123",
-                                    imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
-                                    title = "Product $it",
-                                    isVariantAvailable = true,
-                                    price = if (it % 2 == 0) {
-                                        OriginalPrice("Rp20$it.000", 20000)
-                                    } else {
-                                        DiscountedPrice(
-                                                originalPrice = "Rp20$it.000",
-                                                discountPercent = it * 10,
-                                                discountedPrice = "Rp2$it.000",
-                                                discountedPriceNumber = 20000
-                                        )
-                                    },
-                                    stock = if (it % 2 == 0) {
-                                        OutOfStock
-                                    } else {
-                                        StockAvailable(it * 10)
-                                    },
-                                    minQty = 2,
-                                    isFreeShipping = true,
-                                    applink = null
-                            )
-                        }
-                ))
+                _observableProductSheetContent.value = PlayUiMocker.getMockProductOnlySocket(_observableProductSheetContent.value)
             }
         }
     }
@@ -704,17 +667,7 @@ class PlayViewModel @Inject constructor(
         launch(dispatchers.io) {
             delay(15000)
             withContext(dispatchers.main) {
-                val productSheet = _observableProductSheetContent.value
-                val currentProduct = if (productSheet is PlayResult.Success) productSheet.data else ProductSheetUiModel.empty()
-                _observableProductSheetContent.value = PlayResult.Success(currentProduct.copy(
-                        voucherList = List(5) { voucherIndex ->
-                            MerchantVoucherUiModel(
-                                    type = if (voucherIndex % 2 == 0) MerchantVoucherType.Discount else MerchantVoucherType.Shipping,
-                                    title = if (voucherIndex % 2 == 0) "Cashback ${(voucherIndex + 1) * 2}rb" else "Gratis ongkir ${(voucherIndex + 1) * 2}rb",
-                                    description = "min. pembelian ${(voucherIndex + 1)}00rb"
-                            )
-                        }
-                ))
+                _observableProductSheetContent.value = PlayUiMocker.getMockVoucherOnlySocket(_observableProductSheetContent.value)
             }
         }
     }
@@ -723,45 +676,7 @@ class PlayViewModel @Inject constructor(
         launch(dispatchers.io) {
             delay(3000)
             withContext(dispatchers.main) {
-                _observableProductSheetContent.value = PlayResult.Success(ProductSheetUiModel(
-                        title = "Barang & Promo Pilihan",
-                        voucherList = List(5) { voucherIndex ->
-                                                        MerchantVoucherUiModel(
-                                    type = if (voucherIndex % 2 == 0) MerchantVoucherType.Discount else MerchantVoucherType.Shipping,
-                                    title = if (voucherIndex % 2 == 0) "Cashback ${(voucherIndex + 1) * 2}rb" else "Gratis ongkir ${(voucherIndex + 1) * 2}rb",
-                                    description = "min. pembelian ${(voucherIndex + 1)}00rb"
-                            )
-//                            VoucherPlaceholderUiModel
-                        },
-                        productList = List(5) {
-                            ProductLineUiModel(
-                                    id = "697897875",
-                                    shopId = "123",
-                                    imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
-                                    title = "Product $it",
-                                    isVariantAvailable = true,
-                                    price = if (it % 2 == 0) {
-                                        OriginalPrice("Rp20$it.000", 20000)
-                                    } else {
-                                        DiscountedPrice(
-                                                originalPrice = "Rp20$it.000",
-                                                discountPercent = it * 10,
-                                                discountedPrice = "Rp2$it.000",
-                                                discountedPriceNumber = 20000
-                                        )
-                                    },
-                                    stock = if (it % 2 == 0) {
-                                        OutOfStock
-                                    } else {
-                                        StockAvailable(it * 10)
-                                    },
-                                    minQty = 2,
-                                    isFreeShipping = true,
-                                    applink = "tokopedia://login"
-                            )
-//                            ProductPlaceholderUiModel
-                        }
-                ))
+                _observableProductSheetContent.value = PlayUiMocker.getMockProductSheetContent()
             }
         }
     }
@@ -770,11 +685,7 @@ class PlayViewModel @Inject constructor(
         launch(dispatchers.io) {
             delay(3000)
             withContext(dispatchers.main) {
-                _observablePinnedProduct.value = PinnedProductUiModel(
-                        partnerName = "GSK Official Store",
-                        title = "Ayo belanja barang pilihan kami sebelum kehabisan!",
-                        isPromo = true
-                )
+                _observablePinnedProduct.value = PlayUiMocker.getMockPinnedProduct()
             }
         }
     }
