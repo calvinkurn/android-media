@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.view.fragment.partialview
 
 import android.graphics.drawable.Drawable
 import android.view.View
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.UNSET
@@ -13,7 +12,6 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
 
@@ -47,13 +45,9 @@ class PartialButtonActionView private constructor(val view: View,
 
     companion object {
         fun build(_view: View, _listener: View.OnClickListener) = PartialButtonActionView(_view, _listener)
-
-        private const val TOPCHAT_VARIANT_WHITE = "Icon White"
-        private const val TOPCHAT_VARIANT_GREEN = "Icon Green"
-        private const val TOPCHAT_VARIANT_GREEN_DOT = "Icon Green Dot"
-        private const val KEY_AB_TOPCHAT = "TopChat Icon at PDP 2"
     }
 
+    //OLD PDP
     fun renderData(isWarehouseProduct: Boolean, hasShopAuthority: Boolean, preOrder: PreOrder?) {
         this.isWarehouseProduct = isWarehouseProduct
         this.hasShopAuthority = hasShopAuthority
@@ -69,9 +63,18 @@ class PartialButtonActionView private constructor(val view: View,
         renderButton()
     }
 
-    fun renderData(isWarehouseProduct: Boolean, isExpressCheckout: Boolean, hasTopAdsActive: Boolean, cartTypeData: CartTypeData? = null) {
+    fun setButtonP1(preOrder: PreOrder?, isLeasing: Boolean) {
+        this.preOrder = preOrder
+        this.isLeasing = isLeasing
+    }
+
+    fun setTopAdsButton(hasTopAdsActive: Boolean) {
+        this.hasTopAdsActive = hasTopAdsActive
+    }
+
+    fun renderData(isWarehouseProduct: Boolean, hasShopAuthority: Boolean, hasTopAdsActive: Boolean, cartTypeData: CartTypeData? = null) {
         this.isWarehouseProduct = isWarehouseProduct
-        this.isExpressCheckout = isExpressCheckout
+        this.hasShopAuthority = hasShopAuthority
         this.hasTopAdsActive = hasTopAdsActive
         this.cartTypeData = cartTypeData
         this.onSuccessGetCartType = cartTypeData != null && cartTypeData.availableButtons.isNotEmpty()
@@ -97,9 +100,7 @@ class PartialButtonActionView private constructor(val view: View,
         val unavailableButton = cartTypeData?.unavailableButtons ?: listOf()
         val availableButton = cartTypeData?.availableButtons ?: listOf()
 
-        bindAbTestChatButton(btn_topchat)
-
-        btn_topchat.showWithCondition("chat" !in unavailableButton)
+        btn_topchat.showWithCondition(ProductDetailConstant.KEY_CHAT !in unavailableButton)
         btn_buy_now.showWithCondition(availableButton.firstOrNull() != null)
         btn_add_to_cart.showWithCondition(availableButton.getOrNull(1) != null)
 
@@ -118,6 +119,8 @@ class PartialButtonActionView private constructor(val view: View,
                     ?: false)
         }
 
+        btn_topchat.setOnClickListener(this@PartialButtonActionView)
+        btn_apply_leasing.setOnClickListener(this@PartialButtonActionView)
         btn_buy_now.generateTheme(availableButton.getOrNull(0)?.color ?: "")
         btn_add_to_cart.generateTheme(availableButton.getOrNull(1)?.color ?: "")
     }
@@ -137,7 +140,6 @@ class PartialButtonActionView private constructor(val view: View,
         with(view) {
             hideButtonEmptyAndTopAds()
             btn_topchat.visibility = View.VISIBLE
-            bindAbTestChatButton(btn_topchat)
             btn_buy_now.text = context.getString(
                     if (preOrder?.isPreOrderActive() == true) {
                         R.string.action_preorder
@@ -170,24 +172,6 @@ class PartialButtonActionView private constructor(val view: View,
             }
             btn_topchat.setOnClickListener(this@PartialButtonActionView)
             btn_apply_leasing.setOnClickListener(this@PartialButtonActionView)
-        }
-    }
-
-    private fun bindAbTestChatButton(imageView: AppCompatImageView) {
-        val variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(KEY_AB_TOPCHAT, "")
-        val drawableRes = when (variant) {
-            TOPCHAT_VARIANT_WHITE -> R.drawable.ic_topchat
-            TOPCHAT_VARIANT_GREEN -> R.drawable.ic_topchat_variant_green
-            TOPCHAT_VARIANT_GREEN_DOT -> R.drawable.ic_topchat_variant_green_dot
-            else -> R.drawable.ic_topchat
-        }
-
-        imageView.setImageResource(drawableRes)
-
-        if (variant == TOPCHAT_VARIANT_GREEN) {
-            imageView.setBackgroundResource(R.drawable.variant_topchat_green)
-        } else {
-            imageView.setBackgroundResource(R.drawable.white_topchat_button_rounded_pdp)
         }
     }
 
@@ -247,7 +231,6 @@ class PartialButtonActionView private constructor(val view: View,
     private fun showNoStockButton() {
         with(view) {
             changeTopChatLayoutParamsToHandleWarehouseButton()
-            bindAbTestChatButton(btn_topchat)
             btn_byme.hide()
             btn_empty_stock.show()
             btn_topchat.show()

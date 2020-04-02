@@ -54,9 +54,6 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     val productLastSeenMap: ProductLastSeenDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_LAST_SEEN] as? ProductLastSeenDataModel
 
-    val productVariantInfoMap: ProductGeneralInfoDataModel?
-        get() = mapOfData[ProductDetailConstant.PRODUCT_VARIANT_INFO] as? ProductGeneralInfoDataModel
-
     val productWholesaleInfoMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_WHOLESALE_INFO] as? ProductGeneralInfoDataModel
 
@@ -293,19 +290,6 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     fun updateImageAfterClickVariant(it: MutableList<Media>) {
         snapShotMap?.run {
             media = DynamicProductDetailMapper.convertMediaToDataModel(it)
-        }
-    }
-
-    fun updateVariantInfo(productVariant: ProductVariant, selectedOptionString: String) {
-        productVariantInfoMap?.run {
-            data.first().subtitle =
-                    if (selectedOptionString.isEmpty()) {
-                        "Pilih " +
-                                productVariant.variant.map { it.name }.joinToStringWithLast(separator = ", ",
-                                        lastSeparator = " dan ")
-                    } else {
-                        selectedOptionString
-                    }
         }
     }
 

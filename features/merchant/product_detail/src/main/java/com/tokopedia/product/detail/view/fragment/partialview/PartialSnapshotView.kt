@@ -41,32 +41,39 @@ class PartialSnapshotView(private val view: View,
         }
 
         if (campaign.isActive) {
-            tv_price_pdp.text = context.getString(R.string.template_price, "",
-                    campaign.discountedPrice.getCurrencyFormatted())
-            text_original_price.text = context.getString(R.string.template_price, "",
-                    campaign.originalPrice.getCurrencyFormatted())
-            text_original_price.paintFlags = text_original_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-            text_discount.text = context.getString(R.string.template_campaign_off, campaign.percentageAmount.numberFormatted())
-
-            hideGimmick(campaign)
-            renderFlashSale(campaign, data.stock.getFinalStockWording(nearestWarehouseStockWording))
+            renderCampaignActive(campaign, data.stock.getFinalStockWording(nearestWarehouseStockWording))
         } else {
-            tv_price_pdp.text = context.getString(R.string.template_price, "",
-                    data.price.value.getCurrencyFormatted())
-            text_original_price.gone()
-            text_discount.gone()
-            discount_timer_holder.gone()
-            sale_text_stock_available.gone()
+            renderCampaignInactive(data.price.value.getCurrencyFormatted())
         }
 
-        renderStockAvailable(campaign, data.variant.isVariant, data.stock.getFinalStockWording(nearestWarehouseStockWording))
+        renderStockAvailable(campaign, data.variant.isVariant, data.stock.getFinalStockWording(nearestWarehouseStockWording), basic.isActive())
         label_prescription.showWithCondition(basic.needPrescription)
         divider.show()
     }
 
-    private fun renderStockAvailable(campaign: CampaignModular, isVariant: Boolean, stockWording: String) = with(view) {
+    private fun renderCampaignActive(campaign: CampaignModular, stockWording: String) = with(view) {
+        tv_price_pdp.text = context.getString(R.string.template_price, "",
+                campaign.discountedPrice.getCurrencyFormatted())
+        text_original_price.text = context.getString(R.string.template_price, "",
+                campaign.originalPrice.getCurrencyFormatted())
+        text_original_price.paintFlags = text_original_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        text_discount.text = context.getString(R.string.template_campaign_off, campaign.percentageAmount.numberFormatted())
+
+        hideGimmick(campaign)
+        renderFlashSale(campaign, stockWording)
+    }
+
+    private fun renderCampaignInactive(price:String) = with(view){
+        tv_price_pdp.text = context.getString(R.string.template_price, "", price)
+        text_original_price.gone()
+        text_discount.gone()
+        discount_timer_holder.gone()
+        sale_text_stock_available.gone()
+    }
+
+    private fun renderStockAvailable(campaign: CampaignModular, isVariant: Boolean, stockWording: String, isProductActive: Boolean) = with(view) {
         text_stock_available.text = MethodChecker.fromHtml(stockWording)
-        text_stock_available.showWithCondition(!campaign.activeAndHasId && !isVariant && stockWording.isNotEmpty())
+        text_stock_available.showWithCondition(!campaign.activeAndHasId && !isVariant && stockWording.isNotEmpty() && isProductActive)
     }
 
     private fun hideGimmick(campaign: CampaignModular) = with(view) {

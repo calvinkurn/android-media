@@ -59,6 +59,14 @@ object ProductDetailConstant {
     const val KEY_BYME = "byme"
     const val KEY_XSOURCE = "xSource"
     const val KEY_PAGE_NUMBER = "pageNumber"
+    const val KEY_PREORDER = "preorder"
+    const val KEY_LEASING = "leasing"
+    const val KEY_NORMAL_BUTTON = "normal"
+    const val KEY_OCS_BUTTON = "ocs"
+    const val KEY_OCC_BUTTON = "occ"
+    const val KEY_OVO_DEALS = "ovo_deals"
+    const val KEY_CHAT = "chat"
+    const val KEY_BYME = "byme"
     const val DEFAULT_PAGE_NUMBER = 1
     const val DEFAULT_PAGE_NAME = "pdp_1,pdp_2,pdp_3,pdp_4"
 
@@ -107,7 +115,6 @@ object ProductDetailConstant {
     const val TRADE_IN = "tradein"
     const val INFO = "info"
     const val SHOP_VOUCHER = "shop_voucher"
-    const val SEPARATOR = "separator"
     const val VALUE_PROPOSITION = "value_prop"
     const val PRODUCT_LIST = "product_list"
     const val NOTIFY_ME = "teaser"

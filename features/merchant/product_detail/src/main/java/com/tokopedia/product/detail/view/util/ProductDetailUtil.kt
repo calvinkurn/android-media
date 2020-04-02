@@ -27,6 +27,7 @@ object ProductDetailUtil {
             MethodChecker.fromHtml(review)
         }
     }
+
 }
 
 infix fun String?.toDate(format: String): String {
@@ -47,6 +48,7 @@ infix fun String?.toDate(format: String): String {
     }
     return ""
 }
+
 
 fun Fragment.doActionOrLogin(isLoggedIn: Boolean, action: () -> Unit) {
     if (isLoggedIn) {
@@ -71,8 +73,7 @@ fun Fragment.doActionOrloginWithExtra(isLoggedIn: Boolean, loginAction: () -> Un
     }
 }
 
-fun <T> ArrayList<T>.asThrowable(): Throwable = Throwable(message = this.firstOrNull()?.toString()
-        ?: "")
+fun <T> ArrayList<T>.asThrowable(): Throwable = Throwable(message = this.firstOrNull()?.toString() ?: "")
 
 fun String.asThrowable(): Throwable = Throwable(message = this)
 

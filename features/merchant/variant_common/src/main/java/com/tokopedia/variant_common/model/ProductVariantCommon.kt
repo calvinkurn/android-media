@@ -59,7 +59,7 @@ data class ProductVariantCommon(
     }
 
     val hasChildren: Boolean
-        get() = with(children) {this.isNotEmpty() }
+        get() = with(children) { this.isNotEmpty() }
 
     val hasVariant: Boolean
         get() = with(variant) { this.isNotEmpty() }

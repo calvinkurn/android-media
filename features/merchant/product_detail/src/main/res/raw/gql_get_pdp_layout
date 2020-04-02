@@ -116,6 +116,7 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
             isActive
             hideGimmick
             isCheckImei
+            isUsingOvo
           }
           stock {
             useStock
