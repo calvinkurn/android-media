@@ -159,6 +159,11 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
         trackingQueue.sendAll()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        job.cancel()
+    }
+
     private fun observeProductSheetContent() {
         playViewModel.observableProductSheetContent.observe(viewLifecycleOwner, Observer {
             launch {
