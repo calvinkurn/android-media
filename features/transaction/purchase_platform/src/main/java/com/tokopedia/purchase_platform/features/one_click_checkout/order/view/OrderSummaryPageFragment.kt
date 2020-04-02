@@ -718,6 +718,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     override fun onStop() {
         super.onStop()
+        // todo check if finishing or checkout
         if (!swipe_refresh_layout.isRefreshing) {
             viewModel.updateCart()
         }
