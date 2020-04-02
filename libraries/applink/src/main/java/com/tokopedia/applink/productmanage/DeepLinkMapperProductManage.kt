@@ -13,6 +13,7 @@ import com.tokopedia.config.GlobalConfig
 object DeepLinkMapperProductManage {
 
     const val QUERY_PARAM_FILTER = "filter"
+    private const val PATH_SEGMENT_EDIT = "edit"
 
     /**
      * @param deepLink : tokopedia://product/edit/12345
@@ -22,7 +23,7 @@ object DeepLinkMapperProductManage {
         val uri = Uri.parse(deepLink)
         return when {
             //tokopedia://product/edit/12345
-            uri.pathSegments.size == 2 && uri.pathSegments[0] == "edit" -> {
+            uri.pathSegments.size == 2 && uri.pathSegments[0] == PATH_SEGMENT_EDIT -> {
                 val productId = uri.pathSegments[1]
                 UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_EDIT_ITEM, productId)
             }
