@@ -264,7 +264,7 @@ class AddEditProductDescriptionFragment(
                 put(EXTRA_PRODUCT_VARIANT_SELECTION, productVariantInputModel)
                 put(EXTRA_PRODUCT_SIZECHART, productVariantInputModel.productSizeChart)
                 put(EXTRA_CURRENCY_TYPE, TYPE_IDR)
-                put(EXTRA_DEFAULT_PRICE, 0.0)
+                put(EXTRA_DEFAULT_PRICE, 0.0) //TODO faisalramd put default price
                 put(EXTRA_STOCK_TYPE, "")
                 put(EXTRA_IS_OFFICIAL_STORE, false)
                 put(EXTRA_DEFAULT_SKU, "")

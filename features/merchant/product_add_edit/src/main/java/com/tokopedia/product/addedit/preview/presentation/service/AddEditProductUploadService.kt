@@ -99,10 +99,14 @@ class AddEditProductUploadService : JobIntentService(), CoroutineScope {
 
     private fun uploadProductImages(imageUrlOrPathList: List<String>, sizeChartPath: String) {
         val uploadIdList: ArrayList<String> = ArrayList()
-        var urlImageCount = imageUrlOrPathList.size
+        val urlImageCount = imageUrlOrPathList.size
         var sizeChartUploadId = ""
-        if (sizeChartPath.isNotEmpty()) urlImageCount += 1 // if sizeChartPath valid then add to progress
-        notificationManager = getNotificationManager(urlImageCount)
+        // if sizeChartPath valid then add to progress
+        notificationManager = if (sizeChartPath.isNotEmpty()) {
+            getNotificationManager(urlImageCount + 1)
+        } else {
+            getNotificationManager(urlImageCount)
+        }
         notificationManager?.onSubmitPost()
         launch(coroutineContext) {
             repeat(urlImageCount) { i ->

@@ -5,6 +5,7 @@ import androidx.arch.core.executor.TaskExecutor
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -44,11 +45,12 @@ class GetCategoryRecommendationUseCaseTest : Spek({
     Feature("AddEditProductDetailViewModel") {
         val provider: ResourceProvider = mockk(relaxed = true)
         val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase = mockk(relaxed = true)
+        val getNameRecommendationUseCase: GetNameRecommendationUseCase = mockk(relaxed = true)
 
         val dispatcher: CoroutineDispatcher = Dispatchers.Unconfined
 
         val viewmodel by lazy {
-            AddEditProductDetailViewModel(provider, getCategoryRecommendationUseCase, dispatcher)
+            AddEditProductDetailViewModel(provider, dispatcher, getNameRecommendationUseCase, getCategoryRecommendationUseCase)
         }
 
         Scenario("success get category recommendation") {
@@ -97,6 +99,59 @@ class GetCategoryRecommendationUseCaseTest : Spek({
             Then("get category recommendation is failed") {
                 Thread.sleep(2000)
                 val result = viewmodel.productCategoryRecommendationLiveData.value
+                Assert.assertTrue(result != null && result is Fail)
+            }
+        }
+
+
+        Scenario("success get name recommendation") {
+
+            val resultNameRecommendation = listOf("batik", "batik couple", "baju batik wanita", "baju batik pria", "batik kultut")
+
+            Given("getNameRecommendationUseCase return list of category recommendation") {
+                coEvery {
+                    getNameRecommendationUseCase.executeOnBackground()
+                } returns resultNameRecommendation
+            }
+
+            When("get search name recommendation") {
+                viewmodel.getProductNameRecommendation(query = "batik")
+            }
+
+            Then("run use case") {
+                coVerify {
+                    getNameRecommendationUseCase.executeOnBackground()
+                }
+            }
+
+            Then("get category recommendation result is success") {
+                val resultViewmodel = viewmodel.productNameRecommendations.value
+
+                Assert.assertTrue(resultViewmodel != null && resultViewmodel == Success(resultNameRecommendation))
+            }
+        }
+
+        Scenario("failed get name recommendation") {
+
+            Given("getNameRecommendationUseCase throw a throwable") {
+                coEvery {
+                    getNameRecommendationUseCase.executeOnBackground()
+                } throws MessageErrorException("")
+            }
+
+            When("get category recommendation") {
+                viewmodel.getProductNameRecommendation(query = "baju")
+            }
+
+            Then("run use case") {
+                coVerify {
+                    getNameRecommendationUseCase.executeOnBackground()
+                }
+            }
+
+            Then("get name recommendation is failed") {
+                Thread.sleep(2000)
+                val result = viewmodel.productNameRecommendations.value
                 Assert.assertTrue(result != null && result is Fail)
             }
         }
