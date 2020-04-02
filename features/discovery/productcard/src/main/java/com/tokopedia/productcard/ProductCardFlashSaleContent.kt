@@ -2,15 +2,11 @@ package com.tokopedia.productcard
 
 import android.graphics.Paint
 import android.view.View
-import androidx.annotation.ColorRes
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.productcard.utils.TRANSPARENT_BLACK
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.shouldShowWithAction
-import com.tokopedia.unifycomponents.Label
 import kotlinx.android.synthetic.main.product_card_flashsale_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_flashsale_layout.view.*
 import kotlinx.android.synthetic.main.product_card_flashsale_layout.view.labelProductStatus
@@ -80,26 +76,9 @@ private fun ProductCardFlashSaleView.renderOutOfStockView(productCardModel: Prod
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
         tvLabel.visibility = View.GONE
         progressBar.visibility = View.GONE
-        oosOverlay.visibility = View.VISIBLE
+        outOfStockOverlay.visibility = View.VISIBLE
     } else {
-        oosOverlay.visibility = View.GONE
-    }
-}
-
-private fun Label.trySetCustomLabelType(labelGroupType: String) {
-    unlockFeature = true
-
-    val colorRes = labelGroupType.toUnifyLabelColor()
-    val colorHexInt = ContextCompat.getColor(context, colorRes)
-    val colorHexString = "#${Integer.toHexString(colorHexInt)}"
-    setLabelType(colorHexString)
-}
-
-@ColorRes
-private fun String?.toUnifyLabelColor(): Int {
-    return when(this) {
-        TRANSPARENT_BLACK -> com.tokopedia.unifyprinciples.R.color.Neutral_N700_68
-        else -> com.tokopedia.unifyprinciples.R.color.Neutral_N700_68
+        outOfStockOverlay.visibility = View.GONE
     }
 }
 
