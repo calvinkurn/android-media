@@ -497,6 +497,11 @@
     <string name="flight_terminal_info">Terminal %s*</string>
     <string name="flight_airport_less_than_three_keyword_title_error">Oops, belum ada hasil</string>
     <string name="flight_airport_less_than_three_keyword_error">Coba lengkapi nama kota atau bandara yang kamu cari. Tuliskan min. 3 huruf, ya!</string>
+    <string name="flight_airport_not_found_title_error">Nggak ada hasil yang cocok</string>
+    <string name="flight_airport_not_found_description_error">Coba cari ulang pakai kata kunci lain</string>
+    <string name="flight_airport_connection_title_error">Koneksi internetmu terganggu!</string>
+    <string name="flight_airport_connection_description_error">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan
+di tempatmu.</string>
 
     <string name="flight_min_date_label">Pergi</string>
     <string name="flight_max_date_label">Pulang</string>
