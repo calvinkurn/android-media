@@ -3,8 +3,10 @@
     package="com.tokopedia.df.category.tradein">
 
     <dist:module
-        dist:onDemand="true"
         dist:title="@string/title_trade_in">
+        <dist:delivery>
+            <dist:on-demand/>
+        </dist:delivery>
         <dist:fusing dist:include="true" />
     </dist:module>
 

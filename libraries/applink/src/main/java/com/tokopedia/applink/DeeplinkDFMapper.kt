@@ -89,18 +89,15 @@ object DeeplinkDFMapper {
 
     @JvmField
     val DFM_BASE = "df_base"
-    
-    private val DFM_CATEGORY_TRADEIN = "df_category_tradein"
+
+    private val DFM_CATEGORY_TRADEIN = "df_category_trade_in"
     @JvmField
     val DFM_MERCHANT_SELLER_CUSTOMERAPP = "df_merchant_seller"
 
-    @JvmField
-    val DFM_FACE_DETECTION = "df_user_liveness"
+    private val DFM_USER_LIVENESS = "df_user_liveness"
 
     //sellerapp
     private val DFM_PRODUCT_MANAGE_SELLER = "product_manage_seller"
-    private val DFM_USER_IDENTIFICATION_COMMON = "user_identification_common"
-    private val DFM_OPPORTUNITY = "opportunity"
     private val DFM_SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
     private val DFM_SELLER_TOPADS_DASHBOARD = "seller_topads_dashboard"
 
@@ -110,9 +107,9 @@ object DeeplinkDFMapper {
             // Base
             add(DFP({ it.startsWith(ONBOARDING) }, DFM_BASE, R.string.applink_title_affiliate))
             // Category
-            add(DFP({ it.startsWith(TRADEIN) }, DFM_BASE, R.string.applink_title_tradein))
-            add(DFP({ it.startsWith(FINAL_PRICE) }, DFM_BASE, R.string.applink_harga_final))
-            add(DFP({ it.startsWith(MONEYIN_INTERNAL) }, DFM_BASE, R.string.money_in))
+            add(DFP({ it.startsWith(TRADEIN) }, DFM_CATEGORY_TRADEIN, R.string.applink_title_tradein))
+            add(DFP({ it.startsWith(FINAL_PRICE) }, DFM_CATEGORY_TRADEIN, R.string.applink_harga_final))
+            add(DFP({ it.startsWith(MONEYIN_INTERNAL) }, DFM_CATEGORY_TRADEIN, R.string.money_in))
 
             add(DFP({ it.startsWith(AGE_RESTRICTION) }, DFM_BASE, R.string.applink_title_age_restriction))
 
@@ -233,7 +230,7 @@ object DeeplinkDFMapper {
 
             add(DFP({ it.startsWith(HOME_WISHLIST) }, DFM_BASE, R.string.title_wishlist))
 
-            add(DFP({ it.startsWith(LIVENESS_DETECTION) }, DFM_FACE_DETECTION, R.string.applink_liveness_detection))
+            add(DFP({ it.startsWith(LIVENESS_DETECTION) }, DFM_USER_LIVENESS, R.string.applink_liveness_detection))
         }
     }
 
