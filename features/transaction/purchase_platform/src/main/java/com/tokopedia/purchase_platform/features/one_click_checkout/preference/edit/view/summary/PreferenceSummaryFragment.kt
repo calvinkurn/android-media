@@ -3,7 +3,6 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.preference.e
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -289,7 +288,6 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             parent.hideAddButton()
             val profileId = parent.profileId
             if (arguments?.getBoolean(ARG_IS_EDIT) == true && profileId > -1) {
-                Log.d("jumlah_profile_validasi", parent.should_show_delete_button.toString())
                 if(parent.should_show_delete_button) {
                     parent.showDeleteButton()
                     parent.setDeleteButtonOnClickListener {

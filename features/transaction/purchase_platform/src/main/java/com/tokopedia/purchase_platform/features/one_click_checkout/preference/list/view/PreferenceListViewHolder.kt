@@ -1,6 +1,5 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.preference.list.view
 
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -102,7 +101,6 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
             listener.onPreferenceSelected(preference)
         }
         ivEditPreference.setOnClickListener {
-            Log.d("jumlah_profile_1", profileSize.toString())
             listener.onPreferenceEditClicked(preference, adapterPosition + 1, profileSize)
         }
     }

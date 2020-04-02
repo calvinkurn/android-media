@@ -3,7 +3,6 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.preference.l
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -243,7 +242,6 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
         var showDelete = true
         if (profileSize > 1) showDelete
         else showDelete = false
-        Log.d("jumlah_profile_3", showDelete.toString())
         preferencelistAnalytics.eventClickSettingPreferenceGearInPreferenceListPage()
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
         intent.apply {
