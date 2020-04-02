@@ -239,7 +239,7 @@ class ProductManageFilterExpandChecklistFragment :
     private fun search(searchQuery: String): List<ChecklistUiModel> {
         val result = productManageFilterExpandChecklistViewModel.checklistData.value?.filter { data ->
             val words = data.name.split(" ")
-            checkWords(words, searchQuery)
+            checkWords(words, searchQuery) || data.name.startsWith(searchQuery.trimEnd(), true)
         }
         if(result.isNullOrEmpty()) {
             return emptyList()
