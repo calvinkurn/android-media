@@ -562,6 +562,17 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 R.string.product_manage_set_cashback_success, setCashbackResult.productName),
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
         productManageListAdapter.updateCashback(setCashbackResult.productId, setCashbackResult.cashback)
+        if(viewModel.selectedFilterAndSort.value?.filterOptions == listOf(FilterByCondition.CashBackOnly)) {
+            filterProductListByCashback()
+        }
+    }
+
+    private fun filterProductListByCashback() {
+        val productList = adapter.data.filter {
+            it.cashBack != 0
+        }
+        clearAllData()
+        showProductList(productList)
     }
 
     private fun onSetCashbackLimitExceeded() {
