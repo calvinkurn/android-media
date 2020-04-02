@@ -25,7 +25,7 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
                 shopEtalase =  arrayListOf(ShopEtalaseModel()),
                 categoriesResponse = CategoriesResponse()
         )
-        onGetProductManageFilterOptionsthenReturn(filterOptionsResponse)
+        onGetProductManageFilterOptions_thenReturn(filterOptionsResponse)
 
         viewModel.getData("0")
 
@@ -266,7 +266,7 @@ class ProductManageFilterViewModelTest: ProductManageFilterViewModelTextFixture(
         verifyDataIsNull()
     }
 
-    private fun onGetProductManageFilterOptionsthenReturn(filterOptionsResponse: FilterOptionsResponse) {
+    private fun onGetProductManageFilterOptions_thenReturn(filterOptionsResponse: FilterOptionsResponse) {
         coEvery { getProductManageFilterOptionsUseCase.executeOnBackground() } returns filterOptionsResponse
     }
 

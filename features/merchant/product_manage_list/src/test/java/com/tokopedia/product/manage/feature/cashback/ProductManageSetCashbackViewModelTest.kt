@@ -28,7 +28,7 @@ class ProductManageSetCashbackViewModelTest: ProductManageSetCashbackViewModelTe
                     )
             )
 
-            onSetCashbackthenReturn(setCashbackResponse)
+            onSetCashback_thenReturn(setCashbackResponse)
 
             viewModel.setCashback(productId, productName, cashback)
 
@@ -53,7 +53,7 @@ class ProductManageSetCashbackViewModelTest: ProductManageSetCashbackViewModelTe
                     )
             )
 
-            onSetCashbackthenReturn(setCashbackResponse)
+            onSetCashback_thenReturn(setCashbackResponse)
 
             viewModel.setCashback(productId, productName, cashback)
 
@@ -78,7 +78,7 @@ class ProductManageSetCashbackViewModelTest: ProductManageSetCashbackViewModelTe
                     )
             )
 
-            onSetCashbackthenReturn(setCashbackResponse)
+            onSetCashback_thenReturn(setCashbackResponse)
 
             viewModel.setCashback(productId, productName, cashback)
 
@@ -89,7 +89,7 @@ class ProductManageSetCashbackViewModelTest: ProductManageSetCashbackViewModelTe
         }
     }
 
-    private fun onSetCashbackthenReturn(setCashbackResponse: SetCashbackResponse)  {
+    private fun onSetCashback_thenReturn(setCashbackResponse: SetCashbackResponse)  {
         coEvery { setCashbackUseCase.executeOnBackground() } returns setCashbackResponse
     }
 
