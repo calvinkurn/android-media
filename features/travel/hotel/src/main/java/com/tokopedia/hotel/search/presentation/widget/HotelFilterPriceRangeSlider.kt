@@ -10,6 +10,7 @@ import com.tokopedia.hotel.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.RangeSliderUnify
 import kotlinx.android.synthetic.main.layout_hotel_filter_price_range_slider.view.*
+import kotlin.math.ceil
 
 /**
  * @author by jessica on 31/03/20
@@ -19,8 +20,8 @@ class HotelFilterPriceRangeSlider @JvmOverloads constructor(context: Context, at
     : BaseCustomView(context, attrs, defStyleAttr) {
 
     var maxBound = 0
-    lateinit var minCurrencyTextWatcher: CurrencyTextWatcher
-    lateinit var maxCurrencyTextWatcher: CurrencyTextWatcher
+    private lateinit var minCurrencyTextWatcher: CurrencyTextWatcher
+    private lateinit var maxCurrencyTextWatcher: CurrencyTextWatcher
 
     var onValueChangedListener: OnValueChangedListener? = null
 
@@ -83,8 +84,7 @@ class HotelFilterPriceRangeSlider @JvmOverloads constructor(context: Context, at
 
                 if (end >= 0) {
                     if (end < 99) {
-                        endValue = if (end >= 19) ((end + 1) * 1000)
-                        else 20000
+                        endValue = (ceil(end * (1 - (MIN_BOUND/100000.0))).toInt() * 1000) + 20000
                     }
                     if (end in 99..190) {
                         endValue = ((end - 99) * 10000) + 100000
@@ -119,7 +119,7 @@ class HotelFilterPriceRangeSlider @JvmOverloads constructor(context: Context, at
     private fun getPositionFromMaxValue(value: Int): Int {
         if (value > 0) {
             when {
-                value < 100000 -> return value / 1000 - 1
+                value < 100000 -> return (value - 20000) / 1000 / ceil(1 - (MIN_BOUND/100000.0)).toInt()
                 value in 100000..999999 -> return ((value - 100000) / 10000) + 99
                 value in 1000000..9999999 -> return ((value - 1000000) / 100000) + 189
                 value >= 10000000 -> return ((value - 10000000) / 1000000) + 279
@@ -130,5 +130,9 @@ class HotelFilterPriceRangeSlider @JvmOverloads constructor(context: Context, at
 
     interface OnValueChangedListener {
         fun onValueChanged(startValue: Int, endValue: Int)
+    }
+
+    companion object {
+        const val MIN_BOUND = 20000
     }
 }
