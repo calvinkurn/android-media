@@ -72,34 +72,22 @@ class ProductManageFilterMapper {
         }
 
         fun mapFiltersToFilterOptions(filterUiModel: List<FilterUiModel>): FilterOptionWrapper {
-            val isShown = mutableListOf<Boolean>()
-            val filterSort = filterUiModel[ProductManageFilterFragment.ITEM_SORT_INDEX]
-            val filterEtalase = filterUiModel[ProductManageFilterFragment.ITEM_ETALASE_INDEX]
-            val filterCategories = filterUiModel[ProductManageFilterFragment.ITEM_CATEGORIES_INDEX]
-            val filterOther = filterUiModel[ProductManageFilterFragment.ITEM_OTHER_FILTER_INDEX]
-
+            var selectedFilterCount = 0
             val filterOptions = mutableListOf<FilterOption>()
-            val sortOption = mapSortToSortOptions(filterSort)
-            filterOptions.addAll(mapEtalaseToFilterOptions(filterEtalase))
-            filterOptions.addAll(mapCategoriesToFilterOptions(filterCategories))
-            filterOptions.addAll(mapFiltersToFilterOptions(filterOther))
-
+            val sortOption = mapSortToSortOptions(filterUiModel[ProductManageFilterFragment.ITEM_SORT_INDEX])
+            val isShown = mutableListOf<Boolean>()
+            filterOptions.addAll(mapEtalaseToFilterOptions(filterUiModel[ProductManageFilterFragment.ITEM_ETALASE_INDEX]))
+            filterOptions.addAll(mapCategoriesToFilterOptions(filterUiModel[ProductManageFilterFragment.ITEM_CATEGORIES_INDEX]))
+            filterOptions.addAll(mapFiltersToFilterOptions(filterUiModel[ProductManageFilterFragment.ITEM_OTHER_FILTER_INDEX]))
             filterUiModel.forEach {
                 if(it.isChipsShown) {
                     isShown.add(SHOW_CHIPS)
                 } else {
                     isShown.add(HIDE_CHIPS)
                 }
+                selectedFilterCount += it.data.filter { data -> data.select }.size
             }
-
-            val sortCount = filterSort.data.filter { it.select }.size
-            val etalaseCount = filterEtalase.data.filter { it.select }.size
-            val categoriesCount = filterCategories.data.filter { it.select }.size
-            val otherCount = filterOther.data.filter { it.select }.size
-
-            val totalCount = sortCount + etalaseCount + categoriesCount + otherCount
-
-            return FilterOptionWrapper(sortOption, filterOptions, isShown, totalCount)
+            return FilterOptionWrapper(sortOption, filterOptions, isShown, selectedFilterCount)
         }
 
         fun mapFilterOptionWrapperToSelectedSort(filterOptionWrapper: FilterOptionWrapper): FilterDataUiModel? {
