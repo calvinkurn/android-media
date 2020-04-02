@@ -446,6 +446,26 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
             .verifyValueEquals(false)
     }
 
+    @Test
+    fun `get featured product count should excecute expected usecase`() {
+        runBlocking {
+            val shopId = "1500"
+            val pictures = listOf(Picture("imageUrl"))
+
+            val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000), pictures = pictures))
+            val productListData = ProductListData(ProductList(header = null, data = productList))
+
+            onGetProductList_thenReturn(productListData)
+
+            viewModel.getFeaturedProductCount(shopId)
+
+            val expectedFeaturedProductCount = Success(1)
+
+            verifyGetProductListCalled()
+            viewModel.productListFeaturedOnlyResult.verifySuccessEquals(expectedFeaturedProductCount)
+        }
+    }
+
     private fun onMultiEditProducts_thenError(exception: NullPointerException) {
         coEvery { multiEditProductUseCase.execute(any()) } coAnswers { throw exception }
     }
@@ -508,6 +528,10 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
 
     private fun verifySetFeaturedProductUseCaseCalled() {
         coVerify { setFeaturedProductUseCase.executeOnBackground() }
+    }
+
+    private fun verifyGetProductListCalled() {
+        coVerify { getProductListUseCase.execute(any())}
     }
 
     private fun verifyEditPriceResponseSuccess(expectedResponse: Success<EditPriceResult>) {
