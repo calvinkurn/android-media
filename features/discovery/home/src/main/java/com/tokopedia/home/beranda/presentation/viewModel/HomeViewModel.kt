@@ -430,6 +430,7 @@ open class HomeViewModel @Inject constructor(
         (detectGeolocation as? GeolocationPromptViewModel)?.let {
             launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_DELETE, it)) }
         }
+        setNeedToShowGeolocationComponent(false)
     }
 
     fun onCloseTicker() {
