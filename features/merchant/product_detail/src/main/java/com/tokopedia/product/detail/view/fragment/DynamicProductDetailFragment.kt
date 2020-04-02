@@ -1070,7 +1070,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 }
             }, {
                 logException(it)
-                showToasterError(it.message ?: "")
+                showToastError(it)
             })
         }
     }
@@ -2139,6 +2139,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         shopId = data.basic.shopID.toIntOrZero()
                         quantity = data.basic.minOrder
                         notes = ""
+                        customerId = viewModel.userId.toIntOrZero()
                         warehouseId = selectedWarehouseId
                         trackerAttribution = trackerAttributionPdp ?: ""
                         trackerListName = trackerListNamePdp ?: ""

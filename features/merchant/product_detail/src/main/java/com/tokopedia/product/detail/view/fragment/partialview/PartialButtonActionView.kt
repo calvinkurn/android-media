@@ -150,7 +150,7 @@ class PartialButtonActionView private constructor(private val view: View,
                             R.string.buy
                         }
                     })
-            btn_add_to_cart.text = context.getString(R.string.add_product_to_cart)
+            btn_add_to_cart.text = context.getString(R.string.plus_product_to_cart)
             btn_buy_now.visibility = View.VISIBLE
             btn_add_to_cart.visible()
             if (isLeasing) {
@@ -170,6 +170,9 @@ class PartialButtonActionView private constructor(private val view: View,
                 if (hasComponentLoading) return@setOnClickListener
                 addToCartClick?.invoke(btn_add_to_cart.text.toString())
             }
+
+            btn_buy_now.generateTheme("secondary")
+            btn_add_to_cart.generateTheme("primary")
             btn_topchat.setOnClickListener(this@PartialButtonActionView)
             btn_apply_leasing.setOnClickListener(this@PartialButtonActionView)
         }
@@ -248,7 +251,7 @@ class PartialButtonActionView private constructor(private val view: View,
 
     fun showByMe(show: Boolean, pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate) {
         with(view) {
-            if (show && ProductDetailConstant.KEY_BYME !in cartTypeData?.unavailableButtons ?: listOf()) {
+            if (show && (onSuccessGetCartType && ProductDetailConstant.KEY_BYME !in cartTypeData?.unavailableButtons ?: listOf())) {
                 btn_byme.setOnClickListener { byMeClick?.invoke(pdpAffiliate, true) }
                 btn_byme.visible()
             } else btn_byme.gone()
