@@ -10,7 +10,6 @@ import androidx.annotation.LayoutRes;
 
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.unifycomponents.UnifyButton;
 
 
 /**
@@ -23,7 +22,7 @@ public class ErrorNetworkViewHolder extends AbstractViewHolder<ErrorNetworkModel
     private ImageView ivIcon;
     private TextView tvMessage;
     private TextView tvSubMessage;
-    private UnifyButton tvRetryButton;
+    private TextView tvRetryButton;
     private Context context;
 
     public ErrorNetworkViewHolder(View itemView) {
