@@ -8,7 +8,7 @@ import kotlin.math.roundToInt
 
 class ProductListLayoutManager: LinearLayoutManager {
 
-    val childWidthMultiplier = 0.73
+    private val childWidthMultiplier = 0.73
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, orientation: Int, reverseLayout: Boolean) : super(context, orientation, reverseLayout)
