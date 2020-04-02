@@ -1,9 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
-    package="com.tokopedia.df.merchant.seller">
+    package="com.tokopedia.df.operational.contactus">
 
     <dist:module
-        dist:title="@string/title_df_merchant">
+        dist:title="@string/title_module_contact_us">
         <dist:delivery>
             <dist:on-demand/>
         </dist:delivery>

@@ -435,7 +435,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
         if (getActivity() != null) {
             if (!GlobalConfig.isSellerApp()) {
                 List<String> listToInstall = new ArrayList<>();
-                listToInstall.add(DeeplinkDFMapper.DFM_MERCHANT_SELLER_CUSTOMERAPP);
+                listToInstall.add(DeeplinkDFMapper.DF_MERCHANT_SELLER);
                 DFInstaller.installOnBackground(getActivity().getApplication(), listToInstall, "Shop Open");
             }
             Intent intent = ShopOpenCreateReadyActivity.Companion.newInstance(getActivity(), shopId);

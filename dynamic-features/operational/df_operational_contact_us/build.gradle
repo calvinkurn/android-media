@@ -2,13 +2,6 @@ apply plugin: 'com.android.dynamic-feature'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.feature'
 
-repositories{
-    flatDir {
-        dirs 'libs'
-        dirs project(rootProject.ext.libraries.liveness_lib).file('libs')
-    }
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -56,5 +49,6 @@ android {
 dependencies {
     implementation project(rootProject.ext.app.customerapp)
 
-    implementation project(rootProject.ext.features.liveness)
+    implementation project(rootProject.ext.features.contactUs)
+    implementation project(rootProject.ext.features.chatbot)
 }

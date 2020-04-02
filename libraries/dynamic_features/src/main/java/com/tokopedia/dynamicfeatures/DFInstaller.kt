@@ -18,6 +18,7 @@ import com.tokopedia.dynamicfeatures.utils.StorageUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
+import java.util.*
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -181,6 +182,16 @@ object DFInstaller {
         } else {
             continuation?.resume(false to false)
         }
+    }
+
+    @JvmStatic
+    fun installOnBackground(context: Context, moduleName: String, message: String) {
+        if (isInstalled(context, moduleName)) {
+            return
+        }
+        val list = ArrayList<String>()
+        list.add(moduleName)
+        installOnBackground(context, list, message)
     }
 
     /**

@@ -86,20 +86,20 @@ import java.io.InputStreamReader
  */
 object DeeplinkDFMapper {
     // it should have the same name with the folder of dynamic feature
+    const val DFM_BASE = "df_base"
 
+    private const val DF_CATEGORY_TRADE_IN = "df_category_trade_in"
     @JvmField
-    val DFM_BASE = "df_base"
-
-    private val DFM_CATEGORY_TRADEIN = "df_category_trade_in"
+    val DF_MERCHANT_SELLER = "df_merchant_seller"
     @JvmField
-    val DFM_MERCHANT_SELLER_CUSTOMERAPP = "df_merchant_seller"
+    val DF_OPERATIONAL_CONTACT_US = "df_operational_contact_us"
 
-    private val DFM_USER_LIVENESS = "df_user_liveness"
+    private const val DF_USER_LIVENESS = "df_user_liveness"
 
     //sellerapp
-    private val DFM_PRODUCT_MANAGE_SELLER = "product_manage_seller"
-    private val DFM_SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
-    private val DFM_SELLER_TOPADS_DASHBOARD = "seller_topads_dashboard"
+    private const val DFM_PRODUCT_MANAGE_SELLER = "product_manage_seller"
+    private const val DFM_SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
+    private const val DFM_SELLER_TOPADS_DASHBOARD = "seller_topads_dashboard"
 
     private var manager: SplitInstallManager? = null
     private val deeplinkDFPatternListCustomerApp: List<DFP> by lazy {
@@ -107,9 +107,9 @@ object DeeplinkDFMapper {
             // Base
             add(DFP({ it.startsWith(ONBOARDING) }, DFM_BASE, R.string.applink_title_affiliate))
             // Category
-            add(DFP({ it.startsWith(TRADEIN) }, DFM_CATEGORY_TRADEIN, R.string.applink_title_tradein))
-            add(DFP({ it.startsWith(FINAL_PRICE) }, DFM_CATEGORY_TRADEIN, R.string.applink_harga_final))
-            add(DFP({ it.startsWith(MONEYIN_INTERNAL) }, DFM_CATEGORY_TRADEIN, R.string.money_in))
+            add(DFP({ it.startsWith(TRADEIN) }, DF_CATEGORY_TRADE_IN, R.string.applink_title_tradein))
+            add(DFP({ it.startsWith(FINAL_PRICE) }, DF_CATEGORY_TRADE_IN, R.string.applink_harga_final))
+            add(DFP({ it.startsWith(MONEYIN_INTERNAL) }, DF_CATEGORY_TRADE_IN, R.string.money_in))
 
             add(DFP({ it.startsWith(AGE_RESTRICTION) }, DFM_BASE, R.string.applink_title_age_restriction))
 
@@ -154,38 +154,21 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DFM_BASE, R.string.applink_report_title))
             add(DFP({ it.startsWith(OPEN_SHOP) }, DFM_BASE, R.string.title_open_shop))
 
-            add(DFP({ it.startsWith(INTERNAL_SELLER) }, DFM_MERCHANT_SELLER_CUSTOMERAPP,
-                R.string.merchant_seller,
-                DFWebviewFallbackUrl.SELLER_ORDER))
-            add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST) }, DFM_MERCHANT_SELLER_CUSTOMERAPP,
-                R.string.merchant_seller,
-                DFWebviewFallbackUrl.MANAGE_PRODUCT))
-            add(DFP({ it.startsWith(POWER_MERCHANT_SUBSCRIBE) }, DFM_MERCHANT_SELLER_CUSTOMERAPP,
-                R.string.merchant_seller,
-                DFWebviewFallbackUrl.POWER_MERCHANT))
-            add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DFM_MERCHANT_SELLER_CUSTOMERAPP,
-                R.string.merchant_seller,
-                DFWebviewFallbackUrl.SHOP_SETTINGS))
+            add(DFP({ it.startsWith(INTERNAL_SELLER) }, DF_MERCHANT_SELLER, R.string.merchant_seller, DFWebviewFallbackUrl.SELLER_ORDER))
+            add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST) }, DF_MERCHANT_SELLER, R.string.merchant_seller, DFWebviewFallbackUrl.MANAGE_PRODUCT))
+            add(DFP({ it.startsWith(POWER_MERCHANT_SUBSCRIBE) }, DF_MERCHANT_SELLER, R.string.merchant_seller, DFWebviewFallbackUrl.POWER_MERCHANT))
+            add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DF_MERCHANT_SELLER, R.string.merchant_seller, DFWebviewFallbackUrl.SHOP_SETTINGS))
             add(DFP({
-                it.startsWith(TOPADS_DASHBOARD_CUSTOMER) ||
-                    it.startsWith(TOPADS_DASHBOARD_INTERNAL)
-            }, DFM_MERCHANT_SELLER_CUSTOMERAPP,
-                R.string.merchant_seller,
-                DFWebviewFallbackUrl.TOP_ADS_DASHBOARD))
-            add(DFP({ it.startsWith(OPPORTUNITY) }, DFM_MERCHANT_SELLER_CUSTOMERAPP,
-                R.string.merchant_seller,
-                DFWebviewFallbackUrl.OPPORTUNITY))
-            add(DFP({ it.startsWith(SELLER_TRANSACTION) }, DFM_MERCHANT_SELLER_CUSTOMERAPP,
-                R.string.merchant_seller,
-                DFWebviewFallbackUrl.SELLER_ORDER))
+                it.startsWith(TOPADS_DASHBOARD_CUSTOMER) || it.startsWith(TOPADS_DASHBOARD_INTERNAL)
+            }, DF_MERCHANT_SELLER, R.string.merchant_seller, DFWebviewFallbackUrl.TOP_ADS_DASHBOARD))
+            add(DFP({ it.startsWith(OPPORTUNITY) }, DF_MERCHANT_SELLER, R.string.merchant_seller, DFWebviewFallbackUrl.OPPORTUNITY))
+            add(DFP({ it.startsWith(SELLER_TRANSACTION) }, DF_MERCHANT_SELLER, R.string.merchant_seller, DFWebviewFallbackUrl.SELLER_ORDER))
 
             // Operational
             add(DFP({
-                it.startsWith(CONTACT_US_NATIVE) ||
-                    it.startsWith(CONTACT_US) ||
-                    it.startsWithPattern(TICKET_DETAIL)
-            }, DFM_BASE, R.string.applink_title_contact_us))
-            add(DFP({ it.startsWith(CHAT_BOT) }, DFM_BASE, R.string.title_applink_chatbot))
+                it.startsWith(CONTACT_US_NATIVE) || it.startsWith(CONTACT_US) || it.startsWithPattern(TICKET_DETAIL)
+            }, DF_OPERATIONAL_CONTACT_US, R.string.applink_title_contact_us, DFWebviewFallbackUrl.OPERATIONAL_CONTACT_US))
+            add(DFP({ it.startsWith(CHAT_BOT) }, DF_OPERATIONAL_CONTACT_US, R.string.title_applink_chatbot, DFWebviewFallbackUrl.OPERATIONAL_CHAT_BOT))
 
             // Payment
             add(DFP({ it.startsWith(PAYMENT_SETTING) }, DFM_BASE, R.string.payment_settings_title))
@@ -211,8 +194,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(ATTACH_INVOICE) }, DFM_BASE, R.string.title_module_attachinvoice))
             add(DFP({ it.startsWith(ATTACH_VOUCHER) }, DFM_BASE, R.string.title_module_attachvoucher))
             add(DFP({
-                it.startsWith(TOPCHAT_IDLESS) ||
-                    it.startsWith(ApplinkConstInternalGlobal.TOPCHAT)
+                it.startsWith(TOPCHAT_IDLESS) || it.startsWith(ApplinkConstInternalGlobal.TOPCHAT)
             }, DFM_BASE, R.string.title_topchat))
 
             add(DFP({ it.startsWith(INBOX_TALK) }, DFM_BASE, R.string.talk_title))
@@ -230,7 +212,7 @@ object DeeplinkDFMapper {
 
             add(DFP({ it.startsWith(HOME_WISHLIST) }, DFM_BASE, R.string.title_wishlist))
 
-            add(DFP({ it.startsWith(LIVENESS_DETECTION) }, DFM_USER_LIVENESS, R.string.applink_liveness_detection))
+            add(DFP({ it.startsWith(LIVENESS_DETECTION) }, DF_USER_LIVENESS, R.string.applink_liveness_detection))
         }
     }
 

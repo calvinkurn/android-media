@@ -178,7 +178,7 @@
     <string name="title_af_tokopedia_byme">Tokopedia By Me</string>
 
     <!-- Dynamic feature for manage product list-->
-    <string name="title_product_manage">Daftar Produk</string>
+    <string name="title_df_merchant">Merchant</string>
 
     <!-- Dynamic feature for opportunity-->
     <string name="opportunity_name">Opportunity</string>
