@@ -432,8 +432,6 @@ final class ProductListPresenter
                 getViewToShowMoreData(searchParameter, productViewModel);
             }
 
-            testThrowError();
-
             setTotalData(productViewModel.getTotalData());
         }
     }
@@ -638,20 +636,12 @@ final class ProductListPresenter
 
     private void loadDataSubscriberOnNextIfViewAttached(Map<String, Object> searchParameter, SearchProductModel searchProductModel) {
         if (isViewAttached()) {
-            testThrowError();
-
             if (isSearchRedirected(searchProductModel)) {
                 getViewToRedirectSearch(searchProductModel);
             } else {
                 getViewToProcessSearchResult(searchParameter, searchProductModel);
             }
         }
-    }
-
-    private void testThrowError() {
-        double randomError = Math.random();
-        boolean shouldThrow = randomError < 0.7;
-        if (shouldThrow) throw new RuntimeException("throw error purposely for testing, random value: " + randomError);
     }
 
     private boolean isSearchRedirected(SearchProductModel searchProductModel) {
@@ -914,8 +904,6 @@ final class ProductListPresenter
 
                 if (data.getPosition() <= getView().getLastProductItemPositionFromCache()) {
                     try {
-                        testThrowError();
-
                         Visitable product = productList.get(data.getPosition() - 1);
                         list.add(list.indexOf(product) + 1, data);
                         getView().sendImpressionInspirationCarousel(data);
@@ -1119,8 +1107,6 @@ final class ProductListPresenter
                     getView().logWarning(UrlParamUtils.generateUrlParamString(searchParameter), null);
                     return;
                 }
-
-                testThrowError();
 
                 if (shouldSaveToLocalDynamicFilterDb && searchLocalCacheHandler != null) {
                     searchLocalCacheHandler.saveDynamicFilterModelLocally(getView().getScreenNameId(), dynamicFilterModel);
