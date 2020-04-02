@@ -41,10 +41,10 @@ private val query = """
     mutation release_booking_stock_ocs(${'$'}params:[OCSReleaseBookingStockParam]){
         release_booking_stock_ocs(params:${'$'}params){
             status
-            error_messages
+            error_message
             data{
                 success
-                messages
+                message
             }
         }
     }
