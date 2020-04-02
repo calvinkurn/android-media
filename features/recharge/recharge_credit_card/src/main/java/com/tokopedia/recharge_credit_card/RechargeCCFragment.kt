@@ -105,7 +105,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
         cc_widget_client_number.setListener(object : CCClientNumberWidget.ActionListener {
             override fun onClickNextButton(clientNumber: String) {
                 creditCardAnalytics.clickToConfirmationPage(
-                        categoryId, operatorIdSelected)
+                        categoryId, operatorIdSelected, userSession.userId)
                 dialogConfirmation()
             }
 
@@ -121,7 +121,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
             }
         }
         observeData()
-        creditCardAnalytics.impressionInitialPage(categoryId, "")
+        creditCardAnalytics.impressionInitialPage(categoryId, "none", userSession.userId)
     }
 
     private fun getDataBundle() {
@@ -240,13 +240,13 @@ class RechargeCCFragment : BaseDaggerFragment() {
                 dialog.setPrimaryCTAClickListener {
                     dialog.dismiss()
                     creditCardAnalytics.clickToContinueCheckout(
-                            categoryId.toString(), operatorIdSelected)
+                            categoryId.toString(), operatorIdSelected, userSession.userId)
                     submitCreditCard(categoryId, operatorIdSelected,
                             productIdSelected, cc_widget_client_number.getClientNumber())
                 }
                 dialog.setSecondaryCTAClickListener {
                     creditCardAnalytics.clickBackOnConfirmationPage(
-                            categoryId, operatorIdSelected)
+                            categoryId, operatorIdSelected, userSession.userId)
                     dialog.dismiss()
                 }
                 dialog.show()

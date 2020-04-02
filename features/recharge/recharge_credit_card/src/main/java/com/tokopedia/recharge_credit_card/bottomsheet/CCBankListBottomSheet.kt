@@ -16,6 +16,7 @@ import com.tokopedia.recharge_credit_card.adapter.CreditCardBankAdapter
 import com.tokopedia.recharge_credit_card.analytics.CreditCardAnalytics
 import com.tokopedia.recharge_credit_card.viewmodel.RechargeCCViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class CCBankListBottomSheet(val categoryId: String) : BottomSheetUnify() {
@@ -30,6 +31,8 @@ class CCBankListBottomSheet(val categoryId: String) : BottomSheetUnify() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
     lateinit var creditCardAnalytics: CreditCardAnalytics
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,6 +89,6 @@ class CCBankListBottomSheet(val categoryId: String) : BottomSheetUnify() {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         })
 
-        creditCardAnalytics.impressionBankList(categoryId,"")
+        creditCardAnalytics.impressionBankList(categoryId,"none", userSession.userId)
     }
 }

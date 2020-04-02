@@ -8,6 +8,8 @@ import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.common_digital.common.di.DigitalCommonScope
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.iris.Iris
+import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -109,8 +111,14 @@ class RechargeCCModule {
 
     @Provides
     @RechargeCCScope
-    fun provideAnalytics(): CreditCardAnalytics {
-        return CreditCardAnalytics()
+    fun provideIrisAnalytics(@ApplicationContext context: Context): Iris {
+        return IrisAnalytics.getInstance(context)
+    }
+
+    @Provides
+    @RechargeCCScope
+    fun provideAnalytics(iris: Iris): CreditCardAnalytics {
+        return CreditCardAnalytics(iris)
     }
 
     companion object {
