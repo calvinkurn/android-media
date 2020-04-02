@@ -5,11 +5,10 @@ import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import com.bumptech.glide.Glide
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
-import com.tokopedia.home.beranda.presentation.presenter.HomeFeedContract
+import com.tokopedia.home.analytics.v2.HomeRecommendationTracking
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -42,10 +41,7 @@ class HomeBannerFeedViewHolder(itemView: View) : SmartAbstractViewHolder<BannerR
         bannerImageView.addOnImpressionListener(element,
                 object : ViewHintListener{
                     override fun onViewHint() {
-//                        HomePageTracking.eventImpressionOnBannerFeed(
-//                                element.getTrackingQueue(),
-//                                element,
-//                                homeFeedview.getTabName())
+                        HomeRecommendationTracking.getBannerRecommendation(element)
                     }
 
                 })

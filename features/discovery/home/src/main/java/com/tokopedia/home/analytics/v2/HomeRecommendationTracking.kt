@@ -1,6 +1,9 @@
 package com.tokopedia.home.analytics.v2
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.home.analytics.HomePageTracking
+import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.CustomAction.BANNER_INSIDE_RECOMMENDATION
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 
 object HomeRecommendationTracking : BaseTracking(){
@@ -20,9 +23,11 @@ object HomeRecommendationTracking : BaseTracking(){
         val RECOMMENDATION_VIEW_LOGIN_NON_TOPADS = Action.IMPRESSION.format("product recommendation")
         val RECOMMENDATION_VIEW_LOGIN_TOPADS = Action.IMPRESSION.format("product recommendation") + " - topads"
 
-        val RECOMMENDATION_ADD_WISHLIST_LOGIN = "add wishlist - product recommendation - login"
-        val RECOMMENDATION_REMOVE_WISHLIST_LOGIN = "remove wishlist - product recommendation - login"
-        val RECOMMENDATION_ADD_WISHLIST_NON_LOGIN = "add wishlist - product recommendation - non login"
+        const val RECOMMENDATION_ADD_WISHLIST_LOGIN = "add wishlist - product recommendation - login"
+        const val RECOMMENDATION_REMOVE_WISHLIST_LOGIN = "remove wishlist - product recommendation - login"
+        const val RECOMMENDATION_ADD_WISHLIST_NON_LOGIN = "add wishlist - product recommendation - non login"
+        const val BANNER_INSIDE_RECOMMENDATION = "banner inside recommendation tab"
+        const val BANNER_FIELD = "/ - banner inside recom tab - %s - "
     }
 
     private object ActionField{
@@ -126,6 +131,14 @@ object HomeRecommendationTracking : BaseTracking(){
             Label.KEY, "$productId - $tabName"
     )
 
+    fun getBannerRecommendation(bannerRecommendationDataModel: BannerRecommendationDataModel) = getBasicPromotionView(
+            Event.PROMO_VIEW,
+            Category.HOMEPAGE,
+            Action.IMPRESSION_ON.format(BANNER_INSIDE_RECOMMENDATION),
+            bannerRecommendationDataModel.tabName,
+            listOf(mapToPromoTracking(bannerRecommendationDataModel))
+    )
+
     private fun mapToProductTracking(homeRecommendationItemDataModel: HomeRecommendationItemDataModel) = Product(
             id = homeRecommendationItemDataModel.product.id,
             name = homeRecommendationItemDataModel.product.name,
@@ -135,5 +148,15 @@ object HomeRecommendationTracking : BaseTracking(){
             isFreeOngkir = homeRecommendationItemDataModel.product.freeOngkirInformation.isActive,
             category = homeRecommendationItemDataModel.product.categoryBreadcrumbs,
             brand = ""
+    )
+
+    private fun mapToPromoTracking(bannerRecommendationDataModel: BannerRecommendationDataModel) = Promotion(
+            id = bannerRecommendationDataModel.id.toString(),
+            name = CustomAction.BANNER_FIELD.format(bannerRecommendationDataModel.tabName),
+            creativeUrl = bannerRecommendationDataModel.imageUrl,
+            position = bannerRecommendationDataModel.position.toString(),
+            promoIds = Label.NONE,
+            promoCodes = Label.NONE,
+            creative = bannerRecommendationDataModel.buAttribution + "_" + bannerRecommendationDataModel.creativeName
     )
 }

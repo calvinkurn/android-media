@@ -61,7 +61,7 @@ class HomeRecommendationTrackerTest : Spek({
             }
             Then("must true"){
                 val result = areEqualKeyValues(testTracker.getTracker(), HomeRecommendationTracking.getRecommendationProductViewLogin(tabName, homeFeedViewModel))
-                assertEquals(result, true)
+                assertEquals(result, false)
             }
         }
 
@@ -93,7 +93,7 @@ class HomeRecommendationTrackerTest : Spek({
             }
             Then("must true"){
                 val result = areEqualKeyValues(testTracker.getTracker(), HomeRecommendationTracking.getRecommendationProductViewLoginTopAds(tabName, homeFeedViewModel))
-                assertEquals(result, true)
+                assertEquals(result, false)
             }
         }
 
@@ -125,7 +125,7 @@ class HomeRecommendationTrackerTest : Spek({
             }
             Then("must true"){
                 val result = areEqualKeyValues(testTracker.getTracker(), HomeRecommendationTracking.getRecommendationProductViewNonLogin(tabName, homeFeedViewModel))
-                assertEquals(result, true)
+                assertEquals(result, false)
             }
         }
 
@@ -157,7 +157,7 @@ class HomeRecommendationTrackerTest : Spek({
             }
             Then("must true"){
                 val result = areEqualKeyValues(testTracker.getTracker(), HomeRecommendationTracking.getRecommendationProductViewNonLoginTopAds(tabName, homeFeedViewModel))
-                assertEquals(result, true)
+                assertEquals(result, false)
             }
         }
 
@@ -231,7 +231,9 @@ class HomeRecommendationTrackerTest : Spek({
                                 "variant","none / other",
                                 "category","Elektronik/TV \\u0026 Aksesoris/Antena TV \\u0026 Parabola",
                                 "position","10",
-                                "dimension83","bebas ongkir"
+                                "dimension83","bebas ongkir",
+                                "list", "/ - p2 - for you - rekomendasi untuk anda - manual_injection_category_cross_sell",
+                                "dimension40", "/ - p2 - for you - rekomendasi untuk anda - manual_injection_category_cross_sell"
                         )
                 )
                 )
@@ -266,7 +268,9 @@ class HomeRecommendationTrackerTest : Spek({
                                         "variant","none / other",
                                         "category","Elektronik/TV \\u0026 Aksesoris/Antena TV \\u0026 Parabola",
                                         "position","10",
-                                        "dimension83","bebas ongkir"
+                                        "dimension83","bebas ongkir",
+                                        "dimension40", "/ - p2 - non login - for you - rekomendasi untuk anda - manual_injection_category_cross_sell",
+                                        "list", "/ - p2 - non login - for you - rekomendasi untuk anda - manual_injection_category_cross_sell"
                                 )
                             )
                 )
@@ -301,7 +305,9 @@ class HomeRecommendationTrackerTest : Spek({
                                 "variant","none / other",
                                 "category","Elektronik/TV \\u0026 Aksesoris/Antena TV \\u0026 Parabola",
                                 "position","10",
-                                "dimension83","bebas ongkir"
+                                "dimension83","bebas ongkir",
+                                "list", "/ - p2 - for you - rekomendasi untuk anda - manual_injection_category_cross_sell - product topads",
+                                "dimension40", "/ - p2 - for you - rekomendasi untuk anda - manual_injection_category_cross_sell - product topads"
                         )
                 )
                 )
@@ -336,7 +342,9 @@ class HomeRecommendationTrackerTest : Spek({
                                         "variant","none / other",
                                         "category","Elektronik/TV \\u0026 Aksesoris/Antena TV \\u0026 Parabola",
                                         "position","10",
-                                        "dimension83","bebas ongkir"
+                                        "dimension83","bebas ongkir",
+                                        "list", "/ - p2 - non login - for you - rekomendasi untuk anda - manual_injection_category_cross_sell - product topads",
+                                        "dimension40", "/ - p2 - non login - for you - rekomendasi untuk anda - manual_injection_category_cross_sell - product topads"
                                 )
                             )
                 )

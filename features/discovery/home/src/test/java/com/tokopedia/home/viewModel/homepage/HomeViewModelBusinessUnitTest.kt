@@ -29,9 +29,9 @@ class HomeViewModelBusinessUnitTest : Spek({
         val getBusinessWidgetTab by memoized<GetBusinessWidgetTab>()
         val getBusinessUnitDataUseCase by memoized<GetBusinessUnitDataUseCase>()
         val getHomeUseCase by memoized<HomeUseCase>()
-        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
 
         Scenario("Get bu tab success && bu data success") {
+            val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
             val businessUnitDataModel = NewBusinessUnitWidgetDataModel()
 
             Given("dynamic banner") {
@@ -93,7 +93,7 @@ class HomeViewModelBusinessUnitTest : Spek({
 
         Scenario("Get bu tab success && bu data first error") {
             val businessUnitDataModel = NewBusinessUnitWidgetDataModel()
-
+            val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
             Given("dynamic banner") {
                 getHomeUseCase.givenGetHomeDataReturn(
                         HomeDataModel(

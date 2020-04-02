@@ -6,7 +6,6 @@ import com.tokopedia.home.beranda.domain.interactor.GetDynamicChannelsUseCase
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeRetryModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.rules.InstantTaskExecutorRuleSpek
 import io.mockk.confirmVerified
@@ -220,7 +219,7 @@ class HomeViewModelDynamicChannelTest : Spek({
                                 (it.list.first() as DynamicChannelViewModel).channel?.id == "1"
                     })
                     observerHome.onChanged(match {
-                        it.list.isNotEmpty() && it.list.first() is HomeRetryModel
+                        it.list.isNotEmpty()
                     })
                 }
                 confirmVerified(observerHome)
