@@ -58,17 +58,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
                 listCarouselView.visibility = View.VISIBLE
             } else listCarouselView.visibility = View.GONE
 
-            when (banner.gradientColor.size) {
-                0 -> listCarouselView.visibility = View.GONE
-                1 -> {
-                    listCarouselView.visibility = View.VISIBLE
-                    listCarouselView.setGradientBackground(it.gradientColor[0],it.gradientColor[0])
-                }
-                2 -> {
-                    listCarouselView.visibility = View.VISIBLE
-                    listCarouselView.setGradientBackground(it.gradientColor[0],it.gradientColor[1])
-                }
-            }
+            listCarouselView.setGradientBackground(banner.gradientColor)
 
             if(banner.title.isEmpty()) listCarouselBannerHeader.visibility = View.GONE
             else listCarouselBannerHeader.visibility = View.VISIBLE

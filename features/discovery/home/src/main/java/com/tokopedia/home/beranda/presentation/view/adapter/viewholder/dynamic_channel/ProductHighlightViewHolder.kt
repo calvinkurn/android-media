@@ -73,17 +73,7 @@ class ProductHighlightViewHolder(
     }
 
     private fun setDealsChannelBackground(it: DynamicHomeChannel.Banner) {
-        when (it.gradientColor.size) {
-            0 -> itemView.deals_background.visibility = View.GONE
-            1 -> {
-                itemView.deals_background.visibility = View.VISIBLE
-                itemView.deals_background.setGradientBackground(it.gradientColor[0],it.gradientColor[0])
-            }
-            2 -> {
-                itemView.deals_background.visibility = View.VISIBLE
-                itemView.deals_background.setGradientBackground(it.gradientColor[0],it.gradientColor[1])
-            }
-        }
+        itemView.deals_background.setGradientBackground(it.gradientColor)
     }
 
     private fun setDealsChannelTitle(it: DynamicHomeChannel.Header) {
