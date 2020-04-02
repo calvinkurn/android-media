@@ -23,7 +23,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
@@ -42,6 +41,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST
@@ -283,13 +283,14 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun showProductEmptyState(): Boolean {
         val selectedFilters = viewModel.selectedFilterAndSort.value
-        val searchKeyword = searchBar.searchBarTextField.text.toString()
+        val searchKeyword = searchBar.searchTextView.text.toString()
         return searchKeyword.isEmpty() && selectedFilters == null && !tabFilters.isActive()
     }
 
     private fun setupInterceptor() {
         interceptor.setOnTouchListener { _, _ ->
             searchBar.clearFocus()
+            searchBar.hideKeyboard()
             false
         }
     }
@@ -297,18 +298,18 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun setupSearchBar() {
         searchBar.clearFocus()
 
-        searchBar.searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+        searchBar.setListener(object : SearchInputView.Listener {
+            override fun onSearchSubmitted(text: String?) {
                 clearAllData()
                 showLoadingProgress()
                 getProductList()
                 searchBar.clearFocus()
-                return@setOnEditorActionListener true
             }
-            false
-        }
 
-        searchBar.searchBarIcon.setOnClickListener {
+            override fun onSearchTextChanged(text: String?) {}
+        })
+
+        searchBar.closeImageButton.setOnClickListener {
             clearSearchBarInput()
             loadInitialData()
         }
@@ -317,7 +318,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             view.requestFocus()
         }
 
-        searchBar.searchBarPlaceholder = getString(R.string.product_manage_search_hint)
+        searchBar.setSearchHint(getString(R.string.product_manage_search_hint))
+
+        context?.let {
+            searchBar.closeImageButton.setImageResource(android.R.color.transparent)
+            searchBar.closeImageButton.setBackgroundResource(R.drawable.unify_clear_ic)
+        }
     }
 
     private fun setupBottomSheet() {
@@ -465,7 +471,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun getProductList(page: Int = 1, isRefresh: Boolean = false, withDelay: Boolean = false) {
-        val keyword = searchBar.searchBarTextField.text.toString()
+        val keyword = searchBar.searchTextView.text.toString()
         val selectedFilter = viewModel.selectedFilterAndSort.value
         val filterOptions = createFilterOptions(page, keyword)
         val sortOption = selectedFilter?.sortOption
@@ -826,7 +832,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun clearSearchBarInput() {
-        searchBar.searchBarTextField.text.clear()
+        searchBar.searchTextView.text.clear()
     }
 
     private fun onSuccessChangeFeaturedProduct(productId: String, status: Int) {
