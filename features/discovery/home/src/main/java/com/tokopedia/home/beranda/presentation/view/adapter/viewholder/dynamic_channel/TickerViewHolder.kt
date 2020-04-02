@@ -19,13 +19,14 @@ import java.util.*
  * @author by DevAra on 02/04/20.
  */
 class TickerViewHolder(itemView: View, private val listener: HomeCategoryListener) : AbstractViewHolder<TickerViewModel?>(itemView) {
-    private val tickerComponent: Ticker = itemView.findViewById(R.id.tickerComponent)
     private val context: Context = itemView.context
     private val view: View = itemView
     private val tickerId = ""
 
     override fun bind(element: TickerViewModel?) {
         val tickerDataList: MutableList<TickerData> = ArrayList()
+        val tickerComponent: Ticker = itemView.findViewById(R.id.tickerComponent)
+
         for (tickers in element?.tickers!!) {
             tickerDataList.add(TickerData("", tickers.message.toString(), TYPE_ANNOUNCEMENT, true))
         }
