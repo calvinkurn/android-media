@@ -68,6 +68,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.coach_mark
 
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -76,7 +77,9 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.testDependencies.archCoreTesting
+    implementation rootProject.ext.debugToolsDependencies.chuck
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.spek2Api

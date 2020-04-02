@@ -193,6 +193,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
         sahGlobalError.gone()
         sellerHomeViewModel.getWidgetLayout()
+        sellerHomeViewModel.getTicker()
     }
 
     override fun getAdapterTypeFactory(): SellerHomeAdapterTypeFactory {
