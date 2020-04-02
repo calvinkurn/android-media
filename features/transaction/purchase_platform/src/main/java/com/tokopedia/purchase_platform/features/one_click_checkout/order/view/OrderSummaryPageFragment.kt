@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -637,13 +636,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         }
 
                         override fun onEditPreference(preference: ProfilesItemModel, position: Int, profileSize: Int) {
-                            Log.d("jumlah_profile", profileSize.toString())
                             orderSummaryAnalytics.eventClickGearLogoInPreferenceFromGantiPilihanOSP()
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
                             val preferenceIndex = getString(R.string.lbl_summary_preference_option) + " " + position
+                            var showDelete = true
+                            if (profileSize > 1) showDelete
+                            else showDelete = false
                             intent.apply {
-                                if(profileSize > 1) putExtra(PreferenceEditActivity.EXTRA_SHOW_DELETE_BUTTON, true)
-                                else putExtra(PreferenceEditActivity.EXTRA_SHOW_DELETE_BUTTON, false)
+                                putExtra(PreferenceEditActivity.EXTRA_SHOW_DELETE_BUTTON, showDelete)
                                 putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, preferenceIndex)
                                 putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.profileId)
                                 putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.addressModel?.addressId)

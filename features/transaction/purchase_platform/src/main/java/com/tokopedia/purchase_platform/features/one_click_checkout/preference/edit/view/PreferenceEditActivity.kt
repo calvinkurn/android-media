@@ -67,7 +67,7 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         gatewayCode = intent.getStringExtra(EXTRA_GATEWAY_CODE) ?: ""
         shippingParam = intent.getParcelableExtra(EXTRA_SHIPPING_PARAM)
         listShopShipment = intent.getParcelableArrayListExtra(EXTRA_LIST_SHOP_SHIPMENT)
-        should_show_delete_button = intent.getBooleanExtra(EXTRA_PREFERENCE_INDEX, true)
+        should_show_delete_button = intent.getBooleanExtra(EXTRA_SHOW_DELETE_BUTTON, true)
 
         if (addressId == -1 || shippingId == -1 || gatewayCode.isBlank() || profileId == 0) {
             supportFragmentManager.beginTransaction().replace(R.id.container, AddressListFragment.newInstance()).commit()
