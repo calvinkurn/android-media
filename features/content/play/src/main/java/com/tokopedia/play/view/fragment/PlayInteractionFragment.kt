@@ -1157,11 +1157,16 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             height + marginLp.bottomMargin + marginLp.topMargin
         }
 
-        val quickReplyViewTotalHeight = if (!playViewModel.observableQuickReply.value?.quickReplyList.isNullOrEmpty()) {
-            val height = if (quickReplyView.height <= 0) 2 * statsInfoView.height else quickReplyView.height
+        val quickReplyViewTotalHeight = run {
+            val height = if (!playViewModel.observableQuickReply.value?.quickReplyList.isNullOrEmpty()) {
+                if (quickReplyView.height <= 0) {
+                    quickReplyView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+                    quickReplyView.measuredHeight
+                } else quickReplyView.height
+            } else 0
             val marginLp = quickReplyView.layoutParams as ViewGroup.MarginLayoutParams
             height + marginLp.bottomMargin + marginLp.topMargin
-        } else 0
+        }
 
         val chatListViewTotalHeight = run {
             val height = resources.getDimensionPixelSize(R.dimen.play_chat_max_height)
