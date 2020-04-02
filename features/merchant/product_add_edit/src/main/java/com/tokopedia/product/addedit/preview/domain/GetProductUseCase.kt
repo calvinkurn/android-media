@@ -9,11 +9,15 @@ import com.tokopedia.product.addedit.preview.data.source.api.param.GetProductV3P
 import com.tokopedia.product.addedit.preview.data.source.api.param.OptionV3
 import com.tokopedia.product.addedit.preview.data.source.api.response.GetProductV3Response
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
+import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GetProductUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository) : UseCase<Product>() {
+class GetProductUseCase @Inject constructor(
+        private val graphqlRepository: GraphqlRepository,
+        private val getProductMapper: GetProductMapper
+) : UseCase<Product>() {
 
     var params: RequestParams = RequestParams.EMPTY
 
