@@ -1362,7 +1362,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun observeMultiSelect() {
         observe(viewModel.toggleMultiSelect) { multiSelectEnabled ->
-            val productList = adapter.data.map {
+            val productList = adapter.data.filterIsInstance<ProductViewModel>().map {
                 it.copy(multiSelectActive = multiSelectEnabled, isChecked = false)
             }
 
