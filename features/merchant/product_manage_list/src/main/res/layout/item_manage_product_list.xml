@@ -181,10 +181,10 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:srcCompat="@drawable/ic_attention"
-        app:layout_constraintTop_toTopOf="@id/labelInactive"
-        app:layout_constraintBottom_toBottomOf="@id/labelInactive"
+        app:layout_constraintTop_toBottomOf="@id/textPrice"
         app:layout_constraintLeft_toRightOf="@id/labelInactive"
         app:layout_constraintRight_toLeftOf="@id/imageStockInformation"
+        android:layout_marginTop="@dimen/product_manage_item_stock_info_vertical_spacing"
         tools:ignore="ContentDescription"
         tools:visibility="visible" />
 
@@ -285,9 +285,9 @@
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl1"
-        app:layout_constraintTop_toBottomOf="@id/btnMoreOptions"
+        android:layout_marginTop="@dimen/product_manage_vertical_spacing"
         app:layout_goneMarginTop="@dimen/product_manage_more_option_vertical_spacing"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/btnMoreOptions" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/leftGuideline"
