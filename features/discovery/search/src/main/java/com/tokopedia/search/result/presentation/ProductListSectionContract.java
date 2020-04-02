@@ -8,7 +8,6 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
@@ -142,6 +141,16 @@ public interface ProductListSectionContract {
         String getPreviousKeyword();
 
         boolean isLandingPage();
+
+        void sendTopAdsTrackingUrl(String topAdsTrackingUrl);
+
+        void sendTopAdsGTMTrackingProductImpression(ProductItemViewModel item, int adapterPosition);
+
+        void sendTopAdsGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition);
+
+        void sendGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition, String userId);
+
+        void routeToProductDetail(ProductItemViewModel item, int adapterPosition);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -179,5 +188,9 @@ public interface ProductListSectionContract {
         void onViewVisibilityChanged(boolean isViewVisible, boolean isViewAdded);
 
         void handleWishlistAction(ProductCardOptionsModel productCardOptionsModel);
+
+        void onProductImpressed(ProductItemViewModel item, int adapterPosition);
+
+        void onProductClick(ProductItemViewModel item, int adapterPosition);
     }
 }
