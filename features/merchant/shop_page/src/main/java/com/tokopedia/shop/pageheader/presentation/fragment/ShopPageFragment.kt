@@ -60,6 +60,7 @@ import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -166,6 +167,7 @@ class ShopPageFragment :
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.shop_page_main, container, false)
+
 
     override fun onDestroy() {
         shopViewModel.shopInfoResp.removeObservers(this)
@@ -351,7 +353,7 @@ class ShopPageFragment :
     }
 
     private fun clickSort() {
-        shopPageTracking?.clickSort(isMyShop,customDimensionShopPage)
+        shopPageTracking?.clickSort(isMyShop, customDimensionShopPage)
         openShopProductSortPage()
     }
 
@@ -512,7 +514,12 @@ class ShopPageFragment :
     }
 
     fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
-        with(shopInfo) {
+        val isFirstCreateShop = arguments?.getBoolean(ApplinkConstInternalMarketplace.PARAM_FIRST_CREATE_SHOP) ?: false
+
+        view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
+
+        with(shopInfo)
+        {
             isOfficialStore = (goldOS.isOfficial == 1 && !TextUtils.isEmpty(shopInfo.topContent.topUrl))
             isGoldMerchant = (goldOS.isGoldBadge == 1)
             customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
@@ -535,6 +542,7 @@ class ShopPageFragment :
                 shopPageTracking?.sendScreenShopPage(shopCore.shopID, shopType)
             }
             shopPageFragmentHeaderViewHolder.updateShopTicker(shopInfo, isMyShop)
+
         }
         swipeToRefresh.isRefreshing = false
     }
@@ -852,4 +860,11 @@ class ShopPageFragment :
         }
         updateFloatingChatButtonMargin()
     }
+
+    private fun onToasterNoUploadProduct(view: View, message: String, isFirstCreateShop: Boolean) {
+        if (isFirstCreateShop) {
+            Toaster.make(view, message, actionText = getString(R.string.oke).capitalize(), type = Toaster.TYPE_NORMAL)
+        }
+    }
+
 }
