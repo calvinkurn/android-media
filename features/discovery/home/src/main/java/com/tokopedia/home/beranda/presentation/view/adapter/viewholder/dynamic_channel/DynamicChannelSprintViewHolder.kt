@@ -73,22 +73,22 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         mappingGrid(channel)
     }
 
-//    override fun setupContent(channel: DynamicHomeChannel.Channels, payloads: MutableList<Any>) {
-//        if (payloads.isNotEmpty()) {
-//            payloads.forEach { payload->
-//                if (payload == DynamicChannelViewModel.HOME_RV_SPRINT_BG_IMAGE_URL) {
-//                    channel?.let {
-//                        backgroundThematic.loadImageWithoutPlaceholder(channel.header.backImage)
-//                    }
-//                }
-//            }
-//        }
-//
-//        channel.let {
-//            mappingHeader(it)
-//            mappingGrid(it)
-//        }
-//    }
+    override fun setupContent(channel: DynamicHomeChannel.Channels, payloads: MutableList<Any>) {
+        if (payloads.isNotEmpty()) {
+            payloads.forEach { payload->
+                if (payload == DynamicChannelViewModel.HOME_RV_SPRINT_BG_IMAGE_URL) {
+                    channel?.let {
+                        backgroundThematic.loadImageWithoutPlaceholder(channel.header.backImage)
+                    }
+                }
+            }
+        }
+
+        channel.let {
+            mappingHeader(it)
+            mappingGrid(it)
+        }
+    }
 
     private fun mappingHeader(channel: DynamicHomeChannel.Channels) {
         if (channel.header.backImage.isNotBlank()) {

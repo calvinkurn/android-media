@@ -22,6 +22,7 @@ import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
@@ -34,10 +35,14 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductLastSeenDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductOpenShopDataModel
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProvider
+import com.tokopedia.product.detail.view.util.asFail
+import com.tokopedia.product.detail.view.util.asSuccess
+import com.tokopedia.product.detail.view.util.asThrowable
 import com.tokopedia.purchase_platform.common.data.model.request.helpticket.SubmitHelpTicketRequest
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult
 import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase
@@ -152,6 +157,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     var multiOrigin: Map<String, VariantMultiOriginWarehouse> = mapOf()
     var selectedMultiOrigin: VariantMultiOriginWarehouse = VariantMultiOriginWarehouse()
+    var cartTypeData: CartRedirection? = null
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
     var shopInfo: ShopInfo? = null
     var installmentData: FinancingDataResponse? = null
@@ -162,6 +168,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var buttonActionType: Int = 0
     var buttonActionText: String = ""
     var tradeinDeviceId: String = ""
+    var shippingMinimumPrice: Int = 0
     private var submitTicketSubscription: Subscription? = null
     private var updateCartCounterSubscription: Subscription? = null
 
@@ -402,7 +409,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     private suspend fun getProductInfoP3Variant(listOfProductIds: List<String>?, warehouseId: String?, forceRefresh: Boolean) {
         getP3VariantUseCase.requestParams = GetP3VariantUseCase.createParams(listOfProductIds
-                ?: listOf(), warehouseId)
+                ?: listOf(), warehouseId, DynamicProductDetailMapper.generateCartTypeVariantParams(getDynamicProductInfoP1, variantData))
         getP3VariantUseCase.forceRefresh = forceRefresh
 
         try {
@@ -412,6 +419,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             }, {
                 it
             }) ?: mapOf()
+
+            cartTypeData = p3VariantData.cartRedirectionResponse?.cartRedirection
 
             selectedMultiOrigin = multiOrigin[getDynamicProductInfoP1?.basic?.productID
                     ?: ""] ?: VariantMultiOriginWarehouse()
@@ -714,7 +723,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     private fun getProductInfoP2LoginAsync(shopId: Int, productId: Int): Deferred<ProductInfoP2Login> {
         return async {
-            getProductInfoP2LoginUseCase.requestParams = GetProductInfoP2LoginUseCase.createParams(shopId, productId)
+            getProductInfoP2LoginUseCase.requestParams = GetProductInfoP2LoginUseCase.createParams(shopId, productId, DynamicProductDetailMapper.generateCartTypeParam(getDynamicProductInfoP1))
             getProductInfoP2LoginUseCase.executeOnBackground()
         }
     }

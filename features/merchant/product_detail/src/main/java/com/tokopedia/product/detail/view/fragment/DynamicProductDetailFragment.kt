@@ -106,9 +106,7 @@ import com.tokopedia.product.detail.view.adapter.dynamicadapter.DynamicProductDe
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
 import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.product.detail.view.util.DynamicProductDetailHashMap
-import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
-import com.tokopedia.product.detail.view.util.ProductDetailErrorHelper
+import com.tokopedia.product.detail.view.util.*
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.widget.*
 import com.tokopedia.product.share.ProductData
@@ -135,6 +133,7 @@ import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.variant_common.model.VariantCategory
@@ -1105,6 +1104,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             actionButtonView.renderData(viewModel.getDynamicProductInfoP1?.basic?.isActive() == false,
                     it.isExpressCheckoutType, hasTopAds(),
                     it.newCartTypeResponse.cartRedirection.data.firstOrNull())
+            setupTickerOcc()
 
             it.pdpAffiliate?.let { renderAffiliate(it) }
 
@@ -1261,86 +1261,86 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun observeP1() {
-        viewModel.productLayout.observe(viewLifecycleOwner, Observer {
-            if (::performanceMonitoringP1.isInitialized)
-                performanceMonitoringP1.stopTrace()
-            when (it) {
-                is Success -> {
-                    context?.let { context ->
-                        pdpHashMapUtil = DynamicProductDetailHashMap(context, DynamicProductDetailMapper.hashMapLayout(it.data))
-                    }
-                    onSuccessGetDataP1(it.data)
-                }
-                is Fail -> {
-                    logException(it.throwable)
-                    renderPageError(it.throwable)
-                }
-            }
-        })
-    }
+//    private fun observeP1() {
+//        viewModel.productLayout.observe(viewLifecycleOwner, Observer {
+//            if (::performanceMonitoringP1.isInitialized)
+//                performanceMonitoringP1.stopTrace()
+//            when (it) {
+//                is Success -> {
+//                    context?.let { context ->
+//                        pdpHashMapUtil = DynamicProductDetailHashMap(context, DynamicProductDetailMapper.hashMapLayout(it.data))
+//                    }
+//                    onSuccessGetDataP1(it.data)
+//                }
+//                is Fail -> {
+//                    logException(it.throwable)
+//                    renderPageError(it.throwable)
+//                }
+//            }
+//        })
+//    }
+//
+//    private fun observeP2Login() {
+//        viewModel.p2Login.observe(this, Observer {
+//            topAdsGetProductManage = it.topAdsGetProductManage
+//            it.pdpAffiliate?.let { renderAffiliate(it) }
+//            actionButtonView.renderData(viewModel.getDynamicProductInfoP1?.basic?.isActive() == false,
+//                    it.isExpressCheckoutType, hasTopAds())
+//
+//            if (::performanceMonitoringFull.isInitialized)
+//                performanceMonitoringP2Login.stopTrace()
+//
+//            pdpHashMapUtil?.updateDataP2Login(it)
+//            dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap, ProductDetailConstant.PAYLOAD_WISHLIST)
+//        })
+//    }
 
-    private fun observeP2Login() {
-        viewModel.p2Login.observe(this, Observer {
-            topAdsGetProductManage = it.topAdsGetProductManage
-            it.pdpAffiliate?.let { renderAffiliate(it) }
-            actionButtonView.renderData(viewModel.getDynamicProductInfoP1?.basic?.isActive() == false,
-                    it.isExpressCheckoutType, hasTopAds())
+//    private fun observeP2Shop() {
+//        viewModel.p2ShopDataResp.observe(this, Observer {
+//            if (!viewModel.isUserSessionActive && ::performanceMonitoringFull.isInitialized)
+//                performanceMonitoringFull.stopTrace()
+//            performanceMonitoringP2.stopTrace()
+//
+//            onSuccessGetDataP2Shop(it)
+//        })
+//    }
 
-            if (::performanceMonitoringFull.isInitialized)
-                performanceMonitoringP2Login.stopTrace()
+//    private fun observeP2General() {
+//        viewModel.p2General.observe(this, Observer {
+//            if (::performanceMonitoringP2General.isInitialized)
+//                performanceMonitoringP2General.stopTrace()
+//
+//            onSuccessGetDataP2General(it)
+//        })
+//    }
 
-            pdpHashMapUtil?.updateDataP2Login(it)
-            dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap, ProductDetailConstant.PAYLOAD_WISHLIST)
-        })
-    }
+//    private fun observeP3() {
+//        viewModel.productInfoP3resp.observe(this, Observer {
+//            if (::performanceMonitoringFull.isInitialized)
+//                performanceMonitoringFull.stopTrace()
+//
+//            trackProductView(viewModel.tradeInParams.isEligible == 1)
+//            onSuccessGetDataP3Resp(it)
+//        })
+//    }
 
-    private fun observeP2Shop() {
-        viewModel.p2ShopDataResp.observe(this, Observer {
-            if (!viewModel.isUserSessionActive && ::performanceMonitoringFull.isInitialized)
-                performanceMonitoringFull.stopTrace()
-            performanceMonitoringP2.stopTrace()
+//    private fun observeToggleFavourite() {
+//        viewModel.toggleFavoriteResult.observe(viewLifecycleOwner, Observer {
+//            when (it) {
+//                is Success -> onSuccessFavoriteShop(it.data)
+//                is Fail -> onFailFavoriteShop(it.throwable)
+//            }
+//        })
+//    }
 
-            onSuccessGetDataP2Shop(it)
-        })
-    }
-
-    private fun observeP2General() {
-        viewModel.p2General.observe(this, Observer {
-            if (::performanceMonitoringP2General.isInitialized)
-                performanceMonitoringP2General.stopTrace()
-
-            onSuccessGetDataP2General(it)
-        })
-    }
-
-    private fun observeP3() {
-        viewModel.productInfoP3resp.observe(this, Observer {
-            if (::performanceMonitoringFull.isInitialized)
-                performanceMonitoringFull.stopTrace()
-
-            trackProductView(viewModel.tradeInParams.isEligible == 1)
-            onSuccessGetDataP3Resp(it)
-        })
-    }
-
-    private fun observeToggleFavourite() {
-        viewModel.toggleFavoriteResult.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessFavoriteShop(it.data)
-                is Fail -> onFailFavoriteShop(it.throwable)
-            }
-        })
-    }
-
-    private fun observeMoveToWarehouse() {
-        viewModel.moveToWarehouseResult.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessWarehouseProduct()
-                is Fail -> onErrorWarehouseProduct(it.throwable)
-            }
-        })
-    }
+//    private fun observeMoveToWarehouse() {
+//        viewModel.moveToWarehouseResult.observe(viewLifecycleOwner, Observer {
+//            when (it) {
+//                is Success -> onSuccessWarehouseProduct()
+//                is Fail -> onErrorWarehouseProduct(it.throwable)
+//            }
+//        })
+//    }
 
     private fun observeMoveToEtalase() {
         viewModel.moveToEtalaseResult.observe(viewLifecycleOwner, Observer {
