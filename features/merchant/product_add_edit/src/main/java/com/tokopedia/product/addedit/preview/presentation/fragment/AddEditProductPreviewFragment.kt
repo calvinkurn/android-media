@@ -7,10 +7,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -31,6 +33,7 @@ import com.tokopedia.product.addedit.description.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionActivity
 import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionFragment
 import com.tokopedia.product.addedit.detail.presentation.activity.AddEditProductDetailActivity
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.fragment.AddEditProductDetailFragment.Companion.REQUEST_CODE_DETAIL
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
@@ -45,14 +48,21 @@ import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputMo
 import com.tokopedia.product.addedit.tooltip.model.ImageTooltipModel
 import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
+import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
+import com.tokopedia.product_photo_adapter.ProductPhotoViewHolder
+import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class AddEditProductPreviewFragment : BaseDaggerFragment() {
+class AddEditProductPreviewFragment :
+        BaseDaggerFragment(), ProductPhotoViewHolder.OnStartDragListener {
+
+    // action button
+    private var doneButton: AppCompatTextView? = null
 
     // photo
     private var addEditProductPhotoButton: Typography? = null
@@ -77,6 +87,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
     private var addEditProductVariantLayout: ViewGroup? = null
     private var addEditProductVariantButton: Typography? = null
     private var addProductVariantTipsLayout: ViewGroup? = null
+    private var variantDivider: DividerUnify? = null
 
     // shipment
     private var addEditProductShipmentTitle: Typography? = null
@@ -116,6 +127,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
         arguments?.run {
             viewModel.setProductId(getString(EXTRA_PRODUCT_ID) ?: "")
         }
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -125,8 +137,20 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // action button
+        doneButton = activity?.findViewById(R.id.tv_done)
+
         // photos
         productPhotosView = view.findViewById(R.id.rv_product_photos)
+        val productPhotoPaths = viewModel.imageUrlOrPathList.value ?: mutableListOf()
+        productPhotoAdapter = ProductPhotoAdapter(AddEditProductDetailConstants.MAX_PRODUCT_PHOTOS, productPhotoPaths, this)
+        productPhotosView?.let {
+            it.adapter = productPhotoAdapter
+            it.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            val photoItemTouchHelperCallback = PhotoItemTouchHelperCallback(it)
+            photoItemTouchHelper = ItemTouchHelper(photoItemTouchHelperCallback)
+            photoItemTouchHelper?.attachToRecyclerView(it)
+        }
         addProductPhotoTipsLayout = view.findViewById(R.id.add_product_photo_tips_layout)
         addEditProductPhotoButton = view.findViewById(R.id.tv_start_add_edit_product_photo)
 
@@ -146,6 +170,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
         addEditProductVariantLayout = view.findViewById(R.id.add_product_variant_step_layout)
         addEditProductVariantButton = view.findViewById(R.id.tv_start_add_edit_product_variant)
         addProductVariantTipsLayout = view.findViewById(R.id.add_product_variant_tips_layout)
+        variantDivider = view.findViewById(R.id.du_fourth)
 
         // shipment
         addEditProductShipmentTitle = view.findViewById(R.id.tv_product_shipment)
@@ -160,8 +185,13 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
         productStatusSwitch = view.findViewById(R.id.su_product_status)
 
         addEditProductPhotoButton?.setOnClickListener {
-            val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder())
+            val imageUrlOrPathList = viewModel.imageUrlOrPathList.value ?: mutableListOf()
+            val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)))
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
+        }
+
+        doneButton?.setOnClickListener {
+
         }
 
         addProductPhotoTipsLayout?.setOnClickListener {
@@ -169,6 +199,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
         }
 
         addEditProductDetailButton?.setOnClickListener {
+
+            viewModel.productData?.let {
+
+            }
+
             moveToAddEditProductActivity(arrayListOf())
         }
 
@@ -191,6 +226,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
         observeIsEditModeState()
         observeGetProductResult()
         observeProductVariant()
+        observeImageUrlOrPathList()
 
     }
 
@@ -200,7 +236,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
             if (requestCode == REQUEST_CODE_IMAGE) {
                 val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
                 if (imageUrlOrPathList != null && imageUrlOrPathList.size > 0) {
-                    moveToAddEditProductActivity(imageUrlOrPathList)
+                    val isEditMode = viewModel.isEditMode.value
+                    isEditMode?.let {
+                        if (isEditMode) viewModel.updateProductPhotos(imageUrlOrPathList)
+                        else moveToAddEditProductActivity(imageUrlOrPathList)
+                    }
                 }
             } else if (requestCode == REQUEST_CODE_DETAIL) {
                 val shipmentInputModel =
@@ -212,6 +252,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
                 context?.let { AddEditProductUploadService.startService(it, detailInputModel, descriptionInputModel, shipmentInputModel) }
             }
         }
+    }
+
+    override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
+        photoItemTouchHelper?.startDrag(viewHolder)
     }
 
     override fun getScreenName(): String {
@@ -228,6 +272,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
 
     private fun displayEditMode(isEditMode: Boolean) {
         if (isEditMode) {
+            doneButton?.show()
             enablePhotoEdit()
             enableDetailEdit()
             enableDescriptionEdit()
@@ -262,6 +307,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
 
     private fun enableVariantEdit() {
         addEditProductVariantLayout?.show()
+        variantDivider?.show()
     }
 
     private fun enableShipmentEdit() {
@@ -290,7 +336,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
         viewModel.getProductResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    showProductDetailPreview(it.data)
+                    val productData = it.data
+                    showProductDetailPreview(productData)
+                    viewModel.productData = productData
                 }
                 is Fail -> {
 
@@ -302,6 +350,12 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
     private fun observeProductVariant() {
         viewModel.isVariantEmpty.observe(this, Observer {
             showEmptyVariantState(it)
+        })
+    }
+
+    private fun observeImageUrlOrPathList() {
+        viewModel.imageUrlOrPathList.observe(this, Observer {
+            productPhotoAdapter?.setProductPhotoPaths(it)
         })
     }
 
@@ -355,7 +409,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
     }
 
     @SuppressLint("WrongConstant")
-    private fun createImagePickerBuilder(): ImagePickerBuilder {
+    private fun createImagePickerBuilder(selectedImagePathList: ArrayList<String>?): ImagePickerBuilder {
 
         val title = getString(R.string.action_pick_image)
 
@@ -376,7 +430,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
         val imagePickerEditorBuilder = ImagePickerEditorBuilder.getDefaultBuilder()
 
         val imagePickerMultipleSelectionBuilder = ImagePickerMultipleSelectionBuilder(
-                null,
+                selectedImagePathList,
                 placeholderDrawableRes,
                 R.string.label_primary,
                 MAX_PRODUCT_PHOTOS, false)

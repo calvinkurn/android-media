@@ -24,7 +24,7 @@ data class Detail(
         val name: String,
         @SerializedName("breadcrumbURL")
         val breadcrumbURL: String,
-        @SerializedName("breadcrumbURL")
+        @SerializedName("isAdult")
         val isAdult: Boolean
 )
 

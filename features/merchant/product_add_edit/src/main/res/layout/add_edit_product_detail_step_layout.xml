@@ -60,7 +60,6 @@
             android:textColor="@android:color/black"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_product_name_label"
-
             app:typographyType="body_2"
             app:typographyWeight="reguler"
             tools:text="Batik khas pekalongan" />
@@ -71,7 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:text="@string/add_product_price_header"
-            android:textColor="@color/Neutral_N700"
+            android:textColor="@color/Neutral_N700_44"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_product_name"
             app:typographyType="body_3"
@@ -95,7 +94,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:text="@string/add_product_stock_header"
-            android:textColor="@color/Neutral_N700"
+            android:textColor="@color/Neutral_N700_44"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_product_price"
             app:typographyType="body_3"

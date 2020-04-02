@@ -14,9 +14,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AddEditProductPreviewViewModel @Inject constructor(
@@ -25,6 +24,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher) {
 
     private val productId = MutableLiveData<String>()
+
+    private val mImageUrlOrPathList = MutableLiveData<MutableList<String>>()
+    val imageUrlOrPathList: LiveData<MutableList<String>> get() = mImageUrlOrPathList
+
+    var productData: Product? = null
 
     // observing the product id, and will become true if product id exist
     val isEditMode = Transformations.map(productId) { id ->
@@ -55,24 +59,22 @@ class AddEditProductPreviewViewModel @Inject constructor(
         productId.value = id
     }
 
-    private fun loadProductData(productId: String) {
-        launchCatchError(block = {
-            mGetProductResult.value = (Success(getProductAsync(productId).await()))
-        }, onError = {})
+    fun updateProductPhotos(imageUrlOrPathList: ArrayList<String>) {
+        this.mImageUrlOrPathList.value = imageUrlOrPathList
     }
 
-    private fun getProductAsync(productId: String): Deferred<Product> {
-        return async(Dispatchers.IO) {
-            var product = Product()
-            try {
-                val options = OptionV3(edit = true, variant = true)
-                val getProductV3Param = GetProductV3Param(productId, options)
-                getProductUseCase.params = GetProductUseCase.createRequestParams(getProductV3Param)
-                product = getProductUseCase.executeOnBackground()
-            } catch (t: Throwable) {
-                mGetProductResult.value = Fail(t)
-            }
-            product
-        }
+    private fun loadProductData(productId: String) {
+        getProduct(productId)
+    }
+
+    private fun getProduct(productId: String) {
+        launchCatchError(block = {
+            mGetProductResult.value = Success(withContext(Dispatchers.IO) {
+                getProductUseCase.params = GetProductUseCase.createRequestParams(productId)
+                getProductUseCase.executeOnBackground()
+            })
+        }, onError = {
+            mGetProductResult.value = Fail(it)
+        })
     }
 }
