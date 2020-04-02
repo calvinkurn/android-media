@@ -199,6 +199,8 @@ class PartialSnapshotView(private val view: View,
                     listener.showAlertCampaignEnded()
                 }
                 view.discount_timer_holder.visible()
+            } else {
+                view.layout_discount_timer.gone()
             }
         } catch (ex: Exception) {
             view.discount_timer_holder.visibility = View.GONE
