@@ -41,6 +41,7 @@ open class TopchatProductAttachmentViewHolder(
         if (product == null) return
         super.bind(product)
         bindView()
+        bindLayoutGravity(product)
         bindProductClick(product)
         bindImage(product)
         bindImageClick(product)
@@ -57,6 +58,14 @@ open class TopchatProductAttachmentViewHolder(
     private fun bindView() {
         wishListBtn = itemView.findViewById(R.id.tv_wishlist)
         cardContainer = itemView.findViewById(R.id.containerProductAttachment)
+    }
+
+    private fun bindLayoutGravity(product: ProductAttachmentViewModel) {
+        if (product.isSender) {
+            cardContainer?.gravityRight()
+        } else {
+            cardContainer?.gravityLeft()
+        }
     }
 
     private fun bindProductClick(product: ProductAttachmentViewModel) {

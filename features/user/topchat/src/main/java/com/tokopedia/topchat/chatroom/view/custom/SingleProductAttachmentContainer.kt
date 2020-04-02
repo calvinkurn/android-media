@@ -1,11 +1,12 @@
 package com.tokopedia.topchat.chatroom.view.custom
 
 import android.content.Context
-import android.icu.util.Measure
 import android.os.Build
 import android.util.AttributeSet
+import android.view.Gravity
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
+import androidx.transition.Slide
 
 class SingleProductAttachmentContainer : LinearLayout {
 
@@ -21,5 +22,19 @@ class SingleProductAttachmentContainer : LinearLayout {
         val newWidth = MeasureSpec.getSize(widthMeasureSpec) * widthMultiplier
         val newWidthMeasureSpec = MeasureSpec.makeMeasureSpec(newWidth.toInt(), MeasureSpec.EXACTLY)
         super.onMeasure(newWidthMeasureSpec, heightMeasureSpec)
+    }
+
+    fun gravityRight() {
+        setLayoutGravity(Gravity.END)
+    }
+
+    fun gravityLeft() {
+        setLayoutGravity(Gravity.START)
+    }
+
+    private fun setLayoutGravity(@Slide.GravityFlag gravity: Int) {
+        (layoutParams as LayoutParams).apply {
+            this.gravity = gravity
+        }
     }
 }
