@@ -1979,6 +1979,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void releaseBooking() {
+        // As deals product is using OCS the shipment should only contain 1 product
         String productId = ShipmentCartItemModelHelper.getFirstProductId(shipmentCartItemModelList);
         if (productId != null) {
             compositeSubscription.add(releaseBookingUseCase
