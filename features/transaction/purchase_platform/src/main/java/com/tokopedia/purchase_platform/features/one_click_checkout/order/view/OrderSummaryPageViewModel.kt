@@ -168,6 +168,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         debounceJob = launch {
             delay(1000)
             if (isActive) {
+                updateCart()
                 getRates()
             }
         }
@@ -515,8 +516,11 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     discountAmount += summary.amount
                 }
             }
-            if (discountAmount > 0 && benefitAmount > 0 && discountAmount >= benefitAmount) {
-                discountAmount -= benefitAmount
+            if (discountAmount > 0 && benefitAmount > 0) {
+                val bboAmount = if ((totalShippingPrice - benefitAmount) < 0) totalShippingPrice.toInt() else benefitAmount
+                if (discountAmount >= bboAmount) {
+                    discountAmount -= bboAmount
+                }
             }
             val subtotal = totalProductPrice + finalShippingPrice + insurancePrice + fee - discountAmount
             val minimumAmount = _orderPreference?.preference?.payment?.minimumAmount ?: 0
@@ -838,7 +842,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                     logisticPromoTickerMessage = null, isApplyLogisticPromo = true, logisticPromoShipping = logisticPromoShipping))
                                             orderPreference.value = OccState.Success(_orderPreference!!)
                                             globalEvent.value = OccGlobalEvent.Normal
-                                            calculateTotal()
+                                            updatePromoState(response.promoUiModel)
                                             return
                                         }
                                     }
