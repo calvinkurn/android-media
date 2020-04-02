@@ -2,4 +2,6 @@
 <resources>
     <dimen name="setting_notif_dp_12">12dp</dimen>
     <dimen name="setting_notif_dp_56">56dp</dimen>
+    <dimen name="setting_notif_dp_176">176dp</dimen>
+    <dimen name="setting_notif_dp_57">57dp</dimen>
 </resources>

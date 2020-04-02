@@ -8,6 +8,7 @@
 /features/content/kol_common/           				@tokopedia/minion-dave
 /features/content/profile/              				@tokopedia/minion-dave
 /features/content/feed_component/       				@tokopedia/minion-darth
+/features/category/       				                @tokopedia/minion-darth
 /features/user/groupchat/                       		@tokopedia/minion-dave
 /features/discovery/topadssdk/                      	@tokopedia/minion-dave
 /features/discovery/home/                           	@tokopedia/minion-dave
@@ -196,7 +197,7 @@
 /libraries/bottom_sheet_builder/						@tokopedia/core-team
 /libraries/cache_api/									@tokopedia/core-team
 /libraries/cameraview/									@tokopedia/core-team
-/libraries/circular_view_pager/				    		@lukaskris
+/libraries/circular_view_pager/				    		@tokopedia/core-team
 /libraries/cm_push_notifications/						@tokopedia/minion-yoda
 /libraries/collapsing_tab_layout/						@tokopedia/core-team
 /libraries/common_network/								@tokopedia/core-team
@@ -206,6 +207,7 @@
 /libraries/cpm/											@tokopedia/core-team
 /libraries/date_picker_range/							@tokopedia/core-team
 /libraries/dynamic_features/							@tokopedia/core-team
+/libraries/encryption/							        @tokopedia/core-team
 /libraries/fingerprint/									@tokopedia/core-team
 /libraries/graph_view/									@tokopedia/core-team
 /libraries/image_picker/								@tokopedia/core-team
@@ -238,6 +240,7 @@
 /libraries/williamchart/								@tokopedia/core-team
 /libraries/youtubeutil/									@tokopedia/core-team
 /libraries/imagepreviewslider                           @tokopedia/core-team
+/libraries/blockcanary                                  @tokopedia/core-team
 
 /tkpddiscovery/                                        	@tokopedia/core-team
 /tkpdsession/                                       	@tokopedia/core-team
@@ -247,9 +250,9 @@
 /tkpdtransaction-common/                                @tokopedia/core-team
 /tkpdseller/                                        	@tokopedia/core-team
 
-/tkpddesign/                                        	@nathaniel09 @hendrysetiadi89
-/tkpdcore/                                          	@nathaniel09 @hendrysetiadi89
-/tkpdabstraction/                                   	@nathaniel09 @hendrysetiadi89
+/tkpddesign/                                        	@tokopedia/android-gatekeeper-legacy-code
+/tkpdcore/                                          	@tokopedia/android-gatekeeper-legacy-code
+/tkpdabstraction/                                   	@tokopedia/android-gatekeeper-legacy-code
 
 /customerapp/                                       	@tokopedia/core-team
 /sellerapp/                                         	@tokopedia/minion-stuart

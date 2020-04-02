@@ -6,6 +6,7 @@ import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
@@ -45,6 +46,57 @@ object DynamicProductDetailTracking {
     }
 
     object Click {
+
+        fun eventClickBuyAskForImei(title: String, userId: String, productInfo: DynamicProductInfoP1?) {
+            val actionTitle = "${ProductTrackingConstant.Action.CLICK_REQUEST_PERMISSION_IMEI} $title"
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    actionTitle, "")
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId != "0").toString()
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, actionTitle)
+        }
+
+        fun eventClickGiveAccessPhoneStatePermission(title: String, userId: String, productInfo: DynamicProductInfoP1?) {
+            val actionTitle = "${ProductTrackingConstant.Action.CLICK_ACCEPT_PERMISSION} $title"
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    actionTitle,
+                    "")
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId != "0").toString()
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, actionTitle)
+        }
+
+        fun eventClickGoToSetting(title: String, userId: String, productInfo: DynamicProductInfoP1?) {
+            val actionTitle = "${ProductTrackingConstant.Action.CLICK_GO_TO_SETTING} $title"
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    actionTitle,
+                    "")
+
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId != "0").toString()
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, actionTitle)
+        }
+
+        fun eventClickLater(title: String, userId: String, productInfo: DynamicProductInfoP1?) {
+            val actionTitle = "${ProductTrackingConstant.Action.CLICK_PERMISSION_LATER} $title"
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    actionTitle, "")
+
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId != "0").toString()
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, actionTitle)
+        }
 
         fun eventClickButtonNonLogin(actionButton: Int, productInfo: DynamicProductInfoP1?, userId: String, shopType: String, buttonActionText: String) {
             if (actionButton == ProductDetailConstant.ATC_BUTTON) {
@@ -609,6 +661,18 @@ object DynamicProductDetailTracking {
                     variant ?: ""
             )
             TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.CLICK_CART_BUTTON_VARIANT)
+        }
+
+        fun eventNotifyMe(productInfo: DynamicProductInfoP1, componentTrackDataModel: ComponentTrackDataModel?, notifyMe: Boolean) {
+            val action = if (notifyMe) ProductDetailCommonConstant.VALUE_TEASER_TRACKING_UNREGISTER else
+                ProductDetailCommonConstant.VALUE_TEASER_TRACKING_REGISTER
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    "${ProductTrackingConstant.Action.CLICK_NOTIFY_ME} - $action",
+                    ProductTrackingConstant.Label.EMPTY_LABEL)
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_NOTIFY_ME)
         }
     }
 
