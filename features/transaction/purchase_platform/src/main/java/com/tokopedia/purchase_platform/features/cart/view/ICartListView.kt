@@ -123,5 +123,7 @@ interface ICartListView : CustomerView {
 
     fun navigateToPromoRecommendation()
 
+    fun checkHitValidateUseIsNeeded(params: ValidateUsePromoRequest): Boolean
+
     fun generateGeneralParamValidateUse() : ValidateUsePromoRequest
 }

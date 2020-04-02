@@ -1264,11 +1264,24 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         dPresenter.setHasPerformChecklistChange(true)
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
 
-        renderPromoCheckoutLoading()
-        dPresenter.doUpdateCartAndValidateUse(generateParamValidateUsePromoRevamp(checked, parentPosition, position, false))
+        val params = generateParamValidateUsePromoRevamp(checked, parentPosition, position, false)
+        if (isNeedHitUpdateCartAndValidateUse(params)) {
+            renderPromoCheckoutLoading()
+            dPresenter.doUpdateCartAndValidateUse(params)
+        } else {
+            updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
+        }
 
         cartAdapter.checkForShipmentForm()
         return cartAdapter.setItemSelected(position, parentPosition, checked)
+    }
+
+    private fun updatePromoCheckoutManualIfNoSelected(listPromoApplied: List<String>) {
+        if (cartAdapter.selectedCartShopHolderData.isEmpty()) {
+            renderPromoCheckoutButtonNoItemIsSelected()
+        }  else {
+            renderPromoCheckoutButtonActiveDefault(listPromoApplied)
+        }
     }
 
     override fun onWishlistCheckChanged(productId: String, isChecked: Boolean) {
@@ -1364,6 +1377,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 renderRecommendation(null)
             }
 
+            // show toaster if any promo applied has been changed
+            cartListData.lastApplyShopGroupSimplifiedData?.let { lastApplyData ->
+                if (lastApplyData.additionalInfo.errorDetail.message.isNotEmpty()) {
+                    showToaster(lastApplyData.additionalInfo.errorDetail.message, isShowOk = false)
+                    PromoRevampAnalytics.eventCartViewPromoChanged(lastApplyData.additionalInfo.errorDetail.message)
+                }
+            }
             renderPromoCheckout(it)
         }
     }
@@ -1428,6 +1448,28 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    private fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>) {
+        promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
+        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
+        promoCheckoutBtn.title = getString(R.string.promo_funnel_label)
+        promoCheckoutBtn.desc = ""
+        promoCheckoutBtn.setOnClickListener {
+            dPresenter.doUpdateCartForPromo()
+            // analytics
+            PromoRevampAnalytics.eventCartClickPromoSection(listPromoApplied, false)
+        }
+    }
+
+    private fun renderPromoCheckoutButtonNoItemIsSelected() {
+        promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
+        promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
+        promoCheckoutBtn.title = getString(R.string.promo_funnel_label)
+        promoCheckoutBtn.desc = getString(R.string.promo_desc_no_selected_item)
+        promoCheckoutBtn.setOnClickListener {
+            showToaster(getString(R.string.promo_choose_item_cart), isShowOk = false)
+        }
+    }
+
     private fun doRenderPromoCheckoutButton(lastApplyData: LastApplyUiModel) {
         val isApplied: Boolean
         /*if (lastApplyData.additionalInfo.errorDetail.message.isNotEmpty()) {
@@ -1435,16 +1477,19 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             PromoRevampAnalytics.eventCartViewPromoChanged(lastApplyData.additionalInfo.errorDetail.message)
         }*/
 
-        var title = ""
         promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
         promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
 
-        if (lastApplyData.additionalInfo.messageInfo.message.isNotEmpty()) {
-            title = lastApplyData.additionalInfo.messageInfo.message
-        } else if (lastApplyData.defaultEmptyPromoMessage.isNotBlank()) {
-            title = lastApplyData.defaultEmptyPromoMessage
-        } else {
-            title = getString(R.string.promo_funnel_label)
+        val title: String = when {
+            lastApplyData.additionalInfo.messageInfo.message.isNotEmpty() -> {
+                lastApplyData.additionalInfo.messageInfo.message
+            }
+            lastApplyData.defaultEmptyPromoMessage.isNotBlank() -> {
+                lastApplyData.defaultEmptyPromoMessage
+            }
+            else -> {
+                getString(R.string.promo_funnel_label)
+            }
         }
 
         if (lastApplyData.additionalInfo.messageInfo.detail.isNotEmpty()) {
@@ -1493,6 +1538,52 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         promoCheckoutBtn.state = ButtonPromoCheckoutView.State.LOADING
         promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
     }
+
+    private fun isNeedHitUpdateCartAndValidateUse(params: ValidateUsePromoRequest): Boolean {
+        var isPromoApplied = false
+        var allPromoApplied = arrayListOf<String>()
+        if (params.orders.isNotEmpty()) {
+            params.orders.forEach {
+                it?.let { orderItem ->
+                    if (orderItem.codes.isNotEmpty()) {
+                        orderItem.codes.forEach { merchantCode ->
+                            allPromoApplied.add(merchantCode)
+                        }
+                    }
+                }
+            }
+            params.codes.forEach {
+                it?.let { globalCode ->
+                    allPromoApplied.add(globalCode)
+                }
+            }
+        }
+        if (params.orders.isNotEmpty() && allPromoApplied.isNotEmpty()) isPromoApplied = true
+        return isPromoApplied
+    }
+
+    private fun getAllAppliedPromoCodes(params: ValidateUsePromoRequest): List<String> {
+        var allPromoApplied = arrayListOf<String>()
+        if (params.orders.isNotEmpty()) {
+            params.orders.forEach {
+                it?.let { orderItem ->
+                    if (orderItem.codes.isNotEmpty()) {
+                        orderItem.codes.forEach { merchantCode ->
+                            allPromoApplied.add(merchantCode)
+                        }
+                    }
+                }
+            }
+            params.codes.forEach {
+                it?.let { globalCode ->
+                    allPromoApplied.add(globalCode)
+                }
+            }
+        }
+        return allPromoApplied
+    }
+
+
 
     // NOTES:
     // if position = -1, then isChecked for all (shop level)
@@ -2685,13 +2776,21 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onCartItemQuantityChangedThenHitUpdateCartAndValidateUse() {
-        renderPromoCheckoutLoading()
-        dPresenter.doUpdateCartAndValidateUse(generateParamValidateUsePromoRevamp(false, -1, -1, true))
+        val params = generateParamValidateUsePromoRevamp(false, -1, -1, true)
+        if (isNeedHitUpdateCartAndValidateUse(params)) {
+            renderPromoCheckoutLoading()
+            dPresenter.doUpdateCartAndValidateUse(params)
+        }
     }
 
     override fun onCartShopNameChecked(isCheckedAll: Boolean) {
-        renderPromoCheckoutLoading()
-        dPresenter.doUpdateCartAndValidateUse(generateParamValidateUsePromoRevamp(isCheckedAll, -1, -1, false))
+        val params = generateParamValidateUsePromoRevamp(isCheckedAll, -1, -1, false)
+        if (isNeedHitUpdateCartAndValidateUse(params)) {
+            renderPromoCheckoutLoading()
+            dPresenter.doUpdateCartAndValidateUse(params)
+        } else {
+            updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
+        }
     }
 
     override fun navigateToPromoRecommendation() {
@@ -2707,5 +2806,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun generateGeneralParamValidateUse(): ValidateUsePromoRequest {
         return generateParamValidateUsePromoRevamp(false, -1, -1, true)
+    }
+
+    override fun checkHitValidateUseIsNeeded(params: ValidateUsePromoRequest): Boolean {
+        return isNeedHitUpdateCartAndValidateUse(params)
     }
 }
