@@ -204,7 +204,7 @@ class AddEditProductPreviewFragment :
 
         addEditProductDetailButton?.setOnClickListener {
 
-            viewModel.productData?.let {
+            viewModel.productInputModel?.let {
 
             }
 
@@ -346,7 +346,7 @@ class AddEditProductPreviewFragment :
                 is Success -> {
                     val productData = it.data
                     showProductDetailPreview(productData)
-                    viewModel.productData = productData
+                    viewModel.setProductInputModel(productData)
                 }
                 is Fail -> {
 
