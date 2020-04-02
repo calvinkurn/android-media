@@ -56,7 +56,7 @@ data class Product(
         @SerializedName("shop")
         val shop: Shop = Shop(),
         @SerializedName("wholesale")
-        val wholesales: List<Wholesale> = emptyList(),
+        val wholesales: List<Wholesale> = listOf(),
         @SerializedName("campaign")
         val campaign: Campaign = Campaign(),
         @SerializedName("video")

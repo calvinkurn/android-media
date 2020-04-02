@@ -115,7 +115,7 @@ class GetCategoryRecommendationUseCaseTest : Spek({
             }
 
             When("get search name recommendation") {
-                viewmodel.getSearchNameSuggestion(query = "batik")
+                viewmodel.getProductNameRecommendation(query = "batik")
             }
 
             Then("run use case") {
@@ -125,7 +125,7 @@ class GetCategoryRecommendationUseCaseTest : Spek({
             }
 
             Then("get category recommendation result is success") {
-                val resultViewmodel = viewmodel.searchProductSuggestionName.value
+                val resultViewmodel = viewmodel.productNameRecommendations.value
 
                 Assert.assertTrue(resultViewmodel != null && resultViewmodel == Success(resultNameRecommendation))
             }
@@ -140,7 +140,7 @@ class GetCategoryRecommendationUseCaseTest : Spek({
             }
 
             When("get category recommendation") {
-                viewmodel.getSearchNameSuggestion(query = "baju")
+                viewmodel.getProductNameRecommendation(query = "baju")
             }
 
             Then("run use case") {
@@ -151,7 +151,7 @@ class GetCategoryRecommendationUseCaseTest : Spek({
 
             Then("get name recommendation is failed") {
                 Thread.sleep(2000)
-                val result = viewmodel.searchProductSuggestionName.value
+                val result = viewmodel.productNameRecommendations.value
                 Assert.assertTrue(result != null && result is Fail)
             }
         }
