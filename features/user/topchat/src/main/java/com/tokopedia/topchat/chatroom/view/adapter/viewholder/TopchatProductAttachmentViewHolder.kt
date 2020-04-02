@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.item_topchat_product_card.view.*
 
@@ -31,9 +32,11 @@ open class TopchatProductAttachmentViewHolder(
 
     private var wishListBtn: UnifyButton? = null
     private var cardContainer: SingleProductAttachmentContainer? = null
+    private var emptyStock: Label? = null
 
     private val white = "#ffffff"
     private val white2 = "#fff"
+    private val labelEmptyStockColor = "#80000000"
 
     override fun alwaysShowTime(): Boolean = true
 
@@ -51,6 +54,7 @@ open class TopchatProductAttachmentViewHolder(
         bindPrice(product)
         bindFreeShipping(product)
         bindFooter(product)
+        bindEmptyStockLabel(product)
         bindChatReadStatus(product)
         listener.trackSeenProduct(product)
     }
@@ -58,6 +62,7 @@ open class TopchatProductAttachmentViewHolder(
     private fun bindView() {
         wishListBtn = itemView.findViewById(R.id.tv_wishlist)
         cardContainer = itemView.findViewById(R.id.containerProductAttachment)
+        emptyStock = itemView.findViewById(R.id.lb_empty_stock)
     }
 
     private fun bindLayoutGravity(product: ProductAttachmentViewModel) {
@@ -202,6 +207,18 @@ open class TopchatProductAttachmentViewHolder(
             bindWishList(product)
         } else {
             hideFooter()
+        }
+    }
+
+    private fun bindEmptyStockLabel(product: ProductAttachmentViewModel) {
+        emptyStock?.apply {
+            if (product.hasEmptyStock()) {
+                show()
+                unlockFeature = true
+                setLabelType(labelEmptyStockColor)
+            } else {
+                hide()
+            }
         }
     }
 

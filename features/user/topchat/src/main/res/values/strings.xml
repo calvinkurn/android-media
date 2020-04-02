@@ -156,4 +156,5 @@ yang ditemukan</string>
     <string name="action_atc">+ Keranjang</string>
     <string name="action_wishlist">Tambah ke Wishlist</string>
     <string name="cta_topchat_success_atw">Lihat</string>
+    <string name="title_topchat_empty_stock">Stok habis</string>
 </resources>
