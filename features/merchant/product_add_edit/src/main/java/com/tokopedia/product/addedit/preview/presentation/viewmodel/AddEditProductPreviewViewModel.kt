@@ -70,9 +70,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
     private fun getProduct(productId: String) {
         launchCatchError(block = {
             mGetProductResult.value = Success(withContext(Dispatchers.IO) {
-                val options = OptionV3(edit = true, variant = true)
-                val getProductV3Param = GetProductV3Param(productId, options)
-                getProductUseCase.params = GetProductUseCase.createRequestParams(getProductV3Param)
+                getProductUseCase.params = GetProductUseCase.createRequestParams(productId)
                 getProductUseCase.executeOnBackground()
             })
         }, onError = {

@@ -6,6 +6,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.preview.data.source.api.param.GetProductV3Param
+import com.tokopedia.product.addedit.preview.data.source.api.param.OptionV3
 import com.tokopedia.product.addedit.preview.data.source.api.response.GetProductV3Response
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.usecase.RequestParams
@@ -34,10 +35,12 @@ class GetProductUseCase @Inject constructor(private val graphqlRepository: Graph
         private const val PARAM_PRODUCT_ID = "productID"
         private const val PARAM_OPTIONS = "options"
 
-        fun createRequestParams(param: GetProductV3Param): RequestParams {
+        fun createRequestParams(productId: String): RequestParams {
+            val options = OptionV3(edit = true, variant = true)
+            val getProductV3Param = GetProductV3Param(productId, options)
             val requestParams = RequestParams.create()
-            requestParams.putString(PARAM_PRODUCT_ID, param.productID)
-            requestParams.putObject(PARAM_OPTIONS, param.options)
+            requestParams.putString(PARAM_PRODUCT_ID, getProductV3Param.productID)
+            requestParams.putObject(PARAM_OPTIONS, getProductV3Param.options)
             return requestParams
         }
 
