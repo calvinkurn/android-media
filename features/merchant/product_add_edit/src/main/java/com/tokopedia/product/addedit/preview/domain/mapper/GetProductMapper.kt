@@ -18,11 +18,11 @@ import javax.inject.Inject
 
 class GetProductMapper @Inject constructor() {
 
-    fun mapRemoteModelToUiModel(getProductV3Response: GetProductV3Response): ProductInputModel = 
+    fun mapRemoteModelToUiModel(product: Product): ProductInputModel =
             ProductInputModel(
-                    mapDetailInputModel(getProductV3Response.product),
-                    mapDescriptionInputModel(getProductV3Response.product),
-                    mapShipmentInputModel(getProductV3Response.product)
+                    mapDetailInputModel(product),
+                    mapDescriptionInputModel(product),
+                    mapShipmentInputModel(product)
             )
     
     private fun mapDetailInputModel(product: Product): DetailInputModel =
