@@ -79,6 +79,11 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         setViewListener()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeSubs.clear()
+    }
+
     private fun prepareLayout(view: View) {
         bottomSheetView = view
         rlCurrentLocation = view.findViewById(R.id.rl_current_location)
