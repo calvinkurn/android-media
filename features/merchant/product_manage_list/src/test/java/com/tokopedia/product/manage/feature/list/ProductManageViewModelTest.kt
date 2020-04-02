@@ -459,10 +459,10 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
 
             viewModel.getFeaturedProductCount(shopId)
 
-            val expectedProductList = Success(1)
+            val expectedFeaturedProductCount = Success(1)
 
             verifyGetProductListCalled()
-            viewModel.productListFeaturedOnlyResult.verifySuccessEquals(expectedProductList)
+            viewModel.productListFeaturedOnlyResult.verifySuccessEquals(expectedFeaturedProductCount)
         }
     }
 
