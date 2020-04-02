@@ -294,14 +294,14 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
         withdrawButton.setOnClickListener(v -> {
             KeyboardHandler.hideSoftKeyboard(getActivity());
-            float balance;
+            long balance;
             if (currentState == SELLER_STATE) {
                 balance = sellerSaldoBalance;
             } else {
                 balance = buyerSaldoBalance;
             }
             presenter.doWithdraw(
-                    String.valueOf((int) balance),
+                    String.valueOf(balance),
                     totalWithdrawal.getText().toString(),
                     bankAdapter.getSelectedBank()
             );
@@ -309,7 +309,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         });
 
 
-        float displayBalance;
+        long displayBalance;
         if (buyerSaldoBalance == 0 || buyerSaldoBalance < DEFAULT_MIN_FOR_SELECTED_BANK) {
             displayBalance = sellerSaldoBalance;
             saldoTitleTV.setText(getString(R.string.saldo_seller));
@@ -328,7 +328,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             checkForEmptyView(0);
         }
 
-        saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(displayBalance, false));
+        saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(displayBalance, true));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -445,7 +445,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             sellerWithdrawal = false;
 
             saldoTitleTV.setText(getString(R.string.saldo_refund));
-            saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(buyerSaldoBalance, false));
+            saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(buyerSaldoBalance, true));
         }
     }
 
@@ -461,7 +461,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             sellerWithdrawal = true;
             currentState = SELLER_STATE;
             saldoTitleTV.setText(getString(R.string.saldo_seller));
-            saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(sellerSaldoBalance, false));
+            saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(sellerSaldoBalance, true));
         }
     }
 
@@ -473,7 +473,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 long withdrawal = (long) StringUtils.convertToNumeric(text, false);
                 long min = getMinTransferForCurrentBank();
                 long max = getMaxTransferForCurrentBank();
-                float deposit;
+                long deposit;
                 if (currentState == SELLER_STATE) {
                     deposit = sellerSaldoBalance;
                 } else {

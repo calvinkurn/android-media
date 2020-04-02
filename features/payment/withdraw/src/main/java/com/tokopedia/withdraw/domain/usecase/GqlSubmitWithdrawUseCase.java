@@ -71,7 +71,7 @@ public class GqlSubmitWithdrawUseCase {
         this.query = loadRawString;
     }
 
-    public void setRequestParams(String email, int withdrawal
+    public void setRequestParams(String email, long withdrawal
             , BankAccount bankAccount, String password, boolean isSellerWithdrawal, String userId, String programName) {
         params.put(PARAM_ACTION_USER, "user");
         params.put(PARAM_DEVICE_TYPE, MOBILE_DEVICE);

@@ -1,21 +1,14 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation
 
-import android.app.Activity
-import androidx.annotation.LayoutRes
-import com.google.android.material.snackbar.Snackbar
 import android.view.View
+import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.domain.gql.feed.LabelGroup
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedContract
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeFeedViewModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.productcard.v2.ProductCardModel
-import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.productcard.ProductCardGridView
+import com.tokopedia.productcard.ProductCardModel
 
 /**
  * Created by Lukas on 2019-07-15
@@ -26,36 +19,20 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
     companion object{
         @LayoutRes
         val LAYOUT = R.layout.home_feed_item
-        private const val LABEL_POSITION_OFFERS = "offers"
-        private const val LABEL_POSITION_PROMO = "promo"
-        private const val LABEL_POSITION_CREDIBILITY = "credibility"
     }
 
-    private val productCardView by lazy { itemView.findViewById<ProductCardViewSmallGrid>(R.id.productCardView) }
+    private val productCardView by lazy { itemView.findViewById<ProductCardGridView>(R.id.productCardView) }
 
     override fun bind(element: HomeFeedViewModel) {
         setLayout(element)
     }
 
     private fun setLayout(element: HomeFeedViewModel){
-        var labelCredibility = ProductCardModel.Label()
-        var labelPromo = ProductCardModel.Label()
-        var labelOffers = ProductCardModel.Label()
-
-        for (label: LabelGroup in element.labelGroups){
-            when(label.position){
-                LABEL_POSITION_CREDIBILITY -> {
-                    labelCredibility = if (element.rating == 0 && element.countReview == 0) ProductCardModel.Label(label.title, label.type) else labelCredibility
-                }
-                LABEL_POSITION_PROMO -> {
-                    labelPromo = ProductCardModel.Label(label.title, label.type)
-                }
-                LABEL_POSITION_OFFERS -> {
-                    labelOffers = ProductCardModel.Label(label.title, label.type)
-                }
-            }
+        val productCardModelLabelGroupList = element.labelGroups.map {
+            ProductCardModel.LabelGroup(position = it.position, type = it.type, title = it.title)
         }
-        productCardView.run{
+
+        productCardView?.run{
             setProductModel(
                     ProductCardModel(
                             slashedPrice = element.slashedPrice,
@@ -70,15 +47,14 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
                             isWishlistVisible = true,
                             isWishlisted = element.isWishList,
                             shopBadgeList = element.badges.map {
-                                ProductCardModel.ShopBadge(imageUrl = it.imageUrl?:"")
+                                ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
                             },
                             freeOngkir = ProductCardModel.FreeOngkir(
                                     isActive = element.isFreeOngkirActive,
                                     imageUrl = element.freeOngkirImageUrl
                             ),
-                            labelCredibility = labelCredibility,
-                            labelOffers = labelOffers,
-                            labelPromo = labelPromo
+                            labelGroupList = productCardModelLabelGroupList,
+                            hasThreeDots = true
                     )
             )
             setImageProductViewHintListener(element, object: ViewHintListener {
@@ -87,39 +63,19 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
                 }
             })
             setOnClickListener { homeFeedView.onProductClick(element, adapterPosition) }
-            setButtonWishlistOnClickListener {
-                homeFeedView.onWishlistClick(element, adapterPosition, !it.isActivated){ isSuccess, throwable ->
-                    if(isSuccess){
-                        it.isActivated = !it.isActivated
-                        element.isWishList = it.isActivated
-                        setButtonWishlistImage(it.isActivated)
-                        if(it.isActivated){
-                            showSuccessAddWishlist((context as Activity).findViewById(android.R.id.content), getString(R.string.msg_success_add_wishlist))
-                        } else {
-                            showSuccessRemoveWishlist((context as Activity).findViewById(android.R.id.content), getString(R.string.msg_success_remove_wishlist))
-                        }
-                    } else {
-                        rootView.findViewById<View>(android.R.id.content)?.let { contentView ->
-                            Toaster.make(
-                                    contentView,
-                                    ErrorHandler.getErrorMessage(contentView.context, throwable),
-                                    Snackbar.LENGTH_LONG,
-                                    Toaster.TYPE_ERROR)
-                        }
-                    }
-                }
+
+            setThreeDotsOnClickListener {
+                homeFeedView.onProductThreeDotsClick(element, adapterPosition)
             }
         }
     }
 
-    private fun showSuccessAddWishlist(view: View, message: String){
-        Snackbar.make(view, message, Snackbar.LENGTH_LONG)
-                .setAction(R.string.go_to_wishlist) { RouteManager.route(view.context, ApplinkConst.NEW_WISHLIST) }
-                .show()
-    }
+    override fun bind(element: HomeFeedViewModel, payload: List<Any>) {
+        if (payload.getOrNull(0) !is Boolean) return
 
-    private fun showSuccessRemoveWishlist(view: View, message: String){
-        Snackbar.make(view, message, Snackbar.LENGTH_LONG).show()
+        productCardView?.setThreeDotsOnClickListener {
+            homeFeedView.onProductThreeDotsClick(element, adapterPosition)
+        }
     }
 }
 

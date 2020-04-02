@@ -151,9 +151,9 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
         }
 
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-            Timber.d("DEEPLINK " + errorCode + "  " + description + " " + failingUrl);
             super.onReceivedError(view, errorCode, description, failingUrl);
             progressBar.setVisibility(View.GONE);
+            Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s'",failingUrl, errorCode, description);
         }
 
         @SuppressWarnings("deprecation")

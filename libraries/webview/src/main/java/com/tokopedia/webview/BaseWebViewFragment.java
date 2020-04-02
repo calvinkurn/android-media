@@ -1,5 +1,6 @@
 package com.tokopedia.webview;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -19,6 +20,7 @@ import android.webkit.URLUtil;
 import android.webkit.ValueCallback;
 import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -41,6 +43,8 @@ import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
+
+import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.abstraction.common.utils.image.ImageHandler.encodeToBase64;
@@ -73,6 +77,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     private static final String KOL_URL = "tokopedia.com/content";
     private static final String PLAY_GOOGLE_URL = "play.google.com";
+    private static final String BRANCH_IO_HOST = "tokopedia.link";
     private static final String PARAM_EXTERNAL = "tokopedia_external=true";
     private static final String PARAM_WEBVIEW_BACK = "tokopedia://back";
 
@@ -177,7 +182,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             webSettings.setMediaPlaybackRequiresUserGesture(false);
         }
 
-        if(GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             webView.setWebContentsDebuggingEnabled(true);
         }
         return view;
@@ -265,10 +270,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             WebBackForwardList mWebBackForwardList = webView.copyBackForwardList();
             if (mWebBackForwardList.getCurrentIndex() > 0)
                 historyUrl = mWebBackForwardList.getItemAtIndex(mWebBackForwardList.getCurrentIndex() - 1).getUrl();
-            if (historyUrl.contains(SEAMLESS)){
+            if (historyUrl.contains(SEAMLESS)) {
                 webView.loadAuthUrl(historyUrl, null);
-            }
-            else {
+            } else {
                 webView.loadAuthUrl(historyUrl, userSession);
             }
         }
@@ -422,7 +426,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return shouldOverrideUrlLoading(webView, request.getUrl().toString());
         }
 
-        boolean hasCheckOverrideAtInitialization(String requestUrl){
+        boolean hasCheckOverrideAtInitialization(String requestUrl) {
             return (allowOverride && requestUrl.equals(url));
         }
 
@@ -436,6 +440,14 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
             progressBar.setVisibility(View.GONE);
+            Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s'",failingUrl, errorCode, description);
+        }
+
+        @TargetApi(android.os.Build.VERSION_CODES.M)
+        @Override
+        public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+            super.onReceivedError(view, request, error);
+            Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s'", request.getUrl(), error.getErrorCode(), error.getDescription());
         }
     }
 
@@ -443,18 +455,19 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (getActivity() == null) {
             return false;
         }
-        if (goToLoginGoogle(url)) return true;
+        Uri uri = Uri.parse(url);
+        if (goToLoginGoogle(uri)) return true;
 
         if (url.contains(HCI_CAMERA_KTP)) {
-            mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
+            mJsHciCallbackFuncName = uri.getLastPathSegment();
             startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE), HCI_CAMERA_REQUEST_CODE);
             return true;
         } else if (url.contains(HCI_CAMERA_SELFIE)) {
-            mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
+            mJsHciCallbackFuncName = uri.getLastPathSegment();
             startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE), HCI_CAMERA_REQUEST_CODE);
             return true;
         } else if (PARAM_WEBVIEW_BACK.equalsIgnoreCase(url)
-                && getActivity()!= null) {
+                && getActivity() != null) {
             if (getActivity().isTaskRoot()) {
                 RouteManager.route(getContext(), ApplinkConst.HOME);
             } else {
@@ -464,9 +477,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         } else if (url.contains(PLAY_GOOGLE_URL)) {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(intent);
-        }
-        if (!allowOverride) {
-            return false;
+            return true;
+        } else if (BRANCH_IO_HOST.equalsIgnoreCase(uri.getHost())) {
+            Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
+            if (intent != null) {
+                startActivity(intent);
+            }
         }
         if (url.contains(PARAM_EXTERNAL)) {
             try {
@@ -486,31 +502,43 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         boolean isNotNetworkUrl = !URLUtil.isNetworkUrl(url);
         if (isNotNetworkUrl) {
             Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
-            if (intent!= null) {
+            if (intent != null) {
                 try {
                     hasMoveToNativePage = true;
                     startActivity(intent);
-                } catch (Exception ignored) { }
+                } catch (Exception ignored) {
+                }
                 return true;
             } else {
-                // logging here, url might return blank page
-                // ask user to update app
+                logApplinkErrorOpen(url);
             }
+        }
+        if (!allowOverride && isFirstRequest(url)) {
+            return false;
         }
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
         return hasMoveToNativePage;
     }
 
-    private void checkActivityFinish(){
-        if (hasMoveToNativePage && !webViewHasContent && getActivity()!= null) {
+    private void logApplinkErrorOpen(String url) {
+        Timber.w("P1#APPLINK_OPEN_ERROR#%s;uri='%s'",
+                BaseWebViewFragment.this.getClass().getSimpleName(), url);
+    }
+
+    private boolean isFirstRequest(String url) {
+        return this.url.equals(url);
+    }
+
+    private void checkActivityFinish() {
+        if (hasMoveToNativePage && !webViewHasContent && getActivity() != null) {
             getActivity().finish();
         }
     }
 
-    private boolean goToLoginGoogle(@NonNull String url){
+    private boolean goToLoginGoogle(@NonNull Uri uri) {
         String loginType;
         try {
-            loginType = Uri.parse(url).getQueryParameter("login_type");
+            loginType = uri.getQueryParameter("login_type");
         } catch (Exception e) {
             return false;
         }
@@ -537,7 +565,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         return webView;
     }
 
-    public int setWebView(){
+    public int setWebView() {
         return R.id.webview;
     }
 
@@ -545,7 +573,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         return R.id.progressbar;
     }
 
-    public void reloadPage(){
+    public void reloadPage() {
         webView.reload();
     }
 

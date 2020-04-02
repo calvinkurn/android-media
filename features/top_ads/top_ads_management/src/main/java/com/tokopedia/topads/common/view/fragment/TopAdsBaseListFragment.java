@@ -167,7 +167,7 @@ public abstract class TopAdsBaseListFragment<V extends Visitable, F extends Adap
 
     private void initErrorNetworkViewModel() {
         ErrorNetworkModel errorNetworkModel = new ErrorNetworkModel();
-        errorNetworkModel.setIconDrawableRes(R.drawable.ic_error_network);
+        errorNetworkModel.setIconDrawableRes(R.drawable.unify_globalerrors_connection);
         getAdapter().setErrorNetworkModel(errorNetworkModel);
     }
 

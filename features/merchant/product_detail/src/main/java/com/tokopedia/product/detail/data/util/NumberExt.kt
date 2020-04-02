@@ -23,5 +23,5 @@ fun Number.thousandFormatted(): String {
 
     val exp = (Math.log(this.toDouble())/Math.log(1000.00)).toInt()
     val number = this.toDouble()/Math.pow(1000.00, exp.toDouble())
-    return "${number.numberFormatted()}${listOf("rb", "jt", "M", "T")[exp-1]}"
+    return "${number.numberFormatted()} ${listOf("rb", "jt", "M", "T")[exp-1]}"
 }

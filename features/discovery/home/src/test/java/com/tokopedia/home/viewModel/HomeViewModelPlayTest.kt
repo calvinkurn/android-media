@@ -6,10 +6,12 @@ import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetPlayLiveDynamicUseCase
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.ext.observeOnce
 import com.tokopedia.home.rules.InstantTaskExecutorRuleSpek
+import io.mockk.coVerify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
@@ -48,7 +50,7 @@ class HomeViewModelPlayTest : Spek({
             }
 
             When("viewModel load play data"){
-                homeViewModel.loadPlayBannerFromNetwork(playDataModel)
+                homeViewModel.getLoadPlayBannerFromNetwork(playDataModel)
             }
 
             Then("Expect the event on live data available and check image"){
@@ -94,7 +96,7 @@ class HomeViewModelPlayTest : Spek({
             }
 
             When("viewModel load play data"){
-                homeViewModel.loadPlayBannerFromNetwork(playDataModel)
+                homeViewModel.getLoadPlayBannerFromNetwork(playDataModel)
             }
 
             Then("Expect the event on live data not available"){
@@ -134,7 +136,7 @@ class HomeViewModelPlayTest : Spek({
             }
 
             When("viewModel load play data"){
-                homeViewModel.loadPlayBannerFromNetwork(playDataModel)
+                homeViewModel.getLoadPlayBannerFromNetwork(playDataModel)
             }
 
             Then("Expect the event on live data available and check image"){
@@ -154,7 +156,6 @@ class HomeViewModelPlayTest : Spek({
             }
         }
 
-
         Scenario("No play data available") {
             Given("dynamic banner"){
                 getHomeUseCase.givenGetHomeDataReturn(
@@ -166,6 +167,106 @@ class HomeViewModelPlayTest : Spek({
 
             Given("home viewmodel") {
                 homeViewModel = createHomeViewModel()
+            }
+
+            Then("Expect the event on live data not available"){
+                homeViewModel.homeLiveData.observeOnce {
+                    assert(it.list.isEmpty())
+                }
+            }
+        }
+
+        Scenario("View rendered but the data play still null, it will load new data with right adapter position"){
+            val playDataModel = PlayCardViewModel(DynamicHomeChannel.Channels())
+            val playCardHome = PlayChannel(coverUrl = "cobacoba.com")
+
+            Given("dynamic banner with another list"){
+                getHomeUseCase.givenGetHomeDataReturn(
+                        HomeDataModel(
+                                list = listOf(
+                                        BannerViewModel(),
+                                        playDataModel
+                                )
+                        )
+                )
+            }
+
+            Given("home viewmodel") {
+                homeViewModel = createHomeViewModel()
+            }
+
+            Given("simulate play data returns success"){
+                getPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(
+                        channel = PlayChannel()
+                )
+            }
+
+            When("simulate view want load play data with position"){
+                homeViewModel.getPlayBanner(1)
+            }
+
+            Then("expect function load from network called"){
+                coVerify { getPlayLiveDynamicUseCase.executeOnBackground() }
+            }
+
+            Then("Expect the event on live data available and check image"){
+                homeViewModel.requestImageTestLiveData.observeOnce {
+                    assert(it == null)
+                }
+            }
+
+            When("Image valid but the network error when try get image"){
+                homeViewModel.clearPlayBanner()
+            }
+
+            Then("Expect the event on live data not available"){
+                homeViewModel.homeLiveData.observeOnce {
+                    assert(it.list.isEmpty())
+                }
+            }
+        }
+
+        Scenario("View rendered but the data play still null, it will load new data with wrong adapter position"){
+            val playDataModel = PlayCardViewModel(DynamicHomeChannel.Channels())
+            val playCardHome = PlayChannel(coverUrl = "cobacoba.com")
+
+            Given("dynamic banner with another list"){
+                getHomeUseCase.givenGetHomeDataReturn(
+                        HomeDataModel(
+                                list = listOf(
+                                        BannerViewModel(),
+                                        playDataModel
+                                )
+                        )
+                )
+            }
+
+            Given("home viewmodel") {
+                homeViewModel = createHomeViewModel()
+            }
+
+            Given("simulate play data returns success"){
+                getPlayLiveDynamicUseCase.givenGetPlayLiveDynamicUseCaseReturn(
+                        channel = PlayChannel()
+                )
+            }
+
+            When("simulate view want load play data wrong position"){
+                homeViewModel.getPlayBanner(0)
+            }
+
+            Then("expect function load from network called"){
+                coVerify { getPlayLiveDynamicUseCase.executeOnBackground() }
+            }
+
+            Then("Expect the event on live data available and check image"){
+                homeViewModel.requestImageTestLiveData.observeOnce {
+                    assert(it == null)
+                }
+            }
+
+            When("Image valid but the network error when try get image"){
+                homeViewModel.clearPlayBanner()
             }
 
             Then("Expect the event on live data not available"){

@@ -11,7 +11,6 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.product.Rating
 import com.tokopedia.product.detail.common.data.model.product.WishlistCount
-import com.tokopedia.product.detail.common.data.model.variant.ProductDetailVariantResponse
 import com.tokopedia.product.detail.data.model.ProductInfoP2General
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationResponse
@@ -30,6 +29,7 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.variant_common.model.ProductDetailVariantCommonResponse
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -70,9 +70,14 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
         val forceRefresh = requestParams.getBoolean(ProductDetailCommonConstant.FORCE_REFRESH, false)
         val minOrder = requestParams.getInt(ProductDetailCommonConstant.PARAM_MIN_ORDER, 0)
 
-        val paramsVariant = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId.toString())
+        val paramsVariant = mapOf(
+                ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId.toString(),
+                ProductDetailConstant.PARAM_OPTION to mapOf(ProductDetailConstant.KEY_USER_ID to userId.toString(),
+                        ProductDetailConstant.PARAM_INCLUDE_CAMPAIGN to true)
+        )
+
         val variantRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_VARIANT],
-                ProductDetailVariantResponse::class.java, paramsVariant)
+                ProductDetailVariantCommonResponse::class.java, paramsVariant)
 
         val shopBadgeParams = mapOf(ProductDetailCommonConstant.PARAM_SHOP_IDS to listOf(shopId))
         val shopBadgeRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP_BADGE],
@@ -142,8 +147,8 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
         try {
             val gqlResponse = graphqlRepository.getReseponse(requests, CacheStrategyUtil.getCacheStrategy(forceRefresh))
 
-            if (gqlResponse.getError(ProductDetailVariantResponse::class.java)?.isNotEmpty() != true) {
-                productInfoP2.variantResp = gqlResponse.getData<ProductDetailVariantResponse>(ProductDetailVariantResponse::class.java).data
+            if (gqlResponse.getError(ProductDetailVariantCommonResponse::class.java)?.isNotEmpty() != true) {
+                productInfoP2.variantResp = gqlResponse.getData<ProductDetailVariantCommonResponse>(ProductDetailVariantCommonResponse::class.java).data
             }
 
             if (gqlResponse.getError(ShopBadge.Response::class.java)?.isNotEmpty() != true) {
