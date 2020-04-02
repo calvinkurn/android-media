@@ -253,4 +253,9 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     public void onProductRecommendationWishlistClicked(@NotNull RecommendationItem product, boolean wishlistStatus, @NotNull Function2<? super Boolean, ? super Throwable, Unit> callback) {
 
     }
+
+    @Override
+    public void onProductRecommendationThreeDotsClicked(@NotNull RecommendationItem product, int adapterPosition) {
+
+    }
 }

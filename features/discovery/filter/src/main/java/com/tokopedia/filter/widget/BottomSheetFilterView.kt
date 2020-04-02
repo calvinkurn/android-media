@@ -148,7 +148,7 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
             FilterTracking.eventFilterJourney(it, filterTitle, option.name,
                 false, isChecked, option.isAnnotation)
         }
-        filterController.setFilter(option, isChecked)
+        filterController.setFilter(option, isChecked, option.isTypeRadio)
         applyFilter()
     }
 

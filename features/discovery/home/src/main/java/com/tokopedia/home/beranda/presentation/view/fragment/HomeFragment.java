@@ -138,12 +138,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
+import rx.Observable;
+import rx.schedulers.Schedulers;
 
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_BANNER;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_BANNER_CAROUSEL;
@@ -247,6 +250,9 @@ public class HomeFragment extends BaseDaggerFragment implements
     private boolean isLightThemeStatusBar = true;
     private static final String KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar";
     private Map<String,RecyclerView.OnScrollListener> impressionScrollListeners = new HashMap<>();
+
+    private long mLastClickTime = System.currentTimeMillis();
+    private static final long CLICK_TIME_INTERVAL = 500;
 
     @NonNull
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
@@ -363,6 +369,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         homeMainToolbar = view.findViewById(R.id.toolbar);
+        homeMainToolbar.setAfterInflationCallable(getAfterInflationCallable());
         statusBarBackground = view.findViewById(R.id.status_bar_bg);
         homeRecyclerView = view.findViewById(R.id.list);
         homeRecyclerView.setHasFixedSize(true);
@@ -377,11 +384,22 @@ public class HomeFragment extends BaseDaggerFragment implements
         fetchRemoteConfig();
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
         setupStatusBar();
-        calculateSearchbarView(0);
         setupHomeRecyclerView();
         initEggDragListener();
 
         return view;
+    }
+
+    private Callable getAfterInflationCallable(){
+        Callable afterinflationCallable = new Callable() {
+            @Override
+            public Object call() throws Exception {
+                calculateSearchbarView(0);
+                observeSearchHint();
+                return null;
+            }
+        };
+        return afterinflationCallable;
     }
 
     private void setupHomeRecyclerView() {
@@ -472,12 +490,16 @@ public class HomeFragment extends BaseDaggerFragment implements
         }
 
         if (recyclerView.canScrollVertically(1)) {
-            homeMainToolbar.showShadow();
+            if(homeMainToolbar != null) {
+                homeMainToolbar.showShadow();
+            }
             showFeedSectionViewHolderShadow(false);
             homeRecyclerView.setNestedCanScroll(false);
         } else {
             //home feed now can scroll up, so hide maintoolbar shadow
-            homeMainToolbar.hideShadow();
+            if(homeMainToolbar != null) {
+                homeMainToolbar.hideShadow();
+            }
             showFeedSectionViewHolderShadow(true);
             homeRecyclerView.setNestedCanScroll(true);
         }
@@ -594,7 +616,9 @@ public class HomeFragment extends BaseDaggerFragment implements
             /*
              * set notification gimmick
              */
-            homeMainToolbar.setNotificationNumber(0);
+            if(homeMainToolbar != null) {
+                homeMainToolbar.setNotificationNumber(0);
+            }
         });
         refreshLayout.setOnRefreshListener(this);
     }
@@ -604,7 +628,6 @@ public class HomeFragment extends BaseDaggerFragment implements
         observeUpdateNetworkStatusData();
         observePopupIntroOvo();
         observeSendLocation();
-        observeSearchHint();
         observeStickyLogin();
         observeTrackingData();
         observeRequestImagePlayBanner();
@@ -749,21 +772,25 @@ public class HomeFragment extends BaseDaggerFragment implements
         if (offsetAlpha < 0) {
             offsetAlpha = 0;
         }
-        if(offsetAlpha >= 150){
-            homeMainToolbar.switchToDarkToolbar();
-            if (isLightThemeStatusBar) requestStatusBarDark();
-        } else {
-            homeMainToolbar.switchToLightToolbar();
-            if (!isLightThemeStatusBar) requestStatusBarLight();
+        if(homeMainToolbar != null) {
+            if (offsetAlpha >= 150) {
+                homeMainToolbar.switchToDarkToolbar();
+                if (isLightThemeStatusBar) requestStatusBarDark();
+            } else {
+                homeMainToolbar.switchToLightToolbar();
+                if (!isLightThemeStatusBar) requestStatusBarLight();
+            }
         }
 
         if (offsetAlpha >= 255) {
             offsetAlpha = 255;
         }
 
-        if (offsetAlpha >= 0 && offsetAlpha <= 255) {
-            homeMainToolbar.setBackgroundAlpha(offsetAlpha);
-            setStatusBarAlpha(offsetAlpha);
+        if(homeMainToolbar != null) {
+            if (offsetAlpha >= 0 && offsetAlpha <= 255) {
+                homeMainToolbar.setBackgroundAlpha(offsetAlpha);
+                setStatusBarAlpha(offsetAlpha);
+            }
         }
     }
 
@@ -1165,14 +1192,21 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private void detectAndSendLocation() {
-        LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
-                permissionCheckerHelper,
-                LocationServices.getFusedLocationProviderClient(getActivity()
-                        .getApplicationContext()),
-                getActivity().getApplicationContext());
-        locationDetectorHelper.getLocation(onGetLocation(), getActivity(),
-                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                "");
+        Observable.just(true).map(aBoolean -> {
+            LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
+                    permissionCheckerHelper,
+                    LocationServices.getFusedLocationProviderClient(getActivity()
+                            .getApplicationContext()),
+                    getActivity().getApplicationContext());
+            locationDetectorHelper.getLocation(onGetLocation(), getActivity(),
+                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                    "");
+                return true;
+        }).subscribeOn(Schedulers.io()).subscribe(aBoolean -> {
+            //IGNORE
+        }, throwable -> {
+            //IGNORE
+        });
     }
 
     private Function1<DeviceLocation, Unit> onGetLocation() {
@@ -1299,6 +1333,12 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private void onActionLinkClicked(String actionLink, String trackingAttribution) {
+        long now = System.currentTimeMillis();
+        if (now - mLastClickTime < CLICK_TIME_INTERVAL) {
+            return;
+        }
+        mLastClickTime = now;
+
         if (TextUtils.isEmpty(actionLink)) {
             return;
         }

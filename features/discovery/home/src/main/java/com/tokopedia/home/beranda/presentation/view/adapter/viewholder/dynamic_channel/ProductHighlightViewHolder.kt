@@ -33,6 +33,10 @@ class ProductHighlightViewHolder(
         }
     }
 
+    override fun bind(element: DynamicChannelViewModel?, payloads: MutableList<Any>) {
+        bind(element)
+    }
+
     private fun setDealsChannelInfo(channel: DynamicChannelViewModel) {
         channel.channel?.header?.let {
             setDealsChannelTitle(it)

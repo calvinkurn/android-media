@@ -284,5 +284,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     override fun onClickRemoveFromWishList(productId: String, success: () -> Unit) {}
 
+    override fun trackClickProductThumbnail(product: ProductAttachmentViewModel) { }
+
     override fun onItemClicked(t: Visitable<*>?) {}
 }
