@@ -15,6 +15,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.play.ERR_STATE_GLOBAL
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
@@ -151,7 +152,7 @@ class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
                     }
                 }
             }
-            PlayAnalytics.errorState(channelId, globalError.errorDescription.text.toString(), playViewModel.channelType)
+            PlayAnalytics.errorState(channelId, "$ERR_STATE_GLOBAL: ${globalError.errorDescription.text}", playViewModel.channelType)
             container.visible()
         }
     }

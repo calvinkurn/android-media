@@ -9,6 +9,7 @@ import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.product.Video
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.description.DescriptionData
 import com.tokopedia.product.detail.data.model.spesification.Specification
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -105,4 +106,9 @@ interface DynamicProductDetailListener {
      * ImpressionComponent
      */
     fun onImpressComponent(componentTrackDataModel: ComponentTrackDataModel)
+
+    /**
+     * ProductNotifyMeViewHolder
+     */
+    fun onNotifyMeClicked(data: ProductNotifyMeDataModel, componentTrackDataModel: ComponentTrackDataModel)
 }

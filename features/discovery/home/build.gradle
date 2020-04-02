@@ -70,6 +70,7 @@ dependencies {
     implementation project(rootProject.ext.features.stickyLogin)
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.tkpdsession)
+    implementation project(rootProject.ext.features.phoneVerification)
     implementation project(rootProject.ext.features.tokopointsNotification)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.productCard)
@@ -79,6 +80,7 @@ dependencies {
     implementation project(rootProject.ext.features.searchbar)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.wishlistCommon)
+    implementation project(rootProject.ext.features.kolCommon)
 
     // Library
     implementation project(rootProject.ext.libraries.analytics)
@@ -101,6 +103,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.traceroute)
     implementation project(rootProject.ext.libraries.deviceInfo)
+    implementation project(rootProject.ext.libraries.remoteResourceRequest)
 
     // Room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
@@ -124,6 +127,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.cameraView
     implementation (rootProject.ext.miscDependencies.ucrop){
         exclude group: 'com.android.support'
     }
@@ -186,7 +190,7 @@ dependencies {
 project.ext {
     artifactId = 'home'
     groupId = 'com.tokopedia.discovery'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName ="home-release"
 }
 

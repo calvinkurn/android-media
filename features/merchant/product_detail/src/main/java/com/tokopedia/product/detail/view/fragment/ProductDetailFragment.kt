@@ -1377,7 +1377,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         p2Login.pdpAffiliate?.let { renderAffiliate(it) }
         isWishlisted = p2Login.isWishlisted
 
-        actionButtonView.renderData(productInfo?.basic?.isActive() == false, p2Login.isExpressCheckoutType, hasTopAds())
+        actionButtonView.renderData(productInfo?.basic?.isActive() == false, p2Login.isExpressCheckoutType,hasTopAds())
     }
 
     private fun renderProductInfo3(productInfoP3: ProductInfoP3) {

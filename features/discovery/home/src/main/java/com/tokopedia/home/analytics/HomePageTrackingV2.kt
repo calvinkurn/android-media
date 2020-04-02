@@ -183,7 +183,7 @@ object HomePageTrackingV2 : BaseTracking() {
                     )
                 },
                 list = String.format(
-                        Value.LIST_HEADER_NAME, "1", LIST_MIX_LEFT, channel.header.name
+                        Value.LIST_WITH_HEADER, "1", LIST_MIX_LEFT, channel.header.name
                 ),
                 channelId = channel.id
         )
@@ -198,7 +198,9 @@ object HomePageTrackingV2 : BaseTracking() {
                         Product(
                                 name = grid.name,
                                 id = grid.id,
-                                productPrice = grid.price,
+                                productPrice = convertRupiahToInt(
+                                        grid.price
+                                ).toString(),
                                 brand = Value.NONE_OTHER,
                                 category = Value.NONE_OTHER,
                                 variant = Value.NONE_OTHER,
@@ -211,7 +213,7 @@ object HomePageTrackingV2 : BaseTracking() {
                         )
                 ),
                 list = String.format(
-                        Value.LIST_HEADER_NAME, "1", LIST_MIX_LEFT, channel.header.name
+                        Value.LIST_WITH_HEADER, "1", LIST_MIX_LEFT, channel.header.name
                 )
         )
 

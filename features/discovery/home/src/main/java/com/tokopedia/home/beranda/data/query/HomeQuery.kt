@@ -83,6 +83,7 @@ object HomeQuery{
                 expiredTime
                 backColor
                 backImage
+                textColor
               }
               hero {
                 id
