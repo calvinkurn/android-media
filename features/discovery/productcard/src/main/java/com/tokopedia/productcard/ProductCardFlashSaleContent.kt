@@ -78,6 +78,8 @@ private fun ProductCardFlashSaleView.renderStockLabel(productCardModel: ProductC
 private fun ProductCardFlashSaleView.renderOutOfStockView(productCardModel: ProductCardFlashSaleModel) {
     if (productCardModel.isOutOfStock) {
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
+        tvLabel.visibility = View.GONE
+        progressBar.visibility = View.GONE
         oosOverlay.visibility = View.VISIBLE
     } else {
         oosOverlay.visibility = View.GONE
