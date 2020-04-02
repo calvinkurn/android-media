@@ -831,6 +831,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         productManageListAdapter.updateFeaturedProduct(productId, isFeaturedProduct)
         if(viewModel.selectedFilterAndSort.value?.filterOptions == listOf(FilterByCondition.FeaturedOnly)) {
             filterProductListByFeatured(true)
+            renderMultiSelectProduct()
         }
         hideLoadingProgress()
         showMessageToastWithoutAction(successMessage)
@@ -1362,7 +1363,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun observeMultiSelect() {
         observe(viewModel.toggleMultiSelect) { multiSelectEnabled ->
-            val productList = adapter.data.map {
+            val productList = adapter.data.filterIsInstance<ProductViewModel>().map {
                 it.copy(multiSelectActive = multiSelectEnabled, isChecked = false)
             }
 
