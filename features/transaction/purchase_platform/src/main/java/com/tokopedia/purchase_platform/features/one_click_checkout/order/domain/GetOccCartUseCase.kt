@@ -243,6 +243,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
             freeOngkirImg = product.freeShipping.badgeUrl
             productResponse = product
             wholesalePrice = product.wholesalePrice
+            notes = if (product.productNotes.length > 144) product.productNotes.substring(0, 144) else product.productNotes
         }
 //        mapVariant(orderProduct, product)
         mapQuantity(orderProduct, product)

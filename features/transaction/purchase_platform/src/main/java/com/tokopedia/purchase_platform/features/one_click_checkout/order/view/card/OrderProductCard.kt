@@ -21,6 +21,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
 
     private val etQty: EditText
     private var quantityTextWatcher: QuantityTextWatcher? = null
+    private var noteTextWatcher: TextWatcher? = null
 
     init {
         etQty = view.et_qty
@@ -41,10 +42,16 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                     orderSummaryAnalytics.eventClickSellerNotes(product.productId.toString(), shop.shopId.toString())
                 }
             }
-            view.et_note.addTextChangedListener(object : TextWatcher {
+            if (noteTextWatcher != null) {
+                view.et_note.removeTextChangedListener(noteTextWatcher)
+            }
+            view.et_note.setText(product.notes)
+            view.tv_note_char_counter.text = view.context.getString(R.string.note_counter_format, product.notes.length, 144)
+            noteTextWatcher = object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     product.notes = s?.toString() ?: ""
                     listener.onProductChange(product, false)
+                    view.tv_note_char_counter.text = view.context.getString(R.string.note_counter_format, product.notes.length, 144)
                 }
 
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -54,7 +61,8 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
                 }
-            })
+            }
+            view.et_note.addTextChangedListener(noteTextWatcher)
             if (quantityTextWatcher != null) {
                 etQty.removeTextChangedListener(quantityTextWatcher)
             }

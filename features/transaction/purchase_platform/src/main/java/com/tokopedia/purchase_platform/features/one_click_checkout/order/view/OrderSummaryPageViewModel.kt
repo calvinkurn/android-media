@@ -1077,6 +1077,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                         .subscribe(object : Observer<ClearPromoUiModel?> {
                             override fun onError(e: Throwable?) {
                                 e?.printStackTrace()
+                                globalEvent.value = OccGlobalEvent.Error(e)
                             }
 
                             override fun onNext(t: ClearPromoUiModel?) {
