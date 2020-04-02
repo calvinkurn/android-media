@@ -26,7 +26,7 @@ class ReleaseBookingUseCase @Inject constructor(private val gql: GraphqlUseCase)
                 .map {
                     val response: ReleaseBookingResponse? = it.getData<ReleaseBookingResponse>(ReleaseBookingResponse::class.java)
                     response
-                            ?: throw MessageErrorException(it.getError(RatesGqlResponse::class.java)[0].message)
+                            ?: throw MessageErrorException(it.getError(ReleaseBookingResponse::class.java)[0].message)
                 }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

@@ -1,18 +1,19 @@
 package com.tokopedia.purchase_platform.features.checkout.data.model.response
+
 import com.google.gson.annotations.SerializedName
 
 data class ReleaseBookingResponse(
-    @SerializedName("data")
-    var `data`: Data = Data(),
-    @SerializedName("error_messages")
-    var errorMessages: List<String> = listOf(),
-    @SerializedName("status")
-    var status: String = ""
+        @SerializedName("data")
+        var `data`: Data = Data(),
+        @SerializedName("error_message")
+        var errorMessage: List<String> = listOf(),
+        @SerializedName("status")
+        var status: String = ""
 )
 
 data class Data(
-    @SerializedName("messages")
-    var messages: List<String> = listOf(),
-    @SerializedName("success")
-    var success: Int = 0
+        @SerializedName("message")
+        var message: List<String> = listOf(),
+        @SerializedName("success")
+        var success: Int = 0
 )
