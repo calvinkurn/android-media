@@ -7,7 +7,6 @@ import com.tokopedia.common.travel.R
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.design.component.ticker.TickerView
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import java.util.*
 
 /**
@@ -38,7 +37,7 @@ object TravelTickerUtils {
         tickerView.visibility = View.VISIBLE
     }
 
-    fun buildUnifyTravelTicker(travelTickerModel: TravelTickerModel, tickerView: Ticker, tickerCallback: TickerCallback) {
+    fun buildUnifyTravelTicker(travelTickerModel: TravelTickerModel, tickerView: Ticker) {
         tickerView.setHtmlDescription(travelTickerModel.message)
         when(travelTickerModel.type) {
             ANNOUNCEMENT_TYPE -> {
@@ -47,9 +46,6 @@ object TravelTickerUtils {
             DANGER_TYPE -> {
                 tickerView.tickerType = Ticker.TYPE_ERROR
             }
-        }
-        if (travelTickerModel.url.isNotEmpty()) {
-            tickerView.setDescriptionClickEvent(tickerCallback)
         }
     }
 }
