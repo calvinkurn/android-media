@@ -16,7 +16,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.design.component.ToasterError;
-import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.di.component.DaggerSellerAccountComponent;
@@ -182,9 +181,10 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     }
 
     @Override
-    public void showError(Throwable e) {
+    public void showError(Throwable e, String errorCode) {
         if (getView() != null && getContext() != null && getUserVisibleHint()) {
-            ToasterError.make(getView(), ErrorHandler.getErrorMessage(getContext(), e))
+            String message = String.format("%s (%s)", ErrorHandler.getErrorMessage(getActivity(), e), errorCode);
+            ToasterError.make(getView(), message)
                     .setAction(getString(R.string.title_try_again), view -> getData())
                     .show();
         }
