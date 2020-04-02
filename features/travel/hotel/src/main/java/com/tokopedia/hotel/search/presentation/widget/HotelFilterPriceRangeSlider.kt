@@ -65,41 +65,39 @@ class HotelFilterPriceRangeSlider @JvmOverloads constructor(context: Context, at
                 var endValue = 0
                 var startValue = 0
 
-                if (start >= 0) {
-                    if (start < 100) {
-                        startValue = (start * 1000)
-                    }
-                    if (start in 100..191) {
-                        startValue = ((start - 100) * 10000) + 100000
-                    }
-                    if (start in 190..281) {
-                        startValue = ((start - 190) * 100000) + 1000000
-                    }
-                    if (start > 280) {
-                        startValue = ((start - 280) * 1000000) + 10000000
-                    }
-                    onValueChangedListener?.onValueChanged(startValue, -1)
-                    min_value.setText(startValue.toString())
+                if (start < 100) {
+                    startValue = (start * 1000)
+                }
+                if (start in 100..191) {
+                    startValue = ((start - 100) * 10000) + 100000
+                }
+                if (start in 190..281) {
+                    startValue = ((start - 190) * 100000) + 1000000
+                }
+                if (start > 280) {
+                    startValue = ((start - 280) * 1000000) + 10000000
                 }
 
-                if (end >= 0) {
-                    if (end < 99) {
-                        endValue = (ceil(end * (1 - (MIN_BOUND/100000.0))).toInt() * 1000) + 20000
-                    }
-                    if (end in 99..190) {
-                        endValue = ((end - 99) * 10000) + 100000
-                    }
-                    if (end in 189..280) {
-                        endValue = ((end - 189) * 100000) + 1000000
-                    }
-                    if (end >= 280) {
-                        endValue = ((end - 279) * 1000000) + 10000000
-                    }
-                    onValueChangedListener?.onValueChanged(-1, endValue)
-                    if (endValue >= maxBound) maxCurrencyTextWatcher.format = resources.getString(R.string.hotel_search_filter_max_string_format_with_plus)
-                    else maxCurrencyTextWatcher.format = resources.getString(R.string.hotel_search_filter_max_string_format)
-                    max_value.setText(endValue.toString())
+                if (end < 99) {
+                    endValue = (ceil(end * (1 - (MIN_BOUND / 100000.0))).toInt() * 1000) + 20000
                 }
+                if (end in 99..190) {
+                    endValue = ((end - 99) * 10000) + 100000
+                }
+                if (end in 189..280) {
+                    endValue = ((end - 189) * 100000) + 1000000
+                }
+                if (end >= 280) {
+                    endValue = ((end - 279) * 1000000) + 10000000
+                }
+
+                onValueChangedListener?.onValueChanged(startValue, endValue)
+
+                min_value.setText(startValue.toString())
+                if (endValue >= maxBound) maxCurrencyTextWatcher.format = resources.getString(R.string.hotel_search_filter_max_string_format_with_plus)
+                else maxCurrencyTextWatcher.format = resources.getString(R.string.hotel_search_filter_max_string_format)
+                max_value.setText(endValue.toString())
+
             }
         }
     }
@@ -107,10 +105,10 @@ class HotelFilterPriceRangeSlider @JvmOverloads constructor(context: Context, at
     private fun getPositionFromMinValue(value: Int): Int {
         if (value >= 0) {
             when {
-                value < 100000 -> return value/1000
-                value in 100000..999999 -> return ((value - 100000)/10000) + 100
-                value in 1000000..9999999 -> return ((value - 1000000)/100000) + 190
-                value >= 10000000 -> return ((value - 10000000)/1000000) + 280
+                value < 100000 -> return value / 1000
+                value in 100000..999999 -> return ((value - 100000) / 10000) + 100
+                value in 1000000..9999999 -> return ((value - 1000000) / 100000) + 190
+                value >= 10000000 -> return ((value - 10000000) / 1000000) + 280
             }
         }
         return 0
@@ -119,7 +117,7 @@ class HotelFilterPriceRangeSlider @JvmOverloads constructor(context: Context, at
     private fun getPositionFromMaxValue(value: Int): Int {
         if (value > 0) {
             when {
-                value < 100000 -> return (value - 20000) / 1000 / ceil(1 - (MIN_BOUND/100000.0)).toInt()
+                value < 100000 -> return ceil((value - 20000) / 1000 / (1 - (MIN_BOUND / 100000.0))).toInt()
                 value in 100000..999999 -> return ((value - 100000) / 10000) + 99
                 value in 1000000..9999999 -> return ((value - 1000000) / 100000) + 189
                 value >= 10000000 -> return ((value - 10000000) / 1000000) + 279
