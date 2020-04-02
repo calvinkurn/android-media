@@ -238,12 +238,22 @@ class ProductManageFilterExpandChecklistFragment :
 
     private fun search(searchQuery: String): List<ChecklistUiModel> {
         val result = productManageFilterExpandChecklistViewModel.checklistData.value?.filter { data ->
-            data.name.startsWith(searchQuery, true)
+            val words = data.name.split(" ")
+            checkWords(words, searchQuery)
         }
         if(result.isNullOrEmpty()) {
             return emptyList()
         }
         return result
+    }
+
+    private fun checkWords(words: List<String>, query: String): Boolean {
+        words.forEach {
+            if(it.startsWith(query, true)) {
+                return true
+            }
+        }
+        return false
     }
 
     private fun showError() {
