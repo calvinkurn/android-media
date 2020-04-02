@@ -175,7 +175,6 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
                 it.show()
             }
         }
-        AccountHomeErrorHandler.logExceptionToCrashlytics(e, userSession.userId, userSession.email, errorCode)
         fpmBuyer?.run { stopTrace() }
     }
 
@@ -188,7 +187,7 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
                 it.show()
             }
         }
-
+        AccountHomeErrorHandler.logExceptionToCrashlytics(e, userSession.userId, userSession.email, errorCode)
         fpmBuyer?.run { stopTrace() }
     }
 
