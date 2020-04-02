@@ -319,6 +319,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         super.onStop()
     }
 
+    override fun onStart() {
+        super.onStart()
+        if (refreshHandler?.isRefreshing == false) {
+            if (!::cartAdapter.isInitialized || (::cartAdapter.isInitialized && cartAdapter.itemCount == 0)) {
+                dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
+            }
+        }
+    }
+
     private fun updateCartAfterDetached() {
         val hasChanges = dPresenter.dataHasChanged()
         try {
@@ -1503,8 +1512,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun clearRecyclerView() {
         cartAdapter.unsubscribeSubscription()
-        cartRecyclerView.adapter = null
-        cartAdapter = CartAdapter(null, null, null, null, null)
         cartRecyclerView.removeAllViews()
         cartRecyclerView.recycledViewPool.clear()
     }
@@ -1717,10 +1724,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun onResultFromRequestCodeCartShipment(resultCode: Int, data: Intent?) {
-        if (cartRecyclerView.adapter == null) {
-            cartAdapter = CartAdapter(this, this, this, this, this)
-            cartRecyclerView.adapter = cartAdapter
-        }
         FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
 
         if (resultCode == PaymentConstant.PAYMENT_CANCELLED) {
