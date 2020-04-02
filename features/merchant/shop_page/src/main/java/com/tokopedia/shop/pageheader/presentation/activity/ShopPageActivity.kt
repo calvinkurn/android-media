@@ -4,12 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.common.config.ShopPageConfig
@@ -164,7 +164,11 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
 
     override fun getNewFragment(): Fragment? {
         return if (isNewShopPageEnabled(this)) {
-            ShopPageFragment.createInstance()
+            ShopPageFragment.createInstance().apply {
+                arguments = Bundle().also {
+                    it.putBoolean(ApplinkConstInternalMarketplace.PARAM_FIRST_CREATE_SHOP, getIsFirstCreateShop())
+                }
+            }
         } else {
             null
         }
@@ -181,6 +185,13 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
         val oldShopPageIntent = Intent(intent)
         oldShopPageIntent.setClass(this, com.tokopedia.shop.oldpage.view.activity.ShopPageActivity::class.java)
         startActivity(oldShopPageIntent)
+    }
+
+    private fun getIsFirstCreateShop(): Boolean {
+        if(intent.hasExtra(ApplinkConstInternalMarketplace.PARAM_FIRST_CREATE_SHOP)) {
+            return intent.getBooleanExtra(ApplinkConstInternalMarketplace.PARAM_FIRST_CREATE_SHOP, false)
+        }
+        return false
     }
 
 }
