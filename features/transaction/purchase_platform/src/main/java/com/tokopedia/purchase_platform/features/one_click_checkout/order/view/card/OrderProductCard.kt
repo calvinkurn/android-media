@@ -157,9 +157,11 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 if (error.isEmpty()) {
                     error = String.format(view.context.getString(R.string.max_order_x), element.maxOrderQuantity)
                 }
-            } else if (element.orderQuantity == element.minOrderQuantity) {
+            }
+            if (element.orderQuantity <= element.minOrderQuantity) {
                 view.btn_qty_min.setImageResource(R.drawable.bg_button_counter_minus_checkout_disabled)
-            } else if (element.orderQuantity == element.maxOrderQuantity) {
+            }
+            if (element.orderQuantity >= element.maxOrderQuantity) {
                 view.btn_qty_plus.setImageResource(R.drawable.bg_button_counter_plus_checkout_disabled)
             }
 
