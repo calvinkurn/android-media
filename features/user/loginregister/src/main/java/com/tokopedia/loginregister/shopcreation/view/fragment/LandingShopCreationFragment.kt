@@ -298,7 +298,6 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         activity?.let {
             val intent = RouteManager.getIntent(activity,
                     ApplinkConst.SHOP.replace("{shop_id}", shopId))
-            intent.putExtra(ApplinkConstInternalMarketplace.PARAM_FIRST_CREATE_SHOP, true)
             it.startActivity(intent)
             it.finish()
         }
