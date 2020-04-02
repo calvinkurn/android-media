@@ -83,7 +83,7 @@ object ViewUtils {
 }
 
 fun View.setGradientBackground(colorArray: ArrayList<String>) {
-    var colors = intArrayOf()
+    val colors = IntArray(colorArray.size)
     for (i in 0..colorArray.size) {
         colors[i] = Color.parseColor(colorArray[i])
     }
