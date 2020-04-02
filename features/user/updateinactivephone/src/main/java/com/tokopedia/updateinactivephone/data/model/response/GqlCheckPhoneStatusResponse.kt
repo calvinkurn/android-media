@@ -16,7 +16,7 @@ data class ValidateInactivePhone (
 
     @SerializedName("__typename")
     @Expose
-    var __typename: String = "",
+    var typeName: String = "",
 
     @SerializedName("is_success")
     @Expose

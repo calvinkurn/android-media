@@ -32,10 +32,9 @@ class ChangeInactivePhoneViewModel @Inject constructor(
     fun isValidPhoneNumber(phoneNumber: String): Int {
         var isValid = 0
         val check: Boolean
-        val p: Pattern = Pattern.compile(PHONE_MATCHER)
-        val m: Matcher
-        m = p.matcher(phoneNumber)
-        check = m.matches()
+        val pattern: Pattern = Pattern.compile(PHONE_MATCHER)
+        val matcher: Matcher = pattern.matcher(phoneNumber)
+        check = matcher.matches()
 
         if (TextUtils.isEmpty(phoneNumber)) {
             isValid = R.string.phone_field_empty

@@ -43,7 +43,7 @@ class UpdateNewPhoneEmailFragment : BaseDaggerFragment() {
     lateinit var analytics: UpdateInactivePhoneAnalytics
 
     override fun getScreenName(): String {
-        return UpdateInactivePhoneEventConstants.Screen.INPUT_NEW_PHONE_SCREEN
+        return UpdateInactivePhoneEventConstants.INPUT_NEW_PHONE_SCREEN
     }
 
     override fun initInjector() {

@@ -11,7 +11,6 @@ import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 
-@UpdateInactivePhoneScope
 @Module
 class UpdateInactivePhoneQueryModule {
     @UpdateInactivePhoneScope

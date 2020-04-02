@@ -10,9 +10,9 @@ class UpdateInactivePhoneAnalytics @Inject constructor(private val userSessionIn
 
     fun eventInactivePhoneClick() {
         val gtmData = TrackAppUtils.gtmData(
-                UpdateInactivePhoneEventConstants.Event.INACTIVE_PHONE_CLICK,
-                UpdateInactivePhoneEventConstants.Category.INACTIVE_PHONE_PAGE,
-                UpdateInactivePhoneEventConstants.Action.CLICK_SELUNJANTYA,
+                UpdateInactivePhoneEventConstants.INACTIVE_PHONE_CLICK,
+                UpdateInactivePhoneEventConstants.INACTIVE_PHONE_PAGE,
+                UpdateInactivePhoneEventConstants.CLICK_SELUNJANTYA,
                 ""
         )
 
@@ -27,9 +27,9 @@ class UpdateInactivePhoneAnalytics @Inject constructor(private val userSessionIn
 
     fun eventLoginDialogClick() {
         val gtmData = TrackAppUtils.gtmData(
-                UpdateInactivePhoneEventConstants.Event.INACTIVE_PHONE_CLICK,
-                UpdateInactivePhoneEventConstants.Category.CHANGE_NOT_ACTIVE_PHONE,
-                UpdateInactivePhoneEventConstants.Action.CLICK_MASUK,
+                UpdateInactivePhoneEventConstants.INACTIVE_PHONE_CLICK,
+                UpdateInactivePhoneEventConstants.CHANGE_NOT_ACTIVE_PHONE,
+                UpdateInactivePhoneEventConstants.CLICK_MASUK,
                 ""
         )
 
@@ -44,9 +44,9 @@ class UpdateInactivePhoneAnalytics @Inject constructor(private val userSessionIn
 
     fun eventCancelDialogClick() {
         val gtmData = TrackAppUtils.gtmData(
-                UpdateInactivePhoneEventConstants.Event.INACTIVE_PHONE_CLICK,
-                UpdateInactivePhoneEventConstants.Category.INACTIVE_PHONE_PAGE,
-                UpdateInactivePhoneEventConstants.Action.CLICK_BATAL,
+                UpdateInactivePhoneEventConstants.INACTIVE_PHONE_CLICK,
+                UpdateInactivePhoneEventConstants.INACTIVE_PHONE_PAGE,
+                UpdateInactivePhoneEventConstants.CLICK_BATAL,
                 ""
         )
 
@@ -61,10 +61,10 @@ class UpdateInactivePhoneAnalytics @Inject constructor(private val userSessionIn
 
     fun eventViewWaitingForConfirmationPage() {
         val gtmData = TrackAppUtils.gtmData(
-                UpdateInactivePhoneEventConstants.Event.INACTIVE_PHONE_VIEW,
-                UpdateInactivePhoneEventConstants.Category.WAITING_CONFIRMATION_PAGE,
-                UpdateInactivePhoneEventConstants.Action.VIEW_ON_WAITING_CONFIRMATION_APGE,
-                UpdateInactivePhoneEventConstants.EventLabel.CHANGE_NOT_ACTIVE_PHONE
+                UpdateInactivePhoneEventConstants.INACTIVE_PHONE_VIEW,
+                UpdateInactivePhoneEventConstants.WAITING_CONFIRMATION_PAGE,
+                UpdateInactivePhoneEventConstants.VIEW_ON_WAITING_CONFIRMATION_APGE,
+                UpdateInactivePhoneEventConstants.CHANGE_NOT_ACTIVE_PHONE
         )
 
         if(TextUtils.isEmpty(userSessionInterface.userId)) {
@@ -78,10 +78,10 @@ class UpdateInactivePhoneAnalytics @Inject constructor(private val userSessionIn
 
     fun eventViewSubmitSuccessPage() {
         val gtmData = TrackAppUtils.gtmData(
-                UpdateInactivePhoneEventConstants.Event.INACTIVE_PHONE_VIEW,
-                UpdateInactivePhoneEventConstants.Category.SUBMIT_SUCCESS_PAGE,
-                UpdateInactivePhoneEventConstants.Action.VIEW_ON_SUBMIT_SUCCESS_PAGE,
-                UpdateInactivePhoneEventConstants.EventLabel.CHANGE_NOT_ACTIVE_PHONE
+                UpdateInactivePhoneEventConstants.INACTIVE_PHONE_VIEW,
+                UpdateInactivePhoneEventConstants.SUBMIT_SUCCESS_PAGE,
+                UpdateInactivePhoneEventConstants.VIEW_ON_SUBMIT_SUCCESS_PAGE,
+                UpdateInactivePhoneEventConstants.CHANGE_NOT_ACTIVE_PHONE
         )
 
         if(TextUtils.isEmpty(userSessionInterface.userId)) {
@@ -95,9 +95,9 @@ class UpdateInactivePhoneAnalytics @Inject constructor(private val userSessionIn
 
     fun eventClickKirimPengajuan() {
         val gtmData = TrackAppUtils.gtmData(
-                UpdateInactivePhoneEventConstants.Event.INACTIVE_PHONE_CLICK,
-                UpdateInactivePhoneEventConstants.Category.CHANGE_NOT_ACTIVE_PHONE,
-                UpdateInactivePhoneEventConstants.Action.CLICK_KIRIM_PENGAJUAN,
+                UpdateInactivePhoneEventConstants.INACTIVE_PHONE_CLICK,
+                UpdateInactivePhoneEventConstants.CHANGE_NOT_ACTIVE_PHONE,
+                UpdateInactivePhoneEventConstants.CLICK_KIRIM_PENGAJUAN,
                 ""
         )
 
@@ -112,9 +112,9 @@ class UpdateInactivePhoneAnalytics @Inject constructor(private val userSessionIn
 
     fun eventViewKirimPengajuan() {
         val gtmData = TrackAppUtils.gtmData(
-                UpdateInactivePhoneEventConstants.Event.INACTIVE_PHONE_VIEW,
-                UpdateInactivePhoneEventConstants.Category.INPUT_ID_AND_BANK_ACCOUNT,
-                UpdateInactivePhoneEventConstants.Action.VIEW_KIRIM_PENGAJUAN,
+                UpdateInactivePhoneEventConstants.INACTIVE_PHONE_VIEW,
+                UpdateInactivePhoneEventConstants.INPUT_ID_AND_BANK_ACCOUNT,
+                UpdateInactivePhoneEventConstants.VIEW_KIRIM_PENGAJUAN,
                 ""
         )
 
@@ -129,9 +129,9 @@ class UpdateInactivePhoneAnalytics @Inject constructor(private val userSessionIn
 
     fun eventViewPhotoUploadScreen() {
         val gtmData = TrackAppUtils.gtmData(
-                UpdateInactivePhoneEventConstants.Event.INACTIVE_PHONE_VIEW,
-                UpdateInactivePhoneEventConstants.Category.INPUT_ID_AND_BANK_ACCOUNT,
-                UpdateInactivePhoneEventConstants.Action.VIEW_ON_LANJUTKAN,
+                UpdateInactivePhoneEventConstants.INACTIVE_PHONE_VIEW,
+                UpdateInactivePhoneEventConstants.INPUT_ID_AND_BANK_ACCOUNT,
+                UpdateInactivePhoneEventConstants.VIEW_ON_LANJUTKAN,
                 ""
         )
 
@@ -146,9 +146,9 @@ class UpdateInactivePhoneAnalytics @Inject constructor(private val userSessionIn
 
     fun eventClickPhotoProceed() {
         val gtmData = TrackAppUtils.gtmData(
-                UpdateInactivePhoneEventConstants.Event.INACTIVE_PHONE_CLICK,
-                UpdateInactivePhoneEventConstants.Category.INPUT_ID_AND_BANK_ACCOUNT,
-                UpdateInactivePhoneEventConstants.Action.CLICK_ON_LANJUTKAN,
+                UpdateInactivePhoneEventConstants.INACTIVE_PHONE_CLICK,
+                UpdateInactivePhoneEventConstants.INPUT_ID_AND_BANK_ACCOUNT,
+                UpdateInactivePhoneEventConstants.CLICK_ON_LANJUTKAN,
                 ""
         )
 

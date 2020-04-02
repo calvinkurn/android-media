@@ -69,7 +69,7 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
     }
 
     override fun getScreenName(): String {
-        return UpdateInactivePhoneEventConstants.Screen.INPUT_OLD_PHONE_SCREEN
+        return UpdateInactivePhoneEventConstants.INPUT_OLD_PHONE_SCREEN
     }
 
     override fun onStart() {
@@ -90,7 +90,7 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.changeInactiveFormRequestResponse.observe(this, Observer {
+        viewModel.changeInactiveFormRequestResponse.observe(viewLifecycleOwner, Observer {
             when(it){
                 is Success -> {
                     when(it.data.isSuccess) {

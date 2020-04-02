@@ -38,10 +38,10 @@ class ChangeInactivePhoneRequestSubmittedActivity : BaseSimpleActivity(), HasCom
     lateinit var analytics: UpdateInactivePhoneAnalytics
 
     private val successConfirmationScreenName: String
-        get() = UpdateInactivePhoneEventConstants.Screen.SUBMIT_SUCCESS_REQUEST_PAGE
+        get() = UpdateInactivePhoneEventConstants.SUBMIT_SUCCESS_REQUEST_PAGE
 
     private val waitingConfirmationScreenName: String
-        get() = UpdateInactivePhoneEventConstants.Screen.WAITING_CONFIRMATION_PAGE
+        get() = UpdateInactivePhoneEventConstants.WAITING_CONFIRMATION_PAGE
 
     override fun getNewFragment(): Fragment? {
         return null

@@ -209,7 +209,7 @@ class SelectImageNewPhoneFragment : BaseDaggerFragment() {
     }
 
     override fun getScreenName(): String {
-        return UpdateInactivePhoneEventConstants.Screen.SELECT_IMAGE_TO_UPLOAD
+        return UpdateInactivePhoneEventConstants.SELECT_IMAGE_TO_UPLOAD
     }
 
     override fun initInjector() {
