@@ -102,7 +102,6 @@ open class TopchatProductAttachmentViewHolder(
 
     private fun bindName(product: ProductAttachmentViewModel) {
         itemView.tv_product_name?.let {
-            it.maxLines = if (product.hasVariant()) 2 else 1
             it.text = product.productName
         }
     }
