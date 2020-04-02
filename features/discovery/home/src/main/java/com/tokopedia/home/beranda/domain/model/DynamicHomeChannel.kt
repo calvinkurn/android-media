@@ -697,7 +697,7 @@ data class DynamicHomeChannel(
             @SerializedName("attribution")
             val attribution: String = "",
             @SerializedName("gradient_color")
-            val gradientColor: ArrayList<String> = arrayListOf()
+            val gradientColor: ArrayList<String> = arrayListOf("#ffffff")
     ) : ImpressHolder()
 
     data class CtaData(
