@@ -114,16 +114,9 @@ class MixTopBannerViewHolder(
         val bannerItem = channel.banner
         val ctaData = channel.banner.cta
         var textColor = ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50)
-        var backColor: Int = ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50)
         if(bannerItem.textColor.isNotEmpty()){
             try {
                 textColor = Color.parseColor(bannerItem.textColor)
-            } catch (e: IllegalArgumentException) { }
-        }
-
-        if(bannerItem.backColor.isNotEmpty()) {
-            try {
-                backColor = Color.parseColor(bannerItem.backColor)
             } catch (e: IllegalArgumentException) { }
         }
 
@@ -131,8 +124,9 @@ class MixTopBannerViewHolder(
         bannerTitle.visibility = if(bannerItem.title.isEmpty()) View.GONE else View.VISIBLE
         bannerDescription.text = bannerItem.description
         bannerDescription.visibility = if(bannerItem.description.isEmpty()) View.GONE else View.VISIBLE
-        if (bannerItem.gradientColor.size ==2) {
-            background.setGradientBackground(bannerItem.gradientColor[0], bannerItem.gradientColor[1])
+        when (bannerItem.gradientColor.size) {
+            1 -> background.setGradientBackground(bannerItem.gradientColor[0], bannerItem.gradientColor[0])
+            2 -> background.setGradientBackground(bannerItem.gradientColor[0], bannerItem.gradientColor[1])
         }
         bannerTitle.setTextColor(textColor)
         bannerDescription.setTextColor(textColor)
