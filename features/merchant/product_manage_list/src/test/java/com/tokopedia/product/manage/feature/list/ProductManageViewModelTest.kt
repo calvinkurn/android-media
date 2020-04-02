@@ -62,7 +62,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
             val expectedEditPriceResult = Success(EditPriceResult(productName, productId, price))
 
             verifyEditPriceUseCaseCalled()
-            verifyEditPriceResponseSuccess(expectedEditPriceResult)
+            viewModel.editPriceResult.verifySuccessEquals(expectedEditPriceResult)
         }
     }
 
@@ -84,7 +84,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
             val expectedEditStockResult = Success(EditStockResult(productName, productId, stock, status))
 
             verifyEditStockUseCaseCalled()
-            verifyEditStockResponseSuccess(expectedEditStockResult)
+            viewModel.editStockResult.verifySuccessEquals(expectedEditStockResult)
         }
     }
 
@@ -104,7 +104,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
             val expectedDeleteProductResult = Success(DeleteProductResult(productName, productId))
 
             verifyDeleteProductUseCaseCalled()
-            verifyDeleteProductResponseSuccess(expectedDeleteProductResult)
+            viewModel.deleteProductResult.verifySuccessEquals(expectedDeleteProductResult)
         }
     }
 
@@ -126,7 +126,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
             val expectedEditPriceResult = Fail(EditPriceResult(productName, productId, price, error))
 
             verifyEditPriceUseCaseCalled()
-            verifyEditPriceResponseFail(expectedEditPriceResult, error)
+            viewModel.editPriceResult.verifyErrorEquals(expectedEditPriceResult)
         }
     }
 
@@ -149,7 +149,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
             val expectedEditStockResult = Fail(EditStockResult(productName, productId, stock, status, error))
 
             verifyEditStockUseCaseCalled()
-            verifyEditStockResponseFail(expectedEditStockResult, error)
+            viewModel.editStockResult.verifyErrorEquals(expectedEditStockResult)
         }
     }
 
@@ -170,14 +170,28 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
             val expectedDeleteProductResult = Fail(DeleteProductResult(productName, productId, error))
 
             verifyDeleteProductUseCaseCalled()
-            verifyDeleteProductResponseFail(expectedDeleteProductResult, error)
+            viewModel.deleteProductResult.verifyErrorEquals(expectedDeleteProductResult)
         }
     }
 
     @Test
-    fun `when setFilter should update filter accordingly`() {
+    fun `when setFilter with no filter option wrapper should update filter accordingly`() {
         val selectedFilter = listOf(CashBackOnly, NewOnly)
 
+        viewModel.setSelectedFilter(selectedFilter)
+
+        verifySelectedFiltersEquals(selectedFilter)
+    }
+
+    @Test
+    fun `when setFilter should update filter accordingly`() {
+        val filterOptionWrapper = FilterOptionWrapper(
+                SortByName(ASC),
+                listOf(CashBackOnly, NewOnly),
+                listOf(true, true, false, true))
+        val selectedFilter = listOf(CashBackOnly, NewOnly)
+
+        viewModel.setFilterOptionWrapper(filterOptionWrapper)
         viewModel.setSelectedFilter(selectedFilter)
 
         verifySelectedFiltersEquals(selectedFilter)
@@ -466,6 +480,13 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
         }
     }
 
+    @Test
+    fun `when isPowerMerchant should return power merchant status`() {
+        val actualIsPowerMerchant= viewModel.isPowerMerchant()
+        val expectedIsPowerMerchant = false
+        assertEquals(expectedIsPowerMerchant, actualIsPowerMerchant)
+    }
+
     private fun onMultiEditProducts_thenError(exception: NullPointerException) {
         coEvery { multiEditProductUseCase.execute(any()) } coAnswers { throw exception }
     }
@@ -534,42 +555,9 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
         coVerify { getProductListUseCase.execute(any())}
     }
 
-    private fun verifyEditPriceResponseSuccess(expectedResponse: Success<EditPriceResult>) {
-        val actualEditPriceResult = (viewModel.editPriceResult.value as Success<EditPriceResult>)
-        assertEquals(expectedResponse, actualEditPriceResult)
-    }
-
-    private fun verifyEditStockResponseSuccess(expectedResponse: Success<EditStockResult>) {
-        val actualEditStockResult = (viewModel.editStockResult.value as Success<EditStockResult>)
-        assertEquals(expectedResponse, actualEditStockResult)
-    }
-
-    private fun verifyDeleteProductResponseSuccess(expectedResponse: Success<DeleteProductResult>) {
-        val actualDeleteStockResult = (viewModel.deleteProductResult.value as Success<DeleteProductResult>)
-        assertEquals(expectedResponse, actualDeleteStockResult)
-    }
-
     private fun verifySetFeaturedProductResponseEquals(expectedResponse: Success<SetFeaturedProductResult>) {
         val actualSetFeaturedProductResult = viewModel.setFeaturedProductResult.value as Success<SetFeaturedProductResult>
         assertEquals(expectedResponse, actualSetFeaturedProductResult)
-    }
-
-    private fun verifyEditPriceResponseFail(expectedResponse: Fail, networkErrorException: NetworkErrorException) {
-        var actualEditPriceResult = (viewModel.editPriceResult.value as Fail).throwable
-        actualEditPriceResult = (actualEditPriceResult as EditPriceResult).copy(error = networkErrorException)
-        assertEquals(expectedResponse.throwable as EditPriceResult, actualEditPriceResult)
-    }
-
-    private fun verifyEditStockResponseFail(expectedResponse: Fail, networkErrorException: NetworkErrorException) {
-        var actualEditStockResult = (viewModel.editStockResult.value as Fail).throwable
-        actualEditStockResult = (actualEditStockResult as EditStockResult).copy(error = networkErrorException)
-        assertEquals(expectedResponse.throwable, actualEditStockResult)
-    }
-
-    private fun verifyDeleteProductResponseFail(expectedResponse: Fail, networkErrorException: NetworkErrorException) {
-        var actualDeleteStockResult = (viewModel.deleteProductResult.value as Fail).throwable
-        actualDeleteStockResult = (actualDeleteStockResult as DeleteProductResult).copy(error = networkErrorException)
-        assertEquals(expectedResponse.throwable, actualDeleteStockResult)
     }
 
     private fun verifySelectedFiltersEquals(expectedSelectedFilters: List<FilterOption>) {

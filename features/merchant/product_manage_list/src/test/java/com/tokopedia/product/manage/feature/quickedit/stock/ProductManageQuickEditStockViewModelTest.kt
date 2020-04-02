@@ -8,7 +8,7 @@ import org.junit.Test
 class ProductManageQuickEditStockViewModelTest: ProductManageQuickEditStockViewModelTestFixture() {
 
     @Test
-    fun `when_stock_too_low_should_set_status_to_inactive_and_set_stock_to_minimum_value`() {
+    fun `when stock too low should set status to inactive and set stock to minimum value`() {
         val veryLowStock = -1
 
         viewModel.updateStock(veryLowStock)
@@ -21,7 +21,7 @@ class ProductManageQuickEditStockViewModelTest: ProductManageQuickEditStockViewM
     }
 
     @Test
-    fun `when_stock_too_high_should_set_status_to_active_and_set_stock_to_maximum_value`() {
+    fun `when stock too high should set status to active and set stock to maximum value`() {
         val veryHighStock = 1000000
 
         viewModel.updateStock(veryHighStock)
@@ -34,7 +34,7 @@ class ProductManageQuickEditStockViewModelTest: ProductManageQuickEditStockViewM
     }
 
     @Test
-    fun `when_stock_is_valid_should_set_stock_to_desired_value`() {
+    fun `when stock is valid should set stock to desired value`() {
         val validStock = 10
         val expectedStatus = ProductStatus.ACTIVE
 
@@ -45,7 +45,7 @@ class ProductManageQuickEditStockViewModelTest: ProductManageQuickEditStockViewM
     }
 
     @Test
-    fun `when_status_is_valid_should_set_status_to_desired_value`() {
+    fun `when status is valid should set status to desired value`() {
         val validStatus = ProductStatus.ACTIVE
 
         viewModel.updateStatus(validStatus)
@@ -54,7 +54,7 @@ class ProductManageQuickEditStockViewModelTest: ProductManageQuickEditStockViewM
     }
 
     @Test
-    fun `when_update_sotck_is_submit_should_set_stock_to_desired_value_and_keep_status_the_same`() {
+    fun `when update sotck is submit should set stock to desired value and keep status the same`() {
         val validStatus = ProductStatus.INACTIVE
         val validStock = 10
 

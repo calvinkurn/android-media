@@ -14,7 +14,11 @@ fun getSortFilterViewModel(sortDataModel: FilterDataUiModel = getSortDataModel()
     return FilterUiModel(ProductManageFilterMapper.SORT_HEADER,
             mutableListOf(
                     sortDataModel,
-                    FilterDataUiModel("706", "Some Other Sort", "ASC", false)
+                    FilterDataUiModel("706", "Some Other Sort", "ASC", false),
+                    FilterDataUiModel("707", "Some Other Sort", "ASC", false),
+                    FilterDataUiModel("708", "Some Other Sort", "ASC", false),
+                    FilterDataUiModel("709", "Some Other Sort", "ASC", false),
+                    FilterDataUiModel("710", "Some Other Sort", "ASC", false)
             ), false)
 }
 
@@ -26,7 +30,11 @@ fun getEtalaseFilterViewModel(etalaseDataModel: FilterDataUiModel = getEtalaseDa
     return FilterUiModel(ProductManageFilterMapper.ETALASE_HEADER,
             mutableListOf(
                     etalaseDataModel,
-                    FilterDataUiModel("123", "Some Other Etalase", "", false)
+                    FilterDataUiModel("123", "Some Other Etalase", "", false),
+                    FilterDataUiModel("124", "Some Other Etalase", "", false),
+                    FilterDataUiModel("125", "Some Other Etalase", "", false),
+                    FilterDataUiModel("126", "Some Other Etalase", "", false),
+                    FilterDataUiModel("127", "Some Other Etalase", "", false)
             ), false)
 }
 
@@ -38,7 +46,11 @@ fun getCategoryFilterViewModel(categoryDataModel: FilterDataUiModel = getCategor
     return FilterUiModel(ProductManageFilterMapper.CATEGORY_HEADER,
             mutableListOf(
                     categoryDataModel,
-                    FilterDataUiModel("452", "Some Other Category", "", false)
+                    FilterDataUiModel("452", "Some Other Category", "", false),
+                    FilterDataUiModel("453", "Some Other Category", "", false),
+                    FilterDataUiModel("454", "Some Other Category", "", false),
+                    FilterDataUiModel("455", "Some Other Category", "", false),
+                    FilterDataUiModel("456", "Some Other Category", "", false)
             ), false)
 }
 
@@ -50,7 +62,11 @@ fun getOtherFilterFilterViewModel(otherFilterDataModel: FilterDataUiModel = getO
     return FilterUiModel(ProductManageFilterMapper.OTHER_FILTER_HEADER,
             mutableListOf(
                     otherFilterDataModel,
-                    FilterDataUiModel("611", "Some Other Filter", "", false)
+                    FilterDataUiModel("611", "Some Other Filter", "", false),
+                    FilterDataUiModel("612", "Some Other Filter", "", false),
+                    FilterDataUiModel("613", "Some Other Filter", "", false),
+                    FilterDataUiModel("614", "Some Other Filter", "", false),
+                    FilterDataUiModel("615", "Some Other Filter", "", false)
             ), false)
 }
 
@@ -58,7 +74,11 @@ fun getSelectedSortData(sortDataModel: FilterDataUiModel = getSortDataModel()): 
     return FilterUiModel(ProductManageFilterMapper.SORT_HEADER,
             mutableListOf(
                     sortDataModel,
-                    FilterDataUiModel("706", "Some Other Sort", "ASC", true)
+                    FilterDataUiModel("706", "Some Other Sort", "ASC", true),
+                    FilterDataUiModel("707", "Some Other Sort", "ASC", false),
+                    FilterDataUiModel("708", "Some Other Sort", "ASC", false),
+                    FilterDataUiModel("709", "Some Other Sort", "ASC", false),
+                    FilterDataUiModel("710", "Some Other Sort", "ASC", false)
             ), false)
 }
 
@@ -66,7 +86,11 @@ fun getSelectedEtalaseData(etalaseDataModel: FilterDataUiModel = getEtalaseDataM
     return FilterUiModel(ProductManageFilterMapper.ETALASE_HEADER,
             mutableListOf(
                     etalaseDataModel,
-                    FilterDataUiModel("123", "Some Other Etalase", "", true)
+                    FilterDataUiModel("123", "Some Other Etalase", "", true),
+                    FilterDataUiModel("124", "Some Other Etalase", "", false),
+                    FilterDataUiModel("125", "Some Other Etalase", "", false),
+                    FilterDataUiModel("126", "Some Other Etalase", "", false),
+                    FilterDataUiModel("127", "Some Other Etalase", "", false)
             ), false)
 }
 

@@ -432,6 +432,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                 detailResponse.bookingInfo.onlineBooking.messageArray,
                 detailResponse.bookingInfo.onlineBooking.barcodeType,
                 isRemoveAwb = detailResponse.onlineBooking.isRemoveInputAwb)
+
         listDetailData.add(SomDetailData(dataShipping, DETAIL_SHIPPING_TYPE))
     }
 

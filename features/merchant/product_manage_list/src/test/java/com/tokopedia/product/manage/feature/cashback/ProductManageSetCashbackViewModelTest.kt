@@ -15,7 +15,7 @@ import org.junit.Test
 class ProductManageSetCashbackViewModelTest: ProductManageSetCashbackViewModelTestFixture() {
 
     @Test
-    fun `when_set_cashback_success__should_return_succes_result`() {
+    fun `when set cashback success  should return succes result`() {
         runBlocking {
             val productId = "0"
             val cashback = 0
@@ -40,7 +40,7 @@ class ProductManageSetCashbackViewModelTest: ProductManageSetCashbackViewModelTe
     }
 
     @Test
-    fun `when_set_cashback_limit_reached__should_return_succes_result`() {
+    fun `when set cashback limit reached  should return succes result`() {
         runBlocking {
             val productId = "0"
             val cashback = 0
@@ -65,7 +65,7 @@ class ProductManageSetCashbackViewModelTest: ProductManageSetCashbackViewModelTe
     }
 
     @Test
-    fun `when_set_cashback_fail__should_return_succes_result`() {
+    fun `when set cashback fail  should return succes result`() {
         runBlocking {
             val productId = "0"
             val cashback = 0
