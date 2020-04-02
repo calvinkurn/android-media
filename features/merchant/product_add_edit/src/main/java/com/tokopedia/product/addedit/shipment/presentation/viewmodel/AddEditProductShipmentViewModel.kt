@@ -5,12 +5,16 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_GRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_KILOGRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.UNIT_KILOGRAM
+import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class AddEditProductShipmentViewModel @Inject constructor(
         coroutineDispatcher: CoroutineDispatcher
 ) : BaseViewModel(coroutineDispatcher) {
+
+    var shipmentInputModel: ShipmentInputModel = ShipmentInputModel()
+
     private fun getWeight(weight: String) = weight.replace(".", "").toIntOrZero()
 
     fun isWeightValid(weight: String, unitWeight: Int, minWeight: Int): Boolean {

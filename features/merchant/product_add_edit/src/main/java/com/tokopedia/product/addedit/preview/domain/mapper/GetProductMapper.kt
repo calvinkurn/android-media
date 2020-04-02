@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.preview.domain.mapper
 
+import android.util.Log
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
@@ -18,13 +19,12 @@ import javax.inject.Inject
 
 class GetProductMapper @Inject constructor() {
 
-    fun mapRemoteModelToUiModel(product: Product): ProductInputModel =
-            ProductInputModel(
+    fun mapRemoteModelToUiModel(product: Product): ProductInputModel = ProductInputModel(
                     mapDetailInputModel(product),
                     mapDescriptionInputModel(product),
                     mapShipmentInputModel(product)
             )
-    
+
     private fun mapDetailInputModel(product: Product): DetailInputModel =
             DetailInputModel(
                     product.productName,

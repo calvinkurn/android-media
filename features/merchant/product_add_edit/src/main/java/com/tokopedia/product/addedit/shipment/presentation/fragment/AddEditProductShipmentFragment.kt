@@ -7,13 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
+import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextIntOrZero
+import com.tokopedia.product.addedit.common.util.setText
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentComponent
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_GRAM
@@ -34,14 +34,17 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     private var switchInsurance: SwitchUnify? = null
     private var btnEnd: UnifyButton? = null
     private var selectedWeightPosition: Int = 0
-    private lateinit var shipmentViewModel: AddEditProductShipmentViewModel
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var shipmentViewModel: AddEditProductShipmentViewModel
 
     companion object {
-        fun createInstance(): Fragment {
-            return AddEditProductShipmentFragment()
+        fun createInstance(shipmentInputModel: ShipmentInputModel): Fragment {
+            return AddEditProductShipmentFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(EXTRA_SHIPMENT_INPUT_MODEL, shipmentInputModel)
+                }
+            }
         }
 
         fun getWeightTypeTitle(type: Int) =
@@ -51,6 +54,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
                     else -> -1
                 }
 
+        const val EXTRA_SHIPMENT_INPUT_MODEL = "shipment_input_model"
         const val REQUEST_CODE_SHIPMENT = 0x04
     }
 
@@ -64,7 +68,11 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initViewModel()
+        arguments?.let {
+            val shipmentInputModel: ShipmentInputModel =
+                    it.getParcelable(EXTRA_SHIPMENT_INPUT_MODEL) ?: ShipmentInputModel()
+            shipmentViewModel.shipmentInputModel = shipmentInputModel
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -78,6 +86,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         tfWeightAmount = view.findViewById(R.id.tf_weight_amount)
         switchInsurance = view.findViewById(R.id.switch_insurance)
         btnEnd = view.findViewById(R.id.btn_end)
+        applyShipmentDataToView()
         tfWeightUnit?.apply {
             textFieldInput.setText(getWeightTypeTitle(0))
             textFieldInput.isFocusable = false // disable focus
@@ -94,11 +103,13 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun initViewModel() {
-        activity?.run {
-            shipmentViewModel = ViewModelProviders.of(this, viewModelFactory)
-                    .get(AddEditProductShipmentViewModel::class.java)
-        }
+    private fun applyShipmentDataToView() {
+        val inputModel = shipmentViewModel.shipmentInputModel
+        val weightUnitResId = getWeightTypeTitle(inputModel.weightUnit)
+        val weightUnit = getString(weightUnitResId)
+        tfWeightUnit.setText(weightUnit)
+        tfWeightAmount.setText(inputModel.weight.toString())
+        switchInsurance?.isChecked = inputModel.isMustInsurance
     }
 
     private fun showUnitWeightOption() {
@@ -125,16 +136,17 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun validateInputWeight(inputText: String) {
-        val errorMessage: String
-        val isValid = shipmentViewModel.isWeightValid(inputText, selectedWeightPosition, MIN_WEIGHT)
-        if (selectedWeightPosition == UNIT_GRAM) {
-            errorMessage = getString(R.string.error_weight_not_valid, MIN_WEIGHT, MAX_WEIGHT_GRAM)
+    private fun validateInputWeight(inputText: String): Boolean {
+        val errorMessage = if (selectedWeightPosition == UNIT_GRAM) {
+            getString(R.string.error_weight_not_valid, MIN_WEIGHT, MAX_WEIGHT_GRAM)
         } else {
-            errorMessage = getString(R.string.error_weight_not_valid, MIN_WEIGHT, MAX_WEIGHT_KILOGRAM)
+            getString(R.string.error_weight_not_valid, MIN_WEIGHT, MAX_WEIGHT_KILOGRAM)
         }
+        val isValid = shipmentViewModel.isWeightValid(inputText, selectedWeightPosition, MIN_WEIGHT)
         tfWeightAmount?.setError(!isValid)
         tfWeightAmount?.setMessage(if (isValid) "" else errorMessage)
+        btnEnd?.isEnabled = isValid
+        return isValid
     }
 
     private fun resetTfWeightAmount() {
@@ -146,15 +158,17 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     }
 
     private fun submitInput() {
-        val shipmentInputModel = ShipmentInputModel(
-                tfWeightAmount.getTextIntOrZero(),
-                selectedWeightPosition,
-                switchInsurance?.isChecked == true
-        )
-        val intent = Intent()
-        intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
-        activity?.setResult(Activity.RESULT_OK, intent)
-        activity?.finish()
+        if (validateInputWeight(tfWeightAmount.getText())) {
+            val shipmentInputModel = ShipmentInputModel(
+                    tfWeightAmount.getTextIntOrZero(),
+                    selectedWeightPosition,
+                    switchInsurance?.isChecked == true
+            )
+            val intent = Intent()
+            intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
+        }
     }
 
 }

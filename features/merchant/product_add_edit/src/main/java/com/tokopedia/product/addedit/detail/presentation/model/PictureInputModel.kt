@@ -16,8 +16,8 @@ data class PictureInputModel(
         var width: Int = 0,
         var height: Int = 0,
         var isFromIG: String = "",
-        val urlOriginal: String,
-        val urlThumbnail: String,
-        val url300: String,
-        val status: String
+        var urlOriginal: String = "",
+        var urlThumbnail: String = "",
+        var url300: String = "",
+        var status: String = ""
 ) : Parcelable

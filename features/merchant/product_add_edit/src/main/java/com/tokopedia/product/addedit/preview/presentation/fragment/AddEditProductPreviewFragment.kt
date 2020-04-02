@@ -346,7 +346,6 @@ class AddEditProductPreviewFragment :
                 is Success -> {
                     val productData = it.data
                     showProductDetailPreview(productData)
-                    viewModel.setProductInputModel(productData)
                 }
                 is Fail -> {
 
@@ -466,8 +465,10 @@ class AddEditProductPreviewFragment :
     }
 
     private fun startAddEditProductShipmentActivity() {
-        val intent = Intent(context, AddEditProductShipmentActivity::class.java)
-        startActivityForResult(intent, AddEditProductShipmentFragment.REQUEST_CODE_SHIPMENT)
+        viewModel.productInputModel?.let {
+            val intent = AddEditProductShipmentActivity.createInstanceEditMode(context, it.shipmentInputModel)
+            startActivityForResult(intent, AddEditProductShipmentFragment.REQUEST_CODE_SHIPMENT)
+        }
     }
 
     private fun showVariantDialog() {
