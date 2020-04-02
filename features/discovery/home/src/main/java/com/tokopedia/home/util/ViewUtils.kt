@@ -84,7 +84,7 @@ object ViewUtils {
 
 fun View.setGradientBackground(colorArray: ArrayList<String>) {
     val colors = IntArray(colorArray.size)
-    for (i in 0..colorArray.size) {
+    for (i in 0 until colorArray.size) {
         colors[i] = Color.parseColor(colorArray[i])
     }
     val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
