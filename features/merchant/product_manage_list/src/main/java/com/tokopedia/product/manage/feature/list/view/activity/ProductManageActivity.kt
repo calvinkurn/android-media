@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
@@ -18,6 +19,16 @@ class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageLi
 
     companion object {
         private const val SCREEN_NAME = "Store - Manage product"
+    }
+
+    private val productManageSellerFragment by lazy {
+        val uri = intent.data
+        val filterId = uri?.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_FILTER).orEmpty()
+        return@lazy if (filterId.isNotBlank()) {
+            ProductManageSellerFragment.newInstance(arrayListOf(filterId))
+        } else {
+            ProductManageSellerFragment()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,7 +43,7 @@ class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageLi
     }
 
     override fun getNewFragment(): Fragment? {
-        return ProductManageSellerFragment()
+        return productManageSellerFragment
     }
 
     override fun attachBaseContext(newBase: Context) {

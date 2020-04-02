@@ -23,6 +23,7 @@ import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNaviga
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.getRegisteredNavigationShopReview
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.isShopReview
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationOrder
+import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.promo.getRegisteredNavigationTokopoints
 import com.tokopedia.applink.recommendation.getRegisteredNavigationRecommendation
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrah
@@ -81,6 +82,8 @@ object DeeplinkMapper {
                         getRegisteredNavigationPlay(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.HOME_HOTLIST) ->
                         getRegisteredHotlist(deeplink)
+                    deeplink.startsWithPattern(ApplinkConst.PRODUCT_EDIT) -> DeepLinkMapperProductManage.getEditProductInternalAppLink(deeplink)
+                    deeplink.startsWith(ApplinkConst.PRODUCT_MANAGE) -> DeepLinkMapperProductManage.getProductListInternalAppLink(deeplink)
                     GlobalConfig.isSellerApp() && deeplink.startsWith(ApplinkConst.HOME) ->
                        ApplinkConstInternalSellerapp.SELLER_HOME
                     deeplink.startsWith(ApplinkConst.PRODUCT_CREATE_REVIEW, true) -> getRegisteredNavigationProductReview(deeplink)
@@ -117,7 +120,6 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.SELLER_SHIPMENT, true) -> AppLinkMapperSellerHome.getSomReadyToShipAppLink()
                     deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_FINISHED, true) -> AppLinkMapperSellerHome.getSomDoneAppLink()
                     deeplink.startsWith(ApplinkConst.SELLER_PURCHASE_CANCELED, true) -> AppLinkMapperSellerHome.getSomCancelledAppLink()
-                    deeplink.startsWith(ApplinkConst.PRODUCT_MANAGE, true) -> AppLinkMapperSellerHome.getProductManageAppLink()
                     else -> {
                         if (specialNavigationMapper(deeplink, ApplinkConst.HOST_CATEGORY_P)) {
                             getRegisteredCategoryNavigation(getSegments(deeplink), deeplink)
@@ -135,7 +137,7 @@ object DeeplinkMapper {
                 tempDeeplink
             }
             deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true) -> getRegisteredNavigationFromSellerapp(deeplink)
-            deeplink.startsWith(ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST) -> AppLinkMapperSellerHome.getProductManageAppLink()
+            deeplink.startsWith(ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST) -> DeepLinkMapperProductManage.getProductListInternalAppLink(deeplink)
             deeplink.startsWith(ApplinkConstInternalGlobal.TOPCHAT) -> AppLinkMapperSellerHome.getTopChatAppLink()
             deeplink.startsWith(ApplinkConstInternalOrder.NEW_ORDER) -> AppLinkMapperSellerHome.getSomNewOrderAppLink()
             deeplink.startsWith(ApplinkConstInternalOrder.READY_TO_SHIP) -> AppLinkMapperSellerHome.getSomReadyToShipAppLink()
@@ -267,7 +269,7 @@ object DeeplinkMapper {
             ApplinkConst.NEW_WISHLIST -> ApplinkConsInternalHome.HOME_WISHLIST
             ApplinkConst.CREATE_SHOP -> ApplinkConstInternalGlobal.LANDING_SHOP_CREATION
             ApplinkConst.CHAT_TEMPLATE -> ApplinkConstInternalMarketplace.CHAT_SETTING_TEMPLATE
-            ApplinkConst.PRODUCT_MANAGE -> ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
+            ApplinkConst.PRODUCT_MANAGE -> DeepLinkMapperProductManage.getProductListInternalAppLink(deeplink)
             ApplinkConst.NOTIFICATION -> ApplinkConstInternalMarketplace.NOTIFICATION_CENTER
             ApplinkConst.CHANGE_PASSWORD -> return ApplinkConstInternalGlobal.CHANGE_PASSWORD
             else -> ""
@@ -328,7 +330,6 @@ object DeeplinkMapper {
             ApplinkConst.CHANGE_PASSWORD -> ApplinkConstInternalGlobal.CHANGE_PASSWORD
             ApplinkConst.SELLER_NEW_ORDER -> AppLinkMapperSellerHome.getSomNewOrderAppLink()
             ApplinkConst.SELLER_SHIPMENT -> AppLinkMapperSellerHome.getSomReadyToShipAppLink()
-            ApplinkConst.PRODUCT_MANAGE -> AppLinkMapperSellerHome.getProductManageAppLink()
             ApplinkConst.TOP_CHAT -> AppLinkMapperSellerHome.getTopChatAppLink()
             else -> ""
         }

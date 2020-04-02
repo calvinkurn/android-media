@@ -59,12 +59,4 @@ object AppLinkMapperSellerHome {
             ApplinkConstInternalGlobal.TOPCHAT
         }
     }
-
-    fun getProductManageAppLink(): String {
-        return if (GlobalConfig.isSellerApp()) {
-            ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST
-        } else {
-            ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
-        }
-    }
 }
