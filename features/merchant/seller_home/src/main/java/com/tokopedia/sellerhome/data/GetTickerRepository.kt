@@ -23,7 +23,9 @@ class GetTickerRepository @Inject constructor(
             val response = service.getTicker(
                     userId = userSession.userId,
                     device = versionName,
-                    requestParams = createRequestParams()
+                    pageHeader = TickerService.PAGE_HEADER_VALUE,
+                    pageSize = TickerService.SIZE,
+                    filterDevice = TickerService.FILTER_SELLERAPP_ANDROID_DEVICE
             )
             if (null != response.data?.tickers) {
                 val data = response.data.tickers.orEmpty()
@@ -33,14 +35,6 @@ class GetTickerRepository @Inject constructor(
             }
         } catch (e: Exception) {
             throw e
-        }
-    }
-
-    private fun createRequestParams(): Map<String, String> {
-        return mapOf<String, String>().apply {
-            TickerService.PAGE_HEADER_QUERY to TickerService.PAGE_HEADER_VALUE
-            TickerService.PAGE_SIZE to TickerService.SIZE
-            TickerService.FILTER_DEVICE to TickerService.FILTER_SELLERAPP_ANDROID_DEVICE
         }
     }
 }

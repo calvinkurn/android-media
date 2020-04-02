@@ -4,7 +4,7 @@ import com.tokopedia.sellerhome.data.remote.model.TickerResponse
 import com.tokopedia.url.TokopediaUrl
 import retrofit2.http.GET
 import retrofit2.http.Header
-import retrofit2.http.QueryMap
+import retrofit2.http.Query
 
 /**
  * Created By @ilhamsuaib on 2020-01-17
@@ -31,5 +31,7 @@ interface TickerService {
     suspend fun getTicker(
             @Header(HEADER_USER_ID) userId: String,
             @Header(HEADER_DEVICE) device: String,
-            @QueryMap requestParams: Map<String, String>): TickerResponse
+            @Query(PAGE_HEADER_QUERY) pageHeader: String,
+            @Query(PAGE_SIZE) pageSize: String,
+            @Query(FILTER_DEVICE) filterDevice: String): TickerResponse
 }
