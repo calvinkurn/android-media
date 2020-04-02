@@ -13,46 +13,59 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import kotlinx.android.synthetic.main.ent_search_event_grid_item.view.*
 
-class EventGridAdapter : RecyclerView.Adapter<EventGridAdapter.EventGridViewHolder>() {
+class EventGridAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var listEvent: MutableList<EventGrid> = mutableListOf()
+    var isLoading = false
+    val VIEW_TYPE_ITEM = 1
+    val VIEW_TYPE_LOADING = 0
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventGridViewHolder {
-        return EventGridViewHolder(LayoutInflater.from(parent.context)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        if(viewType == VIEW_TYPE_ITEM) return EventGridViewHolder(LayoutInflater.from(parent.context)
                 .inflate(R.layout.ent_search_event_grid_item, parent, false))
+
+        else return ProgressBarViewHolder(LayoutInflater.from(parent.context)
+                .inflate(R.layout.ent_search_progressbar, parent, false))
     }
 
-    override fun getItemCount(): Int = listEvent.size
+    override fun getItemCount(): Int = if(isLoading) listEvent.size+1 else listEvent.size
 
-    override fun onBindViewHolder(holder: EventGridViewHolder, position: Int) {
-        val event = listEvent.get(position)
-        with(holder.view) {
-            Glide.with(context)
-                    .load(event.image_url)
-                    .centerCrop()
-                    .into(image)
+    override fun getItemViewType(position: Int): Int {
+        return if(isLoading && position >= listEvent.size) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
+    }
 
-            txt_location.text = event.location
-            txt_title.text = event.nama_event
-            if (event.harga_start.startsWith("Rp")) { //Saat diskon beri stroke
-                txt_start_title.paintFlags = txt_start_title.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-            }
-            txt_start_title.text = event.harga_start
-            txt_price.text = event.harga_now
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if(listEvent.size > 0 && position < listEvent.size){
+            val event = listEvent.get(position)
+            with((holder as EventGridViewHolder).view) {
+                Glide.with(context)
+                        .load(event.image_url)
+                        .centerCrop()
+                        .into(image)
 
-            addOnImpressionListener(event, {
-                EventCategoryPageTracking.getInstance().impressionGridViewProduct(event, listEvent, position + 1)
-            })
+                txt_location.text = event.location
+                txt_title.text = event.nama_event
+                if (event.harga_start.startsWith("Rp")) { //Saat diskon beri stroke
+                    txt_start_title.paintFlags = txt_start_title.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                }
+                txt_start_title.text = event.harga_start
+                txt_price.text = event.harga_now
 
-            setOnClickListener {
-                RouteManager.route(holder.view.context, event.app_url)
-                //TODO Open new Activity
-                EventCategoryPageTracking.getInstance().onClickGridViewProduct(event, listEvent, position + 1)
+                addOnImpressionListener(event, {
+                    EventCategoryPageTracking.getInstance().impressionGridViewProduct(event, listEvent, position + 1)
+                })
+
+                setOnClickListener {
+                    RouteManager.route(holder.view.context, event.app_url)
+                    //TODO Open new Activity
+                    EventCategoryPageTracking.getInstance().onClickGridViewProduct(event, listEvent, position + 1)
+                }
             }
         }
     }
 
     class EventGridViewHolder(val view: View) : RecyclerView.ViewHolder(view)
+    class ProgressBarViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
     data class EventGrid(
             val id: String,
@@ -63,8 +76,4 @@ class EventGridAdapter : RecyclerView.Adapter<EventGridAdapter.EventGridViewHold
             val harga_now: String,
             val app_url: String
     ) : ImpressHolder()
-
-    companion object {
-        val LAYOUT = R.layout.ent_search_event_grid
-    }
 }

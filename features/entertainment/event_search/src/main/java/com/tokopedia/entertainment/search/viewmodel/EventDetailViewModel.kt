@@ -46,6 +46,7 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
     val isItShimmering : MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
     val showParentView : MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
     val showResetFilter : MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
+    val showProgressBar : MutableLiveData<Boolean> by lazy { MutableLiveData<Boolean>() }
     val errorReport : MutableLiveData<String> by lazy { MutableLiveData<String>() }
 
     val catLiveData: MutableLiveData<CategoryModel> by lazy { MutableLiveData<CategoryModel>() }
@@ -57,63 +58,64 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
         if(category.isBlank()) hashSet.clear()
 
         launchCatchError(
-                 block = {
-                     if(page == "1") {
-                         isItShimmering.value = true
-                         showParentView.value = false
-                     }
-                     showResetFilter.value = false
-                     val eventData : MutableList<EventGridAdapter.EventGrid> = mutableListOf()
-                     val data = getQueryData()
-                     data.let {
-                         it.eventChildCategory.let {
-                             if(categoryIsDifferentOrEmpty(it)){
-                                 categoryData.clear()
-                                 it.categories.forEach {
-                                     if(it.title != "Trending Events" || it.id != "28"){ //Feedback #3 Remove Trending Events
-                                         categoryData.add(DetailMapper.mapToCategory(it))
-                                     }
-                                 }
-                                 categoryModel.listCategory = categoryData
+                block = {
+                    if(page == "1") {
+                        isItShimmering.value = true
+                        showParentView.value = false
+                    } else showProgressBar.value = true
+                    showResetFilter.value = false
+                    val eventData : MutableList<EventGridAdapter.EventGrid> = mutableListOf()
+                    val data = getQueryData()
+                    data.let {
+                        it.eventChildCategory.let {
+                            if(categoryIsDifferentOrEmpty(it)){
+                                categoryData.clear()
+                                it.categories.forEach {
+                                    if(it.title != "Trending Events" || it.id != "28"){ //Feedback #3 Remove Trending Events
+                                        categoryData.add(DetailMapper.mapToCategory(it))
+                                    }
+                                }
+                                categoryModel.listCategory = categoryData
 
-                                 if(initCategory) {
-                                     categoryModel.hashSet = hashSet
-                                     categoryData.forEachIndexed{index, it ->
-                                         if(hashSet.contains(it.id)){
-                                             categoryModel.position = index
-                                             return@forEachIndexed
-                                         }
-                                     }
-                                     initCategory=false
-                                 } else {
-                                     categoryModel.hashSet = HashSet()
-                                     categoryModel.position = -1
-                                 }
+                                if(initCategory) {
+                                    categoryModel.hashSet = hashSet
+                                    categoryData.forEachIndexed{index, it ->
+                                        if(hashSet.contains(it.id)){
+                                            categoryModel.position = index
+                                            return@forEachIndexed
+                                        }
+                                    }
+                                    initCategory=false
+                                } else {
+                                    categoryModel.hashSet = HashSet()
+                                    categoryModel.position = -1
+                                }
 
-                                 catLiveData.value = categoryModel
-                             }
-                         }
+                                catLiveData.value = categoryModel
+                            }
+                        }
 
-                         it.eventSearch.let {
-                             if(it.products.isNotEmpty()){
-                                 it.products.forEach {
-                                     eventData.add(DetailMapper.mapToGrid(it))
-                                 }
-                             }
+                        it.eventSearch.let {
+                            if(it.products.isNotEmpty()){
+                                it.products.forEach {
+                                    eventData.add(DetailMapper.mapToGrid(it))
+                                }
+                            }
 
-                             eventLiveData.value = eventData
-                             isItRefreshing.value = false
-                             isItShimmering.value = false
-                             if(eventData.isNotEmpty()) showParentView.value = true
-                             else if(page == "1" && eventData.isEmpty()) showResetFilter.value = true
-                         }
-                     }
-                 },
-                 onError = {
-                     Timber.tag(TAG + "Error").w(it)
-                     errorReport.value = it.message
-                     isItRefreshing.value = false
-                 }
+                            eventLiveData.value = eventData
+                            isItRefreshing.value = false
+                            isItShimmering.value = false
+                            if(page == "1" && eventData.isNotEmpty()) showParentView.value = true
+                            else if(page == "1" && eventData.isEmpty()) showResetFilter.value = true
+                            else if(page != "1") showProgressBar.value = false
+                        }
+                    }
+                },
+                onError = {
+                    Timber.tag(TAG + "Error").w(it)
+                    errorReport.value = it.message
+                    isItRefreshing.value = false
+                }
         )
     }
 

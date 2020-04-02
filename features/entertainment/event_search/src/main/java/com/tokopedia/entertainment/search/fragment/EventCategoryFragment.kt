@@ -23,7 +23,8 @@ import kotlinx.android.synthetic.main.ent_search_category_emptystate.*
 import kotlinx.android.synthetic.main.ent_search_category_text.*
 import kotlinx.android.synthetic.main.ent_search_detail_activity.*
 import kotlinx.android.synthetic.main.ent_search_detail_shimmer.*
-import kotlinx.android.synthetic.main.ent_search_fragment.*
+import kotlinx.android.synthetic.main.ent_search_fragment.recycler_viewParent
+import kotlinx.android.synthetic.main.ent_search_fragment.swipe_refresh_layout
 import javax.inject.Inject
 
 /**
@@ -90,6 +91,12 @@ class EventCategoryFragment : BaseDaggerFragment() {
 
     private fun setupGridAdapter(){
         eventGridAdapter = EventGridAdapter()
+        gridLayoutManager.spanSizeLookup = object: GridLayoutManager.SpanSizeLookup(){
+            override fun getSpanSize(position: Int): Int {
+                if(eventGridAdapter.getItemViewType(position) == eventGridAdapter.VIEW_TYPE_LOADING) return gridLayoutManager.spanCount
+                else return 1
+            }
+        }
 
         recycler_viewParent.apply {
             setHasFixedSize(true)
@@ -190,6 +197,12 @@ class EventCategoryFragment : BaseDaggerFragment() {
         viewModel.isItShimmering.observe(this, Observer { showOrHideShimmer(it) })
         viewModel.showParentView.observe(this, Observer { showOrHideParentView(it) })
         viewModel.showResetFilter.observe(this, Observer { showOrHideResetFilter(it) })
+        viewModel.showProgressBar.observe(this, Observer { showOrHideProgressBar(it) })
+    }
+
+    private fun showOrHideProgressBar(state: Boolean){
+        eventGridAdapter.isLoading = state
+        eventGridAdapter.notifyDataSetChanged()
     }
 
     private fun showOrHideResetFilter(state: Boolean) {
