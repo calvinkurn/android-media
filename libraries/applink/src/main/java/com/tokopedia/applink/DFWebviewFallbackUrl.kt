@@ -15,4 +15,7 @@ object DFWebviewFallbackUrl {
     // Operational
     const val OPERATIONAL_CONTACT_US = "https://www.tokopedia.com/help"
     const val OPERATIONAL_CHAT_BOT = "https://www.tokopedia.com/help"
+
+    // Salam Umrah
+    const val SALAM_UMRAH = "https://m.tokopedia.com/s/umroh"
 }

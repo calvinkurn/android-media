@@ -89,7 +89,7 @@ dependencies {
     //Promo
     implementation project(rootProject.ext.features.tokopoints)
     //Salam
-    implementation project(rootProject.ext.features.umrah)
+
     //Travel
     implementation project(rootProject.ext.features.travelHomepage)
     implementation project(rootProject.ext.features.flight)
