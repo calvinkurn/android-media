@@ -49,6 +49,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -1198,6 +1199,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         .build()
                         .bundle)
             }
+            ProductDetailConstant.OCC_BUTTON -> {
+                goToOneClickCheckout()
+            }
             ProductDetailConstant.BUY_BUTTON -> {
                 goToCartCheckout(cartId)
             }
@@ -1212,6 +1216,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         .bundle)
             }
         }
+    }
+
+    private fun goToOneClickCheckout() {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
     }
 
     private fun goToCheckout(shipmentFormRequest: Bundle) {
@@ -1264,6 +1272,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 actionButtonView.visibility = !isAffiliate && viewModel.shopInfo?.statusInfo?.shopStatus == 1
             }
 
+            setupTickerOcc()
+
             viewModel.shopInfo?.let { shopInfo ->
                 DynamicProductDetailTracking.Moengage.sendMoEngageOpenProduct(p1, shopInfo.shopCore.name)
                 DynamicProductDetailTracking.Moengage.eventAppsFylerOpenProduct(p1)
@@ -1287,6 +1297,43 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
         pdpHashMapUtil?.updateDataP2Shop(it)
         adapter.notifyDataSetChanged()
+    }
+
+    private fun setupTickerOcc() {
+        var willShowTicker = false
+        if (actionButtonView.onSuccessGetCartType && actionButtonView.visibility) {
+            val data = actionButtonView.cartTypeData
+            if (data != null) {
+                for (button in data.availableButtons.withIndex()) {
+                    val onboardingMessage = button.value.onboardingMessage
+                    if (onboardingMessage.isNotEmpty()) {
+                        var selectedButton: View? = null
+                        if (button.index == 0) {
+                            selectedButton = actionButtonView.view.btn_buy_now
+                        } else if (button.index == 1) {
+                            selectedButton = actionButtonView.view.btn_add_to_cart
+                        }
+                        if (selectedButton != null && selectedButton.visibility == View.VISIBLE) {
+                            view?.let {
+                                ticker_occ_arrow.post {
+                                    ticker_occ_text?.text = onboardingMessage
+                                    ticker_occ_arrow?.translationX = selectedButton.x + (selectedButton.width / 2)
+                                    ticker_occ?.setOnClickListener {
+                                        ticker_occ_layout?.gone()
+                                    }
+                                    ticker_occ_layout?.visible()
+                                }
+                            }
+                            willShowTicker = true
+                            break
+                        }
+                    }
+                }
+            }
+        }
+        if (!willShowTicker) {
+            ticker_occ_layout.gone()
+        }
     }
 
     private fun onSuccessGetDataP2General(it: ProductInfoP2General) {
@@ -2146,6 +2193,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         isTradeIn = data.data.isTradeIn
                     }
                     viewModel.addToCart(addToCartOcsRequestParams)
+                }
+                ProductDetailConstant.OCC_BUTTON -> {
+                    val addToCartOccRequestParams = AddToCartOccRequestParams(data.basic.productID, data.basic.shopID, data.basic.minOrder.toString()).apply {
+                        warehouseId = selectedWarehouseId.toString()
+                        attribution = trackerAttributionPdp ?: ""
+                        listTracker = trackerListNamePdp ?: ""
+                    }
+                    viewModel.addToCart(addToCartOccRequestParams)
                 }
                 else -> {
                     val addToCartRequestParams = AddToCartRequestParams().apply {
