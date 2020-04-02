@@ -60,5 +60,6 @@ interface HomeRecommendationListener: SmartListener {
     fun onProductImpression(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int)
     fun onProductClick(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int)
     fun onProductThreeDotsClick(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int)
+    fun onBannerImpression(bannerRecommendationDataModel: BannerRecommendationDataModel)
     fun onRetryGetProductRecommendationData()
 }

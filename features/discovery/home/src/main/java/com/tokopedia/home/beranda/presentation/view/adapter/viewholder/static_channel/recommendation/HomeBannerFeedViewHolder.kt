@@ -9,6 +9,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking
+import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -41,7 +42,7 @@ class HomeBannerFeedViewHolder(itemView: View) : SmartAbstractViewHolder<BannerR
         bannerImageView.addOnImpressionListener(element,
                 object : ViewHintListener{
                     override fun onViewHint() {
-                        HomeRecommendationTracking.getBannerRecommendation(element)
+                        (listener as HomeRecommendationListener).onBannerImpression(element)
                     }
 
                 })

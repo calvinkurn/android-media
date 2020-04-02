@@ -22,6 +22,7 @@ import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityRe
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.home.R
+import com.tokopedia.home.analytics.v2.HomeRecommendationTracking
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationAddWishlistLogin
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationAddWishlistNonLogin
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationProductClickLogin
@@ -41,6 +42,7 @@ import com.tokopedia.home.beranda.listener.HomeEggListener
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration
@@ -289,6 +291,10 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
                 this,
                 createProductCardOptionsModel(homeRecommendationItemDataModel, position)
         )
+    }
+
+    override fun onBannerImpression(bannerRecommendationDataModel: BannerRecommendationDataModel) {
+        trackingQueue.putEETracking(HomeRecommendationTracking.getBannerRecommendation(bannerRecommendationDataModel) as HashMap<String, Any>)
     }
 
     override fun onRetryGetProductRecommendationData() {
