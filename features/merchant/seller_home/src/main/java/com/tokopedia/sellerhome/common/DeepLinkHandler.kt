@@ -2,6 +2,7 @@ package com.tokopedia.sellerhome.common
 
 import android.content.Intent
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 
 /**
@@ -41,7 +42,9 @@ object DeepLinkHandler {
 
             //Product Manage
             data.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME_PRODUCT_MANAGE_LIST) -> {
-                callback(PageFragment(FragmentType.PRODUCT))
+                val uri = intent.data
+                val filterId = uri?.getQueryParameter(DeepLinkMapperProductManage.QUERY_PARAM_FILTER).orEmpty()
+                callback(PageFragment(FragmentType.PRODUCT, filterId))
             }
 
             //Top Chat
