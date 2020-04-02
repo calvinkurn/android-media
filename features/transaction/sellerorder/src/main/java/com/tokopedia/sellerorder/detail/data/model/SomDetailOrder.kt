@@ -23,7 +23,7 @@ data class SomDetailOrder(
 
                 @SerializedName("status")
                 @Expose
-                val statusId: Int = 0,
+                val statusCode: Int = 0,
 
                 @SerializedName("status_text")
                 @Expose

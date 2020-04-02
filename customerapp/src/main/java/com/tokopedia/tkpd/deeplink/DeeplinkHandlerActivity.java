@@ -110,6 +110,9 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
@@ -234,7 +237,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                 }
             }
         }
-        LinkerManager.getInstance().initSession();
+        iniBranchIO(this);
         finish();
     }
 
@@ -394,5 +397,12 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     @Override
     public void onError(LinkerError linkerError) {
 
+    }
+
+    private void iniBranchIO(Context context){
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_BRANCH_INIT_DEEPLINKHANDLER)){
+            LinkerManager.getInstance().initSession();
+        }
     }
 }

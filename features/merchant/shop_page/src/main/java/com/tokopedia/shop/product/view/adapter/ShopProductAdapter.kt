@@ -183,7 +183,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
 
     fun getEtalaseNameHighLight(shopProductViewModel: ShopProductViewModel): String {
         shopProductEtalaseHighlightViewModel?.let {
-            val etalaseHighlightCarouselViewModelList = shopProductEtalaseHighlightViewModel!!.etalaseHighlightCarouselViewModelList
+            val etalaseHighlightCarouselViewModelList = it.etalaseHighlightCarouselViewModelList
             var i = 0
             val sizei = etalaseHighlightCarouselViewModelList.size
             while (i < sizei) {
@@ -214,7 +214,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     }
 
     fun isEtalaseInChip(etalaseId: String): Boolean {
-        val shopEtalaseViewModelList = shopProductEtalaseListViewModel!!.etalaseModelList
+        val shopEtalaseViewModelList = shopProductEtalaseListViewModel?.etalaseModelList ?: listOf()
         shopEtalaseViewModelList.filterIsInstance(ShopProductEtalaseChipItemViewModel::class.java).map {
             if (it.etalaseId.equals(etalaseId, ignoreCase = true)) {
                 return true
@@ -296,10 +296,9 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         }
     }
 
-
     fun refreshSticky() {
         if (onStickySingleHeaderViewListener != null) {
-            recyclerView!!.post { onStickySingleHeaderViewListener!!.refreshSticky() }
+            recyclerView?.post { onStickySingleHeaderViewListener?.refreshSticky() }
         }
     }
 

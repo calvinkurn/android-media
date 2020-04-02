@@ -2,9 +2,7 @@
     package="com.tokopedia.topads.dashboard"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <application android:label="@string/app_name"
-        tools:replace="android:label"
-        android:allowBackup="true">
+    <application>
 
         <activity
             android:name=".view.activity.TopAdsDashboardActivity"

@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.MixTopTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -34,10 +33,8 @@ import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
 class MixTopBannerViewHolder(
-        itemView: View, val homeCategoryListener: HomeCategoryListener,
-        countDownListener: CountDownView.CountDownListener,
-        private val parentRecycledViewPool: RecyclerView.RecycledViewPool
-) : DynamicChannelViewHolder(itemView, homeCategoryListener, countDownListener), FlashSaleCardListener{
+        itemView: View, val homeCategoryListener: HomeCategoryListener
+) : DynamicChannelViewHolder(itemView, homeCategoryListener), FlashSaleCardListener{
     private val bannerTitle = itemView.findViewById<Typography>(R.id.banner_title)
     private val bannerDescription = itemView.findViewById<Typography>(R.id.banner_description)
     private val bannerUnifyButton = itemView.findViewById<UnifyButton>(R.id.banner_button)
@@ -63,16 +60,11 @@ class MixTopBannerViewHolder(
         mappingView(channel)
     }
 
-    override fun bind(element: DynamicChannelViewModel?, payloads: MutableList<Any>) {
-        super.bind(element, payloads)
-        val channel = element?.channel
-        element?.let {
-            channel?.let {channel->
-                val visitables = mappingVisitablesFromChannel(channel)
-                mappingHeader(channel)
-                mappingItem(channel, visitables)
-            }
-        }
+    override fun setupContent(channel: DynamicHomeChannel.Channels, payloads: MutableList<Any>) {
+        super.setupContent(channel, payloads)
+        val visitables = mappingVisitablesFromChannel(channel)
+        mappingHeader(channel)
+        mappingItem(channel, visitables)
     }
 
     override fun getViewHolderClassName(): String {
@@ -97,17 +89,16 @@ class MixTopBannerViewHolder(
 
     override fun onFlashSaleCardClicked(position: Int, channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, applink: String) {
         homeCategoryListener.sendEETracking(MixTopTracking.getMixTopClick(
-                MixTopTracking.mapChannelToProductTracker(channel),
+                listOf(MixTopTracking.mapGridToProductTracker(grid, channel.id, position, channel.persoType, channel.categoryID)),
                 channel.header.name,
                 channel.id,
                 adapterPosition.toString()
         ) as HashMap<String, Any>)
+        homeCategoryListener.onDynamicChannelClicked(grid.applink)
     }
 
     private fun mappingView(channel: DynamicHomeChannel.Channels) {
         val visitables = mappingVisitablesFromChannel(channel)
-
-        recyclerView.setRecycledViewPool(parentRecycledViewPool)
         recyclerView.setHasFixedSize(true)
 
         valuateRecyclerViewDecoration()
@@ -160,7 +151,7 @@ class MixTopBannerViewHolder(
 
     private fun mappingItem(channel: DynamicHomeChannel.Channels, visitables: MutableList<Visitable<*>>) {
         startSnapHelper.attachToRecyclerView(recyclerView)
-        val typeFactoryImpl = FlashSaleCardViewTypeFactoryImpl(this, channel)
+        val typeFactoryImpl = FlashSaleCardViewTypeFactoryImpl(channel)
         adapter = MixTopAdapter(visitables, typeFactoryImpl)
         recyclerView.adapter = adapter
     }
@@ -238,11 +229,19 @@ class MixTopBannerViewHolder(
                             discountPercentage = element.discount,
                             pdpViewCount = element.productViewCountFormatted,
                             stockBarLabel = element.label,
+                            isTopAds = element.isTopads,
                             stockBarPercentage = element.soldPercentage
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
-                    applink = element.applink
+                    applink = element.applink,
+                    listener = this
+            ))
+        }
+        if (isHasSeeMoreApplink(channel)) {
+            list.add(SeeMorePdpDataModel(
+                    applink = channel.header.applink,
+                    listener = this
             ))
         }
         return list
