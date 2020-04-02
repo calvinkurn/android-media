@@ -86,11 +86,6 @@ private fun ProductCardFlashSaleView.renderOutOfStockView(productCardModel: Prod
     }
 }
 
-private fun setOutOfStock(it: Label) {
-    it.text = "Stok Habis"
-    it.trySetCustomLabelType("transparentBlack")
-}
-
 private fun Label.trySetCustomLabelType(labelGroupType: String) {
     unlockFeature = true
 
