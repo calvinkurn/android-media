@@ -5,6 +5,7 @@ if (project.hasProperty("apply-patch")) {
 apply plugin: 'robust'
 apply plugin: 'io.fabric'
 apply plugin: 'io.hansel.preprocessor'
+apply plugin: 'com.bugsnag.android.gradle'
 
 apply from: '../tools/dynamic_feature_inclusion.gradle'
 apply from: '../tools/set_debug_tools.gradle'
@@ -415,6 +416,7 @@ dependencies {
     implementation('de.hdodenhof:circleimageview:2.1.0') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
+    implementation rootProject.ext.monitoringDependencies.bugSnag
 
     debugImplementation project.ext.debugToolsDependencies.leakCanary
 
