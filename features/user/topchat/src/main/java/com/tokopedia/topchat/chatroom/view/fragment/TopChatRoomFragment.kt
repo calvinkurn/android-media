@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import androidx.annotation.StringRes
 import androidx.fragment.app.FragmentManager
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
@@ -940,36 +941,50 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         return childFragmentManager
     }
 
-    override fun onClickAddToWishList(productId: String, success: () -> Unit) {
+    override fun onClickAddToWishList(product: ProductAttachmentViewModel, success: () -> Unit) {
+        val productId = product.productId.toString()
         analytics.eventClickAddToWishList(productId)
+        if (product.isWishListed()) {
+            showSuccessToastWishListCta(R.string.title_topchat_already_success_atw)
+        } else {
+            requestNetworkAddToWishList(productId, success)
+        }
+    }
+
+    private fun requestNetworkAddToWishList(productId: String, success: () -> Unit) {
         presenter.addToWishList(productId, session.userId, object : WishListActionListener {
             override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
             override fun onSuccessRemoveWishlist(productId: String?) {}
             override fun onSuccessAddWishlist(productId: String?) {
                 success()
-                view?.let {
-                    val successMessage = it.context.getString(R.string.title_topchat_success_atw)
-                    Toaster.make(
-                            it,
-                            successMessage,
-                            Toaster.LENGTH_SHORT,
-                            Toaster.TYPE_NORMAL
-                    )
-                }
+                showSuccessToastWishListCta(R.string.title_topchat_success_atw)
             }
-
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
                 if (errorMessage == null) return
                 view?.let {
-                    Toaster.make(
-                            it,
-                            errorMessage,
-                            Toaster.LENGTH_SHORT,
-                            Toaster.TYPE_ERROR
-                    )
+                    Toaster.make(it, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
                 }
             }
         })
+    }
+
+    private fun showSuccessToastWishListCta(@StringRes successMessageRes: Int) {
+        view?.let {
+            val successMessage = it.context.getString(successMessageRes)
+            val ctaText = it.context.getString(R.string.cta_topchat_success_atw)
+            Toaster.make(
+                    it,
+                    successMessage,
+                    Toaster.LENGTH_SHORT,
+                    Toaster.TYPE_NORMAL,
+                    ctaText,
+                    View.OnClickListener { goToWishList() }
+            )
+        }
+    }
+
+    private fun goToWishList() {
+        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
     }
 
     override fun onClickRemoveFromWishList(productId: String, success: () -> Unit) {

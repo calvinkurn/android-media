@@ -244,7 +244,9 @@ open class TopchatProductAttachmentViewHolder(
         if (product.hasEmptyStock()) {
             wishListBtn?.show()
             wishListBtn?.setOnClickListener {
-                listener.onClickAddToWishList(product.productId.toString()) { }
+                listener.onClickAddToWishList(product) {
+                    product.wishList = true
+                }
             }
         } else {
             wishListBtn?.hide()
