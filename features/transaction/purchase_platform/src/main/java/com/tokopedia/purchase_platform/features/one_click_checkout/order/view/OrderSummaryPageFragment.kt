@@ -90,6 +90,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private var progressDialog: AlertDialog? = null
 
+    private var shouldUpdateCart: Boolean = true
+
     override fun getScreenName(): String {
         return this::class.java.simpleName
     }
@@ -389,6 +391,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 viewModel.setInsuranceCheck(true)
                 group_insurance.visible()
             } else if (insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_NO) {
+                viewModel.setInsuranceCheck(false)
                 group_insurance.gone()
             } else if (insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_OPTIONAL) {
                 tv_insurance.setText(R.string.label_shipment_insurance)
@@ -726,10 +729,18 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         viewModel.getOccCart(isFullRefresh = isFullRefresh)
     }
 
+    override fun onStart() {
+        shouldUpdateCart = true
+        super.onStart()
+    }
+
+    public fun setIsFinishing() {
+        shouldUpdateCart = false
+    }
+
     override fun onStop() {
         super.onStop()
-        // todo check if finishing or checkout
-        if (!swipe_refresh_layout.isRefreshing) {
+        if (!swipe_refresh_layout.isRefreshing && shouldUpdateCart) {
             viewModel.updateCart()
         }
     }
@@ -744,6 +755,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     paymentPassData.queryString = redirectParam.form
                     paymentPassData.method = redirectParam.method
 
+                    shouldUpdateCart = false
                     val intent = RouteManager.getIntent(activity, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
                     intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
                     intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE, checkoutData.error.message)

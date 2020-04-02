@@ -23,4 +23,12 @@ class OrderSummaryPageActivity : BaseSimpleActivity(), HasComponent<OrderSummary
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .build()
     }
+
+    override fun onBackPressed() {
+        val currFragment = fragment
+        if (currFragment is OrderSummaryPageFragment) {
+            currFragment.setIsFinishing()
+        }
+        super.onBackPressed()
+    }
 }
