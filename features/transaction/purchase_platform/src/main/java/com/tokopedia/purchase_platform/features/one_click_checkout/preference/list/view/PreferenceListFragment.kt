@@ -238,10 +238,14 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
         viewModel.changeDefaultPreference(preference)
     }
 
-    override fun onPreferenceEditClicked(preference: ProfilesItemModel, position: Int) {
+    override fun onPreferenceEditClicked(preference: ProfilesItemModel, position: Int, profileSize: Int) {
+        var showDelete = true
+        if (profileSize > 1) showDelete
+        else showDelete = false
         preferencelistAnalytics.eventClickSettingPreferenceGearInPreferenceListPage()
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
         intent.apply {
+            putExtra(PreferenceEditActivity.EXTRA_SHOW_DELETE_BUTTON, showDelete)
             putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, getString(R.string.lbl_summary_preference_option) + " " + position)
             putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.profileId)
             putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.addressModel?.addressId)
@@ -249,6 +253,19 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
             putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, preference.paymentModel?.gatewayCode)
         }
         startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
+        /*val parent = activity
+        if (parent is PreferenceEditActivity) {
+            val showDelete = parent.should_show_delete_button
+            intent.apply {
+                putExtra(PreferenceEditActivity.EXTRA_SHOW_DELETE_BUTTON, showDelete)
+                putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, getString(R.string.lbl_summary_preference_option) + " " + position)
+                putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.profileId)
+                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.addressModel?.addressId)
+                putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, preference.shipmentModel?.serviceId)
+                putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, preference.paymentModel?.gatewayCode)
+            }
+            startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
+        }*/
     }
 
     companion object {

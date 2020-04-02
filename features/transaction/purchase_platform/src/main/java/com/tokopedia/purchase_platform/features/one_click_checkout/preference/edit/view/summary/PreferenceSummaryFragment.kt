@@ -288,28 +288,33 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             parent.hideAddButton()
             val profileId = parent.profileId
             if (arguments?.getBoolean(ARG_IS_EDIT) == true && profileId > -1) {
-                parent.showDeleteButton()
-                parent.setDeleteButtonOnClickListener {
-                    preferenceListAnalytics.eventClickTrashBinInEditPreference()
-                    context?.let {
-                        if (viewModel.preference.value is OccState.Success) {
-                            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                                setTitle(getString(R.string.lbl_delete_preference_title))
-                                setDescription(getString(R.string.lbl_delete_preference_desc))
-                                setPrimaryCTAText(getString(R.string.lbl_delete_preference_ok))
-                                setSecondaryCTAText(getString(R.string.text_button_negative))
-                                setPrimaryCTAClickListener {
-                                    preferenceListAnalytics.eventClickDeletePreferenceFromTrashBin()
-                                    dismiss()
-                                    viewModel.deletePreference(profileId)
-                                }
-                                setSecondaryCTAClickListener {
-                                    dismiss()
-                                }
-                            }.show()
+                if(parent.should_show_delete_button) {
+                    parent.showDeleteButton()
+                    parent.setDeleteButtonOnClickListener {
+                        preferenceListAnalytics.eventClickTrashBinInEditPreference()
+                        context?.let {
+                            if (viewModel.preference.value is OccState.Success) {
+                                DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                                    setTitle(getString(R.string.lbl_delete_preference_title))
+                                    setDescription(getString(R.string.lbl_delete_preference_desc))
+                                    setPrimaryCTAText(getString(R.string.lbl_delete_preference_ok))
+                                    setSecondaryCTAText(getString(R.string.text_button_negative))
+                                    setPrimaryCTAClickListener {
+                                        preferenceListAnalytics.eventClickDeletePreferenceFromTrashBin()
+                                        dismiss()
+                                        viewModel.deletePreference(profileId)
+                                    }
+                                    setSecondaryCTAClickListener {
+                                        dismiss()
+                                    }
+                                }.show()
+                            }
                         }
                     }
+                } else {
+                    parent.hideDeleteButton()
                 }
+
                 parent.setHeaderTitle(getString(R.string.lbl_summary_preference_with_number_title) + " " + parent.preferenceIndex)
                 parent.hideStepper()
             } else {

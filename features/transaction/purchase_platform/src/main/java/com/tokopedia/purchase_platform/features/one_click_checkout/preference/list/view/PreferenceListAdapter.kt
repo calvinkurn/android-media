@@ -38,7 +38,7 @@ class PreferenceListAdapter(private val listener: PreferenceListAdapterListener,
     }
 
     override fun onBindViewHolder(holder: PreferenceListViewHolder, position: Int) {
-        holder.bind(list[position], currentProfileId)
+        holder.bind(list[position], currentProfileId, itemCount)
     }
 
     override fun getItemCount(): Int {
@@ -49,6 +49,6 @@ class PreferenceListAdapter(private val listener: PreferenceListAdapterListener,
 
         fun onPreferenceSelected(preference: ProfilesItemModel)
 
-        fun onPreferenceEditClicked(preference: ProfilesItemModel, position: Int)
+        fun onPreferenceEditClicked(preference: ProfilesItemModel, position: Int, profileSize: Int)
     }
 }

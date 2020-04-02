@@ -247,7 +247,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     progressDialog?.dismiss()
                     view?.let { v ->
                         ErrorCheckoutBottomSheet().show(this, it, object : ErrorCheckoutBottomSheet.Listener {
-                            override fun onClickSimilarProduct() {
+                            override fun onClickSimilarProduct(errorCode: String) {
+                                if (errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_STOCK_EMPTY) {
+                                    orderSummaryAnalytics.eventClickSimilarProductEmptyStock()
+                                } else  {
+                                    orderSummaryAnalytics.eventClickSimilarProductShopClosed()
+                                }
                                 RouteManager.route(context, ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT, viewModel.orderProduct.productId.toString())
                                 activity?.finish()
                             }
@@ -609,6 +614,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         override fun onPreferenceEditClicked(preference: OrderPreference) {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
             intent.apply {
+                putExtra(PreferenceEditActivity.EXTRA_SHOW_DELETE_BUTTON, false)
                 putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, preference.profileIndex)
                 putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.preference.profileId)
                 putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.preference.address.addressId)
@@ -634,11 +640,15 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                             orderSummaryAnalytics.eventClickGunakanPilihanIniFromGantiPilihanOSP()
                         }
 
-                        override fun onEditPreference(preference: ProfilesItemModel, position: Int) {
+                        override fun onEditPreference(preference: ProfilesItemModel, position: Int, profileSize: Int) {
                             orderSummaryAnalytics.eventClickGearLogoInPreferenceFromGantiPilihanOSP()
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
                             val preferenceIndex = getString(R.string.lbl_summary_preference_option) + " " + position
+                            var showDelete = true
+                            if (profileSize > 1) showDelete
+                            else showDelete = false
                             intent.apply {
+                                putExtra(PreferenceEditActivity.EXTRA_SHOW_DELETE_BUTTON, showDelete)
                                 putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, preferenceIndex)
                                 putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.profileId)
                                 putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.addressModel?.addressId)
