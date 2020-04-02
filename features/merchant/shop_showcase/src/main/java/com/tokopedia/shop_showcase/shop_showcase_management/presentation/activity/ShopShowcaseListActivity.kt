@@ -125,7 +125,7 @@ class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation 
     private fun isMyShop(): Boolean = shopId == userSession.shopId
 
     private fun getShopType() {
-        val isOfficialStore = userSession.isShopOfficialStore
+        val isOfficialStore = false // userSession.isShopOfficialStore
         val isGoldMerchant = userSession.isGoldMerchant
 
         if (isOfficialStore) {
