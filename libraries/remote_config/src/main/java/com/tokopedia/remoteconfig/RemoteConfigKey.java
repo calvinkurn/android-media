@@ -213,4 +213,6 @@ public class RemoteConfigKey {
 
     public static final String WHITELIST_USER_LOG_NOTIFICATION = "key_whitelist_user_log_notification";
     public static final String ENABLE_BRANCH_UTM_SUPPORT = "app_enable_branch_utm_support";
+
+    public static final String ENABLE_REVAMP_EVENT = "android_mainapp_enable_event_revamp";
 }
