@@ -1,8 +1,10 @@
 package com.tokopedia.product.addedit.preview.domain
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.preview.data.source.api.param.GetProductV3Param
 import com.tokopedia.product.addedit.preview.data.source.api.response.GetProductV3Response
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
@@ -18,11 +20,12 @@ class GetProductUseCase @Inject constructor(private val graphqlRepository: Graph
 
         val graphqlRequest = GraphqlRequest(getQuery(), GetProductV3Response::class.java, params.parameters)
         val graphqlResponse: GraphqlResponse = graphqlRepository.getReseponse(listOf(graphqlRequest))
-        return graphqlResponse.run {
-            var product = Product()
-            val response = getData<GetProductV3Response>(GetProductV3Response::class.java)
-            if (response != null) product = response.product
-            product
+        val errors: List<GraphqlError>? = graphqlResponse.getError(GetProductV3Response::class.java)
+        if (errors.isNullOrEmpty()) {
+            val data = graphqlResponse.getData<GetProductV3Response>(GetProductV3Response::class.java)
+            return data.product
+        } else {
+            throw MessageErrorException(errors.joinToString(", ") { it.message })
         }
     }
 

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.preview.presentation.fragment.AddEditProductPreviewFragment
 import com.tokopedia.product.addedit.preview.presentation.fragment.AddEditProductPreviewFragment.Companion.EXTRA_PRODUCT_ID
 
@@ -17,8 +18,12 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
         return AddEditProductPreviewFragment.createInstance(productId)
     }
 
+    override fun getLayoutRes() = R.layout.activity_add_edit_product_preview
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        productId = intent.getStringExtra(EXTRA_PRODUCT_ID)
+        intent.getStringExtra(EXTRA_PRODUCT_ID)?.run {
+            productId = this
+        }
         super.onCreate(savedInstanceState)
     }
 
