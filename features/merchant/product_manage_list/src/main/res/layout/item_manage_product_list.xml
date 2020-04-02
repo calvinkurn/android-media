@@ -285,6 +285,7 @@
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl1"
+        app:layout_constraintTop_toBottomOf="@id/btnMoreOptions"
         app:layout_goneMarginTop="@dimen/product_manage_more_option_vertical_spacing"
         app:layout_constraintBottom_toBottomOf="parent" />
 
