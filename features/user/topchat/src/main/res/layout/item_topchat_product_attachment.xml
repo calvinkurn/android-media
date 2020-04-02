@@ -6,7 +6,8 @@
 
     <include layout="@layout/item_chatcommon_chat_header" />
 
-    <LinearLayout
+    <com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
+        android:id="@+id/containerProductAttachment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_topchat_12"
@@ -22,6 +23,6 @@
         android:paddingBottom="@dimen/dp_topchat_12">
 
         <include layout="@layout/item_topchat_product_card" />
-    </LinearLayout>
+    </com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer>
 
 </LinearLayout>

@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.item_topchat_product_card.view.*
 
@@ -29,6 +30,8 @@ open class TopchatProductAttachmentViewHolder(
 ) : BaseChatViewHolder<ProductAttachmentViewModel>(itemView) {
 
     private var wishListBtn: UnifyButton? = null
+    private var cardContainer: SingleProductAttachmentContainer? = null
+
     private val white = "#ffffff"
     private val white2 = "#fff"
 
@@ -53,6 +56,7 @@ open class TopchatProductAttachmentViewHolder(
 
     private fun bindView() {
         wishListBtn = itemView.findViewById(R.id.tv_wishlist)
+        cardContainer = itemView.findViewById(R.id.containerProductAttachment)
     }
 
     private fun bindProductClick(product: ProductAttachmentViewModel) {
