@@ -16,7 +16,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
+import com.chuckerteam.chucker.api.Chucker
 import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -97,7 +101,6 @@ import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import java.util.*
 import javax.inject.Inject
-import com.chuckerteam.chucker.api.Chucker
 
 /**
  * @author anggaprasetiyo on 18/01/18.
@@ -313,6 +316,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
 
         super.onStop()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (!::cartAdapter.isInitialized || (::cartAdapter.isInitialized && cartAdapter.itemCount == 0)) {
+            dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
+        }
     }
 
     private fun updateCartAfterDetached() {
