@@ -14,5 +14,6 @@
     <color name="category_background">#BFF3F4F5</color>
     <color name="category_border">#EBEBEB</color>
     <color name="category_border_1">#E5E7E9</color>
+    <color name="category_border_color">#F3F4F5</color>
 
 </resources>

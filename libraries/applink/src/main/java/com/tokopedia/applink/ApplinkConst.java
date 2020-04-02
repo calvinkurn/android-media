@@ -310,6 +310,7 @@ public interface ApplinkConst {
     interface Gamification {
         String CRACK = "tokopedia://gamification";
         String TAP_TAP_MANTAP = "tokopedia://gamification2";
+        String DAILY_GIFT_BOX = "tokopedia://gamification_gift_daily";
     }
 
     interface Digital {
@@ -437,6 +438,11 @@ public interface ApplinkConst {
         String PARAM_HAS_TITLEBAR = "titlebar";
         String PARAM_URL = "url";
         String HOST = "groupchat";
+    }
+
+    interface Notification {
+        String BUYER_HOST = "notif-center";
+        String GENERAL_HOST = "notification";
     }
 
     interface Profile {

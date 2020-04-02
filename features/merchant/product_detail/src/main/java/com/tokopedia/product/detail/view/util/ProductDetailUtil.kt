@@ -2,9 +2,8 @@ package com.tokopedia.product.detail.view.util
 
 import android.text.Spanned
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.kotlin.extensions.toFormattedString
+import java.util.*
 
 object ProductDetailUtil {
 
@@ -21,23 +20,23 @@ object ProductDetailUtil {
             MethodChecker.fromHtml(review)
         }
     }
-
 }
 
-fun <T> ArrayList<T>.asThrowable(): Throwable = Throwable(message = this.firstOrNull()?.toString() ?: "")
-fun String.asThrowable(): Throwable = Throwable(message = this)
-
-fun <T : Any> Result<T>.doSuccessOrFail(success: (Success<T>) -> Unit, fail: (Fail: Throwable) -> Unit) {
-    when (this) {
-        is Success -> {
-            success.invoke(this)
+infix fun String?.toDate(format: String): String {
+    this?.let {
+        val isLongFormat = try {
+            it.toLong()
+            true
+        } catch (e: Throwable) {
+            false
         }
-        is Fail -> {
-            fail.invoke(this.throwable)
+
+        return if (isLongFormat) {
+            val date = Date(it.toLong() * 1000)
+            date.toFormattedString(format)
+        } else {
+            this
         }
     }
+    return ""
 }
-
-fun <T : Any> T.asSuccess(): Success<T> = Success(this)
-fun Throwable.asFail(): Fail = Fail(this)
-

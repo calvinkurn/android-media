@@ -148,7 +148,7 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
                             context = context,
                             fragmentManager = childFragmentManager,
                             userSession = userSession,
-                            onSuccess = ::onSuccessToast
+                            listener = this
                     ).show(element)
                 }
             }
@@ -187,7 +187,11 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
         }
     }
 
-    private fun onSuccessToast() {
+    protected fun showToastMessageError(message: String) {
+        view?.let { Toaster.showError(it, message, Snackbar.LENGTH_LONG) }
+    }
+
+    override fun onSuccessReminderStock() {
         view?.let { view ->
             context?.let {
                 Toaster.make(
@@ -200,10 +204,6 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
                 )
             }
         }
-    }
-
-    protected fun showToastMessageError(message: String) {
-        view?.let { Toaster.showError(it, message, Snackbar.LENGTH_LONG) }
     }
 
     override fun onPause() {

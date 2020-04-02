@@ -11,16 +11,6 @@ import com.tokopedia.variant_common.model.*
 object VariantCommonMapper {
     var selectedOptionId = listOf<Int>()
 
-    fun mapVariantIdentifierWithDefaultSelectedToHashMap(variantData: ProductVariantCommon?, selectedOptionIds: List<Int>): MutableMap<String, Int> {
-        val hashMap: MutableMap<String, Int> = mutableMapOf()
-
-        variantData?.variant?.mapIndexed { index, variant ->
-            hashMap[variant.pv.toString()] = selectedOptionIds.getOrNull(index) ?: 0
-        }
-
-        return hashMap
-    }
-
     fun mapVariantIdentifierToHashMap(variantData: ProductVariantCommon?): MutableMap<String, Int> {
         return variantData?.variant?.associateBy({
             it.pv.toString()
@@ -30,7 +20,9 @@ object VariantCommonMapper {
     }
 
     fun processVariant(variantData: ProductVariantCommon?, mapOfSelectedVariant: MutableMap<String, Int>? = mutableMapOf(), level: Int = -1, isPartialySelected: Boolean = false): List<VariantCategory>? {
+        val variantChilderValidation = validateVariantChildren(variantData?.children ?: listOf(), variantData?.variant?.size ?: 0)
         if (variantData == null) return null
+        if (!variantChilderValidation) return null
 
         val listOfVariant: MutableList<VariantCategory> = mutableListOf()
         var updatedSelectedOptionsId: List<Int>
@@ -227,5 +219,20 @@ object VariantCommonMapper {
             it.optionIds == selectedOptionIds
         }
     }
+
+    /**
+     * Example validation:
+     * each child should have the same size option with the variant size.
+     * Example: option[red,XL] has size 2, should same with the variant size (color and size)
+     */
+    private fun validateVariantChildren(childList: List<VariantChildCommon>, variantSize: Int): Boolean {
+        for (childModel: VariantChildCommon in childList) {
+            if (childModel.optionIds.size != variantSize) {
+                return false
+            }
+        }
+        return true
+    }
+
 
 }

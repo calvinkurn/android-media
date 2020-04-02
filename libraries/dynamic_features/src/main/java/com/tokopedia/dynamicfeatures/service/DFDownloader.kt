@@ -116,7 +116,7 @@ object DFDownloader {
                     DFQueue.clear(applicationContext)
                     successResult = true
                 } else {
-                    val (result, immediate) = DFInstaller.startInstallInBackground(applicationContext, listOf(moduleToDownload), onSuccessInstall = {
+                    val (result, immediate) = DFInstaller.startInstallInBackground(applicationContext, moduleToDownload, onSuccessInstall = {
                         DFQueue.removeModuleFromQueue(applicationContext, listOf(moduleToDownload))
                     }, onFailedInstall = {
                         // loop all combined list

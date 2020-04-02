@@ -1005,6 +1005,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         analytics.eventClickQuotation(msg)
     }
 
+    override fun trackClickProductThumbnail(product: ProductAttachmentViewModel) {
+        analytics.eventClickProductThumbnail(product)
+    }
+
     companion object {
         private const val abNewThumbnailKey = "Topchat Product Thumbnail"
         private const val variantNewThumbnail = "New Thumbnail"
