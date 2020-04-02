@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.entertainment.search.Link
 import com.tokopedia.entertainment.search.R
@@ -36,6 +37,7 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope {
     @Inject
     lateinit var factory : EventSearchViewModelFactory
     lateinit var viewModel : EventSearchViewModel
+    lateinit var performanceMonitoring: PerformanceMonitoring
 
     var job: Job = Job()
 
@@ -47,12 +49,17 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope {
         getComponent(EventSearchComponent::class.java).inject(this)
     }
 
+    private fun initializePerformance(){
+        performanceMonitoring = PerformanceMonitoring.start(ENT_SEARCH_PERFORMANCE)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.ent_search_fragment, container,false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initializePerformance()
         activity?.run {
             viewModel = ViewModelProviders.of(this, factory).get(EventSearchViewModel::class.java)
             viewModel.resources = resources
@@ -78,6 +85,7 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope {
 
     private fun setupSwipeRefresh(){
         swipe_refresh_layout.setOnRefreshListener {
+            initializePerformance()
             if(activity?.txt_search?.searchBarTextField?.text?.toString()!!.isNotEmpty()
                     || activity?.txt_search?.searchBarTextField?.text?.toString()!!.isNotBlank()){
                 viewModel.getSearchData(activity?.txt_search?.searchBarTextField?.text?.toString()!!)
@@ -101,6 +109,7 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope {
         viewModel.searchList.observe(this,
                 Observer {
                     searchadapter.setItems(it)
+                    performanceMonitoring.stopTrace()
                 })
         viewModel.isItRefreshing.observe(this,
                 Observer {
@@ -145,6 +154,8 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope {
     companion object{
         fun newInstance() = EventSearchFragment()
         val TAG = EventSearchFragment::class.java.simpleName
+
+        const val ENT_SEARCH_PERFORMANCE = "et_event_search"
     }
 
 }

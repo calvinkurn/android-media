@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
@@ -48,6 +49,7 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         const val REQUEST_LOGIN_TRANSACTION = 214
         const val REQUEST_LOGIN_POST_LIKES = 215
         private const val COACH_MARK_TAG = "event_home"
+        const val ENT_HOME_PAGE_PERFORMANCE = "et_event_homepage"
     }
 
     @Inject
@@ -56,8 +58,12 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
     lateinit var userSession: UserSessionInterface
     lateinit var viewModel: HomeEventViewModel
     lateinit var homeAdapter: HomeEventAdapter
+    lateinit var performanceMonitoring: PerformanceMonitoring
     var favMenuItem : View? = null
 
+    private fun initializePerformance(){
+        performanceMonitoring = PerformanceMonitoring.start(ENT_HOME_PAGE_PERFORMANCE)
+    }
 
     override fun getScreenName(): String {
         return TAG
@@ -69,6 +75,7 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initializePerformance()
         setHasOptionsMenu(true)
         activity?.run {
             viewModel = ViewModelProviders.of(this, factory).get(HomeEventViewModel::class.java)
@@ -92,6 +99,7 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         }
 
         swipe_refresh_layout.setOnRefreshListener {
+            initializePerformance()
             viewModel.getHomeData(this, ::onSuccessGetData, ::onErrorGetData, CacheType.CLOUD_THEN_CACHE)
         }
     }
@@ -113,12 +121,14 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
 
     private fun onErrorGetData(throwable: Throwable) {
         swipe_refresh_layout?.isRefreshing = false
+        performanceMonitoring.stopTrace()
         Toast.makeText(context, throwable.message, Toast.LENGTH_LONG).show()
     }
 
     private fun onSuccessGetData(data: List<HomeEventItem<*>>) {
         shimering_layout.visibility = View.GONE
         homeAdapter.setItems(data)
+        performanceMonitoring.stopTrace()
         swipe_refresh_layout?.isRefreshing = false
         startShowCase()
     }
