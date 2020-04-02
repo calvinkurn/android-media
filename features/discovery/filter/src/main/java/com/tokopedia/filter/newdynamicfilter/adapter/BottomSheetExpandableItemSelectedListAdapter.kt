@@ -121,7 +121,7 @@ class BottomSheetExpandableItemSelectedListAdapter(private val filterView: Botto
             itemContainer?.setOnClickListener {
                 val newCheckedState = !isOptionSelected
                 filterView.saveCheckedState(option, newCheckedState, filterTitle)
-                adapter.notifyItemChanged(position)
+                adapter.notifyDataSetChanged()
             }
         }
 

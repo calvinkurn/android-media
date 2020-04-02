@@ -6,9 +6,8 @@ import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play_common.state.TokopediaPlayVideoState
+import com.tokopedia.play_common.state.PlayVideoState
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emptyFlow
@@ -33,7 +32,7 @@ open class OverlayVideoComponent(
                     .collect {
                         when (it) {
                             ScreenStateEvent.Init -> uiView.hide()
-                            is ScreenStateEvent.VideoPropertyChanged -> handleVideoStateChanged(it.videoProp.type.isVod, it.videoProp.state)
+                            is ScreenStateEvent.VideoPropertyChanged -> handleVideoStateChanged(it.stateHelper.channelType.isVod, it.videoProp.state)
                         }
                     }
         }
@@ -50,13 +49,13 @@ open class OverlayVideoComponent(
     protected open fun initView(container: ViewGroup) =
             OverlayVideoView(container)
 
-    private fun handleVideoStateChanged(isVod: Boolean, state: TokopediaPlayVideoState) {
+    private fun handleVideoStateChanged(isVod: Boolean, state: PlayVideoState) {
         if (!isVod) {
             uiView.hide()
             return
         }
         when (state) {
-            TokopediaPlayVideoState.Ended -> uiView.show()
+            PlayVideoState.Ended -> uiView.show()
             else -> uiView.hide()
         }
     }

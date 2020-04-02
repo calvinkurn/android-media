@@ -64,6 +64,7 @@ query SearchProduct(
             category_breadcrumb
             department_id
             department_name
+            booster_list
           	free_ongkir {
               is_active
               img_url
