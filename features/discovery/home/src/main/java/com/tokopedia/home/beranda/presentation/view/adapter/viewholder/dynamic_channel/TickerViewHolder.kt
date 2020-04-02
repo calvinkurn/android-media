@@ -19,30 +19,35 @@ import java.util.*
  * @author by DevAra on 02/04/20.
  */
 class TickerViewHolder(itemView: View, private val listener: HomeCategoryListener) : AbstractViewHolder<TickerViewModel?>(itemView) {
+    private val emptyTitle: String = ""
+    private val tickerComponent: Ticker = itemView.findViewById(R.id.tickerComponent)
     private val context: Context = itemView.context
     private val view: View = itemView
     private val tickerId = ""
 
     override fun bind(element: TickerViewModel?) {
-        val tickerDataList: MutableList<TickerData> = ArrayList()
-        val tickerComponent: Ticker = itemView.findViewById(R.id.tickerComponent)
+        element?.let {element->
+            element.tickers?.let {tickers->
+                val tickerDataList: MutableList<TickerData> = ArrayList()
 
-        for (tickers in element?.tickers!!) {
-            tickerDataList.add(TickerData("", tickers.message.toString(), TYPE_ANNOUNCEMENT, true))
+                for (tickerData in tickers) {
+                    tickerDataList.add(TickerData(emptyTitle, tickerData.message.toString(), TYPE_ANNOUNCEMENT, true))
+                }
+                val tickerPagerAdapter = TickerPagerAdapter(context, tickerDataList)
+                tickerComponent.addPagerView(tickerPagerAdapter, tickerDataList)
+                tickerComponent.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        HomePageTracking.eventClickTickerHomePage(context,tickerId)
+                        listener.onSectionItemClicked(linkUrl.toString())
+                    }
+
+                    override fun onDismiss() {
+                        HomePageTracking.eventClickOnCloseTickerHomePage(context,tickerId);
+                        listener.onCloseTicker();
+                    }
+                })
+            }
         }
-        val tickerPagerAdapter = TickerPagerAdapter(context, tickerDataList)
-        tickerComponent.addPagerView(tickerPagerAdapter, tickerDataList)
-        tickerComponent.setDescriptionClickEvent(object : TickerCallback {
-            override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                HomePageTracking.eventClickTickerHomePage(context,tickerId)
-                listener.onSectionItemClicked(linkUrl.toString())
-            }
-
-            override fun onDismiss() {
-                HomePageTracking.eventClickOnCloseTickerHomePage(context,tickerId);
-                listener.onCloseTicker();
-            }
-        })
     }
 
     companion object {
