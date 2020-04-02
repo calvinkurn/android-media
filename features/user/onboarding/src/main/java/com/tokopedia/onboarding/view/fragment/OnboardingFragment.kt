@@ -99,13 +99,15 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
             }
         }
         Weaver.executeWeaveCoRoutineWithFirebase(executeViewCreatedWeave, RemoteConfigKey.ENABLE_ASYNC_ONBOARDING_CREATE, context)
-        initView()
     }
 
     @NotNull
-    private fun executeViewCreateFlow() : Boolean{
-        initAbTesting()
-        trackPreinstall()
+    private fun executeViewCreateFlow(): Boolean {
+        GlobalScope.launch(coroutineContext) {
+            initAbTesting()
+            trackPreinstall()
+            initView()
+        }
         return true
     }
 
