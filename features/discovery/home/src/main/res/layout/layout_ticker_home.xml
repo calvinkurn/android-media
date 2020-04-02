@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         app:tickerType="announcement"
         app:tickerShapeType="loose"
+        android:clickable="true"
         app:closeButtonVisibility="visible"
         app:enableAutoSlide="true"
         app:autoSlideDelayNumber="5000"/>

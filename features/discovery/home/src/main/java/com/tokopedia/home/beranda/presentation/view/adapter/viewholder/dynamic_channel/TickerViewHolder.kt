@@ -8,11 +8,8 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerViewModel
-import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
-import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.unifycomponents.ticker.TickerData
-import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import java.util.*
 
 /**
@@ -31,14 +28,20 @@ class TickerViewHolder(itemView: View, private val listener: HomeCategoryListene
                 val tickerDataList: MutableList<TickerData> = ArrayList()
 
                 for (tickerData in tickers) {
-                    tickerDataList.add(TickerData(emptyTitle, tickerData.message.toString(), TYPE_ANNOUNCEMENT, true))
+                    tickerDataList.add(TickerData(emptyTitle, tickerData.message, TYPE_ANNOUNCEMENT, true))
                 }
                 val tickerPagerAdapter = TickerPagerAdapter(context, tickerDataList)
                 tickerComponent.addPagerView(tickerPagerAdapter, tickerDataList)
-                tickerComponent.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                tickerPagerAdapter.setPagerDescriptionClickEvent(object: TickerPagerCallback {
+                    override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
                         HomePageTracking.eventClickTickerHomePage(context,tickerId)
                         listener.onSectionItemClicked(linkUrl.toString())
+                    }
+
+                })
+                tickerComponent.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+
                     }
 
                     override fun onDismiss() {
