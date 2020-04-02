@@ -9,6 +9,8 @@ class AddEditProductDetailConstants {
         const val REQUEST_CODE_GET_CATALOG = 2
         const val UNIT_DAY = 0
         const val UNIT_WEEK = 1
+        const val CONDITION_NEW = "NEW"
+        const val CONDITION_USED = "USED"
         const val CATEGORY_RESULT_ID = "CATEGORY_RESULT_ID"
         const val CATEGORY_RESULT_NAME = "CATEGORY_RESULT_NAME"
         const val UNIVERSE_SEARCH_TYPE = "AUTOCOMPLETE"

@@ -34,17 +34,21 @@ import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DETAIL_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_INPUT
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextFloatOrZero
 import com.tokopedia.product.addedit.common.util.getTextIntOrZero
-import com.tokopedia.product.addedit.description.model.DescriptionInputModel
-import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionActivity
-import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionFragment.Companion.REQUEST_CODE_DESCRIPTION
+import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity
+import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
+import com.tokopedia.product.addedit.description.presentation.fragment.AddEditProductDescriptionFragment.Companion.REQUEST_CODE_DESCRIPTION
+import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailComponent
 import com.tokopedia.product.addedit.detail.presentation.adapter.NameRecommendationAdapter
 import com.tokopedia.product.addedit.detail.presentation.adapter.WholeSalePriceInputAdapter
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_NAME
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_NEW
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_USED
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_GET_CATALOG
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_GET_CATEGORY
@@ -54,6 +58,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.ProductCatalog
+import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.detail.presentation.viewholder.WholeSaleInputViewHolder
 import com.tokopedia.product.addedit.detail.presentation.viewmodel.AddEditProductDetailViewModel
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
@@ -512,7 +517,9 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
                             data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
                     val descriptionInputModel =
                             data.getParcelableExtra<DescriptionInputModel>(EXTRA_DESCRIPTION_INPUT)
-                    submitInput(shipmentInputModel, descriptionInputModel)
+                    val variantInputModel =
+                            data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
+                    submitInput(shipmentInputModel, descriptionInputModel, variantInputModel)
                 }
             }
         }
@@ -561,6 +568,23 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
             }
             viewModel.wholeSaleErrorCounter.value = wholeSaleErrorCounter
         }
+    }
+
+    private fun getWholesaleInput(): MutableList<WholeSaleInputModel> {
+        val inputResult: ArrayList<WholeSaleInputModel> = ArrayList()
+        productWholeSaleInputFormsView?.childCount?.let {
+            for (index in 0 until it) {
+                val productWholeSaleFormView = productWholeSaleInputFormsView?.layoutManager?.getChildAt(index)
+                val productWholeSalePriceField: TextFieldUnify? = productWholeSaleFormView?.findViewById(R.id.tfu_wholesale_price)
+                val productWholeSaleQuantityField: TextFieldUnify? = productWholeSaleFormView?.findViewById(R.id.tfu_wholesale_quantity)
+                val item = WholeSaleInputModel(
+                        productWholeSalePriceField.getText(),
+                        productWholeSaleQuantityField.getText()
+                )
+                inputResult.add(item)
+            }
+        }
+        return inputResult
     }
 
     private fun subscribeToProductNameInputStatus() {
@@ -724,36 +748,10 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
     }
 
     private fun moveToDescriptionActivity() {
-        val intent = Intent(context, AddEditProductDescriptionActivity::class.java)
+        val categoryId = viewModel.selectedCategoryId
+        val intent = AddEditProductDescriptionActivity.createInstance(context)
+        intent.putExtra(EXTRA_CATEGORY_ID, categoryId)
         startActivityForResult(intent, REQUEST_CODE_DESCRIPTION)
-    }
-
-    private fun submitInput(shipmentInputModel: ShipmentInputModel,
-                            descriptionInputModel: DescriptionInputModel) {
-
-        val detailInputModel = DetailInputModel(
-                productNameField.getText(),
-                viewModel.selectedCategoryId,
-                viewModel.selectedCatalogId,
-                productPriceField.getTextFloatOrZero(),
-                productStockField.getTextIntOrZero(),
-                productMinOrderField.getTextIntOrZero(),
-                if (isProductConditionNew) "NEW" else "USED",
-                productSkuField.getText(),
-                productPhotoPaths,
-                PreorderInputModel(
-                        preOrderDurationField.getTextIntOrZero(),
-                        selectedDurationPosition,
-                        preOrderSwitch?.isChecked ?: false
-                )
-        )
-
-        val intent = Intent()
-        intent.putExtra(EXTRA_DETAIL_INPUT, detailInputModel)
-        intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
-        intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
-        activity?.setResult(Activity.RESULT_OK, intent)
-        activity?.finish()
     }
 
     private fun subscribeToProductNameRecommendation() {
@@ -777,11 +775,6 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
     private fun showProductNameLoadingIndicator() {
         productNameRecLoader?.visible()
         productNameRecShimmering?.visible()
-    }
-
-    fun isNotAllowingCharacter(productName: String): Boolean {
-        val notAllowingChar = charArrayOf('[', '{', '}', '<', '>', '}', ']')
-        return productName.indexOfAny(notAllowingChar) >= 0
     }
 
     private fun onGetCategoryRecommendationSuccess(result: Success<List<ListItemUnify>>) {
@@ -809,6 +802,36 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
     private fun onGetCategoryRecommendationFailed() {
         productCategoryLayout?.show()
         productCategoryRecListView?.hide()
+    }
+
+    private fun submitInput(shipmentInputModel: ShipmentInputModel,
+                            descriptionInputModel: DescriptionInputModel,
+                            variantInputModel: ProductVariantInputModel) {
+        val detailInputModel = DetailInputModel(
+                productNameField.getText(),
+                viewModel.selectedCategoryId.toString(),
+                viewModel.selectedCatalogId,
+                productPriceField.getTextFloatOrZero(),
+                productStockField.getTextIntOrZero(),
+                productMinOrderField.getTextIntOrZero(),
+                if (isProductConditionNew) CONDITION_NEW else CONDITION_USED,
+                productSkuField.getText(),
+                productPhotoPaths,
+                PreorderInputModel(
+                        preOrderDurationField.getTextIntOrZero(),
+                        selectedDurationPosition,
+                        preOrderSwitch?.isChecked ?: false
+                ),
+                getWholesaleInput()
+        )
+
+        val intent = Intent()
+        intent.putExtra(EXTRA_DETAIL_INPUT, detailInputModel)
+        intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
+        intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
+        intent.putExtra(EXTRA_VARIANT_INPUT, variantInputModel)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
 
     // category id is saved on listActionText property

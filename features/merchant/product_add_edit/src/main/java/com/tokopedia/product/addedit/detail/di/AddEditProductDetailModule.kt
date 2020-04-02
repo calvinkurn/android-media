@@ -13,11 +13,6 @@ class AddEditProductDetailModule {
 
     @AddEditProductDetailScope
     @Provides
-    fun provideUserSessionInterface(@ApplicationContext context: Context?): UserSessionInterface {
-        return UserSession(context)
-    }
-
-    @Provides
     fun provideUserSession(context: Context): UserSessionInterface = UserSession(context)
 
 }
