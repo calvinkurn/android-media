@@ -460,6 +460,13 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
             .verifyValueEquals(false)
     }
 
+    @Test
+    fun `when isPowerMerchant should return power merchant status`() {
+        val actualIsPowerMerchant= viewModel.isPowerMerchant()
+        val expectedIsPowerMerchant = false
+        assertEquals(expectedIsPowerMerchant, actualIsPowerMerchant)
+    }
+
     private fun onMultiEditProducts_thenError(exception: NullPointerException) {
         coEvery { multiEditProductUseCase.execute(any()) } coAnswers { throw exception }
     }
