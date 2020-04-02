@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.shop_showcase.R
-import com.tokopedia.shop_showcase.shop_showcase_add.presentation.listener.ShopShowcasePreviewListener
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.BaseShowcaseProduct
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.LoadingShowcaseProduct
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.ShowcaseProduct
@@ -19,7 +18,7 @@ import kotlinx.android.synthetic.main.item_add_product_showcase_grid.view.*
  * @author by Rafli Syam on 2020-03-09
  */
 
-class ShowcaseProductListAdapter(private val context: Context, parentFragmentView: View, private val previewListener: ShopShowcasePreviewListener) : RecyclerView.Adapter<ShowcaseProductItemViewHolder>() {
+class ShowcaseProductListAdapter(private val context: Context, parentFragmentView: View) : RecyclerView.Adapter<ShowcaseProductItemViewHolder>() {
 
     companion object {
         private const val VIEW_SHOW_CASE = 0
@@ -38,7 +37,7 @@ class ShowcaseProductListAdapter(private val context: Context, parentFragmentVie
         else {
             LayoutInflater.from(context).inflate(R.layout.item_showcase_product_loading, parent, false)
         }
-        return ShowcaseProductItemViewHolder(view, previewListener)
+        return ShowcaseProductItemViewHolder(view)
     }
 
     override fun getItemCount(): Int {
@@ -57,7 +56,7 @@ class ShowcaseProductListAdapter(private val context: Context, parentFragmentVie
         holder.bind(item)
         if (item is ShowcaseProduct) {
             holder.itemView.parent_card_view.setOnClickListener {
-                val cardState = (!item.ishighlighted)
+                val cardState = !item.ishighlighted
                 if (cardState) {
                     selectedProduct.add(shopProductList[position] as ShowcaseProduct)
                 } else {
@@ -70,12 +69,26 @@ class ShowcaseProductListAdapter(private val context: Context, parentFragmentVie
         }
     }
 
-    fun updateShopProductList(isLoadNextPage: Boolean, productList: List<ShowcaseProduct>) {
+    fun updateShopProductList(isLoadNextPage: Boolean, productList: List<ShowcaseProduct>, isActionEdit: Boolean?) {
         if (!isLoadNextPage) {
             shopProductList = productList.toMutableList()
         } else {
             shopProductList.addAll(productList.toMutableList())
         }
+        if(selectedProduct.isEmpty()) {
+            selectedProduct = ArrayList(productList.filter { it.ishighlighted })
+            showProductCounter(getSelectedProductSize())
+        }
+//        isActionEdit?.let { actionEdit ->
+//            if(!actionEdit && selectedProduct.isEmpty()) {
+//                selectedProduct = ArrayList(productList.filter { it.ishighlighted })
+////                productList.forEach {
+////                    if(it.ishighlighted && selectedProduct.isEmpty())
+////                        selectedProduct.add(it)
+////                }
+//                showProductCounter(getSelectedProductSize())
+//            }
+//        }
         notifyDataSetChanged()
     }
 
@@ -100,11 +113,7 @@ class ShowcaseProductListAdapter(private val context: Context, parentFragmentVie
         return selectedProduct
     }
 
-    fun setSelectedProduct(newSelectedProductList: ArrayList<ShowcaseProduct>) {
-        selectedProduct.addAll(newSelectedProductList)
-        showProductCounter(getSelectedProductSize())
-    }
-
+    // TODO: Move this to fragment level soon!!
     private fun showProductCounter(totalSelectedProduct: Int) {
         if(totalSelectedProduct > 0) {
             val item = selectedProduct[0]

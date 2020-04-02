@@ -15,7 +15,7 @@ class ProductMapper @Inject constructor() {
             ShowcaseProduct(
                     productId = it.productId,
                     productName = it.productName,
-                    productPrice = it.productPrice.text,
+                    productPrice = it.productPrice.value,
                     ratingStarAvg = it.productStatistic.rating.toFloat(),
                     totalReview = it.productStatistic.totalReview,
                     productImageUrl = it.productImage.thumbnail

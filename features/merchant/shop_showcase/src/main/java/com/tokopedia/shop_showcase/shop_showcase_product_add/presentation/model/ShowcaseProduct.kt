@@ -13,7 +13,7 @@ interface BaseShowcaseProduct : Parcelable
 data class ShowcaseProduct(
         val productId: String,
         val productName: String,
-        val productPrice: String,
+        val productPrice: Int,
         val ratingStarAvg: Float,
         val totalReview: Int,
         val productImageUrl: String,

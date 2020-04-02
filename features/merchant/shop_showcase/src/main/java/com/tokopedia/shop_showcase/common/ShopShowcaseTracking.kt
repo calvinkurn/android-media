@@ -1,7 +1,7 @@
 package com.tokopedia.shop_showcase.common
 
 import android.content.Context
-import com.tokopedia.analytic_constant.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
 

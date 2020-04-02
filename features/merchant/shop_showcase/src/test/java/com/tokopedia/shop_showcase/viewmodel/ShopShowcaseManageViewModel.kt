@@ -33,6 +33,9 @@ class ShopShowcaseManageViewModel {
     @RelaxedMockK
     lateinit var reorderShowcase: ReorderShopShowcaseListUseCase
 
+    @RelaxedMockK
+    lateinit var getShopShowcaseTotalProductUseCase: GetShopShowcaseTotalProductUseCase
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -46,6 +49,7 @@ class ShopShowcaseManageViewModel {
                 getSellerShowcaseList,
                 deleteShowcase,
                 reorderShowcase,
+                getShopShowcaseTotalProductUseCase,
                 dispatchers
         )
     }

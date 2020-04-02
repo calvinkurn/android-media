@@ -3,12 +3,14 @@ package com.tokopedia.shop_showcase.shop_showcase_add.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputFilter
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +18,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -31,6 +34,8 @@ import com.tokopedia.shop_showcase.shop_showcase_add.data.model.*
 import com.tokopedia.shop_showcase.shop_showcase_add.di.component.DaggerShopShowcaseAddComponent
 import com.tokopedia.shop_showcase.shop_showcase_add.di.component.ShopShowcaseAddComponent
 import com.tokopedia.shop_showcase.shop_showcase_add.di.modules.ShopShowcaseAddModule
+import com.tokopedia.shop_showcase.shop_showcase_add.domain.mapper.AppendedProductMapper
+import com.tokopedia.shop_showcase.shop_showcase_add.domain.mapper.DeletedProductMapper
 import com.tokopedia.shop_showcase.shop_showcase_add.presentation.adapter.ShopShowcaseAddAdapter
 import com.tokopedia.shop_showcase.shop_showcase_add.presentation.listener.ShopShowcasePreviewListener
 import com.tokopedia.shop_showcase.shop_showcase_add.presentation.viewmodel.ShopShowcaseAddViewModel
@@ -38,10 +43,7 @@ import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.model.GetPro
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.activity.ShopShowcaseProductAddActivity
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.fragment.ShopShowcaseProductAddFragment
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.ShowcaseProduct
-import com.tokopedia.unifycomponents.EmptyState
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.TextFieldUnify
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -64,6 +66,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
 
         const val START_PRODUCT_SHOWCASE_ACTIVITY = 1
         const val SUCCESS_EDIT_SHOWCASE = 1
+        const val MAX_SHOWCASE_NAME_LENGTH = 128
         const val SELECTED_SHOWCASE_PRODUCT = "selected_product_list"
         const val DEFAULT_SHOWCASE_ID = "0"
         const val ERROR_TOASTER = Toaster.TYPE_ERROR
@@ -78,12 +81,11 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     private var selectedProductListFilter = GetProductListFilter()
     private var viewVisible = View.VISIBLE
     private var viewGone = View.GONE
-    private var selectedShowcaseProduct: ArrayList<ShowcaseProduct>? = arrayListOf()
-    private var appendedShowcaseProduct: ArrayList<AppendedProduct> = arrayListOf()
-    private var removedShowcaseProduct: ArrayList<RemovedProduct> = arrayListOf()
     private var isActionEdit: Boolean? = false
     private var showcaseId: String? = DEFAULT_SHOWCASE_ID
     private var showcaseName: String? = ""
+    private var appendedProductMapper = AppendedProductMapper()
+    private var deletedProductMapper = DeletedProductMapper()
 
     private val shopShowcaseAddViewModel: ShopShowcaseAddViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(ShopShowcaseAddViewModel::class.java)
@@ -104,6 +106,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     private val textFieldShowcaseName: TextFieldUnify? by lazy {
         view?.findViewById<TextFieldUnify>(R.id.textfield_showcase_name)?.apply {
             textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
+            textFieldInput.filters = arrayOf(InputFilter.LengthFilter(MAX_SHOWCASE_NAME_LENGTH))
         }
     }
 
@@ -127,6 +130,22 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         view?.findViewById<LoaderUnify>(R.id.loader_unify_add_showcase)
     }
 
+    private val productCounter: CardView? by lazy {
+        view?.findViewById<CardView>(R.id.product_choosen_counter)
+    }
+
+    private val productChoosenImage: ImageUnify? by lazy {
+        view?.findViewById<ImageUnify>(R.id.product_choosen_image)
+    }
+
+    private val productCounterText: Typography? by lazy {
+        view?.findViewById<Typography>(R.id.total_selected_product_counter)
+    }
+
+    private val undoDeleteProductButton: Typography? by lazy {
+        view?.findViewById<Typography>(R.id.delete_counter_cancel)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -144,13 +163,14 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == START_PRODUCT_SHOWCASE_ACTIVITY && resultCode == Activity.RESULT_OK) {
             val newSelectedProductList = data?.getParcelableArrayListExtra<ShowcaseProduct>(ShopShowcaseProductAddFragment.SHOWCASE_PRODUCT_LIST)
-            newSelectedProductList?.map {
-                val newAppendedProduct = AppendedProduct()
-                newAppendedProduct.product_id = it.productId
-                newAppendedProduct.menu_id = showcaseId
-                appendedShowcaseProduct.add(newAppendedProduct)
-            }
+//            newSelectedProductList?.map {
+//                val newAppendedProduct = AppendedProduct()
+//                newAppendedProduct.product_id = it.productId
+//                newAppendedProduct.menu_id = showcaseId
+//                appendedShowcaseProduct.add(newAppendedProduct)
+//            }
             updateSelectedProduct(showcaseAddAdapter, newSelectedProductList)
+            updateAppendedSelectedProduct(showcaseAddAdapter, newSelectedProductList)
             showSelectedProductList()
         }
     }
@@ -183,19 +203,48 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     }
 
     private fun updateSelectedProduct(showcaseAddAdapter: ShopShowcaseAddAdapter?, selectedProductList: ArrayList<ShowcaseProduct>?) {
-        showcaseAddAdapter?.updateSelectedDataSet(selectedProductList)
-        selectedProductList?.let { selectedShowcaseProduct?.addAll(it) }
+        showcaseAddAdapter?.updateSelectedDataSet(selectedProductList, isActionEdit)
+    }
+
+    private fun updateAppendedSelectedProduct(showcaseAddAdapter: ShopShowcaseAddAdapter?, newSelectedProductList: ArrayList<ShowcaseProduct>?) {
+        showcaseAddAdapter?.updateAppendedDataSet(newSelectedProductList)
+    }
+
+    override fun showDeleteCounter(firstDeletedItem: ShowcaseProduct) {
+        isActionEdit?.let {
+            if(it) {
+                ImageHandler.LoadImage(productChoosenImage, firstDeletedItem.productImageUrl)
+                productCounterText?.text = context?.resources?.getString(
+                        R.string.deleted_product_counter_text,
+                        showcaseAddAdapter?.getDeletedProductList()?.size.toString()
+                )
+                undoDeleteProductButton?.setOnClickListener {
+                    showcaseAddAdapter?.undoDeleteSelectedProduct()
+                    showSelectedProductList()
+                }
+                productCounter?.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    override fun hideDeleteCounter() {
+        productCounter?.visibility = View.GONE
     }
 
     override fun deleteSelectedProduct(position: Int) {
-        selectedShowcaseProduct?.get(position).let {
-            val removedProduct = RemovedProduct()
-            removedProduct.product_id = it?.productId
-            removedProduct.menu_id = showcaseId
-            removedShowcaseProduct.add(removedProduct)
-        }
+//        val productItem = selectedShowcaseProduct?.get(position)
+//        val removedProduct = RemovedProduct()
+//        removedProduct.product_id = productItem.productId
+//        removedProduct.menu_id = showcaseId
+//        removedShowcaseProduct.add(removedProduct)
+//        selectedShowcaseProduct?.get(position).let { showcaseProduct->
+//            val removedProduct = RemovedProduct()
+//            removedProduct.product_id = showcaseProduct?.productId
+//            removedProduct.menu_id = showcaseId
+//            removedShowcaseProduct.add(removedProduct)
+//        }
         showcaseAddAdapter?.deleteSelectedProduct(position)
-        showChooseProduct()
+        showSelectedProductList()
     }
 
     override fun showChooseProduct() {
@@ -273,9 +322,9 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
             }
         } else {
             hideSoftKeyboard()
-            if(selectedShowcaseProduct?.size == 0) {
+            if(showcaseAddAdapter?.getSelectedProductList()?.size == 0) {
                 textFieldShowcaseName?.setError(false)
-                showChooseProduct()
+                showSelectedProductList()
             } else {
                 addShopShowcaseParam.name = showcaseName
                 if(isActionEdit == false) {
@@ -299,6 +348,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     private fun goToChooseProduct() {
         val intent = Intent(activity, ShopShowcaseProductAddActivity::class.java)
         intent.putParcelableArrayListExtra(SELECTED_SHOWCASE_PRODUCT, showcaseAddAdapter?.getSelectedProductList())
+        intent.putExtra(ShopShowcaseEditParam.EXTRA_IS_ACTION_EDIT, isActionEdit)
         startActivityForResult(intent, START_PRODUCT_SHOWCASE_ACTIVITY)
     }
 
@@ -310,6 +360,8 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                 selectedProductListRecyclerView?.visibility = View.VISIBLE
                 emptyStateProduct?.visibility = View.GONE
                 headerUnify?.actionTextView?.visibility = View.VISIBLE
+            } else {
+                showChooseProduct()
             }
         }
     }
@@ -438,9 +490,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     private fun observeLoaderState() {
         observe(shopShowcaseAddViewModel.loaderState) {
             if(it) showLoader()
-            else {
-                if(isActionEdit == false) hideLoader()
-            }
+            else hideLoader()
         }
     }
 
@@ -451,8 +501,17 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     private fun updateShopShowcase(updateShopShowcaseParam: UpdateShopShowcaseParam) {
         val appendShowcaseProductParam = AppendShowcaseProductParam()
         val removeShowcaseProductParam = RemoveShowcaseProductParam()
-        appendShowcaseProductParam.listAppended = appendedShowcaseProduct
-        removeShowcaseProductParam.listRemoved = removedShowcaseProduct
+
+        val appendedProductList = showcaseAddAdapter?.getAppendedProductList()?.let {
+            ArrayList(appendedProductMapper.mapToGqlModel(it, showcaseId))
+        }
+
+        val removedProductList = showcaseAddAdapter?.getDeletedProductList()?.let {
+            ArrayList(deletedProductMapper.mapToGqlModel(it, showcaseId))
+        }
+
+        appendedProductList?.let { appendShowcaseProductParam.listAppended = it }
+        removedProductList?.let { removeShowcaseProductParam.listRemoved = it }
         shopShowcaseAddViewModel.updateShopShowcase(updateShopShowcaseParam, appendShowcaseProductParam, removeShowcaseProductParam)
     }
 

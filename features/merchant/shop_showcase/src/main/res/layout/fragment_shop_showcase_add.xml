@@ -45,6 +45,7 @@
                 android:id="@+id/textfield_showcase_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:text_field_counter="128"
                 app:text_field_label_static="true"
                 app:text_field_label="@string/etalase_name_label"
                 app:text_field_message="@string/showcase_name_hint"
@@ -82,8 +83,8 @@
                 app:typographyWeight="reguler"
                 app:typographyType="body_1"
                 android:textColor="@color/text_color_green"
-                android:text="@string/choose_product_text"
-                tools:text="@string/choose_product_text"
+                android:text="@string/add_product_text"
+                tools:text="@string/add_product_text"
                 android:padding="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_36"
                 />
@@ -132,5 +133,63 @@
         app:unifyEmptyStateTitle="@string/showcase_empty"
         android:visibility="gone"
         app:unifyEmptyStateType="section" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/product_choosen_counter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:elevation="@dimen/dp_16"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="@dimen/dp_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/product_choosen_image"
+                android:layout_width="@dimen/dp_48"
+                android:layout_height="@dimen/dp_48"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_8"
+                android:scaleType="centerCrop"
+                />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/total_selected_product_counter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/deleted_product_counter_text"
+                android:layout_toRightOf="@id/product_choosen_image"
+                android:layout_toEndOf="@id/product_choosen_image"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
+                app:typographyType="heading_4"
+                android:layout_marginTop="@dimen/dp_10"
+                android:textColor="@color/primary_text_color"
+                />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/delete_counter_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_cancel_button"
+                android:textColor="@color/text_color_green"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_12"
+                app:typographyType="body_1"
+                app:typographyWeight="bold"
+                tools:ignore="RelativeOverlap" />
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

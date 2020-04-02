@@ -28,6 +28,5 @@ class ShopShowcaseModule {
     @ShopShowcaseScope
     @Provides
     fun provideMainDispatcherProvider(): CoroutineDispatcher = Dispatchers.Main
-    // fun provideMainDispatcherProvider(): ShopShowcaseDispatchProvider = ShopShowcaseDispatcherProvider()
 
 }

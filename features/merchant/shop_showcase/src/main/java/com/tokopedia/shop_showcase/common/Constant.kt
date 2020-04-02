@@ -15,6 +15,7 @@ object GQLQueryConstant {
     const val QUERY_SHOP_SHOWCASE_LIST_AS_SELLER = "get_shop_showcase_list_as_seller"
     const val QUERY_DELETE_SINGLE_SHOP_SHOWCASE = "delete_shop_showcase"
     const val QUERY_REORDER_SHOP_SHOWCASE = "reorder_shop_showcase"
+    const val QUERY_SHOP_SHOWCASE_GET_TOTAL_PRODUCTS = "get_shop_showcase_product"
 }
 
 object PageNameConstant {
@@ -30,6 +31,8 @@ object ShopShowcaseListParam {
     const val EXTRA_IS_SHOW_ZERO_PRODUCT = "IS_SHOW_ZERO_PRODUCT"
     const val EXTRA_IS_MY_SHOP = "IS_MY_SHOP"
     const val EXTRA_SHOP_TYPE = "EXTRA_SHOP_TYPE"
+    const val EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE = "EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE"
+//    const val EXTRA_TOTAL_PRODUCT = "EXTRA_TOTAL_PRODUCT"
 }
 
 object ShopShowcaseEditParam {
@@ -44,8 +47,8 @@ object ShowcaseType {
 }
 
 object TextConstant {
-    const val TEXT_TITLE_DIALOG_DELETE = "Yakin ingin hapus etalase {\n}ini?"
-    const val TEXT_DESCRIPTION_DIALOG_DELETE = "Dengan menghapus etalase, produk {\n}akan tersimpan di Semua Produk?"
+    const val TEXT_TITLE_DIALOG_DELETE = "Yakin ingin hapus etalase \nini?"
+    const val TEXT_DESCRIPTION_DIALOG_DELETE = "Dengan menghapus etalase, produk \nakan tersimpan di Semua Produk"
 }
 
 object ShopType {

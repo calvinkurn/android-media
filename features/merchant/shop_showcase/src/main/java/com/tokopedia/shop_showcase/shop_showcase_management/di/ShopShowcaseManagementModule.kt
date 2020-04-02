@@ -56,4 +56,11 @@ class ShopShowcaseManagementModule {
         return GraphqlHelper.loadRawString(context.resources, R.raw.get_shop_showcase_list_as_seller)
     }
 
+    @ShopShowcaseManagementScope
+    @Provides
+    @Named(GQLQueryConstant.QUERY_SHOP_SHOWCASE_GET_TOTAL_PRODUCTS)
+    fun provideQueryShopShowcaseGetTotalProduct(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.get_shop_showcase_product)
+    }
+
 }

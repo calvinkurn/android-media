@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.header.HeaderUnify
@@ -23,8 +22,8 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
 import com.tokopedia.shop_showcase.common.ImageAssets
+import com.tokopedia.shop_showcase.common.ShopShowcaseEditParam
 import com.tokopedia.shop_showcase.shop_showcase_add.presentation.fragment.ShopShowcaseAddFragment
-import com.tokopedia.shop_showcase.shop_showcase_add.presentation.listener.ShopShowcasePreviewListener
 import com.tokopedia.shop_showcase.shop_showcase_product_add.di.component.DaggerShowcaseProductAddComponent
 import com.tokopedia.shop_showcase.shop_showcase_product_add.di.component.ShowcaseProductAddComponent
 import com.tokopedia.shop_showcase.shop_showcase_product_add.di.module.ShowcaseProductAddModule
@@ -34,7 +33,6 @@ import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.adapte
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.BaseShowcaseProduct
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.ShowcaseProduct
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.viewmodel.ShowcaseProductAddViewModel
-import com.tokopedia.trackingoptimizer.constant.Constant
 import com.tokopedia.unifycomponents.EmptyState
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -46,7 +44,7 @@ import javax.inject.Inject
  * @author by Rafli Syam on 2020-03-09
  */
 
-class ShopShowcaseProductAddFragment : BaseDaggerFragment(), HasComponent<ShowcaseProductAddComponent>, ShopShowcasePreviewListener {
+class ShopShowcaseProductAddFragment : BaseDaggerFragment(), HasComponent<ShowcaseProductAddComponent> {
 
     companion object {
         @JvmStatic
@@ -151,16 +149,9 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(), HasComponent<Showca
         }
     }
 
-    override fun deleteSelectedProduct(position: Int) {
-        // soon implement different adapter and viewholder
-    }
-
-    override fun showChooseProduct() {
-        // soon implement different adapter and viewholder
-    }
-
     private fun initView(view: View?) {
-        initRecyclerView(view, this)
+        emptyState?.visibility = View.INVISIBLE
+        initRecyclerView(view)
         getProductList(productListFilter)
 
         observeProductListData()
@@ -208,13 +199,12 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(), HasComponent<Showca
         }
     }
 
-    private fun initRecyclerView(view: View?, previewListener: ShopShowcasePreviewListener) {
+    private fun initRecyclerView(view: View?) {
         view?.run {
-            emptyState?.visibility = View.INVISIBLE
             recyclerViewProductList?.apply {
                 setHasFixedSize(true)
                 layoutManager = gridLayoutManager
-                showcaseProductListAdapter = ShowcaseProductListAdapter(context, view, previewListener)
+                showcaseProductListAdapter = ShowcaseProductListAdapter(context, view)
                 adapter = showcaseProductListAdapter
                 addOnScrollListener(scrollListener)
             }
@@ -239,30 +229,25 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(), HasComponent<Showca
                 is Success -> {
 
                     val productList: MutableList<ShowcaseProduct> = it.data.toMutableList()
-                    if(productList.size == 0) {
+                    if(productList.size == 0 && !isLoadNextPage) {
                         showEmptyViewProductSearch(true)
-                        showcaseProductListAdapter?.updateShopProductList(isLoadNextPage, productList)
+                        showcaseProductListAdapter?.updateShopProductList(isLoadNextPage, productList, isActionEdit = false)
                     } else {
                         showEmptyViewProductSearch(false)
-                        val selectedProductList = activity?.intent?.getParcelableArrayListExtra<BaseShowcaseProduct>(ShopShowcaseAddFragment.SELECTED_SHOWCASE_PRODUCT)?.filterIsInstance<ShowcaseProduct>()
-                        val filteredProductList: List<ShowcaseProduct>
-                        val productIdSet: MutableSet<String> = mutableSetOf()
-
-                        selectedProductList?.forEach { showcaseProduct ->
-                            productIdSet.add(showcaseProduct.productId)
+                        var selectedProductList = activity?.intent?.getParcelableArrayListExtra<BaseShowcaseProduct>(ShopShowcaseAddFragment.SELECTED_SHOWCASE_PRODUCT)?.filterIsInstance<ShowcaseProduct>()
+                        val isActionEdit = activity?.intent?.getBooleanExtra(ShopShowcaseEditParam.EXTRA_IS_ACTION_EDIT, false)
+                        selectedProductList?.run {
+                            if(isEmpty()) {
+                                selectedProductList = showcaseProductListAdapter?.getSelectedProduct()
+                            }
                         }
-                        filteredProductList = productList.filter { showcaseProduct->
-                            !productIdSet.contains(showcaseProduct.productId)
+                        productList.forEach { showcaseProduct->
+                            selectedProductList?.forEach {
+                                if(it.productId == showcaseProduct.productId)
+                                    showcaseProduct.ishighlighted = true
+                            }
                         }
-//                    selectedProductList?.forEach { selectedProduct ->
-//                        productList.forEach { showcaseProduct ->
-//                            if(selectedProduct.productId == showcaseProduct.productId) {
-//                                showcaseProduct.ishighlighted = true
-//                            }
-//                        }
-//                    }
-//                    showcaseProductListAdapter?.setSelectedProduct(selectedProductList as ArrayList<ShowcaseProduct>)
-                        showcaseProductListAdapter?.updateShopProductList(isLoadNextPage, filteredProductList)
+                        showcaseProductListAdapter?.updateShopProductList(isLoadNextPage, productList, isActionEdit)
                         if (isLoadNextPage)
                             scrollListener.updateStateAfterGetData()
                     }

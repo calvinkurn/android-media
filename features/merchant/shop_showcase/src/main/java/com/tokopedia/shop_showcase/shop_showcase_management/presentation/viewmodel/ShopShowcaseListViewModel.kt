@@ -3,8 +3,7 @@ package com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmo
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.shop_showcase.shop_showcase_management.data.model.DeleteShopShowcaseResponse
-import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ReorderShopShowcaseResponse
+import com.tokopedia.shop_showcase.shop_showcase_management.data.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -22,6 +21,7 @@ class ShopShowcaseListViewModel @Inject constructor(
         private val getShopShowcaseListSellerUseCase: GetShopShowcaseListSellerUseCase,
         private val deleteShopShowcaseUseCase: DeleteShopShowcaseUseCase,
         private val reorderShopShowcaseUseCase: ReorderShopShowcaseListUseCase,
+        private val getShopShowcaseTotalProductUseCase: GetShopShowcaseTotalProductUseCase,
         dispatcher: CoroutineDispatcher
 ): BaseViewModel(dispatcher) {
 
@@ -40,6 +40,10 @@ class ShopShowcaseListViewModel @Inject constructor(
     private val _reoderShopShowcaseResponse =  MutableLiveData<Result<ReorderShopShowcaseResponse>>()
     val reoderShopShowcaseResponse: LiveData<Result<ReorderShopShowcaseResponse>>
         get() = _reoderShopShowcaseResponse
+
+    private val _getShopProductResponse = MutableLiveData<Result<GetShopProductsResponse>>()
+    val getShopProductResponse: LiveData<Result<GetShopProductsResponse>>
+        get() = _getShopProductResponse
 
 
     fun getShopShowcaseListAsBuyer(shopId: String, isOwner: Boolean) {
@@ -95,6 +99,29 @@ class ShopShowcaseListViewModel @Inject constructor(
             }
         }) {
             _reoderShopShowcaseResponse.value = Fail(it)
+        }
+    }
+
+    fun getTotalProduct(shopId: String, page: Int, perPage: Int,
+            sortId: Int, etalase: String, search: String) {
+        launchCatchError(block = {
+            withContext(Dispatchers.IO) {
+                var paramInput = mapOf(
+                        "page" to page,
+                        "fkeyword" to search,
+                        "perPage" to perPage,
+                        "fmenu" to etalase,
+                        "sort" to sortId
+                )
+
+                getShopShowcaseTotalProductUseCase.params = GetShopShowcaseTotalProductUseCase.createRequestParam(shopId, paramInput)
+                val shopProductData = getShopShowcaseTotalProductUseCase.executeOnBackground()
+                shopProductData.let {
+                    _getShopProductResponse.postValue(Success(it))
+                }
+            }
+        }) {
+            _getShopProductResponse.value = Fail(it)
         }
     }
 
