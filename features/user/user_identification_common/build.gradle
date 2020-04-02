@@ -47,7 +47,9 @@ dependencies {
 
     //TEST
     testImplementation rootProject.ext.testDependencies.junit
-    testImplementation rootProject.ext.testDependencies.kotlinMockito
+    testImplementation (rootProject.ext.testDependencies.kotlinMockito){
+        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-reflect'
+    }
     testImplementation rootProject.ext.testDependencies.spekApi
     testImplementation rootProject.ext.testDependencies.platformEngine
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner
