@@ -68,7 +68,7 @@ class PartialCentralizedPromoOnGoingPromoView(
     }
 
     override fun bindSuccessData(data: OnGoingPromoListUiModel) = with(view) {
-        tvOnGoingPromo.text = data.title
+        tvOnGoingPromo.text = context.getString(R.string.sah_label_promo_and_ads)
     }
 
     override fun onRecyclerViewItemEmpty() = with(view) {
