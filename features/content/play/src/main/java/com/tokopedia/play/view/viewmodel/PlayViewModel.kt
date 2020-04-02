@@ -416,7 +416,11 @@ class PlayViewModel @Inject constructor(
 
             playVideoStream(channel)
 
-            val completeInfoUiModel = createCompleteInfoModel(channel)
+            val completeInfoUiModel = PlayUiMapper.createCompleteInfoModel(
+                    channel = channel,
+                    partnerName = _observablePartnerInfo.value?.name.orEmpty(),
+                    isBanned = _observableEvent.value?.isBanned ?: false
+            )
 
             _observableGetChannelInfo.value = Success(completeInfoUiModel.channelInfo)
             _observableTotalViews.value = completeInfoUiModel.totalView
@@ -623,34 +627,6 @@ class PlayViewModel @Inject constructor(
             startWebSocket(channelId, gcToken, settings)
         })
     }
-
-    private fun createCompleteInfoModel(channel: Channel) = PlayCompleteInfoUiModel(
-            channelInfo = PlayUiMapper.mapChannelInfo(channel),
-            videoStream = PlayUiMapper.mapVideoStream(channel.videoStream, channel.isActive),
-            pinnedMessage = PlayUiMapper.mapPinnedMessage(
-                    _observablePartnerInfo.value?.name.orEmpty(),
-                    channel.pinnedMessage
-            ),
-            pinnedProduct = PlayUiMapper.mapPinnedProduct(
-                    _observablePartnerInfo.value?.name.orEmpty(),
-                    channel.isShowProductTagging,
-                    channel.pinnedProduct),
-            quickReply = PlayUiMapper.mapQuickReply(channel.quickReply),
-            totalView = PlayUiMapper.mapTotalViews(channel.totalViews),
-            event = mapEvent(channel)
-    )
-
-    private fun mapEvent(channel: Channel) = EventUiModel(
-            isBanned = _observableEvent.value?.isBanned ?: false,
-            isFreeze = !channel.isActive || channel.isFreeze,
-            bannedMessage = channel.banned.message,
-            bannedTitle = channel.banned.title,
-            bannedButtonTitle = channel.banned.buttonTitle,
-            freezeMessage = channel.freezeChannelState.desc,
-            freezeTitle = channel.freezeChannelState.title,
-            freezeButtonTitle = channel.freezeChannelState.btnTitle,
-            freezeButtonUrl = channel.freezeChannelState.btnAppLink
-    )
 
     private fun mapBufferControl(bufferControl: VideoStream.BufferControl) = PlayBufferControl(
             minBufferMs = bufferControl.minBufferingSecond * MS_PER_SECOND,
