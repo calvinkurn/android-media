@@ -64,7 +64,7 @@
     <string name="setting_menu_shop_notes">Catatan Toko</string>
     <string name="setting_menu_shop_working_hours">Jam buka tutup toko</string>
     <string name="setting_menu_location_and_shipment">LOKASI DAN PENGIRIMAN</string>
-    <string name="setting_menu_add_and_shop_location">Tambah dan lokasi toko</string>
+    <string name="setting_menu_add_and_shop_location">Tambah dan ubah lokasi toko</string>
     <string name="setting_menu_set_shipment_method">Atur layanan pengiriman</string>
     <string name="setting_menu_exclusive_feature">FITUR EKSKLUSIF</string>
     <string name="setting_menu_cash_on_delivery_service">Layanan bayar di tempat</string>

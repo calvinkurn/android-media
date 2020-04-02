@@ -36,6 +36,7 @@
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:scaleType="fitXY"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/leftGuideline"
                 app:srcCompat="@drawable/setting_tip_bar_os"/>
@@ -52,7 +53,7 @@
                 app:layout_constraintDimensionRatio="1:1"
                 android:background="@drawable/setting_image_circular"/>
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_margin="@dimen/setting_shop_badge_border_os_margin"

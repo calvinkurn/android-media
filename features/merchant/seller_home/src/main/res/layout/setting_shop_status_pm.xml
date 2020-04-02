@@ -38,7 +38,6 @@
                 android:id="@+id/powerMerchantStatusText"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="@string/setting_active"
                 android:gravity="center_vertical"
                 android:textColor="@color/setting_green"
                 app:typographyType="body_2"
@@ -49,6 +48,8 @@
                 android:id="@+id/powerMerchantLeftStatus"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/setting_tip_bar_enabled"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/leftGuideline"/>
 
@@ -64,7 +65,7 @@
                 app:layout_constraintDimensionRatio="1:1"
                 android:background="@drawable/setting_image_circular"/>
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/powerMerchantIcon"
                 android:layout_width="0dp"
                 android:layout_height="0dp"

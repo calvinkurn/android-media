@@ -98,7 +98,7 @@
         app:layout_constraintBottom_toTopOf="@id/bottomRefer"
         app:layout_constraintStart_toEndOf="@id/dot" />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/settingShopNext"
         android:layout_width="0dp"
         android:layout_height="0dp"
