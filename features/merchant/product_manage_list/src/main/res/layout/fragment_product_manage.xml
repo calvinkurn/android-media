@@ -29,17 +29,20 @@
                 android:visibility="gone"
                 tools:visibility="visible" />
 
-            <com.tokopedia.unifycomponents.SearchBarUnify
+            <com.tokopedia.design.text.SearchInputView
                 android:id="@+id/searchBar"
-                android:layout_marginLeft="@dimen/spacing_lvl4"
-                android:layout_marginTop="@dimen/spacing_lvl4"
-                android:layout_marginBottom="@dimen/spacing_lvl1"
-                android:layout_marginRight="@dimen/spacing_lvl4"
+                android:clickable="true"
+                android:focusable="true"
+                android:textSize="@dimen/fontSize_lvl2"
+                android:textColorHint="@android:color/darker_gray"
+                android:layout_marginLeft="@dimen/spacing_lvl2"
+                android:layout_marginRight="@dimen/spacing_lvl2"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:background="@drawable/bg_corner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:search_bar_clearable="true"
-                app:search_bar_show_icon="false"
+                app:siv_search_icon="@drawable/unify_search_ic"
                 app:layout_scrollFlags="scroll|snap"/>
 
             <com.tokopedia.product.manage.feature.list.view.ui.tab.ProductManageTabFilter
@@ -48,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/product_manage_horizontal_spacing"
                 android:paddingRight="@dimen/product_manage_horizontal_spacing"
-                android:layout_marginTop="@dimen/product_manage_vertical_spacing"
+                android:layout_marginTop="@dimen/spacing_lvl2"
                 android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
                 android:visibility="gone"
                 app:layout_scrollFlags="scroll|snap" />
