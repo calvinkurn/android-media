@@ -74,6 +74,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String HCI_CAMERA_KTP = "android-js-call://ktp";
     private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
     private static final String LOGIN_APPLINK = "tokopedia://login";
+    private static final String REGISTER_APPLINK = "tokopedia://registration";
     String mJsHciCallbackFuncName;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
     private static final int REQUEST_CODE_LOGIN = 1233;
@@ -530,7 +531,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 return false;
             }
         }
-        if (url.contains(LOGIN_APPLINK)) {
+        if (url.contains(LOGIN_APPLINK)||url.contains(REGISTER_APPLINK)) {
             startActivityForResult(RouteManager.getIntent(getActivity(), url), REQUEST_CODE_LOGIN);
             return true;
         }
