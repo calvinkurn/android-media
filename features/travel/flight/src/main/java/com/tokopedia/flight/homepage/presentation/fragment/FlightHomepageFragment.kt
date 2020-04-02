@@ -308,7 +308,7 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
         TravelTickerUtils.buildUnifyTravelTicker(travelTickerModel,
                 flightHomepageTicker, object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                RouteManager.route(requireContext(), linkUrl.toString())
+                RouteManager.route(requireContext(), travelTickerModel.url)
             }
 
             override fun onDismiss() {}
