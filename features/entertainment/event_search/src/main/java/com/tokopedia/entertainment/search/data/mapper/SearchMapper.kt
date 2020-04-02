@@ -18,7 +18,8 @@ object SearchMapper {
                 nama_event = event.title,
                 lokasi_event = event.subtitle,
                 tanggal_event = "",
-                image_url = event.imageURL
+                image_url = event.imageURL,
+                app_url = event.appURL
         )
     }
 
