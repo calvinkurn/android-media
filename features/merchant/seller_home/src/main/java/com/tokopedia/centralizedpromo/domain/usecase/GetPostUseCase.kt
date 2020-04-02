@@ -25,7 +25,8 @@ class GetPostUseCase @Inject constructor(
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetPostDataResponse>()
             val widgetDataList = data.getPostWidgetData?.data.orEmpty()
-            return postMapper.mapDomainDataModelToUiDataModel(widgetDataList).first()
+            return postMapper.mapDomainDataModelToUiDataModel(widgetDataList).firstOrNull()
+                    ?: PostListUiModel(emptyList(), "")
         } else {
             throw MessageErrorException(errors.joinToString(", ") { it.message })
         }
