@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
-import com.tokopedia.shop.newproduct.view.datamodel.LabelGroupViewModel
+import com.tokopedia.shop.product.view.datamodel.LabelGroupViewModel
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct
 
 /**
