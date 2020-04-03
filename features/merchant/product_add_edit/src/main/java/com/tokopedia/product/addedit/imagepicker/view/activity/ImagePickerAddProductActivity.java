@@ -3,52 +3,69 @@ package com.tokopedia.product.addedit.imagepicker.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import android.text.TextUtils;
 
-import com.tokopedia.imagepicker.picker.main.adapter.ImagePickerViewPagerAdapter;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
-import com.tokopedia.product.addedit.imagepicker.view.fragment.ImagePickerCatalogFragment;
-import com.tokopedia.product.addedit.imagepicker.view.adapter.ImagePickerViewPageAddProductAdapter;
+import com.tokopedia.product.addedit.tracking.ProductAddChooseImageTracking;
+import com.tokopedia.product.addedit.tracking.ProductEditChooseImageTracking;
+import com.tokopedia.user.session.UserSession;
 
-/**
- * Created by zulfikarrahman on 6/6/18.
- */
+import java.util.ArrayList;
 
-public class ImagePickerAddProductActivity extends ImagePickerActivity implements ImagePickerCatalogFragment.ListenerImagePickerCatalog {
+public class ImagePickerAddProductActivity extends ImagePickerActivity {
 
-    public static final String EXTRA_IMAGE_PICKER_CATALOG_ID = "EXTRA_IMAGE_PICKER_CATALOG_ID";
-    String catalogId;
-
-    @Override
-    public void onClickImageCatalog(String url, boolean isChecked) {
-        onImageSelected(url, isChecked, null);
-    }
+    UserSession userSession;
+    boolean isEditProduct = false;
+    public static final String IS_EDIT = "is_edit";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        catalogId = getIntent().getStringExtra(EXTRA_IMAGE_PICKER_CATALOG_ID);
+        isEditProduct = getIntent().getBooleanExtra(IS_EDIT, false);
         super.onCreate(savedInstanceState);
+        userSession = new UserSession(getContext());
     }
 
-    @NonNull
-    @Override
-    protected ImagePickerViewPagerAdapter getImagePickerViewPagerAdapter() {
-        if (!TextUtils.isEmpty(catalogId)) {
-            return new ImagePickerViewPageAddProductAdapter(this, getSupportFragmentManager(), imagePickerBuilder, catalogId);
-        } else {
-            return super.getImagePickerViewPagerAdapter();
-        }
-    }
-
-    public static Intent getIntent(Context context, ImagePickerBuilder imagePickerBuilder, String catalogId) {
+    public static Intent getIntent(Context context, ImagePickerBuilder imagePickerBuilder, boolean isEditProduct) {
         Intent intent = new Intent(context, ImagePickerAddProductActivity.class);
         // https://stackoverflow.com/questions/28589509/android-e-parcel-class-not-found-when-unmarshalling-only-on-samsung-tab3
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_IMAGE_PICKER_BUILDER, imagePickerBuilder);
         intent.putExtra(EXTRA_IMAGE_PICKER_BUILDER, bundle);
-        intent.putExtra(EXTRA_IMAGE_PICKER_CATALOG_ID, catalogId);
+        intent.putExtra(IS_EDIT, isEditProduct);
         return intent;
+    }
+
+    @Override
+    public void trackOpen() {
+        if (!isEditProduct) {
+            ProductAddChooseImageTracking.INSTANCE.trackScreen();
+        }
+    }
+
+    @Override
+    public void trackContinue() {
+        if (isEditProduct) {
+            ProductEditChooseImageTracking.INSTANCE.trackContinue(userSession.getShopId());
+        } else {
+            ProductAddChooseImageTracking.INSTANCE.trackContinue(userSession.getShopId());
+        }
+    }
+
+    @Override
+    public void trackBack() {
+        if (isEditProduct) {
+            ProductEditChooseImageTracking.INSTANCE.trackBack(userSession.getShopId());
+        } else {
+            ProductAddChooseImageTracking.INSTANCE.trackBack(userSession.getShopId());
+        }
+    }
+
+    @Override
+    protected Intent getEditorIntent(ArrayList<String> selectedImagePaths) {
+        Intent targetIntent = new Intent(this, ImagePickerEditPhotoActivity.class);
+        Intent origin = super.getEditorIntent(selectedImagePaths);
+        targetIntent.putExtras(origin.getExtras());
+        targetIntent.putExtra(IS_EDIT, isEditProduct);
+        return targetIntent;
     }
 }

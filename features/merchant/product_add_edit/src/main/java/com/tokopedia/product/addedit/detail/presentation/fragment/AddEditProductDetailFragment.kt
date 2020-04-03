@@ -661,7 +661,11 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
     private fun createAddProductPhotoButtonOnClickListener(): View.OnClickListener {
         return View.OnClickListener {
             productPhotoAdapter?.let { productPhotoPaths = it.getProductPhotoPaths() }
-            val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(productPhotoPaths)))
+            //TODO assign this
+            val isEdit = false
+            val intent = ImagePickerAddProductActivity.getIntent(context,
+                createImagePickerBuilder(ArrayList(productPhotoPaths)),
+                isEdit)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
     }
