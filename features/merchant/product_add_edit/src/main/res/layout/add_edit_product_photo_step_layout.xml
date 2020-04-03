@@ -29,7 +29,7 @@
         app:typographyWeight="reguler" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_uploaded_product_photos"
+        android:id="@+id/rv_product_photos"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_12"
@@ -38,7 +38,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_start_add_edit_product_photo" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/add_product_photo_section"
+        android:id="@+id/add_product_photo_tips_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl7"
         android:layout_marginTop="@dimen/dp_12"

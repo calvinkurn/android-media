@@ -15,6 +15,8 @@ object ApplinkConstInternalMechant {
     val MERCHANT_REDIRECT_CREATE_SHOP = "${INTERNAL_MERCHANT}:/redirect-create-shop"
     @JvmField
     val MERCHANT_OPEN_CATALOG_PICKER = "${INTERNAL_MERCHANT}:/open-catalog-picker"
+    @JvmField
+    val MERCHANT_OPEN_PRODUCT_PREVIEW = "${INTERNAL_MERCHANT}:/open-product-preview"
 
     // Official Store Brandlist
     @JvmField
