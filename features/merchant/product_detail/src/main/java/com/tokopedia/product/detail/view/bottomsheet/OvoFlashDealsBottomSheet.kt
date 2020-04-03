@@ -7,7 +7,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.atc_common.domain.model.response.OvoValidationDataModel
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
-import com.tokopedia.product.detail.data.util.ProductTrackingConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -66,9 +65,11 @@ class OvoFlashDealsBottomSheet(val productId: String,
         btnTopupInstant.visibility = if (ovoInsufficientBalanceModel.buttons.topupButton.enable) View.VISIBLE else View.GONE
         btnTopupInstant.setOnClickListener {
             activity?.let {
-                DynamicProductDetailTracking.Click.eventBottomSheetOvo(
-                        "$ProductTrackingConstant.Action.CLICK_TOPUP_BOTTOMSHEET_OVO $ovoInsufficientBalanceModel.title",
-                        productId, userId)
+                DynamicProductDetailTracking.Click.eventTopupBottomSheetOvo(
+                        ovoInsufficientBalanceModel.title,
+                        ovoInsufficientBalanceModel.buttons.topupButton.text,
+                        productId,
+                        userId)
                 RouteManager.route(it, ovoInsufficientBalanceModel.buttons.topupButton.applink)
                 dismiss()
             }
@@ -78,15 +79,15 @@ class OvoFlashDealsBottomSheet(val productId: String,
         btnTopupOtherMethod.visibility = if (ovoInsufficientBalanceModel.buttons.otherMethodButton.enable) View.VISIBLE else View.GONE
         btnTopupOtherMethod.setOnClickListener {
             activity?.let {
-                DynamicProductDetailTracking.Click.eventBottomSheetOvo(
-                        "$ProductTrackingConstant.Action.CLICK_OTHER_METHOD_BOTTOMSHEET_OVO  $ovoInsufficientBalanceModel.title",
-                        productId, userId)
+                DynamicProductDetailTracking.Click.eventTopupBottomSheetOvo(
+                        ovoInsufficientBalanceModel.title,
+                        ovoInsufficientBalanceModel.buttons.otherMethodButton.text,
+                        productId,
+                        userId)
                 RouteManager.route(it, ovoInsufficientBalanceModel.buttons.otherMethodButton.applink)
                 dismiss()
             }
         }
-        DynamicProductDetailTracking.Click.eventBottomSheetOvo(
-                "$ProductTrackingConstant.Action.CLICK_SEE_BOTTOMSHEET_OVO $ $ovoInsufficientBalanceModel.title",
-                productId, userId)
+        DynamicProductDetailTracking.Click.eventSeeBottomSheetOvo(ovoInsufficientBalanceModel.title, productId, userId)
     }
 }

@@ -139,9 +139,8 @@ object ProductTrackingConstant {
         const val CLICK_NOTIFY_ME = "click - ingatkan saya on pdp campaign"
 
         const val CLICK_BUY_ACTIVATION_OVO = "click - beli then go to bottomsheet ovo activation"
-        const val CLICK_SEE_BOTTOMSHEET_OVO = "click - beli then show bottomsheet "
-        const val CLICK_TOPUP_BOTTOMSHEET_OVO = "click - top-up instant ovo cash on bottomsheet "
-        const val CLICK_OTHER_METHOD_BOTTOMSHEET_OVO = "click - top-up dengan metode lain on bottomsheet "
+        const val CLICK_SEE_BOTTOMSHEET_OVO = "click - beli then show bottomsheet"
+        const val CLICK_TOPUP_BOTTOMSHEET_OVO = "on bottomsheet"
     }
 
     object Label {

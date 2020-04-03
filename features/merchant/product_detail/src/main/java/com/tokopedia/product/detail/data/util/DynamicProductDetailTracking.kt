@@ -681,22 +681,25 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Action.CLICK_BUY_ACTIVATION_OVO,
                     ProductTrackingConstant.Label.EMPTY_LABEL)
-            mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
-            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
-            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId != "0").toString()
-            TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+            TrackingUtil.addComponentOvoTracker(mapEvent, productId, userId)
         }
 
-        fun eventBottomSheetOvo(action: String, productId: String, userId: String) {
+        fun eventSeeBottomSheetOvo(title: String, productId: String, userId: String) {
             val mapEvent = TrackAppUtils.gtmData(
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,
-                    action,
+                    "${ProductTrackingConstant.Action.CLICK_SEE_BOTTOMSHEET_OVO} $title",
                     ProductTrackingConstant.Label.EMPTY_LABEL)
-            mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
-            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
-            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId != "0").toString()
-            TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+            TrackingUtil.addComponentOvoTracker(mapEvent, productId, userId)
+        }
+
+        fun eventTopupBottomSheetOvo(title: String, buttonTitle: String, productId: String, userId: String) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    "${ProductTrackingConstant.Action.CLICK} - $buttonTitle ${ProductTrackingConstant.Action.CLICK_TOPUP_BOTTOMSHEET_OVO} $title",
+                    ProductTrackingConstant.Label.EMPTY_LABEL)
+            TrackingUtil.addComponentOvoTracker(mapEvent, productId, userId)
         }
     }
 
