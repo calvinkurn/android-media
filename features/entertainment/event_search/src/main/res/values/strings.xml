@@ -16,4 +16,5 @@
     <string name="search_emptyState_body">Coba ubah kata kuncimu buat cari ulang, yuk!</string>
     <string name="search_emptystate_heading">Yaah, yang kamu cari nggak ketemu</string>
     <string name="search_placeholder">Cari kegiatan atau lokasi</string>
+    <string name="search_error_message">Terjadi kesalahan. Coba lagi</string>
 </resources>

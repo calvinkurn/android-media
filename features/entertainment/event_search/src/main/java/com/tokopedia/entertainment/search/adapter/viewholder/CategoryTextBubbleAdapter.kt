@@ -1,6 +1,7 @@
 package com.tokopedia.entertainment.search.adapter.viewholder
 
 import android.content.Context
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,9 +33,15 @@ class CategoryTextBubbleAdapter(val onClicked: ((String) -> Unit)? ): RecyclerVi
         // 18dp = 47
         // 8dp = 21
         if (viewType == FIRST_ITEM) {
-            view.view.setMargin(47, 0, 21, 0)
+            view.view.setMargin(parent.context.resources.getDimensionPixelSize(R.dimen.dimen_first_last_category),
+                    parent.context.resources.getDimensionPixelSize(R.dimen.dimen_0dp),
+                    parent.context.resources.getDimensionPixelSize(R.dimen.dimen_category_item),
+                    parent.context.resources.getDimensionPixelSize(R.dimen.dimen_0dp))
         } else if (viewType == LAST_ITEM) {
-            view.view.setMargin(0, 0, 47, 0)
+            view.view.setMargin(parent.context.resources.getDimensionPixelSize(R.dimen.dimen_0dp),
+                    parent.context.resources.getDimensionPixelSize(R.dimen.dimen_0dp),
+                    parent.context.resources.getDimensionPixelSize(R.dimen.dimen_first_last_category),
+                    parent.context.resources.getDimensionPixelSize(R.dimen.dimen_0dp))
         }
         return view
     }

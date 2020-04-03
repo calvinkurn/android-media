@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.entertainment.search.Link
@@ -20,6 +21,7 @@ import com.tokopedia.entertainment.search.adapter.factory.SearchTypeFactoryImp
 import com.tokopedia.entertainment.search.di.EventSearchComponent
 import com.tokopedia.entertainment.search.viewmodel.EventSearchViewModel
 import com.tokopedia.entertainment.search.viewmodel.factory.EventSearchViewModelFactory
+import com.tokopedia.graphql.data.model.CacheType
 import kotlinx.android.synthetic.main.ent_search_activity.*
 import kotlinx.android.synthetic.main.ent_search_fragment.*
 import kotlinx.coroutines.launch
@@ -41,16 +43,16 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope {
 
     var job: Job = Job()
 
+    private fun initializePerformance(){
+        performanceMonitoring = PerformanceMonitoring.start(ENT_SEARCH_PERFORMANCE)
+    }
+
     override fun getScreenName(): String {
         return TAG
     }
 
     override fun initInjector() {
         getComponent(EventSearchComponent::class.java).inject(this)
-    }
-
-    private fun initializePerformance(){
-        performanceMonitoring = PerformanceMonitoring.start(ENT_SEARCH_PERFORMANCE)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -68,11 +70,7 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        if(activity?.txt_search?.searchBarTextField?.text!!.isNotBlank()){
-            viewModel.getSearchData(activity?.txt_search?.searchBarTextField?.text.toString())
-        } else {
-            viewModel.getHistorySearch()
-        }
+        getData()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -86,12 +84,7 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope {
     private fun setupSwipeRefresh(){
         swipe_refresh_layout.setOnRefreshListener {
             initializePerformance()
-            if(activity?.txt_search?.searchBarTextField?.text?.toString()!!.isNotEmpty()
-                    || activity?.txt_search?.searchBarTextField?.text?.toString()!!.isNotBlank()){
-                viewModel.getSearchData(activity?.txt_search?.searchBarTextField?.text?.toString()!!)
-            } else{
-                viewModel.getHistorySearch()
-            }
+            getData(CacheType.ALWAYS_CLOUD)
         }
     }
 
@@ -106,15 +99,23 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun observeSearchList(){
-        viewModel.searchList.observe(this,
-                Observer {
-                    searchadapter.setItems(it)
-                    performanceMonitoring.stopTrace()
-                })
-        viewModel.isItRefreshing.observe(this,
-                Observer {
-                    swipe_refresh_layout.isRefreshing = it
-                })
+        viewModel.searchList.observe(this, Observer {
+            searchadapter.setItems(it)
+            performanceMonitoring.stopTrace()
+        })
+
+        viewModel.isItRefreshing.observe(this, Observer { swipe_refresh_layout.isRefreshing = it })
+
+        viewModel.errorReport.observe(this, Observer { NetworkErrorHelper.createSnackbarRedWithAction(activity, resources.getString(R.string.search_error_message)){ getData() }.showRetrySnackbar()})
+    }
+
+    private fun getData(cacheType: CacheType = CacheType.CACHE_FIRST){
+        if(activity?.txt_search?.searchBarTextField?.text?.toString()!!.isNotEmpty()
+                || activity?.txt_search?.searchBarTextField?.text?.toString()!!.isNotBlank()){
+            viewModel.getSearchData(activity?.txt_search?.searchBarTextField?.text?.toString()!!, cacheType)
+        } else{
+            viewModel.getHistorySearch(cacheType)
+        }
     }
 
     private fun allLocation(){
@@ -123,25 +124,21 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope {
 
     private fun initSearchBar(){
         activity?.txt_search?.searchBarTextField?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
+            override fun afterTextChanged(p0: Editable?) {}
 
-            }
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 if(p0.toString().isEmpty()){
                     if(job.isActive) job.cancel()
                     viewModel.cancelRequest()
-                    viewModel.getHistorySearch()
+                    viewModel.getHistorySearch(CacheType.CACHE_FIRST)
                 }
                 else{
                     if(job.isActive) job.cancel()
                     job = launch {
                         delay(200)
-                        viewModel.getSearchData(p0.toString())
+                        viewModel.getSearchData(p0.toString(), CacheType.CACHE_FIRST)
                     }
                 }
             }

@@ -24,6 +24,7 @@ import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import timber.log.Timber
+import java.net.UnknownHostException
 import javax.annotation.Resource
 
 /**
@@ -47,13 +48,13 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
 
     val errorReport : MutableLiveData<String> by lazy { MutableLiveData<String>() }
 
-    fun getHistorySearch(){
+    fun getHistorySearch(cacheType: CacheType){
         launchCatchError(
                 block = {
                     val lists: MutableList<HistoryBackgroundItemViewHolder.EventModel> = mutableListOf()
                     listViewHolder.clear()
                     if(userSession.isLoggedIn){
-                        val data = getHistorySearchData()
+                        val data = getHistorySearchData(cacheType)
                         data.let {
                             it.travelCollectiveRecentSearches.let {
                                 if(it.items.isNotEmpty()){
@@ -82,14 +83,13 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
         )
     }
 
-    fun getSearchData(text: String){
+    fun getSearchData(text: String, cacheType: CacheType){
         job = launchCatchError(
                 block = {
                     val listsLocation : MutableList<SearchLocationListViewHolder.LocationSuggestion> = mutableListOf()
                     val listsKegiatan : MutableList<SearchEventListViewHolder.KegiatanSuggestion> = mutableListOf()
-                    val dataLocation = getLocationSuggestionData(text)
+                    val dataLocation = getLocationSuggestionData(text, cacheType)
                     listViewHolder.clear()
-                    Timber.tag(TAG + " after clear").d(listViewHolder.size.toString())
                     dataLocation.let {
                         it.eventLocationSearch.let {
                             if(it.count.toInt()  > 0){
@@ -128,23 +128,23 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
         if(job.isCancelled) Timber.tag("Cancel").w("CANCEL")
     }
 
-    suspend fun getLocationSuggestionData(text: String) : EventSearchLocationResponse.Data{
+    suspend fun getLocationSuggestionData(text: String, cacheType: CacheType) : EventSearchLocationResponse.Data{
         return withContext(Dispatchers.IO){
             val req = GraphqlRequest(
                     GraphqlHelper.loadRawString(resources, R.raw.query_event_search_location),
                     EventSearchLocationResponse.Data::class.java, mapOf(SEARCHQUERY to text)
             )
-            val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+            val cacheStrategy = GraphqlCacheStrategy.Builder(cacheType).build()
             gqlRepository.getReseponse(listOf(req), cacheStrategy).getSuccessData<EventSearchLocationResponse.Data>()
         }
     }
 
-    suspend fun getHistorySearchData(): EventSearchHistoryResponse.Data{
+    suspend fun getHistorySearchData(cacheType: CacheType): EventSearchHistoryResponse.Data{
         return withContext(Dispatchers.IO){
             val req = GraphqlRequest(
                     GraphqlHelper.loadRawString(resources, R.raw.query_event_search_history),
                     EventSearchHistoryResponse.Data::class.java)
-            val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+            val cacheStrategy = GraphqlCacheStrategy.Builder(cacheType).build()
             gqlRepository.getReseponse(listOf(req), cacheStrategy).getSuccessData<EventSearchHistoryResponse.Data>()
         }
     }

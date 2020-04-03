@@ -1,6 +1,7 @@
 package com.tokopedia.entertainment.search.fragment
 
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.entertainment.search.R
 import com.tokopedia.entertainment.search.activity.EventCategoryActivity
 import com.tokopedia.entertainment.search.adapter.viewholder.CategoryTextBubbleAdapter
@@ -19,6 +21,7 @@ import com.tokopedia.entertainment.search.adapter.viewholder.EventGridAdapter
 import com.tokopedia.entertainment.search.di.EventSearchComponent
 import com.tokopedia.entertainment.search.viewmodel.EventDetailViewModel
 import com.tokopedia.entertainment.search.viewmodel.factory.EventDetailViewModelFactory
+import com.tokopedia.graphql.data.model.CacheType
 import kotlinx.android.synthetic.main.ent_search_category_emptystate.*
 import kotlinx.android.synthetic.main.ent_search_category_text.*
 import kotlinx.android.synthetic.main.ent_search_detail_activity.*
@@ -39,6 +42,7 @@ class EventCategoryFragment : BaseDaggerFragment() {
     private var CITY_ID : String = ""
     private var CATEGORY_ID: String = ""
     private val gridLayoutManager = GridLayoutManager(context,2)
+    private val endlessScroll = getScrollListener()
 
     @Inject
     lateinit var factory: EventDetailViewModelFactory
@@ -101,17 +105,19 @@ class EventCategoryFragment : BaseDaggerFragment() {
         recycler_viewParent.apply {
             setHasFixedSize(true)
             layoutManager = gridLayoutManager
-            addOnScrollListener(getScrollListener())
+            addOnScrollListener(endlessScroll)
             adapter = eventGridAdapter
+            setPadding(context.resources.getDimensionPixelSize(R.dimen.dimen_recycler_view_category), context.resources.getDimensionPixelSize(R.dimen.dimen_0dp)
+                    , context.resources.getDimensionPixelSize(R.dimen.dimen_recycler_view_category), context.resources.getDimensionPixelSize(R.dimen.dimen_0dp))
         }
     }
 
     private fun setupRefreshLayout(){
         swipe_refresh_layout.apply {
             setOnRefreshListener {
-                recycler_viewParent.addOnScrollListener(getScrollListener())
+                recycler_viewParent.addOnScrollListener(endlessScroll)
                 viewModel.page = "1"
-                getEventData()
+                viewModel.getData(CacheType.ALWAYS_CLOUD)
             }
         }
     }
@@ -142,7 +148,11 @@ class EventCategoryFragment : BaseDaggerFragment() {
 
     private fun observeErrorReport(){
         viewModel.errorReport.observe(this, Observer {
-            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            NetworkErrorHelper.createSnackbarRedWithAction(activity, resources.getString(R.string.search_error_message)) {
+                recycler_viewParent.addOnScrollListener(endlessScroll)
+                viewModel.page = "1"
+                viewModel.getData(CacheType.ALWAYS_CLOUD)
+            }.showRetrySnackbar()
         })
     }
 
@@ -205,20 +215,11 @@ class EventCategoryFragment : BaseDaggerFragment() {
         eventGridAdapter.notifyDataSetChanged()
     }
 
-    private fun showOrHideResetFilter(state: Boolean) {
-        if(state) activity?.resetFilter?.visibility = View.VISIBLE
-        else activity?.resetFilter?.visibility = View.GONE
-    }
+    private fun showOrHideResetFilter(state: Boolean) { activity?.resetFilter?.visibility = if(state) View.VISIBLE else View.GONE }
 
-    private fun showOrHideParentView(state: Boolean){
-        if(state) activity?.parent_view?.visibility = View.VISIBLE
-        else activity?.parent_view?.visibility = View.GONE
-    }
+    private fun showOrHideParentView(state: Boolean){ activity?.parent_view?.visibility = if(state) View.VISIBLE else View.GONE }
 
-    private fun showOrHideShimmer(state: Boolean){
-        if(state) activity?.shimering_layout?.visibility = View.VISIBLE
-        else activity?.shimering_layout?.visibility = View.GONE
-    }
+    private fun showOrHideShimmer(state: Boolean){ activity?.shimering_layout?.visibility = if(state) View.VISIBLE else View.GONE }
 
     private fun getEventData(){
         viewModel.getData()

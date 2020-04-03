@@ -54,7 +54,7 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
 
     val eventLiveData: MutableLiveData<MutableList<EventGridAdapter.EventGrid>> by lazy { MutableLiveData<MutableList<EventGridAdapter.EventGrid>>() }
 
-    fun getData(){
+    fun getData(cacheType: CacheType = CacheType.CACHE_FIRST){
         if(category.isBlank()) hashSet.clear()
 
         launchCatchError(
@@ -65,7 +65,7 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
                     } else showProgressBar.value = true
                     showResetFilter.value = false
                     val eventData : MutableList<EventGridAdapter.EventGrid> = mutableListOf()
-                    val data = getQueryData()
+                    val data = getQueryData(cacheType)
                     data.let {
                         it.eventChildCategory.let {
                             if(categoryIsDifferentOrEmpty(it)){
@@ -115,6 +115,10 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
                     Timber.tag(TAG + "Error").w(it)
                     errorReport.value = it.message
                     isItRefreshing.value = false
+                    isItShimmering.value = false
+                    showParentView.value = false
+                    showProgressBar.value = false
+                    showResetFilter.value = true
                 }
         )
     }
@@ -165,12 +169,12 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
         this.cityID = cityID
     }
 
-    suspend fun getQueryData() : EventDetailResponse.Data{
+    suspend fun getQueryData(cacheType: CacheType) : EventDetailResponse.Data{
         return withContext(Dispatchers.IO){
             val req = GraphqlRequest(
                     GraphqlHelper.loadRawString(resources, R.raw.query_event_search_category),
                     EventDetailResponse.Data::class.java, mapOf(CATEGORYID to category, CITIES to cityID, PAGE to page))
-            val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+            val cacheStrategy = GraphqlCacheStrategy.Builder(cacheType).build()
             gqlRepository.getReseponse(listOf(req), cacheStrategy).getSuccessData<EventDetailResponse.Data>()
         }
     }

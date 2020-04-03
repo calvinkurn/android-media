@@ -64,7 +64,7 @@ class EventLocationEventViewHolder(itemView: View) : HomeEventViewHolder<EventLo
             })
             holder.view.setOnClickListener {
                 RouteManager.route(holder.view.context,
-                        ApplinkConstInternalEntertainment.EVENT_CATEGORY,"", item.id, "")
+                        ApplinkConstInternalEntertainment.EVENT_CATEGORY,"", item.id, item.title)
                 EventHomePageTracking.getInstance().clickLocationEvent(item, items,
                         position + 1)
             }

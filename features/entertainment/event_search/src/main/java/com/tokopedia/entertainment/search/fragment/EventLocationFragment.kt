@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.entertainment.search.R
 import com.tokopedia.entertainment.search.adapter.SearchEventAdapter
 import com.tokopedia.entertainment.search.adapter.factory.SearchTypeFactoryImp
@@ -63,7 +64,9 @@ class EventLocationFragment : BaseDaggerFragment() {
 
     private fun observeSearchList(){
         viewModel.errorReport.observe(this, Observer {
-            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            NetworkErrorHelper.createSnackbarRedWithAction(activity, resources.getString(R.string.search_error_message)){
+                getLocationData()
+            }.showRetrySnackbar()
         })
 
         viewModel.searchList.observe(this, Observer {
