@@ -299,7 +299,9 @@ public class ShipmentMapper implements IShipmentMapper {
                     LastApplyUiModel lastApplyUiModel = new LastApplyUiModel();
 
                     // set codes
-                    lastApplyUiModel.setCodes(lastApply.getData().getCodes());
+                    if (lastApply.getData().getCodes() != null) {
+                        lastApplyUiModel.setCodes(lastApply.getData().getCodes());
+                    }
 
                     // set voucher orders
                     ArrayList<LastApplyVoucherOrdersItemUiModel> listVoucherOrdersUiModel = new ArrayList<>();
@@ -351,15 +353,18 @@ public class ShipmentMapper implements IShipmentMapper {
 
                     // set usage summaries
                     ArrayList<LastApplyUsageSummariesUiModel> listUsageSummaries = new ArrayList<>();
-                    for (UsageSummaries usageSummaries : responseAdditionalInfo.getListUsageSummaries()) {
-                        LastApplyUsageSummariesUiModel lastApplyUsageSummariesUiModel = new LastApplyUsageSummariesUiModel();
-                        lastApplyUsageSummariesUiModel.setDescription(usageSummaries.getDesc());
-                        lastApplyUsageSummariesUiModel.setType(usageSummaries.getType());
-                        lastApplyUsageSummariesUiModel.setAmountStr(usageSummaries.getAmountStr());
-                        lastApplyUsageSummariesUiModel.setAmount(usageSummaries.getAmount());
-                        listUsageSummaries.add(lastApplyUsageSummariesUiModel);
+                    if (responseAdditionalInfo.getListUsageSummaries() != null) {
+                        for (UsageSummaries usageSummaries : responseAdditionalInfo.getListUsageSummaries()) {
+                            LastApplyUsageSummariesUiModel lastApplyUsageSummariesUiModel = new LastApplyUsageSummariesUiModel();
+                            lastApplyUsageSummariesUiModel.setDescription(usageSummaries.getDesc());
+                            lastApplyUsageSummariesUiModel.setType(usageSummaries.getType());
+                            lastApplyUsageSummariesUiModel.setAmountStr(usageSummaries.getAmountStr());
+                            lastApplyUsageSummariesUiModel.setAmount(usageSummaries.getAmount());
+                            listUsageSummaries.add(lastApplyUsageSummariesUiModel);
+                        }
+                        lastApplyAdditionalInfoUiModel.setUsageSummaries(listUsageSummaries);
                     }
-                    lastApplyAdditionalInfoUiModel.setUsageSummaries(listUsageSummaries);
+
                     lastApplyUiModel.setAdditionalInfo(lastApplyAdditionalInfoUiModel);
 
                     // set message
@@ -391,8 +396,8 @@ public class ShipmentMapper implements IShipmentMapper {
                     }
 
                     ArrayList<String> listAllPromoCodes = new ArrayList<>();
-                    for (int i = 0; i < lastApply.getData().getCodes().size(); i++) {
-                        listAllPromoCodes.add(lastApply.getData().getCodes().get(i));
+                    if (lastApply.getData().getCodes() != null) {
+                        listAllPromoCodes.addAll(lastApply.getData().getCodes());
                     }
 
                     if (lastApply.getData().getVoucherOrders() != null) {

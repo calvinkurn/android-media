@@ -111,6 +111,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 promoRequest.skipApply = 0
             } else {
                 // Clear all pre selected promo on load data
+                promoRequest.attemptedCodes.clear()
                 promoRequest.codes.clear()
                 promoRequest.orders.forEach {
                     it.codes.clear()
@@ -327,11 +328,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    fun applyPromo(mutation: String, requestParam: ValidateUsePromoRequest) {
-        launch { doApplyPromo(mutation, requestParam) }
+    fun applyPromo(mutation: String, requestParam: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>) {
+        launch { doApplyPromo(mutation, requestParam, bboPromoCodes) }
     }
 
-    private suspend fun doApplyPromo(mutation: String, validateUsePromoRequest: ValidateUsePromoRequest) {
+    private suspend fun doApplyPromo(mutation: String, validateUsePromoRequest: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>) {
         launchCatchError(block = {
             // Initialize response action state
             if (applyPromoResponse.value == null) {
@@ -384,7 +385,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 }
             }
 
-            // Get all selected promo. Store to map where unique id as key and promo code as value
+            // Get all selected promo
             val promoList = ArrayList<String>()
             promoListUiModel.value?.forEach {
                 if (it is PromoListItemUiModel && it.uiState.isSelected) {
@@ -394,6 +395,33 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                         if (it.uiState.isSelected) {
                             promoList.add(it.uiData.promoCode)
                         }
+                    }
+                }
+            }
+
+            // Remove invalid promo code
+            val invalidPromoCodes = ArrayList<String>()
+            validateUsePromoRequest.codes.forEach { promoGlobalCode ->
+                promoGlobalCode?.let {
+                    if (!promoList.contains(it)) {
+                        invalidPromoCodes.add(it)
+                    }
+                }
+            }
+            validateUsePromoRequest.orders.forEach { order ->
+                order?.codes?.forEach { promoCode ->
+                    if (!promoList.contains(promoCode) && !bboPromoCodes.contains(promoCode)) {
+                        invalidPromoCodes.add(promoCode)
+                    }
+                }
+            }
+            invalidPromoCodes.forEach { invalidPromoCode ->
+                if (validateUsePromoRequest.codes.contains(invalidPromoCode)) {
+                    validateUsePromoRequest.codes.remove(invalidPromoCode)
+                }
+                validateUsePromoRequest.orders.forEach { order ->
+                    if (order?.codes?.contains(invalidPromoCode) == true) {
+                        order.codes.remove(invalidPromoCode)
                     }
                 }
             }
@@ -1179,6 +1207,16 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             it.uiState.isLoading = true
             it.uiState.isButtonSelectEnabled = true
             it.uiData.promoCode = promoCode
+
+            _tmpUiModel.value = Update(it)
+        }
+    }
+
+    fun resetPromoInput() {
+        promoInputUiModel.value?.let {
+            it.uiState.isLoading = false
+            it.uiState.isButtonSelectEnabled = false
+            it.uiData.promoCode = ""
 
             _tmpUiModel.value = Update(it)
         }

@@ -158,6 +158,7 @@ import static com.tokopedia.logisticcart.cod.view.CodActivity.EXTRA_COD_DATA;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_CHECKOUT;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_DEFAULT;
 import static com.tokopedia.purchase_platform.common.constant.Constant.EXTRA_CHECKOUT_REQUEST;
+import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_BBO_PROMO_CODES;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_CLEAR_PROMO_RESULT;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_LAST_VALIDATE_USE_REQUEST;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PAGE_SOURCE;
@@ -247,6 +248,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private HashSet<ShipmentSelectionStateData> shipmentSelectionStateDataHashSet = new HashSet<>();
     private boolean hasInsurance = false;
     private boolean isInsuranceEnabled = false;
+    private ArrayList<String> bboPromoCodes = new ArrayList<>();
 
     private Subscription delayScrollToFirstShopSubscription;
 
@@ -1293,10 +1295,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                 }
 
-                if (stillHasPromo) {
-                    shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
-                } else {
-                    shipmentPresenter.setLatValidateUseRequest(null);
+                shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
+                if (!stillHasPromo) {
                     doResetButtonPromoCheckout();
                 }
             }
@@ -2491,6 +2491,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public ValidateUsePromoRequest generateValidateUsePromoRequest() {
+        ArrayList<String> bboPromoCodes = new ArrayList<>();
         if (shipmentPresenter.getLastValidateUseRequest() != null) {
             // Update param if have done param data generation before
             ValidateUsePromoRequest validateUsePromoRequest = shipmentPresenter.getLastValidateUseRequest();
@@ -2499,10 +2500,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
                     if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
                             shipmentCartItemModel.getCartString().equals(ordersItem.getUniqueId())) {
-                        if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null &&
-                                !ordersItem.getCodes().contains(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode())) {
+                        if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
                             if (!ordersItem.getCodes().contains(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode())) {
                                 ordersItem.getCodes().add(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                            }
+                            if (!bboPromoCodes.contains(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode())) {
+                                bboPromoCodes.add(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
                             }
                         }
 
@@ -2521,6 +2524,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 validateUsePromoRequest.setTradeInDropOff(isTradeInByDropOff() ? 1 : 0);
             }
             shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
+            this.bboPromoCodes = bboPromoCodes;
             return validateUsePromoRequest;
         } else {
             // First param data generation / initialization
@@ -2559,6 +2563,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         if (!listOrderCodes.contains(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode())) {
                             listOrderCodes.add(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
                         }
+                        if (!bboPromoCodes.contains(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode())) {
+                            bboPromoCodes.add(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                        }
                     }
                     ordersItem.setCodes(listOrderCodes);
                     ordersItem.setUniqueId(shipmentCartItemModel.getCartString());
@@ -2596,6 +2603,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 validateUsePromoRequest.setCodes(globalPromoCodes);
             }
             shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
+            this.bboPromoCodes = bboPromoCodes;
             return validateUsePromoRequest;
         }
     }
@@ -2748,6 +2756,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.getPAGE_CHECKOUT());
             intent.putExtra(ARGS_PROMO_REQUEST, promoRequestParam);
             intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam);
+            intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, bboPromoCodes);
 
             startActivityForResult(intent, REQUEST_CODE_PROMO);
         }
@@ -2945,6 +2954,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.getPAGE_CHECKOUT());
         intent.putExtra(ARGS_PROMO_REQUEST, promoRequestParam);
         intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam);
+        intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, bboPromoCodes);
 
         startActivityForResult(intent, REQUEST_CODE_PROMO);
     }
@@ -2955,6 +2965,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         updatePromoTrackingData(promoUiModel.getTrackingDetails());
         updateLogisticPromoData(promoUiModel);
         if (shipmentAdapter.hasSetAllCourier()) {
+            resetPromoBenefit();
             setPromoBenefit(promoUiModel.getBenefitSummaryInfoUiModel().getSummaries());
             shipmentAdapter.updateShipmentCostModel();
         }

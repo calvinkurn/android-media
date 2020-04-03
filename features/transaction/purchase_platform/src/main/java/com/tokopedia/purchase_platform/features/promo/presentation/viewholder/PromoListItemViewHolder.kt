@@ -172,6 +172,7 @@ class PromoListItemViewHolder(private val view: View,
 
             itemView.label_promo_item_sub_title.movementMethod = LinkMovementMethod.getInstance()
             itemView.label_promo_item_sub_title.text = formattedClickableText
+            itemView.label_promo_item_sub_title.show()
         } else {
             if (element.uiData.subTitle.isNotBlank()) {
                 itemView.label_promo_item_sub_title.text = element.uiData.subTitle
