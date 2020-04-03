@@ -1892,7 +1892,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private void showToasterWithAction(String message, int typeToaster, String actionText, View.OnClickListener clickListener){
-        Toaster.INSTANCE.make(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener);
+        Toaster.INSTANCE.make(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener, null);
     }
 
     public void addRecyclerViewScrollImpressionListener(DynamicChannelViewModel dynamicChannelViewModel, int adapterPosition) {
