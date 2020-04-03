@@ -425,6 +425,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     productInfoP3.addressModel = p3Temp.addressModel
                     productInfoP3.rateEstSummarizeText = p3Temp.rateEstSummarizeText
                     productInfoP3.userCod = p3Temp.userCod
+                    productInfoP3.ratesModel = p3Temp.ratesModel
                 }
             }
 
