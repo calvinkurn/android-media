@@ -169,6 +169,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
         sahGlobalError.gone()
         sellerHomeViewModel.getWidgetLayout()
+        sellerHomeViewModel.getTicker()
     }
 
     fun setShopStatus(shopStatus: ShopStatus) = view?.run {
