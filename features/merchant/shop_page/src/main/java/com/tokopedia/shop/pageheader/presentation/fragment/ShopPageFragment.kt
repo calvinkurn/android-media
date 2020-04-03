@@ -514,12 +514,7 @@ class ShopPageFragment :
     }
 
     fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
-        val isFirstCreateShop = arguments?.getBoolean(ApplinkConstInternalMarketplace.PARAM_FIRST_CREATE_SHOP) ?: false
-
-        view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
-
-        with(shopInfo)
-        {
+        with(shopInfo) {
             isOfficialStore = (goldOS.isOfficial == 1 && !TextUtils.isEmpty(shopInfo.topContent.topUrl))
             isGoldMerchant = (goldOS.isGoldBadge == 1)
             customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
@@ -545,6 +540,9 @@ class ShopPageFragment :
 
         }
         swipeToRefresh.isRefreshing = false
+
+        val isFirstCreateShop = arguments?.getBoolean(ApplinkConstInternalMarketplace.PARAM_FIRST_CREATE_SHOP) ?: false
+        view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
     }
 
     fun onBackPressed() {
