@@ -255,6 +255,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
         if (isAffiliate) {
             actionButtonView.gone()
+            ticker_occ_layout.gone()
             base_btn_affiliate_dynamic.visible()
             loadingAffiliateDynamic.visible()
         }
@@ -267,6 +268,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         isLoadingInitialData = true
         isTopdasLoaded = false
         actionButtonView.visibility = false
+        ticker_occ_layout.gone()
         updateStickyContent()
         loadProductData(true)
     }
@@ -1200,7 +1202,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         .bundle)
             }
             ProductDetailConstant.OCC_BUTTON -> {
-                goToOneClickCheckout()
+                if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PREFERENCE_SETTINGS, true) || true) {
+                    goToOneClickCheckout()
+                } else {
+                    goToCartCheckout(cartId)
+                }
             }
             ProductDetailConstant.BUY_BUTTON -> {
                 goToCartCheckout(cartId)
@@ -1451,6 +1457,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 swipeToRefresh.isEnabled = false
             }
             actionButtonView.visibility = false
+            ticker_occ_layout.gone()
         }
     }
 
@@ -1839,6 +1846,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             commissionPdp.text = pdpAffiliate.commissionValueDisplay
             btn_affiliate_pdp.setOnClickListener { onAffiliateClick(pdpAffiliate, false) }
             actionButtonView.gone()
+            ticker_occ_layout.gone()
         } else if (!GlobalConfig.isSellerApp()) {
             base_btn_affiliate_dynamic.gone()
             actionButtonView.byMeClick = this::onAffiliateClick
@@ -2195,12 +2203,25 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     viewModel.addToCart(addToCartOcsRequestParams)
                 }
                 ProductDetailConstant.OCC_BUTTON -> {
-                    val addToCartOccRequestParams = AddToCartOccRequestParams(data.basic.productID, data.basic.shopID, data.basic.minOrder.toString()).apply {
-                        warehouseId = selectedWarehouseId.toString()
-                        attribution = trackerAttributionPdp ?: ""
-                        listTracker = trackerListNamePdp ?: ""
+                    if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PREFERENCE_SETTINGS, true) || true) {
+                        val addToCartOccRequestParams = AddToCartOccRequestParams(data.basic.productID, data.basic.shopID, data.basic.minOrder.toString()).apply {
+                            warehouseId = selectedWarehouseId.toString()
+                            attribution = trackerAttributionPdp ?: ""
+                            listTracker = trackerListNamePdp ?: ""
+                        }
+                        viewModel.addToCart(addToCartOccRequestParams)
+                    } else {
+                        val addToCartRequestParams = AddToCartRequestParams().apply {
+                            productId = data.basic.productID.toLongOrNull() ?: 0
+                            shopId = data.basic.shopID.toIntOrZero()
+                            quantity = data.basic.minOrder
+                            notes = ""
+                            attribution = trackerAttributionPdp ?: ""
+                            listTracker = trackerListNamePdp ?: ""
+                            warehouseId = selectedWarehouseId
+                        }
+                        viewModel.addToCart(addToCartRequestParams)
                     }
-                    viewModel.addToCart(addToCartOccRequestParams)
                 }
                 else -> {
                     val addToCartRequestParams = AddToCartRequestParams().apply {
