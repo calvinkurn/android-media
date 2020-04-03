@@ -6,7 +6,6 @@ import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
-import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -558,7 +557,7 @@ class ShopPageFragment :
             shopPageFragmentHeaderViewHolder.updateShopTicker(shopInfo, isMyShop)
         }
         swipeToRefresh.isRefreshing = false
-        view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_action_no_upload_product), isFirstCreateShop) }
+        view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
     }
 
     fun onBackPressed() {
