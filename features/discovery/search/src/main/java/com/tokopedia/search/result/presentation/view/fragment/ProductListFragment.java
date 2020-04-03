@@ -746,13 +746,31 @@ public class ProductListFragment
 
     @Override
     public void sendTopAdsGTMTrackingProductImpression(ProductItemViewModel item, int adapterPosition) {
+        Product product = createTopAdsProductForTracking(item);
+
+        TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, adapterPosition);
+    }
+
+    private Product createTopAdsProductForTracking(ProductItemViewModel item) {
         Product product = new Product();
         product.setId(item.getProductID());
         product.setName(item.getProductName());
         product.setPriceFormat(item.getPrice());
         product.setCategory(new Category(item.getCategoryID()));
         product.setFreeOngkir(createTopAdsProductFreeOngkirForTracking(item));
-        TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, adapterPosition);
+
+        return product;
+    }
+
+    private FreeOngkir createTopAdsProductFreeOngkirForTracking(ProductItemViewModel item) {
+        if (item != null && item.getFreeOngkirViewModel() != null) {
+            return new FreeOngkir(
+                    item.getFreeOngkirViewModel().isActive(),
+                    item.getFreeOngkirViewModel().getImageUrl()
+            );
+        }
+
+        return null;
     }
 
     @Override
@@ -793,28 +811,6 @@ public class ProductListFragment
         Product product = createTopAdsProductForTracking(item);
 
         TopAdsGtmTracker.eventSearchResultProductClick(getContext(), getQueryKey(), product, adapterPosition, SCREEN_SEARCH_PAGE_PRODUCT_TAB);
-    }
-
-    private Product createTopAdsProductForTracking(ProductItemViewModel item) {
-        Product product = new Product();
-        product.setId(item.getProductID());
-        product.setName(item.getProductName());
-        product.setPriceFormat(item.getPrice());
-        product.setCategory(new Category(item.getCategoryID()));
-        product.setFreeOngkir(createTopAdsProductFreeOngkirForTracking(item));
-
-        return product;
-    }
-
-    private FreeOngkir createTopAdsProductFreeOngkirForTracking(ProductItemViewModel item) {
-        if (item != null && item.getFreeOngkirViewModel() != null) {
-            return new FreeOngkir(
-                    item.getFreeOngkirViewModel().isActive(),
-                    item.getFreeOngkirViewModel().getImageUrl()
-            );
-        }
-
-        return null;
     }
 
     @Override
