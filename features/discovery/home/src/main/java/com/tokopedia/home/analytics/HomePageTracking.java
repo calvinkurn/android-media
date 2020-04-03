@@ -1781,7 +1781,7 @@ public class HomePageTracking {
                 "creative_url", reviewData.getImageUrl(),
                 "position", Integer.toString(position + 1, 10),
                 "category", "",
-                "categoryId", channelId,
+                CHANNEL_ID, channelId,
                 "promo_id", null,
                 "promo_code", null
         ));
@@ -1817,12 +1817,13 @@ public class HomePageTracking {
         ));
     }
 
-    public static void homeReviewOnBlankSpaceClickTracker(String orderId, String productId) {
+    public static void homeReviewOnBlankSpaceClickTracker(String orderId, String productId, String channelId) {
         getTracker().sendGeneralEvent(DataLayer.mapOf(
                 EVENT, "clickReview",
                 EVENT_CATEGORY, "homepage-pdp",
                 EVENT_ACTION, "click - home product review widget",
-                EVENT_LABEL, orderId + " - " + productId
+                EVENT_LABEL, orderId + " - " + productId,
+                CHANNEL_ID, channelId
         ));
     }
 

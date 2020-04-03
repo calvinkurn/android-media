@@ -73,7 +73,8 @@ class ReviewViewHolder(
                 if (!isPressed) {
                     HomePageTracking.homeReviewOnBlankSpaceClickTracker(
                             element.suggestedProductReview.suggestedProductReview.orderId,
-                            element.suggestedProductReview.suggestedProductReview.productId
+                            element.suggestedProductReview.suggestedProductReview.productId,
+                            element.channel.id
                     )
                     reviewListener.onReviewClick(
                             adapterPosition,
