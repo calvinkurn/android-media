@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.view
 
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -18,6 +19,11 @@ class OrderSummaryPageActivity : BaseSimpleActivity(), HasComponent<OrderSummary
         return OrderSummaryPageFragment()
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        orderSummaryAnalytics = OrderSummaryAnalytics()
+    }
+
     override fun getComponent(): OrderSummaryPageComponent {
         return DaggerOrderSummaryPageComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
@@ -25,6 +31,7 @@ class OrderSummaryPageActivity : BaseSimpleActivity(), HasComponent<OrderSummary
     }
 
     override fun onBackPressed() {
+        orderSummaryAnalytics.eventClickBackFromOSP()
         val currFragment = fragment
         if (currFragment is OrderSummaryPageFragment) {
             currFragment.setIsFinishing()
