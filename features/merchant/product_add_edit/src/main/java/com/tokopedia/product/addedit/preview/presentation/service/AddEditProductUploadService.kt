@@ -147,7 +147,7 @@ class AddEditProductUploadService : JobIntentService(), CoroutineScope {
             withContext(Dispatchers.IO) {
                 productAddUseCase.params = ProductAddUseCase.createRequestParams(param)
                 notificationManager?.onSuccessPost()
-                productAddUseCase.executeOnBackground()
+                return@withContext productAddUseCase.executeOnBackground()
             }
         }, onError = {
             notificationManager?.onFailedPost(it.message!!)
