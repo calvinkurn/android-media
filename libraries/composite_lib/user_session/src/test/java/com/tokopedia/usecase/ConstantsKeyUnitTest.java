@@ -54,6 +54,7 @@ public class ConstantsKeyUnitTest {
     private static final String HAS_SHOWN_SALDO_INTRO_PAGE = "HAS_SHOWN_SALDO_INTRO_PAGE";
     private static final String AUTOFILL_USER_DATA = "AUTOFILL_USER_DATA";
     private static final String LOGIN_METHOD = "LOGIN_METHOD";
+    private static final String IS_SHOP_OFFICIAL_STORE = "IS_SHOP_OFFICIAL_STORE";
 
     /**
      * Twitter Prefs
@@ -71,7 +72,7 @@ public class ConstantsKeyUnitTest {
             SHOP_AVATAR, IS_POWER_MERCHANT_IDLE, AUTOFILL_USER_DATA, LOGIN_METHOD,
             TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_TOKEN_SECRET, TWITTER_SHOULD_POST, GTM_LOGIN_ID,
             TEMP_USER_ID, GCM_ID, IS_AFFILIATE, IS_FIRST_TIME_USER_NEW_ONBOARDING,
-            UUID_KEY, LOGIN_UUID_KEY
+            UUID_KEY, LOGIN_UUID_KEY, IS_SHOP_OFFICIAL_STORE
     };
 
     @Test
