@@ -178,7 +178,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         val s = _orderPreference?.shipping
         if (s != null && s.shippingRecommendationData?.logisticPromo?.isApplied == true && s.isApplyLogisticPromo) {
             clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, arrayListOf(s.shippingRecommendationData.logisticPromo?.promoCode
-                    ?: ""))
+                    ?: ""), true)
             compositeSubscription.add(
                     clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe(object : Observer<ClearPromoUiModel?> {
                         override fun onError(e: Throwable?) {
@@ -567,7 +567,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             val shippingDurationViewModels = shippingRecommendationData.shippingDurationViewModels
             if (shippingRecommendationData.logisticPromo?.isApplied == true && shipping.isApplyLogisticPromo) {
                 clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, arrayListOf(shippingRecommendationData.logisticPromo?.promoCode
-                        ?: ""))
+                        ?: ""), true)
                 compositeSubscription.add(
                         clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe(object : Observer<ClearPromoUiModel?> {
                             override fun onError(e: Throwable?) {
@@ -653,7 +653,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             }
             if (shippingRecommendationData.logisticPromo?.isApplied == true && shipping.isApplyLogisticPromo) {
                 clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, arrayListOf(shippingRecommendationData.logisticPromo?.promoCode
-                        ?: ""))
+                        ?: ""), true)
                 compositeSubscription.add(
                         clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe(object : Observer<ClearPromoUiModel?> {
                             override fun onError(e: Throwable?) {
@@ -1071,7 +1071,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     fun cancelIneligiblePromoCheckout(notEligiblePromoHolderdataList: ArrayList<NotEligiblePromoHolderdata>, onSuccessCheckout: (Data) -> Unit) {
         globalEvent.value = OccGlobalEvent.Loading
         val promoCodeList = ArrayList(notEligiblePromoHolderdataList.map { it.promoCode })
-        clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, promoCodeList)
+        clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, promoCodeList, true)
         compositeSubscription.add(
                 clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY)
                         .subscribe(object : Observer<ClearPromoUiModel?> {
