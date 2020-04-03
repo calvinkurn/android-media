@@ -83,12 +83,14 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
         fun createInstance(pageSource: Int,
                            promoRequest: PromoRequest,
-                           validateUsePromoRequest: ValidateUsePromoRequest): PromoCheckoutFragment {
+                           validateUsePromoRequest: ValidateUsePromoRequest,
+                           bboPromoCodes: ArrayList<String>): PromoCheckoutFragment {
             return PromoCheckoutFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARGS_PAGE_SOURCE, pageSource)
                     putParcelable(ARGS_PROMO_REQUEST, promoRequest)
                     putParcelable(ARGS_VALIDATE_USE_REQUEST, validateUsePromoRequest)
+                    putStringArrayList(ARGS_BBO_PROMO_CODES, bboPromoCodes)
                 }
             }
         }
@@ -129,7 +131,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         button_apply_promo.setOnClickListener {
             setButtonLoading(button_apply_promo, true)
             val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) as ValidateUsePromoRequest
-            viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.mutation_validate_use_promo_revamp), validateUsePromoRequest)
+            val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
+            viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.mutation_validate_use_promo_revamp), validateUsePromoRequest, bboPromoCodes ?: ArrayList())
         }
 
         button_apply_no_promo.setOnClickListener {
@@ -551,7 +554,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     viewModel.sendAnalyticsClickSimpanPromoBaru()
                     if (viewModel.isHasAnySelectedPromoItem()) {
                         val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) as ValidateUsePromoRequest
-                        viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.mutation_validate_use_promo_revamp), validateUsePromoRequest)
+                        val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
+                        viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.mutation_validate_use_promo_revamp), validateUsePromoRequest, bboPromoCodes ?: ArrayList())
                     } else {
                         val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) as ValidateUsePromoRequest
                         viewModel.clearPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo), validateUsePromoRequest)
