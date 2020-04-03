@@ -47,10 +47,9 @@ class ProductManageTabFilter: RecyclerView {
     }
 
     fun getProductCount(): Int {
-        return tabFilterAdapter?.list
-            ?.filterIsInstance<FilterTabViewModel>()
-            ?.firstOrNull { it.status == selectedFilter?.status }
-            ?.count.orZero()
+        return tabFilterAdapter?.data?.firstOrNull {
+                it.status == selectedFilter?.status
+            }?.count.orZero()
     }
 
     fun setFilterCount(filterCount: Int) {
