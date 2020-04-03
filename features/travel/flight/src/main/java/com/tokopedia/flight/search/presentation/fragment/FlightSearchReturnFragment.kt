@@ -174,9 +174,13 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
 
     override fun navigateToCart(returnFlightSearchViewModel: FlightJourneyViewModel?, selectedFlightReturn: String?, flightPriceViewModel: FlightPriceViewModel, selectedFlightTerm: String?) {
         if (returnFlightSearchViewModel != null) {
-            onFlightSearchFragmentListener?.selectFlight(returnFlightSearchViewModel.id, returnFlightSearchViewModel.term, flightPriceViewModel, false, true)
+            onFlightSearchFragmentListener?.selectFlight(returnFlightSearchViewModel.id,
+                    returnFlightSearchViewModel.term, flightPriceViewModel,
+                    isBestPairing = false, isCombineDone = true, requestId = flightSearchPassData.searchRequestId)
         } else if (selectedFlightReturn != null && selectedFlightTerm != null) {
-            onFlightSearchFragmentListener?.selectFlight(selectedFlightReturn, selectedFlightTerm, flightPriceViewModel,false, true)
+            onFlightSearchFragmentListener?.selectFlight(selectedFlightReturn, selectedFlightTerm,
+                    flightPriceViewModel, isBestPairing = false, isCombineDone = true,
+                    requestId = flightSearchPassData.searchRequestId)
         }
     }
 

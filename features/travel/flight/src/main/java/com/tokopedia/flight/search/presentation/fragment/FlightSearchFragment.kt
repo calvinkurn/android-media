@@ -410,7 +410,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     override fun navigateToTheNextPage(selectedId: String, selectedTerm: String, fareViewModel: FlightPriceViewModel, isBestPairing: Boolean) {
         if (onFlightSearchFragmentListener != null) {
-            onFlightSearchFragmentListener!!.selectFlight(selectedId, selectedTerm, fareViewModel, isBestPairing, isCombineDone)
+            onFlightSearchFragmentListener!!.selectFlight(selectedId, selectedTerm, fareViewModel,
+                    isBestPairing, isCombineDone, flightSearchPassData.searchRequestId)
         }
     }
 
@@ -430,7 +431,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             progress += halfProgressAmount
         }
 
-        flightSearchPassData.searchRequestId = flightSearchMetaViewModel.searchRequestId
+        if (!isReturning()) {
+            flightSearchPassData.searchRequestId = flightSearchMetaViewModel.searchRequestId
+        }
 
         if (flightAirportCombineModel.isNeedRefresh) {
             if (flightSearchMetaViewModel.isNeedRefresh) {
@@ -897,7 +900,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     interface OnFlightSearchFragmentListener {
 
         fun selectFlight(selectedFlightID: String, selectedTerm: String, flightPriceViewModel: FlightPriceViewModel,
-                         isBestPairing: Boolean, isCombineDone: Boolean)
+                         isBestPairing: Boolean, isCombineDone: Boolean, requestId: String)
 
         fun changeDate(flightSearchPassDataViewModel: FlightSearchPassDataViewModel)
     }
