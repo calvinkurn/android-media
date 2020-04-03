@@ -2,7 +2,7 @@ package com.tokopedia.product.addedit.shipment.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.mediauploader.di.MediaUploaderModule
-import com.tokopedia.product.addedit.common.di.ProductAddUseCaseModule
+import com.tokopedia.product.addedit.preview.di.ProductAddUseCaseModule
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment
 import dagger.Component
 

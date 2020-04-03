@@ -6,10 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.product.addedit.preview.data.source.api.param.GetProductV3Param
-import com.tokopedia.product.addedit.preview.data.source.api.param.OptionV3
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.domain.GetProductUseCase
+import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
+import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -20,6 +20,7 @@ import javax.inject.Inject
 
 class AddEditProductPreviewViewModel @Inject constructor(
         private val getProductUseCase: GetProductUseCase,
+        private val getProductMapper: GetProductMapper,
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
@@ -28,7 +29,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
     private val mImageUrlOrPathList = MutableLiveData<MutableList<String>>()
     val imageUrlOrPathList: LiveData<MutableList<String>> get() = mImageUrlOrPathList
 
-    var productData: Product? = null
+    var productInputModel: ProductInputModel? = null
 
     // observing the product id, and will become true if product id exist
     val isEditMode = Transformations.map(productId) { id ->
@@ -59,6 +60,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
         productId.value = id
     }
 
+    fun setProductInputModel(productData: Product) {
+        productInputModel = getProductMapper.mapRemoteModelToUiModel(productData)
+    }
+
     fun updateProductPhotos(imageUrlOrPathList: ArrayList<String>) {
         this.mImageUrlOrPathList.value = imageUrlOrPathList
     }
@@ -69,10 +74,12 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     private fun getProduct(productId: String) {
         launchCatchError(block = {
-            mGetProductResult.value = Success(withContext(Dispatchers.IO) {
+            val data = withContext(Dispatchers.IO) {
                 getProductUseCase.params = GetProductUseCase.createRequestParams(productId)
                 getProductUseCase.executeOnBackground()
-            })
+            }
+            mGetProductResult.value = Success(data)
+            setProductInputModel(data)
         }, onError = {
             mGetProductResult.value = Fail(it)
         })

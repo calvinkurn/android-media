@@ -26,12 +26,16 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
+import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DETAIL_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
-import com.tokopedia.product.addedit.description.model.DescriptionInputModel
-import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionActivity
-import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionFragment
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_INPUT
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_RESULT_CACHE_ID
+import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity
+import com.tokopedia.product.addedit.description.presentation.fragment.AddEditProductDescriptionFragment
+import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
+import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.detail.presentation.activity.AddEditProductDetailActivity
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.fragment.AddEditProductDetailFragment.Companion.REQUEST_CODE_DETAIL
@@ -200,7 +204,7 @@ class AddEditProductPreviewFragment :
 
         addEditProductDetailButton?.setOnClickListener {
 
-            viewModel.productData?.let {
+            viewModel.productInputModel?.let {
 
             }
 
@@ -249,7 +253,10 @@ class AddEditProductPreviewFragment :
                         data.getParcelableExtra<DescriptionInputModel>(EXTRA_DESCRIPTION_INPUT)
                 val detailInputModel =
                         data.getParcelableExtra<DetailInputModel>(EXTRA_DETAIL_INPUT)
-                context?.let { AddEditProductUploadService.startService(it, detailInputModel, descriptionInputModel, shipmentInputModel) }
+                val variantInputModel =
+                        data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
+                context?.let { AddEditProductUploadService.startService(it, detailInputModel,
+                        descriptionInputModel, shipmentInputModel, variantInputModel) }
             }
         }
     }
@@ -263,8 +270,9 @@ class AddEditProductPreviewFragment :
     }
 
     override fun initInjector() {
+        val baseMainApplication = requireContext().applicationContext as BaseMainApplication
         DaggerAddEditProductPreviewComponent.builder()
-                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+                .addEditProductComponent(AddEditProductComponentBuilder.getComponent(baseMainApplication))
                 .addEditProductPreviewModule(AddEditProductPreviewModule())
                 .build()
                 .inject(this)
@@ -338,7 +346,6 @@ class AddEditProductPreviewFragment :
                 is Success -> {
                     val productData = it.data
                     showProductDetailPreview(productData)
-                    viewModel.productData = productData
                 }
                 is Fail -> {
 
@@ -458,24 +465,24 @@ class AddEditProductPreviewFragment :
     }
 
     private fun startAddEditProductShipmentActivity() {
-        val intent = Intent(context, AddEditProductShipmentActivity::class.java)
-        startActivityForResult(intent, AddEditProductShipmentFragment.REQUEST_CODE_SHIPMENT)
+        viewModel.productInputModel?.let {
+            val intent = AddEditProductShipmentActivity.createInstanceEditMode(context, it.shipmentInputModel)
+            startActivityForResult(intent, AddEditProductShipmentFragment.REQUEST_CODE_SHIPMENT)
+        }
     }
 
     private fun showVariantDialog() {
         activity?.let {
-            val productVariantByCatModelList: ArrayList<String> = ArrayList()
-            productVariantByCatModelList.add(AddEditProductDescriptionFragment.TEST_VARIANT)
             val cacheManager = SaveInstanceCacheManager(it, true).apply {
-                put(AddEditProductUploadConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList) // must using json
-                put(AddEditProductUploadConstant.EXTRA_PRODUCT_VARIANT_SELECTION, "") // must using json
+                put(AddEditProductUploadConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, "")
+                put(AddEditProductUploadConstant.EXTRA_PRODUCT_VARIANT_SELECTION, "")
                 put(AddEditProductUploadConstant.EXTRA_CURRENCY_TYPE, AddEditProductDescriptionFragment.TYPE_IDR)
                 put(AddEditProductUploadConstant.EXTRA_DEFAULT_PRICE, 0.0)
                 put(AddEditProductUploadConstant.EXTRA_STOCK_TYPE, "")
                 put(AddEditProductUploadConstant.EXTRA_IS_OFFICIAL_STORE, false)
                 put(AddEditProductUploadConstant.EXTRA_DEFAULT_SKU, "")
                 put(AddEditProductUploadConstant.EXTRA_NEED_RETAIN_IMAGE, false)
-                put(AddEditProductUploadConstant.EXTRA_PRODUCT_SIZECHART, null) // must using json
+                put(AddEditProductUploadConstant.EXTRA_PRODUCT_SIZECHART, null)
                 put(AddEditProductUploadConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV1, true)
                 put(AddEditProductUploadConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV2, false)
                 put(AddEditProductUploadConstant.EXTRA_HAS_WHOLESALE, false)
@@ -483,7 +490,7 @@ class AddEditProductPreviewFragment :
             }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_VARIANT_DASHBOARD)
             intent?.run {
-                putExtra(AddEditProductUploadConstant.EXTRA_VARIANT_CACHE_ID, cacheManager.id)
+                putExtra(EXTRA_VARIANT_RESULT_CACHE_ID, cacheManager.id)
                 putExtra(AddEditProductUploadConstant.EXTRA_IS_USING_CACHE_MANAGER, true)
                 startActivityForResult(this, AddEditProductDescriptionFragment.REQUEST_CODE_VARIANT)
             }

@@ -4,25 +4,25 @@ import com.google.gson.annotations.SerializedName
 
 data class Picture(
         @SerializedName("picID")
-        val picID: String,
+        val picID: String = "",
         @SerializedName("description")
-        val description: String,
+        val description: String = "",
         @SerializedName("filePath")
-        val filePath: String,
+        val filePath: String = "",
         @SerializedName("fileName")
-        val fileName: String,
+        val fileName: String = "",
         @SerializedName("width")
-        val width: String,
+        val width: String = "0",
         @SerializedName("height")
-        val height: String,
+        val height: String = "0",
         @SerializedName("isFromIG")
-        val isFromIG: String,
+        val isFromIG: String = "",
         @SerializedName("urlOriginal")
-        val urlOriginal: String,
+        val urlOriginal: String = "",
         @SerializedName("urlThumbnail")
-        val urlThumbnail: String,
+        val urlThumbnail: String = "",
         @SerializedName("url300")
-        val url300: String,
+        val url300: String = "",
         @SerializedName("status")
-        val status: String
+        val status: String = ""
 )

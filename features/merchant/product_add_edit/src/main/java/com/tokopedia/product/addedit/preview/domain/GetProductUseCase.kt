@@ -9,14 +9,12 @@ import com.tokopedia.product.addedit.preview.data.source.api.param.GetProductV3P
 import com.tokopedia.product.addedit.preview.data.source.api.param.OptionV3
 import com.tokopedia.product.addedit.preview.data.source.api.response.GetProductV3Response
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
-import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class GetProductUseCase @Inject constructor(
-        private val graphqlRepository: GraphqlRepository,
-        private val getProductMapper: GetProductMapper
+        private val graphqlRepository: GraphqlRepository
 ) : UseCase<Product>() {
 
     var params: RequestParams = RequestParams.EMPTY
@@ -40,7 +38,7 @@ class GetProductUseCase @Inject constructor(
         private const val PARAM_OPTIONS = "options"
 
         fun createRequestParams(productId: String): RequestParams {
-            val options = OptionV3(edit = true, variant = true)
+            val options = OptionV3()
             val getProductV3Param = GetProductV3Param(productId, options)
             val requestParams = RequestParams.create()
             requestParams.putString(PARAM_PRODUCT_ID, getProductV3Param.productID)

@@ -1,6 +1,6 @@
 package com.tokopedia.product.addedit.preview.presentation.model
 
-import com.tokopedia.product.addedit.description.model.DescriptionInputModel
+import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 
