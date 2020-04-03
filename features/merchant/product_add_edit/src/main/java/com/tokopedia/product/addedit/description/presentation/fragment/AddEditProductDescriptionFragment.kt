@@ -61,35 +61,46 @@ import kotlinx.android.synthetic.main.add_edit_product_video_input_layout.*
 import kotlinx.android.synthetic.main.fragment_add_edit_product_description.*
 import javax.inject.Inject
 
-class AddEditProductDescriptionFragment(
-        private val categoryId: String
-) : BaseListFragment<VideoLinkModel, VideoLinkTypeFactory>(), VideoLinkTypeFactory.VideoLinkListener {
+class AddEditProductDescriptionFragment:
+        BaseListFragment<VideoLinkModel, VideoLinkTypeFactory>(),
+        VideoLinkTypeFactory.VideoLinkListener {
 
     companion object {
         fun createInstance(categoryId: String): Fragment {
-            return AddEditProductDescriptionFragment(categoryId)
+            return AddEditProductDescriptionFragment().apply {
+                arguments = Bundle().apply {
+                    putString(EXTRA_CATEGORY_ID, categoryId)
+                }
+            }
+        }
+        fun createInstance(categoryId: String, descriptionInputModel: DescriptionInputModel): Fragment {
+            return AddEditProductDescriptionFragment().apply {
+                arguments = Bundle().apply {
+                    putString(EXTRA_CATEGORY_ID, categoryId)
+                    putParcelable(EXTRA_DESCRIPTION_INPUT_MODEL, descriptionInputModel)
+                }
+            }
         }
 
         const val MAX_VIDEOS = 3
         const val REQUEST_CODE_VARIANT = 0
 
         const val TYPE_IDR = 1
-        const val TYPE_USD = 2
 
         const val IS_ADD = 0
         const val REQUEST_CODE_DESCRIPTION = 0x03
+        const val EXTRA_CATEGORY_ID = "extra_category_id"
+        const val EXTRA_DESCRIPTION_INPUT_MODEL = "extra_description_input_model"
 
         // TODO faisalramd
         const val TEST_IMAGE_URL = "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/9/16/36162992/36162992_778e5d1e-06fd-4e4a-b650-50c232815b24_1080_1080.jpg"
     }
 
-
     private var videoId = 0
     private var productVariantInputModel = ProductVariantInputModel()
-    private lateinit var descriptionViewModel: AddEditProductDescriptionViewModel
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var descriptionViewModel: AddEditProductDescriptionViewModel
 
     override fun getAdapterTypeFactory(): VideoLinkTypeFactory {
         val videoLinkTypeFactory = VideoLinkTypeFactory()
@@ -125,7 +136,13 @@ class AddEditProductDescriptionFragment(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initViewModel()
+        arguments?.let {
+            val categoryId : String = it.getString(EXTRA_CATEGORY_ID) ?: ""
+            val descriptionInputModel : DescriptionInputModel =
+                    it.getParcelable(EXTRA_DESCRIPTION_INPUT_MODEL) ?: DescriptionInputModel()
+            descriptionViewModel.categoryId = categoryId
+            descriptionViewModel.descriptionInputModel = descriptionInputModel
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -152,7 +169,7 @@ class AddEditProductDescriptionFragment(
         }
 
         tvAddVariant.setOnClickListener {
-            descriptionViewModel.getVariants(categoryId)
+            descriptionViewModel.getVariants(descriptionViewModel.categoryId)
         }
 
         btnNext.setOnClickListener {
@@ -173,7 +190,7 @@ class AddEditProductDescriptionFragment(
                     type =  Toaster.TYPE_ERROR,
                     actionText = getString(R.string.title_try_again),
                     clickListener =  View.OnClickListener {
-                descriptionViewModel.getVariants(categoryId)
+                descriptionViewModel.getVariants(descriptionViewModel.categoryId)
             })
         }
     }
@@ -203,13 +220,6 @@ class AddEditProductDescriptionFragment(
                     }
                 }
             }
-        }
-    }
-
-    private fun initViewModel() {
-        activity?.run {
-            descriptionViewModel = ViewModelProviders.of(this, viewModelFactory)
-                    .get(AddEditProductDescriptionViewModel::class.java)
         }
     }
 

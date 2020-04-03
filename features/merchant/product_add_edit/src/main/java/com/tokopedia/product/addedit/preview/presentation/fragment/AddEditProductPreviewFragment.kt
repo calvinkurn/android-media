@@ -224,7 +224,7 @@ class AddEditProductPreviewFragment :
         }
 
         addEditProductShipmentButton?.setOnClickListener {
-            startAddEditProductShipmentActivity()
+            moveToShipmentActivity()
         }
 
         observeIsEditModeState()
@@ -461,10 +461,14 @@ class AddEditProductPreviewFragment :
     }
 
     private fun moveToDescriptionActivity() {
-        startActivity(AddEditProductDescriptionActivity.createInstance(context))
+        viewModel.productInputModel?.let {
+            val intent = AddEditProductDescriptionActivity
+                    .createInstanceEditMode(context, it.detailInputModel.categoryId, it.descriptionInputModel)
+            startActivityForResult(intent, AddEditProductDescriptionActivity.REQUEST_CODE_DESCRIPTION)
+        }
     }
 
-    private fun startAddEditProductShipmentActivity() {
+    private fun moveToShipmentActivity() {
         viewModel.productInputModel?.let {
             val intent = AddEditProductShipmentActivity.createInstanceEditMode(context, it.shipmentInputModel)
             startActivityForResult(intent, AddEditProductShipmentFragment.REQUEST_CODE_SHIPMENT)

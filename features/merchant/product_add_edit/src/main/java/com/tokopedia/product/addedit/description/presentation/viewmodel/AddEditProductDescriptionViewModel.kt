@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
+import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -18,6 +19,9 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         coroutineDispatcher: CoroutineDispatcher,
         private val getProductVariantUseCase: GetProductVariantUseCase
 ) : BaseViewModel(coroutineDispatcher) {
+
+    var categoryId: String = ""
+    var descriptionInputModel: DescriptionInputModel = DescriptionInputModel()
 
     private val _productVariant = MutableLiveData<Result<List<ProductVariantByCatModel>>>()
     val productVariant: LiveData<Result<List<ProductVariantByCatModel>>>
