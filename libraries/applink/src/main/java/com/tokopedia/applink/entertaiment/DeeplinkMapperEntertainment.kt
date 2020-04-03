@@ -8,16 +8,11 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 
 object DeeplinkMapperEntertainment {
     fun getRegisteredNavigationEvents(deeplink: String, context: Context): String {
-        var deeplinkInternal = ""
-          if(getRemoteConfigEventEnabler(context)) {
-             if (deeplink.equals(ApplinkConst.EVENTS)) deeplinkInternal = ApplinkConstInternalEntertainment.EVENT_HOME
-             else if (deeplink.startsWith(ApplinkConst.EVENTS)) {
-                 deeplinkInternal = deeplink.replace(ApplinkConst.EVENTS, ApplinkConstInternalEntertainment.INTERNAL_EVENT)
-             }
-        }else{
-           deeplinkInternal =  deeplink
-        }
-        return deeplinkInternal
+          return if(getRemoteConfigEventEnabler(context) && deeplink.equals(ApplinkConst.EVENTS)) {
+              ApplinkConstInternalEntertainment.EVENT_HOME
+          }else{
+              deeplink
+         }
     }
 
     private fun getRemoteConfigEventEnabler(context: Context): Boolean{
