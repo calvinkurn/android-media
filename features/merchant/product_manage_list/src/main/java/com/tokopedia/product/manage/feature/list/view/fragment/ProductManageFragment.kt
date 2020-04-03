@@ -844,7 +844,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun resetSelectedFilter() {
         removeObservers(viewModel.selectedFilterAndSort)
-        viewModel.setSelectedFilter(listOf())
+        viewModel.resetSelectedFilter()
         tabFilters.resetFilters()
         observeFilter()
     }
