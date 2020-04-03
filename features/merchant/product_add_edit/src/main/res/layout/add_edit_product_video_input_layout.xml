@@ -26,13 +26,31 @@
         app:layout_constraintTop_toBottomOf="@+id/tvVideoHeaderTitle"
         app:typographyType="body_2" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvLinkVideo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvVideoHeaderSubtitle"
+        app:typographyType="body_2"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:text="@string/video_label"/>
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/edt_video_link_youtube"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvLinkVideo"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvVideoHeaderSubtitle" />
+        app:layout_constraintTop_toBottomOf="@+id/edt_video_link_youtube" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewAddVideo"

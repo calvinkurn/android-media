@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.description.presentation.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -43,7 +44,8 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         })
     }
 
-    fun getVideoYoutube(videoId: String) {
+    fun getVideoYoutube(videoUrl: String) {
+        val videoId = getIdYoutubeUrl(videoUrl)
         launchCatchError( block = {
             getYoutubeVideoUseCase.setVideoId(videoId)
             val result = withContext(Dispatchers.IO) {
@@ -58,5 +60,19 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     private fun convertToYoutubeResponse(typeRestResponseMap: Map<Type, RestResponse>): YoutubeVideoModel {
         val restResponse = typeRestResponseMap[YoutubeVideoModel::class.java]
         return restResponse?.getData() as YoutubeVideoModel
+    }
+
+    private fun getIdYoutubeUrl(videoUrl: String): String {
+        return try {
+            val uri = Uri.parse(videoUrl)
+            uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID) ?: ""
+        } catch (e: NullPointerException) {
+            e.printStackTrace()
+            ""
+        }
+    }
+
+    companion object {
+        const val KEY_YOUTUBE_VIDEO_ID = "v"
     }
 }
