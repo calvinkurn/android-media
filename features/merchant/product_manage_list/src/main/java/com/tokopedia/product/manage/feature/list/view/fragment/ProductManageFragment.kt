@@ -588,6 +588,17 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 R.string.product_manage_set_cashback_success, setCashbackResult.productName),
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
         productManageListAdapter.updateCashback(setCashbackResult.productId, setCashbackResult.cashback)
+        if(viewModel.selectedFilterAndSort.value?.filterOptions == listOf(FilterByCondition.CashBackOnly)) {
+            filterProductListByCashback()
+        }
+    }
+
+    private fun filterProductListByCashback() {
+        val productList = adapter.data.filter {
+            it.cashBack != 0
+        }
+        clearAllData()
+        showProductList(productList)
     }
 
     private fun onSetCashbackLimitExceeded() {
@@ -819,6 +830,14 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         showProductList(productList)
     }
 
+    private fun filterProductListByFeatured(isFeatured: Boolean) {
+        val productList = adapter.data.filter {
+            it.isFeatured == isFeatured
+        }
+        clearAllData()
+        showProductList(productList)
+    }
+
     override fun onSwipeRefresh() {
         isLoadingInitialData = true
         swipeToRefresh.isRefreshing = true
@@ -847,6 +866,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             isFeaturedProduct = true
         }
         productManageListAdapter.updateFeaturedProduct(productId, isFeaturedProduct)
+        if(viewModel.selectedFilterAndSort.value?.filterOptions == listOf(FilterByCondition.FeaturedOnly)) {
+            filterProductListByFeatured(true)
+            renderMultiSelectProduct()
+        }
         hideLoadingProgress()
         showMessageToastWithoutAction(successMessage)
     }
@@ -1377,7 +1400,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun observeMultiSelect() {
         observe(viewModel.toggleMultiSelect) { multiSelectEnabled ->
-            val productList = adapter.data.map {
+            val productList = adapter.data.filterIsInstance<ProductViewModel>().map {
                 it.copy(multiSelectActive = multiSelectEnabled, isChecked = false)
             }
 

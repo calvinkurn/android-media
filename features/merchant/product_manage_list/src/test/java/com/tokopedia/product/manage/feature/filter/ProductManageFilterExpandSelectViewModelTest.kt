@@ -9,7 +9,7 @@ import org.junit.Test
 class ProductManageFilterExpandSelectViewModelTest: ProductManageFilterExpandSelectViewModelTestFixture() {
 
     @Test
-    fun `when_update_data_should_set_select_data_to_desired_list`() {
+    fun `when update data should set select data to desired list`() {
         val dataToInsert = getUnselectedData()
 
         viewModel.updateData(dataToInsert)
@@ -18,7 +18,7 @@ class ProductManageFilterExpandSelectViewModelTest: ProductManageFilterExpandSel
     }
 
     @Test
-    fun `when_update_select_index_less_than_5_should_return_false`() {
+    fun `when update select index less than 5 should return false`() {
         val dataToInsert = getUnselectedData()
         val dataToSelect = dataToInsert[3]
 
@@ -29,7 +29,7 @@ class ProductManageFilterExpandSelectViewModelTest: ProductManageFilterExpandSel
     }
 
     @Test
-    fun `when_update_select_index_greater_than_5_should_return_true`() {
+    fun `when update select index greater than 5 should return true`() {
         val dataToInsert = getUnselectedData()
         val dataToSelect = dataToInsert[6]
 
@@ -40,7 +40,7 @@ class ProductManageFilterExpandSelectViewModelTest: ProductManageFilterExpandSel
     }
 
     @Test
-    fun `when_data_contains_selected_value_update_selected_item_should_update_selected_and unselect_old_data`() {
+    fun `when data contains selected value update selected item should update selected and unselect old data`() {
         val dataToInsert = getSelectedData()
         val dataToSelect = dataToInsert.first()
 
@@ -55,7 +55,7 @@ class ProductManageFilterExpandSelectViewModelTest: ProductManageFilterExpandSel
     }
 
     @Test
-    fun `when_update_selected_item_selected_selected_item_should_return_false`() {
+    fun `when update selected item selected selected item should return false`() {
         val dataToInsert = getSelectedData()
         val dataToSelect = dataToInsert[dataToInsert.lastIndex]
 
@@ -69,7 +69,7 @@ class ProductManageFilterExpandSelectViewModelTest: ProductManageFilterExpandSel
     }
 
     @Test
-    fun `when_update_selected_item_with_no_data_should_return_false_and_data_is_still_null`() {
+    fun `when update selected item with no data should return false and data is still null`() {
         val dataToInsert = getSelectedData()
         val dataToSelect = dataToInsert[dataToInsert.lastIndex]
 
@@ -79,7 +79,7 @@ class ProductManageFilterExpandSelectViewModelTest: ProductManageFilterExpandSel
     }
 
     @Test
-    fun `when_data_is_null_all_operations_should_do_nothing`() {
+    fun `when data is null all operations should do nothing`() {
 
         viewModel.updateSelectedItem(getUnselectedData().first())
 

@@ -8,7 +8,7 @@ import org.junit.Test
 class ProductManageFilterExpandChecklistViewModelTest: ProductManageFilterExpandChecklistViewModelTestFixture() {
 
     @Test
-    fun `when_init_data_should_update_daa_and_number_of_selected_data_accordingly`() {
+    fun `when init data should update data and number of selected data accordingly`() {
         val dataToInsert = getInitialChecklistData()
 
         viewModel.initData(dataToInsert)
@@ -21,7 +21,7 @@ class ProductManageFilterExpandChecklistViewModelTest: ProductManageFilterExpand
 
 
     @Test
-    fun `when_clear_all_checklist_should_update_select_values_to_false`() {
+    fun `when clear all checklist should update select values to false`() {
         val initialData = getInitialChecklistData()
 
         viewModel.initData(initialData)
@@ -31,7 +31,7 @@ class ProductManageFilterExpandChecklistViewModelTest: ProductManageFilterExpand
     }
 
     @Test
-    fun `when_update_select_should_update_actual_data_and_number_of_selected_data_accordingly`() {
+    fun `when update select should update actual data and number of selected data accordingly`() {
         val dataToInsert = getInitialChecklistData()
         val selectedData = dataToInsert.first()
 
@@ -46,7 +46,7 @@ class ProductManageFilterExpandChecklistViewModelTest: ProductManageFilterExpand
     }
 
     @Test
-    fun `when_update_select_selected_data_should_update_actual_data_and_number_of_selected_data_accordingly`() {
+    fun `when update select selected data should update actual data and number of selected data accordingly`() {
         val dataToInsert = getInitialChecklistData()
         val selectedData = dataToInsert[2]
 
@@ -61,7 +61,7 @@ class ProductManageFilterExpandChecklistViewModelTest: ProductManageFilterExpand
     }
 
     @Test
-    fun `when_data_is_null_all_operations_should_do_nothing`() {
+    fun `when data is null all operations should do nothing`() {
 
         viewModel.updateSelectedItem(getInitialChecklistData().first())
         viewModel.clearAllChecklist()
