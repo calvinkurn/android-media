@@ -26,7 +26,6 @@ import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.VariantPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.VariantSheetUiModel
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.variant_common.model.ProductVariantCommon
@@ -65,6 +64,7 @@ class VariantSheetView(
     private val globalError: GlobalError = view.findViewById(R.id.global_error_variant)
 
     private val imageRadius = view.resources.getDimensionPixelSize(R.dimen.play_product_line_image_radius).toFloat()
+    private val toasterMargin  =  view.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5)
     private val bottomSheetBehavior = BottomSheetBehavior.from(view)
 
     private val variantAdapter: VariantAdapter = VariantAdapter(this)
@@ -229,7 +229,7 @@ class VariantSheetView(
     }
 
     internal fun showToaster(toasterType: Int, message: String = "", actionText: String?, actionListener: View.OnClickListener?) {
-        Toaster.toasterCustomBottomHeight = btnAction.height.toPx()
+        Toaster.toasterCustomBottomHeight = btnAction.height + toasterMargin
 
         if (actionText != null && actionListener != null) {
             Toaster.make(
