@@ -1446,7 +1446,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     public void onPromoScrolled(BannerSlidesModel bannerSlidesModel) {
         HomeTrackingUtils.homeSlidingBannerImpression(getContext(), bannerSlidesModel, bannerSlidesModel.getPosition());
         if (bannerSlidesModel.getType().equals(BannerSlidesModel.TYPE_BANNER_PERSO) && !bannerSlidesModel.isInvoke()) {
-            sendEETracking((HashMap<String, Object>) HomePageTrackingV2.HomeBanner.INSTANCE.getOverlayBannerImpression(bannerSlidesModel));
+            putEEToTrackingQueue((HashMap<String, Object>) HomePageTrackingV2.HomeBanner.INSTANCE.getOverlayBannerImpression(bannerSlidesModel));
         } else if (!bannerSlidesModel.isInvoke()) {
             if(!bannerSlidesModel.getTopadsViewUrl().isEmpty()){
                 viewModel.sendTopAds(bannerSlidesModel.getTopadsViewUrl());
@@ -1454,7 +1454,7 @@ public class HomeFragment extends BaseDaggerFragment implements
 
             HashMap dataLayer = (HashMap) HomePageTrackingV2.HomeBanner.INSTANCE.getBannerImpression(bannerSlidesModel);
             dataLayer.put(com.tokopedia.iris.util.ConstantKt.KEY_SESSION_IRIS, irisSession.getSessionId());
-            putEEToIris(dataLayer);
+            putEEToTrackingQueue(dataLayer);
         }
 
         if (bannerSlidesModel.getPosition() > 1) {
