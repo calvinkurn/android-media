@@ -111,6 +111,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 promoRequest.skipApply = 0
             } else {
                 // Clear all pre selected promo on load data
+                promoRequest.attemptedCodes.clear()
                 promoRequest.codes.clear()
                 promoRequest.orders.forEach {
                     it.codes.clear()
@@ -1205,6 +1206,16 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             it.uiState.isLoading = true
             it.uiState.isButtonSelectEnabled = true
             it.uiData.promoCode = promoCode
+
+            _tmpUiModel.value = Update(it)
+        }
+    }
+
+    fun resetPromoInput() {
+        promoInputUiModel.value?.let {
+            it.uiState.isLoading = false
+            it.uiState.isButtonSelectEnabled = false
+            it.uiData.promoCode = ""
 
             _tmpUiModel.value = Update(it)
         }

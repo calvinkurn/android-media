@@ -456,6 +456,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun reloadData() {
+        viewModel.resetPromoInput()
         toolbar?.disableResetButton()
         toolbar?.hideResetButton()
         container_action_bottom.gone()
