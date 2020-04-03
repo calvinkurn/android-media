@@ -549,7 +549,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 logApplinkErrorOpen(url);
             }
         }
-        if (!allowOverride && isFirstRequest(url)) {
+        if (!allowOverride) {
             return false;
         }
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
@@ -559,10 +559,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private void logApplinkErrorOpen(String url) {
         Timber.w("P1#APPLINK_OPEN_ERROR#%s;uri='%s'",
                 BaseWebViewFragment.this.getClass().getSimpleName(), url);
-    }
-
-    private boolean isFirstRequest(String url) {
-        return this.url.equals(url);
     }
 
     private void checkActivityFinish() {
