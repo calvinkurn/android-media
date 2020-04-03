@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.oldlist.view.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.oldlist.view.factory.ProductManageFragmentFactoryImpl
 import com.tokopedia.product.manage.oldlist.view.model.ProductManageViewModel
 
@@ -12,7 +13,7 @@ class ProductManageListAdapter(baseListAdapterTypeFactory: ProductManageFragment
         data.forEachIndexed { index, it ->
             if (it.id.equals(productId, ignoreCase = true)) {
                 it.productPricePlain = price
-                it.productCurrencyId = currencyId.toInt()
+                it.productCurrencyId = currencyId.toIntOrZero()
                 it.productCurrencySymbol = priceCurrency
                 notifyItemChanged(index)
                 return
