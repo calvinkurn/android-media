@@ -821,6 +821,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     override fun onSwipeRefresh() {
         isLoadingInitialData = true
         swipeToRefresh.isRefreshing = true
+        clearFilterAndKeywordIfEmpty()
 
         showPageLoading()
         hideSnackBarRetry()
@@ -829,6 +830,23 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
         getFiltersTab(withDelay = true)
         getProductList(withDelay = true)
+    }
+
+    private fun clearFilterAndKeywordIfEmpty() {
+        val productList = adapter.data
+            .filterIsInstance<ProductViewModel>()
+
+        if(productList.isEmpty()) {
+            resetSelectedFilter()
+            clearSearchBarInput()
+        }
+    }
+
+    private fun resetSelectedFilter() {
+        removeObservers(viewModel.selectedFilterAndSort)
+        viewModel.setSelectedFilter(listOf())
+        tabFilters.resetFilters()
+        observeFilter()
     }
 
     private fun clearSearchBarInput() {
