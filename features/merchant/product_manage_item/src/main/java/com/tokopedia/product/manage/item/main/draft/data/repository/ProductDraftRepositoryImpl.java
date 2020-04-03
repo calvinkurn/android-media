@@ -37,8 +37,7 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
 
     @Override
     public Observable<ProductViewModel> getDraft(long productId) {
-        return productDraftDataSource.getDraft(productId)
-                .map(new ProductDraftMapper());
+        return productDraftDataSource.getDraft(productId).map(new ProductDraftMapper());
     }
 
     @Override

@@ -1,8 +1,8 @@
 package com.tokopedia.product.addedit.draft.domain.usecase
 
-import com.tokopedia.product.addedit.common.domain.model.params.add.Product
 import com.tokopedia.product.addedit.common.constant.AddEditProductDraftConstant
 import com.tokopedia.product.addedit.draft.data.db.repository.AddEditProductDraftRepository
+import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -11,7 +11,7 @@ import javax.inject.Inject
 class SaveProductDraftUseCase @Inject constructor(private val draftRepository: AddEditProductDraftRepository): UseCase<Long>() {
 
     companion object{
-        fun createRequestParams(product: Product, productId: Long, isUploading: Boolean): RequestParams {
+        fun createRequestParams(product: ProductInputModel, productId: Long, isUploading: Boolean): RequestParams {
             val params = RequestParams.create()
             params.putObject(AddEditProductDraftConstant.UPLOAD_PRODUCT_INPUT_MODEL, product)
             params.putLong(AddEditProductDraftConstant.PREV_DRAFT_ID, productId)
@@ -22,12 +22,12 @@ class SaveProductDraftUseCase @Inject constructor(private val draftRepository: A
 
     private fun isInputProductNotNull(requestParams: RequestParams?) = requestParams?.getObject(AddEditProductDraftConstant.UPLOAD_PRODUCT_INPUT_MODEL) != null
 
-    private fun isUploadProductDomainModel(requestParams: RequestParams?) = requestParams?.getObject(AddEditProductDraftConstant.UPLOAD_PRODUCT_INPUT_MODEL) is Product
+    private fun isUploadProductDomainModel(requestParams: RequestParams?) = requestParams?.getObject(AddEditProductDraftConstant.UPLOAD_PRODUCT_INPUT_MODEL) is ProductInputModel
 
     override fun createObservable(requestParams: RequestParams?): Observable<Long> {
-        val product: Product
+        val product: ProductInputModel
         if(isInputProductNotNull(requestParams) && isUploadProductDomainModel(requestParams)) {
-            product = requestParams?.getObject(AddEditProductDraftConstant.UPLOAD_PRODUCT_INPUT_MODEL) as Product
+            product = requestParams?.getObject(AddEditProductDraftConstant.UPLOAD_PRODUCT_INPUT_MODEL) as ProductInputModel
         } else {
             throw RuntimeException("Input model is missing")
         }
