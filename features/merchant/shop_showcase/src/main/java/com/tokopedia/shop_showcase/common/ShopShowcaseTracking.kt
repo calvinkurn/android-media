@@ -1,7 +1,7 @@
 package com.tokopedia.shop_showcase.common
 
 import android.content.Context
-import com.tokopedia.analytic_constant.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.user.session.UserSessionInterface
@@ -30,7 +30,7 @@ class ShopShowcaseTracking (context: Context?) {
     fun getShopType(userSession: UserSessionInterface): String {
         return when {
             userSession.isGoldMerchant -> ShopType.GOLD_MERCHANT
-            userSession.isShopOfficialStore -> ShopType.OFFICIAL_STORE
+//            userSession.isShopOfficialStore -> ShopType.OFFICIAL_STORE
             else -> ShopType.REGULAR
         }
     }
