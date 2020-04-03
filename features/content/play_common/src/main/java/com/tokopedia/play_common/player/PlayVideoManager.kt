@@ -123,7 +123,8 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
                     val prepareState = currentPrepareState
                     if (!currentWindow.isLive && !currentWindow.isDynamic && prepareState is PlayVideoPrepareState.Prepared && prepareState.positionHandle is VideoPositionHandle.NotHandled) {
                         currentPrepareState = prepareState.copy(positionHandle = VideoPositionHandle.Handled)
-                        if (prepareState.positionHandle.lastPosition != null) videoPlayer.seekTo(prepareState.positionHandle.lastPosition)
+                        val lastPosition = prepareState.positionHandle.lastPosition
+                        if (lastPosition != null && currentWindow.durationMs >= lastPosition) videoPlayer.seekTo(lastPosition)
                     }
                 }
             } catch (e: Exception) {}

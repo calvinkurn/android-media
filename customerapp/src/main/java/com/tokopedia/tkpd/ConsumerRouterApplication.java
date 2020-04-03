@@ -189,7 +189,6 @@ import com.tokopedia.tkpd.drawer.NoOpDrawerHelper;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.analytics.HomeAnalytics;
-import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
@@ -1213,11 +1212,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public AccountHomeInjection getAccountHomeInjection() {
         return new AccountHomeInjectionImpl();
-    }
-
-    @Override
-    public Fragment getFavoriteFragment() {
-        return FragmentFavorite.newInstance();
     }
 
     public void doLogoutAccount(Context activity) {
