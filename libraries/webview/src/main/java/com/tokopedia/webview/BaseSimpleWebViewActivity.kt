@@ -16,7 +16,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.url.TokopediaUrl
-import com.tokopedia.webview.download.BaseDownloadAppLinkActivity
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
 
@@ -234,7 +233,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             return taskStackBuilder
         }
 
-        @DeepLink(ApplinkConst.WEBVIEW)
+        @DeepLink(ApplinkConst.WEBVIEW, ApplinkConst.SellerApp.WEBVIEW, ApplinkConst.SELLER_INFO_DETAIL)
         @JvmStatic
         fun getInstanceIntentAppLink(context: Context, extras: Bundle): Intent {
             var webUrl = extras.getString(
@@ -267,12 +266,6 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             }
 
             return getStartIntent(context, webUrl, showToolbar, allowOverride, needLogin)
-        }
-
-        @DeepLink(ApplinkConst.SellerApp.WEBVIEW, ApplinkConst.SELLER_INFO_DETAIL)
-        @JvmStatic
-        fun createApplinkIntent(context: Context, bundle: Bundle): Intent {
-            return getStartIntent(context, bundle.getString(BaseDownloadAppLinkActivity.KEY_APP_LINK_QUERY_URL, TokopediaUrl.getInstance().MOBILEWEB))
         }
     }
 
