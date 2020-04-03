@@ -2619,6 +2619,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                 }
                 ordersItem.setProduct_details(productDetailsItems);
+                ordersItem.setChecked(true);
 
                 ArrayList<String> listCodes = new ArrayList<>();
                 if (shipmentCartItemModel.getListPromoCodes() != null) {

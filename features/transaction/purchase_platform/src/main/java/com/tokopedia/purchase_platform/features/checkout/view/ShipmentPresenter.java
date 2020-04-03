@@ -34,7 +34,6 @@ import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationP
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
-import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse;
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
@@ -98,7 +97,6 @@ import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldTieri
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDonationModel;
-import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.OrdersItem;
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest;
 import com.tokopedia.purchase_platform.features.promo.domain.usecase.ValidateUsePromoRevampUseCase;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ClashingInfoDetailUiModel;
@@ -887,17 +885,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                if (messageInfo.length() > 0) {
                                                    getView().showToastNormal(messageInfo);
                                                }
-                                               if (!TextUtils.isEmpty(validateUsePromoRevampUiModel.getPromoUiModel().getTickerInfoUiModel().getMessage())) {
-                                                   if (tickerAnnouncementHolderData == null) {
-                                                       setTickerAnnouncementHolderData(
-                                                               new TickerAnnouncementHolderData(
-                                                                       String.valueOf(validateUsePromoRevampUiModel.getPromoUiModel().getTickerInfoUiModel().getStatusCode()),
-                                                                       validateUsePromoRevampUiModel.getPromoUiModel().getTickerInfoUiModel().getMessage())
-                                                       );
-                                                   }
-                                                   getView().updateTickerAnnouncementMessage();
-                                                   analyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(tickerAnnouncementHolderData.getId());
-                                               }
+                                               updateTickerAnnouncementData(validateUsePromoRevampUiModel);
                                                if (validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase("ERROR")) {
                                                    String message = "";
                                                    if (validateUsePromoRevampUiModel.getMessage().size() > 0) {
@@ -942,6 +930,23 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         )
         );
 
+    }
+
+    private void updateTickerAnnouncementData(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
+        if (!TextUtils.isEmpty(validateUsePromoRevampUiModel.getPromoUiModel().getTickerInfoUiModel().getMessage())) {
+            if (tickerAnnouncementHolderData == null) {
+                setTickerAnnouncementHolderData(
+                        new TickerAnnouncementHolderData(
+                                String.valueOf(validateUsePromoRevampUiModel.getPromoUiModel().getTickerInfoUiModel().getStatusCode()),
+                                validateUsePromoRevampUiModel.getPromoUiModel().getTickerInfoUiModel().getMessage())
+                );
+            } else {
+                tickerAnnouncementHolderData.setId(String.valueOf(validateUsePromoRevampUiModel.getPromoUiModel().getTickerInfoUiModel().getStatusCode()));
+                tickerAnnouncementHolderData.setMessage(validateUsePromoRevampUiModel.getPromoUiModel().getTickerInfoUiModel().getMessage());
+            }
+            getView().updateTickerAnnouncementMessage();
+            analyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(tickerAnnouncementHolderData.getId());
+        }
     }
 
     @NonNull
@@ -1109,6 +1114,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             public void onNext(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
                                 ShipmentPresenter.this.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel;
                                 if (getView() != null) {
+                                    updateTickerAnnouncementData(validateUsePromoRevampUiModel);
                                     String messageInfo = validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getErrorDetailUiModel().getMessage();
                                     if (messageInfo.length() > 0) {
                                         getView().showToastNormal(messageInfo);
@@ -1162,6 +1168,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 ShipmentPresenter.this.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel;
                                 setCouponStateChanged(true);
                                 if (getView() != null) {
+                                    updateTickerAnnouncementData(validateUsePromoRevampUiModel);
                                     String messageInfo = validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getErrorDetailUiModel().getMessage();
                                     if (messageInfo.length() > 0) {
                                         getView().showToastNormal(messageInfo);

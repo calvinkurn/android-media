@@ -115,8 +115,10 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     promoCode = couponItem.code
                     couponAppLink = couponItem.couponAppLink
                     val clashingInfoMap = HashMap<String, String>()
-                    couponItem.clashingInfos.forEach {
-                        clashingInfoMap[it.code] = it.message
+                    if (couponItem.clashingInfos.isNotEmpty()) {
+                        couponItem.clashingInfos.forEach {
+                            clashingInfoMap[it.code] = couponItem.clashingInfos[0].message
+                        }
                     }
                     clashingInfo = clashingInfoMap
                     val tmpCurrentClashingPromoList = ArrayList<String>()
@@ -124,9 +126,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     selectedPromo.forEach {
                         if (clashingInfo.containsKey(it)) {
                             tmpCurrentClashingPromoList.add(it)
-                            if (tmpErrorMessage.isNotBlank()) {
-                                tmpErrorMessage.append("\n")
-                            }
+                            tmpErrorMessage.clear()
                             tmpErrorMessage.append(clashingInfo[it])
                         }
                     }

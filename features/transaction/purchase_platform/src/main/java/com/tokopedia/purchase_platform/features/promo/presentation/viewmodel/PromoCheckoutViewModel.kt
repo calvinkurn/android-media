@@ -759,6 +759,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     promoListItemUiModel.uiData.currentClashingPromo.forEach { string ->
                         if (promoListItemUiModel.uiData.clashingInfo.containsKey(string)) {
                             errorMessageBuilder.append(promoListItemUiModel.uiData.clashingInfo[string])
+                            return@forEach
                         }
                     }
                     promoListItemUiModel.uiData.errorMessage = errorMessageBuilder.toString()
@@ -776,7 +777,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 promoListItemUiModel.uiData.currentClashingPromo.add(selectedItem.uiData.promoCode)
                 val errorMessageBuilder = StringBuilder(promoListItemUiModel.uiData.errorMessage)
                 if (promoListItemUiModel.uiData.errorMessage.isNotBlank()) {
-                    errorMessageBuilder.append("\n")
+                    errorMessageBuilder.clear()
                 }
                 errorMessageBuilder.append(promoListItemUiModel.uiData.clashingInfo[selectedItem.uiData.promoCode])
                 promoListItemUiModel.uiData.errorMessage = errorMessageBuilder.toString()
