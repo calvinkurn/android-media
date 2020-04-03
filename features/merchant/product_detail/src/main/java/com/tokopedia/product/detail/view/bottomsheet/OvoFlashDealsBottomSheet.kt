@@ -67,7 +67,8 @@ class OvoFlashDealsBottomSheet(val productId: String,
         btnTopupInstant.setOnClickListener {
             activity?.let {
                 DynamicProductDetailTracking.Click.eventBottomSheetOvo(
-                        ProductTrackingConstant.Action.CLICK_TOPUP_BOTTOMSHEET_OVO, productId, userId)
+                        "$ProductTrackingConstant.Action.CLICK_TOPUP_BOTTOMSHEET_OVO $ovoInsufficientBalanceModel.title",
+                        productId, userId)
                 RouteManager.route(it, ovoInsufficientBalanceModel.buttons.topupButton.applink)
                 dismiss()
             }
@@ -78,12 +79,14 @@ class OvoFlashDealsBottomSheet(val productId: String,
         btnTopupOtherMethod.setOnClickListener {
             activity?.let {
                 DynamicProductDetailTracking.Click.eventBottomSheetOvo(
-                        ProductTrackingConstant.Action.CLICK_OTHER_METHOD_BOTTOMSHEET_OVO, productId, userId)
+                        "$ProductTrackingConstant.Action.CLICK_OTHER_METHOD_BOTTOMSHEET_OVO  $ovoInsufficientBalanceModel.title",
+                        productId, userId)
                 RouteManager.route(it, ovoInsufficientBalanceModel.buttons.otherMethodButton.applink)
                 dismiss()
             }
         }
         DynamicProductDetailTracking.Click.eventBottomSheetOvo(
-                ProductTrackingConstant.Action.CLICK_SEE_BOTTOMSHEET_OVO, productId, userId)
+                "$ProductTrackingConstant.Action.CLICK_SEE_BOTTOMSHEET_OVO $ $ovoInsufficientBalanceModel.title",
+                productId, userId)
     }
 }

@@ -1180,6 +1180,38 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun onSuccessAtc(result: AddToCartDataModel) {
         val cartId = result.data.cartId
+        when (viewModel.buttonActionType) {
+            ProductDetailConstant.OCS_BUTTON -> {
+                if (result.data.success == 0)
+                    validateOvo(result)
+                else
+                    sendTrackingATC(cartId)
+                    goToCheckout(ShipmentFormRequest
+                            .BundleBuilder()
+                            .deviceId("")
+                            .build()
+                            .bundle)
+            }
+            ProductDetailConstant.BUY_BUTTON -> {
+                sendTrackingATC(cartId)
+                goToCartCheckout(cartId)
+            }
+            ProductDetailConstant.ATC_BUTTON -> {
+                sendTrackingATC(cartId)
+                showAddToCartDoneBottomSheet()
+            }
+            ProductDetailConstant.TRADEIN_AFTER_DIAGNOSE -> {
+                // Same with OCS but should send devideId
+                sendTrackingATC(cartId)
+                goToCheckout(ShipmentFormRequest.BundleBuilder()
+                        .deviceId(viewModel.tradeinDeviceId)
+                        .build()
+                        .bundle)
+            }
+        }
+    }
+
+    private fun sendTrackingATC(cartId: String) {
         DynamicProductDetailTracking.Click.eventEcommerceBuy(viewModel.buttonActionType,
                 viewModel.buttonActionText,
                 viewModel.userId,
@@ -1191,32 +1223,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 DynamicProductDetailTracking.generateVariantString(viewModel.variantData, viewModel.getDynamicProductInfoP1?.basic?.productID
                         ?: ""),
                 viewModel.getDynamicProductInfoP1)
-
-        when (viewModel.buttonActionType) {
-            ProductDetailConstant.OCS_BUTTON -> {
-                if (result.data.success == 0)
-                    validateOvo(result)
-                else
-                    goToCheckout(ShipmentFormRequest
-                            .BundleBuilder()
-                            .deviceId("")
-                            .build()
-                            .bundle)
-            }
-            ProductDetailConstant.BUY_BUTTON -> {
-                goToCartCheckout(cartId)
-            }
-            ProductDetailConstant.ATC_BUTTON -> {
-                showAddToCartDoneBottomSheet()
-            }
-            ProductDetailConstant.TRADEIN_AFTER_DIAGNOSE -> {
-                // Same with OCS but should send devideId
-                goToCheckout(ShipmentFormRequest.BundleBuilder()
-                        .deviceId(viewModel.tradeinDeviceId)
-                        .build()
-                        .bundle)
-            }
-        }
     }
 
     private fun validateOvo(result: AddToCartDataModel) {
