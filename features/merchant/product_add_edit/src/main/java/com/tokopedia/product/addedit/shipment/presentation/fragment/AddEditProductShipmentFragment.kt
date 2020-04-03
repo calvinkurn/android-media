@@ -142,7 +142,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         } else {
             getString(R.string.error_weight_not_valid, MIN_WEIGHT, MAX_WEIGHT_KILOGRAM)
         }
-        val isValid = shipmentViewModel.isWeightValid(inputText, selectedWeightPosition, MIN_WEIGHT)
+        val isValid = shipmentViewModel.isWeightValid(inputText, selectedWeightPosition)
         tfWeightAmount?.setError(!isValid)
         tfWeightAmount?.setMessage(if (isValid) "" else errorMessage)
         btnEnd?.isEnabled = isValid
