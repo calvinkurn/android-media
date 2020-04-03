@@ -361,9 +361,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun setTabFilterCount(filter: FilterOptionWrapper) {
-        var filterCount = filter.filterOptions.count().orZero()
-        filter.sortOption?.let { filterCount++ }
-        tabFilters.setFilterCount(filterCount)
+        tabFilters.setFilterCount(filter.selectedFilterCount)
     }
 
     private fun clickStatusFilterTab(filter: FilterTabViewModel, viewHolder: FilterTabViewHolder) {

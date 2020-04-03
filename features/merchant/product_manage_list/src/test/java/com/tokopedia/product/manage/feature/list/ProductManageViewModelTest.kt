@@ -281,7 +281,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
         val productListMetaResponse = ProductListMetaResponse(productListMeta)
 
         val filterList = listOf(CashBackOnly, FeaturedOnly)
-        val filterOptions = FilterOptionWrapper(filterOptions = filterList, sortOption = SortByName(ASC))
+        val filterOptions = FilterOptionWrapper(filterOptions = filterList, sortOption = SortByName(ASC), selectedFilterCount = 3)
 
         onGetFiltersTab_thenReturn(productListMetaResponse)
 

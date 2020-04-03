@@ -227,8 +227,7 @@ class ProductManageViewModel @Inject constructor(
 
         launchCatchError(block = {
             val selectedFilter = selectedFilterAndSort.value
-            var filterCount = selectedFilter?.filterOptions?.count().orZero()
-            selectedFilter?.sortOption?.let { filterCount++ }
+            val selectedFilterCount = selectedFilter?.selectedFilterCount ?: 0
 
             val response = withContext(dispatchers.io) {
                 if(withDelay) { delay(REQUEST_DELAY) }
@@ -236,7 +235,7 @@ class ProductManageViewModel @Inject constructor(
                 getProductListMetaUseCase.executeOnBackground()
             }
 
-            val result = mapToFilterTabResult(response, filterCount)
+            val result = mapToFilterTabResult(response, selectedFilterCount)
             _productFiltersTab.value = Success(result)
         }, onError = {
             if(it is CancellationException) {

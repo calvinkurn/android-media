@@ -72,6 +72,7 @@ class ProductManageFilterMapper {
         }
 
         fun mapFiltersToFilterOptions(filterUiModel: List<FilterUiModel>): FilterOptionWrapper {
+            var selectedFilterCount = 0
             val filterOptions = mutableListOf<FilterOption>()
             val sortOption = mapSortToSortOptions(filterUiModel[ProductManageFilterFragment.ITEM_SORT_INDEX])
             val isShown = mutableListOf<Boolean>()
@@ -84,8 +85,9 @@ class ProductManageFilterMapper {
                 } else {
                     isShown.add(HIDE_CHIPS)
                 }
+                selectedFilterCount += it.data.filter { data -> data.select }.size
             }
-            return FilterOptionWrapper(sortOption, filterOptions, isShown)
+            return FilterOptionWrapper(sortOption, filterOptions, isShown, selectedFilterCount)
         }
 
         fun mapFilterOptionWrapperToSelectedSort(filterOptionWrapper: FilterOptionWrapper): FilterDataUiModel? {
