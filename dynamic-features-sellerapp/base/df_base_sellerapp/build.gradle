@@ -66,15 +66,15 @@ dependencies {
     implementation project(rootProject.ext.features.shopOpen)
 
     //User
-    implementation project(rootProject.ext.features.changePhoneNumber)
+//    implementation project(rootProject.ext.features.changePhoneNumber)
     implementation project(rootProject.ext.features.changepassword)
-    implementation project(rootProject.ext.features.profileCompletion)
+//    implementation project(rootProject.ext.features.profileCompletion)
     implementation project(rootProject.ext.features.settingbank)
     implementation project(rootProject.ext.features.settingnotif)
     implementation project(rootProject.ext.features.attachinvoice)
     implementation project(rootProject.ext.features.kyccentralized)
-    implementation project(rootProject.ext.features.notifCenter)
+//    implementation project(rootProject.ext.features.notifCenter)
     implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.attachvoucher)
-    implementation project(rootProject.ext.features.topchat)
+//    implementation project(rootProject.ext.features.topchat)
 }
