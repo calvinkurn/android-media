@@ -1,5 +1,7 @@
 package com.tokopedia.search.result.presentation;
 
+import androidx.annotation.Nullable;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -141,6 +143,8 @@ public interface ProductListSectionContract {
         String getPreviousKeyword();
 
         boolean isLandingPage();
+
+        void logWarning(String message, @Nullable Throwable throwable);
 
         void sendTopAdsTrackingUrl(String topAdsTrackingUrl);
 
