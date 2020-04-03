@@ -412,3 +412,5 @@
 
 # -- robust
 -optimizations !class/unboxing/enum,!code/simplification/arithmetic
+
+-keep class com.tokopedia.sortfilter.** { *; }
