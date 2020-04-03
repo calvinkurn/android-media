@@ -226,9 +226,8 @@ class ProductManageViewModel @Inject constructor(
         getFilterTabJob?.cancel()
 
         launchCatchError(block = {
-            var selectedFilterCount = 0
             val selectedFilter = selectedFilterAndSort.value
-            selectedFilter?.selectedFilterCount?.let { selectedFilterCount = it }
+            val selectedFilterCount = selectedFilter?.selectedFilterCount ?: 0
 
             val response = withContext(dispatchers.io) {
                 if(withDelay) { delay(REQUEST_DELAY) }
