@@ -560,7 +560,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             val promoCodesJson = Gson().toJson(toBeRemovedPromoCodes)
             tmpMutation = tmpMutation.replace("#promoCode", promoCodesJson)
 
-            tmpMutation = tmpMutation.replace("#isOcc", "false")
+            tmpMutation = tmpMutation.replace("#isOCC", validateUsePromoRequest.cartType.equals("occ").toString())
             // Get response
             val response = withContext(Dispatchers.IO) {
                 val request = GraphqlRequest(tmpMutation, ClearPromoResponse::class.java)
