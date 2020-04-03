@@ -26,7 +26,7 @@ import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.homepage.di.HotelHomepageComponent
-import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity.Companion.EXTRA_SHOW_ONLY_CHANGE_PARAM
+import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity.Companion.EXTRA_IS_HOTEL_CHANGE_SEARCH
 import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity.Companion.TYPE_PROPERTY
 import com.tokopedia.hotel.homepage.presentation.adapter.HotelLastSearchAdapter
 import com.tokopedia.hotel.homepage.presentation.adapter.viewholder.HotelLastSearchViewHolder
@@ -62,7 +62,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     lateinit var trackingHotelUtil: TrackingHotelUtil
 
     private var hotelHomepageModel: HotelHomepageModel = HotelHomepageModel()
-    private var showOnlyChangeParam: Boolean = false
+    private var isHotelChangeSearch: Boolean = false
 
     private lateinit var remoteConfig: RemoteConfig
 
@@ -99,7 +99,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
             if (hotelHomepageModel.checkInDate.isNotBlank() && hotelHomepageModel.checkOutDate.isNotBlank()) hotelHomepageModel.nightCounter = countRoomDuration()
         }
 
-        showOnlyChangeParam  = arguments?.getBoolean(EXTRA_SHOW_ONLY_CHANGE_PARAM, false) ?: false
+        isHotelChangeSearch  = arguments?.getBoolean(EXTRA_IS_HOTEL_CHANGE_SEARCH, false) ?: false
 
         remoteConfig = FirebaseRemoteConfigImpl(context)
     }
@@ -112,7 +112,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         initView()
         hidePromoContainer()
-        if (!showOnlyChangeParam) loadPromoData()
+        if (!isHotelChangeSearch) loadPromoData()
     }
 
     override fun onResume() {
@@ -120,7 +120,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         // last search need to reload every time user back to homepage
         hideHotelLastSearchContainer()
-        if (!showOnlyChangeParam) loadRecentSearchData()
+        if (!isHotelChangeSearch) loadRecentSearchData()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -470,10 +470,10 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         const val TAG_GUEST_INFO = "guestHotelInfo"
 
-        fun getInstance(showOnlyChangeParam: Boolean): HotelHomepageFragment =
+        fun getInstance(isHotelChangeSearch: Boolean): HotelHomepageFragment =
                 HotelHomepageFragment().also {
                     it.arguments = Bundle().apply {
-                        putBoolean(EXTRA_SHOW_ONLY_CHANGE_PARAM, showOnlyChangeParam)
+                        putBoolean(EXTRA_IS_HOTEL_CHANGE_SEARCH, isHotelChangeSearch)
                     }
                 }
 

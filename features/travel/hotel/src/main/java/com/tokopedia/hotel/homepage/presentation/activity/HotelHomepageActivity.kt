@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.hotel.HotelComponentInstance
+import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.homepage.di.DaggerHotelHomepageComponent
 import com.tokopedia.hotel.homepage.di.HotelHomepageComponent
@@ -21,7 +22,7 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
     private var room: Int = 0
     private var adult: Int = 0
 
-    private var showOnlyChangeParam: Boolean  = false
+    private var isHotelChangeSearch: Boolean  = false
 
     override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view
 
@@ -54,11 +55,13 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
             if (!uri.getQueryParameter(PARAM_ADULT).isNullOrEmpty()) adult = uri.getQueryParameter(PARAM_ADULT).toInt()
 
         } else {
-            showOnlyChangeParam = intent.getBooleanExtra(EXTRA_SHOW_ONLY_CHANGE_PARAM, false)
+            isHotelChangeSearch = intent.getBooleanExtra(EXTRA_IS_HOTEL_CHANGE_SEARCH, false)
         }
 
         super.onCreate(savedInstanceState)
         toolbar.contentInsetStartWithNavigation = 0
+
+        if (isHotelChangeSearch) toolbar.title = getString(R.string.hotel_search_result_change_toolbar_title)
     }
 
     override fun getComponent(): HotelHomepageComponent =
@@ -66,22 +69,22 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
                     .hotelComponent(HotelComponentInstance.getHotelComponent(application))
                     .build()
 
-    override fun getScreenName(): String = HOMEPAGE_SCREEN_NAME
+    override fun getScreenName(): String = if (isHotelChangeSearch) "" else HOMEPAGE_SCREEN_NAME
 
     override fun getNewFragment(): Fragment = if (type.isNotEmpty())
         HotelHomepageFragment.getInstance(id, name, type, checkIn, checkOut, adult, room)
     else
-        HotelHomepageFragment.getInstance(showOnlyChangeParam)
+        HotelHomepageFragment.getInstance(isHotelChangeSearch)
 
-    override fun shouldShowOptionMenu(): Boolean = true
+    override fun shouldShowOptionMenu(): Boolean = !isHotelChangeSearch
 
     companion object {
         fun getCallingIntent(context: Context): Intent =
                 Intent(context, HotelHomepageActivity::class.java)
 
-        fun getCallingIntent(context: Context, showOnlyChangeParam: Boolean): Intent =
+        fun getCallingIntent(context: Context, isHotelChangeSearch: Boolean): Intent =
                 Intent(context, HotelHomepageActivity::class.java)
-                        .putExtra(EXTRA_SHOW_ONLY_CHANGE_PARAM, showOnlyChangeParam)
+                        .putExtra(EXTRA_IS_HOTEL_CHANGE_SEARCH, isHotelChangeSearch)
 
         const val PARAM_HOTEL_ID = "hotel_id"
         const val PARAM_HOTEL_NAME = "hotel_name"
@@ -96,7 +99,7 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
         const val PARAM_ROOM = "room"
         const val PARAM_ADULT = "adult"
 
-        const val EXTRA_SHOW_ONLY_CHANGE_PARAM = "extra_show_only_change_param"
+        const val EXTRA_IS_HOTEL_CHANGE_SEARCH = "extra_is_hotel_change_search"
 
         const val TYPE_REGION = "region"
         const val TYPE_DISTRICT = "district"
