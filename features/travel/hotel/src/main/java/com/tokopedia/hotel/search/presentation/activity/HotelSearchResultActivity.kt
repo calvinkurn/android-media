@@ -3,6 +3,10 @@ package com.tokopedia.hotel.search.presentation.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.common.travel.utils.TravelDateUtil
@@ -10,10 +14,11 @@ import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.common.util.HotelUtils
+import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity
 import com.tokopedia.hotel.search.di.DaggerHotelSearchPropertyComponent
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragment
-import java.util.*
+import kotlinx.android.synthetic.main.activity_hotel_search_result.*
 
 class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchPropertyComponent> {
 
@@ -30,17 +35,19 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
     var long = 0f
     var children = 0
     var subtitle = ""
+    private lateinit var wrapper: LinearLayout
 
-    override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view
+    override fun getLayoutRes(): Int = R.layout.activity_hotel_search_result
 
-    override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple
+    override fun getToolbarResourceID(): Int = R.id.hotel_search_header
+
+    override fun getParentViewResourceID(): Int = R.id.hotel_search_parent_view
 
     override fun shouldShowOptionMenu(): Boolean = false
 
     override fun getScreenName(): String = SEARCH_SCREEN_NAME
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         val uri = intent.data
         if (uri != null) {
             if (!uri.getQueryParameter(PARAM_HOTEL_ID).isNullOrEmpty()) {
@@ -90,8 +97,44 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
                 checkOutString,
                 room,
                 adult)
-        updateTitle(name, subtitle)
 
+        setupSearchToolbarAction()
+        setUpTitleAndSubtitle()
+    }
+
+    private fun  setupSearchToolbarAction() {
+        wrapper = LinearLayout(this)
+        wrapper.apply {
+            val param = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
+            layoutParams = param
+        }
+
+        val textView = TextView(this)
+        val param = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        textView.layoutParams = param
+        textView.text = resources.getString(R.string.hotel_search_result_change)
+        textView.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Green_G500))
+
+        wrapper.addView(textView)
+        wrapper.setOnClickListener {
+            routeToHomepage()
+        }
+        hotel_search_header.addCustomRightContent(wrapper)
+        hotel_search_header.isShowBackButton = true
+        hotel_search_header.setNavigationOnClickListener {
+            onBackPressed()
+        }
+    }
+
+    private fun setUpTitleAndSubtitle() {
+        hotel_search_header.title = name
+        hotel_search_header.subtitle  = subtitle
+        hotel_search_header.subheaderView?.setTextColor(ContextCompat.getColor(this, R.color.search_subtitle))
+    }
+
+    private fun routeToHomepage() {
+        startActivity(HotelHomepageActivity.getCallingIntent(this, true))
     }
 
     private fun checkParameter() {

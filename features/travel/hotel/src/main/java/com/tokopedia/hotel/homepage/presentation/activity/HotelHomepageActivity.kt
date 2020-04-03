@@ -21,6 +21,8 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
     private var room: Int = 0
     private var adult: Int = 0
 
+    private var showOnlyChangeParam: Boolean  = false
+
     override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view
 
     override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple
@@ -51,6 +53,8 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
             if (!uri.getQueryParameter(PARAM_ROOM).isNullOrEmpty()) room = uri.getQueryParameter(PARAM_ROOM).toInt()
             if (!uri.getQueryParameter(PARAM_ADULT).isNullOrEmpty()) adult = uri.getQueryParameter(PARAM_ADULT).toInt()
 
+        } else {
+            showOnlyChangeParam = intent.getBooleanExtra(EXTRA_SHOW_ONLY_CHANGE_PARAM, false)
         }
 
         super.onCreate(savedInstanceState)
@@ -67,13 +71,17 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
     override fun getNewFragment(): Fragment = if (type.isNotEmpty())
         HotelHomepageFragment.getInstance(id, name, type, checkIn, checkOut, adult, room)
     else
-        HotelHomepageFragment.getInstance()
+        HotelHomepageFragment.getInstance(showOnlyChangeParam)
 
     override fun shouldShowOptionMenu(): Boolean = true
 
     companion object {
         fun getCallingIntent(context: Context): Intent =
                 Intent(context, HotelHomepageActivity::class.java)
+
+        fun getCallingIntent(context: Context, showOnlyChangeParam: Boolean): Intent =
+                Intent(context, HotelHomepageActivity::class.java)
+                        .putExtra(EXTRA_SHOW_ONLY_CHANGE_PARAM, showOnlyChangeParam)
 
         const val PARAM_HOTEL_ID = "hotel_id"
         const val PARAM_HOTEL_NAME = "hotel_name"
@@ -87,6 +95,8 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
         const val PARAM_CHECK_OUT = "check_out"
         const val PARAM_ROOM = "room"
         const val PARAM_ADULT = "adult"
+
+        const val EXTRA_SHOW_ONLY_CHANGE_PARAM = "extra_show_only_change_param"
 
         const val TYPE_REGION = "region"
         const val TYPE_DISTRICT = "district"

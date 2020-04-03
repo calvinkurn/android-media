@@ -26,6 +26,7 @@ import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.homepage.di.HotelHomepageComponent
+import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity.Companion.EXTRA_SHOW_ONLY_CHANGE_PARAM
 import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity.Companion.TYPE_PROPERTY
 import com.tokopedia.hotel.homepage.presentation.adapter.HotelLastSearchAdapter
 import com.tokopedia.hotel.homepage.presentation.adapter.viewholder.HotelLastSearchViewHolder
@@ -61,6 +62,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     lateinit var trackingHotelUtil: TrackingHotelUtil
 
     private var hotelHomepageModel: HotelHomepageModel = HotelHomepageModel()
+    private var showOnlyChangeParam: Boolean = false
 
     private lateinit var remoteConfig: RemoteConfig
 
@@ -97,8 +99,9 @@ class HotelHomepageFragment : HotelBaseFragment(),
             if (hotelHomepageModel.checkInDate.isNotBlank() && hotelHomepageModel.checkOutDate.isNotBlank()) hotelHomepageModel.nightCounter = countRoomDuration()
         }
 
-        remoteConfig = FirebaseRemoteConfigImpl(context)
+        showOnlyChangeParam  = arguments?.getBoolean(EXTRA_SHOW_ONLY_CHANGE_PARAM, false) ?: false
 
+        remoteConfig = FirebaseRemoteConfigImpl(context)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -109,7 +112,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         initView()
         hidePromoContainer()
-        loadPromoData()
+        if (!showOnlyChangeParam) loadPromoData()
     }
 
     override fun onResume() {
@@ -117,7 +120,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         // last search need to reload every time user back to homepage
         hideHotelLastSearchContainer()
-        loadRecentSearchData()
+        if (!showOnlyChangeParam) loadRecentSearchData()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -467,7 +470,12 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         const val TAG_GUEST_INFO = "guestHotelInfo"
 
-        fun getInstance(): HotelHomepageFragment = HotelHomepageFragment()
+        fun getInstance(showOnlyChangeParam: Boolean): HotelHomepageFragment =
+                HotelHomepageFragment().also {
+                    it.arguments = Bundle().apply {
+                        putBoolean(EXTRA_SHOW_ONLY_CHANGE_PARAM, showOnlyChangeParam)
+                    }
+                }
 
         fun getInstance(id: Long, name: String, type: String, checkIn: String, checkOut: String, adult: Int, room: Int): HotelHomepageFragment =
                 HotelHomepageFragment().also {
