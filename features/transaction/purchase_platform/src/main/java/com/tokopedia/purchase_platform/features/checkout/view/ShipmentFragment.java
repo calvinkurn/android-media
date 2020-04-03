@@ -1295,10 +1295,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                 }
 
-                if (stillHasPromo) {
-                    shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
-                } else {
-                    shipmentPresenter.setLatValidateUseRequest(null);
+                shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
+                if (!stillHasPromo) {
                     doResetButtonPromoCheckout();
                 }
             }
@@ -2967,6 +2965,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         updatePromoTrackingData(promoUiModel.getTrackingDetails());
         updateLogisticPromoData(promoUiModel);
         if (shipmentAdapter.hasSetAllCourier()) {
+            resetPromoBenefit();
             setPromoBenefit(promoUiModel.getBenefitSummaryInfoUiModel().getSummaries());
             shipmentAdapter.updateShipmentCostModel();
         }
