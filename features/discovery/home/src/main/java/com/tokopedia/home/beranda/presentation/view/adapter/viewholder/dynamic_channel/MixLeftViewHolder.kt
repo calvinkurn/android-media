@@ -155,7 +155,15 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
                             pdpViewCount = element.productViewCountFormatted,
                             stockBarLabel = element.label,
                             isTopAds = element.isTopads,
-                            stockBarPercentage = element.soldPercentage
+                            stockBarPercentage = element.soldPercentage,
+                            labelGroupList = element.labelGroup.map {
+                                ProductCardFlashSaleModel.LabelGroup(
+                                        position = it.position,
+                                        title = it.title,
+                                        type = it.type
+                                )
+                            },
+                            isOutOfStock = element.isOutOfStock
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,

@@ -114,6 +114,12 @@ object HomeQuery{
                   imageUrl
                 }
                 productViewCountFormatted
+                isOutOfStock
+                labelGroup {
+                  title
+                  position
+                  type
+                }
               }
               banner {
                 id

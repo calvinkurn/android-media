@@ -629,7 +629,13 @@ data class DynamicHomeChannel(
             val freeOngkir: FreeOngkir = FreeOngkir(),
             @Expose
             @SerializedName("productViewCountFormatted")
-            val productViewCountFormatted: String = ""
+            val productViewCountFormatted: String = "",
+            @Expose
+            @SerializedName("isOutOfStock")
+            val isOutOfStock: Boolean = false,
+            @Expose
+            @SerializedName("labelGroup")
+            val labelGroup: Array<LabelGroup> = arrayOf()
     )
 
     data class Header(
