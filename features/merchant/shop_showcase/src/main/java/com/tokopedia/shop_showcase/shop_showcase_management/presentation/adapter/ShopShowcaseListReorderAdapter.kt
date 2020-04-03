@@ -85,7 +85,7 @@ class ShopShowcaseListReorderAdapter(
         fun bindData(dataShowcase: ShowcaseItem, position: Int) {
             val stringTotalProduct: String = dataShowcase.count.toString()
             titleShowcase?.text = dataShowcase.name
-            subtitleShowcase?.text = "$stringTotalProduct Produk"
+            subtitleShowcase?.text = "$stringTotalProduct produk"
 
             if (dataShowcase.type == ShowcaseType.GENERATED) {
                 buttonMove?.visibility = View.INVISIBLE

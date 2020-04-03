@@ -27,10 +27,10 @@
     <string name="done_menu_text">Selesai</string>
     <string name="empty_showcase_name_text">Oops, kamu belum mengisi nama etalase</string>
     <string name="selected_product_text">Produk Pilihan</string>
-    <string name="info_success_delete_showcase">Etalase kamu berhasil di hapus</string>
-    <string name="info_success_edit_showcase">Etalase kamu berhasil di edit</string>
-    <string name="subtitle_empty_state">Silahkan lakukan pencarian dengan kata kunci lain</string>
-    <string name="title_empty_state">Oops, Etalase Nggak \nDitemukan</string>
+    <string name="info_success_delete_showcase">Etalase kamu berhasil dihapus</string>
+    <string name="info_success_edit_showcase">Etalase kamu berhasil diubah</string>
+    <string name="subtitle_empty_state">Silakan lakukan pencarian dengan kata kunci lain</string>
+    <string name="title_empty_state">Oops, etalase nggak \nditemukan</string>
     <string name="title_empty_state_search_product">Oops, produk nggak \nditemukan</string>
     <string name="please_search_with_different_keyword_text">\nLakukan pencarian dengan kata kunci lain, ya!</string>
     <string name="text_cancel_button">Batal</string>
