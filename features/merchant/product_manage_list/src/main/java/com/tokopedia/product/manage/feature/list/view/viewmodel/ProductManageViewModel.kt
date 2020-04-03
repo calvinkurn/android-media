@@ -399,6 +399,12 @@ class ProductManageViewModel @Inject constructor(
         }
     }
 
+    fun resetSelectedFilter() {
+        _selectedFilterAndSort.value = FilterOptionWrapper(
+            filterShownState = listOf(true, true, false, false)
+        )
+    }
+
     fun getTotalProductCount(): Int {
        return (productFiltersTab.value as? Success<GetFilterTabResult>)
            ?.data?.totalProductCount.orZero()
