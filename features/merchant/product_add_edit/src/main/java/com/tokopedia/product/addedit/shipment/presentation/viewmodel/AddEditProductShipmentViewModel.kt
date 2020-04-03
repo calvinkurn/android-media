@@ -15,6 +15,9 @@ class AddEditProductShipmentViewModel @Inject constructor(
 
     var shipmentInputModel: ShipmentInputModel = ShipmentInputModel()
 
+    //TODO
+    var isEditMode:Boolean = false
+
     private fun getWeight(weight: String) = weight.replace(".", "").toIntOrZero()
 
     fun isWeightValid(weight: String, unitWeight: Int, minWeight: Int): Boolean {
