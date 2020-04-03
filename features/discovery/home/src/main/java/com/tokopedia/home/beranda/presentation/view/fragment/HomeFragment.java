@@ -405,6 +405,8 @@ public class HomeFragment extends BaseDaggerFragment implements
         //giving recyclerview larger cache to prevent lag, we can implement this because home dc content
         //is finite
         homeRecyclerView.setItemViewCacheSize(20);
+        homeRecyclerView.setItemAnimator(null);
+
         if (homeRecyclerView.getItemDecorationCount() == 0) {
             homeRecyclerView.addItemDecoration(new HomeRecyclerDecoration(getResources().getDimensionPixelSize(R.dimen.home_recyclerview_item_spacing)));
         }
@@ -1050,7 +1052,6 @@ public class HomeFragment extends BaseDaggerFragment implements
     public void onRefresh() {
         //on refresh most likely we already lay out many view, then we can reduce
         //animation to keep our performance
-        homeRecyclerView.setItemAnimator(null);
         adapter.resetImpressionHomeBanner();
         resetFeedState();
         removeNetworkError();
