@@ -430,6 +430,7 @@ open class HomeViewModel @Inject constructor(
         (detectGeolocation as? GeolocationPromptViewModel)?.let {
             launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_DELETE, it)) }
         }
+        setNeedToShowGeolocationComponent(false)
     }
 
     fun onCloseTicker() {
@@ -685,9 +686,6 @@ open class HomeViewModel @Inject constructor(
     fun getFeedTabData() {
         launchCatchError(coroutineContext, block={
             val homeRecommendationTabs = getRecommendationTabUseCase.executeOnBackground()
-            val findLoadingModel = _homeLiveData.value?.list?.find {
-                visitable -> visitable is HomeLoadingMoreModel
-            }
             val findRetryModel = _homeLiveData.value?.list?.find {
                 visitable -> visitable is HomeRetryModel
             }
@@ -698,21 +696,15 @@ open class HomeViewModel @Inject constructor(
             if (findRecommendationModel != null) return@launchCatchError
 
             val homeRecommendationFeedViewModel = HomeRecommendationFeedViewModel()
-            homeRecommendationFeedViewModel.feedTabModel = homeRecommendationTabs
+            homeRecommendationFeedViewModel.recommendationTabDataModel = homeRecommendationTabs
             homeRecommendationFeedViewModel.isNewData = true
-            updateWidget(UpdateLiveDataModel(ACTION_DELETE, findLoadingModel as HomeVisitable?))
             updateWidget(UpdateLiveDataModel(ACTION_DELETE, findRetryModel as HomeVisitable?))
             updateWidget(UpdateLiveDataModel(ACTION_ADD, homeRecommendationFeedViewModel))
 
         }){
-            val findLoadingModel = _homeLiveData.value?.list?.find {
-                visitable -> visitable is HomeLoadingMoreModel
-            }
             val findRetryModel = _homeLiveData.value?.list?.find {
                 visitable -> visitable is HomeRetryModel
             }
-
-            updateWidget(UpdateLiveDataModel(ACTION_DELETE, findLoadingModel as HomeVisitable?))
             updateWidget(UpdateLiveDataModel(ACTION_DELETE, findRetryModel as HomeVisitable?))
             updateWidget(UpdateLiveDataModel(ACTION_ADD, HomeRetryModel()))
         }

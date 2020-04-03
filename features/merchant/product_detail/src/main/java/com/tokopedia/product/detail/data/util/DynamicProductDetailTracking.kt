@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.data.util
 
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -947,7 +948,7 @@ object DynamicProductDetailTracking {
                     DataLayer.mapOf(
                             ProductTrackingConstant.Tracking.NAME, productInfo?.getProductName,
                             ProductTrackingConstant.Tracking.ID, productInfo?.basic?.getProductId(),
-                            ProductTrackingConstant.Tracking.PRICE, productInfo?.data?.price?.value,
+                            ProductTrackingConstant.Tracking.PRICE, productInfo?.finalPrice.orZero(),
                             ProductTrackingConstant.Tracking.BRAND, productInfo?.getProductName,
                             ProductTrackingConstant.Tracking.CATEGORY, TrackingUtil.getEnhanceCategoryFormatted(productInfo?.basic?.category?.detail),
                             ProductTrackingConstant.Tracking.VARIANT, ProductTrackingConstant.Tracking.DEFAULT_VALUE,
@@ -979,8 +980,7 @@ object DynamicProductDetailTracking {
                     "productDeeplinkUrl", deeplinkUrl,
                     "productImageUrl", productImageUrl,
                     "isOfficialStore", shopInfo?.goldOS?.isOfficial,
-                    "productPriceFormatted", TrackingUtil.getFormattedPrice(productInfo?.data?.price?.value
-                    ?: 0),
+                    "productPriceFormatted", TrackingUtil.getFormattedPrice(productInfo?.finalPrice.orZero()),
                     ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productInfo?.basic?.productID
                     ?: "",
                     ProductTrackingConstant.Tracking.KEY_LAYOUT, "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id}",
