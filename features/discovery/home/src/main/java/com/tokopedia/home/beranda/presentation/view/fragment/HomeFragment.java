@@ -140,6 +140,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
@@ -303,7 +304,6 @@ public class HomeFragment extends BaseDaggerFragment implements
     @VisibleForTesting
     protected void initViewModel(){
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(HomeViewModel.class);
-        Log.d("testNoSkeleton", viewModel.toString());
     }
 
     @Override
@@ -370,6 +370,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         homeMainToolbar = view.findViewById(R.id.toolbar);
+        homeMainToolbar.setAfterInflationCallable(getAfterInflationCallable());
         statusBarBackground = view.findViewById(R.id.status_bar_bg);
         homeRecyclerView = view.findViewById(R.id.list);
         homeRecyclerView.setHasFixedSize(true);
@@ -384,17 +385,30 @@ public class HomeFragment extends BaseDaggerFragment implements
         fetchRemoteConfig();
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
         setupStatusBar();
-        calculateSearchbarView(0);
         setupHomeRecyclerView();
         initEggDragListener();
 
         return view;
     }
 
+    private Callable getAfterInflationCallable(){
+        Callable afterinflationCallable = new Callable() {
+            @Override
+            public Object call() throws Exception {
+                calculateSearchbarView(0);
+                observeSearchHint();
+                return null;
+            }
+        };
+        return afterinflationCallable;
+    }
+
     private void setupHomeRecyclerView() {
         //giving recyclerview larger cache to prevent lag, we can implement this because home dc content
         //is finite
         homeRecyclerView.setItemViewCacheSize(20);
+        homeRecyclerView.setItemAnimator(null);
+
         if (homeRecyclerView.getItemDecorationCount() == 0) {
             homeRecyclerView.addItemDecoration(new HomeRecyclerDecoration(getResources().getDimensionPixelSize(R.dimen.home_recyclerview_item_spacing)));
         }
@@ -479,12 +493,16 @@ public class HomeFragment extends BaseDaggerFragment implements
         }
 
         if (recyclerView.canScrollVertically(1)) {
-            homeMainToolbar.showShadow();
+            if(homeMainToolbar != null) {
+                homeMainToolbar.showShadow();
+            }
             showFeedSectionViewHolderShadow(false);
             homeRecyclerView.setNestedCanScroll(false);
         } else {
             //home feed now can scroll up, so hide maintoolbar shadow
-            homeMainToolbar.hideShadow();
+            if(homeMainToolbar != null) {
+                homeMainToolbar.hideShadow();
+            }
             showFeedSectionViewHolderShadow(true);
             homeRecyclerView.setNestedCanScroll(true);
         }
@@ -601,7 +619,9 @@ public class HomeFragment extends BaseDaggerFragment implements
             /*
              * set notification gimmick
              */
-            homeMainToolbar.setNotificationNumber(0);
+            if(homeMainToolbar != null) {
+                homeMainToolbar.setNotificationNumber(0);
+            }
         });
         refreshLayout.setOnRefreshListener(this);
     }
@@ -611,7 +631,6 @@ public class HomeFragment extends BaseDaggerFragment implements
         observeUpdateNetworkStatusData();
         observePopupIntroOvo();
         observeSendLocation();
-        observeSearchHint();
         observeStickyLogin();
         observeTrackingData();
         observeRequestImagePlayBanner();
@@ -756,21 +775,25 @@ public class HomeFragment extends BaseDaggerFragment implements
         if (offsetAlpha < 0) {
             offsetAlpha = 0;
         }
-        if(offsetAlpha >= 150){
-            homeMainToolbar.switchToDarkToolbar();
-            if (isLightThemeStatusBar) requestStatusBarDark();
-        } else {
-            homeMainToolbar.switchToLightToolbar();
-            if (!isLightThemeStatusBar) requestStatusBarLight();
+        if(homeMainToolbar != null) {
+            if (offsetAlpha >= 150) {
+                homeMainToolbar.switchToDarkToolbar();
+                if (isLightThemeStatusBar) requestStatusBarDark();
+            } else {
+                homeMainToolbar.switchToLightToolbar();
+                if (!isLightThemeStatusBar) requestStatusBarLight();
+            }
         }
 
         if (offsetAlpha >= 255) {
             offsetAlpha = 255;
         }
 
-        if (offsetAlpha >= 0 && offsetAlpha <= 255) {
-            homeMainToolbar.setBackgroundAlpha(offsetAlpha);
-            setStatusBarAlpha(offsetAlpha);
+        if(homeMainToolbar != null) {
+            if (offsetAlpha >= 0 && offsetAlpha <= 255) {
+                homeMainToolbar.setBackgroundAlpha(offsetAlpha);
+                setStatusBarAlpha(offsetAlpha);
+            }
         }
     }
 
@@ -1031,7 +1054,6 @@ public class HomeFragment extends BaseDaggerFragment implements
     public void onRefresh() {
         //on refresh most likely we already lay out many view, then we can reduce
         //animation to keep our performance
-        homeRecyclerView.setItemAnimator(null);
         adapter.resetImpressionHomeBanner();
         resetFeedState();
         removeNetworkError();

@@ -5,6 +5,4 @@ import dagger.Module
 
 @SearchScope
 @Module
-class FollowKolPostUseCaseModule {
-
-}
+class FollowKolPostUseCaseModule

@@ -46,11 +46,11 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
-import com.tokopedia.shop.newproduct.view.fragment.ShopPageProductListFragment
-import com.tokopedia.shop.oldpage.di.component.DaggerOldShopPageComponent
-import com.tokopedia.shop.oldpage.di.component.OldShopPageComponent
-import com.tokopedia.shop.oldpage.di.module.OldShopPageModule
-import com.tokopedia.shop.oldpage.view.ShopPageViewModel
+import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
+import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
+import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
+import com.tokopedia.shop.pageheader.di.module.ShopPageModule
+import com.tokopedia.shop.pageheader.presentation.ShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentHeaderViewHolder
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
@@ -71,7 +71,7 @@ import javax.inject.Inject
 
 class ShopPageFragment :
         BaseDaggerFragment(),
-        HasComponent<OldShopPageComponent>,
+        HasComponent<ShopPageComponent>,
         ShopPageFragmentHeaderViewHolder.ShopPageFragmentViewHolderListener {
 
     companion object {
@@ -107,6 +107,9 @@ class ShopPageFragment :
 
         private const val CART_LOCAL_CACHE_NAME = "CART"
         private const val TOTAL_CART_CACHE_KEY = "CACHE_TOTAL_CART"
+        private const val PATH_HOME = "home"
+        private const val QUERY_SHOP_REF = "shop_ref"
+        private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
 
         @JvmStatic
         fun createInstance() = ShopPageFragment()
@@ -137,7 +140,7 @@ class ShopPageFragment :
     private lateinit var shopPageFragmentHeaderViewHolder: ShopPageFragmentHeaderViewHolder
     private lateinit var viewPagerAdapter: ShopPageFragmentPagerAdapter
     private lateinit var errorTextView: TextView
-    private lateinit var errorButton: Button
+    private lateinit var errorButton: View
     private val iconTabHome = R.drawable.ic_shop_tab_home_inactive
     private val iconTabProduct = R.drawable.ic_shop_tab_products_inactive
     private val iconTabFeed = R.drawable.ic_shop_tab_feed_inactive
@@ -155,7 +158,7 @@ class ShopPageFragment :
         } else false
 
     override fun getComponent() = activity?.run {
-        DaggerOldShopPageComponent.builder().oldShopPageModule(OldShopPageModule())
+        DaggerShopPageComponent.builder().shopPageModule(ShopPageModule())
                 .shopComponent(ShopComponentInstance.getComponent(application)).build()
     }
 
@@ -291,9 +294,10 @@ class ShopPageFragment :
                     if (shopDomain.isNullOrEmpty()) {
                         shopDomain = getQueryParameter(SHOP_DOMAIN)
                     }
-                    if (shopAttribution.isNullOrEmpty()) {
-                        shopAttribution = getQueryParameter(SHOP_ATTRIBUTION)
-                    }
+                    if (lastPathSegment.orEmpty() == PATH_HOME)
+                        tabPosition = TAB_POSITION_HOME
+                    shopRef = getQueryParameter(QUERY_SHOP_REF) ?: ""
+                    shopAttribution = getQueryParameter(QUERY_SHOP_ATTRIBUTION) ?: ""
                 }
             }
             shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageViewModel::class.java)
@@ -315,7 +319,7 @@ class ShopPageFragment :
         stickyLoginView.setOnDismissListener(View.OnClickListener {
             stickyLoginView.tracker.clickOnDismiss(StickyLoginConstant.Page.SHOP)
             stickyLoginView.dismiss(StickyLoginConstant.Page.SHOP)
-            updateFloatingChatButtonMargin()
+            updateStickyContent()
         })
         updateStickyContent()
     }
@@ -687,13 +691,16 @@ class ShopPageFragment :
     }
 
     private fun onErrorToggleFavourite(e: Throwable) {
-        activity?.run {
-            shopPageFragmentHeaderViewHolder.updateFavoriteButton()
+        shopPageFragmentHeaderViewHolder.updateFavoriteButton()
+        context?.let {
             if (e is UserNotLoginException) {
-                val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
+                val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
                 startActivityForResult(intent, REQUEST_CODER_USER_LOGIN)
                 return
             }
+        }
+
+        activity?.run {
             NetworkErrorHelper.showCloseSnackbar(this, ErrorHandler.getErrorMessage(this, e))
         }
     }
@@ -723,6 +730,7 @@ class ShopPageFragment :
             }
         } else if (requestCode == REQUEST_CODE_USER_LOGIN_CART) {
             if (resultCode == Activity.RESULT_OK) {
+                refreshData()
                 goToCart()
             }
         }
@@ -746,7 +754,7 @@ class ShopPageFragment :
         }
     }
 
-    private fun refreshData() {
+    fun refreshData() {
         val f: Fragment? = viewPagerAdapter.getRegisteredFragment(if (isOfficialStore) TAB_POSITION_HOME + 1 else TAB_POSITION_HOME)
         if (f != null && f is ShopPageProductListFragment) {
             f.clearCache()
@@ -840,12 +848,14 @@ class ShopPageFragment :
     }
 
     private fun updateFloatingChatButtonMargin() {
+        val stickyLoginViewHeight = stickyLoginView.height.takeIf { stickyLoginView.isShowing() }
+                ?: 0
         val buttonChatLayoutParams = (button_chat.layoutParams as ViewGroup.MarginLayoutParams)
         buttonChatLayoutParams.setMargins(
                 buttonChatLayoutParams.leftMargin,
                 buttonChatLayoutParams.topMargin,
                 buttonChatLayoutParams.rightMargin,
-                initialFloatingChatButtonMarginBottom + stickyLoginView.height
+                initialFloatingChatButtonMarginBottom + stickyLoginViewHeight
         )
         button_chat.layoutParams = buttonChatLayoutParams
     }
@@ -853,30 +863,40 @@ class ShopPageFragment :
     private fun updateStickyState() {
         if (this.tickerDetail == null) {
             stickyLoginView.hide()
+            updateViewPagerPadding()
+            updateFloatingChatButtonMargin()
             return
         }
 
         val isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_SHOP, true)
         if (!isCanShowing) {
             stickyLoginView.hide()
+            updateViewPagerPadding()
+            updateFloatingChatButtonMargin()
             return
         }
 
         val userSession = UserSession(context)
         if (userSession.isLoggedIn) {
             stickyLoginView.hide()
+            updateViewPagerPadding()
+            updateFloatingChatButtonMargin()
             return
         }
 
         this.tickerDetail?.let { stickyLoginView.setContent(it) }
         stickyLoginView.show(StickyLoginConstant.Page.SHOP)
         stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.SHOP)
+        updateViewPagerPadding()
+        updateFloatingChatButtonMargin()
 
+    }
+
+    private fun updateViewPagerPadding() {
         if (stickyLoginView.isShowing()) {
             viewPager.setPadding(0, 0, 0, stickyLoginView.height)
         } else {
             viewPager.setPadding(0, 0, 0, 0)
         }
-        updateFloatingChatButtonMargin()
     }
 }
