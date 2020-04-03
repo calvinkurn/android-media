@@ -1,15 +1,15 @@
 package com.tokopedia.search.result.domain.usecase.searchprofile
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_PARAMS
-import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.search.R
+import com.tokopedia.search.di.qualifier.SearchContext
+import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.data.mapper.searchprofile.SearchProfileMapperModule
 import com.tokopedia.search.result.domain.model.SearchProfileModel
 import com.tokopedia.search.utils.UrlParamUtils
@@ -57,7 +57,7 @@ class SearchProfileUseCaseModule {
     @SearchScope
     @Provides
     @Named(SearchConstant.SearchProfile.SEARCH_PROFILE_USE_CASE)
-    fun provideSearchProfileUseCase(@ApplicationContext context: Context,
+    fun provideSearchProfileUseCase(@SearchContext context: Context,
                                     searchProfileModelMapper: Func1<GraphqlResponse, SearchProfileModel>)
             : UseCase<SearchProfileModel> {
 

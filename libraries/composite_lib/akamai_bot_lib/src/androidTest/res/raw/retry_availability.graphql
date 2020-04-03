@@ -1,0 +1,11 @@
+query RetryAvailability($id: String!){
+  retryAvailability(orderID:$id){
+    awbnum
+    order_id
+    order_tx_id
+    deadline_retry
+    deadline_retry_unixtime
+    show_retry_button
+    availability_retry
+  }
+}

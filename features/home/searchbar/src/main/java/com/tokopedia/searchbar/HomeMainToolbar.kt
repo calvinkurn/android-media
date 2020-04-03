@@ -11,8 +11,9 @@ import android.os.Build
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
+import androidx.asynclayoutinflater.view.AsyncLayoutInflater
+import androidx.asynclayoutinflater.view.AsyncLayoutInflater.OnInflateFinishedListener
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.tokopedia.applink.RouteManager
@@ -21,6 +22,7 @@ import com.tokopedia.searchbar.helper.ViewHelper
 import kotlinx.android.synthetic.main.home_main_toolbar.view.*
 import kotlinx.coroutines.*
 import java.net.URLEncoder
+import java.util.concurrent.Callable
 import kotlin.coroutines.CoroutineContext
 import kotlin.text.Charsets.UTF_8
 
@@ -50,15 +52,17 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
 
     private lateinit var inboxBitmapGrey: Drawable
 
+    private lateinit var afterInflationCallable: Callable<Any?>
+
+    private lateinit var viewHomeMainToolBar: View
+
     constructor(context: Context) : super(context)
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    override fun init(context: Context, attrs: AttributeSet?) {
-        super.init(context, attrs)
-
+    fun setViewAttributesAfterInflation(){
         showShadow()
 
         setBackgroundAlpha(0f)
@@ -71,6 +75,10 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             setImageDrawables()
             //..........
         }
+    }
+
+    fun setAfterInflationCallable(callable: Callable<Any?>){
+        afterInflationCallable = callable
     }
 
     fun initializeinBackground() : Deferred<Unit> = async(Dispatchers.IO){
@@ -133,7 +141,17 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
     }
 
     override fun inflateResource(context: Context) {
-        View.inflate(context, R.layout.home_main_toolbar, this)
+        val asyncLayoutInflater = AsyncLayoutInflater(context)
+        val inflateFinishCallBack: OnInflateFinishedListener? = OnInflateFinishedListener { view, resid, parent ->
+            viewHomeMainToolBar = view
+            actionAfterInflation(context, view)
+            setViewAttributesAfterInflation()
+            afterInflationCallable.call()
+            this@HomeMainToolbar.addView(view)
+        }
+        if (inflateFinishCallBack != null) {
+            asyncLayoutInflater.inflate(R.layout.home_main_toolbar, this@HomeMainToolbar, inflateFinishCallBack)
+        }
     }
 
     fun setBackgroundAlpha(alpha: Float) {
@@ -144,7 +162,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
 
 
     fun switchToDarkToolbar() {
-        if (toolbarType != TOOLBAR_DARK_TYPE) {
+        if (toolbarType != TOOLBAR_DARK_TYPE && crossfaderIsInitialized()) {
             wishlistCrossfader.reverseTransition(200)
             notifCrossfader.reverseTransition(200)
             inboxCrossfader.reverseTransition(200)
@@ -152,6 +170,11 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             toolbarType = TOOLBAR_DARK_TYPE
         }
     }
+
+    private fun crossfaderIsInitialized() =
+            ::wishlistCrossfader.isInitialized
+                    && ::notifCrossfader.isInitialized
+                    && ::inboxCrossfader.isInitialized
 
     private fun getBitmapDrawableFromVectorDrawable(context: Context, drawableId: Int): Drawable {
         return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -175,7 +198,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
     }
 
     fun switchToLightToolbar() {
-        if (toolbarType != TOOLBAR_LIGHT_TYPE) {
+        if (toolbarType != TOOLBAR_LIGHT_TYPE && crossfaderIsInitialized()) {
             wishlistCrossfader.reverseTransition(200)
             notifCrossfader.reverseTransition(200)
             inboxCrossfader.reverseTransition(200)
@@ -188,8 +211,8 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         return shadowApplied
     }
 
-    fun setHint(placeholder: String, keyword: String){
-        val editTextSearch = findViewById<TextView>(R.id.et_search)
+    fun setHint(placeholder: String, keyword: String, isFirstInstall: Boolean){
+        val editTextSearch = viewHomeMainToolBar.findViewById<TextView>(R.id.et_search)
         editTextSearch.hint = if(placeholder.isEmpty()) context.getString(R.string.search_tokopedia) else placeholder
         editTextSearch.setSingleLine()
         editTextSearch.ellipsize = TextUtils.TruncateAt.END
@@ -198,7 +221,11 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             if(placeholder.isEmpty()){
                 RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
             }else{
-                RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?navsource={source}&hint={hint}", HOME_SOURCE, safeEncodeUTF8(keyword))
+                RouteManager.route(context,
+                        ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE,
+                        HOME_SOURCE,
+                        safeEncodeUTF8(keyword),
+                        isFirstInstall.toString())
             }
         }
     }
@@ -216,5 +243,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         const val TOOLBAR_LIGHT_TYPE = 0
         const val TOOLBAR_DARK_TYPE = 1
         private const val HOME_SOURCE = "home"
+
+        private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
     }
 }

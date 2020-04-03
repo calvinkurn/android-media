@@ -121,11 +121,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private static final long KEYBOARD_SEARCH_WAITING_TIME = 300;
     public static final String ACTION_BUY_AGAIN = "beli lagi";
     public static final String ACTION_ASK_SELLER = "tanya penjual";
+    public static final String ACTION_TULIS_REVIEW = "tulis review";
     private static final String ACTION_TRACK_IT = "lacak";
     public static final String ACTION_SUBMIT_CANCELLATION = "ajukan pembatalan";
     private static final String ACTION_DONE = "selesai";
     private static final String ACTION_SIMILAR_PRODUCT = "rekomendasi";
     private static final String CLICK_SIMILAR_PRODUCT = "click lihat produk serupa";
+    private static final String CLICK_TULIS_REVIEW = "click button tulis review";
     private static final String  MULAI_DARI= "Mulai Dari";
     private static final String  SAMPAI= "Sampai";
     private static final int DEFAULT_FILTER_YEAR = 2017;
@@ -642,14 +644,18 @@ public class OrderListFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void addData(List<Visitable> data, Boolean isRecommendation) {
+    public void addData(List<Visitable> data, Boolean isRecommendation, boolean isInitial) {
         this.isRecommendation = isRecommendation;
         if (!hasRecyclerListener) {
             addRecyclerListener();
         }
         refreshHandler.finishRefresh();
         refreshHandler.setPullEnabled(true);
-        orderListAdapter.addElement(data);
+        if (isInitial) {
+            orderListAdapter.setElements(data);
+        } else {
+            orderListAdapter.addElement(data);
+        }
         endlessRecyclerViewScrollListener.updateStateAfterGetData();
         swipeToRefresh.setVisibility(View.VISIBLE);
         if ((mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || (mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) && !isRecommendation )|| orderLabelList.getOrderCategory().equalsIgnoreCase(OrderCategory.DIGITAL)) {
@@ -939,7 +945,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
                         eventLabel = String.valueOf(order.items().get(0).getId());
                     }
                     orderListAnalytics.sendActionButtonClickEventList(CLICK_SIMILAR_PRODUCT, eventLabel);
+
+                } else if (actionButton.label().equalsIgnoreCase(ACTION_TULIS_REVIEW)) {
+                    orderListAnalytics.sendActionButtonClickEventList(CLICK_TULIS_REVIEW, String.valueOf(order.status()));
                 }
+
                 handleDefaultCase(actionButton);
                 break;
         }

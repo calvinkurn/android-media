@@ -41,6 +41,7 @@ public class OrderListAnalytics {
     private static final String EVENT_TICKER_CLICK_ACTION = "click see more on ticker";
     private static final String EVENT_TICKER_CLICK_LINK_ACTION = "click link on ticker";
     private static final String EVENT_ACTION_DOWNLOAD_INVOICE = "click button download invoice";
+    private static final String EVENT_ACTION_TULIS_REVIEW = "click button tulis review";
     private static final String TEVENT_TICKER_CLOSE_ACTION = "click x on ticker";
 
     private static final String SEARCH_EVENT_ACTION = "submit search";
@@ -135,6 +136,10 @@ public class OrderListAnalytics {
 
     public void sendDownloadEventData(String eventLabel){
         sendGtmDataDetails(EVENT_ACTION_DOWNLOAD_INVOICE, eventLabel);
+    }
+
+    public void sendTulisReviewEventData(String eventLabel) {
+        sendGtmDataDetails(EVENT_ACTION_TULIS_REVIEW, eventLabel);
     }
 
     public void sendHelpEventData(String eventLabel) {

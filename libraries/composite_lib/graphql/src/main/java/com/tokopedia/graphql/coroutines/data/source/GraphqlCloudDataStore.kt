@@ -10,12 +10,15 @@ import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend
 import kotlinx.coroutines.*
 import timber.log.Timber
-import java.net.SocketTimeoutException
+import java.io.InterruptedIOException
+import java.net.SocketException
 import java.net.UnknownHostException
+import javax.inject.Inject
+import okhttp3.internal.http2.ConnectionShutdownException
 
-class GraphqlCloudDataStore(private val api: GraphqlApiSuspend,
-                            private val cacheManager: GraphqlCacheManager,
-                            private val fingerprintManager: FingerprintManager) : GraphqlDataStore {
+class GraphqlCloudDataStore @Inject constructor(private val api: GraphqlApiSuspend,
+                                                private val cacheManager: GraphqlCacheManager,
+                                                private val fingerprintManager: FingerprintManager) : GraphqlDataStore {
 
     override suspend fun getResponse(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponseInternal {
         return withContext(Dispatchers.Default) {
@@ -23,7 +26,11 @@ class GraphqlCloudDataStore(private val api: GraphqlApiSuspend,
             try {
                 result = api.getResponseSuspend(requests.toMutableList())
             } catch (e: Throwable) {
-                if (e !is UnknownHostException && e!is SocketTimeoutException && e !is CancellationException) {
+                if (e !is UnknownHostException &&
+                        e !is SocketException &&
+                        e !is InterruptedIOException &&
+                        e !is ConnectionShutdownException &&
+                        e !is CancellationException) {
                     Timber.e(e, "P1#REQUEST_ERROR_GQL#$requests")
                 }
                 if (e !is CancellationException) {

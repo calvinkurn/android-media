@@ -29,6 +29,8 @@ open class NotificationItemViewBean(
         var dataNotification: DataNotification = DataNotification(),
         var products: List<ProductData> = emptyList(),
         var isLongerContent: Boolean = false,
+        var isShowBottomSheet: Boolean = false,
+        var typeBottomSheet: Int = 0,
         var options: NotificationOptions = NotificationOptions(),
         var userInfo: UserInfo = UserInfo()
 ) : Parcelable, Visitable<BaseNotificationTypeFactory> {
@@ -50,9 +52,11 @@ open class NotificationItemViewBean(
         templateKey = `in`.readString()?: ""
         appLink = `in`.readString()?: ""
         hasShop = `in`.readInt() != 0
-        isLongerContent = `in`.readInt() != 0
         typeLink = `in`.readInt()
         totalProduct = `in`.readInt()
+        isLongerContent = `in`.readInt() != 0
+        isShowBottomSheet = `in`.readInt() != 0
+        typeBottomSheet = `in`.readInt()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -68,9 +72,11 @@ open class NotificationItemViewBean(
         parcel.writeString(templateKey)
         parcel.writeString(appLink)
         parcel.writeInt(if (hasShop) 1 else 0)
-        parcel.writeInt(if (isLongerContent) 1 else 0)
         parcel.writeInt(typeLink)
         parcel.writeInt(totalProduct)
+        parcel.writeInt(if (isLongerContent) 1 else 0)
+        parcel.writeInt(if (isShowBottomSheet) 1 else 0)
+        parcel.writeInt(typeBottomSheet)
     }
 
     override fun describeContents(): Int = 0
@@ -83,20 +89,11 @@ open class NotificationItemViewBean(
         return product
     }
 
-    private fun getProductIdImpression(): String {
-        if (products.isEmpty()) return ""
-        val product = products.first()
-        return if (isHasProductCard()) product.productId else ""
+    fun getAtcEventLabel(): String {
+        return "$SOURCE - $templateKey - $notificationId - ${getAtcProduct()?.productId}"
     }
 
-    private fun isHasProductCard(): Boolean {
-        return typeLink == TYPE_WISHLIST || typeLink == TYPE_PRODUCT_CHECKOUT
-    }
-
-    fun getImpressionTrackLabel(location: String): String {
-        val productId = getProductIdImpression()
-        return "$location - $templateKey - $notificationId - $productId"
-    }
+    fun getBuyEventAction(): String = BUY_ACTION
 
     companion object {
         const val BUYER_TYPE = 1
@@ -109,6 +106,7 @@ open class NotificationItemViewBean(
         const val TYPE_BANNER_2X1 = 4
         const val TYPE_PRODUCT_CHECKOUT = 5
 
+        private const val BUY_ACTION = "click on by button"
         const val SOURCE = "notifcenter"
 
         @JvmField

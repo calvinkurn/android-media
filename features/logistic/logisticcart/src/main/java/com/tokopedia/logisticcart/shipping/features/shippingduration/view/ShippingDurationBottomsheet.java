@@ -357,13 +357,13 @@ public class ShippingDurationBottomsheet extends BottomSheets
             }
         }
         if (shippingDurationBottomsheetListener != null) {
-            shippingDurationBottomsheetListener.onShippingDurationChoosen(
-                    shippingCourierUiModels, presenter.getCourierItemData(shippingCourierUiModels),
-                    mRecipientAddress, cartPosition, selectedServiceId, serviceData,
-                    flagNeedToSetPinpoint, true, true);
             try {
+                shippingDurationBottomsheetListener.onShippingDurationChoosen(
+                        shippingCourierUiModels, presenter.getCourierItemData(shippingCourierUiModels),
+                        mRecipientAddress, cartPosition, selectedServiceId, serviceData,
+                        flagNeedToSetPinpoint, true, true);
                 dismiss();
-            } catch (IllegalStateException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -401,10 +401,14 @@ public class ShippingDurationBottomsheet extends BottomSheets
         courierData.setPromoTitle(data.getTitle());
         courierData.setHideShipperName(data.getHideShipperName());
 
-        shippingDurationBottomsheetListener.onLogisticPromoChosen(
-                serviceData.getShippingCourierViewModelList(), courierData,
-                mRecipientAddress, mCartPosition,
-                serviceData.getServiceData(), false, data.getPromoCode(), data.getServiceId());
+        try {
+            shippingDurationBottomsheetListener.onLogisticPromoChosen(
+                    serviceData.getShippingCourierViewModelList(), courierData,
+                    mRecipientAddress, mCartPosition,
+                    serviceData.getServiceData(), false, data.getPromoCode(), data.getServiceId());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         dismiss();
     }
 

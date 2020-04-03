@@ -6,9 +6,7 @@ import com.tokopedia.feedcomponent.data.pojo.TemplateData
 import com.tokopedia.feedcomponent.data.pojo.feed.CardHighlight
 import com.tokopedia.feedcomponent.data.pojo.feed.Cardpost
 import com.tokopedia.feedcomponent.data.pojo.feed.Feed
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Footer
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Media
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTag
 import com.tokopedia.feedcomponent.data.pojo.template.Template
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
@@ -44,8 +42,6 @@ import javax.inject.Inject
  * @author by milhamj on 20/12/18.
  */
 class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFeedDomainModel> {
-
-    var count = 1;
 
     companion object {
         private const val TYPE_CARDRECOM = "cardrecom"
@@ -275,7 +271,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                     true
 
         return feed.content.cardpost.header.avatarTitle.isNotEmpty() &&
-                ((feed.content.cardpost.body.media.isNotEmpty() && contentList.size > 0) || postTag.items.size > 0) &&
+                ((feed.content.cardpost.body.media.isNotEmpty() && contentList.size > 0) || postTag.items.isNotEmpty()) &&
                 isGridNotEmpty
     }
 
@@ -357,8 +353,10 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                     item.id,
                     item.text,
                     item.price,
+                    item.priceOriginal,
                     item.applink,
                     item.thumbnail,
+                    item.tags.toMutableList(),
                     mapTrackingData(item.tracking)
             ))
         }
@@ -411,8 +409,10 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                     item.id,
                     item.text,
                     item.price,
+                    item.priceOriginal,
                     item.applink,
                     item.thumbnail,
+                    item.tags.toMutableList(),
                     mapTrackingData(item.tracking)
             ))
         }
@@ -452,7 +452,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
     }
 
     private fun mapCardHighlight(posts: MutableList<Visitable<*>>, feed: Feed, template: Template) {
-        val contentList: MutableList<HighlightCardViewModel> = mapHighlightContent(feed, feed.content.cardHighlight, template)
+        val contentList: MutableList<HighlightCardViewModel> = mapHighlightContent(feed.content.cardHighlight, template)
         if (shouldAddHighlightSection(contentList)) {
             posts.add(HighlightViewModel(
                     feed.id.toString(),
@@ -467,7 +467,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         return contentList.isNotEmpty()
     }
 
-    private fun mapHighlightContent(feed: Feed, cardHighlight: CardHighlight, template: Template): MutableList<HighlightCardViewModel> {
+    private fun mapHighlightContent(cardHighlight: CardHighlight, template: Template): MutableList<HighlightCardViewModel> {
         val list: MutableList<HighlightCardViewModel> = ArrayList()
         for (item in cardHighlight.items) {
             if (item.media.isNotEmpty()) {
@@ -490,7 +490,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
     }
 
     private fun convertTempTrackingToList(tracking: Tracking): List<Tracking> {
-        var list:MutableList<Tracking> = ArrayList()
+        val list:MutableList<Tracking> = ArrayList()
         list.add(tracking)
         return list
     }

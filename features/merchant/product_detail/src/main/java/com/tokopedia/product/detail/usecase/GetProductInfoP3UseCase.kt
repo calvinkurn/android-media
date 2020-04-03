@@ -32,8 +32,10 @@ class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<St
     override suspend fun executeOnBackground(): ProductInfoP3 {
         val productInfoP3 = ProductInfoP3()
 
-        val estimationParams = mapOf(ProductDetailCommonConstant.PARAM_RATE_EST_WEIGHT to weight,
-                ProductDetailCommonConstant.PARAM_RATE_EST_SHOP_DOMAIN to shopDomain, ProductDetailCommonConstant.PARAM_PRODUCT_ORIGIN to origin)
+        val estimationParams = mapOf(
+                ProductDetailCommonConstant.PARAM_RATE_EST_WEIGHT to weight,
+                ProductDetailCommonConstant.PARAM_RATE_EST_SHOP_DOMAIN to shopDomain,
+                ProductDetailCommonConstant.PARAM_PRODUCT_ORIGIN to origin)
         val estimationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_RATE_ESTIMATION],
                 RatesEstimationModel.Response::class.java, estimationParams)
 

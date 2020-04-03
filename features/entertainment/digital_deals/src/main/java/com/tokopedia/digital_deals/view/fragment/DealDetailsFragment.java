@@ -39,12 +39,14 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
+import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
@@ -59,6 +61,7 @@ import com.tokopedia.digital_deals.view.model.Media;
 import com.tokopedia.digital_deals.view.model.Outlet;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
+import com.tokopedia.digital_deals.view.model.response.EventContentData;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealCategoryAdapterPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
@@ -69,12 +72,20 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 import static com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter.DEFAULT_PARAM_ENABLE;
 import static com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter.PARAM_DEAL_PASSDATA;
@@ -140,6 +151,12 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     private boolean forceRefresh;
     private DealsCategoryAdapter dealsAdapter;
     private UserSession userSession;
+
+    private static final int SALAM_VALUE = 32768;
+    private static final int SALAM_INDICATOR = 0;
+    private static final String SALAM_REGEX_PATTERN = "<a(?:[^>]+)?>(.*?)<\\/a>";
+    private static final int URL_GROUP = 1;
+    private static final int FIRST_VALUE = 0;
 
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new DealDetailsFragment();
@@ -427,10 +444,12 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     }
 
     @Override
-    public void addDealsToCards(List<ProductItem> productItems) {
-        ((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).addAll(productItems);
-        if (recyclerViewDeals.getAdapter().getItemCount() > 0)
+    public void addDealsToCards(@NotNull ArrayList<ProductItem> productItems) {
+        ((DealsCategoryAdapter) Objects.requireNonNull(recyclerViewDeals.getAdapter())).addAll(productItems);
+        if (recyclerViewDeals.getAdapter().getItemCount() > 0){
             tvRecommendedDeals.setVisibility(View.VISIBLE);
+            recyclerViewDeals.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -462,6 +481,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         appBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
             MenuItem item = menu.findItem(com.tokopedia.digital_deals.R.id.action_menu_share);
 
+            verticalOffset = Math.abs(verticalOffset);
             verticalOffset = Math.abs(verticalOffset);
             int difference = appBarLayout.getTotalScrollRange() - toolbar.getHeight();
             if (verticalOffset >= difference) {
@@ -496,14 +516,18 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
     @Override
     public void hideShareButton() {
-        MenuItem item = mMenu.findItem(com.tokopedia.digital_deals.R.id.action_menu_share);
-        item.setVisible(false);
+        if(mMenu!=null) {
+            MenuItem item = mMenu.findItem(com.tokopedia.digital_deals.R.id.action_menu_share);
+            item.setVisible(false);
+        }
     }
 
     @Override
     public void showShareButton() {
-        MenuItem item = mMenu.findItem(com.tokopedia.digital_deals.R.id.action_menu_share);
-        item.setVisible(true);
+        if(mMenu!=null) {
+            MenuItem item = mMenu.findItem(com.tokopedia.digital_deals.R.id.action_menu_share);
+            item.setVisible(true);
+        }
     }
 
     @Override
@@ -680,11 +704,34 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
             }
         } else if (Id == com.tokopedia.digital_deals.R.id.cl_redeem_instructions) {
             sendEvent(DealsAnalytics.EVENT_CLICK_CHECK_REDEEM_INS_PRODUCT_DETAIL);
-            startGeneralWebView(DealsUrl.WebUrl.REDEEM_URL);
-
+            if((dealDetail.customText1 & SALAM_VALUE) <= SALAM_INDICATOR){
+                startGeneralWebView(DealsUrl.WebUrl.REDEEM_URL);
+            } else {
+                mPresenter.getEventContent(onSuccessGetEventContent(), onErrorGetEventContent());
+            }
         }
     }
 
+    private Function1<? super EventContentData, Unit> onSuccessGetEventContent(){
+        return success -> {
+            String valueText = success.getEventContentById().getData().getSectionDatas().get(FIRST_VALUE).getContents().get(FIRST_VALUE).getValueText();
+            Pattern pattern = Pattern.compile(SALAM_REGEX_PATTERN);
+            Matcher matcher = pattern.matcher(valueText);
+            if(matcher.find()){
+                startGeneralWebView(matcher.group(URL_GROUP));
+            }
+            return Unit.INSTANCE;
+        };
+    }
+
+    private Function1<? super Throwable, Unit> onErrorGetEventContent(){
+        return error -> showErrorMessage();
+    }
+
+    private Unit showErrorMessage(){
+        NetworkErrorHelper.showRedSnackbar(getActivity(), getResources().getString(R.string.how_to_redeem_error));
+        return Unit.INSTANCE;
+    }
 
     void sendEvent(String action) {
         dealsAnalytics.sendEventDealsDigitalClick(action
