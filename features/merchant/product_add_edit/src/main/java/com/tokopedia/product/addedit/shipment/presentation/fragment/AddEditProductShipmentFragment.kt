@@ -13,6 +13,7 @@ import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextIntOrZero
+import com.tokopedia.product.addedit.common.util.setModeToNumberInput
 import com.tokopedia.product.addedit.common.util.setText
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentComponent
@@ -86,6 +87,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         tfWeightAmount = view.findViewById(R.id.tf_weight_amount)
         switchInsurance = view.findViewById(R.id.switch_insurance)
         btnEnd = view.findViewById(R.id.btn_end)
+        tfWeightAmount.setModeToNumberInput()
         applyShipmentDataToView()
         tfWeightUnit?.apply {
             textFieldInput.setText(getWeightTypeTitle(0))
