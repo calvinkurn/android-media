@@ -131,7 +131,19 @@ internal fun Label.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?) {
     else showLabel(labelGroup)
 }
 
+internal fun Label.initLabelGroup(labelGroup: ProductCardFlashSaleModel.LabelGroup?) {
+    if (labelGroup == null) hide()
+    else showLabel(labelGroup)
+}
+
 private fun Label.showLabel(labelGroup: ProductCardModel.LabelGroup) {
+    shouldShowWithAction(labelGroup.title.isNotEmpty()) {
+        it.text = MethodChecker.fromHtml(labelGroup.title)
+        it.determineLabelType(labelGroup.type)
+    }
+}
+
+private fun Label.showLabel(labelGroup: ProductCardFlashSaleModel.LabelGroup) {
     shouldShowWithAction(labelGroup.title.isNotEmpty()) {
         it.text = MethodChecker.fromHtml(labelGroup.title)
         it.determineLabelType(labelGroup.type)
