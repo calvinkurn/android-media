@@ -98,7 +98,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             }
         }
         tfWeightAmount?.textFieldInput?.afterTextChanged{
-            validateInputWeight(it)
+            validateInputWeight()
         }
         btnEnd?.setOnClickListener {
             submitInput()
@@ -138,13 +138,14 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun validateInputWeight(inputText: String): Boolean {
+    private fun validateInputWeight(): Boolean {
         val errorMessage = if (selectedWeightPosition == UNIT_GRAM) {
             getString(R.string.error_weight_not_valid, MIN_WEIGHT, MAX_WEIGHT_GRAM)
         } else {
             getString(R.string.error_weight_not_valid, MIN_WEIGHT, MAX_WEIGHT_KILOGRAM)
         }
-        val isValid = shipmentViewModel.isWeightValid(inputText, selectedWeightPosition)
+        val isValid = shipmentViewModel
+                .isWeightValid(tfWeightAmount.getTextIntOrZero(), selectedWeightPosition)
         tfWeightAmount?.setError(!isValid)
         tfWeightAmount?.setMessage(if (isValid) "" else errorMessage)
         btnEnd?.isEnabled = isValid
@@ -160,7 +161,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     }
 
     private fun submitInput() {
-        if (validateInputWeight(tfWeightAmount.getText())) {
+        if (validateInputWeight()) {
             val shipmentInputModel = ShipmentInputModel(
                     tfWeightAmount.getTextIntOrZero(),
                     selectedWeightPosition,
