@@ -73,7 +73,7 @@ object ProductAddMainTracking {
         })
     }
 
-    fun clickContinue(shopId: String, isDay: Boolean) {
+    fun clickContinue(shopId: String) {
         sendAddProductClick(SCREEN, shopId, "click continue on main page")
     }
 }

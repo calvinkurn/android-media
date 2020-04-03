@@ -61,6 +61,8 @@ class AddEditProductDetailViewModel @Inject constructor(
         get() = mIsPreOrderDurationInputError
     var preOrderDurationMessage: String = ""
 
+    var isEditMode:Boolean = false
+
     private val mIsInputValid = MediatorLiveData<Boolean>().apply {
 
         addSource(mIsProductPhotoError) {

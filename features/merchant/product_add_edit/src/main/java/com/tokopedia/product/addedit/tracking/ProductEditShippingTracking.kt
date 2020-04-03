@@ -28,12 +28,4 @@ object ProductEditShippingTracking {
         })
     }
 
-    fun clickFinish(shopId: String, isSuccess: Boolean) {
-        sendEditProductClick(shopId, "click finish", if (isSuccess) {
-            "success"
-        } else {
-            "error"
-        })
-    }
-
 }

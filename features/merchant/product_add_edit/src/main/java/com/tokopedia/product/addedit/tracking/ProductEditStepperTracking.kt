@@ -63,8 +63,16 @@ object ProductEditStepperTracking {
         sendEditProductClick(shopId, "click product status button")
     }
 
-    fun trackFinish(shopId: String) {
+    fun trackFinishButton(shopId: String) {
         sendEditProductClick(shopId, "click finish on stepper page")
+    }
+
+    fun trackFinishService(shopId: String, isSuccess: Boolean) {
+        sendEditProductClick(shopId, "click finish", if (isSuccess) {
+            "success"
+        } else {
+            "error"
+        })
     }
 
     private fun sendEditProductClick(shopId: String, action: String, label: String = "") {

@@ -42,7 +42,7 @@ object ProductAddShippingTracking {
     }
 
     fun clickFinish(shopId: String, isSuccess: Boolean) {
-        sendAddProductClick(SCREEN, shopId, "click finish", if (isSuccess) {
+        sendAddProductClick(shopId, "click finish", if (isSuccess) {
             "success"
         } else {
             "error"
