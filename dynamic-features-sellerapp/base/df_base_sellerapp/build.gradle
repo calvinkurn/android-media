@@ -57,15 +57,15 @@ dependencies {
 
 
     //Content
-    implementation project(rootProject.ext.features.profile)
+//    implementation project(rootProject.ext.features.profile)
 
     //Fintech
-    implementation project(rootProject.ext.features.instantLoan)
-    implementation project(rootProject.ext.features.saldodetails)
+//    implementation project(rootProject.ext.features.instantLoan)
+//    implementation project(rootProject.ext.features.saldodetails)
 
     //Merchant
-    implementation project(rootProject.ext.features.report)
-    implementation project(rootProject.ext.features.shopOpen)
+//    implementation project(rootProject.ext.features.report)
+//    implementation project(rootProject.ext.features.shopOpen)
 
     //User
 //    implementation project(rootProject.ext.features.changePhoneNumber)
