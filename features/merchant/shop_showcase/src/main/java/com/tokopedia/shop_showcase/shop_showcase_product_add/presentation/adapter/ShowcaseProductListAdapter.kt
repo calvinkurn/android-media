@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.shop_showcase.R
+import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.fragment.ShopShowcaseProductAddListener
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.BaseShowcaseProduct
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.LoadingShowcaseProduct
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.ShowcaseProduct
@@ -18,7 +19,11 @@ import kotlinx.android.synthetic.main.item_add_product_showcase_grid.view.*
  * @author by Rafli Syam on 2020-03-09
  */
 
-class ShowcaseProductListAdapter(private val context: Context, parentFragmentView: View) : RecyclerView.Adapter<ShowcaseProductItemViewHolder>() {
+class ShowcaseProductListAdapter(
+        private val context: Context,
+        parentFragmentView: View,
+        listener: ShopShowcaseProductAddListener
+) : RecyclerView.Adapter<ShowcaseProductItemViewHolder>() {
 
     companion object {
         private const val VIEW_SHOW_CASE = 0
@@ -29,6 +34,7 @@ class ShowcaseProductListAdapter(private val context: Context, parentFragmentVie
     private var selectedProduct: ArrayList<ShowcaseProduct> = arrayListOf()
     private val fragmentView: View = parentFragmentView
     private val loadingModel = LoadingShowcaseProduct()
+    private val viewListener: ShopShowcaseProductAddListener = listener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShowcaseProductItemViewHolder {
         val view = if (viewType == VIEW_SHOW_CASE) {
@@ -65,6 +71,7 @@ class ShowcaseProductListAdapter(private val context: Context, parentFragmentVie
                 item.ishighlighted = cardState
                 holder.renderCardState(item)
                 showProductCounter(getSelectedProductSize())
+                viewListener.onCLickProductCardTracking()
             }
         }
     }

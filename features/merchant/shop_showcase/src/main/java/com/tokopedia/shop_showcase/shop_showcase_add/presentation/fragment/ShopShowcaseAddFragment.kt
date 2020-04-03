@@ -26,10 +26,7 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
-import com.tokopedia.shop_showcase.common.AppScreen
-import com.tokopedia.shop_showcase.common.ImageAssets
-import com.tokopedia.shop_showcase.common.ShopShowcaseEditParam
-import com.tokopedia.shop_showcase.common.ShopShowcaseListParam
+import com.tokopedia.shop_showcase.common.*
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.*
 import com.tokopedia.shop_showcase.shop_showcase_add.di.component.DaggerShopShowcaseAddComponent
 import com.tokopedia.shop_showcase.shop_showcase_add.di.component.ShopShowcaseAddComponent
@@ -47,6 +44,8 @@ import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseAddComponent>, ShopShowcasePreviewListener {
@@ -75,13 +74,20 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var tracking: ShopShowcaseTracking
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     private var showcaseAddAdapter: ShopShowcaseAddAdapter? = null
     private var addShopShowcaseParam = AddShopShowcaseParam()
     private var updateShopShowcaseParam = UpdateShopShowcaseParam()
     private var selectedProductListFilter = GetProductListFilter()
     private var viewVisible = View.VISIBLE
     private var viewGone = View.GONE
-    private var isActionEdit: Boolean? = false
+    private var isActionEdit: Boolean = false
     private var showcaseId: String? = DEFAULT_SHOWCASE_ID
     private var showcaseName: String? = ""
     private var appendedProductMapper = AppendedProductMapper()
@@ -89,6 +95,14 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
 
     private val shopShowcaseAddViewModel: ShopShowcaseAddViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(ShopShowcaseAddViewModel::class.java)
+    }
+
+    private val shopType: String by lazy {
+        tracking.getShopType(userSession)
+    }
+
+    private val shopId: String by lazy {
+        userSession.shopId
     }
 
     private val selectedProductText: Typography? by lazy {
@@ -121,6 +135,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     private val headerUnify: HeaderUnify? by lazy {
         view?.findViewById<HeaderUnify>(R.id.add_showcase_toolbar)?.apply {
             backButtonView?.setOnClickListener {
+                tracking.addShowcaseClickBackButton(shopId, shopType, isActionEdit)
                 activity?.onBackPressed()
             }
         }
@@ -150,7 +165,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         super.onCreate(savedInstanceState)
         arguments?.let {
             isActionEdit = it.getBoolean(ShopShowcaseEditParam.EXTRA_IS_ACTION_EDIT)
-            if (isActionEdit == true) {
+            if (isActionEdit) {
                 showcaseId = it.getString(ShopShowcaseEditParam.EXTRA_SHOWCASE_ID)
                 showcaseName = it.getString(ShopShowcaseEditParam.EXTRA_SHOWCASE_NAME)
                 selectedProductListFilter.fmenu = showcaseId
@@ -184,6 +199,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         initView()
         initRecyclerView(view, this)
         initListener()
+        tracking.sendScreenName()
     }
 
     override fun getScreenName(): String  = AppScreen.ADD_SHOP_SHOWCASE_SCREEN
@@ -202,28 +218,18 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         component?.inject(this)
     }
 
-    private fun updateSelectedProduct(showcaseAddAdapter: ShopShowcaseAddAdapter?, selectedProductList: ArrayList<ShowcaseProduct>?) {
-        showcaseAddAdapter?.updateSelectedDataSet(selectedProductList, isActionEdit)
-    }
-
-    private fun updateAppendedSelectedProduct(showcaseAddAdapter: ShopShowcaseAddAdapter?, newSelectedProductList: ArrayList<ShowcaseProduct>?) {
-        showcaseAddAdapter?.updateAppendedDataSet(newSelectedProductList)
-    }
-
     override fun showDeleteCounter(firstDeletedItem: ShowcaseProduct) {
-        isActionEdit?.let {
-            if(it) {
-                ImageHandler.LoadImage(productChoosenImage, firstDeletedItem.productImageUrl)
-                productCounterText?.text = context?.resources?.getString(
-                        R.string.deleted_product_counter_text,
-                        showcaseAddAdapter?.getDeletedProductList()?.size.toString()
-                )
-                undoDeleteProductButton?.setOnClickListener {
-                    showcaseAddAdapter?.undoDeleteSelectedProduct()
-                    showSelectedProductList()
-                }
-                productCounter?.visibility = View.VISIBLE
+        if(isActionEdit) {
+            ImageHandler.LoadImage(productChoosenImage, firstDeletedItem.productImageUrl)
+            productCounterText?.text = context?.resources?.getString(
+                    R.string.deleted_product_counter_text,
+                    showcaseAddAdapter?.getDeletedProductList()?.size.toString()
+            )
+            undoDeleteProductButton?.setOnClickListener {
+                showcaseAddAdapter?.undoDeleteSelectedProduct()
+                showSelectedProductList()
             }
+            productCounter?.visibility = View.VISIBLE
         }
     }
 
@@ -232,18 +238,8 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     }
 
     override fun deleteSelectedProduct(position: Int) {
-//        val productItem = selectedShowcaseProduct?.get(position)
-//        val removedProduct = RemovedProduct()
-//        removedProduct.product_id = productItem.productId
-//        removedProduct.menu_id = showcaseId
-//        removedShowcaseProduct.add(removedProduct)
-//        selectedShowcaseProduct?.get(position).let { showcaseProduct->
-//            val removedProduct = RemovedProduct()
-//            removedProduct.product_id = showcaseProduct?.productId
-//            removedProduct.menu_id = showcaseId
-//            removedShowcaseProduct.add(removedProduct)
-//        }
         showcaseAddAdapter?.deleteSelectedProduct(position)
+        tracking.addShowcaseClickDeleteButtonProductCard(shopId, shopType, isActionEdit)
         showSelectedProductList()
     }
 
@@ -278,6 +274,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
          * Listener for action text "Selesai" on toolbar is clicked
          */
         headerUnify?.actionTextView?.setOnClickListener {
+            tracking.addShowcaseClickFinishButton(shopId, shopType, isActionEdit)
             val showcaseName = textFieldShowcaseName?.textFieldInput?.text.toString()
             validateShowcaseName(showcaseName, true)
         }
@@ -296,16 +293,22 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
             }
         })
 
+        textFieldShowcaseName?.textFieldInput?.setOnClickListener {
+            tracking.addShowcaseClickNameField(shopId, shopType, isActionEdit)
+        }
+
         /**
          * Listener for user click primary "Pilih Produk" button on empty state
          * it will navigate to choose ShopShowcaseProductAddActivity.kt to choose
          * product
          */
         emptyStateProduct?.setPrimaryCTAClickListener {
+            tracking.addShowcaseClickAddProduct(shopId, shopType)
             goToChooseProduct()
         }
 
         chooseProductText?.setOnClickListener {
+            tracking.addShowcaseClickChooseProductText(shopId, shopType, isActionEdit)
             goToChooseProduct()
         }
 
@@ -327,7 +330,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                 showSelectedProductList()
             } else {
                 addShopShowcaseParam.name = showcaseName
-                if(isActionEdit == false) {
+                if(!isActionEdit) {
                     showcaseAddAdapter?.getSelectedProductList()?.map {
                         if(it is ShowcaseProduct) {
                             addShopShowcaseParam.productIDs.add(it.productId)
@@ -349,6 +352,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         val intent = Intent(activity, ShopShowcaseProductAddActivity::class.java)
         intent.putParcelableArrayListExtra(SELECTED_SHOWCASE_PRODUCT, showcaseAddAdapter?.getSelectedProductList())
         intent.putExtra(ShopShowcaseEditParam.EXTRA_IS_ACTION_EDIT, isActionEdit)
+        intent.putExtra(ShopShowcaseEditParam.EXTRA_SHOWCASE_ID, showcaseId)
         startActivityForResult(intent, START_PRODUCT_SHOWCASE_ACTIVITY)
     }
 
@@ -400,9 +404,9 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         textFieldShowcaseName?.setMessage(resources.getString(R.string.showcase_name_hint))
     }
 
-    private fun showUnifyToaster(message: String, type: Int) {
+    private fun showUnifyToaster(message: String) {
         view?.run {
-            Toaster.make(this, message, Snackbar.LENGTH_SHORT, type)
+            Toaster.make(this, message, Snackbar.LENGTH_SHORT, ERROR_TOASTER)
         }
     }
 
@@ -416,7 +420,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                         activity?.finish()
                     }
                     else {
-                        showUnifyToaster(responseData.message, ERROR_TOASTER)
+                        showUnifyToaster(responseData.message)
                     }
                 }
             }
@@ -455,20 +459,20 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
 
                                     } else {
                                         // Show error remove showcase product
-                                        showUnifyToaster(removeShowcaseProductResult.data.header.reason, ERROR_TOASTER)
+                                        showUnifyToaster(removeShowcaseProductResult.data.header.reason)
                                     }
 
                                 }
 
                             } else {
                                 // Show error append new showcase product
-                                showUnifyToaster(appendShowcaseProductResult.data.header.reason, ERROR_TOASTER)
+                                showUnifyToaster(appendShowcaseProductResult.data.header.reason)
                             }
                         }
 
                     } else {
                         // Show error update showcase name
-                        showUnifyToaster(updateShowcaseNameResult.data.message, ERROR_TOASTER)
+                        showUnifyToaster(updateShowcaseNameResult.data.message)
                     }
                 }
             }
@@ -517,6 +521,14 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
 
     private fun getSelectedProductList(filter: GetProductListFilter) {
         shopShowcaseAddViewModel.getSelectedProductList(filter)
+    }
+
+    private fun updateSelectedProduct(showcaseAddAdapter: ShopShowcaseAddAdapter?, selectedProductList: ArrayList<ShowcaseProduct>?) {
+        showcaseAddAdapter?.updateSelectedDataSet(selectedProductList, isActionEdit)
+    }
+
+    private fun updateAppendedSelectedProduct(showcaseAddAdapter: ShopShowcaseAddAdapter?, newSelectedProductList: ArrayList<ShowcaseProduct>?) {
+        showcaseAddAdapter?.updateAppendedDataSet(newSelectedProductList)
     }
 
     private fun hideSoftKeyboard() {

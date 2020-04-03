@@ -11,6 +11,7 @@ data class GetProductListFilter (
         @SerializedName("perPage") var perPage : Int = 10,
         @SerializedName("fkeyword") var fkeyword : String = "",
         @SerializedName("fmenu") var fmenu : String? = "",
+        @SerializedName("fmenuExclude") var fmenuExclude : String? = "",
         @SerializedName("fcategory") var fcategory : Int = 0,
         @SerializedName("fcondition") var fcondition : Int = 0,
         @SerializedName("fcatalog") var fcatalog : Int = 0,
