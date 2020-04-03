@@ -443,7 +443,6 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         val applink = data.popGratificationClaim?.popGratificationActionButton?.appLink
         if (!TextUtils.isEmpty(applink)) {
             dropKeysFromBundle(applink, activityContext.intent)
-            RouteManager.route(btnAction.context, applink)
             bottomSheetDialog.dismiss()
         }
         TargetedPromotionAnalytics.userClickCheckMyCoupon(buttonText)
