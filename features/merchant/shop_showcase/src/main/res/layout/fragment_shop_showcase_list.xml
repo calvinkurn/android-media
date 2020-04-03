@@ -9,12 +9,11 @@
     android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbarLayout"
+        android:id="@+id/appbar_layout_showcase_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
         android:background="@color/white"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:theme="@style/AppBarNoBottomShadow"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
@@ -101,7 +100,7 @@
         android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appbarLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/appbar_layout_showcase_list" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list_etalase"
@@ -112,7 +111,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appbarLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/appbar_layout_showcase_list" />
 
     <LinearLayout
         android:id="@+id/empty_state"
@@ -123,7 +122,7 @@
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appbarLayout">
+        app:layout_constraintTop_toBottomOf="@+id/appbar_layout_showcase_list">
 
         <ImageView
             android:id="@+id/img_empty_state"
