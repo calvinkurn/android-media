@@ -14,8 +14,8 @@ import javax.inject.Inject
 
 class CategoryLevelOneViewModel @Inject constructor(private var getCategoryListUseCase: AllCategoryQueryUseCase) : ViewModel() {
 
-    var categoryDepth = 2
-    val categoryListLiveData = MutableLiveData<Result<CategoryAllList>>()
+    private var categoryDepth = 2
+    private val categoryListLiveData = MutableLiveData<Result<CategoryAllList>>()
 
     fun bound() {
         getCategoryListUseCase.execute(getCategoryListUseCase.createRequestParams(categoryDepth, true), object : Subscriber<CategoryAllList>() {

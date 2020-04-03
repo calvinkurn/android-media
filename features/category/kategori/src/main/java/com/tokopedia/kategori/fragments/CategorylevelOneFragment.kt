@@ -38,7 +38,7 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
 
     var activityStateListener: ActivityStateListener? = null
 
-    var selectedPosition = 0
+    private var selectedPosition = 0
 
     private var selectedItemIdentifier: String? = null
 

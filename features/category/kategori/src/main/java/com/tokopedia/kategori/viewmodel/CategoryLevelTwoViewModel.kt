@@ -1,5 +1,6 @@
 package com.tokopedia.kategori.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.kategori.Constants
@@ -18,8 +19,8 @@ const val categoryDepth = 2
 
 class CategoryLevelTwoViewModel @Inject constructor(private var allCategoryQueryUseCase: AllCategoryQueryUseCase) : ViewModel() {
 
-    var childItem = MutableLiveData<Result<List<CategoryChildItem>>>()
-    var YANG_LAGI_HITS_TITLE = "yanglagihits"
+    private var childItem = MutableLiveData<Result<List<CategoryChildItem>>>()
+    private var YANG_LAGI_HITS_TITLE = "yanglagihits"
     fun refresh(id: String) {
         allCategoryQueryUseCase.execute(allCategoryQueryUseCase.createRequestParams(categoryDepth, true), object : Subscriber<CategoryAllList>() {
             override fun onCompleted() {
@@ -127,7 +128,7 @@ class CategoryLevelTwoViewModel @Inject constructor(private var allCategoryQuery
         return label.replace(" ", "").toLowerCase()
     }
 
-    fun getCategoryChildren(): MutableLiveData<Result<List<CategoryChildItem>>> = childItem
+    fun getCategoryChildren(): LiveData<Result<List<CategoryChildItem>>> = childItem
 
     override fun onCleared() {
         super.onCleared()
