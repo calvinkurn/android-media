@@ -142,7 +142,7 @@ class ShopPageFragment :
     private lateinit var shopPageFragmentHeaderViewHolder: ShopPageFragmentHeaderViewHolder
     private lateinit var viewPagerAdapter: ShopPageFragmentPagerAdapter
     private lateinit var errorTextView: TextView
-    private lateinit var errorButton: Button
+    private lateinit var errorButton: View
     private val iconTabHome = R.drawable.ic_shop_tab_home_inactive
     private val iconTabProduct = R.drawable.ic_shop_tab_products_inactive
     private val iconTabFeed = R.drawable.ic_shop_tab_feed_inactive
