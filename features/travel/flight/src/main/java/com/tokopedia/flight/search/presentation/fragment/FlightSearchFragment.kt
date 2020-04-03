@@ -430,6 +430,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             progress += halfProgressAmount
         }
 
+        flightSearchPassData.searchRequestId = flightSearchMetaViewModel.searchRequestId
+
         if (flightAirportCombineModel.isNeedRefresh) {
             if (flightSearchMetaViewModel.isNeedRefresh) {
                 var noRetry: Int = flightAirportCombineModel.noOfRetry
