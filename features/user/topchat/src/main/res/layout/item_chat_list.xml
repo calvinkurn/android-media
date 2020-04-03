@@ -109,12 +109,12 @@
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="12:15"
         android:textColor="@color/Neutral_N700_44"
         app:layout_constraintBottom_toBottomOf="@id/user_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/user_name"
-        app:typographyType="body_3" />
+        app:typographyType="body_3"
+        tools:text="12:15" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/unread_counter"
