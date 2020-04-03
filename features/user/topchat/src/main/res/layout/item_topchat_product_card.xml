@@ -6,18 +6,21 @@
     android:layout_height="match_parent"
     android:layout_marginBottom="@dimen/spacing_lvl1"
     android:background="@drawable/bg_shadow_attach_product"
-    android:orientation="vertical"
     android:paddingStart="@dimen/dp_topchat_12"
     android:paddingLeft="@dimen/dp_topchat_12"
     android:paddingTop="@dimen/dp_topchat_12"
     android:paddingEnd="@dimen/dp_topchat_12"
     android:paddingRight="@dimen/spacing_lvl4"
     android:paddingBottom="@dimen/dp_topchat_12"
-    tools:parentTag="android.widget.LinearLayout">
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_info"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/iv_thumbnail"
@@ -192,7 +195,12 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cl_info"
+        app:layout_constraintVertical_bias="1">
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/tv_atc"

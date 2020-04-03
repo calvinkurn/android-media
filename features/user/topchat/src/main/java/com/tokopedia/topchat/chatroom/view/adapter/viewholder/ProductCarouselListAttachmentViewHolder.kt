@@ -2,14 +2,11 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
 import android.os.Parcelable
 import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.ProductListAdapter
-import com.tokopedia.topchat.chatroom.view.custom.ProductListLayoutManager
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import kotlinx.android.synthetic.main.item_topchat_product_list_attachment.view.*
 
@@ -25,11 +22,6 @@ class ProductCarouselListAttachmentViewHolder(
     }
 
     private val adapter = ProductListAdapter(productListener)
-    private val layoutManager = ProductListLayoutManager(
-            itemView?.context,
-            LinearLayoutManager.HORIZONTAL,
-            false
-    )
 
     init {
         initRecyclerView()
@@ -37,17 +29,11 @@ class ProductCarouselListAttachmentViewHolder(
 
     private fun initRecyclerView() {
         itemView.rv_product?.apply {
-            setHasFixedSize(true)
-            layoutManager = this@ProductCarouselListAttachmentViewHolder.layoutManager
             adapter = this@ProductCarouselListAttachmentViewHolder.adapter
-            PagerSnapHelper().attachToRecyclerView(this)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        listener.saveProductCarouselState(
-                                adapterPosition,
-                                this@ProductCarouselListAttachmentViewHolder.layoutManager.onSaveInstanceState()
-                        )
+                        saveProductCarouselState(adapterPosition, listener)
                     }
                 }
             })
@@ -66,9 +52,7 @@ class ProductCarouselListAttachmentViewHolder(
     }
 
     private fun bindScrollState() {
-        listener.getSavedCarouselState(adapterPosition)?.let {
-            layoutManager.onRestoreInstanceState(it)
-        }
+        itemView.rv_product?.restoreSavedCarouselState(adapterPosition, listener)
     }
 
     companion object {
