@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.settings.view.uimodel
 
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.sellerhome.settings.analytics.SettingTrackingConstant
 import com.tokopedia.sellerhome.settings.view.typefactory.OtherMenuTypeFactory
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingShopInfoClickTrackable
@@ -12,6 +13,7 @@ class MenuItemUiModel(val title: String = "",
                       private val clickApplink: String? = null,
                       eventActionSuffix: String = "",
                       settingTypeInfix: String = "",
+                      val trackingAlias: String? = null,
                       val clickAction: () -> Unit = {})
     : SettingUiModel, SettingShopInfoImpressionTrackable, SettingShopInfoClickTrackable {
 
@@ -41,7 +43,8 @@ class MenuItemUiModel(val title: String = "",
                 if (settingTypeInfix == SettingTrackingConstant.APP_SETTING) {
                     settingType = SettingTrackingConstant.APPLICATION_SETTING
                 }
-                "${SettingTrackingConstant.IMPRESSION} $settingType - $title"
+                trackingAlias?.run {
+                    "${SettingTrackingConstant.IMPRESSION} $settingType - $trackingAlias" }.toBlankOrString()
             } else {
                 "${SettingTrackingConstant.IMPRESSION} $eventActionSuffix"
             }
