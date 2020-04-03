@@ -1070,7 +1070,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 }
             }, {
                 logException(it)
-                showToastError(it)
+                showToasterError(it.message ?: "")
             })
         }
     }
