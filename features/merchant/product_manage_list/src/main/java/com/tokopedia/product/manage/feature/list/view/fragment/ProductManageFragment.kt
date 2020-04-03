@@ -503,6 +503,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun showProductList(productList: List<ProductViewModel>) {
         val hasNextPage = productList.isNotEmpty()
         renderProductList(productList, hasNextPage)
+        renderSelectAllCheckBox()
     }
 
     private fun renderMultiSelectProduct() {
