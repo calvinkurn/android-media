@@ -36,6 +36,7 @@ open class BaseRepository {
             val restRequest = RestRequest.Builder(url, typeOf)
                     .setRequestType(requestType)
                     .setQueryParams(queryMap)
+                    .setBody(queryMap)
                     .setCacheStrategy(RestCacheStrategy.Builder(cacheType).build())
                     .build()
             return restRepository.getResponse(restRequest).getData()

@@ -24,6 +24,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.coroutines.CoroutineContext
 
@@ -36,8 +37,8 @@ const val CLOSED = 5
 
 class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : InboxListPresenter, CustomEditText.Listener, CoroutineScope {
     private var mView: InboxListView? = null
-    private var filterList: List<String>? = null
-    private val originalList: MutableList<TicketsItem>
+    private val filterList: ArrayList<String> by lazy { ArrayList<String>() }
+    private val originalList: ArrayList<TicketsItem> by lazy { ArrayList<TicketsItem>() }
     private var isLoading = false
     private var isLastPage = false
     private var filterAdapter: InboxFilterAdapter? = null
@@ -47,7 +48,7 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : Inbox
 
     override fun attachView(view: InboxBaseView?) {
         mView = view as InboxListView
-        filterList = mView?.getActivity()?.resources?.getStringArray(R.array.filterarray)?.toList()
+        filterList.addAll(Arrays.asList(*mView?.getActivity()?.resources?.getStringArray(R.array.filterarray)))
         ticketList
     }
 
@@ -62,22 +63,26 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : Inbox
                     block = {
                         if (!::queryMap.isInitialized) queryMap = HashMap()
                         val ticketListResponse = mUseCase.getTicketListResponse(queryMap)
-                        if (ticketListResponse.tickets?.isNotEmpty() == true) {
-                            mView?.toggleEmptyLayout(View.GONE)
-                            originalList.clear()
-                            originalList.addAll(ticketListResponse.tickets)
-                            nextUrl = ticketListResponse.nextPage
-                            isLastPage = nextUrl?.isEmpty() == true
-                            mView?.renderTicketList(originalList)
-                            mView?.showFilter()
-                        } else if (fromFilter) {
-                            originalList.clear()
-                            mView?.toggleEmptyLayout(View.VISIBLE)
-                            mView?.showFilter()
-                            fromFilter = false
-                        } else {
-                            mView?.toggleEmptyLayout(View.VISIBLE)
-                            mView?.hideFilter()
+                        when {
+                            ticketListResponse.tickets?.isNotEmpty() == true -> {
+                                mView?.toggleEmptyLayout(View.GONE)
+                                originalList.clear()
+                                originalList.addAll(ticketListResponse.tickets)
+                                nextUrl = ticketListResponse.nextPage
+                                isLastPage = nextUrl?.isEmpty() == true
+                                mView?.renderTicketList(originalList)
+                                mView?.showFilter()
+                            }
+                            fromFilter -> {
+                                originalList.clear()
+                                mView?.toggleEmptyLayout(View.VISIBLE)
+                                mView?.showFilter()
+                                fromFilter = false
+                            }
+                            else -> {
+                                mView?.toggleEmptyLayout(View.VISIBLE)
+                                mView?.hideFilter()
+                            }
                         }
                         mView?.hideProgressBar()
 
@@ -100,32 +105,32 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : Inbox
             ALL -> {
                 queryMap = mUseCase.setQueryMap(0, 0, 0)
                 ticketList
-                selectedFilter = filterList?.get(ALL) ?: ""
+                selectedFilter = getFilterList(filterList, ALL)
                 filterAdapter?.setSelected(ALL)
             }
             UNREAD -> {
                 queryMap = mUseCase.setQueryMap(0, 1, 0)
-                selectedFilter = filterList?.get(UNREAD) ?: ""
+                selectedFilter = getFilterList(filterList, UNREAD)
                 ticketList
             }
             NEEDRATING -> {
                 queryMap = mUseCase.setQueryMap(2, 0, 1)
-                selectedFilter = filterList?.get(NEEDRATING) ?: ""
+                selectedFilter = getFilterList(filterList, NEEDRATING)
                 ticketList
             }
             INPROGRESS -> {
                 queryMap = mUseCase.setQueryMap(1, 0, 0)
-                selectedFilter = filterList?.get(INPROGRESS) ?: ""
+                selectedFilter = getFilterList(filterList, INPROGRESS)
                 ticketList
             }
             READ -> {
                 queryMap = mUseCase.setQueryMap(0, 2, 0)
-                selectedFilter = filterList?.get(READ) ?: ""
+                selectedFilter = getFilterList(filterList, READ)
                 ticketList
             }
             CLOSED -> {
                 queryMap = mUseCase.setQueryMap(2, 0, 2)
-                selectedFilter = filterList?.get(CLOSED) ?: ""
+                selectedFilter = getFilterList(filterList, CLOSED)
                 ticketList
             }
         }
@@ -134,6 +139,14 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : Inbox
                 InboxTicketTracking.Action.EventClickFilter,
                 selectedFilter)
         mView?.hideBottomFragment()
+    }
+
+    private fun getFilterList(filterList: ArrayList<String>, listType: Int): String {
+        return if (filterList.isNotEmpty()) {
+            filterList[listType]
+        } else {
+            ""
+        }
     }
 
     override fun onClickTicket(index: Int, isOfficialStore: Boolean) {
@@ -171,7 +184,7 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : Inbox
     override fun onDestroy() {}
 
     private fun getFilterAdapter(): InboxFilterAdapter {
-        if (filterAdapter == null) filterAdapter = InboxFilterAdapter(filterList ?: listOf(), this)
+        if (filterAdapter == null) filterAdapter = InboxFilterAdapter(filterList, this)
         return filterAdapter as InboxFilterAdapter
     }
 
@@ -243,9 +256,5 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : Inbox
         if (text.isNotEmpty()) {
             mView?.toggleSearch(View.VISIBLE)
         }
-    }
-
-    init {
-        originalList = ArrayList()
     }
 }

@@ -32,20 +32,39 @@ class BaseProvideRatingFragmentPresenter : BaseDaggerPresenter<ProvideRatingCont
             getView().setFilterList(ArrayList())
             getView().hideSubmitButton()
         } else {
-            getView().setFilterList(getView().getReasonList())
-            getView().showSubmitButton()
+            setFilterList()
         }
+    }
+
+    private fun setFilterList() {
+        view.setFilterList(view.getReasonList())
+        view.showSubmitButton()
     }
 
     fun getScreenState(emoji: Int): ScreenState? {
         var screenState: ScreenState? = null
         when (emoji) {
             NO_EMOJI -> screenState = ZeroScreenState()
-            FIRST_EMOJI -> screenState = FirstScreenState(captionsList[FIRST_EMOJI - 1], questionList[FIRST_EMOJI - 1])
-            SECOND_EMOJI -> screenState = SecondScreenState(captionsList[SECOND_EMOJI - 1], questionList[SECOND_EMOJI - 1])
-            THIRD_EMOJI -> screenState = ThirdScreenState(captionsList[THIRD_EMOJI - 1], questionList[THIRD_EMOJI - 1])
-            FOURTH_EMOJI -> screenState = FourthScreenState(captionsList[FOURTH_EMOJI - 1], questionList[FOURTH_EMOJI - 1])
-            FIFTH_EMOJI -> screenState = FifthScreenState(captionsList[FIFTH_EMOJI - 1], questionList[FIFTH_EMOJI - 1])
+            FIRST_EMOJI -> {
+                screenState = FirstScreenState(captionsList[FIRST_EMOJI - 1], questionList[FIRST_EMOJI - 1])
+                setFilterList()
+            }
+            SECOND_EMOJI -> {
+                screenState = SecondScreenState(captionsList[SECOND_EMOJI - 1], questionList[SECOND_EMOJI - 1])
+                setFilterList()
+            }
+            THIRD_EMOJI -> {
+                screenState = ThirdScreenState(captionsList[THIRD_EMOJI - 1], questionList[THIRD_EMOJI - 1])
+                setFilterList()
+            }
+            FOURTH_EMOJI -> {
+                screenState = FourthScreenState(captionsList[FOURTH_EMOJI - 1], questionList[FOURTH_EMOJI - 1])
+                setFilterList()
+            }
+            FIFTH_EMOJI -> {
+                screenState = FifthScreenState(captionsList[FIFTH_EMOJI - 1], questionList[FIFTH_EMOJI - 1])
+                setFilterList()
+            }
         }
         return screenState
 

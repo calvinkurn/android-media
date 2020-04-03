@@ -29,8 +29,8 @@ class InboxModule(private val context: Context) {
 
     @Provides
     @Named("InboxListPresenter")
-    fun provideTicketListPresenter(useCase: GetTicketListUseCase?): InboxBasePresenter {
-        return InboxListPresenterImpl(useCase!!)
+    fun provideTicketListPresenter(useCase: GetTicketListUseCase): InboxBasePresenter {
+        return InboxListPresenterImpl(useCase)
     }
 
     @Provides
@@ -40,8 +40,9 @@ class InboxModule(private val context: Context) {
                                   ratingUseCase: PostRatingUseCase,
                                   inboxOptionUseCase: InboxOptionUseCase,
                                   submitRatingUseCase: SubmitRatingUseCase,
-                                  closeTicketByUserUseCase: CloseTicketByUserUseCase): InboxDetailPresenter {
-        return InboxDetailPresenterImpl(messageUseCase, messageUseCase2, ratingUseCase, inboxOptionUseCase, submitRatingUseCase, closeTicketByUserUseCase)
+                                  closeTicketByUserUseCase: CloseTicketByUserUseCase,
+                                  uploadImgeUseCase: UploadImageUseCase): InboxDetailPresenter {
+        return InboxDetailPresenterImpl(messageUseCase, messageUseCase2, ratingUseCase, inboxOptionUseCase, submitRatingUseCase, closeTicketByUserUseCase,uploadImgeUseCase)
     }
 
 }
