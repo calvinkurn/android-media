@@ -68,15 +68,20 @@ import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductMan
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.FilterTabViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
-import com.tokopedia.product.manage.feature.list.view.model.*
+import com.tokopedia.product.manage.feature.list.view.model.SearchEmptyModel
+import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel
+import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
+import com.tokopedia.product.manage.feature.list.view.model.ProductEmptyModel
+import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.*
+import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageBottomSheet
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.StockInformationBottomSheet
-import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
 import com.tokopedia.product.manage.feature.multiedit.ui.bottomsheet.ProductMultiEditBottomSheet
+import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
 import com.tokopedia.product.manage.feature.multiedit.ui.toast.MultiEditToastMessage.getRetryMessage
 import com.tokopedia.product.manage.feature.multiedit.ui.toast.MultiEditToastMessage.getSuccessMessage
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
@@ -95,7 +100,6 @@ import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.I
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.REQUEST_CODE_STOCK_REMINDER
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.SET_CASHBACK_REQUEST_CODE
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.URL_TIPS_TRICK
-import com.tokopedia.product.manage.oldlist.data.model.BulkBottomSheetType
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
@@ -140,10 +144,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private val stockInfoBottomSheet by lazy { StockInformationBottomSheet(view, fragmentManager) }
 
     private val productManageListAdapter by lazy { adapter as ProductManageListAdapter }
-    private val checkedPositionList: HashSet<Int> = hashSetOf()
     private var defaultFilterOptions: List<FilterOption> = emptyList()
-
-    private var stockType = BulkBottomSheetType.StockType()
     private var itemsChecked: MutableList<ProductViewModel> = mutableListOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -238,8 +239,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     override fun onClickProductFilter(filter: FilterTabViewModel, viewHolder: FilterTabViewHolder, tabName: String) {
         clearAllData()
-        showLoadingProgress()
+        resetSelectAllCheckBox()
+        clearSelectedProduct()
         disableMultiSelect()
+        showLoadingProgress()
         clickStatusFilterTab(filter, viewHolder)
         ProductManageTracking.eventInventory(tabName)
     }
@@ -385,9 +388,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun setTabFilterCount(filter: FilterOptionWrapper) {
-        var filterCount = filter.filterOptions.count().orZero()
-        filter.sortOption?.let { filterCount++ }
-        tabFilters.setFilterCount(filterCount)
+        tabFilters.setFilterCount(filter.selectedFilterCount)
     }
 
     private fun clickStatusFilterTab(filter: FilterTabViewModel, viewHolder: FilterTabViewHolder) {
@@ -521,7 +522,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun showProductList(productList: List<ProductViewModel>) {
         val hasNextPage = productList.isNotEmpty()
         renderProductList(productList, hasNextPage)
-        renderMultiSelectProduct()
+        renderSelectAllCheckBox()
         setDefaultFilterOption()
     }
 
@@ -841,6 +842,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     override fun onSwipeRefresh() {
         isLoadingInitialData = true
         swipeToRefresh.isRefreshing = true
+        clearFilterAndKeywordIfEmpty()
 
         showPageLoading()
         hideSnackBarRetry()
@@ -849,6 +851,23 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
         getFiltersTab(withDelay = true)
         getProductList(withDelay = true)
+    }
+
+    private fun clearFilterAndKeywordIfEmpty() {
+        val productList = adapter.data
+            .filterIsInstance<ProductViewModel>()
+
+        if(productList.isEmpty()) {
+            resetSelectedFilter()
+            clearSearchBarInput()
+        }
+    }
+
+    private fun resetSelectedFilter() {
+        removeObservers(viewModel.selectedFilterAndSort)
+        viewModel.resetSelectedFilter()
+        tabFilters.resetFilters()
+        observeFilter()
     }
 
     private fun clearSearchBarInput() {
@@ -985,7 +1004,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun goToProductViolationHelpPage() {
-        RouteManager.route(activity, ProductManageUrl.PRODUCT_VIOLATION_HELP_URL)
+        RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${ProductManageUrl.PRODUCT_VIOLATION_HELP_URL}")
     }
 
     private fun clickDuplicateProduct(productId: String) {

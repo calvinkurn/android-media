@@ -125,7 +125,9 @@ class ProductViewHolder(
     }
 
     private fun onClickProductItem(product: ProductViewModel) {
-        listener.onClickProductItem(product)
+        if(product.isNotViolation()) {
+            listener.onClickProductItem(product)
+        }
     }
 
     interface ProductViewHolderView {

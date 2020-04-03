@@ -281,7 +281,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
         val productListMetaResponse = ProductListMetaResponse(productListMeta)
 
         val filterList = listOf(CashBackOnly, FeaturedOnly)
-        val filterOptions = FilterOptionWrapper(filterOptions = filterList, sortOption = SortByName(ASC))
+        val filterOptions = FilterOptionWrapper(filterOptions = filterList, sortOption = SortByName(ASC), selectedFilterCount = 3)
 
         onGetFiltersTab_thenReturn(productListMetaResponse)
 
@@ -415,22 +415,6 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `get free claim should fail with exception`() {
-        val menuId = "1"
-        val menuName = "Etalase Toko"
-        val exception = NullPointerException()
-
-        onMultiEditProducts_thenError(exception)
-
-        viewModel.editProductsEtalase(listOf("1", "2"), menuId, menuName)
-
-        val expectedError = Fail(exception)
-
-        viewModel.multiEditProductResult
-            .verifyErrorEquals(expectedError)
-    }
-
-    @Test
     fun `get total product count should return total product count from filters tab`() {
         val tabs = listOf(Tab(id = "ACTIVE", name = "Active", value = "10"))
         val productListMetaData = ProductListMetaData(tabs = tabs)
@@ -485,6 +469,17 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
         val actualIsPowerMerchant= viewModel.isPowerMerchant()
         val expectedIsPowerMerchant = false
         assertEquals(expectedIsPowerMerchant, actualIsPowerMerchant)
+    }
+
+    @Test
+    fun `when reset selected filter should set filter to initial state`() {
+        viewModel.resetSelectedFilter()
+
+        val expectedFilter = FilterOptionWrapper(
+            filterShownState = listOf(true, true, false, false))
+
+        viewModel.selectedFilterAndSort
+            .verifyValueEquals(expectedFilter)
     }
 
     private fun onMultiEditProducts_thenError(exception: NullPointerException) {
