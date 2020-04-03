@@ -58,6 +58,7 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
+import kotlin.math.max
 
 class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                                                     private val getOccCartUseCase: GetOccCartUseCase,
@@ -496,6 +497,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             }
             val totalProductPrice = quantity.orderQuantity * productPrice
             val shipping = _orderPreference?.shipping
+            // change shipping discount count
             val totalShippingPrice: Double = if (shipping?.logisticPromoShipping != null && shipping.isApplyLogisticPromo) {
                 shipping.logisticPromoShipping.productData.price.price.toDouble()
             } else if (shipping?.shippingPrice != null) {
@@ -505,27 +507,27 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             if (shipping?.isCheckInsurance == true && shipping.insuranceData != null) {
                 insurancePrice = shipping.insuranceData.insurancePrice.toDouble()
             }
-            val benefitAmount = if (shipping?.logisticPromoViewModel != null && shipping.isApplyLogisticPromo) shipping.logisticPromoViewModel.benefitAmount else 0
             val fee = _orderPreference?.preference?.payment?.fee?.toDouble() ?: 0.0
-            val finalShippingPrice = if ((totalShippingPrice - benefitAmount) < 0) 0.0 else (totalShippingPrice - benefitAmount)
-            var discountAmount = 0
+            var productDiscount = 0
+            var shippingDiscount = 0
             val list1 = validateUsePromoRevampUiModel?.promoUiModel?.benefitSummaryInfoUiModel?.summaries
                     ?: emptyList()
             for (summary in list1) {
                 if (summary.type == "discount") {
-                    discountAmount += summary.amount
+                    for (detail in summary.details) {
+                        if (detail.type == "shipping_discount") {
+                            shippingDiscount += detail.amount
+                        } else if (detail.type == "product_discount") {
+                            productDiscount += detail.amount
+                        }
+                    }
                 }
             }
-            if (discountAmount > 0 && benefitAmount > 0) {
-                val bboAmount = if ((totalShippingPrice - benefitAmount) < 0) totalShippingPrice.toInt() else benefitAmount
-                if (discountAmount >= bboAmount) {
-                    discountAmount -= bboAmount
-                }
-            }
-            val subtotal = totalProductPrice + finalShippingPrice + insurancePrice + fee - discountAmount
+            val finalShippingPrice = max(totalShippingPrice - shippingDiscount, 0.0)
+            val subtotal = totalProductPrice + finalShippingPrice + insurancePrice + fee - productDiscount
             val minimumAmount = _orderPreference?.preference?.payment?.minimumAmount ?: 0
             val maximumAmount = _orderPreference?.preference?.payment?.maximumAmount ?: 0
-            val orderCost = OrderCost(totalProductPrice, subtotal, totalShippingPrice, insurancePrice, fee, benefitAmount, validateUsePromoRevampUiModel?.promoUiModel?.benefitSummaryInfoUiModel?.finalBenefitText
+            val orderCost = OrderCost(totalProductPrice, subtotal, totalShippingPrice, insurancePrice, fee, shippingDiscount, validateUsePromoRevampUiModel?.promoUiModel?.benefitSummaryInfoUiModel?.finalBenefitText
                     ?: "", validateUsePromoRevampUiModel?.promoUiModel?.benefitSummaryInfoUiModel?.finalBenefitAmount
                     ?: 0)
             var currentState = orderTotal.value?.buttonState ?: ButtonBayarState.NORMAL
@@ -1042,9 +1044,9 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     if (voucherOrdersItemUiModel != null && voucherOrdersItemUiModel.messageUiModel.state == "red") {
                         val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
                         notEligiblePromoHolderdata.promoTitle = if (voucherOrdersItemUiModel.titleDescription != null) voucherOrdersItemUiModel.titleDescription else ""
-                        if (validateUsePromoRevampUiModel.promoUiModel.codes.size > 0) {
-                            notEligiblePromoHolderdata.promoCode = validateUsePromoRevampUiModel.promoUiModel.codes[0]
-                        }
+//                        if (validateUsePromoRevampUiModel.promoUiModel.codes.size > 0) {
+                            notEligiblePromoHolderdata.promoCode = voucherOrdersItemUiModel.titleDescription
+//                        }
                         if (orderShop.cartResponse.cartString == voucherOrdersItemUiModel.uniqueId) {
                             notEligiblePromoHolderdata.shopName = orderShop.shopName
                             if (orderShop.cartResponse.shop.isOfficial == 1) {
@@ -1053,7 +1055,17 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                 notEligiblePromoHolderdata.iconType = TYPE_ICON_POWER_MERCHANT
                             }
                         }
-                        notEligiblePromoHolderdata.errorMessage = validateUsePromoRevampUiModel.promoUiModel.messageUiModel.text
+                        // why?
+                        if (i == 0) {
+                            notEligiblePromoHolderdata.showShopSection = true
+                        } else if (voucherOrdersItemUiModels[i - 1]?.uniqueId == voucherOrdersItemUiModel.uniqueId) {
+                            notEligiblePromoHolderdata.showShopSection = false
+                        } else {
+                            notEligiblePromoHolderdata.showShopSection = true
+                        }
+
+//                        notEligiblePromoHolderdata.errorMessage = validateUsePromoRevampUiModel.promoUiModel.messageUiModel.text
+                        notEligiblePromoHolderdata.errorMessage = voucherOrdersItemUiModel.messageUiModel.text
                         notEligiblePromoHolderdataList.add(notEligiblePromoHolderdata)
                     }
                 }

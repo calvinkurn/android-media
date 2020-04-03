@@ -134,9 +134,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             val clearPromoUiModel: ClearPromoUiModel? = data?.getParcelableExtra(ARGS_CLEAR_PROMO_RESULT)
             if (clearPromoUiModel != null) {
                 //reset
+                viewModel.validateUsePromoRevampUiModel = null
                 viewModel.updatePromoState(PromoUiModel().apply {
                     titleDescription = clearPromoUiModel.successDataModel.defaultEmptyPromoMessage
                 })
+                viewModel.validateUsePromo()
 //                shipmentAdapter.checkHasSelectAllCourier(false)
             }
         }
