@@ -125,6 +125,7 @@ class ShopPageFragment :
     var shopRef: String = ""
     var shopDomain: String? = null
     var shopAttribution: String? = null
+    var isFirstCreateShop: Boolean = false
     var isShowFeed: Boolean = false
     var isOfficialStore: Boolean = false
     var isGoldMerchant: Boolean = false
@@ -274,6 +275,7 @@ class ShopPageFragment :
                 shopDomain = getStringExtra(SHOP_DOMAIN)
                 shopAttribution = getStringExtra(SHOP_ATTRIBUTION)
                 tabPosition = getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
+                isFirstCreateShop = getBooleanExtra(ApplinkConstInternalMarketplace.PARAM_FIRST_CREATE_SHOP, false)
                 data?.run {
                     if (shopId.isNullOrEmpty()) {
                         shopId = getQueryParameter(SHOP_ID)
@@ -541,7 +543,6 @@ class ShopPageFragment :
         }
         swipeToRefresh.isRefreshing = false
 
-        val isFirstCreateShop = arguments?.getBoolean(ApplinkConstInternalMarketplace.PARAM_FIRST_CREATE_SHOP) ?: false
         view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
     }
 

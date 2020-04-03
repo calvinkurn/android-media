@@ -164,11 +164,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
 
     override fun getNewFragment(): Fragment? {
         return if (isNewShopPageEnabled(this)) {
-            ShopPageFragment.createInstance().apply {
-                arguments = Bundle().also {
-                    it.putBoolean(ApplinkConstInternalMarketplace.PARAM_FIRST_CREATE_SHOP, getIsFirstCreateShop())
-                }
-            }
+            ShopPageFragment.createInstance()
         } else {
             null
         }
