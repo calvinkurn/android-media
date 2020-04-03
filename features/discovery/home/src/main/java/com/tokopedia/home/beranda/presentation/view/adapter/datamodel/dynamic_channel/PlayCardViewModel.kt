@@ -102,6 +102,7 @@ data class PlayCardViewModel(
                 "event", if (isToIris) "promoViewIris" else "promoView",
                 "eventCategory", "homepage-cmp",
                 "eventAction", "impression on play dynamic banner",
+                "channelId", playCardHome?.channelId,
                 "eventLabel", "Play-CMP_OTHERS_${playCardHome?.slug} - ${playCardHome?.channelId} - ${getLiveOrVod(playCardHome?.videoStream?.isLive)}",
                 "ecommerce", DataLayer.mapOf(
                 "promoView", DataLayer.mapOf(

@@ -58,12 +58,14 @@ class ReviewViewHolder(
                             element.suggestedProductReview.suggestedProductReview,
                             adapterPosition,
                             element.suggestedProductReview.suggestedProductReview.orderId,
-                            element.suggestedProductReview.suggestedProductReview.productId
+                            element.suggestedProductReview.suggestedProductReview.productId,
+                            element.channel.id
                     )
                     categoryListener.sendIrisTrackerHashMap(HomePageTracking.getHomeReviewImpressionIris(element.suggestedProductReview.suggestedProductReview,
                             adapterPosition,
                             element.suggestedProductReview.suggestedProductReview.orderId,
-                            element.suggestedProductReview.suggestedProductReview.productId))
+                            element.suggestedProductReview.suggestedProductReview.productId,
+                            element.channel.id))
                 }
             })
 
