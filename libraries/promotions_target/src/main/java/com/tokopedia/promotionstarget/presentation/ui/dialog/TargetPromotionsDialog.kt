@@ -278,6 +278,8 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
                 recyclerView.addItemDecoration(CouponItemDecoration())
                 viewFlipper.displayedChild = CONTAINER_COUPON
 
+                tvSubTitle.text = tvSubTitle.context.getString(R.string.t_promo_apakah_kamu_mau_klaim_kupon_ini)
+
             } else {
 
                 val imageUrl = couponDetail.popGratification?.imageUrl
@@ -338,6 +340,12 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         couponCodeAfterClaim = data.popGratificationClaim?.dummyCouponCode
         this.data = data
         shouldCallAutoApply = true
+
+        if(!couponCodeAfterClaim.isNullOrEmpty()){
+            tvSubTitleRight.text = tvSubTitleRight.context.getString(R.string.t_promo_kupon_sudah_ada_dihalaman_keranjangmu_ya)
+            originalBtnText = tvSubTitleRight.context.getString(R.string.t_promo_belanja_sekarang)
+            btnAction.text = originalBtnText
+        }
     }
 
     private fun setListeners(activityContext: Context) {
