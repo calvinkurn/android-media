@@ -67,6 +67,7 @@ import com.tokopedia.purchase_platform.features.promo.presentation.analytics.Pro
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoUiModel
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.card_order_empty_preference.*
 import kotlinx.android.synthetic.main.fragment_order_summary_page.*
 import java.net.ConnectException
@@ -80,6 +81,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
     lateinit var orderSummaryAnalytics: OrderSummaryAnalytics
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val viewModel: OrderSummaryPageViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[OrderSummaryPageViewModel::class.java]
@@ -341,6 +344,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         group_insurance.gone()
 
         button_atur_pilihan.setOnClickListener {
+            orderSummaryAnalytics.eventUserSetsFirstPreference(userSession.userId)
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
             intent.putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, getString(R.string.preference_number_summary) + " " + 1)
             startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
