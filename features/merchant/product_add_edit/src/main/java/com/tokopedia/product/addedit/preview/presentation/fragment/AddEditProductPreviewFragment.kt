@@ -462,8 +462,8 @@ class AddEditProductPreviewFragment :
 
     private fun moveToDescriptionActivity() {
         viewModel.productInputModel?.let {
-            val intent = AddEditProductDescriptionActivity
-                    .createInstanceEditMode(context, it.detailInputModel.categoryId, it.descriptionInputModel)
+            val intent = AddEditProductDescriptionActivity.createInstanceEditMode(context,
+                    it.detailInputModel.categoryId, it.descriptionInputModel, it.variantInputModel)
             startActivityForResult(intent, AddEditProductDescriptionActivity.REQUEST_CODE_DESCRIPTION)
         }
     }

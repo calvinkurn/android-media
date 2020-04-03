@@ -9,8 +9,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -38,9 +36,14 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstan
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_PICKER_RESULT_CACHE_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_RESULT_CACHE_ID
 import com.tokopedia.product.addedit.common.util.getText
+import com.tokopedia.product.addedit.common.util.setText
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.di.AddEditProductDescriptionModule
 import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescriptionComponent
+import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_CATEGORY_ID
+import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_DESCRIPTION_INPUT_MODEL
+import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_IS_EDIT_MODE
+import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_VARIANT_INPUT_MODEL
 import com.tokopedia.product.addedit.description.presentation.adapter.VideoLinkTypeFactory
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.PictureViewModel
@@ -69,15 +72,20 @@ class AddEditProductDescriptionFragment:
         fun createInstance(categoryId: String): Fragment {
             return AddEditProductDescriptionFragment().apply {
                 arguments = Bundle().apply {
-                    putString(EXTRA_CATEGORY_ID, categoryId)
+                    putString(PARAM_CATEGORY_ID, categoryId)
                 }
             }
         }
-        fun createInstance(categoryId: String, descriptionInputModel: DescriptionInputModel): Fragment {
+        fun createInstance(categoryId: String,
+                           descriptionInputModel: DescriptionInputModel,
+                           variantInputModel: ProductVariantInputModel,
+                           isEditMode: Boolean): Fragment {
             return AddEditProductDescriptionFragment().apply {
                 arguments = Bundle().apply {
-                    putString(EXTRA_CATEGORY_ID, categoryId)
-                    putParcelable(EXTRA_DESCRIPTION_INPUT_MODEL, descriptionInputModel)
+                    putString(PARAM_CATEGORY_ID, categoryId)
+                    putParcelable(PARAM_DESCRIPTION_INPUT_MODEL, descriptionInputModel)
+                    putParcelable(PARAM_VARIANT_INPUT_MODEL, variantInputModel)
+                    putBoolean(PARAM_IS_EDIT_MODE, isEditMode)
                 }
             }
         }
@@ -89,15 +97,12 @@ class AddEditProductDescriptionFragment:
 
         const val IS_ADD = 0
         const val REQUEST_CODE_DESCRIPTION = 0x03
-        const val EXTRA_CATEGORY_ID = "extra_category_id"
-        const val EXTRA_DESCRIPTION_INPUT_MODEL = "extra_description_input_model"
 
         // TODO faisalramd
         const val TEST_IMAGE_URL = "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/9/16/36162992/36162992_778e5d1e-06fd-4e4a-b650-50c232815b24_1080_1080.jpg"
     }
 
     private var videoId = 0
-    private var productVariantInputModel = ProductVariantInputModel()
 
     @Inject
     lateinit var descriptionViewModel: AddEditProductDescriptionViewModel
@@ -137,11 +142,16 @@ class AddEditProductDescriptionFragment:
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            val categoryId : String = it.getString(EXTRA_CATEGORY_ID) ?: ""
+            val categoryId: String = it.getString(PARAM_CATEGORY_ID) ?: ""
+            val isEditMode: Boolean = it.getBoolean(PARAM_IS_EDIT_MODE, false)
             val descriptionInputModel : DescriptionInputModel =
-                    it.getParcelable(EXTRA_DESCRIPTION_INPUT_MODEL) ?: DescriptionInputModel()
+                    it.getParcelable(PARAM_DESCRIPTION_INPUT_MODEL) ?: DescriptionInputModel()
+            val variantInputModel : ProductVariantInputModel =
+                    it.getParcelable(PARAM_VARIANT_INPUT_MODEL) ?: ProductVariantInputModel()
             descriptionViewModel.categoryId = categoryId
             descriptionViewModel.descriptionInputModel = descriptionInputModel
+            descriptionViewModel.variantInputModel = variantInputModel
+            descriptionViewModel.isEditMode = isEditMode
         }
     }
 
@@ -154,6 +164,8 @@ class AddEditProductDescriptionFragment:
 
         textFieldDescription.textFieldInput.setSingleLine(false)
         textFieldDescription.textFieldInput.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
+
+        applyEditMode()
 
         textViewAddVideo.setOnClickListener {
             videoId += 1
@@ -184,6 +196,15 @@ class AddEditProductDescriptionFragment:
         })
     }
 
+    private fun applyEditMode() {
+        val description = descriptionViewModel.descriptionInputModel.productDescription
+        val videoLinks = descriptionViewModel.descriptionInputModel.videoLinkList
+
+        textFieldDescription.setText(description)
+        super.clearAllData()
+        super.renderList(videoLinks)
+    }
+
     private fun showVariantErrorToast(errorMessage: String) {
         view?.let {
             Toaster.make(it, errorMessage,
@@ -210,13 +231,13 @@ class AddEditProductDescriptionFragment:
                     if (data.hasExtra(EXTRA_PRODUCT_VARIANT_SELECTION)) {
                         val productVariantViewModel = cacheManager.get(EXTRA_PRODUCT_VARIANT_SELECTION,
                                 object : TypeToken<ProductVariantInputModel>() {}.type) ?: ProductVariantInputModel()
-                        productVariantInputModel.variantOptionParent = productVariantViewModel.variantOptionParent
-                        productVariantInputModel.productVariant = productVariantViewModel.productVariant
+                        descriptionViewModel.variantInputModel.variantOptionParent = productVariantViewModel.variantOptionParent
+                        descriptionViewModel.variantInputModel.productVariant = productVariantViewModel.productVariant
                     }
                     if (data.hasExtra(EXTRA_PRODUCT_SIZECHART)) {
                         val productPictureViewModel = cacheManager.get(EXTRA_PRODUCT_SIZECHART,
                                 object : TypeToken<PictureViewModel>() {}.type, PictureViewModel())
-                        productVariantInputModel.productSizeChart = productPictureViewModel
+                        descriptionViewModel.variantInputModel.productSizeChart = productPictureViewModel
                     }
                 }
             }
@@ -271,8 +292,8 @@ class AddEditProductDescriptionFragment:
         activity?.let {
             val cacheManager = SaveInstanceCacheManager(it, true).apply {
                 put(EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, variants)
-                put(EXTRA_PRODUCT_VARIANT_SELECTION, productVariantInputModel)
-                put(EXTRA_PRODUCT_SIZECHART, productVariantInputModel.productSizeChart)
+                put(EXTRA_PRODUCT_VARIANT_SELECTION, descriptionViewModel.variantInputModel)
+                put(EXTRA_PRODUCT_SIZECHART, descriptionViewModel.variantInputModel.productSizeChart)
                 put(EXTRA_CURRENCY_TYPE, TYPE_IDR)
                 put(EXTRA_DEFAULT_PRICE, 0.0) //TODO faisalramd put default price
                 put(EXTRA_STOCK_TYPE, "")
@@ -306,7 +327,7 @@ class AddEditProductDescriptionFragment:
         val intent = Intent()
         intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
         intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
-        intent.putExtra(EXTRA_VARIANT_INPUT, productVariantInputModel)
+        intent.putExtra(EXTRA_VARIANT_INPUT, descriptionViewModel.variantInputModel)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }
