@@ -581,11 +581,15 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 });
             } else {
                 if (!TextUtils.isEmpty(actionButton.getUri())) {
-                    textView.setOnClickListener(clickActionButton(actionButton));
-                }
-
-                if (actionButton.getKey().equalsIgnoreCase(KEY_TULIS_REVIEW)) {
-                    orderListAnalytics.sendTulisReviewEventData(this.status.status());
+                    textView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            clickActionButton(actionButton);
+                            if (actionButton.getKey().equalsIgnoreCase(KEY_TULIS_REVIEW)) {
+                                orderListAnalytics.sendTulisReviewEventData(status.status());
+                            }
+                        }
+                    });
                 }
             }
             actionBtnLayout.addView(textView);
