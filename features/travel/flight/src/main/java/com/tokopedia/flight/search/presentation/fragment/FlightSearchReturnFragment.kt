@@ -265,8 +265,12 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
     }
 
     private fun resetDepartureLabelPrice() {
-        if (priceViewModel.departurePrice.adultNumericCombo != 0) {
-            departure_trip_label.setValuePrice(priceViewModel.departurePrice.adultCombo)
+        if (isBestPairing) {
+            if (isViewOnlyBestPairing && priceViewModel.departurePrice.adultNumericCombo > 0) {
+                departure_trip_label.setValuePrice(priceViewModel.departurePrice.adultCombo)
+            } else {
+                departure_trip_label.setValuePrice(priceViewModel.departurePrice.adult)
+            }
         } else {
             departure_trip_label.setValuePrice(priceViewModel.departurePrice.adult)
         }
