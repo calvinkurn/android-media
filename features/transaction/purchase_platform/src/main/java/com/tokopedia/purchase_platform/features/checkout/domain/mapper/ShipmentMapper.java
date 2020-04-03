@@ -299,7 +299,9 @@ public class ShipmentMapper implements IShipmentMapper {
                     LastApplyUiModel lastApplyUiModel = new LastApplyUiModel();
 
                     // set codes
-                    lastApplyUiModel.setCodes(lastApply.getData().getCodes());
+                    if (lastApply.getData().getCodes() != null) {
+                        lastApplyUiModel.setCodes(lastApply.getData().getCodes());
+                    }
 
                     // set voucher orders
                     ArrayList<LastApplyVoucherOrdersItemUiModel> listVoucherOrdersUiModel = new ArrayList<>();
