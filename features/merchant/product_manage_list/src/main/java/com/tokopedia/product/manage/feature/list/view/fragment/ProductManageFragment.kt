@@ -965,7 +965,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun goToProductViolationHelpPage() {
-        RouteManager.route(activity, ProductManageUrl.PRODUCT_VIOLATION_HELP_URL)
+        RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${ProductManageUrl.PRODUCT_VIOLATION_HELP_URL}")
     }
 
     private fun clickDuplicateProduct(productId: String) {
