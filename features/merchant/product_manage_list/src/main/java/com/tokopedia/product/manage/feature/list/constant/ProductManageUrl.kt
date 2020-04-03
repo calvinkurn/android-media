@@ -8,5 +8,5 @@ object ProductManageUrl {
     const val PRODUCT_MANAGE_SEARCH_EMPTY_STATE = "https://ecs7.tokopedia.net/android/others/ic_product_not_found.png"
     const val PRODUCT_MANAGE_LIST_EMPTY_STATE = "https://ecs7.tokopedia.net/android/others/illustration_buka.png"
 
-    const val PRODUCT_VIOLATION_HELP_URL = "https://www.tokopedia.com/help/article/mengapa-produk-saya-dalam-pengawasan"
+    const val PRODUCT_VIOLATION_HELP_URL = "https://www.tokopedia.com/help/article/produk-yang-saya-jual-dalam-pengawasan"
 }

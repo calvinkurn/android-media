@@ -34,7 +34,7 @@ class ProductManageTabFilter: RecyclerView {
         isNestedScrollingEnabled = false
     }
 
-    fun resetAllFilter(selectedFilter: FilterTabViewHolder) {
+    fun resetAllFilter(selectedFilter: FilterTabViewHolder? = null) {
         for(i in 0..tabFilterAdapter?.itemCount.orZero()) {
             val viewHolder = findViewHolderForAdapterPosition(i) as? FilterTabViewHolder
             if(viewHolder != selectedFilter) viewHolder?.resetFilter()
@@ -47,10 +47,9 @@ class ProductManageTabFilter: RecyclerView {
     }
 
     fun getProductCount(): Int {
-        return tabFilterAdapter?.list
-            ?.filterIsInstance<FilterTabViewModel>()
-            ?.firstOrNull { it.status == selectedFilter?.status }
-            ?.count.orZero()
+        return tabFilterAdapter?.data?.firstOrNull {
+                it.status == selectedFilter?.status
+            }?.count.orZero()
     }
 
     fun setFilterCount(filterCount: Int) {
@@ -64,6 +63,12 @@ class ProductManageTabFilter: RecyclerView {
 
     fun resetSelectedFilter() {
         selectedFilter = null
+    }
+
+    fun resetFilters() {
+        resetSelectedFilter()
+        resetAllFilter()
+        setFilterCount(0)
     }
 
     fun isActive() = selectedFilter != null
