@@ -1781,6 +1781,7 @@ public class HomePageTracking {
                 "creative_url", reviewData.getImageUrl(),
                 "position", Integer.toString(position + 1, 10),
                 "category", "",
+                "categoryId", channelId,
                 "promo_id", null,
                 "promo_code", null
         ));

@@ -275,7 +275,7 @@ object HomePageTrackingV2 : BaseTracking() {
                     Category.KEY, Category.HOMEPAGE,
                     Action.KEY, CLICK_POPULAR_KEYWORDS_RELOAD,
                     Label.KEY, channel.header.name,
-                    Label.CHANNEL_LABEL, channel.header.name
+                    ChannelId.KEY, channel.id
             ) as HashMap<String, Any>
         }
 
