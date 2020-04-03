@@ -598,6 +598,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         override fun onLogisticPromoClick(logisticPromoUiModel: LogisticPromoUiModel) {
+            orderSummaryAnalytics.eventChooseBboAsDuration()
             viewModel.chooseLogisticPromo(logisticPromoUiModel)
         }
 
