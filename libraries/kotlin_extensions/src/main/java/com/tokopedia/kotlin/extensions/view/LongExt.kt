@@ -1,5 +1,6 @@
 package com.tokopedia.kotlin.extensions.view
 
+import kotlin.math.max
 import kotlin.math.pow
 
 /**
@@ -47,10 +48,12 @@ fun Long.toAmountStringByDivider(
     return buildString {
         append(wholeNum)
         if (fractionNum > 0) {
-            val fractionString = fractionNum.toString()
+            val fullString = this@toAmountStringByDivider.toString()
+            val fractionString = fullString.substring(max(0, fullString.indexOf(wholeNum.toString()) + 1), fullString.length)
             append(separator)
+            println(decimalPlaces)
             for (num in 0 until decimalPlaces) {
-                if (num < fractionString.length) append("${fractionNum.toString()[num]}")
+                if (num < fractionString.length) append("${fractionString[num]}")
             }
         }
         if (withSpacing) append(" ")

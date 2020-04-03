@@ -2,7 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.viewmodel
 
 import android.os.Bundle
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecommendationTabDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 
 /**
@@ -48,7 +48,7 @@ class HomeRecommendationFeedViewModel : HomeVisitable {
         return "recommendationSection"
     }
 
-    var feedTabModel: List<FeedTabModel>? = null
+    var recommendationTabDataModel: List<RecommendationTabDataModel>? = null
 
     var isNewData = true
 

@@ -1,17 +1,16 @@
 <resources>
     <string name="title_search_result" >Pencarian</string>
-    <string name="search_result_app_name">search</string>
     <string name="app_name">Search</string>
     <string name="search_result_page">Search Result Page</string>
     <string name="OK">OK</string>
 
+    <string name="search_toolbar_title_default">Cari di Tokopedia</string>
+
     <string name="product_tab_title">Produk</string>
-    <string name="catalog_tab_title">Katalog</string>
     <string name="shop_tab_title">Toko</string>
+    <string name="title_profile">Profil</string>
 
     <string name="title_category">Kategori</string>
-    <string name="title_share">Bagikan</string>
-    <string name="title_profile">Profil</string>
 
     <string name="grid">Grid</string>
 
@@ -21,16 +20,11 @@
     <string name="result_count_template_text">%s Produk</string>
     <string name="empty_state_selected_filter_price_name">Filter Harga</string>
 
-    <string name="view_similar_item">Lihat Barang Serupa</string>
-    <string name="press_to_see_similar">Tekan dan tahan produk pilihan Anda untuk melihat produk serupa.</string>
-    <string name="megerti">Mengerti</string>
     <string name="msg_remove_wishlist">Sukses menghapus wishlist</string>
     <string name="msg_add_wishlist">Sukses menambah wishlist</string>
     <string name="msg_remove_wishlist_failed">Gagal menghapus wishlist</string>
     <string name="msg_add_wishlist_failed">Gagal menambah wishlist</string>
 
-    <string name="message_success_people_fav">Sukses menambahkan toko favorit</string>
-    <string name="message_success_people_unfav">Sukses menghapus toko favorit</string>
     <string name="shop_total_count_found_in">\u0020ditemukan di\u0020</string>
     <string name="shop_total_count_shop">\u0020toko</string>
     <string name="shop_has_no_product">Toko belum ada produk</string>
@@ -44,10 +38,8 @@
     <string name="shop_voucher_cashback_rb">%srb</string>
     <string name="shop_see_shop_button">Lihat Toko</string>
 
-    <string name="title_total_prods">Produk</string>
 
     <string name="value_profile_count">%1$s profil</string>
-    <string name="empty_search_content_template">Hasil pencarian untuk \"%s\" tidak ditemukan. Coba keyword lain?</string>
     <string name="empty_search_button_text">Lakukan Pencarian Baru</string>
     <string name="msg_empty_search_with_filter_1">Oops, %s tidak ditemukan :(</string>
 
@@ -76,9 +68,6 @@
     <string name="msg_empty_search_with_filter_2">Hasil pencarian untuk \"%s\" tidak ditemukan. Coba kurangi filter pencarian Anda :</string>
     <string name="related_search_title">Mungkin maksud Anda :</string>
     <string name="value_status_followed">\u2022 Following</string>
-    <string name="image_product_desc">Produk</string>
-    <string name="search_hint">Cari produk atau Toko</string>
-    <string name="search_title">Pencarian</string>
 
     <string name="free_ongkir_promo_show_case_title">Bebas Ongkir</string>
     <string name="free_ongkir_promo_show_case_description">Semua barang berlogo Bebas Ongkir, biaya kirimnya berpotensi GRATIS!</string>

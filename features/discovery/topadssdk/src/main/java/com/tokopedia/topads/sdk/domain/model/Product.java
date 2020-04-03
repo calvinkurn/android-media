@@ -35,6 +35,7 @@ public class Product implements Parcelable {
     private static final String KEY_PRODUCT_CASHBACK = "product_cashback";
     private static final String KEY_PRODUCT_CASHBACK_RATE = "product_cashback_rate";
     private static final String KEY_PRODUCT_NEW_LABEL = "product_new_label";
+    private static final String KEY_PRODUCT_RATE_FORMAT = "product_rating_format";
     private static final String KEY_PRODUCT_RATE = "product_rating";
     private static final String KEY_WHOLESALE_PRICE = "wholesale_price";
     private static final String KEY_LABELS = "labels";
@@ -109,6 +110,10 @@ public class Product implements Parcelable {
     @SerializedName(KEY_PRODUCT_NEW_LABEL)
     @Expose
     private boolean productNewLabel = false;
+
+    @SerializedName(KEY_PRODUCT_RATE_FORMAT)
+    @Expose
+    private String productRatingFormat = "";
 
     @SerializedName(KEY_PRODUCT_RATE)
     @Expose
@@ -213,6 +218,9 @@ public class Product implements Parcelable {
         if(!object.isNull(KEY_PRODUCT_CASHBACK_RATE)){
             setProductCashbackRate(object.getString(KEY_PRODUCT_CASHBACK_RATE));
         }
+        if(!object.isNull(KEY_PRODUCT_RATE_FORMAT)) {
+            setProductRatingFormat(object.getString(KEY_PRODUCT_RATE_FORMAT));
+        }
         if(!object.isNull(KEY_PRODUCT_RATE)){
             setProductRating(object.getInt(KEY_PRODUCT_RATE));
         }
@@ -276,6 +284,7 @@ public class Product implements Parcelable {
         productCashback = in.readByte() != 0;
         productCashbackRate = in.readString();
         productNewLabel = in.readByte() != 0;
+        productRatingFormat = in.readString();
         productRating = in.readInt();
         applinks = in.readString();
         wholesalePrice = in.createTypedArrayList(WholesalePrice.CREATOR);
@@ -308,6 +317,7 @@ public class Product implements Parcelable {
         dest.writeByte((byte) (productCashback ? 1 : 0));
         dest.writeString(productCashbackRate);
         dest.writeByte((byte) (productNewLabel ? 1 : 0));
+        dest.writeString(productRatingFormat);
         dest.writeInt(productRating);
         dest.writeString(applinks);
         dest.writeTypedList(wholesalePrice);
@@ -527,6 +537,14 @@ public class Product implements Parcelable {
 
     public void setLabels(List<Label> labels) {
         this.labels = labels;
+    }
+
+    public String getProductRatingFormat() {
+        return productRatingFormat;
+    }
+
+    public void setProductRatingFormat(String productRatingFormat) {
+        this.productRatingFormat = productRatingFormat;
     }
 
     public int getProductRating() {

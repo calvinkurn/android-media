@@ -3,10 +3,7 @@
     package="com.tokopedia.topads.auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <application
-        android:allowBackup="true"
-        tools:replace="android:label"
-        android:label="@string/auto_ads_app_name">
+    <application>
         <activity
             android:name=".view.activity.AutoAdsRouteActivity"
             android:label="" >

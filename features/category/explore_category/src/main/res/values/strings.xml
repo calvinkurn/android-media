@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">explore_category</string>
+    <string name="label_category_explore">Jelajah Tokopedia</string>
+    <string name="host_category_explore">category-explore</string>
+    <string name="ec_new_label">BARU</string>
+</resources>

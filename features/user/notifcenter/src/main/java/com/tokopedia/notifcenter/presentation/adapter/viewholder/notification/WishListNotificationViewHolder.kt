@@ -41,7 +41,7 @@ class WishListNotificationViewHolder(
         }
     }
 
-    override fun bindProductClickTrack(element: NotificationItemViewBean) {
+    override fun trackProduct(element: NotificationItemViewBean) {
         listener.getAnalytic().trackAtcToPdpClick(element)
     }
 
