@@ -238,8 +238,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     override fun onClickProductFilter(filter: FilterTabViewModel, viewHolder: FilterTabViewHolder, tabName: String) {
         clearAllData()
-        showLoadingProgress()
+        resetSelectAllCheckBox()
+        clearSelectedProduct()
         disableMultiSelect()
+        showLoadingProgress()
         clickStatusFilterTab(filter, viewHolder)
         ProductManageTracking.eventInventory(tabName)
     }
