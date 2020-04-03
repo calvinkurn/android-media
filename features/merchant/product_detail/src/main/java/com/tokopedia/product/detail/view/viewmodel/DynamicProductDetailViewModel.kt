@@ -170,6 +170,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     fun hasShopAuthority(): Boolean {
         return isShopOwner(getDynamicProductInfoP1?.basic?.getShopId() ?: 0) || shopInfo?.allowManage == true
     }
+
     fun isShopOwner(shopId: Int): Boolean = userSessionInterface.shopId.toIntOrNull() == shopId
     val isUserSessionActive: Boolean
         get() = userSessionInterface.isLoggedIn
@@ -251,9 +252,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                 return@execute
                             }
                         }
-                        onError?.invoke("".asThrowable())
+                        onError?.invoke(Throwable(""))
                     } else {
-                        onError?.invoke("".asThrowable())
+                        onError?.invoke(Throwable(""))
                     }
                 },
                 onError = {
@@ -430,8 +431,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     productInfoP3.addressModel = p3Temp.addressModel
                     productInfoP3.rateEstSummarizeText = p3Temp.rateEstSummarizeText
                     productInfoP3.userCod = p3Temp.userCod
-                    //TODO YEHEZ
-                    shippingMinimumPrice = p3Temp.ratesModel?.getMinimumShippingPrice() ?: 30000
+                    val shippingPriceValue = p3Temp.ratesModel?.getMinimumShippingPrice()
+                    shippingMinimumPrice = if (shippingPriceValue == null || shippingPriceValue == 0) getDynamicProductInfoP1?.basic?.getDefaultOngkirInt() ?: 30000 else shippingPriceValue
                 }
             }
 

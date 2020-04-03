@@ -73,9 +73,7 @@ fun Fragment.doActionOrloginWithExtra(isLoggedIn: Boolean, loginAction: () -> Un
     }
 }
 
-fun <T> ArrayList<T>.asThrowable(): Throwable = Throwable(message = this.firstOrNull()?.toString() ?: "")
-
-fun String.asThrowable(): Throwable = Throwable(message = this)
+fun ArrayList<String>.asThrowable(): Throwable = Throwable(message = this.firstOrNull()?.toString() ?: "")
 
 fun <T : Any> Result<T>.doSuccessOrFail(success: (Success<T>) -> Unit, fail: (Fail: Throwable) -> Unit) {
     when (this) {

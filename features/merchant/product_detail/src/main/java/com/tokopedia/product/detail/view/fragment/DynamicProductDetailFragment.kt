@@ -1255,7 +1255,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun onSuccessGetDataP2Shop(it: ProductInfoP2ShopData) {
         viewModel.getDynamicProductInfoP1?.let { p1 ->
             actionButtonView.renderData(!p1.basic.isActive(), viewModel.hasShopAuthority(),
-                    hasTopAds(), it.newCartTypeResponse.cartRedirection.data.firstOrNull())
+                    hasTopAds(), it.cartRedirectionResponse.cartRedirection.data.firstOrNull())
 
             if (viewModel.shopInfo == null) {
                 actionButtonView.visibility = !isAffiliate
@@ -2076,7 +2076,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
             if (isVariant && isPartialySelected) {
                 if (pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory == null) {
-                    showToasterWithAction("Variant gagal diload", "Refresh") {
+                    showToasterWithAction(getString(R.string.variant_failed_load), getString(R.string.product_refresh)) {
                         onSwipeRefresh()
                     }
                 } else {
