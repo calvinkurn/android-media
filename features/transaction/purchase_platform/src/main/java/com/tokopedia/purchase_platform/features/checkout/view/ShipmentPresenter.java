@@ -580,6 +580,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     public void initializePresenterData(CartShipmentAddressFormData cartShipmentAddressFormData) {
+        setLatValidateUseRequest(null);
+        setValidateUsePromoRevampUiModel(null);
 
         if (getView().isInsuranceEnabled()) {
             getInsuranceTechCartOnCheckout();
