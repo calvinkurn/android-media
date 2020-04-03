@@ -58,6 +58,10 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         private const val TERM_CONDITION_BUTTON_NAME = "Syarat dan Ketentuan"
         private const val PRIVACY_POLICY_BUTTON_NAME = "Kebijakan Privasi"
 
+        private const val SHIPPING_SERVICE_ALIAS = "shipping service"
+        private const val PASSWORD_ALIAS = "password"
+        private const val LOGOUT_ALIAS = "logout"
+
         @JvmStatic
         fun createInstance(): MenuSettingFragment = MenuSettingFragment()
     }
@@ -68,9 +72,16 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     @DrawableRes
     private val logoutIconDrawable = R.drawable.sah_qc_launcher2
 
-    private val logoutUiModel by lazy {
-        OtherSettingsUiModel(LOGOUT_BUTTON_NAME)
+    private val trackingAliasHashMap by lazy {
+        mapOf<String, String?>(
+                resources.getString(R.string.setting_menu_set_shipment_method) to SHIPPING_SERVICE_ALIAS,
+                resources.getString(R.string.setting_menu_password) to PASSWORD_ALIAS,
+                LOGOUT_BUTTON_NAME to LOGOUT_ALIAS)
     }
+    private val logoutUiModel by lazy {
+        OtherSettingsUiModel(LOGOUT_BUTTON_NAME, trackingAliasHashMap[LOGOUT_BUTTON_NAME])
+    }
+
     private val termsAndConditionUiModel by lazy {
         OtherSettingsUiModel(TERM_CONDITION_BUTTON_NAME)
     }
@@ -136,7 +147,8 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_set_shipment_method),
                         clickApplink = ApplinkConst.SELLER_SHIPPING_EDITOR,
-                        settingTypeInfix = SettingTrackingConstant.SHOP_SETTING),
+                        settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
+                        trackingAlias = trackingAliasHashMap[resources.getString(R.string.setting_menu_set_shipment_method)]),
                 DividerUiModel(DividerType.THICK),
                 SettingTitleMenuUiModel(resources.getString(R.string.setting_menu_account_setting), R.drawable.ic_account),
                 MenuItemUiModel(
@@ -149,7 +161,8 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                         settingTypeInfix = SettingTrackingConstant.ACCOUNT_SETTING),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_password),
-                        settingTypeInfix = SettingTrackingConstant.ACCOUNT_SETTING) { addOrChangePassword() },
+                        settingTypeInfix = SettingTrackingConstant.ACCOUNT_SETTING,
+                        trackingAlias = trackingAliasHashMap[resources.getString(R.string.setting_menu_password)]) { addOrChangePassword() },
                 DividerUiModel(DividerType.THICK),
                 SettingTitleMenuUiModel(resources.getString(R.string.setting_menu_app_setting), R.drawable.ic_app_setting),
                 MenuItemUiModel(
@@ -165,7 +178,9 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                 DividerUiModel(DividerType.THIN_INDENTED)
         )
         if (GlobalConfig.isAllowDebuggingTools())
-            settingList.add(DEVELOPER_OPTION_INDEX, MenuItemUiModel(resources.getString(R.string.setting_menu_developer_options)) {
+            settingList.add(DEVELOPER_OPTION_INDEX, MenuItemUiModel(
+                    resources.getString(R.string.setting_menu_developer_options),
+                    settingTypeInfix = SettingTrackingConstant.APP_SETTING) {
                 RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
             })
         adapter.data.addAll(settingList)
@@ -192,18 +207,12 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     private fun setupExtraSettingView() {
         tcLayout?.run {
             settingTC?.run {
-                this.sendSettingShopInfoImpressionTracking(termsAndConditionUiModel) {
-                    it.sendShopInfoImpressionData()
-                }
                 setOnClickListener {
                     termsAndConditionUiModel.sendSettingShopInfoClickTracking()
                     showTermsAndConditions()
                 }
             }
             settingPrivacy?.run {
-                this.sendSettingShopInfoImpressionTracking(privacyPolicyUiModel) {
-                    it.sendShopInfoImpressionData()
-                }
                 setOnClickListener {
                     privacyPolicyUiModel.sendSettingShopInfoClickTracking()
                     showPrivacyPolicy()

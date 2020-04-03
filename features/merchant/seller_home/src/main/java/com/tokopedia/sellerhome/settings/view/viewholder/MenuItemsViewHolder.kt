@@ -29,13 +29,21 @@ class MenuItemsViewHolder(itemView: View,
         with(itemView) {
             element.drawableReference?.let { settingMenuIcon.setImageDrawable(ContextCompat.getDrawable(context, it)) }
             settingMenuTitle.text = element.title
-            sendSettingShopInfoImpressionTracking(element, trackingListener::sendImpressionDataIris)
+            if (element.isNoIcon) {
+                element.trackingAlias?.let {
+                    sendSettingShopInfoImpressionTracking(element, trackingListener::sendImpressionDataIris)
+                }
+            } else {
+                sendSettingShopInfoImpressionTracking(element, trackingListener::sendImpressionDataIris)
+            }
             setOnClickListener {
-                element.sendSettingShopInfoClickTracking()
-                if (element.onClickApplink.isNullOrEmpty()) {
-                    element.clickAction.invoke()
-                } else {
-                    RouteManager.route(context, element.onClickApplink)
+                element.run {
+                    sendSettingShopInfoClickTracking()
+                    if (onClickApplink.isNullOrEmpty()) {
+                        clickAction.invoke()
+                    } else {
+                        RouteManager.route(context, onClickApplink)
+                    }
                 }
             }
         }
