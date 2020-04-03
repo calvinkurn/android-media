@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.kotlin.extensions.view.toUrlParams
 import com.tokopedia.search.TestException
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -9,6 +10,7 @@ import com.tokopedia.search.result.error
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.presenter.product.testinstance.searchProductModelCommon
 import com.tokopedia.search.shouldBe
+import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import io.mockk.*
@@ -87,6 +89,11 @@ internal class SearchProductFirstPageTest: Spek({
 
         Scenario("Load Data Failed with exception") {
             val testException = TestException()
+            val searchParameter : Map<String, Any> = mutableMapOf<String, Any>().also {
+                it[SearchApiConst.Q] = "samsung"
+                it[SearchApiConst.OFFICIAL] = true
+            }
+            val slotSearchParameterErrorLog = slot<String>()
             lateinit var productListPresenter: ProductListPresenter
 
             Given("Search Product API will throw exception") {
@@ -101,10 +108,6 @@ internal class SearchProductFirstPageTest: Spek({
             }
 
             When("Load Data") {
-                val searchParameter : Map<String, Any> = mutableMapOf<String, Any>().also {
-                    it[SearchApiConst.Q] = "samsung"
-                }
-
                 productListPresenter.loadData(searchParameter)
             }
 
@@ -115,6 +118,8 @@ internal class SearchProductFirstPageTest: Spek({
                     productListView.isAnyFilterActive
 
                     verifyShowError(productListView)
+
+                    productListView.logWarning(capture(slotSearchParameterErrorLog), testException)
                 }
 
                 confirmVerified(productListView)
@@ -130,6 +135,12 @@ internal class SearchProductFirstPageTest: Spek({
                 val startFrom = productListPresenter.startFrom
 
                 startFrom shouldBe SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS.toInt()
+            }
+
+            Then("verify logged error message is from search parameter") {
+                val message = slotSearchParameterErrorLog.captured
+
+                message shouldBe UrlParamUtils.generateUrlParamString(searchParameter)
             }
         }
 
