@@ -17,7 +17,6 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,13 +77,12 @@ import com.tokopedia.home.beranda.listener.HomeFeedsListener;
 import com.tokopedia.home.beranda.listener.HomeInspirationListener;
 import com.tokopedia.home.beranda.listener.HomeReviewListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
-import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerOrganicViewHolder;
@@ -93,12 +91,14 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView;
+import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel;
 import com.tokopedia.home.constant.BerandaUrl;
 import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
+import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.locationmanager.DeviceLocation;
 import com.tokopedia.locationmanager.LocationDetectorHelper;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
@@ -227,6 +227,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     private TrackingQueue trackingQueue;
 
     private Iris irisAnalytics;
+    private IrisSession irisSession;
 
     private HomeMainToolbar homeMainToolbar;
 
@@ -288,6 +289,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         userSession = new UserSession(getActivity());
         trackingQueue = new TrackingQueue(getActivity());
         irisAnalytics = IrisAnalytics.Companion.getInstance(getActivity());
+        irisSession = new IrisSession(getContext());
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         searchBarTransitionRange = getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
         startToTransitionOffset = (getResources().getDimensionPixelSize(R.dimen.banner_background_height)) / 2;
@@ -739,7 +741,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private boolean isDataValid(List<HomeVisitable> visitables) {
-        return containsInstance(visitables, BannerViewModel.class);
+        return containsInstance(visitables, HomepageBannerDataModel.class);
     }
 
     private <T> boolean containsInstance(List<T> list, Class type){
@@ -978,6 +980,14 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     @Override
     public void onPromoClick(int position, BannerSlidesModel slidesModel) {
+        // tracking handler
+        if(slidesModel.getType().equals(BannerSlidesModel.TYPE_BANNER_PERSO)){
+            sendEETracking((HashMap<String, Object>) HomePageTrackingV2.HomeBanner.INSTANCE.getOverlayBannerClick(slidesModel));
+        }else {
+            sendEETracking((HashMap<String, Object>) HomePageTrackingV2.HomeBanner.INSTANCE.getBannerClick(slidesModel));
+        }
+        HomeTrackingUtils.homeSlidingBannerClick(getContext(), slidesModel, position);
+
         if (getActivity() != null && RouteManager.isSupportApplink(getActivity(), slidesModel.getApplink())) {
             openApplink(slidesModel.getApplink());
         } else {
@@ -1434,9 +1444,19 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     @Override
     public void onPromoScrolled(BannerSlidesModel bannerSlidesModel) {
-        if (getUserVisibleHint()) {
-            viewModel.hitBannerImpression(bannerSlidesModel);
+        HomeTrackingUtils.homeSlidingBannerImpression(getContext(), bannerSlidesModel, bannerSlidesModel.getPosition());
+        if (bannerSlidesModel.getType().equals(BannerSlidesModel.TYPE_BANNER_PERSO) && !bannerSlidesModel.isInvoke()) {
+            sendEETracking((HashMap<String, Object>) HomePageTrackingV2.HomeBanner.INSTANCE.getOverlayBannerImpression(bannerSlidesModel));
+        } else if (!bannerSlidesModel.isInvoke()) {
+            if(!bannerSlidesModel.getTopadsViewUrl().isEmpty()){
+                viewModel.sendTopAds(bannerSlidesModel.getTopadsViewUrl());
+            }
+
+            HashMap dataLayer = (HashMap) HomePageTrackingV2.HomeBanner.INSTANCE.getBannerImpression(bannerSlidesModel);
+            dataLayer.put(com.tokopedia.iris.util.ConstantKt.KEY_SESSION_IRIS, irisSession.getSessionId());
+            putEEToIris(dataLayer);
         }
+
         if (bannerSlidesModel.getPosition() > 1) {
             stopHomeInitPerformanceMonitoring();
         }
