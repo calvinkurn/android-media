@@ -63,16 +63,11 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_SHOW_ZERO_PRODUCT, isShowZeroProduct ?: false)
             bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_MY_SHOP, isMyShop ?: false)
             bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE, isNeedToGoToAddShowcase ?: false)
-//            bundle.putInt(ShopShowcaseListParam.EXTRA_TOTAL_PRODUCT, totalProduct ?: 0)
             fragment.arguments = bundle
             return fragment
         }
         const val REQUEST_EDIT_SHOWCASE_CODE = 1
     }
-
-//    private val userSession: UserSessionInterface by lazy {
-//        UserSession(activity)
-//    }
 
     @Inject
     lateinit var viewModel: ShopShowcaseListViewModel
@@ -97,9 +92,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private var isShowZeroProduct: Boolean? = null
     private var isMyShop: Boolean = false
     private var shopType = ""
-//    private var isEnableAddShowcase = false
     private var isNeedToGoToAddShowcase = false
-//    private var totalProduct: Int = 0
 
 
     override fun getScreenName(): String {
@@ -144,7 +137,6 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             isShowZeroProduct = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_SHOW_ZERO_PRODUCT)
             isMyShop = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_MY_SHOP)
             isNeedToGoToAddShowcase = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE)
-//            totalProduct = it.getInt(ShopShowcaseListParam.EXTRA_TOTAL_PRODUCT)
         }
         super.onCreate(savedInstanceState)
     }
@@ -354,7 +346,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             checkTotalProduct()
             Handler().postDelayed({
                 viewModel.getShopShowcaseListAsSeller()
-            }, 400)
+            }, 500)
         } else {
             viewModel.getShopShowcaseListAsSeller()
         }
@@ -447,12 +439,6 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         } else {
             setupBuyerView()
         }
-    }
-
-    private fun gotoAddShowcasePage() {
-//        if (totalProduct > 0 && isNeedToGoToAddShowcase) {
-//            RouteManager.route(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_ADD)
-//        }
     }
 
     private fun setupBuyerView() {
