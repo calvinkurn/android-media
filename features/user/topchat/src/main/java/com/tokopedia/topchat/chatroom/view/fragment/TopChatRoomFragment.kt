@@ -549,7 +549,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             REQUEST_GO_TO_SETTING_TEMPLATE -> {
                 presenter.getTemplate(getUserSession().shopId == shopId.toString())
             }
-
             TopChatRoomActivity.REQUEST_CODE_CHAT_IMAGE -> {
                 if (resultCode != RESULT_OK || data == null) {
                     return
@@ -564,17 +563,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     }
                 }
             }
-
             TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE -> onProductAttachmentSelected(data)
-
             REQUEST_GO_TO_SHOP -> onReturnFromShopPage(resultCode, data)
-
             REQUEST_GO_TO_SETTING_CHAT -> onReturnFromChatSetting(resultCode, data)
-
             REQUEST_GO_TO_NORMAL_CHECKOUT -> onReturnFromNormalCheckout(resultCode, data)
-
             REQUEST_ATTACH_INVOICE -> onAttachInvoiceSelected(data, resultCode)
-
             REQUEST_ATTACH_VOUCHER -> onAttachVoucherSelected(data, resultCode)
         }
     }
