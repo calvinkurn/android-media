@@ -216,7 +216,12 @@ class TopChatRoomPresenter @Inject constructor(
         if (messageId.isNotEmpty()) {
             getChatUseCase.execute(
                     GetChatUseCase.generateParam(messageId, paramBeforeReplyTime),
-                    GetChatSubscriber(view.isUseNewCard(), onError, onSuccessGetExistingMessage)
+                    GetChatSubscriber(
+                            view?.isUseCarousel() ?: false,
+                            view?.isUseNewCard() ?: true,
+                            onError,
+                            onSuccessGetExistingMessage
+                    )
             )
         }
     }
@@ -240,7 +245,12 @@ class TopChatRoomPresenter @Inject constructor(
         if (messageId.isNotEmpty()) {
             getChatUseCase.execute(
                     GetChatUseCase.generateParam(messageId, paramBeforeReplyTime),
-                    GetChatSubscriber(view.isUseNewCard(), onError, onSuccessGetPreviousChat)
+                    GetChatSubscriber(
+                            view?.isUseCarousel() ?: false,
+                            view?.isUseNewCard() ?: true,
+                            onError,
+                            onSuccessGetPreviousChat
+                    )
             )
         }
     }

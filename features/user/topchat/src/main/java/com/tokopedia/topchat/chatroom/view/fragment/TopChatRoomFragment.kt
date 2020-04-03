@@ -440,6 +440,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         return RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewThumbnailKey) == variantNewThumbnail
     }
 
+    override fun isUseCarousel(): Boolean? {
+        return remoteConfig?.getBoolean(RemoteConfigKey.CHAT_PRODUCT_CAROUSEL, true)
+    }
+
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
         if (adapterTypeFactory !is TopChatTypeFactoryImpl) {
             throw IllegalStateException("getAdapterTypeFactory() must return TopChatTypeFactoryImpl")

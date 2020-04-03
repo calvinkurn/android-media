@@ -56,6 +56,8 @@ interface TopChatContract {
         fun redirectToBrowser(url: String)
 
         fun isUseNewCard(): Boolean
+
+        fun isUseCarousel(): Boolean?
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
