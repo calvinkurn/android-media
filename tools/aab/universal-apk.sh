@@ -30,7 +30,7 @@ killall java
 
 # Generate app bundle
 ./gradlew $APP_COMPILE
-AAB_FILE_PATH="$APP_NAME/build/outputs/bundle/$COMPILE_TYPE/$APP_NAME-live-dev-debug.aab"
+AAB_FILE_PATH="$APP_NAME/build/outputs/bundle/$COMPILE_TYPE/$APP_NAME.aab"
 if [ ! -f "$AAB_FILE_PATH" ]; then
 	echo "$AAB_FILE_PATH does not exist, please try again"
     exit 1
