@@ -25,9 +25,6 @@ APP_NAME=${arr[0]}
 COMPILE_TYPE=${arr[1]#"bundle"}
 COMPILE_TYPE=$(echo $COMPILE_TYPE | awk '{$1=tolower(substr($1,0,1))substr($1,2)}1')
 
-# Kill All Java Process
-killall java
-
 # Generate app bundle
 ./gradlew $APP_COMPILE
 AAB_FILE_PATH="$APP_NAME/build/outputs/bundle/$COMPILE_TYPE/$APP_NAME.aab"
