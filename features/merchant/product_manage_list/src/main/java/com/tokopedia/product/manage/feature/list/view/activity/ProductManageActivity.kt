@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.feature.list.view.activity
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.google.android.play.core.splitcompat.SplitCompat
@@ -11,6 +12,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
 import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhomedrawer.presentation.view.BaseSellerReceiverDrawerActivity
 
 class ProductManageActivity : BaseSellerReceiverDrawerActivity(), HasComponent<ProductManageListComponent> {
@@ -22,6 +24,7 @@ class ProductManageActivity : BaseSellerReceiverDrawerActivity(), HasComponent<P
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        goToOldManageProductIfEnabled()
         if (!GlobalConfig.isSellerApp()) {
             setupLayout(savedInstanceState)
         }
@@ -56,6 +59,14 @@ class ProductManageActivity : BaseSellerReceiverDrawerActivity(), HasComponent<P
     private fun goToSellerAppDashboard() {
         if (GlobalConfig.isSellerApp()) {
             RouteManager.route(this, ApplinkConstInternalMarketplace.SELLER_APP_DASHBOARD)
+        }
+    }
+
+    private fun goToOldManageProductIfEnabled() {
+        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_OLD_PRODUCT_MANAGE)) {
+            val intent = Intent(this, com.tokopedia.product.manage.oldlist.view.activity.ProductManageActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 }
