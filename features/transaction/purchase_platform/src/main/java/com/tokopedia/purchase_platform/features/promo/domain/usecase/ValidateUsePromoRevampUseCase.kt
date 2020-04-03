@@ -47,9 +47,9 @@ class ValidateUsePromoRevampUseCase @Inject constructor (@ApplicationContext pri
 
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
                 .map { it ->
-                    var validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel
-                    val validateUseGqlRespons = it.getData<ValidateUseResponse>(ValidateUseResponse::class.java)
-                    validateUseGqlRespons.validateUsePromoRevamp.let {
+                    var validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel()
+                    val validateUseGqlResponse = it.getData<ValidateUseResponse>(ValidateUseResponse::class.java)
+                    validateUseGqlResponse?.validateUsePromoRevamp?.let {
                         validateUsePromoRevampUiModel = ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(it)
                     }
                     validateUsePromoRevampUiModel
