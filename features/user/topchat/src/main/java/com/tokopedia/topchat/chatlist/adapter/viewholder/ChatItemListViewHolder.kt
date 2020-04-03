@@ -191,6 +191,7 @@ class ChatItemListViewHolder(
         element.attributes?.let {
             with(it) {
                 readStatus = STATE_CHAT_UNREAD
+                unreadReply = 1
                 bindReadState(element)
                 listener.increaseNotificationCounter()
                 listener.trackChangeReadStatus(element)
