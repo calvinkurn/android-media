@@ -363,7 +363,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             doubleTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    String applink = ApplinkConst.SHOP_INFO.replace("{shop_id}", String.valueOf(shopInfo.getShopId()));
+                    String applink = ApplinkConst.SHOP.replace("{shop_id}", String.valueOf(shopInfo.getShopId()));
                     RouteManager.route(getContext(), applink);
                 }
             });
