@@ -147,7 +147,7 @@ ext {
 //            pms                             : ":features:payment:pms_no_op",
             withdraw                        : ":features:payment:withdraw",
 
-            gallery                         : ":features:product:gallery",
+            gallery                         : ":features:merchant:gallery",
 
             gamification                    : ":features:promo:gamification",
             merchantVoucher                 : ":features:promo:merchant_voucher",
