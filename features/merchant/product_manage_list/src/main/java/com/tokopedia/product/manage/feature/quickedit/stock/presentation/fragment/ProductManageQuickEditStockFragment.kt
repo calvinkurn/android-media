@@ -126,6 +126,9 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
         }
 
         quickEditStockSaveButton.setOnClickListener {
+            if(quickEditStockQuantityEditor.editText.text.isEmpty()) {
+                quickEditStockQuantityEditor.setValue(MINIMUM_STOCK)
+            }
             viewModel.updateStock(quickEditStockQuantityEditor.getValue(), SUBMIT_FLAG)
             onFinishedListener.onFinishEditStock(product)
             removeObservers()
