@@ -646,12 +646,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     private fun setUpProgress() {
         if (horizontal_progress_bar.visibility == View.VISIBLE) {
-            if (isDoneLoadData() || isCombineDone) {
-                if (isDoneLoadData() && !isCombineDone) {
-                    progress = MAX_PROGRESS - 10
-                } else if (isDoneLoadData() && isCombineDone) {
-                    progress = MAX_PROGRESS
-                }
+            if (isDoneLoadData()) {
                 horizontal_progress_bar.setProgress(progress)
                 flightSearchPresenter.setDelayHorizontalProgress()
             } else {
