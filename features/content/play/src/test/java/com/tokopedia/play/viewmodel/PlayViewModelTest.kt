@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.play.data.PlaySocketTest
 import com.tokopedia.play.data.TotalLike
@@ -23,6 +24,7 @@ import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.websocket.WebSocketResponse
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -31,6 +33,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
 
 /**
  * Created by jegul on 20/02/20
@@ -48,7 +52,8 @@ class PlayViewModelTest {
     private val mockGetCartCountUseCase: GetCartCountUseCase = mockk(relaxed = true)
     private val mockGetProductTagItemsUseCase: GetProductTagItemsUseCase = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
-    private val mockPlaySocket: PlaySocketTest = mockk(relaxed = true)
+    private val localCacheHandler: LocalCacheHandler = mockk(relaxed = true)
+    private val mockPlaySocket: PlaySocketTest = PlaySocketTest(userSession, localCacheHandler)
     private val dispatchers: CoroutineDispatcherProvider = TestCoroutineDispatchersProvider
 
     private val modelBuilder = ModelBuilder()
@@ -56,15 +61,15 @@ class PlayViewModelTest {
     private val mockChannel = modelBuilder.buildChannel()
     private val mockShopInfo = modelBuilder.buildShopInfo()
     private val mockNewChat = modelBuilder.buildNewChat()
-    private val mockCartCount = 1
-    private val mockProductTagging = modelBuilder.buildProductTagging()
-
 
     private val mockTotalLikeContentData = modelBuilder.buildTotalLike()
     private val mockTotalLike = TotalLike(mockTotalLikeContentData.like.value, mockTotalLikeContentData.like.fmt)
 
     private val mockIsLikeContentData = modelBuilder.buildIsLike()
     private val mockIsLike = mockIsLikeContentData.isLike
+
+    private val mockCartCount = 1
+    private val mockProductTagging = modelBuilder.buildProductTagging()
 
     private lateinit var playViewModel: PlayViewModel
 
@@ -89,7 +94,6 @@ class PlayViewModelTest {
         coEvery { mockGetIsLikeUseCase.executeOnBackground() } returns mockIsLike
         coEvery { mockGetCartCountUseCase.executeOnBackground() } returns mockCartCount
         coEvery { mockGetProductTagItemsUseCase.executeOnBackground() } returns mockProductTagging
-        coEvery { mockPlaySocket.channelId } returns mockChannel.channelId
     }
 
     @After
@@ -190,49 +194,54 @@ class PlayViewModelTest {
                 .isEqualTo(expectedModel)
     }
 
-    @Test
-    fun `test observe partner info when partner type is admin`() {
-        val expectedModel = PartnerInfoUiModel(
-                id = mockChannel.partnerId,
-                name = mockChannel.moderatorName,
-                type = PartnerType.ADMIN,
-                isFollowed = true,
-                isFollowable = false
-        )
+    @Nested
+    @DisplayName("Type of Partner Info")
+    inner class TypeOfPartnerInfo {
 
-        playViewModel.getChannelInfo(mockChannel.channelId)
+        @Test
+        fun `test observe partner info when partner type is admin`() {
+            val expectedModel = PartnerInfoUiModel(
+                    id = mockChannel.partnerId,
+                    name = mockChannel.moderatorName,
+                    type = PartnerType.ADMIN,
+                    isFollowed = true,
+                    isFollowable = false
+            )
 
-        Assertions
-                .assertThat(playViewModel.observablePartnerInfo.getOrAwaitValue())
-                .isEqualTo(expectedModel)
-    }
+            playViewModel.getChannelInfo(mockChannel.channelId)
 
-    @Test
-    fun `test observe partner info when partner type is shop owner`() {
-        val mockChannel = modelBuilder.buildChannelWithPartnerTypeShop()
+            Assertions
+                    .assertThat(playViewModel.observablePartnerInfo.getOrAwaitValue())
+                    .isEqualTo(expectedModel)
+        }
 
-        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel
-        coEvery { userSession.shopId } returns mockChannel.partnerId.toString()
+        @Test
+        fun `test observe partner info when partner type is shop owner`() {
+            val mockChannel = modelBuilder.buildChannelWithShop()
 
-        val expectedModel = PartnerInfoUiModel(
-                id = mockShopInfo.shopCore.shopId.toLong(),
-                name = mockShopInfo.shopCore.name,
-                type = PartnerType.SHOP,
-                isFollowed = mockShopInfo.favoriteData.alreadyFavorited == 1,
-                isFollowable = userSession.shopId != mockShopInfo.shopCore.shopId
-        )
+            coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel
+            coEvery { userSession.shopId } returns mockChannel.partnerId.toString()
 
-        playViewModel.getChannelInfo(mockChannel.channelId)
+            val expectedModel = PartnerInfoUiModel(
+                    id = mockShopInfo.shopCore.shopId.toLong(),
+                    name = mockShopInfo.shopCore.name,
+                    type = PartnerType.SHOP,
+                    isFollowed = mockShopInfo.favoriteData.alreadyFavorited == 1,
+                    isFollowable = userSession.shopId != mockShopInfo.shopCore.shopId
+            )
 
-        Assertions
-                .assertThat(playViewModel.observablePartnerInfo.getOrAwaitValue())
-                .isEqualTo(expectedModel)
+            playViewModel.getChannelInfo(mockChannel.channelId)
+
+            Assertions
+                    .assertThat(playViewModel.observablePartnerInfo.getOrAwaitValue())
+                    .isEqualTo(expectedModel)
+        }
     }
 
     @Test
     fun `test observe badge cart`() {
         val expectedModel = CartUiModel(
-                count = 1,
+                count = mockCartCount,
                 isShow = true
         )
 
@@ -241,7 +250,21 @@ class PlayViewModelTest {
         Assertions
                 .assertThat(playViewModel.observableBadgeCart.getOrAwaitValue())
                 .isEqualTo(expectedModel)
+    }
 
+    @Test
+    fun `test update badge cart`() {
+        val expectedModel = CartUiModel(
+                isShow = true,
+                count = mockCartCount
+        )
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+        playViewModel.updateBadgeCart()
+
+        Assertions
+                .assertThat(playViewModel.observableBadgeCart.getOrAwaitValue())
+                .isEqualTo(expectedModel)
     }
 
     @Test
@@ -282,21 +305,6 @@ class PlayViewModelTest {
 
         Assertions
                 .assertThat(playViewModel.observableNewChat.getOrAwaitValue())
-                .isEqualTo(expectedModel)
-    }
-
-    @Test
-    fun `test update badge cart`() {
-        val expectedModel = CartUiModel(
-                isShow = true,
-                count = mockCartCount
-        )
-
-        playViewModel.getChannelInfo(mockChannel.channelId)
-        playViewModel.updateBadgeCart()
-
-        Assertions
-                .assertThat(playViewModel.observableBadgeCart.getOrAwaitValue())
                 .isEqualTo(expectedModel)
     }
 
@@ -398,17 +406,115 @@ class PlayViewModelTest {
                 .isEqualTo(expectedResult)
     }
 
-//    @Test
-//    fun `test observe total like from socket`() {
-//        val expectedModel = TotalLikeUiModel(
-//                totalLike = mockTotalLike.totalLike,
-//                totalLikeFormatted = mockTotalLike.totalLikeFormatted
-//        )
-//
-//        playViewModel.getChannelInfo(mockChannel.channelId)
-//
-//        Assertions
-//                .assertThat(playViewModel.observableTotalLikes.getOrAwaitValue())
-//                .isEqualTo(expectedModel)
-//    }
+    private val gson = Gson()
+
+    @Test
+    fun `test observe total like from socket`() {
+        val actualResult = """
+        {
+            "type": "TOTAL_LIKE",
+            "data": {
+                "channel_id": 2315,
+                "total_like": 48,
+                "total_like_formatted": "48"
+            }
+        }
+        """.trimIndent()
+
+        val expectedResult = modelBuilder.buildTotalLikeUiModel(
+                totalLike = mockTotalLike.totalLike,
+                totalLikeFormatted = mockTotalLike.totalLikeFormatted
+        )
+
+        mockPlaySocket.webSocketResponse = gson.fromJson(actualResult, WebSocketResponse::class.java)
+
+
+        playViewModel.startWebSocket(mockChannel.channelId, mockChannel.gcToken, mockChannel.settings)
+
+        Assertions
+                .assertThat(playViewModel.observableTotalLikes.getOrAwaitValue())
+                .isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun `test observe total view from socket`() {
+        val actualResult = """
+        {
+            "type": "TOTAL_VIEW",
+            "data": {
+                "channel_id": 2315,
+                "total_view": 12,
+                "total_view_formatted": "12"
+            }
+        }
+        """.trimIndent()
+
+        val expectedResult = modelBuilder.buildTotalViewUiModel(mockChannel.totalViews)
+
+        mockPlaySocket.webSocketResponse = gson.fromJson(actualResult, WebSocketResponse::class.java)
+
+        playViewModel.startWebSocket(mockChannel.channelId, mockChannel.gcToken, mockChannel.settings)
+
+        Assertions
+                .assertThat(playViewModel.observableTotalViews.getOrAwaitValue())
+                .isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun `test observe incoming chat from socket`() {
+        val actualResult = """
+        {
+            "type": "MESG",
+            "data": {
+                "channel_id": 1,
+                "msg_id": 1,
+                "user": {
+                    "id": 1251,
+                    "name": "mzennis",
+                    "image": "https://image.png"
+                },
+                "message": "Keren banget fitur ini.",
+                "timestamp": 1579064126000
+            }
+        }
+        """.trimIndent()
+        mockPlaySocket.webSocketResponse = gson.fromJson(actualResult, WebSocketResponse::class.java)
+
+        val expectedModel = modelBuilder.buildPlayChatUiModel(
+                isSelfMessage = false
+        )
+
+        playViewModel.startWebSocket(mockChannel.channelId, mockChannel.gcToken, mockChannel.settings)
+
+        Assertions
+                .assertThat(playViewModel.observableNewChat.getOrAwaitValue())
+                .isEqualTo(expectedModel)
+    }
+
+    @Test
+    fun `test observe pinned message from socket`() {
+        val actualResult = """
+        {
+            "type": "PINNED_MESSAGE",
+            "data": {
+                "channel_id": 1251,
+                "pinned_message_id": 3187,
+                "title": "message",
+                "message": "",
+                "redirect_url": "https://tkp.me"
+            }
+        }
+        """.trimIndent()
+        mockPlaySocket.webSocketResponse = gson.fromJson(actualResult, WebSocketResponse::class.java)
+
+        val expectedModel = modelBuilder.buildPinnedMessageUiModel(
+                partnerName = ""
+        )
+
+        playViewModel.startWebSocket(mockChannel.channelId, mockChannel.gcToken, mockChannel.settings)
+
+        Assertions
+                .assertThat(playViewModel.observablePinned.getOrAwaitValue())
+                .isEqualTo(expectedModel)
+    }
 }

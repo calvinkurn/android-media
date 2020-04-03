@@ -1,15 +1,21 @@
 package com.tokopedia.play.model
 
+import android.provider.MediaStore.Video
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.play.data.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
+import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.state.PlayVideoState
+import com.tokopedia.variant_common.model.ProductDetailVariantCommonResponse
 import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.variant_common.model.VariantCategory
+import java.util.*
+
 
 /**
  * Created by jegul on 20/02/20
@@ -308,9 +314,838 @@ class ModelBuilder {
     }
     """.trimIndent()
 
+    private val productVariant = """
+        {
+        	"getProductVariant": {
+        		"parentID": "745647988",
+        		"defaultChild": "745647992",
+        		"sizeChart": "",
+        		"alwaysAvailable": false,
+        		"stock": 52,
+        		"variant": [{
+        			"name": "warna",
+        			"identifier": "colour",
+        			"unitName": "",
+        			"position": 1,
+        			"variantID": "1",
+        			"variantUnitID": 0,
+        			"productVariantID": "15125086",
+        			"option": [{
+        					"value": "Merah",
+        					"hex": "#ff0016",
+        					"productVariantOptionID": 47372624,
+        					"variantUnitValueID": 9,
+        					"picture": {
+        						"url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420",
+        						"url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420"
+        					}
+        				},
+        				{
+        					"value": "Biru",
+        					"hex": "#1d6cbb",
+        					"productVariantOptionID": 47372625,
+        					"variantUnitValueID": 5,
+        					"picture": {
+        						"url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491",
+        						"url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491"
+        					}
+        				},
+        				{
+        					"value": "Hijau",
+        					"hex": "#006400",
+        					"productVariantOptionID": 47372626,
+        					"variantUnitValueID": 18,
+        					"picture": {
+        						"url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450",
+        						"url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450"
+        					}
+        				},
+        				{
+        					"value": "Hitam",
+        					"hex": "#000000",
+        					"productVariantOptionID": 47372627,
+        					"variantUnitValueID": 2,
+        					"picture": {
+        						"url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000",
+        						"url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000"
+        					}
+        				},
+        				{
+        					"value": "Biru Muda",
+        					"hex": "#8ad1e8",
+        					"productVariantOptionID": 47372628,
+        					"variantUnitValueID": 6,
+        					"picture": {
+        						"url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105",
+        						"url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105"
+        					}
+        				},
+        				{
+        					"value": "Cokelat",
+        					"hex": "#8b4513",
+        					"productVariantOptionID": 47372629,
+        					"variantUnitValueID": 16,
+        					"picture": {
+        						"url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860",
+        						"url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860"
+        					}
+        				}
+        			]
+        		}],
+        		"children": [{
+        				"productID": "745647991",
+        				"price": 110000,
+        				"priceFmt": "Rp 110.000",
+        				"sku": "",
+        				"optionID": [
+        					47372624
+        				],
+        				"productName": "starterpokemonberdasarkanwarna - Merah",
+        				"productURL": "https://www.tokopedia.com/ostactical/starterpokemonberdasarkanwarna-merah",
+        				"isCOD": false,
+        				"isWishlist": false,
+        				"campaignInfo": {
+        					"campaignID": "0",
+        					"isActive": false,
+        					"originalPrice": 0,
+        					"originalPriceFmt": "",
+        					"discountPercentage": 0,
+        					"discountPrice": 0,
+        					"discountPriceFmt": "",
+        					"campaignType": 0,
+        					"campaignTypeName": "",
+        					"startDate": "",
+        					"endDate": "",
+        					"stock": 0,
+        					"appLinks": "",
+        					"isAppsOnly": false
+        				},
+        				"stock": {
+        					"isLimitedStock": false,
+        					"stockWording": "Stok tersisa <5, beli segera!",
+        					"stockWordingHTML": "Stok <b style='color:red'>tersisa &lt;5,</b> beli segera!",
+        					"otherVariantStock": "available",
+        					"minimumOrder": 1,
+        					"maximumOrder": 0,
+        					"isBuyable": true,
+        					"alwaysAvailable": false
+        				},
+        				"picture": {
+        					"url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420",
+        					"url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420"
+        				}
+        			},
+        			{
+        				"productID": "745647992",
+        				"price": 120000,
+        				"priceFmt": "Rp 120.000",
+        				"sku": "",
+        				"optionID": [
+        					47372625
+        				],
+        				"productName": "starterpokemonberdasarkanwarna - Biru",
+        				"productURL": "https://www.tokopedia.com/ostactical/starterpokemonberdasarkanwarna-biru",
+        				"isCOD": false,
+        				"isWishlist": false,
+        				"campaignInfo": {
+        					"campaignID": "0",
+        					"isActive": false,
+        					"originalPrice": 0,
+        					"originalPriceFmt": "",
+        					"discountPercentage": 0,
+        					"discountPrice": 0,
+        					"discountPriceFmt": "",
+        					"campaignType": 0,
+        					"campaignTypeName": "",
+        					"startDate": "",
+        					"endDate": "",
+        					"stock": 0,
+        					"appLinks": "",
+        					"isAppsOnly": false
+        				},
+        				"stock": {
+        					"isLimitedStock": false,
+        					"stockWording": "Stok tinggal <20, beli segera!",
+        					"stockWordingHTML": "Stok tinggal &lt;20, beli segera!",
+        					"otherVariantStock": "available",
+        					"minimumOrder": 1,
+        					"maximumOrder": 0,
+        					"isBuyable": true,
+        					"alwaysAvailable": false
+        				},
+        				"picture": {
+        					"url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491",
+        					"url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491"
+        				}
+        			},
+        			{
+        				"productID": "745647993",
+        				"price": 130000,
+        				"priceFmt": "Rp 130.000",
+        				"sku": "",
+        				"optionID": [
+        					47372626
+        				],
+        				"productName": "starterpokemonberdasarkanwarna - Hijau",
+        				"productURL": "https://www.tokopedia.com/ostactical/starterpokemonberdasarkanwarna-hijau",
+        				"isCOD": false,
+        				"isWishlist": false,
+        				"campaignInfo": {
+        					"campaignID": "0",
+        					"isActive": false,
+        					"originalPrice": 0,
+        					"originalPriceFmt": "",
+        					"discountPercentage": 0,
+        					"discountPrice": 0,
+        					"discountPriceFmt": "",
+        					"campaignType": 0,
+        					"campaignTypeName": "",
+        					"startDate": "",
+        					"endDate": "",
+        					"stock": 0,
+        					"appLinks": "",
+        					"isAppsOnly": false
+        				},
+        				"stock": {
+        					"isLimitedStock": false,
+        					"stockWording": "Tersedia Untuk Varian Lain",
+        					"stockWordingHTML": "Tersedia Untuk Varian Lain",
+        					"otherVariantStock": "available",
+        					"minimumOrder": 1,
+        					"maximumOrder": 0,
+        					"isBuyable": false,
+        					"alwaysAvailable": false
+        				},
+        				"picture": {
+        					"url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450",
+        					"url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450"
+        				}
+        			},
+        			{
+        				"productID": "745647994",
+        				"price": 300000,
+        				"priceFmt": "Rp 300.000",
+        				"sku": "",
+        				"optionID": [
+        					47372627
+        				],
+        				"productName": "starterpokemonberdasarkanwarna - Hitam",
+        				"productURL": "https://www.tokopedia.com/ostactical/starterpokemonberdasarkanwarna-hitam",
+        				"isCOD": false,
+        				"isWishlist": false,
+        				"campaignInfo": {
+        					"campaignID": "0",
+        					"isActive": false,
+        					"originalPrice": 0,
+        					"originalPriceFmt": "",
+        					"discountPercentage": 0,
+        					"discountPrice": 0,
+        					"discountPriceFmt": "",
+        					"campaignType": 0,
+        					"campaignTypeName": "",
+        					"startDate": "",
+        					"endDate": "",
+        					"stock": 0,
+        					"appLinks": "",
+        					"isAppsOnly": false
+        				},
+        				"stock": {
+        					"isLimitedStock": false,
+        					"stockWording": "Stok tinggal <20, beli segera!",
+        					"stockWordingHTML": "Stok tinggal &lt;20, beli segera!",
+        					"otherVariantStock": "available",
+        					"minimumOrder": 1,
+        					"maximumOrder": 0,
+        					"isBuyable": true,
+        					"alwaysAvailable": false
+        				},
+        				"picture": {
+        					"url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000",
+        					"url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000"
+        				}
+        			},
+        			{
+        				"productID": "745647995",
+        				"price": 500000,
+        				"priceFmt": "Rp 500.000",
+        				"sku": "",
+        				"optionID": [
+        					47372628
+        				],
+        				"productName": "starterpokemonberdasarkanwarna - Biru Muda",
+        				"productURL": "https://www.tokopedia.com/ostactical/starterpokemonberdasarkanwarna-biru-muda",
+        				"isCOD": false,
+        				"isWishlist": false,
+        				"campaignInfo": {
+        					"campaignID": "0",
+        					"isActive": false,
+        					"originalPrice": 0,
+        					"originalPriceFmt": "",
+        					"discountPercentage": 0,
+        					"discountPrice": 0,
+        					"discountPriceFmt": "",
+        					"campaignType": 0,
+        					"campaignTypeName": "",
+        					"startDate": "",
+        					"endDate": "",
+        					"stock": 0,
+        					"appLinks": "",
+        					"isAppsOnly": false
+        				},
+        				"stock": {
+        					"isLimitedStock": false,
+        					"stockWording": "Tersedia Untuk Varian Lain",
+        					"stockWordingHTML": "Tersedia Untuk Varian Lain",
+        					"otherVariantStock": "available",
+        					"minimumOrder": 1,
+        					"maximumOrder": 0,
+        					"isBuyable": false,
+        					"alwaysAvailable": false
+        				},
+        				"picture": {
+        					"url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105",
+        					"url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105"
+        				}
+        			},
+        			{
+        				"productID": "745647996",
+        				"price": 190000,
+        				"priceFmt": "Rp 190.000",
+        				"sku": "",
+        				"optionID": [
+        					47372629
+        				],
+        				"productName": "starterpokemonberdasarkanwarna - Cokelat",
+        				"productURL": "https://www.tokopedia.com/ostactical/starterpokemonberdasarkanwarna-cokelat",
+        				"isCOD": false,
+        				"isWishlist": false,
+        				"campaignInfo": {
+        					"campaignID": "0",
+        					"isActive": false,
+        					"originalPrice": 0,
+        					"originalPriceFmt": "",
+        					"discountPercentage": 0,
+        					"discountPrice": 0,
+        					"discountPriceFmt": "",
+        					"campaignType": 0,
+        					"campaignTypeName": "",
+        					"startDate": "",
+        					"endDate": "",
+        					"stock": 0,
+        					"appLinks": "",
+        					"isAppsOnly": false
+        				},
+        				"stock": {
+        					"isLimitedStock": false,
+        					"stockWording": "Tersedia Untuk Varian Lain",
+        					"stockWordingHTML": "Tersedia Untuk Varian Lain",
+        					"otherVariantStock": "available",
+        					"minimumOrder": 1,
+        					"maximumOrder": 0,
+        					"isBuyable": false,
+        					"alwaysAvailable": false
+        				},
+        				"picture": {
+        					"url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860",
+        					"url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860"
+        				}
+        			}
+        		]
+        	}
+        }
+    """.trimIndent()
+
+    private val product = """
+    {
+       "id": "748953246",
+       "name": "digimonroyalknightsberdasarkanwarna",
+       "image_url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/20/82764734/82764734_5759a072-79f9-4b66-8cf8-65c0e94721e3_779_779",
+       "shop_id": "7307032",
+       "original_price": 1000000,
+       "original_price_formatted": "Rp 1.000.000",
+       "discount": 0,
+       "price": 0,
+       "price_formatted": "Rp 0",
+       "quantity": 0,
+       "is_variant": true,
+       "is_available": true,
+       "order": 2,
+       "app_link": "tokopedia://product/748953246",
+       "web_link": "https://www.tokopedia.com/ostactical/digimonroyalknightsberdasarkanwarna",
+       "min_quantity": 1,
+       "is_free_shipping": true
+     }
+    """.trimIndent()
+
+    private val parentVariant = """
+        {
+            "parentID": 745647988,
+            "defaultChild": 745647992,
+            "sizeChart": "",
+            "alwaysAvailable": false,
+            "stock": 52,
+            "variant": [
+              {
+                "productVariantID": 15125086,
+                "variantID": 1,
+                "variantUnitID": 0,
+                "name": "warna",
+                "identifier": "colour",
+                "unitName": "",
+                "position": 1,
+                "option": [
+                  {
+                    "productVariantOptionID": 47372624,
+                    "variantUnitValueID": 9,
+                    "value": "Merah",
+                    "hex": "#ff0016",
+                    "picture": {
+                      "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420",
+                      "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420"
+                    }
+                  },
+                  {
+                    "productVariantOptionID": 47372625,
+                    "variantUnitValueID": 5,
+                    "value": "Biru",
+                    "hex": "#1d6cbb",
+                    "picture": {
+                      "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491",
+                      "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491"
+                    }
+                  },
+                  {
+                    "productVariantOptionID": 47372626,
+                    "variantUnitValueID": 18,
+                    "value": "Hijau",
+                    "hex": "#006400",
+                    "picture": {
+                      "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450",
+                      "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450"
+                    }
+                  },
+                  {
+                    "productVariantOptionID": 47372627,
+                    "variantUnitValueID": 2,
+                    "value": "Hitam",
+                    "hex": "#000000",
+                    "picture": {
+                      "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000",
+                      "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000"
+                    }
+                  },
+                  {
+                    "productVariantOptionID": 47372628,
+                    "variantUnitValueID": 6,
+                    "value": "Biru Muda",
+                    "hex": "#8ad1e8",
+                    "picture": {
+                      "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105",
+                      "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105"
+                    }
+                  },
+                  {
+                    "productVariantOptionID": 47372629,
+                    "variantUnitValueID": 16,
+                    "value": "Cokelat",
+                    "hex": "#8b4513",
+                    "picture": {
+                      "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860",
+                      "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860"
+                    }
+                  }
+                ]
+              }
+            ],
+            "children": [
+              {
+                "productID": 745647991,
+                "price": 110000.0,
+                "priceFmt": "Rp 110.000",
+                "sku": "",
+                "stock": {
+                  "stock": 0,
+                  "isBuyable": true,
+                  "alwaysAvailable": false,
+                  "isLimitedStock": false,
+                  "stockWording": "Stok tersisa \u003c5, beli segera!",
+                  "stockWordingHTML": "Stok \u003cb style\u003d\u0027color:red\u0027\u003etersisa \u0026lt;5,\u003c/b\u003e beli segera!",
+                  "otherVariantStock": "available",
+                  "minimumOrder": 1,
+                  "maximumOrder": 0
+                },
+                "optionID": [
+                  47372624
+                ],
+                "productName": "starterpokemonberdasarkanwarna - Merah",
+                "productURL": "https://www.tokopedia.com/ostactical/starterpokemonberdasarkanwarna-merah",
+                "picture": {
+                  "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420",
+                  "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420"
+                },
+                "campaignInfo": {
+                  "getStockPercentageInt": 0,
+                  "campaignID": "0",
+                  "isActive": false,
+                  "originalPrice": 0.0,
+                  "originalPriceFmt": "",
+                  "discountPercentage": 0.0,
+                  "discountPrice": 0.0,
+                  "discountPriceFmt": "",
+                  "campaignType": 0,
+                  "campaignTypeName": "",
+                  "startDate": "",
+                  "endDate": "",
+                  "stock": 0,
+                  "isAppsOnly": false,
+                  "appLinks": ""
+                },
+                "isWishlist": false,
+                "isCOD": false
+              },
+              {
+                "productID": 745647992,
+                "price": 120000.0,
+                "priceFmt": "Rp 120.000",
+                "sku": "",
+                "stock": {
+                  "stock": 0,
+                  "isBuyable": true,
+                  "alwaysAvailable": false,
+                  "isLimitedStock": false,
+                  "stockWording": "Stok tinggal \u003c20, beli segera!",
+                  "stockWordingHTML": "Stok tinggal \u0026lt;20, beli segera!",
+                  "otherVariantStock": "available",
+                  "minimumOrder": 1,
+                  "maximumOrder": 0
+                },
+                "optionID": [
+                  47372625
+                ],
+                "productName": "starterpokemonberdasarkanwarna - Biru",
+                "productURL": "https://www.tokopedia.com/ostactical/starterpokemonberdasarkanwarna-biru",
+                "picture": {
+                  "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491",
+                  "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491"
+                },
+                "campaignInfo": {
+                  "getStockPercentageInt": 0,
+                  "campaignID": "0",
+                  "isActive": false,
+                  "originalPrice": 0.0,
+                  "originalPriceFmt": "",
+                  "discountPercentage": 0.0,
+                  "discountPrice": 0.0,
+                  "discountPriceFmt": "",
+                  "campaignType": 0,
+                  "campaignTypeName": "",
+                  "startDate": "",
+                  "endDate": "",
+                  "stock": 0,
+                  "isAppsOnly": false,
+                  "appLinks": ""
+                },
+                "isWishlist": false,
+                "isCOD": false
+              },
+              {
+                "productID": 745647993,
+                "price": 130000.0,
+                "priceFmt": "Rp 130.000",
+                "sku": "",
+                "stock": {
+                  "stock": 0,
+                  "isBuyable": false,
+                  "alwaysAvailable": false,
+                  "isLimitedStock": false,
+                  "stockWording": "Tersedia Untuk Varian Lain",
+                  "stockWordingHTML": "Tersedia Untuk Varian Lain",
+                  "otherVariantStock": "available",
+                  "minimumOrder": 1,
+                  "maximumOrder": 0
+                },
+                "optionID": [
+                  47372626
+                ],
+                "productName": "starterpokemonberdasarkanwarna - Hijau",
+                "productURL": "https://www.tokopedia.com/ostactical/starterpokemonberdasarkanwarna-hijau",
+                "picture": {
+                  "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450",
+                  "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450"
+                },
+                "campaignInfo": {
+                  "getStockPercentageInt": 0,
+                  "campaignID": "0",
+                  "isActive": false,
+                  "originalPrice": 0.0,
+                  "originalPriceFmt": "",
+                  "discountPercentage": 0.0,
+                  "discountPrice": 0.0,
+                  "discountPriceFmt": "",
+                  "campaignType": 0,
+                  "campaignTypeName": "",
+                  "startDate": "",
+                  "endDate": "",
+                  "stock": 0,
+                  "isAppsOnly": false,
+                  "appLinks": ""
+                },
+                "isWishlist": false,
+                "isCOD": false
+              },
+              {
+                "productID": 745647994,
+                "price": 300000.0,
+                "priceFmt": "Rp 300.000",
+                "sku": "",
+                "stock": {
+                  "stock": 0,
+                  "isBuyable": true,
+                  "alwaysAvailable": false,
+                  "isLimitedStock": false,
+                  "stockWording": "Stok tinggal \u003c20, beli segera!",
+                  "stockWordingHTML": "Stok tinggal \u0026lt;20, beli segera!",
+                  "otherVariantStock": "available",
+                  "minimumOrder": 1,
+                  "maximumOrder": 0
+                },
+                "optionID": [
+                  47372627
+                ],
+                "productName": "starterpokemonberdasarkanwarna - Hitam",
+                "productURL": "https://www.tokopedia.com/ostactical/starterpokemonberdasarkanwarna-hitam",
+                "picture": {
+                  "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000",
+                  "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000"
+                },
+                "campaignInfo": {
+                  "getStockPercentageInt": 0,
+                  "campaignID": "0",
+                  "isActive": false,
+                  "originalPrice": 0.0,
+                  "originalPriceFmt": "",
+                  "discountPercentage": 0.0,
+                  "discountPrice": 0.0,
+                  "discountPriceFmt": "",
+                  "campaignType": 0,
+                  "campaignTypeName": "",
+                  "startDate": "",
+                  "endDate": "",
+                  "stock": 0,
+                  "isAppsOnly": false,
+                  "appLinks": ""
+                },
+                "isWishlist": false,
+                "isCOD": false
+              },
+              {
+                "productID": 745647995,
+                "price": 500000.0,
+                "priceFmt": "Rp 500.000",
+                "sku": "",
+                "stock": {
+                  "stock": 0,
+                  "isBuyable": false,
+                  "alwaysAvailable": false,
+                  "isLimitedStock": false,
+                  "stockWording": "Tersedia Untuk Varian Lain",
+                  "stockWordingHTML": "Tersedia Untuk Varian Lain",
+                  "otherVariantStock": "available",
+                  "minimumOrder": 1,
+                  "maximumOrder": 0
+                },
+                "optionID": [
+                  47372628
+                ],
+                "productName": "starterpokemonberdasarkanwarna - Biru Muda",
+                "productURL": "https://www.tokopedia.com/ostactical/starterpokemonberdasarkanwarna-biru-muda",
+                "picture": {
+                  "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105",
+                  "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105"
+                },
+                "campaignInfo": {
+                  "getStockPercentageInt": 0,
+                  "campaignID": "0",
+                  "isActive": false,
+                  "originalPrice": 0.0,
+                  "originalPriceFmt": "",
+                  "discountPercentage": 0.0,
+                  "discountPrice": 0.0,
+                  "discountPriceFmt": "",
+                  "campaignType": 0,
+                  "campaignTypeName": "",
+                  "startDate": "",
+                  "endDate": "",
+                  "stock": 0,
+                  "isAppsOnly": false,
+                  "appLinks": ""
+                },
+                "isWishlist": false,
+                "isCOD": false
+              },
+              {
+                "productID": 745647996,
+                "price": 190000.0,
+                "priceFmt": "Rp 190.000",
+                "sku": "",
+                "stock": {
+                  "stock": 0,
+                  "isBuyable": false,
+                  "alwaysAvailable": false,
+                  "isLimitedStock": false,
+                  "stockWording": "Tersedia Untuk Varian Lain",
+                  "stockWordingHTML": "Tersedia Untuk Varian Lain",
+                  "otherVariantStock": "available",
+                  "minimumOrder": 1,
+                  "maximumOrder": 0
+                },
+                "optionID": [
+                  47372629
+                ],
+                "productName": "starterpokemonberdasarkanwarna - Cokelat",
+                "productURL": "https://www.tokopedia.com/ostactical/starterpokemonberdasarkanwarna-cokelat",
+                "picture": {
+                  "url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860",
+                  "url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860"
+                },
+                "campaignInfo": {
+                  "getStockPercentageInt": 0,
+                  "campaignID": "0",
+                  "isActive": false,
+                  "originalPrice": 0.0,
+                  "originalPriceFmt": "",
+                  "discountPercentage": 0.0,
+                  "discountPrice": 0.0,
+                  "discountPriceFmt": "",
+                  "campaignType": 0,
+                  "campaignTypeName": "",
+                  "startDate": "",
+                  "endDate": "",
+                  "stock": 0,
+                  "isAppsOnly": false,
+                  "appLinks": ""
+                },
+                "isWishlist": false,
+                "isCOD": false
+              }
+            ]
+          }
+    """.trimIndent()
+
+    private val listOfVariantCategory = """
+        [
+            {
+              "name": "warna",
+              "identifier": "colour",
+              "variantGuideline": "",
+              "hasCustomImage": true,
+              "selectedValue": "",
+              "isLeaf": true,
+              "variantOptions": [
+                {
+                  "variantId": 47372624,
+                  "currentState": 0,
+                  "variantHex": "#ff0016",
+                  "variantName": "Merah",
+                  "image200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420",
+                  "imageOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420",
+                  "isBuyable": false,
+                  "stock": 0,
+                  "variantOptionIdentifier": "colour",
+                  "variantCategoryKey": "15125086",
+                  "selectedStockWording": "",
+                  "level": 0,
+                  "flashSale": false,
+                  "hasCustomImages": true
+                },
+                {
+                  "variantId": 47372625,
+                  "currentState": 0,
+                  "variantHex": "#1d6cbb",
+                  "variantName": "Biru",
+                  "image200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491",
+                  "imageOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491",
+                  "isBuyable": false,
+                  "stock": 0,
+                  "variantOptionIdentifier": "colour",
+                  "variantCategoryKey": "15125086",
+                  "selectedStockWording": "",
+                  "level": 0,
+                  "flashSale": false,
+                  "hasCustomImages": true
+                },
+                {
+                  "variantId": 47372626,
+                  "currentState": -1,
+                  "variantHex": "#006400",
+                  "variantName": "Hijau",
+                  "image200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450",
+                  "imageOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450",
+                  "isBuyable": false,
+                  "stock": 0,
+                  "variantOptionIdentifier": "colour",
+                  "variantCategoryKey": "15125086",
+                  "selectedStockWording": "",
+                  "level": 0,
+                  "flashSale": false,
+                  "hasCustomImages": true
+                },
+                {
+                  "variantId": 47372627,
+                  "currentState": 0,
+                  "variantHex": "#000000",
+                  "variantName": "Hitam",
+                  "image200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000",
+                  "imageOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000",
+                  "isBuyable": false,
+                  "stock": 0,
+                  "variantOptionIdentifier": "colour",
+                  "variantCategoryKey": "15125086",
+                  "selectedStockWording": "",
+                  "level": 0,
+                  "flashSale": false,
+                  "hasCustomImages": true
+                },
+                {
+                  "variantId": 47372628,
+                  "currentState": -1,
+                  "variantHex": "#8ad1e8",
+                  "variantName": "Biru Muda",
+                  "image200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105",
+                  "imageOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105",
+                  "isBuyable": false,
+                  "stock": 0,
+                  "variantOptionIdentifier": "colour",
+                  "variantCategoryKey": "15125086",
+                  "selectedStockWording": "",
+                  "level": 0,
+                  "flashSale": false,
+                  "hasCustomImages": true
+                },
+                {
+                  "variantId": 47372629,
+                  "currentState": -1,
+                  "variantHex": "#8b4513",
+                  "variantName": "Cokelat",
+                  "image200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860",
+                  "imageOriginal": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860",
+                  "isBuyable": false,
+                  "stock": 0,
+                  "variantOptionIdentifier": "colour",
+                  "variantCategoryKey": "15125086",
+                  "selectedStockWording": "",
+                  "level": 0,
+                  "flashSale": false,
+                  "hasCustomImages": true
+                }
+              ]
+            }
+          ]
+    """.trimIndent()
+
     fun buildChannel() = gson.fromJson(channelJson, Channel::class.java)
 
-    fun buildChannelWithPartnerTypeShop() = gson.fromJson(channelWithShopJson, Channel::class.java)
+    fun buildChannelWithShop() = gson.fromJson(channelWithShopJson, Channel::class.java)
 
     fun buildShopInfo() = gson.fromJson(shopInfoJson, ShopInfo::class.java)
 
@@ -321,6 +1156,18 @@ class ModelBuilder {
     fun buildIsLike() = gson.fromJson(isLike, IsLikedContent.Data::class.java)
 
     fun buildProductTagging() = gson.fromJson(channelTagItemsJson, ProductTagging::class.java)
+
+    fun buildProductVariant() = gson.fromJson(productVariant, ProductDetailVariantCommonResponse::class.java)
+
+    fun buildProduct() = gson.fromJson(product, Product::class.java)
+
+    fun buildVariantSheetUiModel() = VariantSheetUiModel(
+            product = PlayUiMapper.mapItemProduct(buildProduct()),
+            action = ProductAction.AddToCart,
+            parentVariant = gson.fromJson(parentVariant, ProductVariantCommon::class.java),
+            listOfVariantCategory = gson.fromJson(listOfVariantCategory, object : TypeToken<List<VariantCategory>>() {}.type),
+            mapOfSelectedVariants = mutableMapOf("15125086" to 0)
+    )
 
     /**
      * UI Model
@@ -371,7 +1218,7 @@ class ModelBuilder {
             message: String = "Keren banget fitur ini.",
             isSelfMessage: Boolean = true
     ) = PlayChatUiModel(
-            messageId = message,
+            messageId = messageId,
             userId = userId,
             name = name,
             message = message,

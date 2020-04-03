@@ -1,13 +1,12 @@
 package com.tokopedia.play.data
 
-import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.play.data.mapper.PlaySocketType
 import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketInfo
 import com.tokopedia.websocket.WebSocketResponse
 import com.tokopedia.websocket.WebSocketSubscriber
+import io.mockk.mockk
 import okhttp3.WebSocket
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
@@ -19,34 +18,19 @@ import rx.subscriptions.CompositeSubscription
 class PlaySocketTest(userSessionInterface: UserSessionInterface,
                      localCacheHandler: LocalCacheHandler) : PlaySocket(userSessionInterface, localCacheHandler) {
 
-    lateinit var webSocket: WebSocket
-    private lateinit var compositeSubscription: CompositeSubscription
+    private var webSocket: WebSocket = mockk(relaxed = true)
+    private var compositeSubscription: CompositeSubscription = CompositeSubscription()
 
     lateinit var webSocketSubscriber: WebSocketSubscriber
 
-    private fun start() {
-        val webSocketSubscription = Observable.just(dummyWebSocketInfo())
-                .subscribe(webSocketSubscriber)
-        compositeSubscription.add(webSocketSubscription)
-    }
+    var webSocketResponse: WebSocketResponse? = null
 
-    private fun dummyWebSocketInfo(): WebSocketInfo {
+    private fun webSocketInfo(webSocketResponse: WebSocketResponse): WebSocketInfo {
         val webSocketInfo = WebSocketInfo(webSocket, "")
         webSocketInfo.isOnOpen = true
         webSocketInfo.isOnReconnect = false
-        webSocketInfo.response = totalLike()
+        webSocketInfo.response = webSocketResponse
         return webSocketInfo
-    }
-
-    private fun totalLike(): WebSocketResponse {
-        val jsonObject = JsonObject()
-        jsonObject.addProperty("total_like", 48)
-        jsonObject.addProperty("total_like_formatted", "48")
-
-        return WebSocketResponse(
-                type = PlaySocketType.TotalLike.value,
-                code = 200,
-                jsonElement = jsonObject)
     }
 
     override fun connect(onMessageReceived: (WebSocketResponse) -> Unit, onReconnect: () -> Unit, onError: (error: Throwable) -> Unit) {
@@ -63,6 +47,11 @@ class PlaySocketTest(userSessionInterface: UserSessionInterface,
                 onReconnect()
             }
         }
-        start()
+
+        webSocketResponse?.let { dummyResponse ->
+            val webSocketSubscription = Observable.just(webSocketInfo(dummyResponse))
+                    .subscribe(webSocketSubscriber)
+            compositeSubscription.add(webSocketSubscription)
+        }
     }
 }
