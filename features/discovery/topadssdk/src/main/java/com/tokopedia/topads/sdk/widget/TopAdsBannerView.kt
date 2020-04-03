@@ -67,9 +67,10 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private val NO_TEMPLATE = 0
     private val SHOP_TEMPLATE = 1
     private val DIGITAL_TEMPLATE = 2
-    private final val VARIANT_A = "Headline Ads A"
-    private final val VARIANT_B = "Headline Ads B"
-    private final val AB_TEST_KEY = "Headline Ads New Design"
+    private final val VARIANT_A = "Headline A"
+    private final val VARIANT_NO_HEADLINE = "No Headline"
+    private final val VARIANT_B = "Headline B"
+    private final val AB_TEST_KEY = "Headline Ads New Design 2"
 
     @Inject
     lateinit var bannerPresenter: BannerAdsPresenter
@@ -92,17 +93,19 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         if (activityIsFinishing(context))
             return
         if (template == NO_TEMPLATE && isEligible(cpmData)) {
-            var variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_KEY, VARIANT_A)
+            var variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_KEY, VARIANT_NO_HEADLINE)
             if (variant.equals(VARIANT_B)) {
                 View.inflate(getContext(), R.layout.layout_ads_banner_shop_b_pager, this)
                 BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_b_product
                 BannerShopViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_b
                 BannerShowMoreViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_b_more
-            } else {
+            } else if (variant.equals(VARIANT_A)){
                 View.inflate(getContext(), R.layout.layout_ads_banner_shop_a_pager, this)
                 BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_product
                 BannerShopViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a
                 BannerShowMoreViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_more
+            } else {
+                return
             }
 
             findViewById<TextView>(R.id.shop_name)?.text = escapeHTML(cpmData.cpm.name)
@@ -123,6 +126,12 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                         it.onImpressionHeadlineAdsItem(0, cpmData)
                         ImpresionTask().execute(cpmData.cpm.cpmImage.fullUrl)
                     }
+                }
+            }
+            shop_image?.setOnClickListener {
+                if (topAdsBannerClickListener != null) {
+                    topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)
+                    ImpresionTask().execute(cpmData?.adClickUrl)
                 }
             }
             if (cpmData.cpm.cpmShop.isPowerMerchant && !cpmData.cpm.cpmShop.isOfficial) {
@@ -150,6 +159,18 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             }
             shop_name?.text = cpmData?.cpm?.cpmShop?.name
             description?.text = cpmData?.cpm?.cpmShop?.slogan
+            shop_badge?.setOnClickListener {
+                if (topAdsBannerClickListener != null) {
+                    topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)
+                    ImpresionTask().execute(cpmData?.adClickUrl)
+                }
+            }
+            shop_name?.setOnClickListener {
+                if (topAdsBannerClickListener != null) {
+                    topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)
+                    ImpresionTask().execute(cpmData?.adClickUrl)
+                }
+            }
             kunjungi_toko?.setOnClickListener {
                 if (topAdsBannerClickListener != null) {
                     topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)

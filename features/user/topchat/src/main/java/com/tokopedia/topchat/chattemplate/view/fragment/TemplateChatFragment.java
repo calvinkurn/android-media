@@ -4,18 +4,19 @@ package com.tokopedia.topchat.chattemplate.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -26,6 +27,7 @@ import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics;
 import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent;
+import com.tokopedia.topchat.chattemplate.di.TemplateChatModule;
 import com.tokopedia.topchat.chattemplate.view.activity.EditTemplateChatActivity;
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatSettingAdapter;
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatSettingTypeFactoryImpl;
@@ -110,8 +112,8 @@ public class TemplateChatFragment extends BaseDaggerFragment
 
     private void setBottomSheetDialog() {
         bottomSheetView = new BottomSheetView(getActivity());
-        bottomSheetView.setTitleTextSize(getResources().getDimension(R.dimen.sp_14));
-        bottomSheetView.setBodyTextSize(getResources().getDimension(R.dimen.sp_14));
+        bottomSheetView.setTitleTextSize(getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl3));
+        bottomSheetView.setBodyTextSize(getResources().getDimension(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl3));
         bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
                 .BottomSheetFieldBuilder()
                 .setTitle(getActivity().getString(R.string.title_info_list_template))
@@ -183,7 +185,9 @@ public class TemplateChatFragment extends BaseDaggerFragment
                     .getBaseAppComponent();
             DaggerTemplateChatComponent daggerTemplateChatComponent =
                     (DaggerTemplateChatComponent) DaggerTemplateChatComponent.builder()
-                            .baseAppComponent(appComponent).build();
+                            .baseAppComponent(appComponent)
+                            .templateChatModule(new TemplateChatModule(getContext()))
+                            .build();
             daggerTemplateChatComponent.inject(this);
         }
     }

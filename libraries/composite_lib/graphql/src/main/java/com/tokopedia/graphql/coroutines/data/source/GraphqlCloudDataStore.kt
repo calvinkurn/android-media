@@ -12,10 +12,11 @@ import kotlinx.coroutines.*
 import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import javax.inject.Inject
 
-class GraphqlCloudDataStore(private val api: GraphqlApiSuspend,
-                            private val cacheManager: GraphqlCacheManager,
-                            private val fingerprintManager: FingerprintManager) : GraphqlDataStore {
+class GraphqlCloudDataStore @Inject constructor(private val api: GraphqlApiSuspend,
+                                                private val cacheManager: GraphqlCacheManager,
+                                                private val fingerprintManager: FingerprintManager) : GraphqlDataStore {
 
     override suspend fun getResponse(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponseInternal {
         return withContext(Dispatchers.Default) {

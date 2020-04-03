@@ -67,9 +67,6 @@ class ResourceDownloadManager private constructor() {
     }
 
     /**
-    mDecodeTaskThreadPool = ThreadPoolExecutor(
-    DEFAULT_POOL_SIZE, MAX_POOL_SIZE, KEEP_ALIVE_TIME, TimeUnit.SECONDS, mDecodeWorkQueue
-    )
      * Call this method when you need to change the base url and relative url of the remote server
      * where file to be downloaded is placed.
      */
@@ -98,7 +95,7 @@ class ResourceDownloadManager private constructor() {
             remoteFileName: String,
             imageView: DeferredImageView?,
             deferredTaskCallback: DeferredTaskCallback?
-    ) {
+    ): DeferredResourceTask {
         check(!(!::mBaseUrl.isInitialized || !::mRelativeUrl.isInitialized)) {
             "ResourceDownloadManager not initialized!! " +
                     "Call ResourceDownloadManager.setBaseAndRelativeUrl(baseUrl, relativeUrl) at least once!!!!"
@@ -108,12 +105,12 @@ class ResourceDownloadManager private constructor() {
                     "Call ResourceDownloadManager.initialize(context, resId) first!!!!"
         }
 
-
         val customUrl = getResourceUrl(remoteFileName)
         var task = pollForIdleTask()
         if (task == null) {
             task = getNewDownloadTaskInstance()
         }
+        task.isRequestedFromWorker = imageView?.let { false } ?: true
         task.initTask(customUrl, imageView, deferredTaskCallback)
 
         if (map[customUrl] == null || map[customUrl]?.size == 0) {
@@ -126,6 +123,7 @@ class ResourceDownloadManager private constructor() {
         }
         map[customUrl]!!.add(task) // Added !! since null case handled in if case above
 
+        return task
     }
 
     fun getNewDownloadTaskInstance(): DeferredResourceTask {
@@ -180,7 +178,8 @@ class ResourceDownloadManager private constructor() {
             }
             DOWNLOAD_COMPLETED -> {
                 CallbackDispatcher.dispatchLog(deferredCallback,
-                        "DOWNLOAD_COMPLETED ${task.getDownloadUrl()}")
+                        "DOWNLOAD_COMPLETED ${task.getDownloadUrl()},  " +
+                                "startedFromWorker = ${task.isRequestedFromWorker} ")
                 CallbackDispatcher.onDownloadState(deferredCallback,
                         task.getDownloadUrl(), true)
                 onDownloadCompleted(task)
@@ -189,7 +188,8 @@ class ResourceDownloadManager private constructor() {
 
             DOWNLOAD_FAILED -> {
                 CallbackDispatcher.dispatchLog(deferredCallback,
-                        "DOWNLOAD_FAILED ${task.getDownloadUrl()}")
+                        "DOWNLOAD_FAILED ${task.getDownloadUrl()},  " +
+                                "startedFromWorker = ${task.isRequestedFromWorker} ")
                 CallbackDispatcher.onDownloadState(deferredCallback,
                         task.getDownloadUrl(), false)
                 offerTask(task)
@@ -204,7 +204,8 @@ class ResourceDownloadManager private constructor() {
 
             DECODE_COMPLETED -> {
                 CallbackDispatcher.dispatchLog(deferredCallback,
-                        "DECODE_COMPLETED ${task.getDownloadUrl()}")
+                        "DECODE_COMPLETED ${task.getDownloadUrl()},  " +
+                                "startedFromWorker = ${task.isRequestedFromWorker} ")
 
                 onDecodeCompleted(task)
                 return true
@@ -212,7 +213,8 @@ class ResourceDownloadManager private constructor() {
 
             DECODE_FAILED -> {
                 CallbackDispatcher.dispatchLog(deferredCallback,
-                        "DECODE_FAILED ${task.getDownloadUrl()}")
+                        "DECODE_FAILED ${task.getDownloadUrl()}, " +
+                                "startedFromWorker = ${task.isRequestedFromWorker} ")
                 offerTask(task)
                 return true
             }
@@ -240,6 +242,7 @@ class ResourceDownloadManager private constructor() {
             task.setByteBuffer(completedTask.getByteBuffer())
             task.deferredImageView?.let {
                 if (it.get() != null) {
+                    it.get()?.mRemoteFileName = ""
                     startDecoding(task)
                 } else {
                     handler.obtainMessage(TASK_COMPLETED, task).sendToTarget()

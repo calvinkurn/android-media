@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
+import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.hoteldetail.di.DaggerHotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.fragment.HotelDetailFragment
@@ -24,7 +25,7 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
 
     private var checkInDate: String = ""
     private var checkOutDate: String = ""
-    private var propertyId: Int = 0
+    private var propertyId: Long = 0
     private var roomCount: Int = 1
     private var adultCount: Int = 1
     private var destinationType: String = ""
@@ -34,7 +35,7 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
         if (uri != null) {
-            propertyId = uri.lastPathSegment.toInt()
+            propertyId = uri.lastPathSegment.toLong()
             if (!uri.getQueryParameter(PARAM_CHECK_IN).isNullOrEmpty()) {
                 checkInDate = uri.getQueryParameter(PARAM_CHECK_IN)
                 checkOutDate = uri.getQueryParameter(PARAM_CHECK_OUT)
@@ -51,7 +52,7 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
             with(intent) {
                 checkInDate = getStringExtra(EXTRA_CHECK_IN_DATE)
                 checkOutDate = getStringExtra(EXTRA_CHECK_OUT_DATE)
-                propertyId = getIntExtra(EXTRA_PROPERTY_ID, 0)
+                propertyId = getLongExtra(EXTRA_PROPERTY_ID, 0)
                 roomCount = getIntExtra(EXTRA_ROOM_COUNT, 1)
                 adultCount = getIntExtra(EXTRA_ADULT_COUNT, 1)
                 destinationType = getStringExtra(EXTRA_DESTINATION_TYPE)
@@ -59,9 +60,16 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
                 isDirectPayment =  getBooleanExtra(EXTRA_IS_DIRECT_PAYMENT, true)
             }
         }
+        checkParameter()
 
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
+    }
+
+    private fun checkParameter() {
+        val updatedCheckInCheckOutDate = HotelUtils.validateCheckInAndCheckOutDate(checkInDate, checkOutDate)
+        checkInDate = updatedCheckInCheckOutDate.first
+        checkOutDate = updatedCheckInCheckOutDate.second
     }
 
     override fun shouldShowOptionMenu(): Boolean = true
@@ -77,7 +85,7 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
                     .hotelComponent(HotelComponentInstance.getHotelComponent(application))
                     .build()
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = PDP_SCREEN_NAME
 
     companion object {
 
@@ -96,7 +104,9 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
         const val PARAM_ROOM_COUNT = "room"
         const val PARAM_ADULT_COUNT = "adult"
 
-        fun getCallingIntent(context: Context, checkInDate: String, checkOutDate: String, propertyId: Int, roomCount: Int,
+        const val PDP_SCREEN_NAME = "/hotel/pdp"
+
+        fun getCallingIntent(context: Context, checkInDate: String, checkOutDate: String, propertyId: Long, roomCount: Int,
                              adultCount: Int, destinationType: String, destinationName: String, isDirectPayment: Boolean = true): Intent =
                 Intent(context, HotelDetailActivity::class.java)
                         .putExtra(EXTRA_CHECK_IN_DATE, checkInDate)

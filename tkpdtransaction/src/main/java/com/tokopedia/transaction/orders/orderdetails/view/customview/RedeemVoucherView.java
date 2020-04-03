@@ -11,7 +11,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.Body;
@@ -94,8 +93,7 @@ public class RedeemVoucherView extends LinearLayout {
         redeemVoucher.setVisibility(VISIBLE);
         redeemVoucher.setText(actionButton.getLabel());
         if (!TextUtils.isEmpty(actionButton.getHeader())) {
-            Gson gson = new Gson();
-            Header header = gson.fromJson(actionButton.getHeader(), Header.class);
+            Header header = actionButton.getHeaderObject();
             if (!TextUtils.isEmpty(header.getItemLabel())) {
                 voucherNumber.setText(header.getItemLabel());
             }
@@ -130,8 +128,7 @@ public class RedeemVoucherView extends LinearLayout {
         redeemVoucher.setText(actionButton.getLabel());
         if (OmsDetailFragment.RETRY_COUNT == 0) {
             if (!TextUtils.isEmpty(actionButton.getHeader())) {
-                Gson gson = new Gson();
-                Header header = gson.fromJson(actionButton.getHeader(), Header.class);
+                Header header = actionButton.getHeaderObject();
                 if (!TextUtils.isEmpty(header.getItemLabel())) {
                     voucherNumber.setText(header.getItemLabel());
                 }

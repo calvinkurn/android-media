@@ -1,6 +1,8 @@
 package com.tokopedia.abstraction;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.view.MotionEvent;
 
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
@@ -37,4 +39,6 @@ public interface AbstractionRouter {
     void logInvalidGrant(Response response);
 
     boolean isAllowLogOnChuckInterceptorNotification();
+
+    void onNewIntent(Context context, Intent intent);
 }

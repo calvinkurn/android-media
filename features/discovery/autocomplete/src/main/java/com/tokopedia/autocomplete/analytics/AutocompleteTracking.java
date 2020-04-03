@@ -2,8 +2,8 @@ package com.tokopedia.autocomplete.analytics;
 
 import android.content.Context;
 
-import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
+import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -55,6 +55,9 @@ public class AutocompleteTracking {
     public static final String CLICK_SEARCH = "click - search";
     public static final String CLICK_PROFILE_SUGGESTION = "click - profile autocomplete on suggestion list";
     public static final String CLICK_TOP_PROFILE_SUGGESTION = "click - profile autocomplete on top suggestion";
+    public static final String CLICK_REFRESH_POPULAR_SEARCH = "click refresh on popular search";
+    public static final String CLICK_SHOP_SUGGESTION = "click - shop autocomplete";
+    public static final String CLICK_KEYWORD_SUGGESTION = "click - product autocomplete";
 
     public static final String ECOMMERCE = "ecommerce";
     public static final String PRODUCT_CLICK = "productClick";
@@ -94,78 +97,16 @@ public class AutocompleteTracking {
         );
     }
 
-    public static void eventClickAutoCompleteSearch(Context context, String label, String tabName) {
+    public static void eventClickShop(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_SEARCH_RESULT,
                 EVENTCATEGORY_TOP_NAV,
-                String.format("click - product autocomplete - tab: %s", tabName),
+                CLICK_SHOP_SUGGESTION,
                 label
         );
     }
 
-    public static void eventClickShopSearch(Context context,
-                                            String label,
-                                            String tabName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                EVENT_CLICK_SEARCH_RESULT,
-                EVENTCATEGORY_TOP_NAV,
-                String.format("click - shop autocomplete - tab: %s", tabName),
-                label
-        );
-    }
-
-    public static void eventClickInCategory(Context context,
-                                            String label,
-                                            String tabName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                EVENT_CLICK_SEARCH_RESULT,
-                EVENTCATEGORY_TOP_NAV,
-                String.format("click - category autocomplete - tab: %s", tabName),
-                label
-        );
-    }
-
-    public static void eventClickInHotlist(Context context,
-                                           String keyword,
-                                           String hotlistName,
-                                           String id,
-                                           int position,
-                                           String applink) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                EVENT_CLICK_TOP_NAV,
-                EVENTCATEGORY_TOP_NAV,
-                ACTION_CLICK_HOTLIST_SUGGESTION,
-                String.format(
-                        LABEL_HOTLIST_CLICK,
-                        keyword,
-                        hotlistName,
-                        id,
-                        String.valueOf(position),
-                        applink
-                )
-        );
-    }
-
-    public static void eventClickCategory(Context context,
-                                          String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                EVENT_CLICK_SEARCH_RESULT,
-                EVENTCATEGORY_TOP_NAV,
-                CLICK_CATEGORY_SUGGESTION,
-                label
-        );
-    }
-
-    public static void eventClickDigital(Context context, String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                EVENT_CLICK_SEARCH_RESULT,
-                EVENTCATEGORY_TOP_NAV,
-                CLICK_DIGITAL_PRODUCT_SUGGESTION,
-                label
-        );
-    }
-
-    public static void eventClickProfile(Context context, String label) {
+    public static void eventClickProfile(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_TOP_NAV,
                 EVENTCATEGORY_TOP_NAV,
@@ -174,11 +115,20 @@ public class AutocompleteTracking {
         );
     }
 
-    public static void eventClickTopProfile(Context context, String label) {
+    public static void eventClickKeyword(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                EVENT_CLICK_TOP_NAV,
+                EVENT_CLICK_SEARCH_RESULT,
                 EVENTCATEGORY_TOP_NAV,
-                CLICK_TOP_PROFILE_SUGGESTION,
+                CLICK_KEYWORD_SUGGESTION,
+                label
+        );
+    }
+
+    public static void eventClickCurated(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                EVENT_CLICK_SEARCH_RESULT,
+                EVENTCATEGORY_TOP_NAV,
+                CLICK_DIGITAL_PRODUCT_SUGGESTION,
                 label
         );
     }
@@ -192,9 +142,8 @@ public class AutocompleteTracking {
         );
     }
 
-    public static void eventClickRecentView(Context context,
-                                            String position,
-                                            BaseItemAutoCompleteSearch data) {
+    public static void eventClickRecentView(String position,
+                                            BaseItemInitialStateSearch data) {
         Map<String, Object> productData = convertSearchItemToProductData(data, position);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, PRODUCT_CLICK,
@@ -217,16 +166,25 @@ public class AutocompleteTracking {
         );
     }
 
-    private static Map<String, Object> convertSearchItemToProductData(BaseItemAutoCompleteSearch data,
+    private static Map<String, Object> convertSearchItemToProductData(BaseItemInitialStateSearch data,
                                                                       String position) {
         return DataLayer.mapOf(
-                PRODUCT_NAME, data.getKeyword(),
+                PRODUCT_NAME, data.getTitle(),
                 PRODUCT_ID, data.getProductId(),
-                PRODUCT_PRICE, data.getProductPrice(),
+                PRODUCT_PRICE, "",
                 PRODUCT_BRAND, NONE_OTHER,
                 PRODUCT_CATEGORY, NONE_OTHER,
                 PRODUCT_VARIANT, NONE_OTHER,
                 PRODUCT_POSITION, position
+        );
+    }
+
+    public static void eventClickRefreshPopularSearch(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                EVENT_CLICK_TOP_NAV,
+                EVENTCATEGORY_TOP_NAV + " - homepage",
+                CLICK_REFRESH_POPULAR_SEARCH,
+                ""
         );
     }
 }

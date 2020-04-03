@@ -604,7 +604,11 @@ public class EventReviewTicketPresenter
         String jsonResponse = saveInstanceCacheManager.get(EXTRA_VERIFY_RESPONSE,String.class);
         if (!StringUtils.isBlank(jsonResponse))
             this.verifiedSeatResponse = (JsonObject) new JsonParser().parse(jsonResponse);
-        mView.renderFromPackageVM(checkoutData, selectedSeatViewModel, this.eventsDetailsViewModel.getCustomText1());
-        getAndInitForms();
+        if(checkoutData!=null &&  eventsDetailsViewModel!=null) {
+            mView.renderFromPackageVM(checkoutData, selectedSeatViewModel, this.eventsDetailsViewModel.getCustomText1());
+            getAndInitForms();
+        } else {
+            mView.showErrorRenderFromPackage();
+        }
     }
 }

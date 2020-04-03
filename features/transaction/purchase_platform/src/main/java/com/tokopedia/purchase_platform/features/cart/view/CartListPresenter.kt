@@ -30,10 +30,10 @@ import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartI
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
-import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceEmptyCartActionFieldData
-import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceEmptyCartClickData
-import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceEmptyCartData
-import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceEmptyCartProductData
+import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceActionFieldData
+import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceClickData
+import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceData
+import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceProductData
 import com.tokopedia.purchase_platform.features.cart.view.subscriber.*
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.*
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -102,8 +102,6 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         compositeSubscription.unsubscribe()
         addWishListUseCase?.unsubscribe()
         removeWishListUseCase?.unsubscribe()
-        getRecentViewUseCase?.unsubscribe()
-        getWishlistUseCase?.unsubscribe()
         getRecommendationUseCase?.unsubscribe()
         getInsuranceCartUseCase?.unsubscribe()
         removeInsuranceProductUsecase?.unsubscribe()
@@ -259,9 +257,11 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         }
     }
 
-    override fun processUpdateCartData() {
+    override fun processUpdateCartData(fireAndForget: Boolean) {
         view?.let {
-            it.showProgressLoading()
+            if (!fireAndForget) {
+                it.showProgressLoading()
+            }
 
             val updateCartRequestList = getUpdateCartRequest(it.getAllSelectedCartDataList()
                     ?: emptyList())
@@ -270,7 +270,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
             compositeSubscription.add(
                     updateCartUseCase?.createObservable(requestParams)
-                            ?.subscribe(UpdateCartSubscriber(view, this))
+                            ?.subscribe(UpdateCartSubscriber(view, this, fireAndForget))
             )
         }
     }
@@ -603,6 +603,58 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         }
     }
 
+    override fun generateCheckPromoFirstStepParam(promoStackingGlobalData: PromoStackingData): Promo {
+        val orders = ArrayList<Order>()
+        getCartListData()?.shopGroupAvailableDataList?.let { shopGroupAvailableDataList ->
+            for (shopGroupAvailableData in shopGroupAvailableDataList) {
+                val order = Order()
+                val productDetails = ArrayList<ProductDetail>()
+                shopGroupAvailableData.cartItemDataList?.let { cartItemHolderDataList ->
+                    for (cartItemHolderData in cartItemHolderDataList) {
+                        val productDetail = ProductDetail()
+                        try {
+                            productDetail.productId = Integer.parseInt(cartItemHolderData.cartItemData?.originData?.productId
+                                    ?: "0")
+                        } catch (e: NumberFormatException) {
+                            e.printStackTrace()
+                            productDetail.productId = 0
+                        }
+
+                        productDetail.quantity = cartItemHolderData.cartItemData?.updatedData?.quantity
+                        productDetails.add(productDetail)
+                    }
+                }
+                if (shopGroupAvailableData.voucherOrdersItemData != null && !shopGroupAvailableData.voucherOrdersItemData?.code.isNullOrEmpty()) {
+                    val merchantPromoCodes = ArrayList<String>()
+                    merchantPromoCodes.add(shopGroupAvailableData.voucherOrdersItemData?.code ?: "")
+                    if (merchantPromoCodes.size > 0) {
+                        order.codes = merchantPromoCodes
+                    }
+                }
+                order.productDetails = productDetails
+                order.uniqueId = shopGroupAvailableData.cartString
+                try {
+                    order.shopId = Integer.parseInt(shopGroupAvailableData.shopId ?: "0")
+                } catch (e: NumberFormatException) {
+                    e.printStackTrace()
+                    order.shopId = 0
+                }
+
+                orders.add(order)
+            }
+        }
+        val promo = Promo()
+        promo.state = Promo.STATE_CART
+        promo.cartType = Promo.CART_TYPE_DEFAULT
+        val globalPromoCodes = ArrayList<String>()
+        globalPromoCodes.add(promoStackingGlobalData.promoCode)
+        promo.codes = globalPromoCodes
+        promo.orders = orders
+        promo.skipApply = 0
+        promo.isSuggested = 0
+        return promo
+    }
+
     override fun processAddToWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener) {
         addWishListUseCase?.createObservable(productId, userId, wishListActionListener)
     }
@@ -611,124 +663,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         removeWishListUseCase?.createObservable(productId, userId, wishListActionListener)
     }
 
-    override fun generateCartDataAnalytics(cartItemDataList: List<CartItemData>, enhancedECommerceAction: String): Map<String, Any> {
-        val enhancedECommerceCartMapData = EnhancedECommerceCartMapData().apply {
-            for (cartItemData in cartItemDataList) {
-                val enhancedECommerceProductCartMapData = getEnhancedECommerceProductCartMapData(cartItemData)
-                addProduct(enhancedECommerceProductCartMapData.product)
-            }
-
-            setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR)
-            setAction(enhancedECommerceAction)
-        }
-        return enhancedECommerceCartMapData.cartMap
-    }
-
-    override fun generateRecommendationDataAnalytics(cartRecommendationItemHolderDataList: List<CartRecommendationItemHolderData>, isEmptyCart: Boolean): Map<String, Any> {
-        val enhancedECommerceCartMapData = EnhancedECommerceCartMapData().apply {
-            var position = 1
-            for (cartRecommendationItemHolderData in cartRecommendationItemHolderDataList) {
-                val enhancedECommerceProductCartMapData = getEnhancedECommerceProductRecommendationMapData(cartRecommendationItemHolderData.recommendationItem, isEmptyCart, position)
-                addImpression(enhancedECommerceProductCartMapData.product)
-                position++
-            }
-
-            setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR)
-        }
-        return enhancedECommerceCartMapData.cartMap
-    }
-
-    override fun generateWishlistDataImpressionAnalytics(cartWishlistItemHolderDataList: List<CartWishlistItemHolderData>, isEmptyCart: Boolean): Map<String, Any> {
-        val enhancedECommerceCartMapData = EnhancedECommerceCartMapData().apply {
-            var position = 0
-            for (cartWishlistItemHolderData in cartWishlistItemHolderDataList) {
-                val enhancedECommerceProductCartMapData = getProductWishlistImpressionMapData(cartWishlistItemHolderData, isEmptyCart, position)
-                addImpression(enhancedECommerceProductCartMapData.product)
-                position++
-            }
-
-            setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR)
-        }
-        return enhancedECommerceCartMapData.cartMap
-    }
-
-    override fun generateRecentViewDataImpressionAnalytics(cartRecentViewItemHolderDataList: List<CartRecentViewItemHolderData>, isEmptyCart: Boolean): Map<String, Any> {
-        val enhancedECommerceCartMapData = EnhancedECommerceCartMapData().apply {
-            var position = 0
-            for (cartRecentViewItemHolderData in cartRecentViewItemHolderDataList) {
-                val enhancedECommerceProductCartMapData = getProductRecentViewImpressionMapData(cartRecentViewItemHolderData, isEmptyCart, position)
-                addImpression(enhancedECommerceProductCartMapData.product)
-                position++
-            }
-
-            setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR)
-        }
-        return enhancedECommerceCartMapData.cartMap
-    }
-
-    override fun generateRecommendationDataOnClickAnalytics(recommendationItem: RecommendationItem, isEmptyCart: Boolean, position: Int): Map<String, Any> {
-        val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
-            setProductID(recommendationItem.productId.toString())
-            setProductName(recommendationItem.name)
-            setPrice(recommendationItem.price.replace("[^0-9]".toRegex(), ""))
-            setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-            setCategory(if (TextUtils.isEmpty(recommendationItem.categoryBreadcrumbs))
-                EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-            else
-                recommendationItem.categoryBreadcrumbs)
-            setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-            setPosition(position.toString())
-            setAttribution(EnhancedECommerceProductCartMapData.RECOMMENDATION_ATTRIBUTION)
-            if (recommendationItem.isFreeOngkirActive) {
-                setDimension83(EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR)
-            } else {
-                setDimension83(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-            }
-        }
-        val productsData = ArrayList<Map<String, Any>>().apply {
-            add(enhancedECommerceProductCartMapData.product)
-        }
-        return getEnhancedECommerceOnClickEmptyCartData(productsData, getActionFieldListStr(isEmptyCart, recommendationItem)).getData()
-    }
-
-    private fun getEnhancedECommerceProductRecommendationMapData(recommendationItem: RecommendationItem, isEmptyCart: Boolean, position: Int): EnhancedECommerceProductCartMapData {
-        val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
-            setProductID(recommendationItem.productId.toString())
-            setProductName(recommendationItem.name)
-            setPrice(recommendationItem.price.replace("[^0-9]".toRegex(), ""))
-            setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-            setCategory(if (TextUtils.isEmpty(recommendationItem.categoryBreadcrumbs))
-                EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-            else
-                recommendationItem.categoryBreadcrumbs)
-            setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-            setListName(getActionFieldListStr(isEmptyCart, recommendationItem))
-            setPosition(position.toString())
-            if (recommendationItem.isFreeOngkirActive) {
-                setDimension83(EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR)
-            } else {
-                setDimension83(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-            }
-        }
-        return enhancedECommerceProductCartMapData
-    }
-
-    private fun getEnhancedECommerceOnClickEmptyCartData(productsData: List<Map<String, Any>>, valueSectionName: String): EnhancedECommerceEmptyCartData {
-        val enhancedECommerceEmptyCartActionFieldData = EnhancedECommerceEmptyCartActionFieldData().apply {
-            setList(valueSectionName)
-        }
-
-        val enhancedECommerceEmptyCartClickData = EnhancedECommerceEmptyCartClickData().apply {
-            setActionField(enhancedECommerceEmptyCartActionFieldData.getData())
-            setProducts(productsData)
-        }
-
-        val enhancedECommerceEmptyCart = EnhancedECommerceEmptyCartData().apply {
-            setClickData(enhancedECommerceEmptyCartClickData.getData())
-        }
-        return enhancedECommerceEmptyCart
-    }
-
+    // ANALYTICS COMMON
     private fun getActionFieldListStr(isCartEmpty: Boolean, recommendationItem: RecommendationItem): String {
         var listName: String
         if (isCartEmpty) {
@@ -741,6 +676,20 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             listName += EnhancedECommerceActionField.LIST_CART_RECOMMENDATION_TOPADS_TYPE
         }
         return listName
+    }
+
+    // ANALYTICS DELETE ACTION
+    override fun generateDeleteCartDataAnalytics(cartItemDataList: List<CartItemData>): Map<String, Any> {
+        val enhancedECommerceCartMapData = EnhancedECommerceCartMapData().apply {
+            for (cartItemData in cartItemDataList) {
+                val enhancedECommerceProductCartMapData = getEnhancedECommerceProductCartMapData(cartItemData)
+                addProduct(enhancedECommerceProductCartMapData.product)
+            }
+
+            setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR)
+            setAction(EnhancedECommerceCartMapData.REMOVE_ACTION)
+        }
+        return enhancedECommerceCartMapData.cartMap
     }
 
     private fun getEnhancedECommerceProductCartMapData(cartItemData: CartItemData): EnhancedECommerceProductCartMapData {
@@ -795,6 +744,262 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         }
     }
 
+    // ANALYTICS IMPRESSION
+    override fun generateRecommendationImpressionDataAnalytics(cartRecommendationItemHolderDataList: List<CartRecommendationItemHolderData>, isEmptyCart: Boolean): Map<String, Any> {
+        val enhancedECommerceCartMapData = EnhancedECommerceCartMapData().apply {
+            var position = 1
+            for (cartRecommendationItemHolderData in cartRecommendationItemHolderDataList) {
+                val enhancedECommerceProductCartMapData = getEnhancedECommerceProductRecommendationMapData(cartRecommendationItemHolderData.recommendationItem, isEmptyCart, position)
+                addImpression(enhancedECommerceProductCartMapData.product)
+                position++
+            }
+
+            setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR)
+        }
+        return enhancedECommerceCartMapData.cartMap
+    }
+
+    private fun getEnhancedECommerceProductRecommendationMapData(recommendationItem: RecommendationItem, isEmptyCart: Boolean, position: Int): EnhancedECommerceProductCartMapData {
+        val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
+            setProductID(recommendationItem.productId.toString())
+            setProductName(recommendationItem.name)
+            setPrice(recommendationItem.price.replace("[^0-9]".toRegex(), ""))
+            setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
+            setCategory(if (TextUtils.isEmpty(recommendationItem.categoryBreadcrumbs))
+                EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+            else
+                recommendationItem.categoryBreadcrumbs)
+            setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
+            setListName(getActionFieldListStr(isEmptyCart, recommendationItem))
+            setPosition(position.toString())
+            if (recommendationItem.isFreeOngkirActive) {
+                setDimension83(EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR)
+            } else {
+                setDimension83(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
+            }
+        }
+        return enhancedECommerceProductCartMapData
+    }
+
+    override fun generateWishlistDataImpressionAnalytics(cartWishlistItemHolderDataList: List<CartWishlistItemHolderData>, isEmptyCart: Boolean): Map<String, Any> {
+        val enhancedECommerceCartMapData = EnhancedECommerceCartMapData().apply {
+            var position = 0
+            for (cartWishlistItemHolderData in cartWishlistItemHolderDataList) {
+                val enhancedECommerceProductCartMapData = getProductWishlistImpressionMapData(cartWishlistItemHolderData, isEmptyCart, position)
+                addImpression(enhancedECommerceProductCartMapData.product)
+                position++
+            }
+
+            setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR)
+        }
+        return enhancedECommerceCartMapData.cartMap
+    }
+
+    private fun getProductWishlistImpressionMapData(wishlistItemHolderData: CartWishlistItemHolderData, isEmptyCart: Boolean, position: Int): EnhancedECommerceProductCartMapData {
+        return EnhancedECommerceProductCartMapData().apply {
+            setProductID(wishlistItemHolderData.id)
+            setProductName(wishlistItemHolderData.name)
+            setPrice(wishlistItemHolderData.price.replace("[^0-9]".toRegex(), ""))
+            setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
+            setCategory(wishlistItemHolderData.category)
+            setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
+
+            if (isEmptyCart) {
+                setListName(EnhancedECommerceActionFieldData.VALUE_SECTION_NAME_WISHLIST_EMPTY_CART)
+            } else {
+                setListName(EnhancedECommerceActionFieldData.VALUE_SECTION_NAME_WISHLIST)
+            }
+
+            setPosition(position.toString())
+        }
+    }
+
+    override fun generateRecentViewDataImpressionAnalytics(cartRecentViewItemHolderDataList: List<CartRecentViewItemHolderData>, isEmptyCart: Boolean): Map<String, Any> {
+        val enhancedECommerceCartMapData = EnhancedECommerceCartMapData().apply {
+            var position = 0
+            for (cartRecentViewItemHolderData in cartRecentViewItemHolderDataList) {
+                val enhancedECommerceProductCartMapData = getProductRecentViewImpressionMapData(cartRecentViewItemHolderData, isEmptyCart, position)
+                addImpression(enhancedECommerceProductCartMapData.product)
+                position++
+            }
+
+            setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR)
+        }
+        return enhancedECommerceCartMapData.cartMap
+    }
+
+    private fun getProductRecentViewImpressionMapData(recentViewItemHolderData: CartRecentViewItemHolderData, isEmptyCart: Boolean, position: Int): EnhancedECommerceProductCartMapData {
+        return EnhancedECommerceProductCartMapData().apply {
+            setProductID(recentViewItemHolderData.id)
+            setProductName(recentViewItemHolderData.name)
+            setPrice(recentViewItemHolderData.price.replace("[^0-9]".toRegex(), ""))
+            setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
+            setCategory(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
+            setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
+
+            if (isEmptyCart) {
+                setListName(EnhancedECommerceActionFieldData.VALUE_SECTION_NAME_RECENT_VIEW_EMPTY_CART)
+            } else {
+                setListName(EnhancedECommerceActionFieldData.VALUE_SECTION_NAME_RECENT_VIEW)
+            }
+
+            setPosition(position.toString())
+        }
+    }
+
+    // ANALYTICS CLICK ACTION
+    override fun generateRecommendationDataOnClickAnalytics(recommendationItem: RecommendationItem, isEmptyCart: Boolean, position: Int): Map<String, Any> {
+        val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
+            setProductID(recommendationItem.productId.toString())
+            setProductName(recommendationItem.name)
+            setPrice(recommendationItem.price.replace("[^0-9]".toRegex(), ""))
+            setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
+            setCategory(if (TextUtils.isEmpty(recommendationItem.categoryBreadcrumbs))
+                EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+            else
+                recommendationItem.categoryBreadcrumbs)
+            setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
+            setPosition(position.toString())
+            setAttribution(EnhancedECommerceProductCartMapData.RECOMMENDATION_ATTRIBUTION)
+            if (recommendationItem.isFreeOngkirActive) {
+                setDimension83(EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR)
+            } else {
+                setDimension83(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
+            }
+        }
+        val productsData = ArrayList<Map<String, Any>>().apply {
+            add(enhancedECommerceProductCartMapData.product)
+        }
+        return getEnhancedECommerceOnClickData(productsData, getActionFieldListStr(isEmptyCart, recommendationItem)).getData()
+    }
+
+    private fun getEnhancedECommerceOnClickData(productsData: List<Map<String, Any>>, valueSectionName: String): EnhancedECommerceData {
+        val enhancedECommerceActionFieldData = EnhancedECommerceActionFieldData().apply {
+            setList(valueSectionName)
+        }
+
+        val enhancedECommerceClickData = EnhancedECommerceClickData().apply {
+            setActionField(enhancedECommerceActionFieldData.getData())
+            setProducts(productsData)
+        }
+
+        val enhancedECommerce = EnhancedECommerceData().apply {
+            setClickData(enhancedECommerceClickData.getData())
+        }
+        return enhancedECommerce
+    }
+
+    override fun generateRecentViewProductClickDataLayer(cartRecentViewItemHolderData: CartRecentViewItemHolderData, position: Int): Map<String, Any> {
+        val stringObjectMap = HashMap<String, Any>()
+        val enhancedECommerceActionField = EnhancedECommerceActionField().apply {
+            setList(EnhancedECommerceActionFieldData.VALUE_SECTION_NAME_RECENT_VIEW)
+        }
+        val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
+            setProductName(cartRecentViewItemHolderData.name)
+            setProductID(cartRecentViewItemHolderData.id)
+            setPrice(cartRecentViewItemHolderData.price.replace("[^0-9]".toRegex(), ""))
+            setCategory(EnhancedECommerceProductData.DEFAULT_VALUE_NONE_OTHER)
+            setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
+            setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
+            setPosition(position.toString())
+        }
+        val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
+            setActionField(enhancedECommerceActionField.actionFieldMap)
+            addProduct(enhancedECommerceProductCartMapData.product)
+        }
+        stringObjectMap["currencyCode"] = "IDR"
+        stringObjectMap[EnhancedECommerceAdd.KEY_ADD] = enhancedECommerceAdd.getAddMap()
+        return stringObjectMap
+    }
+
+    override fun generateRecentViewProductClickEmptyCartDataLayer(cartRecentViewItemHolderData: CartRecentViewItemHolderData, position: Int): Map<String, Any> {
+        val enhancedECommerceProductData = EnhancedECommerceProductData().apply {
+            setProductID(cartRecentViewItemHolderData.id)
+            setProductName(cartRecentViewItemHolderData.name)
+            setPrice(cartRecentViewItemHolderData.price.replace("[^0-9]".toRegex(), ""))
+            setBrand(EnhancedECommerceProductData.DEFAULT_VALUE_NONE_OTHER)
+            setCategory(EnhancedECommerceProductData.DEFAULT_VALUE_NONE_OTHER)
+            setPosition(position.toString())
+            setVariant(EnhancedECommerceProductData.DEFAULT_VALUE_NONE_OTHER)
+        }
+
+        val productsData = ArrayList<Map<String, Any>>().apply {
+            add(enhancedECommerceProductData.getProduct())
+        }
+
+        val enhancedECommerceEmptyCart = getEnhancedECommerceOnClickData(
+                productsData, EnhancedECommerceActionFieldData.VALUE_SECTION_NAME_RECENT_VIEW_EMPTY_CART)
+
+        return enhancedECommerceEmptyCart.getData()
+    }
+
+    override fun generateWishlistProductClickDataLayer(cartWishlistItemHolderData: CartWishlistItemHolderData, position: Int): Map<String, Any> {
+        val stringObjectMap = HashMap<String, Any>()
+        val enhancedECommerceActionField = EnhancedECommerceActionField().apply {
+            setList(EnhancedECommerceActionFieldData.VALUE_SECTION_NAME_WISHLIST)
+        }
+        val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
+            setProductName(cartWishlistItemHolderData.name)
+            setProductID(cartWishlistItemHolderData.id)
+            setPrice(cartWishlistItemHolderData.price.replace("[^0-9]".toRegex(), ""))
+            setCategory(cartWishlistItemHolderData.category)
+            setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
+            setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
+            setPosition(position.toString())
+        }
+        val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
+            setActionField(enhancedECommerceActionField.actionFieldMap)
+            addProduct(enhancedECommerceProductCartMapData.product)
+        }
+        stringObjectMap["currencyCode"] = "IDR"
+        stringObjectMap[EnhancedECommerceAdd.KEY_ADD] = enhancedECommerceAdd.getAddMap()
+        return stringObjectMap
+    }
+
+    override fun generateWishlistProductClickEmptyCartDataLayer(cartWishlistItemHolderData: CartWishlistItemHolderData, position: Int): Map<String, Any> {
+        val enhancedECommerceEmptyCartProductData = EnhancedECommerceProductData().apply {
+            setProductID(cartWishlistItemHolderData.id)
+            setProductName(cartWishlistItemHolderData.name)
+            setPrice(cartWishlistItemHolderData.price.replace("[^0-9]".toRegex(), ""))
+            setBrand(EnhancedECommerceProductData.DEFAULT_VALUE_NONE_OTHER)
+            setCategory(cartWishlistItemHolderData.category)
+            setPosition(position.toString())
+            setVariant(EnhancedECommerceProductData.DEFAULT_VALUE_NONE_OTHER)
+        }
+
+        val productsData = ArrayList<Map<String, Any>>().apply {
+            add(enhancedECommerceEmptyCartProductData.getProduct())
+        }
+
+        val enhancedECommerceEmptyCart = getEnhancedECommerceOnClickData(
+                productsData, EnhancedECommerceActionFieldData.VALUE_SECTION_NAME_WISHLIST_EMPTY_CART)
+
+        return enhancedECommerceEmptyCart.getData()
+    }
+
+    // ANALYTICS STEP 0 / STEP 1
+    override fun generateCheckoutDataAnalytics(cartItemDataList: List<CartItemData>, step: String): Map<String, Any> {
+        val checkoutMapData = HashMap<String, Any>()
+        val enhancedECommerceActionField = EnhancedECommerceActionField().apply {
+            setStep(step)
+            if (step == EnhancedECommerceActionField.STEP_0) {
+                setOption(EnhancedECommerceActionField.STEP_0_OPTION_VIEW_CART_PAGE)
+            } else if (step == EnhancedECommerceActionField.STEP_1) {
+                setOption(EnhancedECommerceActionField.STEP_1_OPTION_CART_PAGE_LOADED)
+            }
+        }
+        val enhancedECommerceCheckout = EnhancedECommerceCheckout().apply {
+            for (cartItemData in cartItemDataList) {
+                val enhancedECommerceProductCartMapData = getCheckoutEnhancedECommerceProductCartMapData(cartItemData)
+                addProduct(enhancedECommerceProductCartMapData.product)
+            }
+            setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR)
+            setActionField(enhancedECommerceActionField.actionFieldMap)
+        }
+        checkoutMapData[EnhancedECommerceCheckout.KEY_CHECKOUT] = enhancedECommerceCheckout.checkoutMap
+        return checkoutMapData
+    }
+
     private fun getCheckoutEnhancedECommerceProductCartMapData(cartItemData: CartItemData): EnhancedECommerceProductCartMapData {
         val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
             setDimension80(
@@ -840,26 +1045,101 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         return enhancedECommerceProductCartMapData
     }
 
-    override fun generateCheckoutDataAnalytics(cartItemDataList: List<CartItemData>, step: String): Map<String, Any> {
-        val checkoutMapData = HashMap<String, Any>()
+    // ANALYTICS ATC
+    override fun generateAddToCartEnhanceEcommerceDataLayer(cartWishlistItemHolderData: CartWishlistItemHolderData,
+                                                            addToCartDataResponseModel: AddToCartDataModel, isCartEmpty: Boolean): Map<String, Any> {
+        val stringObjectMap = HashMap<String, Any>()
         val enhancedECommerceActionField = EnhancedECommerceActionField().apply {
-            setStep(step)
-            if (step == EnhancedECommerceActionField.STEP_0) {
-                setOption(EnhancedECommerceActionField.STEP_0_OPTION_VIEW_CART_PAGE)
-            } else if (step == EnhancedECommerceActionField.STEP_1) {
-                setOption(EnhancedECommerceActionField.STEP_1_OPTION_CART_PAGE_LOADED)
-            }
+            setList(if (isCartEmpty) EnhancedECommerceActionField.LIST_WISHLIST_ON_EMPTY_CART else EnhancedECommerceActionField.LIST_WISHLIST)
         }
-        val enhancedECommerceCheckout = EnhancedECommerceCheckout().apply {
-            for (cartItemData in cartItemDataList) {
-                val enhancedECommerceProductCartMapData = getCheckoutEnhancedECommerceProductCartMapData(cartItemData)
-                addProduct(enhancedECommerceProductCartMapData.product)
-            }
-            setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR)
+        val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
+            setProductName(cartWishlistItemHolderData.name)
+            setProductID(cartWishlistItemHolderData.id)
+            setPrice(cartWishlistItemHolderData.rawPrice)
+            setCategory(cartWishlistItemHolderData.category)
+            setQty(cartWishlistItemHolderData.minOrder)
+            setShopId(cartWishlistItemHolderData.shopId)
+            setShopType(cartWishlistItemHolderData.shopType)
+            setShopName(cartWishlistItemHolderData.shopName)
+            setPicture(cartWishlistItemHolderData.imageUrl)
+            setUrl(cartWishlistItemHolderData.url)
+            setDimension45(addToCartDataResponseModel.data.cartId)
+            setBrand("")
+            setCategoryId("")
+            setVariant("")
+        }
+        val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
             setActionField(enhancedECommerceActionField.actionFieldMap)
+            addProduct(enhancedECommerceProductCartMapData.product)
         }
-        checkoutMapData[EnhancedECommerceCheckout.KEY_CHECKOUT] = enhancedECommerceCheckout.checkoutMap
-        return checkoutMapData
+        stringObjectMap["currencyCode"] = "IDR"
+        stringObjectMap[EnhancedECommerceAdd.KEY_ADD] = enhancedECommerceAdd.getAddMap()
+        return stringObjectMap
+    }
+
+    override fun generateAddToCartEnhanceEcommerceDataLayer(cartRecentViewItemHolderData: CartRecentViewItemHolderData,
+                                                            addToCartDataResponseModel: AddToCartDataModel, isCartEmpty: Boolean): Map<String, Any> {
+        val stringObjectMap = HashMap<String, Any>()
+        val enhancedECommerceActionField = EnhancedECommerceActionField().apply {
+            setList(if (isCartEmpty) EnhancedECommerceActionField.LIST_RECENT_VIEW_ON_EMPTY_CART else EnhancedECommerceActionField.LIST_RECENT_VIEW)
+        }
+        val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
+            setProductName(cartRecentViewItemHolderData.name)
+            setProductID(cartRecentViewItemHolderData.id)
+            setPrice(cartRecentViewItemHolderData.price)
+            setQty(cartRecentViewItemHolderData.minOrder)
+            setDimension52(cartRecentViewItemHolderData.shopId)
+            setDimension57(cartRecentViewItemHolderData.shopName)
+            setDimension59(cartRecentViewItemHolderData.shopType)
+            setDimension77(addToCartDataResponseModel.data.cartId)
+            setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
+            setCategoryId("")
+            setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
+        }
+        val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
+            setActionField(enhancedECommerceActionField.actionFieldMap)
+            addProduct(enhancedECommerceProductCartMapData.product)
+        }
+        stringObjectMap["currencyCode"] = "IDR"
+        stringObjectMap[EnhancedECommerceAdd.KEY_ADD] = enhancedECommerceAdd.getAddMap()
+        return stringObjectMap
+    }
+
+    override fun generateAddToCartEnhanceEcommerceDataLayer(cartRecommendationItemHolderData: CartRecommendationItemHolderData,
+                                                            addToCartDataResponseModel: AddToCartDataModel, isCartEmpty: Boolean): Map<String, Any> {
+        val stringObjectMap = HashMap<String, Any>()
+        val enhancedECommerceActionField = EnhancedECommerceActionField().apply {
+            setList(getActionFieldListStr(isCartEmpty, cartRecommendationItemHolderData.recommendationItem))
+        }
+        val enhancedECommerceProductCartMapData = EnhancedECommerceRecomProductCartMapData().apply {
+            setProductName(cartRecommendationItemHolderData.recommendationItem.name)
+            setProductID(cartRecommendationItemHolderData.recommendationItem.productId.toString())
+            setPrice(cartRecommendationItemHolderData.recommendationItem.price.replace("[^0-9]".toRegex(), ""))
+            setCategory(cartRecommendationItemHolderData.recommendationItem.categoryBreadcrumbs)
+            setQty(cartRecommendationItemHolderData.recommendationItem.minOrder)
+            setShopId(cartRecommendationItemHolderData.recommendationItem.shopId.toString())
+            setShopType(cartRecommendationItemHolderData.recommendationItem.shopType)
+            setShopName(cartRecommendationItemHolderData.recommendationItem.shopName)
+            setDimension45(addToCartDataResponseModel.data.cartId)
+            setDimension53(cartRecommendationItemHolderData.recommendationItem.discountPercentageInt > 0)
+            setDimension40(addToCartDataResponseModel.data.trackerListName)
+            setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
+            setCategoryId("")
+            setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
+            if (cartRecommendationItemHolderData.recommendationItem.isFreeOngkirActive) {
+                setDimension83(EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR)
+            } else {
+                setDimension83(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
+            }
+        }
+
+        val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
+            setActionField(enhancedECommerceActionField.actionFieldMap)
+            addProduct(enhancedECommerceProductCartMapData.getProduct())
+        }
+        stringObjectMap["currencyCode"] = "IDR"
+        stringObjectMap[EnhancedECommerceAdd.KEY_ADD] = enhancedECommerceAdd.getAddMap()
+        return stringObjectMap
     }
 
     override fun setHasPerformChecklistChange(hasChangeState: Boolean) {
@@ -893,21 +1173,32 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     override fun processGetRecentViewData() {
         try {
             val userId = Integer.parseInt(userSessionInterface.userId)
-            getRecentViewUseCase?.createObservable(userId, GetRecentViewSubscriber(view))
+            val requestParams = RequestParams.create()
+            requestParams.putInt(GetRecentViewUseCase.PARAM_USER_ID, userId)
+            compositeSubscription.add(
+                    getRecentViewUseCase?.createObservable(requestParams)
+                            ?.subscribe(GetRecentViewSubscriber(view))
+            )
         } catch (e: NumberFormatException) {
             e.printStackTrace()
         }
     }
 
     override fun processGetWishlistData() {
-        getWishlistUseCase?.createObservable(GetWishlistSubscriber(view, this))
+        compositeSubscription.add(
+                getWishlistUseCase?.createObservable(RequestParams.EMPTY)
+                        ?.subscribe(GetWishlistSubscriber(view, this))
+        )
     }
 
     override fun processGetRecommendationData(page: Int, allProductIds: List<String>) {
         view?.showItemLoading()
         val requestParam = getRecommendationUseCase?.getRecomParams(
                 page, "recom_widget", "cart", allProductIds, "")
-        getRecommendationUseCase?.execute(requestParam, GetRecommendationSubscriber(view, this))
+        getRecommendationUseCase?.createObservable(requestParam ?: RequestParams.EMPTY)
+                ?.subscribeOn(schedulers.io)
+                ?.observeOn(schedulers.main)
+                ?.subscribe(GetRecommendationSubscriber(view))
     }
 
     override fun processAddToCart(productModel: Any) {
@@ -951,228 +1242,6 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         )
     }
 
-    override fun generateAddToCartEnhanceEcommerceDataLayer(cartWishlistItemHolderData: CartWishlistItemHolderData,
-                                                            addToCartDataResponseModel: AddToCartDataModel, isCartEmpty: Boolean): Map<String, Any> {
-        val stringObjectMap = HashMap<String, Any>()
-        val enhancedECommerceActionField = EnhancedECommerceActionField().apply {
-            setList(if (isCartEmpty) EnhancedECommerceActionField.LIST_WISHLIST_ON_EMPTY_CART else EnhancedECommerceActionField.LIST_WISHLIST)
-        }
-        val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
-            setProductName(cartWishlistItemHolderData.name)
-            setProductID(cartWishlistItemHolderData.id)
-            setPrice(cartWishlistItemHolderData.rawPrice)
-            setCategory(cartWishlistItemHolderData.category)
-            setQty(cartWishlistItemHolderData.minOrder)
-            setShopId(cartWishlistItemHolderData.shopId)
-            setShopType(cartWishlistItemHolderData.shopType)
-            setShopName(cartWishlistItemHolderData.shopName)
-            setPicture(cartWishlistItemHolderData.imageUrl)
-            setUrl(cartWishlistItemHolderData.url)
-            setDimension45(addToCartDataResponseModel.data.cartId.toString())
-            setBrand("")
-            setCategoryId("")
-            setVariant("")
-        }
-        val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
-            setActionField(enhancedECommerceActionField.actionFieldMap)
-            addProduct(enhancedECommerceProductCartMapData.product)
-        }
-        stringObjectMap["currencyCode"] = "IDR"
-        stringObjectMap[EnhancedECommerceAdd.KEY_ADD] = enhancedECommerceAdd.getAddMap()
-        return stringObjectMap
-    }
-
-    override fun generateAddToCartEnhanceEcommerceDataLayer(cartRecentViewItemHolderData: CartRecentViewItemHolderData,
-                                                            addToCartDataResponseModel: AddToCartDataModel, isCartEmpty: Boolean): Map<String, Any> {
-        val stringObjectMap = HashMap<String, Any>()
-        val enhancedECommerceActionField = EnhancedECommerceActionField().apply {
-            setList(if (isCartEmpty) EnhancedECommerceActionField.LIST_RECENT_VIEW_ON_EMPTY_CART else EnhancedECommerceActionField.LIST_RECENT_VIEW)
-        }
-        val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
-            setProductName(cartRecentViewItemHolderData.name)
-            setProductID(cartRecentViewItemHolderData.id)
-            setPrice(cartRecentViewItemHolderData.price)
-            setQty(cartRecentViewItemHolderData.minOrder)
-            setDimension52(cartRecentViewItemHolderData.shopId)
-            setDimension57(cartRecentViewItemHolderData.shopName)
-            setDimension59(cartRecentViewItemHolderData.shopType)
-            setDimension77(addToCartDataResponseModel.data.cartId.toString())
-            setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-            setCategoryId("")
-            setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-        }
-        val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
-            setActionField(enhancedECommerceActionField.actionFieldMap)
-            addProduct(enhancedECommerceProductCartMapData.product)
-        }
-        stringObjectMap["currencyCode"] = "IDR"
-        stringObjectMap[EnhancedECommerceAdd.KEY_ADD] = enhancedECommerceAdd.getAddMap()
-        return stringObjectMap
-    }
-
-    override fun generateAddToCartEnhanceEcommerceDataLayer(cartRecommendationItemHolderData: CartRecommendationItemHolderData,
-                                                            addToCartDataResponseModel: AddToCartDataModel, isCartEmpty: Boolean): Map<String, Any> {
-        val stringObjectMap = HashMap<String, Any>()
-        val enhancedECommerceActionField = EnhancedECommerceActionField().apply {
-            setList(getActionFieldListStr(isCartEmpty, cartRecommendationItemHolderData.recommendationItem))
-        }
-        val enhancedECommerceProductCartMapData = EnhancedECommerceRecomProductCartMapData().apply {
-            setProductName(cartRecommendationItemHolderData.recommendationItem.name)
-            setProductID(cartRecommendationItemHolderData.recommendationItem.productId.toString())
-            setPrice(cartRecommendationItemHolderData.recommendationItem.price.replace("[^0-9]".toRegex(), ""))
-            setCategory(cartRecommendationItemHolderData.recommendationItem.categoryBreadcrumbs)
-            setQty(cartRecommendationItemHolderData.recommendationItem.minOrder)
-            setShopId(cartRecommendationItemHolderData.recommendationItem.shopId.toString())
-            setShopType(cartRecommendationItemHolderData.recommendationItem.shopType)
-            setShopName(cartRecommendationItemHolderData.recommendationItem.shopName)
-            setDimension45(addToCartDataResponseModel.data.cartId.toString())
-            setDimension53(cartRecommendationItemHolderData.recommendationItem.discountPercentageInt > 0)
-            setDimension40(addToCartDataResponseModel.data.trackerListName)
-            setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-            setCategoryId("")
-            setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-            if (cartRecommendationItemHolderData.recommendationItem.isFreeOngkirActive) {
-                setDimension83(EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR)
-            } else {
-                setDimension83(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-            }
-        }
-
-        val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
-            setActionField(enhancedECommerceActionField.actionFieldMap)
-            addProduct(enhancedECommerceProductCartMapData.getProduct())
-        }
-        stringObjectMap["currencyCode"] = "IDR"
-        stringObjectMap[EnhancedECommerceAdd.KEY_ADD] = enhancedECommerceAdd.getAddMap()
-        return stringObjectMap
-    }
-
-    override fun generateRecentViewProductClickDataLayer(cartRecentViewItemHolderData: CartRecentViewItemHolderData, position: Int): Map<String, Any> {
-        val stringObjectMap = HashMap<String, Any>()
-        val enhancedECommerceActionField = EnhancedECommerceActionField().apply {
-            setList(EnhancedECommerceEmptyCartActionFieldData.VALUE_SECTION_NAME_RECENT_VIEW)
-        }
-        val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
-            setProductName(cartRecentViewItemHolderData.name)
-            setProductID(cartRecentViewItemHolderData.id)
-            setPrice(cartRecentViewItemHolderData.price.replace("[^0-9]".toRegex(), ""))
-            setCategory(EnhancedECommerceEmptyCartProductData.DEFAULT_VALUE_NONE_OTHER)
-            setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-            setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-            setPosition(position.toString())
-        }
-        val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
-            setActionField(enhancedECommerceActionField.actionFieldMap)
-            addProduct(enhancedECommerceProductCartMapData.product)
-        }
-        stringObjectMap["currencyCode"] = "IDR"
-        stringObjectMap[EnhancedECommerceAdd.KEY_ADD] = enhancedECommerceAdd.getAddMap()
-        return stringObjectMap
-    }
-
-    override fun generateWishlistProductClickDataLayer(cartWishlistItemHolderData: CartWishlistItemHolderData, position: Int): Map<String, Any> {
-        val stringObjectMap = HashMap<String, Any>()
-        val enhancedECommerceActionField = EnhancedECommerceActionField().apply {
-            setList(EnhancedECommerceEmptyCartActionFieldData.VALUE_SECTION_NAME_WISHLIST)
-        }
-        val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
-            setProductName(cartWishlistItemHolderData.name)
-            setProductID(cartWishlistItemHolderData.id)
-            setPrice(cartWishlistItemHolderData.price.replace("[^0-9]".toRegex(), ""))
-            setCategory(cartWishlistItemHolderData.category)
-            setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-            setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-            setPosition(position.toString())
-        }
-        val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
-            setActionField(enhancedECommerceActionField.actionFieldMap)
-            addProduct(enhancedECommerceProductCartMapData.product)
-        }
-        stringObjectMap["currencyCode"] = "IDR"
-        stringObjectMap[EnhancedECommerceAdd.KEY_ADD] = enhancedECommerceAdd.getAddMap()
-        return stringObjectMap
-    }
-
-    private fun getProductRecentViewImpressionMapData(recentViewItemHolderData: CartRecentViewItemHolderData, isEmptyCart: Boolean, position: Int): EnhancedECommerceProductCartMapData {
-        return EnhancedECommerceProductCartMapData().apply {
-            setProductID(recentViewItemHolderData.id)
-            setProductName(recentViewItemHolderData.name)
-            setPrice(recentViewItemHolderData.price.replace("[^0-9]".toRegex(), ""))
-            setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-            setCategory(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-            setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-
-            if (isEmptyCart) {
-                setListName(EnhancedECommerceEmptyCartActionFieldData.VALUE_SECTION_NAME_RECENT_VIEW_EMPTY_CART)
-            } else {
-                setListName(EnhancedECommerceEmptyCartActionFieldData.VALUE_SECTION_NAME_RECENT_VIEW)
-            }
-
-            setPosition(position.toString())
-        }
-    }
-
-    override fun generateRecentViewProductClickEmptyCartDataLayer(cartRecentViewItemHolderData: CartRecentViewItemHolderData, position: Int): Map<String, Any> {
-        val enhancedECommerceEmptyCartProductData = EnhancedECommerceEmptyCartProductData().apply {
-            setProductID(cartRecentViewItemHolderData.id)
-            setProductName(cartRecentViewItemHolderData.name)
-            setPrice(cartRecentViewItemHolderData.price.replace("[^0-9]".toRegex(), ""))
-            setBrand(EnhancedECommerceEmptyCartProductData.DEFAULT_VALUE_NONE_OTHER)
-            setCategory(EnhancedECommerceEmptyCartProductData.DEFAULT_VALUE_NONE_OTHER)
-            setPosition(position.toString())
-            setVariant(EnhancedECommerceEmptyCartProductData.DEFAULT_VALUE_NONE_OTHER)
-        }
-
-        val productsData = ArrayList<Map<String, Any>>().apply {
-            add(enhancedECommerceEmptyCartProductData.getProduct())
-        }
-
-        val enhancedECommerceEmptyCart = getEnhancedECommerceOnClickEmptyCartData(
-                productsData, EnhancedECommerceEmptyCartActionFieldData.VALUE_SECTION_NAME_RECENT_VIEW_EMPTY_CART)
-
-        return enhancedECommerceEmptyCart.getData()
-    }
-
-    private fun getProductWishlistImpressionMapData(wishlistItemHolderData: CartWishlistItemHolderData, isEmptyCart: Boolean, position: Int): EnhancedECommerceProductCartMapData {
-        return EnhancedECommerceProductCartMapData().apply {
-            setProductID(wishlistItemHolderData.id)
-            setProductName(wishlistItemHolderData.name)
-            setPrice(wishlistItemHolderData.price.replace("[^0-9]".toRegex(), ""))
-            setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-            setCategory(wishlistItemHolderData.category)
-            setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-
-            if (isEmptyCart) {
-                setListName(EnhancedECommerceEmptyCartActionFieldData.VALUE_SECTION_NAME_WISHLIST_EMPTY_CART)
-            } else {
-                setListName(EnhancedECommerceEmptyCartActionFieldData.VALUE_SECTION_NAME_WISHLIST)
-            }
-
-            setPosition(position.toString())
-        }
-    }
-
-    override fun generateWishlistProductClickEmptyCartDataLayer(cartWishlistItemHolderData: CartWishlistItemHolderData, position: Int): Map<String, Any> {
-        val enhancedECommerceEmptyCartProductData = EnhancedECommerceEmptyCartProductData().apply {
-            setProductID(cartWishlistItemHolderData.id)
-            setProductName(cartWishlistItemHolderData.name)
-            setPrice(cartWishlistItemHolderData.price.replace("[^0-9]".toRegex(), ""))
-            setBrand(EnhancedECommerceEmptyCartProductData.DEFAULT_VALUE_NONE_OTHER)
-            setCategory(cartWishlistItemHolderData.category)
-            setPosition(position.toString())
-            setVariant(EnhancedECommerceEmptyCartProductData.DEFAULT_VALUE_NONE_OTHER)
-        }
-
-        val productsData = ArrayList<Map<String, Any>>().apply {
-            add(enhancedECommerceEmptyCartProductData.getProduct())
-        }
-
-        val enhancedECommerceEmptyCart = getEnhancedECommerceOnClickEmptyCartData(
-                productsData, EnhancedECommerceEmptyCartActionFieldData.VALUE_SECTION_NAME_WISHLIST_EMPTY_CART)
-
-        return enhancedECommerceEmptyCart.getData()
-    }
-
     override fun redirectToLite(url: String) {
         view?.let {
             it.showProgressLoading()
@@ -1200,58 +1269,6 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         }
     }
 
-    override fun generateCheckPromoFirstStepParam(promoStackingGlobalData: PromoStackingData): Promo {
-        val orders = ArrayList<Order>()
-        getCartListData()?.shopGroupAvailableDataList?.let { shopGroupAvailableDataList ->
-            for (shopGroupAvailableData in shopGroupAvailableDataList) {
-                val order = Order()
-                val productDetails = ArrayList<ProductDetail>()
-                shopGroupAvailableData.cartItemDataList?.let { cartItemHolderDataList ->
-                    for (cartItemHolderData in cartItemHolderDataList) {
-                        val productDetail = ProductDetail()
-                        try {
-                            productDetail.productId = Integer.parseInt(cartItemHolderData.cartItemData?.originData?.productId
-                                    ?: "0")
-                        } catch (e: NumberFormatException) {
-                            e.printStackTrace()
-                            productDetail.productId = 0
-                        }
-
-                        productDetail.quantity = cartItemHolderData.cartItemData?.updatedData?.quantity
-                        productDetails.add(productDetail)
-                    }
-                }
-                if (shopGroupAvailableData.voucherOrdersItemData != null && !shopGroupAvailableData.voucherOrdersItemData?.code.isNullOrEmpty()) {
-                    val merchantPromoCodes = ArrayList<String>()
-                    merchantPromoCodes.add(shopGroupAvailableData.voucherOrdersItemData?.code ?: "")
-                    if (merchantPromoCodes.size > 0) {
-                        order.codes = merchantPromoCodes
-                    }
-                }
-                order.productDetails = productDetails
-                order.uniqueId = shopGroupAvailableData.cartString
-                try {
-                    order.shopId = Integer.parseInt(shopGroupAvailableData.shopId ?: "0")
-                } catch (e: NumberFormatException) {
-                    e.printStackTrace()
-                    order.shopId = 0
-                }
-
-                orders.add(order)
-            }
-        }
-        val promo = Promo()
-        promo.state = Promo.STATE_CART
-        promo.cartType = Promo.CART_TYPE_DEFAULT
-        val globalPromoCodes = ArrayList<String>()
-        globalPromoCodes.add(promoStackingGlobalData.promoCode)
-        promo.codes = globalPromoCodes
-        promo.orders = orders
-        promo.skipApply = 0
-        promo.isSuggested = 0
-        return promo
-    }
-
     override fun processUpdateCartCounter() {
         compositeSubscription.add(
                 updateCartCounterUseCase.createObservable(RequestParams.create())
@@ -1261,4 +1278,5 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                         .subscribe(UpdateCartCounterSubscriber(view))
         )
     }
+
 }

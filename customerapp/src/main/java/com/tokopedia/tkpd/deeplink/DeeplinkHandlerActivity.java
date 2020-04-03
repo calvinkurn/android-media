@@ -91,8 +91,6 @@ import com.tokopedia.shop.applink.ShopAppLinkModule;
 import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
-import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
-import com.tokopedia.topchat.deeplink.TopChatAppLinkModuleLoader;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.logisticorder.applink.TrackingAppLinkModule;
 import com.tokopedia.logisticorder.applink.TrackingAppLinkModuleLoader;
@@ -114,6 +112,9 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
@@ -138,7 +139,6 @@ import rx.schedulers.Schedulers;
         InterestPickApplinkModule.class,
         TrackingAppLinkModule.class,
         HowtopayApplinkModule.class,
-        TopChatAppLinkModule.class,
         HomeNavigationApplinkModule.class,
         AccountHomeApplinkModule.class,
         RecentViewApplinkModule.class,
@@ -183,7 +183,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new InterestPickApplinkModuleLoader(),
                     new TrackingAppLinkModuleLoader(),
                     new HowtopayApplinkModuleLoader(),
-                    new TopChatAppLinkModuleLoader(),
                     new HomeNavigationApplinkModuleLoader(),
                     new AccountHomeApplinkModuleLoader(),
                     new RecentViewApplinkModuleLoader(),
@@ -242,7 +241,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                 }
             }
         }
-        LinkerManager.getInstance().initSession();
+        iniBranchIO(this);
         finish();
     }
 
@@ -402,5 +401,12 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     @Override
     public void onError(LinkerError linkerError) {
 
+    }
+
+    private void iniBranchIO(Context context){
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_BRANCH_INIT_DEEPLINKHANDLER)){
+            LinkerManager.getInstance().initSession();
+        }
     }
 }

@@ -21,20 +21,29 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.adapterDelegate)
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.trackingOptimizer)
 
     implementation project(rootProject.ext.features.playCommon)
+    implementation project(rootProject.ext.features.atc_common)
+    implementation project(rootProject.ext.features.variantCommon)
+    implementation project(rootProject.ext.features.resourcesCommon)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
 
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.lottie
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
 
     implementation rootProject.ext.networkDependencies.glide
 
@@ -46,6 +55,10 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.assertJCore
     testImplementation rootProject.ext.testDependencies.couroutinesTest
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junitJupiterApi
+    testImplementation rootProject.ext.testDependencies.junitPlatformRunner
+    testRuntimeOnly rootProject.ext.testDependencies.junitJupiterEngine
 
     implementation "com.google.android.exoplayer:exoplayer-core:$newExoPlayerVersion"
     implementation "com.google.android.exoplayer:exoplayer-ui:$newExoPlayerVersion"
@@ -59,3 +72,5 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

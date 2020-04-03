@@ -1,18 +1,25 @@
 package com.tokopedia.product.detail.view.util
 
 import android.content.Context
+import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.joinToStringWithLast
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
-import com.tokopedia.product.detail.data.model.*
+import com.tokopedia.product.detail.data.model.ProductInfoP2General
+import com.tokopedia.product.detail.data.model.ProductInfoP2Login
+import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
+import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationResponse
+import com.tokopedia.product.detail.data.model.variant.VariantDataModel
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import java.util.*
 import kotlin.collections.ArrayList
@@ -71,6 +78,15 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     val valuePropositionDataModel: ProductValuePropositionDataModel?
         get() = mapOfData[ProductDetailConstant.VALUE_PROP] as? ProductValuePropositionDataModel
 
+    val productNewVariantDataModel: VariantDataModel?
+        get() = mapOfData[ProductDetailConstant.VARIANT_OPTIONS] as? VariantDataModel
+
+    val productSocialProofPvDataModel: ProductSocialProofPvDataModel?
+        get() = mapOfData[ProductDetailConstant.SOCIAL_PROOF_PV] as? ProductSocialProofPvDataModel
+
+    val notifyMeMap: ProductNotifyMeDataModel?
+        get() = mapOfData[ProductDetailConstant.UPCOMING_DEALS] as? ProductNotifyMeDataModel
+
     val listProductRecomMap: List<ProductRecommendationDataModel>? = mapOfData.filterKeys {
         it == ProductDetailConstant.PDP_1 || it == ProductDetailConstant.PDP_2
                 || it == ProductDetailConstant.PDP_3 || it == ProductDetailConstant.PDP_4
@@ -81,14 +97,21 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     val getShopInfo: ProductShopInfoDataModel
         get() = shopInfoMap ?: ProductShopInfoDataModel()
 
-    fun updateDataP1(dataP1: DynamicProductInfoP1?, imageHeight: Int) {
+    fun updateDataP1(dataP1: DynamicProductInfoP1?) {
         dataP1?.let {
             snapShotMap?.run {
+                shouldRenderImageVariant = true
                 dynamicProductInfoP1 = it
-                screenHeight = imageHeight
-                media = it.data.media.map { media ->
-                    ProductMediaDataModel(media.type, media.uRL300, media.uRLOriginal, media.uRLThumbnail, media.description, media.videoURLAndroid, media.isAutoplay)
-                }
+                media = DynamicProductDetailMapper.convertMediaToDataModel(it.data.media.toMutableList())
+            }
+
+            notifyMeMap?.run {
+                campaignID = it.data.campaignId
+                campaignType = it.data.campaignType
+                campaignTypeName = it.data.campaignTypeName
+                endDate = it.data.endDate
+                startDate = it.data.startDate
+                notifyMe = it.data.notifyMe
             }
 
             valuePropositionDataModel?.run {
@@ -101,6 +124,12 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
             }
 
             socialProofMap?.run {
+                txStats = it.basic.txStats
+                stats = it.basic.stats
+                rating = it.basic.stats.rating
+            }
+
+            productSocialProofPvDataModel?.run {
                 txStats = it.basic.txStats
                 stats = it.basic.stats
                 rating = it.basic.stats.rating
@@ -139,11 +168,13 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
         }
     }
 
-    fun updateDataTradein(tradeinResponse: ValidateTradeInPDP) {
+    fun updateDataTradein(tradeinResponse: ValidateTradeInResponse) {
         productTradeinMap?.run {
             snapShotMap?.shouldShowTradein = true
             data.first().subtitle = if (tradeinResponse.usedPrice > 0) {
                 context.getString(R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice, true))
+            } else if (!tradeinResponse.widgetString.isNullOrEmpty()) {
+                tradeinResponse.widgetString
             } else {
                 context.getString(R.string.trade_in_exchange)
             }
@@ -165,15 +196,10 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                 shopInfo = it.shopInfo
             }
 
-            productFullfilmentMap?.run {
-                data.first().subtitle = context.getString(R.string.multiorigin_desc)
-            }
-
             snapShotMap?.run {
                 isAllowManage = it.shopInfo?.isAllowManage ?: 0
-                nearestWarehouse = it.nearestWarehouse
                 statusTitle = it.shopInfo?.statusInfo?.statusTitle ?: ""
-                statusTitle = it.shopInfo?.statusInfo?.statusMessage ?: ""
+                statusMessage = it.shopInfo?.statusInfo?.statusMessage ?: ""
                 shopStatus = it.shopInfo?.statusInfo?.shopStatus ?: 1
             }
 
@@ -213,6 +239,10 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
             }
 
             socialProofMap?.run {
+                wishListCount = it.wishlistCount.count
+            }
+
+            productSocialProofPvDataModel?.run {
                 wishListCount = it.wishlistCount.count
             }
 
@@ -260,6 +290,12 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
         }
     }
 
+    fun updateImageAfterClickVariant(it: MutableList<Media>) {
+        snapShotMap?.run {
+            media = DynamicProductDetailMapper.convertMediaToDataModel(it)
+        }
+    }
+
     fun updateVariantInfo(productVariant: ProductVariant, selectedOptionString: String) {
         productVariantInfoMap?.run {
             data.first().subtitle =
@@ -288,24 +324,20 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                     isWishlistVisible = false,
                     isWishlisted = it.isWishlist,
                     shopBadgeList = it.badgesUrl.map {
-                        ProductCardModel.ShopBadge(imageUrl = it ?: "")
+                        ProductCardModel.ShopBadge(imageUrl = it
+                                ?: "")
                     },
                     freeOngkir = ProductCardModel.FreeOngkir(
                             isActive = it.isFreeOngkirActive,
                             imageUrl = it.freeOngkirImageUrl
                     ),
-                    labelPromo = ProductCardModel.Label(
-                            title = it.labelPromo.title,
-                            type = it.labelPromo.type
-                    ),
-                    labelCredibility = ProductCardModel.Label(
-                            title = it.labelCredibility.title,
-                            type = it.labelCredibility.type
-                    ),
-                    labelOffers = ProductCardModel.Label(
-                            title = it.labelOffers.title,
-                            type = it.labelOffers.type
-                    )
+                    labelGroupList = it.labelGroupList.map { recommendationLabel ->
+                        ProductCardModel.LabelGroup(
+                                position = recommendationLabel.position,
+                                title = recommendationLabel.title,
+                                type = recommendationLabel.type
+                        )
+                    }
             )
         }
     }

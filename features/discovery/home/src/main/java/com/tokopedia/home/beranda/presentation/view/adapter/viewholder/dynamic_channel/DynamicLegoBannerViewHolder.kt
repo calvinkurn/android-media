@@ -1,15 +1,13 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
 import android.content.Context
-import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
-import com.google.android.gms.analytics.Tracker
-import com.tokopedia.design.countdown.CountDownView
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2
@@ -28,10 +26,9 @@ import com.tokopedia.track.TrackApp
 
 class DynamicLegoBannerViewHolder(legoBannerView: View,
                                   private val homeCategoryListener: HomeCategoryListener,
-                                  countDownListener: CountDownView.CountDownListener,
                                   private val parentRecycledViewPool: RecyclerView.RecycledViewPool) :
         DynamicChannelViewHolder(
-                legoBannerView, homeCategoryListener, countDownListener
+                legoBannerView, homeCategoryListener
         ) {
 
     companion object {
@@ -98,13 +95,12 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
             private val LEGO_LANDSCAPE = R.layout.layout_lego_landscape
         }
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LegoItemViewHolder {
-            val layout = if(legoBannerType == TYPE_FOUR_GRID_LEGO) LEGO_LANDSCAPE else LEGO_SQUARE
-            val v = LayoutInflater.from(parent.context).inflate(layout, parent, false)
+            val v = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
             return LegoItemViewHolder(v)
         }
 
         override fun getItemViewType(position: Int): Int {
-            return R.layout.layout_lego_item
+            return if(legoBannerType == TYPE_FOUR_GRID_LEGO) LEGO_LANDSCAPE else LEGO_SQUARE
         }
 
         override fun onBindViewHolder(holder: LegoItemViewHolder, position: Int) {

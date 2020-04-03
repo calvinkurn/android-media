@@ -2,23 +2,21 @@ package com.tokopedia.travelhomepage.homepage.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.constant.TravelType
-import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
-import com.tokopedia.common.travel.domain.TravelRecentSearchUseCase
+import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.travelhomepage.homepage.data.*
+import com.tokopedia.travelhomepage.homepage.data.ParamData
+import com.tokopedia.travelhomepage.homepage.data.TravelHomepageItemModel
+import com.tokopedia.travelhomepage.homepage.data.TravelLayoutSubhomepage
+import com.tokopedia.travelhomepage.homepage.data.TravelUnifiedSubhomepageData
 import com.tokopedia.travelhomepage.homepage.data.mapper.TravelHomepageMapper
-import com.tokopedia.travelhomepage.homepage.usecase.GetEmptyViewModelsUseCase
-import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.travelhomepage.homepage.usecase.GetEmptyModelsUseCase
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -28,182 +26,56 @@ import javax.inject.Inject
 
 class TravelHomepageViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
-        private val getEmptyViewModelsUseCase: GetEmptyViewModelsUseCase,
-        private val getTravelCollectiveBannerUseCase: GetTravelCollectiveBannerUseCase,
-        private val travelRecentSearchUseCase: TravelRecentSearchUseCase,
-        dispatcher: CoroutineDispatcher)
-    : BaseViewModel(dispatcher) {
+        private val getEmptyModelsUseCase: GetEmptyModelsUseCase,
+        private val dispatcherProvider: TravelDispatcherProvider)
+    : BaseViewModel(dispatcherProvider.io()) {
 
     val travelItemList = MutableLiveData<List<TravelHomepageItemModel>>()
     val isAllError = MutableLiveData<Boolean>()
     private val mapper = TravelHomepageMapper()
 
-    fun getIntialList(isLoadFromCloud: Boolean) {
-        val list: List<TravelHomepageItemModel> = getEmptyViewModelsUseCase.requestEmptyViewModels(isLoadFromCloud)
-
-        travelItemList.value = list
-        isAllError.value = false
-    }
-
-    fun getBanner(rawQuery: String, isFromCloud: Boolean) {
-        launch {
-            val banners = getTravelCollectiveBannerUseCase.execute(rawQuery, TravelType.ALL, isFromCloud)
-            when (banners) {
-                is Success -> {
-                    travelItemList.value?.let {
-                        val updatedList = it.toMutableList()
-                        updatedList[BANNER_ORDER] = TravelHomepageBannerModel(banners.data)
-                        updatedList[BANNER_ORDER].isLoaded = true
-                        updatedList[BANNER_ORDER].isSuccess = true
-                        travelItemList.value = updatedList
-                    }
-                }
-                is Fail -> {
-                    travelItemList.value?.let {
-                        val updatedList = it.toMutableList()
-                        updatedList[BANNER_ORDER].isLoaded = true
-                        updatedList[BANNER_ORDER].isSuccess = false
-                        travelItemList.value = updatedList
-                        checkIfAllError()
-                    }
-                }
-            }
+    fun getListFromCloud(rawQuery: String, isLoadFromCloud: Boolean) {
+        launchCatchError(block = {
+            val layoutResult = getEmptyModelsUseCase.getTravelLayoutSubhomepage(rawQuery, isLoadFromCloud)
+            if (layoutResult is Success) {
+                travelItemList.postValue(layoutResult.data)
+                isAllError.postValue(false)
+            } else checkIfAllError()
+        }) {
+            checkIfAllError()
         }
     }
 
-    fun getCategories(rawQuery: String, isFromCloud: Boolean) {
+    fun getTravelUnifiedData(rawQuery: String, layoutData: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean) {
+
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
-                val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageCategoryListModel.Response::class.java)
+            val data = withContext(dispatcherProvider.ui()) {
+                val param = mapOf(DATA_TYPE_PARAM to layoutData.dataType, WIDGET_TYPE_PARAM to layoutData.widgetType, "data" to ParamData())
+                val graphqlRequest = GraphqlRequest(rawQuery, TravelUnifiedSubhomepageData.Response::class.java, param)
                 var graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
                 else GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
-            }.getSuccessData<TravelHomepageCategoryListModel.Response>()
+            }.getSuccessData<TravelUnifiedSubhomepageData.Response>()
 
             travelItemList.value?.let {
                 val updatedList = it.toMutableList()
-                updatedList[CATEGORIES_ORDER] = data.response
-                updatedList[CATEGORIES_ORDER].isLoaded = true
-                updatedList[CATEGORIES_ORDER].isSuccess = true
-                travelItemList.value = updatedList
+                updatedList[layoutData.position] = mapper.mapToViewModel(layoutData, data.response)
+                updatedList[layoutData.position].isLoaded = true
+                updatedList[layoutData.position].isSuccess = true
+                travelItemList.postValue(updatedList)
             }
         }) {
             travelItemList.value?.let {
                 val updatedList = it.toMutableList()
-                updatedList[CATEGORIES_ORDER].isLoaded = true
-                updatedList[CATEGORIES_ORDER].isSuccess = false
-                travelItemList.value = updatedList
-                checkIfAllError()
+                updatedList[layoutData.position].isLoaded = true
+                updatedList[layoutData.position].isSuccess = false
+                travelItemList.postValue(updatedList)
             }
+            checkIfAllError()
         }
     }
 
-    fun getOrderList(rawQuery: String, isFromCloud: Boolean) {
-        launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
-                val param = mapOf(PARAM_PAGE to 1, PARAM_PER_PAGE to 10, PARAM_FILTER_STATUS to "success")
-                val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageOrderListModel.Response::class.java, param)
-                var graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-                else GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
-            }.getSuccessData<TravelHomepageOrderListModel.Response>()
-
-            travelItemList.value?.let {
-                val updatedList = it.toMutableList()
-                updatedList[ORDER_LIST_ORDER] = mapper.mapToSectionViewModel(data.response)
-                updatedList[ORDER_LIST_ORDER].isLoaded = true
-                updatedList[ORDER_LIST_ORDER].isSuccess = true
-                travelItemList.value = updatedList
-            }
-        }) {
-            travelItemList.value?.let {
-                val updatedList = it.toMutableList()
-                updatedList[ORDER_LIST_ORDER].isLoaded = true
-                updatedList[ORDER_LIST_ORDER].isSuccess = false
-                travelItemList.value = updatedList
-                checkIfAllError()
-            }
-        }
-    }
-
-    fun getRecentSearch(rawQuery: String, isFromCloud: Boolean) {
-        launchCatchError(block = {
-            val data = travelRecentSearchUseCase.execute(rawQuery, isFromCloud)
-
-            travelItemList.value?.let {
-                val updatedList = it.toMutableList()
-                updatedList[RECENT_SEARCHES_ORDER] = mapper.mapToSectionViewModel(data)
-                updatedList[RECENT_SEARCHES_ORDER].isLoaded = true
-                updatedList[RECENT_SEARCHES_ORDER].isSuccess = true
-                travelItemList.value = updatedList
-            }
-        }) {
-            travelItemList.value?.let {
-                val updatedList = it.toMutableList()
-                updatedList[RECENT_SEARCHES_ORDER].isLoaded = true
-                updatedList[RECENT_SEARCHES_ORDER].isSuccess = false
-                travelItemList.value = updatedList
-                checkIfAllError()
-            }
-        }
-    }
-
-    fun getRecommendation(rawQuery: String, isFromCloud: Boolean) {
-        launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
-                val param = mapOf(PARAM_PRODUCT to "ALL")
-                val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageRecommendationModel.Response::class.java, param)
-                var graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-                else GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
-            }.getSuccessData<TravelHomepageRecommendationModel.Response>()
-
-            travelItemList.value?.let {
-                val updatedList = it.toMutableList()
-                updatedList[RECOMMENDATION_ORDER] = mapper.mapToSectionViewModel(data.response)
-                updatedList[RECOMMENDATION_ORDER].isLoaded = true
-                updatedList[RECOMMENDATION_ORDER].isSuccess = true
-                travelItemList.value = updatedList
-            }
-        }) {
-            travelItemList.value?.let {
-                val updatedList = it.toMutableList()
-                updatedList[RECOMMENDATION_ORDER].isLoaded = true
-                updatedList[RECOMMENDATION_ORDER].isSuccess = false
-                travelItemList.value = updatedList
-                checkIfAllError()
-            }
-        }
-    }
-
-    fun getDestination(rawQuery: String, isFromCloud: Boolean) {
-        launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
-                val graphqlRequest = GraphqlRequest(rawQuery, TravelHomepageDestinationModel.Response::class.java)
-                var graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-                else GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
-            }.getSuccessData<TravelHomepageDestinationModel.Response>()
-
-            travelItemList.value?.let {
-                val updatedList = it.toMutableList()
-                updatedList[DESTINATION_ORDER] = data.response
-                updatedList[DESTINATION_ORDER].isLoaded = true
-                updatedList[DESTINATION_ORDER].isSuccess = true
-                travelItemList.value = updatedList
-            }
-        }) {
-            travelItemList.value?.let {
-                val updatedList = it.toMutableList()
-                updatedList[DESTINATION_ORDER].isLoaded = true
-                updatedList[DESTINATION_ORDER].isSuccess = false
-                travelItemList.value = updatedList
-                checkIfAllError()
-            }
-        }
-    }
-
-    fun checkIfAllError() {
+    private fun checkIfAllError() {
         travelItemList.value?.let {
             var isSuccess = false
             for (item in it) {
@@ -212,22 +84,12 @@ class TravelHomepageViewModel @Inject constructor(
                     break
                 }
             }
-            if (!isSuccess) isAllError.value = true
+            isAllError.postValue(!isSuccess)
         }
     }
 
     companion object {
-        const val BANNER_ORDER = 0
-        const val CATEGORIES_ORDER = 1
-        const val ORDER_LIST_ORDER = 2
-        const val RECENT_SEARCHES_ORDER = 3
-        const val RECOMMENDATION_ORDER = 4
-        const val DESTINATION_ORDER = 5
-
-        val PARAM_PAGE = "page"
-        val PARAM_PER_PAGE = "perPage"
-        val PARAM_FILTER_STATUS = "filterStatus"
-        val PARAM_PRODUCT = "product"
+        const val DATA_TYPE_PARAM = "dataType"
+        const val WIDGET_TYPE_PARAM = "widgetType"
     }
-
 }

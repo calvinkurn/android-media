@@ -14,6 +14,7 @@ import com.tokopedia.imageuploader.utils.ImageUploaderUtils;
 import com.tokopedia.kyc_centralized.view.listener.UserIdentificationUploadImage;
 import com.tokopedia.kyc_centralized.view.presenter.UserIdentificationUploadImagePresenter;
 import com.tokopedia.kyc_centralized.view.viewmodel.AttachmentImageModel;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.user_identification_common.domain.usecase.GetKtpStatusUseCase;
@@ -82,5 +83,11 @@ public class UserIdentificationCommonModule {
     @Provides
     public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
+    }
+
+    @UserIdentificationCommonScope
+    @Provides
+    public RemoteConfigInstance provideRemoteConfigInstance() {
+        return RemoteConfigInstance.getInstance();
     }
 }

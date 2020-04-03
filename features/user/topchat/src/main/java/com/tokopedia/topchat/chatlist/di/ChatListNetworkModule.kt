@@ -7,16 +7,16 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.chat_common.network.ChatUrl
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.CommonNetwork
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.topchat.common.chat.api.ChatApi
-import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
+import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.XUserIdInterceptor
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -34,7 +34,6 @@ import javax.inject.Named
 
 @Module
 class ChatListNetworkModule {
-
 
     private val NET_READ_TIMEOUT = 60
     private val NET_WRITE_TIMEOUT = 60
@@ -67,7 +66,7 @@ class ChatListNetworkModule {
 
     @ChatListScope
     @Provides
-    fun provideResources(@ApplicationContext context: Context): Resources {
+    fun provideResources(@TopchatContext context: Context): Resources {
         return context.resources
     }
 

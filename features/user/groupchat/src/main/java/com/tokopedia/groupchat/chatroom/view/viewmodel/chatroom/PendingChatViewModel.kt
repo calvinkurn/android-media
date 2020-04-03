@@ -21,12 +21,14 @@ class PendingChatViewModel : BaseChatViewModel, Visitable<GroupChatTypeFactory> 
         this.isRetry = false
     }
 
-    constructor(message: String, senderId: String, senderName: String, senderIconUrl: String, isInfluencer: Boolean) : super(message, 0, 0, "") {
+    constructor(message: String, senderId: String, senderName: String, senderIconUrl: String, isInfluencer: Boolean, isChatDisabled: Boolean, isQuickReply: Boolean) : super(message, 0, 0, "") {
         this.senderId = senderId
         this.senderName = senderName
         this.senderIconUrl = senderIconUrl
         this.isInfluencer = isInfluencer
         this.isRetry = false
+        this.isChatDisabled = isChatDisabled
+        this.isQuickReply = isQuickReply
     }
 
     override fun type(typeFactory: GroupChatTypeFactory): Int {

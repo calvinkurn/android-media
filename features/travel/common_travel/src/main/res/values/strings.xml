@@ -10,7 +10,6 @@
     <string name="travel_passenger_additional_info">Bila tidak ada, mohon masukkan tanggal lahir dalam format (DDMMYYYY)</string>
     <string name="travel_passenger_birthdate">Tanggal Lahir</string>
     <string name="travel_passenger_birthdate_hint">Pilih Tanggal Lahir</string>
-    <string name="travel_select_passenger_submit_button">Simpan</string>
 
     <string name="travel_menu_passenger_list">Edit</string>
     <string name="travel_error_msg_choose_passenger">Kategori penumpang tidak sesuai.</string>

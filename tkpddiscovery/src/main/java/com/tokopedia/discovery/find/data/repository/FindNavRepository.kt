@@ -6,7 +6,7 @@ import com.tokopedia.discovery.find.data.model.RelatedLinkResponse
 import com.tokopedia.discovery.find.util.FindNavConstants
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
-import com.tokopedia.tradein_common.repository.BaseRepository
+import com.tokopedia.basemvvm.repository.BaseRepository
 import javax.inject.Inject
 import javax.inject.Named
 

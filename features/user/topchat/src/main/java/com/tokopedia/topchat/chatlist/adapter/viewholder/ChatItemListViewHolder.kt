@@ -2,12 +2,12 @@ package com.tokopedia.topchat.chatlist.adapter.viewholder
 
 import android.graphics.Typeface.ITALIC
 import android.graphics.Typeface.NORMAL
-import androidx.annotation.LayoutRes
-import com.google.android.material.snackbar.Snackbar
 import android.text.format.DateFormat
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.LayoutRes
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -16,8 +16,8 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
-import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.pojo.ChatStateItem
+import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.widget.LongClickMenu
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
@@ -149,7 +149,7 @@ class ChatItemListViewHolder(
 
     private fun changeStateMarkAsRead(element: ItemChatListPojo) {
         element.attributes?.let {
-            with (it) {
+            with(it) {
                 readStatus = STATE_CHAT_READ
                 bindReadState(readStatus, unreads)
                 listener.decreaseNotificationCounter()
@@ -168,7 +168,7 @@ class ChatItemListViewHolder(
 
     private fun changeStateMarkAsUnread(element: ItemChatListPojo) {
         element.attributes?.let {
-            with (it) {
+            with(it) {
                 readStatus = STATE_CHAT_UNREAD
                 bindReadState(readStatus, unreads)
                 listener.increaseNotificationCounter()
@@ -210,13 +210,13 @@ class ChatItemListViewHolder(
     private fun bindTypingState() {
         message.setText(R.string.is_typing)
         message.setTypeface(null, ITALIC)
-        message.setTextColor(MethodChecker.getColor(message.context, R.color.Green_G500))
+        message.setTextColor(MethodChecker.getColor(message.context, com.tokopedia.unifyprinciples.R.color.Green_G500))
     }
 
     private fun bindMessageState(lastReplyMessage: String) {
         message.text = MethodChecker.fromHtml(lastReplyMessage)
         message.setTypeface(null, NORMAL)
-        message.setTextColor(MethodChecker.getColor(message.context, R.color.Neutral_N700_68))
+        message.setTextColor(MethodChecker.getColor(message.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
     }
 
     private fun bindReadState(readStatus: Int?, unreads: Int?) {

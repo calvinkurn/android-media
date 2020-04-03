@@ -9,9 +9,10 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponseInternal
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class GraphqlCacheDataStore(private val mCacheManager: GraphqlCacheManager,
-                            private val mFingerprintManager: FingerprintManager): GraphqlDataStore {
+class GraphqlCacheDataStore @Inject constructor(private val mCacheManager: GraphqlCacheManager,
+                                                private val mFingerprintManager: FingerprintManager): GraphqlDataStore {
 
     override suspend fun getResponse(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponseInternal {
         return withContext(Dispatchers.IO){
@@ -27,7 +28,7 @@ class GraphqlCacheDataStore(private val mCacheManager: GraphqlCacheManager,
                         listOfCached.add(rawJson)
                     }
                 }
-                GraphqlResponseInternal(JsonParser().parse(listOfCached.toString()).asJsonArray, true, indexOfEmptyCached)
+                GraphqlResponseInternal(JsonParser().parse(listOfCached.toString()).asJsonArray, indexOfEmptyCached)
             }else{
                 val rawJson = mCacheManager.get(mFingerprintManager.generateFingerPrint(requests.toString(),
                         cacheStrategy.isSessionIncluded))

@@ -10,4 +10,8 @@ data class Like (
     var value: Int = 0,
     @SerializedName("checked")
     var isChecked: Boolean = false
-)
+) {
+    fun copy(): Like {
+        return Like(fmt, value, isChecked)
+    }
+}

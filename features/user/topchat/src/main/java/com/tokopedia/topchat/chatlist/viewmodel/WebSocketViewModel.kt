@@ -43,7 +43,7 @@ class WebSocketViewModel
             "&device_id=" + userSession.deviceId +
             "&user_id=" + userSession.userId
     private var easyWS: EasyWS? = null
-
+    private var isOnStop = false
     private val _itemChat = MutableLiveData<Result<BaseIncomingItemWebSocketModel>>()
     val itemChat: LiveData<Result<BaseIncomingItemWebSocketModel>>
         get() = _itemChat
@@ -59,6 +59,7 @@ class WebSocketViewModel
             easyWS?.let {
                 for (response in it.textChannel) {
                     Timber.d(" Response: $response")
+                    if (isOnStop) continue
                     when(response.code) {
                         EVENT_TOPCHAT_REPLY_MESSAGE ->  {
                             val chat = Success(mapToIncomingChat(response))
@@ -119,6 +120,18 @@ class WebSocketViewModel
         super.onCleared()
         easyWS?.webSocket?.close(1000, "Bye!")
         Timber.d(" OnCleared")
+    }
+
+    fun clearItemChatValue() {
+        _itemChat.value = null
+    }
+
+    fun onStop() {
+        isOnStop = true
+    }
+
+    fun onStart() {
+        isOnStop = false
     }
 
     companion object {

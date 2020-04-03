@@ -15,18 +15,18 @@
 
     <ImageView
         android:id="@+id/iv_close"
-        android:layout_width="@dimen/dp_30"
-        android:layout_height="@dimen/dp_28"
+        android:layout_width="@dimen/dp_topchat_30"
+        android:layout_height="@dimen/dp_topchat_28"
         android:layout_gravity="end"
-        android:layout_marginTop="@dimen/dp_6"
-        android:layout_marginEnd="@dimen/dp_10"
-        android:layout_marginRight="@dimen/dp_10"
-        android:paddingStart="@dimen/dp_6"
-        android:paddingLeft="@dimen/dp_6"
-        android:paddingTop="@dimen/dp_10"
-        android:paddingEnd="@dimen/dp_14"
-        android:paddingRight="@dimen/dp_14"
-        android:paddingBottom="@dimen/dp_6"
+        android:layout_marginTop="@dimen/dp_topchat_6"
+        android:layout_marginEnd="@dimen/dp_topchat_10"
+        android:layout_marginRight="@dimen/dp_topchat_10"
+        android:paddingStart="@dimen/dp_topchat_6"
+        android:paddingLeft="@dimen/dp_topchat_6"
+        android:paddingTop="@dimen/dp_topchat_10"
+        android:paddingEnd="@dimen/dp_topchat_14"
+        android:paddingRight="@dimen/dp_topchat_14"
+        android:paddingBottom="@dimen/dp_topchat_6"
         app:srcCompat="@drawable/topchat_ic_close_white" />
 
 </FrameLayout>

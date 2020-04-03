@@ -3,20 +3,22 @@ package com.tokopedia.travelhomepage.destination.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.travelhomepage.destination.model.*
+import com.tokopedia.travelhomepage.destination.model.TravelArticleModel
+import com.tokopedia.travelhomepage.destination.model.TravelDestinationCityModel
+import com.tokopedia.travelhomepage.destination.model.TravelDestinationItemModel
+import com.tokopedia.travelhomepage.destination.model.TravelDestinationSummaryModel
 import com.tokopedia.travelhomepage.destination.model.mapper.TravelDestinationMapper
-import com.tokopedia.travelhomepage.destination.usecase.GetEmptyViewModelsUseCase
+import com.tokopedia.travelhomepage.destination.usecase.GetEmptyModelsUseCase
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageOrderListModel
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageRecommendationModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -26,9 +28,9 @@ import javax.inject.Inject
 
 class TravelDestinationViewModel  @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
-        private val getEmptyViewModelsUseCase: GetEmptyViewModelsUseCase,
-        dispatcher: CoroutineDispatcher)
-    : BaseViewModel(dispatcher) {
+        private val getEmptyModelsUseCase: GetEmptyModelsUseCase,
+        private val dispatcherProvider: TravelDispatcherProvider)
+    : BaseViewModel(dispatcherProvider.io()) {
 
     private val travelDestinationItemListMutable = MutableLiveData<List<TravelDestinationItemModel>>()
     val travelDestinationItemList: LiveData<List<TravelDestinationItemModel>>
@@ -45,12 +47,12 @@ class TravelDestinationViewModel  @Inject constructor(
     private val mapper = TravelDestinationMapper()
 
     fun getInitialList() {
-        travelDestinationItemListMutable.value = getEmptyViewModelsUseCase.requestEmptyViewModels()
+        travelDestinationItemListMutable.value = getEmptyModelsUseCase.requestEmptyViewModels()
     }
 
     fun getDestinationCityData(query: String, webUrl: String) {
         launchCatchError( block = {
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(dispatcherProvider.ui()) {
                 val param = mapOf(PARAM_WEBURLS to webUrl)
                 val graphqlRequest = GraphqlRequest(query, TravelDestinationCityModel.Response::class.java, param)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
@@ -64,7 +66,7 @@ class TravelDestinationViewModel  @Inject constructor(
 
     fun getDestinationSummaryData(query: String, cityId: String) {
         launchCatchError( block = {
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(dispatcherProvider.ui()) {
                 val param = mapOf(PARAM_CITY_ID to cityId)
                 val graphqlRequest = GraphqlRequest(query, TravelDestinationSummaryModel.Response::class.java, param)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
@@ -84,7 +86,7 @@ class TravelDestinationViewModel  @Inject constructor(
 
     fun getCityRecommendationData(query: String, cityId: String, product: String, order: Int) {
         launchCatchError(block ={
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(dispatcherProvider.ui()) {
                 val param = mapOf(PARAM_PRODUCT to product, PARAM_CITY_ID to cityId.toInt())
                 val graphqlRequest = GraphqlRequest(query, TravelHomepageRecommendationModel.Response::class.java, param)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
@@ -112,7 +114,7 @@ class TravelDestinationViewModel  @Inject constructor(
 
     fun getOrderList(query: String, cityId: String) {
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(dispatcherProvider.ui()) {
                 val param = mapOf(PARAM_PAGE to 1, PARAM_PER_PAGE to 10, PARAM_FILTER_STATUS to "success", PARAM_CITY_ID to cityId.toInt())
                 val graphqlRequest = GraphqlRequest(query, TravelHomepageOrderListModel.Response::class.java, param)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
@@ -138,7 +140,7 @@ class TravelDestinationViewModel  @Inject constructor(
 
     fun getCityArticles(query: String, cityId: String) {
         launchCatchError(block ={
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(dispatcherProvider.ui()) {
                 val param = mapOf(PARAM_CITY_ID to cityId.toInt())
                 val graphqlRequest = GraphqlRequest(query, TravelArticleModel.Response::class.java, param)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
@@ -163,7 +165,7 @@ class TravelDestinationViewModel  @Inject constructor(
         }
     }
 
-    private fun checkIfAllError() {
+    fun checkIfAllError() {
         travelDestinationItemList.value?.let {
             var isSuccess = false
             for (item in it) {
@@ -172,7 +174,7 @@ class TravelDestinationViewModel  @Inject constructor(
                     break
                 }
             }
-            if (!isSuccess) isAllErrorMutable.postValue(true)
+            isAllErrorMutable.postValue(!isSuccess)
         }
     }
 

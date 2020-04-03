@@ -64,6 +64,7 @@ query SearchProduct(
             category_breadcrumb
             department_id
             department_name
+            booster_list
           	free_ongkir {
               is_active
               img_url
@@ -84,6 +85,7 @@ query SearchProduct(
             }
             is_featured
             rating
+            rating_average
             count_review
             original_price
             discount_expired_time
@@ -191,6 +193,7 @@ query SearchProduct(
                 product_new_label
                 product_cashback_rate
                 product_rating
+                product_rating_format
               	free_ongkir {
                   is_active
                   img_url
@@ -316,6 +319,7 @@ query SearchProduct(
             background
             see_all_applink
             see_all_url
+            show_topads
             list {
                 category_name
                 name

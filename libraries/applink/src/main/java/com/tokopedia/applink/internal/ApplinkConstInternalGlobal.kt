@@ -45,6 +45,10 @@ object ApplinkConstInternalGlobal {
     val PARAM_LOGIN_TYPE = "loginType"
     @JvmField
     val PARAM_IS_SQ_CHECK = "isSqCheck"
+    @JvmField
+    val PARAM_KTP_PATH = "ktpPath"
+    @JvmField
+    val PARAM_FACE_PATH = "facePath"
 
     //VerificationActivity Param
     @JvmField
@@ -119,6 +123,9 @@ object ApplinkConstInternalGlobal {
     val NAME_SHOP_CREATION = "$INTERNAL_GLOBAL/name-shop-creation"
 
     @JvmField
+    val LIVENESS_DETECTION = "$INTERNAL_GLOBAL/liveness-detection"
+
+    @JvmField
     val USER_IDENTIFICATION_INFO_BASE = "$INTERNAL_GLOBAL/user-identification-info"
 
     // UserIdentificationInfoActivity
@@ -147,21 +154,30 @@ object ApplinkConstInternalGlobal {
     // TalkProductActivity
     // tokopedia-android-internal://global/product-talk
     @JvmField
-    val SHOP_TALK = "$INTERNAL_GLOBAL/shop-talk"
+    val SHOP_TALK_BASE = "$INTERNAL_GLOBAL/shop-talk/"
+    @JvmField
+    val SHOP_TALK = "$SHOP_TALK_BASE{shop_id}/"
     @JvmField
     val PARAM_SHOP_ID = "shop_id"
 
     // TalkProductActivity
     // tokopedia-android-internal://global/product-talk
     @JvmField
-    val PRODUCT_TALK = "$INTERNAL_GLOBAL/product-talk"
+    val PRODUCT_TALK_BASE = "$INTERNAL_GLOBAL/product-talk/"
+    @JvmField
+    val PRODUCT_TALK = "$PRODUCT_TALK_BASE{product_id}/"
     @JvmField
     val PARAM_PRODUCT_ID = "product_id"
 
     // TalkDetailsActivity
     // tokopedia-android-internal://global/detail-talk
     @JvmField
-    val DETAIL_TALK = "$INTERNAL_GLOBAL/detail-talk"
+    val DETAIL_TALK_BASE = "$INTERNAL_GLOBAL/detail-talk/"
+    @JvmField
+    val DETAIL_TALK = "$DETAIL_TALK_BASE{talk_id}/?" +
+            "shop_id={shop_id}&" +
+            "comment_id={comment_id}&" +
+            "source={source}"
 
     // AddTalkActivity
     // tokopedia-android-internal://global/add-talk
@@ -206,6 +222,11 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/add-pin-onboarding
     @JvmField
     val ADD_PIN_ONBOARDING = "$INTERNAL_GLOBAL/add-pin-onboarding"
+
+    // RegisterFingerprintOnboardingActivity
+    // tokopedia-android-internal://global/add-fingerprint-onboarding
+    @JvmField
+    val ADD_FINGERPRINT_ONBOARDING = "$INTERNAL_GLOBAL/add-fingerprint-onboarding"
 
     // PinCompleteActivity
     // tokopedia-android-internal://global/add-pin-complete
@@ -367,8 +388,7 @@ object ApplinkConstInternalGlobal {
     val DYNAMIC_FEATURE_INSTALL= DYNAMIC_FEATURE_INSTALL_BASE + "{module}/?" +
         "dfname={moduleTranslate}&" +
         "dfapplink={encodedApplink}&" +
-        "dfauto={isAutoDownload}&" +
-        "dfimage={imageUrl}"
+        "dffallbackurl={fallbackUrl}"
 
     /**
      * LogoutActivity
@@ -396,6 +416,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PUSH_NOTIFICATION_TROUBLESHOOTER = "$INTERNAL_GLOBAL/push-notification-troubleshooter"
 
+    // Topchat
+    @JvmField
+    val TOPCHAT = "$INTERNAL_GLOBAL/topchat"
+
+
     // Phone Number Verification Activity
     // tokopedia-android-internal://global/setting-referral-phone-verification
     @JvmField
@@ -412,5 +437,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/gamification2
     @JvmField
     val GAMIFICATION_TAP_TAP_MANTAP = "$INTERNAL_GLOBAL/gamification2"
+    val GAMIFICATION_DAILY_GIFT = "$INTERNAL_GLOBAL/gamification_gift_daily"
 
 }

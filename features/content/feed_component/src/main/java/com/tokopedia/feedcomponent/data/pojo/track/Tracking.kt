@@ -25,4 +25,8 @@ data class Tracking(
         @SerializedName("recomID")
         @Expose
         val recomID: Int = 0
-)
+) {
+        fun copy(): Tracking {
+                return Tracking(clickURL, viewURL, type, source)
+        }
+}

@@ -1,6 +1,5 @@
 package com.tokopedia.search.result.presentation.view.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -21,7 +20,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
@@ -41,6 +39,7 @@ import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.model.SearchParameter;
+import com.tokopedia.discovery.common.utils.URLParser;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData;
@@ -62,6 +61,7 @@ import com.tokopedia.search.result.presentation.viewmodel.SearchViewModel;
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModel;
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModelFactoryModule;
 import com.tokopedia.search.utils.CountDrawable;
+import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.Nullable;
@@ -77,8 +77,6 @@ import javax.inject.Named;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.Cart.CACHE_TOTAL_CART;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
-import static com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_ID;
-import static com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_STORAGE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SEARCH_RESULT_TRACE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_FIRST_POSITION;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_FORTH_POSITION;
@@ -221,6 +219,7 @@ public class SearchActivity extends BaseActivity
     private void initToolbar() {
         configureSupportActionBar();
         configureToolbarOnClickListener();
+        configureToolbarVisibility();
     }
 
     private void configureSupportActionBar() {
@@ -247,13 +246,19 @@ public class SearchActivity extends BaseActivity
     }
 
     private void moveToAutoCompleteActivity() {
-        String query = URLEncoder.encode(searchParameter.getSearchQuery());
+        String query = URLEncoder.encode(searchParameter.getSearchQuery()).replace("+", " ");
 
-        if (!TextUtils.isEmpty(autocompleteApplink)) {
-            startActivityWithApplink(autocompleteApplink);
-        } else {
-            startActivityWithApplink(ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?q=" + query);
-        }
+        String currentAutoCompleteApplink = !TextUtils.isEmpty(autocompleteApplink) ?
+                autocompleteApplink : ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?q=" + query;
+
+        Map<String, String> autoCompleteParams = new URLParser(currentAutoCompleteApplink).getParamKeyValueMap();
+        autoCompleteParams.put(SearchApiConst.PREVIOUS_KEYWORD, query);
+
+        startActivityWithApplink(
+                ApplinkConstInternalDiscovery.AUTOCOMPLETE
+                        + "?"
+                        + UrlParamUtils.generateUrlParamString(autoCompleteParams)
+        );
     }
 
     private void onCartButtonClicked() {
@@ -270,6 +275,16 @@ public class SearchActivity extends BaseActivity
     private void moveToHomeActivity() {
         SearchTracking.eventActionClickHomeButton(searchParameter.getSearchQuery());
         RouteManager.route(this, ApplinkConst.HOME);
+    }
+
+    private void configureToolbarVisibility() {
+        if (isLandingPage()) {
+            tabLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private boolean isLandingPage() {
+        return searchParameter.getBoolean(SearchApiConst.LANDING_PAGE);
     }
 
     private void initViewPager() {
@@ -490,14 +505,9 @@ public class SearchActivity extends BaseActivity
     private void setSearchParameterUniqueId() {
         String uniqueId = userSession.isLoggedIn() ?
                 AuthHelper.getMD5Hash(userSession.getUserId()) :
-                AuthHelper.getMD5Hash(getRegistrationId(this));
+                AuthHelper.getMD5Hash(userSession.getDeviceId());
 
         searchParameter.set(SearchApiConst.UNIQUE_ID, uniqueId);
-    }
-
-    private String getRegistrationId(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        return cache.getString(GCM_ID, "");
     }
 
     private void setSearchParameterUserIdIfLoggedIn() {
@@ -519,7 +529,6 @@ public class SearchActivity extends BaseActivity
         availableSearchTabs.add(SearchConstant.ActiveTab.PRODUCT);
         availableSearchTabs.add(SearchConstant.ActiveTab.SHOP);
         availableSearchTabs.add(SearchConstant.ActiveTab.PROFILE);
-        availableSearchTabs.add(SearchConstant.ActiveTab.CATALOG);
 
         return !availableSearchTabs.contains(activeTab);
     }
@@ -539,7 +548,16 @@ public class SearchActivity extends BaseActivity
     }
 
     protected void setToolbarTitle(String query) {
-        searchTextView.setText(query);
+        String toolbarTitle = getToolbarTitle(query);
+        searchTextView.setText(toolbarTitle);
+    }
+
+    private String getToolbarTitle(String query) {
+        if (getResources() == null) return query;
+
+        return query == null || query.isEmpty() ?
+                getResources().getString(R.string.search_toolbar_title_default)
+                : query;
     }
 
     private void loadSection() {
@@ -557,9 +575,11 @@ public class SearchActivity extends BaseActivity
 
     private void addFragmentTitlesToList(List<String> searchSectionItemList) {
         searchSectionItemList.add(productTabTitle);
-        searchSectionItemList.add(shopTabTitle);
-        searchSectionItemList.add(profileTabTitle);
-        searchSectionItemList.add(catalogTabTitle);
+
+        if (!isLandingPage()) {
+            searchSectionItemList.add(shopTabTitle);
+            searchSectionItemList.add(profileTabTitle);
+        }
     }
 
     private void initTabLayout() {

@@ -1,0 +1,44 @@
+query hachikoCouponDetailQuery($code: String) {
+  detail: hachikoCouponDetail(code: $code) {
+    id
+    expired
+    real_code
+    points
+    title
+    sub_title
+    image_url
+    image_url_mobile
+    thumbnail_url
+    thumbnail_url_mobile
+    overview
+    is_gift
+    how_to_use
+    tnc
+    cta
+    cta_desktop
+    minimum_usage
+    minimum_usage_label
+    usage {
+      active_count_down
+      expired_count_down
+      text
+      usage_str
+      btn_usage {
+        text
+        url
+        applink
+        type
+      }
+    }
+    swipe {
+      need_swipe
+      text
+      note
+      partner_code
+      pin {
+        need_pin
+        text
+      }
+    }
+  }
+}
