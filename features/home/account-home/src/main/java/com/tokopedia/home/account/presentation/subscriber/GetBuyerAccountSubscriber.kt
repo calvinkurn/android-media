@@ -23,6 +23,6 @@ class GetBuyerAccountSubscriber(val view: BuyerAccount.View?) : BaseAccountSubsc
 
     override fun onCompleted() { }
     override fun getErrorCode(): String {
-        return AccountConstants.ErrorCodes.ERROR_CODE_ACCOUNT_SETTING_CONFIG
+        return AccountConstants.ErrorCodes.ERROR_CODE_BUYER_ACCOUNT
     }
 }

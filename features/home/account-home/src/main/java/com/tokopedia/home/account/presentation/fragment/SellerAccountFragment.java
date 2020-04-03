@@ -24,6 +24,7 @@ import com.tokopedia.home.account.presentation.SellerAccount;
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.adapter.seller.SellerAccountAdapter;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
+import com.tokopedia.home.account.presentation.util.AccountHomeErrorHandler;
 import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 import com.tokopedia.navigation_common.listener.FragmentListener;
@@ -188,7 +189,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
                     .setAction(getString(R.string.title_try_again), view -> getData())
                     .show();
         }
-
+        AccountHomeErrorHandler.logExceptionToCrashlytics(e, userSession.getUserId(), userSession.getEmail(), errorCode);
         fpmSeller.stopTrace();
     }
 
