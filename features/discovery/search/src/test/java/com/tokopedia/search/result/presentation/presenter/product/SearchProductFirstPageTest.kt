@@ -2,7 +2,6 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.kotlin.extensions.view.toUrlParams
 import com.tokopedia.search.TestException
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
