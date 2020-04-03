@@ -129,7 +129,7 @@
         app:unifyEmptyStateCTAFullWidth="true"
         app:unifyEmptyStateDescription="@string/showcase_empty_subtitle_text"
         app:unifyEmptyStateOrientation="horizontal"
-        app:unifyEmptyStatePrimaryCTAText="@string/choose_product_text"
+        app:unifyEmptyStatePrimaryCTAText="@string/add_product_text"
         app:unifyEmptyStateTitle="@string/showcase_empty"
         android:visibility="gone"
         app:unifyEmptyStateType="section" />

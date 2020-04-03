@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.shop_showcase.common.ShopShowcaseTracking
 import com.tokopedia.shop_showcase.shop_showcase_add.di.scope.ShopShowcaseAddScope
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -30,4 +31,10 @@ class ShopShowcaseAddModule {
     @Provides
     @Named("Main")
     fun provideMainDispatcherProvider(): CoroutineDispatcher = Dispatchers.Main
+
+    @ShopShowcaseAddScope
+    @Provides
+    fun provideShopShowcaseTracking(@ApplicationContext context: Context?): ShopShowcaseTracking {
+        return ShopShowcaseTracking(context)
+    }
 }

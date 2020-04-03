@@ -23,6 +23,7 @@ import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
 import com.tokopedia.shop_showcase.common.ImageAssets
 import com.tokopedia.shop_showcase.common.ShopShowcaseEditParam
+import com.tokopedia.shop_showcase.common.ShopShowcaseTracking
 import com.tokopedia.shop_showcase.shop_showcase_add.presentation.fragment.ShopShowcaseAddFragment
 import com.tokopedia.shop_showcase.shop_showcase_product_add.di.component.DaggerShowcaseProductAddComponent
 import com.tokopedia.shop_showcase.shop_showcase_product_add.di.component.ShowcaseProductAddComponent
@@ -37,28 +38,55 @@ import com.tokopedia.unifycomponents.EmptyState
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_showcase_product_add.view.*
 import javax.inject.Inject
 
 /**
  * @author by Rafli Syam on 2020-03-09
  */
-
-class ShopShowcaseProductAddFragment : BaseDaggerFragment(), HasComponent<ShowcaseProductAddComponent> {
+class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
+        HasComponent<ShowcaseProductAddComponent>, ShopShowcaseProductAddListener {
 
     companion object {
         @JvmStatic
-        fun createInstance() = ShopShowcaseProductAddFragment()
+        fun createInstance(extraActionEdit: Boolean): ShopShowcaseProductAddFragment {
+            val fragment = ShopShowcaseProductAddFragment()
+            val extraData = Bundle()
+            extraData.putBoolean(ShopShowcaseEditParam.EXTRA_IS_ACTION_EDIT, extraActionEdit)
+            fragment.arguments = extraData
+            return fragment
+        }
 
         const val SHOWCASE_PRODUCT_LIST = "product_list"
     }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var tracking: ShopShowcaseTracking
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     private var productListFilter = GetProductListFilter()
     private var isLoadNextPage: Boolean = false
+    private var showcaseId: String? = "0"
     private var showcaseProductListAdapter: ShowcaseProductListAdapter? = null
+    private var isActionEdit: Boolean = false
 
+    private val shopId: String by lazy {
+        userSession.shopId
+    }
+
+    private val shopType: String by lazy {
+        tracking.getShopType(userSession)
+    }
+
+    override fun onCLickProductCardTracking() {
+        tracking.addShowcaseProductCardClick(shopId, shopType, isActionEdit)
+    }
 
     /**
      * Setup Grid layout manager for mutliple item view type
@@ -91,6 +119,7 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(), HasComponent<Showca
     private val headerUnify: HeaderUnify? by lazy {
         view?.findViewById<HeaderUnify>(R.id.add_product_showcase_toolbar)?.apply {
             backButtonView?.setOnClickListener {
+                tracking.addShowcaseProductClickBackButton(shopId, shopType, isActionEdit)
                 activity?.onBackPressed()
             }
         }
@@ -120,14 +149,22 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(), HasComponent<Showca
         view?.findViewById<SearchBarUnify>(R.id.searchbar_add_product)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            isActionEdit = it.getBoolean(ShopShowcaseEditParam.EXTRA_IS_ACTION_EDIT)
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_shop_showcase_product_add, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView(view)
+        initView(view, this)
         initListener()
+        tracking.sendScreenNameAddShowcaseProduct()
     }
 
     override fun getScreenName(): String {
@@ -149,9 +186,9 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(), HasComponent<Showca
         }
     }
 
-    private fun initView(view: View?) {
+    private fun initView(view: View?, listener: ShopShowcaseProductAddListener) {
         emptyState?.visibility = View.INVISIBLE
-        initRecyclerView(view)
+        initRecyclerView(view, listener)
         getProductList(productListFilter)
 
         observeProductListData()
@@ -163,6 +200,7 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(), HasComponent<Showca
 
     private fun initListener() {
         headerUnify?.actionTextView?.setOnClickListener {
+            tracking.addShowcaseProductClickSaveButton(shopId, shopType, isActionEdit)
             goBackToPreviewShowcase()
         }
     }
@@ -192,6 +230,10 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(), HasComponent<Showca
             }
         })
 
+        searchTextField?.setOnClickListener {
+            tracking.addShowcaseProductClickSearchbar(shopId, shopType, isActionEdit)
+        }
+
         searchClearButton?.setOnClickListener {
             productListFilter.setDefaultFilter()
             searchTextField?.text?.clear()
@@ -199,12 +241,12 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(), HasComponent<Showca
         }
     }
 
-    private fun initRecyclerView(view: View?) {
+    private fun initRecyclerView(view: View?, listener: ShopShowcaseProductAddListener) {
         view?.run {
             recyclerViewProductList?.apply {
                 setHasFixedSize(true)
                 layoutManager = gridLayoutManager
-                showcaseProductListAdapter = ShowcaseProductListAdapter(context, view)
+                showcaseProductListAdapter = ShowcaseProductListAdapter(context, view, listener)
                 adapter = showcaseProductListAdapter
                 addOnScrollListener(scrollListener)
             }
@@ -242,8 +284,8 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(), HasComponent<Showca
                             }
                         }
                         productList.forEach { showcaseProduct->
-                            selectedProductList?.forEach {
-                                if(it.productId == showcaseProduct.productId)
+                            selectedProductList?.forEach { selectedProduct ->
+                                if(selectedProduct.productId == showcaseProduct.productId)
                                     showcaseProduct.ishighlighted = true
                             }
                         }
@@ -277,6 +319,8 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(), HasComponent<Showca
     private fun getProductList(filter: GetProductListFilter) {
         isLoadNextPage = false
         searchBar?.clearFocus()
+        showcaseId = activity?.intent?.getStringExtra(ShopShowcaseEditParam.EXTRA_SHOWCASE_ID)
+        productListFilter.fmenuExclude = showcaseId
         showcaseProductAddViewModel.getProductList(filter, false)
     }
 
@@ -304,4 +348,8 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(), HasComponent<Showca
         showcaseProductListAdapter?.hideLoadingProgress()
     }
 
+}
+
+interface ShopShowcaseProductAddListener {
+    fun onCLickProductCardTracking()
 }
