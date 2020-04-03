@@ -247,16 +247,25 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         view?.let { view ->
             NetworkErrorHelper.showGreenCloseSnackbar(view, dataModelAtc.message.first())
         }
+        trackClickAddToCart(dataModelAtc, shopHomeProductViewModel, parentPosition, shopHomeCarousellProductUiModel)
+    }
+
+    private fun trackClickAddToCart(
+            dataModelAtc: DataModel?,
+            shopHomeProductViewModel: ShopHomeProductViewModel?,
+            parentPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?
+    ) {
         shopPageHomeTracking.addToCart(
                 isOwner,
-                dataModelAtc.cartId.toString(),
+                dataModelAtc?.cartId ?: "",
                 shopAttribution,
                 isLogin,
                 shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
                 shopHomeProductViewModel?.name ?: "",
                 shopHomeProductViewModel?.id ?: "",
                 shopHomeProductViewModel?.displayedPrice ?: "",
-                dataModelAtc.quantity,
+                dataModelAtc?.quantity ?: 1,
                 shopName,
                 parentPosition + 1,
                 shopHomeCarousellProductUiModel?.widgetId ?: "",
@@ -622,7 +631,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
         shopPageHomeTracking.clickCta(
                 layoutId = shopPageHomeLayoutUiModel?.masterLayoutId.toString(),
-                widgetName = shopHomeCarouselProductUiModel?.name.toString(),
+                widgetName = shopHomeCarouselProductUiModel?.header?.title.toString(),
                 widgetId = shopHomeCarouselProductUiModel?.widgetId.toString(),
                 appLink = shopHomeCarouselProductUiModel?.header?.ctaLink.toString(),
                 shopId = shopId,
@@ -672,6 +681,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     }
             )
         } else {
+            trackClickAddToCart(
+                    null,
+                    shopHomeProductViewModel,
+                    parentPosition,
+                    shopHomeCarousellProductUiModel
+            )
             redirectToLoginPage()
         }
     }
@@ -695,6 +710,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
         if (!productCardOptionsModel.wishlistResult.isUserLoggedIn) {
+            threeDotsClickShopProductViewModel?.let {
+                trackClickWishlist(threeDotsClickShopCarouselProductUiModel, it, false)
+            }
             redirectToLoginPage()
         } else {
             handleWishlistActionForLoggedInUser(productCardOptionsModel)
@@ -736,7 +754,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    private fun stopPerformanceMonitor(){
+    private fun stopPerformanceMonitor() {
         performanceMonitoring?.stopTrace()
     }
 
