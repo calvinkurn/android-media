@@ -302,6 +302,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
                             override fun onButtonContinueClicked(checkoutType: Int) {
                                 viewModel.cancelIneligiblePromoCheckout(it.notEligiblePromoHolderdataList, onSuccessCheckout())
+                                orderSummaryAnalytics.eventClickLanjutBayarPromoErrorOSP()
                             }
 
                             override fun onButtonChooseOtherPromo() {
@@ -310,9 +311,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                 intent.putExtra(ARGS_PROMO_REQUEST, viewModel.generatePromoRequest())
                                 intent.putExtra(ARGS_VALIDATE_USE_REQUEST, viewModel.generateValidateUsePromoRequest())
 
+                                orderSummaryAnalytics.eventClickPilihPromoLainPromoErrorOSP()
                                 startActivityForResult(intent, REQUEST_CODE_PROMO)
                             }
                         }
+                        promoNotEligibleBottomsheet.show(fragmentManager!!, "")
                     }
                 }
             }
@@ -522,6 +525,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
                     intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUsePromoRequest)
 
+                    val codes = validateUsePromoRequest.codes
+                    val promoCodes = ArrayList<String>()
+                    for (code in codes) {
+                        if (code != null) {
+                            promoCodes.add(code)
+                        }
+                    }
+                    if (validateUsePromoRequest.orders.isNotEmpty()) {
+                        val orderCodes = validateUsePromoRequest.orders[0]?.codes ?: mutableListOf()
+                        for (code in orderCodes) {
+                            promoCodes.add(code)
+                        }
+                    }
+                    orderSummaryAnalytics.eventClickPromoOSP(promoCodes)
                     startActivityForResult(intent, REQUEST_CODE_PROMO)
                 }
             }

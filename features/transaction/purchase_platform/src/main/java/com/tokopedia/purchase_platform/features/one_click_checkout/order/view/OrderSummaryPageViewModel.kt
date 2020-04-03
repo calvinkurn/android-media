@@ -942,8 +942,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         }
     }
 
-    private fun doCheckout(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (Data) -> Unit) {
-        if (checkIneligiblePromo()) {
+    private fun doCheckout(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (Data) -> Unit, skipCheckIneligiblePromo: Boolean = false) {
+        if (skipCheckIneligiblePromo || checkIneligiblePromo()) {
             val param = CheckoutOccRequest(Profile(pref.preference.profileId), ParamCart(data = listOf(ParamData(
                     pref.preference.address.addressId,
                     listOf(
@@ -1082,7 +1082,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
                             override fun onNext(t: ClearPromoUiModel?) {
                                 if (_orderPreference != null) {
-                                    doCheckout(orderProduct, orderShop, _orderPreference!!, onSuccessCheckout)
+                                    doCheckout(orderProduct, orderShop, _orderPreference!!, onSuccessCheckout, true)
                                 }
                             }
 

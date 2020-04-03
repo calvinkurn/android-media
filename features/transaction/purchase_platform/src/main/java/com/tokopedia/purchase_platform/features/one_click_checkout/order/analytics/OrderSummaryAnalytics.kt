@@ -244,6 +244,39 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         )
     }
 
+    fun eventClickPromoOSP(promoCodes: List<String>) {
+        if (promoCodes.isEmpty()) {
+            sendEventCategoryAction(
+                    EventName.CLICK_CHECKOUT_EXPRESS,
+                    EventCategory.ORDER_SUMMARY,
+                    EventAction.CLICK_PROMO_SECTION_NOT_APPLIED_OSP
+            )
+        } else {
+            sendEventCategoryActionLabel(
+                    EventName.CLICK_CHECKOUT_EXPRESS,
+                    EventCategory.ORDER_SUMMARY,
+                    EventAction.CLICK_PROMO_SECTION_APPLIED_OSP,
+                    promoCodes.joinToString("-")
+            )
+        }
+    }
+
+    fun eventClickLanjutBayarPromoErrorOSP() {
+        sendEventCategoryAction(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_LANJUT_BAYAR_PROMO_ERROR_OSP
+        )
+    }
+
+    fun eventClickPilihPromoLainPromoErrorOSP() {
+        sendEventCategoryAction(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_PILIH_PROMO_LAIN_PROMO_ERROR_OSP
+        )
+    }
+
     companion object {
         private const val NOT_SUCCESS = "not success"
     }

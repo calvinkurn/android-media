@@ -435,6 +435,10 @@ public interface ConstantTransactionAnalytics {
         String CLICK_TAMBAH_PILIHAN_FROM_GANTI_PILIHAN_OSP  = "preference -  click tambah pilihan from ganti pilihan";
         String CLICK_BACK_FROM_OSP = "click back in order summary page";
         String CLICK_BUTTON_INFO_ON_OSP = "click button info on order summary page";
+        String CLICK_PROMO_SECTION_APPLIED_OSP = "promo - click promo section with promo applied";
+        String CLICK_PROMO_SECTION_NOT_APPLIED_OSP = "promo - click promo section with promo not applied";
+        String CLICK_LANJUT_BAYAR_PROMO_ERROR_OSP = "promo - click lanjut bayar on bottom sheet promo error";
+        String CLICK_PILIH_PROMO_LAIN_PROMO_ERROR_OSP = "promo - click pilih promo lain on bottom sheet promo error";
 
         String VIEW_ORDER_SUMMARY_PAGE = "view order summary page";
 
