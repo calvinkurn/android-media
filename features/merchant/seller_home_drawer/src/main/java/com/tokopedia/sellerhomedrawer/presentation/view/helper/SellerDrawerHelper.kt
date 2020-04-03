@@ -191,8 +191,7 @@ class SellerDrawerHelper @Inject constructor(val context: Activity,
                 }
                 SellerHomeState.DrawerPosition.RESOLUTION_CENTER -> {
                     eventDrawerClick(EventLabel.RESOLUTION_CENTER)
-                    val intent = RouteManager.getIntent(context, ApplinkConst.SellerApp.WEBVIEW)
-                    intent.putExtra(URL_KEY, SellerBaseUrl.HOSTNAME + SellerBaseUrl.RESO_INBOX_SELLER)
+                    val intent = RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.SellerApp.WEBVIEW, SellerBaseUrl.HOSTNAME + SellerBaseUrl.RESO_INBOX_SELLER))
                     context.startActivity(intent)
                 }
                 SellerHomeState.DrawerPosition.SETTINGS -> {
