@@ -361,7 +361,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         withContext(dispatcher.io()) {
             val result = addToCartOccUseCase.createObservable(requestParams).toBlocking().single()
             if (result.isDataError()) {
-                _addToCartLiveData.postValue((result.getAtcErrorMessage() ?: "").asThrowable().asFail())
+                _addToCartLiveData.postValue(arrayListOf(result.getAtcErrorMessage() ?: "").asThrowable().asFail())
 
             } else {
                 _addToCartLiveData.postValue(result.asSuccess())
