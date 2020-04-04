@@ -188,10 +188,14 @@ class AddEditProductDescriptionFragment:
             moveToDescriptionActivity()
         }
 
+        observeProductVariant()
+    }
+
+    private fun observeProductVariant() {
         descriptionViewModel.productVariant.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> showVariantDialog(result.data)
-                is Fail -> showVariantErrorToast(getString(R.string.title_tooltip_description_tips))
+                is Fail -> showVariantErrorToast(getString(R.string.error_cannot_get_variants))
             }
         })
     }
