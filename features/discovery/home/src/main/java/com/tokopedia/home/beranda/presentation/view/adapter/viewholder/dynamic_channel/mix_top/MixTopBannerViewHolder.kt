@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.design.countdown.CountDownView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.MixTopTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -21,10 +21,11 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SimpleHorizontalLinearLayoutDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.dataModel.MixTopProductDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.dataModel.MixTopSeeMoreDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.dataModel.MixTopVisitable
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.typeFactory.MixTopTypeFactoryImpl
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.SeeMorePdpDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.typeFactory.FlashSaleCardViewTypeFactoryImpl
+import com.tokopedia.productcard.ProductCardFlashSaleModel
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -32,10 +33,8 @@ import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
 class MixTopBannerViewHolder(
-        itemView: View, val homeCategoryListener: HomeCategoryListener,
-        countDownListener: CountDownView.CountDownListener,
-        private val parentRecycledViewPool: RecyclerView.RecycledViewPool
-) : DynamicChannelViewHolder(itemView, homeCategoryListener, countDownListener){
+        itemView: View, val homeCategoryListener: HomeCategoryListener
+) : DynamicChannelViewHolder(itemView, homeCategoryListener), FlashSaleCardListener{
     private val bannerTitle = itemView.findViewById<Typography>(R.id.banner_title)
     private val bannerDescription = itemView.findViewById<Typography>(R.id.banner_description)
     private val bannerUnifyButton = itemView.findViewById<UnifyButton>(R.id.banner_button)
@@ -61,17 +60,11 @@ class MixTopBannerViewHolder(
         mappingView(channel)
     }
 
-    override fun bind(element: DynamicChannelViewModel?, payloads: MutableList<Any>) {
-        super.bind(element, payloads)
-        val channel = element?.channel
-        val blankSpaceConfig = computeBlankSpaceConfig(channel)
-        element?.let {
-            channel?.let {channel->
-                val visitables = mappingVisitablesFromChannel(channel, blankSpaceConfig)
-                mappingHeader(channel)
-                mappingItem(channel, visitables)
-            }
-        }
+    override fun setupContent(channel: DynamicHomeChannel.Channels, payloads: MutableList<Any>) {
+        super.setupContent(channel, payloads)
+        val visitables = mappingVisitablesFromChannel(channel)
+        mappingHeader(channel)
+        mappingItem(channel, visitables)
     }
 
     override fun getViewHolderClassName(): String {
@@ -79,14 +72,33 @@ class MixTopBannerViewHolder(
     }
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
-        homeCategoryListener.putEEToTrackingQueue(MixTopTracking.getMixTopSeeAllClick(channel.header.name) as HashMap<String, Any>)
+        homeCategoryListener.sendEETracking(MixTopTracking.getMixTopSeeAllClick(channel.header.name) as HashMap<String, Any>)
+    }
+
+    override fun onBannerSeeMoreClicked(applink: String, channel: DynamicHomeChannel.Channels) {
+        homeCategoryListener.sendEETracking(MixTopTracking.getMixTopSeeAllClick(channel.header.name) as HashMap<String, Any>)
+    }
+
+    override fun onFlashSaleCardImpressed(position: Int, channel: DynamicHomeChannel.Channels) {
+        homeCategoryListener.putEEToTrackingQueue(MixTopTracking.getMixTopView(
+                MixTopTracking.mapChannelToProductTracker(channel),
+                channel.header.name,
+                adapterPosition.toString()
+        ) as HashMap<String, Any>)
+    }
+
+    override fun onFlashSaleCardClicked(position: Int, channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, applink: String) {
+        homeCategoryListener.sendEETracking(MixTopTracking.getMixTopClick(
+                listOf(MixTopTracking.mapGridToProductTracker(grid, channel.id, position, channel.persoType, channel.categoryID)),
+                channel.header.name,
+                channel.id,
+                adapterPosition.toString()
+        ) as HashMap<String, Any>)
+        homeCategoryListener.onDynamicChannelClicked(grid.applink)
     }
 
     private fun mappingView(channel: DynamicHomeChannel.Channels) {
-        val blankSpaceConfig = computeBlankSpaceConfig(channel)
-        val visitables = mappingVisitablesFromChannel(channel, blankSpaceConfig)
-
-        recyclerView.setRecycledViewPool(parentRecycledViewPool)
+        val visitables = mappingVisitablesFromChannel(channel)
         recyclerView.setHasFixedSize(true)
 
         valuateRecyclerViewDecoration()
@@ -137,20 +149,11 @@ class MixTopBannerViewHolder(
         }
     }
 
-    private fun mappingItem(channel: DynamicHomeChannel.Channels, visitables: MutableList<MixTopVisitable>){
-        if (adapter == null) {
-            startSnapHelper.attachToRecyclerView(recyclerView)
-            adapter = MixTopAdapter(
-                    MixTopTypeFactoryImpl(homeCategoryListener),
-                    channel.grids,
-                    channel,
-                    homeCategoryListener)
-            adapter?.setItems(visitables)
-
-            recyclerView.adapter = adapter
-        } else {
-            adapter?.setItems(visitables)
-        }
+    private fun mappingItem(channel: DynamicHomeChannel.Channels, visitables: MutableList<Visitable<*>>) {
+        startSnapHelper.attachToRecyclerView(recyclerView)
+        val typeFactoryImpl = FlashSaleCardViewTypeFactoryImpl(channel)
+        adapter = MixTopAdapter(visitables, typeFactoryImpl)
+        recyclerView.adapter = adapter
     }
 
     private fun mappingCtaButton(cta: DynamicHomeChannel.CtaData) {
@@ -196,20 +199,6 @@ class MixTopBannerViewHolder(
                 Snackbar.LENGTH_LONG)
     }
 
-    private fun computeBlankSpaceConfig(channel: DynamicHomeChannel.Channels?): BlankSpaceConfig {
-        val blankSpaceConfig = BlankSpaceConfig(
-                twoLinesProductName = true
-        )
-        channel?.grids?.forEach {
-            if (it.freeOngkir.isActive) blankSpaceConfig.freeOngkir = true
-            if (it.slashedPrice.isNotEmpty()) blankSpaceConfig.slashedPrice = true
-            if (it.price.isNotEmpty()) blankSpaceConfig.price = true
-            if (it.discount.isNotEmpty()) blankSpaceConfig.discountPercentage = true
-            if (it.name.isNotEmpty()) blankSpaceConfig.productName = true
-        }
-        return blankSpaceConfig
-    }
-
     private fun valuateRecyclerViewDecoration() {
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(SimpleHorizontalLinearLayoutDecoration())
         recyclerView.layoutManager = LinearLayoutManager(
@@ -223,17 +212,38 @@ class MixTopBannerViewHolder(
         startSnapHelper.attachToRecyclerView(recyclerView)
     }
 
-    private fun mappingVisitablesFromChannel(channel: DynamicHomeChannel.Channels,
-                                             blankSpaceConfig: BlankSpaceConfig): MutableList<MixTopVisitable> {
-        val visitables: MutableList<MixTopVisitable> = channel.grids.map {
-            MixTopProductDataModel(it, channel, blankSpaceConfig, adapterPosition.toString())
-        }.toMutableList()
+    private fun mappingVisitablesFromChannel(channel: DynamicHomeChannel.Channels): MutableList<Visitable<*>> {
+        val visitables: MutableList<Visitable<*>> = convertDataToProductData(channel)
+        return visitables
+    }
 
-        if (isHasSeeMoreApplink(channel) && getLayoutType(channel) == TYPE_BANNER_CAROUSEL) {
-            visitables.add(MixTopSeeMoreDataModel(
-                    channel
+    private fun convertDataToProductData(channel: DynamicHomeChannel.Channels): MutableList<Visitable<*>> {
+        val list :MutableList<Visitable<*>> = mutableListOf()
+        for (element in channel.grids) {
+            list.add(FlashSaleDataModel(
+                    ProductCardFlashSaleModel(
+                            slashedPrice = element.slashedPrice,
+                            productName = element.name,
+                            formattedPrice = element.price,
+                            productImageUrl = element.imageUrl,
+                            discountPercentage = element.discount,
+                            pdpViewCount = element.productViewCountFormatted,
+                            stockBarLabel = element.label,
+                            isTopAds = element.isTopads,
+                            stockBarPercentage = element.soldPercentage
+                    ),
+                    blankSpaceConfig = BlankSpaceConfig(),
+                    grid = element,
+                    applink = element.applink,
+                    listener = this
             ))
         }
-        return visitables
+        if (isHasSeeMoreApplink(channel)) {
+            list.add(SeeMorePdpDataModel(
+                    applink = channel.header.applink,
+                    listener = this
+            ))
+        }
+        return list
     }
 }

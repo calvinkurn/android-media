@@ -21,7 +21,7 @@ class DynamicOnboardingUseCase @Inject constructor(
                         val config = Gson().fromJson(data.dyanmicOnboarding.config, ConfigDataModel::class.java)
                         onSuccess(config)
                     } else {
-                        onError(Throwable(FAIL_IS_NOT_ENABLE))
+                        onError(Throwable(data.dyanmicOnboarding.message))
                     }
                 }, { throwable ->
                     onError(throwable)
@@ -32,9 +32,5 @@ class DynamicOnboardingUseCase @Inject constructor(
 
     fun cancelJobs() {
         graphqlUseCase.cancelJobs()
-    }
-
-    companion object {
-        const val FAIL_IS_NOT_ENABLE = "is not enable"
     }
 }

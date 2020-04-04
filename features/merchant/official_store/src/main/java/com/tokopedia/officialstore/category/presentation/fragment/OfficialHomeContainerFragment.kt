@@ -164,13 +164,14 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         val categorySelected = getSelectedCategory(officialStoreCategories)
         tabLayout?.getTabAt(categorySelected)?.select()
 
-        val category = tabAdapter.categoryList[0]
-        tracking.eventImpressionCategory(
-                category.title,
-                category.categoryId,
-                0,
-                category.icon
-        )
+        tabAdapter.categoryList.forEachIndexed { index, category ->
+            tracking.eventImpressionCategory(
+                    category.title,
+                    category.categoryId,
+                    index,
+                    category.icon
+            )
+        }
 
         tabLayout?.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
             override fun onTabReselected(tab: TabLayout.Tab?) {

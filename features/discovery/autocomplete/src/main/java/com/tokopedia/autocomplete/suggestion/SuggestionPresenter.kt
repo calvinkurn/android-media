@@ -2,10 +2,13 @@ package com.tokopedia.autocomplete.suggestion
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.autocomplete.suggestion.SuggestionTrackerUseCase.Companion.URL_TRACKER
 import com.tokopedia.autocomplete.suggestion.doubleline.convertSuggestionItemToDoubleLineVisitableList
 import com.tokopedia.autocomplete.suggestion.singleline.convertSuggestionItemToSingleLineVisitableList
 import com.tokopedia.autocomplete.suggestion.title.convertToTitleHeader
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import javax.inject.Inject
@@ -16,6 +19,9 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
 
     @Inject
     lateinit var getSuggestionUseCase: SuggestionUseCase
+
+    @Inject
+    lateinit var suggestionTrackerUseCase: UseCase<Void?>
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -110,10 +116,35 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
     }
 
     override fun onSuggestionItemClicked(item: BaseSuggestionViewModel) {
+        trackSuggestionItemWithUrl(item)
         trackEventItemClicked(item)
+
         view?.dropKeyBoard()
         view?.route(item.applink)
         view?.finish()
+    }
+
+    private fun trackSuggestionItemWithUrl(item: BaseSuggestionViewModel) {
+        if (item.urlTracker.isNotEmpty()) {
+            val requestParam = RequestParams()
+            requestParam.putString(URL_TRACKER, item.urlTracker)
+
+            suggestionTrackerUseCase.execute(requestParam, createEmptySubscriberForUrlTracker())
+        }
+    }
+
+    private fun createEmptySubscriberForUrlTracker() = object : Subscriber<Void?>() {
+        override fun onNext(t: Void?) {
+
+        }
+
+        override fun onCompleted() {
+
+        }
+
+        override fun onError(e: Throwable?) {
+
+        }
     }
 
     private fun trackEventItemClicked(item: BaseSuggestionViewModel) {
@@ -200,5 +231,6 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
     override fun detachView() {
         super.detachView()
         getSuggestionUseCase.unsubscribe()
+        suggestionTrackerUseCase.unsubscribe()
     }
 }

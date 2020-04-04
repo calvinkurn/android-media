@@ -62,6 +62,7 @@ object HomeQuery{
           dynamicHomeChannel {
             channels {
               id
+              group_id
               galaxy_attribution
               persona
               brand_id
@@ -70,6 +71,8 @@ object HomeQuery{
               layout
               type
               showPromoBadge
+              categoryID
+              perso_type
               header {
                 id
                 name
@@ -80,6 +83,7 @@ object HomeQuery{
                 expiredTime
                 backColor
                 backImage
+                textColor
               }
               hero {
                 id
@@ -104,10 +108,12 @@ object HomeQuery{
                 productClickUrl
                 impression
                 cashback
+                isTopads
                 freeOngkir {
                   isActive
                   imageUrl
                 }
+                productViewCountFormatted
               }
               banner {
                 id

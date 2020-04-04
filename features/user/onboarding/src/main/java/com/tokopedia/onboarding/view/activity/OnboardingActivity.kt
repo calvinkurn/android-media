@@ -47,6 +47,8 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
 
     private lateinit var remoteConfig: RemoteConfig
 
+    private var loadTime = 0L
+
     override fun getNewFragment(): Fragment? {
         return null
     }
@@ -86,6 +88,7 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
         component.inject(this)
 
         initObserver()
+        loadTime = System.currentTimeMillis()
         viewModel.getData()
     }
 
@@ -110,22 +113,16 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
     private fun initObserver() {
         viewModel.configData.observe(this, Observer { result ->
             when(result) {
-                is Success -> {
-                    onboardingAnalytics.trackOnboardingPage(true)
-                    onGetDynamicOnboardingSuccess(result.data)
-                }
-                is Fail -> {
-                    if (result.throwable.message == JOB_WAS_CANCELED) {
-                        onboardingAnalytics.trackOnboardingPage(false)
-                    }
-
-                    onGetDynamicOnboardingFailed(result.throwable)
-                }
+                is Success -> { onGetDynamicOnboardingSuccess(result.data) }
+                is Fail -> { onGetDynamicOnboardingFailed(result.throwable) }
             }
         })
     }
 
     private fun onGetDynamicOnboardingSuccess(data: ConfigDataModel) {
+        loadTime = System.currentTimeMillis() - loadTime
+        onboardingAnalytics.trackDynamicOnboardingPage(true, loadTime, "")
+
         val bundle = Bundle()
         intent.extras?.let { bundle.putAll(it) }
         bundle.putParcelable(DynamicOnboardingFragment.ARG_DYNAMIC_ONBAORDING_DATA, data)
@@ -135,6 +132,14 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
     }
 
     private fun onGetDynamicOnboardingFailed(throwable: Throwable) {
+        loadTime = System.currentTimeMillis() - loadTime
+
+        if (throwable.message == JOB_WAS_CANCELED) {
+            onboardingAnalytics.trackDynamicOnboardingPage(false, loadTime, JOB_WAS_CANCELED)
+        } else {
+            onboardingAnalytics.trackDynamicOnboardingPage(false, loadTime, throwable.message ?: "")
+        }
+
         showStaticOnboarding()
     }
 

@@ -8,15 +8,11 @@ import com.tokopedia.analyticsdebugger.debugger.ui.adapter.FpmDebuggerTypeFactor
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-class FpmDebuggerViewModel : Visitable<FpmDebuggerTypeFactory>, Parcelable {
-    var id: Long = 0
-    var name: String? = null
-    var duration: Long = 0
-    var metrics: String? = null
-    var attributes: String? = null
-    var previewMetrics: String? = null
-    var previewAttributes: String? = null
-    var timestamp: String? = null
+data class FpmDebuggerViewModel(var id: Long = 0, var name: String? = null,
+                           var duration: Long = 0, var metrics: String? = null,
+                           var attributes: String? = null, var previewMetrics: String? = null,
+                           var previewAttributes: String? = null,
+                           var timestamp: String? = null) : Visitable<FpmDebuggerTypeFactory>, Parcelable {
 
     override fun type(typeFactory: FpmDebuggerTypeFactory): Int {
         return typeFactory.type(this)

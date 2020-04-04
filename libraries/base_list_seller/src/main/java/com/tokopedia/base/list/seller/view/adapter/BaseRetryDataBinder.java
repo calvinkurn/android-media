@@ -21,7 +21,7 @@ public class BaseRetryDataBinder extends RetryDataBinder {
 
     public BaseRetryDataBinder(DataBindAdapter dataBindAdapter) {
         super(dataBindAdapter);
-        this.errorDrawableRes = R.drawable.ic_error_network;
+        this.errorDrawableRes = R.drawable.unify_globalerrors_connection;
     }
 
     public BaseRetryDataBinder(DataBindAdapter dataBindAdapter, int errorDrawableRes) {

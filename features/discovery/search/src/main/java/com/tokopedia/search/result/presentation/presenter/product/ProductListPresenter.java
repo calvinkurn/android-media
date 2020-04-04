@@ -12,14 +12,13 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel.WishlistResu
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase;
 import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
-import com.tokopedia.search.di.module.SearchContextModule;
+import com.tokopedia.search.analytics.SearchEventTracking;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper;
@@ -36,7 +35,6 @@ import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler;
-import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
 import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Badge;
@@ -48,9 +46,6 @@ import com.tokopedia.topads.sdk.domain.model.LabelGroup;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.wishlist.common.listener.WishListActionListener;
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -78,33 +73,19 @@ final class ProductListPresenter
         extends BaseDaggerPresenter<ProductListSectionContract.View>
         implements ProductListSectionContract.Presenter {
 
-    private List<Integer> searchNoResultCodeList = Arrays.asList(1, 2, 3, 6);
+    private List<Integer> searchNoResultCodeList = Arrays.asList(1, 2, 3, 6, 8);
     private static final String SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search";
     private static final String DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu";
     private static final String DEFAULT_USER_ID = "0";
 
-    @Inject
-    @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
-    UseCase<SearchProductModel> searchProductFirstPageUseCase;
-    @Inject
-    @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_LOAD_MORE_USE_CASE)
-    UseCase<SearchProductModel> searchProductLoadMoreUseCase;
-    @Inject
-    GetRecommendationUseCase recommendationUseCase;
-    @Inject
-    SeamlessLoginUsecase seamlessLoginUsecase;
-    @Inject
-    UserSessionInterface userSession;
-    @Inject
-    RemoteConfig remoteConfig;
-    @Inject
-    @Named(SearchConstant.Advertising.ADVERTISING_LOCAL_CACHE)
-    LocalCacheHandler advertisingLocalCache;
-    @Inject
-    @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE)
-    UseCase<DynamicFilterModel> getDynamicFilterUseCase;
-    @Inject
-    SearchLocalCacheHandler searchLocalCacheHandler;
+    private UseCase<SearchProductModel> searchProductFirstPageUseCase;
+    private UseCase<SearchProductModel> searchProductLoadMoreUseCase;
+    private GetRecommendationUseCase recommendationUseCase;
+    private SeamlessLoginUsecase seamlessLoginUsecase;
+    private UserSessionInterface userSession;
+    private LocalCacheHandler advertisingLocalCache;
+    private UseCase<DynamicFilterModel> getDynamicFilterUseCase;
+    private SearchLocalCacheHandler searchLocalCacheHandler;
 
     private boolean enableGlobalNavWidget = true;
     private boolean changeParamRow = false;
@@ -120,18 +101,40 @@ final class ProductListPresenter
     private List<Visitable> productList;
     private List<InspirationCarouselViewModel> inspirationCarouselViewModel;
 
+    @Inject
+    ProductListPresenter(
+            @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
+            UseCase<SearchProductModel> searchProductFirstPageUseCase,
+            @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_LOAD_MORE_USE_CASE)
+            UseCase<SearchProductModel> searchProductLoadMoreUseCase,
+            GetRecommendationUseCase recommendationUseCase,
+            SeamlessLoginUsecase seamlessLoginUsecase,
+            UserSessionInterface userSession,
+            @Named(SearchConstant.Advertising.ADVERTISING_LOCAL_CACHE)
+            LocalCacheHandler advertisingLocalCache,
+            @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE)
+            UseCase<DynamicFilterModel> getDynamicFilterUseCase,
+            SearchLocalCacheHandler searchLocalCacheHandler,
+            RemoteConfig remoteConfig
+    ) {
+        this.searchProductFirstPageUseCase = searchProductFirstPageUseCase;
+        this.searchProductLoadMoreUseCase = searchProductLoadMoreUseCase;
+        this.recommendationUseCase = recommendationUseCase;
+        this.seamlessLoginUsecase = seamlessLoginUsecase;
+        this.userSession = userSession;
+        this.advertisingLocalCache = advertisingLocalCache;
+        this.getDynamicFilterUseCase = getDynamicFilterUseCase;
+        this.searchLocalCacheHandler = searchLocalCacheHandler;
+
+        this.enableGlobalNavWidget = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET, true);
+        this.changeParamRow = remoteConfig.getBoolean(SearchConstant.RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false);
+        this.isUsingBottomSheetFilter = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER, true);
+    }
+
     @Override
-    public void initInjector(ProductListSectionContract.View view) {
-        ProductListPresenterComponent component = DaggerProductListPresenterComponent.builder()
-                .baseAppComponent(view.getBaseAppComponent())
-                .searchContextModule(createSearchContextModule(view))
-                .build();
+    public void attachView(ProductListSectionContract.View view) {
+        super.attachView(view);
 
-        component.inject(this);
-
-        enableGlobalNavWidget = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET, true);
-        changeParamRow = remoteConfig.getBoolean(SearchConstant.RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false);
-        isUsingBottomSheetFilter = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER, true);
         useRatingString = getIsUseRatingString();
     }
 
@@ -139,19 +142,6 @@ final class ProductListPresenter
         return getView().getABTestRemoteConfig()
                 .getString(AB_TEST_KEY_COMMA_VS_FULL_STAR, AB_TEST_VARIANT_FULL_STAR)
                 .equals(AB_TEST_VARIANT_COMMA_STAR);
-    }
-
-    /**
-     * Very ugly hack.
-     * It is only intended for hotfix to reduce number of file changed
-    * */
-    @Deprecated
-    private SearchContextModule createSearchContextModule(ProductListSectionContract.View view) {
-        ProductListFragment fragment = (ProductListFragment)view;
-
-        if (fragment == null || fragment.getActivity() == null) return null;
-
-        return new SearchContextModule(fragment.getActivity());
     }
 
     @Override
@@ -465,18 +455,7 @@ final class ProductListPresenter
         List<Visitable> list = new ArrayList<>(convertToListOfVisitable(productViewModel));
         productList.addAll(list);
 
-        if (inspirationCarouselViewModel.size() > 0) {
-            Iterator<InspirationCarouselViewModel> inspirationCarouselViewModelIterator = inspirationCarouselViewModel.iterator();
-            while(inspirationCarouselViewModelIterator.hasNext()) {
-                InspirationCarouselViewModel data = inspirationCarouselViewModelIterator.next();
-                if (data.getPosition() < getView().getLastProductItemPositionFromCache()) {
-                    Visitable product = productList.get(data.getPosition());
-                    list.add(list.indexOf(product), data);
-                    getView().sendImpressionInspirationCarousel(data);
-                    inspirationCarouselViewModelIterator.remove();
-                }
-            }
-        }
+        processInspirationCarouselPosition(list);
 
         getView().removeLoading();
         getView().addProductList(list);
@@ -678,6 +657,8 @@ final class ProductListPresenter
     }
 
     private void getViewToProcessSearchResult(SearchProductModel searchProductModel) {
+        updateValueEnableGlobalNavWidget();
+
         ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
 
         sendTrackingNoSearchResult(productViewModel);
@@ -699,6 +680,12 @@ final class ProductListPresenter
 
         if (isFirstTimeLoad) {
             getViewToSendTrackingOnFirstTimeLoad(productViewModel);
+        }
+    }
+
+    private void updateValueEnableGlobalNavWidget() {
+        if (getView() != null) {
+            enableGlobalNavWidget = enableGlobalNavWidget && !getView().isLandingPage();
         }
     }
 
@@ -843,19 +830,7 @@ final class ProductListPresenter
         }
 
         inspirationCarouselViewModel = productViewModel.getInspirationCarouselViewModel();
-
-        if (inspirationCarouselViewModel.size() > 0) {
-            Iterator<InspirationCarouselViewModel> inspirationCarouselViewModelIterator = inspirationCarouselViewModel.iterator();
-            while(inspirationCarouselViewModelIterator.hasNext()) {
-                InspirationCarouselViewModel data = inspirationCarouselViewModelIterator.next();
-                if (data.getPosition() < list.size()) {
-                    Visitable product = productList.get(data.getPosition());
-                    list.add(list.indexOf(product), data);
-                    getView().sendImpressionInspirationCarousel(data);
-                    inspirationCarouselViewModelIterator.remove();
-                }
-            }
-        }
+        processInspirationCarouselPosition(list);
 
         getView().removeLoading();
         getView().setProductList(list);
@@ -913,6 +888,33 @@ final class ProductListPresenter
         return new BannedProductsTickerViewModel(htmlErrorMessage);
     }
 
+    private void processInspirationCarouselPosition(List<Visitable> list) {
+        if (inspirationCarouselViewModel.size() > 0) {
+            Iterator<InspirationCarouselViewModel> inspirationCarouselViewModelIterator = inspirationCarouselViewModel.iterator();
+
+            while(inspirationCarouselViewModelIterator.hasNext()) {
+                InspirationCarouselViewModel data = inspirationCarouselViewModelIterator.next();
+
+                if (data.getPosition() <= 0) {
+                    inspirationCarouselViewModelIterator.remove();
+                    continue;
+                }
+
+                if (data.getPosition() <= getView().getLastProductItemPositionFromCache()) {
+                    try {
+                        Visitable product = productList.get(data.getPosition() - 1);
+                        list.add(list.indexOf(product) + 1, data);
+                        getView().sendImpressionInspirationCarousel(data);
+                        inspirationCarouselViewModelIterator.remove();
+                    }
+                    catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
     private boolean isExistsFreeOngkirBadge(List<Visitable> productList) {
         for (Visitable product : productList) {
             if (product instanceof ProductItemViewModel) {
@@ -955,12 +957,71 @@ final class ProductListPresenter
 
     private GeneralSearchTrackingModel createGeneralSearchTrackingModel(ProductViewModel productViewModel, Map<String, String> category) {
         return new GeneralSearchTrackingModel(
+                createGeneralSearchTrackingEventLabel(productViewModel),
+                !productViewModel.getProductList().isEmpty(),
+                category,
+                createGeneralSearchTrackingRelatedKeyword(productViewModel)
+        );
+    }
+
+    private String createGeneralSearchTrackingEventLabel(ProductViewModel productViewModel) {
+        return String.format(
+                SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
                 productViewModel.getQuery(),
                 productViewModel.getKeywordProcess(),
-                productViewModel.getResponseCode(),
-                !productViewModel.getProductList().isEmpty(),
-                category
+                productViewModel.getResponseCode()
         );
+    }
+
+    private String createGeneralSearchTrackingRelatedKeyword(ProductViewModel productViewModel) {
+        String previousKeyword = getPreviousKeywordForGeneralSearchTracking();
+        String alternativeKeyword = getAlternativeKeywordForGeneralSearchTracking(productViewModel);
+
+        return previousKeyword + " - " + alternativeKeyword;
+    }
+
+    private String getPreviousKeywordForGeneralSearchTracking() {
+        if (getView() == null) return SearchEventTracking.NONE;
+
+        String previousKeyword = getView().getPreviousKeyword();
+        if (previousKeyword.isEmpty()) return SearchEventTracking.NONE;
+
+        return previousKeyword;
+    }
+
+    private String getAlternativeKeywordForGeneralSearchTracking(ProductViewModel productViewModel) {
+        String alternativeKeyword = SearchEventTracking.NONE;
+
+        if (isAlternativeKeywordFromRelated(productViewModel)) {
+            alternativeKeyword = productViewModel.getRelatedSearchModel().getRelatedKeyword();
+        }
+        else if (isAlternativeKeywordFromSuggestion(productViewModel)) {
+            alternativeKeyword = productViewModel.getSuggestionModel().getSuggestion();
+        }
+
+        return alternativeKeyword;
+    }
+
+    private boolean isAlternativeKeywordFromRelated(ProductViewModel productViewModel) {
+        String responseCode = productViewModel.getResponseCode();
+
+        boolean isResponseCodeForRelatedKeyword = responseCode.equals("3") || responseCode.equals("6");
+        boolean relatedKeywordIsNotEmpty =
+                productViewModel.getRelatedSearchModel() != null
+                && !productViewModel.getRelatedSearchModel().getRelatedKeyword().isEmpty();
+
+        return isResponseCodeForRelatedKeyword && relatedKeywordIsNotEmpty;
+    }
+
+    private boolean isAlternativeKeywordFromSuggestion(ProductViewModel productViewModel) {
+        String responseCode = productViewModel.getResponseCode();
+
+        boolean isResponseCodeForSuggestion = responseCode.equals("7");
+        boolean suggestionIsNotEmpty =
+                productViewModel.getSuggestionModel() != null
+                && !productViewModel.getSuggestionModel().getSuggestion().isEmpty();
+
+        return isResponseCodeForSuggestion && suggestionIsNotEmpty;
     }
 
     private void enrichWithRelatedSearchParam(RequestParams requestParams) {

@@ -19,8 +19,8 @@ class OnboardingAnalytics {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 
-    fun trackOnboardingPage(isDynamic: Boolean) {
-        Timber.w("P2#DYNAMIC_OBOARDING_PAGE#$isDynamic")
+    fun trackDynamicOnboardingPage(isEnable: Boolean, time: Long, message: String) {
+        Timber.w("P2#DYNAMIC_OBOARDING_PAGE#isEnable=$isEnable;loadTime=$time;message=$message")
     }
 
     fun trackMoengage() {
