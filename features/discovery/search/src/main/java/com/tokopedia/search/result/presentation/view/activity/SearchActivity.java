@@ -50,7 +50,6 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.R;
 import com.tokopedia.search.analytics.SearchTracking;
-import com.tokopedia.search.result.presentation.SearchContract;
 import com.tokopedia.search.result.presentation.model.ChildViewVisibilityChangedModel;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionPagerAdapter;
 import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
@@ -64,6 +63,7 @@ import com.tokopedia.search.utils.CountDrawable;
 import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.URLEncoder;
@@ -79,12 +79,11 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.Cart.CACHE
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SEARCH_RESULT_TRACE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_FIRST_POSITION;
-import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_FORTH_POSITION;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_SECOND_POSITION;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_THIRD_POSITION;
 
 public class SearchActivity extends BaseActivity
-        implements SearchContract.View,
+        implements
         RedirectionListener,
         BottomSheetListener,
         SearchNavigationListener,
@@ -112,7 +111,6 @@ public class SearchActivity extends BaseActivity
     private String productTabTitle;
     private String shopTabTitle;
     private String profileTabTitle;
-    private String catalogTabTitle;
     private String autocompleteApplink;
 
     @Inject UserSessionInterface userSession;
@@ -288,7 +286,7 @@ public class SearchActivity extends BaseActivity
     }
 
     private void initViewPager() {
-        viewPager.setOffscreenPageLimit(3);
+        viewPager.setOffscreenPageLimit(2);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -315,9 +313,6 @@ public class SearchActivity extends BaseActivity
             case TAB_SECOND_POSITION:
                 SearchTracking.eventSearchResultTabClick(this, shopTabTitle);
                 break;
-            case TAB_FORTH_POSITION:
-                SearchTracking.eventSearchResultTabClick(this, catalogTabTitle);
-                break;
         }
     }
 
@@ -336,6 +331,7 @@ public class SearchActivity extends BaseActivity
                 sendBottomSheetHideEventForProductList();
             }
 
+            @NotNull
             @Override
             public AppCompatActivity getActivity() {
                 return SearchActivity.this;
@@ -408,7 +404,6 @@ public class SearchActivity extends BaseActivity
         productTabTitle = getString(R.string.product_tab_title);
         shopTabTitle = getString(R.string.shop_tab_title);
         profileTabTitle = getString(R.string.title_profile);
-        catalogTabTitle = getString(R.string.catalog_tab_title);
     }
 
     private void initViewModel() {
@@ -604,9 +599,6 @@ public class SearchActivity extends BaseActivity
                 case TAB_THIRD_POSITION:
                     profileListFragmentExecuteBackToTop();
                     break;
-                case TAB_FORTH_POSITION:
-                    catalogListFragmentExecuteBackToTop();
-                    break;
             }
         }
     }
@@ -629,12 +621,6 @@ public class SearchActivity extends BaseActivity
         }
     }
 
-    private void catalogListFragmentExecuteBackToTop() {
-        if (searchSectionPagerAdapter.getCatalogListFragment() != null) {
-            searchSectionPagerAdapter.getCatalogListFragment().backToTop();
-        }
-    }
-
     private void setActiveTab() {
         viewPager.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -653,8 +639,6 @@ public class SearchActivity extends BaseActivity
                 return TAB_SECOND_POSITION;
             case SearchConstant.ActiveTab.PROFILE:
                 return TAB_THIRD_POSITION;
-            case SearchConstant.ActiveTab.CATALOG:
-                return TAB_FORTH_POSITION;
             default:
                 return TAB_FIRST_POSITION;
         }
