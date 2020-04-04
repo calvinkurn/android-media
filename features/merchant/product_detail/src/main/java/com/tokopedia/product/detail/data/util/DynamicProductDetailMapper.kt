@@ -1,8 +1,10 @@
 package com.tokopedia.product.detail.data.util
 
+import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionParams
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
+import com.tokopedia.variant_common.model.ProductVariantCommon
 
 object DynamicProductDetailMapper {
 
@@ -18,8 +20,10 @@ object DynamicProductDetailMapper {
                             type = component.type,
                             name = component.componentName,
                             campaignID = component.componentData.firstOrNull()?.campaignId ?: "",
-                            campaignType = component.componentData.firstOrNull()?.campaignType ?: "",
-                            campaignTypeName = component.componentData.firstOrNull()?.campaignTypeName ?: "",
+                            campaignType = component.componentData.firstOrNull()?.campaignType
+                                    ?: "",
+                            campaignTypeName = component.componentData.firstOrNull()?.campaignTypeName
+                                    ?: "",
                             endDate = component.componentData.firstOrNull()?.endDate ?: "",
                             startDate = component.componentData.firstOrNull()?.startDate ?: "",
                             notifyMe = component.componentData.firstOrNull()?.notifyMe ?: false
@@ -54,9 +58,6 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.SHOP_VOUCHER -> {
                     listOfComponent.add(ProductMerchantVoucherDataModel(type = component.type, name = component.componentName))
-                }
-                ProductDetailConstant.SEPARATOR -> {
-                    listOfComponent.add(SeparatorDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.VALUE_PROPOSITION -> {
                     listOfComponent.add(ProductValuePropositionDataModel(type = component.type, name = component.componentName))
@@ -99,6 +100,44 @@ object DynamicProductDetailMapper {
         }, {
             it
         })
+    }
+
+    fun generateCartTypeVariantParams(dynamicProductInfoP1: DynamicProductInfoP1?, productVariant: ProductVariantCommon?): List<CartRedirectionParams> {
+
+        return productVariant?.children?.map {
+            val listOfFlags = mutableListOf<String>()
+            if (dynamicProductInfoP1?.data?.preOrder?.isActive == true) listOfFlags.add(ProductDetailConstant.KEY_PREORDER)
+            if (dynamicProductInfoP1?.basic?.isLeasing == true) listOfFlags.add(ProductDetailConstant.KEY_LEASING)
+            if (it.campaign?.isUsingOvo == true) listOfFlags.add(ProductDetailConstant.KEY_OVO_DEALS)
+
+            CartRedirectionParams(it.campaign?.campaignID?.toIntOrNull() ?: 0,
+                    it.campaign?.campaignType ?: 0, listOfFlags)
+        } ?: listOf()
+    }
+
+    fun generateCartTypeParam(dynamicProductInfoP1: DynamicProductInfoP1?): List<CartRedirectionParams> {
+        val campaignId = dynamicProductInfoP1?.data?.campaign?.campaignID?.toIntOrNull() ?: 0
+        val campaignTypeId = dynamicProductInfoP1?.data?.campaign?.campaignType?.toIntOrNull() ?: 0
+        val listOfFlags = mutableListOf<String>()
+        if (dynamicProductInfoP1?.data?.preOrder?.isActive == true) listOfFlags.add(ProductDetailConstant.KEY_PREORDER)
+        if (dynamicProductInfoP1?.basic?.isLeasing == true) listOfFlags.add(ProductDetailConstant.KEY_LEASING)
+        if (dynamicProductInfoP1?.data?.campaign?.isUsingOvo == true) listOfFlags.add(ProductDetailConstant.KEY_OVO_DEALS)
+
+        return listOf(CartRedirectionParams(campaignId, campaignTypeId, listOfFlags))
+    }
+
+    fun generateButtonAction(it: String, atcButton: Boolean, leasing: Boolean): Int {
+        return when {
+            atcButton -> ProductDetailConstant.ATC_BUTTON
+            leasing -> ProductDetailConstant.LEASING_BUTTON
+            it == ProductDetailConstant.KEY_NORMAL_BUTTON -> {
+                ProductDetailConstant.BUY_BUTTON
+            }
+            it == ProductDetailConstant.KEY_OCS_BUTTON -> {
+                ProductDetailConstant.OCS_BUTTON
+            }
+            else -> ProductDetailConstant.BUY_BUTTON
+        }
     }
 
     fun mapToWholesale(data: List<Wholesale>?): List<com.tokopedia.product.detail.common.data.model.product.Wholesale>? {
