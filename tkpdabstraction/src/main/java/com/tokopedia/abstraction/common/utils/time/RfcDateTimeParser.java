@@ -13,6 +13,8 @@ import java.util.Locale;
 // https://gist.github.com/oseparovic/d9ee771927ac5f3aefc8ba0b99c0cf38
 // Relevant SO question
 // http://stackoverflow.com/questions/40369287/what-pattern-should-be-used-to-parse-rfc-3339-datetime-strings-in-java
+// Relevant different behaviour when unit testing
+// https://stackoverflow.com/questions/35139588/dateformat-parseexception-only-during-unit-testing
 
 public class RfcDateTimeParser {
 
@@ -23,9 +25,11 @@ public class RfcDateTimeParser {
     // "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
     // also please note that ZZZZZ == XXX in java 7. This project was initially created for Android
     // so XXX is not supported
+    // the third pattern (without Z) was added to support unit testing
     public final static String[] RFC_3339 = {
             "yyyy-MM-dd'T'HH:mm:ssZZZZZ",
-            "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+            "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ",
+            "yyyy-MM-dd'T'HH:mm:ss"
     };
     public final static String[] RFC_822 = {
             "EEE, dd MMM yy HH:mm:ss zzz"
@@ -49,9 +53,10 @@ public class RfcDateTimeParser {
         // http://stackoverflow.com/a/4024604/740474
         for (String formatString : rfcPatterns) {
             try {
-                return new SimpleDateFormat(formatString, Locale.US).parse(timestamp);
+                return new SimpleDateFormat(formatString, Locale.getDefault()).parse(timestamp);
             } catch (ParseException e) {
                 // SimpleDateFormat couldn't parse the date, catch and continue
+                e.printStackTrace();
             }
         }
 
