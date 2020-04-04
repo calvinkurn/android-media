@@ -8,7 +8,10 @@ import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.event.Event
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
+import com.tokopedia.play.view.wrapper.InteractionEvent
+import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -43,6 +46,32 @@ class PlayInteractionViewModelTest {
                 userSession,
                 dispatchers
         )
+    }
+
+    @Test
+    fun `test do interaction event send chat when isLoggedIn true`() {
+
+        coEvery { userSession.isLoggedIn } returns true
+
+        val expectedResult = Event(LoginStateEvent.InteractionAllowed(InteractionEvent.SendChat))
+
+        playInteractionViewModel.doInteractionEvent(InteractionEvent.SendChat)
+
+        Assertions.assertThat(playInteractionViewModel.observableLoggedInInteractionEvent.getOrAwaitValue())
+                .isEqualToComparingFieldByFieldRecursively(expectedResult)
+    }
+
+    @Test
+    fun `test do interaction event send chat when isLoggedIn false`() {
+
+        coEvery { userSession.isLoggedIn } returns false
+
+        val expectedResult = Event(LoginStateEvent.NeedLoggedIn(InteractionEvent.SendChat))
+
+        playInteractionViewModel.doInteractionEvent(InteractionEvent.SendChat)
+
+        Assertions.assertThat(playInteractionViewModel.observableLoggedInInteractionEvent.getOrAwaitValue())
+                .isEqualToComparingFieldByFieldRecursively(expectedResult)
     }
 
     @Test

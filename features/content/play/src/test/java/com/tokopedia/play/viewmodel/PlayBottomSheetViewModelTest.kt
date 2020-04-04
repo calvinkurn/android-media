@@ -6,10 +6,13 @@ import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.event.Event
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
+import com.tokopedia.play.view.wrapper.InteractionEvent
+import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
@@ -115,5 +118,24 @@ class PlayBottomSheetViewModelTest {
         Assertions
                 .assertThat(playBottomSheetViewModel.observableAddToCart.getOrAwaitValue())
                 .isEqualTo(expectedModel)
+    }
+
+    @Test
+    fun `test do interaction event do action product when isLoggedIn true`() {
+
+        coEvery { userSession.isLoggedIn } returns true
+
+        val expectedResult = Event(LoginStateEvent.InteractionAllowed(InteractionEvent.DoActionProduct(
+                product = PlayUiMapper.mapItemProduct(modelBuilder.buildProduct()),
+                action = ProductAction.AddToCart,
+                type = BottomInsetsType.VariantSheet)))
+
+        playBottomSheetViewModel.doInteractionEvent(InteractionEvent.DoActionProduct(
+                product = PlayUiMapper.mapItemProduct(modelBuilder.buildProduct()),
+                action = ProductAction.AddToCart,
+                type = BottomInsetsType.VariantSheet))
+
+        Assertions.assertThat(playBottomSheetViewModel.observableLoggedInInteractionEvent.getOrAwaitValue())
+                .isEqualToComparingFieldByFieldRecursively(expectedResult)
     }
 }
