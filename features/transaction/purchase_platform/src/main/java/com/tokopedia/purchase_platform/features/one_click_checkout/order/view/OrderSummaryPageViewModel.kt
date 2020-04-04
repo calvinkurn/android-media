@@ -1043,7 +1043,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     val voucherOrdersItemUiModel = voucherOrdersItemUiModels[i]
                     if (voucherOrdersItemUiModel != null && voucherOrdersItemUiModel.messageUiModel.state == "red") {
                         val notEligiblePromoHolderdata = NotEligiblePromoHolderdata()
-                        notEligiblePromoHolderdata.promoTitle = if (voucherOrdersItemUiModel.titleDescription != null) voucherOrdersItemUiModel.titleDescription else ""
+                        notEligiblePromoHolderdata.promoTitle = voucherOrdersItemUiModel.titleDescription
 //                        if (validateUsePromoRevampUiModel.promoUiModel.codes.size > 0) {
                             notEligiblePromoHolderdata.promoCode = voucherOrdersItemUiModel.titleDescription
 //                        }
@@ -1115,13 +1115,13 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         return list
     }
 
-    fun updateCartPromo(onSuccess: (PromoRequest, ValidateUsePromoRequest) -> Unit) {
+    fun updateCartPromo(onSuccess: (PromoRequest, ValidateUsePromoRequest, ArrayList<String>) -> Unit) {
         val param = generateUpdateCartParam()
         if (param != null) {
             globalEvent.value = OccGlobalEvent.Loading
             updateCartOccUseCase.execute(param, {
                 globalEvent.value = OccGlobalEvent.Normal
-                onSuccess(generatePromoRequest(), generateValidateUsePromoRequest())
+                onSuccess(generatePromoRequest(), generateValidateUsePromoRequest(), generateBboPromoCodes())
             }, { throwable: Throwable ->
                 throwable.printStackTrace()
                 if (throwable is MessageErrorException && throwable.message != null) {
@@ -1246,6 +1246,14 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         lastValidateUsePromoRequest = validateUsePromoRequest
 
         return validateUsePromoRequest
+    }
+
+    fun generateBboPromoCodes(): ArrayList<String> {
+        val shipping = _orderPreference?.shipping
+        if (shipping?.isApplyLogisticPromo == true && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
+            return arrayListOf(shipping.logisticPromoViewModel.promoCode)
+        }
+        return ArrayList()
     }
 
     fun validateUsePromo(validateUsePromoRequest: ValidateUsePromoRequest? = null) {
