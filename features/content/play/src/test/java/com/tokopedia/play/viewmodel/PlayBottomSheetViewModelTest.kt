@@ -1,20 +1,18 @@
 package com.tokopedia.play.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.google.gson.GsonBuilder
 import com.tokopedia.play.domain.PostAddToCartUseCase
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
-import com.tokopedia.play.view.uimodel.VariantSheetUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
-import com.tokopedia.variant_common.util.VariantCommonMapper
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.assertj.core.api.Assertions
@@ -63,8 +61,6 @@ class PlayBottomSheetViewModelTest {
         val expectedModel = modelBuilder.buildVariantSheetUiModel()
         val expectedResult = PlayResult.Success(expectedModel)
 
-        println("expected: ${GsonBuilder().setPrettyPrinting().create().toJson(expectedModel)}")
-
         playBottomSheetViewModel.getProductVariant(
                 PlayUiMapper.mapItemProduct(modelBuilder.buildProduct()),
                 ProductAction.AddToCart
@@ -72,12 +68,52 @@ class PlayBottomSheetViewModelTest {
 
         Assertions
                 .assertThat(playBottomSheetViewModel.observableProductVariant.getOrAwaitValue())
-                .isEqualTo(expectedResult)
+                .isEqualToComparingFieldByFieldRecursively(expectedResult)
     }
 
     @Test
-    fun `test add to cart`() {
+    fun `test add to cart success`() {
 
+        coEvery { mockPostAddToCartUseCase.executeOnBackground() } returns modelBuilder.buildAddToCartModelResponseSuccess()
 
+        val expectedModel = modelBuilder.buildCartUiModel(
+                action = ProductAction.AddToCart,
+                product = PlayUiMapper.mapItemProduct(modelBuilder.buildProduct()),
+                bottomInsetsType = BottomInsetsType.VariantSheet
+        )
+
+        playBottomSheetViewModel.addToCart(
+                product = PlayUiMapper.mapItemProduct(modelBuilder.buildProduct()),
+                action = ProductAction.AddToCart,
+                type = BottomInsetsType.VariantSheet
+        )
+
+        Assertions
+                .assertThat(playBottomSheetViewModel.observableAddToCart.getOrAwaitValue())
+                .isEqualTo(expectedModel)
+    }
+
+    @Test
+    fun `test add to cart fail`() {
+        coEvery { mockPostAddToCartUseCase.executeOnBackground() } returns modelBuilder.buildAddToCartModelResponseFail()
+
+        val expectedModel = modelBuilder.buildCartUiModel(
+                action = ProductAction.AddToCart,
+                product = PlayUiMapper.mapItemProduct(modelBuilder.buildProduct()),
+                bottomInsetsType = BottomInsetsType.VariantSheet,
+                isSuccess = false,
+                errorMessage = "error message ",
+                cartId = ""
+        )
+
+        playBottomSheetViewModel.addToCart(
+                product = PlayUiMapper.mapItemProduct(modelBuilder.buildProduct()),
+                action = ProductAction.AddToCart,
+                type = BottomInsetsType.VariantSheet
+        )
+
+        Assertions
+                .assertThat(playBottomSheetViewModel.observableAddToCart.getOrAwaitValue())
+                .isEqualTo(expectedModel)
     }
 }

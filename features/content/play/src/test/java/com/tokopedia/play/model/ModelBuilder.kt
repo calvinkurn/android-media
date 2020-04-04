@@ -3,6 +3,8 @@ package com.tokopedia.play.model
 import android.provider.MediaStore.Video
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.play.data.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
@@ -1167,6 +1169,28 @@ class ModelBuilder {
             parentVariant = gson.fromJson(parentVariant, ProductVariantCommon::class.java),
             listOfVariantCategory = gson.fromJson(listOfVariantCategory, object : TypeToken<List<VariantCategory>>() {}.type),
             mapOfSelectedVariants = mutableMapOf("15125086" to 0)
+    )
+
+    fun buildAddToCartModelResponseSuccess() = AddToCartDataModel(data = DataModel(cartId = "123", success = 1))
+    fun buildAddToCartModelResponseFail() = AddToCartDataModel(
+            errorMessage = arrayListOf("error message"),
+            data = DataModel(cartId = "", success = 0)
+    )
+
+    fun buildCartUiModel(
+            product: ProductLineUiModel,
+            action: ProductAction,
+            bottomInsetsType: BottomInsetsType,
+            isSuccess: Boolean = true,
+            errorMessage: String = "",
+            cartId: String = "123"
+    ) = CartFeedbackUiModel(
+            isSuccess = isSuccess,
+            errorMessage = errorMessage,
+            action = action,
+            product = product,
+            bottomInsetsType = bottomInsetsType,
+            cartId = cartId
     )
 
     /**

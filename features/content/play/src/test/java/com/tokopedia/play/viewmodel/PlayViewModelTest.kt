@@ -8,7 +8,6 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.play.data.PlaySocketTest
 import com.tokopedia.play.data.TotalLike
-import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.helper.getOrAwaitValue
@@ -52,8 +51,7 @@ class PlayViewModelTest {
     private val mockGetCartCountUseCase: GetCartCountUseCase = mockk(relaxed = true)
     private val mockGetProductTagItemsUseCase: GetProductTagItemsUseCase = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
-    private val localCacheHandler: LocalCacheHandler = mockk(relaxed = true)
-    private val mockPlaySocket: PlaySocketTest = PlaySocketTest(userSession, localCacheHandler)
+    private val mockPlaySocket: PlaySocketTest = mockk(relaxed = true)
     private val dispatchers: CoroutineDispatcherProvider = TestCoroutineDispatchersProvider
 
     private val modelBuilder = ModelBuilder()
@@ -352,8 +350,36 @@ class PlayViewModelTest {
     }
 
     @Test
+    fun `test observe channel type when null`() {
+
+        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } throws Exception("just throws")
+
+        val expectedResult = PlayChannelType.Unknown
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+
+        Assertions
+                .assertThat(playViewModel.channelType)
+                .isEqualTo(expectedResult)
+    }
+
+    @Test
     fun `test observe content id`() {
         val expectedResult = mockChannel.contentId
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+
+        Assertions
+                .assertThat(playViewModel.contentId)
+                .isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun `test observe content id when null`() {
+
+        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } throws Exception("just throws")
+
+        val expectedResult = 0
 
         playViewModel.getChannelInfo(mockChannel.channelId)
 
@@ -374,6 +400,20 @@ class PlayViewModelTest {
     }
 
     @Test
+    fun `test observe content type when null`() {
+
+        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } throws Exception("just throws")
+
+        val expectedResult = 0
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+
+        Assertions
+                .assertThat(playViewModel.contentType)
+                .isEqualTo(expectedResult)
+    }
+
+    @Test
     fun `test observe like type`() {
         val expectedResult = mockChannel.likeType
 
@@ -385,8 +425,36 @@ class PlayViewModelTest {
     }
 
     @Test
-    fun `test observe partner type`() {
+    fun `test observe like type when null`() {
+
+        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } throws Exception("just throws")
+
+        val expectedResult = 0
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+
+        Assertions
+                .assertThat(playViewModel.likeType)
+                .isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun `test observe partner id`() {
         val expectedResult = mockChannel.partnerId
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+
+        Assertions
+                .assertThat(playViewModel.partnerId)
+                .isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun `test observe partner id when null`() {
+
+        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } throws Exception("just throws")
+
+        val expectedResult = null
 
         playViewModel.getChannelInfo(mockChannel.channelId)
 
@@ -406,115 +474,17 @@ class PlayViewModelTest {
                 .isEqualTo(expectedResult)
     }
 
-    private val gson = Gson()
-
     @Test
-    fun `test observe total like from socket`() {
-        val actualResult = """
-        {
-            "type": "TOTAL_LIKE",
-            "data": {
-                "channel_id": 2315,
-                "total_like": 48,
-                "total_like_formatted": "48"
-            }
-        }
-        """.trimIndent()
+    fun `test observe total view when null`() {
 
-        val expectedResult = modelBuilder.buildTotalLikeUiModel(
-                totalLike = mockTotalLike.totalLike,
-                totalLikeFormatted = mockTotalLike.totalLikeFormatted
-        )
+        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } throws Exception("just throws")
 
-        mockPlaySocket.webSocketResponse = gson.fromJson(actualResult, WebSocketResponse::class.java)
+        val expectedResult = null
 
-
-        playViewModel.startWebSocket(mockChannel.channelId, mockChannel.gcToken, mockChannel.settings)
+        playViewModel.getChannelInfo(mockChannel.channelId)
 
         Assertions
-                .assertThat(playViewModel.observableTotalLikes.getOrAwaitValue())
+                .assertThat(playViewModel.totalView)
                 .isEqualTo(expectedResult)
-    }
-
-    @Test
-    fun `test observe total view from socket`() {
-        val actualResult = """
-        {
-            "type": "TOTAL_VIEW",
-            "data": {
-                "channel_id": 2315,
-                "total_view": 12,
-                "total_view_formatted": "12"
-            }
-        }
-        """.trimIndent()
-
-        val expectedResult = modelBuilder.buildTotalViewUiModel(mockChannel.totalViews)
-
-        mockPlaySocket.webSocketResponse = gson.fromJson(actualResult, WebSocketResponse::class.java)
-
-        playViewModel.startWebSocket(mockChannel.channelId, mockChannel.gcToken, mockChannel.settings)
-
-        Assertions
-                .assertThat(playViewModel.observableTotalViews.getOrAwaitValue())
-                .isEqualTo(expectedResult)
-    }
-
-    @Test
-    fun `test observe incoming chat from socket`() {
-        val actualResult = """
-        {
-            "type": "MESG",
-            "data": {
-                "channel_id": 1,
-                "msg_id": 1,
-                "user": {
-                    "id": 1251,
-                    "name": "mzennis",
-                    "image": "https://image.png"
-                },
-                "message": "Keren banget fitur ini.",
-                "timestamp": 1579064126000
-            }
-        }
-        """.trimIndent()
-        mockPlaySocket.webSocketResponse = gson.fromJson(actualResult, WebSocketResponse::class.java)
-
-        val expectedModel = modelBuilder.buildPlayChatUiModel(
-                isSelfMessage = false
-        )
-
-        playViewModel.startWebSocket(mockChannel.channelId, mockChannel.gcToken, mockChannel.settings)
-
-        Assertions
-                .assertThat(playViewModel.observableNewChat.getOrAwaitValue())
-                .isEqualTo(expectedModel)
-    }
-
-    @Test
-    fun `test observe pinned message from socket`() {
-        val actualResult = """
-        {
-            "type": "PINNED_MESSAGE",
-            "data": {
-                "channel_id": 1251,
-                "pinned_message_id": 3187,
-                "title": "message",
-                "message": "",
-                "redirect_url": "https://tkp.me"
-            }
-        }
-        """.trimIndent()
-        mockPlaySocket.webSocketResponse = gson.fromJson(actualResult, WebSocketResponse::class.java)
-
-        val expectedModel = modelBuilder.buildPinnedMessageUiModel(
-                partnerName = ""
-        )
-
-        playViewModel.startWebSocket(mockChannel.channelId, mockChannel.gcToken, mockChannel.settings)
-
-        Assertions
-                .assertThat(playViewModel.observablePinned.getOrAwaitValue())
-                .isEqualTo(expectedModel)
     }
 }
