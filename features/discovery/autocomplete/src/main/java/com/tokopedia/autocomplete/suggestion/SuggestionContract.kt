@@ -17,6 +17,8 @@ interface SuggestionContract {
 
         fun trackEventClickProfile(eventLabel: String)
 
+        fun trackEventClickRecentKeyword(eventLabel: String)
+
         fun dropKeyBoard()
 
         fun route(applink: String)

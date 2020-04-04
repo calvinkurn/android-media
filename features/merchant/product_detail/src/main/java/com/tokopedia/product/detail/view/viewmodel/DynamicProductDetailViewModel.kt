@@ -89,6 +89,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val addToCartOcsUseCase: AddToCartOcsUseCase,
                                                              private val getP3VariantUseCase: GetP3VariantUseCase,
                                                              private val toggleNotifyMeUseCase: ToggleNotifyMeUseCase,
+                                                             private val sendTopAdsUseCase: SendTopAdsUseCase,
                                                              val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.ui()) {
 
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
@@ -135,8 +136,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val addToCartLiveData: LiveData<Result<AddToCartDataModel>>
         get() = _addToCartLiveData
 
-    private val _initialVariantData = MutableLiveData<List<VariantCategory>>()
-    val initialVariantData: LiveData<List<VariantCategory>>
+    private val _initialVariantData = MutableLiveData<List<VariantCategory>?>()
+    val initialVariantData: LiveData<List<VariantCategory>?>
         get() = _initialVariantData
 
     private val _onVariantClickedData = MutableLiveData<List<VariantCategory>?>()
@@ -190,6 +191,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         addToCartUseCase.unsubscribe()
         addToCartOcsUseCase.unsubscribe()
         toggleNotifyMeUseCase.cancelJobs()
+    }
+
+    fun sendTopAds(url: String) {
+        sendTopAdsUseCase.executeOnBackground(url)
     }
 
     fun processVariant(data: ProductVariantCommon, mapOfSelectedVariant: MutableMap<String, Int>?) {

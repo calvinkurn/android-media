@@ -63,6 +63,7 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.dialog.IAccessRequestListener
 import com.tokopedia.design.drawable.CountDrawable
+import com.tokopedia.device.info.permission.ImeiPermissionAsker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.gallery.ImageReviewGalleryActivity
@@ -108,10 +109,7 @@ import com.tokopedia.product.detail.view.util.DynamicProductDetailHashMap
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHelper
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
-import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
-import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet
-import com.tokopedia.product.detail.view.widget.SquareHFrameLayout
-import com.tokopedia.product.detail.view.widget.ValuePropositionBottomSheet
+import com.tokopedia.product.detail.view.widget.*
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.purchase_platform.common.constant.CartConstant
@@ -241,6 +239,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     lateinit var performanceMonitoringP2Login: PerformanceMonitoring
     lateinit var performanceMonitoringFull: PerformanceMonitoring
 
+    private var enableCheckImeiRemoteConfig = false
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dynamic_product_detail_fragment, container, false)
     }
@@ -249,7 +249,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         super.onViewCreated(view, savedInstanceState)
         if (::remoteConfig.isInitialized) {
             viewModel.enableCaching = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_CACHE_PDP, true)
+            enableCheckImeiRemoteConfig = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CHECK_IMEI_PDP, false)
         }
+
         initTradein()
         initPerformanceMonitoring()
         initRecyclerView(view)
@@ -648,6 +650,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     /**
      * ProductRecommendationViewHolder Listener
      */
+
+    override fun sendTopAds(topAdsUrl: String) {
+        viewModel.sendTopAds(topAdsUrl)
+    }
+
     override fun onSeeAllRecomClicked(pageName: String, applink: String, componentTrackDataModel: ComponentTrackDataModel) {
         DynamicProductDetailTracking.Click.eventClickSeeMoreRecomWidget(pageName, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
         RouteManager.route(context, applink)
@@ -850,13 +857,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             Dialog(it, Dialog.Type.LONG_PROMINANCE).apply {
                 setTitle(getString(R.string.campaign_expired_title))
                 setDesc(getString(R.string.campaign_expired_descr))
-                setBtnOk(getString(R.string.exp_dialog_ok))
                 setBtnCancel(getString(R.string.close))
                 setOnCancelClickListener {
                     onSwipeRefresh()
-                    dismiss()
-                }
-                setOnOkClickListener {
                     dismiss()
                 }
             }.show()
@@ -1043,8 +1046,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun observeInitialVariantData() {
         viewModel.initialVariantData.observe(viewLifecycleOwner, Observer {
-            pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = it
-            dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, null)
+            if (it == null) {
+                dynamicAdapter.clearElement(pdpHashMapUtil?.productNewVariantDataModel)
+            } else {
+                pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = it
+                dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, null)
+            }
         })
     }
 
@@ -2060,8 +2067,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.buttonActionType = buttonAction
         context?.let {
             val isVariant = viewModel.getDynamicProductInfoP1?.data?.variant?.isVariant ?: false
-            val isPartialySelected = pdpHashMapUtil?.productNewVariantDataModel?.isPartialySelected()
-                    ?: false
+            val isPartialySelected = pdpHashMapUtil?.productNewVariantDataModel?.isPartialySelected() ?: false
 
             if (!viewModel.isUserSessionActive) {
                 doLoginWhenUserClickButton()
@@ -2088,7 +2094,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     return@let
                 }
             }
-            hitAtc(buttonAction)
+
+            if (viewModel.getDynamicProductInfoP1?.checkImei(enableCheckImeiRemoteConfig) == true) {
+                activity?.run {
+                    ImeiPermissionAsker.checkImeiPermission(this, {
+                        showImeiPermissionBottomSheet()
+                    }, { hitAtc(buttonAction) }) { onNeverAskAgain() }
+                }
+            } else hitAtc(buttonAction)
         }
     }
 
@@ -2122,7 +2135,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 ProductDetailConstant.OCS_BUTTON -> {
                     val addToCartOcsRequestParams = AddToCartOcsRequestParams().apply {
                         productId = data.basic.productID.toLongOrNull() ?: 0
-                        shopId = viewModel.shopInfo?.shopCore?.shopID.toIntOrZero()
+                        shopId = data.basic.shopID.toIntOrZero()
                         quantity = data.basic.minOrder
                         notes = ""
                         warehouseId = selectedWarehouseId
@@ -2135,7 +2148,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 else -> {
                     val addToCartRequestParams = AddToCartRequestParams().apply {
                         productId = data.basic.productID.toLongOrNull() ?: 0
-                        shopId = viewModel.shopInfo?.shopCore?.shopID.toIntOrZero()
+                        shopId = data.basic.shopID.toIntOrZero()
                         quantity = data.basic.minOrder
                         notes = ""
                         attribution = trackerAttributionPdp ?: ""
@@ -2408,7 +2421,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun scrollToPosition(position: Int) {
-        getRecyclerView(view).smoothScrollToPosition(position)
+        try {
+            getRecyclerView(view).post {
+                getRecyclerView(view).smoothScrollToPosition(position)
+            }
+        } catch (e: Throwable) {
+
+        }
     }
 
     private fun showProgressDialog(onCancelClicked: (() -> Unit)? = null) {
@@ -2502,6 +2521,34 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        activity?.run {
+            ImeiPermissionAsker.onImeiRequestPermissionsResult(this, requestCode, permissions, grantResults,
+                onUserDenied = {}, onUserDeniedAndDontAskAgain = {}, onUserAcceptPermission = {}
+            )
+        }
+    }
+
+    private fun onNeverAskAgain() {
+        DynamicProductDetailTracking.Click.eventClickBuyAskForImei(ProductTrackingConstant.ImeiChecker.CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS, viewModel.userId, viewModel.getDynamicProductInfoP1)
+        activity?.run {
+            CheckImeiBottomSheet.showPermissionDialog(this) {
+                DynamicProductDetailTracking.Click.eventClickGiveAccessPhoneStatePermission(ProductTrackingConstant.ImeiChecker.CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS, viewModel.userId, viewModel.getDynamicProductInfoP1)
+                showRationaleDialog()
+            }
+        }
+    }
+
+    private fun showRationaleDialog(){
+        DynamicProductDetailTracking.Click.eventClickBuyAskForImei(ProductTrackingConstant.ImeiChecker.CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS_INFO, viewModel.userId, viewModel.getDynamicProductInfoP1)
+        CheckImeiRationaleDialog.showRationaleDialog(activity, {
+            DynamicProductDetailTracking.Click.eventClickGoToSetting(ProductTrackingConstant.ImeiChecker.CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS_INFO, viewModel.userId, viewModel.getDynamicProductInfoP1)
+        }, {
+            DynamicProductDetailTracking.Click.eventClickLater(ProductTrackingConstant.ImeiChecker.CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS_INFO, viewModel.userId, viewModel.getDynamicProductInfoP1)
+        })
+    }
+
     private fun observeToggleNotifyMe() {
         viewModel.toggleTeaserNotifyMe.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -2545,6 +2592,16 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun trackToggleNotifyMe(componentTrackDataModel: ComponentTrackDataModel?, notifyMe: Boolean) {
         viewModel.getDynamicProductInfoP1?.let {
             DynamicProductDetailTracking.Click.eventNotifyMe(it, componentTrackDataModel, notifyMe)
+        }
+    }
+
+    private fun showImeiPermissionBottomSheet() {
+        DynamicProductDetailTracking.Click.eventClickBuyAskForImei(ProductTrackingConstant.ImeiChecker.CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS, viewModel.userId, viewModel.getDynamicProductInfoP1)
+        activity?.run {
+            CheckImeiBottomSheet.showPermissionDialog(this) {
+                DynamicProductDetailTracking.Click.eventClickGiveAccessPhoneStatePermission(ProductTrackingConstant.ImeiChecker.CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS, viewModel.userId, viewModel.getDynamicProductInfoP1)
+                ImeiPermissionAsker.askImeiPermissionFragment(this@DynamicProductDetailFragment)
+            }
         }
     }
 }

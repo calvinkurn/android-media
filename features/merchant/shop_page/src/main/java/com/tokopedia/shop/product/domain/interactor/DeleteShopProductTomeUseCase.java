@@ -3,7 +3,6 @@ package com.tokopedia.shop.product.domain.interactor;
 import android.content.Context;
 
 import com.tokopedia.cacheapi.domain.interactor.CacheApiDataDeleteUseCase;
-import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.usecase.RequestParams;
 

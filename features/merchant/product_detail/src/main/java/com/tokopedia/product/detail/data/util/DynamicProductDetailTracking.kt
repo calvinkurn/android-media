@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.data.util
 
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -46,6 +47,57 @@ object DynamicProductDetailTracking {
     }
 
     object Click {
+
+        fun eventClickBuyAskForImei(title: String, userId: String, productInfo: DynamicProductInfoP1?) {
+            val actionTitle = "${ProductTrackingConstant.Action.CLICK_REQUEST_PERMISSION_IMEI} $title"
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    actionTitle, "")
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId != "0").toString()
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, actionTitle)
+        }
+
+        fun eventClickGiveAccessPhoneStatePermission(title: String, userId: String, productInfo: DynamicProductInfoP1?) {
+            val actionTitle = "${ProductTrackingConstant.Action.CLICK_ACCEPT_PERMISSION} $title"
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    actionTitle,
+                    "")
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId != "0").toString()
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, actionTitle)
+        }
+
+        fun eventClickGoToSetting(title: String, userId: String, productInfo: DynamicProductInfoP1?) {
+            val actionTitle = "${ProductTrackingConstant.Action.CLICK_GO_TO_SETTING} $title"
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    actionTitle,
+                    "")
+
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId != "0").toString()
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, actionTitle)
+        }
+
+        fun eventClickLater(title: String, userId: String, productInfo: DynamicProductInfoP1?) {
+            val actionTitle = "${ProductTrackingConstant.Action.CLICK_PERMISSION_LATER} $title"
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    actionTitle, "")
+
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId != "0").toString()
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, actionTitle)
+        }
 
         fun eventClickButtonNonLogin(actionButton: Int, productInfo: DynamicProductInfoP1?, userId: String, shopType: String, buttonActionText: String) {
             if (actionButton == ProductDetailConstant.ATC_BUTTON) {
@@ -896,7 +948,7 @@ object DynamicProductDetailTracking {
                     DataLayer.mapOf(
                             ProductTrackingConstant.Tracking.NAME, productInfo?.getProductName,
                             ProductTrackingConstant.Tracking.ID, productInfo?.basic?.getProductId(),
-                            ProductTrackingConstant.Tracking.PRICE, productInfo?.data?.price?.value,
+                            ProductTrackingConstant.Tracking.PRICE, productInfo?.finalPrice.orZero(),
                             ProductTrackingConstant.Tracking.BRAND, productInfo?.getProductName,
                             ProductTrackingConstant.Tracking.CATEGORY, TrackingUtil.getEnhanceCategoryFormatted(productInfo?.basic?.category?.detail),
                             ProductTrackingConstant.Tracking.VARIANT, ProductTrackingConstant.Tracking.DEFAULT_VALUE,
@@ -928,8 +980,7 @@ object DynamicProductDetailTracking {
                     "productDeeplinkUrl", deeplinkUrl,
                     "productImageUrl", productImageUrl,
                     "isOfficialStore", shopInfo?.goldOS?.isOfficial,
-                    "productPriceFormatted", TrackingUtil.getFormattedPrice(productInfo?.data?.price?.value
-                    ?: 0),
+                    "productPriceFormatted", TrackingUtil.getFormattedPrice(productInfo?.finalPrice.orZero()),
                     ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productInfo?.basic?.productID
                     ?: "",
                     ProductTrackingConstant.Tracking.KEY_LAYOUT, "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id}",

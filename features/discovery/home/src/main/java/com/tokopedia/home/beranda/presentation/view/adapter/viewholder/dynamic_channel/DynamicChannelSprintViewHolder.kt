@@ -73,9 +73,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         mappingGrid(channel)
     }
 
-    override fun bind(element: DynamicChannelViewModel, payloads: MutableList<Any>) {
-        val channel = element?.channel
-
+    override fun setupContent(channel: DynamicHomeChannel.Channels, payloads: MutableList<Any>) {
         if (payloads.isNotEmpty()) {
             payloads.forEach { payload->
                 if (payload == DynamicChannelViewModel.HOME_RV_SPRINT_BG_IMAGE_URL) {
@@ -86,7 +84,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
             }
         }
 
-        channel?.let {
+        channel.let {
             mappingHeader(it)
             mappingGrid(it)
         }
@@ -188,7 +186,15 @@ class DynamicChannelSprintViewHolder(sprintView: View,
                     discountPercentage = element.discount,
                     pdpViewCount = element.productViewCountFormatted,
                     stockBarLabel = element.label,
-                    stockBarPercentage = element.soldPercentage
+                    stockBarPercentage = element.soldPercentage,
+                    labelGroupList = element.labelGroup.map {
+                        ProductCardFlashSaleModel.LabelGroup(
+                                position = it.position,
+                                title = it.title,
+                                type = it.type
+                        )
+                    },
+                    isOutOfStock = element.isOutOfStock
             )
         }
     }

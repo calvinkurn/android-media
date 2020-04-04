@@ -35,6 +35,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import timber.log.Timber
+import java.text.NumberFormat
+import java.util.*
 
 /**
  * @author by M on 6/12/2019
@@ -44,7 +46,6 @@ class MainSliceProvider : SliceProvider() {
     private lateinit var contextNonNull: Context
     private lateinit var userSession: UserSession
     private lateinit var remoteConfig: FirebaseRemoteConfigImpl
-
 
     @Inject
     lateinit var repository: GraphqlRepository
@@ -86,7 +87,7 @@ class MainSliceProvider : SliceProvider() {
     )
 
     private fun createGetInvoiceSlice(sliceUri: Uri): Slice? {
-        if(getRemoteConfigRechargeSliceEnabler(contextNonNull)) {
+        if (getRemoteConfigRechargeSliceEnabler(contextNonNull)) {
             val mainPendingIntent = PendingIntent.getActivity(
                     contextNonNull,
                     0,
@@ -105,7 +106,7 @@ class MainSliceProvider : SliceProvider() {
                             if (recommendationModel?.get(0)?.productName.isNullOrEmpty())
                                 subtitle = contextNonNull.resources.getString(R.string.slice_loading)
                             else
-                                subtitle = (contextNonNull.resources.getString(R.string.slice_pembelian_terakhir) + recommendationModel?.get(0)?.productName).capitalizeWords()
+                                subtitle = (contextNonNull.resources.getString(R.string.slice_pembelian_terakhir) + recommendationModel?.get(0)?.productName?.capitalizeWords())
                             primaryAction = SliceAction.create(
                                     mainPendingIntent,
                                     createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
@@ -121,14 +122,13 @@ class MainSliceProvider : SliceProvider() {
                                     setTitleItem(createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()), SMALL_IMAGE)
                                     recommendationModel.let {
                                         it?.let {
-                                            product = Product(it.get(i).categoryId.toString(), it.get(i).productName, it.get(i).title)
+                                            product = Product(it.get(i).productId.toString(), it.get(i).productName, rupiahFormatter(it.get(i).productPrice))
                                             listProduct.add(i, product)
                                         }
-                                        it?.get(i)?.categoryName?.capitalizeWords()?.let { it1 -> setTitle(it1) }
-                                        it?.get(i)?.title?.capitalizeWords()?.let { it1 -> setSubtitle(it1) }
+                                        it?.get(i)?.productName?.capitalizeWords()?.let { it1 -> setTitle(it1) }
+                                        it?.get(i)?.productPrice?.let { it1 -> setSubtitle(rupiahFormatter(it1)) }
                                     }
-                                    val trackingClick = TrackingData(listOf(product))
-                                    primaryAction = createPendingIntent(recommendationModel?.get(i)?.position, recommendationModel?.get(i)?.appLink, trackingClick.toString())?.let {
+                                    primaryAction = createPendingIntent(recommendationModel?.get(i)?.position, recommendationModel?.get(i)?.appLink, product.toString())?.let {
                                         SliceAction.create(
                                                 it,
                                                 createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()),
@@ -138,8 +138,10 @@ class MainSliceProvider : SliceProvider() {
                                     }
                                 }
                             }
-                            val trackingImpression = TrackingData(listProduct)
-                            Timber.w(contextNonNull.resources.getString(R.string.slice_track_timber_impression) + trackingImpression)
+                            if(alreadyLoadData && listProduct.size==3) {
+                                val trackingImpression = TrackingData(listProduct)
+                                Timber.w(contextNonNull.resources.getString(R.string.slice_track_timber_impression) + trackingImpression)
+                            }
                         }
                     }
                 } else {
@@ -148,12 +150,14 @@ class MainSliceProvider : SliceProvider() {
             } catch (e: Exception) {
                 return sliceNotLogin(sliceUri)
             }
-        }else{
+        } else {
             return sliceNoAccess(sliceUri)
         }
     }
 
-    private fun sliceNotLogin(sliceUri: Uri): Slice{
+    private fun sliceNotLogin(sliceUri: Uri): Slice {
+        Timber.w(contextNonNull.resources.getString(R.string.slice_track_timber_impression) +
+                contextNonNull.resources.getString(R.string.slice_user_not_login))
         return list(contextNonNull, sliceUri, INFINITY) {
             setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
             header {
@@ -170,7 +174,7 @@ class MainSliceProvider : SliceProvider() {
         }
     }
 
-    private fun sliceNoAccess(sliceUri: Uri): Slice{
+    private fun sliceNoAccess(sliceUri: Uri): Slice {
         return list(contextNonNull, sliceUri, INFINITY) {
             setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
             header {
@@ -198,7 +202,7 @@ class MainSliceProvider : SliceProvider() {
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 val data = repository.getReseponse(listOf(graphqlRequest)).getSuccessData<Data>()
-                recommendationModel = data.rechargeFavoriteRecommendationList.recommendations
+                recommendationModel = getOnlyThreeData(data.rechargeFavoriteRecommendationList.recommendations)
                 alreadyLoadData = true
                 updateSlice(sliceUri)
             } catch (e: Exception) {
@@ -230,9 +234,20 @@ class MainSliceProvider : SliceProvider() {
         return true
     }
 
-    fun getRemoteConfigRechargeSliceEnabler(context: Context): Boolean{
+    private fun getOnlyThreeData(recommendations: List<Recommendation>): List<Recommendation> {
+        return recommendations.subList(0, 3)
+    }
+
+    private fun rupiahFormatter(nonRupiah: Int): String {
+        val localeID = Locale("in", "ID")
+        val rupiahFormat: NumberFormat = NumberFormat.getCurrencyInstance(localeID)
+        rupiahFormat.maximumFractionDigits = 0
+        return if (nonRupiah != 0) rupiahFormat.format(nonRupiah) else ""
+    }
+
+    fun getRemoteConfigRechargeSliceEnabler(context: Context): Boolean {
         remoteConfig = FirebaseRemoteConfigImpl(context)
-        return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_RECHARGE,true))
+        return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_RECHARGE, true))
     }
 
     companion object {
@@ -240,6 +255,5 @@ class MainSliceProvider : SliceProvider() {
         const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"
         const val RECHARGE_HOME_PAGE_EXTRA = "RECHARGE_HOME_PAGE_EXTRA"
         private val APPLINK_DEBUGGER = "APPLINK_DEBUGGER"
-
     }
 }
