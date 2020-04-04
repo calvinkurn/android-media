@@ -134,10 +134,10 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
 
     private val headerUnify: HeaderUnify? by lazy {
         view?.findViewById<HeaderUnify>(R.id.add_showcase_toolbar)?.apply {
-            backButtonView?.setOnClickListener {
-                tracking.addShowcaseClickBackButton(shopId, shopType, isActionEdit)
-                activity?.onBackPressed()
-            }
+//            backButtonView?.setOnClickListener {
+//                tracking.addShowcaseClickBackButton(shopId, shopType, isActionEdit)
+//                activity?.onBackPressed()
+//            }
         }
     }
 
