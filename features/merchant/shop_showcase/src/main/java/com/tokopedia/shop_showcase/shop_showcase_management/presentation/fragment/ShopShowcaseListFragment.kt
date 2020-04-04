@@ -168,7 +168,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         showLoading(true)
-        initRecyclerView(view)
+        initRecyclerView()
         setupBuyerSellerView()
 
         observeShopShowcaseSellerData()
@@ -230,7 +230,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         })
     }
 
-    private fun initRecyclerView(view: View) {
+    private fun initRecyclerView() {
         var currentScrollPosition = 0
 
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {

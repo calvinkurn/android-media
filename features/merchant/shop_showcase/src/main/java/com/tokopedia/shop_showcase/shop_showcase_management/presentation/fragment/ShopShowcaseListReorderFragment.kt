@@ -12,10 +12,12 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.touchhelper.OnStartDragListener
 import com.tokopedia.design.touchhelper.SimpleItemTouchHelperCallback
 import com.tokopedia.shop_showcase.R
@@ -63,6 +65,7 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
     private lateinit var loading: LoaderUnify
     private lateinit var btnSubmit: TextView
     private lateinit var recyclerView: RecyclerView
+    private lateinit var appBarLayout: AppBarLayout
     private var layoutManager: LinearLayoutManager? = null
     private var shopShowcaseListReorderAdapter: ShopShowcaseListReorderAdapter? = null
     private var shopShowcaseListDefault: ArrayList<ShowcaseItem>? = null
@@ -104,6 +107,7 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
         val view = inflater.inflate(R.layout.fragment_reorder_showcase, container, false)
         btnBack = view.findViewById(R.id.btn_back_showcase)
         btnSubmit = view.findViewById(R.id.btn_submit)
+        appBarLayout = view.findViewById(R.id.appbar_layout_showcase_list)
         recyclerView = view.findViewById(R.id.rv_list_showcase)
         loading = view.findViewById(R.id.loading)
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -117,6 +121,7 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         val itemTouchHelperCallback = SimpleItemTouchHelperCallback(shopShowcaseListReorderAdapter)
         enableReorderMode(true)
+        initRecyclerView()
         itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
         itemTouchHelper!!.attachToRecyclerView(recyclerView)
 
@@ -188,6 +193,23 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
                 }
                 is Fail -> {
                     showErrorMessage(it.throwable)
+                }
+            }
+        })
+    }
+
+    private fun initRecyclerView() {
+        var currentScrollPosition = 0
+
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                currentScrollPosition += dy
+
+                if (currentScrollPosition == 0) {
+                    appBarLayout.background = MethodChecker.getDrawable(context, R.color.white)
+                } else {
+                    appBarLayout.background = MethodChecker.getDrawable(context, R.drawable.card_shadow_bottom)
                 }
             }
         })
