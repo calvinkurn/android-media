@@ -231,7 +231,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                 _orderPreference = _orderPreference?.copy(shipping = Shipment(
                                         serviceName = _orderPreference?.preference?.shipment?.serviceName,
                                         serviceDuration = _orderPreference?.preference?.shipment?.serviceDuration,
-                                        serviceErrorMessage = "Tidak ada kurir yang mendukung pengiriman ini ke lokasi Anda.",
+                                        serviceErrorMessage = NO_COURIER_SUPPORTED_ERROR_MESSAGE,
                                         shippingRecommendationData = null
                                 ))
                                 orderPreference.value = OccState.Success(_orderPreference!!)
@@ -260,7 +260,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                         val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
                                                             tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
                                                         } else {
-                                                            "Durasi tergantung kurir"
+                                                            NO_EXACT_DURATION_MESSAGE
                                                         }
                                                         shipping = Shipment(
                                                                 serviceId = shippingDurationViewModel.serviceData.serviceId,
@@ -293,7 +293,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                             val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
                                                                 tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
                                                             } else {
-                                                                "Durasi tergantung kurir"
+                                                                NO_EXACT_DURATION_MESSAGE
                                                             }
                                                             shipping = shipping.copy(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
                                                                     shipperId = selectedShippingCourierUiModel.productData.shipperId,
@@ -302,7 +302,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                                     checksum = selectedShippingCourierUiModel.productData.checkSum,
                                                                     shipperName = selectedShippingCourierUiModel.productData.shipperName,
                                                                     needPinpoint = flagNeedToSetPinpoint,
-                                                                    serviceErrorMessage = if (flagNeedToSetPinpoint) "Butuh pinpoint lokasi" else errorMessage,
+                                                                    serviceErrorMessage = if (flagNeedToSetPinpoint) NEED_PINPOINT_ERROR_MESSAGE else errorMessage,
                                                                     insuranceData = selectedShippingCourierUiModel.productData.insurance,
                                                                     serviceId = shippingDurationViewModel.serviceData.serviceId,
                                                                     serviceDuration = serviceDur,
@@ -316,9 +316,9 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                 }
                                             }
                                             if (selectedShippingDurationViewModel == null && shippingRecommendationData.shippingDurationViewModels.isNotEmpty()) {
-                                                shipping = Shipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = "durasi tidak tersedia", shippingRecommendationData = shippingRecommendationData)
+                                                shipping = Shipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = NO_DURATION_AVAILABLE, shippingRecommendationData = shippingRecommendationData)
                                             } else if (shippingRecommendationData.shippingDurationViewModels.isEmpty()) {
-                                                shipping = Shipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = "Tidak ada kurir yang mendukung pengiriman ini ke lokasi Anda.", shippingRecommendationData = null)
+                                                shipping = Shipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = NO_COURIER_SUPPORTED_ERROR_MESSAGE, shippingRecommendationData = null)
                                             }
                                         } else {
                                             val shippingDurationViewModels = shippingRecommendationData.shippingDurationViewModels
@@ -333,7 +333,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                         val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
                                                             tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
                                                         } else {
-                                                            "Durasi tergantung kurir"
+                                                            NO_EXACT_DURATION_MESSAGE
                                                         }
                                                         shipping = Shipment(
                                                                 serviceId = shippingDurationViewModel.serviceData.serviceId,
@@ -367,7 +367,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                             val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
                                                                 tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
                                                             } else {
-                                                                "Durasi tergantung kurir"
+                                                                NO_EXACT_DURATION_MESSAGE
                                                             }
                                                             shipping = Shipment(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
                                                                     shipperId = selectedShippingCourierUiModel.productData.shipperId,
@@ -376,7 +376,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                                     checksum = selectedShippingCourierUiModel.productData.checkSum,
                                                                     shipperName = selectedShippingCourierUiModel.productData.shipperName,
                                                                     needPinpoint = flagNeedToSetPinpoint,
-                                                                    serviceErrorMessage = if (flagNeedToSetPinpoint) "Butuh pinpoint lokasi" else errorMessage,
+                                                                    serviceErrorMessage = if (flagNeedToSetPinpoint) NEED_PINPOINT_ERROR_MESSAGE else errorMessage,
                                                                     insuranceData = selectedShippingCourierUiModel.productData.insurance,
                                                                     serviceId = shippingDurationViewModel.serviceData.serviceId,
                                                                     serviceDuration = serviceDur,
@@ -390,9 +390,9 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                 }
                                             }
                                             if (selectedShippingDurationViewModel == null && shippingRecommendationData.shippingDurationViewModels.isNotEmpty()) {
-                                                shipping = Shipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = "durasi tidak tersedia", shippingRecommendationData = shippingRecommendationData)
+                                                shipping = Shipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = NO_DURATION_AVAILABLE, shippingRecommendationData = shippingRecommendationData)
                                             } else if (shippingRecommendationData.shippingDurationViewModels.isEmpty()) {
-                                                shipping = Shipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = "Tidak ada kurir yang mendukung pengiriman ini ke lokasi Anda.", shippingRecommendationData = null)
+                                                shipping = Shipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = NO_COURIER_SUPPORTED_ERROR_MESSAGE, shippingRecommendationData = null)
                                             }
                                         }
                                     }
@@ -651,7 +651,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
                 tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
             } else {
-                "Durasi tergantung kurir"
+                NO_EXACT_DURATION_MESSAGE
             }
             if (shippingRecommendationData.logisticPromo?.isApplied == true && shipping.isApplyLogisticPromo) {
                 clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, arrayListOf(shippingRecommendationData.logisticPromo?.promoCode
@@ -677,7 +677,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo?.copy(isApplied = false)
             var shipping1 = shipping.copy(
                     needPinpoint = flagNeedToSetPinpoint,
-                    serviceErrorMessage = if (flagNeedToSetPinpoint) "Butuh pinpoint lokasi" else null,
+                    serviceErrorMessage = if (flagNeedToSetPinpoint) NEED_PINPOINT_ERROR_MESSAGE else null,
                     isServicePickerEnable = !flagNeedToSetPinpoint,
                     serviceId = selectedShippingDurationViewModel.serviceData.serviceId,
                     serviceDuration = serviceDur,
@@ -1289,5 +1289,12 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     fun updatePromoState(promoUiModel: PromoUiModel) {
         orderPromo.value = orderPromo.value?.copy(lastApply = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel), state = ButtonBayarState.NORMAL)
         calculateTotal()
+    }
+
+    companion object {
+        const val NO_COURIER_SUPPORTED_ERROR_MESSAGE = "Tidak ada kurir yang mendukung pengiriman ini ke lokasi Anda."
+        const val NO_EXACT_DURATION_MESSAGE = "Durasi tergantung kurir"
+        const val NO_DURATION_AVAILABLE = "Durasi tidak tersedia"
+        const val NEED_PINPOINT_ERROR_MESSAGE = "Butuh pinpoint lokasi"
     }
 }
