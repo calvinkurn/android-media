@@ -10,12 +10,7 @@
         android:id="@+id/add_product_showcase_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        app:headerTitle="@string/choose_product_text"
-        app:layout_constraintTop_toTopOf="parent"
-        app:headerActionText="@string/save_product_action_text"
-        app:headerHasBackButton="true"
-        app:headerHasShadow="false"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/searchbar_add_product"
