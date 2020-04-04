@@ -10,11 +10,7 @@
         android:id="@+id/add_showcase_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        app:layout_constraintTop_toTopOf="parent"
-        app:headerActionText="@string/done_menu_text"
-        app:headerHasBackButton="true"
-        app:headerHasShadow="false"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
