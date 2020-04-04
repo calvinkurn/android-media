@@ -118,10 +118,10 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     }
 
     private val textFieldShowcaseName: TextFieldUnify? by lazy {
-        view?.findViewById<TextFieldUnify>(R.id.textfield_showcase_name)?.apply {
-            textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
-            textFieldInput.filters = arrayOf(InputFilter.LengthFilter(MAX_SHOWCASE_NAME_LENGTH))
-        }
+//        view?.findViewById<TextFieldUnify>(R.id.textfield_showcase_name)?.apply {
+//            textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
+//            textFieldInput.filters = arrayOf(InputFilter.LengthFilter(MAX_SHOWCASE_NAME_LENGTH))
+//        }
     }
 
     private val tvShowcaseTitle: Typography? by lazy {
