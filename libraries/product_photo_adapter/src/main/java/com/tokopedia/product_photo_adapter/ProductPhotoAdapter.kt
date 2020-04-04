@@ -6,12 +6,12 @@ import androidx.recyclerview.widget.RecyclerView
 
 class ProductPhotoAdapter(private val maxSize: Int,
                           private var productPhotoPaths: MutableList<String>,
-                          private val onStartDragListener: ProductPhotoViewHolder.OnStartDragListener)
+                          private val onPhotoChangeListener: ProductPhotoViewHolder.OnPhotoChangeListener)
     : RecyclerView.Adapter<ProductPhotoViewHolder>(), ProductPhotoViewHolder.OnDeleteButtonClickListener {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductPhotoViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.product_photo_item, parent, false)
-        return ProductPhotoViewHolder(itemView, this, onStartDragListener)
+        return ProductPhotoViewHolder(itemView, this, onPhotoChangeListener)
     }
 
     override fun getItemCount(): Int {

@@ -17,8 +17,8 @@ class AddEditProductDescriptionActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment {
         intent?.apply {
             categoryId = getStringExtra(PARAM_CATEGORY_ID)
-            descriptionInputModel = getParcelableExtra(PARAM_DESCRIPTION_INPUT_MODEL)
-            variantInputModel = getParcelableExtra(PARAM_VARIANT_INPUT_MODEL)
+            descriptionInputModel = getParcelableExtra(PARAM_DESCRIPTION_INPUT_MODEL) ?: DescriptionInputModel()
+            variantInputModel = getParcelableExtra(PARAM_VARIANT_INPUT_MODEL) ?: ProductVariantInputModel()
             isEditMode = getBooleanExtra(PARAM_IS_EDIT_MODE, false)
         }
 
@@ -53,4 +53,11 @@ class AddEditProductDescriptionActivity : BaseSimpleActivity() {
                         .putExtra(PARAM_IS_EDIT_MODE, true)
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val f = fragment
+        if (f!= null && f is AddEditProductDescriptionFragment) {
+            f.onBackPressed()
+        }
+    }
 }

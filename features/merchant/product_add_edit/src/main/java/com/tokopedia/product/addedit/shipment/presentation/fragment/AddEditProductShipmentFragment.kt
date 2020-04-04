@@ -23,9 +23,13 @@ import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProdu
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.UNIT_KILOGRAM
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.shipment.presentation.viewmodel.AddEditProductShipmentViewModel
+import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
+import com.tokopedia.product.addedit.tracking.ProductEditShippingTracking
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class AddEditProductShipmentFragment : BaseDaggerFragment() {
@@ -34,6 +38,9 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     private var switchInsurance: SwitchUnify? = null
     private var btnEnd: UnifyButton? = null
     private var selectedWeightPosition: Int = 0
+
+    private lateinit var userSession: UserSessionInterface
+    private lateinit var shopId: String
 
     @Inject
     lateinit var shipmentViewModel: AddEditProductShipmentViewModel
@@ -49,8 +56,8 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
 
         fun getWeightTypeTitle(type: Int) =
                 when (type) {
-                    UNIT_GRAM ->  R.string.label_weight_gram
-                    UNIT_KILOGRAM ->  R.string.label_weight_kilogram
+                    UNIT_GRAM -> R.string.label_weight_gram
+                    UNIT_KILOGRAM -> R.string.label_weight_kilogram
                     else -> -1
                 }
 
@@ -67,11 +74,21 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        userSession = UserSession(requireContext())
+        shopId = userSession.shopId
         super.onCreate(savedInstanceState)
         arguments?.let {
             val shipmentInputModel: ShipmentInputModel =
                     it.getParcelable(EXTRA_SHIPMENT_INPUT_MODEL) ?: ShipmentInputModel()
             shipmentViewModel.shipmentInputModel = shipmentInputModel
+        }
+    }
+
+    fun onBackPressed() {
+        if (shipmentViewModel.isEditMode) {
+            ProductEditShippingTracking.clickBack(shopId)
+        } else {
+            ProductAddShippingTracking.clickBack(shopId)
         }
     }
 
@@ -95,11 +112,18 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
                 showUnitWeightOption()
             }
         }
-        tfWeightAmount?.textFieldInput?.afterTextChanged{
+        tfWeightAmount?.textFieldInput?.afterTextChanged {
             validateInputWeight(it)
         }
         btnEnd?.setOnClickListener {
             submitInput()
+        }
+        switchInsurance?.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (shipmentViewModel.isEditMode) {
+                ProductEditShippingTracking.clickInsurance(shopId)
+            } else {
+                ProductAddShippingTracking.clickInsurance(shopId)
+            }
         }
     }
 
@@ -113,8 +137,21 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     }
 
     private fun showUnitWeightOption() {
+        if (shipmentViewModel.isEditMode) {
+            ProductEditShippingTracking.clickWeightDropDown(shopId)
+        } else {
+            ProductAddShippingTracking.clickWeightDropDown(shopId)
+        }
         fragmentManager?.let {
             val optionPicker = OptionPicker()
+            optionPicker.setCloseClickListener {
+                if (shipmentViewModel.isEditMode) {
+                    ProductEditShippingTracking.clickCancelChangeWeight(shopId)
+                } else {
+                    ProductAddShippingTracking.clickCancelChangeWeight(shopId)
+                }
+                optionPicker.dismiss()
+            }
             val title = getString(R.string.label_weight)
             val options: ArrayList<String> = ArrayList()
             options.add(getString(getWeightTypeTitle(UNIT_GRAM)))
@@ -128,7 +165,12 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
                 show(it, null)
             }
 
-            optionPicker.setOnItemClickListener{ selectedText: String, selectedPosition: Int ->
+            optionPicker.setOnItemClickListener { selectedText: String, selectedPosition: Int ->
+                if (shipmentViewModel.isEditMode) {
+                    ProductEditShippingTracking.clickChooseWeight(shopId, selectedPosition == 0)
+                } else {
+                    ProductAddShippingTracking.clickChooseWeight(shopId, selectedPosition == 0)
+                }
                 tfWeightUnit?.textFieldInput?.setText(selectedText)
                 selectedWeightPosition = selectedPosition
                 resetTfWeightAmount()
@@ -169,6 +211,6 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
         }
-    }
 
+    }
 }

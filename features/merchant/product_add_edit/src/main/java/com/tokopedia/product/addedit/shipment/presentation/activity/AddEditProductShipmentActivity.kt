@@ -37,4 +37,11 @@ class AddEditProductShipmentActivity : BaseSimpleActivity(), HasComponent<AddEdi
 
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val f = fragment
+        if (f!= null && f is AddEditProductShipmentFragment) {
+            f.onBackPressed()
+        }
+    }
 }
