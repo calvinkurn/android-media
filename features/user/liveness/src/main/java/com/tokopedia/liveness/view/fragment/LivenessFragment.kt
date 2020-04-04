@@ -90,7 +90,7 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
     private fun initData() {
         arguments?.let {
             ktpPath = it.getString(ApplinkConstInternalGlobal.PARAM_KTP_PATH, "")
-            tkpdProjectId = it.getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, 1).toString()
+            tkpdProjectId = it.getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, -1).toString()
             facePath = it.getString(ApplinkConstInternalGlobal.PARAM_FACE_PATH, "")
 
             if (isFileExists(facePath)) {

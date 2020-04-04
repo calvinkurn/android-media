@@ -2,8 +2,11 @@ package com.tokopedia.home.analytics.v2
 
 import android.annotation.SuppressLint
 import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.home.analytics.v2.BaseTracking.Value.FORMAT_2_ITEMS_UNDERSCORE
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.track.TrackApp
+import com.tokopedia.track.interfaces.ContextAnalytics
 
 @SuppressLint("VisibleForTests")
 abstract class BaseTracking {
@@ -53,7 +56,9 @@ abstract class BaseTracking {
         const val NONE_OTHER = "none / other"
         const val LIST_WITH_HEADER = "/ - p%s - %s - %s"
         const val LIST = "/ - p%s - %s"
+        const val LIST_HEADER_NAME = "/ - p%s - %s - %s"
         const val EMPTY = ""
+        const val FORMAT_2_ITEMS_UNDERSCORE = "%s_%s"
 
         fun getFreeOngkirValue(grid: DynamicHomeChannel.Grid) = if (grid.freeOngkir.isActive)"bebas ongkir" else "none / other"
     }
@@ -90,8 +95,10 @@ abstract class BaseTracking {
         private const val KEY_POSITION = "position"
         private const val KEY_LIST = "list"
         private const val KEY_ATTRIBUTION = "attribution"
+        private const val KEY_DIMENSION_40 = "dimension40"
         private const val KEY_DIMENSION_83 = "dimension83"
         private const val KEY_DIMENSION_84 = "dimension84"
+        private const val KEY_DIMENSION_96 = "dimension96"
 
         fun getEcommercePromoView(promotions: List<Promotion>): Map<String, Any> {
             return DataLayer.mapOf(
@@ -112,9 +119,9 @@ abstract class BaseTracking {
                     CURRENCY_CODE, IDR,
                     CLICK, DataLayer.mapOf(
                         ACTION_FIELD, DataLayer.mapOf(
-                            LIST, list
+                            LIST, list  + if(products.first().isTopAds) " - topads" else ""
                         ),
-                        PRODUCTS, getProducts(products)
+                        PRODUCTS, getProductsClick(products, list)
                     )
             )
         }
@@ -135,6 +142,12 @@ abstract class BaseTracking {
         private fun getProducts(products: List<Product>): List<Any>{
             val list = ArrayList<Map<String,Any>>()
             products.forEach { list.add(createProductMap(it)) }
+            return DataLayer.listOf(*list.toTypedArray<Any>())
+        }
+
+        private fun getProductsClick(products: List<Product>, listClick: String): List<Any>{
+            val list = ArrayList<Map<String,Any>>()
+            products.forEach { list.add(createProductMap(it, listClick)) }
             return DataLayer.listOf(*list.toTypedArray<Any>())
         }
 
@@ -166,14 +179,16 @@ abstract class BaseTracking {
             map[KEY_CATEGORY] = if(product.category.isNotBlank()) product.category else NONE
             map[KEY_POSITION] = product.productPosition
             map[KEY_DIMENSION_83] = if(product.isFreeOngkir) FREE_ONGKIR else NONE
+            map[KEY_DIMENSION_40] = list + if(product.isTopAds) " - topads" else ""
             if (product.channelId.isNotEmpty()) map[KEY_DIMENSION_84] = product.channelId else NONE
-            if (list.isNotEmpty()) map[KEY_LIST] = list
+            if (product.categoryId.isNotEmpty() || product.persoType.isNotEmpty()) map[KEY_DIMENSION_96] = String.format(FORMAT_2_ITEMS_UNDERSCORE, product.persoType, product.categoryId) else NONE
+            if (list.isNotEmpty()) map[KEY_LIST] = list + if(product.isTopAds) " - topads" else ""
             return map
         }
     }
 
     class Promotion(val id: String, val name: String, val creative: String, val creativeUrl: String, val position: String, val promoIds: String = "", val promoCodes: String = "")
-    open class Product(
+    open class  Product(
             val name: String,
             val id: String,
             val productPrice: String,
@@ -182,7 +197,10 @@ abstract class BaseTracking {
             val variant: String,
             val productPosition: String,
             val isFreeOngkir: Boolean,
-            val channelId: String = ""): ImpressHolder()
+            val channelId: String = "",
+            val persoType: String = "",
+            val isTopAds: Boolean = false,
+            val categoryId: String = ""): ImpressHolder()
 
     open fun getBasicPromotionView(
         event: String,
@@ -197,6 +215,24 @@ abstract class BaseTracking {
                 Action.KEY, eventAction,
                 Label.KEY, eventLabel,
                 Ecommerce.KEY, Ecommerce.getEcommercePromoView(promotions)
+        )
+    }
+
+    open fun getBasicPromotionChannelView(
+            event: String,
+            eventCategory: String,
+            eventAction: String,
+            eventLabel: String,
+            promotions: List<Promotion>,
+            channelId: String
+    ): Map<String, Any>{
+        return DataLayer.mapOf(
+                Event.KEY, event,
+                Category.KEY, eventCategory,
+                Action.KEY, eventAction,
+                Label.KEY, eventLabel,
+                Ecommerce.KEY, Ecommerce.getEcommercePromoView(promotions),
+                ChannelId.KEY, channelId
         )
     }
 
@@ -223,6 +259,33 @@ abstract class BaseTracking {
                 Label.CATEGORY_LABEL, categoryId,
                 Label.SHOP_LABEL, shopId,
                 Ecommerce.KEY, Ecommerce.getEcommercePromoClick(promotions)
+        )
+    }
+
+    open fun getBasicPromotionChannelClick(
+            event: String,
+            eventCategory: String,
+            eventAction: String,
+            eventLabel: String,
+            channelId: String,
+            affinity: String,
+            attribution: String,
+            categoryId: String,
+            shopId: String,
+            promotions: List<Promotion>
+    ): Map<String, Any>{
+        return DataLayer.mapOf(
+                Event.KEY, event,
+                Category.KEY, eventCategory,
+                Action.KEY, eventAction,
+                Label.KEY, eventLabel,
+                Label.CHANNEL_LABEL, channelId,
+                Label.AFFINITY_LABEL, affinity,
+                Label.ATTRIBUTION_LABEL, attribution,
+                Label.CATEGORY_LABEL, categoryId,
+                Label.SHOP_LABEL, shopId,
+                Ecommerce.KEY, Ecommerce.getEcommercePromoClick(promotions),
+                ChannelId.KEY, channelId
         )
     }
 
@@ -279,22 +342,34 @@ abstract class BaseTracking {
         )
     }
 
-    open fun getBasicProductView(
+    open fun getBasicProductChannelView(
             event: String,
             eventCategory: String,
             eventAction: String,
             eventLabel: String,
-            channelId: String,
             list: String,
-            products: List<Product>
+            products: List<Product>,
+            channelId: String
     ): Map<String, Any>{
         return DataLayer.mapOf(
                 Event.KEY, event,
                 Category.KEY, eventCategory,
                 Action.KEY, eventAction,
                 Label.KEY, eventLabel,
-                Label.CHANNEL_LABEL, channelId,
-                Ecommerce.KEY, Ecommerce.getEcommerceProductView(products, list)
+                Ecommerce.KEY, Ecommerce.getEcommerceProductView(products, list),
+                ChannelId.KEY, channelId
         )
+    }
+
+    protected fun convertRupiahToInt(rupiah: String): Int {
+        var rupiah = rupiah
+        rupiah = rupiah.replace("Rp", "")
+        rupiah = rupiah.replace(".", "")
+        rupiah = rupiah.replace(" ", "")
+        return Integer.parseInt(rupiah)
+    }
+
+    protected fun getTracker(): ContextAnalytics {
+        return TrackApp.getInstance().gtm
     }
 }

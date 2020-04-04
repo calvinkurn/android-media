@@ -14,8 +14,6 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
-import com.tokopedia.home.beranda.helper.glide.loadImage
-import com.tokopedia.home.beranda.helper.glide.loadImageCenterCrop
 import com.tokopedia.home.beranda.helper.glide.loadImageWithoutPlaceholder
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
@@ -23,6 +21,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridS
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.ThematicCardView
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.productcard.ProductCardFlashSaleModel
+import com.tokopedia.productcard.ProductCardFlashSaleView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.unifyprinciples.Typography
 
@@ -32,10 +32,9 @@ import com.tokopedia.unifyprinciples.Typography
 
 class DynamicChannelSprintViewHolder(sprintView: View,
                                      private val homeCategoryListener: HomeCategoryListener,
-                                     countDownListener: CountDownView.CountDownListener,
                                      private val parentRecycledViewPool: RecyclerView.RecycledViewPool) :
         DynamicChannelViewHolder(
-                sprintView, homeCategoryListener, countDownListener
+                sprintView, homeCategoryListener
         ) {
 
     private var adapter: SprintAdapter? = null
@@ -74,9 +73,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         mappingGrid(channel)
     }
 
-    override fun bind(element: DynamicChannelViewModel, payloads: MutableList<Any>) {
-        val channel = element?.channel
-
+    override fun setupContent(channel: DynamicHomeChannel.Channels, payloads: MutableList<Any>) {
         if (payloads.isNotEmpty()) {
             payloads.forEach { payload->
                 if (payload == DynamicChannelViewModel.HOME_RV_SPRINT_BG_IMAGE_URL) {
@@ -87,7 +84,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
             }
         }
 
-        channel?.let {
+        channel.let {
             mappingHeader(it)
             mappingGrid(it)
         }
@@ -159,7 +156,8 @@ class DynamicChannelSprintViewHolder(sprintView: View,
             try {
                 val grid = grids[position]
                 holder.thematicCardView.run {
-                    setItemWithWrapBlankSpaceConfig(grid, blankSpaceConfig)
+                    applyCarousel()
+                    setProductModel(convertData(grid))
                     setOnClickListener {
                         HomePageTrackingV2.SprintSale.sendSprintSaleClick(channels, countDownView?.currentCountDown?:"", grid, position)
                         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid))
@@ -178,10 +176,31 @@ class DynamicChannelSprintViewHolder(sprintView: View,
             grids = channel.grids
             notifyDataSetChanged()
         }
+
+        fun convertData(element: DynamicHomeChannel.Grid): ProductCardFlashSaleModel {
+            return ProductCardFlashSaleModel(
+                    slashedPrice = element.slashedPrice,
+                    productName = element.name,
+                    formattedPrice = element.price,
+                    productImageUrl = element.imageUrl,
+                    discountPercentage = element.discount,
+                    pdpViewCount = element.productViewCountFormatted,
+                    stockBarLabel = element.label,
+                    stockBarPercentage = element.soldPercentage,
+                    labelGroupList = element.labelGroup.map {
+                        ProductCardFlashSaleModel.LabelGroup(
+                                position = it.position,
+                                title = it.title,
+                                type = it.type
+                        )
+                    },
+                    isOutOfStock = element.isOutOfStock
+            )
+        }
     }
 
     class SprintViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val thematicCardView: ThematicCardView = view.findViewById(R.id.thematic_card)
+        val thematicCardView: ProductCardFlashSaleView = view.findViewById(R.id.thematic_card)
         val context: Context
             get() = itemView.context
     }

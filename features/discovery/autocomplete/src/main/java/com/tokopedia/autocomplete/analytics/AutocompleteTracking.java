@@ -58,6 +58,7 @@ public class AutocompleteTracking {
     public static final String CLICK_REFRESH_POPULAR_SEARCH = "click refresh on popular search";
     public static final String CLICK_SHOP_SUGGESTION = "click - shop autocomplete";
     public static final String CLICK_KEYWORD_SUGGESTION = "click - product autocomplete";
+    public static final String EVENT_ACTION_CLICK_RECENT_SEARCH_AUTOCOMPLETE = "click - recent search autocomplete";
 
     public static final String ECOMMERCE = "ecommerce";
     public static final String PRODUCT_CLICK = "productClick";
@@ -185,6 +186,15 @@ public class AutocompleteTracking {
                 EVENTCATEGORY_TOP_NAV + " - homepage",
                 CLICK_REFRESH_POPULAR_SEARCH,
                 ""
+        );
+    }
+
+    public static void eventClickRecentKeyword(String keyword) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                EVENT_CLICK_TOP_NAV,
+                EVENTCATEGORY_TOP_NAV + " - homepage",
+                EVENT_ACTION_CLICK_RECENT_SEARCH_AUTOCOMPLETE,
+                keyword
         );
     }
 }

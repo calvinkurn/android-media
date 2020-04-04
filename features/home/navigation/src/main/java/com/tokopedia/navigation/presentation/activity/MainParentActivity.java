@@ -21,8 +21,11 @@ import android.os.Handler;
 import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
+
+import androidx.asynclayoutinflater.view.AsyncLayoutInflater;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -36,6 +39,7 @@ import android.view.FrameMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -273,7 +277,7 @@ public class MainParentActivity extends BaseActivity implements
         if (userSession.hasShop() && !DFInstaller.isInstalled(getApplication(), DFM_MERCHANT_SELLER_CUSTOMERAPP)) {
             ArrayList<String> list = new ArrayList<>();
             list.add(DFM_MERCHANT_SELLER_CUSTOMERAPP);
-            new DFInstaller().installOnBackground(this.getApplication(), list, null, null, "Home");
+            DFInstaller.installOnBackground(this.getApplication(), list, "Home");
         }
     }
 
@@ -309,12 +313,10 @@ public class MainParentActivity extends BaseActivity implements
             }
         }
 
-        if (DFInstaller.isInstalled(this.getApplication(), DeeplinkDFMapper.DFM_ONBOARDING)) {
-            Intent intent = RouteManager.getIntent(this,
-                    ApplinkConstInternalMarketplace.ONBOARDING);
-            startActivity(intent);
-            finish();
-        }
+        Intent intent = RouteManager.getIntent(this,
+                ApplinkConstInternalMarketplace.ONBOARDING);
+        startActivity(intent);
+        finish();
     }
 
     private void setDefaultShakeEnable() {
@@ -352,17 +354,7 @@ public class MainParentActivity extends BaseActivity implements
         isFirstNavigationImpression = true;
         setContentView(R.layout.activity_main_parent);
 
-        bottomNavigation = findViewById(R.id.bottomnav);
         fragmentContainer = findViewById(R.id.container);
-
-        bottomNavigation.setItemIconTintList(null);
-        bottomNavigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
-        bottomNavigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
-        bottomNavigation.setOnNavigationItemReselectedListener(item -> {
-            Fragment fragment = fragmentList.get(getPositionFragmentByMenu(item));
-            scrollToTop(fragment); // enable feature scroll to top for home & feed
-        });
-
         fragmentList = fragments();
 
         WeaveInterface firstTimeWeave = new WeaveInterface() {
@@ -373,12 +365,38 @@ public class MainParentActivity extends BaseActivity implements
             }
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(firstTimeWeave, RemoteConfigKey.ENABLE_ASYNC_FIRSTTIME_EVENT, getContext());
-
-        handleAppLinkBottomNavigation(savedInstanceState);
+        showSelectedPage();
         checkAppUpdateAndInApp();
         checkApplinkCouponCode(getIntent());
+        inflateBottomNavigationViewAsync(savedInstanceState);
+    }
 
+    private void inflateBottomNavigationViewAsync(Bundle savedInstanceState){
+        AsyncLayoutInflater asyncLayoutInflater = new AsyncLayoutInflater(getContext());
+        AsyncLayoutInflater.OnInflateFinishedListener inflationCompleteListener = new AsyncLayoutInflater.OnInflateFinishedListener() {
+            @Override
+            public void onInflateFinished(@NonNull View view, int resid, @Nullable ViewGroup parent) {
+                parent.addView(view);
+                afterBottomNaviagtionInflation(savedInstanceState);
+            }
+        };
+        final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) this
+                .findViewById(android.R.id.content)).getChildAt(0);
+        asyncLayoutInflater.inflate(R.layout.bottom_navigation_view, viewGroup, inflationCompleteListener);
+    }
+
+    private void afterBottomNaviagtionInflation(Bundle savedInstanceState){
+        bottomNavigation = findViewById(R.id.bottomnav);
+        bottomNavigation.setItemIconTintList(null);
+        bottomNavigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
+        bottomNavigation.setOnNavigationItemSelectedListener(MainParentActivity.this::onNavigationItemSelected);
+        bottomNavigation.setOnNavigationItemReselectedListener(item -> {
+            Fragment fragment = fragmentList.get(getPositionFragmentByMenu(item));
+            scrollToTop(fragment); // enable feature scroll to top for home & feed
+        });
+        handleAppLinkBottomNavigation(savedInstanceState);
         initNewFeedClickReceiver();
+        registerNewFeedClickedReceiver();
     }
 
     @NotNull
@@ -387,6 +405,18 @@ public class MainParentActivity extends BaseActivity implements
             globalNavAnalytics.trackFirstTime(MainParentActivity.this);
         }
         return true;
+    }
+
+    private void showSelectedPage(){
+        int tabPosition = HOME_MENU;
+        if (getIntent().getExtras() != null) {
+            tabPosition = getIntent().getExtras().getInt(ARGS_TAB_POSITION, HOME_MENU);
+        }
+        Fragment fragment = fragmentList.get(tabPosition);
+        if (fragment != null) {
+            this.currentFragment = fragment;
+            selectFragment(fragment);
+        }
     }
 
     private void handleAppLinkBottomNavigation(Bundle savedInstanceState) {
@@ -414,7 +444,6 @@ public class MainParentActivity extends BaseActivity implements
             }
         } else if (savedInstanceState == null) {
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_home));
-            this.currentFragment = fragmentList.get(HOME_MENU);
         }
     }
 
@@ -627,8 +656,6 @@ public class MainParentActivity extends BaseActivity implements
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(addShortcutsWeave, RemoteConfigKey.ENABLE_ASYNC_ADDSHORTCUTS, getContext());
 
-        registerNewFeedClickedReceiver();
-
         WeaveInterface checkAppSignatureWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -701,14 +728,16 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void renderNotification(Notification notification) {
         this.notification = notification;
-        bottomNavigation.setNotification(notification.getTotalCart(), CART_MENU);
-        if (notification.getHaveNewFeed()) {
-            bottomNavigation.setNotification(-1, FEED_MENU);
-            Intent intent = new Intent(BROADCAST_FEED);
-            intent.putExtra(PARAM_BROADCAST_NEW_FEED, notification.getHaveNewFeed());
-            LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
-        } else {
-            bottomNavigation.setNotification(0, FEED_MENU);
+        if(bottomNavigation != null) {
+            bottomNavigation.setNotification(notification.getTotalCart(), CART_MENU);
+            if (notification.getHaveNewFeed()) {
+                bottomNavigation.setNotification(-1, FEED_MENU);
+                Intent intent = new Intent(BROADCAST_FEED);
+                intent.putExtra(PARAM_BROADCAST_NEW_FEED, notification.getHaveNewFeed());
+                LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
+            } else {
+                bottomNavigation.setNotification(0, FEED_MENU);
+            }
         }
         if (currentFragment != null)
             setBadgeNotifCounter(currentFragment);
@@ -797,38 +826,41 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void onReadytoShowBoarding(ArrayList<ShowCaseObject> showCaseObjects) {
 
-        playAnimOsIcon(); // show animation icon
+        if(bottomNavigation != null) {
 
-        final String showCaseTag = MainParentActivity.class.getName() + ".bottomNavigation";
-        if (ShowCasePreference.hasShown(this, showCaseTag) || showCaseDialog != null
-                || showCaseObjects == null) {
-            return;
+            playAnimOsIcon(); // show animation icon
+
+            final String showCaseTag = MainParentActivity.class.getName() + ".bottomNavigation";
+            if (ShowCasePreference.hasShown(this, showCaseTag) || showCaseDialog != null
+                    || showCaseObjects == null) {
+                return;
+            }
+
+            showCaseDialog = createShowCase();
+
+            int bottomNavTopPos = bottomNavigation.getTop();
+            int bottomNavBottomPos = bottomNavigation.getBottom();
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                bottomNavBottomPos =
+                        bottomNavBottomPos - DisplayMetricUtils.getStatusBarHeight(this);
+                bottomNavTopPos =
+                        bottomNavTopPos - DisplayMetricUtils.getStatusBarHeight(this);
+            }
+            ArrayList<ShowCaseObject> showcases = new ArrayList<>();
+            showcases.add(new ShowCaseObject(
+                    bottomNavigation,
+                    getString(R.string.title_showcase),
+                    getString(R.string.desc_showcase))
+                    .withCustomTarget(new int[]{
+                            bottomNavigation.getLeft(),
+                            bottomNavTopPos,
+                            bottomNavigation.getRight(),
+                            bottomNavBottomPos}));
+            showcases.addAll(showCaseObjects);
+
+            showCaseDialog.show(this, showCaseTag, showcases);
         }
-
-        showCaseDialog = createShowCase();
-
-        int bottomNavTopPos = bottomNavigation.getTop();
-        int bottomNavBottomPos = bottomNavigation.getBottom();
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            bottomNavBottomPos =
-                    bottomNavBottomPos - DisplayMetricUtils.getStatusBarHeight(this);
-            bottomNavTopPos =
-                    bottomNavTopPos - DisplayMetricUtils.getStatusBarHeight(this);
-        }
-        ArrayList<ShowCaseObject> showcases = new ArrayList<>();
-        showcases.add(new ShowCaseObject(
-                bottomNavigation,
-                getString(R.string.title_showcase),
-                getString(R.string.desc_showcase))
-                .withCustomTarget(new int[]{
-                        bottomNavigation.getLeft(),
-                        bottomNavTopPos,
-                        bottomNavigation.getRight(),
-                        bottomNavBottomPos}));
-        showcases.addAll(showCaseObjects);
-
-        showCaseDialog.show(this, showCaseTag, showcases);
     }
 
     private Boolean isFirstTime() {

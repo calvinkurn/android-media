@@ -59,12 +59,8 @@ class PartialHeaderView private constructor(private val view: View,
             imageIc = ImageSpan(drawableOs, ImageSpan.ALIGN_BOTTOM)
             colorIc = ContextCompat.getColor(context, R.color.purple_official_store)
             renderTxtIcon(labelIc, colorIc, imageIc)
-            view.layout_guarantee.visible()
-            view.layout_guarantee.setOnClickListener {
-                onGuaranteeOsClicked?.invoke()
-            }
+
         } else {
-            view.layout_guarantee.gone()
             view.label_official_store.gone()
         }
 

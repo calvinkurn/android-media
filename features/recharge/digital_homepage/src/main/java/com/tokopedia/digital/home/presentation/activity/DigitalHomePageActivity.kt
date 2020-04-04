@@ -10,6 +10,7 @@ import com.tokopedia.digital.home.di.DigitalHomePageComponent
 import com.tokopedia.digital.home.di.DigitalHomePageComponentInstance
 import com.tokopedia.digital.home.presentation.fragment.DigitalHomePageFragment
 import com.tokopedia.graphql.data.GraphqlClient
+import timber.log.Timber
 
 /**
  * applink
@@ -25,7 +26,7 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
-
+        handleTracking()
         GraphqlClient.init(this)
     }
 
@@ -49,7 +50,18 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
 
     companion object {
         const val DIGITAL_HOMEPAGE_SCREEN_NAME = "/digital/subhomepage/topup"
+        const val RECHARGE_HOME_PAGE_EXTRA = "RECHARGE_HOME_PAGE_EXTRA"
 
         fun getCallingIntent(context: Context): Intent = Intent(context, DigitalHomePageActivity::class.java)
+    }
+
+
+    /* This Method is use to tracking action click when user click open app in action
+    */
+    private fun handleTracking(){
+        val trackingClick = intent.getBooleanExtra(RECHARGE_HOME_PAGE_EXTRA, false)
+        if (trackingClick) {
+            Timber.w("P2#ACTION_SLICE_CLICK_RECHARGE#DigitalHomepage")
+        }
     }
 }

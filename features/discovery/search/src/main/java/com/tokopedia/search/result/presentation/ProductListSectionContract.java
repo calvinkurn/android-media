@@ -1,5 +1,7 @@
 package com.tokopedia.search.result.presentation;
 
+import androidx.annotation.Nullable;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -15,6 +17,7 @@ import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
@@ -33,10 +36,6 @@ public interface ProductListSectionContract {
 
         void addRecommendationList(List<Visitable> list);
 
-        void disableWishlistButton(String productId);
-
-        void enableWishlistButton(String productId);
-
         void showNetworkError(int startRow);
 
         String getQueryKey();
@@ -54,16 +53,6 @@ public interface ProductListSectionContract {
         void addLoading();
 
         void removeLoading();
-
-        void successAddWishlist(ProductItemViewModel productItemViewModel);
-
-        void errorAddWishList(String errorMessage, String productId);
-
-        void successRemoveWishlist(ProductItemViewModel productItemViewModel);
-
-        void errorRemoveWishlist(String errorMessage, String productId);
-
-        void notifyAdapter();
 
         void stopTracePerformanceMonitoring();
 
@@ -93,19 +82,11 @@ public interface ProductListSectionContract {
 
         void showAdultRestriction();
 
-        void sendTrackingWishlistNonLogin(ProductItemViewModel productItemViewModel);
-
         void redirectSearchToAnotherPage(String applink);
 
         void sendTrackingForNoResult(String resultCode, String alternativeKeyword, String keywordProcess);
 
         void setDefaultLayoutType(int defaultView);
-
-        void successRemoveRecommendationWishlist(String productId);
-
-        void successAddRecommendationWishlist(String productId);
-
-        void errorRecommendationWishlist(String errorMessage, String productId);
 
         void showFreeOngkirShowCase(boolean hasFreeOngkirBadge);
 
@@ -128,8 +109,6 @@ public interface ProductListSectionContract {
         void setTotalSearchResultCount(String formattedResultCount);
 
         BaseAppComponent getBaseAppComponent();
-
-        void logDebug(String tag, String message);
 
         void renderDynamicFilter(DynamicFilterModel dynamicFilterModel);
 
@@ -162,11 +141,15 @@ public interface ProductListSectionContract {
         void showMessageSuccessWishlistAction(boolean isWishlisted);
 
         void showMessageFailedWishlistAction(boolean isWishlisited);
+
+        String getPreviousKeyword();
+
+        boolean isLandingPage();
+
+        void logWarning(String message, @Nullable Throwable throwable);
     }
 
     interface Presenter extends CustomerPresenter<View> {
-
-        void initInjector(View view);
 
         void requestDynamicFilter(Map<String, Object> searchParameter);
 
