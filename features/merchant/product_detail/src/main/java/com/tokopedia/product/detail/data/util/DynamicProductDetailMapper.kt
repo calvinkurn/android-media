@@ -103,12 +103,13 @@ object DynamicProductDetailMapper {
     }
 
     fun generateCartTypeVariantParams(dynamicProductInfoP1: DynamicProductInfoP1?, productVariant: ProductVariantCommon?): List<CartRedirectionParams> {
-        val listOfFlags = mutableListOf<String>()
-        if (dynamicProductInfoP1?.data?.preOrder?.isActive == true) listOfFlags.add(ProductDetailConstant.KEY_PREORDER)
-        if (dynamicProductInfoP1?.basic?.isLeasing == true) listOfFlags.add(ProductDetailConstant.KEY_LEASING)
-        if (dynamicProductInfoP1?.data?.campaign?.isUsingOvo == true) listOfFlags.add(ProductDetailConstant.KEY_OVO_DEALS)
 
         return productVariant?.children?.map {
+            val listOfFlags = mutableListOf<String>()
+            if (dynamicProductInfoP1?.data?.preOrder?.isActive == true) listOfFlags.add(ProductDetailConstant.KEY_PREORDER)
+            if (dynamicProductInfoP1?.basic?.isLeasing == true) listOfFlags.add(ProductDetailConstant.KEY_LEASING)
+            if (it.campaign?.isUsingOvo == true) listOfFlags.add(ProductDetailConstant.KEY_OVO_DEALS)
+
             CartRedirectionParams(it.campaign?.campaignID?.toIntOrNull() ?: 0,
                     it.campaign?.campaignType ?: 0, listOfFlags)
         } ?: listOf()

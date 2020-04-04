@@ -64,6 +64,8 @@ object ProductDetailConstant {
     const val KEY_OVO_DEALS = "ovo_deals"
     const val KEY_CHAT = "chat"
     const val KEY_BYME = "byme"
+    const val KEY_BUTTON_PRIMARY = "primary"
+    const val KEY_BUTTON_SECONDARY = "secondary"
     const val DEFAULT_PAGE_NUMBER = 1
     const val DEFAULT_PAGE_NAME = "pdp_1,pdp_2,pdp_3,pdp_4"
 
