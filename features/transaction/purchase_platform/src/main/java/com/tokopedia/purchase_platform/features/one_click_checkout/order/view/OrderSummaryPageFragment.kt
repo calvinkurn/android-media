@@ -79,8 +79,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var orderSummaryAnalytics: OrderSummaryAnalytics
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -236,7 +238,16 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
                 is OccGlobalEvent.TriggerRefresh -> {
                     progressDialog?.dismiss()
-                    refresh(false, isFullRefresh = it.isFullRefresh)
+                    view?.let { v ->
+                        var message = it.errorMessage
+                        if (message.isBlank() && it.throwable != null) {
+                            message = ErrorHandler.getErrorMessage(context, it.throwable)
+                        }
+                        if (message.isNotBlank()) {
+                            Toaster.make(v, message, type = Toaster.TYPE_ERROR)
+                        }
+                        refresh(false, isFullRefresh = it.isFullRefresh)
+                    }
                 }
                 is OccGlobalEvent.Error -> {
                     progressDialog?.dismiss()
@@ -255,7 +266,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                             override fun onClickSimilarProduct(errorCode: String) {
                                 if (errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_STOCK_EMPTY) {
                                     orderSummaryAnalytics.eventClickSimilarProductEmptyStock()
-                                } else  {
+                                } else {
                                     orderSummaryAnalytics.eventClickSimilarProductShopClosed()
                                 }
                                 RouteManager.route(context, ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT, viewModel.orderProduct.productId.toString())
@@ -710,7 +721,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
             }
             is RuntimeException -> {
-                when (throwable.localizedMessage.toIntOrNull()) {
+                when (throwable.localizedMessage?.toIntOrNull() ?: 0) {
                     ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(GlobalError.NO_CONNECTION)
                     ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
                     ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
@@ -725,7 +736,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             else -> {
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
-                    Toaster.make(it, throwable.message ?: getString(R.string.default_osp_error_message), type = Toaster.TYPE_ERROR)
+                    Toaster.make(it, throwable.message
+                            ?: getString(R.string.default_osp_error_message), type = Toaster.TYPE_ERROR)
                 }
             }
         }

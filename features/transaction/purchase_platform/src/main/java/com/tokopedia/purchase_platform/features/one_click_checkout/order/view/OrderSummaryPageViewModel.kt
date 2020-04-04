@@ -815,7 +815,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         }
     }
 
-    fun finalUpdate(onSuccessCheckout: (Data) -> Unit) {
+    fun finalUpdate(onSuccessCheckout: (Data) -> Unit, skipCheckIneligiblePromo: Boolean = false) {
         val product = orderProduct
         val shop = orderShop
         val pref = _orderPreference
@@ -824,7 +824,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             if (param != null) {
                 globalEvent.value = OccGlobalEvent.Loading
                 updateCartOccUseCase.execute(param, {
-                    doCheckout(product, shop, pref, onSuccessCheckout)
+//                    doCheckout(product, shop, pref, onSuccessCheckout)
+                    finalValidateUse(product, shop, pref, onSuccessCheckout, skipCheckIneligiblePromo)
                 }, { throwable: Throwable ->
                     throwable.printStackTrace()
                     if (throwable is MessageErrorException && throwable.message != null) {
@@ -838,8 +839,39 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         }
     }
 
+    private fun finalValidateUse(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (Data) -> Unit, skipCheckIneligiblePromo: Boolean = false) {
+        if (!skipCheckIneligiblePromo) {
+            val requestParams = RequestParams.create()
+            requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, generateValidateUsePromoRequest())
+            compositeSubscription.add(
+                    validateUsePromoRevampUseCase.createObservable(requestParams)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
+                                override fun onError(e: Throwable) {
+                                    e.printStackTrace()
+                                    globalEvent.value = OccGlobalEvent.Error(e)
+                                }
+
+                                override fun onNext(t: ValidateUsePromoRevampUiModel) {
+                                    validateUsePromoRevampUiModel = t
+                                    updatePromoState(t.promoUiModel)
+                                    if (checkIneligiblePromo()) {
+                                        doCheckout(product, shop, pref, onSuccessCheckout)
+                                    }
+                                }
+
+                                override fun onCompleted() {
+                                }
+                            })
+            )
+        } else {
+            doCheckout(product, shop, pref, onSuccessCheckout)
+        }
+    }
+
     private fun doCheckout(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (Data) -> Unit, skipCheckIneligiblePromo: Boolean = false) {
-        if (skipCheckIneligiblePromo || checkIneligiblePromo()) {
+//        if (skipCheckIneligiblePromo || checkIneligiblePromo()) {
             val param = CheckoutOccRequest(Profile(pref.preference.profileId), ParamCart(data = listOf(ParamData(
                     pref.preference.address.addressId,
                     listOf(
@@ -880,23 +912,23 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                         } else if (errorCode == ERROR_CODE_PRICE_CHANGE) {
                             globalEvent.value = OccGlobalEvent.PriceChangeError(PriceValidation(true, Message(PRICE_CHANGE_ERROR_MESSAGE, checkoutOccGqlResponse.response.data.error.message, PRICE_CHANGE_ACTION_MESSAGE)))
                         } else if (checkoutOccGqlResponse.response.data.error.message.isNotBlank()) {
-                            globalEvent.value = OccGlobalEvent.Error(errorMessage = checkoutOccGqlResponse.response.data.error.message)
+                            globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = checkoutOccGqlResponse.response.data.error.message)
                         } else {
-                            globalEvent.value = OccGlobalEvent.Error(errorMessage = "Terjadi kesalahan dengan kode ${checkoutOccGqlResponse.response.data.error.message}")
+                            globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = "Terjadi kesalahan dengan kode ${errorCode}")
                         }
                     }
                 } else {
                     if (checkoutOccGqlResponse.response.header.messages.isNotEmpty()) {
-                        globalEvent.value = OccGlobalEvent.Error(errorMessage = checkoutOccGqlResponse.response.header.messages[0])
+                        globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = checkoutOccGqlResponse.response.header.messages[0])
                     } else {
-                        globalEvent.value = OccGlobalEvent.Error(errorMessage = "Terjadi kesalahan")
+                        globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = "Terjadi kesalahan. Ulangi beberapa saat lagi")
                     }
                 }
             }, { throwable: Throwable ->
                 throwable.printStackTrace()
                 globalEvent.value = OccGlobalEvent.Error(throwable)
             })
-        }
+//        }
     }
 
     private fun generateShopPromos(): List<com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout.PromoRequest> {
@@ -999,7 +1031,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
                             override fun onNext(t: ClearPromoUiModel?) {
                                 if (_orderPreference != null) {
-                                    doCheckout(orderProduct, orderShop, _orderPreference!!, onSuccessCheckout, true)
+                                    finalUpdate(onSuccessCheckout, true)
+//                                    doCheckout(orderProduct, orderShop, _orderPreference!!, onSuccessCheckout, true)
                                 }
                             }
 
