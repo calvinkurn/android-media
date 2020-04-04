@@ -2,14 +2,13 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.preference.e
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.logisticcart.shipping.model.*
+import com.tokopedia.logisticcart.shipping.model.RatesParam
+import com.tokopedia.logisticcart.shipping.model.ShippingParam
+import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
+import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.RatesGqlResponse
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.Preference
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.ShippingNoPriceResponse
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetPreferenceEditUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetShippingDurationUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.mapper.ShippingDurationModelMapper
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.mapper.ShippingDurationModelWithPriceMapper
@@ -17,7 +16,6 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingnoprice.ShippingListModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingprice.ServicesItemModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingprice.ServicesItemModelNoPrice
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingprice.ShippingDataModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -41,7 +39,6 @@ class ShippingDurationViewModel @Inject constructor(val useCase: GetShippingDura
     fun getShippingDuration(){
         _shippingDuration.value = OccState.Loading
         useCase.execute(onSuccess = {
-//            _shippingDuration.value = OccState.Success(mapTomodel(it))
             logicSelection(mapTomodel(it))
         }, onError = {
             _shippingDuration.value = OccState.Fail(false, it, "")
@@ -83,7 +80,6 @@ class ShippingDurationViewModel @Inject constructor(val useCase: GetShippingDura
         if(shippingModel != null && _shippingDuration.value is OccState.Success) {
             selectedId = shippingId
             logicSelection(shippingModel)
-//            shippingModel?.let { logicSelection(it) }
         }
     }
 
@@ -103,7 +99,6 @@ class ShippingDurationViewModel @Inject constructor(val useCase: GetShippingDura
 
                     override fun onNext(shippingRecomendationData: ShippingRecommendationData) {
                         logicSelection(mapTomodelPrice(shippingRecomendationData))
-
                     }
 
                     override fun onCompleted() {

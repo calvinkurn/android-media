@@ -1,6 +1,5 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.shipping
 
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -16,10 +15,6 @@ import kotlinx.android.synthetic.main.item_shipping_duration.view.*
 class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : RecyclerView.Adapter<ShippingDurationItemAdapter.ShippingDurationViewHolder>(){
 
     var shippingDurationList = mutableListOf<ServicesItem>()
-    var lastCheckedPosition = -1
-//    private var inflater: LayoutInflater = LayoutInflater.from(context)
-//    private val listShippingDuration = emptyList<Preference>()
-    var shippingDurationPositionId = -1
 
     interface OnShippingMenuSelected {
         fun onSelect(selection: Int)
@@ -30,7 +25,6 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
     }
 
     override fun getItemCount(): Int {
-        Log.d("itemList", shippingDurationList.size.toString())
         return shippingDurationList.size
     }
 
@@ -43,7 +37,6 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
         }
     }
 
-    /*Inner View Holder*/
     inner class ShippingDurationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(data: ServicesItemModelNoPrice) {
             with(itemView){
@@ -54,14 +47,8 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
                 item_shipping_radio.isChecked = data.isSelected
 
                 item_shipping_list.setOnClickListener {
-
                     listener.onSelect(data.serviceId)
-                    /*data.serviceId?.let {
-                        shippingDurationPositionId = it
-                    }*/
                 }
-
-
             }
         }
 
@@ -79,11 +66,7 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
                 item_shipping_radio.isChecked = data.isSelected
 
                 item_shipping_list.setOnClickListener {
-
                     listener.onSelect(data.servicesId)
-                    /*data.serviceId?.let {
-                        shippingDurationPositionId = it
-                    }*/
                 }
 
 

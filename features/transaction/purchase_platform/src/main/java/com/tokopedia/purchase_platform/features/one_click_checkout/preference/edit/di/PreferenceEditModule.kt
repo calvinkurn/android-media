@@ -58,12 +58,6 @@ class PreferenceEditModule {
         return GraphqlUseCase(graphqlRepository)
     }
 
-//    @PreferenceEditScope
-//    @Provides
-//    fun providesGetPreferenceByIdUseCase(graphqlUseCase: GraphqlUseCase<GetPreferenceByIdGqlResponse>): GetPreferenceByIdUseCase {
-//        return GetPreferenceByIdUseCase(graphqlUseCase)
-//    }
-
     @PreferenceEditScope
     @Provides
     fun providesCreatePreferenceGraphqlUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<CreatePreferenceGqlResponse> {

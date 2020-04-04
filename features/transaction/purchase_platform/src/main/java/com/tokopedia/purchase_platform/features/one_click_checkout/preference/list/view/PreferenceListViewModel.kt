@@ -48,10 +48,4 @@ class PreferenceListViewModel @Inject constructor(private val getPreferenceListU
         }
     }
 
-    fun consumeSetDefaultPreferenceFail() {
-        val value = _setDefaultPreference.value
-        if (value is OccState.Fail) {
-            _setDefaultPreference.value = value.copy(isConsumed = true)
-        }
-    }
 }

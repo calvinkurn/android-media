@@ -66,17 +66,14 @@ class AddressListItemAdapter(var listener: onSelectedListener) : RecyclerView.Ad
         }
 
         private fun setVisibility(recipientAddressModel: RecipientAddressModel) {
-            //null
             if((recipientAddressModel.latitude == null || recipientAddressModel.latitude.isEmpty())
                     || recipientAddressModel.longitude == null || recipientAddressModel.longitude.isEmpty()) {
                 val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_no_pin_map_address)
                 imageLocation.setImageDrawable(icon)
-//                pinpointText.setTextColor(ContextCompat.getColor(itemView.context, R.color.ic_disable_pinpoint))
                 pinpointText.text = itemView.context.getString(R.string.no_pinpoint)
             } else {
                 val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_pin_map_address)
                 imageLocation.setImageDrawable(icon)
-//                pinpointText.setTextColor(ContextCompat.getColor(itemView.context, R.color.ic_disable_pinpoint))
                 pinpointText.text = itemView.context.getString(R.string.pinpoint)
             }
         }
