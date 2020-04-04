@@ -77,8 +77,9 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
             if (lastApply.data.voucherOrders != null) {
                 for (i in lastApply.data.voucherOrders.indices) {
                     val lastApplyVoucherOrdersItemUiModel = LastApplyVoucherOrdersItemUiModel()
-                    val (_, code, _, _, _, _, _, message) = lastApply.data.voucherOrders[i]!!
+                    val (_, code, uniqueId, _, _, _, _, message) = lastApply.data.voucherOrders[i]!!
                     lastApplyVoucherOrdersItemUiModel.code = code!!
+                    lastApplyVoucherOrdersItemUiModel.uniqueId = uniqueId!!
                     val lastApplyMessageInfoUiModel = LastApplyMessageUiModel()
                     lastApplyMessageInfoUiModel.color = message!!.color!!
                     lastApplyMessageInfoUiModel.state = message.state!!
@@ -245,7 +246,6 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
             wholesalePrice = product.wholesalePrice
             notes = if (product.productNotes.length > 144) product.productNotes.substring(0, 144) else product.productNotes
         }
-//        mapVariant(orderProduct, product)
         mapQuantity(orderProduct, product)
         return orderProduct
     }

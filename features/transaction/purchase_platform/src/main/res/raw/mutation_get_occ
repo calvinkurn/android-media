@@ -378,6 +378,11 @@ query get_occ_cart_page {
               discount_amount
               title_description
               invoice_description
+              message {
+               state
+               color
+               text
+              }
               benefit_details {
                 code
                 type

@@ -79,8 +79,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var orderSummaryAnalytics: OrderSummaryAnalytics
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -121,16 +123,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             if (validateUsePromoRevampUiModel != null) {
                 viewModel.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel
                 viewModel.updatePromoState(validateUsePromoRevampUiModel.promoUiModel)
-//                shipmentPresenter.setValidateUsePromoRevampUiModel(validateUsePromoRevampUiModel)
-                // update button promo
-//                updateButtonPromoCheckout(validateUsePromoRevampUiModel.promoUiModel)
-//                return
             }
+
             val validateUsePromoRequest: ValidateUsePromoRequest? = data?.getParcelableExtra(ARGS_LAST_VALIDATE_USE_REQUEST)
             if (validateUsePromoRequest != null) {
                 viewModel.lastValidateUsePromoRequest = validateUsePromoRequest
-//                shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest)
             }
+
             val clearPromoUiModel: ClearPromoUiModel? = data?.getParcelableExtra(ARGS_CLEAR_PROMO_RESULT)
             if (clearPromoUiModel != null) {
                 //reset
@@ -139,7 +138,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     titleDescription = clearPromoUiModel.successDataModel.defaultEmptyPromoMessage
                 })
                 viewModel.validateUsePromo()
-//                shipmentAdapter.checkHasSelectAllCourier(false)
             }
         }
     }
@@ -148,14 +146,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         if (resultCode == Activity.RESULT_OK && data?.extras != null) {
             val locationPass: LocationPass? = data.extras?.getParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION)
             if (locationPass != null) {
-                //update
                 viewModel.savePinpoint(locationPass.longitude, locationPass.latitude)
             }
         }
-        // show error
-//        view?.let {
-//            Toaster.make(it, "Pinpoint lokasi untuk melanjutkan dengan durasi/kurir sebelumnya")
-//        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -170,13 +163,18 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         initViewModel()
     }
 
+    private fun initViews(view: View) {
+        orderProductCard = OrderProductCard(view, this, orderSummaryAnalytics)
+        orderPreferenceCard = OrderPreferenceCard(view, getOrderPreferenceCardListener())
+    }
+
     private fun initViewModel() {
         viewModel.orderPreference.observe(this, Observer {
             if (it is OccState.FirstLoad) {
                 swipe_refresh_layout.isRefreshing = false
                 global_error.gone()
                 main_content.visible()
-                view?.let { v ->
+                view?.let { _ ->
                     orderProductCard.setProduct(viewModel.orderProduct)
                     orderProductCard.setShop(viewModel.orderShop)
                     orderProductCard.initView()
@@ -194,7 +192,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             } else if (it is OccState.Success) {
                 swipe_refresh_layout.isRefreshing = false
                 main_content.visible()
-                view?.let { v ->
+                view?.let { _ ->
                     if (it.data.preference.address.addressId > 0) {
                         orderPreferenceCard.setPreference(it.data)
                     }
@@ -212,14 +210,16 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
             }
         })
+
         viewModel.orderTotal.observe(this, Observer {
             setupPaymentError(it.paymentErrorMessage)
-//            orderPreferenceCard.setPaymentError(it.paymentErrorMessage)
             setupButtonBayar(it)
         })
+
         viewModel.orderPromo.observe(this, Observer {
             setupButtonPromo(it)
         })
+
         viewModel.globalEvent.observe(this, Observer {
             when (it) {
                 is OccGlobalEvent.Loading -> {
@@ -238,7 +238,16 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
                 is OccGlobalEvent.TriggerRefresh -> {
                     progressDialog?.dismiss()
-                    refresh(false, isFullRefresh = it.isFullRefresh)
+                    view?.let { v ->
+                        var message = it.errorMessage
+                        if (message.isBlank() && it.throwable != null) {
+                            message = ErrorHandler.getErrorMessage(context, it.throwable)
+                        }
+                        if (message.isNotBlank()) {
+                            Toaster.make(v, message, type = Toaster.TYPE_ERROR)
+                        }
+                        refresh(false, isFullRefresh = it.isFullRefresh)
+                    }
                 }
                 is OccGlobalEvent.Error -> {
                     progressDialog?.dismiss()
@@ -252,12 +261,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
                 is OccGlobalEvent.CheckoutError -> {
                     progressDialog?.dismiss()
-                    view?.let { v ->
+                    view?.let { _ ->
                         ErrorCheckoutBottomSheet().show(this, it, object : ErrorCheckoutBottomSheet.Listener {
                             override fun onClickSimilarProduct(errorCode: String) {
                                 if (errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_STOCK_EMPTY) {
                                     orderSummaryAnalytics.eventClickSimilarProductEmptyStock()
-                                } else  {
+                                } else {
                                     orderSummaryAnalytics.eventClickSimilarProductShopClosed()
                                 }
                                 RouteManager.route(context, ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT, viewModel.orderProduct.productId.toString())
@@ -323,9 +332,49 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
             }
         })
+
+        // first load
         if (viewModel.orderProduct.productId == 0) {
             refresh()
         }
+    }
+
+    private fun showMessage(preference: ProfileResponse) {
+        if (preference.hasPreference && preference.profileId > 0) {
+            tv_header_2.text = getString(R.string.lbl_osp_secondary_header)
+            tv_header_2.visible()
+            tv_header_3.gone()
+            tv_subheader.gone()
+            tv_subheader_action.gone()
+            iv_subheader.gone()
+        } else if (preference.profileId > 0) {
+            tv_header_2.gone()
+            tv_header_3.gone()
+            ImageHandler.LoadImage(iv_subheader, BELI_LANGSUNG_CART_IMAGE)
+            iv_subheader.visible()
+            tv_subheader.text = preference.onboardingHeaderMessage
+            tv_subheader_action.setOnClickListener {
+                orderSummaryAnalytics.eventClickInfoOnOSP()
+                OccInfoBottomSheet().show(this, preference.onboardingComponent)
+            }
+            tv_subheader_action.visible()
+            tv_subheader.visible()
+        } else {
+            tv_header_2.text = getString(R.string.lbl_osp_secondary_header_intro)
+            val spannableString = SpannableString("${preference.onboardingHeaderMessage} Info")
+            spannableString.setSpan(ForegroundColorSpan(Color.parseColor(COLOR_INFO)), preference.onboardingHeaderMessage.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+            tv_header_3.text = spannableString
+            tv_header_3.setOnClickListener {
+                orderSummaryAnalytics.eventClickInfoOnOSP()
+                OccInfoBottomSheet().show(this, preference.onboardingComponent)
+            }
+            tv_header_2.visible()
+            tv_header_3.visible()
+            tv_subheader.gone()
+            tv_subheader_action.gone()
+            iv_subheader.gone()
+        }
+        ticker_preference_info.visibility = if (preference.isChangedProfile) View.VISIBLE else View.GONE
     }
 
     private fun showPreferenceCard() {
@@ -352,7 +401,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         button_atur_pilihan.setOnClickListener {
             orderSummaryAnalytics.eventUserSetsFirstPreference(userSession.userId)
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
-            intent.putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, getString(R.string.preference_number_summary) + " " + 1)
+            intent.putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, "${getString(R.string.preference_number_summary)} 1")
             startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
         }
     }
@@ -498,6 +547,15 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
     }
 
+    private fun setupPaymentError(paymentErrorMessage: String?) {
+        if (paymentErrorMessage.isNullOrEmpty()) {
+            ticker_payment_error.gone()
+        } else {
+            ticker_payment_error.setTextDescription(paymentErrorMessage)
+            ticker_payment_error.visible()
+        }
+    }
+
     private fun setupButtonPromo(orderPromo: OrderPromo) {
         //loading
         if (orderPromo.state == ButtonBayarState.LOADING) {
@@ -548,59 +606,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
             }
         }
-    }
-
-    private fun setupPaymentError(paymentErrorMessage: String?) {
-        if (paymentErrorMessage.isNullOrEmpty()) {
-            ticker_payment_error.gone()
-        } else {
-            ticker_payment_error.setTextDescription(paymentErrorMessage)
-            ticker_payment_error.visible()
-        }
-    }
-
-    private fun showMessage(preference: ProfileResponse) {
-        tv_header.text = "Barang yang dibeli"
-        if (preference.hasPreference && preference.profileId > 0) {
-            tv_header_2.text = "Pengiriman dan pembayaran"
-            tv_header_2.visible()
-            tv_header_3.gone()
-            tv_subheader.gone()
-            tv_subheader_action.gone()
-            iv_subheader.gone()
-        } else if (preference.profileId > 0) {
-            tv_header_2.gone()
-            tv_header_3.gone()
-            ImageHandler.LoadImage(iv_subheader, BELI_LANGSUNG_CART_IMAGE)
-            iv_subheader.visible()
-            tv_subheader.text = preference.onboardingHeaderMessage
-            tv_subheader_action.setOnClickListener {
-                orderSummaryAnalytics.eventClickInfoOnOSP()
-                OccInfoBottomSheet().show(this, preference.onboardingComponent)
-            }
-            tv_subheader_action.visible()
-            tv_subheader.visible()
-        } else {
-            tv_header_2.text = "Hai!"
-            val spannableString = SpannableString(preference.onboardingHeaderMessage + " Info")
-            spannableString.setSpan(ForegroundColorSpan(Color.parseColor("#03AC0E")), preference.onboardingHeaderMessage.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-            tv_header_3.text = spannableString
-            tv_header_3.setOnClickListener {
-                orderSummaryAnalytics.eventClickInfoOnOSP()
-                OccInfoBottomSheet().show(this, preference.onboardingComponent)
-            }
-            tv_header_2.visible()
-            tv_header_3.visible()
-            tv_subheader.gone()
-            tv_subheader_action.gone()
-            iv_subheader.gone()
-        }
-        ticker_preference_info.visibility = if (preference.isChangedProfile) View.VISIBLE else View.GONE
-    }
-
-    private fun initViews(view: View) {
-        orderProductCard = OrderProductCard(view, this, orderSummaryAnalytics)
-        orderPreferenceCard = OrderPreferenceCard(view, getOrderPreferenceCardListener())
     }
 
     private fun getOrderPreferenceCardListener() = object : OrderPreferenceCard.OrderPreferenceCardListener {
@@ -673,10 +678,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         override fun onEditPreference(preference: ProfilesItemModel, position: Int, profileSize: Int) {
                             orderSummaryAnalytics.eventClickGearLogoInPreferenceFromGantiPilihanOSP()
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
-                            val preferenceIndex = getString(R.string.lbl_summary_preference_option) + " " + position
+                            val preferenceIndex = "${getString(R.string.lbl_summary_preference_option)} $position"
                             var showDelete = true
-                            if (profileSize > 1) showDelete
-                            else showDelete = false
+                            if (profileSize <= 1) {
+                                showDelete = false
+                            }
                             intent.apply {
                                 putExtra(PreferenceEditActivity.EXTRA_SHOW_DELETE_BUTTON, showDelete)
                                 putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, preferenceIndex)
@@ -695,7 +701,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                             orderSummaryAnalytics.eventAddPreferensiFromOSP()
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
                             val value = itemCount + 1
-                            val preferenceIndex = getString(R.string.preference_number_summary) + " " + value
+                            val preferenceIndex = "${getString(R.string.preference_number_summary)} $value"
                             intent.putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, preferenceIndex)
                             startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
                         }
@@ -715,14 +721,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 }
             }
             is RuntimeException -> {
-                when (throwable.localizedMessage.toIntOrNull()) {
+                when (throwable.localizedMessage?.toIntOrNull() ?: 0) {
                     ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(GlobalError.NO_CONNECTION)
                     ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
                     ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
                     else -> {
                         view?.let {
                             showGlobalError(GlobalError.SERVER_ERROR)
-                            Toaster.make(it, "Terjadi kesalahan pada server. Ulangi beberapa saat lagi", type = Toaster.TYPE_ERROR)
+                            Toaster.make(it, getString(R.string.default_osp_error_message), type = Toaster.TYPE_ERROR)
                         }
                     }
                 }
@@ -731,11 +737,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
                     Toaster.make(it, throwable.message
-                            ?: "Terjadi kesalahan pada server. Ulangi beberapa saat lagi", type = Toaster.TYPE_ERROR)
+                            ?: getString(R.string.default_osp_error_message), type = Toaster.TYPE_ERROR)
                 }
             }
         }
-//        viewModel.consumePreferenceListFail()
     }
 
     private fun showGlobalError(type: Int) {
@@ -756,22 +761,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         viewModel.getOccCart(isFullRefresh = isFullRefresh)
     }
 
-    override fun onStart() {
-        shouldUpdateCart = true
-        super.onStart()
-    }
-
-    public fun setIsFinishing() {
-        shouldUpdateCart = false
-    }
-
-    override fun onStop() {
-        super.onStop()
-        if (!swipe_refresh_layout.isRefreshing && shouldUpdateCart) {
-            viewModel.updateCart()
-        }
-    }
-
     private fun onSuccessCheckout(): (Data) -> Unit = { checkoutData: Data ->
         view?.let { v ->
             activity?.let {
@@ -788,9 +777,25 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE, checkoutData.error.message)
                     startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
                 } else {
-                    Toaster.make(v, "Terjadi kesalahan", type = Toaster.TYPE_ERROR)
+                    Toaster.make(v, getString(R.string.default_osp_error_message), type = Toaster.TYPE_ERROR)
                 }
             }
+        }
+    }
+
+    override fun onStart() {
+        shouldUpdateCart = true
+        super.onStart()
+    }
+
+    fun setIsFinishing() {
+        shouldUpdateCart = false
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (!swipe_refresh_layout.isRefreshing && shouldUpdateCart) {
+            viewModel.updateCart()
         }
     }
 
@@ -805,5 +810,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         private const val EMPTY_PROFILE_IMAGE = "https://ecs7.tokopedia.net/android/others/beli_langsung_intro.png"
         private const val BELI_LANGSUNG_CART_IMAGE = "https://ecs7.tokopedia.net/android/others/beli_langsung_keranjang.png"
+
+        private const val COLOR_INFO = "#03AC0E"
     }
 }

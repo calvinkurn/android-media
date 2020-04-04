@@ -31,7 +31,6 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         showPreference()
     }
 
-    @SuppressLint("SetTextI18n")
     private fun showPreference() {
         showHeader()
 
@@ -60,6 +59,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun showShipping() {
         val shipmentModel = preference.preference.shipment
 
@@ -102,7 +102,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
 
                     //BBO APPLY
                     if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
-                        view.tv_shipping_name.text = "Pengiriman Bebas Ongkir"
+                        view.tv_shipping_name.text = view.context.getString(R.string.lbl_osp_free_shipping)
                         val tempServiceDuration = shipping.logisticPromoViewModel.title
                         val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
                             tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
@@ -151,7 +151,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
 
                     //BBO APPLY
                     if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null) {
-                        view.tv_shipping_name.text = "Pengiriman Bebas Ongkir"
+                        view.tv_shipping_name.text = view.context.getString(R.string.lbl_osp_free_shipping)
                         val tempServiceDuration = shipping.logisticPromoViewModel.title
                         val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
                             tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
@@ -160,7 +160,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                         }
                         view.tv_shipping_duration.text = serviceDur
                         if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoViewModel.shippingRate) {
-                            view.tv_shipping_courier.text = "Bebas Ongkir - Rp 0"
+                            view.tv_shipping_courier.text = view.context.getString(R.string.lbl_osp_free_shipping_with_price)
                             view.tv_shipping_slash_price.gone()
                         } else {
                             view.tv_shipping_courier.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.discountedRate, false)
@@ -205,6 +205,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun showAddress() {
         val addressModel = preference.preference.address
         view.tv_address_name.text = addressModel.addressName
@@ -223,19 +224,10 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         } else {
             view.tv_address_receiver.gone()
         }
-        view.tv_address_detail.text = addressModel.addressStreet + ", " +
-                addressModel.districtName + ", " +
-                addressModel.cityName + ", " +
-                addressModel.provinceName + " " +
-                addressModel.postalCode
-    }
-
-    fun initView() {
-//        view.tv_shipping_duration.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, com.tokopedia.design.R.drawable.ic_arrow_drop_down_grey_checkout_module, 0)
+        view.tv_address_detail.text = "${addressModel.addressStreet}, ${addressModel.districtName}, ${addressModel.cityName}, ${addressModel.provinceName} ${addressModel.postalCode}"
     }
 
     fun showCourierBottomSheet(fragment: OrderSummaryPageFragment) {
-//        if (!listener.isLoading()) {
         val shippingRecommendationData = preference.shipping?.shippingRecommendationData
         if (shippingRecommendationData != null) {
             val list: ArrayList<RatesViewModelType> = ArrayList()
@@ -261,7 +253,6 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                 }
             })
         }
-//        }
     }
 
     private fun isCourierInstantOrSameday(shipperId: Int): Boolean {
@@ -283,18 +274,6 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         }
     }
 
-    fun setPaymentError(paymentErrorMessage: String?) {
-        if (paymentErrorMessage?.isNotEmpty() == true) {
-            view.tv_payment_message.text = paymentErrorMessage
-            view.tv_payment_message.visible()
-            view.tv_payment_message.setOnClickListener {
-                listener.onErrorPaymentClicked()
-            }
-        } else {
-            view.tv_payment_message.gone()
-        }
-    }
-
     interface OrderPreferenceCardListener {
 
         fun onChangePreferenceClicked()
@@ -304,8 +283,6 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         fun onDurationChange(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean)
 
         fun onLogisticPromoClick(logisticPromoUiModel: LogisticPromoUiModel)
-
-//        fun isLoading(): Boolean
 
         fun chooseCourier()
 

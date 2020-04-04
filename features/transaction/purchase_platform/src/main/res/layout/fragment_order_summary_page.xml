@@ -31,12 +31,12 @@
                     android:layout_marginStart="@dimen/dp_16"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_8"
+                    android:text="@string/lbl_osp_header"
                     android:textColor="@color/Neutral_N700_96"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:typographyType="heading_4"
-                    app:typographyWeight="bold"
-                    tools:text="Barang yang dibeli" />
+                    app:typographyWeight="bold" />
 
                 <include
                     layout="@layout/card_order_product"
