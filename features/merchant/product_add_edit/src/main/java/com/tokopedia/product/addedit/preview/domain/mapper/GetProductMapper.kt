@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.preview.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
@@ -10,7 +11,6 @@ import com.tokopedia.product.addedit.preview.data.source.api.response.*
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import javax.inject.Inject
-import kotlin.random.Random
 
 /**
  * Created by faisalramd on 2020-04-01.
@@ -22,14 +22,29 @@ class GetProductMapper @Inject constructor() {
             mapDetailInputModel(product),
             mapDescriptionInputModel(product),
             mapShipmentInputModel(product),
-            mapVariantInputModel(product))
+            mapVariantInputModel(product.variant))
 
-    private fun mapVariantInputModel(product: Product): ProductVariantInputModel =
+    private fun mapVariantInputModel(variant: Variant): ProductVariantInputModel =
             ProductVariantInputModel(
-                    mapProductVariantOption(product.variant.selections),
-                    mapProductVariant(product.variant.products),
-                    PictureViewModel()
+                    mapProductVariantOption(variant.selections),
+                    mapProductVariant(variant.products),
+                    mapSizeChart(variant.sizecharts).firstOrNull()
             )
+
+    private fun mapSizeChart(sizecharts: List<Picture>): List<PictureViewModel> =
+            sizecharts.map {
+                PictureViewModel(
+                        it.picID.toLongOrZero(),
+                        it.status.toIntOrZero(),
+                        "",
+                        "",
+                        it.urlOriginal,
+                        it.urlThumbnail,
+                        0,
+                        0,
+                        it.isFromIG.toIntOrZero()
+                )
+            }
 
     private fun mapProductVariant(products: List<ProductVariant>): ArrayList<ProductVariantCombinationViewModel> {
         val variantCombination = products.map {
