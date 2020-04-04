@@ -7,7 +7,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingTop="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_16"
     android:background="@color/white"
     android:visibility="gone"
     tools:ignore="RtlSymmetry"
@@ -48,6 +47,7 @@
     </LinearLayout>
 
     <FrameLayout
+        android:id="@+id/recom_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -74,5 +74,14 @@
             tools:visibility="visible" />
 
     </FrameLayout>
+
+    <View
+        android:id="@+id/recom_separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@color/grey_separator"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recom_container" />
 
 </LinearLayout>

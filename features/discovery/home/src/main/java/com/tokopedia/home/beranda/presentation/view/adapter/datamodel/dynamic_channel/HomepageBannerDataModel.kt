@@ -10,7 +10,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
  * @author by errysuprayogi on 11/28/17.
  */
 
-class BannerViewModel : ImpressHolder(), HomeVisitable {
+class HomepageBannerDataModel : ImpressHolder(), HomeVisitable {
     var slides: List<BannerSlidesModel>? = null
     private var isCache: Boolean = false
     private var trackingData: Map<String, Any>? = null
@@ -18,7 +18,7 @@ class BannerViewModel : ImpressHolder(), HomeVisitable {
     private var isCombined: Boolean = false
 
     override fun equalsWith(b: Any?): Boolean {
-        return b is BannerViewModel && b.slides == slides && b.slides?.size == b.slides?.size
+        return b is HomepageBannerDataModel && b.slides == slides && b.slides?.size == b.slides?.size
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
