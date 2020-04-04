@@ -154,5 +154,11 @@ class OrderSummaryPageEnhanceECommerce {
         private const val KEY_SHOP_TYPE = "dimension81" //marketplace or official_store or gold_merchant
         private const val KEY_CATEGORY_ID = "dimension82"
         private const val KEY_PRODUCT_TYPE = "dimension83"
+
+        const val STEP_1 = 1
+        const val STEP_1_OPTION = "order summary page loaded"
+
+        const val STEP_2 = 2
+        const val STEP_2_OPTION = "click bayar success"
     }
 }
