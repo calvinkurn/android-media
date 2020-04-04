@@ -10,6 +10,7 @@ import com.tokopedia.product.addedit.preview.data.source.api.response.*
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import javax.inject.Inject
+import kotlin.random.Random
 
 /**
  * Created by faisalramd on 2020-04-01.
@@ -58,14 +59,18 @@ class GetProductMapper @Inject constructor() {
         return ArrayList(variantOptions)
     }
 
-    private fun mapProductVariantOptionChild(options: List<Option>): List<ProductVariantOptionChild>? =
-            options.map {
-                ProductVariantOptionChild(
-                        hex = it.hexCode,
-                        value = it.value,
-                        vuv = it.unitValueID.toIntOrZero()
-                )
-            }
+    private fun mapProductVariantOptionChild(options: List<Option>): List<ProductVariantOptionChild>?{
+        var pvo = -1
+        return options.map {
+            pvo += 1 // generate pvo id
+            ProductVariantOptionChild(
+                    hex = it.hexCode,
+                    value = it.value,
+                    vuv = it.unitValueID.toIntOrZero(),
+                    pvo = pvo
+            )
+        }
+    }
 
     private fun mapDetailInputModel(product: Product): DetailInputModel =
             DetailInputModel(

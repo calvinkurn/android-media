@@ -31,7 +31,6 @@ class AddEditProductDescriptionActivity : BaseSimpleActivity() {
         } else {
             AddEditProductDescriptionFragment.createInstance(categoryId)
         }
-
     }
 
     companion object {
