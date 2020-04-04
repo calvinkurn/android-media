@@ -137,7 +137,6 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                     }
                 }
                 is OccState.Fail -> {
-//                    if (!it.isConsumed) {
                     progressDialog?.dismiss()
                     view?.let { view ->
                         if (it.throwable != null) {
@@ -152,8 +151,6 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                             Toaster.make(view, "Failed", type = Toaster.TYPE_ERROR)
                         }
                     }
-//                        viewModel.consumeSetDefaultPreferenceFail()
-//                    }
                 }
                 else -> {
                     if (progressDialog == null) {
@@ -220,11 +217,6 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
         rv_preference_list.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
                 super.getItemOffsets(outRect, view, parent, state)
-//                val position = parent.getChildAdapterPosition(view)
-//                val lastIndex = (parent.adapter?.itemCount ?: 1) - 1
-//                if (position >= lastIndex) {
-//                    outRect.bottom =
-//                }
                 outRect.left = context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0
                 outRect.right = context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0
                 outRect.top = context?.resources?.getDimension(R.dimen.dp_8)?.toInt() ?: 0
@@ -253,19 +245,6 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
             putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, preference.paymentModel?.gatewayCode)
         }
         startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
-        /*val parent = activity
-        if (parent is PreferenceEditActivity) {
-            val showDelete = parent.should_show_delete_button
-            intent.apply {
-                putExtra(PreferenceEditActivity.EXTRA_SHOW_DELETE_BUTTON, showDelete)
-                putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, getString(R.string.lbl_summary_preference_option) + " " + position)
-                putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.profileId)
-                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.addressModel?.addressId)
-                putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, preference.shipmentModel?.serviceId)
-                putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, preference.paymentModel?.gatewayCode)
-            }
-            startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
-        }*/
     }
 
     companion object {

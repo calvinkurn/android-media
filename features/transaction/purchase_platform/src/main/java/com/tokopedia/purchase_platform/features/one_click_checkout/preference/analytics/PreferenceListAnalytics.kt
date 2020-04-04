@@ -88,7 +88,6 @@ class PreferenceListAnalytics : TransactionAnalytics() {
         )
     }
 
-    //ForUsersWhoHasAddress
     fun eventClickAddressOptionInPilihAlamatPage() {
         sendEventCategoryAction(
                 EventName.CLICK_CHECKOUT_EXPRESS,

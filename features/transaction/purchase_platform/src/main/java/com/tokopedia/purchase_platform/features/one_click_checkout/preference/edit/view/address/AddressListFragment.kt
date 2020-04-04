@@ -97,14 +97,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
                     swipe_refresh_layout.isRefreshing = false
                     global_error.gone()
                     setEmptyState(it.data.listAddress.isEmpty(), viewModel.savedQuery.isEmpty())
-//                    if (it.data.listAddress.isEmpty()) {
-//                        text_search_error.visible()
-//                        content_layout.gone()
-//                    } else {
-//                        text_search_error.gone()
-//                        address_list_rv.visible()
                     renderData(it.data.listAddress)
-//                    }
                 }
 
                 is OccState.Fail -> {
@@ -117,10 +110,8 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
                 }
 
                 else -> swipe_refresh_layout.isRefreshing = true
-
             }
         })
-
     }
 
     private fun renderData(data: List<RecipientAddressModel>) {

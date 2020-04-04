@@ -1,8 +1,14 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.get
 
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.preference.*
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.*
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.preference.Address
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.preference.Payment
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.preference.ProfilesItem
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.preference.Shipment
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.AddressModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.PaymentModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ProfilesItemModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ShipmentModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.get.model.GetPreferenceByIdGqlResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.get.model.GetPreferenceData
 import javax.inject.Inject
@@ -14,7 +20,6 @@ class PreferenceModelMapper @Inject constructor() {
             val data = response.response.data
             if (data.success == 1) {
                 val getPreferenceData = GetPreferenceData()
-//                getPreferenceData.messages = data.messages
 
                 val profilesItemModel = getProfilesItemModel(data.profile)
 

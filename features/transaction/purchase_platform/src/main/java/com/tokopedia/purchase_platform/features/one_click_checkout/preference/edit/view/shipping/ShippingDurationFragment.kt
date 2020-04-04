@@ -88,11 +88,6 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
                             preferenceListAnalytics.eventClickPilihMetodePembayaranInDuration(selectedId.toString())
                             goToNextStep()
                         }
-                        /*if(arguments?.getBoolean(ARG_IS_EDIT) == false) {
-                            goToNextStep()
-                        } else {
-                            goBack()
-                        }*/
                     }
 
                     renderData(it.data.services)

@@ -2,26 +2,12 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.preference.l
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ProfilesItemModel
 
 class PreferenceListAdapter(private val listener: PreferenceListAdapterListener, private val currentProfileId: Int = -1) : RecyclerView.Adapter<PreferenceListViewHolder>() {
 
     private var list: ArrayList<ProfilesItemModel> = ArrayList()
-
-    companion object {
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ProfilesItemModel>() {
-            override fun areItemsTheSame(oldItem: ProfilesItemModel, newItem: ProfilesItemModel): Boolean {
-                return oldItem.profileId == newItem.profileId
-            }
-
-            override fun areContentsTheSame(oldItem: ProfilesItemModel, newItem: ProfilesItemModel): Boolean {
-                return oldItem == newItem
-            }
-
-        }
-    }
 
     fun submitList(newList: List<ProfilesItemModel>?) {
         list.clear()
