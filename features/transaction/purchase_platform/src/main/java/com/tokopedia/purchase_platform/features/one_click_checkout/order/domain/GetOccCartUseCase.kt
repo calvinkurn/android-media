@@ -245,7 +245,6 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
             wholesalePrice = product.wholesalePrice
             notes = if (product.productNotes.length > 144) product.productNotes.substring(0, 144) else product.productNotes
         }
-//        mapVariant(orderProduct, product)
         mapQuantity(orderProduct, product)
         return orderProduct
     }

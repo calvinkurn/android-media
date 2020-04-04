@@ -16,6 +16,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.mo
 import kotlinx.android.synthetic.main.card_order_product.view.*
 
 class OrderProductCard(private val view: View, private val listener: OrderProductCardListener, val orderSummaryAnalytics: OrderSummaryAnalytics) {
+
     private lateinit var product: OrderProduct
     private lateinit var shop: OrderShop
 
@@ -36,6 +37,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             ImageHandler.loadImageFitCenter(view.context, view.iv_product_image, product.productImageUrl)
             view.tv_product_name.text = product.productName
             showPrice()
+
             view.et_note.filters = arrayOf(InputFilter.LengthFilter(144))
             view.et_note.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
                 if (hasFocus) {
@@ -63,6 +65,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 }
             }
             view.et_note.addTextChangedListener(noteTextWatcher)
+
             if (quantityTextWatcher != null) {
                 etQty.removeTextChangedListener(quantityTextWatcher)
             }
@@ -120,6 +123,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 }
                 orderSummaryAnalytics.eventEditQuantityDecrease(product.productId.toString(), shop.shopId.toString(), product.quantity!!.orderQuantity.toString())
             }
+
             validateQuantity()
             renderProductPropertiesInvenage()
         }

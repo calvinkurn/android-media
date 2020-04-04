@@ -354,4 +354,7 @@
     <string name="atur_pilihan">Atur Pilihan</string>
 
     <string name="label_pay_total">Total Bayar</string>
+
+    <string name="lbl_osp_free_shipping">Pengiriman Bebas Ongkir</string>
+    <string name="lbl_osp_free_shipping_with_price">Bebas Ongkir - Rp 0</string>
 </resources>

@@ -167,8 +167,5 @@ data class ProductDataResponse(
         @SerializedName("free_shipping")
         val freeShipping: FreeShipping = FreeShipping(),
         @SerializedName("booking_stock")
-        val bookingStock: Int = 0,
-        @SerializedName("product_variant")
-        @Expose
-        val productVariant: ProductVariantResponse = ProductVariantResponse()
-        )
+        val bookingStock: Int = 0
+)

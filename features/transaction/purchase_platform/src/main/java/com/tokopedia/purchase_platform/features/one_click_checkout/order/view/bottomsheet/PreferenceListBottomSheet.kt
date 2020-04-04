@@ -23,9 +23,7 @@ import java.net.UnknownHostException
 
 class PreferenceListBottomSheet(
         private val getPreferenceListUseCase: GetPreferenceListUseCase,
-        private val listener: PreferenceListBottomSheetListener
-) {
-    // need get all preference list usecase, update selected preference usecase
+        private val listener: PreferenceListBottomSheetListener) {
 
     private var bottomSheet: BottomSheetUnify? = null
 
@@ -36,20 +34,7 @@ class PreferenceListBottomSheet(
 
     private var adapter: PreferenceListAdapter? = null
 
-    init {
-        //get all preference
-//        launch {
-//            delay(3000)
-//            updateList(listOf(Preference(), Preference(), Preference(), Preference(), Preference()))
-//        }
-//        useCase.execute({ preferenceListResponseModel: PreferenceListResponseModel ->
-//            updateList(preferenceListResponseModel.profiles ?: ArrayList())
-//        }, { throwable: Throwable ->
-//
-//        })
-    }
-
-    fun getPreferenceList() {
+    private fun getPreferenceList() {
         globalError?.gone()
         rvPreferenceList?.gone()
         btnAddPreference?.gone()
@@ -59,7 +44,6 @@ class PreferenceListBottomSheet(
         }, { throwable: Throwable ->
             throwable.printStackTrace()
             handleError(throwable)
-//            bottomSheet?.dismiss()
         })
     }
 
@@ -75,14 +59,11 @@ class PreferenceListBottomSheet(
                     ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
                     else -> {
                         showGlobalError(GlobalError.SERVER_ERROR)
-//                            Toaster.make(it, "Terjadi kesalahan pada server. Ulangi beberapa saat lagi", type = Toaster.TYPE_ERROR)
                     }
                 }
             }
             else -> {
                 showGlobalError(GlobalError.SERVER_ERROR)
-//                    Toaster.make(it, throwable.message
-//                            ?: "Terjadi kesalahan pada server. Ulangi beberapa saat lagi", type = Toaster.TYPE_ERROR)
             }
         }
     }
@@ -104,7 +85,7 @@ class PreferenceListBottomSheet(
             bottomSheet = BottomSheetUnify().apply {
                 isDragable = true
                 isHideable = true
-                setTitle("Pengiriman dan pembayaran")
+                setTitle(BOTTOM_SHEET_TITLE)
                 val child = View.inflate(fragment.context, R.layout.bottom_sheet_preference_list, null)
                 setupChild(child, profileId)
                 fragment.view?.height?.div(2)?.let { height ->
@@ -148,12 +129,6 @@ class PreferenceListBottomSheet(
         bottomSheet?.dismiss()
     }
 
-    fun reload() {
-        progressBar?.visible()
-        rvPreferenceList?.gone()
-        btnAddPreference?.gone()
-    }
-
     private fun updateList(preferences: PreferenceListResponseModel) {
         adapter?.submitList(preferences.profiles)
         progressBar?.gone()
@@ -167,10 +142,6 @@ class PreferenceListBottomSheet(
         }
     }
 
-//    private fun onCleared() {
-//        cancel()
-//    }
-
     interface PreferenceListBottomSheetListener {
 
         fun onChangePreference(preference: ProfilesItemModel)
@@ -178,5 +149,9 @@ class PreferenceListBottomSheet(
         fun onEditPreference(preference: ProfilesItemModel, position: Int, profileSize: Int)
 
         fun onAddPreference(itemCount: Int)
+    }
+
+    companion object {
+        private const val BOTTOM_SHEET_TITLE = "Pengiriman dan pembayaran"
     }
 }
