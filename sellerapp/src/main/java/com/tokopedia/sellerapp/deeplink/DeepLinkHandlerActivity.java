@@ -57,6 +57,8 @@ import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModul
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
+import com.tokopedia.webview.WebViewApplinkModule;
+import com.tokopedia.webview.WebViewApplinkModuleLoader;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 
@@ -82,7 +84,8 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
         UserIdentificationApplinkModule.class,
         FlashsaleDeeplinkModule.class,
         CreatePostModule.class,
-        RNDevOptionsApplinkModule.class
+        RNDevOptionsApplinkModule.class,
+        WebViewApplinkModule.class
 })
 /* **
  * Navigation will via RouteManager -> manifest instead.
@@ -112,7 +115,8 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new UserIdentificationApplinkModuleLoader(),
                 new FlashsaleDeeplinkModuleLoader(),
                 new CreatePostModuleLoader(),
-                new RNDevOptionsApplinkModuleLoader()
+                new RNDevOptionsApplinkModuleLoader(),
+                new WebViewApplinkModuleLoader()
         );
     }
 
