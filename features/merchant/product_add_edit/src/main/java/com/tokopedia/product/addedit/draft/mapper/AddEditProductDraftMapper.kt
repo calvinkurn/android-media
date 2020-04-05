@@ -8,29 +8,29 @@ import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import rx.functions.Func1
 
-class AddEditProductDraftMapper: Func1<AddEditProductDraftEntity, ProductInputModel> {
+class AddEditProductDraftMapper {
 
     companion object {
         const val UTF_8 = "UTF-8"
         const val VERSION_PRODUCT_VIEW_MODEL = 1
 
-        fun mapProductToJsonString(productInputModel: ProductInputModel): String? {
+        fun mapProductInputToJsonString(productInputModel: ProductInputModel): String {
             return CacheUtil.convertModelToString(productInputModel, object : TypeToken<Product>() {}.type)
         }
-    }
 
-    override fun call(draft : AddEditProductDraftEntity?): ProductInputModel {
-        return try {
-            CacheUtil.convertStringToModel(draft?.data, ProductInputModel::class.java)
-        }catch (e: Exception) {
-            val product: Product = CacheUtil.convertStringToModel(draft?.data, Product::class.java)
-            mapProductToCurrentModel(product)
+        fun mapDraftToProductInput(draft : AddEditProductDraftEntity): ProductInputModel {
+            val productInputModel: ProductInputModel
+            productInputModel = try {
+                CacheUtil.convertStringToModel(draft.data, ProductInputModel::class.java)
+            }catch (e: Exception) {
+                val product: Product = CacheUtil.convertStringToModel(draft.data, Product::class.java)
+                GetProductMapper().mapRemoteModelToUiModel(product)
+            }
+            return productInputModel
         }
     }
 
-    private fun mapProductToCurrentModel(product: Product): ProductInputModel {
-        return GetProductMapper().mapRemoteModelToUiModel(product)
-    }
+
 
 
 }

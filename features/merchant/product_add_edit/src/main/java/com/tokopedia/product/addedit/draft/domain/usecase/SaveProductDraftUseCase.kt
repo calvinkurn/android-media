@@ -4,8 +4,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductDraftConstant
 import com.tokopedia.product.addedit.draft.data.db.repository.AddEditProductDraftRepository
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase
-import rx.Observable
+import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class SaveProductDraftUseCase @Inject constructor(private val draftRepository: AddEditProductDraftRepository): UseCase<Long>() {
@@ -20,27 +19,28 @@ class SaveProductDraftUseCase @Inject constructor(private val draftRepository: A
         }
     }
 
-    private fun isInputProductNotNull(requestParams: RequestParams?) = requestParams?.getObject(AddEditProductDraftConstant.UPLOAD_PRODUCT_INPUT_MODEL) != null
+    var params: RequestParams = RequestParams.EMPTY
 
-    private fun isUploadProductDomainModel(requestParams: RequestParams?) = requestParams?.getObject(AddEditProductDraftConstant.UPLOAD_PRODUCT_INPUT_MODEL) is ProductInputModel
+    private fun isInputProductNotNull() = params.getObject(AddEditProductDraftConstant.UPLOAD_PRODUCT_INPUT_MODEL) != null
 
-    override fun createObservable(requestParams: RequestParams?): Observable<Long> {
+    private fun isUploadProductDomainModel() = params.getObject(AddEditProductDraftConstant.UPLOAD_PRODUCT_INPUT_MODEL) is ProductInputModel
+
+    override suspend fun executeOnBackground(): Long {
         val product: ProductInputModel
-        if(isInputProductNotNull(requestParams) && isUploadProductDomainModel(requestParams)) {
-            product = requestParams?.getObject(AddEditProductDraftConstant.UPLOAD_PRODUCT_INPUT_MODEL) as ProductInputModel
+        if(isInputProductNotNull() && isUploadProductDomainModel()) {
+            product = params.getObject(AddEditProductDraftConstant.UPLOAD_PRODUCT_INPUT_MODEL) as ProductInputModel
         } else {
             throw RuntimeException("Input model is missing")
         }
 
-        val prevDraftId = requestParams.getLong(AddEditProductDraftConstant.PREV_DRAFT_ID, 0)
-        val isUploading = requestParams.getBoolean(AddEditProductDraftConstant.IS_UPLOADING, false)
+        val prevDraftId = params.getLong(AddEditProductDraftConstant.PREV_DRAFT_ID, 0)
+        val isUploading = params.getBoolean(AddEditProductDraftConstant.IS_UPLOADING, false)
         return if (prevDraftId <= 0) {
-            draftRepository.saveDraft(product, isUploading)
+            draftRepository.saveDraft(product, isUploading) ?: 0L
         } else {
-            draftRepository.updateDraft(prevDraftId, product, isUploading)
+            draftRepository.updateDraft(prevDraftId, product, isUploading) ?: 0L
         }
     }
-
 
 
 }

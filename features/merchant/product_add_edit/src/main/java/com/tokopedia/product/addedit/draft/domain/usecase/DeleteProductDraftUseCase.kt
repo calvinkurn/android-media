@@ -3,8 +3,7 @@ package com.tokopedia.product.addedit.draft.domain.usecase
 import com.tokopedia.product.addedit.common.constant.AddEditProductDraftConstant
 import com.tokopedia.product.addedit.draft.data.db.repository.AddEditProductDraftRepository
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase
-import rx.Observable
+import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class DeleteProductDraftUseCase @Inject constructor(private val draftRepository: AddEditProductDraftRepository): UseCase<Boolean>() {
@@ -17,8 +16,8 @@ class DeleteProductDraftUseCase @Inject constructor(private val draftRepository:
         }
     }
 
-    override fun createObservable(requestParams: RequestParams?): Observable<Boolean> {
-        val param = requestParams?.getLong(AddEditProductDraftConstant.DRAFT_PRODUCT_ID, Long.MIN_VALUE) ?: 0L
+    override suspend fun executeOnBackground(): Boolean {
+        val param = useCaseRequestParams.getLong(AddEditProductDraftConstant.DRAFT_PRODUCT_ID, Long.MIN_VALUE)
         return draftRepository.deleteDraft(param)
     }
 

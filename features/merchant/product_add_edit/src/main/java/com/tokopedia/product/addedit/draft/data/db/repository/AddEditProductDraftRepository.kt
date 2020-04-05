@@ -1,24 +1,23 @@
 package com.tokopedia.product.addedit.draft.data.db.repository
 
-import com.tokopedia.product.addedit.draft.data.db.model.AddEditProductDraftModel
+import androidx.lifecycle.LiveData
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import rx.Observable
 
 interface AddEditProductDraftRepository {
 
-    fun saveDraft(productInputModel: ProductInputModel, isUploading: Boolean): Observable<Long>
+    fun saveDraft(productInputModel: ProductInputModel, isUploading: Boolean): Long?
 
-    fun getDraft(productId: Long): Observable<ProductInputModel>
+    fun getDraft(productId: Long): LiveData<ProductInputModel>
 
-    fun getAllDrafts(): Observable<MutableList<AddEditProductDraftModel?>>?
+    fun getAllDrafts(): LiveData<List<ProductInputModel>>
 
-    fun getAllDraftsCount(): Observable<Int>
+    fun getAllDraftsCount(): LiveData<Int>
 
-    fun deleteDraft(productId: Long): Observable<Boolean>
+    fun deleteDraft(productId: Long): Boolean
 
-    fun deleteAllDrafts(): Observable<Boolean>
+    fun deleteAllDrafts(): Boolean
 
-    fun updateDraft(productId: Long, productInputModel: ProductInputModel, isUploading: Boolean): Observable<Long>
+    fun updateDraft(productId: Long, productInputModel: ProductInputModel, isUploading: Boolean): Long?
 
-    fun updateLoadingStatus(productId: Long, isUploading: Boolean): Observable<Boolean>
+    fun updateLoadingStatus(productId: Long, isUploading: Boolean): Boolean
 }

@@ -8,6 +8,7 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,6 +44,7 @@ import com.tokopedia.product.addedit.description.presentation.model.DescriptionI
 import com.tokopedia.product.addedit.description.presentation.fragment.AddEditProductDescriptionFragment.Companion.REQUEST_CODE_DESCRIPTION
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailComponent
+import com.tokopedia.product.addedit.detail.presentation.activity.AddEditProductDetailActivity
 import com.tokopedia.product.addedit.detail.presentation.adapter.NameRecommendationAdapter
 import com.tokopedia.product.addedit.detail.presentation.adapter.WholeSalePriceInputAdapter
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_ID
@@ -63,6 +65,7 @@ import com.tokopedia.product.addedit.detail.presentation.viewholder.WholeSaleInp
 import com.tokopedia.product.addedit.detail.presentation.viewmodel.AddEditProductDetailViewModel
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
+import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
@@ -82,7 +85,9 @@ import kotlin.collections.ArrayList
 class AddEditProductDetailFragment(private val initialSelectedImagePathList: ArrayList<String>?)
     : BaseDaggerFragment(), ProductPhotoViewHolder.OnStartDragListener,
         NameRecommendationAdapter.ProductNameItemClickListener,
-        WholeSaleInputViewHolder.TextChangedListener {
+        WholeSaleInputViewHolder.TextChangedListener,
+        AddEditProductDetailActivity.OnClickDialogButtonListener
+{
 
     companion object {
 
@@ -113,6 +118,8 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
     private var productPhotoPaths = mutableListOf<String>()
 
     private var selectedDurationPosition: Int = UNIT_DAY
+
+    private var productInputModel = ProductInputModel()
 
     // product photo
     private var addProductPhotoButton: AppCompatTextView? = null
@@ -482,6 +489,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         subscribeToPreOrderSwitchStatus()
         subscribeToPreOrderDurationInputStatus()
         subscribeToInputStatus()
+        subscribeToSaveProductDraftResult()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -490,6 +498,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
             when (requestCode) {
                 REQUEST_CODE_IMAGE -> {
                     val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
+                    productInputModel.detailInputModel.imageUrlOrPathList = imageUrlOrPathList
                     productPhotoAdapter?.setProductPhotoPaths(imageUrlOrPathList)
                     productPhotoAdapter?.let { viewModel.validateProductPhotoInput(it.itemCount) }
                 }
@@ -654,6 +663,15 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
             when (it) {
                 is Success -> onGetCategoryRecommendationSuccess(it)
                 is Fail -> onGetCategoryRecommendationFailed()
+            }
+        })
+    }
+
+    private fun subscribeToSaveProductDraftResult() {
+        viewModel.saveProductDraftResultLiveData.observe(this, Observer {
+            when (it) {
+                is Success -> Log.d("Hello Success", it.toString())
+                is Fail -> Log.d("Hello SFailed", it.throwable.message)
             }
         })
     }
@@ -845,6 +863,12 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
             return (it.get(productCategoryRecListView) as ArrayList<ListItemUnify>).find { listItem ->
                 listItem.listRightRadiobtn?.isChecked ?: false
             }
+        }
+    }
+
+    override fun onClickSaveDraft(isUploading: Boolean) {
+        view?.id?.toLong()?.let {
+            viewModel.saveProductDraft(productInputModel, it,isUploading)
         }
     }
 }

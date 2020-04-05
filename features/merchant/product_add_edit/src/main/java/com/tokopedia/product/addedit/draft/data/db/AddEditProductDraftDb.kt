@@ -12,6 +12,8 @@ import com.tokopedia.product.addedit.draft.data.db.entity.AddEditProductDraftEnt
 @Database(entities = [AddEditProductDraftEntity::class], version = AddEditProductDraftConstant.DB_VERSION, exportSchema = false)
 abstract class AddEditProductDraftDb : RoomDatabase(){
 
+    abstract fun getDraftDao(): AddEditProductDraftDao
+
     companion object {
         @Volatile
         private var INSTANCE: AddEditProductDraftDb? = null

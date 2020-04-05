@@ -1,9 +1,13 @@
 package com.tokopedia.product.addedit.detail.presentation.activity
 
+import android.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailComponent
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailModule
@@ -23,5 +27,29 @@ class AddEditProductDetailActivity : BaseSimpleActivity(), HasComponent<AddEditP
                 .addEditProductComponent(AddEditProductComponentBuilder.getComponent(application))
                 .addEditProductDetailModule(AddEditProductDetailModule())
                 .build()
+    }
+
+    override fun onBackPressed() {
+        val dialogBuilder = AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
+                .setMessage("Anda belum selesai menambahkan produk. Apakah Anda yakin ingin keluar?")
+                .setNegativeButton("Batal") { _, _ -> }
+                .setPositiveButton("Keluar") { _, _ ->
+                    backHome()
+                }
+                .setNeutralButton("Simpan Draft") { _, _ ->
+                    (newFragment as OnClickDialogButtonListener).onClickSaveDraft(false)
+                }
+        val dialog = dialogBuilder.create()
+        dialog.show()
+    }
+
+    private fun backHome() {
+        val intentHome = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.SELLER_HOME)
+        startActivity(intentHome)
+        finish()
+    }
+
+    interface OnClickDialogButtonListener {
+        fun onClickSaveDraft(isUploading: Boolean)
     }
 }

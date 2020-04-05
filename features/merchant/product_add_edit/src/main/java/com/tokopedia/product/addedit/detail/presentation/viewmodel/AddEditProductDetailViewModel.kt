@@ -10,6 +10,8 @@ import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommenda
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
+import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
+import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -22,7 +24,9 @@ import javax.inject.Inject
 class AddEditProductDetailViewModel @Inject constructor(
         val provider: ResourceProvider, dispatcher: CoroutineDispatcher,
         private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
-        private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase)
+        private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
+        private val saveProductDraftUseCase: SaveProductDraftUseCase
+)
     : BaseViewModel(dispatcher) {
 
     private val mIsProductPhotoError = MutableLiveData<Boolean>()
@@ -60,6 +64,10 @@ class AddEditProductDetailViewModel @Inject constructor(
     val isPreOrderDurationInputError: LiveData<Boolean>
         get() = mIsPreOrderDurationInputError
     var preOrderDurationMessage: String = ""
+
+    private val saveProductDraftResultMutableLiveData = MutableLiveData<Result<Long>>()
+    val saveProductDraftResultLiveData: LiveData<Result<Long>>
+        get() = saveProductDraftResultMutableLiveData
 
     private val mIsInputValid = MediatorLiveData<Boolean>().apply {
 
@@ -324,6 +332,17 @@ class AddEditProductDetailViewModel @Inject constructor(
             })
         }, onError = {
             productCategoryRecommendationLiveData.value = Fail(it)
+        })
+    }
+
+    fun saveProductDraft(productInputModel: ProductInputModel, productId: Long, isUploading: Boolean) {
+        launchCatchError(block = {
+            saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(productInputModel, productId, isUploading)
+            saveProductDraftResultMutableLiveData.value = withContext(Dispatchers.IO) {
+                saveProductDraftUseCase.executeOnBackground()
+            }.let { Success(it) }
+        }, onError = {
+            saveProductDraftResultMutableLiveData.value = Fail(it)
         })
     }
 }
