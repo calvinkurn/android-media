@@ -42,6 +42,8 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
 
     private var selectedItemIdentifier: String? = null
 
+    private lateinit var categoryLevelOneAdapter: CategoryLevelOneAdapter
+
     companion object {
         @JvmStatic
         fun newInstance(categoryName: String?): CategorylevelOneFragment {
@@ -80,7 +82,7 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
         val linearLayoutManager = LinearLayoutManager(context)
         master_list.layoutManager = linearLayoutManager
         addShimmerItems(categoryList)
-        val categoryLevelOneAdapter = CategoryLevelOneAdapter(categoryList, listener, activityStateListener?.getActivityTrackingQueue())
+        categoryLevelOneAdapter = CategoryLevelOneAdapter(categoryList, listener, activityStateListener?.getActivityTrackingQueue())
         master_list.adapter = categoryLevelOneAdapter
 
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -164,6 +166,9 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
     interface CategorySelectListener {
         fun onItemClicked(id: String, position: Int, categoryName: String, applink: String?)
     }
+
+    override fun onPause() {
+        categoryLevelOneAdapter.onPause()
+        super.onPause()
+    }
 }
-
-

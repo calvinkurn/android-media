@@ -16,14 +16,12 @@ import org.junit.Test
 class PlaySocketMapperTest {
 
     private lateinit var playSocketMapper: PlaySocketMapper
-    private val amountStringStepArray = arrayOf("k", "m")
 
     private fun actual(type: String, jsonObject: JsonObject): Any? {
         playSocketMapper = PlaySocketMapper(WebSocketResponse(
                 type = type,
                 code = 200,
-                jsonObject = jsonObject),
-                amountStringStepArray)
+                jsonElement = jsonObject))
         return playSocketMapper.mapping()
     }
 

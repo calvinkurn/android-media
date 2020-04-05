@@ -55,10 +55,17 @@ data class VariantChildCommon(
 
         @SerializedName("isCOD")
         @Expose
-        val isCod: Boolean? = false
+        val isCod: Boolean? = false,
+
+        @SerializedName("upcomingCampaignInfo")
+        @Expose
+        val upcoming: VariantUpcoming? = null
 ) {
     val isBuyable: Boolean
         get() = stock?.isBuyable ?: false
+
+    val isFlashSale: Boolean
+        get() = campaign?.isActive == true
 
     val hasPicture: Boolean
         get() = picture != null &&
@@ -174,6 +181,8 @@ data class Campaign(
         @Expose
         val stockSoldPercentage: Float? = null
 ) {
+    val getStockPercentageInt: Int = stockSoldPercentage?.toInt() ?: 0
+
     val activeAndHasId: Boolean
         get() = isActive == true && (campaignID?.isNotEmpty() == true)
 }
@@ -215,4 +224,30 @@ data class VariantStock(
         @SerializedName("maximumOrder")
         @Expose
         val maximumOrder: Int? = 0
+)
+
+data class VariantUpcoming(
+        @SerializedName("campaignID")
+        @Expose
+        val campaignId: String? = "",
+
+        @SerializedName("campaignType")
+        @Expose
+        val campaignType: String? = "",
+
+        @SerializedName("campaignTypeName")
+        @Expose
+        val campaignTypeName: String? = "",
+
+        @SerializedName("startDate")
+        @Expose
+        val startDate: String? = "",
+
+        @SerializedName("endDate")
+        @Expose
+        val endDate: String? = "",
+
+        @SerializedName("notifyMe")
+        @Expose
+        val notifyMe: Boolean? = false
 )

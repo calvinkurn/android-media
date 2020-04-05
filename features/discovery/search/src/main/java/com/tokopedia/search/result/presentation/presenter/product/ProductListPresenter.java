@@ -19,7 +19,6 @@ import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase;
 import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.analytics.SearchEventTracking;
-import com.tokopedia.search.di.module.SearchContextModule;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper;
@@ -36,7 +35,6 @@ import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler;
-import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
 import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Badge;
@@ -75,33 +73,19 @@ final class ProductListPresenter
         extends BaseDaggerPresenter<ProductListSectionContract.View>
         implements ProductListSectionContract.Presenter {
 
-    private List<Integer> searchNoResultCodeList = Arrays.asList(1, 2, 3, 6);
+    private List<Integer> searchNoResultCodeList = Arrays.asList(1, 2, 3, 6, 8);
     private static final String SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search";
     private static final String DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu";
     private static final String DEFAULT_USER_ID = "0";
 
-    @Inject
-    @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
-    UseCase<SearchProductModel> searchProductFirstPageUseCase;
-    @Inject
-    @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_LOAD_MORE_USE_CASE)
-    UseCase<SearchProductModel> searchProductLoadMoreUseCase;
-    @Inject
-    GetRecommendationUseCase recommendationUseCase;
-    @Inject
-    SeamlessLoginUsecase seamlessLoginUsecase;
-    @Inject
-    UserSessionInterface userSession;
-    @Inject
-    RemoteConfig remoteConfig;
-    @Inject
-    @Named(SearchConstant.Advertising.ADVERTISING_LOCAL_CACHE)
-    LocalCacheHandler advertisingLocalCache;
-    @Inject
-    @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE)
-    UseCase<DynamicFilterModel> getDynamicFilterUseCase;
-    @Inject
-    SearchLocalCacheHandler searchLocalCacheHandler;
+    private UseCase<SearchProductModel> searchProductFirstPageUseCase;
+    private UseCase<SearchProductModel> searchProductLoadMoreUseCase;
+    private GetRecommendationUseCase recommendationUseCase;
+    private SeamlessLoginUsecase seamlessLoginUsecase;
+    private UserSessionInterface userSession;
+    private LocalCacheHandler advertisingLocalCache;
+    private UseCase<DynamicFilterModel> getDynamicFilterUseCase;
+    private SearchLocalCacheHandler searchLocalCacheHandler;
 
     private boolean enableGlobalNavWidget = true;
     private boolean changeParamRow = false;
@@ -117,38 +101,53 @@ final class ProductListPresenter
     private List<Visitable> productList;
     private List<InspirationCarouselViewModel> inspirationCarouselViewModel;
 
+    @Inject
+    ProductListPresenter(
+            @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
+            UseCase<SearchProductModel> searchProductFirstPageUseCase,
+            @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_LOAD_MORE_USE_CASE)
+            UseCase<SearchProductModel> searchProductLoadMoreUseCase,
+            GetRecommendationUseCase recommendationUseCase,
+            SeamlessLoginUsecase seamlessLoginUsecase,
+            UserSessionInterface userSession,
+            @Named(SearchConstant.Advertising.ADVERTISING_LOCAL_CACHE)
+            LocalCacheHandler advertisingLocalCache,
+            @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE)
+            UseCase<DynamicFilterModel> getDynamicFilterUseCase,
+            SearchLocalCacheHandler searchLocalCacheHandler,
+            RemoteConfig remoteConfig
+    ) {
+        this.searchProductFirstPageUseCase = searchProductFirstPageUseCase;
+        this.searchProductLoadMoreUseCase = searchProductLoadMoreUseCase;
+        this.recommendationUseCase = recommendationUseCase;
+        this.seamlessLoginUsecase = seamlessLoginUsecase;
+        this.userSession = userSession;
+        this.advertisingLocalCache = advertisingLocalCache;
+        this.getDynamicFilterUseCase = getDynamicFilterUseCase;
+        this.searchLocalCacheHandler = searchLocalCacheHandler;
+
+        this.enableGlobalNavWidget = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET, true);
+        this.changeParamRow = remoteConfig.getBoolean(SearchConstant.RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false);
+        this.isUsingBottomSheetFilter = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER, true);
+    }
+
     @Override
-    public void initInjector(ProductListSectionContract.View view) {
-        ProductListPresenterComponent component = DaggerProductListPresenterComponent.builder()
-                .baseAppComponent(view.getBaseAppComponent())
-                .searchContextModule(createSearchContextModule(view))
-                .build();
+    public void attachView(ProductListSectionContract.View view) {
+        super.attachView(view);
 
-        component.inject(this);
-
-        enableGlobalNavWidget = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET, true);
-        changeParamRow = remoteConfig.getBoolean(SearchConstant.RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false);
-        isUsingBottomSheetFilter = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER, true);
         useRatingString = getIsUseRatingString();
     }
 
     private boolean getIsUseRatingString() {
-        return getView().getABTestRemoteConfig()
-                .getString(AB_TEST_KEY_COMMA_VS_FULL_STAR, AB_TEST_VARIANT_FULL_STAR)
-                .equals(AB_TEST_VARIANT_COMMA_STAR);
-    }
-
-    /**
-     * Very ugly hack.
-     * It is only intended for hotfix to reduce number of file changed
-    * */
-    @Deprecated
-    private SearchContextModule createSearchContextModule(ProductListSectionContract.View view) {
-        ProductListFragment fragment = (ProductListFragment)view;
-
-        if (fragment == null || fragment.getActivity() == null) return null;
-
-        return new SearchContextModule(fragment.getActivity());
+        try {
+            return getView().getABTestRemoteConfig()
+                    .getString(AB_TEST_KEY_COMMA_VS_FULL_STAR, AB_TEST_VARIANT_FULL_STAR)
+                    .equals(AB_TEST_VARIANT_COMMA_STAR);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
@@ -664,6 +663,8 @@ final class ProductListPresenter
     }
 
     private void getViewToProcessSearchResult(SearchProductModel searchProductModel) {
+        updateValueEnableGlobalNavWidget();
+
         ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
 
         sendTrackingNoSearchResult(productViewModel);
@@ -685,6 +686,12 @@ final class ProductListPresenter
 
         if (isFirstTimeLoad) {
             getViewToSendTrackingOnFirstTimeLoad(productViewModel);
+        }
+    }
+
+    private void updateValueEnableGlobalNavWidget() {
+        if (getView() != null) {
+            enableGlobalNavWidget = enableGlobalNavWidget && !getView().isLandingPage();
         }
     }
 
@@ -899,7 +906,7 @@ final class ProductListPresenter
                     continue;
                 }
 
-                if (data.getPosition() <= getView().getLastProductItemPositionFromCache()) {
+                if (data.getPosition() <= productList.size()) {
                     try {
                         Visitable product = productList.get(data.getPosition() - 1);
                         list.add(list.indexOf(product) + 1, data);

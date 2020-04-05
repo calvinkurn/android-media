@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.data.query
 object HomeQuery{
     fun getQuery() = """
         {
+        status
           ticker {
             meta {
               total_data
@@ -62,6 +63,7 @@ object HomeQuery{
           dynamicHomeChannel {
             channels {
               id
+              group_id
               galaxy_attribution
               persona
               brand_id
@@ -107,6 +109,7 @@ object HomeQuery{
                 productClickUrl
                 impression
                 cashback
+                isTopads
                 freeOngkir {
                   isActive
                   imageUrl

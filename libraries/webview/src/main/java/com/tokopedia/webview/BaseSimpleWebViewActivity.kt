@@ -10,6 +10,7 @@ import androidx.core.app.TaskStackBuilder
 import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
+import android.webkit.WebView
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
@@ -62,10 +63,9 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                 showTitleBar = it.toBoolean();
             }
 
-           try {
-                allowOverride = getQueryParameter(KEY_ALLOW_OVERRIDE)?.toBoolean() ?: true
-            } catch (e: Exception) {
-
+            val override = getQueryParameter(KEY_ALLOW_OVERRIDE)
+            override?.let {
+                allowOverride = it.toBoolean();
             }
 
             val isLoginRequire = getQueryParameter(KEY_NEED_LOGIN)
@@ -202,15 +202,61 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     override fun onBackPressed() {
         val f = fragment
         if (f is BaseSessionWebViewFragment && f.webView.canGoBack()) {
-            f.webView.goBack()
-        } else {
-            if (isTaskRoot) {
-                RouteManager.route(this, ApplinkConst.HOME)
-                finish()
+            if (checkForSameUrlInPreviousIndex(f.webView)) {
+                val historyItemsCount = f.webView.copyBackForwardList().size
+                if (historyItemsCount > 1) {
+                    goPreviousActivity()
+                } else {
+                    f.webView.goBack()
+                    onBackPressed()
+                }
             } else {
-                super.onBackPressed()
+                f.webView.goBack()
+            }
+        } else {
+            goPreviousActivity()
+        }
+    }
+
+    fun goPreviousActivity() {
+        if (isTaskRoot) {
+            RouteManager.route(this, ApplinkConst.HOME)
+            finish()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+
+    fun checkForSameUrlInPreviousIndex(webView: WebView): Boolean {
+        val webBackList = webView.copyBackForwardList()
+        val uidKey = "uid"
+        if (webBackList.size > 1) {
+            val currentUrl = webBackList.getItemAtIndex(0).url
+            val currentOriginalUrl = webBackList.getItemAtIndex(0).originalUrl
+            val prevUrl = webBackList.getItemAtIndex(1).url
+            val prevOriginalUrl = webBackList.getItemAtIndex(1).originalUrl
+            if (currentUrl == prevUrl) {
+                val currentUri = Uri.parse(currentOriginalUrl)
+                val previousUri = Uri.parse(prevOriginalUrl)
+
+                val currentQueryParamMap = mutableMapOf<String, String?>()
+                val previousQueryParamMap = mutableMapOf<String, String?>()
+
+                currentUri.queryParameterNames.forEach {
+                    val value = currentUri.getQueryParameter(it)
+                    if (it != uidKey)
+                        currentQueryParamMap[it] = value
+                }
+                previousUri.queryParameterNames.forEach {
+                    val value = currentUri.getQueryParameter(it)
+                    if (it != uidKey)
+                        previousQueryParamMap[it] = value
+                }
+                return currentQueryParamMap == previousQueryParamMap
             }
         }
+        return false
     }
 
     companion object {
