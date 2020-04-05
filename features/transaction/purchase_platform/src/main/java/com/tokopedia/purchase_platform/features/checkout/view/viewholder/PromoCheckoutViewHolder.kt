@@ -15,7 +15,6 @@ import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.mode
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUsageSummariesUiModel
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.item_promo_checkout.view.*
 
 
 /**
@@ -30,38 +29,49 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
         val ITEM_VIEW_PROMO_CHECKOUT = R.layout.item_promo_checkout
     }
 
+    private val btnPromoCheckoutView by lazy {
+        view.findViewById<ButtonPromoCheckoutView>(R.id.promo_checkout_btn_shipment)
+    }
+
+    private val llSummaryTransaction by lazy {
+        view.findViewById<LinearLayout>(R.id.ll_summary_transaction)
+    }
+
     fun bindViewHolder(lastApplyUiModel: LastApplyUiModel) {
-        var title = ""
+        val titleValue: String
 
         when {
             lastApplyUiModel.additionalInfo.messageInfo.message.isNotEmpty() -> {
-                title = lastApplyUiModel.additionalInfo.messageInfo.message
+                titleValue = lastApplyUiModel.additionalInfo.messageInfo.message
                 isApplied = true
                 actionListener.onSendAnalyticsViewPromoCheckoutApplied()
             }
             lastApplyUiModel.defaultEmptyPromoMessage.isNotBlank() -> {
-                title = lastApplyUiModel.defaultEmptyPromoMessage
+                titleValue = lastApplyUiModel.defaultEmptyPromoMessage
                 isApplied = false
             }
             else -> {
-                title = itemView.context.getString(R.string.promo_funnel_label)
+                titleValue = itemView.context.getString(R.string.promo_funnel_label)
                 isApplied = false
             }
         }
-        itemView.promo_checkout_btn_shipment.title = title
-        itemView.promo_checkout_btn_shipment.desc = lastApplyUiModel.additionalInfo.messageInfo.detail
-        itemView.promo_checkout_btn_shipment.state = ButtonPromoCheckoutView.State.ACTIVE
-        itemView.promo_checkout_btn_shipment.margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
-        itemView.promo_checkout_btn_shipment.setOnClickListener {
-            actionListener.onClickPromoCheckout(lastApplyUiModel)
-            actionListener.onSendAnalyticsClickPromoCheckout(isApplied, lastApplyUiModel.listAllPromoCodes)
+
+        btnPromoCheckoutView.apply {
+            title = titleValue
+            desc = lastApplyUiModel.additionalInfo.messageInfo.detail
+            state = ButtonPromoCheckoutView.State.ACTIVE
+            margin = ButtonPromoCheckoutView.Margin.WITH_BOTTOM
+            setOnClickListener {
+                actionListener.onClickPromoCheckout(lastApplyUiModel)
+                actionListener.onSendAnalyticsClickPromoCheckout(isApplied, lastApplyUiModel.listAllPromoCodes)
+            }
         }
 
         if (lastApplyUiModel.additionalInfo.usageSummaries.isEmpty()) {
-            itemView.ll_summary_transaction.gone()
+            llSummaryTransaction.gone()
         } else {
-            itemView.ll_summary_transaction.visible()
-            if  (hasChildren(itemView.ll_summary_transaction)) itemView.ll_summary_transaction.removeAllViews()
+            llSummaryTransaction.visible()
+            if  (hasChildren(llSummaryTransaction)) llSummaryTransaction.removeAllViews()
             generateChildrenView(lastApplyUiModel)
         }
     }
@@ -125,7 +135,7 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
             if (value.parent != null) (value.parent as ViewGroup).removeView(value)
             relativeLayout.addView(value)
 
-            itemView.ll_summary_transaction.addView(relativeLayout)
+            llSummaryTransaction.addView(relativeLayout)
         }
     }
 }
