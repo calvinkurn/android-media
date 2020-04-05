@@ -156,7 +156,7 @@ class AddEditProductDescriptionFragment:
         shopId = userSession.shopId
         super.onCreate(savedInstanceState)
         if (!descriptionViewModel.isEditMode) {
-            ProductAddDescriptionTracking.trackScreen();
+            ProductAddDescriptionTracking.trackScreen()
         }
         arguments?.let {
             val categoryId: String = it.getString(PARAM_CATEGORY_ID) ?: ""
@@ -190,7 +190,7 @@ class AddEditProductDescriptionFragment:
         textFieldDescription.textFieldInput.setSingleLine(false)
         textFieldDescription.textFieldInput.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
 
-        applyEditMode()
+        if (descriptionViewModel.isEditMode) applyEditMode()
 
         textViewAddVideo.setOnClickListener {
             if (descriptionViewModel.isEditMode) {
