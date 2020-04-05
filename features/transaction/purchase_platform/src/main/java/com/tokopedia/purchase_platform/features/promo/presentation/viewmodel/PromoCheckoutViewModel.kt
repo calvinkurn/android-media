@@ -89,6 +89,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     val getCouponRecommendationResponse: LiveData<GetCouponRecommendationAction>
         get() = _getCouponRecommendationResponse
 
+    // Page source : CART, CHECKOUT
     private fun getPageSource(): Int {
         return fragmentUiModel.value?.uiData?.pageSource ?: 0
     }
@@ -628,7 +629,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     }
 
     private fun initPromoList(response: CouponListRecommendationResponse) {
-        // Get all sellected promo
+        // Get all selected promo
         val selectedPromoList = ArrayList<String>()
         response.couponListRecommendation.data.couponSections.forEach { couponSectionItem ->
             if (couponSectionItem.isEnabled) {

@@ -194,14 +194,17 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             }
         })
 
+        // Observe visitable data changes
         observeFragmentUiModel()
         observePromoRecommendationUiModel()
         observePromoInputUiModel()
         observePromoListUiModel()
+        observeEmptyStateUiModel()
         observeVisitableChangeUiModel()
         observeVisitableListChangeUiModel()
-        observeEmptyStateUiModel()
-        observeGetCouponRecommendation()
+
+        // Observe network call result
+        observeGetCouponRecommendationResult()
         observeApplyPromoResult()
         observeClearPromoResult()
     }
@@ -367,7 +370,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         })
     }
 
-    private fun observeGetCouponRecommendation() {
+    private fun observeGetCouponRecommendationResult() {
         viewModel.getCouponRecommendationResponse.observe(this, Observer {
             when {
                 it.state == GetCouponRecommendationAction.ACTION_CLEAR_DATA -> {
