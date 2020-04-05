@@ -262,31 +262,14 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
         if (isValid) {
             updateTipUIView(null)
         } else {
-            val errorMessage: String = if (LivenessView.NO_RESPONSE == errorCode) {
-                getString(R.string.liveness_failed_reason_auth_failed)
-            } else {
-                message
-            }
             activity?.run {
-                showAlertDialog(errorMessage, this)
+                showAlertDialog()
             }
         }
     }
 
-    private fun showAlertDialog(message: String, activity: FragmentActivity) {
-        val dialog = context?.let { DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE) }
-        dialog?.setTitle(message)
-        dialog?.setDescription(getString(R.string.default_error_unknown))
-        dialog?.setOverlayClose(false)
-        dialog?.setPrimaryCTAText(getString(R.string.exit))
-
-        dialog?.setPrimaryCTAClickListener {
-            activity.setResult(RESULT_OK)
-            activity.finish()
-            dialog.dismiss()
-            Unit
-        }
-        dialog?.show()
+    private fun showAlertDialog() {
+        (activity as LivenessActivity).showNotSupportedDialog()
     }
 
     private fun getLottieFile(detectionType: Detector.DetectionType?): String {
