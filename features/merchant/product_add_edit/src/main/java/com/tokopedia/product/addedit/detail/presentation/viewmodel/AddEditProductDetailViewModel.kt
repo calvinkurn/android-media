@@ -36,6 +36,7 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     private val mIsProductPhotoError = MutableLiveData<Boolean>()
 
+    var isProductNameChanged = false
     private val mIsProductNameInputError = MutableLiveData<Boolean>()
     val isProductNameInputError: LiveData<Boolean>
         get() = mIsProductNameInputError

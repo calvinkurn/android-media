@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.preview.domain.mapper
 
+import android.util.Log
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel

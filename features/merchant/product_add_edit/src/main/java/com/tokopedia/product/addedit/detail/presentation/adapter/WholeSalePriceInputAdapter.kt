@@ -8,8 +8,10 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.detail.presentation.viewholder.WholeSaleInputViewHolder
 
-class WholeSalePriceInputAdapter(private val listener: WholeSaleInputViewHolder.TextChangedListener) :
-        RecyclerView.Adapter<WholeSaleInputViewHolder>(), WholeSaleInputViewHolder.OnDeleteButtonClickListener {
+class WholeSalePriceInputAdapter(private val listener: WholeSaleInputViewHolder.TextChangedListener,
+                                 private val onAddWholesale: (() -> Unit)? = null,
+                                 private val onDeleteWholesale: (() -> Unit)? = null) :
+    RecyclerView.Adapter<WholeSaleInputViewHolder>(), WholeSaleInputViewHolder.OnDeleteButtonClickListener {
 
     private var wholeSaleInputModelList: MutableList<WholeSaleInputModel> = mutableListOf()
 
@@ -31,6 +33,7 @@ class WholeSalePriceInputAdapter(private val listener: WholeSaleInputViewHolder.
         if (itemCount == MAX_WHOLESALE_PRICES) return
         val wholeSaleInputModel = WholeSaleInputModel()
         wholeSaleInputModelList.add(wholeSaleInputModel)
+        onAddWholesale?.invoke()
         notifyItemInserted(wholeSaleInputModelList.lastIndex)
     }
 
@@ -47,6 +50,7 @@ class WholeSalePriceInputAdapter(private val listener: WholeSaleInputViewHolder.
     }
 
     override fun onDeleteButtonClicked(position: Int) {
+        onDeleteWholesale?.invoke()
         wholeSaleInputModelList.removeAt(position)
         notifyDataSetChanged()
     }

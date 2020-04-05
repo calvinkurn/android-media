@@ -8,5 +8,7 @@ class AddEditProductPreviewConstants {
         const val PRODUCT_STATUS_ACTIVE = "ACTIVE"
         const val EXTRA_IS_EDITING_PRODUCT = "IS_EDITING_PRODUCT"
         const val EXTRA_IS_DRAFTING_PRODUCT = "IS_DRAFTING_PRODUCT"
+        const val EXTRA_FROM_NOTIF_SUCCESS = "FROM_NOTIF_SUCCESS"
+        const val EXTRA_FROM_NOTIF_EDIT_PRODUCT = "FROM_NOTIF_EDIT_PRODUCT"
     }
 }

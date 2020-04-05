@@ -23,6 +23,9 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     val productVariant: LiveData<Result<List<ProductVariantByCatModel>>>
         get() = _productVariant
 
+    //TODO
+    var isEditMode = false
+
     fun getVariants(categoryId: String) {
         launchCatchError(block = {
             _productVariant.value = Success(withContext(Dispatchers.IO) {

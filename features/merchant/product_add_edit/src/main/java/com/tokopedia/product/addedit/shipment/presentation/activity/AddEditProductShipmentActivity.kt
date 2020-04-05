@@ -10,10 +10,15 @@ import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentComponent
 import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentModule
 import com.tokopedia.product.addedit.shipment.di.DaggerAddEditProductShipmentComponent
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment
+import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 
 class AddEditProductShipmentActivity : BaseSimpleActivity(), HasComponent<AddEditProductShipmentComponent> {
 
-    override fun getNewFragment(): Fragment = AddEditProductShipmentFragment.createInstance()
+    override fun getNewFragment(): Fragment {
+        val shipmentInputModel:ShipmentInputModel =
+                intent.getParcelableExtra(PARAM_SHIPMENT_INPUT_MODEL) ?: ShipmentInputModel()
+        return AddEditProductShipmentFragment.createInstance(shipmentInputModel)
+    }
 
     override fun getComponent(): AddEditProductShipmentComponent {
         return DaggerAddEditProductShipmentComponent
@@ -24,7 +29,19 @@ class AddEditProductShipmentActivity : BaseSimpleActivity(), HasComponent<AddEdi
     }
 
     companion object {
+        private const val PARAM_SHIPMENT_INPUT_MODEL = "param_shipment_input_model"
         fun createInstance(context: Context?) = Intent(context, AddEditProductShipmentActivity::class.java)
+        fun createInstanceEditMode(context: Context?, shipmentInputModel: ShipmentInputModel): Intent =
+                Intent(context, AddEditProductShipmentActivity::class.java)
+                        .putExtra(PARAM_SHIPMENT_INPUT_MODEL, shipmentInputModel)
+
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val f = fragment
+        if (f!= null && f is AddEditProductShipmentFragment) {
+            f.onBackPressed()
+        }
+    }
 }

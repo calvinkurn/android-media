@@ -61,6 +61,8 @@ import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputMo
 import com.tokopedia.product.addedit.tooltip.model.ImageTooltipModel
 import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
+import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
+import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
 import com.tokopedia.product_photo_adapter.ProductPhotoViewHolder
@@ -69,9 +71,14 @@ import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
+import java.text.NumberFormat
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
-class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHolder.OnStartDragListener {
+class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHolder.OnPhotoChangeListener {
 
     // action button
     private var doneButton: AppCompatTextView? = null
@@ -113,6 +120,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private var editProductStatusLayout: ViewGroup? = null
     private var productStatusSwitch: SwitchUnify? = null
 
+    private lateinit var userSession: UserSessionInterface
+    private lateinit var shopId: String
+
     @Inject
     lateinit var viewModel: AddEditProductPreviewViewModel
 
@@ -131,10 +141,27 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        userSession = UserSession(requireContext())
+        shopId = userSession.shopId
         super.onCreate(savedInstanceState)
         arguments?.run {
             viewModel.setProductId(getString(EXTRA_PRODUCT_ID) ?: "")
             viewModel.setDraftId(getString(EXTRA_DRAFT_ID) ?: "")
+        }
+
+        if (viewModel.isEditing.value == true) {
+            //TODO is goldmerchant and isregular
+            ProductEditStepperTracking.trackScreen(shopId, false, false)
+        } else {
+            ProductAddStepperTracking.trackScreen()
+        }
+    }
+
+    fun onBackPressed() {
+        if (viewModel.isEditing.value == true) {
+            ProductAddStepperTracking.trackBack(shopId)
+        } else {
+            ProductEditStepperTracking.trackBack(shopId)
         }
     }
 
@@ -192,20 +219,41 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         productStatusSwitch = view.findViewById(R.id.su_product_status)
 
         addEditProductPhotoButton?.setOnClickListener {
+            if (viewModel.isEditing.value == true) {
+                ProductEditStepperTracking.trackClickChangeProductPic(shopId)
+            } else {
+                ProductAddStepperTracking.trackStart(shopId)
+            }
             val imageUrlOrPathList = viewModel.imageUrlOrPathList.value ?: mutableListOf()
             val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)))
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
 
-        doneButton?.setOnClickListener {
+        productStatusSwitch?.setOnCheckedChangeListener { buttonView, isChecked ->
+            //TODO function
+            if (viewModel.isEditing.value == true) {
+                ProductEditStepperTracking.trackChangeProductStatus(shopId)
+            }
+        }
 
+        doneButton?.setOnClickListener {
+            //TODO will go to AddEditProductUploadService.startService ?
+            if (viewModel.isEditing.value == true) {
+                ProductEditStepperTracking.trackFinishButton(shopId)
+            }
         }
 
         addProductPhotoTipsLayout?.setOnClickListener {
+            if (viewModel.isEditing.value == false) {
+                ProductAddStepperTracking.trackHelpProductQuality(shopId)
+            }
             showPhotoTips()
         }
 
         addEditProductDetailButton?.setOnClickListener {
+            if (viewModel.isEditing.value == true) {
+                ProductEditStepperTracking.trackChangeProductDetail(shopId)
+            }
             val productInputModel = viewModel.productInputModel.value ?: ProductInputModel()
             val isEditing = viewModel.isEditing.value ?: false
             val isDrafting = viewModel.isDrafting.value ?: false
@@ -213,19 +261,38 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         }
 
         addEditProductDescriptionButton?.setOnClickListener {
+            if (viewModel.isEditing.value == true) {
+                ProductEditStepperTracking.trackChangeProductDesc(shopId)
+            }
             moveToDescriptionActivity()
         }
 
         addEditProductVariantButton?.setOnClickListener {
+            if (viewModel.isEditing.value == true) {
+                ProductEditStepperTracking.trackAddProductVariant(shopId)
+            }
             showVariantDialog()
         }
 
         addProductVariantTipsLayout?.setOnClickListener {
+            if (viewModel.isEditing.value == true) {
+                ProductEditStepperTracking.trackClickHelpPriceVariant(shopId)
+            }
             showVariantTips()
         }
 
         addEditProductShipmentButton?.setOnClickListener {
+            if (viewModel.isEditing.value == true) {
+                ProductEditStepperTracking.trackChangeShipping(shopId)
+            }
             startAddEditProductShipmentActivity()
+        }
+
+        editProductPromotionButton?.setOnClickListener {
+            //TODO functionality
+            if (viewModel.isEditing.value == true) {
+                ProductEditStepperTracking.trackChangePromotion(shopId)
+            }
         }
 
         observeIsEditingStatus()
@@ -267,6 +334,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 context?.let {
                     AddEditProductUploadService.startService(it, detailInputModel,
                             descriptionInputModel, shipmentInputModel, variantInputModel)
+
                 }
             }
         }
@@ -274,6 +342,12 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
         photoItemTouchHelper?.startDrag(viewHolder)
+    }
+
+    override fun onRemovePhoto(viewHolder: RecyclerView.ViewHolder) {
+        if (viewModel.isEditing.value == true) {
+            ProductEditStepperTracking.trackRemoveProductImage(shopId)
+        }
     }
 
     override fun getScreenName(): String {
@@ -287,6 +361,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 .addEditProductPreviewModule(AddEditProductPreviewModule())
                 .build()
                 .inject(this)
+    }
+
+    private fun formatProductPriceInput(productPriceInput: String): String {
+        return if (productPriceInput.isNotBlank()) NumberFormat.getNumberInstance(Locale.US).format(productPriceInput.toLong()).replace(",", ".")
+        else productPriceInput
     }
 
     private fun displayEditMode(isEditMode: Boolean) {
@@ -399,7 +478,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private fun showProductDetailPreview(productInputModel: ProductInputModel) {
         val detailInputModel = productInputModel.detailInputModel
         productNameView?.text = detailInputModel.productName
-        productPriceView?.text = detailInputModel.price.toString()
+        productPriceView?.text = "Rp " + formatProductPriceInput(detailInputModel.price.toString())
         productStockView?.text = detailInputModel.stock.toString()
         productDetailPreviewLayout?.show()
     }
@@ -507,8 +586,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     private fun startAddEditProductShipmentActivity() {
-        val intent = Intent(context, AddEditProductShipmentActivity::class.java)
-        startActivityForResult(intent, AddEditProductShipmentFragment.REQUEST_CODE_SHIPMENT)
+        viewModel.productInputModel.let {
+            val shipmentInputModel = it.value?.shipmentInputModel ?: ShipmentInputModel()
+            val intent = AddEditProductShipmentActivity.createInstanceEditMode(context, shipmentInputModel)
+            startActivityForResult(intent, AddEditProductShipmentFragment.REQUEST_CODE_SHIPMENT)
+        }
     }
 
     private fun showVariantDialog() {

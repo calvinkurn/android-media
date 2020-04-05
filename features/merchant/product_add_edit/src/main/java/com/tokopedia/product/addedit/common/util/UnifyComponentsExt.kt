@@ -5,6 +5,8 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.TextFieldUnify
 
+fun TextFieldUnify?.setText(text: String) = this?.textFieldInput?.setText(text)
+
 fun TextFieldUnify?.getText(): String = this?.textFieldInput?.text.toString()
 
 fun TextFieldUnify?.getTextIntOrZero(): Int = this?.textFieldInput?.text.toString().replace(".", "").toIntOrZero()

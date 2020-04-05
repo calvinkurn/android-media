@@ -52,9 +52,13 @@ import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProdu
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
+import com.tokopedia.product.addedit.tracking.ProductAddDescriptionTracking
+import com.tokopedia.product.addedit.tracking.ProductEditDescriptionTracking
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.add_edit_product_description_input_layout.*
 import kotlinx.android.synthetic.main.add_edit_product_variant_input_layout.*
 import kotlinx.android.synthetic.main.add_edit_product_video_input_layout.*
@@ -62,7 +66,7 @@ import kotlinx.android.synthetic.main.fragment_add_edit_product_description.*
 import javax.inject.Inject
 
 class AddEditProductDescriptionFragment(
-        private val categoryId: String
+    private val categoryId: String
 ) : BaseListFragment<VideoLinkModel, VideoLinkTypeFactory>(), VideoLinkTypeFactory.VideoLinkListener {
 
     companion object {
@@ -83,10 +87,12 @@ class AddEditProductDescriptionFragment(
         const val TEST_IMAGE_URL = "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/9/16/36162992/36162992_778e5d1e-06fd-4e4a-b650-50c232815b24_1080_1080.jpg"
     }
 
-
     private var videoId = 0
     private var productVariantInputModel = ProductVariantInputModel()
     private lateinit var descriptionViewModel: AddEditProductDescriptionViewModel
+
+    private lateinit var userSession: UserSessionInterface
+    private lateinit var shopId: String
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -99,10 +105,15 @@ class AddEditProductDescriptionFragment(
     }
 
     override fun onDeleteClicked(videoLinkModel: VideoLinkModel, position: Int) {
+        if (descriptionViewModel.isEditMode) {
+            ProductEditDescriptionTracking.clickRemoveVideoLink(shopId)
+        } else {
+            ProductAddDescriptionTracking.clickRemoveVideoLink(shopId)
+        }
         adapter.data.removeAt(position)
         adapter.notifyDataSetChanged()
         textViewAddVideo.visibility =
-                if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
+            if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
     }
 
     override fun onTextChanged(url: String, position: Int) {
@@ -117,15 +128,28 @@ class AddEditProductDescriptionFragment(
 
     override fun initInjector() {
         DaggerAddEditProductDescriptionComponent.builder()
-                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-                .addEditProductDescriptionModule(AddEditProductDescriptionModule())
-                .build()
-                .inject(this)
+            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+            .addEditProductDescriptionModule(AddEditProductDescriptionModule())
+            .build()
+            .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        userSession = UserSession(requireContext())
+        shopId = userSession.shopId
         super.onCreate(savedInstanceState)
         initViewModel()
+        if (!descriptionViewModel.isEditMode) {
+            ProductAddDescriptionTracking.trackScreen();
+        }
+    }
+
+    fun onBackPressed() {
+        if (descriptionViewModel.isEditMode) {
+            ProductEditDescriptionTracking.clickBack(shopId)
+        } else {
+            ProductAddDescriptionTracking.clickBack(shopId)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -139,6 +163,11 @@ class AddEditProductDescriptionFragment(
         textFieldDescription.textFieldInput.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
 
         textViewAddVideo.setOnClickListener {
+            if (descriptionViewModel.isEditMode) {
+                ProductEditDescriptionTracking.clickAddVideoLink(shopId)
+            } else {
+                ProductAddDescriptionTracking.clickAddVideoLink(shopId)
+            }
             videoId += 1
             loadData(videoId)
         }
@@ -152,6 +181,11 @@ class AddEditProductDescriptionFragment(
         }
 
         tvAddVariant.setOnClickListener {
+            if (descriptionViewModel.isEditMode) {
+                ProductEditDescriptionTracking.clickAddProductVariant(shopId)
+            } else {
+                ProductAddDescriptionTracking.clickAddProductVariant(shopId)
+            }
             descriptionViewModel.getVariants(categoryId)
         }
 
@@ -170,11 +204,11 @@ class AddEditProductDescriptionFragment(
     private fun showVariantErrorToast(errorMessage: String) {
         view?.let {
             Toaster.make(it, errorMessage,
-                    type =  Toaster.TYPE_ERROR,
-                    actionText = getString(R.string.title_try_again),
-                    clickListener =  View.OnClickListener {
-                descriptionViewModel.getVariants(categoryId)
-            })
+                type = Toaster.TYPE_ERROR,
+                actionText = getString(R.string.title_try_again),
+                clickListener = View.OnClickListener {
+                    descriptionViewModel.getVariants(categoryId)
+                })
         }
     }
 
@@ -184,7 +218,7 @@ class AddEditProductDescriptionFragment(
             when (requestCode) {
                 REQUEST_CODE_SHIPMENT -> {
                     val shipmentInputModel =
-                            data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
+                        data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
                     submitInput(shipmentInputModel)
                 }
                 REQUEST_CODE_VARIANT -> {
@@ -192,13 +226,14 @@ class AddEditProductDescriptionFragment(
                     val cacheManager = SaveInstanceCacheManager(context!!, variantCacheId)
                     if (data.hasExtra(EXTRA_PRODUCT_VARIANT_SELECTION)) {
                         val productVariantViewModel = cacheManager.get(EXTRA_PRODUCT_VARIANT_SELECTION,
-                                object : TypeToken<ProductVariantInputModel>() {}.type) ?: ProductVariantInputModel()
+                            object : TypeToken<ProductVariantInputModel>() {}.type)
+                            ?: ProductVariantInputModel()
                         productVariantInputModel.variantOptionParent = productVariantViewModel.variantOptionParent
                         productVariantInputModel.productVariant = productVariantViewModel.productVariant
                     }
                     if (data.hasExtra(EXTRA_PRODUCT_SIZECHART)) {
                         val productPictureViewModel = cacheManager.get(EXTRA_PRODUCT_SIZECHART,
-                                object : TypeToken<PictureViewModel>() {}.type, PictureViewModel())
+                            object : TypeToken<PictureViewModel>() {}.type, PictureViewModel())
                         productVariantInputModel.productSizeChart = productPictureViewModel
                     }
                 }
@@ -209,11 +244,14 @@ class AddEditProductDescriptionFragment(
     private fun initViewModel() {
         activity?.run {
             descriptionViewModel = ViewModelProviders.of(this, viewModelFactory)
-                    .get(AddEditProductDescriptionViewModel::class.java)
+                .get(AddEditProductDescriptionViewModel::class.java)
         }
     }
 
     private fun showDescriptionTips() {
+        if (!descriptionViewModel.isEditMode) {
+            ProductAddDescriptionTracking.clickHelpWriteDescription(shopId)
+        }
         fragmentManager?.let {
             val tooltipBottomSheet = TooltipBottomSheet()
             val tips: ArrayList<NumericTooltipModel> = ArrayList()
@@ -231,6 +269,11 @@ class AddEditProductDescriptionFragment(
     }
 
     private fun showVariantTips() {
+        if (descriptionViewModel.isEditMode) {
+            ProductEditDescriptionTracking.clickHelpVariant(shopId)
+        } else {
+            ProductAddDescriptionTracking.clickHelpVariant(shopId)
+        }
         fragmentManager?.let {
             val tooltipBottomSheet = TooltipBottomSheet()
             val tips: ArrayList<NumericTooltipModel> = ArrayList()
@@ -254,7 +297,7 @@ class AddEditProductDescriptionFragment(
         super.renderList(videoLinkModels)
 
         textViewAddVideo.visibility =
-                if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
+            if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
     }
 
     private fun showVariantDialog(variants: List<ProductVariantByCatModel>) {
@@ -284,14 +327,19 @@ class AddEditProductDescriptionFragment(
     }
 
     private fun moveToDescriptionActivity() {
+        if (descriptionViewModel.isEditMode) {
+            ProductEditDescriptionTracking.clickContinue(shopId)
+        } else {
+            ProductAddDescriptionTracking.clickContinue(shopId)
+        }
         val intent = Intent(context, AddEditProductShipmentActivity::class.java)
         startActivityForResult(intent, REQUEST_CODE_SHIPMENT)
     }
 
     private fun submitInput(shipmentInputModel: ShipmentInputModel) {
         val descriptionInputModel = DescriptionInputModel(
-                textFieldDescription.getText(),
-                adapter.data
+            textFieldDescription.getText(),
+            adapter.data
         )
         val intent = Intent()
         intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
