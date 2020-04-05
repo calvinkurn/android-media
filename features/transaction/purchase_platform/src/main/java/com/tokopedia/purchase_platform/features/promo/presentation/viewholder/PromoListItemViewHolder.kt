@@ -21,11 +21,37 @@ import com.tokopedia.purchase_platform.features.promo.presentation.setImageFilte
 import com.tokopedia.purchase_platform.features.promo.presentation.setImageFilterNormal
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListItemUiModel
 import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_promo_list_item.view.*
 
 class PromoListItemViewHolder(private val view: View,
                               private val listener: PromoCheckoutActionListener
 ) : AbstractViewHolder<PromoListItemUiModel>(view) {
+
+    private val containerImagePromoItem by lazy {
+        view.findViewById<LinearLayout>(R.id.container_image_promo_item)
+    }
+    private val labelPromoItemTitle by lazy {
+        view.findViewById<Typography>(R.id.label_promo_item_title)
+    }
+    private val labelPromoItemSubTitle by lazy {
+        view.findViewById<Typography>(R.id.label_promo_item_sub_title)
+    }
+    private val labelPromoCodeInfo by lazy {
+        view.findViewById<Typography>(R.id.label_promo_code_info)
+    }
+    private val labelPromoCodeValue by lazy {
+        view.findViewById<Typography>(R.id.label_promo_code_value)
+    }
+    private val labelPromoItemErrorMessage by lazy {
+        view.findViewById<Typography>(R.id.label_promo_item_error_message)
+    }
+    private val cardPromoItem by lazy {
+        view.findViewById<CardUnify>(R.id.card_promo_item)
+    }
+    private val imageSelectPromo by lazy {
+        view.findViewById<ImageView>(R.id.image_select_promo)
+    }
 
     companion object {
         val LAYOUT = R.layout.item_promo_list_item
@@ -33,7 +59,7 @@ class PromoListItemViewHolder(private val view: View,
 
     override fun bind(element: PromoListItemUiModel) {
         if (element.uiData.imageResourceUrls.isNotEmpty()) {
-            itemView.container_image_promo_item.removeAllViews()
+            containerImagePromoItem.removeAllViews()
             var hasNonBlankUrl = false
             element.uiData.imageResourceUrls.forEach {
                 if (it.isNotBlank()) {
@@ -46,30 +72,30 @@ class PromoListItemViewHolder(private val view: View,
                     imageView.setMargin(0, 0, itemView.context.resources.getDimensionPixelSize(R.dimen.dp_4), 0)
                     imageView.scaleType = ImageView.ScaleType.FIT_START
                     ImageHandler.loadImageRounded2(itemView.context, imageView, it)
-                    itemView.container_image_promo_item.addView(imageView)
+                    containerImagePromoItem.addView(imageView)
                 }
             }
             if (hasNonBlankUrl) {
-                itemView.container_image_promo_item.show()
+                containerImagePromoItem.show()
             } else {
-                itemView.label_promo_item_title.setMargin(0, 0, itemView.context.resources.getDimension(R.dimen.dp_12).toInt(), 0)
-                itemView.container_image_promo_item.gone()
+                labelPromoItemTitle.setMargin(0, 0, itemView.context.resources.getDimension(R.dimen.dp_12).toInt(), 0)
+                containerImagePromoItem.gone()
             }
         } else {
-            itemView.label_promo_item_title.setMargin(0, 0, itemView.context.resources.getDimension(R.dimen.dp_12).toInt(), 0)
-            itemView.container_image_promo_item.gone()
+            labelPromoItemTitle.setMargin(0, 0, itemView.context.resources.getDimension(R.dimen.dp_12).toInt(), 0)
+            containerImagePromoItem.gone()
         }
 
         if (element.uiState.isAttempted) {
-            itemView.label_promo_code_value.text = element.uiData.promoCode
-            itemView.label_promo_code_value.show()
-            itemView.label_promo_code_info.show()
+            labelPromoCodeValue.text = element.uiData.promoCode
+            labelPromoCodeValue.show()
+            labelPromoCodeInfo.show()
         } else {
-            itemView.label_promo_code_value.gone()
-            itemView.label_promo_code_info.gone()
+            labelPromoCodeValue.gone()
+            labelPromoCodeInfo.gone()
         }
 
-        itemView.label_promo_item_title.text = element.uiData.title
+        labelPromoItemTitle.text = element.uiData.title
         formatSubTitle(element)
 
         if (element.uiState.isParentEnabled && element.uiData.currentClashingPromo.isNullOrEmpty()) {
@@ -82,7 +108,7 @@ class PromoListItemViewHolder(private val view: View,
             renderDisablePromoItem(element)
         }
 
-        itemView.card_promo_item.setOnClickListener {
+        cardPromoItem.setOnClickListener {
             if (adapterPosition != RecyclerView.NO_POSITION && element.uiData.currentClashingPromo.isNullOrEmpty() && element.uiState.isParentEnabled && !element.uiState.isDisabled) {
                 listener.onClickPromoListItem(element)
             }
@@ -91,58 +117,58 @@ class PromoListItemViewHolder(private val view: View,
     }
 
     private fun renderEnablePromoItem(element: PromoListItemUiModel) {
-        itemView.label_promo_item_error_message.gone()
-        itemView.label_promo_item_sub_title.setMargin(0, itemView.context.resources.getDimension(R.dimen.dp_2).toInt(),
+        labelPromoItemErrorMessage.gone()
+        labelPromoItemSubTitle.setMargin(0, itemView.context.resources.getDimension(R.dimen.dp_2).toInt(),
                 itemView.context.resources.getDimension(R.dimen.dp_12).toInt(), 0)
         if (element.uiState.isSelected) {
-            itemView.card_promo_item.cardType = CardUnify.TYPE_BORDER_ACTIVE
-            itemView.image_select_promo.show()
+            cardPromoItem.cardType = CardUnify.TYPE_BORDER_ACTIVE
+            imageSelectPromo.show()
         } else {
-            itemView.card_promo_item.cardType = CardUnify.TYPE_BORDER
-            itemView.image_select_promo.gone()
+            cardPromoItem.cardType = CardUnify.TYPE_BORDER
+            imageSelectPromo.gone()
         }
 
-        val childcount = itemView.container_image_promo_item.childCount
+        val childcount = containerImagePromoItem.childCount
         for (index in 0 until childcount) {
-            val child = itemView.container_image_promo_item.getChildAt(index)
+            val child = containerImagePromoItem.getChildAt(index)
             if (child is ImageView) {
                 setImageFilterNormal(child)
             }
         }
 
-        itemView.label_promo_item_title.setTextColor(ContextCompat.getColor(itemView.context, R.color.clr_f531353b))
-        itemView.label_promo_code_info.setTextColor(ContextCompat.getColor(itemView.context, R.color.black_70))
-        itemView.label_promo_code_value.setTextColor(ContextCompat.getColor(itemView.context, R.color.black_70))
-        itemView.label_promo_item_error_message.setTextColor(ContextCompat.getColor(itemView.context, R.color.black_70))
-        itemView.label_promo_item_sub_title.setTextColor(ContextCompat.getColor(itemView.context, R.color.black_70))
+        labelPromoItemTitle.setTextColor(ContextCompat.getColor(itemView.context, R.color.clr_f531353b))
+        labelPromoCodeInfo.setTextColor(ContextCompat.getColor(itemView.context, R.color.black_70))
+        labelPromoCodeValue.setTextColor(ContextCompat.getColor(itemView.context, R.color.black_70))
+        labelPromoItemErrorMessage.setTextColor(ContextCompat.getColor(itemView.context, R.color.black_70))
+        labelPromoItemSubTitle.setTextColor(ContextCompat.getColor(itemView.context, R.color.black_70))
     }
 
     private fun renderDisablePromoItem(element: PromoListItemUiModel) {
-        itemView.card_promo_item.cardType = CardUnify.TYPE_BORDER_DISABLED
+        cardPromoItem.cardType = CardUnify.TYPE_BORDER_DISABLED
         if (element.uiData.errorMessage.isNotBlank()) {
-            itemView.label_promo_item_error_message.text = element.uiData.errorMessage
-            itemView.label_promo_item_error_message.show()
+            labelPromoItemErrorMessage.text = element.uiData.errorMessage
+            labelPromoItemErrorMessage.show()
         } else {
-            itemView.label_promo_item_error_message.gone()
+            labelPromoItemErrorMessage.gone()
         }
-        itemView.label_promo_item_sub_title.setMargin(0, itemView.context.resources.getDimension(R.dimen.dp_8).toInt(),
+        labelPromoItemSubTitle.setMargin(0, itemView.context.resources.getDimension(R.dimen.dp_8).toInt(),
                 itemView.context.resources.getDimension(R.dimen.dp_12).toInt(), 0)
-        itemView.image_select_promo.gone()
+        imageSelectPromo.gone()
 
-        val childcount = itemView.container_image_promo_item.childCount
+        val childcount = containerImagePromoItem.childCount
         for (index in 0 until childcount) {
-            val child = itemView.container_image_promo_item.getChildAt(index)
+            val child = containerImagePromoItem.getChildAt(index)
             if (child is ImageView) {
                 setImageFilterGrayScale(child)
             }
         }
 
         val disabledColor = ContextCompat.getColor(itemView.context, R.color.n_700_44)
-        itemView.label_promo_item_title.setTextColor(disabledColor)
-        itemView.label_promo_code_info.setTextColor(disabledColor)
-        itemView.label_promo_code_value.setTextColor(disabledColor)
-        itemView.label_promo_item_error_message.setTextColor(disabledColor)
-        itemView.label_promo_item_sub_title.setTextColor(disabledColor)
+        labelPromoItemTitle.setTextColor(disabledColor)
+        labelPromoCodeInfo.setTextColor(disabledColor)
+        labelPromoCodeValue.setTextColor(disabledColor)
+        labelPromoItemErrorMessage.setTextColor(disabledColor)
+        labelPromoItemSubTitle.setTextColor(disabledColor)
     }
 
     private fun formatSubTitle(element: PromoListItemUiModel) {
@@ -170,15 +196,15 @@ class PromoListItemViewHolder(private val view: View,
             }
             formattedClickableText.setSpan(clickableSpan, startSpan, endSpan, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-            itemView.label_promo_item_sub_title.movementMethod = LinkMovementMethod.getInstance()
-            itemView.label_promo_item_sub_title.text = formattedClickableText
-            itemView.label_promo_item_sub_title.show()
+            labelPromoItemSubTitle.movementMethod = LinkMovementMethod.getInstance()
+            labelPromoItemSubTitle.text = formattedClickableText
+            labelPromoItemSubTitle.show()
         } else {
             if (element.uiData.subTitle.isNotBlank()) {
-                itemView.label_promo_item_sub_title.text = element.uiData.subTitle
-                itemView.label_promo_item_sub_title.show()
+                labelPromoItemSubTitle.text = element.uiData.subTitle
+                labelPromoItemSubTitle.show()
             } else {
-                itemView.label_promo_item_sub_title.gone()
+                labelPromoItemSubTitle.gone()
             }
         }
     }
