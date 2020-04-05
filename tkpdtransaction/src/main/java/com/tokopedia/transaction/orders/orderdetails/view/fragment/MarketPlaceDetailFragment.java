@@ -367,15 +367,6 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 doubleTextView.setBottomText(spannableString);
             }
 
-            /*if (detail.label().equalsIgnoreCase("Nama Toko")) {
-                doubleTextView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        String applink = ApplinkConst.SHOP.replace("{shop_id}", String.valueOf(shopInfo.getShopId()));
-                        RouteManager.route(getContext(), applink);
-                    }
-                });
-            }*/
             detailContent.addView(doubleTextView);
         }
     }
@@ -968,7 +959,6 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @SuppressLint("SetTextI18n")
     @Override
     public void setItems(List<Items> items, boolean isTradeIn) {
-        // productInformationTitle.setVisibility(View.VISIBLE);
         shopInformationTitle.setVisibility(View.VISIBLE);
         String labelShop = shopInformationTitle.getContext().getResources().getString(R.string.label_shop_title) + " ";
         int startLabelShop = labelShop.length();
