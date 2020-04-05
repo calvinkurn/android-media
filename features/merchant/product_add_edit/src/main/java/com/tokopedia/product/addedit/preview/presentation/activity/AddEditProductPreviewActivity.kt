@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.product.addedit.preview.presentation.fragment.AddEditProductPreviewFragment
-import com.tokopedia.product.addedit.preview.presentation.fragment.AddEditProductPreviewFragment.Companion.EXTRA_PRODUCT_ID
 
 
 class AddEditProductPreviewActivity : BaseSimpleActivity() {
@@ -18,7 +17,7 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        productId = intent.getStringExtra(EXTRA_PRODUCT_ID)
+//        productId = intent.getStringExtra(EXTRA_PRODUCT_ID)
         super.onCreate(savedInstanceState)
     }
 

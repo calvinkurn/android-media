@@ -5,6 +5,7 @@ import com.tokopedia.common.network.coroutines.usecase.RestRequestUseCase
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeVideoModel
 import java.lang.reflect.Type
 import javax.inject.Inject
 
@@ -25,12 +26,14 @@ class GetYoutubeVideoUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): Map<Type, RestResponse> {
 
+        val restRequestList = mutableListOf<RestRequest>()
+
         val restRequest = RestRequest.Builder(YOUTUBE_LINK, YoutubeVideoModel::class.java)
                 .setQueryParams(generateRequestParam())
                 .setRequestType(RequestType.GET)
                 .build()
 
-        restRequestList.add(restRequest)
+        this.restRequestList.add(restRequest)
 
         return repository.getResponses(restRequestList)
     }

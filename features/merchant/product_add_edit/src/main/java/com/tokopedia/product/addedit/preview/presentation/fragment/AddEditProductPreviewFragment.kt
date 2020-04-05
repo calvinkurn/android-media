@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.preview.presentation.fragment
 
+//import com.tokopedia.product.addedit.description.model.DescriptionInputModel
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -23,16 +24,14 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DETAIL_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
-import com.tokopedia.product.addedit.description.model.DescriptionInputModel
-import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionActivity
-import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionFragment
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_INPUT
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity
+import com.tokopedia.product.addedit.description.presentation.fragment.AddEditProductDescriptionFragment
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.detail.presentation.activity.AddEditProductDetailActivity
@@ -420,7 +419,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
     private fun showVariantDialog() {
         activity?.let {
             val productVariantByCatModelList: ArrayList<String> = ArrayList()
-            productVariantByCatModelList.add(AddEditProductDescriptionFragment.TEST_VARIANT)
+//            productVariantByCatModelList.add(AddEditProductDescriptionFragment.TEST_VARIANT)
             val cacheManager = SaveInstanceCacheManager(it, true).apply {
                 put(AddEditProductUploadConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList) // must using json
                 put(AddEditProductUploadConstant.EXTRA_PRODUCT_VARIANT_SELECTION, "") // must using json
@@ -438,7 +437,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
             }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_VARIANT_DASHBOARD)
             intent?.run {
-                putExtra(AddEditProductUploadConstant.EXTRA_VARIANT_CACHE_ID, cacheManager.id)
+//                putExtra(AddEditProductUploadConstant.EXTRA_VARIANT_CACHE_ID, cacheManager.id)
                 putExtra(AddEditProductUploadConstant.EXTRA_IS_USING_CACHE_MANAGER, true)
                 startActivityForResult(this, AddEditProductDescriptionFragment.REQUEST_CODE_VARIANT)
             }

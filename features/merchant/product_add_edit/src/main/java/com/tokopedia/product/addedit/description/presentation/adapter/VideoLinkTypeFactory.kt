@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
+import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeVideoModel
 import kotlinx.android.synthetic.main.item_product_add_video.view.*
 
 class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
@@ -17,6 +18,7 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
     }
 
     fun type(videoLinkModel: VideoLinkModel): Int = VideoLinkViewHolder.LAYOUT
+    fun type(youtubeVideoModel: YoutubeVideoModel): Int = VideoLinkViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type){
@@ -26,27 +28,34 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
     }
 
     class VideoLinkViewHolder(val view: View?, private val listener: VideoLinkListener?)
-        : AbstractViewHolder<VideoLinkModel>(view) {
-        override fun bind(element: VideoLinkModel) {
-            itemView.textFieldUrl.textFieldInput.setText(element.inputUrl)
-            loadLayout(element.inputUrl, element.inputImage)
-            itemView.textFieldUrl.textFieldInput.afterTextChanged {
-                loadLayout(it, element.inputImage)
-                if (adapterPosition >= 0) {
-                    val inputUrl = itemView.textFieldUrl.textFieldInput.text.toString()
-                    listener?.onTextChanged(inputUrl, adapterPosition)
+        : AbstractViewHolder<Visitable<*>>(view) {
+        override fun bind(element: Visitable<*>) {
+            when(element) {
+                is VideoLinkModel -> {
+                    itemView.textFieldUrl.textFieldInput.setText(element.inputUrl)
+                    itemView.cardThumbnail.visibility =
+                            if (element.inputUrl.isEmpty()) View.GONE else View.VISIBLE
+                    itemView.textFieldUrl.textFieldInput.afterTextChanged {
+                        if (adapterPosition >= 0) {
+                            val inputUrl = itemView.textFieldUrl.textFieldInput.text.toString()
+                            listener?.onTextChanged(inputUrl, adapterPosition)
+                        }
+                    }
+                    itemView.textFieldUrl.getSecondIcon().setOnClickListener {
+                        itemView.textFieldUrl.clearFocus()
+                        listener?.onDeleteClicked(element, adapterPosition)
+                    }
                 }
-            }
-            itemView.textFieldUrl.getSecondIcon().setOnClickListener {
-                itemView.textFieldUrl.clearFocus()
-                listener?.onDeleteClicked(element, adapterPosition)
+                is YoutubeVideoModel -> {
+                    loadLayout(element.thumbnailUrl.toString(), element.title.toString(), element.description.toString())
+                }
             }
         }
 
-        private fun loadLayout (url: String, imageUrl: String) {
-            itemView.cardThumbnail.visibility =
-                    if (url.isEmpty()) View.GONE else View.VISIBLE
+        private fun loadLayout (imageUrl: String, title: String, description: String) {
             itemView.imgThumbnail.urlSrc = imageUrl
+            itemView.tvVideoTitle.text = title
+            itemView.tvVideoSubtitle.text = description
         }
 
         companion object {

@@ -13,11 +13,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_CURRENCY_TYPE
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DEFAULT_PRICE
@@ -53,6 +55,7 @@ import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProdu
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.add_edit_product_description_input_layout.*
@@ -63,7 +66,7 @@ import javax.inject.Inject
 
 class AddEditProductDescriptionFragment(
         private val categoryId: String
-) : BaseListFragment<VideoLinkModel, VideoLinkTypeFactory>(), VideoLinkTypeFactory.VideoLinkListener {
+) : BaseListFragment<Visitable<*>, VideoLinkTypeFactory>(), VideoLinkTypeFactory.VideoLinkListener {
 
     companion object {
         fun createInstance(categoryId: String): Fragment {
@@ -106,12 +109,12 @@ class AddEditProductDescriptionFragment(
     }
 
     override fun onTextChanged(url: String, position: Int) {
-        adapter.data[position].inputUrl = url
+//        adapter.data[position].items.firstOrNull()?.snippet.thumbnails.default.url = url
+        if(url.isNotEmpty()) {
+            descriptionViewModel.getVideoYoutube(url)
+        }
     }
 
-    override fun onItemClicked(t: VideoLinkModel?) {
-        //no op
-    }
 
     override fun getScreenName(): String? = null
 
@@ -162,6 +165,7 @@ class AddEditProductDescriptionFragment(
         descriptionViewModel.homeTicker.observe(viewLifecycleOwner, Observer { result ->
             showVariantDialog(result.data)
         })
+        observeVideoYoutube()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -175,15 +179,16 @@ class AddEditProductDescriptionFragment(
                 }
                 REQUEST_CODE_VARIANT -> {
                     val variantCacheId = data.getStringExtra(EXTRA_VARIANT_PICKER_RESULT_CACHE_ID)
-                    val cacheManager = SaveInstanceCacheManager(context!!, variantCacheId)
+                    val cacheManager = context?.let { SaveInstanceCacheManager(it, variantCacheId) }
                     if (data.hasExtra(EXTRA_PRODUCT_VARIANT_SELECTION)) {
-                        val productVariantViewModel = cacheManager.get(EXTRA_PRODUCT_VARIANT_SELECTION,
-                                object : TypeToken<ProductVariantInputModel>() {}.type) ?: ProductVariantInputModel()
+                        val productVariantViewModel = cacheManager?.get(EXTRA_PRODUCT_VARIANT_SELECTION,
+                                object : TypeToken<ProductVariantInputModel>() {}.type)
+                                ?: ProductVariantInputModel()
                         productVariantInputModel.variantOptionParent = productVariantViewModel.variantOptionParent
                         productVariantInputModel.productVariant = productVariantViewModel.productVariant
                     }
                     if (data.hasExtra(EXTRA_PRODUCT_SIZECHART)) {
-                        val productPictureViewModel = cacheManager.get(EXTRA_PRODUCT_SIZECHART,
+                        val productPictureViewModel = cacheManager?.get(EXTRA_PRODUCT_SIZECHART,
                                 object : TypeToken<PictureViewModel>() {}.type, PictureViewModel())
                         productVariantInputModel.productSizeChart = productPictureViewModel
                     }
@@ -237,8 +242,9 @@ class AddEditProductDescriptionFragment(
     override fun loadData(page: Int) {
         val videoLinkModels: ArrayList<VideoLinkModel> = ArrayList()
         videoLinkModels.add(VideoLinkModel(page, "", TEST_IMAGE_URL))
-        super.renderList(videoLinkModels)
+        super.renderList(videoLinkModels as List<Visitable<*>>)
 
+//        getRecyclerView(view).hide()
         textViewAddVideo.visibility =
                 if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
     }
@@ -276,8 +282,8 @@ class AddEditProductDescriptionFragment(
 
     private fun submitInput(shipmentInputModel: ShipmentInputModel) {
         val descriptionInputModel = DescriptionInputModel(
-                textFieldDescription.getText(),
-                adapter.data
+                textFieldDescription.getText()
+//                adapter.data
         )
         val intent = Intent()
         intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
@@ -288,19 +294,23 @@ class AddEditProductDescriptionFragment(
     }
 
 
-    private fun observeVideoYoutube(videoUrl: String) {
+    private fun observeVideoYoutube() {
         observe(descriptionViewModel.videoYoutube) {
-            when(it) {
+            when (it) {
                 is Success -> {
-
+                    adapter.setElement(it.data)
+                    getRecyclerView(view).visible()
                 }
                 is Fail -> {
-
+                    //TODO when youtube onError
+                    view?.let { it1 -> Toaster.make(it1, it.throwable.toString(), Toaster.TYPE_NORMAL) }
                 }
             }
         }
+    }
 
-        descriptionViewModel.getVideoYoutube(videoUrl)
+    override fun onItemClicked(t: Visitable<*>?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
 }

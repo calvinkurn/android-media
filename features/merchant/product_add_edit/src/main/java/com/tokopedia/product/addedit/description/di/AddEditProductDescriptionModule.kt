@@ -2,6 +2,8 @@ package com.tokopedia.product.addedit.description.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.common.network.coroutines.RestRequestInteractor
+import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.product.addedit.description.data.remote.ProductVariantService
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -34,5 +36,15 @@ class AddEditProductDescriptionModule {
     fun provideTickerService(retrofit: Retrofit): ProductVariantService {
         return retrofit.create(ProductVariantService::class.java)
     }
+
+    @AddEditProductDescriptionScope
+    @Provides
+    fun provideRestRepository(): RestRepository = RestRequestInteractor.getInstance().restRepository
+
+//    @AddEditProductDescriptionScope
+//    @Provides
+//    fun provideGetYoutubeVideoUseCase(restRepository: RestRepository): GetYoutubeVideoUseCase {
+//        return GetYoutubeVideoUseCase(restRepository)
+//    }
 
 }
