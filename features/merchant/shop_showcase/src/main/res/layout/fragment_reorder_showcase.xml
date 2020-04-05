@@ -81,7 +81,6 @@
         android:id="@+id/rv_list_showcase"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
-        android:background="#e5e7e9"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
