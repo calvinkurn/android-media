@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
-import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
@@ -16,16 +15,12 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
@@ -36,11 +31,11 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstan
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_INPUT
 import com.tokopedia.product.addedit.common.util.getText
-import com.tokopedia.product.addedit.common.util.getTextFloatOrZero
 import com.tokopedia.product.addedit.common.util.getTextIntOrZero
+import com.tokopedia.product.addedit.common.util.getTextLongOrZero
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity
-import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.fragment.AddEditProductDescriptionFragment.Companion.REQUEST_CODE_DESCRIPTION
+import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailComponent
 import com.tokopedia.product.addedit.detail.presentation.adapter.NameRecommendationAdapter
@@ -49,20 +44,25 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_NAME
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_NEW
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_USED
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_CATEGORY_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_GET_CATALOG
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_GET_CATEGORY
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.NEW_PRODUCT_INDEX
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_CATEGORY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.USED_PRODUCT_INDEX
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
-import com.tokopedia.product.addedit.detail.presentation.model.ProductCatalog
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.detail.presentation.viewholder.WholeSaleInputViewHolder
 import com.tokopedia.product.addedit.detail.presentation.viewmodel.AddEditProductDetailViewModel
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DRAFTING_PRODUCT
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_EDITING_PRODUCT
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
+import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
@@ -79,38 +79,32 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class AddEditProductDetailFragment(private val initialSelectedImagePathList: ArrayList<String>?)
-    : BaseDaggerFragment(), ProductPhotoViewHolder.OnStartDragListener,
+class AddEditProductDetailFragment : BaseDaggerFragment(),
+        ProductPhotoViewHolder.OnStartDragListener,
         NameRecommendationAdapter.ProductNameItemClickListener,
         WholeSaleInputViewHolder.TextChangedListener {
 
     companion object {
-
-        private const val EXTRA_PRODUCT_NAME = "product_name"
-        private const val EXTRA_CATEGORY_ID = "category_id"
-        private const val EXTRA_JSON_CATALOG = "json_catalog"
-
-        fun createInstance(initialSelectedImagePathList: ArrayList<String>?): Fragment {
-            return AddEditProductDetailFragment(initialSelectedImagePathList)
+        fun createInstance(productInputModel: ProductInputModel, isEditing: Boolean, isDrafting: Boolean): Fragment {
+            return AddEditProductDetailFragment().apply {
+                val args = Bundle()
+                args.putParcelable(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
+                args.putBoolean(EXTRA_IS_EDITING_PRODUCT, isEditing)
+                args.putBoolean(EXTRA_IS_DRAFTING_PRODUCT, isDrafting)
+                arguments = args
+            }
         }
 
-        fun getDurationUnit(type: Int) =
+        private fun getDurationUnit(type: Int) =
                 when (type) {
                     UNIT_DAY -> R.string.label_day
                     UNIT_WEEK -> R.string.label_week
                     else -> -1
                 }
-
-        const val REQUEST_CODE_DETAIL = 0x02
     }
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
     lateinit var viewModel: AddEditProductDetailViewModel
-
-    private var productPhotoPaths = mutableListOf<String>()
 
     private var selectedDurationPosition: Int = UNIT_DAY
 
@@ -131,10 +125,6 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
     private var productCategoryLayout: ViewGroup? = null
     private var productCategoryRecListView: ListUnify? = null
     private var productCategoryPickerButton: AppCompatTextView? = null
-
-    // product catalog
-    private var productCatalogLayout: ViewGroup? = null
-    private var productCatalogPickerButton: AppCompatTextView? = null
 
     // product price
     private var productPriceField: TextFieldUnify? = null
@@ -158,6 +148,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
 
     // product conditions
     private var productConditionListView: ListUnify? = null
+    private val productConditions = ArrayList<ListItemUnify>()
     private var isProductConditionNew = true
 
     // product sku
@@ -174,6 +165,22 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         getComponent(AddEditProductDetailComponent::class.java).inject(this)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // set detail input model
+        arguments?.getParcelable<ProductInputModel>(EXTRA_PRODUCT_INPUT_MODEL)?.run {
+            viewModel.detailInputModel = this.detailInputModel
+        }
+        // set isEditing status
+        arguments?.getBoolean(EXTRA_IS_EDITING_PRODUCT)?.run {
+            viewModel.isEditing = this
+        }
+        // set isDrafting status
+        arguments?.getBoolean(EXTRA_IS_DRAFTING_PRODUCT)?.run {
+            viewModel.isEditing = this
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_add_edit_product_detail_layout, container, false)
@@ -182,16 +189,10 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-                .get(AddEditProductDetailViewModel::class.java)
-
-        // store the selected image paths from previous activity
-        initialSelectedImagePathList?.let { productPhotoPaths.addAll(initialSelectedImagePathList) }
-
         // add edit product photo views
         addProductPhotoButton = view.findViewById(R.id.tv_add_product_photo)
         productPhotosView = view.findViewById(R.id.rv_product_photos)
-        productPhotoAdapter = ProductPhotoAdapter(MAX_PRODUCT_PHOTOS, productPhotoPaths, this)
+        productPhotoAdapter = ProductPhotoAdapter(MAX_PRODUCT_PHOTOS, mutableListOf(), this)
         productPhotosView?.let {
             it.adapter = productPhotoAdapter
             it.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -217,34 +218,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         productCategoryPickerButton = view.findViewById(R.id.tv_category_picker_button)
         productCategoryPickerButton?.setOnClickListener {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_CATEGORY_PICKER, 0.toString())
-            startActivityForResult(intent, REQUEST_CODE_GET_CATEGORY)
-        }
-
-        // add edit product catalog views
-        productCatalogLayout = view.findViewById(R.id.add_edit_product_catalog_layout)
-        productCatalogPickerButton = view.findViewById(R.id.tv_add_product_picker_button)
-        productCatalogPickerButton?.setOnClickListener {
-
-            // intent for catalog picker
-            val openCatalogPickerIntent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_OPEN_CATALOG_PICKER)
-
-            // json selected catalog
-            var jsonSelectedCatalog = Gson().toJson(ProductCatalog())
-            val selectedCatalogObj = productCategoryPickerButton?.getTag(R.id.selected_catalog)
-            selectedCatalogObj?.let { jsonSelectedCatalog = Gson().toJson(it as ProductCatalog) }
-            openCatalogPickerIntent.putExtra(EXTRA_JSON_CATALOG, jsonSelectedCatalog)
-
-            // product name
-            val productName = productNameField?.textFieldInput?.editableText.toString()
-            openCatalogPickerIntent.putExtra(EXTRA_PRODUCT_NAME, productName)
-
-            // category id
-            var categoryId = -1L
-            val categoryIdObj = productCategoryPickerButton?.getTag(R.id.category_id)
-            categoryIdObj?.let { categoryId = it.toString().toLong() }
-            openCatalogPickerIntent.putExtra(EXTRA_CATEGORY_ID, categoryId)
-
-            startActivityForResult(openCatalogPickerIntent, REQUEST_CODE_GET_CATALOG)
+            startActivityForResult(intent, REQUEST_CODE_CATEGORY)
         }
 
         // add edit product price views
@@ -293,15 +267,16 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
 
         // add edit product conditions views
         productConditionListView = view.findViewById(R.id.lvu_product_conditions)
-        val productConditions = ArrayList<ListItemUnify>()
         // new condition
         val newCondition = ListItemUnify(getString(R.string.label_new), "")
         newCondition.setVariant(null, ListItemUnify.RADIO_BUTTON, null)
-        productConditions.add(newCondition)
+        productConditions.add(NEW_PRODUCT_INDEX, newCondition)
+
         // secondhand condition
         val secondHandCondition = ListItemUnify(getString(R.string.label_secondhand), "")
         secondHandCondition.setVariant(null, ListItemUnify.RADIO_BUTTON, getString(R.string.label_secondhand))
-        productConditions.add(secondHandCondition)
+        productConditions.add(USED_PRODUCT_INDEX, secondHandCondition)
+
         // add new and secondhand condition to the view
         productConditionListView?.setData(productConditions)
         productConditionListView?.onLoadFinish {
@@ -321,6 +296,9 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
 
         // button 'lanjut'
         continueButton = view.findViewById(R.id.btn_continue)
+
+        // fill the form with detail input model
+        fillProductDetailForm(viewModel.detailInputModel)
 
         addProductPhotoButton?.setOnClickListener(createAddProductPhotoButtonOnClickListener())
 
@@ -372,7 +350,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
                     viewModel.validateProductPriceInput(it)
                     // format the number
                     productPriceField?.textFieldInput?.removeTextChangedListener(this)
-                    val formattedText: String = NumberFormat.getNumberInstance(Locale.US).format(it.toLong()).toString().replace(",", ".")
+                    val formattedText = formatProductPriceInput(it)
                     productPriceField?.textFieldInput?.setText(formattedText)
                     productPriceField?.textFieldInput?.setSelection(formattedText.length)
                     productPriceField?.textFieldInput?.addTextChangedListener(this)
@@ -493,24 +471,12 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
                     productPhotoAdapter?.setProductPhotoPaths(imageUrlOrPathList)
                     productPhotoAdapter?.let { viewModel.validateProductPhotoInput(it.itemCount) }
                 }
-                REQUEST_CODE_GET_CATEGORY -> {
+                REQUEST_CODE_CATEGORY -> {
                     val categoryId = data.getLongExtra(CATEGORY_RESULT_ID, 0)
                     val categoryName = data.getStringExtra(CATEGORY_RESULT_NAME)
                     productCategoryPickerButton?.text = categoryName
                     viewModel.selectedCategoryId = categoryId.toString()
                     getSelectedCategory()?.listRightRadiobtn?.isChecked = false
-                }
-                REQUEST_CODE_GET_CATALOG -> {
-                    val jsonSelectedCatalog: String? = data.getStringExtra(EXTRA_JSON_CATALOG)
-                    jsonSelectedCatalog?.let {
-                        val selectedCatalog: ProductCatalog = Gson().fromJson(jsonSelectedCatalog, ProductCatalog::class.java)
-                        val selectedCatalogName = selectedCatalog.catalogName
-                        if (!TextUtils.isEmpty(selectedCatalogName)) {
-                            productCategoryPickerButton?.text = selectedCatalogName
-                            productCategoryPickerButton?.setTag(R.id.selected_catalog, selectedCatalog)
-                            viewModel.selectedCatalogId = selectedCatalog.catalogId.toString()
-                        }
-                    }
                 }
                 REQUEST_CODE_DESCRIPTION -> {
                     val shipmentInputModel =
@@ -532,6 +498,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
     override fun onNameItemClicked(productName: String) {
         viewModel.isProductRecommendationSelected = true
         productNameField?.textFieldInput?.setText(productName)
+        viewModel.getCategoryRecommendation(productName)
         viewModel.isProductRecommendationSelected = false
     }
 
@@ -585,6 +552,66 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
             }
         }
         return inputResult
+    }
+
+    private fun fillProductDetailForm(detailInputModel: DetailInputModel) {
+
+        // product photo
+        productPhotoAdapter?.setProductPhotoPaths(detailInputModel.imageUrlOrPathList.toMutableList())
+
+        // product name
+        productNameField?.textFieldInput?.setText(detailInputModel.productName)
+
+        // product price
+        productPriceField?.textFieldInput?.setText(formatProductPriceInput(detailInputModel.price.toString()))
+
+        // product category
+        if (detailInputModel.categoryName.isNotBlank()) {
+            productCategoryPickerButton?.text = detailInputModel.categoryName
+            productCategoryRecListView?.hide()
+            productCategoryPickerButton?.show()
+            productCategoryLayout?.show()
+        }
+
+        // product wholesale
+        val wholesalePriceExist = detailInputModel.wholesaleList.isNotEmpty()
+        if (wholesalePriceExist) {
+            productWholeSaleSwitch?.isChecked = true
+            addNewWholeSalePrice(wholesaleInputs = detailInputModel.wholesaleList)
+            productWholeSaleInputLayout?.show()
+        }
+
+        // product pre order
+        val isPreOrder = detailInputModel.preorder.isActive
+        if (isPreOrder) {
+            preOrderSwitch?.isChecked = true
+            preOrderDurationUnitField?.textFieldInput?.setText(getString(getDurationUnit(detailInputModel.preorder.timeUnit)))
+            preOrderDurationField?.textFieldInput?.setText(detailInputModel.preorder.duration)
+            preOrderInputLayout?.show()
+        }
+
+        // product stock
+        productStockField?.textFieldInput?.setText(detailInputModel.stock.toString())
+
+        // product min order
+        productMinOrderField?.textFieldInput?.setText(detailInputModel.minOrder.toString())
+
+        // product condition
+        val isProductConditionNew = detailInputModel.condition == CONDITION_NEW
+        if (isProductConditionNew) productConditions[NEW_PRODUCT_INDEX].listRightRadiobtn?.isChecked = true
+        else productConditions[USED_PRODUCT_INDEX].listRightRadiobtn?.isChecked = true
+
+        // product sku
+        productSkuField?.textFieldInput?.setText(detailInputModel.sku)
+    }
+
+    private fun addNewWholeSalePrice(wholesaleInputs: List<WholeSaleInputModel>) {
+        wholeSaleInputFormsAdapter?.addNewWholeSalePrice(wholesaleInputs)
+    }
+
+    private fun formatProductPriceInput(productPriceInput: String): String {
+        return if (productPriceInput.isNotBlank()) NumberFormat.getNumberInstance(Locale.US).format(productPriceInput.toLong()).replace(",", ".")
+        else productPriceInput
     }
 
     private fun subscribeToProductNameInputStatus() {
@@ -660,8 +687,8 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
 
     private fun createAddProductPhotoButtonOnClickListener(): View.OnClickListener {
         return View.OnClickListener {
-            productPhotoAdapter?.let { productPhotoPaths = it.getProductPhotoPaths() }
-            val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(productPhotoPaths)))
+            productPhotoAdapter?.let { viewModel.productPhotoPaths = it.getProductPhotoPaths() }
+            val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(viewModel.productPhotoPaths)))
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
     }
@@ -779,7 +806,6 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
 
     private fun onGetCategoryRecommendationSuccess(result: Success<List<ListItemUnify>>) {
         productCategoryLayout?.show()
-        productCatalogLayout?.show()
         productCategoryRecListView?.show()
         val items = ArrayList(result.data.take(3))
         productCategoryRecListView?.setData(items)
@@ -809,14 +835,15 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
                             variantInputModel: ProductVariantInputModel) {
         val detailInputModel = DetailInputModel(
                 productNameField.getText(),
-                viewModel.selectedCategoryId.toString(),
-                viewModel.selectedCatalogId,
-                productPriceField.getTextFloatOrZero(),
+                productCategoryPickerButton?.text?.toString() ?: "",
+                viewModel.selectedCategoryId,
+                "",
+                productPriceField.getTextLongOrZero(),
                 productStockField.getTextIntOrZero(),
                 productMinOrderField.getTextIntOrZero(),
                 if (isProductConditionNew) CONDITION_NEW else CONDITION_USED,
                 productSkuField.getText(),
-                productPhotoPaths,
+                viewModel.productPhotoPaths,
                 PreorderInputModel(
                         preOrderDurationField.getTextIntOrZero(),
                         selectedDurationPosition,

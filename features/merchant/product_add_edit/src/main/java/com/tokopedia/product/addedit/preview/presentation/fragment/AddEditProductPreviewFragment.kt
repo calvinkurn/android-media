@@ -25,8 +25,9 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.Companion.EXTRA_CACHE_MANAGER_ID
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DETAIL_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
@@ -37,13 +38,21 @@ import com.tokopedia.product.addedit.description.presentation.fragment.AddEditPr
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.detail.presentation.activity.AddEditProductDetailActivity
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
-import com.tokopedia.product.addedit.detail.presentation.fragment.AddEditProductDetailFragment.Companion.REQUEST_CODE_DETAIL
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_DETAIL
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
 import com.tokopedia.product.addedit.preview.di.DaggerAddEditProductPreviewComponent
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_DRAFT_ID
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DRAFTING_PRODUCT
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_EDITING_PRODUCT
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_ID
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.PRODUCT_STATUS_ACTIVE
+import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductUploadService
 import com.tokopedia.product.addedit.preview.presentation.viewmodel.AddEditProductPreviewViewModel
 import com.tokopedia.product.addedit.shipment.presentation.activity.AddEditProductShipmentActivity
@@ -62,8 +71,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class AddEditProductPreviewFragment :
-        BaseDaggerFragment(), ProductPhotoViewHolder.OnStartDragListener {
+class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHolder.OnStartDragListener {
 
     // action button
     private var doneButton: AppCompatTextView? = null
@@ -109,18 +117,14 @@ class AddEditProductPreviewFragment :
     lateinit var viewModel: AddEditProductPreviewViewModel
 
     companion object {
-        fun createInstance(productId: String): Fragment {
+        fun createInstance(productId: String, draftId: String): Fragment {
             return AddEditProductPreviewFragment().apply {
                 arguments = Bundle().apply {
                     putString(EXTRA_PRODUCT_ID, productId)
+                    putString(EXTRA_DRAFT_ID, draftId)
                 }
             }
         }
-
-        private const val MAX_PRODUCT_PHOTOS = 5
-        private const val REQUEST_CODE_IMAGE = 0x01
-
-        const val EXTRA_PRODUCT_ID = "PRODUCT_ID"
 
         // TODO faisalramd
         const val TEST_IMAGE_URL = "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/9/16/36162992/36162992_778e5d1e-06fd-4e4a-b650-50c232815b24_1080_1080.jpg"
@@ -130,8 +134,8 @@ class AddEditProductPreviewFragment :
         super.onCreate(savedInstanceState)
         arguments?.run {
             viewModel.setProductId(getString(EXTRA_PRODUCT_ID) ?: "")
+            viewModel.setDraftId(getString(EXTRA_DRAFT_ID) ?: "")
         }
-        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -146,8 +150,7 @@ class AddEditProductPreviewFragment :
 
         // photos
         productPhotosView = view.findViewById(R.id.rv_product_photos)
-        val productPhotoPaths = viewModel.imageUrlOrPathList.value ?: mutableListOf()
-        productPhotoAdapter = ProductPhotoAdapter(AddEditProductDetailConstants.MAX_PRODUCT_PHOTOS, productPhotoPaths, this)
+        productPhotoAdapter = ProductPhotoAdapter(MAX_PRODUCT_PHOTOS, mutableListOf(), this)
         productPhotosView?.let {
             it.adapter = productPhotoAdapter
             it.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -203,12 +206,10 @@ class AddEditProductPreviewFragment :
         }
 
         addEditProductDetailButton?.setOnClickListener {
-
-            viewModel.productInputModel?.let {
-
-            }
-
-            moveToAddEditProductActivity(arrayListOf())
+            val productInputModel = viewModel.productInputModel.value ?: ProductInputModel()
+            val isEditing = viewModel.isEditing.value ?: false
+            val isDrafting = viewModel.isDrafting.value ?: false
+            startAddEditProductDetailActivity(productInputModel, isEditing, isDrafting)
         }
 
         addEditProductDescriptionButton?.setOnClickListener {
@@ -227,11 +228,12 @@ class AddEditProductPreviewFragment :
             startAddEditProductShipmentActivity()
         }
 
-        observeIsEditModeState()
-        observeGetProductResult()
+        observeIsEditingStatus()
+        observeIsDraftingStatus()
+        observeProductData()
+        observeProductInputModel()
         observeProductVariant()
         observeImageUrlOrPathList()
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -240,10 +242,17 @@ class AddEditProductPreviewFragment :
             if (requestCode == REQUEST_CODE_IMAGE) {
                 val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
                 if (imageUrlOrPathList != null && imageUrlOrPathList.size > 0) {
-                    val isEditMode = viewModel.isEditMode.value
+                    val isEditMode = viewModel.isEditing.value
                     isEditMode?.let {
+                        // update the product pictures in the preview page
                         if (isEditMode) viewModel.updateProductPhotos(imageUrlOrPathList)
-                        else moveToAddEditProductActivity(imageUrlOrPathList)
+                        else {
+                            // start add product detail
+                            val newProductInputModel = viewModel.getNewProductInputModel(imageUrlOrPathList)
+                            val isEditing = viewModel.isEditing.value ?: false
+                            val isDrafting = viewModel.isDrafting.value ?: false
+                            startAddEditProductDetailActivity(newProductInputModel, isEditing = isEditing, isDrafting = isDrafting)
+                        }
                     }
                 }
             } else if (requestCode == REQUEST_CODE_DETAIL) {
@@ -255,8 +264,10 @@ class AddEditProductPreviewFragment :
                         data.getParcelableExtra<DetailInputModel>(EXTRA_DETAIL_INPUT)
                 val variantInputModel =
                         data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
-                context?.let { AddEditProductUploadService.startService(it, detailInputModel,
-                        descriptionInputModel, shipmentInputModel, variantInputModel) }
+                context?.let {
+                    AddEditProductUploadService.startService(it, detailInputModel,
+                            descriptionInputModel, shipmentInputModel, variantInputModel)
+                }
             }
         }
     }
@@ -334,24 +345,37 @@ class AddEditProductPreviewFragment :
         editProductStatusLayout?.show()
     }
 
-    private fun observeIsEditModeState() {
-        viewModel.isEditMode.observe(this, Observer {
+    private fun observeIsEditingStatus() {
+        viewModel.isEditing.observe(this, Observer {
             displayEditMode(it)
         })
     }
 
-    private fun observeGetProductResult() {
+    private fun observeIsDraftingStatus() {
+        viewModel.isDrafting.observe(this, Observer {
+
+        })
+    }
+
+    private fun observeProductData() {
         viewModel.getProductResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    val productData = it.data
-                    showProductDetailPreview(productData)
-                    viewModel.setProductInputModel(productData)
+                    val isVariantEmpty = it.data.variant.products.isEmpty()
+                    showEmptyVariantState(isVariantEmpty)
+                    showProductStatus(it.data)
                 }
                 is Fail -> {
 
                 }
             }
+        })
+    }
+
+    private fun observeProductInputModel() {
+        viewModel.productInputModel.observe(this, Observer {
+            showProductPhotoPreview(it)
+            showProductDetailPreview(it)
         })
     }
 
@@ -367,10 +391,16 @@ class AddEditProductPreviewFragment :
         })
     }
 
-    private fun showProductDetailPreview(product: Product) {
-        productNameView?.text = product.productName
-        productPriceView?.text = product.price.toString()
-        productStockView?.text = product.stock.toString()
+    private fun showProductPhotoPreview(productInputModel: ProductInputModel) {
+        val imageUrlOrPathList = productInputModel.detailInputModel.imageUrlOrPathList
+        productPhotoAdapter?.setProductPhotoPaths(imageUrlOrPathList.toMutableList())
+    }
+
+    private fun showProductDetailPreview(productInputModel: ProductInputModel) {
+        val detailInputModel = productInputModel.detailInputModel
+        productNameView?.text = detailInputModel.productName
+        productPriceView?.text = detailInputModel.price.toString()
+        productStockView?.text = detailInputModel.stock.toString()
         productDetailPreviewLayout?.show()
     }
 
@@ -379,6 +409,11 @@ class AddEditProductPreviewFragment :
             addEditProductVariantButton?.text = getString(R.string.label_add)
             addProductVariantTipsLayout?.show()
         }
+    }
+
+    private fun showProductStatus(productData: Product) {
+        val productStatus = productData.status
+        if (productStatus == PRODUCT_STATUS_ACTIVE) productStatusSwitch?.isChecked = true
     }
 
     private fun showPhotoTips() {
@@ -455,10 +490,16 @@ class AddEditProductPreviewFragment :
                 imagePickerMultipleSelectionBuilder)
     }
 
-    private fun moveToAddEditProductActivity(imageUrlOrPathList: ArrayList<String>) {
-        val addEditProductDetailIntent = Intent(context, AddEditProductDetailActivity::class.java)
-        addEditProductDetailIntent.putStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS, imageUrlOrPathList)
-        startActivityForResult(addEditProductDetailIntent, REQUEST_CODE_DETAIL)
+    private fun startAddEditProductDetailActivity(productInputModel: ProductInputModel, isEditing: Boolean, isDrafting: Boolean) {
+        context?.run {
+            val cacheManager = SaveInstanceCacheManager(this, true).apply {
+                put(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
+                put(EXTRA_IS_EDITING_PRODUCT, isEditing)
+                put(EXTRA_IS_DRAFTING_PRODUCT, isDrafting)
+            }
+            val intent = Intent(this, AddEditProductDetailActivity::class.java).apply { putExtra(EXTRA_CACHE_MANAGER_ID, cacheManager.id) }
+            startActivityForResult(intent, REQUEST_CODE_DETAIL)
+        }
     }
 
     private fun moveToDescriptionActivity() {

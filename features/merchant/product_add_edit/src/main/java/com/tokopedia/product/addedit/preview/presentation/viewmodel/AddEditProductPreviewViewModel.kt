@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.domain.GetProductUseCase
 import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
@@ -26,13 +27,14 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     private val productId = MutableLiveData<String>()
 
-    private val mImageUrlOrPathList = MutableLiveData<MutableList<String>>()
-    val imageUrlOrPathList: LiveData<MutableList<String>> get() = mImageUrlOrPathList
-
-    var productInputModel: ProductInputModel? = null
+    private val draftId = MutableLiveData<String>()
 
     // observing the product id, and will become true if product id exist
-    val isEditMode = Transformations.map(productId) { id ->
+    val isEditing = Transformations.map(productId) { id ->
+        !id.isNullOrBlank()
+    }
+
+    val isDrafting = Transformations.map(draftId) { id ->
         !id.isNullOrBlank()
     }
 
@@ -43,6 +45,18 @@ class AddEditProductPreviewViewModel @Inject constructor(
         }
     }
     val getProductResult: LiveData<Result<Product>> get() = mGetProductResult
+
+    // observing the use case result, and will convert product data to input model
+    var productInputModel = Transformations.map(mGetProductResult) {
+        when (it) {
+            is Success -> {
+                getProductMapper.mapRemoteModelToUiModel(it.data)
+            }
+            is Fail -> {
+                ProductInputModel()
+            }
+        }
+    }
 
     // observing the use case result, and will become true if no variant
     val isVariantEmpty = Transformations.map(mGetProductResult) {
@@ -56,16 +70,25 @@ class AddEditProductPreviewViewModel @Inject constructor(
         }
     }
 
+    private val mImageUrlOrPathList = MutableLiveData<MutableList<String>>()
+    val imageUrlOrPathList: LiveData<MutableList<String>> get() = mImageUrlOrPathList
+
     fun setProductId(id: String) {
         productId.value = id
     }
 
-    fun setProductInputModel(productData: Product) {
-        productInputModel = getProductMapper.mapRemoteModelToUiModel(productData)
+    fun setDraftId(id: String) {
+        draftId.value = id
     }
 
     fun updateProductPhotos(imageUrlOrPathList: ArrayList<String>) {
+        productInputModel.value?.detailInputModel?.imageUrlOrPathList = imageUrlOrPathList
         this.mImageUrlOrPathList.value = imageUrlOrPathList
+    }
+
+    fun getNewProductInputModel(imageUrlOrPathList: ArrayList<String>): ProductInputModel {
+        val detailInputModel = DetailInputModel().apply { this.imageUrlOrPathList = imageUrlOrPathList }
+        return ProductInputModel().apply { this.detailInputModel = detailInputModel }
     }
 
     private fun loadProductData(productId: String) {
@@ -74,10 +97,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     private fun getProduct(productId: String) {
         launchCatchError(block = {
-            mGetProductResult.value = Success(withContext(Dispatchers.IO) {
+            val data = withContext(Dispatchers.IO) {
                 getProductUseCase.params = GetProductUseCase.createRequestParams(productId)
                 getProductUseCase.executeOnBackground()
-            })
+            }
+            mGetProductResult.value = Success(data)
         }, onError = {
             mGetProductResult.value = Fail(it)
         })
