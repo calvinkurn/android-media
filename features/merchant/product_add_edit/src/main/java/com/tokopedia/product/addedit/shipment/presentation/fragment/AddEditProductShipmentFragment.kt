@@ -55,11 +55,11 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         }
 
         fun getWeightTypeTitle(type: Int) =
-            when (type) {
-                UNIT_GRAM -> R.string.label_weight_gram
-                UNIT_KILOGRAM -> R.string.label_weight_kilogram
-                else -> -1
-            }
+                when (type) {
+                    UNIT_GRAM -> R.string.label_weight_gram
+                    UNIT_KILOGRAM -> R.string.label_weight_kilogram
+                    else -> -1
+                }
 
         const val EXTRA_SHIPMENT_INPUT_MODEL = "shipment_input_model"
         const val REQUEST_CODE_SHIPMENT = 0x04
@@ -79,7 +79,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             val shipmentInputModel: ShipmentInputModel =
-                it.getParcelable(EXTRA_SHIPMENT_INPUT_MODEL) ?: ShipmentInputModel()
+                    it.getParcelable(EXTRA_SHIPMENT_INPUT_MODEL) ?: ShipmentInputModel()
             shipmentViewModel.shipmentInputModel = shipmentInputModel
         }
     }
@@ -201,17 +201,15 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
 
     private fun submitInput() {
         if (validateInputWeight(tfWeightAmount.getText())) {
-            if (shipmentViewModel.isEditMode) {
-                val shipmentInputModel = ShipmentInputModel(
-                    tfWeightAmount.getTextIntOrZero(),
-                    selectedWeightPosition,
-                    switchInsurance?.isChecked == true
-                )
-                val intent = Intent()
-                intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
-                activity?.setResult(Activity.RESULT_OK, intent)
-                activity?.finish()
-            }
+            val shipmentInputModel = ShipmentInputModel(
+                tfWeightAmount.getTextIntOrZero(),
+                selectedWeightPosition,
+                switchInsurance?.isChecked == true
+            )
+            val intent = Intent()
+            intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
         }
-
     }
+}
