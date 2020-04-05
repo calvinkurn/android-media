@@ -7,7 +7,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class SaveProductDraftUseCase @Inject constructor(private val draftRepository: AddEditProductDraftRepository): UseCase<Long>() {
+class InsertProductDraftUseCase @Inject constructor(private val draftRepository: AddEditProductDraftRepository): UseCase<Long>() {
 
     companion object{
         fun createRequestParams(product: ProductInputModel, productId: Long, isUploading: Boolean): RequestParams {
@@ -36,9 +36,9 @@ class SaveProductDraftUseCase @Inject constructor(private val draftRepository: A
         val prevDraftId = params.getLong(AddEditProductDraftConstant.PREV_DRAFT_ID, 0)
         val isUploading = params.getBoolean(AddEditProductDraftConstant.IS_UPLOADING, false)
         return if (prevDraftId <= 0) {
-            draftRepository.saveDraft(product, isUploading) ?: 0L
+            draftRepository.insertDraft(product, isUploading)
         } else {
-            draftRepository.updateDraft(prevDraftId, product, isUploading) ?: 0L
+            draftRepository.updateDraft(prevDraftId, product, isUploading)
         }
     }
 

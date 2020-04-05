@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.detail.di
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.product.addedit.draft.data.db.AddEditProductDraftDao
 import com.tokopedia.product.addedit.draft.data.db.AddEditProductDraftDb
 import com.tokopedia.product.addedit.draft.data.db.repository.AddEditProductDraftRepository
@@ -22,7 +23,7 @@ class AddEditProductDetailModule {
 
     @AddEditProductDetailScope
     @Provides
-    fun provideProductDraftDb(context: Context): AddEditProductDraftDb = AddEditProductDraftDb.getInstance(context)
+    fun provideProductDraftDb(@ApplicationContext context: Context): AddEditProductDraftDb = AddEditProductDraftDb.getInstance(context)
 
     @AddEditProductDetailScope
     @Provides
@@ -30,10 +31,7 @@ class AddEditProductDetailModule {
 
     @AddEditProductDetailScope
     @Provides
-    fun provideProductDraftRepository(draftDataSource: AddEditProductDraftDataSource, context: Context): AddEditProductDraftRepository {
+    fun provideProductDraftRepository(draftDataSource: AddEditProductDraftDataSource, @ApplicationContext context: Context): AddEditProductDraftRepository {
         return AddEditProductDraftRepositoryImpl(draftDataSource, context)
     }
-
-
-
 }

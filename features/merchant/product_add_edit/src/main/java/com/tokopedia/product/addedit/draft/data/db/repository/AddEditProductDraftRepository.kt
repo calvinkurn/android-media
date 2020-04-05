@@ -5,11 +5,11 @@ import com.tokopedia.product.addedit.preview.presentation.model.ProductInputMode
 
 interface AddEditProductDraftRepository {
 
-    fun saveDraft(productInputModel: ProductInputModel, isUploading: Boolean): Long?
+    fun insertDraft(productInputModel: ProductInputModel, isUploading: Boolean): Long
 
     fun getDraft(productId: Long): LiveData<ProductInputModel>
 
-    fun getAllDrafts(): LiveData<List<ProductInputModel>>
+    fun getAllDrafts(): List<ProductInputModel>
 
     fun getAllDraftsCount(): LiveData<Int>
 
@@ -17,7 +17,7 @@ interface AddEditProductDraftRepository {
 
     fun deleteAllDrafts(): Boolean
 
-    fun updateDraft(productId: Long, productInputModel: ProductInputModel, isUploading: Boolean): Long?
+    fun updateDraft(productId: Long, productInputModel: ProductInputModel, isUploading: Boolean): Long
 
     fun updateLoadingStatus(productId: Long, isUploading: Boolean): Boolean
 }

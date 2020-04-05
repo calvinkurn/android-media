@@ -11,5 +11,6 @@ import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputMo
 data class ProductInputModel (
         var detailInputModel: DetailInputModel = DetailInputModel(),
         var descriptionInputModel: DescriptionInputModel = DescriptionInputModel(),
-        var shipmentInputModel: ShipmentInputModel = ShipmentInputModel()
+        var shipmentInputModel: ShipmentInputModel = ShipmentInputModel(),
+        var productId: Long = 0L
 )

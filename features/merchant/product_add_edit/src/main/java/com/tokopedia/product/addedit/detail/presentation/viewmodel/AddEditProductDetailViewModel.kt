@@ -10,7 +10,8 @@ import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommenda
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
-import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
+import com.tokopedia.product.addedit.draft.domain.usecase.GetAllProductsDraftUseCase
+import com.tokopedia.product.addedit.draft.domain.usecase.InsertProductDraftUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -25,7 +26,8 @@ class AddEditProductDetailViewModel @Inject constructor(
         val provider: ResourceProvider, dispatcher: CoroutineDispatcher,
         private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
         private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
-        private val saveProductDraftUseCase: SaveProductDraftUseCase
+        private val insertProductDraftUseCase: InsertProductDraftUseCase,
+        private val getAllProductsDraftUseCase: GetAllProductsDraftUseCase
 )
     : BaseViewModel(dispatcher) {
 
@@ -65,9 +67,13 @@ class AddEditProductDetailViewModel @Inject constructor(
         get() = mIsPreOrderDurationInputError
     var preOrderDurationMessage: String = ""
 
-    private val saveProductDraftResultMutableLiveData = MutableLiveData<Result<Long>>()
-    val saveProductDraftResultLiveData: LiveData<Result<Long>>
-        get() = saveProductDraftResultMutableLiveData
+    private val insertProductDraftResultMutableLiveData = MutableLiveData<Result<Long>>()
+    val insertProductDraftResultLiveData: LiveData<Result<Long>>
+        get() = insertProductDraftResultMutableLiveData
+
+    private val getAllProductsDraftResultMutableLiveData = MutableLiveData<Result<List<ProductInputModel>>>()
+    val getAllProductsDraftResultLiveData: LiveData<Result<List<ProductInputModel>>>
+        get() = getAllProductsDraftResultMutableLiveData
 
     private val mIsInputValid = MediatorLiveData<Boolean>().apply {
 
@@ -335,14 +341,24 @@ class AddEditProductDetailViewModel @Inject constructor(
         })
     }
 
-    fun saveProductDraft(productInputModel: ProductInputModel, productId: Long, isUploading: Boolean) {
+    fun insertProductDraft(productInputModel: ProductInputModel, productId: Long, isUploading: Boolean) {
         launchCatchError(block = {
-            saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(productInputModel, productId, isUploading)
-            saveProductDraftResultMutableLiveData.value = withContext(Dispatchers.IO) {
-                saveProductDraftUseCase.executeOnBackground()
+            insertProductDraftUseCase.params = InsertProductDraftUseCase.createRequestParams(productInputModel, productId, isUploading)
+            insertProductDraftResultMutableLiveData.value = withContext(Dispatchers.IO) {
+                insertProductDraftUseCase.executeOnBackground()
             }.let { Success(it) }
         }, onError = {
-            saveProductDraftResultMutableLiveData.value = Fail(it)
+            insertProductDraftResultMutableLiveData.value = Fail(it)
+        })
+    }
+
+    fun getAllProductsDraft() {
+        launchCatchError(block = {
+            getAllProductsDraftResultMutableLiveData.value = withContext(Dispatchers.IO) {
+                getAllProductsDraftUseCase.executeOnBackground()
+            }.let { Success(it) }
+        }, onError = {
+            getAllProductsDraftResultMutableLiveData.value = Fail(it)
         })
     }
 }

@@ -85,8 +85,7 @@ import kotlin.collections.ArrayList
 class AddEditProductDetailFragment(private val initialSelectedImagePathList: ArrayList<String>?)
     : BaseDaggerFragment(), ProductPhotoViewHolder.OnStartDragListener,
         NameRecommendationAdapter.ProductNameItemClickListener,
-        WholeSaleInputViewHolder.TextChangedListener,
-        AddEditProductDetailActivity.OnClickDialogButtonListener
+        WholeSaleInputViewHolder.TextChangedListener
 {
 
     companion object {
@@ -118,8 +117,6 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
     private var productPhotoPaths = mutableListOf<String>()
 
     private var selectedDurationPosition: Int = UNIT_DAY
-
-    private var productInputModel = ProductInputModel()
 
     // product photo
     private var addProductPhotoButton: AppCompatTextView? = null
@@ -479,6 +476,8 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
             }
         }
 
+        getAllProductsDraft()
+
         subscribeToProductNameInputStatus()
         subscribeToProductNameRecommendation()
         subscribeToCategoryRecommendation()
@@ -489,7 +488,8 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         subscribeToPreOrderSwitchStatus()
         subscribeToPreOrderDurationInputStatus()
         subscribeToInputStatus()
-        subscribeToSaveProductDraftResult()
+        subscribeToInsertProductDraftResult()
+        subscribeToGetAllProductsDraftResult()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -498,7 +498,6 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
             when (requestCode) {
                 REQUEST_CODE_IMAGE -> {
                     val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-                    productInputModel.detailInputModel.imageUrlOrPathList = imageUrlOrPathList
                     productPhotoAdapter?.setProductPhotoPaths(imageUrlOrPathList)
                     productPhotoAdapter?.let { viewModel.validateProductPhotoInput(it.itemCount) }
                 }
@@ -667,10 +666,23 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         })
     }
 
-    private fun subscribeToSaveProductDraftResult() {
-        viewModel.saveProductDraftResultLiveData.observe(this, Observer {
+    private fun subscribeToInsertProductDraftResult() {
+        viewModel.insertProductDraftResultLiveData.observe(this, Observer {
             when (it) {
                 is Success -> Log.d("Hello Success", it.toString())
+                is Fail -> Log.d("Hello SFailed", it.throwable.message)
+            }
+        })
+    }
+
+    private fun subscribeToGetAllProductsDraftResult() {
+        viewModel.getAllProductsDraftResultLiveData.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    for (i in it.data) {
+                        Log.d("Hello Success", i.productId.toString())
+                    }
+                }
                 is Fail -> Log.d("Hello SFailed", it.throwable.message)
             }
         })
@@ -866,9 +878,17 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         }
     }
 
-    override fun onClickSaveDraft(isUploading: Boolean) {
-        view?.id?.toLong()?.let {
-            viewModel.saveProductDraft(productInputModel, it,isUploading)
-        }
+    fun insertProductDraft(isUploading: Boolean) {
+        val productInputModel = ProductInputModel()
+        productInputModel.detailInputModel.productName = productNameField?.getEditableValue().toString()
+        Log.d("Success", productInputModel.detailInputModel.productName.toString())
+        viewModel.insertProductDraft(productInputModel, 0, isUploading)
+        Log.d("Success", "Insert")
     }
+
+    fun getAllProductsDraft() {
+        viewModel.getAllProductsDraft()
+    }
+
+
 }

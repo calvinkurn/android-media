@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 class AddEditProductDraftDataManager @Inject constructor(private val draftDao: AddEditProductDraftDao) {
 
-    fun saveDraft(json: String, isUploading: Boolean, shopId: String): Long? {
+    fun insertDraft(json: String, isUploading: Boolean, shopId: String): Long {
         val draft = AddEditProductDraftEntity()
         draft.data = json
         draft.isUploading = isUploading
@@ -23,7 +23,7 @@ class AddEditProductDraftDataManager @Inject constructor(private val draftDao: A
         return draftDao.getDraft(productId)
     }
 
-    fun getAllDrafts(shopId: String): LiveData<List<AddEditProductDraftEntity>> {
+    fun getAllDrafts(shopId: String): List<AddEditProductDraftEntity> {
         return draftDao.getAllDrafts(shopId)
     }
 
@@ -52,7 +52,7 @@ class AddEditProductDraftDataManager @Inject constructor(private val draftDao: A
         return productId
     }
 
-    fun updateDraft(productId: Long, data: String, isUploading: Boolean): Long? {
+    fun updateDraft(productId: Long, data: String, isUploading: Boolean): Long {
         Transformations.map(getDraft(productId)) { draft ->
             draft.data = data
             draft.isUploading = isUploading

@@ -37,7 +37,7 @@ class AddEditProductDetailActivity : BaseSimpleActivity(), HasComponent<AddEditP
                     backHome()
                 }
                 .setNeutralButton("Simpan Draft") { _, _ ->
-                    (newFragment as OnClickDialogButtonListener).onClickSaveDraft(false)
+                    saveProductToDraft()
                 }
         val dialog = dialogBuilder.create()
         dialog.show()
@@ -49,7 +49,10 @@ class AddEditProductDetailActivity : BaseSimpleActivity(), HasComponent<AddEditP
         finish()
     }
 
-    interface OnClickDialogButtonListener {
-        fun onClickSaveDraft(isUploading: Boolean)
+    private fun saveProductToDraft() {
+        val fragment = fragment
+        if (fragment != null && fragment is AddEditProductDetailFragment) {
+            fragment.insertProductDraft(false)
+        }
     }
 }

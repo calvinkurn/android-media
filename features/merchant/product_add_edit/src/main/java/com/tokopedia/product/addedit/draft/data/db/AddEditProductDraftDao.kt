@@ -18,7 +18,7 @@ interface AddEditProductDraftDao {
     fun getDraft(productId: Long): LiveData<AddEditProductDraftEntity>
 
     @Query("SELECT * FROM ${AddEditProductDraftConstant.DB_TABLE} WHERE shopId LIKE :shopId AND ${AddEditProductDraftConstant.DB_COLUMN_IS_UPLOADING} = 0")
-    fun getAllDrafts(shopId: String): LiveData<List<AddEditProductDraftEntity>>
+    fun getAllDrafts(shopId: String): List<AddEditProductDraftEntity>
 
     @Query("SELECT COUNT(*) FROM ${AddEditProductDraftConstant.DB_TABLE} WHERE shopId LIKE :shopId AND ${AddEditProductDraftConstant.DB_COLUMN_IS_UPLOADING} = 0")
     fun getAllDraftsCount(shopId: String): LiveData<Int>
