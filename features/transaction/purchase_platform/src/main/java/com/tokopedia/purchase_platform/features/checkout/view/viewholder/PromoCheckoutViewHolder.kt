@@ -57,72 +57,75 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
             actionListener.onSendAnalyticsClickPromoCheckout(isApplied, lastApplyUiModel.listAllPromoCodes)
         }
 
-        val params = LinearLayout.LayoutParams(
-                RelativeLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT
-        )
-        val displayMetrics = itemView.context?.resources?.displayMetrics
-
         if (lastApplyUiModel.additionalInfo.usageSummaries.isEmpty()) {
             itemView.ll_summary_transaction.gone()
         } else {
             itemView.ll_summary_transaction.visible()
             if  (hasChildren(itemView.ll_summary_transaction)) itemView.ll_summary_transaction.removeAllViews()
-            for ((i, lastApplyUsageSummary: LastApplyUsageSummariesUiModel) in lastApplyUiModel.additionalInfo.usageSummaries.withIndex()) {
-                val relativeLayout: RelativeLayout = RelativeLayout(itemView.context).apply {
-                    layoutParams = params
-
-                    if (i > 0) {
-                        displayMetrics?.let {
-                            setMargin(0, 4.dpToPx(it), 0, 0)
-                        }
-                    } else if (i == 0) {
-                        displayMetrics?.let {
-                            setMargin(0, 0, 0, 0)
-                        }
-                    }
-                }
-
-                val label: Typography = Typography(itemView.context).apply {
-                    setTextColor(resources.getColor(R.color.text_black))
-                    setWeight(Typography.REGULAR)
-                    setType(Typography.BODY_3)
-                    text = lastApplyUsageSummary.description
-                }
-
-                val labelParams = RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.WRAP_CONTENT,
-                        RelativeLayout.LayoutParams.WRAP_CONTENT
-                )
-                labelParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT)
-                label.layoutParams = labelParams
-
-                val value: Typography = Typography(itemView.context).apply {
-                    setTextColor(resources.getColor(R.color.text_black))
-                    setWeight(Typography.REGULAR)
-                    setType(Typography.BODY_3)
-                    text = lastApplyUsageSummary.amountStr
-                }
-
-                val valueParams = RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.WRAP_CONTENT,
-                        RelativeLayout.LayoutParams.WRAP_CONTENT
-                )
-                valueParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
-                value.layoutParams = valueParams
-
-                if (label.parent != null) (label.parent as ViewGroup).removeView(label)
-                relativeLayout.addView(label)
-
-                if (value.parent != null) (value.parent as ViewGroup).removeView(value)
-                relativeLayout.addView(value)
-
-                itemView.ll_summary_transaction.addView(relativeLayout)
-            }
+            generateChildrenView(lastApplyUiModel)
         }
     }
 
     private fun hasChildren(viewGroup: ViewGroup): Boolean {
         return viewGroup.childCount > 0
+    }
+
+    private fun generateChildrenView(lastApplyUiModel: LastApplyUiModel) {
+        for ((i, lastApplyUsageSummary: LastApplyUsageSummariesUiModel) in lastApplyUiModel.additionalInfo.usageSummaries.withIndex()) {
+            val params = LinearLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT
+            )
+            val displayMetrics = itemView.context?.resources?.displayMetrics
+            val relativeLayout: RelativeLayout = RelativeLayout(itemView.context).apply {
+                layoutParams = params
+
+                if (i > 0) {
+                    displayMetrics?.let {
+                        setMargin(0, 4.dpToPx(it), 0, 0)
+                    }
+                } else if (i == 0) {
+                    displayMetrics?.let {
+                        setMargin(0, 0, 0, 0)
+                    }
+                }
+            }
+
+            val label: Typography = Typography(itemView.context).apply {
+                setTextColor(resources.getColor(R.color.text_black))
+                setWeight(Typography.REGULAR)
+                setType(Typography.BODY_3)
+                text = lastApplyUsageSummary.description
+            }
+
+            val labelParams = RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT
+            )
+            labelParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT)
+            label.layoutParams = labelParams
+
+            val value: Typography = Typography(itemView.context).apply {
+                setTextColor(resources.getColor(R.color.text_black))
+                setWeight(Typography.REGULAR)
+                setType(Typography.BODY_3)
+                text = lastApplyUsageSummary.amountStr
+            }
+
+            val valueParams = RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT
+            )
+            valueParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
+            value.layoutParams = valueParams
+
+            if (label.parent != null) (label.parent as ViewGroup).removeView(label)
+            relativeLayout.addView(label)
+
+            if (value.parent != null) (value.parent as ViewGroup).removeView(value)
+            relativeLayout.addView(value)
+
+            itemView.ll_summary_transaction.addView(relativeLayout)
+        }
     }
 }

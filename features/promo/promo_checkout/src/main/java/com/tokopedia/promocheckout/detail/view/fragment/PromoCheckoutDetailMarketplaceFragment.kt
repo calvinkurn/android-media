@@ -83,8 +83,7 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
         val ONE_CLICK_SHIPMENT = "ONE_CLICK_SHIPMENT"
         val PAGE_TRACKING = "PAGE_TRACKING"
 
-        fun createInstance(codeCoupon: String, isUse: Boolean, oneClickShipment: Boolean, pageTracking: Int
-                           /*promo: Promo*/): PromoCheckoutDetailMarketplaceFragment {
+        fun createInstance(codeCoupon: String, isUse: Boolean, oneClickShipment: Boolean, pageTracking: Int): PromoCheckoutDetailMarketplaceFragment {
             val promoCheckoutDetailFragment = PromoCheckoutDetailMarketplaceFragment()
             val bundle = Bundle()
             bundle.putString(EXTRA_KUPON_CODE, codeCoupon)

@@ -233,14 +233,12 @@ class CartItemViewHolder constructor(itemView: View,
                 cbChangeJob?.cancel()
                 cbChangeJob = GlobalScope.launch(Dispatchers.Main) {
                     delay(500L)
-                    if (isChecked == prevIsChecked) {
-                        if (isChecked != data.isSelected) {
-                            if (data.cartItemData?.isError == false) {
-                                data.isSelected = isChecked
-                                if (adapterPosition != RecyclerView.NO_POSITION) {
-                                    actionListener?.onCartItemCheckChanged(adapterPosition, parentPosition, data.isSelected)
-                                    viewHolderListener?.onNeedToRefreshAllShop()
-                                }
+                    if (isChecked == prevIsChecked && isChecked != data.isSelected) {
+                        if (data.cartItemData?.isError == false) {
+                            data.isSelected = isChecked
+                            if (adapterPosition != RecyclerView.NO_POSITION) {
+                                actionListener?.onCartItemCheckChanged(adapterPosition, parentPosition, data.isSelected)
+                                viewHolderListener?.onNeedToRefreshAllShop()
                             }
                         }
                     }
@@ -712,10 +710,6 @@ class CartItemViewHolder constructor(itemView: View,
             cartItemHolderData?.cartItemData?.updatedData?.remark = editable.toString()
             renderErrorFormItemValidation(cartItemHolderData!!)
         }
-    }
-
-    private fun shopCheckboxWatcherAction(isChecked: Boolean) {
-        println("++ isChecked  = $isChecked")
     }
 
     private fun itemQuantityTextWatcherAction(quantity: QuantityWrapper) {

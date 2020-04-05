@@ -134,7 +134,7 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
         )
     }
 
-    override fun getDetailPromo(codeCoupon: String, oneClickShipment: Boolean/*, promo: Promo?*/) {
+    override fun getDetailPromo(codeCoupon: String, oneClickShipment: Boolean) {
         view.showLoading()
         getDetailCouponMarketplaceUseCase.execute(getDetailCouponMarketplaceUseCase.createRequestParams(codeCoupon, oneClickShipment = oneClickShipment),
                 object : Subscriber<GraphqlResponse>() {
@@ -155,8 +155,6 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
                         val dataDetailCheckoutPromo = response?.getData<DataPromoCheckoutDetail>(DataPromoCheckoutDetail::class.java)
                         view.onSuccessGetDetailPromo(dataDetailCheckoutPromo?.promoCheckoutDetailModel
                                 ?: throw RuntimeException())
-
-//                        validatePromoStackingUse(codeCoupon, promo, true)
                     }
                 })
     }
