@@ -352,16 +352,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
 
         removeAutoApplyLiveDataObserver()
 
-        autoApplyObserver = Observer { it ->
-            when (it.status) {
-                LiveDataResult.STATUS.SUCCESS -> {
-                    val messageList = it.data?.tokopointsSetAutoApply?.resultStatus?.message
-                    if (messageList != null && messageList.isNotEmpty()) {
-                        CustomToast.show(activityContext, messageList[0].toString())
-                        TargetedPromotionAnalytics.claimSucceedPopup(messageList[0].toString())
-                    }
-                }
-            }
+        autoApplyObserver = Observer {
             removeAutoApplyLiveDataObserver()
         }
 
@@ -494,7 +485,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         val activity = activityContext as AppCompatActivity
 
         val component = DaggerPromoTargetComponent.builder()
-                .appModule(AppModule(activity))
+                .appModule(AppModule(activity.application))
                 .build()
         component.inject(this)
         activity.run {
