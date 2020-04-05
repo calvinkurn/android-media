@@ -435,6 +435,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         if (!TextUtils.isEmpty(applink)) {
             dropKeysFromBundle(applink, activityContext.intent)
         }
+        shouldCallAutoApply = true
         bottomSheetDialog.dismiss()
         TargetedPromotionAnalytics.userClickCheckMyCoupon(buttonText)
     }
