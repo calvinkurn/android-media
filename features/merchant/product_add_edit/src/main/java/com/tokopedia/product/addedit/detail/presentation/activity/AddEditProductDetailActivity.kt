@@ -24,4 +24,12 @@ class AddEditProductDetailActivity : BaseSimpleActivity(), HasComponent<AddEditP
                 .addEditProductDetailModule(AddEditProductDetailModule())
                 .build()
     }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val f = fragment
+        if (f!= null && f is AddEditProductDetailFragment) {
+            f.onBackPressed()
+        }
+    }
 }

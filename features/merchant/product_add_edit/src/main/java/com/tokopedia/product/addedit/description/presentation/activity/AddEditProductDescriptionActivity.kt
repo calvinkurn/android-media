@@ -18,4 +18,11 @@ class AddEditProductDescriptionActivity : BaseSimpleActivity() {
         fun createInstance(context: Context?) = Intent(context, AddEditProductDescriptionActivity::class.java)
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val f = fragment
+        if (f!= null && f is AddEditProductDescriptionFragment) {
+            f.onBackPressed()
+        }
+    }
 }
