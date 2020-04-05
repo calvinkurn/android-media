@@ -981,6 +981,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         shopInformationTitle.setText(completeLabelShop);
 
         shopInformationTitle.setOnClickListener(v -> {
+            orderListAnalytics.sendClickShopName(status.status());
             String applink = ApplinkConst.SHOP.replace("{shop_id}", String.valueOf(shopInfo.getShopId()));
             RouteManager.route(getContext(), applink);
         });
