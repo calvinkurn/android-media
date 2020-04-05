@@ -26,14 +26,12 @@ class GetYoutubeVideoUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): Map<Type, RestResponse> {
 
-        val restRequestList = mutableListOf<RestRequest>()
-
         val restRequest = RestRequest.Builder(YOUTUBE_LINK, YoutubeVideoModel::class.java)
                 .setQueryParams(generateRequestParam())
                 .setRequestType(RequestType.GET)
                 .build()
 
-        this.restRequestList.add(restRequest)
+        restRequestList.add(restRequest)
 
         return repository.getResponses(restRequestList)
     }
