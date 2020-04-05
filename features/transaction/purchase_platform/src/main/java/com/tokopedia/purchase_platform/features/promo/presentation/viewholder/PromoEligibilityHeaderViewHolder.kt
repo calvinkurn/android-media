@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.viewholder
 
 import android.view.View
-import androidx.core.content.ContextCompat
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
@@ -10,35 +10,45 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.promo.presentation.PromoCheckoutActionListener
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoEligibilityHeaderUiModel
-import kotlinx.android.synthetic.main.item_promo_eligibility_header.view.*
+import com.tokopedia.unifyprinciples.Typography
 
 class PromoEligibilityHeaderViewHolder(private val view: View,
                                        private val listener: PromoCheckoutActionListener
 ) : AbstractViewHolder<PromoEligibilityHeaderUiModel>(view) {
+
+    private val labelPromoEligibilityHeaderTitle by lazy {
+        view.findViewById<Typography>(R.id.label_promo_eligibility_header_title)
+    }
+    private val labelPromoEligibilityHeaderSubtitle by lazy {
+        view.findViewById<Typography>(R.id.label_promo_eligibility_header_subtitle)
+    }
+    private val imageChevron by lazy {
+        view.findViewById<ImageView>(R.id.image_chevron)
+    }
 
     companion object {
         val LAYOUT = R.layout.item_promo_eligibility_header
     }
 
     override fun bind(element: PromoEligibilityHeaderUiModel) {
-        itemView.label_promo_eligibility_header_title.text = element.uiData.title
+        labelPromoEligibilityHeaderTitle.text = element.uiData.title
         if (element.uiData.subTitle.isNotBlank()) {
-            itemView.label_promo_eligibility_header_subtitle.text = element.uiData.subTitle
-            itemView.label_promo_eligibility_header_subtitle.show()
+            labelPromoEligibilityHeaderSubtitle.text = element.uiData.subTitle
+            labelPromoEligibilityHeaderSubtitle.show()
         } else {
-            itemView.label_promo_eligibility_header_subtitle.hide()
+            labelPromoEligibilityHeaderSubtitle.hide()
         }
 
         if (element.uiState.isEnabled) {
-            itemView.image_chevron.gone()
+            imageChevron.gone()
             itemView.setOnClickListener { }
         } else {
             if (!element.uiState.isCollapsed) {
-                itemView.image_chevron.rotation = 180f
+                imageChevron.rotation = 180f
             } else {
-                itemView.image_chevron.rotation = 0f
+                imageChevron.rotation = 0f
             }
-            itemView.image_chevron.show()
+            imageChevron.show()
             itemView.setOnClickListener {
                 if (adapterPosition != RecyclerView.NO_POSITION) listener.onClickPromoEligibilityHeader(element)
             }

@@ -8,8 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -17,6 +21,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -29,6 +35,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
 import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.kotlin.extensions.view.gone
@@ -53,7 +60,7 @@ import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 import com.tokopedia.purchase_platform.features.promo.presentation.viewmodel.*
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.synthetic.main.fragment_promo_checkout_marketplace.*
+import com.tokopedia.unifyprinciples.Typography
 import java.net.UnknownHostException
 import javax.inject.Inject
 
@@ -62,19 +69,37 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
     @Inject
     lateinit var itemDecorator: PromoCheckoutDecoration
+
+    private val viewModel by lazy {
+        ViewModelProviders.of(this, viewModelFactory)[PromoCheckoutViewModel::class.java]
+    }
 
     // Use single recycler view to prevent NPE caused by nested recyclerview
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: PromoCheckoutAdapter
 
+    // Main Section
     private var toolbar: ToolbarPromoCheckout? = null
+    private val appBarLayout by lazy { view?.findViewById<AppBarLayout>(R.id.app_bar_layout) }
+    private val swipeRefreshLayout by lazy { view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout) }
+    private val layoutMainContainer by lazy { view?.findViewById<FrameLayout>(R.id.layout_main_container) }
+    private val containerActionBottom by lazy { view?.findViewById<ConstraintLayout>(R.id.container_action_bottom) }
+    private val layoutGlobalError by lazy { view?.findViewById<GlobalError>(R.id.layout_global_error) }
 
-    private val viewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[PromoCheckoutViewModel::class.java]
-    }
+    // Sticky header section
+    private val headerPromoSection by lazy { view?.findViewById<LinearLayout>(R.id.header_promo_section) }
+    private val sectionImagePromoListHeader by lazy { view?.findViewById<ImageView>(R.id.section_image_promo_list_header) }
+    private val sectionLabelPromoListHeaderTitle by lazy { view?.findViewById<Typography>(R.id.section_label_promo_list_header_title) }
+    private val sectionLabelPromoListHeaderSubTitle by lazy { view?.findViewById<Typography>(R.id.section_label_promo_list_header_sub_title) }
+    private val sectionImageChevron by lazy { view?.findViewById<ImageView>(R.id.section_image_chevron) }
+
+    // Footer section
+    private val labelTotalPromoInfo by lazy { view?.findViewById<Typography>(R.id.label_total_promo_info) }
+    private val labelTotalPromoAmount by lazy { view?.findViewById<Typography>(R.id.label_total_promo_amount) }
+    private val buttonApplyPromo by lazy { view?.findViewById<UnifyButton>(R.id.button_apply_promo) }
+    private val buttonApplyNoPromo by lazy { view?.findViewById<UnifyButton>(R.id.button_apply_no_promo) }
 
     companion object {
         const val REQUEST_CODE_PHONE_VERIFICATION = 9999
@@ -128,23 +153,28 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         setToolbarShadowVisibility(false)
         viewModel.initFragmentUiModel(arguments?.getInt(ARGS_PAGE_SOURCE, 0) ?: 0)
 
-        button_apply_promo.setOnClickListener {
-            setButtonLoading(button_apply_promo, true)
-            val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) as ValidateUsePromoRequest
-            val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
-            viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.mutation_validate_use_promo_revamp), validateUsePromoRequest, bboPromoCodes ?: ArrayList())
+        buttonApplyPromo?.let { buttonApplyPromo ->
+            buttonApplyPromo.setOnClickListener {
+                setButtonLoading(buttonApplyPromo, true)
+                val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) as ValidateUsePromoRequest
+                val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
+                viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.mutation_validate_use_promo_revamp), validateUsePromoRequest, bboPromoCodes
+                        ?: ArrayList())
+            }
         }
 
-        button_apply_no_promo.setOnClickListener {
-            setButtonLoading(button_apply_no_promo, true)
-            val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) as ValidateUsePromoRequest
-            viewModel.clearPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo), validateUsePromoRequest)
+        buttonApplyNoPromo?.let { buttonApplyNoPromo ->
+            buttonApplyNoPromo.setOnClickListener {
+                setButtonLoading(buttonApplyNoPromo, true)
+                val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) as ValidateUsePromoRequest
+                viewModel.clearPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo), validateUsePromoRequest)
+            }
         }
 
         activity?.let {
-            swipe_refresh_layout.setColorSchemeColors(ContextCompat.getColor(it, R.color.tkpd_main_green))
+            swipeRefreshLayout?.setColorSchemeColors(ContextCompat.getColor(it, R.color.tkpd_main_green))
         }
-        swipe_refresh_layout.setOnRefreshListener {
+        swipeRefreshLayout?.setOnRefreshListener {
             reloadData()
         }
 
@@ -203,7 +233,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             if (lastData is PromoListHeaderUiModel && lastData.uiState.isEnabled && !lastData.uiState.isCollapsed) {
                 tmpLastHeaderUiModel = lastData
                 isShow = true
-            } else if (tmpLastHeaderUiModel != null && lastData is PromoListItemUiModel && lastData.uiData.parentIdentifierId == tmpLastHeaderUiModel.uiData.identifierId && lastData.uiState.isParentEnabled) {
+            } else if (tmpLastHeaderUiModel != null && lastData is PromoListItemUiModel &&
+                    lastData.uiData.parentIdentifierId == tmpLastHeaderUiModel.uiData.identifierId &&
+                    lastData.uiState.isParentEnabled) {
                 isShow = true
             } else if (lastData is PromoListItemUiModel && lastData.uiState.isParentEnabled) {
                 if (tmpLastHeaderUiModel != null && lastData.uiData.parentIdentifierId == tmpLastHeaderUiModel.uiData.identifierId) {
@@ -225,26 +257,28 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
             // View logic here should be same as view logic on #PromoListHeaderEnabledViewHolder
             if (tmpLastHeaderUiModel != null) {
-                if (tmpLastHeaderUiModel?.uiData?.iconUrl?.isNotBlank() == true) {
-                    ImageHandler.loadImageRounded2(context, section_image_promo_list_header, tmpLastHeaderUiModel?.uiData?.iconUrl)
-                    section_image_promo_list_header.show()
-                } else {
-                    section_image_promo_list_header.gone()
+                sectionImagePromoListHeader?.let { sectionImagePromoListHeader ->
+                    if (tmpLastHeaderUiModel?.uiData?.iconUrl?.isNotBlank() == true) {
+                        ImageHandler.loadImageRounded2(context, sectionImagePromoListHeader, tmpLastHeaderUiModel?.uiData?.iconUrl)
+                        sectionImagePromoListHeader.show()
+                    } else {
+                        sectionImagePromoListHeader.gone()
+                    }
+                    setImageFilterNormal(sectionImagePromoListHeader)
                 }
 
-                section_label_promo_list_header_title.text = tmpLastHeaderUiModel?.uiData?.title
-                section_label_promo_list_header_sub_title.text = tmpLastHeaderUiModel?.uiData?.subTitle
+                sectionLabelPromoListHeaderTitle?.text = tmpLastHeaderUiModel?.uiData?.title
+                sectionLabelPromoListHeaderSubTitle?.text = tmpLastHeaderUiModel?.uiData?.subTitle
 
                 if (tmpLastHeaderUiModel?.uiState?.isCollapsed == false) {
-                    section_image_chevron.rotation = 180f
+                    sectionImageChevron?.rotation = 180f
                 } else {
-                    section_image_chevron.rotation = 0f
+                    sectionImageChevron?.rotation = 0f
                 }
 
-                setImageFilterNormal(section_image_promo_list_header)
-                section_label_promo_list_header_sub_title.show()
-                section_image_chevron.show()
-                header_promo_section.setOnClickListener {
+                sectionLabelPromoListHeaderSubTitle?.show()
+                sectionImageChevron?.show()
+                headerPromoSection?.setOnClickListener {
                     if (tmpLastHeaderUiModel != null) {
                         onClickPromoListHeader(tmpLastHeaderUiModel!!)
                     }
@@ -252,10 +286,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             }
 
             if (isShow) {
-                header_promo_section.show()
+                headerPromoSection?.show()
                 setToolbarShadowVisibility(false)
             } else {
-                header_promo_section.gone()
+                headerPromoSection?.gone()
             }
         }
     }
@@ -263,9 +297,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     private fun setToolbarShadowVisibility(show: Boolean) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (show) {
-                app_bar_layout.elevation = HAS_ELEVATION.toFloat()
+                appBarLayout?.elevation = HAS_ELEVATION.toFloat()
             } else {
-                app_bar_layout.elevation = NO_ELEVATION.toFloat()
+                appBarLayout?.elevation = NO_ELEVATION.toFloat()
             }
         }
     }
@@ -350,7 +384,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun observeApplyPromoResult() {
         viewModel.applyPromoResponse.observe(this, Observer {
-            setButtonLoading(button_apply_promo, false)
+            buttonApplyPromo?.let {
+                setButtonLoading(it, false)
+            }
             when {
                 it.state == ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CART -> {
                     val intent = Intent()
@@ -381,7 +417,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun observeClearPromoResult() {
         viewModel.clearPromoResponse.observe(this, Observer {
-            setButtonLoading(button_apply_no_promo, false)
+            buttonApplyNoPromo?.let {
+                setButtonLoading(it, false)
+            }
             when {
                 it.state == ClearPromoResponseAction.ACTION_STATE_SUCCESS -> {
                     val intent = Intent()
@@ -406,7 +444,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             showLoading()
         } else {
             hideLoading()
-            swipe_refresh_layout.isRefreshing = false
+            swipeRefreshLayout?.isRefreshing = false
         }
 
         if (!fragmentUiModel.uiState.hasFailedToLoad) {
@@ -414,43 +452,43 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 toolbar?.enableResetButton()
                 toolbar?.showResetButton()
                 activity?.let {
-                    label_total_promo_info.show()
-                    label_total_promo_amount.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentUiModel.uiData.totalBenefit, false)
-                    label_total_promo_amount.show()
-                    button_apply_promo.text = String.format(it.resources.getString(R.string.promo_checkout_label_button_apply_promo), fragmentUiModel.uiData.usedPromoCount)
-                    button_apply_promo.show()
-                    button_apply_no_promo.gone()
-                    container_action_bottom.show()
+                    labelTotalPromoInfo?.show()
+                    labelTotalPromoAmount?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentUiModel.uiData.totalBenefit, false)
+                    labelTotalPromoAmount?.show()
+                    buttonApplyPromo?.text = String.format(it.resources.getString(R.string.promo_checkout_label_button_apply_promo), fragmentUiModel.uiData.usedPromoCount)
+                    buttonApplyPromo?.show()
+                    buttonApplyNoPromo?.gone()
+                    containerActionBottom?.show()
                 }
             } else {
                 toolbar?.disableResetButton()
                 toolbar?.showResetButton()
                 if (fragmentUiModel.uiState.hasPreAppliedPromo) {
-                    label_total_promo_info.gone()
-                    label_total_promo_amount.gone()
-                    button_apply_promo.gone()
-                    button_apply_no_promo.show()
-                    container_action_bottom.show()
+                    labelTotalPromoInfo?.gone()
+                    labelTotalPromoAmount?.gone()
+                    buttonApplyPromo?.gone()
+                    buttonApplyNoPromo?.show()
+                    containerActionBottom?.show()
                 } else {
-                    container_action_bottom.gone()
+                    containerActionBottom?.gone()
                 }
             }
-            layout_global_error.gone()
-            layout_main_container.show()
+            layoutGlobalError?.gone()
+            layoutMainContainer?.show()
         } else {
             toolbar?.disableResetButton()
             toolbar?.hideResetButton()
             fragmentUiModel.uiData.exception?.let {
-                layout_global_error.setType(getGlobalErrorType(it))
+                layoutGlobalError?.setType(getGlobalErrorType(it))
             }
-            layout_global_error.setActionClickListener { view ->
+            layoutGlobalError?.setActionClickListener { view ->
                 viewModel.sendAnalyticsClickCobaLagi()
-                layout_global_error.gone()
+                layoutGlobalError?.gone()
                 reloadData()
             }
-            layout_global_error.show()
-            layout_main_container.gone()
-            container_action_bottom.gone()
+            layoutGlobalError?.show()
+            layoutMainContainer?.gone()
+            containerActionBottom?.gone()
             viewModel.sendAnalyticsViewErrorPopup()
         }
     }
@@ -459,9 +497,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         viewModel.resetPromoInput()
         toolbar?.disableResetButton()
         toolbar?.hideResetButton()
-        container_action_bottom.gone()
+        containerActionBottom?.gone()
         adapter.clearAllElements()
-        layout_main_container.show()
+        layoutMainContainer?.show()
         loadData(0)
     }
 
@@ -477,7 +515,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         activity?.let {
             val appbar = view.findViewById<Toolbar>(R.id.toolbar)
             appbar.removeAllViews()
-            toolbar = toolbarPromoCheckout()
+            toolbar = getToolbarPromoCheckout()
             toolbar?.let {
                 appbar.addView(toolbar)
                 (activity as AppCompatActivity).setSupportActionBar(appbar)
@@ -485,7 +523,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         }
     }
 
-    private fun toolbarPromoCheckout(): ToolbarPromoCheckout? {
+    private fun getToolbarPromoCheckout(): ToolbarPromoCheckout? {
         activity?.let {
             return ToolbarPromoCheckout(it).apply {
                 listener = this@PromoCheckoutFragment
@@ -556,7 +594,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     if (viewModel.isHasAnySelectedPromoItem()) {
                         val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) as ValidateUsePromoRequest
                         val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
-                        viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.mutation_validate_use_promo_revamp), validateUsePromoRequest, bboPromoCodes ?: ArrayList())
+                        viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.mutation_validate_use_promo_revamp), validateUsePromoRequest, bboPromoCodes
+                                ?: ArrayList())
                     } else {
                         val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) as ValidateUsePromoRequest
                         viewModel.clearPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo), validateUsePromoRequest)
