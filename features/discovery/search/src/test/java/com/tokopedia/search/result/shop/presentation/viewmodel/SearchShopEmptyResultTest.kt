@@ -19,7 +19,7 @@ internal class SearchShopEmptyResultTest: Spek({
     InstantTaskExecutorRuleSpek(this)
 
     Feature("Search Shop Empty Result") {
-        defaultTimeout = 9999999
+
         
         createTestInstance()
 

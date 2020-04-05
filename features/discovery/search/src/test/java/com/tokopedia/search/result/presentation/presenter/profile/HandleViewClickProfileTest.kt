@@ -14,7 +14,7 @@ class HandleViewClickProfileTest: Spek({
     InstantTaskExecutorRuleSpek(this)
 
     Feature("Handle View Click Profile") {
-        defaultTimeout = 9999999
+
         
         createTestInstance()
 

@@ -20,7 +20,7 @@ class RequestProfileListDataTest: Spek({
     InstantTaskExecutorRuleSpek(this)
 
     Feature("Request Profile List Data Empty Result") {
-        defaultTimeout = 9999999
+
         
         createTestInstance()
 

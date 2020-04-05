@@ -10,7 +10,7 @@ import org.spekframework.spek2.style.gherkin.Feature
 internal class HandleViewCreatedTest: Spek({
 
     Feature("Handle view created") {
-        defaultTimeout = 9999999
+
         
         createTestInstance()
 

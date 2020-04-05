@@ -17,7 +17,7 @@ import rx.Subscriber
 internal class SearchRedirectionTest: Spek({
 
     Feature("Search success with redirection") {
-        defaultTimeout = 9999999
+
         
         createTestInstance()
 

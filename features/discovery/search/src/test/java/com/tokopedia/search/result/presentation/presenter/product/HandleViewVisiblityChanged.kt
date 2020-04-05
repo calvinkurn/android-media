@@ -8,7 +8,7 @@ import org.spekframework.spek2.style.gherkin.Feature
 internal class HandleViewVisiblityChanged: Spek({
 
     Feature("Handle view visibility changed") {
-        defaultTimeout = 9999999
+
         
         createTestInstance()
 
