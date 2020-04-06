@@ -94,10 +94,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
-        app:initialMaxValue="284"
-        app:initialValue="0"
-        app:step="1"
-        app:valueFrom="0"
-        app:valueTo="284" />
+        app:initialMaxValue="@integer/price_range_initial_max_value"
+        app:initialValue="@integer/price_range_initial_min_value"
+        app:step="@integer/price_range_step"
+        app:valueFrom="@integer/price_range_initial_min_value"
+        app:valueTo="@integer/price_range_initial_max_value" />
 
 </LinearLayout>
