@@ -19,16 +19,16 @@ data class AddToCart(
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
-            parcel.readValue(Int::class.java.classLoader) as? Int,
+            parcel.readInt(),
             parcel.readString(),
             parcel.readString(),
-            parcel.readValue(Double::class.java.classLoader) as? Double,
+            parcel.readDouble(),
             parcel.readString(),
             parcel.readString(),
-            parcel.readValue(Int::class.java.classLoader) as? Int,
+            parcel.readInt(),
             parcel.readString(),
-            parcel.readString()) {
-    }
+            parcel.readString()
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeValue(productId)
