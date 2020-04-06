@@ -12,6 +12,10 @@ import com.tokopedia.recharge_credit_card.data.RechargeCCRepository
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCSignatureReponse
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import okhttp3.internal.http2.ConnectionShutdownException
+import java.io.InterruptedIOException
+import java.net.SocketException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
@@ -44,7 +48,14 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
                 _errorSignature.postValue(data.rechargeSignature.messageError)
             }
         }) {
-            _errorSignature.postValue(it.message)
+            if (it is UnknownHostException ||
+                    it is SocketException ||
+                    it is InterruptedIOException ||
+                    it is ConnectionShutdownException) {
+                _errorSignature.postValue(ERROR_DEFAULT)
+            } else {
+                _errorSignature.postValue(it.message)
+            }
         }
     }
 
@@ -55,15 +66,22 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
             }
 
             if (data.redirectUrl != "") {
-                data.clientNumber = mapParam[PARAM_CLIENT_NUMBER]?: ""
-                data.operatorId = mapParam[PARAM_OPERATOR_ID]?: ""
-                data.productId = mapParam[PARAM_PRODUCT_ID]?: ""
+                data.clientNumber = mapParam[PARAM_CLIENT_NUMBER] ?: ""
+                data.operatorId = mapParam[PARAM_OPERATOR_ID] ?: ""
+                data.productId = mapParam[PARAM_PRODUCT_ID] ?: ""
                 _redirectUrl.postValue(data)
             } else {
                 _errorSubmitCreditCard.postValue(data.messageError)
             }
         }) {
-            _errorSubmitCreditCard.postValue(it.message)
+            if (it is UnknownHostException ||
+                    it is SocketException ||
+                    it is InterruptedIOException ||
+                    it is ConnectionShutdownException) {
+                _errorSubmitCreditCard.postValue(ERROR_DEFAULT)
+            } else {
+                _errorSubmitCreditCard.postValue(it.message)
+            }
         }
     }
 
@@ -84,5 +102,7 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
         private const val PARAM_PRODUCT_ID = "product_id"
         private const val PARAM_USER_ID = "user_id"
         const val PARAM_PCIDSS = "pcidss_signature"
+
+        private const val ERROR_DEFAULT = "Terjadi kesalahan, silakan ulangi beberapa saat lagi"
     }
 }

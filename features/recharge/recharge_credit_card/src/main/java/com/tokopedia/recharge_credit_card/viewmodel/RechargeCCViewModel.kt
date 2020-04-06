@@ -13,6 +13,10 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recharge_credit_card.datamodel.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import okhttp3.internal.http2.ConnectionShutdownException
+import java.io.InterruptedIOException
+import java.net.SocketException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class RechargeCCViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
@@ -74,7 +78,14 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
             }
 
         }) {
-            errorCCBankList.postValue(it.message)
+            if (it is UnknownHostException ||
+                    it is SocketException ||
+                    it is InterruptedIOException ||
+                    it is ConnectionShutdownException) {
+                errorCCBankList.postValue(ERROR_DEFAULT)
+            } else {
+                errorCCBankList.postValue(it.message)
+            }
         }
     }
 
@@ -109,13 +120,21 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
                 _bankNotSupported.postValue("")
             }
         }) {
-            _errorPrefix.postValue(it.message)
+            if (it is UnknownHostException ||
+                    it is SocketException ||
+                    it is InterruptedIOException ||
+                    it is ConnectionShutdownException) {
+                _errorPrefix.postValue(ERROR_DEFAULT)
+            } else {
+                _errorPrefix.postValue(it.message)
+            }
         }
     }
 
     companion object {
         private const val CATEGORY_ID = "categoryId"
         private const val MENU_ID = "menuId"
+        private const val ERROR_DEFAULT = "Terjadi kesalahan, silakan ulangi beberapa saat lagi"
 
         //production
         //const val CC_MENU_ID = 169

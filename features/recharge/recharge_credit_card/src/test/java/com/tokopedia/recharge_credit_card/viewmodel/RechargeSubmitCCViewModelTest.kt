@@ -57,7 +57,7 @@ class RechargeSubmitCCViewModelTest {
         //then
         val actualData = rechargeSubmitViewModel.redirectUrl
         assertNotNull(actualData)
-        assertEquals(ccRedirectUrl.redirectUrl, actualData.value)
+        assertEquals(ccRedirectUrl, actualData.value)
         assertEquals(signature, mapParam[RechargeSubmitCCViewModel.PARAM_PCIDSS])
     }
 
