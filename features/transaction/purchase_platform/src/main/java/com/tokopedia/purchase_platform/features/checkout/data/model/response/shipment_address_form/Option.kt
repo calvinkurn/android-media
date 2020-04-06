@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.features.express_checkout.data.entity.response.variant
+package com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
