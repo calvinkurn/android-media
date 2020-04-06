@@ -58,11 +58,11 @@ class RegisterFingerprintOnboardingFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupObserver()
 
-        fingerprint_onboarding_aktivasi_btn.setOnClickListener {
+        fingerprint_onboarding_aktivasi_btn?.setOnClickListener {
             showFingerprintDialog()
         }
 
-        fingerprint_onboarding_skip_btn.setOnClickListener {
+        fingerprint_onboarding_skip_btn?.setOnClickListener {
             viewModel.unregisterFP()
             activity?.finish()
         }
@@ -115,14 +115,14 @@ class RegisterFingerprintOnboardingFragment : BaseDaggerFragment() {
     }
 
     private fun showProgressBar(){
-        fingerprint_onboarding_aktivasi_btn.visibility = View.GONE
-        fingerprint_onboarding_skip_btn.visibility = View.GONE
-        fingerprint_onboarding_loader.visibility = View.VISIBLE
+        fingerprint_onboarding_aktivasi_btn?.visibility = View.GONE
+        fingerprint_onboarding_skip_btn?.visibility = View.GONE
+        fingerprint_onboarding_loader?.visibility = View.VISIBLE
     }
 
     private fun hideProgressBar(){
-        fingerprint_onboarding_aktivasi_btn.visibility = View.VISIBLE
-        fingerprint_onboarding_skip_btn.visibility = View.VISIBLE
-        fingerprint_onboarding_loader.visibility = View.GONE
+        fingerprint_onboarding_aktivasi_btn?.visibility = View.VISIBLE
+        fingerprint_onboarding_skip_btn?.visibility = View.VISIBLE
+        fingerprint_onboarding_loader?.visibility = View.GONE
     }
 }
