@@ -29,10 +29,10 @@ class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJo
 
     private val compositeSubscription = CompositeSubscription()
 
-    override fun onFlightSearchSelected(selectedFlightDeparture: String, returnJourneyViewModel: FlightJourneyModel, adapterPosition: Int) {
+    override fun onFlightSearchSelected(selectedFlightDeparture: String, returnJourneyModel: FlightJourneyModel, adapterPosition: Int) {
         if (adapterPosition >= 0) {
             flightAnalytics.eventSearchProductClickFromList((view as FlightSearchContract.View)
-                    .getSearchPassData(), returnJourneyViewModel, adapterPosition)
+                    .getSearchPassData(), returnJourneyModel, adapterPosition)
         }
 
         val priceViewModel = view.getFlightPriceViewModel()
@@ -41,12 +41,12 @@ class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJo
                 flightSearchJourneyByIdUseCase.createObservable(flightSearchJourneyByIdUseCase
                         .createRequestParams(selectedFlightDeparture)),
                 flightGetComboKeyUseCase.createObservable(flightGetComboKeyUseCase
-                        .createRequestParams(selectedFlightDeparture, returnJourneyViewModel.id))
+                        .createRequestParams(selectedFlightDeparture, returnJourneyModel.id))
         ) { departureJourney, comboKey ->
             priceViewModel.comboKey = comboKey
             if (departureJourney != null &&
-                    isValidReturnJourney(departureJourney, returnJourneyViewModel)) {
-                priceViewModel.returnPrice = buildFare(returnJourneyViewModel.fare, true)
+                    isValidReturnJourney(departureJourney, returnJourneyModel)) {
+                priceViewModel.returnPrice = buildFare(returnJourneyModel.fare, true)
                 true
             } else {
                 false
@@ -58,8 +58,8 @@ class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJo
                 .subscribe(object : Subscriber<Boolean>() {
                     override fun onNext(t: Boolean?) {
                         if (t != null && t) {
-                            view.navigateToCart(returnFlightSearchViewModel = returnJourneyViewModel,
-                                    flightPriceModel = priceViewModel)
+                            view.navigateToCart(returnFlightSearchViewModel = returnJourneyModel,
+                                    flightPriceViewModel = priceViewModel)
                         } else {
                             view.showReturnTimeShouldGreaterThanArrivalDeparture()
                         }
@@ -135,11 +135,11 @@ class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJo
         flightSearchJourneyByIdUseCase.unsubscribe()
     }
 
-    private fun isValidReturnJourney(departureViewModel: FlightJourneyModel, returnViewModel: FlightJourneyModel): Boolean {
-        if (departureViewModel.routeList != null && returnViewModel.routeList != null) {
-            if (departureViewModel.routeList.size > 0 && returnViewModel.routeList.size > 0) {
-                val lastDepartureRoute = departureViewModel.routeList[departureViewModel.routeList.size - 1]
-                val firstReturnRoute = returnViewModel.routeList[0]
+    private fun isValidReturnJourney(departureModel: FlightJourneyModel, returnModel: FlightJourneyModel): Boolean {
+        if (departureModel.routeList != null && returnModel.routeList != null) {
+            if (departureModel.routeList.size > 0 && returnModel.routeList.size > 0) {
+                val lastDepartureRoute = departureModel.routeList[departureModel.routeList.size - 1]
+                val firstReturnRoute = returnModel.routeList[0]
                 val departureArrivalTime = FlightDateUtil.stringToDate(
                         FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, lastDepartureRoute.arrivalTimestamp)
                 val returnDepartureTime = FlightDateUtil.stringToDate(

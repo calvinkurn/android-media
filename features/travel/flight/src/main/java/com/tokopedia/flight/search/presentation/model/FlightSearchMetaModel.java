@@ -18,9 +18,9 @@ public class FlightSearchMetaModel {
     private List<String> airlines;
     private String searchRequestId;
 
-    public FlightSearchMetaViewModel(String departureAirport, String arrivalAirport, String date,
-                                     boolean needRefresh, int refreshTime, int maxRetry, int retryNo,
-                                     long last_pulled, List<String> airlines, String searchRequestId) {
+    public FlightSearchMetaModel(String departureAirport, String arrivalAirport, String date,
+                                 boolean needRefresh, int refreshTime, int maxRetry, int retryNo,
+                                 long last_pulled, List<String> airlines, String searchRequestId) {
         this.departureAirport = departureAirport;
         this.arrivalAirport = arrivalAirport;
         this.date = date;

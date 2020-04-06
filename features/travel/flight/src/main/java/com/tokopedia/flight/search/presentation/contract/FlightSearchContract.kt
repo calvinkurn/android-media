@@ -71,7 +71,7 @@ interface FlightSearchContract {
 
         fun onGetSearchMeta(flightSearchMetaModel: FlightSearchMetaModel)
 
-        fun onSuccessGetDetailFlightDeparture(flightJourneyViewModel: FlightJourneyModel)
+        fun onSuccessGetDetailFlightDeparture(flightJourneyModel: FlightJourneyModel)
 
         fun onErrorDeleteFlightCache(e: Throwable)
 
@@ -90,9 +90,9 @@ interface FlightSearchContract {
 
         fun isDoneLoadData(): Boolean
 
-        fun onSeeDetailItemClicked(journeyViewModel: FlightJourneyModel, adapterPosition: Int)
+        fun onSeeDetailItemClicked(journeyModel: FlightJourneyModel, adapterPosition: Int)
 
-        fun onSearchItemClicked(journeyViewModel: FlightJourneyModel? = null, adapterPosition: Int = -1, selectedId: String = "")
+        fun onSearchItemClicked(journeyModel: FlightJourneyModel? = null, adapterPosition: Int = -1, selectedId: String = "")
 
         fun onSuccessDateChanged(year: Int, month: Int, dayOfMonth: Int)
 

@@ -4,6 +4,7 @@ import com.tokopedia.flight.search.data.api.single.response.Meta
 import com.tokopedia.flight.search.data.repository.FlightSearchRepository
 import com.tokopedia.flight.search.presentation.model.FlightSearchMetaModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchApiRequestModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchMetaModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable

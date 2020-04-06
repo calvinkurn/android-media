@@ -23,7 +23,7 @@ interface FlightSearchReturnContract {
 
         fun showSeeBestPairingResultView()
 
-        fun navigateToCart(returnFlightSearchViewModel: FlightJourneyModel? = null,
+        fun navigateToCart(returnFlightSearchModel: FlightJourneyModel? = null,
                            selectedFlightReturn: String? = null,
                            flightPriceModel: FlightPriceModel,
                            selectedFlightTerm: String? = null)
@@ -32,7 +32,7 @@ interface FlightSearchReturnContract {
 
     interface Presenter {
 
-        fun onFlightSearchSelected(selectedFlightDeparture: String, returnJourneyViewModel: FlightJourneyModel, adapterPosition: Int = -1)
+        fun onFlightSearchSelected(selectedFlightDeparture: String, returnJourneyModel: FlightJourneyModel, adapterPosition: Int = -1)
 
         fun onFlightSearchSelected(selectedFlightDeparture: String, selectedFlightReturn: String, selectedTerm: String)
 

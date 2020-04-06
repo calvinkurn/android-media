@@ -88,19 +88,19 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
 
     override fun isDoneLoadData(): Boolean = callCounter >= maxCall
 
-    override fun onSeeDetailItemClicked(journeyViewModel: FlightJourneyModel, adapterPosition: Int) {
-        flightAnalytics.eventSearchDetailClick(journeyViewModel, adapterPosition)
-        flightAnalytics.eventProductDetailImpression(journeyViewModel, adapterPosition)
+    override fun onSeeDetailItemClicked(journeyModel: FlightJourneyModel, adapterPosition: Int) {
+        flightAnalytics.eventSearchDetailClick(journeyModel, adapterPosition)
+        flightAnalytics.eventProductDetailImpression(journeyModel, adapterPosition)
     }
 
-    override fun onSearchItemClicked(journeyViewModel: FlightJourneyModel?, adapterPosition: Int, selectedId: String) {
+    override fun onSearchItemClicked(journeyModel: FlightJourneyModel?, adapterPosition: Int, selectedId: String) {
         if (selectedId.isEmpty()) {
             if (adapterPosition == -1) {
-                flightAnalytics.eventSearchProductClickFromList(view.getSearchPassData(), journeyViewModel)
+                flightAnalytics.eventSearchProductClickFromList(view.getSearchPassData(), journeyModel)
             } else {
-                flightAnalytics.eventSearchProductClickFromList(view.getSearchPassData(), journeyViewModel, adapterPosition)
+                flightAnalytics.eventSearchProductClickFromList(view.getSearchPassData(), journeyModel, adapterPosition)
             }
-            deleteFlightReturnSearch(getDeleteFlightReturnSubscriber(journeyViewModel!!))
+            deleteFlightReturnSearch(getDeleteFlightReturnSubscriber(journeyModel!!))
         } else {
             flightSearchJourneyByIdUseCase.execute(flightSearchJourneyByIdUseCase.createRequestParams(selectedId),
                     object : Subscriber<FlightJourneyModel>() {
@@ -160,8 +160,8 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                         e?.printStackTrace()
                     }
 
-                    override fun onNext(journeyViewModel: FlightJourneyModel?) {
-                        view.onSuccessGetDetailFlightDeparture(journeyViewModel!!)
+                    override fun onNext(journeyModel: FlightJourneyModel?) {
+                        view.onSuccessGetDetailFlightDeparture(journeyModel!!)
                     }
                 })
     }
@@ -322,13 +322,13 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                         }
                     }
 
-                    override fun onNext(flightJourneyViewModelList: List<FlightJourneyModel>) {
+                    override fun onNext(flightJourneyModelList: List<FlightJourneyModel>) {
                         flightAnalytics.eventSearchView(view.getSearchPassData(), true)
-                        if (!needRefresh || flightJourneyViewModelList.isNotEmpty()) {
+                        if (!needRefresh || flightJourneyModelList.isNotEmpty()) {
                             view.clearAdapterData()
                         }
 
-                        view.renderSearchList(flightJourneyViewModelList, needRefresh)
+                        view.renderSearchList(flightJourneyModelList, needRefresh)
                         view.stopTrace()
 
                         if (view.isDoneLoadData()) {
@@ -337,10 +337,10 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                             view.hideHorizontalProgress()
                         }
 
-                        if (lastPosition != flightJourneyViewModelList.size || fromCombo) onProductViewImpression(flightJourneyViewModelList)
-                        else if (lastPosition == 0 && !needRefresh) onProductViewImpression(flightJourneyViewModelList)
+                        if (lastPosition != flightJourneyModelList.size || fromCombo) onProductViewImpression(flightJourneyModelList)
+                        else if (lastPosition == 0 && !needRefresh) onProductViewImpression(flightJourneyModelList)
 
-                        lastPosition = flightJourneyViewModelList.size
+                        lastPosition = flightJourneyModelList.size
                     }
                 }
         )
@@ -405,9 +405,9 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
         )
     }
 
-    private fun onProductViewImpression(listJourneyViewModel: List<FlightJourneyModel>) {
-        if (listJourneyViewModel.isEmpty()) flightAnalytics.eventProductViewNotFound(view.getSearchPassData())
-        else flightAnalytics.eventProductViewEnchanceEcommerce(view.getSearchPassData(), listJourneyViewModel)
+    private fun onProductViewImpression(listJourneyModel: List<FlightJourneyModel>) {
+        if (listJourneyModel.isEmpty()) flightAnalytics.eventProductViewNotFound(view.getSearchPassData())
+        else flightAnalytics.eventProductViewEnchanceEcommerce(view.getSearchPassData(), listJourneyModel)
     }
 
     override fun unsubscribeAll() {
@@ -486,7 +486,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                 }
             }
 
-    private fun getDeleteFlightReturnSubscriber(journeyViewModel: FlightJourneyModel): Subscriber<Boolean> =
+    private fun getDeleteFlightReturnSubscriber(journeyModel: FlightJourneyModel): Subscriber<Boolean> =
             object : Subscriber<Boolean>() {
                 override fun onCompleted() {
 
@@ -500,8 +500,8 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
 
                 override fun onNext(t: Boolean?) {
                     val priceViewModel = FlightPriceModel()
-                    priceViewModel.departurePrice = buildFare(journeyViewModel.fare, !view.getSearchPassData().isOneWay)
-                    view.navigateToTheNextPage(journeyViewModel.id, journeyViewModel.term, priceViewModel, journeyViewModel.isBestPairing)
+                    priceViewModel.departurePrice = buildFare(journeyModel.fare, !view.getSearchPassData().isOneWay)
+                    view.navigateToTheNextPage(journeyModel.id, journeyModel.term, priceViewModel, journeyModel.isBestPairing)
                 }
             }
 

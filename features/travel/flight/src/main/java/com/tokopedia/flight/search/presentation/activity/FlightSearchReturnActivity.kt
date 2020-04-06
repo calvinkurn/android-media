@@ -59,9 +59,9 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
 
     override fun getArrivalAirport(): FlightAirportModel = passDataModel.departureAirport
 
-    override fun selectFlight(selectedFlightID: String, selectedFlightTerm: String, flightPriceViewModel: FlightPriceModel,
+    override fun selectFlight(selectedFlightID: String, selectedFlightTerm: String, flightPriceModel: FlightPriceModel,
                               isBestPairing: Boolean, isCombineDone: Boolean, requestId: String) {
-        passDataViewModel.searchRequestId = requestId
+        passDataModel.searchRequestId = requestId
         if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_BOOKING_NEW_FLOW, true)) {
             startActivityForResult(FlightBookingActivity
                     .getCallingIntent(this,

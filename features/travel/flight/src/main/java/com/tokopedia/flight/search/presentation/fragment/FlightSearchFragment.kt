@@ -432,7 +432,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         }
 
         if (!isReturning()) {
-            flightSearchPassData.searchRequestId = flightSearchMetaViewModel.searchRequestId
+            flightSearchPassData.searchRequestId = flightSearchMetaModel.searchRequestId
         }
 
         if (flightAirportCombineModel.isNeedRefresh) {
@@ -463,7 +463,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                 flightAirportCombineModel.isNeedRefresh)
     }
 
-    override fun onSuccessGetDetailFlightDeparture(flightJourneyViewModel: FlightJourneyModel) {
+    override fun onSuccessGetDetailFlightDeparture(flightJourneyModel: FlightJourneyModel) {
         // DO NOTHING
     }
 
@@ -488,26 +488,26 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         fetchFlightSearchData()
     }
 
-    override fun onDetailClicked(journeyViewModel: FlightJourneyModel?, adapterPosition: Int) {
-        flightSearchPresenter.onSeeDetailItemClicked(journeyViewModel!!, adapterPosition)
-        val flightDetailViewModel = FlightDetailModel()
-        flightDetailViewModel.build(journeyViewModel)
+    override fun onDetailClicked(journeyModel: FlightJourneyModel?, adapterPosition: Int) {
+        flightSearchPresenter.onSeeDetailItemClicked(journeyModel!!, adapterPosition)
+        val flightDetailViewModel = FlightDetailViewModel()
+        flightDetailViewModel.build(journeyModel)
         flightDetailViewModel.build(flightSearchPassData)
 
-        if (journeyViewModel.fare.adultNumericCombo != 0) {
-            flightDetailViewModel.total = journeyViewModel.comboPrice
-            flightDetailViewModel.totalNumeric = journeyViewModel.comboPriceNumeric
-            flightDetailViewModel.adultNumericPrice = journeyViewModel.fare.adultNumericCombo
-            flightDetailViewModel.childNumericPrice = journeyViewModel.fare.childNumericCombo
-            flightDetailViewModel.infantNumericPrice = journeyViewModel.fare.infantNumericCombo
+        if (journeyModel.fare.adultNumericCombo != 0) {
+            flightDetailViewModel.total = journeyModel.comboPrice
+            flightDetailViewModel.totalNumeric = journeyModel.comboPriceNumeric
+            flightDetailViewModel.adultNumericPrice = journeyModel.fare.adultNumericCombo
+            flightDetailViewModel.childNumericPrice = journeyModel.fare.childNumericCombo
+            flightDetailViewModel.infantNumericPrice = journeyModel.fare.infantNumericCombo
         }
 
         startActivityForResult(FlightDetailActivity.createIntent(activity,
                 flightDetailViewModel, true), REQUEST_CODE_SEE_DETAIL_FLIGHT)
     }
 
-    override fun onItemClicked(journeyViewModel: FlightJourneyModel?, adapterPosition: Int) {
-        flightSearchPresenter.onSearchItemClicked(journeyViewModel, adapterPosition)
+    override fun onItemClicked(journeyModel: FlightJourneyModel?, adapterPosition: Int) {
+        flightSearchPresenter.onSearchItemClicked(journeyModel, adapterPosition)
     }
 
     override fun onShowAllClicked() {
@@ -518,8 +518,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         // need in return search
     }
 
-    override fun onItemClicked(journeyViewModel: FlightJourneyModel?) {
-        flightSearchPresenter.onSearchItemClicked(journeyViewModel = journeyViewModel)
+    override fun onItemClicked(journeyModel: FlightJourneyModel?) {
+        flightSearchPresenter.onSearchItemClicked(journeyViewModel = journeyModel)
     }
 
     override fun getScreenName(): String = ""
@@ -894,7 +894,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     interface OnFlightSearchFragmentListener {
 
-        fun selectFlight(selectedFlightID: String, selectedTerm: String, flightPriceViewModel: FlightPriceModel,
+        fun selectFlight(selectedFlightID: String, selectedTerm: String, flightPriceModel: FlightPriceModel,
                          isBestPairing: Boolean, isCombineDone: Boolean, requestId: String)
 
         fun changeDate(flightSearchPassDataModel: FlightSearchPassDataModel)

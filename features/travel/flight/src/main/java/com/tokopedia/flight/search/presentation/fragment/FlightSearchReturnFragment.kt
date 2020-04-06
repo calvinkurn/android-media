@@ -99,43 +99,43 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
 
     override fun isReturning(): Boolean = true
 
-    override fun onSuccessGetDetailFlightDeparture(flightJourneyViewModel: FlightJourneyModel) {
-        if (flightJourneyViewModel.airlineDataList != null &&
-                flightJourneyViewModel.airlineDataList.size > 1) {
+    override fun onSuccessGetDetailFlightDeparture(flightJourneyModel: FlightJourneyModel) {
+        if (flightJourneyModel.airlineDataList != null &&
+                flightJourneyModel.airlineDataList.size > 1) {
             departure_trip_label.setValueName(String.format(" | %s", getString(R.string.flight_label_multi_maskapai)))
-        } else if (flightJourneyViewModel.airlineDataList != null &&
-                flightJourneyViewModel.airlineDataList.size == 1) {
-            departure_trip_label.setValueName(String.format(" | %s", flightJourneyViewModel.airlineDataList[0].shortName))
+        } else if (flightJourneyModel.airlineDataList != null &&
+                flightJourneyModel.airlineDataList.size == 1) {
+            departure_trip_label.setValueName(String.format(" | %s", flightJourneyModel.airlineDataList[0].shortName))
         }
 
-        if (flightJourneyViewModel.addDayArrival > 0) {
+        if (flightJourneyModel.addDayArrival > 0) {
             departure_trip_label.setValueTime(String.format("%s - %s (+%sh)",
-                    flightJourneyViewModel.departureTime,
-                    flightJourneyViewModel.arrivalTime,
-                    flightJourneyViewModel.addDayArrival.toString()))
+                    flightJourneyModel.departureTime,
+                    flightJourneyModel.arrivalTime,
+                    flightJourneyModel.addDayArrival.toString()))
         } else {
             departure_trip_label.setValueTime(String.format("%s - %s",
-                    flightJourneyViewModel.departureTime,
-                    flightJourneyViewModel.arrivalTime))
+                    flightJourneyModel.departureTime,
+                    flightJourneyModel.arrivalTime))
         }
 
         departure_trip_label.setValueDestination(String.format("%s - %s",
-                flightJourneyViewModel.departureAirport,
-                flightJourneyViewModel.arrivalAirport))
+                flightJourneyModel.departureAirport,
+                flightJourneyModel.arrivalAirport))
 
         resetDepartureLabelPrice()
     }
 
-    override fun onItemClicked(journeyViewModel: FlightJourneyModel?) {
-        if (journeyViewModel != null) {
-            flightSearchReturnPresenter.onFlightSearchSelected(selectedFlightDeparture, journeyViewModel)
+    override fun onItemClicked(journeyModel: FlightJourneyModel?) {
+        if (journeyModel != null) {
+            flightSearchReturnPresenter.onFlightSearchSelected(selectedFlightDeparture, journeyModel)
         }
     }
 
-    override fun onItemClicked(journeyViewModel: FlightJourneyModel?, adapterPosition: Int) {
-        if (journeyViewModel != null) {
+    override fun onItemClicked(journeyModel: FlightJourneyModel?, adapterPosition: Int) {
+        if (journeyModel != null) {
             flightSearchReturnPresenter.onFlightSearchSelected(selectedFlightDeparture,
-                    journeyViewModel, adapterPosition)
+                    journeyModel, adapterPosition)
         }
     }
 
@@ -172,10 +172,10 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
         isViewOnlyBestPairing = false
     }
 
-    override fun navigateToCart(returnFlightSearchViewModel: FlightJourneyModel?, selectedFlightReturn: String?, flightPriceModel: FlightPriceModel, selectedFlightTerm: String?) {
-        if (returnFlightSearchViewModel != null) {
-            onFlightSearchFragmentListener?.selectFlight(returnFlightSearchViewModel.id,
-                    returnFlightSearchViewModel.term, flightPriceModel,
+    override fun navigateToCart(returnFlightSearchModel: FlightJourneyModel?, selectedFlightReturn: String?, flightPriceModel: FlightPriceModel, selectedFlightTerm: String?) {
+        if (returnFlightSearchModel != null) {
+            onFlightSearchFragmentListener?.selectFlight(returnFlightSearchModel.id,
+                    returnFlightSearchModel.term, flightPriceModel,
                     isBestPairing = false, isCombineDone = true, requestId = flightSearchPassData.searchRequestId)
         } else if (selectedFlightReturn != null && selectedFlightTerm != null) {
             onFlightSearchFragmentListener?.selectFlight(selectedFlightReturn, selectedFlightTerm,
