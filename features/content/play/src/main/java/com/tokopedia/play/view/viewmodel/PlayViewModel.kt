@@ -562,7 +562,7 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private fun startWebSocket(channelId: String, gcToken: String, settings: Channel.Settings) {
+    fun startWebSocket(channelId: String, gcToken: String, settings: Channel.Settings) {
         playSocket.channelId = channelId
         playSocket.gcToken = gcToken
         playSocket.settings = settings
