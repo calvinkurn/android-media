@@ -105,7 +105,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                 };
             }
         }).debounce(CHECKBOX_WATCHER_DEBOUNCE_TIME, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Boolean>() {
                     @Override
@@ -138,15 +138,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         renderErrorItemHeader(cartShopHolderData);
         renderWarningItemHeader(cartShopHolderData);
 
-        /*String labelShop = tvShopName.getContext().getResources().getString(R.string.label_toko) + " ";
-        int startLabelShop = labelShop.length();*/
         String shopName = cartShopHolderData.getShopGroupAvailableData().getShopName();
-
-        /*SpannableStringBuilder completeLabelShop = new SpannableStringBuilder();
-        completeLabelShop.append(labelShop);
-        completeLabelShop.append(shopName);
-        completeLabelShop.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), startLabelShop, completeLabelShop.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);*/
-
         tvShopName.setText(shopName);
         tvShopName.setOnClickListener(v -> actionListener.onCartShopNameClicked(cartShopHolderData));
 

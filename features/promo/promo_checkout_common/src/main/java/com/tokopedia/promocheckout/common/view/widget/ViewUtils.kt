@@ -88,12 +88,6 @@ object ViewUtils {
 
         shapeDrawable.shape = RoundRectShape(outerRadius, null, null)
 
-        /*val border = GradientDrawable()
-        border.setColor(-0x1) //white background
-        border.setStroke(1, -0x1000000) //black border with full opacity
-
-        view.background = border*/
-
         val drawable = LayerDrawable(arrayOf<Drawable>(shapeDrawable))
         drawable.setLayerInset(0, elevationValue, elevationValue * 2, elevationValue, elevationValue * 2)
 
