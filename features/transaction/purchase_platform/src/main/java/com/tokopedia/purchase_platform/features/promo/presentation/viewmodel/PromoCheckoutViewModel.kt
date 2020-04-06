@@ -29,7 +29,10 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                                                  private val graphqlRepository: GraphqlRepository,
@@ -103,8 +106,10 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         launch { getCouponRecommendation(mutation, promoRequest, promoCode) }
     }
 
-    private suspend fun getCouponRecommendation(mutation: String, promoRequest: PromoRequest, promoCode: String) {
+    private suspend fun getCouponRecommendation(mutation: String, promoRequest: PromoRequest, tmpPromoCode: String) {
         launchCatchError(block = {
+            val promoCode = tmpPromoCode.toUpperCase(Locale.getDefault())
+
             // Set param manual input
             if (promoCode.isNotBlank()) {
                 promoRequest.attemptedCodes.clear()
@@ -164,6 +169,16 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                             }
                         }
                     }
+                }
+            }
+
+            // Remove code if same with attempted
+            if (promoRequest.codes.contains(promoCode)) {
+                promoRequest.codes.remove(promoCode)
+            }
+            promoRequest.orders.forEach {
+                if (it.codes.contains(promoCode)) {
+                    it.codes.remove(promoCode)
                 }
             }
 
