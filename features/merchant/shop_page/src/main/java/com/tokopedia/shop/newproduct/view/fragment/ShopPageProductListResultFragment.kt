@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -58,7 +59,6 @@ import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.listener.OnShopProductListFragmentListener
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
-import com.tokopedia.shop_showcase.shop_showcase_management.presentation.activity.ShopShowcaseListActivity
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
@@ -441,9 +441,14 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     CustomDimensionShopPage.create(it.shopCore.shopID,
                             it.goldOS.isOfficial == 1, it.goldOS.isGold == 1))
             context?.let { context ->
-                val shopShowcaseListIntent = ShopShowcaseListActivity.createIntentListShopShowcase(
-                        context, it.shopCore.shopID, selectedEtalaseId, true, false)
-                context.startActivity(shopShowcaseListIntent)
+                val bundle = Bundle()
+                bundle.putString("selectedEtalaseId", selectedEtalaseId)
+                bundle.putBoolean("isShowDefault", true)
+                bundle.putBoolean("isShowZeroProduct", false)
+                bundle.putString("shopId", it.shopCore.shopID)
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
+                intent.putExtra("bundle", bundle)
+                startActivity(intent)
             }
         }
     }
