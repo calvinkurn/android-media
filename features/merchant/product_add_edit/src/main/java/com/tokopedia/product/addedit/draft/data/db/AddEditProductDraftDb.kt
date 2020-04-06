@@ -33,7 +33,7 @@ abstract class AddEditProductDraftDb : RoomDatabase(){
         private val migrationFromSixToSeven = object : Migration(AddEditProductDraftConstant.DB_OLD_VERSION, AddEditProductDraftConstant.DB_VERSION) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("CREATE TABLE ${AddEditProductDraftConstant.DB_TABLE}2(" +
-                        "id INTEGER PRIMARY KEY," +
+                        "id INTEGER PRIMARY KEY NOT NULL," +
                         "data TEXT NOT NULL," +
                         "${AddEditProductDraftConstant.DB_COLUMN_IS_UPLOADING} INTEGER NOT NULL," +
                         "shopId TEXT," +

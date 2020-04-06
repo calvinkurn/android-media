@@ -20,7 +20,8 @@ data class DetailInputModel(
         var imageUrlOrPathList: List<String> = emptyList(),
         var preorder: PreorderInputModel = PreorderInputModel(),
         var wholesaleList: List<WholeSaleInputModel> = emptyList(),
-        var pictureList: List<PictureInputModel> = emptyList()
+        var pictureList: List<PictureInputModel> = emptyList(),
+        var categoryName: String = ""
 ) : Parcelable
 
 @Parcelize

@@ -1,18 +1,24 @@
 package com.tokopedia.product.addedit.description.presentation.activity
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.description.presentation.fragment.AddEditProductDescriptionFragment
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
+import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 
 class AddEditProductDescriptionActivity : BaseSimpleActivity() {
     private var categoryId: String = ""
     private var isEditMode: Boolean = false
     private var descriptionInputModel: DescriptionInputModel = DescriptionInputModel()
     private var variantInputModel: ProductVariantInputModel = ProductVariantInputModel()
+    private var productInputModel: ProductInputModel = ProductInputModel()
 
     override fun getNewFragment(): Fragment {
         intent?.apply {
@@ -20,6 +26,7 @@ class AddEditProductDescriptionActivity : BaseSimpleActivity() {
             descriptionInputModel = getParcelableExtra(PARAM_DESCRIPTION_INPUT_MODEL) ?: DescriptionInputModel()
             variantInputModel = getParcelableExtra(PARAM_VARIANT_INPUT_MODEL) ?: ProductVariantInputModel()
             isEditMode = getBooleanExtra(PARAM_IS_EDIT_MODE, false)
+            productInputModel = getParcelableExtra(PARAM_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
         }
 
         return if (isEditMode) {
@@ -29,7 +36,7 @@ class AddEditProductDescriptionActivity : BaseSimpleActivity() {
                     variantInputModel,
                     isEditMode)
         } else {
-            AddEditProductDescriptionFragment.createInstance(categoryId)
+            AddEditProductDescriptionFragment.createInstance(categoryId, productInputModel)
         }
     }
 
@@ -37,11 +44,13 @@ class AddEditProductDescriptionActivity : BaseSimpleActivity() {
         const val REQUEST_CODE_DESCRIPTION = 0x03
         const val PARAM_DESCRIPTION_INPUT_MODEL = "param_description_input_model"
         const val PARAM_VARIANT_INPUT_MODEL = "param_variant_input_model"
+        const val PARAM_PRODUCT_INPUT_MODEL = "param_product_input_model"
         const val PARAM_CATEGORY_ID = "param_category_id"
         const val PARAM_IS_EDIT_MODE = "is_edit_mode"
-        fun createInstance(context: Context?, categoryId: String): Intent =
+        fun createInstance(context: Context?, categoryId: String, productInputModel: ProductInputModel): Intent =
                 Intent(context, AddEditProductDescriptionActivity::class.java)
                         .putExtra(PARAM_CATEGORY_ID, categoryId)
+                        .putExtra(PARAM_PRODUCT_INPUT_MODEL, productInputModel)
         fun createInstanceEditMode(context: Context?,
                                    categoryId: String,
                                    descriptionInputModel: DescriptionInputModel,
@@ -54,7 +63,35 @@ class AddEditProductDescriptionActivity : BaseSimpleActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
+        onBackPressedHitTracking()
+        val dialogBuilder = AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
+                .setMessage(R.string.message_alert_dialog_before_exit)
+                .setNegativeButton(R.string.label_negative_button_on_alert_dialog) { _, _ -> }
+                .setPositiveButton(R.string.label_positive_button_on_alert_dialog) { _, _ ->
+                    backHome()
+                }
+                .setNeutralButton(R.string.label_neutral_button_on_alert_dialog) { _, _ ->
+                    saveProductToDraft()
+                    backHome()
+                }
+        val dialog = dialogBuilder.create()
+        dialog.show()
+    }
+
+    private fun backHome() {
+        val intentHome = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.SELLER_HOME)
+        startActivity(intentHome)
+        finish()
+    }
+
+    private fun saveProductToDraft() {
+        val f = fragment
+        if (f != null && f is AddEditProductDescriptionFragment) {
+            f.insertProductDraft(false)
+        }
+    }
+
+    private fun onBackPressedHitTracking() {
         val f = fragment
         if (f!= null && f is AddEditProductDescriptionFragment) {
             f.onBackPressed()

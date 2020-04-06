@@ -16,6 +16,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_CURRENCY_TYPE
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DEFAULT_PRICE
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DEFAULT_SKU
@@ -43,6 +44,7 @@ import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescript
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_CATEGORY_ID
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_DESCRIPTION_INPUT_MODEL
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_IS_EDIT_MODE
+import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_VARIANT_INPUT_MODEL
 import com.tokopedia.product.addedit.description.presentation.adapter.VideoLinkTypeFactory
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
@@ -50,6 +52,7 @@ import com.tokopedia.product.addedit.description.presentation.model.PictureViewM
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.description.presentation.viewmodel.AddEditProductDescriptionViewModel
+import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.activity.AddEditProductShipmentActivity
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment.Companion.REQUEST_CODE_SHIPMENT
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
@@ -73,10 +76,11 @@ class AddEditProductDescriptionFragment:
         VideoLinkTypeFactory.VideoLinkListener {
 
     companion object {
-        fun createInstance(categoryId: String): Fragment {
+        fun createInstance(categoryId: String, productInputModel: ProductInputModel): Fragment {
             return AddEditProductDescriptionFragment().apply {
                 arguments = Bundle().apply {
                     putString(PARAM_CATEGORY_ID, categoryId)
+                    putParcelable(PARAM_PRODUCT_INPUT_MODEL, productInputModel)
                 }
             }
         }
@@ -107,6 +111,7 @@ class AddEditProductDescriptionFragment:
     }
 
     private var videoId = 0
+    private var productInputModel : ProductInputModel? = null
 
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
@@ -169,14 +174,7 @@ class AddEditProductDescriptionFragment:
             descriptionViewModel.descriptionInputModel = descriptionInputModel
             descriptionViewModel.variantInputModel = variantInputModel
             descriptionViewModel.isEditMode = isEditMode
-        }
-    }
-
-    fun onBackPressed() {
-        if (descriptionViewModel.isEditMode) {
-            ProductEditDescriptionTracking.clickBack(shopId)
-        } else {
-            ProductAddDescriptionTracking.clickBack(shopId)
+            productInputModel = it.getParcelable(PARAM_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
         }
     }
 
@@ -220,10 +218,30 @@ class AddEditProductDescriptionFragment:
         }
 
         btnNext.setOnClickListener {
-            moveToDescriptionActivity()
+            moveToShipmentActivity()
         }
 
         observeProductVariant()
+    }
+
+    fun onBackPressed() {
+        if (descriptionViewModel.isEditMode) {
+            ProductEditDescriptionTracking.clickBack(shopId)
+        } else {
+            ProductAddDescriptionTracking.clickBack(shopId)
+        }
+    }
+
+    fun insertProductDraft(isUploading: Boolean) {
+        inputAllDataInInputDraftModel()
+        productInputModel?.let { descriptionViewModel.insertProductDraft(it, 0, isUploading) }
+    }
+
+    private fun inputAllDataInInputDraftModel() {
+        productInputModel?.descriptionInputModel = DescriptionInputModel(
+                textFieldDescription.getText(),
+                adapter.data
+        )
     }
 
     private fun observeProductVariant() {
@@ -361,13 +379,15 @@ class AddEditProductDescriptionFragment:
         }
     }
 
-    private fun moveToDescriptionActivity() {
+    private fun moveToShipmentActivity() {
         if (descriptionViewModel.isEditMode) {
             ProductEditDescriptionTracking.clickContinue(shopId)
         } else {
             ProductAddDescriptionTracking.clickContinue(shopId)
         }
+        inputAllDataInInputDraftModel()
         val intent = Intent(context, AddEditProductShipmentActivity::class.java)
+        intent.putExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT, productInputModel)
         startActivityForResult(intent, REQUEST_CODE_SHIPMENT)
     }
 

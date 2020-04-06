@@ -10,12 +10,14 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextIntOrZero
 import com.tokopedia.product.addedit.common.util.setModeToNumberInput
 import com.tokopedia.product.addedit.common.util.setText
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
+import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentComponent
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_GRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_KILOGRAM
@@ -38,6 +40,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     private var tfWeightUnit: TextFieldUnify? = null
     private var switchInsurance: SwitchUnify? = null
     private var btnEnd: UnifyButton? = null
+    private var productInputModel: ProductInputModel? = null
     private var selectedWeightPosition: Int = 0
 
     private lateinit var userSession: UserSessionInterface
@@ -47,7 +50,13 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     lateinit var shipmentViewModel: AddEditProductShipmentViewModel
 
     companion object {
-        fun createInstance(): Fragment = AddEditProductShipmentFragment()
+        fun createInstance(productInputModel: ProductInputModel): Fragment {
+            return AddEditProductShipmentFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(EXTRA_PRODUCT_INPUT, productInputModel)
+                }
+            }
+        }
         fun createInstanceEditMode(shipmentInputModel: ShipmentInputModel): Fragment {
             return AddEditProductShipmentFragment().apply {
                 arguments = Bundle().apply {
@@ -82,19 +91,11 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         shopId = userSession.shopId
         super.onCreate(savedInstanceState)
         arguments?.run {
-            val shipmentInputModel: ShipmentInputModel = getParcelable(EXTRA_SHIPMENT_INPUT_MODEL)
-                ?: ShipmentInputModel()
+            val shipmentInputModel: ShipmentInputModel = getParcelable(EXTRA_SHIPMENT_INPUT_MODEL) ?: ShipmentInputModel()
             val isEditMode = getBoolean(EXTRA_IS_EDITMODE, false)
+            productInputModel = getParcelable(EXTRA_PRODUCT_INPUT) ?: ProductInputModel()
             shipmentViewModel.shipmentInputModel = shipmentInputModel
             shipmentViewModel.isEditMode = isEditMode
-        }
-    }
-
-    fun onBackPressed() {
-        if (shipmentViewModel.isEditMode) {
-            ProductEditShippingTracking.clickBack(shopId)
-        } else {
-            ProductAddShippingTracking.clickBack(shopId)
         }
     }
 
@@ -132,6 +133,27 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
                 ProductAddShippingTracking.clickInsurance(shopId)
             }
         }
+    }
+
+    fun onBackPressed() {
+        if (shipmentViewModel.isEditMode) {
+            ProductEditShippingTracking.clickBack(shopId)
+        } else {
+            ProductAddShippingTracking.clickBack(shopId)
+        }
+    }
+
+    fun insertProductDraft(isUploading: Boolean) {
+        inputAllDataInInputDraftModel()
+        productInputModel?.let { shipmentViewModel.insertProductDraft(it, 0,isUploading) }
+    }
+
+    private fun inputAllDataInInputDraftModel() {
+        productInputModel?.shipmentInputModel = ShipmentInputModel(
+                tfWeightAmount.getTextIntOrZero(),
+                selectedWeightPosition,
+                switchInsurance?.isChecked == true
+        )
     }
 
     private fun applyEditMode() {
