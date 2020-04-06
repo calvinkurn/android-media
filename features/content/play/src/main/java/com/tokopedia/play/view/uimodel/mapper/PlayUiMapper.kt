@@ -15,6 +15,38 @@ object PlayUiMapper {
     private const val MAX_PRODUCTS = 5
     private const val MAX_VOUCHERS = 5
 
+    fun createCompleteInfoModel(
+            channel: Channel,
+            partnerName: String,
+            isBanned: Boolean
+    ) = PlayCompleteInfoUiModel(
+            channelInfo = mapChannelInfo(channel),
+            videoStream = mapVideoStream(channel.videoStream, channel.isActive),
+            pinnedMessage = mapPinnedMessage(
+                    partnerName,
+                    channel.pinnedMessage
+            ),
+            pinnedProduct = PlayUiMapper.mapPinnedProduct(
+                    partnerName,
+                    channel.isShowProductTagging,
+                    channel.pinnedProduct),
+            quickReply = mapQuickReply(channel.quickReply),
+            totalView = mapTotalViews(channel.totalViews),
+            event = mapEvent(channel, isBanned)
+    )
+
+    private fun mapEvent(channel: Channel, isBanned: Boolean) = EventUiModel(
+            isBanned = isBanned,
+            isFreeze = !channel.isActive || channel.isFreeze,
+            bannedMessage = channel.banned.message,
+            bannedTitle = channel.banned.title,
+            bannedButtonTitle = channel.banned.buttonTitle,
+            freezeMessage = channel.freezeChannelState.desc,
+            freezeTitle = channel.freezeChannelState.title,
+            freezeButtonTitle = channel.freezeChannelState.btnTitle,
+            freezeButtonUrl = channel.freezeChannelState.btnAppLink
+    )
+
     fun mapChannelInfo(channel: Channel) = ChannelInfoUiModel(
             id = channel.channelId,
             title = channel.title,
@@ -86,31 +118,33 @@ object PlayUiMapper {
     }
 
     fun mapItemProducts(products: List<Product>): List<ProductLineUiModel> {
-        return products.take(MAX_PRODUCTS).map {
-            ProductLineUiModel(
-                    id = it.id.toString(),
-                    shopId = it.shopId,
-                    imageUrl = it.image,
-                    title = it.name,
-                    price = if (it.discount != 0) {
-                        DiscountedPrice(
-                                originalPrice = it.originalPriceFormatted,
-                                discountedPrice = it.priceFormatted,
-                                discountedPriceNumber = it.price,
-                                discountPercent = it.discount
-                        )
-                    } else {
-                        OriginalPrice(price = it.originalPriceFormatted,
-                                priceNumber = it.originalPrice)
-                    },
-                    isVariantAvailable = it.isVariant,
-                    stock = if (it.isAvailable) StockAvailable(it.quantity) else OutOfStock,
-                    minQty = it.minimumQuantity,
-                    isFreeShipping = it.isFreeShipping,
-                    applink = it.appLink
-            )
+        return products.take(MAX_PRODUCTS).map { product ->
+            mapItemProduct(product)
         }
     }
+
+    fun mapItemProduct(product: Product) = ProductLineUiModel(
+            id = product.id.toString(),
+            shopId = product.shopId,
+            imageUrl = product.image,
+            title = product.name,
+            price = if (product.discount != 0) {
+                DiscountedPrice(
+                        originalPrice = product.originalPriceFormatted,
+                        discountedPrice = product.priceFormatted,
+                        discountedPriceNumber = product.price,
+                        discountPercent = product.discount
+                )
+            } else {
+                OriginalPrice(price = product.originalPriceFormatted,
+                        priceNumber = product.originalPrice)
+            },
+            isVariantAvailable = product.isVariant,
+            stock = if (product.isAvailable) StockAvailable(product.quantity) else OutOfStock,
+            minQty = product.minimumQuantity,
+            isFreeShipping = product.isFreeShipping,
+            applink = product.appLink
+    )
 
     fun mapItemVouchers(vouchers: List<Voucher>): List<MerchantVoucherUiModel> {
         return vouchers.take(MAX_VOUCHERS).map {

@@ -21,6 +21,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.typeFactory.FlashSaleCardViewTypeFactoryImpl
+import com.tokopedia.home.util.setGradientBackground
 import com.tokopedia.productcard.ProductCardFlashSaleModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
@@ -83,9 +84,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
     }
 
     private fun setupBackground(channel: DynamicHomeChannel.Channels) {
-        if (channel.banner.backColor.isNotEmpty()) {
-            parallaxBackground.setBackgroundColor(Color.parseColor(channel.banner.backColor))
-        }
+        parallaxBackground.setGradientBackground(channel.banner.gradientColor)
         if (channel.banner.imageUrl.isNotEmpty()) {
             image.loadImage(channel.banner.imageUrl)
         }
@@ -156,7 +155,15 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
                             pdpViewCount = element.productViewCountFormatted,
                             stockBarLabel = element.label,
                             isTopAds = element.isTopads,
-                            stockBarPercentage = element.soldPercentage
+                            stockBarPercentage = element.soldPercentage,
+                            labelGroupList = element.labelGroup.map {
+                                ProductCardFlashSaleModel.LabelGroup(
+                                        position = it.position,
+                                        title = it.title,
+                                        type = it.type
+                                )
+                            },
+                            isOutOfStock = element.isOutOfStock
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
