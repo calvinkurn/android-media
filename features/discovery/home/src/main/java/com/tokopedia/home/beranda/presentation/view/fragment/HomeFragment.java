@@ -639,6 +639,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     private void observeHomeData(){
         viewModel.getHomeLiveData().observe(this, data -> {
             if(data != null){
+                Log.d("HomePerfTest HomeFragment" , "observeHomeData list size is "+data.getList().size());
                 if (data.getList().size() > VISITABLE_SIZE_WITH_DEFAULT_BANNER ) {
                     configureHomeFlag(data.getHomeFlag());
                     setData(new ArrayList(data.getList()), data.isCache());
@@ -728,7 +729,9 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private void setData(List<HomeVisitable> data, boolean isCache){
+        Log.d("HomePerfTest HomeFragment" , "setData");
         if(!data.isEmpty()) {
+            Log.d("HomePerfTest HomeFragment" , "setData --> data is not empty and cache is "+isCache);
             if (isCache && needToPerformanceMonitoring()) {
                 setOnRecyclerViewLayoutReady();
             }

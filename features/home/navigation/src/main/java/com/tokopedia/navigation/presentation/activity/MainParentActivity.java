@@ -20,19 +20,24 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
+
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 
 import androidx.asynclayoutinflater.view.AsyncLayoutInflater;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.FrameMetrics;
@@ -303,11 +308,11 @@ public class MainParentActivity extends BaseActivity implements
 
     /**
      * this is temporary fix for crash MediaPlayer,
-     *  because we already fix it 5times, and still appear on specific device
+     * because we already fix it 5times, and still appear on specific device
      */
     private void routeOnboarding() {
         if (Build.MODEL.contains("vivo Y35")
-            || Build.MODEL.contains("vivo Y51L")) {
+                || Build.MODEL.contains("vivo Y51L")) {
             if (Build.VERSION.RELEASE.contains("5.0.2")) {
                 return;
             }
@@ -371,7 +376,7 @@ public class MainParentActivity extends BaseActivity implements
         inflateBottomNavigationViewAsync(savedInstanceState);
     }
 
-    private void inflateBottomNavigationViewAsync(Bundle savedInstanceState){
+    private void inflateBottomNavigationViewAsync(Bundle savedInstanceState) {
         AsyncLayoutInflater asyncLayoutInflater = new AsyncLayoutInflater(getContext());
         AsyncLayoutInflater.OnInflateFinishedListener inflationCompleteListener = new AsyncLayoutInflater.OnInflateFinishedListener() {
             @Override
@@ -385,7 +390,7 @@ public class MainParentActivity extends BaseActivity implements
         asyncLayoutInflater.inflate(R.layout.bottom_navigation_view, viewGroup, inflationCompleteListener);
     }
 
-    private void afterBottomNaviagtionInflation(Bundle savedInstanceState){
+    private void afterBottomNaviagtionInflation(Bundle savedInstanceState) {
         bottomNavigation = findViewById(R.id.bottomnav);
         bottomNavigation.setItemIconTintList(null);
         bottomNavigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
@@ -400,14 +405,14 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @NotNull
-    private boolean executeFirstTimeEvent(){
+    private boolean executeFirstTimeEvent() {
         if (isFirstTime()) {
             globalNavAnalytics.trackFirstTime(MainParentActivity.this);
         }
         return true;
     }
 
-    private void showSelectedPage(){
+    private void showSelectedPage() {
         int tabPosition = HOME_MENU;
         if (getIntent().getExtras() != null) {
             tabPosition = getIntent().getExtras().getInt(ARGS_TAB_POSITION, HOME_MENU);
@@ -669,7 +674,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @NotNull
-    private boolean checkAppSignature(){
+    private boolean checkAppSignature() {
         if (!((BaseMainApplication) getApplication()).checkAppSignature()) {
             finish();
         }
@@ -728,7 +733,7 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void renderNotification(Notification notification) {
         this.notification = notification;
-        if(bottomNavigation != null) {
+        if (bottomNavigation != null) {
             bottomNavigation.setNotification(notification.getTotalCart(), CART_MENU);
             if (notification.getHaveNewFeed()) {
                 bottomNavigation.setNotification(-1, FEED_MENU);
@@ -744,13 +749,16 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
-    public void onStartLoading() { }
+    public void onStartLoading() {
+    }
 
     @Override
-    public void onError(String message) { }
+    public void onError(String message) {
+    }
 
     @Override
-    public void onHideLoading() { }
+    public void onHideLoading() {
+    }
 
     @Override
     public Context getContext() {
@@ -826,7 +834,7 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void onReadytoShowBoarding(ArrayList<ShowCaseObject> showCaseObjects) {
 
-        if(bottomNavigation != null) {
+        if (bottomNavigation != null) {
 
             playAnimOsIcon(); // show animation icon
 
@@ -1103,12 +1111,11 @@ public class MainParentActivity extends BaseActivity implements
 
 
     /**
-     *
      * Load animated icon by Lottie
      * duration anim: 2s
      * 1s = 60 frames
      * + 20 frames
-     *
+     * <p>
      * 0f - 0.7f state default - animation - default
      * 1 state selected
      */
@@ -1168,6 +1175,7 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void stopHomePerformanceMonitoring() {
         if (homePerformanceMonitoring != null) {
+            Log.d("HomePerfTest MainParentActivity", "stopHomePerformanceMonitoring");
             homePerformanceMonitoring.stopTrace();
             homePerformanceMonitoring = null;
         }
