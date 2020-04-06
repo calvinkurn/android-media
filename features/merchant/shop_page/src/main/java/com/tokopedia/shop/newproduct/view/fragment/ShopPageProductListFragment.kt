@@ -61,8 +61,7 @@ import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
-import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
-import com.tokopedia.shop_showcase.shop_showcase_management.presentation.activity.ShopShowcaseListActivity
+import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListene
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
@@ -251,11 +250,11 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun redirectToAddEtalasePage() {
         context?.let {
-//            RouteManager.route(it, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_ADD)
-            // RouteManager.route(it, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ETALASE_ADD)
-            val shopAddShowcaseIntent = ShopShowcaseListActivity.createIntentAddShopShowcase(
-                    it, true)
-            startActivity(shopAddShowcaseIntent)
+            val bundle = Bundle()
+            bundle.putBoolean("isNeedToGoToAddShowcase", true)
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
+            intent.putExtra("bundle", bundle)
+            startActivity(intent)
         }
     }
 
@@ -651,14 +650,15 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun redirectToEtalasePicker() {
-        activity?.let {
-//            val shopEtalaseIntent = ShopEtalasePickerActivity.createIntent(it, shopInfo?.shopCore?.shopID
-//                    ?: "",
-//                    selectedEtalaseId, isShowDefault = true, isShowZeroProduct = isOwner)
-//            startActivityForResult(shopEtalaseIntent, REQUEST_CODE_ETALASE)
-            val shopShowcaseListIntent = ShopShowcaseListActivity.createIntentListShopShowcase(it,
-                    shopInfo!!.shopCore.shopID, selectedEtalaseId, true, false)
-            startActivity(shopShowcaseListIntent)
+        context?.let {
+            val bundle = Bundle()
+            bundle.putString("selectedEtalaseId", selectedEtalaseId)
+            bundle.putBoolean("isShowDefault", true)
+            bundle.putBoolean("isShowZeroProduct", false)
+            bundle.putString("shopId", shopInfo!!.shopCore.shopID)
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
+            intent.putExtra("bundle", bundle)
+            startActivity(intent)
         }
     }
 

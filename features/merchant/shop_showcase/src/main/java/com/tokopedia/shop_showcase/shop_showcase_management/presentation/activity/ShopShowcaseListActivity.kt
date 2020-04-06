@@ -23,56 +23,83 @@ import com.tokopedia.user.session.UserSessionInterface
 class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation {
 
     companion object {
-        @JvmStatic
-        fun createIntentListShopShowcase(
-                context: Context,
-                shopId: String,
-                selectedEtalaseId: String? = "",
-                isShowDefault : Boolean? = false,
-                isShowZeroProduct : Boolean? = false
-        ): Intent {
-            val intent = Intent(context, ShopShowcaseListActivity::class.java)
-            intent.putExtra(ShopShowcaseListParam.EXTRA_SHOP_ID, shopId)
-            intent.putExtra(ShopShowcaseListParam.EXTRA_ETALASE_ID, selectedEtalaseId)
-            intent.putExtra(ShopShowcaseListParam.EXTRA_IS_SHOW_DEFAULT, isShowDefault ?: false)
-            intent.putExtra(ShopShowcaseListParam.EXTRA_IS_SHOW_ZERO_PRODUCT, isShowZeroProduct ?: false)
-            return intent
-        }
+        const val SHOP_ID = "shopId"
+        const val IS_SHOW_ZERO_PRODUCT = "isShowZeroProduct"
+        const val IS_SHOW_DEFAULT = "isShowDefault"
+        const val IS_NEED_TOGO_TO_ADD_PAGE = "isNeedToGoToAddShowcase"
+        const val SELECTED_ETALASE_ID = "selectedEtalaseId"
 
-        @JvmStatic
-        fun createIntentAddShopShowcase(
-                context: Context,
-                isNeedToGoToAddShowcase: Boolean
-        ): Intent {
-            val intent = Intent(context, ShopShowcaseListActivity::class.java)
-            intent.putExtra(ShopShowcaseListParam.EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE, isNeedToGoToAddShowcase)
-//            intent.putExtra(ShopShowcaseListParam.EXTRA_TOTAL_PRODUCT, totalProduct)
-            return intent
-        }
+//        @JvmStatic
+//        fun createIntentListShopShowcase(
+//                context: Context,
+//                shopId: String,
+//                selectedEtalaseId: String? = "",
+//                isShowDefault : Boolean? = false,
+//                isShowZeroProduct : Boolean? = false
+//        ): Intent {
+//            val intent = Intent(context, ShopShowcaseListActivity::class.java)
+//            intent.putExtra(ShopShowcaseListParam.EXTRA_SHOP_ID, shopId)
+//            intent.putExtra(ShopShowcaseListParam.EXTRA_ETALASE_ID, selectedEtalaseId)
+//            intent.putExtra(ShopShowcaseListParam.EXTRA_IS_SHOW_DEFAULT, isShowDefault ?: false)
+//            intent.putExtra(ShopShowcaseListParam.EXTRA_IS_SHOW_ZERO_PRODUCT, isShowZeroProduct ?: false)
+//            return intent
+//        }
+//
+//        @JvmStatic
+//        fun createIntentAddShopShowcase(
+//                context: Context,
+//                isNeedToGoToAddShowcase: Boolean
+//        ): Intent {
+//            val intent = Intent(context, ShopShowcaseListActivity::class.java)
+//            intent.putExtra(ShopShowcaseListParam.EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE, isNeedToGoToAddShowcase)
+////            intent.putExtra(ShopShowcaseListParam.EXTRA_TOTAL_PRODUCT, totalProduct)
+//            return intent
+//        }
     }
 
     private val userSession: UserSessionInterface by lazy {
         UserSession(this)
     }
-    private var shopId: String? = null
-    private var selectedEtalaseId: String? = null
-    private var isShowDefault: Boolean? = null
-    private var isShowZeroProduct: Boolean? = null
-    private var shopType = com.tokopedia.shop_showcase.common.ShopType.REGULAR
-    private var isNeedToGoToAddShowcase: Boolean? = false
-    private var totalProduct: Int? = 0
+//    private var shopId: String? = null
+//    private var selectedEtalaseId: String? = null
+//    private var isShowDefault: Boolean? = null
+//    private var isShowZeroProduct: Boolean? = null
+//    private var shopType = com.tokopedia.shop_showcase.common.ShopType.REGULAR
+//    private var isNeedToGoToAddShowcase: Boolean? = false
+//    private var totalProduct: Int? = 0
+
+    private var shopId: String = "0"
+    private var selectedEtalaseId: String = "0"
+    private var isShowDefault: Boolean = true
+    private var isShowZeroProduct: Boolean = true
+    private var shopType = ShopType.REGULAR
+    private var isNeedToGoToAddShowcase: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        shopId = intent?.getStringExtra(ShopShowcaseListParam.EXTRA_SHOP_ID)
-        selectedEtalaseId = intent?.getStringExtra(ShopShowcaseListParam.EXTRA_ETALASE_ID)
-        isShowDefault = intent?.getBooleanExtra(ShopShowcaseListParam.EXTRA_IS_SHOW_DEFAULT, false)
-        isShowZeroProduct = intent?.getBooleanExtra(ShopShowcaseListParam.EXTRA_IS_SHOW_ZERO_PRODUCT, false)
-        isNeedToGoToAddShowcase = intent?.getBooleanExtra(ShopShowcaseListParam.EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE, false)
+//        shopId = intent?.getStringExtra(ShopShowcaseListParam.EXTRA_SHOP_ID)
+//        selectedEtalaseId = intent?.getStringExtra(ShopShowcaseListParam.EXTRA_ETALASE_ID)
+//        isShowDefault = intent?.getBooleanExtra(ShopShowcaseListParam.EXTRA_IS_SHOW_DEFAULT, false)
+//        isShowZeroProduct = intent?.getBooleanExtra(ShopShowcaseListParam.EXTRA_IS_SHOW_ZERO_PRODUCT, false)
+//        isNeedToGoToAddShowcase = intent?.getBooleanExtra(ShopShowcaseListParam.EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE, false)
 //        totalProduct = intent?.getIntExtra(ShopShowcaseListParam.EXTRA_TOTAL_PRODUCT, 0)
+
         setContentView(R.layout.fragment_shop_showcase_list_container)
 
-        if (shopId == null){
+//        val bundle = intent?.getBundleExtra("bundle")
+//        val testShopId = bundle?.getString("shopId")
+//        println(testShopId)
+
+        intent?.let {
+            val bundle: Bundle = it.getBundleExtra("bundle")
+            shopId = bundle.getString(SHOP_ID)
+            selectedEtalaseId = bundle.getString(SELECTED_ETALASE_ID)
+            isShowDefault = bundle.getBoolean(IS_SHOW_DEFAULT)
+            isShowZeroProduct = bundle.getBoolean(IS_SHOW_ZERO_PRODUCT)
+            isNeedToGoToAddShowcase = bundle.getBoolean(IS_NEED_TOGO_TO_ADD_PAGE)
+        }
+
+        if (shopId == "0"){
             shopId = userSession.shopId
         }
 
@@ -125,7 +152,7 @@ class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation 
     private fun isMyShop(): Boolean = shopId == userSession.shopId
 
     private fun getShopType() {
-        val isOfficialStore = false // userSession.isShopOfficialStore
+        val isOfficialStore = userSession.isShopOfficialStore
         val isGoldMerchant = userSession.isGoldMerchant
 
         if (isOfficialStore) {
