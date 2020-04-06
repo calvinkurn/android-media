@@ -66,6 +66,7 @@ class PlayBannerUITest {
     private val getBusinessUnitDataUseCase = mockk<GetBusinessUnitDataUseCase> (relaxed = true)
     private val getPopularKeywordUseCase = mockk<GetPopularKeywordUseCase> (relaxed = true)
     private val getDynamicChannelsUseCase = mockk<GetDynamicChannelsUseCase> (relaxed = true)
+    private val sendTopAdsUseCase = mockk<SendTopAdsUseCase>(relaxed = true)
     private val homeDataMapper = HomeDataMapper(InstrumentationRegistry.getInstrumentation().context, HomeVisitableFactoryImpl(userSessionInterface), mockk(relaxed = true))
 
 
@@ -359,6 +360,7 @@ class PlayBannerUITest {
             popularKeywordUseCase = getPopularKeywordUseCase,
             sendGeolocationInfoUseCase = getSendGeolocationInfoUseCase,
             stickyLoginUseCase = getStickyLoginUseCase,
-            userSession = userSessionInterface
+            userSession = userSessionInterface,
+            sendTopAdsUseCase = sendTopAdsUseCase
     )
 }

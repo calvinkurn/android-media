@@ -107,7 +107,7 @@ public class VariantImageView extends FrameLayout {
         this.basePictureViewModel = basePictureViewModel;
         if (basePictureViewModel != null && !TextUtils.isEmpty(basePictureViewModel.getUriOrPath())) {
             ivVariant.setBackgroundColor(Color.TRANSPARENT);
-            if (basePictureViewModel.getId() > 0) {
+            if (basePictureViewModel.getId() != 0) {
                 if (basePictureViewModel.getX() != 0 && basePictureViewModel.getY() != 0) {
                     ImageHandler.loadImageFitCenter(getContext(), ivVariant,
                             basePictureViewModel.getUrlOriginal());

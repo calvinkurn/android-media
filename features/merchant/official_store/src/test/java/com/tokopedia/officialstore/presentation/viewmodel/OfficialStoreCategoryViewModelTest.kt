@@ -36,29 +36,29 @@ class OfficialStoreCategoryViewModelTest {
         MockKAnnotations.init(this)
     }
 
-    @Test
-    fun testGetOfficialStoreCategoriesSuccess() {
-        coEvery {
-            getOfficialStoreCategoriesUseCase.executeOnBackground()
-        } returns OfficialStoreCategories()
-        viewModelStore.getOfficialStoreCategories()
-        coVerify {
-            getOfficialStoreCategoriesUseCase.executeOnBackground()
-        }
-        assertTrue(viewModelStore.officialStoreCategoriesResult.value is Success)
-    }
+//    @Test
+//    fun testGetOfficialStoreCategoriesSuccess() {
+//        coEvery {
+//            getOfficialStoreCategoriesUseCase.executeOnBackground()
+//        } returns OfficialStoreCategories()
+//        viewModelStore.getOfficialStoreCategories()
+//        coVerify {
+//            getOfficialStoreCategoriesUseCase.executeOnBackground()
+//        }
+//        assertTrue(viewModelStore.officialStoreCategoriesResult.value is Success)
+//    }
 
-    @Test
-    fun testGetOfficialStoreCategoriesError() {
-        coEvery {
-            getOfficialStoreCategoriesUseCase.executeOnBackground()
-        } throws Throwable()
-        viewModelStore.getOfficialStoreCategories()
-        coVerify {
-            getOfficialStoreCategoriesUseCase.executeOnBackground()
-        }
-        assertTrue(viewModelStore.officialStoreCategoriesResult.value is Fail)
-    }
+//    @Test
+//    fun testGetOfficialStoreCategoriesError() {
+//        coEvery {
+//            getOfficialStoreCategoriesUseCase.executeOnBackground()
+//        } throws Throwable()
+//        viewModelStore.getOfficialStoreCategories()
+//        coVerify {
+//            getOfficialStoreCategoriesUseCase.executeOnBackground()
+//        }
+//        assertTrue(viewModelStore.officialStoreCategoriesResult.value is Fail)
+//    }
 
 }
 
