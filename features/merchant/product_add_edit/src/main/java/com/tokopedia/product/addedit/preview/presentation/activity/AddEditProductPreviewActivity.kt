@@ -43,6 +43,9 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
     }
 
     companion object {
+        fun createInstance(context: Context?): Intent =
+                Intent(context, AddEditProductPreviewActivity::class.java)
+
         fun createInstance(context: Context?, isFromSuccessNotif: Boolean?,
                            isFromNotifEditMode: Boolean?): Intent {
             val intent = Intent(context,

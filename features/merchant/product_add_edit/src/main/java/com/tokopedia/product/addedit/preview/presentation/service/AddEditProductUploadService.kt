@@ -27,11 +27,9 @@ import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProduc
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
 import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.io.File
 import java.util.*
 import javax.inject.Inject
@@ -152,7 +150,7 @@ class AddEditProductUploadService : JobIntentService(), CoroutineScope {
                 return@withContext productAddUseCase.executeOnBackground()
             }
         }, onError = {
-            notificationManager?.onFailedPost(it.message!!)
+            it.message?.let { errorMessage -> notificationManager?.onFailedPost(errorMessage) }
         })
     }
 

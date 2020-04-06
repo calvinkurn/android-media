@@ -13,6 +13,7 @@ import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextIntOrZero
+import com.tokopedia.product.addedit.common.util.setModeToNumberInput
 import com.tokopedia.product.addedit.common.util.setText
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentComponent
@@ -46,10 +47,12 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     lateinit var shipmentViewModel: AddEditProductShipmentViewModel
 
     companion object {
-        fun createInstance(shipmentInputModel: ShipmentInputModel): Fragment {
+        fun createInstance(): Fragment = AddEditProductShipmentFragment()
+        fun createInstanceEditMode(shipmentInputModel: ShipmentInputModel): Fragment {
             return AddEditProductShipmentFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(EXTRA_SHIPMENT_INPUT_MODEL, shipmentInputModel)
+                    putBoolean(EXTRA_IS_EDITMODE, true)
                 }
             }
         }
@@ -62,6 +65,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             }
 
         const val EXTRA_SHIPMENT_INPUT_MODEL = "shipment_input_model"
+        const val EXTRA_IS_EDITMODE = "shipment_input_model"
         const val REQUEST_CODE_SHIPMENT = 0x04
     }
 
@@ -77,10 +81,12 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         userSession = UserSession(requireContext())
         shopId = userSession.shopId
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            val shipmentInputModel: ShipmentInputModel =
-                it.getParcelable(EXTRA_SHIPMENT_INPUT_MODEL) ?: ShipmentInputModel()
+        arguments?.run {
+            val shipmentInputModel: ShipmentInputModel = getParcelable(EXTRA_SHIPMENT_INPUT_MODEL)
+                ?: ShipmentInputModel()
+            val isEditMode = getBoolean(EXTRA_IS_EDITMODE, false)
             shipmentViewModel.shipmentInputModel = shipmentInputModel
+            shipmentViewModel.isEditMode = isEditMode
         }
     }
 
@@ -103,7 +109,8 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         tfWeightAmount = view.findViewById(R.id.tf_weight_amount)
         switchInsurance = view.findViewById(R.id.switch_insurance)
         btnEnd = view.findViewById(R.id.btn_end)
-        applyShipmentDataToView()
+        tfWeightAmount.setModeToNumberInput()
+        if (shipmentViewModel.isEditMode) applyEditMode()
         tfWeightUnit?.apply {
             textFieldInput.setText(getWeightTypeTitle(0))
             textFieldInput.isFocusable = false // disable focus
@@ -127,7 +134,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun applyShipmentDataToView() {
+    private fun applyEditMode() {
         val inputModel = shipmentViewModel.shipmentInputModel
         val weightUnitResId = getWeightTypeTitle(inputModel.weightUnit)
         val weightUnit = getString(weightUnitResId)
@@ -184,7 +191,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         } else {
             getString(R.string.error_weight_not_valid, MIN_WEIGHT, MAX_WEIGHT_KILOGRAM)
         }
-        val isValid = shipmentViewModel.isWeightValid(inputText, selectedWeightPosition, MIN_WEIGHT)
+        val isValid = shipmentViewModel.isWeightValid(inputText, selectedWeightPosition)
         tfWeightAmount?.setError(!isValid)
         tfWeightAmount?.setMessage(if (isValid) "" else errorMessage)
         btnEnd?.isEnabled = isValid
@@ -201,17 +208,16 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
 
     private fun submitInput() {
         if (validateInputWeight(tfWeightAmount.getText())) {
-            if (shipmentViewModel.isEditMode) {
-                val shipmentInputModel = ShipmentInputModel(
-                    tfWeightAmount.getTextIntOrZero(),
-                    selectedWeightPosition,
-                    switchInsurance?.isChecked == true
-                )
-                val intent = Intent()
-                intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
-                activity?.setResult(Activity.RESULT_OK, intent)
-                activity?.finish()
-            }
+            val shipmentInputModel = ShipmentInputModel(
+                tfWeightAmount.getTextIntOrZero(),
+                selectedWeightPosition,
+                switchInsurance?.isChecked == true
+            )
+            val intent = Intent()
+            intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
         }
-
     }
+
+}
