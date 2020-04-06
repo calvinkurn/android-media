@@ -30,7 +30,6 @@ class AddEditProductDetailActivity : BaseSimpleActivity(), HasComponent<AddEditP
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
         onBackPressedHitTracking()
         val dialogBuilder = AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
                 .setMessage(R.string.message_alert_dialog_before_exit)
