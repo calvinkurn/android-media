@@ -183,12 +183,14 @@ class PartialSnapshotView(private val view: View,
             val endDate = dateFormat.parse(campaign.endDate)
             val delta = endDate.time - endDateTimeMs
 
-            if (TimeUnit.MICROSECONDS.toDays(now - endDate.time) < 1) {
+            if (TimeUnit.MILLISECONDS.toDays(endDate.time - now) < 1) {
                 count_down.setup(delta, endDate) {
                     hideProductCampaign(campaign)
                     listener.showAlertCampaignEnded()
                 }
                 discount_timer_holder.visible()
+            } else {
+                view.layout_discount_timer.gone()
             }
         } catch (ex: Exception) {
             discount_timer_holder.visibility = View.GONE

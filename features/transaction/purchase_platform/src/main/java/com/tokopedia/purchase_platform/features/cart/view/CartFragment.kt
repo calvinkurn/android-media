@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.chuckerteam.chucker.api.Chucker
 import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -104,6 +105,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
@@ -342,6 +344,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
 
         super.onStop()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (refreshHandler?.isRefreshing == false) {
+            if (!::cartAdapter.isInitialized || (::cartAdapter.isInitialized && cartAdapter.itemCount == 0)) {
+                dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
+            }
+        }
     }
 
     private fun updateCartAfterDetached() {
@@ -1147,7 +1158,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         onProductClicked(productId)
     }
 
-    override fun onRecommendationProductClicked(productId: String) {
+    override fun onRecommendationProductClicked(productId: String, topAds: Boolean, clickUrl: String) {
         var index = 1
         var recommendationItemClick: RecommendationItem? = null
         for ((recommendationItem) in recommendationList as List<CartRecommendationItemHolderData>) {
@@ -1163,7 +1174,20 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     dPresenter.generateRecommendationDataOnClickAnalytics(it, FLAG_IS_CART_EMPTY, index))
         }
 
+        when {
+            topAds -> {
+                ImpresionTask().execute(clickUrl)
+            }
+        }
         onProductClicked(productId)
+    }
+
+    override fun onRecommendationProductImpression(topAds: Boolean, trackingImageUrl: String) {
+        when {
+            topAds -> {
+                ImpresionTask().execute(trackingImageUrl)
+            }
+        }
     }
 
     override fun onButtonAddToCartClicked(productModel: Any) {

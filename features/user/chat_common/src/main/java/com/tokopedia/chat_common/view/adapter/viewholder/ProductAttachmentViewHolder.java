@@ -139,7 +139,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         }
 
         if (element.hasSizeVariant()) {
-            productColorVariant.setVisibility(View.VISIBLE);
+            productSizeVariant.setVisibility(View.VISIBLE);
             productSizeVariantValue.setText(element.getSizeVariant());
         } else {
             productSizeVariant.setVisibility(View.GONE);

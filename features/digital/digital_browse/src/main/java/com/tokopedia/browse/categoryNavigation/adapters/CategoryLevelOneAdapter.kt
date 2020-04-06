@@ -12,18 +12,20 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.browse.R
 import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics.Companion.categoryAnalytics
+import com.tokopedia.browse.categoryNavigation.data.model.newcategory.CategoriesItem
 import com.tokopedia.browse.categoryNavigation.fragments.CategorylevelOneFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.item_category_level_one.view.*
 import kotlinx.android.synthetic.main.item_shimmer_level_one.view.*
 
-class CategoryLevelOneAdapter(private val categoryList: MutableList<com.tokopedia.browse.categoryNavigation.data.model.newcategory.CategoriesItem>,
+class CategoryLevelOneAdapter(private val categoryList: MutableList<CategoriesItem>,
                               private val listener: CategorylevelOneFragment.CategorySelectListener,
                               private val trackingQueue: TrackingQueue?)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val categoryItem = 1
     private val viewMap = HashMap<Int, Boolean>()
+    private val itemListTrackerList = ArrayList<CategoriesItem>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -101,13 +103,20 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<com.tokopedi
 
     override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
         super.onViewAttachedToWindow(holder)
-        val position = holder.adapterPosition
-        if (!viewMap.containsKey(position)) {
-            viewMap[position] = true
-            trackingQueue?.let {
-                categoryAnalytics.eventSideCategoryView(it, categoryList[position], position)
+        if (holder.itemViewType == categoryItem) {
+            val position = holder.adapterPosition
+            val item = categoryList[position]
+            item.position = position
+            if (!viewMap.containsKey(position)) {
+                viewMap[position] = true
+                itemListTrackerList.add(item)
             }
         }
+    }
+
+    fun onPause() {
+        categoryAnalytics.eventSideCategoryView(itemListTrackerList)
+        itemListTrackerList.clear()
     }
 
     private fun getEllipsizedMessage(message: String): String? {
