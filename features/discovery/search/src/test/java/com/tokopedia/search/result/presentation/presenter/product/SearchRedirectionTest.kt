@@ -17,6 +17,8 @@ import rx.Subscriber
 internal class SearchRedirectionTest: Spek({
 
     Feature("Search success with redirection") {
+
+        
         createTestInstance()
 
         Scenario("Load Data Success With Redirection") {

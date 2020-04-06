@@ -245,7 +245,7 @@ final class ProductListPresenter
             enrichWithAdditionalParams(params, additionalParamsMap);
         }
 
-        getDynamicFilterUseCase.execute(params, getDynamicFilterSubscriber(false));
+        getDynamicFilterUseCase.execute(params, getDynamicFilterSubscriber(false, searchParameterMap));
     }
 
     private RequestParams createRequestDynamicFilterParams(Map<String, Object> searchParameter) {
@@ -393,7 +393,7 @@ final class ProductListPresenter
 
             @Override
             public void onNext(SearchProductModel searchProductModel) {
-                loadMoreDataSubscriberOnNextIfViewAttached(searchProductModel);
+                loadMoreDataSubscriberOnNextIfViewAttached(searchParameter, searchProductModel);
             }
 
             @Override
@@ -402,8 +402,8 @@ final class ProductListPresenter
             }
 
             @Override
-            public void onError(Throwable e) {
-                loadMoreDataSubscriberOnErrorIfViewAttached(searchParameter);
+            public void onError(Throwable error) {
+                loadMoreDataSubscriberOnErrorIfViewAttached(searchParameter, error);
             }
         };
     }
@@ -418,7 +418,7 @@ final class ProductListPresenter
         startFrom = startFrom + Integer.parseInt(SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS);
     }
 
-    private void loadMoreDataSubscriberOnNextIfViewAttached(SearchProductModel searchProductModel) {
+    private void loadMoreDataSubscriberOnNextIfViewAttached(Map<String, Object> searchParameter, SearchProductModel searchProductModel) {
         if (isViewAttached()) {
             int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
 
@@ -429,7 +429,7 @@ final class ProductListPresenter
             if (productViewModel.getProductList().isEmpty()) {
                 getViewToRemoveLoading();
             } else {
-                getViewToShowMoreData(productViewModel);
+                getViewToShowMoreData(searchParameter, productViewModel);
             }
 
             setTotalData(productViewModel.getTotalData());
@@ -451,11 +451,11 @@ final class ProductListPresenter
         getView().removeLoading();
     }
 
-    private void getViewToShowMoreData(ProductViewModel productViewModel) {
+    private void getViewToShowMoreData(Map<String, Object> searchParameter, ProductViewModel productViewModel) {
         List<Visitable> list = new ArrayList<>(convertToListOfVisitable(productViewModel));
         productList.addAll(list);
 
-        processInspirationCarouselPosition(list);
+        processInspirationCarouselPosition(searchParameter, list);
 
         getView().removeLoading();
         getView().addProductList(list);
@@ -554,11 +554,12 @@ final class ProductListPresenter
         }
     }
 
-    private void loadMoreDataSubscriberOnErrorIfViewAttached(Map<String, Object> searchParameter) {
+    private void loadMoreDataSubscriberOnErrorIfViewAttached(Map<String, Object> searchParameter, Throwable error) {
         if (isViewAttached()) {
             getView().removeLoading();
             getView().hideRefreshLayout();
             getView().showNetworkError(getIntegerFromSearchParameter(searchParameter, SearchApiConst.START));
+            getView().logWarning(UrlParamUtils.generateUrlParamString(searchParameter), error);
         }
     }
 
@@ -599,13 +600,13 @@ final class ProductListPresenter
             }
 
             @Override
-            public void onError(Throwable e) {
-                loadDataSubscriberOnErrorIfViewAttached();
+            public void onError(Throwable error) {
+                loadDataSubscriberOnErrorIfViewAttached(searchParameter, error);
             }
 
             @Override
             public void onNext(SearchProductModel searchProductModel) {
-                loadDataSubscriberOnNextIfViewAttached(searchProductModel);
+                loadDataSubscriberOnNextIfViewAttached(searchParameter, searchProductModel);
             }
         };
     }
@@ -624,20 +625,21 @@ final class ProductListPresenter
         }
     }
 
-    private void loadDataSubscriberOnErrorIfViewAttached() {
+    private void loadDataSubscriberOnErrorIfViewAttached(Map<String, Object> searchParameter, Throwable throwable) {
         if (isViewAttached()) {
             getView().removeLoading();
             getView().showNetworkError(0);
             getView().hideRefreshLayout();
+            getView().logWarning(UrlParamUtils.generateUrlParamString(searchParameter), throwable);
         }
     }
 
-    private void loadDataSubscriberOnNextIfViewAttached(SearchProductModel searchProductModel) {
+    private void loadDataSubscriberOnNextIfViewAttached(Map<String, Object> searchParameter, SearchProductModel searchProductModel) {
         if (isViewAttached()) {
             if (isSearchRedirected(searchProductModel)) {
                 getViewToRedirectSearch(searchProductModel);
             } else {
-                getViewToProcessSearchResult(searchProductModel);
+                getViewToProcessSearchResult(searchParameter, searchProductModel);
             }
         }
     }
@@ -656,7 +658,7 @@ final class ProductListPresenter
         getView().redirectSearchToAnotherPage(applink);
     }
 
-    private void getViewToProcessSearchResult(SearchProductModel searchProductModel) {
+    private void getViewToProcessSearchResult(Map<String, Object> searchParameter, SearchProductModel searchProductModel) {
         updateValueEnableGlobalNavWidget();
 
         ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
@@ -670,7 +672,7 @@ final class ProductListPresenter
             getViewToShowRecommendationItem();
             getView().hideBottomNavigation();
         } else {
-            getViewToShowProductList(searchProductModel, productViewModel);
+            getViewToShowProductList(searchParameter, searchProductModel, productViewModel);
             getView().showBottomNavigation();
         }
 
@@ -775,7 +777,7 @@ final class ProductListPresenter
         );
     }
 
-    private void getViewToShowProductList(SearchProductModel searchProductModel, ProductViewModel productViewModel) {
+    private void getViewToShowProductList(Map<String, Object> searchParameter, SearchProductModel searchProductModel, ProductViewModel productViewModel) {
         SearchProductModel.SearchProduct searchProduct = searchProductModel.getSearchProduct();
 
         List<Visitable> list = new ArrayList<>();
@@ -830,7 +832,7 @@ final class ProductListPresenter
         }
 
         inspirationCarouselViewModel = productViewModel.getInspirationCarouselViewModel();
-        processInspirationCarouselPosition(list);
+        processInspirationCarouselPosition(searchParameter, list);
 
         getView().removeLoading();
         getView().setProductList(list);
@@ -888,7 +890,7 @@ final class ProductListPresenter
         return new BannedProductsTickerViewModel(htmlErrorMessage);
     }
 
-    private void processInspirationCarouselPosition(List<Visitable> list) {
+    private void processInspirationCarouselPosition(Map<String, Object> searchParameter, List<Visitable> list) {
         if (inspirationCarouselViewModel.size() > 0) {
             Iterator<InspirationCarouselViewModel> inspirationCarouselViewModelIterator = inspirationCarouselViewModel.iterator();
 
@@ -909,6 +911,7 @@ final class ProductListPresenter
                     }
                     catch (Exception exception) {
                         exception.printStackTrace();
+                        getView().logWarning(UrlParamUtils.generateUrlParamString(searchParameter), exception);
                     }
                 }
             }
@@ -1081,25 +1084,27 @@ final class ProductListPresenter
         requestParams.putAllString(additionalParams);
     }
 
-    protected Subscriber<DynamicFilterModel> getDynamicFilterSubscriber(final boolean shouldSaveToLocalDynamicFilterDb) {
+    protected Subscriber<DynamicFilterModel> getDynamicFilterSubscriber(final boolean shouldSaveToLocalDynamicFilterDb, Map<String, Object> searchParameter) {
         return new Subscriber<DynamicFilterModel>() {
             @Override
             public void onCompleted() {
             }
 
             @Override
-            public void onError(Throwable e) {
-                if (e != null) {
-                    e.printStackTrace();
+            public void onError(Throwable error) {
+                if (error != null) {
+                    error.printStackTrace();
                 }
 
                 getView().renderFailRequestDynamicFilter();
+                getView().logWarning(UrlParamUtils.generateUrlParamString(searchParameter), error);
             }
 
             @Override
             public void onNext(DynamicFilterModel dynamicFilterModel) {
                 if (dynamicFilterModel == null) {
                     getView().renderFailRequestDynamicFilter();
+                    getView().logWarning(UrlParamUtils.generateUrlParamString(searchParameter), null);
                     return;
                 }
 

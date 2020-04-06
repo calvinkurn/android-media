@@ -11,7 +11,6 @@ import com.tokopedia.search.di.module.UserSessionModule;
 import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterGqlUseCaseModule;
 import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductUseCaseModule;
-import com.tokopedia.search.result.network.service.TopAdsServiceModule;
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandlerModule;
 import com.tokopedia.search.result.presentation.presenter.product.ProductListPresenterModule;
 
@@ -23,7 +22,6 @@ import dagger.Component;
         RemoteConfigModule.class,
         RecommendationModule.class,
         UserSessionModule.class,
-        TopAdsServiceModule.class,
         SearchProductUseCaseModule.class,
         GetDynamicFilterGqlUseCaseModule.class,
         SearchLocalCacheHandlerModule.class,

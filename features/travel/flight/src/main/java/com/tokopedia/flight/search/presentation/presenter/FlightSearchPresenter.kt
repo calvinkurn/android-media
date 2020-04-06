@@ -257,13 +257,15 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
         val child = flightPassengerModel.children
         val infant = flightPassengerModel.infant
         val classID = passDataModel.flightClass.id
+        val searchRequestId = passDataModel.searchRequestId
 
         val requestModel = FlightSearchApiRequestModel(
                 airportCombineModel.depAirport,
                 airportCombineModel.arrAirport,
                 date, adult, child, infant, classID,
                 airportCombineModel.airlines,
-                FlightRequestUtil.getLocalIpAddress())
+                FlightRequestUtil.getLocalIpAddress(),
+                searchRequestId)
 
         flightSearchUseCase.execute(flightSearchUseCase.createRequestParams(
                 requestModel,
@@ -372,13 +374,15 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
         val child = flightPassengerModel.children
         val infant = flightPassengerModel.infant
         val classID = passDataModel.flightClass.id
+        val searchRequestId = passDataModel.searchRequestId
 
         val requestModel = FlightSearchApiRequestModel(
                 airportCombineModel.arrAirport,
                 airportCombineModel.depAirport,
                 date, adult, child, infant, classID,
                 airportCombineModel.airlines,
-                FlightRequestUtil.getLocalIpAddress())
+                FlightRequestUtil.getLocalIpAddress(),
+                searchRequestId)
 
         flightSearchUseCase.execute(flightSearchUseCase.createRequestParams(
                 requestModel,

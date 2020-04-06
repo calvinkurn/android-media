@@ -180,9 +180,10 @@ open class FlightSearchActivity : BaseFlightActivity(),
         setupSearchToolbarText()
     }
 
-    override fun selectFlight(selectedFlightID: String, selectedTerm: String, flightPriceModel: FlightPriceModel,
-                              isBestPairing: Boolean, isCombineDone: Boolean) {
-        if (passDataModel.isOneWay) {
+    override fun selectFlight(selectedFlightID: String, selectedTerm: String, flightPriceViewModel: FlightPriceModel,
+                              isBestPairing: Boolean, isCombineDone: Boolean, requestId: String) {
+        passDataViewModel.searchRequestId = requestId
+        if (passDataViewModel.isOneWay) {
             if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_BOOKING_NEW_FLOW, true)) {
                 startActivityForResult(FlightBookingActivity
                         .getCallingIntent(this, passDataModel, selectedFlightID, selectedTerm,

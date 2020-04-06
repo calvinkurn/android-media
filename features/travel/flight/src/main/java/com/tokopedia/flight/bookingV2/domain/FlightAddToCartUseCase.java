@@ -44,6 +44,7 @@ public class FlightAddToCartUseCase extends UseCase<CartEntity> {
     private static final String PARAM_CART_TYPE = "add_cart";
     private static final String PARAM_PRICE = "price";
     private static final String PARAM_CURRENCY = "price_currency";
+    private static final String PARAM_REQUEST_ID = "request_id";
     private static final int DEFAULT_CURRENCY_ID = 1;
     private static final int DEFAULT_DEVICE_ID = 5;
     private FlightRepository flightRepository;
@@ -74,6 +75,7 @@ public class FlightAddToCartUseCase extends UseCase<CartEntity> {
         attributesRequest.setDid(DEFAULT_DEVICE_ID);
         attributesRequest.setIpAddress(FlightRequestUtil.getLocalIpAddress());
         attributesRequest.setUserAgent(FlightRequestUtil.getUserAgentForApiCall());
+        attributesRequest.setRequestId(requestParams.getString(PARAM_REQUEST_ID, ""));
         FlightRequest flightRequest = new FlightRequest();
         flightRequest.setAdult(requestParams.getInt(PARAM_ADULT, 0));
         flightRequest.setChild(requestParams.getInt(PARAM_CHILD, PARAM_DEFAULT_VALUE_INT));
@@ -139,7 +141,8 @@ public class FlightAddToCartUseCase extends UseCase<CartEntity> {
                                             int flightClass,
                                             String departureId,
                                             String idEmpotencyKey,
-                                            int price) {
+                                            int price,
+                                            String requestId) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putInt(PARAM_ADULT, adult);
         requestParams.putInt(PARAM_CHILD, child);
@@ -148,6 +151,7 @@ public class FlightAddToCartUseCase extends UseCase<CartEntity> {
         requestParams.putString(PARAM_FLIGHT_DEPARTURE, departureId);
         requestParams.putString(PARAM_ID_EMPOTENCY_KEY, idEmpotencyKey);
         requestParams.putInt(PARAM_PRICE, price);
+        requestParams.putString(PARAM_REQUEST_ID, requestId);
         return requestParams;
     }
 
@@ -159,7 +163,8 @@ public class FlightAddToCartUseCase extends UseCase<CartEntity> {
                                             String returnId,
                                             String idEmpotencyKey,
                                             int price,
-                                            String comboKey) {
+                                            String comboKey,
+                                            String requestId) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putInt(PARAM_ADULT, adult);
         requestParams.putInt(PARAM_CHILD, child);
@@ -170,6 +175,7 @@ public class FlightAddToCartUseCase extends UseCase<CartEntity> {
         requestParams.putString(PARAM_ID_EMPOTENCY_KEY, idEmpotencyKey);
         requestParams.putInt(PARAM_PRICE, price);
         requestParams.putString(PARAM_COMBO_KEY, comboKey);
+        requestParams.putString(PARAM_REQUEST_ID, requestId);
         return requestParams;
     }
 }

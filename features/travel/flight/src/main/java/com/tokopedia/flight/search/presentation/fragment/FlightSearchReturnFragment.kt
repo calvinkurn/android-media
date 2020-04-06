@@ -174,9 +174,13 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
 
     override fun navigateToCart(returnFlightSearchViewModel: FlightJourneyModel?, selectedFlightReturn: String?, flightPriceModel: FlightPriceModel, selectedFlightTerm: String?) {
         if (returnFlightSearchViewModel != null) {
-            onFlightSearchFragmentListener?.selectFlight(returnFlightSearchViewModel.id, returnFlightSearchViewModel.term, flightPriceModel, false, true)
+            onFlightSearchFragmentListener?.selectFlight(returnFlightSearchViewModel.id,
+                    returnFlightSearchViewModel.term, flightPriceModel,
+                    isBestPairing = false, isCombineDone = true, requestId = flightSearchPassData.searchRequestId)
         } else if (selectedFlightReturn != null && selectedFlightTerm != null) {
-            onFlightSearchFragmentListener?.selectFlight(selectedFlightReturn, selectedFlightTerm, flightPriceModel,false, true)
+            onFlightSearchFragmentListener?.selectFlight(selectedFlightReturn, selectedFlightTerm,
+                    flightPriceModel, isBestPairing = false, isCombineDone = true,
+                    requestId = flightSearchPassData.searchRequestId)
         }
     }
 
@@ -261,8 +265,12 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
     }
 
     private fun resetDepartureLabelPrice() {
-        if (priceModel.departurePrice.adultNumericCombo != 0) {
-            departure_trip_label.setValuePrice(priceModel.departurePrice.adultCombo)
+        if (isBestPairing) {
+            if (isOnlyShowBestPair() && priceModel.departurePrice.adultNumericCombo > 0) {
+                departure_trip_label.setValuePrice(priceModel.departurePrice.adultCombo)
+            } else {
+                departure_trip_label.setValuePrice(priceModel.departurePrice.adult)
+            }
         } else {
             departure_trip_label.setValuePrice(priceModel.departurePrice.adult)
         }

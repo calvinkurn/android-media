@@ -58,6 +58,7 @@ data class BannerSlidesModel(
     var position = -1
     companion object{
         const val TYPE_BANNER_PERSO = "overlay"
+        const val TYPE_TOPADS = "topads"
         const val TYPE_BANNER_DEFAULT = "default"
     }
 }

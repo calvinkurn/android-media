@@ -59,9 +59,9 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
 
     override fun getArrivalAirport(): FlightAirportModel = passDataModel.departureAirport
 
-    override fun selectFlight(selectedFlightID: String, selectedFlightTerm: String, flightPriceModel: FlightPriceModel,
-                              isBestPairing: Boolean, isCombineDone: Boolean) {
-
+    override fun selectFlight(selectedFlightID: String, selectedFlightTerm: String, flightPriceViewModel: FlightPriceModel,
+                              isBestPairing: Boolean, isCombineDone: Boolean, requestId: String) {
+        passDataViewModel.searchRequestId = requestId
         if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_BOOKING_NEW_FLOW, true)) {
             startActivityForResult(FlightBookingActivity
                     .getCallingIntent(this,
@@ -96,13 +96,13 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
     }
 
     companion object {
-        val EXTRA_DEPARTURE_ID = "EXTRA_DEPARTURE_ID"
-        val EXTRA_DEPARTURE_TERM = "EXTRA_DEPARTURE_TERM"
-        val EXTRA_IS_BEST_PAIRING = "EXTRA_IS_BEST_PAIRING"
-        val EXTRA_PRICE_VIEW_MODEL = "EXTRA_PRICE_VIEW_MODEL"
-        val EXTRA_IS_COMBINE_DONE = "EXTRA_IS_COMBINE_DONE"
+        const val EXTRA_DEPARTURE_ID = "EXTRA_DEPARTURE_ID"
+        const val EXTRA_DEPARTURE_TERM = "EXTRA_DEPARTURE_TERM"
+        const val EXTRA_IS_BEST_PAIRING = "EXTRA_IS_BEST_PAIRING"
+        const val EXTRA_PRICE_VIEW_MODEL = "EXTRA_PRICE_VIEW_MODEL"
+        const val EXTRA_IS_COMBINE_DONE = "EXTRA_IS_COMBINE_DONE"
 
-        private val REQUEST_CODE_BOOKING = 13
+        private const val REQUEST_CODE_BOOKING = 13
 
         fun getCallingIntent(context: Context,
                              passDataModel: FlightSearchPassDataModel,
