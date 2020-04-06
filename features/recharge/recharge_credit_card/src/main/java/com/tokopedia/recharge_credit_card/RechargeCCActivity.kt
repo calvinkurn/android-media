@@ -7,6 +7,12 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import kotlinx.android.synthetic.main.activity_recharge_cc.*
 
+/*
+ * applink production = tokopedia://digital/form?category_id=26&menu_id=169&template=tagihancc
+ * applink staging = tokopedia://digital/form?category_id=26&menu_id=86&template=tagihancc
+ * for activating staging, dont forget change base url on submit PCIDSS
+ */
+
 class RechargeCCActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment? {
