@@ -116,7 +116,7 @@ class FirebaseMessagingManagerImpl @Inject constructor(
                     fcmTokenShouldBe: $token
                     errorMessage: ${error.message},
                 """.trimIndent()
-                Crashlytics.log(errorMessage)
+                Crashlytics.logException(Exception(errorMessage))
             }
         } catch (e: Exception) {
             e.printStackTrace()

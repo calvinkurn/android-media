@@ -34,6 +34,9 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
                               private val trackingQueue: TrackingQueue?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val viewMap = HashMap<Int, Boolean>()
+    private var productTrackerList = ArrayList<CategoryChildItem>()
+    private var yangLangHitTrackerList = ArrayList<CategoryChildItem>()
+    private var seringKamuTrackerList = ArrayList<CategoryChildItem>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
@@ -105,8 +108,9 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
                 categoryAnalytics.eventBannerCategoryLevelTwoClick(item, position)
             }
         }
+        // product border Logic
 
-        if (isLeafElement(item.sameCategoryTotalCount, item.categoryPosition)) {
+        if (isLastRowElement(item.sameCategoryTotalCount, item.categoryPosition)) {
             productViewHolder.bottomBorder.hide()
         }
         when (item.categoryPosition % totalColumns) {
@@ -124,9 +128,14 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
         }
     }
 
-    private fun isLeafElement(sameCategoryTotalCount: Int, categoryPosition: Int): Boolean {
-        val x = sameCategoryTotalCount / totalColumns
-        return (categoryPosition - totalColumns * x > 0) || (categoryPosition > sameCategoryTotalCount - totalColumns)
+    private fun isLastRowElement(sameCategoryTotalCount: Int, categoryPosition: Int): Boolean {
+        val div = sameCategoryTotalCount / totalColumns
+        val mod = sameCategoryTotalCount % totalColumns
+        return if (mod == 0) {
+            categoryPosition > (sameCategoryTotalCount - totalColumns)
+        } else {
+            categoryPosition > div * totalColumns
+        }
     }
 
 
@@ -232,23 +241,19 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
             val item = list[position]
             when (holder.itemViewType) {
                 Constants.ProductView -> {
-                    trackingQueue?.let {
-                        if (list[position].isSeringKamuLihat) {
-                            categoryAnalytics.eventSeringkkamuLihatView(it, item, item.categoryPosition)
-                        } else {
-                            categoryAnalytics.eventCategoryLevelTwoView(it, item, position)
-                        }
+                    if (list[position].isSeringKamuLihat) {
+                        seringKamuTrackerList.add(item)
+                    } else {
+                        item.categoryPosition = position
+                        productTrackerList.add(item)
                     }
                 }
                 Constants.YangLagiHitsView -> {
-                    trackingQueue?.let {
-                        categoryAnalytics.eventYangLagiHitView(it, item, position)
-                    }
+                    item.categoryPosition = position
+                    yangLangHitTrackerList.add(item)
                 }
                 Constants.ProductHeaderView -> {
-                    trackingQueue?.let {
-                        categoryAnalytics.eventCategoryLevelOneBannerView(it, item, position)
-                    }
+                    categoryAnalytics.eventCategoryLevelOneBannerView(item, position)
                 }
             }
         }
@@ -256,5 +261,21 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
 
     private fun convertDpToPx(context: Context, dp: Int): Int {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), context.resources.displayMetrics).toInt()
+    }
+
+    fun pushTrackingEvents() {
+        if (seringKamuTrackerList.isNotEmpty()) {
+            categoryAnalytics.eventSeringkamuLihatView(seringKamuTrackerList)
+        }
+
+        if (productTrackerList.isNotEmpty()) {
+            categoryAnalytics.eventCategoryLevelTwoView(productTrackerList)
+        }
+        if (yangLangHitTrackerList.isNotEmpty()) {
+            categoryAnalytics.eventYangLagiHitView(yangLangHitTrackerList)
+        }
+        seringKamuTrackerList.clear()
+        productTrackerList.clear()
+        yangLangHitTrackerList.clear()
     }
 }

@@ -41,7 +41,10 @@ data class CategoriesItem(
         val child: List<ChildItem?>? = null,
 
         @field:SerializedName("isSelected")
-        var isSelected: Boolean = false
+        var isSelected: Boolean = false,
+
+        @field:SerializedName("position")
+        var position: Int = 0
 
 
 )
