@@ -20,7 +20,6 @@ import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
 import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
 import com.tokopedia.withdraw.di.WithdrawComponent;
-import com.tokopedia.withdraw.view.bottomsheet.WithdrawInfoBottomSheet;
 import com.tokopedia.withdraw.view.fragment.WithdrawFragment;
 
 import javax.inject.Inject;
@@ -84,10 +83,6 @@ public class WithdrawActivity extends BaseSimpleActivity {
         }
     }
 
-    private void showWithdrawInfoBottomSheet() {
-        WithdrawInfoBottomSheet withdrawInfoBottomSheet = new WithdrawInfoBottomSheet(this);
-        withdrawInfoBottomSheet.show();
-    }
 
     @Override
     protected void setupStatusBar() {

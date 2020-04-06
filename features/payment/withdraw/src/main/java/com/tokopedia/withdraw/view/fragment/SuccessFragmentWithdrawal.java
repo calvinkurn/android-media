@@ -12,6 +12,8 @@ import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
@@ -85,7 +87,7 @@ public class SuccessFragmentWithdrawal extends BaseDaggerFragment implements Vie
                 adminFees.setVisibility(View.VISIBLE);
             }
             accountNum.setText(bankAccount.getAccountNo() + "-" + bankAccount.getAccountName());
-            double amount = getArguments().getDouble(WithdrawConstant.Keys.AMOUNT);
+            long amount = getArguments().getLong(WithdrawConstant.Keys.AMOUNT);
             totalAmt.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(amount, false));
         }
     }
@@ -95,14 +97,13 @@ public class SuccessFragmentWithdrawal extends BaseDaggerFragment implements Vie
         int id = v.getId();
         if(id == R.id.backto_saldo_dtl){
             if(getActivity() != null){
-                Objects.requireNonNull(getActivity()).setResult(WithdrawConstant.ResultCode.GOTO_SALDO_DETAIL_PAGE);
                 getActivity().finish();
                 analytics.eventClickBackToSaldoPage();
             }
         }
         else if(id == R.id.backto_shop){
             if(getActivity() != null){
-                Objects.requireNonNull(getActivity()).setResult(WithdrawConstant.ResultCode.GOTO_TOKOPEDIA_HOME_PAGE);
+                RouteManager.route(getContext(), ApplinkConst.HOME, "");
                 getActivity().finish();
                 analytics.eventClicGoToHomePage();
             }
