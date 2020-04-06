@@ -1,16 +1,16 @@
 package com.tokopedia.saldodetails.di
 
-import android.app.Application
-
+import android.app.Activity
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 
 object SaldoDetailsComponentInstance {
 
-    fun getComponent(application: Application): SaldoDetailsComponent {
+    fun getComponent(activity: Activity): SaldoDetailsComponent {
 
         val saldoDetailsComponent = DaggerSaldoDetailsComponent.builder()
-                    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                    .build()
+                .baseAppComponent((activity.application as BaseMainApplication).baseAppComponent)
+                .gqlQueryModule(GqlQueryModule(activity))
+                .build()
 
         return saldoDetailsComponent
     }
