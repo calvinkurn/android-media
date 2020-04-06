@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.preview.domain.mapper
 
+import android.net.Uri
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.preview.data.model.params.add.*
@@ -64,8 +65,8 @@ class AddProductInputMapper @Inject constructor() {
                                        variantOptionParent: List<ProductVariantOptionParent>): Int? {
         variantOptionParent.forEach { productVariantOptionParent ->
             productVariantOptionParent.productVariantOptionChild?.let {
-                for (i in it.indices){
-                    if (it[i].value == variantValue) return i
+                for (outputIndex in it.indices){
+                    if (it[outputIndex].value == variantValue) return outputIndex
                 }
             }
         }
@@ -76,7 +77,9 @@ class AddProductInputMapper @Inject constructor() {
                                 sizeChartUploadId: String): Variant? {
         if (variantInputModel.variantOptionParent.size == 0 &&
                 variantInputModel.productVariant.size == 0 &&
-                variantInputModel.productSizeChart == null) return null
+                variantInputModel.productSizeChart == null) {
+            return null
+        }
 
         // generate option index for each product variant
         variantInputModel.productVariant.forEach { productVariant ->
@@ -177,9 +180,9 @@ class AddProductInputMapper @Inject constructor() {
         val data: ArrayList<Video> = ArrayList()
         videoLinkList.forEach {
             if (it.inputUrl.isNotEmpty()) {
-                val urlSplit = it.inputUrl.split("/watch?v=")
-                val source = urlSplit[0]
-                val url = urlSplit[1]
+                val uri = Uri.parse(it.inputUrl)
+                val source = uri.host ?: ""
+                val url = uri.getQueryParameter("v") ?: uri.lastPathSegment
                 data.add(Video(source, url))
             }
         }

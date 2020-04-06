@@ -30,14 +30,13 @@ class AddEditProductDescriptionModule {
 
     @AddEditProductDescriptionScope
     @Provides
-    fun provideTickerRetrofit(builder: Retrofit.Builder): Retrofit {
-        return builder.baseUrl(ProductVariantService.BASE_URL)
-                .build()
+    fun provideVariantRetrofit(builder: Retrofit.Builder): Retrofit {
+        return builder.baseUrl(ProductVariantService.BASE_URL).build()
     }
 
     @AddEditProductDescriptionScope
     @Provides
-    fun provideTickerService(retrofit: Retrofit): ProductVariantService {
+    fun provideVariantService(retrofit: Retrofit): ProductVariantService {
         return retrofit.create(ProductVariantService::class.java)
     }
 

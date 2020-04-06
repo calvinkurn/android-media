@@ -12,7 +12,7 @@
     <string name="label_add_product_shipment">Detail Pengiriman</string>
     <string name="label_add_product_promotion">Promosi</string>
     <string name="label_edit_product_status">Status Produk</string>
-    <string name="label_product_status_description">Jika status aktif, berarti produkmu\n dapat dicari pembeli</string>
+    <string name="label_product_status_description">Jika status aktif, berarti produkmu\ndapat dicari pembeli</string>
     <string name="preview_label_add_product_photo_tips">Tips Memilih foto produk yang benar</string>
     <string name="preview_label_add_product_variant_tips">Tips atur stok &amp; harga dengan fitur Varian</string>
     <string name="action_start">Mulai</string>
@@ -134,6 +134,7 @@
     <string name="message_tooltip_variant_tips_2">Klik ‘Tambah Varian Produk’.</string>
     <string name="message_tooltip_variant_tips_3">Atur kategori varian dan lengkapi informasinya.</string>
     <string name="message_tooltip_variant_tips_4">Klik ‘Terapkan’.</string>
+    <string name="error_cannot_get_variants">Tidak bisa mendapatkan data variant</string>
 
     <!--Shipment-->
     <string name="label_shipment_insurance">Asuransi pengiriman</string>

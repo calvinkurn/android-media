@@ -6,6 +6,13 @@ data class GetProductV3Param(
 )
 
 data class OptionV3(
-        val edit: Boolean,
-        val variant: Boolean
+        val edit: Boolean = true,
+        val category: Boolean = true,
+        val catalog: Boolean = true,
+        val wholesale: Boolean = true,
+        val preorder: Boolean = true,
+        val picture: Boolean = true,
+        val sku: Boolean = true,
+        val video: Boolean = true,
+        val variant: Boolean = true
 )

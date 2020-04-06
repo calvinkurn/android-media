@@ -25,11 +25,11 @@ import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
 import com.tokopedia.product.addedit.preview.di.DaggerAddEditProductPreviewComponent
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
+import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
+import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.io.File
 import java.util.*
 import javax.inject.Inject
@@ -78,10 +78,10 @@ class AddEditProductUploadService : JobIntentService(), CoroutineScope {
     private fun initInjector() {
         val baseMainApplication = applicationContext as BaseMainApplication
         DaggerAddEditProductPreviewComponent.builder()
-                .addEditProductComponent(AddEditProductComponentBuilder.getComponent(baseMainApplication))
-                .addEditProductPreviewModule(AddEditProductPreviewModule())
-                .build()
-                .inject(this)
+            .addEditProductComponent(AddEditProductComponentBuilder.getComponent(baseMainApplication))
+            .addEditProductPreviewModule(AddEditProductPreviewModule())
+            .build()
+            .inject(this)
     }
 
     override val coroutineContext: CoroutineContext by lazy {
@@ -94,22 +94,26 @@ class AddEditProductUploadService : JobIntentService(), CoroutineScope {
         detailInputModel = intent.getParcelableExtra(EXTRA_DETAIL_INPUT)
         variantInputModel = intent.getParcelableExtra(EXTRA_VARIANT_INPUT)
         uploadProductImages(detailInputModel.imageUrlOrPathList,
-                variantInputModel.productSizeChart?.filePath ?: "")
+            variantInputModel.productSizeChart?.filePath ?: "")
     }
 
     private fun uploadProductImages(imageUrlOrPathList: List<String>, sizeChartPath: String) {
         val uploadIdList: ArrayList<String> = ArrayList()
-        var urlImageCount = imageUrlOrPathList.size
+        val urlImageCount = imageUrlOrPathList.size
         var sizeChartUploadId = ""
-        if (sizeChartPath.isNotEmpty()) urlImageCount += 1 // if sizeChartPath valid then add to progress
-        notificationManager = getNotificationManager(urlImageCount)
+        // if sizeChartPath valid then add to progress
+        notificationManager = if (sizeChartPath.isNotEmpty()) {
+            getNotificationManager(urlImageCount + 1)
+        } else {
+            getNotificationManager(urlImageCount)
+        }
         notificationManager?.onSubmitPost()
         launch(coroutineContext) {
             repeat(urlImageCount) { i ->
                 val imageId = uploadImageAndGetId(imageUrlOrPathList[i])
                 uploadIdList.add(imageId)
             }
-            if (sizeChartPath.isNotEmpty()){ // if sizeChartPath valid then upload the image
+            if (sizeChartPath.isNotEmpty()) { // if sizeChartPath valid then upload the image
                 sizeChartUploadId = uploadImageAndGetId(sizeChartPath)
             }
             addProduct(uploadIdList, sizeChartUploadId)
@@ -119,8 +123,8 @@ class AddEditProductUploadService : JobIntentService(), CoroutineScope {
     private suspend fun uploadImageAndGetId(imagePath: String): String {
         val filePath = File(imagePath)
         val params = uploaderUseCase.createParams(
-                sourceId = IMAGE_SOURCE_ID,
-                filePath = filePath
+            sourceId = IMAGE_SOURCE_ID,
+            filePath = filePath
         )
         return when (val result = uploaderUseCase(params)) {
             is UploadResult.Success -> {
@@ -137,8 +141,8 @@ class AddEditProductUploadService : JobIntentService(), CoroutineScope {
     private fun addProduct(uploadIdList: ArrayList<String>, sizeChartId: String) {
         val shopId = userSession.shopId
         val param = addProductInputMapper.mapInputToParam(shopId, uploadIdList,
-                sizeChartId, detailInputModel, descriptionInputModel, shipmentInputModel,
-                variantInputModel)
+            sizeChartId, detailInputModel, descriptionInputModel, shipmentInputModel,
+            variantInputModel)
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 productAddUseCase.params = ProductAddUseCase.createRequestParams(param)
@@ -146,7 +150,7 @@ class AddEditProductUploadService : JobIntentService(), CoroutineScope {
                 return@withContext productAddUseCase.executeOnBackground()
             }
         }, onError = {
-            notificationManager?.onFailedPost(it.message!!)
+            it.message?.let { errorMessage -> notificationManager?.onFailedPost(errorMessage) }
         })
     }
 
@@ -154,14 +158,28 @@ class AddEditProductUploadService : JobIntentService(), CoroutineScope {
         val notifId = Random().nextInt()
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         return object : AddEditProductNotificationManager(notifId, urlImageCount, manager,
-                this@AddEditProductUploadService) {
+            this@AddEditProductUploadService) {
             override fun getSuccessIntent(): PendingIntent {
-                val intent = AddEditProductPreviewActivity.createInstance(context)
+                //TODO isedit still hardcoded
+                var isEdit = false
+                if (isEdit) {
+                    ProductEditStepperTracking.trackFinishService(userSession.shopId, true)
+                } else {
+                    ProductAddShippingTracking.clickFinish(userSession.shopId, true)
+                }
+                val intent = AddEditProductPreviewActivity.createInstance(context, true, isEdit)
                 return PendingIntent.getActivity(context, 0, intent, 0)
             }
 
             override fun getFailedIntent(errorMessage: String): PendingIntent {
-                val intent = AddEditProductPreviewActivity.createInstance(context)
+                //TODO isedit still hardcoded
+                var isEdit = false
+                if (isEdit) {
+                    ProductEditStepperTracking.trackFinishService(userSession.shopId, false)
+                } else {
+                    ProductAddShippingTracking.clickFinish(userSession.shopId, false)
+                }
+                val intent = AddEditProductPreviewActivity.createInstance(context, false, isEdit)
                 return PendingIntent.getActivity(context, 0, intent, 0)
             }
         }

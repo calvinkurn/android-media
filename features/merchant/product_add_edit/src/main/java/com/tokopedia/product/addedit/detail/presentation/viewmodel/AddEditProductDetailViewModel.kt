@@ -10,6 +10,7 @@ import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommenda
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
+import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -19,19 +20,32 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class AddEditProductDetailViewModel @Inject constructor(val provider: ResourceProvider, dispatcher: CoroutineDispatcher,
-                                                        private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
-                                                        private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase)
+class AddEditProductDetailViewModel @Inject constructor(
+        val provider: ResourceProvider, dispatcher: CoroutineDispatcher,
+        private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
+        private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase)
     : BaseViewModel(dispatcher) {
 
-    private val mIsProductPhotoError = MutableLiveData<Boolean>()
-    val isProductPhotoInputError: LiveData<Boolean>
-        get() = mIsProductPhotoError
+    var isEditing = false
 
+    var isDrafting = false
+
+    var detailInputModel = DetailInputModel()
+
+    var productPhotoPaths = detailInputModel.imageUrlOrPathList.toMutableList()
+
+    private val mIsProductPhotoError = MutableLiveData<Boolean>()
+
+    var isProductNameChanged = false
     private val mIsProductNameInputError = MutableLiveData<Boolean>()
     val isProductNameInputError: LiveData<Boolean>
         get() = mIsProductNameInputError
     var productNameMessage: String = ""
+
+    var isProductRecommendationSelected = false
+    private val mProductNameRecommendations = MutableLiveData<Result<List<String>>>()
+    val productNameRecommendations: LiveData<Result<List<String>>>
+        get() = mProductNameRecommendations
 
     private val mIsProductPriceInputError = MutableLiveData<Boolean>()
     val isProductPriceInputError: LiveData<Boolean>
@@ -57,11 +71,7 @@ class AddEditProductDetailViewModel @Inject constructor(val provider: ResourcePr
         get() = mIsPreOrderDurationInputError
     var preOrderDurationMessage: String = ""
 
-    private val _searchProductSuggestionName = MutableLiveData<Result<List<String>>>()
-    val searchProductSuggestionName: LiveData<Result<List<String>>> = _searchProductSuggestionName
-
     private val mIsInputValid = MediatorLiveData<Boolean>().apply {
-
         addSource(mIsProductPhotoError) {
             this.value = isInputValid()
         }
@@ -86,8 +96,9 @@ class AddEditProductDetailViewModel @Inject constructor(val provider: ResourcePr
     }
     val isInputValid: LiveData<Boolean>
         get() = mIsInputValid
-    var selectedCategoryId: Long = -1L
-    var selectedCatalogId = ""
+
+    var selectedCategoryId: String = ""
+
     val productCategoryRecommendationLiveData = MutableLiveData<Result<List<ListItemUnify>>>()
 
     private val minProductPriceLimit = 100
@@ -100,18 +111,6 @@ class AddEditProductDetailViewModel @Inject constructor(val provider: ResourcePr
     private val minPreOrderDuration = 1
     private val maxPreOrderDays = 90
     private val maxPreOrderWeeks = 13
-
-    fun getSearchNameSuggestion(shopId: Int = 0, query: String) {
-        launchCatchError(block = {
-                    val result = withContext(Dispatchers.IO) {
-                        getNameRecommendationUseCase.requestParams = GetNameRecommendationUseCase.createRequestParam(shopId, query)
-                        getNameRecommendationUseCase.executeOnBackground()
-                    }
-                    _searchProductSuggestionName.value = Success(result)
-        }, onError = {
-            _searchProductSuggestionName.value = Fail(it)
-        })
-    }
 
     private fun isInputValid(): Boolean {
 
@@ -311,6 +310,18 @@ class AddEditProductDetailViewModel @Inject constructor(val provider: ResourcePr
     private fun isProductNameBanned(productNameInput: String): Boolean {
         // TODO: replace the validation with API check
         return productNameInput == "Shopee"
+    }
+
+    fun getProductNameRecommendation(shopId: Int = 0, query: String) {
+        launchCatchError(block = {
+            val result = withContext(Dispatchers.IO) {
+                getNameRecommendationUseCase.requestParams = GetNameRecommendationUseCase.createRequestParam(shopId, query)
+                getNameRecommendationUseCase.executeOnBackground()
+            }
+            mProductNameRecommendations.value = Success(result)
+        }, onError = {
+            mProductNameRecommendations.value = Fail(it)
+        })
     }
 
     fun getCategoryRecommendation(productNameInput: String) {

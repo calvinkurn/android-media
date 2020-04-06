@@ -6,28 +6,38 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.product.addedit.preview.data.source.api.param.GetProductV3Param
-import com.tokopedia.product.addedit.preview.data.source.api.param.OptionV3
+import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
+import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
+import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.domain.GetProductUseCase
+import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
+import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AddEditProductPreviewViewModel @Inject constructor(
         private val getProductUseCase: GetProductUseCase,
+        private val getProductMapper: GetProductMapper,
+        private val getProductVariantUseCase: GetProductVariantUseCase,
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
     private val productId = MutableLiveData<String>()
 
+    private val draftId = MutableLiveData<String>()
+
     // observing the product id, and will become true if product id exist
-    val isEditMode = Transformations.map(productId) { id ->
+    val isEditing = Transformations.map(productId) { id ->
+        !id.isNullOrBlank()
+    }
+
+    val isDrafting = Transformations.map(draftId) { id ->
         !id.isNullOrBlank()
     }
 
@@ -38,6 +48,18 @@ class AddEditProductPreviewViewModel @Inject constructor(
         }
     }
     val getProductResult: LiveData<Result<Product>> get() = mGetProductResult
+
+    // observing the use case result, and will convert product data to input model
+    var productInputModel = Transformations.map(mGetProductResult) {
+        when (it) {
+            is Success -> {
+                getProductMapper.mapRemoteModelToUiModel(it.data)
+            }
+            is Fail -> {
+                ProductInputModel()
+            }
+        }
+    }
 
     // observing the use case result, and will become true if no variant
     val isVariantEmpty = Transformations.map(mGetProductResult) {
@@ -51,28 +73,55 @@ class AddEditProductPreviewViewModel @Inject constructor(
         }
     }
 
+    private val mImageUrlOrPathList = MutableLiveData<MutableList<String>>()
+    val imageUrlOrPathList: LiveData<MutableList<String>> get() = mImageUrlOrPathList
+
+    private val mProductVariantList = MutableLiveData<Result<List<ProductVariantByCatModel>>>()
+    val productVariantList: LiveData<Result<List<ProductVariantByCatModel>>> get() = mProductVariantList
+
     fun setProductId(id: String) {
         productId.value = id
     }
 
-    private fun loadProductData(productId: String) {
-        launchCatchError(block = {
-            mGetProductResult.value = (Success(getProductAsync(productId).await()))
-        }, onError = {})
+    fun setDraftId(id: String) {
+        draftId.value = id
     }
 
-    private fun getProductAsync(productId: String): Deferred<Product> {
-        return async(Dispatchers.IO) {
-            var product = Product()
-            try {
-                val options = OptionV3(edit = true, variant = true)
-                val getProductV3Param = GetProductV3Param(productId, options)
-                getProductUseCase.params = GetProductUseCase.createRequestParams(getProductV3Param)
-                product = getProductUseCase.executeOnBackground()
-            } catch (t: Throwable) {
-                mGetProductResult.value = Fail(t)
+    fun updateProductPhotos(imageUrlOrPathList: ArrayList<String>) {
+        productInputModel.value?.detailInputModel?.imageUrlOrPathList = imageUrlOrPathList
+        this.mImageUrlOrPathList.value = imageUrlOrPathList
+    }
+
+    fun getNewProductInputModel(imageUrlOrPathList: ArrayList<String>): ProductInputModel {
+        val detailInputModel = DetailInputModel().apply { this.imageUrlOrPathList = imageUrlOrPathList }
+        return ProductInputModel().apply { this.detailInputModel = detailInputModel }
+    }
+
+    private fun loadProductData(productId: String) {
+        getProduct(productId)
+    }
+
+    private fun getProduct(productId: String) {
+        launchCatchError(block = {
+            val data = withContext(Dispatchers.IO) {
+                getProductUseCase.params = GetProductUseCase.createRequestParams(productId)
+                getProductUseCase.executeOnBackground()
             }
-            product
-        }
+            mGetProductResult.value = Success(data)
+        }, onError = {
+            mGetProductResult.value = Fail(it)
+        })
+    }
+
+    fun getVariantList(categoryId: String) {
+        launchCatchError(block = {
+            mProductVariantList.value = Success(withContext(Dispatchers.IO) {
+                getProductVariantUseCase.params =
+                        GetProductVariantUseCase.createRequestParams(categoryId)
+                getProductVariantUseCase.executeOnBackground()
+            })
+        }, onError = {
+            mProductVariantList.value = Fail(it)
+        })
     }
 }

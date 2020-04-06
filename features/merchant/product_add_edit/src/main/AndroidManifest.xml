@@ -7,6 +7,16 @@
         android:supportsRtl="true">
 
         <activity
+            android:name=".imagepicker.view.activity.ImagePickerAddProductActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".imagepicker.view.activity.ImagePickerEditPhotoActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
             android:name=".preview.presentation.activity.AddEditProductPreviewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">

@@ -12,7 +12,11 @@ import com.tokopedia.product.addedit.description.domain.usecase.GetYoutubeVideoU
 import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeVideoModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
+import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -25,22 +29,27 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         private val getYoutubeVideoUseCase: GetYoutubeVideoUseCase
 ) : BaseViewModel(coroutineDispatcher) {
 
-    private val _homeTicker = MutableLiveData<Success<List<ProductVariantByCatModel>>>()
-    val homeTicker: LiveData<Success<List<ProductVariantByCatModel>>>
-        get() = _homeTicker
+    var categoryId: String = ""
+    var descriptionInputModel: DescriptionInputModel = DescriptionInputModel()
+    var variantInputModel: ProductVariantInputModel = ProductVariantInputModel()
+    var isEditMode: Boolean = false
+
+    private val _productVariant = MutableLiveData<Result<List<ProductVariantByCatModel>>>()
+    val productVariant: LiveData<Result<List<ProductVariantByCatModel>>>
+        get() = _productVariant
 
     private val _videoYoutube = MutableLiveData<Result<YoutubeVideoModel>>()
     val videoYoutube: LiveData<Result<YoutubeVideoModel>> = _videoYoutube
 
     fun getVariants(categoryId: String) {
         launchCatchError(block = {
-            _homeTicker.value = Success(withContext(Dispatchers.IO) {
+            _productVariant.value = Success(withContext(Dispatchers.IO) {
                 getProductVariantUseCase.params =
                         GetProductVariantUseCase.createRequestParams(categoryId)
                 getProductVariantUseCase.executeOnBackground()
             })
         }, onError = {
-            // no-op
+            _productVariant.value = Fail(it)
         })
     }
 
