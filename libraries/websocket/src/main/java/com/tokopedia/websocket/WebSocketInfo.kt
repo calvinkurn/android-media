@@ -21,6 +21,7 @@ class WebSocketInfo {
     var isOnReconnect: Boolean = false
         private set
 
+
     private constructor()
 
     internal constructor(webSocket: WebSocket?, onOpen: Boolean) {
