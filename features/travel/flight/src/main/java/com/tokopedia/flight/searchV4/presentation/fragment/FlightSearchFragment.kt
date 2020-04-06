@@ -8,6 +8,7 @@ import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
  * @author by furqan on 06/04/2020
  */
 class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSearchAdapterTypeFactory>() {
+
     override fun getAdapterTypeFactory(): FlightSearchAdapterTypeFactory {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
@@ -26,5 +27,9 @@ class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSearchAd
 
     override fun loadData(page: Int) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    companion object {
+        fun newInstance(): FlightSearchFragment = FlightSearchFragment()
     }
 }
