@@ -8,6 +8,7 @@ import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
+import com.tokopedia.product.addedit.preview.data.model.params.edit.ProductEditParam
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import javax.inject.Inject
 
@@ -27,8 +28,8 @@ class EditProductInputMapper @Inject constructor() {
         const val UNIT_MONTH = "MONTH"
     }
 
-    fun mapInputToParam(productId: String,
-                        shopId: String,
+    fun mapInputToParam(shopId: String,
+                        productId: String,
                         uploadIdList: ArrayList<String>,
                         sizeChartUploadId: String,
                         detailInputModel: DetailInputModel,

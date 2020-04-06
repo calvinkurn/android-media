@@ -17,7 +17,7 @@ import com.tokopedia.user.session.UserSession
 
 class AddEditProductPreviewActivity : BaseSimpleActivity() {
 
-    private var productId = ""
+    private var productId = "766797740"
 
     override fun getNewFragment(): Fragment? {
         return AddEditProductPreviewFragment.createInstance(productId)

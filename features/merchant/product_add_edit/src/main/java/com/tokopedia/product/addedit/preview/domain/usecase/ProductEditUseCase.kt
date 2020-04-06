@@ -5,7 +5,8 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.product.addedit.preview.data.model.params.add.ProductAddParam
+import com.tokopedia.product.addedit.preview.data.model.params.add.Variant
+import com.tokopedia.product.addedit.preview.data.model.params.edit.ProductEditParam
 import com.tokopedia.product.addedit.preview.data.model.responses.ProductAddEditV3Response
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -32,7 +33,7 @@ class ProductEditUseCase @Inject constructor(private val graphqlRepository: Grap
     companion object {
         const val PARAM_INPUT = "input"
         @JvmStatic
-        fun createRequestParams(param: ProductAddParam): RequestParams {
+        fun createRequestParams(param: ProductEditParam): RequestParams {
             val requestParams = RequestParams.create()
             requestParams.putObject(PARAM_INPUT, param)
             return requestParams

@@ -10,11 +10,9 @@ import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManag
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
-import com.tokopedia.product.addedit.preview.domain.mapper.AddProductInputMapper
-import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
+import com.tokopedia.product.addedit.preview.domain.usecase.ProductEditUseCase
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
-import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
 import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -24,7 +22,8 @@ import kotlin.collections.ArrayList
  * Created by faisalramd on 2020-04-05.
  */
 
-class AddProductUploadService : BaseProductUploadService() {
+class AddEditProductEditService : AddEditProductBaseService() {
+    private var productId = ""
     private var shipmentInputModel: ShipmentInputModel = ShipmentInputModel()
     private var descriptionInputModel: DescriptionInputModel = DescriptionInputModel()
     private var detailInputModel: DetailInputModel = DetailInputModel()
@@ -34,21 +33,24 @@ class AddProductUploadService : BaseProductUploadService() {
         private const val JOB_ID = 13131314
 
         fun startService(context: Context,
+                         productId: String,
                          detailInputModel: DetailInputModel,
                          descriptionInputModel: DescriptionInputModel,
                          shipmentInputModel: ShipmentInputModel,
                          variantInputModel: ProductVariantInputModel) {
-            val work = Intent(context, BaseProductUploadService::class.java).apply {
+            val work = Intent(context, AddEditProductBaseService::class.java).apply {
+                putExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_ID_INPUT, productId)
                 putExtra(AddEditProductUploadConstant.EXTRA_DETAIL_INPUT, detailInputModel)
                 putExtra(AddEditProductUploadConstant.EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
                 putExtra(AddEditProductUploadConstant.EXTRA_SHIPMENT_INPUT, shipmentInputModel)
                 putExtra(AddEditProductUploadConstant.EXTRA_VARIANT_INPUT, variantInputModel)
             }
-            enqueueWork(context, AddProductUploadService::class.java, JOB_ID, work)
+            enqueueWork(context, AddEditProductEditService::class.java, JOB_ID, work)
         }
     }
 
     override fun onHandleWork(intent: Intent) {
+        productId = intent.getStringExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_ID_INPUT)
         shipmentInputModel = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_SHIPMENT_INPUT)
         descriptionInputModel = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_DESCRIPTION_INPUT)
         detailInputModel = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_DETAIL_INPUT)
@@ -58,49 +60,39 @@ class AddProductUploadService : BaseProductUploadService() {
     }
 
     override fun onUploadProductImagesDone(uploadIdList: ArrayList<String>, sizeChartId: String) {
-        addProduct(uploadIdList, sizeChartId)
+        editProduct(uploadIdList, sizeChartId)
     }
 
     override fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager {
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         return object : AddEditProductNotificationManager(urlImageCount, manager,
-                this@AddProductUploadService) {
+                this@AddEditProductEditService) {
             override fun getSuccessIntent(): PendingIntent {
-                //TODO isedit still hardcoded
-                var isEdit = false
-                if (isEdit) {
-                    ProductEditStepperTracking.trackFinishService(userSession.shopId, true)
-                } else {
-                    ProductAddShippingTracking.clickFinish(userSession.shopId, true)
-                }
-                val intent = AddEditProductPreviewActivity.createInstance(context, true, isEdit)
+                ProductEditStepperTracking.trackFinishService(userSession.shopId, true)
+                val intent = AddEditProductPreviewActivity
+                        .createInstance(context, isFromSuccessNotif = true, isFromNotifEditMode = true)
                 return PendingIntent.getActivity(context, 0, intent, 0)
             }
 
             override fun getFailedIntent(errorMessage: String): PendingIntent {
-                //TODO isedit still hardcoded
-                var isEdit = false
-                if (isEdit) {
-                    ProductEditStepperTracking.trackFinishService(userSession.shopId, false)
-                } else {
-                    ProductAddShippingTracking.clickFinish(userSession.shopId, false)
-                }
-                val intent = AddEditProductPreviewActivity.createInstance(context, false, isEdit)
+                ProductEditStepperTracking.trackFinishService(userSession.shopId, false)
+                val intent = AddEditProductPreviewActivity
+                        .createInstance(context, isFromSuccessNotif = false, isFromNotifEditMode = true)
                 return PendingIntent.getActivity(context, 0, intent, 0)
             }
         }
     }
 
-    private fun addProduct(uploadIdList: ArrayList<String>, sizeChartId: String) {
+    private fun editProduct(uploadIdList: ArrayList<String>, sizeChartId: String) {
         val shopId = userSession.shopId
-        val param = addProductInputMapper.mapInputToParam(shopId, uploadIdList,
-                sizeChartId, detailInputModel, descriptionInputModel, shipmentInputModel,
-                variantInputModel)
+        val param = editProductInputMapper.mapInputToParam(shopId, productId,
+                uploadIdList, sizeChartId, detailInputModel, descriptionInputModel,
+                shipmentInputModel, variantInputModel)
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
-                productAddUseCase.params = ProductAddUseCase.createRequestParams(param)
+                productEditUseCase.params = ProductEditUseCase.createRequestParams(param)
                 setUploadProductDataSuccess()
-                return@withContext productAddUseCase.executeOnBackground()
+                return@withContext productEditUseCase.executeOnBackground()
             }
         }, onError = {
             it.message?.let { errorMessage -> setUploadProductDataSuccess(errorMessage) }

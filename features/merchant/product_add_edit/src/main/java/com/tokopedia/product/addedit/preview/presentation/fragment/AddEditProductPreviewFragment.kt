@@ -44,7 +44,8 @@ import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddPro
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
 import com.tokopedia.product.addedit.preview.di.DaggerAddEditProductPreviewComponent
-import com.tokopedia.product.addedit.preview.presentation.service.AddProductUploadService
+import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductAddService
+import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductEditService
 import com.tokopedia.product.addedit.preview.presentation.viewmodel.AddEditProductPreviewViewModel
 import com.tokopedia.product.addedit.shipment.presentation.activity.AddEditProductShipmentActivity
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment
@@ -232,9 +233,18 @@ class AddEditProductPreviewFragment :
         }
 
         doneButton?.setOnClickListener {
-            //TODO will go to BaseProductUploadService.startService ?
+            //TODO will go to AddEditProductBaseService.startService ?
             if (viewModel.isEditMode.value == true) {
                 ProductEditStepperTracking.trackFinishButton(shopId)
+                context?.apply {
+                    viewModel.productInputModel?.let { productInputModel ->
+                        AddEditProductEditService.startService(this, viewModel.getProductId(),
+                                productInputModel.detailInputModel,
+                                productInputModel.descriptionInputModel,
+                                productInputModel.shipmentInputModel,
+                                ProductVariantInputModel())
+                    }
+                }
             }
         }
 
@@ -322,7 +332,7 @@ class AddEditProductPreviewFragment :
                 val variantInputModel =
                     data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
                 context?.let {
-                    AddProductUploadService.startService(it, detailInputModel,
+                    AddEditProductAddService.startService(it, detailInputModel,
                         descriptionInputModel, shipmentInputModel, variantInputModel)
                 }
             }

@@ -10,7 +10,9 @@ import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManag
 import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
 import com.tokopedia.product.addedit.preview.di.DaggerAddEditProductPreviewComponent
 import com.tokopedia.product.addedit.preview.domain.mapper.AddProductInputMapper
+import com.tokopedia.product.addedit.preview.domain.mapper.EditProductInputMapper
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
+import com.tokopedia.product.addedit.preview.domain.usecase.ProductEditUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +21,7 @@ import java.io.File
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-abstract class BaseProductUploadService : JobIntentService(), CoroutineScope {
+abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     @Inject
     lateinit var userSession: UserSessionInterface
     @Inject
@@ -28,6 +30,10 @@ abstract class BaseProductUploadService : JobIntentService(), CoroutineScope {
     lateinit var addProductInputMapper: AddProductInputMapper
     @Inject
     lateinit var productAddUseCase: ProductAddUseCase
+    @Inject
+    lateinit var productEditUseCase: ProductEditUseCase
+    @Inject
+    lateinit var editProductInputMapper: EditProductInputMapper
 
     private var notificationManager: AddEditProductNotificationManager? = null
 

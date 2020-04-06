@@ -56,6 +56,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
         }
     }
 
+    fun getProductId(): String {
+        return productId.value ?: ""
+    }
+
     fun setProductId(id: String) {
         productId.value = id
     }
