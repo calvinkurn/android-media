@@ -5,7 +5,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.logisticcart.domain.executor.MainScheduler
 import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetPreferenceEditUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetShippingDurationUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.create.CreatePreferenceUseCase
@@ -38,12 +37,6 @@ class PreferenceEditModule {
     @Provides
     fun provideScheduler(): SchedulerProvider {
         return MainScheduler()
-    }
-
-    @PreferenceEditScope
-    @Provides
-    fun providesGetPreferenceEditUseCase(graphqlRepository: GraphqlRepository): GetPreferenceEditUseCase {
-        return GetPreferenceEditUseCase(GraphqlUseCase(graphqlRepository))
     }
 
     @PreferenceEditScope
