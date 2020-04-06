@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -196,7 +195,5 @@ class MainActivity : AppCompatActivity() {
          * startActivity(PlayActivity.getCallingIntent(this, "668", true))
          * or, you can use route like this:
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS) */
-        startActivity(Intent(this, AddEditProductDescriptionActivity::class.java))
-
     }
 }
