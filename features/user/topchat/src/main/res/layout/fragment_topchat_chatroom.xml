@@ -67,7 +67,8 @@
             android:layout_marginBottom="@dimen/spacing_lvl4"
             android:background="@drawable/border_green_white_box"
             android:padding="@dimen/spacing_lvl3"
-            android:visibility="visible">
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <TextView
                 android:id="@+id/blocked_text"
