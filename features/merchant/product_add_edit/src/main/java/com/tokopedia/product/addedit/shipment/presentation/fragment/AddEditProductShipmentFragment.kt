@@ -65,7 +65,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
                 }
 
         const val EXTRA_SHIPMENT_INPUT_MODEL = "shipment_input_model"
-        const val EXTRA_IS_EDITMODE = "shipment_input_model"
+        const val EXTRA_IS_EDITMODE = "shipment_is_editmode"
         const val REQUEST_CODE_SHIPMENT = 0x04
     }
 

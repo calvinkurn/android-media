@@ -22,7 +22,7 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
     private var draftId = ""
 
     override fun getNewFragment(): Fragment? {
-        return AddEditProductPreviewFragment.createInstance(productId, draftId)
+        return AddEditProductPreviewFragment.createInstance("773109803", draftId)
     }
 
     override fun getLayoutRes() = R.layout.activity_add_edit_product_preview

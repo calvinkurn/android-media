@@ -198,8 +198,7 @@ class AddEditProductDescriptionFragment:
             } else {
                 ProductAddDescriptionTracking.clickAddVideoLink(shopId)
             }
-            videoId += 1
-            loadData(videoId)
+            addEmptyVideoUrl()
         }
 
         layoutDescriptionTips.setOnClickListener {
@@ -226,6 +225,11 @@ class AddEditProductDescriptionFragment:
         observeProductVariant()
     }
 
+    private fun addEmptyVideoUrl() {
+        videoId += 1
+        loadData(videoId)
+    }
+
     private fun observeProductVariant() {
         descriptionViewModel.productVariant.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
@@ -239,9 +243,13 @@ class AddEditProductDescriptionFragment:
         val description = descriptionViewModel.descriptionInputModel.productDescription
         val videoLinks = descriptionViewModel.descriptionInputModel.videoLinkList
 
-        textFieldDescription.setText(description)
-        super.clearAllData()
-        super.renderList(videoLinks)
+        if (videoLinks.isEmpty()) {
+            addEmptyVideoUrl()
+        } else {
+            textFieldDescription.setText(description)
+            super.clearAllData()
+            super.renderList(videoLinks)
+        }
     }
 
     private fun showVariantErrorToast(errorMessage: String) {
