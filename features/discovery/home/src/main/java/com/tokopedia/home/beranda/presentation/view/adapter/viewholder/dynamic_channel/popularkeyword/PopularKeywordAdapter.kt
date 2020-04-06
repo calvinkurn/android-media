@@ -7,7 +7,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.home.R
-import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.getPopularKeywordImpressionItem
+import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.getPopularKeywordImpressionIrisItem
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.glide.loadImage
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
@@ -60,7 +60,7 @@ class PopularKeywordAdapter(val dataList: List<PopularKeywordViewModel>,
             } else tvCount.hide()
             itemView.addOnImpressionListener(data.impressHolder) {
                 popularKeywordListener.onPopularKeywordItemImpressed(channel, position, data.title)
-                homeCategoryListener.sendIrisTrackerHashMap(getPopularKeywordImpressionItem(channel, position, data.title, true) as HashMap<String, Any>)
+                homeCategoryListener.sendIrisTrackerHashMap(getPopularKeywordImpressionIrisItem(channel, position, data.title) as HashMap<String, Any>)
             }
             cardProduct.setOnClickListener{
                 popularKeywordListener.onPopularKeywordItemClicked(data.applink, channel, position, data.title)

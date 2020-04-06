@@ -1615,13 +1615,12 @@ public class HomePageTracking {
                                                                   String channelId,
                                                                   boolean isToIris) {
         List<Object> promotionBody = DataLayer.listOf(DataLayer.mapOf(
-                "id", orderId + " - " + productId,
+                "id", orderId + " - " + productId + " - " + channelId,
                 "name", "product review notification - " + orderId + " - " + productId,
                 "creative", "product review notification - " + orderId + " - " + productId,
                 "creative_url", reviewData.getImageUrl(),
                 "position", Integer.toString(position + 1, 10),
                 "category", "",
-                CHANNEL_ID, channelId,
                 "promo_id", null,
                 "promo_code", null
         ));

@@ -1523,7 +1523,7 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     @Override
     public void onPopularKeywordItemImpressed(@NotNull DynamicHomeChannel.Channels channel, int position, @NotNull String keyword) {
-        trackingQueue.putEETracking((HashMap<String, Object>) HomePageTrackingV2.PopularKeyword.INSTANCE.getPopularKeywordImpressionItem(channel, position, keyword, false));
+        trackingQueue.putEETracking((HashMap<String, Object>) HomePageTrackingV2.PopularKeyword.INSTANCE.getPopularKeywordImpressionItem(channel, position, keyword));
     }
 
     @Override

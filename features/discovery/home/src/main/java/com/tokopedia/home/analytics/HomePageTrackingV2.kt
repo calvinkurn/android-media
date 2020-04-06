@@ -227,8 +227,24 @@ object HomePageTrackingV2 : BaseTracking() {
         private const val CLICK_POPULAR_KEYWORDS_RELOAD = "click view all on popular keyword banner"
         private const val IMPRESSION_POPULAR_KEYWORDS = "impression on popular keyword banner"
         private const val POPULAR_KEYWORDS_NAME = "popular keyword banner"
-        fun getPopularKeywordImpressionItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String, isToIris: Boolean = false) = getBasicPromotionChannelView(
-                event = if(isToIris) Event.PROMO_VIEW_IRIS else Event.PROMO_VIEW,
+        fun getPopularKeywordImpressionItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String) = getBasicPromotionView(
+                event = Event.PROMO_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = IMPRESSION_POPULAR_KEYWORDS,
+                eventLabel = String.format(BaseTracking.Label.FORMAT_2_ITEMS, channel.header.name, keyword),
+                promotions = channel.grids.map {
+                    Promotion(
+                            id = channel.id,
+                            creative = it.attribution,
+                            creativeUrl = it.imageUrl,
+                            name = Ecommerce.PROMOTION_NAME.format(position, POPULAR_KEYWORDS_NAME, keyword),
+                            position = position.toString()
+                    )
+
+                })
+
+        fun getPopularKeywordImpressionIrisItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String) = getBasicPromotionChannelView(
+                event = Event.PROMO_VIEW_IRIS,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = IMPRESSION_POPULAR_KEYWORDS,
                 eventLabel = String.format(BaseTracking.Label.FORMAT_2_ITEMS, channel.header.name, keyword),
