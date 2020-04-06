@@ -1,5 +1,7 @@
 package com.tokopedia.notifications.model
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.notifications.common.CMConstant
@@ -8,10 +10,50 @@ data class AddToCart(
         @Expose @SerializedName(CMConstant.PayloadKeys.PRODUCT_ID) var productId: Int? = 0,
         @Expose @SerializedName(CMConstant.PayloadKeys.PRODUCT_NAME) var productName: String? = "",
         @Expose @SerializedName(CMConstant.PayloadKeys.PRODUCT_BRAND) var productBrand: String? = "",
-        @Expose @SerializedName(CMConstant.PayloadKeys.PRODUCT_PRICE) var productPrice: Float? = 0f,
+        @Expose @SerializedName(CMConstant.PayloadKeys.PRODUCT_PRICE) var productPrice: Double? = 0.0,
         @Expose @SerializedName(CMConstant.PayloadKeys.PRODUCT_VARIANT) var productVariant: String? = "",
         @Expose @SerializedName(CMConstant.PayloadKeys.PRODUCT_QUANTITY) var productQuantity: String? = "",
-        @Expose @SerializedName(CMConstant.PayloadKeys.SHOP_ID) var shopId: Int? = 0,
+        @Expose @SerializedName(CMConstant.PayloadKeys.ATC_SHOP_ID) var shopId: Int? = 0,
         @Expose @SerializedName(CMConstant.PayloadKeys.SHOP_NAME) var shopName: String? = "",
         @Expose @SerializedName(CMConstant.PayloadKeys.SHOP_TYPE) var shopType: String? = ""
-)
+) : Parcelable {
+
+    constructor(parcel: Parcel) : this(
+            parcel.readValue(Int::class.java.classLoader) as? Int,
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readValue(Double::class.java.classLoader) as? Double,
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readValue(Int::class.java.classLoader) as? Int,
+            parcel.readString(),
+            parcel.readString()) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeValue(productId)
+        parcel.writeString(productName)
+        parcel.writeString(productBrand)
+        parcel.writeValue(productPrice)
+        parcel.writeString(productVariant)
+        parcel.writeString(productQuantity)
+        parcel.writeValue(shopId)
+        parcel.writeString(shopName)
+        parcel.writeString(shopType)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<AddToCart> {
+        override fun createFromParcel(parcel: Parcel): AddToCart {
+            return AddToCart(parcel)
+        }
+
+        override fun newArray(size: Int): Array<AddToCart?> {
+            return arrayOfNulls(size)
+        }
+    }
+
+}

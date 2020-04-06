@@ -51,7 +51,9 @@ data class ActionButton(
             parcel.readString(),
             parcel.readString(),
             parcel.readParcelable(PreDefineActions::class.java.classLoader),
-            parcel.readString())
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readParcelable(AddToCart::class.java.classLoader))
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(text)
@@ -59,6 +61,8 @@ data class ActionButton(
         parcel.writeString(actionButtonIcon)
         parcel.writeParcelable(pdActions, flags)
         parcel.writeString(element_id)
+        parcel.writeString(type)
+        parcel.writeParcelable(addToCart, flags)
     }
 
     override fun describeContents(): Int {
