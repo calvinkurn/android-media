@@ -47,7 +47,7 @@ object ShowcaseType {
 }
 
 object TextConstant {
-    const val TEXT_TITLE_DIALOG_DELETE = "Yakin ingin hapus etalase \nini?"
+    const val TEXT_TITLE_DIALOG_DELETE = "Yakin hapus etalase ini?"
     const val TEXT_DESCRIPTION_DIALOG_DELETE = "Dengan menghapus etalase, produk \nakan tersimpan di Semua Produk"
 }
 
