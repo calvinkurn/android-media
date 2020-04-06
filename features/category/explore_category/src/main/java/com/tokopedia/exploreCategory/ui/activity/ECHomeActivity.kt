@@ -54,7 +54,7 @@ class ECHomeActivity : BaseViewModelActivity<ECHomeViewModel>() {
         val data = intent.data
 
         if (data?.getQueryParameter(EXTRA_TITLE) == null) {
-           if ((data?.getQueryParameter(EXTRA_TYPE))?.toInt() == TYPE_LAYANAN) {
+           if (data?.getQueryParameter(EXTRA_TYPE)?.toInt() == TYPE_LAYANAN) {
                 title = TITLE_LAYANAN
             }
         }
