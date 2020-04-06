@@ -223,4 +223,7 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val PARAM_IS_NEED_LOC = "IS_NEED_LOC"
 
+    @JvmField
+    val PARAM_FIRST_CREATE_SHOP = "FIRST_CREATE_SHOP"
+
 }

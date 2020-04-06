@@ -72,6 +72,7 @@ open class HomeViewModel @Inject constructor(
         private val getBusinessWidgetTab: GetBusinessWidgetTab,
         private val getBusinessUnitDataUseCase: GetBusinessUnitDataUseCase,
         private val getDynamicChannelsUseCase: GetDynamicChannelsUseCase,
+        private val sendTopAdsUseCase: SendTopAdsUseCase,
         private val homeDispatcher: HomeDispatcherProvider
 ) : BaseViewModel(homeDispatcher.io()){
 
@@ -176,25 +177,6 @@ open class HomeViewModel @Inject constructor(
         getTokocashBalance()
         getTokopoint()
         getSearchHint(isFirstInstall)
-    }
-
-    fun hitBannerImpression(slidesModel: BannerSlidesModel) {
-        if (!slidesModel.isImpressed && slidesModel.topadsViewUrl.isNotEmpty()) {
-            compositeSubscription.add(Observable.just(ImpresionTask(object : ImpressionListener {
-                        override fun onSuccess() {
-                            slidesModel.isImpressed = true
-                        }
-
-                        override fun onFailed() {
-                            slidesModel.isImpressed = false
-                        }
-                    }).execute(slidesModel.topadsViewUrl))
-                    .debounce(200, TimeUnit.MILLISECONDS)
-                    .subscribeOn(Schedulers.newThread())
-                    .unsubscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe())
-        }
     }
 
     fun sendGeolocationData() {
@@ -369,7 +351,7 @@ open class HomeViewModel @Inject constructor(
 
     fun onBannerClicked(slidesModel: BannerSlidesModel) {
         if (slidesModel.redirectUrl.isNotEmpty()) {
-            ImpresionTask().execute(slidesModel.redirectUrl)
+            sendTopAdsUseCase.executeOnBackground(slidesModel.redirectUrl)
         }
     }
 
@@ -430,6 +412,7 @@ open class HomeViewModel @Inject constructor(
         (detectGeolocation as? GeolocationPromptViewModel)?.let {
             launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_DELETE, it)) }
         }
+        setNeedToShowGeolocationComponent(false)
     }
 
     fun onCloseTicker() {
@@ -776,6 +759,10 @@ open class HomeViewModel @Inject constructor(
         }){
             _stickyLogin.postValue(Result.error(it))
         }
+    }
+
+    fun sendTopAds(url: String){
+        sendTopAdsUseCase.executeOnBackground(url)
     }
 
     private fun getTokocashBalance() {
