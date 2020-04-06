@@ -223,5 +223,5 @@ public class RemoteConfigKey {
 
     public static final String CHAT_PRODUCT_CAROUSEL = "android_chat_product_carousel";
 
-    public static final String ENABLE_PREFERENCE_SETTINGS = "android_enable_preference_settings";
+    public static final String ENABLE_ONE_CLICK_CHECKOUT = "android_mainapp_enable_one_click_checkout";
 }

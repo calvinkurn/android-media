@@ -170,7 +170,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
             }
         }
 
-        if (FirebaseRemoteConfigImpl(context).getBoolean(RemoteConfigKey.ENABLE_PREFERENCE_SETTINGS, true) || true) {
+        if (FirebaseRemoteConfigImpl(context).getBoolean(RemoteConfigKey.ENABLE_ONE_CLICK_CHECKOUT, true) || true) {
             settingItems.add(SettingItemViewModel(SettingConstant.SETTING_PREFERENCE_ID,
                     getString(R.string.title_preference_setting), getString(R.string.subtitle_preference_setting)))
         }
