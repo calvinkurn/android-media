@@ -58,8 +58,8 @@ class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJo
                 .subscribe(object : Subscriber<Boolean>() {
                     override fun onNext(t: Boolean?) {
                         if (t != null && t) {
-                            view.navigateToCart(returnFlightSearchViewModel = returnJourneyModel,
-                                    flightPriceViewModel = priceViewModel)
+                            view.navigateToCart(returnFlightSearchModel = returnJourneyModel,
+                                    flightPriceModel = priceViewModel)
                         } else {
                             view.showReturnTimeShouldGreaterThanArrivalDeparture()
                         }

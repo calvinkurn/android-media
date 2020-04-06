@@ -22,7 +22,7 @@ public class FlightSearchPassDataModel implements Parcelable{
     private String linkUrl;
     private String searchRequestId;
 
-    public FlightSearchPassDataViewModel(String departureDate, String returnDate, boolean isOneWay,
+    public FlightSearchPassDataModel(String departureDate, String returnDate, boolean isOneWay,
                                          FlightPassengerModel flightPassengerViewModel,
                                          FlightAirportModel departureAirport, FlightAirportModel arrivalAirport,
                                          FlightClassModel flightClass, String linkUrl, String searchRequestId) {
@@ -217,7 +217,7 @@ public class FlightSearchPassDataModel implements Parcelable{
             return this;
         }
 
-        public FlightSearchPassDataViewModel build() {
+        public FlightSearchPassDataModel build() {
             return new FlightSearchPassDataModel(departureDate, returnDate, isOneWay,
                     flightPassengerViewModel, departureAirport, arrivalAirport, flightClass,
                     linkUrl, searchRequestId);
