@@ -66,15 +66,15 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
 
     public ProductEmptySearchViewHolder(View view, EmptyStateListener emptyStateListener, BannerAdsListener bannerAdsListener, Config topAdsConfig) {
         super(view);
-        noResultImage = (ImageView) view.findViewById(R.id.no_result_image);
-        emptyTitleTextView = (TextView) view.findViewById(R.id.text_view_empty_title_text);
-        emptyContentTextView = (TextView) view.findViewById(R.id.text_view_empty_content_text);
+        noResultImage = view.findViewById(R.id.no_result_image);
+        emptyTitleTextView = view.findViewById(R.id.text_view_empty_title_text);
+        emptyContentTextView = view.findViewById(R.id.text_view_empty_content_text);
         emptyButtonItemButton = view.findViewById(R.id.button_add_promo);
         this.emptyStateListener = emptyStateListener;
         this.bannerAdsListener = bannerAdsListener;
         context = itemView.getContext();
-        topAdsView = (TopAdsView) itemView.findViewById(R.id.topads);
-        topAdsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.banner_ads);
+        topAdsView = itemView.findViewById(R.id.topads);
+        topAdsBannerView = itemView.findViewById(R.id.banner_ads);
         selectedFilterRecyclerView = itemView.findViewById(R.id.selectedFilterRecyclerView);
 
         if (topAdsConfig != null) {

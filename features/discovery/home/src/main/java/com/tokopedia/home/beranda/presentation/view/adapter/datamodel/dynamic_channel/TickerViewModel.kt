@@ -21,7 +21,11 @@ class TickerViewModel : HomeVisitable {
 
     override fun equalsWith(b: Any?): Boolean {
         if (b is TickerViewModel) {
-            return tickers == b.tickers
+            if (tickers?.size != b.tickers?.size) return false
+            tickers?.forEachIndexed { index, ticker ->
+                if (ticker.id == b.tickers?.get(index)?.id) return false
+            }
+            return true
         }
         return false
     }
@@ -31,7 +35,7 @@ class TickerViewModel : HomeVisitable {
     }
 
     override fun visitableId(): String {
-        return "hometicker"
+        return tickers?.size.toString()
     }
 
     fun setCache(cache: Boolean) {

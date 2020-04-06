@@ -41,7 +41,8 @@ object VariantMapper {
                 isAppsOnly = newData?.campaign?.isAppsOnly ?: false,
                 appLinks = newData?.campaign?.applinks ?: "",
                 percentageAmount = newData?.campaign?.discountedPercentage?.toInt() ?: 0,
-                stockSoldPercentage = newData?.campaign?.stockSoldPercentage?.toInt() ?: 0
+                stockSoldPercentage = newData?.campaign?.stockSoldPercentage?.toInt() ?: 0,
+                isUsingOvo = newData?.campaign?.isUsingOvo ?: false
         )
 
         val newMedia = if (newData?.hasPicture == true) {
