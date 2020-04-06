@@ -6,9 +6,11 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.promocheckout.common.data.*
+import com.tokopedia.promocheckout.common.data.EXTRA_IS_USE
+import com.tokopedia.promocheckout.common.data.EXTRA_KUPON_CODE
+import com.tokopedia.promocheckout.common.data.ONE_CLICK_SHIPMENT
+import com.tokopedia.promocheckout.common.data.PAGE_TRACKING
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
-import com.tokopedia.promocheckout.detail.view.fragment.BasePromoCheckoutDetailFragment
 import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.view.fragment.PromoCheckoutDetailMarketplaceFragment
@@ -25,8 +27,7 @@ class PromoCheckoutDetailMarketplaceActivity : BaseSimpleActivity(), HasComponen
                 intent.getStringExtra(EXTRA_KUPON_CODE),
                 intent.getBooleanExtra(EXTRA_IS_USE, false),
                 intent.getBooleanExtra(ONE_CLICK_SHIPMENT, false),
-                intent.getIntExtra(PAGE_TRACKING, 1) ?: 1,
-                intent.getParcelableExtra(CHECK_PROMO_CODE_FIRST_STEP_PARAM)
+                intent.getIntExtra(PAGE_TRACKING, 1) ?: 1
         )
     }
 
@@ -37,7 +38,6 @@ class PromoCheckoutDetailMarketplaceActivity : BaseSimpleActivity(), HasComponen
             intent.putExtra(EXTRA_IS_USE, isUse)
             intent.putExtra(ONE_CLICK_SHIPMENT, oneClickShipment)
             intent.putExtra(PAGE_TRACKING, pageTracking)
-            intent.putExtra(CHECK_PROMO_CODE_FIRST_STEP_PARAM, promo)
             return intent
         }
     }

@@ -8,13 +8,9 @@ import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct;
-import com.tokopedia.shop.analytic.model.ListTitleTypeDef;
-import com.tokopedia.shop.analytic.model.TrackShopTypeDef;
-import com.tokopedia.shop.newproduct.view.datamodel.ShopProductViewModel;
+import com.tokopedia.shop.product.view.datamodel.ShopProductViewModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;

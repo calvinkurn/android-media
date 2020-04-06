@@ -62,6 +62,8 @@ object DFInstaller {
         fun onInstalling(state: SplitInstallSessionState)
         fun onFailed(errorString: String)
         fun getModuleNameView(): String
+        fun getDeeplink(): String
+        fun getFallbackUrl(): String
     }
 
     @JvmStatic
@@ -151,6 +153,8 @@ object DFInstaller {
         if (view != null && view.getModuleNameView() == moduleName) {
             view.onInstalled()
             tag = DOWNLOAD_MODE_PAGE
+            deeplink = view.getDeeplink()
+            fallbackUrl = view.getFallbackUrl()
         } else {
             tag = DOWNLOAD_MODE_BACKGROUND
         }
@@ -171,6 +175,8 @@ object DFInstaller {
             // to stop download other DFs in queue
             DFQueue.clear(context)
             tag = DOWNLOAD_MODE_PAGE
+            deeplink = view.getDeeplink()
+            fallbackUrl = view.getFallbackUrl()
         } else {
             tag = DOWNLOAD_MODE_BACKGROUND
         }
@@ -212,7 +218,7 @@ object DFInstaller {
     private fun logDeferredStatus(context: Context, message: String, moduleNames: List<String>, errorCode: List<String> = emptyList()) {
         val errorCodeTemp = ErrorUtils.getValidatedErrorCode(context, errorCode, freeInternalSpaceBeforeDownload)
         DFInstallerLogUtil.logStatus(context, TAG_DFM_DEFERRED, message, moduleNames.joinToString(),
-            freeInternalSpaceBeforeDownload, moduleSize, errorCodeTemp, 0, false)
+            freeInternalSpaceBeforeDownload, moduleSize, errorCodeTemp, 1, false)
     }
 
     /**
