@@ -67,6 +67,7 @@
         app:text_field_input_type="number"
         android:layout_marginTop="@dimen/spacing_lvl5"
         android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
         app:layout_constraintHorizontal_weight="2"
         app:layout_constraintLeft_toRightOf="@id/tf_weight_unit"
         app:layout_constraintRight_toRightOf="parent"
