@@ -85,6 +85,7 @@ import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
+import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.product.manage.item.common.di.component.DaggerProductComponent;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.item.common.di.module.ProductModule;
@@ -120,7 +121,10 @@ import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.utils.DeferredResourceInitializer;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.welcome.WelcomeActivity;
+import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
+import com.tokopedia.sellerorder.common.util.SomConsts;
+import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
 import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity;
@@ -136,11 +140,14 @@ import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.topchat.attachproduct.view.activity.BroadcastMessageAttachProductActivity;
+import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.withdraw.WithdrawRouter;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -176,7 +183,8 @@ public abstract class SellerRouterApplication extends MainApplication
         FlashSaleRouter,
         LinkerRouter,
         ResolutionRouter,
-        MLPRouter {
+        MLPRouter,
+        SellerHomeRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -193,6 +201,7 @@ public abstract class SellerRouterApplication extends MainApplication
         initializeDagger();
         initializeRemoteConfig();
         initResourceDownloadManager();
+        initIris();
     }
 
     private void initResourceDownloadManager() {
@@ -961,5 +970,26 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void onNewIntent(Context context, Intent intent) {
         //no op
+    }
+
+    @NotNull
+    @Override
+    public Fragment getSomListFragment(String tabPage) {
+        Bundle bundle = new Bundle();
+        tabPage = (null == tabPage || "".equals(tabPage)) ? SomConsts.STATUS_ALL_ORDER : tabPage;
+        bundle.putString(SomConsts.TAB_ACTIVE, tabPage);
+        return SomListFragment.newInstance(bundle);
+    }
+
+    @NotNull
+    @Override
+    public Fragment getProductManageFragment(@NotNull ArrayList<String> filterOptions) {
+        return ProductManageSellerFragment.newInstance(filterOptions);
+    }
+
+    @NotNull
+    @Override
+    public Fragment getChatListFragment() {
+        return ChatTabListFragment.create();
     }
 }

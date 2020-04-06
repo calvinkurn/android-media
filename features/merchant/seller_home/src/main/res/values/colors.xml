@@ -8,4 +8,16 @@
     <color name="sah_color_fbe7ff">#fbe7ff</color>
     <color name="sah_color_00ebffef">#00ebffef</color>
     <color name="sah_color_ebffef">#ebffef</color>
+
+    <color name="white_95">#f2ffffff</color>
+
+    <color name="setting_divider_color">#e5e7e9</color>
+    <color name="setting_title_color">#AD31353B</color>
+    <color name="setting_image_border">#E5E7E9</color>
+    <color name="setting_green">#03AC0E</color>
+    <color name="setting_black_text">#F531353B</color>
+    <color name="setting_grey_text">#AD31353B</color>
+    <color name="setting_grey_pale">#5231353B</color>
+    <color name="setting_white_background">#E5E5E5</color>
+    <color name="setting_red_text">#EF144A</color>
 </resources>

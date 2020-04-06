@@ -11,6 +11,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.exception.HeaderErrorListResponse
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.sellerhome.data.remote.TickerService
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.user.session.UserSession
@@ -46,7 +47,7 @@ class SellerHomeModule {
 
     @SellerHomeScope
     @Provides
-    fun provideMultipleRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase {
+    fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase {
         return MultiRequestGraphqlUseCase(graphqlRepository)
     }
 
@@ -97,4 +98,9 @@ class SellerHomeModule {
     fun provideTickerService(retrofit: Retrofit): TickerService {
         return retrofit.create(TickerService::class.java)
     }
+
+    @SellerHomeScope
+    @Provides
+    fun provideRemoteConfig(@ApplicationContext context: Context): FirebaseRemoteConfigImpl =
+            FirebaseRemoteConfigImpl(context)
 }
