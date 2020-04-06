@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.search.presentation.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -14,7 +15,7 @@ import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.common.util.HotelUtils
-import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity
+import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity
 import com.tokopedia.hotel.search.di.DaggerHotelSearchPropertyComponent
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragment
@@ -90,19 +91,11 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
 
         super.onCreate(savedInstanceState)
 
-        checkInString = TravelDateUtil.dateToString(TravelDateUtil.VIEW_FORMAT_WITHOUT_YEAR, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, checkIn))
-        checkOutString = TravelDateUtil.dateToString(TravelDateUtil.VIEW_FORMAT_WITHOUT_YEAR, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, checkOut))
-        subtitle = getString(R.string.template_search_subtitle,
-                checkInString,
-                checkOutString,
-                room,
-                adult)
-
         setupSearchToolbarAction()
         setUpTitleAndSubtitle()
     }
 
-    private fun  setupSearchToolbarAction() {
+    private fun setupSearchToolbarAction() {
         wrapper = LinearLayout(this)
         wrapper.apply {
             val param = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -118,7 +111,7 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
 
         wrapper.addView(textView)
         wrapper.setOnClickListener {
-            routeToHomepage()
+            changeSearchParameter()
         }
         hotel_search_header.addCustomRightContent(wrapper)
         hotel_search_header.isShowBackButton = true
@@ -128,13 +121,23 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
     }
 
     private fun setUpTitleAndSubtitle() {
+        checkInString = TravelDateUtil.dateToString(TravelDateUtil.VIEW_FORMAT_WITHOUT_YEAR, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, checkIn))
+        checkOutString = TravelDateUtil.dateToString(TravelDateUtil.VIEW_FORMAT_WITHOUT_YEAR, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, checkOut))
+        subtitle = getString(R.string.template_search_subtitle,
+                checkInString,
+                checkOutString,
+                room,
+                adult)
+
         hotel_search_header.title = name
-        hotel_search_header.subtitle  = subtitle
+        hotel_search_header.subtitle = subtitle
         hotel_search_header.subheaderView?.setTextColor(ContextCompat.getColor(this, R.color.search_subtitle))
     }
 
-    private fun routeToHomepage() {
-        startActivity(HotelHomepageActivity.getCallingIntent(this, true))
+    private fun changeSearchParameter() {
+        startActivityForResult(HotelChangeSearchActivity.getIntent(this, id, name, type, lat.toDouble(), long.toDouble(),
+                checkIn, checkOut, adult, room, getString(R.string.hotel_search_result_change_toolbar_title)),
+                CHANGE_SEARCH_REQ_CODE)
     }
 
     private fun checkParameter() {
@@ -154,8 +157,40 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
                     .hotelComponent(HotelComponentInstance.getHotelComponent(application))
                     .build()
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode == Activity.RESULT_OK && requestCode == CHANGE_SEARCH_REQ_CODE) {
+            if (fragment is HotelSearchResultFragment) {
+                data?.let {
+                    id = it.getLongExtra(HotelChangeSearchActivity.DESTINATION_ID, 0)
+                    name = it.getStringExtra(HotelChangeSearchActivity.DESTINATION_NAME)
+                    type = it.getStringExtra(HotelChangeSearchActivity.DESTINATION_TYPE)
+                    lat = it.getDoubleExtra(HotelChangeSearchActivity.DESTINATION_LAT, 0.0).toFloat()
+                    long = it.getDoubleExtra(HotelChangeSearchActivity.DESTINATION_LONG, 0.0).toFloat()
+                    checkIn = it.getStringExtra(HotelChangeSearchActivity.CHECK_IN_DATE)
+                    checkOut = it.getStringExtra(HotelChangeSearchActivity.CHECK_OUT_DATE)
+                    room = it.getIntExtra(HotelChangeSearchActivity.NUM_OF_ROOMS, 1)
+                    adult = it.getIntExtra(HotelChangeSearchActivity.NUM_OF_GUESTS, 0)
+                    (fragment as HotelSearchResultFragment).let { searchFragment ->
+                        searchFragment.searchResultviewModel.initSearchParam(id, type,
+                                lat, long, checkIn, checkOut, room, adult)
+                        searchFragment.searchDestinationName = name
+                        searchFragment.searchDestinationType = type
+
+                        setUpTitleAndSubtitle()
+                        searchFragment.changeSearchParam()
+                    }
+                }
+            }
+
+        }
+    }
 
     companion object {
+
+        const val CHANGE_SEARCH_REQ_CODE = 101
+
         const val PARAM_HOTEL_ID = "hotel_id"
         const val PARAM_HOTEL_NAME = "hotel_name"
         const val PARAM_DISTRICT_ID = "district_id"

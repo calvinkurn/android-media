@@ -26,7 +26,6 @@ import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.homepage.di.HotelHomepageComponent
-import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity.Companion.EXTRA_IS_HOTEL_CHANGE_SEARCH
 import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity.Companion.TYPE_PROPERTY
 import com.tokopedia.hotel.homepage.presentation.adapter.HotelLastSearchAdapter
 import com.tokopedia.hotel.homepage.presentation.adapter.viewholder.HotelLastSearchViewHolder
@@ -62,7 +61,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
     lateinit var trackingHotelUtil: TrackingHotelUtil
 
     private var hotelHomepageModel: HotelHomepageModel = HotelHomepageModel()
-    private var isHotelChangeSearch: Boolean = false
 
     private lateinit var remoteConfig: RemoteConfig
 
@@ -99,8 +97,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
             if (hotelHomepageModel.checkInDate.isNotBlank() && hotelHomepageModel.checkOutDate.isNotBlank()) hotelHomepageModel.nightCounter = countRoomDuration()
         }
 
-        isHotelChangeSearch  = arguments?.getBoolean(EXTRA_IS_HOTEL_CHANGE_SEARCH, false) ?: false
-
         remoteConfig = FirebaseRemoteConfigImpl(context)
     }
 
@@ -112,7 +108,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         initView()
         hidePromoContainer()
-        if (!isHotelChangeSearch) loadPromoData()
+        loadPromoData()
     }
 
     override fun onResume() {
@@ -120,7 +116,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         // last search need to reload every time user back to homepage
         hideHotelLastSearchContainer()
-        if (!isHotelChangeSearch) loadRecentSearchData()
+        loadRecentSearchData()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -470,12 +466,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         const val TAG_GUEST_INFO = "guestHotelInfo"
 
-        fun getInstance(isHotelChangeSearch: Boolean): HotelHomepageFragment =
-                HotelHomepageFragment().also {
-                    it.arguments = Bundle().apply {
-                        putBoolean(EXTRA_IS_HOTEL_CHANGE_SEARCH, isHotelChangeSearch)
-                    }
-                }
+        fun getInstance(): HotelHomepageFragment = HotelHomepageFragment()
 
         fun getInstance(id: Long, name: String, type: String, checkIn: String, checkOut: String, adult: Int, room: Int): HotelHomepageFragment =
                 HotelHomepageFragment().also {
