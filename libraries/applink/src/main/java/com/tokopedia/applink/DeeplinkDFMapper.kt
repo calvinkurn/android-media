@@ -93,6 +93,7 @@ object DeeplinkDFMapper {
     const val DF_OPERATIONAL_CONTACT_US = "df_operational_contact_us"
     const val DF_SALAM_UMRAH = "df_salam_umrah"
     private const val DF_USER_LIVENESS = "df_user_liveness"
+    const val DF_USER_SETTINGS = "df_user_settings"
 
     //sellerapp
     private const val DFM_PRODUCT_MANAGE_SELLER = "product_manage_seller"
@@ -183,7 +184,7 @@ object DeeplinkDFMapper {
             // User
             add(DFP({ it.startsWith(GROUPCHAT_LIST) }, DF_BASE, R.string.title_groupchat))
             add(DFP({ it.startsWith(GROUPCHAT_DETAIL) }, DF_BASE, R.string.title_groupchat))
-            add(DFP({ it.startsWith(SETTING_PROFILE) }, DF_BASE, R.string.applink_profile_completion_title))
+            add(DFP({ it.startsWith(SETTING_PROFILE) }, DF_USER_SETTINGS, R.string.applink_profile_completion_title, DFWebviewFallbackUrl.USER_PROFILE_SETTINGS))
             add(DFP({ it.startsWith(CHANGE_PHONE_NUMBER) }, DF_BASE, R.string.applink_change_phone_number))
             add(DFP({ it.startsWith(CHANGE_PASSWORD) }, DF_BASE, R.string.applink_change_password))
             add(DFP({ it.startsWith(SETTING_BANK) }, DF_BASE, R.string.applink_setting_bank_title))

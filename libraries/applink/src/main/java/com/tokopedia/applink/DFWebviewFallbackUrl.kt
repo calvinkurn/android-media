@@ -18,4 +18,7 @@ object DFWebviewFallbackUrl {
 
     // Salam Umrah
     const val SALAM_UMRAH = "https://m.tokopedia.com/s/umroh"
+
+    //
+    const val USER_PROFILE_SETTINGS = "https://m.tokopedia.com/user/profile/edit"
 }

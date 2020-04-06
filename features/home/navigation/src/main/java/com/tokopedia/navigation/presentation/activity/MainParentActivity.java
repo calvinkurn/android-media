@@ -275,6 +275,7 @@ public class MainParentActivity extends BaseActivity implements
     private void installDF() {
         DFInstaller.installOnBackground(this.getApplication(), DeeplinkDFMapper.DF_SALAM_UMRAH, "Home");
         if (userSession.isLoggedIn()) {
+            DFInstaller.installOnBackground(this.getApplication(), DeeplinkDFMapper.DF_USER_SETTINGS, "Home");
             DFInstaller.installOnBackground(this.getApplication(), DeeplinkDFMapper.DF_OPERATIONAL_CONTACT_US, "Home");
         }
         if (userSession.hasShop()) {
