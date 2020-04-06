@@ -201,6 +201,18 @@ class GetProductUseCase @Inject constructor(
                           hexCode
                         }
                       }
+                      sizecharts{
+                        picID
+                        description
+                        filePath
+                        fileName
+                        width
+                        height
+                        urlOriginal
+                        urlThumbnail
+                        url300
+                        status
+                      }
                     }
                   }
                 }

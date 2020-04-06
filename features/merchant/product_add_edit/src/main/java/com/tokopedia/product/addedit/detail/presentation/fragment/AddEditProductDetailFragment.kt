@@ -894,8 +894,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             ProductAddMainTracking.clickContinue(shopId)
         }
         val categoryId = viewModel.selectedCategoryId
-        val intent = AddEditProductDescriptionActivity.createInstance(context)
-        intent.putExtra(EXTRA_CATEGORY_ID, categoryId)
+        val intent = AddEditProductDescriptionActivity.createInstance(context, categoryId)
         startActivityForResult(intent, REQUEST_CODE_DESCRIPTION)
     }
 
