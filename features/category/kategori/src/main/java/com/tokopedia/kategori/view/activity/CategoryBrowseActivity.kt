@@ -1,4 +1,4 @@
-package com.tokopedia.kategori.view
+package com.tokopedia.kategori.view.activity
 
 import android.os.Bundle
 import android.text.Spannable
@@ -8,9 +8,9 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.kategori.analytics.CategoryAnalytics.Companion.categoryAnalytics
-import com.tokopedia.kategori.fragments.CategoryLevelTwoFragment
-import com.tokopedia.kategori.fragments.CategoryLevelOneFragment
-import com.tokopedia.kategori.fragments.Listener
+import com.tokopedia.kategori.view.fragments.CategoryLevelTwoFragment
+import com.tokopedia.kategori.view.fragments.CategoryLevelOneFragment
+import com.tokopedia.kategori.view.fragments.Listener
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kategori.R
 import com.tokopedia.kotlin.extensions.view.hide

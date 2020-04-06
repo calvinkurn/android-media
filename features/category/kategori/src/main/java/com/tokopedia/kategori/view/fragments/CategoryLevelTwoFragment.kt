@@ -1,4 +1,4 @@
-package com.tokopedia.kategori.fragments
+package com.tokopedia.kategori.view.fragments
 
 
 import androidx.lifecycle.Observer
@@ -13,12 +13,12 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kategori.adapters.CategoryLevelTwoAdapter
-import com.tokopedia.kategori.newcategory.CategoryChildItem
+import com.tokopedia.kategori.model.CategoryChildItem
 import com.tokopedia.kategori.di.CategoryNavigationComponent
 import com.tokopedia.kategori.di.DaggerCategoryNavigationComponent
 import com.tokopedia.kategori.Constants
 import com.tokopedia.kategori.R
-import com.tokopedia.kategori.view.ActivityStateListener
+import com.tokopedia.kategori.view.activity.ActivityStateListener
 import com.tokopedia.kategori.viewmodel.CategoryLevelTwoViewModel
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_category_level_two.*

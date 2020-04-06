@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kategori.analytics.CategoryAnalytics.Companion.categoryAnalytics
-import com.tokopedia.kategori.newcategory.CategoryChildItem
+import com.tokopedia.kategori.model.CategoryChildItem
 import com.tokopedia.kategori.Constants
 import com.tokopedia.kategori.R
 import com.tokopedia.kotlin.extensions.view.hide

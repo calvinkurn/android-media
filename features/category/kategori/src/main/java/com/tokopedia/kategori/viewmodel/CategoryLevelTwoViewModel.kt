@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.kategori.Constants
-import com.tokopedia.kategori.newcategory.CategoriesItem
-import com.tokopedia.kategori.newcategory.CategoryAllList
-import com.tokopedia.kategori.newcategory.CategoryChildItem
-import com.tokopedia.kategori.newcategory.ChildItem
+import com.tokopedia.kategori.model.CategoriesItem
+import com.tokopedia.kategori.model.CategoryAllList
+import com.tokopedia.kategori.model.CategoryChildItem
+import com.tokopedia.kategori.model.ChildItem
 import com.tokopedia.kategori.usecase.AllCategoryQueryUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result

@@ -2,8 +2,8 @@ package com.tokopedia.kategori.usecase
 
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.kategori.newcategory.CategoryAllList
-import com.tokopedia.kategori.newcategory.Data
+import com.tokopedia.kategori.model.CategoryAllList
+import com.tokopedia.kategori.model.Data
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy

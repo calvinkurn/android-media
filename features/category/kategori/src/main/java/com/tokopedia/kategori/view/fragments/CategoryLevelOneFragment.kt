@@ -1,4 +1,4 @@
-package com.tokopedia.kategori.fragments
+package com.tokopedia.kategori.view.fragments
 
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -16,9 +16,9 @@ import com.tokopedia.kategori.di.CategoryNavigationComponent
 
 import com.tokopedia.kategori.adapters.CategoryLevelOneAdapter
 import com.tokopedia.kategori.di.DaggerCategoryNavigationComponent
-import com.tokopedia.kategori.newcategory.CategoriesItem
-import com.tokopedia.kategori.view.ActivityStateListener
-import com.tokopedia.kategori.view.CategoryChangeListener
+import com.tokopedia.kategori.model.CategoriesItem
+import com.tokopedia.kategori.view.activity.ActivityStateListener
+import com.tokopedia.kategori.view.activity.CategoryChangeListener
 import com.tokopedia.kategori.viewmodel.CategoryLevelOneViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

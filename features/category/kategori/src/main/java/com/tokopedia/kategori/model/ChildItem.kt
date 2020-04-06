@@ -1,20 +1,8 @@
-package com.tokopedia.kategori.newcategory
+package com.tokopedia.kategori.model
 
 import com.google.gson.annotations.SerializedName
 
-data class CategoryChildItem(
-
-        @field:SerializedName("sameCategoryTotalCount")
-        var sameCategoryTotalCount: Int = 0,
-
-        @field:SerializedName("categoryPosition")
-        var categoryPosition: Int = 0,
-
-        @field:SerializedName("itemType")
-        var itemType: Int? = null,
-
-        @field:SerializedName("isSeringKamuLihat")
-        var isSeringKamuLihat: Boolean = false,
+data class ChildItem(
 
         @field:SerializedName("identifier")
         val identifier: String? = null,

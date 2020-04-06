@@ -1,8 +1,8 @@
 package com.tokopedia.kategori.analytics
 
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.kategori.newcategory.CategoriesItem
-import com.tokopedia.kategori.newcategory.CategoryChildItem
+import com.tokopedia.kategori.model.CategoriesItem
+import com.tokopedia.kategori.model.CategoryChildItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 import java.util.HashMap
@@ -245,7 +245,7 @@ class CategoryAnalytics {
     }
 
     // 11
-    fun eventCategoryLevelOneBannerView( product: CategoryChildItem, position: Int) {
+    fun eventCategoryLevelOneBannerView(product: CategoryChildItem, position: Int) {
         val map = DataLayer.mapOf(
                 KEY_EVENT, EVENT_PROMO_VIEW,
                 KEY_EVENT_CATEGORY, EVENT_CATEGORY_BELANJA_PAGE,

@@ -3,7 +3,7 @@
 
     <application>
         <activity
-            android:name="com.tokopedia.kategori.view.CategoryBrowseActivity"
+            android:name="com.tokopedia.kategori.view.activity.CategoryBrowseActivity"
             android:label="@string/digital_browse_home_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"

@@ -1,8 +1,11 @@
-package com.tokopedia.kategori.newcategory
+package com.tokopedia.kategori.model
 
 import com.google.gson.annotations.SerializedName
 
-data class ChildItem(
+data class CategoriesItem(
+
+        @field:SerializedName("type")
+        var type: Int = 1,
 
         @field:SerializedName("identifier")
         val identifier: String? = null,
@@ -31,6 +34,17 @@ data class ChildItem(
         @field:SerializedName("url")
         val url: String? = null,
 
+        @field:SerializedName("iconImageUrlGray")
+        val iconImageUrlGray: String? = null,
+
         @field:SerializedName("child")
-        val child: List<ChildItem?>? = null
+        val child: List<ChildItem?>? = null,
+
+        @field:SerializedName("isSelected")
+        var isSelected: Boolean = false,
+
+        @field:SerializedName("position")
+        var position: Int = 0
+
+
 )
