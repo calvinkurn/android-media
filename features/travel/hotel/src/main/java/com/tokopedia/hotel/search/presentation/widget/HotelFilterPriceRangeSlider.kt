@@ -65,30 +65,30 @@ class HotelFilterPriceRangeSlider @JvmOverloads constructor(context: Context, at
                 var endValue = 0
                 var startValue = 0
 
-                if (start < 100) {
-                    startValue = (start * 1000)
+                if (start < ONE_HUNDRED) {
+                    startValue = (start * ONE_THOUSAND)
                 }
-                if (start in 100..191) {
-                    startValue = ((start - 100) * 10000) + 100000
+                if (start in ONE_HUNDRED..(STEP_190 + 1)) {
+                    startValue = ((start - STEP_100) * TEN_THOUSAND) + ONE_HUNDRED_THOUSAND
                 }
-                if (start in 190..281) {
-                    startValue = ((start - 190) * 100000) + 1000000
+                if (start in STEP_190..(STEP_280 + 1)) {
+                    startValue = ((start - STEP_190) * ONE_HUNDRED_THOUSAND) + ONE_MILLION
                 }
-                if (start > 280) {
-                    startValue = ((start - 280) * 1000000) + 10000000
+                if (start > STEP_280) {
+                    startValue = ((start - STEP_280) * ONE_MILLION) + TEN_MILLION
                 }
 
-                if (end < 99) {
-                    endValue = (ceil(end * (1 - (MIN_BOUND / 100000.0))).toInt() * 1000) + 20000
+                if (end < (STEP_100 - 1)) {
+                    endValue = (ceil(end * (1 - (MIN_BOUND / ONE_HUNDRED_THOUSAND.toFloat()))).toInt() * ONE_THOUSAND) + MIN_BOUND
                 }
-                if (end in 99..190) {
-                    endValue = ((end - 99) * 10000) + 100000
+                if (end in (STEP_100  - 1)..STEP_190) {
+                    endValue = ((end - STEP_100 + 1) * TEN_THOUSAND) + ONE_HUNDRED_THOUSAND
                 }
-                if (end in 189..280) {
-                    endValue = ((end - 189) * 100000) + 1000000
+                if (end in (STEP_190 - 1)..STEP_280) {
+                    endValue = ((end - STEP_190 + 1) * ONE_HUNDRED_THOUSAND) + ONE_MILLION
                 }
-                if (end >= 280) {
-                    endValue = ((end - 279) * 1000000) + 10000000
+                if (end >= STEP_280) {
+                    endValue = ((end - STEP_280 + 1) * ONE_MILLION) + TEN_MILLION
                 }
 
                 onValueChangedListener?.onValueChanged(startValue, endValue)
@@ -105,10 +105,10 @@ class HotelFilterPriceRangeSlider @JvmOverloads constructor(context: Context, at
     private fun getPositionFromMinValue(value: Int): Int {
         if (value >= 0) {
             when {
-                value < 100000 -> return value / 1000
-                value in 100000..999999 -> return ((value - 100000) / 10000) + 100
-                value in 1000000..9999999 -> return ((value - 1000000) / 100000) + 190
-                value >= 10000000 -> return ((value - 10000000) / 1000000) + 280
+                value < ONE_HUNDRED_THOUSAND -> return value / ONE_THOUSAND
+                value in ONE_HUNDRED_THOUSAND until ONE_MILLION -> return ((value - ONE_HUNDRED_THOUSAND) / TEN_THOUSAND) + STEP_100
+                value in ONE_MILLION until TEN_MILLION -> return ((value - ONE_MILLION) / ONE_HUNDRED_THOUSAND) + STEP_190
+                value >= TEN_MILLION -> return ((value - TEN_MILLION) / ONE_MILLION) + STEP_280
             }
         }
         return 0
@@ -117,10 +117,10 @@ class HotelFilterPriceRangeSlider @JvmOverloads constructor(context: Context, at
     private fun getPositionFromMaxValue(value: Int): Int {
         if (value > 0) {
             when {
-                value < 100000 -> return ceil((value - 20000) / 1000 / (1 - (MIN_BOUND / 100000.0))).toInt()
-                value in 100000..999999 -> return ((value - 100000) / 10000) + 99
-                value in 1000000..9999999 -> return ((value - 1000000) / 100000) + 189
-                value >= 10000000 -> return ((value - 10000000) / 1000000) + 279
+                value < ONE_HUNDRED_THOUSAND -> return ceil((value - MIN_BOUND) / ONE_THOUSAND / (1 - (MIN_BOUND / ONE_HUNDRED_THOUSAND.toFloat()))).toInt()
+                value in ONE_HUNDRED_THOUSAND until ONE_MILLION -> return ((value - ONE_HUNDRED_THOUSAND) / TEN_THOUSAND) + STEP_100 - 1
+                value in ONE_MILLION until TEN_MILLION -> return ((value - ONE_MILLION) / ONE_HUNDRED_THOUSAND) + STEP_190 - 1
+                value >= TEN_MILLION -> return ((value - TEN_MILLION) / ONE_MILLION) + STEP_280 - 1
             }
         }
         return 285
@@ -132,5 +132,16 @@ class HotelFilterPriceRangeSlider @JvmOverloads constructor(context: Context, at
 
     companion object {
         const val MIN_BOUND = 20000
+
+        const val ONE_HUNDRED = 100
+        const val ONE_THOUSAND = 1000
+        const val TEN_THOUSAND  = 10000
+        const val ONE_HUNDRED_THOUSAND  = 100000
+        const val ONE_MILLION = 1000000
+        const val TEN_MILLION = 10000000
+
+        const val STEP_100 = 100
+        const val STEP_190 = 190
+        const val STEP_280 = 280
     }
 }
