@@ -22,3 +22,21 @@ private fun getModifiedSearchResultApplink(applink: String?, searchParameter: Se
 
     return ApplinkConst.DISCOVERY_SEARCH + "?" + UrlParamHelper.generateUrlParamString(applinkQueryParams)
 }
+
+internal fun getModifiedApplink(applink: String?, searchParameterMap: Map<String, String>?): String {
+    applink ?: return ""
+
+    return if (applink.startsWith(ApplinkConst.DISCOVERY_SEARCH))
+        getModifiedSearchResultApplink(applink, searchParameterMap)
+    else applink
+}
+
+private fun getModifiedSearchResultApplink(applink: String?, searchParameterMap: Map<String, String>?): String {
+    applink ?: return ""
+
+    val applinkQueryParams = URLParser(applink).paramKeyValueMap
+
+    applinkQueryParams[SearchApiConst.PREVIOUS_KEYWORD] = searchParameterMap?.get(SearchApiConst.PREVIOUS_KEYWORD) ?: ""
+
+    return ApplinkConst.DISCOVERY_SEARCH + "?" + UrlParamHelper.generateUrlParamString(applinkQueryParams)
+}

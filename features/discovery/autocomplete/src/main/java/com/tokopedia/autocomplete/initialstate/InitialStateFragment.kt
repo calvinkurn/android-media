@@ -35,8 +35,6 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
 
     private var performanceMonitoring: PerformanceMonitoring? = null
 
-    private var searchParameter: SearchParameter? = null
-
     private lateinit var adapter: InitialStateAdapter
 
     private var initialStateViewUpdateListener: InitialStateViewUpdateListener? = null
@@ -99,7 +97,7 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         notifyAdapter(initialStateVisitableList)
     }
 
-    private fun notifyAdapter(list: List<Visitable<*>>){
+    private fun notifyAdapter(list: List<Visitable<*>>) {
         stopTracePerformanceMonitoring()
         adapter.clearData()
         adapter.addAll(list)
@@ -123,25 +121,27 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         super.onViewStateRestored(savedInstanceState)
 
         if (savedInstanceState != null) {
-            searchParameter = savedInstanceState.getParcelable(SEARCH_PARAMETER)
-            searchParameter?.let { presenter.getInitialStateData(it) }
+            val searchParameter = savedInstanceState.getSerializable(SEARCH_PARAMETER) as HashMap<String, String>
+            presenter.getInitialStateData(searchParameter)
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putParcelable(SEARCH_PARAMETER, searchParameter)
+        presenter.getSearchParameterMap()?.let {
+            outState.putSerializable(SEARCH_PARAMETER, HashMap<String, Any>(it))
+        }
     }
 
     fun getInitialStateData(searchParameter: SearchParameter) {
         performanceMonitoring = PerformanceMonitoring.start(MP_SEARCH_AUTOCOMPLETE)
-        presenter.getInitialStateData(searchParameter)
+        presenter.getInitialStateData(searchParameter.getSearchParameterMap())
     }
 
     override fun onItemClicked(applink: String, webUrl: String) {
         dropKeyBoard()
 
-        val modifiedApplink = getModifiedApplink(applink, searchParameter)
+        val modifiedApplink = getModifiedApplink(applink, presenter.getSearchParameterMap())
         startActivityFromAutoComplete(modifiedApplink)
     }
 
@@ -178,18 +178,16 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         refreshPopularSearch()
     }
 
-    private fun refreshPopularSearch(){
-        searchParameter?.let {
-            AutocompleteTracking.eventClickRefreshPopularSearch()
-            presenter.refreshPopularSearch(it)
-        }
+    private fun refreshPopularSearch() {
+        AutocompleteTracking.eventClickRefreshPopularSearch()
+        presenter.refreshPopularSearch()
     }
 
     fun setSearchParameter(searchParameter: SearchParameter) {
-        this.searchParameter = searchParameter
+        presenter.setSearchParameterMap(searchParameter.getSearchParameterHashMap())
     }
 
-    fun setInitialStateViewUpdateListener(initialStateViewUpdateListener: InitialStateViewUpdateListener){
+    fun setInitialStateViewUpdateListener(initialStateViewUpdateListener: InitialStateViewUpdateListener) {
         this.initialStateViewUpdateListener = initialStateViewUpdateListener
     }
 }

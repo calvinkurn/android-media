@@ -12,7 +12,6 @@ import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewMode
 import com.tokopedia.autocomplete.initialstate.recentsearch.convertRecentSearchToVisitableList
 import com.tokopedia.autocomplete.initialstate.recentview.ReecentViewTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.convertRecentViewSearchToVisitableList
-import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.user.session.UserSessionInterface
 import retrofit2.Response
 import rx.Subscriber
@@ -33,6 +32,15 @@ class InitialStatePresenter @Inject constructor(
 
     private var querySearch = ""
     private var listVistable = mutableListOf<Visitable<*>>()
+    private var searchParameterHashMap = HashMap<String, String>()
+
+    fun setSearchParameterMap(searchParameter: HashMap<String, String>) {
+        this.searchParameterHashMap = searchParameter
+    }
+    
+    fun getSearchParameterMap() : Map<String, String>? {
+        return searchParameterHashMap
+    }
 
     private fun getInitialStateSubscriber(): Subscriber<List<InitialStateData>> = object : Subscriber<List<InitialStateData>>() {
         override fun onCompleted() {}
@@ -208,10 +216,10 @@ class InitialStatePresenter @Inject constructor(
         return childList
     }
 
-    override fun getInitialStateData(searchParameter: SearchParameter) {
+    override fun getInitialStateData(searchParameterMap: Map<String, Any>) {
         initialStateUseCase.execute(
                 InitialStateUseCase.getParams(
-                        searchParameter.getSearchParameterMap(),
+                        searchParameterMap,
                         userSession.deviceId,
                         userSession.userId
                 ),
@@ -242,15 +250,17 @@ class InitialStatePresenter @Inject constructor(
         )
     }
 
-    override fun refreshPopularSearch(searchParameter: SearchParameter) {
-        refreshPopularSearchUseCase.execute(
-                RefreshPopularSearchUseCase.getParams(
-                        searchParameter.getSearchParameterMap(),
-                        userSession.deviceId,
-                        userSession.userId
-                ),
-                getPopularSearchSubscriber()
-        )
+    override fun refreshPopularSearch() {
+        searchParameterHashMap?.let {
+            refreshPopularSearchUseCase.execute(
+                    RefreshPopularSearchUseCase.getParams(
+                            it,
+                            userSession.deviceId,
+                            userSession.userId
+                    ),
+                    getPopularSearchSubscriber()
+            )
+        }
     }
 
     override fun detachView() {
