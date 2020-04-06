@@ -6,16 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:paddingStart="@dimen/dp_16"
-    android:paddingLeft="@dimen/dp_16"
     android:paddingTop="@dimen/dp_16"
-    android:paddingEnd="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_16"
     android:visibility="visible">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/pdp_shop_info_container"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -30,7 +29,6 @@
             android:scaleType="centerCrop"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/label_shop_title"
             tools:ignore="ContentDescription"
             tools:src="@color/tkpd_main_green" />
 
@@ -192,10 +190,20 @@
     <include
         android:id="@+id/pdp_shimmering_shop_info"
         layout="@layout/shimmering_shop_info"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/shop_separator"
         tools:visibility="gone" />
+
+
+    <View
+        android:id="@+id/shop_separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@color/grey_separator"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pdp_shop_info_container"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

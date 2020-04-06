@@ -181,7 +181,8 @@ open class FlightSearchActivity : BaseFlightActivity(),
     }
 
     override fun selectFlight(selectedFlightID: String, selectedTerm: String, flightPriceViewModel: FlightPriceViewModel,
-                              isBestPairing: Boolean, isCombineDone: Boolean) {
+                              isBestPairing: Boolean, isCombineDone: Boolean, requestId: String) {
+        passDataViewModel.searchRequestId = requestId
         if (passDataViewModel.isOneWay) {
             if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_BOOKING_NEW_FLOW, true)) {
                 startActivityForResult(FlightBookingActivity
