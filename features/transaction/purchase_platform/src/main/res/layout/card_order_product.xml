@@ -107,24 +107,31 @@
         app:typographyWeight="bold"
         tools:text="Rp 1.000.000" />
 
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/lbl_cashback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        app:labelType="general_light_green"
+        app:layout_constraintBottom_toBottomOf="@id/tv_product_price"
+        app:layout_constraintStart_toEndOf="@id/tv_product_price"
+        app:layout_constraintTop_toTopOf="@id/tv_product_price"
+        app:labelTitle="@string/label_cashback" />
+
     <ImageView
         android:id="@+id/iv_free_shipping"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
         app:layout_constraintBottom_toBottomOf="@id/tv_product_price"
-        app:layout_constraintStart_toEndOf="@id/tv_product_price"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/lbl_cashback"
         app:layout_constraintTop_toTopOf="@id/tv_product_price"
+        tools:ignore="ContentDescription"
         tools:src="@drawable/ic_close_default" />
-
-    <!--    <androidx.recyclerview.widget.RecyclerView-->
-    <!--        android:id="@+id/rv_product_variant"-->
-    <!--        android:layout_width="0dp"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginTop="@dimen/dp_16"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="@+id/iv_product_image"-->
-    <!--        app:layout_constraintTop_toBottomOf="@+id/tv_product_price" />-->
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_quantity_stock_available"
@@ -200,19 +207,6 @@
         app:typographyType="small"
         tools:text="Maksimal 2 broh hjadjf askjbfk kjabfdk ashfb aksbfkabsf "
         tools:visibility="visible" />
-
-    <!--    <com.tokopedia.unifycomponents.QuantityEditorUnify-->
-    <!--        android:id="@+id/quantity_editor"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginTop="@dimen/dp_16"-->
-    <!--        android:layout_marginEnd="@dimen/dp_24"-->
-    <!--        android:layout_marginRight="@dimen/dp_24"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@+id/rv_product_variant"-->
-    <!--        app:qty_default_value="1"-->
-    <!--        app:qty_max_value="10"-->
-    <!--        app:qty_min_value="1" />-->
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_note_label"

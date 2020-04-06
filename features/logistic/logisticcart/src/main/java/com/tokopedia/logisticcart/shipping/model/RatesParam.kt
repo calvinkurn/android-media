@@ -37,7 +37,6 @@ data class RatesParam(
         var is_express_checkout: Int? = null,
         var val_rates: String? = null,
         var used_otdg: Int? = null,
-//TODO: ADD OCC INT FLAG = 1 OR 0
         var occ: String = "0"
 ) {
 

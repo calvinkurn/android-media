@@ -247,6 +247,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
             freeOngkirImg = product.freeShipping.badgeUrl
             productResponse = product
             wholesalePrice = product.wholesalePrice
+            cashback = if (product.productCashback.isNotBlank()) "Cashback ${product.productCashback}" else ""
             notes = if (product.productNotes.length > OrderProductCard.MAX_NOTES_LENGTH) product.productNotes.substring(0, OrderProductCard.MAX_NOTES_LENGTH) else product.productNotes
         }
         mapQuantity(orderProduct, product)
