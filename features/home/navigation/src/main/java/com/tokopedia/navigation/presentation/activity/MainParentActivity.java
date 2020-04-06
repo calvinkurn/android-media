@@ -40,6 +40,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.text.TextUtils;
 import android.util.SparseArray;
+import android.util.Log;
 import android.view.FrameMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
