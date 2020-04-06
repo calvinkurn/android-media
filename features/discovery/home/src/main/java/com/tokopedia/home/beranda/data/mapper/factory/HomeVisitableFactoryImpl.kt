@@ -52,7 +52,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
     }
 
     override fun addBannerVisitable(): HomeVisitableFactory {
-        val bannerViewModel = BannerViewModel()
+        val bannerViewModel = HomepageBannerDataModel()
         val bannerDataModel = homeData?.banner
         bannerViewModel.isCache = isCache
 
@@ -89,20 +89,22 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
     }
 
     override fun addTickerVisitable(): HomeVisitableFactory {
-        val tmpTickers = ArrayList<Ticker.Tickers>()
-        val tickers = homeData?.ticker?.tickers
-        if (!HomeFragment.HIDE_TICKER) {
-            tickers?.let {
-                for (tmpTicker in tickers) {
-                    if (tmpTicker.layout != StickyLoginConstant.LAYOUT_FLOATING) {
-                        tmpTickers.add(tmpTicker)
+        if (!isCache) {
+            val tmpTickers = ArrayList<Ticker.Tickers>()
+            val tickers = homeData?.ticker?.tickers
+            if (!HomeFragment.HIDE_TICKER) {
+                tickers?.let {
+                    for (tmpTicker in tickers) {
+                        if (tmpTicker.layout != StickyLoginConstant.LAYOUT_FLOATING) {
+                            tmpTickers.add(tmpTicker)
+                        }
                     }
-                }
-                if (tmpTickers.isNotEmpty()) {
-                    val viewModel = TickerViewModel()
-                    viewModel.tickers = tmpTickers
+                    if (tmpTickers.isNotEmpty()) {
+                        val viewModel = TickerViewModel()
+                        viewModel.tickers = tmpTickers
 
-                    visitableList.add(viewModel)
+                        visitableList.add(viewModel)
+                    }
                 }
             }
         }

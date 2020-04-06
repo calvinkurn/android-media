@@ -66,18 +66,20 @@ class DeleteCartUseCase @Inject constructor(private val clearCacheAutoApplyStack
                             .map {
                                 val deleteCartGqlResponse = it.getData<DeleteCartGqlResponse>(DeleteCartGqlResponse::class.java)
                                 val deleteCartData = DeleteCartData()
-                                deleteCartData.isSuccess = deleteCartGqlResponse.deleteCartDataResponse.status == "OK"
-                                deleteCartData.message = if (deleteCartGqlResponse.deleteCartDataResponse.status == "OK") {
-                                    if (deleteCartGqlResponse.deleteCartDataResponse.data?.message?.isNotEmpty() == true) {
-                                        deleteCartGqlResponse.deleteCartDataResponse.data.message[0]
+                                if (deleteCartGqlResponse != null) {
+                                    deleteCartData.isSuccess = deleteCartGqlResponse.deleteCartDataResponse.status == "OK"
+                                    deleteCartData.message = if (deleteCartGqlResponse.deleteCartDataResponse.status == "OK") {
+                                        if (deleteCartGqlResponse.deleteCartDataResponse.data?.message?.isNotEmpty() == true) {
+                                            deleteCartGqlResponse.deleteCartDataResponse.data.message[0]
+                                        } else {
+                                            ""
+                                        }
                                     } else {
-                                        ""
-                                    }
-                                } else {
-                                    if (deleteCartGqlResponse.deleteCartDataResponse.errorMessage.isNotEmpty()) {
-                                        deleteCartGqlResponse.deleteCartDataResponse.errorMessage[0]
-                                    } else {
-                                        ""
+                                        if (deleteCartGqlResponse.deleteCartDataResponse.errorMessage.isNotEmpty()) {
+                                            deleteCartGqlResponse.deleteCartDataResponse.errorMessage[0]
+                                        } else {
+                                            ""
+                                        }
                                     }
                                 }
                                 deleteCartData

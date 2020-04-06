@@ -17,10 +17,6 @@ interface ActionListener {
 
     fun onShopItemCheckChanged(itemPosition: Int, checked: Boolean)
 
-    fun onVoucherMerchantPromoClicked(`object`: Any)
-
-    fun onCancelVoucherMerchantClicked(promoMerchantCode: String, position: Int, ignoreAPIResponse: Boolean)
-
     fun onCartDataEnableToCheckout()
 
     fun onCartDataDisableToCheckout()
@@ -66,4 +62,6 @@ interface ActionListener {
     fun onTobaccoLiteUrlClicked(url: String)
 
     fun onShowTickerTobacco()
+
+    fun onCartShopNameChecked(isAllChecked: Boolean)
 }
