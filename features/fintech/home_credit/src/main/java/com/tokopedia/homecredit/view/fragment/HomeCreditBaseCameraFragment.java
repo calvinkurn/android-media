@@ -12,7 +12,6 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -286,7 +285,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
             cameraView.addCameraListener(cameraListener);
             cameraView.open();
         } catch (Throwable e) {
-            Log.e("Carmera" , e.toString());
+            e.printStackTrace();
         }
     }
 
