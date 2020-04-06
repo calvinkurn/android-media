@@ -1,6 +1,8 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.mapper
 
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.DEFAULT_ERROR_MESSAGE
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.STATUS_OK
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.preference.*
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.*
 import javax.inject.Inject
@@ -8,7 +10,7 @@ import javax.inject.Inject
 class PreferenceListModelMapper @Inject constructor() : PreferenceDataMapper {
 
     override fun convertToDomainModel(response: PreferenceListGqlResponse): PreferenceListResponseModel {
-        if (response.data.status.equals("OK", true)) {
+        if (response.data.status.equals(STATUS_OK, true)) {
             val data = response.data.data
             if (data.success == 1) {
                 val preferenceListResponseModel = PreferenceListResponseModel()
@@ -28,7 +30,7 @@ class PreferenceListModelMapper @Inject constructor() : PreferenceDataMapper {
                 if (errorMessage.isNotEmpty()) {
                     throw MessageErrorException(errorMessage[0])
                 } else {
-                    throw MessageErrorException("Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
+                    throw MessageErrorException(DEFAULT_ERROR_MESSAGE)
                 }
             }
         } else {
@@ -36,7 +38,7 @@ class PreferenceListModelMapper @Inject constructor() : PreferenceDataMapper {
             if (errorMessage.isNotEmpty()) {
                 throw MessageErrorException(errorMessage[0])
             } else {
-                throw MessageErrorException("Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
+                throw MessageErrorException(DEFAULT_ERROR_MESSAGE)
             }
         }
     }
@@ -68,11 +70,7 @@ class PreferenceListModelMapper @Inject constructor() : PreferenceDataMapper {
         addressModel.provinceName = address.provinceName
         addressModel.receiverName = address.receiverName
 
-        addressModel.fullAddress = address.addressStreet + ", " +
-                address.districtName + ", " +
-                address.cityName + ", " +
-                address.provinceName + " " +
-                address.postalCode
+        addressModel.fullAddress = "${address.addressStreet}, ${address.districtName}, ${address.cityName}, ${address.provinceName} ${address.postalCode}"
 
 
         return addressModel

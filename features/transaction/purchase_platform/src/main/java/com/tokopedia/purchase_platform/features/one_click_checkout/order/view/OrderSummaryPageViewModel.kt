@@ -1042,13 +1042,13 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         )
     }
 
-    fun updateCartPromo(onSuccess: (PromoRequest, ValidateUsePromoRequest, ArrayList<String>) -> Unit) {
+    fun updateCartPromo(onSuccess: (ValidateUsePromoRequest, PromoRequest, ArrayList<String>) -> Unit) {
         val param = generateUpdateCartParam()
         if (param != null) {
             globalEvent.value = OccGlobalEvent.Loading
             updateCartOccUseCase.execute(param, {
                 globalEvent.value = OccGlobalEvent.Normal
-                onSuccess(generatePromoRequest(), generateValidateUsePromoRequest(), generateBboPromoCodes())
+                onSuccess(generateValidateUsePromoRequest(), generatePromoRequest(), generateBboPromoCodes())
             }, { throwable: Throwable ->
                 throwable.printStackTrace()
                 if (throwable is MessageErrorException && throwable.message != null) {

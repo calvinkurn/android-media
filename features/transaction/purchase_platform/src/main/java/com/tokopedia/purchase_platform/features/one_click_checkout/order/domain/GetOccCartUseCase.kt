@@ -13,9 +13,12 @@ import com.tokopedia.purchase_platform.common.utils.isNullOrEmpty
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShipProd
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShopShipment
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.PromoSAFResponse
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.DEFAULT_ERROR_MESSAGE
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.STATUS_OK
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.GetOccCartGqlResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.ProductDataResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.ShopDataResponse
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.OrderProductCard
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.*
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -29,7 +32,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
                 R.raw.mutation_get_occ)
         graphqlUseCase.setGraphqlQuery(graphqlRequest)
         val response = graphqlUseCase.executeOnBackground()
-        if (response.response.status.equals("OK", true)) {
+        if (response.response.status.equals(STATUS_OK, true)) {
             if (response.response.data.cartList.isNotEmpty()) {
                 val orderCart = OrderCart()
                 val cart = response.response.data.cartList[0]
@@ -47,13 +50,13 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
             } else if (response.response.data.errors.isNotEmpty()) {
                 throw MessageErrorException(response.response.data.errors[0])
             } else {
-                throw MessageErrorException("Terjadi kesalahan")
+                throw MessageErrorException(DEFAULT_ERROR_MESSAGE)
             }
         } else {
             if (response.response.errorMessages.isNotEmpty()) {
                 throw MessageErrorException(response.response.errorMessages[0])
             } else {
-                throw MessageErrorException("Terjadi kesalahan")
+                throw MessageErrorException(DEFAULT_ERROR_MESSAGE)
             }
         }
     }
@@ -244,7 +247,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
             freeOngkirImg = product.freeShipping.badgeUrl
             productResponse = product
             wholesalePrice = product.wholesalePrice
-            notes = if (product.productNotes.length > 144) product.productNotes.substring(0, 144) else product.productNotes
+            notes = if (product.productNotes.length > OrderProductCard.MAX_NOTES_LENGTH) product.productNotes.substring(0, OrderProductCard.MAX_NOTES_LENGTH) else product.productNotes
         }
         mapQuantity(orderProduct, product)
         return orderProduct
@@ -252,13 +255,6 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
 
     private fun mapQuantity(orderProduct: OrderProduct, product: ProductDataResponse) {
         val quantityViewModel = QuantityUiModel()
-//        quantityViewModel.errorFieldBetween = messagesModel?.get(Message.ERROR_FIELD_BETWEEN) ?: ""
-//        quantityViewModel.errorFieldMaxChar = messagesModel?.get(Message.ERROR_FIELD_MAX_CHAR) ?: ""
-//        quantityViewModel.errorFieldRequired = messagesModel?.get(Message.ERROR_FIELD_REQUIRED) ?: ""
-//        quantityViewModel.errorProductAvailableStock = messagesModel?.get(Message.ERROR_PRODUCT_AVAILABLE_STOCK) ?: ""
-//        quantityViewModel.errorProductAvailableStockDetail = messagesModel?.get(Message.ERROR_PRODUCT_AVAILABLE_STOCK_DETAIL) ?: ""
-//        quantityViewModel.errorProductMaxQuantity = messagesModel?.get(Message.ERROR_PRODUCT_MAX_QUANTITY) ?: ""
-//        quantityViewModel.errorProductMinQuantity = messagesModel?.get(Message.ERROR_PRODUCT_MIN_QUANTITY) ?: ""
         quantityViewModel.isStateError = false
 
         quantityViewModel.maxOrderQuantity = product.productMaxOrder

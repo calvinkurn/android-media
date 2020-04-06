@@ -38,7 +38,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             view.tv_product_name.text = product.productName
             showPrice()
 
-            view.et_note.filters = arrayOf(InputFilter.LengthFilter(144))
+            view.et_note.filters = arrayOf(InputFilter.LengthFilter(MAX_NOTES_LENGTH))
             view.et_note.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
                 if (hasFocus) {
                     orderSummaryAnalytics.eventClickSellerNotes(product.productId.toString(), shop.shopId.toString())
@@ -217,5 +217,9 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     interface OrderProductCardListener {
 
         fun onProductChange(product: OrderProduct, shouldReloadRates: Boolean = true)
+    }
+
+    companion object {
+        const val MAX_NOTES_LENGTH = 144
     }
 }
