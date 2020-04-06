@@ -6,7 +6,7 @@ import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetPlayLiveDynamicUseCase
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.ext.observeOnce
@@ -184,7 +184,7 @@ class HomeViewModelPlayTest : Spek({
                 getHomeUseCase.givenGetHomeDataReturn(
                         HomeDataModel(
                                 list = listOf(
-                                        BannerViewModel(),
+                                        HomepageBannerDataModel(),
                                         playDataModel
                                 )
                         )
@@ -234,7 +234,7 @@ class HomeViewModelPlayTest : Spek({
                 getHomeUseCase.givenGetHomeDataReturn(
                         HomeDataModel(
                                 list = listOf(
-                                        BannerViewModel(),
+                                        HomepageBannerDataModel(),
                                         playDataModel
                                 )
                         )

@@ -4,6 +4,7 @@ import com.tokopedia.url.TokopediaUrl
 
 object ProductDetailConstant {
 
+
     @JvmField
     var BASE_REST_URL = TokopediaUrl.getInstance().WS
 
@@ -52,8 +53,6 @@ object ProductDetailConstant {
     const val DEFAULT_DEVICE = "android"
     const val DEFAULT_SRC_PAGE = "recommen_pdp"
     const val KEY_PRODUCT_ID = "productIDs"
-    const val KEY_BUTTON_NORMAL = "normal"
-    const val KEY_BUTTON_OCS = "ocs"
     const val KEY_XSOURCE = "xSource"
     const val KEY_PAGE_NUMBER = "pageNumber"
     const val KEY_PREORDER = "preorder"
@@ -64,6 +63,8 @@ object ProductDetailConstant {
     const val KEY_OVO_DEALS = "ovo_deals"
     const val KEY_CHAT = "chat"
     const val KEY_BYME = "byme"
+    const val KEY_BUTTON_PRIMARY = "primary"
+    const val KEY_BUTTON_SECONDARY = "secondary"
     const val DEFAULT_PAGE_NUMBER = 1
     const val DEFAULT_PAGE_NAME = "pdp_1,pdp_2,pdp_3,pdp_4"
 
@@ -82,7 +83,6 @@ object ProductDetailConstant {
     const val PAYLOAD_FULLFILLMENT = 192
     const val PAYLOAD_VARIANT_COMPONENT = 1
     const val PAYLOAD_NOTIFY_ME = 1
-
 
     //Request Code
     const val REQUEST_CODE_TALK_PRODUCT = 1

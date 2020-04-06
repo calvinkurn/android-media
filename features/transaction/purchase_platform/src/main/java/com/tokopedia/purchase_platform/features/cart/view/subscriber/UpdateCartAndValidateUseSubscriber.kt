@@ -16,7 +16,6 @@ class UpdateCartAndValidateUseSubscriber(private val view: ICartListView?,
                 if (updateCartData.isSuccess) {
                     it.promoUiModel?.let { promoUiModel ->
                         presenter.isLastApplyResponseStillValid = false
-//                        presenter.lastValidateUseResponse?.promoUiModel = promoUiModel
                         view?.updatePromoCheckoutStickyButton(promoUiModel)
                     }
                 }

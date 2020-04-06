@@ -2,8 +2,6 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.common.domai
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.ShippingNoPriceResponse
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.mapper.ShippingDurationModelMapper
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingnoprice.ShippingListModel
 import javax.inject.Inject
 
 class GetShippingDurationUseCase @Inject constructor(val graphqlUseCase: GraphqlUseCase<ShippingNoPriceResponse>) {

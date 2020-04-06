@@ -52,7 +52,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
     }
 
     override fun addBannerVisitable(): HomeVisitableFactory {
-        val bannerViewModel = BannerViewModel()
+        val bannerViewModel = HomepageBannerDataModel()
         val bannerDataModel = homeData?.banner
         bannerViewModel.isCache = isCache
 

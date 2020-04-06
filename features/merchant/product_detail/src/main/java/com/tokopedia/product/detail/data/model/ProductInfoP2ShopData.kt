@@ -11,5 +11,5 @@ data class ProductInfoP2ShopData(
         var shopCod: Boolean = false,
         var nearestWarehouse: MultiOriginWarehouse = MultiOriginWarehouse(),
         var tradeinResponse: TradeinResponse? = null,
-        var newCartTypeResponse: CartRedirectionResponse = CartRedirectionResponse()
+        var cartRedirectionResponse: CartRedirectionResponse = CartRedirectionResponse()
 )

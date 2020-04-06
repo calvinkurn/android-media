@@ -114,6 +114,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             onResultFromCourierPinpoint(resultCode, data)
         } else if (requestCode == REQUEST_CODE_PROMO) {
             onResultFromPromo(resultCode, data)
+        } else if (requestCode == PaymentConstant.REQUEST_CODE) {
+            onResultFromPayment(resultCode, data)
         }
     }
 
@@ -147,6 +149,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             val locationPass: LocationPass? = data.extras?.getParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION)
             if (locationPass != null) {
                 viewModel.savePinpoint(locationPass.longitude, locationPass.latitude)
+            }
+        }
+    }
+
+    private fun onResultFromPayment(resultCode: Int, data: Intent?) {
+        if (activity != null) {
+            if (resultCode != PaymentConstant.PAYMENT_CANCELLED && resultCode != PaymentConstant.PAYMENT_FAILED) {
+                activity?.finish()
             }
         }
     }

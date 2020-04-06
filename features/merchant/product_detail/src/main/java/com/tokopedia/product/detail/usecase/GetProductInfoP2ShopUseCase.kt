@@ -94,7 +94,7 @@ class GetProductInfoP2ShopUseCase @Inject constructor(private val rawQueries: Ma
             }
 
             if (gqlResponse.getError(CartRedirectionResponse::class.java)?.isNotEmpty() != true) {
-                p2Shop.newCartTypeResponse = gqlResponse.getData<CartRedirectionResponse>(CartRedirectionResponse::class.java)
+                p2Shop.cartRedirectionResponse = gqlResponse.getData<CartRedirectionResponse>(CartRedirectionResponse::class.java)
             }
         } catch (t: Throwable) {
             Timber.d(t)

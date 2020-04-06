@@ -49,33 +49,7 @@ infix fun String?.toDate(format: String): String {
     return ""
 }
 
-
-fun Fragment.doActionOrLogin(isLoggedIn: Boolean, action: () -> Unit) {
-    if (isLoggedIn) {
-        action.invoke()
-    } else {
-        this.activity?.let {
-            this.startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                    ProductDetailConstant.REQUEST_CODE_LOGIN)
-        }
-    }
-}
-
-fun Fragment.doActionOrloginWithExtra(isLoggedIn: Boolean, loginAction: () -> Unit, nonLoginAction: () -> Unit) {
-    if(isLoggedIn) {
-        loginAction.invoke()
-    } else {
-        nonLoginAction.invoke()
-        this.activity?.let {
-            this.startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                    ProductDetailConstant.REQUEST_CODE_LOGIN)
-        }
-    }
-}
-
-fun <T> ArrayList<T>.asThrowable(): Throwable = Throwable(message = this.firstOrNull()?.toString() ?: "")
-
-fun String.asThrowable(): Throwable = Throwable(message = this)
+fun ArrayList<String>.asThrowable(): Throwable = Throwable(message = this.firstOrNull()?.toString() ?: "")
 
 fun <T : Any> Result<T>.doSuccessOrFail(success: (Success<T>) -> Unit, fail: (Fail: Throwable) -> Unit) {
     when (this) {
