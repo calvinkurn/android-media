@@ -115,6 +115,12 @@ object HomeQuery{
                   imageUrl
                 }
                 productViewCountFormatted
+                isOutOfStock
+                labelGroup {
+                  title
+                  position
+                  type
+                }
               }
               banner {
                 id
@@ -132,7 +138,7 @@ object HomeQuery{
                 text_color
                 image_url
                 attribution
-
+                gradient_color
               }
             }
           }

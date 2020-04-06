@@ -304,7 +304,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     }
 
     private void addProductToWishList(ProductAttachmentViewModel element) {
-        viewListener.onClickAddToWishList(element.getStringProductId(), () -> {
+        viewListener.onClickAddToWishList(element, () -> {
                     onSuccessAddToWishList(element);
                     return null;
                 }

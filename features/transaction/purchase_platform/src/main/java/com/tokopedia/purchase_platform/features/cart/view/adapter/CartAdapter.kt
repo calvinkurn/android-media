@@ -4,25 +4,23 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementActionListener
-import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartDigitalProduct
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShops
-import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener
-import com.tokopedia.purchase_platform.common.feature.promo_global.PromoGlobalViewHolder
 import com.tokopedia.purchase_platform.common.feature.seller_cashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.seller_cashback.ShipmentSellerCashbackViewHolder
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementActionListener
+import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementViewHolder
 import com.tokopedia.purchase_platform.common.insurance.utils.PAGE_TYPE_CART
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData
 import com.tokopedia.purchase_platform.features.cart.view.ActionListener
 import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener
-import com.tokopedia.purchase_platform.features.cart.view.viewholder.*
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.*
+import com.tokopedia.purchase_platform.features.cart.view.viewholder.*
 import rx.subscriptions.CompositeSubscription
 import java.util.*
 import javax.inject.Inject
@@ -33,13 +31,12 @@ import kotlin.math.min
  */
 
 class CartAdapter @Inject constructor(private val actionListener: ActionListener?,
-                                      private val promoActionListener: PromoActionListener?,
                                       private val cartItemActionListener: CartItemAdapter.ActionListener?,
                                       private val insuranceItemActionlistener: InsuranceItemActionListener?,
                                       private val tickerAnnouncementActionListener: TickerAnnouncementActionListener?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val cartDataList = ArrayList<Any>()
-    private val compositeSubscription = CompositeSubscription()
+    private var compositeSubscription = CompositeSubscription()
 
     val insuranceCartShops = ArrayList<InsuranceCartShops>()
     private val insuranceRecommendationList = ArrayList<InsuranceCartShops>()
@@ -287,7 +284,6 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         val data = cartDataList[position]
         return when (data) {
             is CartShopHolderData -> CartShopViewHolder.TYPE_VIEW_ITEM_SHOP
-            is PromoStackingData -> PromoGlobalViewHolder.TYPE_VIEW_PROMO
             is CartItemTickerErrorHolderData -> CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR
             is ShipmentSellerCashbackModel -> ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK
             is CartEmptyHolderData -> CartEmptyViewHolder.LAYOUT
@@ -309,14 +305,12 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         when (viewType) {
             CartShopViewHolder.TYPE_VIEW_ITEM_SHOP -> {
+                if (compositeSubscription.isUnsubscribed) {
+                    compositeSubscription = CompositeSubscription()
+                }
                 val view = LayoutInflater.from(parent.context)
                         .inflate(CartShopViewHolder.TYPE_VIEW_ITEM_SHOP, parent, false)
                 return CartShopViewHolder(view, actionListener, cartItemActionListener, compositeSubscription)
-            }
-            PromoGlobalViewHolder.TYPE_VIEW_PROMO -> {
-                val view = LayoutInflater.from(parent.context)
-                        .inflate(PromoGlobalViewHolder.TYPE_VIEW_PROMO, parent, false)
-                return PromoGlobalViewHolder(view, promoActionListener)
             }
             CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR -> {
                 val view = LayoutInflater.from(parent.context)
@@ -399,10 +393,6 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
             viewType == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP -> {
                 val data = cartDataList[position] as CartShopHolderData
                 (holder as CartShopViewHolder).bindData(data, position)
-            }
-            viewType == PromoGlobalViewHolder.TYPE_VIEW_PROMO -> {
-                val data = cartDataList[position] as PromoStackingData
-                (holder as PromoGlobalViewHolder).bindData(data, position)
             }
             viewType == CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR -> {
                 val data = cartDataList[position] as CartItemTickerErrorHolderData
@@ -740,13 +730,8 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         checkForShipmentForm()
     }
 
-    fun addCartEmptyData() {
-        if (cartEmptyHolderData == null) {
-            cartEmptyHolderData = CartEmptyHolderData()
-        }
-        cartEmptyHolderData?.let {
-            cartDataList.add(it)
-        }
+    fun addCartEmptyData(cartEmptyHolderData: CartEmptyHolderData) {
+        cartDataList.add(cartEmptyHolderData)
     }
 
     fun addCartRecentViewData(cartSectionHeaderHolderData: CartSectionHeaderHolderData,

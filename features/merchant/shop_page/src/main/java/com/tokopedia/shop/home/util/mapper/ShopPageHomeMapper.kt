@@ -10,7 +10,7 @@ import com.tokopedia.shop.home.WidgetType.DISPLAY
 import com.tokopedia.shop.home.WidgetType.VOUCHER
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.view.model.*
-import com.tokopedia.shop.newproduct.view.datamodel.LabelGroupViewModel
+import com.tokopedia.shop.product.view.datamodel.LabelGroupViewModel
 import com.tokopedia.shop.product.data.model.ShopProduct
 import kotlin.math.roundToInt
 

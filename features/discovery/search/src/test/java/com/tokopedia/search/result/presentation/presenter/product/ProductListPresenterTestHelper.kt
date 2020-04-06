@@ -94,5 +94,5 @@ internal fun TestBody.createProductListPresenter(): ProductListPresenter {
         productListView.abTestRemoteConfig
     }
 
-    return presenter;
+    return presenter
 }

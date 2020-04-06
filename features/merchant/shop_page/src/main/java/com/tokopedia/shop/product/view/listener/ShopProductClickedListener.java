@@ -1,6 +1,9 @@
 package com.tokopedia.shop.product.view.listener;
 
-import com.tokopedia.shop.product.view.model.ShopProductViewModel;
+
+import com.tokopedia.shop.product.view.datamodel.ShopProductViewModel;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by normansyahputa on 2/24/18.
@@ -8,7 +11,7 @@ import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 public interface ShopProductClickedListener {
 
-    void onWishListClicked(ShopProductViewModel shopProductViewModel, int shopTrackType);
+    void onThreeDotsClicked(@NotNull ShopProductViewModel shopProductViewModel, int shopTrackType);
 
     void onProductClicked(ShopProductViewModel shopProductViewModel, int shopTrackType, int productPosition);
 }

@@ -326,7 +326,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
-    private fun onErrorGetInfo(): (String) -> Unit {
+    private fun onErrorGetInfo(): (Int) -> Unit {
         return {
             performanceMonitoring.stopTrace()
             viewState.onErrorGetInfo(it)

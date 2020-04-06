@@ -1,5 +1,7 @@
 package com.tokopedia.search.result.presentation;
 
+import androidx.annotation.Nullable;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -15,6 +17,7 @@ import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
@@ -142,6 +145,8 @@ public interface ProductListSectionContract {
         String getPreviousKeyword();
 
         boolean isLandingPage();
+
+        void logWarning(String message, @Nullable Throwable throwable);
     }
 
     interface Presenter extends CustomerPresenter<View> {
