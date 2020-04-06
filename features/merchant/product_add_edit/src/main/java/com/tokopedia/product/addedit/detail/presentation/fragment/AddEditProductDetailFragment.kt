@@ -181,6 +181,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // set detail input model
         arguments?.getParcelable<ProductInputModel>(EXTRA_PRODUCT_INPUT_MODEL)?.run {
             viewModel.detailInputModel = this.detailInputModel
+            viewModel.selectedCategoryId = this.detailInputModel.categoryId
             viewModel.productPhotoPaths = this.detailInputModel.imageUrlOrPathList.toMutableList()
         }
         // set isEditing status
@@ -1012,24 +1013,21 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun submitInputEdit() {
-        val detailInputModel = DetailInputModel(
-                productNameField.getText(),
-                productCategoryPickerButton?.text?.toString() ?: "",
-                viewModel.selectedCategoryId,
-                "",
-                productPriceField.getTextLongOrZero(),
-                productStockField.getTextIntOrZero(),
-                productMinOrderField.getTextIntOrZero(),
-                if (isProductConditionNew) CONDITION_NEW else CONDITION_USED,
-                productSkuField.getText(),
-                viewModel.productPhotoPaths,
-                PreorderInputModel(
-                        preOrderDurationField.getTextIntOrZero(),
-                        selectedDurationPosition,
-                        preOrderSwitch?.isChecked ?: false
-                ),
-                getWholesaleInput()
-        )
+        val detailInputModel = viewModel.detailInputModel
+        detailInputModel.apply {
+            productName = productNameField.getText()
+            price = productPriceField.getTextLongOrZero()
+            stock = productStockField.getTextIntOrZero()
+            minOrder = productMinOrderField.getTextIntOrZero()
+            condition = if (isProductConditionNew) CONDITION_NEW else CONDITION_USED
+            sku = productSkuField.getText()
+            imageUrlOrPathList = viewModel.productPhotoPaths
+            preorder = PreorderInputModel(
+                    preOrderDurationField.getTextIntOrZero(),
+                    selectedDurationPosition,
+                    preOrderSwitch?.isChecked ?: false)
+            wholesaleList = getWholesaleInput()
+        }
 
         val intent = Intent()
         intent.putExtra(EXTRA_DETAIL_INPUT, detailInputModel)
