@@ -39,8 +39,8 @@ import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivi
 import com.tokopedia.flight.review.view.activity.FlightBookingReviewActivity
 import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel
-import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
+import com.tokopedia.flight.search.presentation.model.FlightPriceModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.travel.passenger.presentation.activity.TravelContactDataActivity
 import com.tokopedia.travel.passenger.presentation.fragment.TravelContactDataFragment
 import com.tokopedia.travel.passenger.presentation.model.TravelContactData
@@ -66,7 +66,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
 
     private lateinit var departureId: String
     private lateinit var returnId: String
-    private lateinit var flightPriceViewModel: FlightPriceViewModel
+    private lateinit var flightPriceModel: FlightPriceModel
     private lateinit var paramViewModel: FlightBookingParamViewModel
     private lateinit var flightBookingCartData: FlightBookingCartData
     private lateinit var passengerAdapter: FlightBookingPassengerAdapter
@@ -94,7 +94,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
         progressDialog = ProgressDialog(activity)
         progressDialog.setMessage(getString(com.tokopedia.flight.R.string.flight_booking_loading_title))
         progressDialog.setCancelable(false)
-        flightPriceViewModel = args.getParcelable(EXTRA_PRICE)
+        flightPriceModel = args.getParcelable(EXTRA_PRICE)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -114,7 +114,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
             flightBookingCartData = savedInstanceState.getParcelable(KEY_CART_DATA)
             paramViewModel = savedInstanceState.getParcelable(KEY_PARAM_VIEW_MODEL_DATA)
             expiredDate = savedInstanceState.getSerializable(KEY_PARAM_EXPIRED_DATE) as Date
-            flightPriceViewModel = savedInstanceState.getParcelable(EXTRA_PRICE)
+            flightPriceModel = savedInstanceState.getParcelable(EXTRA_PRICE)
             hideFullPageLoading()
             flightBookingPresenter.renderUi(flightBookingCartData, true)
         }
@@ -134,7 +134,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
         outState.putParcelable(KEY_CART_DATA, flightBookingCartData)
         outState.putParcelable(KEY_PARAM_VIEW_MODEL_DATA, paramViewModel)
         outState.putSerializable(KEY_PARAM_EXPIRED_DATE, expiredDate)
-        outState.putParcelable(EXTRA_PRICE, flightPriceViewModel)
+        outState.putParcelable(EXTRA_PRICE, flightPriceModel)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -315,7 +315,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun getPriceViewModel(): FlightPriceViewModel = flightPriceViewModel
+    override fun getPriceViewModel(): FlightPriceModel = flightPriceModel
 
     override fun navigateToPassengerInfoDetail(viewModel: FlightBookingPassengerViewModel, isMandatoryDoB: Boolean, departureDate: String, requestId: String) {
         startActivityForResult(
@@ -337,7 +337,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
 
     override fun getCurrentBookingParamViewModel(): FlightBookingParamViewModel = paramViewModel
 
-    override fun showAndRenderDepartureTripCardDetail(searchParam: FlightSearchPassDataViewModel, departureTrip: FlightDetailViewModel) {
+    override fun showAndRenderDepartureTripCardDetail(searchParam: FlightSearchPassDataModel, departureTrip: FlightDetailViewModel) {
         cwa_departure_info.visibility = View.VISIBLE
         cwa_departure_info.setContent(departureTrip.departureAirportCity + " - " + departureTrip.arrivalAirportCity)
         cwa_departure_info.setContentInfo("(" + FlightDateUtil.formatToUi(searchParam.departureDate) + ")")
@@ -360,7 +360,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
         cwa_departure_info.setSubContentInfo(tripInfo)
     }
 
-    override fun showAndRenderReturnTripCardDetail(searchParam: FlightSearchPassDataViewModel, returnTrip: FlightDetailViewModel) {
+    override fun showAndRenderReturnTripCardDetail(searchParam: FlightSearchPassDataModel, returnTrip: FlightDetailViewModel) {
         cwa_return_info.visibility = View.VISIBLE
         cwa_return_info.setContent(returnTrip.departureAirportCity + " - " + returnTrip.arrivalAirportCity)
         cwa_return_info.setContentInfo("(" + FlightDateUtil.formatToUi(searchParam.returnDate) + ")")
@@ -512,7 +512,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
     override fun navigateToReview(flightBookingReviewModel: FlightBookingReviewModel) {
         countdown_finish_transaction.cancel()
         startActivityForResult(FlightBookingReviewActivity.createIntent(activity, flightBookingReviewModel,
-                flightPriceViewModel.comboKey), REQUEST_CODE_REVIEW)
+                flightPriceModel.comboKey), REQUEST_CODE_REVIEW)
     }
 
     override fun showUpdatePriceLoading() {
@@ -622,15 +622,15 @@ class FlightBookingFragment : BaseDaggerFragment(),
         private val REQUEST_CODE_REVIEW = 4
         private val REQUEST_CODE_OTP = 5
 
-        fun newInstance(searchPassDataViewModel: FlightSearchPassDataViewModel,
+        fun newInstance(searchPassDataModel: FlightSearchPassDataModel,
                         departureId: String, returnId: String,
-                        priceViewModel: FlightPriceViewModel): FlightBookingFragment {
+                        priceModel: FlightPriceModel): FlightBookingFragment {
             val fragment = FlightBookingFragment()
             val bundle = Bundle()
-            bundle.putParcelable(EXTRA_SEARCH_PASS_DATA, searchPassDataViewModel)
+            bundle.putParcelable(EXTRA_SEARCH_PASS_DATA, searchPassDataModel)
             bundle.putString(EXTRA_FLIGHT_DEPARTURE_ID, departureId)
             bundle.putString(EXTRA_FLIGHT_ARRIVAL_ID, returnId)
-            bundle.putParcelable(EXTRA_PRICE, priceViewModel)
+            bundle.putParcelable(EXTRA_PRICE, priceModel)
             fragment.arguments = bundle
             return fragment
         }

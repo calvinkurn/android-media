@@ -11,7 +11,7 @@ import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerVie
  * Created by alvarisi on 11/1/17.
  */
 
-public class FlightSearchPassDataViewModel implements Parcelable{
+public class FlightSearchPassDataModel implements Parcelable{
     private String departureDate;
     private String returnDate;
     private boolean isOneWay;
@@ -22,10 +22,10 @@ public class FlightSearchPassDataViewModel implements Parcelable{
     private String linkUrl;
     private String searchRequestId;
 
-    public FlightSearchPassDataViewModel(String departureDate, String returnDate, boolean isOneWay,
-                                         FlightPassengerViewModel flightPassengerViewModel,
-                                         FlightAirportViewModel departureAirport, FlightAirportViewModel arrivalAirport,
-                                         FlightClassViewModel flightClass, String linkUrl, String searchRequestId) {
+    public FlightSearchPassDataModel(String departureDate, String returnDate, boolean isOneWay,
+                                     FlightPassengerViewModel flightPassengerViewModel,
+                                     FlightAirportViewModel departureAirport, FlightAirportViewModel arrivalAirport,
+                                     FlightClassViewModel flightClass, String linkUrl, String searchRequestId) {
         this.departureDate = departureDate;
         this.returnDate = returnDate;
         this.isOneWay = isOneWay;
@@ -37,10 +37,10 @@ public class FlightSearchPassDataViewModel implements Parcelable{
         this.searchRequestId = searchRequestId;
     }
 
-    public FlightSearchPassDataViewModel() {
+    public FlightSearchPassDataModel() {
     }
 
-    protected FlightSearchPassDataViewModel(Parcel in) {
+    protected FlightSearchPassDataModel(Parcel in) {
         departureDate = in.readString();
         returnDate = in.readString();
         isOneWay = in.readByte() != 0;
@@ -52,15 +52,15 @@ public class FlightSearchPassDataViewModel implements Parcelable{
         searchRequestId = in.readString();
     }
 
-    public static final Creator<FlightSearchPassDataViewModel> CREATOR = new Creator<FlightSearchPassDataViewModel>() {
+    public static final Creator<FlightSearchPassDataModel> CREATOR = new Creator<FlightSearchPassDataModel>() {
         @Override
-        public FlightSearchPassDataViewModel createFromParcel(Parcel in) {
-            return new FlightSearchPassDataViewModel(in);
+        public FlightSearchPassDataModel createFromParcel(Parcel in) {
+            return new FlightSearchPassDataModel(in);
         }
 
         @Override
-        public FlightSearchPassDataViewModel[] newArray(int size) {
-            return new FlightSearchPassDataViewModel[size];
+        public FlightSearchPassDataModel[] newArray(int size) {
+            return new FlightSearchPassDataModel[size];
         }
     };
 
@@ -217,8 +217,8 @@ public class FlightSearchPassDataViewModel implements Parcelable{
             return this;
         }
 
-        public FlightSearchPassDataViewModel build() {
-            return new FlightSearchPassDataViewModel(departureDate, returnDate, isOneWay,
+        public FlightSearchPassDataModel build() {
+            return new FlightSearchPassDataModel(departureDate, returnDate, isOneWay,
                     flightPassengerViewModel, departureAirport, arrivalAirport, flightClass,
                     linkUrl, searchRequestId);
         }

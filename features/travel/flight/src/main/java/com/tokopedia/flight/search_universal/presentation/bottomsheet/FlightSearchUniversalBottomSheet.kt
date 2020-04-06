@@ -18,7 +18,7 @@ import com.tokopedia.flight.dashboard.view.activity.FlightSelectPassengerActivit
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel
 import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.di.DaggerFlightSearchUniversalComponent
 import com.tokopedia.flight.search_universal.di.FlightSearchUniversalComponent
 import com.tokopedia.flight.search_universal.presentation.viewmodel.FlightSearchUniversalViewModel
@@ -123,7 +123,7 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
         startActivityForResult(intent, REQUEST_CODE_SELECT_CLASSES)
     }
 
-    override fun onSaveSearch(flightSearchData: FlightSearchPassDataViewModel) {
+    override fun onSaveSearch(flightSearchData: FlightSearchPassDataModel) {
         if (::listener.isInitialized) {
             listener.onSaveSearchParams(flightSearchData)
             dismiss()
@@ -226,7 +226,7 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
     }
 
     interface Listener {
-        fun onSaveSearchParams(flightSearchParams: FlightSearchPassDataViewModel)
+        fun onSaveSearchParams(flightSearchParams: FlightSearchPassDataModel)
     }
 
     companion object {

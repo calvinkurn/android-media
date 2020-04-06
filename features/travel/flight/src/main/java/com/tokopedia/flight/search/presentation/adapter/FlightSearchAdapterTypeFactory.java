@@ -13,10 +13,10 @@ import com.tokopedia.flight.search.presentation.adapter.viewholder.EmptyResultVi
 import com.tokopedia.flight.search.presentation.adapter.viewholder.FlightSearchSeeAllViewHolder;
 import com.tokopedia.flight.search.presentation.adapter.viewholder.FlightSearchSeeOnlyBestPairingViewHolder;
 import com.tokopedia.flight.search.presentation.adapter.viewholder.FlightSearchViewHolder;
-import com.tokopedia.flight.search.presentation.model.EmptyResultViewModel;
-import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel;
-import com.tokopedia.flight.search.presentation.model.FlightSearchSeeAllResultViewModel;
-import com.tokopedia.flight.search.presentation.model.FlightSearchSeeOnlyBestPairingViewModel;
+import com.tokopedia.flight.search.presentation.model.EmptyResultModel;
+import com.tokopedia.flight.search.presentation.model.FlightJourneyModel;
+import com.tokopedia.flight.search.presentation.model.FlightSearchSeeAllResultModel;
+import com.tokopedia.flight.search.presentation.model.FlightSearchSeeOnlyBestPairingModel;
 
 /**
  * @author by furqan on 02/10/18.
@@ -55,7 +55,7 @@ public class FlightSearchAdapterTypeFactory extends BaseAdapterTypeFactory
         onFlightSearchListener.onRetryClicked();
     }
 
-    public int type(FlightJourneyViewModel flightJourneyViewModel) {
+    public int type(FlightJourneyModel flightJourneyViewModel) {
         return FlightSearchViewHolder.LAYOUT;
     }
 
@@ -63,7 +63,7 @@ public class FlightSearchAdapterTypeFactory extends BaseAdapterTypeFactory
         return TravelSearchShimmeringViewHolder.LAYOUT;
     }
 
-    public int type(EmptyResultViewModel viewModel) {
+    public int type(EmptyResultModel viewModel) {
         return EmptyResultViewHolder.LAYOUT;
     }
 
@@ -71,20 +71,20 @@ public class FlightSearchAdapterTypeFactory extends BaseAdapterTypeFactory
         return ErrorNetworkViewHolder.LAYOUT;
     }
 
-    public int type(FlightSearchSeeAllResultViewModel viewModel) {
+    public int type(FlightSearchSeeAllResultModel viewModel) {
         return FlightSearchSeeAllViewHolder.LAYOUT;
     }
 
-    public int type(FlightSearchSeeOnlyBestPairingViewModel viewModel) {
+    public int type(FlightSearchSeeOnlyBestPairingModel viewModel) {
         return FlightSearchSeeOnlyBestPairingViewHolder.LAYOUT;
     }
 
     public interface OnFlightSearchListener {
         void onRetryClicked();
 
-        void onDetailClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition);
+        void onDetailClicked(FlightJourneyModel journeyViewModel, int adapterPosition);
 
-        void onItemClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition);
+        void onItemClicked(FlightJourneyModel journeyViewModel, int adapterPosition);
 
         void onShowAllClicked();
 

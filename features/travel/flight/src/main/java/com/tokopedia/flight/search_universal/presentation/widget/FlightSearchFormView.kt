@@ -17,7 +17,7 @@ import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.dashboard.view.fragment.cache.FlightDashboardCache
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -34,7 +34,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
     private var flightDashboardCache: FlightDashboardCache = FlightDashboardCache(context)
 
-    private val flightSearchData: FlightSearchPassDataViewModel = FlightSearchPassDataViewModel()
+    private val flightSearchData: FlightSearchPassDataModel = FlightSearchPassDataModel()
 
     private lateinit var departureDate: Date
     private lateinit var returnDate: Date
@@ -441,7 +441,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         fun onReturnDateClicked(departureDate: Date, returnDate: Date)
         fun onPassengerClicked(passengerModel: FlightPassengerViewModel?)
         fun onClassClicked(flightClassId: Int = -1)
-        fun onSaveSearch(flightSearchData: FlightSearchPassDataViewModel)
+        fun onSaveSearch(flightSearchData: FlightSearchPassDataModel)
     }
 
 }

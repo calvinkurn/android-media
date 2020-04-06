@@ -7,7 +7,7 @@ import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
 import com.tokopedia.flight.filter.presentation.model.PriceRangeModel
 import com.tokopedia.flight.search.domain.FlightSearchCountUseCase
 import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase
-import com.tokopedia.flight.search.presentation.model.FlightAirlineViewModel
+import com.tokopedia.flight.search.presentation.model.FlightAirlineModel
 import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
@@ -91,7 +91,7 @@ class FlightFilterViewModelTest {
 
         val airlineStats = mutableListOf<AirlineStat>()
         for (i in 0 until 3) {
-            airlineStats.add(AirlineStat(FlightAirlineViewModel(i.toString(), "", "", ""), 0, ""))
+            airlineStats.add(AirlineStat(FlightAirlineModel(i.toString(), "", "", ""), 0, ""))
         }
 
         val departureStats = mutableListOf<DepartureStat>()
@@ -326,7 +326,7 @@ class FlightFilterViewModelTest {
         //given
         val airlinesMockData = mutableListOf<AirlineStat>()
         for (i in 0 until 3) {
-            airlinesMockData.add(AirlineStat(FlightAirlineViewModel(i.toString(), "", "", ""), 0, ""))
+            airlinesMockData.add(AirlineStat(FlightAirlineModel(i.toString(), "", "", ""), 0, ""))
         }
         coEvery {
             flightSearchStatisticsUseCase.executeCoroutine(any())

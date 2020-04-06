@@ -1,8 +1,8 @@
 package com.tokopedia.flight.search.presentation.contract
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView
-import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel
-import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
+import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
+import com.tokopedia.flight.search.presentation.model.FlightPriceModel
 
 /**
  * @author by furqan on 14/01/19
@@ -13,7 +13,7 @@ interface FlightSearchReturnContract {
 
         fun isOnlyShowBestPair(): Boolean
 
-        fun getFlightPriceViewModel(): FlightPriceViewModel
+        fun getFlightPriceViewModel(): FlightPriceModel
 
         fun showReturnTimeShouldGreaterThanArrivalDeparture()
 
@@ -23,16 +23,16 @@ interface FlightSearchReturnContract {
 
         fun showSeeBestPairingResultView()
 
-        fun navigateToCart(returnFlightSearchViewModel: FlightJourneyViewModel? = null,
+        fun navigateToCart(returnFlightSearchModel: FlightJourneyModel? = null,
                            selectedFlightReturn: String? = null,
-                           flightPriceViewModel: FlightPriceViewModel,
+                           flightPriceModel: FlightPriceModel,
                            selectedFlightTerm: String? = null)
 
     }
 
     interface Presenter {
 
-        fun onFlightSearchSelected(selectedFlightDeparture: String, returnJourneyViewModel: FlightJourneyViewModel, adapterPosition: Int = -1)
+        fun onFlightSearchSelected(selectedFlightDeparture: String, returnJourneyModel: FlightJourneyModel, adapterPosition: Int = -1)
 
         fun onFlightSearchSelected(selectedFlightDeparture: String, selectedFlightReturn: String, selectedTerm: String)
 

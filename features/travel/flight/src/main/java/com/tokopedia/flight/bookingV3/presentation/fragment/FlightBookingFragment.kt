@@ -48,8 +48,8 @@ import com.tokopedia.flight.common.util.*
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity
-import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
+import com.tokopedia.flight.search.presentation.model.FlightPriceModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -133,12 +133,12 @@ class FlightBookingFragment : BaseDaggerFragment() {
             val returnId = args.getString(EXTRA_FLIGHT_ARRIVAL_ID, "")
             val departureTerm = args.getString(EXTRA_FLIGHT_DEPARTURE_TERM, "")
             val returnTerm = args.getString(EXTRA_FLIGHT_ARRIVAL_TERM, "")
-            val searchParam: FlightSearchPassDataViewModel = args.getParcelable(EXTRA_SEARCH_PASS_DATA)
-                    ?: FlightSearchPassDataViewModel()
-            val flightPriceViewModel: FlightPriceViewModel = args.getParcelable(EXTRA_PRICE)
-                    ?: FlightPriceViewModel()
+            val searchParam: FlightSearchPassDataModel = args.getParcelable(EXTRA_SEARCH_PASS_DATA)
+                    ?: FlightSearchPassDataModel()
+            val flightPriceModel: FlightPriceModel = args.getParcelable(EXTRA_PRICE)
+                    ?: FlightPriceModel()
 
-            bookingViewModel.setSearchParam(departureId, returnId, departureTerm, returnTerm, searchParam, flightPriceViewModel)
+            bookingViewModel.setSearchParam(departureId, returnId, departureTerm, returnTerm, searchParam, flightPriceModel)
         }
     }
 
@@ -1086,18 +1086,18 @@ class FlightBookingFragment : BaseDaggerFragment() {
             return FlightBookingFragment()
         }
 
-        fun newInstance(searchPassDataViewModel: FlightSearchPassDataViewModel,
+        fun newInstance(searchPassDataModel: FlightSearchPassDataModel,
                         departureId: String, returnId: String,
                         departureTerm: String, returnTerm: String,
-                        priceViewModel: FlightPriceViewModel): FlightBookingFragment {
+                        priceModel: FlightPriceModel): FlightBookingFragment {
             val fragment = FlightBookingFragment()
             val bundle = Bundle()
-            bundle.putParcelable(EXTRA_SEARCH_PASS_DATA, searchPassDataViewModel)
+            bundle.putParcelable(EXTRA_SEARCH_PASS_DATA, searchPassDataModel)
             bundle.putString(EXTRA_FLIGHT_DEPARTURE_ID, departureId)
             bundle.putString(EXTRA_FLIGHT_ARRIVAL_ID, returnId)
             bundle.putString(EXTRA_FLIGHT_DEPARTURE_TERM, departureTerm)
             bundle.putString(EXTRA_FLIGHT_ARRIVAL_TERM, returnTerm)
-            bundle.putParcelable(EXTRA_PRICE, priceViewModel)
+            bundle.putParcelable(EXTRA_PRICE, priceModel)
             fragment.arguments = bundle
             return fragment
         }

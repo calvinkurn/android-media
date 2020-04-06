@@ -1,12 +1,11 @@
 package com.tokopedia.flight.detail.view.model;
 
-import com.tokopedia.flight.orderlist.data.cloud.entity.Amenity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderStopDetailEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.RouteEntity;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightStopOverViewModel;
 import com.tokopedia.flight.search.data.api.single.response.Route;
 import com.tokopedia.flight.search.data.api.single.response.StopDetailEntity;
-import com.tokopedia.flight.search.presentation.model.FlightAirlineViewModel;
+import com.tokopedia.flight.search.presentation.model.FlightAirlineModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -159,9 +158,9 @@ public class FlightDetailRouteViewModelMapper {
         return flightDetailRouteViewModels;
     }
 
-    private int getIndexFromId(List<FlightAirlineViewModel> airlineDBList, String id) {
+    private int getIndexFromId(List<FlightAirlineModel> airlineDBList, String id) {
         int index = -1;
-        for (FlightAirlineViewModel airlineDB : airlineDBList) {
+        for (FlightAirlineModel airlineDB : airlineDBList) {
             index++;
             if (airlineDB.getId().equals(id)) {
                 break;

@@ -3,7 +3,7 @@ package com.tokopedia.flight.bookingV2.presentation.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel;
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.List;
 public class FlightBookingParamViewModel implements Parcelable{
     private String id;
     private String orderDueTimestamp;
-    private FlightSearchPassDataViewModel searchParam;
+    private FlightSearchPassDataModel searchParam;
     private TravelCountryPhoneCode phoneCode;
     private List<FlightBookingPassengerViewModel> passengerViewModels;
     private String contactName;
@@ -34,7 +34,7 @@ public class FlightBookingParamViewModel implements Parcelable{
     protected FlightBookingParamViewModel(Parcel in) {
         id = in.readString();
         orderDueTimestamp = in.readString();
-        searchParam = in.readParcelable(FlightSearchPassDataViewModel.class.getClassLoader());
+        searchParam = in.readParcelable(FlightSearchPassDataModel.class.getClassLoader());
         phoneCode = in.readParcelable(TravelCountryPhoneCode.class.getClassLoader());
         passengerViewModels = in.createTypedArrayList(FlightBookingPassengerViewModel.CREATOR);
         contactName = in.readString();
@@ -74,11 +74,11 @@ public class FlightBookingParamViewModel implements Parcelable{
         this.passengerViewModels = passengerViewModels;
     }
 
-    public FlightSearchPassDataViewModel getSearchParam() {
+    public FlightSearchPassDataModel getSearchParam() {
         return searchParam;
     }
 
-    public void setSearchParam(FlightSearchPassDataViewModel searchParam) {
+    public void setSearchParam(FlightSearchPassDataModel searchParam) {
         this.searchParam = searchParam;
     }
 

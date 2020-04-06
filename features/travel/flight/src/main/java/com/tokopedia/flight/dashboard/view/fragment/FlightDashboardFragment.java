@@ -54,7 +54,7 @@ import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardPresenter;
 import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget;
 import com.tokopedia.flight.dashboard.view.widget.TextInputView;
 import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity;
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget;
@@ -616,7 +616,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void navigateToSearchPage(FlightDashboardViewModel currentDashboardViewModel) {
-        FlightSearchPassDataViewModel passDataViewModel = new FlightSearchPassDataViewModel.Builder()
+        FlightSearchPassDataModel passDataViewModel = new FlightSearchPassDataModel.Builder()
                 .setFlightPassengerViewModel(currentDashboardViewModel.getFlightPassengerViewModel())
                 .setDepartureDate(currentDashboardViewModel.getDepartureDate())
                 .setDepartureAirport(currentDashboardViewModel.getDepartureAirport())

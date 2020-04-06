@@ -23,8 +23,8 @@ import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel
 import com.tokopedia.flight.search.data.api.single.response.Fare
 import com.tokopedia.flight.search.domain.FlightSearchJourneyByIdUseCase
-import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
+import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
@@ -564,7 +564,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
         }
     }
 
-    private fun getDepartureDataObservable(): Observable<FlightJourneyViewModel> =
+    private fun getDepartureDataObservable(): Observable<FlightJourneyModel> =
             flightSearchJourneyByIdUseCase.createObservable(flightSearchJourneyByIdUseCase
                     .createRequestParams(view.getDepartureTripId()))
 
@@ -669,7 +669,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
         )
     }
 
-    private fun buildPassengerViewModel(passData: FlightSearchPassDataViewModel): List<FlightBookingPassengerViewModel> {
+    private fun buildPassengerViewModel(passData: FlightSearchPassDataModel): List<FlightBookingPassengerViewModel> {
         var passengerNumber = 1
         val viewModels = arrayListOf<FlightBookingPassengerViewModel>()
         for (i in 1..passData.flightPassengerViewModel.adult) {

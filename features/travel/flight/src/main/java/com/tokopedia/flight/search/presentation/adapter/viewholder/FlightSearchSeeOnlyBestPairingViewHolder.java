@@ -7,13 +7,13 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.search.presentation.adapter.FlightSearchAdapterTypeFactory;
-import com.tokopedia.flight.search.presentation.model.FlightSearchSeeOnlyBestPairingViewModel;
+import com.tokopedia.flight.search.presentation.model.FlightSearchSeeOnlyBestPairingModel;
 
 /**
  * @author by furqan on 15/10/18.
  */
 
-public class FlightSearchSeeOnlyBestPairingViewHolder extends AbstractViewHolder<FlightSearchSeeOnlyBestPairingViewModel> {
+public class FlightSearchSeeOnlyBestPairingViewHolder extends AbstractViewHolder<FlightSearchSeeOnlyBestPairingModel> {
 
     public static final int LAYOUT = com.tokopedia.flight.R.layout.item_flight_search_see_best_pairing;
 
@@ -34,7 +34,7 @@ public class FlightSearchSeeOnlyBestPairingViewHolder extends AbstractViewHolder
     }
 
     @Override
-    public void bind(FlightSearchSeeOnlyBestPairingViewModel element) {
+    public void bind(FlightSearchSeeOnlyBestPairingModel element) {
         tvBestPairingDesc.setText(Html.fromHtml(
                 getString(com.tokopedia.flight.R.string.flight_search_show_best_pairing_desc, element.getNewPrice())));
     }

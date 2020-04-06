@@ -19,8 +19,8 @@ import com.tokopedia.flight.common.data.model.FlightError
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.common.util.FlightRequestUtil
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
-import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
+import com.tokopedia.flight.search.presentation.model.FlightPriceModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -123,7 +123,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                     flightBookingParam.departureDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, data.cartData.flight.journeys[0].departureTime))
                     flightBookingParam.isDomestic = data.cartData.flight.isDomestic
                     flightBookingParam.isMandatoryDob = data.cartData.flight.mandatoryDob
-                    flightDetailViewModels = FlightBookingMapper.mapToFlightDetail(data.cartData.flight, data.included, flightBookingParam.flightPriceViewModel)
+                    flightDetailViewModels = FlightBookingMapper.mapToFlightDetail(data.cartData.flight, data.included, flightBookingParam.flightPriceModel)
                     if (flightPassengersData.value?.isEmpty() != false && !isRefreshCart) {
                         _flightPromoResult.value = FlightBookingMapper.mapToFlightPromoViewEntity(data.cartData.voucher)
                         _flightPassengersData.value = FlightBookingMapper.mapToFlightPassengerEntity(data.cartData.flight.adult,
@@ -620,14 +620,14 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
 
     fun setSearchParam(depatureId: String, arrivalId: String,
                        departureTerm: String, arrivalTerm: String,
-                       searchParam: FlightSearchPassDataViewModel,
-                       flightPriceViewModel: FlightPriceViewModel) {
+                       searchParam: FlightSearchPassDataModel,
+                       flightPriceModel: FlightPriceModel) {
         flightBookingParam.departureId = depatureId
         flightBookingParam.returnId = arrivalId
         flightBookingParam.departureTerm = departureTerm
         flightBookingParam.returnTerm = arrivalTerm
         flightBookingParam.searchParam = searchParam
-        flightBookingParam.flightPriceViewModel = flightPriceViewModel
+        flightBookingParam.flightPriceModel = flightPriceModel
     }
 
     fun addToCart(query: String, getCartQuery: String = "", idempotencyKey: String) {
@@ -661,7 +661,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         addToCartParam.requestId = flightBookingParam.searchParam.searchRequestId
         addToCartParam.ipAddress = FlightRequestUtil.getLocalIpAddress()
         addToCartParam.userAgent = FlightRequestUtil.getUserAgentForApiCall()
-        addToCartParam.flight.combo = flightBookingParam.flightPriceViewModel.comboKey ?: ""
+        addToCartParam.flight.combo = flightBookingParam.flightPriceModel.comboKey ?: ""
         addToCartParam.flight.destination.add(FlightAddToCartParam.FlightDestination(flightBookingParam.departureId, flightBookingParam.departureTerm))
         if (flightBookingParam.returnId.isNotEmpty()) addToCartParam.flight.destination.add(FlightAddToCartParam.FlightDestination(flightBookingParam.returnId, flightBookingParam.returnTerm))
 
@@ -730,8 +730,8 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         return gson.fromJson<List<FlightError>>(message, itemType)[0]
     }
 
-    fun getSearchParam(): FlightSearchPassDataViewModel = flightBookingParam.searchParam
-    fun getFlightPriceModel(): FlightPriceViewModel = flightBookingParam.flightPriceViewModel
+    fun getSearchParam(): FlightSearchPassDataModel = flightBookingParam.searchParam
+    fun getFlightPriceModel(): FlightPriceModel = flightBookingParam.flightPriceModel
     fun getMandatoryDOB(): Boolean = flightBookingParam.isMandatoryDob
     fun getDepartureId(): String = flightBookingParam.departureId
     fun getReturnId(): String = flightBookingParam.returnId

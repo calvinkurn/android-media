@@ -11,7 +11,7 @@ import java.util.List;
  * Created by User on 10/30/2017.
  */
 
-public class FlightJourneyViewModel implements Visitable<FlightSearchAdapterTypeFactory> {
+public class FlightJourneyModel implements Visitable<FlightSearchAdapterTypeFactory> {
 
     public static final int ONE_HOURS_DAY = 2400;
 
@@ -40,22 +40,22 @@ public class FlightJourneyViewModel implements Visitable<FlightSearchAdapterType
     private boolean showSpecialPriceTag;
     private RefundableEnum isRefundable;
     private boolean isReturning;
-    private FlightFareViewModel fare;
+    private FlightFareModel fare;
     private List<Route> routeList;
-    private List<FlightAirlineViewModel> airlineDataList; // merge result
+    private List<FlightAirlineModel> airlineDataList; // merge result
     private String comboId;
     private String specialTagText;
 
-    public FlightJourneyViewModel(String term, String id, String departureAirport,
-                                  String departureAirportName, String departureAirportCity, String departureTime,
-                                  int departureTimeInt, String arrivalAirport, String arrivalTime,
-                                  String arrivalAirportName, String arrivalAirportCity, int arrivalTimeInt,
-                                  int totalTransit, int addDayArrival, String duration, int durationMinute,
-                                  String total, int totalNumeric, String comboPrice, int comboPriceNumeric,
-                                  boolean isBestPairing, String beforeTotal, boolean showSpecialPriceTag,
-                                  RefundableEnum isRefundable, boolean isReturning, FlightFareViewModel fare,
-                                  List<Route> routeList, List<FlightAirlineViewModel> airlineDataList,
-                                  String comboId, String specialTagText) {
+    public FlightJourneyModel(String term, String id, String departureAirport,
+                              String departureAirportName, String departureAirportCity, String departureTime,
+                              int departureTimeInt, String arrivalAirport, String arrivalTime,
+                              String arrivalAirportName, String arrivalAirportCity, int arrivalTimeInt,
+                              int totalTransit, int addDayArrival, String duration, int durationMinute,
+                              String total, int totalNumeric, String comboPrice, int comboPriceNumeric,
+                              boolean isBestPairing, String beforeTotal, boolean showSpecialPriceTag,
+                              RefundableEnum isRefundable, boolean isReturning, FlightFareModel fare,
+                              List<Route> routeList, List<FlightAirlineModel> airlineDataList,
+                              String comboId, String specialTagText) {
         this.term = term;
         this.id = id;
         this.departureAirport = departureAirport;
@@ -186,7 +186,7 @@ public class FlightJourneyViewModel implements Visitable<FlightSearchAdapterType
         return isReturning;
     }
 
-    public FlightFareViewModel getFare() {
+    public FlightFareModel getFare() {
         return fare;
     }
 
@@ -194,7 +194,7 @@ public class FlightJourneyViewModel implements Visitable<FlightSearchAdapterType
         return routeList;
     }
 
-    public List<FlightAirlineViewModel> getAirlineDataList() {
+    public List<FlightAirlineModel> getAirlineDataList() {
         return airlineDataList;
     }
 

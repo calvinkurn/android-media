@@ -3,9 +3,9 @@ package com.tokopedia.flight.detail.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.flight.search.presentation.model.FlightAirlineViewModel;
-import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel;
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.search.presentation.model.FlightAirlineModel;
+import com.tokopedia.flight.search.presentation.model.FlightJourneyModel;
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel;
 import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum;
 
 import java.util.List;
@@ -47,7 +47,7 @@ public class FlightDetailViewModel implements Parcelable {
     private int countChild;
     private int countInfant;
     private List<FlightDetailRouteViewModel> routeList;
-    private List<FlightAirlineViewModel> airlineDataList;
+    private List<FlightAirlineModel> airlineDataList;
 
     public FlightDetailViewModel() {
     }
@@ -73,10 +73,10 @@ public class FlightDetailViewModel implements Parcelable {
         countInfant = in.readInt();
         routeList = in.createTypedArrayList(FlightDetailRouteViewModel.CREATOR);
         isRefundable = (RefundableEnum) in.readSerializable();
-        airlineDataList = in.createTypedArrayList(FlightAirlineViewModel.CREATOR);
+        airlineDataList = in.createTypedArrayList(FlightAirlineModel.CREATOR);
     }
 
-    public FlightDetailViewModel build(FlightJourneyViewModel flightJourneyViewModel) {
+    public FlightDetailViewModel build(FlightJourneyModel flightJourneyViewModel) {
         if (flightJourneyViewModel != null) {
             setId(flightJourneyViewModel.getId());
             setTerm(flightJourneyViewModel.getTerm());
@@ -119,7 +119,7 @@ public class FlightDetailViewModel implements Parcelable {
         }
     }
 
-    public FlightDetailViewModel build(FlightSearchPassDataViewModel flightSearchPassDataViewModel) {
+    public FlightDetailViewModel build(FlightSearchPassDataModel flightSearchPassDataViewModel) {
         setCountAdult(flightSearchPassDataViewModel.getFlightPassengerViewModel().getAdult());
         setCountChild(flightSearchPassDataViewModel.getFlightPassengerViewModel().getChildren());
         setCountInfant(flightSearchPassDataViewModel.getFlightPassengerViewModel().getInfant());
@@ -316,11 +316,11 @@ public class FlightDetailViewModel implements Parcelable {
         parcel.writeTypedList(airlineDataList);
     }
 
-    public List<FlightAirlineViewModel> getAirlineDataList() {
+    public List<FlightAirlineModel> getAirlineDataList() {
         return airlineDataList;
     }
 
-    public void setAirlineDataList(List<FlightAirlineViewModel> airlineDataList) {
+    public void setAirlineDataList(List<FlightAirlineModel> airlineDataList) {
         this.airlineDataList = airlineDataList;
     }
 }

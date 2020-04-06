@@ -16,7 +16,7 @@ import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightStopOverViewModel
 import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment.DEFAULT_IS_COUPON_ONE
 import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment.DEFAULT_IS_COUPON_ZERO
-import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
+import com.tokopedia.flight.search.presentation.model.FlightPriceModel
 import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
@@ -187,7 +187,7 @@ class FlightBookingMapper {
         }
 
         fun mapToFlightDetail(flight: FlightCart.Flight, included: List<FlightCart.Included>,
-                              flightPriceViewModel: FlightPriceViewModel): List<FlightDetailViewModel> {
+                              flightPriceModel: FlightPriceModel): List<FlightDetailViewModel> {
 
             val list = listOf<FlightDetailViewModel>().toMutableList()
             for ((index, journey) in flight.journeys.withIndex()) {
@@ -210,25 +210,25 @@ class FlightBookingMapper {
                 flightDetailViewModel.isRefundable = if (journey.routes[0].refundable) RefundableEnum.REFUNDABLE else RefundableEnum.NOT_REFUNDABLE
 
                 if (index == 0) {
-                    if (flightPriceViewModel.comboKey.isNullOrEmpty()) {
-                        flightDetailViewModel.adultNumericPrice = flightPriceViewModel.departurePrice.adultNumeric
-                        flightDetailViewModel.childNumericPrice = flightPriceViewModel.departurePrice.childNumeric
-                        flightDetailViewModel.infantNumericPrice = flightPriceViewModel.departurePrice.infantNumeric
+                    if (flightPriceModel.comboKey.isNullOrEmpty()) {
+                        flightDetailViewModel.adultNumericPrice = flightPriceModel.departurePrice.adultNumeric
+                        flightDetailViewModel.childNumericPrice = flightPriceModel.departurePrice.childNumeric
+                        flightDetailViewModel.infantNumericPrice = flightPriceModel.departurePrice.infantNumeric
                     } else {
-                        flightDetailViewModel.adultNumericPrice = flightPriceViewModel.departurePrice.adultNumericCombo
-                        flightDetailViewModel.childNumericPrice = flightPriceViewModel.departurePrice.childNumericCombo
-                        flightDetailViewModel.infantNumericPrice = flightPriceViewModel.departurePrice.infantNumericCombo
+                        flightDetailViewModel.adultNumericPrice = flightPriceModel.departurePrice.adultNumericCombo
+                        flightDetailViewModel.childNumericPrice = flightPriceModel.departurePrice.childNumericCombo
+                        flightDetailViewModel.infantNumericPrice = flightPriceModel.departurePrice.infantNumericCombo
                     }
 
                 } else if (index == 1) {
-                    if (flightPriceViewModel.comboKey.isNullOrEmpty()) {
-                        flightDetailViewModel.adultNumericPrice = flightPriceViewModel.returnPrice.adultNumeric
-                        flightDetailViewModel.childNumericPrice = flightPriceViewModel.returnPrice.childNumeric
-                        flightDetailViewModel.infantNumericPrice = flightPriceViewModel.returnPrice.infantNumeric
+                    if (flightPriceModel.comboKey.isNullOrEmpty()) {
+                        flightDetailViewModel.adultNumericPrice = flightPriceModel.returnPrice.adultNumeric
+                        flightDetailViewModel.childNumericPrice = flightPriceModel.returnPrice.childNumeric
+                        flightDetailViewModel.infantNumericPrice = flightPriceModel.returnPrice.infantNumeric
                     } else {
-                        flightDetailViewModel.adultNumericPrice = flightPriceViewModel.returnPrice.adultNumericCombo
-                        flightDetailViewModel.childNumericPrice = flightPriceViewModel.returnPrice.childNumericCombo
-                        flightDetailViewModel.infantNumericPrice = flightPriceViewModel.returnPrice.infantNumericCombo
+                        flightDetailViewModel.adultNumericPrice = flightPriceModel.returnPrice.adultNumericCombo
+                        flightDetailViewModel.childNumericPrice = flightPriceModel.returnPrice.childNumericCombo
+                        flightDetailViewModel.infantNumericPrice = flightPriceModel.returnPrice.infantNumericCombo
                     }
                 }
 

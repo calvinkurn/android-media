@@ -7,11 +7,11 @@ import com.tokopedia.flight.search.presentation.adapter.FlightSearchAdapterTypeF
  * @author by furqan on 15/10/18.
  */
 
-public class FlightSearchSeeOnlyBestPairingViewModel implements Visitable<FlightSearchAdapterTypeFactory> {
+public class FlightSearchSeeAllResultModel implements Visitable<FlightSearchAdapterTypeFactory> {
 
     private String newPrice;
 
-    public FlightSearchSeeOnlyBestPairingViewModel(String newPrice) {
+    public FlightSearchSeeAllResultModel(String newPrice) {
         this.newPrice = newPrice;
     }
 

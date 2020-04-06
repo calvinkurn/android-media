@@ -6,7 +6,7 @@ import android.os.Parcelable
 /**
  * Created by Rizky on 23/10/18.
  */
-data class FlightAirlineViewModel(val id: String, val name: String, val shortName: String, val logo: String): Parcelable {
+data class FlightAirlineModel(val id: String, val name: String, val shortName: String, val logo: String): Parcelable {
 
     constructor(parcel: Parcel) : this(
             parcel.readString(),
@@ -25,12 +25,12 @@ data class FlightAirlineViewModel(val id: String, val name: String, val shortNam
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<FlightAirlineViewModel> {
-        override fun createFromParcel(parcel: Parcel): FlightAirlineViewModel {
-            return FlightAirlineViewModel(parcel)
+    companion object CREATOR : Parcelable.Creator<FlightAirlineModel> {
+        override fun createFromParcel(parcel: Parcel): FlightAirlineModel {
+            return FlightAirlineModel(parcel)
         }
 
-        override fun newArray(size: Int): Array<FlightAirlineViewModel?> {
+        override fun newArray(size: Int): Array<FlightAirlineModel?> {
             return arrayOfNulls(size)
         }
     }

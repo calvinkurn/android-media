@@ -11,7 +11,7 @@ import com.tokopedia.flight.search.presentation.adapter.viewholder.EmptyResultVi
  * Created by alvarisi on 12/22/17.
  */
 
-public class EmptyResultViewModel implements Visitable<FlightSearchAdapterTypeFactory> {
+public class EmptyResultModel implements Visitable<FlightSearchAdapterTypeFactory> {
     @DrawableRes
     private int iconRes;
     private String title;
@@ -24,7 +24,7 @@ public class EmptyResultViewModel implements Visitable<FlightSearchAdapterTypeFa
     private String buttonTitle;
     private EmptyResultViewHolder.Callback callback;
 
-    public EmptyResultViewModel() {
+    public EmptyResultModel() {
     }
 
 

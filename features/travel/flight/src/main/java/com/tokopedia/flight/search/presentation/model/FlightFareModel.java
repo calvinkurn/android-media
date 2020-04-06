@@ -6,7 +6,7 @@ import android.os.Parcelable;
 /**
  * Created by Rizky on 26/09/18.
  */
-public class FlightFareViewModel implements Parcelable{
+public class FlightFareModel implements Parcelable{
 
     private String adult;
     private String adultCombo;
@@ -21,9 +21,9 @@ public class FlightFareViewModel implements Parcelable{
     private int infantNumeric;
     private int infantNumericCombo;
 
-    public FlightFareViewModel(String adult, String adultCombo, String child, String childCombo,
-                               String infant, String infantCombo, int adultNumeric, int adultNumericCombo,
-                               int childNumeric, int childNumericCombo, int infantNumeric, int infantNumericCombo) {
+    public FlightFareModel(String adult, String adultCombo, String child, String childCombo,
+                           String infant, String infantCombo, int adultNumeric, int adultNumericCombo,
+                           int childNumeric, int childNumericCombo, int infantNumeric, int infantNumericCombo) {
         this.adult = adult;
         this.adultCombo = adultCombo;
         this.child = child;
@@ -38,7 +38,7 @@ public class FlightFareViewModel implements Parcelable{
         this.infantNumericCombo = infantNumericCombo;
     }
 
-    protected FlightFareViewModel(Parcel in) {
+    protected FlightFareModel(Parcel in) {
         adult = in.readString();
         adultCombo = in.readString();
         child = in.readString();
@@ -53,15 +53,15 @@ public class FlightFareViewModel implements Parcelable{
         infantNumericCombo = in.readInt();
     }
 
-    public static final Creator<FlightFareViewModel> CREATOR = new Creator<FlightFareViewModel>() {
+    public static final Creator<FlightFareModel> CREATOR = new Creator<FlightFareModel>() {
         @Override
-        public FlightFareViewModel createFromParcel(Parcel in) {
-            return new FlightFareViewModel(in);
+        public FlightFareModel createFromParcel(Parcel in) {
+            return new FlightFareModel(in);
         }
 
         @Override
-        public FlightFareViewModel[] newArray(int size) {
-            return new FlightFareViewModel[size];
+        public FlightFareModel[] newArray(int size) {
+            return new FlightFareModel[size];
         }
     };
 

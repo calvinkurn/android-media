@@ -6,8 +6,8 @@ import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewMod
 import com.tokopedia.flight.bookingV2.presentation.viewmodel.*
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel
-import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
+import com.tokopedia.flight.search.presentation.model.FlightPriceModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.travel.passenger.presentation.model.TravelContactData
 import java.util.*
 
@@ -48,11 +48,11 @@ interface FlightBookingContract {
 
         fun getCurrentBookingParamViewModel(): FlightBookingParamViewModel
 
-        fun getPriceViewModel(): FlightPriceViewModel
+        fun getPriceViewModel(): FlightPriceModel
 
-        fun showAndRenderReturnTripCardDetail(searchParam: FlightSearchPassDataViewModel, returnTrip: FlightDetailViewModel)
+        fun showAndRenderReturnTripCardDetail(searchParam: FlightSearchPassDataModel, returnTrip: FlightDetailViewModel)
 
-        fun showAndRenderDepartureTripCardDetail(searchParam: FlightSearchPassDataViewModel, departureTrip: FlightDetailViewModel)
+        fun showAndRenderDepartureTripCardDetail(searchParam: FlightSearchPassDataModel, departureTrip: FlightDetailViewModel)
 
         fun renderPassengersList(passengerViewModels: List<FlightBookingPassengerViewModel>)
 

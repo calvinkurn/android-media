@@ -13,9 +13,9 @@ import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.search.data.api.single.response.Route;
-import com.tokopedia.flight.search.presentation.model.FlightAirlineViewModel;
-import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel;
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.search.presentation.model.FlightAirlineModel;
+import com.tokopedia.flight.search.presentation.model.FlightJourneyModel;
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel;
 import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
@@ -189,7 +189,7 @@ public class FlightAnalytics {
         );
     }
 
-    public void eventSearchView(FlightSearchPassDataViewModel passDataViewModel, boolean searchFound) {
+    public void eventSearchView(FlightSearchPassDataModel passDataViewModel, boolean searchFound) {
         Map<String, Object> mapModel = new HashMap<>();
         mapModel.put(EVENT, VIEW_SEARCH_EVENT);
         mapModel.put(EVENT_CATEGORY, GENERIC_CATEGORY);
@@ -232,7 +232,7 @@ public class FlightAnalytics {
         TrackApp.getInstance().getGTM().sendGeneralEvent(mapModel);
     }
 
-    public void eventSearchProductClickFromDetail(FlightSearchPassDataViewModel flightSearchPassData, FlightJourneyViewModel viewModel) {
+    public void eventSearchProductClickFromDetail(FlightSearchPassDataModel flightSearchPassData, FlightJourneyModel viewModel) {
         StringBuilder result = transformSearchProductClickLabel(viewModel);
         result.append(String.format("%s%s", Label.PRICE_PREFIX, String.valueOf(viewModel.getFare().getAdultNumeric())));
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
@@ -243,7 +243,7 @@ public class FlightAnalytics {
         productClickEnhanceEcommerce(Action.PRODUCT_CLICK_SEARCH_DETAIL, flightSearchPassData, viewModel, result);
     }
 
-    private void productClickEnhanceEcommerce(String action, FlightSearchPassDataViewModel flightSearchPassData, FlightJourneyViewModel viewModel, StringBuilder result) {
+    private void productClickEnhanceEcommerce(String action, FlightSearchPassDataModel flightSearchPassData, FlightJourneyModel viewModel, StringBuilder result) {
         List<Object> products = new ArrayList<>();
         if (flightSearchPassData.getFlightPassengerViewModel().getAdult() > 0) {
             products.add(DataLayer.mapOf(
@@ -298,7 +298,7 @@ public class FlightAnalytics {
         );
     }
 
-    public void eventProductViewNotFound(FlightSearchPassDataViewModel searchPassDataViewModel) {
+    public void eventProductViewNotFound(FlightSearchPassDataModel searchPassDataViewModel) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(SEARCH_RESULT_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_SEARCH_PRODUCT_NOT_FOUND,
@@ -321,11 +321,11 @@ public class FlightAnalytics {
         ));
     }
 
-    public void eventProductViewEnchanceEcommerce(FlightSearchPassDataViewModel searchPassDataViewModel, List<FlightJourneyViewModel> listJourneyViewModel) {
+    public void eventProductViewEnchanceEcommerce(FlightSearchPassDataModel searchPassDataViewModel, List<FlightJourneyModel> listJourneyViewModel) {
 
         List<Object> products = new ArrayList<>();
         int position = 0;
-        for (FlightJourneyViewModel item : listJourneyViewModel) {
+        for (FlightJourneyModel item : listJourneyViewModel) {
             position++;
             products.add(transformSearchProductView(searchPassDataViewModel, item, position));
         }
@@ -346,7 +346,7 @@ public class FlightAnalytics {
         );
     }
 
-    public void eventSearchProductClickFromList(FlightSearchPassDataViewModel flightSearchPassData, FlightJourneyViewModel viewModel) {
+    public void eventSearchProductClickFromList(FlightSearchPassDataModel flightSearchPassData, FlightJourneyModel viewModel) {
         List<Object> products = new ArrayList<>();
         products.add(transformSearchProductClick(flightSearchPassData, viewModel, 0));
 
@@ -368,7 +368,7 @@ public class FlightAnalytics {
 
     }
 
-    public void eventSearchProductClickFromList(FlightSearchPassDataViewModel flightSearchPassData, FlightJourneyViewModel viewModel, int adapterPosition) {
+    public void eventSearchProductClickFromList(FlightSearchPassDataModel flightSearchPassData, FlightJourneyModel viewModel, int adapterPosition) {
         List<Object> products = new ArrayList<>();
         products.add(transformSearchProductClick(flightSearchPassData, viewModel, adapterPosition));
 
@@ -389,7 +389,7 @@ public class FlightAnalytics {
         );
     }
 
-    private Object transformSearchProductView(FlightSearchPassDataViewModel searchPassDataViewModel, FlightJourneyViewModel journeyViewModel, int position) {
+    private Object transformSearchProductView(FlightSearchPassDataModel searchPassDataViewModel, FlightJourneyModel journeyViewModel, int position) {
         String isRefundable = "false";
         for (Route route : journeyViewModel.getRouteList()) {
             if (route.getRefundable()) {
@@ -435,7 +435,7 @@ public class FlightAnalytics {
         return product;
     }
 
-    private Object transformSearchProductClick(FlightSearchPassDataViewModel searchPassDataViewModel, FlightJourneyViewModel journeyViewModel, int position) {
+    private Object transformSearchProductClick(FlightSearchPassDataModel searchPassDataViewModel, FlightJourneyModel journeyViewModel, int position) {
         String isRefundable = "false";
         for (Route route : journeyViewModel.getRouteList()) {
             if (route.getRefundable()) {
@@ -482,11 +482,11 @@ public class FlightAnalytics {
     }
 
     @NonNull
-    private StringBuilder transformSearchProductClickLabel(FlightJourneyViewModel viewModel) {
+    private StringBuilder transformSearchProductClickLabel(FlightJourneyModel viewModel) {
         StringBuilder result = new StringBuilder();
         if (viewModel != null && viewModel.getAirlineDataList() != null) {
             List<String> airlines = new ArrayList<>();
-            for (FlightAirlineViewModel airlineDB : viewModel.getAirlineDataList()) {
+            for (FlightAirlineModel airlineDB : viewModel.getAirlineDataList()) {
                 airlines.add(airlineDB.getShortName().toLowerCase());
             }
             result.append(TextUtils.join(",", airlines));
@@ -500,7 +500,7 @@ public class FlightAnalytics {
         return result;
     }
 
-    public void eventSearchDetailClick(FlightJourneyViewModel viewModel, int adapterPosition) {
+    public void eventSearchDetailClick(FlightJourneyModel viewModel, int adapterPosition) {
         StringBuilder result = transformSearchDetailLabel(viewModel, adapterPosition);
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
@@ -583,11 +583,11 @@ public class FlightAnalytics {
     }
 
     @NonNull
-    private StringBuilder transformSearchDetailLabel(FlightJourneyViewModel viewModel, int adapterPosition) {
+    private StringBuilder transformSearchDetailLabel(FlightJourneyModel viewModel, int adapterPosition) {
         StringBuilder result = new StringBuilder();
         if (viewModel.getAirlineDataList() != null) {
             List<String> airlines = new ArrayList<>();
-            for (FlightAirlineViewModel airlineDB : viewModel.getAirlineDataList()) {
+            for (FlightAirlineModel airlineDB : viewModel.getAirlineDataList()) {
                 airlines.add(airlineDB.getId());
             }
             result.append(TextUtils.join(",", airlines));
@@ -633,7 +633,7 @@ public class FlightAnalytics {
         ));
     }
 
-    public void eventBookingNextClick(FlightBookingCartData flightBookingCartData, FlightSearchPassDataViewModel searchParam, String comboKey) {
+    public void eventBookingNextClick(FlightBookingCartData flightBookingCartData, FlightSearchPassDataModel searchParam, String comboKey) {
 
         List<Object> products = new ArrayList<>();
 
@@ -665,7 +665,7 @@ public class FlightAnalytics {
         );
     }
 
-    public void eventCheckoutClick(FlightDetailViewModel departureTrip, FlightDetailViewModel returnTrip, FlightSearchPassDataViewModel searchParam, String comboKey) {
+    public void eventCheckoutClick(FlightDetailViewModel departureTrip, FlightDetailViewModel returnTrip, FlightSearchPassDataModel searchParam, String comboKey) {
 
         List<Object> products = new ArrayList<>();
 
@@ -901,7 +901,7 @@ public class FlightAnalytics {
         );
     }
 
-    public void eventProductDetailImpression(FlightJourneyViewModel flightSearchViewModel, int adapterPosition) {
+    public void eventProductDetailImpression(FlightJourneyModel flightSearchViewModel, int adapterPosition) {
         StringBuilder result = transformSearchDetailLabel(flightSearchViewModel, adapterPosition);
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
