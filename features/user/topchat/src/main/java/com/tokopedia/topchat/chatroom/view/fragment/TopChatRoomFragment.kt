@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import androidx.annotation.StringRes
 import androidx.fragment.app.FragmentManager
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
@@ -178,16 +179,20 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun loadInitialData() {
         if (messageId.isNotEmpty()) {
-            presenter.getExistingChat(messageId,
-                    onErrorInitiateData(),
-                    onSuccessGetExistingChatFirstTime())
+            presenter.getExistingChat(
+                    messageId,
+                    ::onErrorInitiateData,
+                    ::onSuccessGetExistingChatFirstTime
+            )
             presenter.connectWebSocket(messageId)
         } else {
-            presenter.getMessageId(toUserId,
+            presenter.getMessageId(
+                    toUserId,
                     toShopId,
                     source,
                     onError(),
-                    onSuccessGetMessageId())
+                    onSuccessGetMessageId()
+            )
         }
     }
 
@@ -240,22 +245,21 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-    private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel) -> Unit {
-        return {
-            updateViewData(it)
-            checkCanAttachVoucher(it)
-            presenter.connectWebSocket(messageId)
-            presenter.getShopFollowingStatus(shopId, onErrorGetShopFollowingStatus(),
-                    onSuccessGetShopFollowingStatus())
+    private fun onSuccessGetExistingChatFirstTime(chatRoom: ChatroomViewModel) {
+        updateViewData(chatRoom)
+        checkCanAttachVoucher(chatRoom)
+        presenter.updateMinReplyTime(chatRoom)
+        presenter.connectWebSocket(messageId)
+        presenter.getShopFollowingStatus(shopId, onErrorGetShopFollowingStatus(),
+                onSuccessGetShopFollowingStatus())
 
-            renderList(it.listChat, it.canLoadMore)
-            getViewState().onSuccessLoadFirstTime(it, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
-            getViewState().onSetCustomMessage(customMessage)
-            presenter.getTemplate(getUserSession().shopId == shopId.toString())
-            loadChatRoomSettings(it)
+        renderList(chatRoom.listChat, chatRoom.canLoadMore)
+        getViewState().onSuccessLoadFirstTime(chatRoom, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
+        getViewState().onSetCustomMessage(customMessage)
+        presenter.getTemplate(getUserSession().shopId == shopId.toString())
+        loadChatRoomSettings(chatRoom)
 
-            fpm.stopTrace()
-        }
+        fpm.stopTrace()
     }
 
     private fun checkCanAttachVoucher(room: ChatroomViewModel) {
@@ -304,6 +308,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             renderList(it.listChat, it.canLoadMore)
             checkShowLoading(it.canLoadMore)
             loadChatRoomSettings(it)
+            presenter.updateMinReplyTime(it)
         }
     }
 
@@ -327,12 +332,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-    private fun onErrorInitiateData(): (Throwable) -> Unit {
-        return {
-            hideLoading()
-            showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, it))
-            fpm.stopTrace()
-        }
+    private fun onErrorInitiateData(throwable: Throwable) {
+        hideLoading()
+        showSnackbarError(ErrorHandler.getErrorMessage(view!!.context, throwable))
+        fpm.stopTrace()
     }
 
     override fun getScreenName(): String {
@@ -382,7 +385,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun loadData(page: Int) {
-        presenter.loadPreviousChat(messageId, page, onError(), onSuccessGetPreviousChat())
+        presenter.loadPreviousChat(messageId, onError(), onSuccessGetPreviousChat())
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -433,8 +436,12 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         )
     }
 
-    private fun isUseNewCard(): Boolean {
+    override fun isUseNewCard(): Boolean {
         return RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewThumbnailKey) == variantNewThumbnail
+    }
+
+    override fun isUseCarousel(): Boolean? {
+        return remoteConfig?.getBoolean(RemoteConfigKey.CHAT_PRODUCT_CAROUSEL, true)
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
@@ -546,7 +553,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             REQUEST_GO_TO_SETTING_TEMPLATE -> {
                 presenter.getTemplate(getUserSession().shopId == shopId.toString())
             }
-
             TopChatRoomActivity.REQUEST_CODE_CHAT_IMAGE -> {
                 if (resultCode != RESULT_OK || data == null) {
                     return
@@ -561,17 +567,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     }
                 }
             }
-
             TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE -> onProductAttachmentSelected(data)
-
             REQUEST_GO_TO_SHOP -> onReturnFromShopPage(resultCode, data)
-
             REQUEST_GO_TO_SETTING_CHAT -> onReturnFromChatSetting(resultCode, data)
-
             REQUEST_GO_TO_NORMAL_CHECKOUT -> onReturnFromNormalCheckout(resultCode, data)
-
             REQUEST_ATTACH_INVOICE -> onAttachInvoiceSelected(data, resultCode)
-
             REQUEST_ATTACH_VOUCHER -> onAttachVoucherSelected(data, resultCode)
         }
     }
@@ -794,6 +794,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onBackPressed(): Boolean {
+        if (super.onBackPressed()) return true
         if (presenter.isUploading()) {
             showDialogConfirmToAbortUpload()
         } else {
@@ -937,36 +938,50 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         return childFragmentManager
     }
 
-    override fun onClickAddToWishList(productId: String, success: () -> Unit) {
+    override fun onClickAddToWishList(product: ProductAttachmentViewModel, success: () -> Unit) {
+        val productId = product.productId.toString()
         analytics.eventClickAddToWishList(productId)
+        if (product.isWishListed()) {
+            showSuccessToastWishListCta(R.string.title_topchat_already_success_atw)
+        } else {
+            requestNetworkAddToWishList(productId, success)
+        }
+    }
+
+    private fun requestNetworkAddToWishList(productId: String, success: () -> Unit) {
         presenter.addToWishList(productId, session.userId, object : WishListActionListener {
             override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
             override fun onSuccessRemoveWishlist(productId: String?) {}
             override fun onSuccessAddWishlist(productId: String?) {
                 success()
-                view?.let {
-                    val successMessage = it.context.getString(R.string.title_topchat_success_atw)
-                    Toaster.make(
-                            it,
-                            successMessage,
-                            Toaster.LENGTH_SHORT,
-                            Toaster.TYPE_NORMAL
-                    )
-                }
+                showSuccessToastWishListCta(R.string.title_topchat_success_atw)
             }
-
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
                 if (errorMessage == null) return
                 view?.let {
-                    Toaster.make(
-                            it,
-                            errorMessage,
-                            Toaster.LENGTH_SHORT,
-                            Toaster.TYPE_ERROR
-                    )
+                    Toaster.make(it, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
                 }
             }
         })
+    }
+
+    private fun showSuccessToastWishListCta(@StringRes successMessageRes: Int) {
+        view?.let {
+            val successMessage = it.context.getString(successMessageRes)
+            val ctaText = it.context.getString(R.string.cta_topchat_success_atw)
+            Toaster.make(
+                    it,
+                    successMessage,
+                    Toaster.LENGTH_SHORT,
+                    Toaster.TYPE_NORMAL,
+                    ctaText,
+                    View.OnClickListener { goToWishList() }
+            )
+        }
+    }
+
+    private fun goToWishList() {
+        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
     }
 
     override fun onClickRemoveFromWishList(productId: String, success: () -> Unit) {
