@@ -219,5 +219,5 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             activity?.finish()
         }
     }
-  
+
 }

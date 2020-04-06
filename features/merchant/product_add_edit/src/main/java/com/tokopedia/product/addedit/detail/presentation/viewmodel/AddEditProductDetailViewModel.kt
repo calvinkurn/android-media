@@ -10,6 +10,7 @@ import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommenda
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
+import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -25,8 +26,17 @@ class AddEditProductDetailViewModel @Inject constructor(
         private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase)
     : BaseViewModel(dispatcher) {
 
+    var isEditing = false
+
+    var isDrafting = false
+
+    var detailInputModel = DetailInputModel()
+
+    var productPhotoPaths = detailInputModel.imageUrlOrPathList.toMutableList()
+
     private val mIsProductPhotoError = MutableLiveData<Boolean>()
 
+    var isProductNameChanged = false
     private val mIsProductNameInputError = MutableLiveData<Boolean>()
     val isProductNameInputError: LiveData<Boolean>
         get() = mIsProductNameInputError
@@ -61,10 +71,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         get() = mIsPreOrderDurationInputError
     var preOrderDurationMessage: String = ""
 
-    var isEditMode:Boolean = false
-
     private val mIsInputValid = MediatorLiveData<Boolean>().apply {
-
         addSource(mIsProductPhotoError) {
             this.value = isInputValid()
         }
@@ -91,7 +98,6 @@ class AddEditProductDetailViewModel @Inject constructor(
         get() = mIsInputValid
 
     var selectedCategoryId: String = ""
-    var selectedCatalogId: String = ""
 
     val productCategoryRecommendationLiveData = MutableLiveData<Result<List<ListItemUnify>>>()
 
