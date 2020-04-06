@@ -23,7 +23,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.core.gcm.GCMHandler
-import com.tokopedia.core.share.DefaultShare
+import com.tokopedia.sharedata.DefaultShareData
 import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
@@ -697,7 +697,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
                 .build()
 
         shareData.type = LinkerData.HOTLIST_TYPE
-        DefaultShare(activity, shareData).show()
+        DefaultShareData(activity, shareData).show()
     }
 
     override fun topAdsTrackerUrlTrigger(url: String) {
