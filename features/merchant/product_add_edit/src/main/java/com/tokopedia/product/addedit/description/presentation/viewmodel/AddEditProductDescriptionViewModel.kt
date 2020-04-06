@@ -45,9 +45,8 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     }
 
     fun getVideoYoutube(videoUrl: String) {
-        val videoId = getIdYoutubeUrl(videoUrl)
         launchCatchError( block = {
-            getYoutubeVideoUseCase.setVideoId(videoId)
+            getYoutubeVideoUseCase.setVideoId(getIdYoutubeUrl(videoUrl))
             val result = withContext(Dispatchers.IO) {
                 convertToYoutubeResponse(getYoutubeVideoUseCase.executeOnBackground())
             }
@@ -58,8 +57,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     }
 
     private fun convertToYoutubeResponse(typeRestResponseMap: Map<Type, RestResponse>): YoutubeVideoModel {
-        val restResponse = typeRestResponseMap[YoutubeVideoModel::class.java]
-        return restResponse?.getData() as YoutubeVideoModel
+        return typeRestResponseMap[YoutubeVideoModel::class.java]?.getData() as YoutubeVideoModel
     }
 
     private fun getIdYoutubeUrl(videoUrl: String): String {
