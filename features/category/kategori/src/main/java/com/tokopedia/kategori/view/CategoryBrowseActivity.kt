@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.kategori.analytics.CategoryAnalytics.Companion.categoryAnalytics
 import com.tokopedia.kategori.fragments.CategoryLevelTwoFragment
-import com.tokopedia.kategori.fragments.CategorylevelOneFragment
+import com.tokopedia.kategori.fragments.CategoryLevelOneFragment
 import com.tokopedia.kategori.fragments.Listener
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kategori.R
@@ -87,14 +87,14 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
                 .commit()
 
 
-        masterFragment = CategorylevelOneFragment.newInstance(deepLinkCategoryName)
+        masterFragment = CategoryLevelOneFragment.newInstance(deepLinkCategoryName)
         supportFragmentManager.beginTransaction()
                 .replace(R.id.master_view, masterFragment, tagFragment)
                 .commit()
     }
 
     override fun onAttachFragment(fragment: Fragment) {
-        if (fragment is CategorylevelOneFragment) {
+        if (fragment is CategoryLevelOneFragment) {
             fragment.activityStateListener = this
         } else if (fragment is CategoryLevelTwoFragment) {
             fragment.activityStateListener = this
@@ -126,7 +126,7 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
             slave_view.show()
             master_view.show()
             globalError.hide()
-            (masterFragment as CategorylevelOneFragment).reloadData()
+            (masterFragment as CategoryLevelOneFragment).reloadData()
         }
     }
 

@@ -12,13 +12,13 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kategori.R
 import com.tokopedia.kategori.analytics.CategoryAnalytics.Companion.categoryAnalytics
-import com.tokopedia.kategori.fragments.CategorylevelOneFragment
+import com.tokopedia.kategori.fragments.CategoryLevelOneFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.item_category_level_one.view.*
 import kotlinx.android.synthetic.main.item_shimmer_level_one.view.*
 
 class CategoryLevelOneAdapter(private val categoryList: MutableList<com.tokopedia.kategori.newcategory.CategoriesItem>,
-                              private val listener: CategorylevelOneFragment.CategorySelectListener,
+                              private val listener: CategoryLevelOneFragment.CategorySelectListener,
                               private val trackingQueue: TrackingQueue?)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

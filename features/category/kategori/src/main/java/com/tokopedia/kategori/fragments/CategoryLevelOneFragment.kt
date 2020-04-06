@@ -28,7 +28,7 @@ import kotlin.collections.ArrayList
 
 private const val EXTRA_CATEGORY_NAME = "CATEGORY_NAME"
 
-class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComponent> {
+class CategoryLevelOneFragment : Fragment(), HasComponent<CategoryNavigationComponent> {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -44,8 +44,8 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
 
     companion object {
         @JvmStatic
-        fun newInstance(categoryName: String?): CategorylevelOneFragment {
-            val fragment = CategorylevelOneFragment()
+        fun newInstance(categoryName: String?): CategoryLevelOneFragment {
+            val fragment = CategoryLevelOneFragment()
             if (categoryName != null) {
                 val bundle = Bundle()
                 bundle.putString(EXTRA_CATEGORY_NAME, categoryName)
