@@ -59,9 +59,9 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.PRODUCT_STATUS_ACTIVE
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductAddService
+import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductEditService
 import com.tokopedia.product.addedit.preview.presentation.viewmodel.AddEditProductPreviewViewModel
 import com.tokopedia.product.addedit.shipment.presentation.activity.AddEditProductShipmentActivity
-import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tooltip.model.ImageTooltipModel
 import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
@@ -246,13 +246,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             if (viewModel.isEditing.value == true) {
                 ProductEditStepperTracking.trackFinishButton(shopId)
                 context?.apply {
-                    /*viewModel.productInputModel?.let { productInputModel ->
-                        AddEditProductEditService.startService(this, viewModel.getProductId(),
-                                productInputModel.detailInputModel,
-                                productInputModel.descriptionInputModel,
-                                productInputModel.shipmentInputModel,
-                                ProductVariantInputModel())
-                    }*/
+                    viewModel.productInputModel.value?.let { productInputModel ->
+                        AddEditProductEditService.startService(this,
+                                viewModel.getProductId(), productInputModel)
+                    }
                 }
             }
         }

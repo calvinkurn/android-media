@@ -5,13 +5,13 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductEditUseCase
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
+import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
 import kotlinx.coroutines.Dispatchers
@@ -31,33 +31,40 @@ class AddEditProductEditService : AddEditProductBaseService() {
 
     companion object {
         private const val JOB_ID = 13131314
+        private const val EXTRA_PRODUCT_ID_INPUT_EDIT = "EXTRA_PRODUCT_ID_INPUT_EDIT"
+        private const val EXTRA_PRODUCT_INPUT_MODEL = "EXTRA_PRODUCT_INPUT_MODEL"
+        private const val HTTP_PREFIX = "http"
 
         fun startService(context: Context,
                          productId: String,
-                         detailInputModel: DetailInputModel,
-                         descriptionInputModel: DescriptionInputModel,
-                         shipmentInputModel: ShipmentInputModel,
-                         variantInputModel: ProductVariantInputModel) {
+                         productInputModel: ProductInputModel) {
             val work = Intent(context, AddEditProductBaseService::class.java).apply {
-                putExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_ID_INPUT, productId)
-                putExtra(AddEditProductUploadConstant.EXTRA_DETAIL_INPUT, detailInputModel)
-                putExtra(AddEditProductUploadConstant.EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
-                putExtra(AddEditProductUploadConstant.EXTRA_SHIPMENT_INPUT, shipmentInputModel)
-                putExtra(AddEditProductUploadConstant.EXTRA_VARIANT_INPUT, variantInputModel)
+                putExtra(EXTRA_PRODUCT_ID_INPUT_EDIT, productId)
+                putExtra(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
             }
             enqueueWork(context, AddEditProductEditService::class.java, JOB_ID, work)
         }
     }
 
     override fun onHandleWork(intent: Intent) {
-        productId = intent.getStringExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_ID_INPUT)
-        shipmentInputModel = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_SHIPMENT_INPUT)
-        descriptionInputModel = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_DESCRIPTION_INPUT)
-        detailInputModel = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_DETAIL_INPUT)
-        variantInputModel = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_VARIANT_INPUT)
-        uploadProductImages(detailInputModel.imageUrlOrPathList,
-                variantInputModel.productSizeChart?.filePath ?: "")
+        productId = intent.getStringExtra(EXTRA_PRODUCT_ID_INPUT_EDIT)
+        val productInputModel: ProductInputModel? = intent.getParcelableExtra(EXTRA_PRODUCT_INPUT_MODEL)
+
+        productInputModel?.let {
+            shipmentInputModel = it.shipmentInputModel
+            descriptionInputModel = it.descriptionInputModel
+            detailInputModel = it.detailInputModel
+            variantInputModel = it.variantInputModel
+            uploadProductImages(filterPathOnly(detailInputModel.imageUrlOrPathList),
+                    variantInputModel.productSizeChart?.filePath ?: "")
+        }
     }
+
+    private fun filterPathOnly(imageUrlOrPathList: List<String>): List<String> =
+            imageUrlOrPathList.filterNot {
+                it.startsWith(HTTP_PREFIX)
+            }
+
 
     override fun onUploadProductImagesDone(uploadIdList: ArrayList<String>, sizeChartId: String) {
         editProduct(uploadIdList, sizeChartId)

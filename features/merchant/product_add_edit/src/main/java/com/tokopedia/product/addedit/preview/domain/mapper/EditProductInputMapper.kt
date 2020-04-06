@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.preview.data.model.params.add.*
 import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
+import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.preview.data.model.params.edit.ProductEditParam
@@ -55,7 +56,7 @@ class EditProductInputMapper @Inject constructor() {
                 Catalog(detailInputModel.catalogId),
                 Category(detailInputModel.categoryId),
                 ProductEtalase(), // TODO product etalase not implemented yet
-                mapPictureParam(uploadIdList),
+                mapPictureParam(detailInputModel.pictureList, uploadIdList),
                 mapPreorderParam(detailInputModel.preorder),
                 mapWholesaleParam(detailInputModel.wholesaleList),
                 mapVideoParam(descriptionInputModel.videoLinkList),
@@ -184,7 +185,7 @@ class EditProductInputMapper @Inject constructor() {
         videoLinkList.forEach {
             if (it.inputUrl.isNotEmpty()) {
                 val uri = Uri.parse(it.inputUrl)
-                val source = uri.host ?: ""
+                val source = uri.host ?: uri.pathSegments[0] ?: ""
                 val url = uri.getQueryParameter("v") ?: uri.lastPathSegment
                 data.add(Video(source, url))
             }
@@ -192,8 +193,20 @@ class EditProductInputMapper @Inject constructor() {
         return Videos(data)
     }
 
-    private fun mapPictureParam(uploadIdList: java.util.ArrayList<String>): Pictures {
+    private fun mapPictureParam(pictureList: List<PictureInputModel>,
+                                uploadIdList: List<String>): Pictures {
         val data: ArrayList<Picture> = ArrayList()
+        // map existing picture
+        pictureList.forEach {
+            data.add(Picture(
+                    it.description,
+                    it.fileName,
+                    it.filePath,
+                    it.picID,
+                    it.isFromIG.contains("true")
+            ))
+        }
+        // map new uploaded picture (only upload id)
         uploadIdList.forEach {
             data.add(Picture(uploadId = it))
         }
