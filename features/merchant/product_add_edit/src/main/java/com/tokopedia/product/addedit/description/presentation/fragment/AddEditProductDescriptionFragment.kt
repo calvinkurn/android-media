@@ -222,6 +222,10 @@ class AddEditProductDescriptionFragment:
             moveToDescriptionActivity()
         }
 
+        btnSave.setOnClickListener {
+            submitInputEdit()
+        }
+
         observeProductVariant()
     }
 
@@ -250,6 +254,9 @@ class AddEditProductDescriptionFragment:
             super.clearAllData()
             super.renderList(videoLinks)
         }
+
+        btnNext.visibility = View.GONE
+        btnSave.visibility = View.VISIBLE
     }
 
     private fun showVariantErrorToast(errorMessage: String) {
@@ -387,6 +394,18 @@ class AddEditProductDescriptionFragment:
         val intent = Intent()
         intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
         intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
+        intent.putExtra(EXTRA_VARIANT_INPUT, descriptionViewModel.variantInputModel)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
+    }
+
+    private fun submitInputEdit() {
+        val descriptionInputModel = DescriptionInputModel(
+                textFieldDescription.getText(),
+                adapter.data
+        )
+        val intent = Intent()
+        intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
         intent.putExtra(EXTRA_VARIANT_INPUT, descriptionViewModel.variantInputModel)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()

@@ -18,11 +18,11 @@ import com.tokopedia.user.session.UserSession
 
 class AddEditProductPreviewActivity : BaseSimpleActivity() {
 
-    private var productId = ""
+    private var productId = "773109803"
     private var draftId = ""
 
     override fun getNewFragment(): Fragment? {
-        return AddEditProductPreviewFragment.createInstance("773109803", draftId)
+        return AddEditProductPreviewFragment.createInstance(productId, draftId)
     }
 
     override fun getLayoutRes() = R.layout.activity_add_edit_product_preview

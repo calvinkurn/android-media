@@ -38,6 +38,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     private var tfWeightUnit: TextFieldUnify? = null
     private var switchInsurance: SwitchUnify? = null
     private var btnEnd: UnifyButton? = null
+    private var btnSave: UnifyButton? = null
     private var selectedWeightPosition: Int = 0
 
     private lateinit var userSession: UserSessionInterface
@@ -108,6 +109,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         tfWeightUnit = view.findViewById(R.id.tf_weight_unit)
         tfWeightAmount = view.findViewById(R.id.tf_weight_amount)
         switchInsurance = view.findViewById(R.id.switch_insurance)
+        btnSave = view.findViewById(R.id.btn_save)
         btnEnd = view.findViewById(R.id.btn_end)
         tfWeightAmount.setModeToNumberInput()
         if (shipmentViewModel.isEditMode) applyEditMode()
@@ -125,6 +127,9 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         btnEnd?.setOnClickListener {
             submitInput()
         }
+        btnSave?.setOnClickListener {
+            submitInputEdit()
+        }
         switchInsurance?.setOnCheckedChangeListener { buttonView, isChecked ->
             if (shipmentViewModel.isEditMode) {
                 ProductEditShippingTracking.clickInsurance(shopId)
@@ -141,6 +146,8 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         tfWeightUnit.setText(weightUnit)
         tfWeightAmount.setText(inputModel.weight.toString())
         switchInsurance?.isChecked = inputModel.isMustInsurance
+        btnEnd?.visibility = View.GONE
+        btnSave?.visibility = View.VISIBLE
     }
 
     private fun showUnitWeightOption() {
@@ -212,6 +219,20 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
                 tfWeightAmount.getTextIntOrZero(),
                 selectedWeightPosition,
                 switchInsurance?.isChecked == true
+            )
+            val intent = Intent()
+            intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
+        }
+    }
+
+    private fun submitInputEdit() {
+        if (validateInputWeight(tfWeightAmount.getText())) {
+            val shipmentInputModel = ShipmentInputModel(
+                    tfWeightAmount.getTextIntOrZero(),
+                    selectedWeightPosition,
+                    switchInsurance?.isChecked == true
             )
             val intent = Intent()
             intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
