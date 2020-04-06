@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.detail.presentation.model
 
 import android.os.Parcelable
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_NEW
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -10,12 +11,13 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class DetailInputModel(
         var productName: String = "",
+        var categoryName: String = "",
         var categoryId: String = "",
         var catalogId: String = "",
-        var price: Float = 0F,
+        var price: Long = 0L,
         var stock: Int = 0,
         var minOrder: Int = 0,
-        var condition: String = "NEW",
+        var condition: String = CONDITION_NEW,
         var sku: String = "",
         var imageUrlOrPathList: List<String> = emptyList(),
         var preorder: PreorderInputModel = PreorderInputModel(),

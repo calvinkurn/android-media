@@ -15,9 +15,11 @@ import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputMo
 class AddEditProductShipmentActivity : BaseSimpleActivity(), HasComponent<AddEditProductShipmentComponent> {
 
     override fun getNewFragment(): Fragment {
-        val shipmentInputModel:ShipmentInputModel =
-                intent.getParcelableExtra(PARAM_SHIPMENT_INPUT_MODEL) ?: ShipmentInputModel()
-        return AddEditProductShipmentFragment.createInstance(shipmentInputModel)
+        val shipmentInputModel:ShipmentInputModel? = intent.getParcelableExtra(PARAM_SHIPMENT_INPUT_MODEL)
+        shipmentInputModel?.run {
+            return AddEditProductShipmentFragment.createInstanceEditMode(shipmentInputModel)
+        }
+        return AddEditProductShipmentFragment.createInstance()
     }
 
     override fun getComponent(): AddEditProductShipmentComponent {

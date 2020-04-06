@@ -16,7 +16,7 @@ data class ProductEditParam (
         var productName: String? = null,
         @SerializedName("price")
         @Expose
-        var price: Float? = null,
+        var price: Long? = null,
         @SerializedName("priceCurrency")
         @Expose
         var priceCurrency: String? = null,

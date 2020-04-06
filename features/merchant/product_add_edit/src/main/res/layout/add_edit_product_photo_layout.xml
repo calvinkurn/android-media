@@ -6,7 +6,7 @@
     android:background="@android:color/white">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_product_name_header"
+        android:id="@+id/tv_product_photo_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/add_product_photo_header"
@@ -14,6 +14,16 @@
         android:textSize="@dimen/fontSize_lvl3"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_asterisk"
+        android:textColor="@color/Red_R600_96"
+        app:layout_constraintLeft_toRightOf="@id/tv_product_photo_header"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_add_product_photo"
@@ -31,6 +41,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_18"
-        app:layout_constraintTop_toBottomOf="@id/tv_product_name_header" />
+        app:layout_constraintTop_toBottomOf="@id/tv_product_photo_header" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
