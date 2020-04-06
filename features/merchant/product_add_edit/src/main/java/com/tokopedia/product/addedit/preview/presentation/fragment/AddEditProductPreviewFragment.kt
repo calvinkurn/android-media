@@ -32,6 +32,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstan
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_RESULT_CACHE_ID
+import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity
 import com.tokopedia.product.addedit.description.presentation.fragment.AddEditProductDescriptionFragment
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
@@ -58,6 +59,7 @@ import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
 import com.tokopedia.product_photo_adapter.ProductPhotoViewHolder
 import com.tokopedia.unifycomponents.DividerUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
@@ -269,7 +271,8 @@ class AddEditProductPreviewFragment :
             if (viewModel.isEditMode.value == true) {
                 ProductEditStepperTracking.trackAddProductVariant(shopId)
             }
-            showVariantDialog()
+            val categoryId: String = viewModel.productInputModel?.detailInputModel?.categoryId ?: ""
+            viewModel.getVariantList(categoryId)
         }
 
         addProductVariantTipsLayout?.setOnClickListener {
@@ -283,7 +286,7 @@ class AddEditProductPreviewFragment :
             if (viewModel.isEditMode.value == true) {
                 ProductEditStepperTracking.trackChangeShipping(shopId)
             }
-            startAddEditProductShipmentActivity()
+            moveToShipmentActivity()
         }
 
         editProductPromotionButton?.setOnClickListener {
@@ -297,6 +300,7 @@ class AddEditProductPreviewFragment :
         observeGetProductResult()
         observeProductVariant()
         observeImageUrlOrPathList()
+        observeProductVariantList()
 
     }
 
@@ -440,6 +444,15 @@ class AddEditProductPreviewFragment :
         })
     }
 
+    private fun observeProductVariantList() {
+        viewModel.productVariantList.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Success -> showVariantDialog(result.data)
+                is Fail -> showVariantErrorToast(getString(R.string.error_cannot_get_variants))
+            }
+        })
+    }
+
     private fun showProductDetailPreview(product: Product) {
         productNameView?.text = product.productName
         productPriceView?.text = product.price.toString()
@@ -489,6 +502,19 @@ class AddEditProductPreviewFragment :
         }
     }
 
+    private fun showVariantErrorToast(errorMessage: String) {
+        view?.let {
+            Toaster.make(it, errorMessage,
+                    type =  Toaster.TYPE_ERROR,
+                    actionText = getString(R.string.title_try_again),
+                    clickListener =  View.OnClickListener {
+                        val categoryId: String = viewModel.productInputModel?.detailInputModel?.
+                                categoryId ?: ""
+                        viewModel.getVariantList(categoryId)
+                    })
+        }
+    }
+
     @SuppressLint("WrongConstant")
     private fun createImagePickerBuilder(selectedImagePathList: ArrayList<String>?): ImagePickerBuilder {
 
@@ -535,38 +561,44 @@ class AddEditProductPreviewFragment :
     }
 
     private fun moveToDescriptionActivity() {
-        startActivity(AddEditProductDescriptionActivity.createInstance(context))
+        viewModel.productInputModel?.let {
+            val intent = AddEditProductDescriptionActivity.createInstanceEditMode(context,
+                    it.detailInputModel.categoryId, it.descriptionInputModel, it.variantInputModel)
+            startActivityForResult(intent, AddEditProductDescriptionActivity.REQUEST_CODE_DESCRIPTION)
+        }
     }
 
-    private fun startAddEditProductShipmentActivity() {
+    private fun moveToShipmentActivity() {
         viewModel.productInputModel?.let {
             val intent = AddEditProductShipmentActivity.createInstanceEditMode(context, it.shipmentInputModel)
             startActivityForResult(intent, AddEditProductShipmentFragment.REQUEST_CODE_SHIPMENT)
         }
     }
 
-    private fun showVariantDialog() {
+    private fun showVariantDialog(variantList: List<ProductVariantByCatModel>) {
         activity?.let {
-            val cacheManager = SaveInstanceCacheManager(it, true).apply {
-                put(AddEditProductUploadConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, "")
-                put(AddEditProductUploadConstant.EXTRA_PRODUCT_VARIANT_SELECTION, "")
-                put(AddEditProductUploadConstant.EXTRA_CURRENCY_TYPE, AddEditProductDescriptionFragment.TYPE_IDR)
-                put(AddEditProductUploadConstant.EXTRA_DEFAULT_PRICE, 0.0)
-                put(AddEditProductUploadConstant.EXTRA_STOCK_TYPE, "")
-                put(AddEditProductUploadConstant.EXTRA_IS_OFFICIAL_STORE, false)
-                put(AddEditProductUploadConstant.EXTRA_DEFAULT_SKU, "")
-                put(AddEditProductUploadConstant.EXTRA_NEED_RETAIN_IMAGE, false)
-                put(AddEditProductUploadConstant.EXTRA_PRODUCT_SIZECHART, null)
-                put(AddEditProductUploadConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV1, true)
-                put(AddEditProductUploadConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV2, false)
-                put(AddEditProductUploadConstant.EXTRA_HAS_WHOLESALE, false)
-                put(AddEditProductUploadConstant.EXTRA_IS_ADD, false)
-            }
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_VARIANT_DASHBOARD)
-            intent?.run {
-                putExtra(EXTRA_VARIANT_RESULT_CACHE_ID, cacheManager.id)
-                putExtra(AddEditProductUploadConstant.EXTRA_IS_USING_CACHE_MANAGER, true)
-                startActivityForResult(this, AddEditProductDescriptionFragment.REQUEST_CODE_VARIANT)
+            viewModel.productInputModel?.let { productInputModel ->
+                val cacheManager = SaveInstanceCacheManager(it, true).apply {
+                    put(AddEditProductUploadConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, variantList)
+                    put(AddEditProductUploadConstant.EXTRA_PRODUCT_VARIANT_SELECTION, productInputModel.variantInputModel)
+                    put(AddEditProductUploadConstant.EXTRA_PRODUCT_SIZECHART, productInputModel.variantInputModel.productSizeChart)
+                    put(AddEditProductUploadConstant.EXTRA_CURRENCY_TYPE, AddEditProductDescriptionFragment.TYPE_IDR)
+                    put(AddEditProductUploadConstant.EXTRA_DEFAULT_PRICE, 0.0)
+                    put(AddEditProductUploadConstant.EXTRA_STOCK_TYPE, "")
+                    put(AddEditProductUploadConstant.EXTRA_IS_OFFICIAL_STORE, false)
+                    put(AddEditProductUploadConstant.EXTRA_DEFAULT_SKU, "")
+                    put(AddEditProductUploadConstant.EXTRA_NEED_RETAIN_IMAGE, false)
+                    put(AddEditProductUploadConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV1, true)
+                    put(AddEditProductUploadConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV2, false)
+                    put(AddEditProductUploadConstant.EXTRA_HAS_WHOLESALE, false)
+                    put(AddEditProductUploadConstant.EXTRA_IS_ADD, false)
+                }
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_VARIANT_DASHBOARD)
+                intent?.run {
+                    putExtra(EXTRA_VARIANT_RESULT_CACHE_ID, cacheManager.id)
+                    putExtra(AddEditProductUploadConstant.EXTRA_IS_USING_CACHE_MANAGER, true)
+                    startActivityForResult(this, AddEditProductDescriptionFragment.REQUEST_CODE_VARIANT)
+                }
             }
         }
     }
