@@ -14,7 +14,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.mo
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderShop
 import kotlinx.android.synthetic.main.card_order_product.view.*
 
-class OrderProductCard(private val view: View, private val listener: OrderProductCardListener, val orderSummaryAnalytics: OrderSummaryAnalytics) {
+class OrderProductCard(private val view: View, private val listener: OrderProductCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) {
 
     private lateinit var product: OrderProduct
     private lateinit var shop: OrderShop
@@ -45,7 +45,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             }
 
             view.et_note.filters = arrayOf(InputFilter.LengthFilter(MAX_NOTES_LENGTH))
-            view.et_note.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+            view.et_note.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     orderSummaryAnalytics.eventClickSellerNotes(product.productId.toString(), shop.shopId.toString())
                 }
@@ -221,7 +221,5 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
 
     companion object {
         const val MAX_NOTES_LENGTH = 144
-
-        const val QUANTITY_PLACEHOLDER = "{{value}}"
     }
 }

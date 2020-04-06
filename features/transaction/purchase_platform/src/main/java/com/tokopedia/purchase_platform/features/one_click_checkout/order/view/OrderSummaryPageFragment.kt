@@ -710,8 +710,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         override fun onAddPreference(itemCount: Int) {
                             orderSummaryAnalytics.eventAddPreferensiFromOSP()
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
-                            val value = itemCount + 1
-                            val preferenceIndex = "${getString(R.string.preference_number_summary)} $value"
+                            val preferenceIndex = "${getString(R.string.preference_number_summary)} ${itemCount + 1}"
                             intent.putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, preferenceIndex)
                             startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
                         }
