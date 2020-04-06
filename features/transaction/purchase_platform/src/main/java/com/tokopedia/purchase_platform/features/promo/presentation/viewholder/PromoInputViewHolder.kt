@@ -4,15 +4,22 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.promo.presentation.PromoCheckoutActionListener
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoInputUiModel
-import kotlinx.android.synthetic.main.item_promo_input.view.*
+import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.UnifyButton
 
 class PromoInputViewHolder(private val view: View,
                            private val listener: PromoCheckoutActionListener
 ) : AbstractViewHolder<PromoInputUiModel>(view) {
+
+    private val buttonApplyPromo by lazy {
+        view.findViewById<UnifyButton>(R.id.button_apply_promo)
+    }
+    private val textFieldInputPromo by lazy {
+        view.findViewById<TextFieldUnify>(R.id.text_field_input_promo)
+    }
 
     companion object {
         val LAYOUT = R.layout.item_promo_input
@@ -26,23 +33,23 @@ class PromoInputViewHolder(private val view: View,
         }
 
         if (element.uiState.isLoading) {
-            itemView.button_apply_promo.isLoading = true
-            itemView.button_apply_promo.isClickable = false
+            buttonApplyPromo.isLoading = true
+            buttonApplyPromo.isClickable = false
         } else {
-            itemView.button_apply_promo.isLoading = false
-            itemView.button_apply_promo.isClickable = true
+            buttonApplyPromo.isLoading = false
+            buttonApplyPromo.isClickable = true
         }
 
         if (element.uiData.promoCode.isNotBlank()) {
-            itemView.button_apply_promo.isEnabled = true
-            itemView.text_field_input_promo.setFirstIcon(R.drawable.unify_chips_ic_close)
+            buttonApplyPromo.isEnabled = true
+            textFieldInputPromo.setFirstIcon(R.drawable.unify_chips_ic_close)
         } else {
-            itemView.button_apply_promo.isEnabled = false
-            itemView.text_field_input_promo.setFirstIcon(R.color.white)
+            buttonApplyPromo.isEnabled = false
+            textFieldInputPromo.setFirstIcon(R.color.white)
         }
 
-        itemView.text_field_input_promo.textFieldInput.setText(element.uiData.promoCode)
-        itemView.text_field_input_promo.textFieldInput.addTextChangedListener(object : TextWatcher {
+        textFieldInputPromo.textFieldInput.setText(element.uiData.promoCode)
+        textFieldInputPromo.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
             }
 
@@ -53,23 +60,23 @@ class PromoInputViewHolder(private val view: View,
                 element.uiData.promoCode = text.toString()
                 if (text?.isNotEmpty() == true) {
                     element.uiState.isButtonSelectEnabled = true
-                    itemView.button_apply_promo.isEnabled = true
-                    itemView.text_field_input_promo.setFirstIcon(R.drawable.unify_chips_ic_close)
+                    buttonApplyPromo.isEnabled = true
+                    textFieldInputPromo.setFirstIcon(R.drawable.unify_chips_ic_close)
                 } else {
                     element.uiState.isButtonSelectEnabled = false
-                    itemView.button_apply_promo.isEnabled = false
-                    itemView.text_field_input_promo.setFirstIcon(R.color.white)
+                    buttonApplyPromo.isEnabled = false
+                    textFieldInputPromo.setFirstIcon(R.color.white)
                 }
             }
         })
 
-        itemView.text_field_input_promo.getFirstIcon().setOnClickListener {
-            itemView.text_field_input_promo.textFieldInput.text.clear()
+        textFieldInputPromo.getFirstIcon().setOnClickListener {
+            textFieldInputPromo.textFieldInput.text.clear()
             listener.onCLickClearManualInputPromo()
         }
 
-        itemView.button_apply_promo.setOnClickListener {
-            val promoCode = itemView.text_field_input_promo.textFieldInput.text.toString()
+        buttonApplyPromo.setOnClickListener {
+            val promoCode = textFieldInputPromo.textFieldInput.text.toString()
             if (promoCode.isNotEmpty()) {
                 listener.onClickApplyManualInputPromo(promoCode)
             }
@@ -77,9 +84,10 @@ class PromoInputViewHolder(private val view: View,
     }
 
     private fun renderPromoInputError(element: PromoInputUiModel) {
-        itemView.text_field_input_promo.setError(true)
+        textFieldInputPromo.setError(true)
         if (element.uiData.exception != null) {
-            itemView.text_field_input_promo.setMessage(element.uiData.exception?.message ?: "Terjadi kesalahan. Ulangi beberapa saat lagi")
+            textFieldInputPromo.setMessage(element.uiData.exception?.message
+                    ?: "Terjadi kesalahan. Ulangi beberapa saat lagi")
             setPaddingViewHasError()
         } else {
             setPaddingViewHasNoError()
@@ -105,8 +113,8 @@ class PromoInputViewHolder(private val view: View,
     }
 
     private fun renderPromoInputNotError(element: PromoInputUiModel) {
-        itemView.text_field_input_promo.setError(false)
-        itemView.text_field_input_promo.setMessage("")
+        textFieldInputPromo.setError(false)
+        textFieldInputPromo.setMessage("")
         setPaddingViewHasNoError()
     }
 
