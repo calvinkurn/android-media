@@ -4,10 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.gson.Gson
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.play.data.PlaySocketTest
 import com.tokopedia.play.data.TotalLike
+import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.helper.getOrAwaitValue
@@ -23,7 +21,6 @@ import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.websocket.WebSocketResponse
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -51,7 +48,7 @@ class PlayViewModelTest {
     private val mockGetCartCountUseCase: GetCartCountUseCase = mockk(relaxed = true)
     private val mockGetProductTagItemsUseCase: GetProductTagItemsUseCase = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
-    private val mockPlaySocket: PlaySocketTest = mockk(relaxed = true)
+    private val mockPlaySocket: PlaySocket = mockk(relaxed = true)
     private val dispatchers: CoroutineDispatcherProvider = TestCoroutineDispatchersProvider
 
     private val modelBuilder = ModelBuilder()
