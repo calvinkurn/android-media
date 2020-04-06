@@ -87,18 +87,13 @@
                 app:textViewTheme="lightPrimary"
                 app:weight="medium" />
 
-            <com.tokopedia.design.text.RangeInputView
+            <com.tokopedia.hotel.search.presentation.widget.HotelFilterPriceRangeSlider
                 android:id="@+id/price_range_input_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_12"
                 android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                app:driv_label_max="@string/hotel_search_filter_price_max_label"
-                app:driv_label_min="@string/hotel_search_filter_price_min_label"
-                app:driv_typable="false"
-                app:driv_value_max_length="@integer/max_length_duration_input"
-                app:driv_value_text_appearance="@style/TextView.Small.Bold" />
+                android:layout_marginRight="@dimen/dp_16"/>
 
             <View
                 android:layout_width="match_parent"
