@@ -560,18 +560,18 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    fun clearPromo(mutation: String, validateUsePromoRequest: ValidateUsePromoRequest) {
-        launch { doClearPromo(mutation, validateUsePromoRequest) }
+    fun clearPromo(mutation: String, validateUsePromoRequest: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>) {
+        launch { doClearPromo(mutation, validateUsePromoRequest, bboPromoCodes) }
     }
 
-    private suspend fun doClearPromo(mutation: String, validateUsePromoRequest: ValidateUsePromoRequest) {
+    private suspend fun doClearPromo(mutation: String, validateUsePromoRequest: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>) {
         launchCatchError(block = {
             // Initialize response action state
             if (clearPromoResponse.value == null) {
                 _clearPromoResponse.value = ClearPromoResponseAction()
             }
 
-            // Set param
+            // Add unselected promo
             val toBeRemovedPromoCodes = ArrayList<String>()
             var tmpMutation = mutation
             promoListUiModel.value?.forEach {
@@ -582,6 +582,22 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                         if (it.uiState.isParentEnabled) {
                             toBeRemovedPromoCodes.add(it.uiData.promoCode)
                         }
+                    }
+                }
+            }
+
+            // Add invalid promo
+            validateUsePromoRequest.codes.forEach { promoGlobalCode ->
+                promoGlobalCode?.let {
+                    if (!bboPromoCodes.contains(it) && !toBeRemovedPromoCodes.contains(it)) {
+                        toBeRemovedPromoCodes.add(it)
+                    }
+                }
+            }
+            validateUsePromoRequest.orders.forEach { order ->
+                order?.codes?.forEach {
+                    if (!bboPromoCodes.contains(it) && !toBeRemovedPromoCodes.contains(it)) {
+                        toBeRemovedPromoCodes.add(it)
                     }
                 }
             }
