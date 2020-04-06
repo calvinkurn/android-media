@@ -711,7 +711,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
         if (!productCardOptionsModel.wishlistResult.isUserLoggedIn) {
             threeDotsClickShopProductViewModel?.let {
-                trackClickWishlist(threeDotsClickShopCarouselProductUiModel, it, false)
+                trackClickWishlist(threeDotsClickShopCarouselProductUiModel, it, true)
             }
             redirectToLoginPage()
         } else {
