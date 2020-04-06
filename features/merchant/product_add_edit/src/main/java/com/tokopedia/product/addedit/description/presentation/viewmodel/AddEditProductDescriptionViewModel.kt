@@ -8,7 +8,7 @@ import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
-import com.tokopedia.product.addedit.draft.domain.usecase.InsertProductDraftUseCase
+import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.Fail
@@ -21,7 +21,7 @@ import javax.inject.Inject
 class AddEditProductDescriptionViewModel @Inject constructor(
         coroutineDispatcher: CoroutineDispatcher,
         private val getProductVariantUseCase: GetProductVariantUseCase,
-        private val insertProductDraftUseCase: InsertProductDraftUseCase
+        private val saveProductDraftUseCase: SaveProductDraftUseCase
 ) : BaseViewModel(coroutineDispatcher) {
 
     var categoryId: String = ""
@@ -33,9 +33,9 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     val productVariant: LiveData<Result<List<ProductVariantByCatModel>>>
         get() = _productVariant
 
-    private val _insertProductDraftResult = MutableLiveData<Result<Long>>()
-    val insertProductDraftResult: LiveData<Result<Long>>
-        get() = _insertProductDraftResult
+    private val _saveProductDraftResult = MutableLiveData<Result<Long>>()
+    val saveProductDraftResult: LiveData<Result<Long>>
+        get() = _saveProductDraftResult
 
     fun getVariants(categoryId: String) {
         launchCatchError(block = {
@@ -49,14 +49,14 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         })
     }
 
-    fun insertProductDraft(productInputModel: ProductInputModel, productId: Long, isUploading: Boolean) {
+    fun saveProductDraft(productInputModel: ProductInputModel, productId: Long, isUploading: Boolean) {
         launchCatchError(block = {
-            insertProductDraftUseCase.params = InsertProductDraftUseCase.createRequestParams(productInputModel, productId, isUploading)
-            _insertProductDraftResult.value = withContext(Dispatchers.IO) {
-                insertProductDraftUseCase.executeOnBackground()
+            saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(productInputModel, productId, isUploading)
+            _saveProductDraftResult.value = withContext(Dispatchers.IO) {
+                saveProductDraftUseCase.executeOnBackground()
             }.let { Success(it) }
         }, onError = {
-            _insertProductDraftResult.value = Fail(it)
+            _saveProductDraftResult.value = Fail(it)
         })
     }
 }

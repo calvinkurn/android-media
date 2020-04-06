@@ -71,7 +71,7 @@ class AddEditProductShipmentActivity : BaseSimpleActivity(), HasComponent<AddEdi
     private fun saveProductToDraft() {
         val f = fragment
         if (f != null && f is AddEditProductShipmentFragment) {
-            f.insertProductDraft(false)
+            f.saveProductDraft(false)
         }
     }
 

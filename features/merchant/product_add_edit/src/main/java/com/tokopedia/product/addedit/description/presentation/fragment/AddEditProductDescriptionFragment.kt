@@ -232,9 +232,9 @@ class AddEditProductDescriptionFragment:
         }
     }
 
-    fun insertProductDraft(isUploading: Boolean) {
+    fun saveProductDraft(isUploading: Boolean) {
         inputAllDataInInputDraftModel()
-        productInputModel?.let { descriptionViewModel.insertProductDraft(it, 0, isUploading) }
+        productInputModel?.let { descriptionViewModel.saveProductDraft(it, 0, isUploading) }
     }
 
     private fun inputAllDataInInputDraftModel() {

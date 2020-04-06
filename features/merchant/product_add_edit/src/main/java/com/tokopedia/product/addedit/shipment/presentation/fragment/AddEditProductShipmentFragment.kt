@@ -143,9 +143,9 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         }
     }
 
-    fun insertProductDraft(isUploading: Boolean) {
+    fun saveProductDraft(isUploading: Boolean) {
         inputAllDataInInputDraftModel()
-        productInputModel?.let { shipmentViewModel.insertProductDraft(it, 0,isUploading) }
+        productInputModel?.let { shipmentViewModel.saveProductDraft(it, 0,isUploading) }
     }
 
     private fun inputAllDataInInputDraftModel() {

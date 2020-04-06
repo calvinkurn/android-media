@@ -648,9 +648,9 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         }
     }
 
-    fun insertProductDraft(isUploading: Boolean) {
+    fun saveProductDraft(isUploading: Boolean) {
         inputAllDataInInputDraftModel()
-        viewModel.insertProductDraft(productInputModel, 0, isUploading)
+        viewModel.saveProductDraft(productInputModel, 0, isUploading)
     }
 
     fun getAllProductsDraft() {
