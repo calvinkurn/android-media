@@ -27,7 +27,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.Companion.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
@@ -651,28 +650,8 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     putExtra(AddEditProductUploadConstant.EXTRA_IS_USING_CACHE_MANAGER, true)
                     startActivityForResult(this, AddEditProductDescriptionFragment.REQUEST_CODE_VARIANT)
                 }
-            val productVariantByCatModelList: ArrayList<String> = ArrayList()
+                val productVariantByCatModelList: ArrayList<String> = ArrayList()
 //            productVariantByCatModelList.add(AddEditProductDescriptionFragment.TEST_VARIANT)
-            val cacheManager = SaveInstanceCacheManager(it, true).apply {
-                put(AddEditProductUploadConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList) // must using json
-                put(AddEditProductUploadConstant.EXTRA_PRODUCT_VARIANT_SELECTION, "") // must using json
-                put(AddEditProductUploadConstant.EXTRA_CURRENCY_TYPE, AddEditProductDescriptionFragment.TYPE_IDR)
-                put(AddEditProductUploadConstant.EXTRA_DEFAULT_PRICE, 0.0)
-                put(AddEditProductUploadConstant.EXTRA_STOCK_TYPE, "")
-                put(AddEditProductUploadConstant.EXTRA_IS_OFFICIAL_STORE, false)
-                put(AddEditProductUploadConstant.EXTRA_DEFAULT_SKU, "")
-                put(AddEditProductUploadConstant.EXTRA_NEED_RETAIN_IMAGE, false)
-                put(AddEditProductUploadConstant.EXTRA_PRODUCT_SIZECHART, null) // must using json
-                put(AddEditProductUploadConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV1, true)
-                put(AddEditProductUploadConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV2, false)
-                put(AddEditProductUploadConstant.EXTRA_HAS_WHOLESALE, false)
-                put(AddEditProductUploadConstant.EXTRA_IS_ADD, false)
-            }
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_VARIANT_DASHBOARD)
-            intent?.run {
-//                putExtra(AddEditProductUploadConstant.EXTRA_VARIANT_CACHE_ID, cacheManager.id)
-                putExtra(AddEditProductUploadConstant.EXTRA_IS_USING_CACHE_MANAGER, true)
-                startActivityForResult(this, AddEditProductDescriptionFragment.REQUEST_CODE_VARIANT)
             }
         }
     }

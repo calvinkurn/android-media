@@ -46,7 +46,6 @@ import com.tokopedia.product.addedit.description.presentation.activity.AddEditPr
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_DESCRIPTION_INPUT_MODEL
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_IS_EDIT_MODE
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_VARIANT_INPUT_MODEL
-import com.tokopedia.product.addedit.description.presentation.adapter.VideoLinkTypeFactory
 import com.tokopedia.product.addedit.description.presentation.adapter.YoutubeVideoTypeFactory
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.PictureViewModel
@@ -58,9 +57,6 @@ import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProdu
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.product.addedit.tracking.ProductAddDescriptionTracking
 import com.tokopedia.product.addedit.tracking.ProductEditDescriptionTracking
 import com.tokopedia.unifycomponents.Toaster
@@ -80,7 +76,7 @@ class AddEditProductDescriptionFragment(
 
     companion object {
         fun createInstance(categoryId: String): Fragment {
-            return AddEditProductDescriptionFragment().apply {
+            return AddEditProductDescriptionFragment(categoryId).apply {
                 arguments = Bundle().apply {
                     putString(PARAM_CATEGORY_ID, categoryId)
                 }
@@ -90,7 +86,7 @@ class AddEditProductDescriptionFragment(
                            descriptionInputModel: DescriptionInputModel,
                            variantInputModel: ProductVariantInputModel,
                            isEditMode: Boolean): Fragment {
-            return AddEditProductDescriptionFragment().apply {
+            return AddEditProductDescriptionFragment(categoryId).apply {
                 arguments = Bundle().apply {
                     putString(PARAM_CATEGORY_ID, categoryId)
                     putParcelable(PARAM_DESCRIPTION_INPUT_MODEL, descriptionInputModel)
@@ -276,11 +272,6 @@ class AddEditProductDescriptionFragment(
                     val cacheManager = context?.let { SaveInstanceCacheManager(it, variantCacheId) }
                     if (data.hasExtra(EXTRA_PRODUCT_VARIANT_SELECTION)) {
                         val productVariantViewModel = cacheManager?.get(EXTRA_PRODUCT_VARIANT_SELECTION,
-                                object : TypeToken<ProductVariantInputModel>() {}.type)
-                                ?: ProductVariantInputModel()
-                        productVariantInputModel.variantOptionParent = productVariantViewModel.variantOptionParent
-                        productVariantInputModel.productVariant = productVariantViewModel.productVariant
-                        val productVariantViewModel = cacheManager.get(EXTRA_PRODUCT_VARIANT_SELECTION,
                                 object : TypeToken<ProductVariantInputModel>() {}.type) ?: ProductVariantInputModel()
                         descriptionViewModel.variantInputModel.variantOptionParent = productVariantViewModel.variantOptionParent
                         descriptionViewModel.variantInputModel.productVariant = productVariantViewModel.productVariant
@@ -386,8 +377,8 @@ class AddEditProductDescriptionFragment(
         val descriptionInputModel = DescriptionInputModel(
                 textFieldDescription.getText()
 //                adapter.data
-            textFieldDescription.getText(),
-            adapter.data
+//            textFieldDescription.getText(),
+//            adapter.data
         )
         val intent = Intent()
         intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
