@@ -19,7 +19,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_CURRENCY_TYPE
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DEFAULT_PRICE
@@ -44,7 +43,7 @@ import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.di.AddEditProductDescriptionModule
 import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescriptionComponent
-import com.tokopedia.product.addedit.description.presentation.adapter.VideoLinkTypeFactory
+import com.tokopedia.product.addedit.description.presentation.adapter.YoutubeVideoTypeFactory
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.PictureViewModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
@@ -66,7 +65,7 @@ import javax.inject.Inject
 
 class AddEditProductDescriptionFragment(
         private val categoryId: String
-) : BaseListFragment<Visitable<*>, VideoLinkTypeFactory>(), VideoLinkTypeFactory.VideoLinkListener {
+) : BaseListFragment<Visitable<*>, YoutubeVideoTypeFactory>(), YoutubeVideoTypeFactory.VideoLinkListener {
 
     companion object {
         fun createInstance(categoryId: String): Fragment {
@@ -94,8 +93,8 @@ class AddEditProductDescriptionFragment(
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    override fun getAdapterTypeFactory(): VideoLinkTypeFactory {
-        val videoLinkTypeFactory = VideoLinkTypeFactory()
+    override fun getAdapterTypeFactory(): YoutubeVideoTypeFactory {
+        val videoLinkTypeFactory = YoutubeVideoTypeFactory()
         videoLinkTypeFactory.setVideoLinkListener(this)
 
         return videoLinkTypeFactory
@@ -243,8 +242,6 @@ class AddEditProductDescriptionFragment(
         val videoLinkModels: ArrayList<VideoLinkModel> = ArrayList()
         videoLinkModels.add(VideoLinkModel(page, "", TEST_IMAGE_URL))
         super.renderList(videoLinkModels as List<Visitable<*>>)
-
-//        getRecyclerView(view).hide()
         textViewAddVideo.visibility =
                 if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
     }
@@ -298,8 +295,7 @@ class AddEditProductDescriptionFragment(
         observe(descriptionViewModel.videoYoutube) {
             when (it) {
                 is Success -> {
-                    adapter.setElement(it.data)
-                    getRecyclerView(view).visible()
+                    adapter.addElement(videoId, it.data)
                 }
                 is Fail -> {
                     //TODO when youtube onError
@@ -309,8 +305,6 @@ class AddEditProductDescriptionFragment(
         }
     }
 
-    override fun onItemClicked(t: Visitable<*>?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun onItemClicked(t: Visitable<*>?) {}
 
 }
