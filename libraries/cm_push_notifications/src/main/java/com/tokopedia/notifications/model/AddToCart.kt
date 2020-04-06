@@ -10,7 +10,7 @@ data class AddToCart(
         @Expose @SerializedName(CMConstant.PayloadKeys.PRODUCT_ID) var productId: Int? = 0,
         @Expose @SerializedName(CMConstant.PayloadKeys.PRODUCT_NAME) var productName: String? = "",
         @Expose @SerializedName(CMConstant.PayloadKeys.PRODUCT_BRAND) var productBrand: String? = "",
-        @Expose @SerializedName(CMConstant.PayloadKeys.PRODUCT_PRICE) var productPrice: Double? = 0.0,
+        @Expose @SerializedName(CMConstant.PayloadKeys.PRODUCT_PRICE) var productPrice: Float? = 0f,
         @Expose @SerializedName(CMConstant.PayloadKeys.PRODUCT_VARIANT) var productVariant: String? = "",
         @Expose @SerializedName(CMConstant.PayloadKeys.PRODUCT_QUANTITY) var productQuantity: String? = "",
         @Expose @SerializedName(CMConstant.PayloadKeys.ATC_SHOP_ID) var shopId: Int? = 0,
@@ -22,7 +22,7 @@ data class AddToCart(
             parcel.readInt(),
             parcel.readString(),
             parcel.readString(),
-            parcel.readDouble(),
+            parcel.readFloat(),
             parcel.readString(),
             parcel.readString(),
             parcel.readInt(),
@@ -34,7 +34,7 @@ data class AddToCart(
         parcel.writeInt(productId?: 0)
         parcel.writeString(productName)
         parcel.writeString(productBrand)
-        parcel.writeDouble(productPrice?: 0.0)
+        parcel.writeFloat(productPrice?: 0f)
         parcel.writeString(productVariant)
         parcel.writeString(productQuantity)
         parcel.writeInt(shopId?: 0)

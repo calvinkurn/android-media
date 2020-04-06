@@ -32,7 +32,7 @@ object NotificationAnalytics {
                 "dimension79" to addToCart.shopId,
                 "dimension81" to addToCart.shopType,
                 "dimension80" to addToCart.shopName,
-                "dimension82" to addToCart.productPrice,
+                "dimension82" to addToCart.productPrice.toString(),
                 "dimension45" to cartId,
                 "dimension40" to ""
         )
