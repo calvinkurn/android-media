@@ -25,8 +25,8 @@ class AddEditProductDescriptionActivity : BaseSimpleActivity() {
             categoryId = getStringExtra(PARAM_CATEGORY_ID)
             descriptionInputModel = getParcelableExtra(PARAM_DESCRIPTION_INPUT_MODEL) ?: DescriptionInputModel()
             variantInputModel = getParcelableExtra(PARAM_VARIANT_INPUT_MODEL) ?: ProductVariantInputModel()
-            isEditMode = getBooleanExtra(PARAM_IS_EDIT_MODE, false)
             productInputModel = getParcelableExtra(PARAM_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
+            isEditMode = getBooleanExtra(PARAM_IS_EDIT_MODE, false)
         }
 
         return if (isEditMode) {
