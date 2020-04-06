@@ -5,7 +5,7 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.bookingV2.presentation.adapter.viewholder.FlightBookingAmenityViewHolder;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingAmenityViewModel;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingAmenityModel;
 
 /**
  * Created by alvarisi on 12/19/17.
@@ -18,7 +18,7 @@ public class FlightAmenityAdapterTypeFactory extends BaseAdapterTypeFactory {
         this.listenerCheckedClass = listenerCheckedClass;
     }
 
-    public int type(FlightBookingAmenityViewModel viewModel) {
+    public int type(FlightBookingAmenityModel viewModel) {
         return FlightBookingAmenityViewHolder.LAYOUT;
     }
 

@@ -6,11 +6,11 @@ import androidx.annotation.NonNull;
 
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingCartData;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
-import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
-import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingCartData;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardModel;
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteModel;
+import com.tokopedia.flight.detail.view.model.FlightDetailModel;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.search.data.api.single.response.Route;
 import com.tokopedia.flight.search.presentation.model.FlightAirlineModel;
@@ -151,7 +151,7 @@ public class FlightAnalytics {
         ));
     }
 
-    public void eventSearchClick(FlightDashboardViewModel dashboardViewModel) {
+    public void eventSearchClick(FlightDashboardModel dashboardViewModel) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(CLICK_SEARCH_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_SEARCH,
@@ -509,7 +509,7 @@ public class FlightAnalytics {
         ));
     }
 
-    public void eventDetailPriceTabClick(FlightDetailViewModel viewModel) {
+    public void eventDetailPriceTabClick(FlightDetailModel viewModel) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_PRICE_TAB,
@@ -517,7 +517,7 @@ public class FlightAnalytics {
         ));
     }
 
-    public void eventDetailFacilitiesTabClick(FlightDetailViewModel viewModel) {
+    public void eventDetailFacilitiesTabClick(FlightDetailModel viewModel) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_FACILITIES_TAB,
@@ -525,7 +525,7 @@ public class FlightAnalytics {
         ));
     }
 
-    public void eventDetailTabClick(FlightDetailViewModel viewModel) {
+    public void eventDetailTabClick(FlightDetailModel viewModel) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_DETAIL_TAB,
@@ -533,7 +533,7 @@ public class FlightAnalytics {
         ));
     }
 
-    private String transformEventDetailLabel(FlightDetailViewModel viewModel) {
+    private String transformEventDetailLabel(FlightDetailModel viewModel) {
         StringBuilder result = new StringBuilder();
         if (viewModel.getRouteList() != null && viewModel.getRouteList().size() > 0) {
             String airlines = viewModel.getRouteList().get(0).getAirlineName().toLowerCase();
@@ -547,7 +547,7 @@ public class FlightAnalytics {
         return result.toString();
     }
 
-    private String transformEventDetailLabel(FlightDetailViewModel departureViewModel, FlightDetailViewModel returnViewModel) {
+    private String transformEventDetailLabel(FlightDetailModel departureViewModel, FlightDetailModel returnViewModel) {
         StringBuilder result = new StringBuilder();
         if (departureViewModel.getRouteList() != null && departureViewModel.getRouteList().size() > 0) {
             String airlines = departureViewModel.getRouteList().get(0).getAirlineName().toLowerCase();
@@ -572,9 +572,9 @@ public class FlightAnalytics {
     }
 
     @NonNull
-    private String transformAirlines(FlightDetailViewModel viewModel) {
+    private String transformAirlines(FlightDetailModel viewModel) {
         List<String> airlines = new ArrayList<>();
-        for (FlightDetailRouteViewModel airlineDB : viewModel.getRouteList()) {
+        for (FlightDetailRouteModel airlineDB : viewModel.getRouteList()) {
             if (!airlines.contains(airlineDB.getAirlineName())) {
                 airlines.add(airlineDB.getAirlineName());
             }
@@ -617,7 +617,7 @@ public class FlightAnalytics {
         return refundable;
     }
 
-    public void eventDetailClick(FlightDetailViewModel viewModel) {
+    public void eventDetailClick(FlightDetailModel viewModel) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.BOOKING_DETAIL,
@@ -665,7 +665,7 @@ public class FlightAnalytics {
         );
     }
 
-    public void eventCheckoutClick(FlightDetailViewModel departureTrip, FlightDetailViewModel returnTrip, FlightSearchPassDataModel searchParam, String comboKey) {
+    public void eventCheckoutClick(FlightDetailModel departureTrip, FlightDetailModel returnTrip, FlightSearchPassDataModel searchParam, String comboKey) {
 
         List<Object> products = new ArrayList<>();
 
@@ -761,7 +761,7 @@ public class FlightAnalytics {
         ));
     }
 
-    private void eventAddToCart(String label, FlightDetailViewModel viewModel, Object actionField, List<Object> products) {
+    private void eventAddToCart(String label, FlightDetailModel viewModel, Object actionField, List<Object> products) {
         try {
             TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                     DataLayer.mapOf(EVENT, ATC_EVENT,
@@ -799,8 +799,8 @@ public class FlightAnalytics {
         ));
     }
 
-    public void eventAddToCart(FlightClassViewModel flightClass, FlightBookingCartData cartData,
-                               int resultTotalPrice, FlightDetailViewModel departureViewModel, FlightDetailViewModel returnViewModel,
+    public void eventAddToCart(FlightClassModel flightClass, FlightBookingCartData cartData,
+                               int resultTotalPrice, FlightDetailModel departureViewModel, FlightDetailModel returnViewModel,
                                String comboKey) {
 
         List<Object> products = new ArrayList<>();
@@ -834,7 +834,7 @@ public class FlightAnalytics {
         }
     }
 
-    private List<Object> constructEnhanceEcommerceProduct(FlightDetailViewModel flightViewModel, String comboKey, String flightClass, Boolean isOneWay) {
+    private List<Object> constructEnhanceEcommerceProduct(FlightDetailModel flightViewModel, String comboKey, String flightClass, Boolean isOneWay) {
         List<Object> products = new ArrayList<>();
         String name = flightViewModel.getDepartureAirportCity() + "-" + flightViewModel.getArrivalAirportCity();
 
@@ -938,7 +938,7 @@ public class FlightAnalytics {
     }
 
 
-    public void eventInsuranceChecked(boolean checked, FlightDetailViewModel departure, FlightDetailViewModel returntrip) {
+    public void eventInsuranceChecked(boolean checked, FlightDetailModel departure, FlightDetailModel returntrip) {
         String eventAction = checked ? Category.ADD_INSURANCE : Category.REMOVE_INSURANCE;
         String eventLabel = "";
         if (departure != null) {

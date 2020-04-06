@@ -3,9 +3,9 @@ package com.tokopedia.flight.search.presentation.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
+import com.tokopedia.flight.airport.view.model.FlightAirportModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel;
 
 /**
  * Created by alvarisi on 11/1/17.
@@ -15,17 +15,17 @@ public class FlightSearchPassDataModel implements Parcelable{
     private String departureDate;
     private String returnDate;
     private boolean isOneWay;
-    private FlightPassengerViewModel flightPassengerViewModel;
-    private FlightAirportViewModel departureAirport;
-    private FlightAirportViewModel arrivalAirport;
-    private FlightClassViewModel flightClass;
+    private FlightPassengerModel flightPassengerViewModel;
+    private FlightAirportModel departureAirport;
+    private FlightAirportModel arrivalAirport;
+    private FlightClassModel flightClass;
     private String linkUrl;
     private String searchRequestId;
 
-    public FlightSearchPassDataModel(String departureDate, String returnDate, boolean isOneWay,
-                                     FlightPassengerViewModel flightPassengerViewModel,
-                                     FlightAirportViewModel departureAirport, FlightAirportViewModel arrivalAirport,
-                                     FlightClassViewModel flightClass, String linkUrl, String searchRequestId) {
+    public FlightSearchPassDataViewModel(String departureDate, String returnDate, boolean isOneWay,
+                                         FlightPassengerModel flightPassengerViewModel,
+                                         FlightAirportModel departureAirport, FlightAirportModel arrivalAirport,
+                                         FlightClassModel flightClass, String linkUrl, String searchRequestId) {
         this.departureDate = departureDate;
         this.returnDate = returnDate;
         this.isOneWay = isOneWay;
@@ -44,10 +44,10 @@ public class FlightSearchPassDataModel implements Parcelable{
         departureDate = in.readString();
         returnDate = in.readString();
         isOneWay = in.readByte() != 0;
-        flightPassengerViewModel = in.readParcelable(FlightPassengerViewModel.class.getClassLoader());
-        departureAirport = in.readParcelable(FlightAirportViewModel.class.getClassLoader());
-        arrivalAirport = in.readParcelable(FlightAirportViewModel.class.getClassLoader());
-        flightClass = in.readParcelable(FlightClassViewModel.class.getClassLoader());
+        flightPassengerViewModel = in.readParcelable(FlightPassengerModel.class.getClassLoader());
+        departureAirport = in.readParcelable(FlightAirportModel.class.getClassLoader());
+        arrivalAirport = in.readParcelable(FlightAirportModel.class.getClassLoader());
+        flightClass = in.readParcelable(FlightClassModel.class.getClassLoader());
         linkUrl = in.readString();
         searchRequestId = in.readString();
     }
@@ -100,35 +100,35 @@ public class FlightSearchPassDataModel implements Parcelable{
         isOneWay = oneWay;
     }
 
-    public FlightPassengerViewModel getFlightPassengerViewModel() {
+    public FlightPassengerModel getFlightPassengerViewModel() {
         return flightPassengerViewModel;
     }
 
-    public void setFlightPassengerViewModel(FlightPassengerViewModel flightPassengerViewModel) {
+    public void setFlightPassengerViewModel(FlightPassengerModel flightPassengerViewModel) {
         this.flightPassengerViewModel = flightPassengerViewModel;
     }
 
-    public FlightAirportViewModel getDepartureAirport() {
+    public FlightAirportModel getDepartureAirport() {
         return departureAirport;
     }
 
-    public void setDepartureAirport(FlightAirportViewModel departureAirport) {
+    public void setDepartureAirport(FlightAirportModel departureAirport) {
         this.departureAirport = departureAirport;
     }
 
-    public FlightAirportViewModel getArrivalAirport() {
+    public FlightAirportModel getArrivalAirport() {
         return arrivalAirport;
     }
 
-    public void setArrivalAirport(FlightAirportViewModel arrivalAirport) {
+    public void setArrivalAirport(FlightAirportModel arrivalAirport) {
         this.arrivalAirport = arrivalAirport;
     }
 
-    public FlightClassViewModel getFlightClass() {
+    public FlightClassModel getFlightClass() {
         return flightClass;
     }
 
-    public void setFlightClass(FlightClassViewModel flightClass) {
+    public void setFlightClass(FlightClassModel flightClass) {
         this.flightClass = flightClass;
     }
 
@@ -162,10 +162,10 @@ public class FlightSearchPassDataModel implements Parcelable{
         private String departureDate;
         private String returnDate;
         private boolean isOneWay;
-        private FlightPassengerViewModel flightPassengerViewModel;
-        private FlightAirportViewModel departureAirport;
-        private FlightAirportViewModel arrivalAirport;
-        private FlightClassViewModel flightClass;
+        private FlightPassengerModel flightPassengerViewModel;
+        private FlightAirportModel departureAirport;
+        private FlightAirportModel arrivalAirport;
+        private FlightClassModel flightClass;
         private String linkUrl;
         private String searchRequestId;
 
@@ -187,22 +187,22 @@ public class FlightSearchPassDataModel implements Parcelable{
             return this;
         }
 
-        public Builder setFlightPassengerViewModel(FlightPassengerViewModel flightPassengerViewModel) {
+        public Builder setFlightPassengerViewModel(FlightPassengerModel flightPassengerViewModel) {
             this.flightPassengerViewModel = flightPassengerViewModel;
             return this;
         }
 
-        public Builder setDepartureAirport(FlightAirportViewModel departureAirport) {
+        public Builder setDepartureAirport(FlightAirportModel departureAirport) {
             this.departureAirport = departureAirport;
             return this;
         }
 
-        public Builder setArrivalAirport(FlightAirportViewModel arrivalAirport) {
+        public Builder setArrivalAirport(FlightAirportModel arrivalAirport) {
             this.arrivalAirport = arrivalAirport;
             return this;
         }
 
-        public Builder setFlightClass(FlightClassViewModel flightClass) {
+        public Builder setFlightClass(FlightClassModel flightClass) {
             this.flightClass = flightClass;
             return this;
         }
@@ -217,7 +217,7 @@ public class FlightSearchPassDataModel implements Parcelable{
             return this;
         }
 
-        public FlightSearchPassDataModel build() {
+        public FlightSearchPassDataViewModel build() {
             return new FlightSearchPassDataModel(departureDate, returnDate, isOneWay,
                     flightPassengerViewModel, departureAirport, arrivalAirport, flightClass,
                     linkUrl, searchRequestId);

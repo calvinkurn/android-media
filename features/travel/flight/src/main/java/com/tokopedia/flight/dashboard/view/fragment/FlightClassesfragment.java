@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.adapter.FlightClassesAdapterTypeFactory;
 import com.tokopedia.flight.dashboard.view.adapter.viewholder.FlightClassViewHolder;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel;
 import com.tokopedia.flight.dashboard.view.presenter.FlightClassesContract;
 import com.tokopedia.flight.dashboard.view.presenter.FlightClassesPresenter;
 
@@ -20,7 +20,7 @@ import javax.inject.Inject;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FlightClassesfragment extends BaseListFragment<FlightClassViewModel, FlightClassesAdapterTypeFactory> implements FlightClassesContract.View, FlightClassViewHolder.ListenerCheckedClass {
+public class FlightClassesfragment extends BaseListFragment<FlightClassModel, FlightClassesAdapterTypeFactory> implements FlightClassesContract.View, FlightClassViewHolder.ListenerCheckedClass {
     public static final String EXTRA_FLIGHT_SELECTED_CLASS = "EXTRA_FLIGHT_SELECTED_CLASS";
     @Inject
     FlightClassesPresenter presenter;
@@ -50,12 +50,12 @@ public class FlightClassesfragment extends BaseListFragment<FlightClassViewModel
     }
 
     @Override
-    public void renderFlightClasses(List<FlightClassViewModel> viewModels) {
+    public void renderFlightClasses(List<FlightClassModel> viewModels) {
         renderList(viewModels);
     }
 
     @Override
-    public boolean isItemChecked(FlightClassViewModel selectedItem) {
+    public boolean isItemChecked(FlightClassModel selectedItem) {
         return selectedItem.getId() == selectedId;
     }
 
@@ -88,7 +88,7 @@ public class FlightClassesfragment extends BaseListFragment<FlightClassViewModel
     }
 
     @Override
-    public void onItemClicked(FlightClassViewModel flightClassViewModel) {
+    public void onItemClicked(FlightClassModel flightClassViewModel) {
         if (interactionListener != null) {
             interactionListener.actionClassSelected(flightClassViewModel);
         }
@@ -105,6 +105,6 @@ public class FlightClassesfragment extends BaseListFragment<FlightClassViewModel
     }
 
     public interface OnFragmentInteractionListener {
-        void actionClassSelected(FlightClassViewModel flightClassViewModel);
+        void actionClassSelected(FlightClassModel flightClassViewModel);
     }
 }

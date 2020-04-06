@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.bookingV2.presentation.model.SimpleModel;
 import com.tokopedia.flight.orderlist.constant.FlightCancellationStatus;
 import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
 
@@ -124,7 +124,7 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
     }
 
     private class ReviewPassengerDetailAdapter extends RecyclerView.Adapter<PassengerDetailViewHolder> {
-        List<SimpleViewModel> infoList;
+        List<SimpleModel> infoList;
 
         public ReviewPassengerDetailAdapter() {
             infoList = new ArrayList<>();
@@ -146,7 +146,7 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
             return infoList.size();
         }
 
-        public void addData(List<SimpleViewModel> infos) {
+        public void addData(List<SimpleModel> infos) {
             infoList.clear();
             infoList.addAll(infos);
             notifyDataSetChanged();
@@ -163,7 +163,7 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
             descInfo = (TextView) itemView.findViewById(com.tokopedia.flight.R.id.desc_info);
         }
 
-        public void bindData(SimpleViewModel info) {
+        public void bindData(SimpleModel info) {
             titleInfo.setText(info.getDescription());
             descInfo.setText(info.getLabel().trim());
         }

@@ -1,8 +1,8 @@
 package com.tokopedia.flight.cancellation.domain.mapper;
 
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationDetail;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListPassengerViewModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListPassengerModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.orderlist.data.cloud.entity.CancellationDetailsAttribute;
 import com.tokopedia.flight.orderlist.data.cloud.entity.CancellationEntity;
@@ -37,11 +37,11 @@ public class FlightOrderEntityToCancellationListMapper {
         this.flightOrderPassengerViewModelMapper = flightOrderPassengerViewModelMapper;
     }
 
-    public List<FlightCancellationListViewModel> transform(OrderEntity orderEntity) {
-        List<FlightCancellationListViewModel> cancellationListViewModelList = new ArrayList<>();
+    public List<FlightCancellationListModel> transform(OrderEntity orderEntity) {
+        List<FlightCancellationListModel> cancellationListViewModelList = new ArrayList<>();
 
         for (CancellationEntity item : orderEntity.getAttributes().getFlight().getCancellations()) {
-            FlightCancellationListViewModel cancellationItem = new FlightCancellationListViewModel();
+            FlightCancellationListModel cancellationItem = new FlightCancellationListModel();
             cancellationItem.setOrderId(orderEntity.getId());
             cancellationItem.setCancellations(transform(item, orderEntity));
 
@@ -88,13 +88,13 @@ public class FlightOrderEntityToCancellationListMapper {
         return flightOrderJourneyList;
     }
 
-    private List<FlightCancellationListPassengerViewModel> transformPassenger(List<PassengerEntity> passengers, List<CancellationDetailsAttribute> details) {
-        List<FlightCancellationListPassengerViewModel> passengerViewModelList = new ArrayList<>();
+    private List<FlightCancellationListPassengerModel> transformPassenger(List<PassengerEntity> passengers, List<CancellationDetailsAttribute> details) {
+        List<FlightCancellationListPassengerModel> passengerViewModelList = new ArrayList<>();
 
         for (CancellationDetailsAttribute cancellationItem : details) {
             for (PassengerEntity item : passengers) {
                 if (cancellationItem.getPassengerId().equals(item.getId())) {
-                    FlightCancellationListPassengerViewModel passengerItem = new FlightCancellationListPassengerViewModel();
+                    FlightCancellationListPassengerModel passengerItem = new FlightCancellationListPassengerModel();
                     passengerItem.setPassengerId(item.getId());
                     passengerItem.setTitle(item.getTitle());
                     passengerItem.setType(item.getType());

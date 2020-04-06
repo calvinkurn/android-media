@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase
-import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.flight.R
 import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.data.model.FlightError
@@ -12,7 +12,7 @@ import com.tokopedia.flight.common.data.model.FlightException
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightRequestUtil
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
 import com.tokopedia.flight.search.domain.*
 import com.tokopedia.flight.search.presentation.contract.FlightSearchContract
 import com.tokopedia.flight.search.presentation.fragment.FlightSearchFragment
@@ -252,10 +252,10 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
 
         // normal fetch
         val date: String = passDataModel.getDate(view.isReturning())
-        val flightPassengerViewModel: FlightPassengerViewModel = passDataModel.flightPassengerViewModel
-        val adult = flightPassengerViewModel.adult
-        val child = flightPassengerViewModel.children
-        val infant = flightPassengerViewModel.infant
+        val flightPassengerModel: FlightPassengerModel = passDataModel.flightPassengerViewModel
+        val adult = flightPassengerModel.adult
+        val child = flightPassengerModel.children
+        val infant = flightPassengerModel.infant
         val classID = passDataModel.flightClass.id
         val searchRequestId = passDataModel.searchRequestId
 
@@ -349,7 +349,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
     override fun fetchTickerData() {
         travelTickerUseCase.execute(travelTickerUseCase.createRequestParams(
                 TravelTickerInstanceId.FLIGHT, TravelTickerFlightPage.SEARCH),
-                object : Subscriber<TravelTickerViewModel>() {
+                object : Subscriber<TravelTickerModel>() {
                     override fun onCompleted() {
 
                     }
@@ -358,9 +358,9 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                         e.printStackTrace()
                     }
 
-                    override fun onNext(travelTickerViewModel: TravelTickerViewModel) {
-                        if (travelTickerViewModel.message.isNotEmpty()) {
-                            view.renderTickerView(travelTickerViewModel)
+                    override fun onNext(travelTickerModel: TravelTickerModel) {
+                        if (travelTickerModel.message.isNotEmpty()) {
+                            view.renderTickerView(travelTickerModel)
                         }
                     }
                 })
@@ -369,10 +369,10 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
     override fun fireAndForgetReturnFlight(passDataModel: FlightSearchPassDataModel, airportCombineModel: FlightAirportCombineModel) {
         // normal fetch
         val date: String = passDataModel.getDate(true)
-        val flightPassengerViewModel: FlightPassengerViewModel = passDataModel.flightPassengerViewModel
-        val adult = flightPassengerViewModel.adult
-        val child = flightPassengerViewModel.children
-        val infant = flightPassengerViewModel.infant
+        val flightPassengerModel: FlightPassengerModel = passDataModel.flightPassengerViewModel
+        val adult = flightPassengerModel.adult
+        val child = flightPassengerModel.children
+        val infant = flightPassengerModel.infant
         val classID = passDataModel.flightClass.id
         val searchRequestId = passDataModel.searchRequestId
 

@@ -41,5 +41,6 @@
     <color name="bg_trade_in_address_info">#f8f8f8</color>
     <color name="grey_nonactive_text">#42000000</color>
     <color name="cashback_text_color">#42b549</color>
+    <color name="clr_a2a4a8">#a2a4a8</color>
 
 </resources>

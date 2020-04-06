@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.travel.R
 import com.tokopedia.common.travel.ticker.data.response.TravelTickerAttribute
 import com.tokopedia.common.travel.ticker.data.response.TravelTickerEntity
-import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -20,9 +20,9 @@ import javax.inject.Inject
  * @author by furqan on 19/02/19
  */
 class TravelTickerUseCase @Inject
-constructor(@param:ApplicationContext private val context: Context, private val graphqlUseCase: GraphqlUseCase) : UseCase<TravelTickerViewModel>() {
+constructor(@param:ApplicationContext private val context: Context, private val graphqlUseCase: GraphqlUseCase) : UseCase<TravelTickerModel>() {
 
-    override fun createObservable(requestParams: RequestParams): Observable<TravelTickerViewModel> {
+    override fun createObservable(requestParams: RequestParams): Observable<TravelTickerModel> {
         return Observable.just(requestParams)
                 .flatMap(object : Func1<RequestParams, Observable<GraphqlResponse>> {
                     override fun call(reqParams: RequestParams?): Observable<GraphqlResponse> {
@@ -53,8 +53,8 @@ constructor(@param:ApplicationContext private val context: Context, private val 
                 }
     }
 
-    private fun mapToTravelTickerViewModel(travelTickerAttribute: TravelTickerAttribute): TravelTickerViewModel {
-        return TravelTickerViewModel(
+    private fun mapToTravelTickerViewModel(travelTickerAttribute: TravelTickerAttribute): TravelTickerModel {
+        return TravelTickerModel(
                 travelTickerAttribute.title,
                 travelTickerAttribute.message,
                 travelTickerAttribute.url,

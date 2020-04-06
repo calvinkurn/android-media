@@ -13,8 +13,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.detail.view.model.FlightDetailOrderJourney;
-import com.tokopedia.flight.detail.view.model.FlightDetailRouteInfoViewModelMapper;
-import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteInfoModelMapper;
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailRouteViewModel;
 
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightDetail
     private View separatorLine;
     private FlightDetailAdapter flightDetailAdapter;
     private FlightDetailOrderJourney flightOrderJourney;
-    private FlightDetailRouteInfoViewModelMapper flightDetailRouteInfoViewModelMapper;
+    private FlightDetailRouteInfoModelMapper flightDetailRouteInfoViewModelMapper;
 
     private ExpandableOnClickListener expandableOnClickListener;
 
@@ -45,7 +45,7 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightDetail
     public FlightDetailOrderViewHolder(final View layoutView, ExpandableOnClickListener expandableOnClickListener, float titleFontSize) {
         super(layoutView);
         this.expandableOnClickListener = expandableOnClickListener;
-        flightDetailRouteInfoViewModelMapper = new FlightDetailRouteInfoViewModelMapper();
+        flightDetailRouteInfoViewModelMapper = new FlightDetailRouteInfoModelMapper();
 
         flightCounter = layoutView.findViewById(com.tokopedia.flight.R.id.counter_flight);
         journeyView = layoutView.findViewById(com.tokopedia.flight.R.id.layout_expendable_flight);
@@ -116,11 +116,11 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightDetail
         expandableOnClickListener.onCloseExpand(getAdapterPosition());
     }
 
-    private List<FlightDetailRouteViewModel> transform(List<FlightOrderDetailRouteViewModel> routeList) {
-        List<FlightDetailRouteViewModel> routeViewModelList = new ArrayList<>();
+    private List<FlightDetailRouteModel> transform(List<FlightOrderDetailRouteViewModel> routeList) {
+        List<FlightDetailRouteModel> routeViewModelList = new ArrayList<>();
 
         for (FlightOrderDetailRouteViewModel item : routeList) {
-            FlightDetailRouteViewModel viewModel = new FlightDetailRouteViewModel();
+            FlightDetailRouteModel viewModel = new FlightDetailRouteModel();
             viewModel.setPnr(item.getPnr());
             viewModel.setAirlineName(item.getAirlineName());
             viewModel.setAirlineCode(item.getAirlineCode());

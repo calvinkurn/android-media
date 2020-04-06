@@ -4,13 +4,13 @@ import android.content.Context;
 
 import androidx.annotation.StringRes;
 
-import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.BaseCartData;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightInsuranceViewModel;
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel;
+import com.tokopedia.flight.bookingV2.presentation.model.BaseCartData;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingPassengerModel;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightInsuranceModel;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
-import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
+import com.tokopedia.flight.review.view.model.FlightCheckoutModel;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
 
 import java.util.List;
@@ -53,7 +53,7 @@ public interface FlightBookingReviewContract {
 
         void hideCheckoutLoading();
 
-        void navigateToTopPay(FlightCheckoutViewModel flightCheckoutViewModel);
+        void navigateToTopPay(FlightCheckoutModel flightCheckoutViewModel);
 
         void navigateToOrderList();
 
@@ -75,7 +75,7 @@ public interface FlightBookingReviewContract {
 
         void renderAutoApplyPromo(PromoData promoData);
 
-        void renderTickerView(TravelTickerViewModel travelTickerViewModel);
+        void renderTickerView(TravelTickerModel travelTickerModel);
 
         String getComboKey();
 
@@ -87,8 +87,8 @@ public interface FlightBookingReviewContract {
         void onViewCreated();
 
         void verifyBooking(String promoCode, int price, int adult, String cartId,
-                           List<FlightBookingPassengerViewModel> flightPassengerViewModels,
-                           String contactName, String country, String email, String phone, List<FlightInsuranceViewModel> insurances);
+                           List<FlightBookingPassengerModel> flightPassengerViewModels,
+                           String contactName, String country, String email, String phone, List<FlightInsuranceModel> insurances);
 
         void onPaymentSuccess();
 

@@ -1,7 +1,7 @@
 package com.tokopedia.flight.cancellation.domain
 
 import com.tokopedia.flight.cancellation.domain.mapper.FlightOrderEntityToCancellationListMapper
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListViewModel
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListModel
 import com.tokopedia.flight.common.domain.FlightRepository
 import com.tokopedia.flight.orderlist.data.cache.FlightOrderDataCacheSource
 import com.tokopedia.usecase.RequestParams
@@ -16,9 +16,9 @@ import javax.inject.Inject
 class FlightCancellationGetCancellationListUseCase @Inject
 constructor(private val flightOrderDataCacheSource: FlightOrderDataCacheSource,
             private val flightOrderEntityToCancellationListMapper: FlightOrderEntityToCancellationListMapper,
-            private val flightRepository: FlightRepository) : UseCase<List<FlightCancellationListViewModel>>() {
+            private val flightRepository: FlightRepository) : UseCase<List<FlightCancellationListModel>>() {
 
-    override fun createObservable(requestParams: RequestParams): Observable<List<FlightCancellationListViewModel>> {
+    override fun createObservable(requestParams: RequestParams): Observable<List<FlightCancellationListModel>> {
         return flightOrderDataCacheSource.isExpired
                 .flatMap { aBoolean ->
                     if (aBoolean!!) {

@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
+import com.tokopedia.flight.detail.view.model.FlightDetailModel;
 
 /**
  * Created by zulfikarrahman on 10/30/17.
@@ -19,7 +19,7 @@ import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 public class FlightDetailPriceFragment extends Fragment {
 
     private static final String EXTRA_FLIGHT_DETAIL_MODEL = "EXTRA_FLIGHT_DETAIL_MODEL";
-    private FlightDetailViewModel flightDetailViewModel;
+    private FlightDetailModel flightDetailViewModel;
 
     private TextView labelAdultPrice;
     private TextView labelChildPrice;
@@ -80,14 +80,14 @@ public class FlightDetailPriceFragment extends Fragment {
         totalPrice.setText(FlightCurrencyFormatUtil.Companion.convertToIdrPrice(calculateTotal(flightDetailViewModel)));
     }
 
-    private int calculateTotal(FlightDetailViewModel flightDetailViewModel) {
+    private int calculateTotal(FlightDetailModel flightDetailViewModel) {
         int total = flightDetailViewModel.getCountAdult() * flightDetailViewModel.getAdultNumericPrice();
         total += flightDetailViewModel.getCountChild() * flightDetailViewModel.getChildNumericPrice();
         total += flightDetailViewModel.getCountInfant() * flightDetailViewModel.getInfantNumericPrice();
         return total;
     }
 
-    public static FlightDetailPriceFragment createInstance(FlightDetailViewModel flightDetailViewModel) {
+    public static FlightDetailPriceFragment createInstance(FlightDetailModel flightDetailViewModel) {
         FlightDetailPriceFragment flightDetailPriceFragment = new FlightDetailPriceFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_FLIGHT_DETAIL_MODEL, flightDetailViewModel);

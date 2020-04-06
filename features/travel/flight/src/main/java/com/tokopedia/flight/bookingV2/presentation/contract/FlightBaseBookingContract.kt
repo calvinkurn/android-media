@@ -3,10 +3,10 @@ package com.tokopedia.flight.bookingV2.presentation.contract
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingCartData
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingPassengerViewModel
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel
-import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingCartData
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingPassengerModel
+import com.tokopedia.flight.bookingV2.presentation.model.SimpleModel
+import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import java.util.*
 
 /**
@@ -22,13 +22,13 @@ interface FlightBaseBookingContract {
 
         fun showUpdatePriceLoading()
 
-        fun getDepartureFlightDetailViewModel(): FlightDetailViewModel
+        fun getDepartureFlightDetailViewModel(): FlightDetailModel
 
-        fun getReturnFlightDetailViewModel(): FlightDetailViewModel?
+        fun getReturnFlightDetailViewModel(): FlightDetailModel?
 
-        fun getFlightBookingPassengers(): List<FlightBookingPassengerViewModel>
+        fun getFlightBookingPassengers(): List<FlightBookingPassengerModel>
 
-        fun renderPriceListDetails(simpleViewModels: List<SimpleViewModel>)
+        fun renderPriceListDetails(simpleModels: List<SimpleModel>)
 
         fun renderFinishTimeCountDown(date: Date)
 

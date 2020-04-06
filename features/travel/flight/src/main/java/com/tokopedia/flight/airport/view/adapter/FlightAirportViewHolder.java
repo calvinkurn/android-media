@@ -11,13 +11,13 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
+import com.tokopedia.flight.airport.view.model.FlightAirportModel;
 
 /**
  * Created by zulfikarrahman on 10/24/17.
  */
 
-public class FlightAirportViewHolder extends AbstractViewHolder<FlightAirportViewModel> {
+public class FlightAirportViewHolder extends AbstractViewHolder<FlightAirportModel> {
     @LayoutRes
     public static int LAYOUT = com.tokopedia.flight.R.layout.item_flight_airport;
 
@@ -38,7 +38,7 @@ public class FlightAirportViewHolder extends AbstractViewHolder<FlightAirportVie
     }
 
     @Override
-    public void bind(final FlightAirportViewModel airport) {
+    public void bind(final FlightAirportModel airport) {
         Context context = itemView.getContext();
         String filterText = filterTextListener.getFilterText();
 

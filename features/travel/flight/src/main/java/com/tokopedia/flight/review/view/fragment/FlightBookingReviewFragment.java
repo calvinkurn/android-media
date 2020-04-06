@@ -35,18 +35,18 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.common.payment.model.PaymentCode;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.common.travel.ticker.TravelTickerUtils;
-import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel;
 import com.tokopedia.common.travel.widget.CountdownTimeView;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.bookingV2.di.FlightBookingComponent;
 import com.tokopedia.flight.bookingV2.presentation.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.bookingV2.presentation.fragment.FlightBookingNewPriceDialogFragment;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.BaseCartData;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingAmenityMetaViewModel;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingAmenityViewModel;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.bookingV2.presentation.model.BaseCartData;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingAmenityMetaModel;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingAmenityModel;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingPassengerModel;
+import com.tokopedia.flight.bookingV2.presentation.model.SimpleModel;
 import com.tokopedia.flight.common.constant.FlightFlowConstant;
 import com.tokopedia.flight.common.data.model.FlightException;
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil;
@@ -59,7 +59,7 @@ import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapterTypeFactory;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailRouteTypeFactory;
-import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
+import com.tokopedia.flight.detail.view.model.FlightDetailModel;
 import com.tokopedia.flight.orderlist.network.model.FlightOrderError;
 import com.tokopedia.flight.orderlist.network.model.FlightOrderException;
 import com.tokopedia.flight.orderlist.util.FlightErrorUtil;
@@ -68,7 +68,7 @@ import com.tokopedia.flight.review.view.activity.OnBackActionListener;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapter;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapterTypeFactory;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
-import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
+import com.tokopedia.flight.review.view.model.FlightCheckoutModel;
 import com.tokopedia.flight.review.view.presenter.FlightBookingReviewContract;
 import com.tokopedia.flight.review.view.presenter.FlightBookingReviewPresenter;
 import com.tokopedia.promocheckout.common.data.ConstantKt;
@@ -568,22 +568,22 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public FlightDetailViewModel getDepartureFlightDetailViewModel() {
+    public FlightDetailModel getDepartureFlightDetailViewModel() {
         return flightBookingReviewModel.getDetailViewModelListDeparture();
     }
 
     @Override
-    public FlightDetailViewModel getReturnFlightDetailViewModel() {
+    public FlightDetailModel getReturnFlightDetailViewModel() {
         return flightBookingReviewModel.getDetailViewModelListReturn();
     }
 
     @Override
-    public List<FlightBookingPassengerViewModel> getFlightBookingPassengers() {
+    public List<FlightBookingPassengerModel> getFlightBookingPassengers() {
         return flightBookingReviewModel.getDetailPassengersData();
     }
 
     @Override
-    public void renderPriceListDetails(List<SimpleViewModel> simpleViewModels) {
+    public void renderPriceListDetails(List<SimpleModel> simpleViewModels) {
         flightBookingReviewModel.setFlightReviewFares(simpleViewModels);
         flightBookingReviewPriceAdapter.setViewModels(simpleViewModels);
         flightBookingReviewPriceAdapter.notifyDataSetChanged();
@@ -611,12 +611,12 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
         BaseCartData baseCartData = new BaseCartData();
         baseCartData.setId(flightBookingReviewModel.getId());
         baseCartData.setNewFarePrices(flightBookingReviewModel.getFarePrices());
-        List<FlightBookingAmenityViewModel> amenityViewModels = new ArrayList<>();
-        for (FlightBookingPassengerViewModel passengerViewModel : flightBookingReviewModel.getDetailPassengersData()) {
-            for (FlightBookingAmenityMetaViewModel flightBookingAmenityMetaViewModel : passengerViewModel.getFlightBookingLuggageMetaViewModels()) {
+        List<FlightBookingAmenityModel> amenityViewModels = new ArrayList<>();
+        for (FlightBookingPassengerModel passengerViewModel : flightBookingReviewModel.getDetailPassengersData()) {
+            for (FlightBookingAmenityMetaModel flightBookingAmenityMetaViewModel : passengerViewModel.getFlightBookingLuggageMetaViewModels()) {
                 amenityViewModels.addAll(flightBookingAmenityMetaViewModel.getAmenities());
             }
-            for (FlightBookingAmenityMetaViewModel flightBookingAmenityMetaViewModel : passengerViewModel.getFlightBookingMealMetaViewModels()) {
+            for (FlightBookingAmenityMetaModel flightBookingAmenityMetaViewModel : passengerViewModel.getFlightBookingMealMetaViewModels()) {
                 amenityViewModels.addAll(flightBookingAmenityMetaViewModel.getAmenities());
             }
         }
@@ -688,7 +688,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void navigateToTopPay(FlightCheckoutViewModel flightCheckoutViewModel) {
+    public void navigateToTopPay(FlightCheckoutModel flightCheckoutViewModel) {
         PaymentPassData paymentPassData = new PaymentPassData();
         paymentPassData.setPaymentId(flightCheckoutViewModel.getPaymentId());
         paymentPassData.setTransactionId(flightCheckoutViewModel.getTransactionId());
@@ -781,8 +781,8 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void renderTickerView(TravelTickerViewModel travelTickerViewModel) {
-        TravelTickerUtils.INSTANCE.buildTravelTicker(getContext(), travelTickerViewModel, tickerView);
+    public void renderTickerView(TravelTickerModel travelTickerModel) {
+        TravelTickerUtils.INSTANCE.buildTravelTicker(getContext(), travelTickerModel, tickerView);
     }
 
 

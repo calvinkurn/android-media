@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
+import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.bookingV3.presentation.activity.FlightBookingActivity
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
 import com.tokopedia.flight.common.util.FlightAnalytics
@@ -30,7 +30,6 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
 
         selectedDepartureID = intent.getStringExtra(EXTRA_DEPARTURE_ID)
         selectedDepartureTerm = intent.getStringExtra(EXTRA_DEPARTURE_TERM)
-
         super.onCreate(savedInstanceState)
     }
 
@@ -56,9 +55,9 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
         }
     }
 
-    override fun getDepartureAirport(): FlightAirportViewModel = passDataModel.arrivalAirport
+    override fun getDepartureAirport(): FlightAirportModel = passDataModel.arrivalAirport
 
-    override fun getArrivalAirport(): FlightAirportViewModel = passDataModel.departureAirport
+    override fun getArrivalAirport(): FlightAirportModel = passDataModel.departureAirport
 
     override fun selectFlight(selectedFlightID: String, selectedFlightTerm: String, flightPriceModel: FlightPriceModel,
                               isBestPairing: Boolean, isCombineDone: Boolean, requestId: String) {

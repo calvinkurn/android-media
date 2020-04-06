@@ -13,7 +13,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.flight.R
-import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
+import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.bookingV3.presentation.activity.FlightBookingActivity
 import com.tokopedia.flight.common.constant.FlightFlowConstant
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
@@ -21,7 +21,7 @@ import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightFlowUtil
 import com.tokopedia.flight.common.view.BaseFlightActivity
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
 import com.tokopedia.flight.search.presentation.fragment.FlightSearchFragment
 import com.tokopedia.flight.search.presentation.model.FlightPriceModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
@@ -85,7 +85,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
         classString = passDataModel.flightClass.title
     }
 
-    protected fun buildPassengerTextFormatted(passData: FlightPassengerViewModel): String {
+    protected fun buildPassengerTextFormatted(passData: FlightPassengerModel): String {
         var passengerFmt = ""
 
         if (passData.adult > 0) {
@@ -101,9 +101,9 @@ open class FlightSearchActivity : BaseFlightActivity(),
         return passengerFmt
     }
 
-    open fun getDepartureAirport(): FlightAirportViewModel = passDataModel.departureAirport
+    open fun getDepartureAirport(): FlightAirportModel = passDataModel.departureAirport
 
-    open fun getArrivalAirport(): FlightAirportViewModel = passDataModel.arrivalAirport
+    open fun getArrivalAirport(): FlightAirportModel = passDataModel.arrivalAirport
 
     private fun setupSearchToolbarAction() {
         wrapper = LinearLayout(this)

@@ -3,12 +3,12 @@ package com.tokopedia.flight.review.view.presenter;
 import com.tokopedia.common.travel.ticker.TravelTickerFlightPage;
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId;
 import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase;
-import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel;
 import com.tokopedia.flight.bookingV2.domain.FlightAddToCartUseCase;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.BaseCartData;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingVoucherViewModel;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightInsuranceViewModel;
+import com.tokopedia.flight.bookingV2.presentation.model.BaseCartData;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingPassengerModel;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingVoucherModel;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightInsuranceModel;
 import com.tokopedia.flight.common.data.model.FlightException;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.orderlist.util.FlightErrorUtil;
@@ -18,7 +18,7 @@ import com.tokopedia.flight.review.domain.FlightBookingVerifyUseCase;
 import com.tokopedia.flight.review.domain.verifybooking.model.response.CartItem;
 import com.tokopedia.flight.review.domain.verifybooking.model.response.DataResponseVerify;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
-import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
+import com.tokopedia.flight.review.view.model.FlightCheckoutModel;
 import com.tokopedia.flight.review.view.model.mapper.FlightBookingCartDataMapper;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.promocheckout.common.domain.flight.FlightCancelVoucherUseCase;
@@ -78,7 +78,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
         if (reviewModel.getVoucherViewModel().isEnableVoucher()) {
             getView().showVoucherContainer();
 
-            FlightBookingVoucherViewModel voucherViewModel = reviewModel.getVoucherViewModel();
+            FlightBookingVoucherModel voucherViewModel = reviewModel.getVoucherViewModel();
             if (voucherViewModel.isAutoapplySuccess()) {
                 if (!(voucherViewModel.getIsCouponActive() == DEFAULT_IS_COUPON_ZERO &&
                         voucherViewModel.getIsCoupon() == DEFAULT_IS_COUPON_ONE)) {
@@ -105,13 +105,13 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
 
     @Override
     public void verifyBooking(String promoCode, int price, int adult, String cartId,
-                              List<FlightBookingPassengerViewModel> flightPassengerViewModels,
+                              List<FlightBookingPassengerModel> flightPassengerViewModels,
                               String contactName, String country, String email, String phone,
-                              List<FlightInsuranceViewModel> insurances) {
+                              List<FlightInsuranceModel> insurances) {
         getView().showCheckoutLoading();
         flightAnalytics.eventReviewNextClick(getView().getCurrentBookingReviewModel(), getView().getComboKey());
         List<String> insuranceIds = new ArrayList<>();
-        for (FlightInsuranceViewModel insurance : insurances) {
+        for (FlightInsuranceModel insurance : insurances) {
             insuranceIds.add(insurance.getId());
         }
 
@@ -146,10 +146,10 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                 }
                 throw new RuntimeException("Failed to checkout");
             }
-        }).map(new Func1<FlightCheckoutEntity, FlightCheckoutViewModel>() {
+        }).map(new Func1<FlightCheckoutEntity, FlightCheckoutModel>() {
             @Override
-            public FlightCheckoutViewModel call(FlightCheckoutEntity checkoutEntity) {
-                FlightCheckoutViewModel viewModel = new FlightCheckoutViewModel();
+            public FlightCheckoutModel call(FlightCheckoutEntity checkoutEntity) {
+                FlightCheckoutModel viewModel = new FlightCheckoutModel();
                 viewModel.setPaymentId(checkoutEntity.getAttributes().getParameter().getTransactionId());
                 viewModel.setTransactionId(checkoutEntity.getAttributes().getParameter().getTransactionId());
                 viewModel.setQueryString(checkoutEntity.getAttributes().getQueryString());
@@ -163,7 +163,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<FlightCheckoutViewModel>() {
+                .subscribe(new Subscriber<FlightCheckoutModel>() {
                     @Override
                     public void onCompleted() {
 
@@ -184,7 +184,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                     }
 
                     @Override
-                    public void onNext(FlightCheckoutViewModel flightCheckoutViewModel) {
+                    public void onNext(FlightCheckoutModel flightCheckoutViewModel) {
                         getView().setNeedToRefreshOnPassengerInfo();
                         getView().navigateToTopPay(flightCheckoutViewModel);
                     }
@@ -298,7 +298,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
     }
 
     @Override
-    public List<FlightInsuranceViewModel> getInsurances() {
+    public List<FlightInsuranceModel> getInsurances() {
         return getView().getCurrentBookingReviewModel().getInsuranceIds();
     }
 
@@ -306,7 +306,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
     public void fetchTickerData() {
         travelTickerUseCase.execute(travelTickerUseCase.createRequestParams(
                 TravelTickerInstanceId.Companion.getFLIGHT(), TravelTickerFlightPage.Companion.getSUMMARY()),
-                new Subscriber<TravelTickerViewModel>() {
+                new Subscriber<TravelTickerModel>() {
                     @Override
                     public void onCompleted() {
 
@@ -318,9 +318,9 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                     }
 
                     @Override
-                    public void onNext(TravelTickerViewModel travelTickerViewModel) {
-                        if (travelTickerViewModel.getMessage().length() > 0) {
-                            getView().renderTickerView(travelTickerViewModel);
+                    public void onNext(TravelTickerModel travelTickerModel) {
+                        if (travelTickerModel.getMessage().length() > 0) {
+                            getView().renderTickerView(travelTickerModel);
                         }
                     }
                 });

@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.bookingV2.presentation.model.SimpleModel;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapterTypeFactory;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
 
 public class FlightDetailPassenger implements Parcelable, Visitable<FlightBookingReviewPassengerAdapterTypeFactory> {
 
-    List<SimpleViewModel> infoPassengerList;
+    List<SimpleModel> infoPassengerList;
     String passengerName;
     @FlightBookingPassenger
     int passengerType;
@@ -26,7 +26,7 @@ public class FlightDetailPassenger implements Parcelable, Visitable<FlightBookin
     String secondPassengerCancellationStr;
 
     protected FlightDetailPassenger(Parcel in) {
-        infoPassengerList = in.createTypedArrayList(SimpleViewModel.CREATOR);
+        infoPassengerList = in.createTypedArrayList(SimpleModel.CREATOR);
         passengerName = in.readString();
         passengerType = in.readInt();
         passengerStatus = in.readInt();
@@ -63,11 +63,11 @@ public class FlightDetailPassenger implements Parcelable, Visitable<FlightBookin
         }
     };
 
-    public List<SimpleViewModel> getInfoPassengerList() {
+    public List<SimpleModel> getInfoPassengerList() {
         return infoPassengerList;
     }
 
-    public void setInfoPassengerList(List<SimpleViewModel> infoPassengerList) {
+    public void setInfoPassengerList(List<SimpleModel> infoPassengerList) {
         this.infoPassengerList = infoPassengerList;
     }
 

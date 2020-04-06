@@ -12,10 +12,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.flight.bookingV2.presentation.adapter.FlightBookingPassengerActionListener;
 import com.tokopedia.flight.bookingV2.presentation.adapter.FlightSimpleAdapter;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingAmenityMetaViewModel;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingAmenityViewModel;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingAmenityMetaModel;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingAmenityModel;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingPassengerModel;
+import com.tokopedia.flight.bookingV2.presentation.model.SimpleModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ import java.util.List;
  * @author by alvarisi on 12/7/17.
  */
 
-public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightBookingPassengerViewModel> {
+public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightBookingPassengerModel> {
     @LayoutRes
     public static final int LAYOUT = com.tokopedia.flight.R.layout.item_flight_booking_passenger;
 
@@ -48,7 +48,7 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
     }
 
     @Override
-    public void bind(final FlightBookingPassengerViewModel viewModel) {
+    public void bind(final FlightBookingPassengerModel viewModel) {
         headerLabel.setTitle(String.valueOf(viewModel.getHeaderTitle()));
         headerLabel.setContentColorValue(itemView.getResources().getColor(com.tokopedia.design.R.color.bg_button_green_border_outline));
         headerLabel.setOnClickListener(new View.OnClickListener() {
@@ -67,7 +67,7 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
         }
     }
 
-    private void bindPassenger(FlightBookingPassengerViewModel viewModel) {
+    private void bindPassenger(FlightBookingPassengerModel viewModel) {
         passengerDetailLayout.setVisibility(View.VISIBLE);
         headerLabel.setContent(itemView.getContext().getString(com.tokopedia.flight.R.string.flight_booking_passenger_change_label));
         String passengerName = viewModel.getPassengerFirstName() + " " + viewModel.getPassengerLastName();
@@ -78,26 +78,26 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
         initiatePassengerDetailView(viewModel);
     }
 
-    private void initiatePassengerDetailView(FlightBookingPassengerViewModel viewModel) {
-        List<SimpleViewModel> simpleViewModels = new ArrayList<>();
+    private void initiatePassengerDetailView(FlightBookingPassengerModel viewModel) {
+        List<SimpleModel> simpleViewModels = new ArrayList<>();
         if (viewModel.getPassengerBirthdate() != null && viewModel.getPassengerBirthdate().length() > 0) {
-            simpleViewModels.add(new SimpleViewModel(itemView.getContext().getString(com.tokopedia.flight.R.string.flight_booking_list_passenger_birthdate_label) + "  | ", String.valueOf(FlightDateUtil.formatDate(
+            simpleViewModels.add(new SimpleModel(itemView.getContext().getString(com.tokopedia.flight.R.string.flight_booking_list_passenger_birthdate_label) + "  | ", String.valueOf(FlightDateUtil.formatDate(
                     FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.DEFAULT_VIEW_FORMAT, viewModel.getPassengerBirthdate()
             ))));
         }
 
         if (viewModel.getPassportNumber() != null && viewModel.getPassportNumber().length() > 0) {
-            simpleViewModels.add(new SimpleViewModel(itemView.getContext().getString(
+            simpleViewModels.add(new SimpleModel(itemView.getContext().getString(
                     com.tokopedia.flight.R.string.flight_passenger_passport_number_hint) + "  | ", viewModel.getPassportNumber()));
         }
 
         if (viewModel.getFlightBookingLuggageMetaViewModels() != null) {
-            for (FlightBookingAmenityMetaViewModel flightBookingLuggageRouteViewModel : viewModel.getFlightBookingLuggageMetaViewModels()) {
+            for (FlightBookingAmenityMetaModel flightBookingLuggageRouteViewModel : viewModel.getFlightBookingLuggageMetaViewModels()) {
                 ArrayList<String> selectedLuggages = new ArrayList<>();
-                for (FlightBookingAmenityViewModel flightBookingLuggageViewModel : flightBookingLuggageRouteViewModel.getAmenities()) {
+                for (FlightBookingAmenityModel flightBookingLuggageViewModel : flightBookingLuggageRouteViewModel.getAmenities()) {
                     selectedLuggages.add(flightBookingLuggageViewModel.getTitle());
                 }
-                simpleViewModels.add(new SimpleViewModel(
+                simpleViewModels.add(new SimpleModel(
                         itemView.getContext().getString(com.tokopedia.flight.R.string.flight_booking_list_passenger_luggage_label) + " " + flightBookingLuggageRouteViewModel.getDescription() + "  | ",
                         TextUtils.join(" + ", selectedLuggages)
                 ));
@@ -105,8 +105,8 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
         }
 
         if (viewModel.getFlightBookingMealMetaViewModels() != null && viewModel.getFlightBookingMealMetaViewModels().size() > 0) {
-            for (FlightBookingAmenityMetaViewModel flightBookingMealRouteViewModel : viewModel.getFlightBookingMealMetaViewModels()) {
-                simpleViewModels.add(new SimpleViewModel(
+            for (FlightBookingAmenityMetaModel flightBookingMealRouteViewModel : viewModel.getFlightBookingMealMetaViewModels()) {
+                simpleViewModels.add(new SimpleModel(
                         itemView.getContext().getString(com.tokopedia.flight.R.string.flight_booking_list_passenger_meals_label) + " " + flightBookingMealRouteViewModel.getDescription() + "  | ",
                         TextUtils.join(" + ", flightBookingMealRouteViewModel.getAmenities())
                 ));

@@ -13,7 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.ColorInt;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.bookingV2.presentation.model.SimpleModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.List;
 
 public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapter.ViewHolder> {
     private static final int PARAM_EMPTY_MARGIN = 0;
-    private List<SimpleViewModel> viewModels;
+    private List<SimpleModel> viewModels;
     private float fontSize;
     private float marginTopDp;
     private float marginBottomDp;
@@ -73,11 +73,11 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
         return viewModels.size();
     }
 
-    public void setViewModel(SimpleViewModel simpleViewModel) {
+    public void setViewModel(SimpleModel simpleViewModel) {
         this.viewModels.add(simpleViewModel);
     }
 
-    public void setViewModels(List<SimpleViewModel> viewModels) {
+    public void setViewModels(List<SimpleModel> viewModels) {
         this.viewModels = viewModels;
     }
 
@@ -138,7 +138,7 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
     }
 
     public interface OnAdapterInteractionListener {
-        void onItemClick(int adapterPosition, SimpleViewModel viewModel);
+        void onItemClick(int adapterPosition, SimpleModel viewModel);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -155,7 +155,7 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
             containerLinearLayout = (LinearLayout) itemView.findViewById(com.tokopedia.flight.orderlist.R.id.container);
         }
 
-        public void bind(final SimpleViewModel viewModel) {
+        public void bind(final SimpleModel viewModel) {
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) titleTextView.getLayoutParams();
 
             titleTextView.setText(viewModel.getLabel());

@@ -2,9 +2,9 @@ package com.tokopedia.flight.review.domain;
 
 import android.text.TextUtils;
 
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingAmenityMetaViewModel;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingAmenityViewModel;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingPassengerViewModel;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingAmenityMetaModel;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingAmenityModel;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingPassengerModel;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.review.domain.verifybooking.model.request.AmenityPassenger;
@@ -64,7 +64,7 @@ public class FlightBookingVerifyUseCase extends UseCase<DataResponseVerify> {
     }
 
     public RequestParams createRequestParams(String promoCode, int price, String cartId,
-                                             List<FlightBookingPassengerViewModel> flightPassengerViewModels,
+                                             List<FlightBookingPassengerModel> flightPassengerViewModels,
                                              String contactName, String country, String email, String phone,
                                              List<String> insuranceIds) {
         RequestParams requestParams = RequestParams.create();
@@ -97,9 +97,9 @@ public class FlightBookingVerifyUseCase extends UseCase<DataResponseVerify> {
         return requestParams;
     }
 
-    private List<Passenger> generatePassengers(List<FlightBookingPassengerViewModel> flightPassengerViewModels) {
+    private List<Passenger> generatePassengers(List<FlightBookingPassengerModel> flightPassengerViewModels) {
         List<Passenger> passengers = new ArrayList<>();
-        for (FlightBookingPassengerViewModel flightPassengerViewModel : flightPassengerViewModels) {
+        for (FlightBookingPassengerModel flightPassengerViewModel : flightPassengerViewModels) {
             Passenger passenger = new Passenger();
             if (!TextUtils.isEmpty(flightPassengerViewModel.getPassengerBirthdate()))
                 passenger.setDob(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, flightPassengerViewModel.getPassengerBirthdate()));
@@ -127,11 +127,11 @@ public class FlightBookingVerifyUseCase extends UseCase<DataResponseVerify> {
         return passengers;
     }
 
-    private List<AmenityPassenger> generateAmenities(List<FlightBookingAmenityMetaViewModel> flightBookingLuggageMetaViewModels,
-                                                     List<FlightBookingAmenityMetaViewModel> flightBookingMealMetaViewModels) {
+    private List<AmenityPassenger> generateAmenities(List<FlightBookingAmenityMetaModel> flightBookingLuggageMetaViewModels,
+                                                     List<FlightBookingAmenityMetaModel> flightBookingMealMetaViewModels) {
         List<AmenityPassenger> amenityPassengers = new ArrayList<>();
-        for (FlightBookingAmenityMetaViewModel lugagge : flightBookingLuggageMetaViewModels) {
-            for (FlightBookingAmenityViewModel amenityViewModel : lugagge.getAmenities()) {
+        for (FlightBookingAmenityMetaModel lugagge : flightBookingLuggageMetaViewModels) {
+            for (FlightBookingAmenityModel amenityViewModel : lugagge.getAmenities()) {
                 AmenityPassenger amenityPassenger = new AmenityPassenger();
                 amenityPassenger.setKey(lugagge.getKey());
                 amenityPassenger.setArrivalId(lugagge.getArrivalId());
@@ -143,8 +143,8 @@ public class FlightBookingVerifyUseCase extends UseCase<DataResponseVerify> {
             }
         }
 
-        for (FlightBookingAmenityMetaViewModel meal : flightBookingMealMetaViewModels) {
-            for (FlightBookingAmenityViewModel amenityViewModel : meal.getAmenities()) {
+        for (FlightBookingAmenityMetaModel meal : flightBookingMealMetaViewModels) {
+            for (FlightBookingAmenityModel amenityViewModel : meal.getAmenities()) {
                 AmenityPassenger amenityPassenger = new AmenityPassenger();
                 amenityPassenger.setKey(meal.getKey());
                 amenityPassenger.setArrivalId(meal.getArrivalId());

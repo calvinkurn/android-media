@@ -19,13 +19,13 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.common.travel.ticker.TravelTickerUtils
-import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.flight.bookingV2.di.FlightBookingComponent
 import com.tokopedia.flight.bookingV2.presentation.activity.FlightInsuranceWebviewActivity
 import com.tokopedia.flight.bookingV2.presentation.adapter.*
 import com.tokopedia.flight.bookingV2.presentation.contract.FlightBookingContract
+import com.tokopedia.flight.bookingV2.presentation.model.*
 import com.tokopedia.flight.bookingV2.presentation.presenter.FlightBookingPresenter
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.*
 import com.tokopedia.flight.bookingV2.presentation.widget.FlightInsuranceView
 import com.tokopedia.flight.common.constant.FlightFlowConstant
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
@@ -33,7 +33,7 @@ import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightFlowUtil
 import com.tokopedia.flight.common.util.FlightRequestUtil
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity
-import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
+import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.orderlist.util.FlightErrorUtil
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity
 import com.tokopedia.flight.review.view.activity.FlightBookingReviewActivity
@@ -67,7 +67,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
     private lateinit var departureId: String
     private lateinit var returnId: String
     private lateinit var flightPriceModel: FlightPriceModel
-    private lateinit var paramViewModel: FlightBookingParamViewModel
+    private lateinit var paramModel: FlightBookingParamModel
     private lateinit var flightBookingCartData: FlightBookingCartData
     private lateinit var passengerAdapter: FlightBookingPassengerAdapter
     private lateinit var userBirthdate: String
@@ -89,8 +89,8 @@ class FlightBookingFragment : BaseDaggerFragment(),
 
         departureId = args.getString(EXTRA_FLIGHT_DEPARTURE_ID)
         returnId = args.getString(EXTRA_FLIGHT_ARRIVAL_ID, "")
-        paramViewModel = FlightBookingParamViewModel()
-        paramViewModel.searchParam = args.getParcelable(EXTRA_SEARCH_PASS_DATA)
+        paramModel = FlightBookingParamModel()
+        paramModel.searchParam = args.getParcelable(EXTRA_SEARCH_PASS_DATA)
         progressDialog = ProgressDialog(activity)
         progressDialog.setMessage(getString(com.tokopedia.flight.R.string.flight_booking_loading_title))
         progressDialog.setCancelable(false)
@@ -112,7 +112,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
             flightBookingPresenter.initialize()
         } else {
             flightBookingCartData = savedInstanceState.getParcelable(KEY_CART_DATA)
-            paramViewModel = savedInstanceState.getParcelable(KEY_PARAM_VIEW_MODEL_DATA)
+            paramModel = savedInstanceState.getParcelable(KEY_PARAM_VIEW_MODEL_DATA)
             expiredDate = savedInstanceState.getSerializable(KEY_PARAM_EXPIRED_DATE) as Date
             flightPriceModel = savedInstanceState.getParcelable(EXTRA_PRICE)
             hideFullPageLoading()
@@ -124,15 +124,15 @@ class FlightBookingFragment : BaseDaggerFragment(),
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        paramViewModel.contactName = getContactName()
-        paramViewModel.contactPhone = getContactPhoneNumber()
-        paramViewModel.contactEmail = getContactEmail()
+        paramModel.contactName = getContactName()
+        paramModel.contactPhone = getContactPhoneNumber()
+        paramModel.contactEmail = getContactEmail()
 
-        outState.putParcelable(EXTRA_SEARCH_PASS_DATA, paramViewModel.searchParam)
+        outState.putParcelable(EXTRA_SEARCH_PASS_DATA, paramModel.searchParam)
         outState.putString(EXTRA_FLIGHT_DEPARTURE_ID, departureId)
         outState.putString(EXTRA_FLIGHT_ARRIVAL_ID, returnId)
         outState.putParcelable(KEY_CART_DATA, flightBookingCartData)
-        outState.putParcelable(KEY_PARAM_VIEW_MODEL_DATA, paramViewModel)
+        outState.putParcelable(KEY_PARAM_VIEW_MODEL_DATA, paramModel)
         outState.putSerializable(KEY_PARAM_EXPIRED_DATE, expiredDate)
         outState.putParcelable(EXTRA_PRICE, flightPriceModel)
     }
@@ -143,7 +143,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
         when (requestCode) {
             REQUEST_CODE_PASSENGER -> if (resultCode == Activity.RESULT_OK) {
                 data?.let {
-                    val passengerViewModel = it.getParcelableExtra<FlightBookingPassengerViewModel>(FlightBookingPassengerActivity.EXTRA_PASSENGER)
+                    val passengerViewModel = it.getParcelableExtra<FlightBookingPassengerModel>(FlightBookingPassengerActivity.EXTRA_PASSENGER)
                     flightBookingPresenter.onPassengerResultReceived(passengerViewModel)
                 }
             }
@@ -195,15 +195,15 @@ class FlightBookingFragment : BaseDaggerFragment(),
         super.onDestroyView()
     }
 
-    override fun onChangePassengerData(viewModel: FlightBookingPassengerViewModel?) {
-        val departureDate = if (!paramViewModel.searchParam.isOneWay) {
-            paramViewModel.searchParam.returnDate
+    override fun onChangePassengerData(model: FlightBookingPassengerModel?) {
+        val departureDate = if (!paramModel.searchParam.isOneWay) {
+            paramModel.searchParam.returnDate
         } else {
-            paramViewModel.searchParam.departureDate
+            paramModel.searchParam.departureDate
         }
 
-        if (viewModel != null) {
-            flightBookingPresenter.onChangePassengerButtonClicked(viewModel, departureDate)
+        if (model != null) {
+            flightBookingPresenter.onChangePassengerButtonClicked(model, departureDate)
         }
     }
 
@@ -293,11 +293,11 @@ class FlightBookingFragment : BaseDaggerFragment(),
         insurance_layout.visibility = View.GONE
     }
 
-    override fun renderInsurance(insurances: List<FlightInsuranceViewModel>) {
+    override fun renderInsurance(insurances: List<FlightInsuranceModel>) {
         if (flightInsuranceAdapter == null) {
             flightInsuranceAdapter = FlightInsuranceAdapter(insurances)
             flightInsuranceAdapter!!.setActionListener(object : FlightInsuranceView.ActionListener {
-                override fun onInsuranceChecked(insurance: FlightInsuranceViewModel, checked: Boolean) {
+                override fun onInsuranceChecked(insurance: FlightInsuranceModel, checked: Boolean) {
                     flightBookingPresenter.onInsuranceChanges(insurance, checked)
                 }
 
@@ -317,13 +317,13 @@ class FlightBookingFragment : BaseDaggerFragment(),
 
     override fun getPriceViewModel(): FlightPriceModel = flightPriceModel
 
-    override fun navigateToPassengerInfoDetail(viewModel: FlightBookingPassengerViewModel, isMandatoryDoB: Boolean, departureDate: String, requestId: String) {
+    override fun navigateToPassengerInfoDetail(model: FlightBookingPassengerModel, isMandatoryDoB: Boolean, departureDate: String, requestId: String) {
         startActivityForResult(
                 FlightBookingPassengerActivity.getCallingIntent(
                         activity as Activity,
                         getDepartureTripId(),
                         getReturnTripId(),
-                        viewModel,
+                        model,
                         flightBookingCartData.luggageViewModels,
                         flightBookingCartData.mealViewModels,
                         isMandatoryDoB,
@@ -335,9 +335,9 @@ class FlightBookingFragment : BaseDaggerFragment(),
         )
     }
 
-    override fun getCurrentBookingParamViewModel(): FlightBookingParamViewModel = paramViewModel
+    override fun getCurrentBookingParamViewModel(): FlightBookingParamModel = paramModel
 
-    override fun showAndRenderDepartureTripCardDetail(searchParam: FlightSearchPassDataModel, departureTrip: FlightDetailViewModel) {
+    override fun showAndRenderDepartureTripCardDetail(searchParam: FlightSearchPassDataModel, departureTrip: FlightDetailModel) {
         cwa_departure_info.visibility = View.VISIBLE
         cwa_departure_info.setContent(departureTrip.departureAirportCity + " - " + departureTrip.arrivalAirportCity)
         cwa_departure_info.setContentInfo("(" + FlightDateUtil.formatToUi(searchParam.departureDate) + ")")
@@ -360,7 +360,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
         cwa_departure_info.setSubContentInfo(tripInfo)
     }
 
-    override fun showAndRenderReturnTripCardDetail(searchParam: FlightSearchPassDataModel, returnTrip: FlightDetailViewModel) {
+    override fun showAndRenderReturnTripCardDetail(searchParam: FlightSearchPassDataModel, returnTrip: FlightDetailModel) {
         cwa_return_info.visibility = View.VISIBLE
         cwa_return_info.setContent(returnTrip.departureAirportCity + " - " + returnTrip.arrivalAirportCity)
         cwa_return_info.setContentInfo("(" + FlightDateUtil.formatToUi(searchParam.returnDate) + ")")
@@ -383,16 +383,16 @@ class FlightBookingFragment : BaseDaggerFragment(),
         cwa_return_info.setSubContentInfo(tripInfo)
     }
 
-    override fun renderPassengersList(passengerViewModels: List<FlightBookingPassengerViewModel>) {
+    override fun renderPassengersList(passengerModels: List<FlightBookingPassengerModel>) {
         passengerAdapter.clearAllElements()
-        passengerAdapter.addElement(passengerViewModels)
+        passengerAdapter.addElement(passengerModels)
     }
 
     override fun getDepartureTripId(): String = departureId
 
     override fun getReturnTripId(): String = returnId
 
-    override fun navigateToDetailTrip(departureTrip: FlightDetailViewModel) {
+    override fun navigateToDetailTrip(departureTrip: FlightDetailModel) {
         startActivity(FlightDetailActivity.createIntent(activity, departureTrip, false))
     }
 
@@ -414,8 +414,8 @@ class FlightBookingFragment : BaseDaggerFragment(),
 
     override fun getCurrentCartPassData(): FlightBookingCartData = flightBookingCartData
 
-    override fun renderPriceListDetails(prices: List<SimpleViewModel>) {
-        paramViewModel.priceListDetails = prices
+    override fun renderPriceListDetails(prices: List<SimpleModel>) {
+        paramModel.priceListDetails = prices
         priceListAdapter.setViewModels(prices)
         priceListAdapter.notifyDataSetChanged()
     }
@@ -461,8 +461,8 @@ class FlightBookingFragment : BaseDaggerFragment(),
         getCurrentBookingParamViewModel().id = id
     }
 
-    override fun renderTickerView(travelTickerViewModel: TravelTickerViewModel) {
-        TravelTickerUtils.buildTravelTicker(context, travelTickerViewModel, flight_ticker_view)
+    override fun renderTickerView(travelTickerModel: TravelTickerModel) {
+        TravelTickerUtils.buildTravelTicker(context, travelTickerModel, flight_ticker_view)
     }
 
     override fun showSoldOutDialog() {
@@ -500,14 +500,14 @@ class FlightBookingFragment : BaseDaggerFragment(),
         widget_partial_traveller_info.hideLoadingBar()
     }
 
-    override fun getDepartureFlightDetailViewModel(): FlightDetailViewModel =
+    override fun getDepartureFlightDetailViewModel(): FlightDetailModel =
             flightBookingCartData.departureTrip
 
-    override fun getReturnFlightDetailViewModel(): FlightDetailViewModel? =
+    override fun getReturnFlightDetailViewModel(): FlightDetailModel? =
             flightBookingCartData.returnTrip
 
-    override fun getFlightBookingPassengers(): List<FlightBookingPassengerViewModel> =
-            paramViewModel.passengerViewModels
+    override fun getFlightBookingPassengers(): List<FlightBookingPassengerModel> =
+            paramModel.passengerViewModels
 
     override fun navigateToReview(flightBookingReviewModel: FlightBookingReviewModel) {
         countdown_finish_transaction.cancel()

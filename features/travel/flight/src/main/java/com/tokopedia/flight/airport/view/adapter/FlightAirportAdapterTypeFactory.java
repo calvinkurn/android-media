@@ -4,8 +4,8 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
-import com.tokopedia.flight.airport.view.viewmodel.FlightCountryAirportViewModel;
+import com.tokopedia.flight.airport.view.model.FlightAirportModel;
+import com.tokopedia.flight.airport.view.model.FlightCountryAirportModel;
 
 /**
  * Created by alvarisi on 12/19/17.
@@ -18,7 +18,7 @@ public class FlightAirportAdapterTypeFactory extends BaseAdapterTypeFactory {
         this.flightAirportClickListener = flightAirportClickListener;
     }
 
-    public int type(FlightAirportViewModel viewModel) {
+    public int type(FlightAirportModel viewModel) {
         return FlightAirportViewHolder.LAYOUT;
     }
 
@@ -33,7 +33,7 @@ public class FlightAirportAdapterTypeFactory extends BaseAdapterTypeFactory {
         }
     }
 
-    public int type(FlightCountryAirportViewModel flightCountryAirportViewModel) {
+    public int type(FlightCountryAirportModel flightCountryAirportModel) {
         return FlightCountryViewHolder.LAYOUT;
     }
 }

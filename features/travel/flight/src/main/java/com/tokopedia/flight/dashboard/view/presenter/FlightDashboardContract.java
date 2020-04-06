@@ -5,12 +5,12 @@ import androidx.annotation.StringRes;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel;
-import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
-import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardPassDataViewModel;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel;
+import com.tokopedia.flight.airport.view.model.FlightAirportModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardPassDataModel;
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel;
 
 import java.util.Date;
 import java.util.List;
@@ -26,11 +26,11 @@ public interface FlightDashboardContract {
 
         void renderRoundTripView();
 
-        FlightDashboardViewModel getCurrentDashboardViewModel();
+        FlightDashboardModel getCurrentDashboardViewModel();
 
         void showDepartureDatePickerDialog(Date selectedDate, Date minDate, Date maxDate);
 
-        void setDashBoardViewModel(FlightDashboardViewModel viewModel);
+        void setDashBoardViewModel(FlightDashboardModel viewModel);
 
         void showReturnDatePickerDialog(Date selectedDate, Date minDate, Date maxDate);
 
@@ -56,7 +56,7 @@ public interface FlightDashboardContract {
 
         void showApplinkErrorMessage(@StringRes int resId);
 
-        void navigateToSearchPage(FlightDashboardViewModel currentDashboardViewModel);
+        void navigateToSearchPage(FlightDashboardModel currentDashboardViewModel);
 
         void showAirportShouldDifferentCity(@StringRes int resId);
 
@@ -64,7 +64,7 @@ public interface FlightDashboardContract {
 
         void hideBannerView();
 
-        void renderTickerView(TravelTickerViewModel travelTickerViewModel);
+        void renderTickerView(TravelTickerModel travelTickerModel);
 
         String getScreenName();
 
@@ -82,9 +82,9 @@ public interface FlightDashboardContract {
 
         Boolean isAutoSearch();
 
-        FlightDashboardPassDataViewModel getDashboardPassData();
+        FlightDashboardPassDataModel getDashboardPassData();
 
-        void setDashboardPassData(FlightDashboardPassDataViewModel flightDashboardPassDataViewModel);
+        void setDashboardPassData(FlightDashboardPassDataModel flightDashboardPassDataViewModel);
 
         void hideProgressBar();
 
@@ -119,13 +119,13 @@ public interface FlightDashboardContract {
 
         void onReturnDateChange(int year, int month, int dayOfMonth, boolean showError);
 
-        void onFlightClassesChange(FlightClassViewModel viewModel);
+        void onFlightClassesChange(FlightClassModel viewModel);
 
-        void onFlightPassengerChange(FlightPassengerViewModel passengerViewModel);
+        void onFlightPassengerChange(FlightPassengerModel passengerViewModel);
 
-        void onDepartureAirportChange(FlightAirportViewModel departureAirport);
+        void onDepartureAirportChange(FlightAirportModel departureAirport);
 
-        void onArrivalAirportChange(FlightAirportViewModel arrivalAirport);
+        void onArrivalAirportChange(FlightAirportModel arrivalAirport);
 
         void onSearchTicketButtonClicked();
 

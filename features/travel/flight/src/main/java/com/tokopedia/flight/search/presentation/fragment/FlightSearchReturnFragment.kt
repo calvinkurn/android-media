@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
-import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
+import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent
 import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity.Companion.EXTRA_PASS_DATA
 import com.tokopedia.flight.search.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_DEPARTURE_ID
@@ -85,9 +85,9 @@ class FlightSearchReturnFragment : FlightSearchFragment(),
 
     override fun getLayout(): Int = R.layout.fragment_search_return
 
-    override fun getDepartureAirport(): FlightAirportViewModel = flightSearchPassData.arrivalAirport
+    override fun getDepartureAirport(): FlightAirportModel = flightSearchPassData.arrivalAirport
 
-    override fun getArrivalAirport(): FlightAirportViewModel = flightSearchPassData.departureAirport
+    override fun getArrivalAirport(): FlightAirportModel = flightSearchPassData.departureAirport
 
     override fun getSwipeRefreshLayoutResourceId(): Int {
         return R.id.swipe_refresh_layout

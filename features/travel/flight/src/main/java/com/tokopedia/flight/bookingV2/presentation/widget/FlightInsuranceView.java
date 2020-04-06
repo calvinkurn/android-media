@@ -26,8 +26,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.flight.bookingV2.presentation.adapter.FlightInsuranceBenefitAdapter;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightInsuranceBenefitViewModel;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightInsuranceViewModel;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightInsuranceBenefitModel;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightInsuranceModel;
 
 import java.util.List;
 
@@ -47,11 +47,11 @@ public class FlightInsuranceView extends LinearLayout {
     private LinearLayout otherProtection;
     private View dividerBenefit;
 
-    private FlightInsuranceViewModel flightInsuranceViewModel;
+    private FlightInsuranceModel flightInsuranceViewModel;
     private ActionListener listener;
 
     public interface ActionListener {
-        void onInsuranceChecked(FlightInsuranceViewModel insurance, boolean checked);
+        void onInsuranceChecked(FlightInsuranceModel insurance, boolean checked);
 
         void onMoreInfoClicked(String tncUrl, String title);
 
@@ -132,7 +132,7 @@ public class FlightInsuranceView extends LinearLayout {
         renderData(this.flightInsuranceViewModel);
     }
 
-    public void renderData(FlightInsuranceViewModel insuranceViewModel) {
+    public void renderData(FlightInsuranceModel insuranceViewModel) {
         if (insuranceViewModel == null) return;
         this.flightInsuranceViewModel = insuranceViewModel;
         tvName.setText(insuranceViewModel.getName());
@@ -151,9 +151,9 @@ public class FlightInsuranceView extends LinearLayout {
         tvHighlightTnc.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
-    private void renderHighlightBenefit(FlightInsuranceViewModel insuranceViewModel) {
+    private void renderHighlightBenefit(FlightInsuranceModel insuranceViewModel) {
         highlightContainer.setVisibility(VISIBLE);
-        FlightInsuranceBenefitViewModel highlightBenefit = insuranceViewModel.getBenefits().get(0);
+        FlightInsuranceBenefitModel highlightBenefit = insuranceViewModel.getBenefits().get(0);
         tvHighlight.setText(highlightBenefit.getTitle());
         tvHighlightDetail.setText(highlightBenefit.getDescription());
         ImageHandler.loadImageWithoutPlaceholder(ivHighlight, highlightBenefit.getIcon(),
@@ -168,7 +168,7 @@ public class FlightInsuranceView extends LinearLayout {
         }
     }
 
-    private void renderMoreBenefit(List<FlightInsuranceBenefitViewModel> benefits) {
+    private void renderMoreBenefit(List<FlightInsuranceBenefitModel> benefits) {
         if (benefits.size() > 0) {
             otherProtection.setVisibility(VISIBLE);
             protectionLabelTextView.setText(String.format(getContext().getString(com.tokopedia.flight.R.string.flight_insurance_additional_benefits_prefix), benefits.size()));

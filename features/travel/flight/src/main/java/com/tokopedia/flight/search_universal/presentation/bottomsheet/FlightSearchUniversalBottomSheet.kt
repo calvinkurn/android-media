@@ -11,12 +11,12 @@ import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity
 import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment
-import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
+import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.dashboard.view.activity.FlightClassesActivity
 import com.tokopedia.flight.dashboard.view.activity.FlightSelectPassengerActivity
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel
-import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel
+import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
 import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.di.DaggerFlightSearchUniversalComponent
@@ -54,6 +54,10 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
         }
 
         initBottomSheet()
+    }
+
+    override fun onRoundTripSwitchChanged(isRoundTrip: Boolean) {
+        // do nothing
     }
 
     override fun onDepartureAirportClicked() {
@@ -111,7 +115,7 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
                 TAG_RETURN_CALENDAR)
     }
 
-    override fun onPassengerClicked(passengerModel: FlightPassengerViewModel?) {
+    override fun onPassengerClicked(passengerModel: FlightPassengerModel?) {
         passengerModel?.let {
             val intent = FlightSelectPassengerActivity.getCallingIntent(requireContext(), it)
             startActivityForResult(intent, REQUEST_CODE_SELECT_PASSENGER)
@@ -136,25 +140,25 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_CODE_AIRPORT_DEPARTURE -> {
-                    val departureAirport = data?.getParcelableExtra<FlightAirportViewModel>(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT)
+                    val departureAirport = data?.getParcelableExtra<FlightAirportModel>(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT)
                     departureAirport?.let {
                         mChildView.flightSearchFormView.setOriginAirport(departureAirport)
                     }
                 }
                 REQUEST_CODE_AIRPORT_DESTINATION -> {
-                    val arrivalAirport = data?.getParcelableExtra<FlightAirportViewModel>(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT)
+                    val arrivalAirport = data?.getParcelableExtra<FlightAirportModel>(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT)
                     arrivalAirport?.let {
                         mChildView.flightSearchFormView.setDestinationAirport(arrivalAirport)
                     }
                 }
                 REQUEST_CODE_SELECT_PASSENGER -> {
-                    val passengerModel = data?.getParcelableExtra<FlightPassengerViewModel>(FlightSelectPassengerActivity.EXTRA_PASS_DATA)
+                    val passengerModel = data?.getParcelableExtra<FlightPassengerModel>(FlightSelectPassengerActivity.EXTRA_PASS_DATA)
                     passengerModel?.let {
                         mChildView.flightSearchFormView.setPassengerView(it)
                     }
                 }
                 REQUEST_CODE_SELECT_CLASSES -> {
-                    val classModel = data?.getParcelableExtra<FlightClassViewModel>(FlightClassesActivity.EXTRA_FLIGHT_CLASS)
+                    val classModel = data?.getParcelableExtra<FlightClassModel>(FlightClassesActivity.EXTRA_FLIGHT_CLASS)
                     classModel?.let {
                         mChildView.flightSearchFormView.setClassView(it)
                     }

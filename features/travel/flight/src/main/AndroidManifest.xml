@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.flight">
 
     <application>
         <activity
-            android:name=".dashboard.view.activity.FlightDashboardActivity"
+            android:name=".homepage.presentation.activity.FlightHomepageActivity"
             android:label="@string/flight_dashboard_toolbar_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight">
@@ -20,7 +19,6 @@
                     android:path="@string/path_flight_dashboard"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
-
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -33,6 +31,11 @@
                     android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".dashboard.view.activity.FlightDashboardActivity"
+            android:label="@string/flight_dashboard_toolbar_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
         <activity
             android:name=".dashboard.view.activity.FlightSelectPassengerActivity"
             android:label="@string/select_passenger_toolbar_title"
@@ -173,13 +176,11 @@
             android:label="@string/flight_order_invoice_toolbar_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
-
         <activity
             android:name=".bookingV3.presentation.activity.FlightBookingActivity"
             android:label="@string/flight_booking_toolbar_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
-
     </application>
 
 </manifest>

@@ -117,7 +117,7 @@ class FlightSearchReturnPresenter @Inject constructor(private val flightSearchJo
                     override fun onNext(t: Boolean?) {
                         if (t != null && t) {
                             view.navigateToCart(selectedFlightReturn = selectedFlightReturn,
-                                    flightPriceViewModel = priceViewModel, selectedFlightTerm = selectedTerm)
+                                    flightPriceModel = priceViewModel, selectedFlightTerm = selectedTerm)
                         } else {
                             view.showReturnTimeShouldGreaterThanArrivalDeparture()
                         }

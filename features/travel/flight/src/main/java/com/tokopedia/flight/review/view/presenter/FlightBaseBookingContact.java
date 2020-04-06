@@ -2,9 +2,9 @@ package com.tokopedia.flight.review.view.presenter;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel;
-import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingPassengerModel;
+import com.tokopedia.flight.bookingV2.presentation.model.SimpleModel;
+import com.tokopedia.flight.detail.view.model.FlightDetailModel;
 
 import java.util.Date;
 import java.util.List;
@@ -23,13 +23,13 @@ public interface FlightBaseBookingContact {
 
         void showUpdatePriceLoading();
 
-        FlightDetailViewModel getDepartureFlightDetailViewModel();
+        FlightDetailModel getDepartureFlightDetailViewModel();
 
-        FlightDetailViewModel getReturnFlightDetailViewModel();
+        FlightDetailModel getReturnFlightDetailViewModel();
 
-        List<FlightBookingPassengerViewModel> getFlightBookingPassengers();
+        List<FlightBookingPassengerModel> getFlightBookingPassengers();
 
-        void renderPriceListDetails(List<SimpleViewModel> simpleViewModels);
+        void renderPriceListDetails(List<SimpleModel> simpleViewModels);
 
         void renderFinishTimeCountDown(Date date);
 

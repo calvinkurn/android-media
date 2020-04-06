@@ -13,7 +13,7 @@ import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationReasonAd
 import com.tokopedia.flight.cancellation.view.adapter.viewholder.FlightCancellationReasonViewHolder;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationChooseReasonContract;
 import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationChooseReasonPresenter;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonModel;
 
 import java.util.ArrayList;
 
@@ -23,7 +23,7 @@ import javax.inject.Inject;
  * @author by furqan on 30/10/18.
  */
 
-public class FlightCancellationChooseReasonFragment extends BaseListFragment<FlightCancellationReasonViewModel, FlightCancellationReasonAdapterTypeFactory>
+public class FlightCancellationChooseReasonFragment extends BaseListFragment<FlightCancellationReasonModel, FlightCancellationReasonAdapterTypeFactory>
         implements FlightCancellationReasonViewHolder.ReasonListener, FlightCancellationChooseReasonContract.View{
 
     public static final String EXTRA_SELECTED_REASON = "EXTRA_SELECTED_REASON";
@@ -31,10 +31,10 @@ public class FlightCancellationChooseReasonFragment extends BaseListFragment<Fli
     @Inject
     FlightCancellationChooseReasonPresenter presenter;
 
-    private ArrayList<FlightCancellationReasonViewModel> reasonList;
-    private FlightCancellationReasonViewModel selectedReason;
+    private ArrayList<FlightCancellationReasonModel> reasonList;
+    private FlightCancellationReasonModel selectedReason;
 
-    public static FlightCancellationChooseReasonFragment createInstance(FlightCancellationReasonViewModel selectedReason) {
+    public static FlightCancellationChooseReasonFragment createInstance(FlightCancellationReasonModel selectedReason) {
         FlightCancellationChooseReasonFragment fragment = new FlightCancellationChooseReasonFragment();
 
         Bundle bundle = new Bundle();
@@ -78,13 +78,13 @@ public class FlightCancellationChooseReasonFragment extends BaseListFragment<Fli
     }
 
     @Override
-    public boolean isItemChecked(FlightCancellationReasonViewModel selectedItem) {
+    public boolean isItemChecked(FlightCancellationReasonModel selectedItem) {
         return selectedReason != null && selectedReason.getDetail()
                 .equalsIgnoreCase(selectedItem.getDetail());
     }
 
     @Override
-    public void onItemClicked(FlightCancellationReasonViewModel viewModel) {
+    public void onItemClicked(FlightCancellationReasonModel viewModel) {
         selectedReason = viewModel;
         getAdapter().notifyDataSetChanged();
 
@@ -102,12 +102,12 @@ public class FlightCancellationChooseReasonFragment extends BaseListFragment<Fli
     }
 
     @Override
-    public void renderReasonList(ArrayList<FlightCancellationReasonViewModel> reasonViewModelList) {
+    public void renderReasonList(ArrayList<FlightCancellationReasonModel> reasonViewModelList) {
         reasonList = reasonViewModelList;
         renderList(reasonList);
     }
 
-    private void selectReason(FlightCancellationReasonViewModel selectedReason) {
+    private void selectReason(FlightCancellationReasonModel selectedReason) {
         Intent intent = new Intent();
         intent.putExtra(EXTRA_SELECTED_REASON, selectedReason);
         getActivity().setResult(Activity.RESULT_OK, intent);

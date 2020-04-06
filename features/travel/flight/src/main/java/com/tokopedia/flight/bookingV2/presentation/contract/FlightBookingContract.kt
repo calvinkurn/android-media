@@ -2,9 +2,9 @@ package com.tokopedia.flight.bookingV2.presentation.contract
 
 import android.content.Context
 import androidx.annotation.StringRes
-import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.*
-import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
+import com.tokopedia.flight.bookingV2.presentation.model.*
+import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel
 import com.tokopedia.flight.search.presentation.model.FlightPriceModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
@@ -46,21 +46,21 @@ interface FlightBookingContract {
 
         fun showContactPhoneNumberInvalidError(@StringRes resId: Int)
 
-        fun getCurrentBookingParamViewModel(): FlightBookingParamViewModel
+        fun getCurrentBookingParamViewModel(): FlightBookingParamModel
 
         fun getPriceViewModel(): FlightPriceModel
 
-        fun showAndRenderReturnTripCardDetail(searchParam: FlightSearchPassDataModel, returnTrip: FlightDetailViewModel)
+        fun showAndRenderReturnTripCardDetail(searchParam: FlightSearchPassDataModel, returnTrip: FlightDetailModel)
 
-        fun showAndRenderDepartureTripCardDetail(searchParam: FlightSearchPassDataModel, departureTrip: FlightDetailViewModel)
+        fun showAndRenderDepartureTripCardDetail(searchParam: FlightSearchPassDataModel, departureTrip: FlightDetailModel)
 
-        fun renderPassengersList(passengerViewModels: List<FlightBookingPassengerViewModel>)
+        fun renderPassengersList(passengerModels: List<FlightBookingPassengerModel>)
 
         fun getDepartureTripId(): String
 
         fun getReturnTripId(): String
 
-        fun navigateToDetailTrip(departureTrip: FlightDetailViewModel)
+        fun navigateToDetailTrip(departureTrip: FlightDetailModel)
 
         fun getIdEmpotencyKey(tokenId: String): String
 
@@ -72,7 +72,7 @@ interface FlightBookingContract {
 
         fun getCurrentCartPassData(): FlightBookingCartData
 
-        override fun renderPriceListDetails(prices: List<SimpleViewModel>)
+        override fun renderPriceListDetails(prices: List<SimpleModel>)
 
         fun renderTotalPrices(totalPrice: String)
 
@@ -92,7 +92,7 @@ interface FlightBookingContract {
 
         fun showPassengerInfoNotFullfilled(@StringRes resId: Int)
 
-        fun navigateToPassengerInfoDetail(viewModel: FlightBookingPassengerViewModel,
+        fun navigateToPassengerInfoDetail(model: FlightBookingPassengerModel,
                                           isMandatoryDoB: Boolean, departureDate: String,
                                           requestId: String)
 
@@ -116,11 +116,11 @@ interface FlightBookingContract {
 
         fun hideInsuranceLayout()
 
-        fun renderInsurance(insurances: List<FlightInsuranceViewModel>)
+        fun renderInsurance(insurances: List<FlightInsuranceModel>)
 
         fun setCartId(id: String)
 
-        fun renderTickerView(travelTickerViewModel: TravelTickerViewModel)
+        fun renderTickerView(travelTickerModel: TravelTickerModel)
 
         fun showContactDataProgressBar()
 
@@ -136,7 +136,7 @@ interface FlightBookingContract {
 
         fun onButtonSubmitClicked()
 
-        fun onPassengerResultReceived(passengerViewModel: FlightBookingPassengerViewModel)
+        fun onPassengerResultReceived(passengerModel: FlightBookingPassengerModel)
 
         fun onDepartureInfoClicked()
 
@@ -148,13 +148,13 @@ interface FlightBookingContract {
 
         fun onFinishTransactionTimeReached()
 
-        fun onChangePassengerButtonClicked(viewModel: FlightBookingPassengerViewModel, departureDate: String)
+        fun onChangePassengerButtonClicked(model: FlightBookingPassengerModel, departureDate: String)
 
         fun onReceiveOtpSuccessResult()
 
         fun onReceiveOtpCancelResult()
 
-        fun onInsuranceChanges(insurance: FlightInsuranceViewModel, checked: Boolean)
+        fun onInsuranceChanges(insurance: FlightInsuranceModel, checked: Boolean)
 
         fun onMoreInsuranceInfoClicked()
 

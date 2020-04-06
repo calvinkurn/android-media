@@ -19,15 +19,15 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.common.travel.ticker.TravelTickerUtils
-import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
-import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
+import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity
-import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
+import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
 import com.tokopedia.flight.filter.presentation.bottomsheets.FlightFilterBottomSheet
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent
@@ -320,8 +320,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         }
     }
 
-    override fun renderTickerView(travelTickerViewModel: TravelTickerViewModel) {
-        TravelTickerUtils.buildTravelTicker(context, travelTickerViewModel, flight_ticker_view)
+    override fun renderTickerView(travelTickerModel: TravelTickerModel) {
+        TravelTickerUtils.buildTravelTicker(context, travelTickerModel, flight_ticker_view)
     }
 
     override fun addToolbarElevation() {
@@ -609,10 +609,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         }
     }
 
-    open fun getDepartureAirport(): FlightAirportViewModel =
+    open fun getDepartureAirport(): FlightAirportModel =
             flightSearchPassData.departureAirport
 
-    open fun getArrivalAirport(): FlightAirportViewModel =
+    open fun getArrivalAirport(): FlightAirportModel =
             flightSearchPassData.arrivalAirport
 
     private fun showSearchRouteTitle() {

@@ -8,18 +8,18 @@ import androidx.annotation.LayoutRes;
 import androidx.core.content.ContextCompat;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingAmenityViewModel;
+import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingAmenityModel;
 
 /**
  * Created by zulfikarrahman on 11/7/17.
  */
 
-public class FlightBookingAmenityViewHolder extends AbstractViewHolder<FlightBookingAmenityViewModel> {
+public class FlightBookingAmenityViewHolder extends AbstractViewHolder<FlightBookingAmenityModel> {
     @LayoutRes
     public static int LAYOUT = com.tokopedia.flight.R.layout.item_flight_booking_amenity;
 
     public interface ListenerCheckedLuggage {
-        boolean isItemChecked(FlightBookingAmenityViewModel selectedItem);
+        boolean isItemChecked(FlightBookingAmenityModel selectedItem);
         void resetItemCheck();
     }
 
@@ -36,7 +36,7 @@ public class FlightBookingAmenityViewHolder extends AbstractViewHolder<FlightBoo
     }
 
     @Override
-    public void bind(FlightBookingAmenityViewModel flightBookingLuggageViewModel) {
+    public void bind(FlightBookingAmenityModel flightBookingLuggageViewModel) {
         boolean isItemChecked = false;
         if (listenerCheckedLuggage != null) {
             isItemChecked = listenerCheckedLuggage.isItemChecked(flightBookingLuggageViewModel);
