@@ -11,7 +11,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
-import com.tokopedia.product.addedit.detail.presentation.fragment.AddEditProductDetailFragment
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentComponent
 import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentModule
@@ -64,8 +63,8 @@ class AddEditProductShipmentActivity : BaseSimpleActivity(), HasComponent<AddEdi
     }
 
     private fun moveToManageProduct() {
-        val intentHome = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
-        startActivity(intentHome)
+        val intent = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
+        startActivity(intent)
         finish()
     }
 

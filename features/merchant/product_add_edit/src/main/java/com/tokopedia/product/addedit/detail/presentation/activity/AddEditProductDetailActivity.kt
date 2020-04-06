@@ -46,8 +46,8 @@ class AddEditProductDetailActivity : BaseSimpleActivity(), HasComponent<AddEditP
     }
 
     private fun moveToManageProduct() {
-        val intentHome = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
-        startActivity(intentHome)
+        val intent = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
+        startActivity(intent)
         finish()
     }
 
