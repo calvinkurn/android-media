@@ -31,13 +31,13 @@ data class AddToCart(
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeValue(productId)
+        parcel.writeInt(productId?: 0)
         parcel.writeString(productName)
         parcel.writeString(productBrand)
-        parcel.writeValue(productPrice)
+        parcel.writeDouble(productPrice?: 0.0)
         parcel.writeString(productVariant)
         parcel.writeString(productQuantity)
-        parcel.writeValue(shopId)
+        parcel.writeInt(shopId?: 0)
         parcel.writeString(shopName)
         parcel.writeString(shopType)
     }
