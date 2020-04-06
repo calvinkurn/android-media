@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.feature.list.view.activity
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -8,12 +9,15 @@ import androidx.fragment.app.Fragment
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
 import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment
+import com.tokopedia.remoteconfig.RemoteConfigKey
 
 class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageListComponent> {
 
@@ -33,6 +37,7 @@ class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageLi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        goToOldManageProductIfEnabled()
         if (!GlobalConfig.isSellerApp()) {
             setupLayout(savedInstanceState)
         }
@@ -51,11 +56,30 @@ class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageLi
         SplitCompat.installActivity(this)
     }
 
+    override fun onBackPressed() {
+        goToSellerAppDashboard()
+        super.onBackPressed()
+    }
+
     override fun getScreenName(): String {
         return SCREEN_NAME
     }
 
     override fun getComponent(): ProductManageListComponent {
         return ProductManageListInstance.getComponent(application)
+    }
+
+    private fun goToSellerAppDashboard() {
+        if (GlobalConfig.isSellerApp()) {
+            RouteManager.route(this, ApplinkConstInternalMarketplace.SELLER_APP_DASHBOARD)
+        }
+    }
+
+    private fun goToOldManageProductIfEnabled() {
+        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_OLD_PRODUCT_MANAGE)) {
+            val intent = Intent(this, com.tokopedia.product.manage.oldlist.view.activity.ProductManageActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
     }
 }
