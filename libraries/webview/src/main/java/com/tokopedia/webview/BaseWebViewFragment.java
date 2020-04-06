@@ -1,5 +1,6 @@
 package com.tokopedia.webview;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -19,6 +20,7 @@ import android.webkit.URLUtil;
 import android.webkit.ValueCallback;
 import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -41,6 +43,8 @@ import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
+
+import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.abstraction.common.utils.image.ImageHandler.encodeToBase64;
@@ -436,6 +440,14 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
             progressBar.setVisibility(View.GONE);
+            Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s'",failingUrl, errorCode, description);
+        }
+
+        @TargetApi(android.os.Build.VERSION_CODES.M)
+        @Override
+        public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+            super.onReceivedError(view, request, error);
+            Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s'", request.getUrl(), error.getErrorCode(), error.getDescription());
         }
     }
 
@@ -465,14 +477,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         } else if (url.contains(PLAY_GOOGLE_URL)) {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(intent);
+            return true;
         } else if (BRANCH_IO_HOST.equalsIgnoreCase(uri.getHost())) {
             Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
             if (intent != null) {
                 startActivity(intent);
             }
-        }
-        if (!allowOverride) {
-            return false;
         }
         if (url.contains(PARAM_EXTERNAL)) {
             try {
@@ -500,12 +510,23 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 }
                 return true;
             } else {
-                // logging here, url might return blank page
-                // ask user to update app
+                logApplinkErrorOpen(url);
             }
+        }
+        if (!allowOverride && isFirstRequest(url)) {
+            return false;
         }
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
         return hasMoveToNativePage;
+    }
+
+    private void logApplinkErrorOpen(String url) {
+        Timber.w("P1#APPLINK_OPEN_ERROR#%s;uri='%s'",
+                BaseWebViewFragment.this.getClass().getSimpleName(), url);
+    }
+
+    private boolean isFirstRequest(String url) {
+        return this.url.equals(url);
     }
 
     private void checkActivityFinish() {

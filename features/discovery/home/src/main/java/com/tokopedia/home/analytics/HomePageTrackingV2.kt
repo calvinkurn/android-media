@@ -1,37 +1,124 @@
 package com.tokopedia.home.analytics
 
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.home.analytics.v2.BaseTracking
-import com.tokopedia.home.analytics.v2.BaseTracking.Action.IMPRESSION_ON
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-import com.tokopedia.track.TrackApp
-import com.tokopedia.track.interfaces.ContextAnalytics
+import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 
 object HomePageTrackingV2 : BaseTracking() {
     private object CustomEvent{
         const val CLICK_HOMEPAGE = "clickHomepage"
+        const val FORMAT_4_VALUE_UNDERSCORE = "%s_%s_%s_%s";
+    }
+
+    object HomeBanner{
+        private const val SLIDER_BANNER = "slider banner"
+        private const val OVERLAY_SLIDER_BANNER = "overlay slider banner"
+        private const val PROMO_VALUE = "/ - p1 - promo"
+        private const val PROMO_OVERLAY_VALUE = "/ - p1 - promo overlay"
+        fun getBannerImpression(bannerModel: BannerSlidesModel) = getBasicPromotionView(
+                Event.PROMO_VIEW,
+                Category.HOMEPAGE,
+                Action.IMPRESSION.format(SLIDER_BANNER),
+                Label.NONE,
+                listOf(
+                        Promotion(
+                                id= bannerModel.id.toString(),
+                                name = PROMO_VALUE,
+                                creative = bannerModel.creativeName,
+                                creativeUrl = bannerModel.imageUrl,
+                                position = bannerModel.position.toString(),
+                                promoCodes = Label.NONE,
+                                promoIds = Label.NONE
+                        )
+                )
+        )
+
+        fun getOverlayBannerImpression(bannerModel: BannerSlidesModel) = getBasicPromotionView(
+                Event.PROMO_VIEW,
+                Category.HOMEPAGE,
+                Action.IMPRESSION.format(OVERLAY_SLIDER_BANNER),
+                Label.NONE,
+                listOf(
+                        Promotion(
+                                id= bannerModel.id.toString(),
+                                name = PROMO_OVERLAY_VALUE,
+                                creative = bannerModel.creativeName,
+                                creativeUrl = bannerModel.imageUrl,
+                                position = bannerModel.position.toString(),
+                                promoCodes = Label.NONE,
+                                promoIds = Label.NONE
+                        )
+                )
+        )
+
+        fun getBannerClick(bannerModel: BannerSlidesModel) = getBasicPromotionClick(
+                event = Event.PROMO_CLICK,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = Action.CLICK.format(SLIDER_BANNER),
+                eventLabel = Label.NONE,
+                attribution = bannerModel.galaxyAttribution,
+                affinity = bannerModel.persona,
+                categoryId = bannerModel.categoryPersona,
+                shopId = bannerModel.brandId,
+                channelId = Label.NONE,
+                promotions = listOf(
+                        Promotion(
+                                id= bannerModel.id.toString(),
+                                name = PROMO_VALUE,
+                                creative = bannerModel.creativeName,
+                                creativeUrl = bannerModel.imageUrl,
+                                position = bannerModel.position.toString(),
+                                promoCodes = Label.NONE,
+                                promoIds = Label.NONE
+                        )
+                )
+        )
+
+        fun getOverlayBannerClick(bannerModel: BannerSlidesModel) = getBasicPromotionClick(
+                event = Event.PROMO_CLICK,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = Action.CLICK.format(OVERLAY_SLIDER_BANNER),
+                eventLabel = Label.NONE,
+                attribution = bannerModel.galaxyAttribution,
+                affinity = bannerModel.persona,
+                categoryId = bannerModel.categoryPersona,
+                shopId = bannerModel.brandId,
+                channelId = Label.NONE,
+                promotions = listOf(
+                        Promotion(
+                                id= bannerModel.id.toString(),
+                                name = PROMO_OVERLAY_VALUE,
+                                creative = bannerModel.creativeName,
+                                creativeUrl = bannerModel.imageUrl,
+                                position = bannerModel.position.toString(),
+                                promoCodes = Label.NONE,
+                                promoIds = Label.NONE
+                        )
+                )
+        )
     }
 
     object LegoBanner{
         private const val LEGO_BANNER_4_IMAGE_NAME = "lego banner 4 image"
 
-        fun getLegoBannerFourImageImpression(channel: DynamicHomeChannel.Channels, position: Int, isToIris: Boolean = false) = getBasicPromotionView(
+        fun getLegoBannerFourImageImpression(channel: DynamicHomeChannel.Channels, position: Int, isToIris: Boolean = false) = getBasicPromotionChannelView(
                 event = if(isToIris) Event.PROMO_VIEW_IRIS else Event.PROMO_VIEW,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = Action.IMPRESSION.format(LEGO_BANNER_4_IMAGE_NAME),
                 eventLabel = Label.NONE,
                 promotions = channel.grids.mapIndexed { index, grid ->
                     Promotion(
-                            id = "%s_%s".format(channel.id, grid.id),
+                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.persoType, channel.categoryID),
                             creative = grid.attribution,
                             creativeUrl = grid.imageUrl,
                             name = Ecommerce.PROMOTION_NAME.format(position, LEGO_BANNER_4_IMAGE_NAME, channel.header.name),
                             position = (index + 1).toString()
                     )
-                }
+                },
+                channelId = channel.id
         )
-        fun getLegoBannerFourImageClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicPromotionClick(
+        fun getLegoBannerFourImageClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicPromotionChannelClick(
                 event = Event.PROMO_CLICK,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = Action.CLICK.format(LEGO_BANNER_4_IMAGE_NAME),
@@ -43,7 +130,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 shopId = channel.brandId,
                 promotions = channel.grids.map {
                     Promotion(
-                            id = "%s_%s".format(channel.id, it.id),
+                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.persoType, channel.categoryID),
                             creative = it.attribution,
                             creativeUrl = it.imageUrl,
                             name = Ecommerce.PROMOTION_NAME.format(position, LEGO_BANNER_4_IMAGE_NAME, channel.header.name),
@@ -69,7 +156,7 @@ object HomePageTrackingV2 : BaseTracking() {
         private const val RECOMMENDATION_LIST_CLICK_EVENT_ACTION = "click on dynamic channel list"
         private const val RECOMMENDATION_LIST_SEE_ALL_EVENT_ACTION = "click view all on dynamic channel list"
 
-        fun getRecommendationListImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductView(
+        fun getRecommendationListImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductChannelView(
                 event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = RECOMMENDATION_LIST_IMPRESSION_EVENT_ACTION,
@@ -84,13 +171,18 @@ object HomePageTrackingV2 : BaseTracking() {
                             variant = Value.NONE_OTHER,
                             productPosition = (index + 1).toString(),
                             channelId = channel.id,
-                            isFreeOngkir = grid.freeOngkir.isActive
+                            isFreeOngkir = grid.freeOngkir.isActive,
+                            persoType = channel.persoType,
+                            categoryId = channel.categoryID,
+                            isTopAds = grid.isTopads
                     )
                 },
                 list = String.format(
                         Value.LIST_WITH_HEADER, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.header.name
-                )
+                ),
+                channelId = channel.id
         )
+
         private fun getRecommendationListClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductChannelClick(
                 event = Event.PRODUCT_CLICK,
                 eventCategory = Category.HOMEPAGE,
@@ -107,7 +199,10 @@ object HomePageTrackingV2 : BaseTracking() {
                                 variant = Value.NONE_OTHER,
                                 productPosition = (position + 1).toString(),
                                 channelId = channel.id,
-                                isFreeOngkir = grid.freeOngkir.isActive
+                                isFreeOngkir = grid.freeOngkir.isActive,
+                                persoType = channel.persoType,
+                                categoryId = channel.categoryID,
+                                isTopAds = grid.isTopads
                         )
                 ),
                 list = String.format(
@@ -133,16 +228,88 @@ object HomePageTrackingV2 : BaseTracking() {
         }
     }
 
-    private fun getTracker(): ContextAnalytics {
-        return TrackApp.getInstance().gtm
-    }
+    object MixLeft {
 
-    private fun convertRupiahToInt(rupiah: String): Int {
-        var rupiah = rupiah
-        rupiah = rupiah.replace("Rp", "")
-        rupiah = rupiah.replace(".", "")
-        rupiah = rupiah.replace(" ", "")
-        return Integer.parseInt(rupiah)
+        private const val LIST_MIX_LEFT = "dynamic channel left carousel"
+        private const val IMPRESSION_MIX_LEFT = "impression on product dynamic channel left carousel"
+        private const val CLICK_MIX_LEFT = "click on product dynamic channel left carousel"
+
+        private const val CLICK_MIX_LEFT_LOADMORE = "click view all on dynamic channel left carousel"
+        fun getMixLeftClickLoadMore(channel: DynamicHomeChannel.Channels): HashMap<String, Any> {
+            return DataLayer.mapOf(
+                    Event.KEY, CustomEvent.CLICK_HOMEPAGE,
+                    Category.KEY, Category.HOMEPAGE,
+                    Action.KEY, CLICK_MIX_LEFT_LOADMORE,
+                    Label.KEY, channel.header.name,
+                    Label.CHANNEL_LABEL, channel.id
+            ) as HashMap<String, Any>
+        }
+
+        fun sendMixLeftClickLoadMore(channel: DynamicHomeChannel.Channels) {
+            getTracker().sendGeneralEvent(getMixLeftClickLoadMore(channel))
+        }
+
+        fun getMixLeftProductView(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductChannelView(
+                event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = IMPRESSION_MIX_LEFT,
+                eventLabel = channel.header.name,
+                products = channel.grids.mapIndexed { index, grid ->
+                    Product(
+                            name = grid.name,
+                            id = grid.id,
+                            productPrice = convertRupiahToInt(
+                                    grid.price
+                            ).toString(),
+                            brand = Value.NONE_OTHER,
+                            category = Value.NONE_OTHER,
+                            variant = Value.NONE_OTHER,
+                            productPosition = (index + 1).toString(),
+                            channelId = channel.id,
+                            isFreeOngkir = grid.freeOngkir.isActive,
+                            persoType = channel.persoType,
+                            categoryId = channel.categoryID,
+                            isTopAds = grid.isTopads
+                    )
+                },
+                list = String.format(
+                        Value.LIST_WITH_HEADER, "1", LIST_MIX_LEFT, channel.header.name
+                ),
+                channelId = channel.id
+        )
+
+        fun getMixLeftProductClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductChannelClick(
+                event = Event.PRODUCT_CLICK,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = CLICK_MIX_LEFT,
+                eventLabel = channel.header.name,
+                channelId = channel.id,
+                products = listOf(
+                        Product(
+                                name = grid.name,
+                                id = grid.id,
+                                productPrice = convertRupiahToInt(
+                                        grid.price
+                                ).toString(),
+                                brand = Value.NONE_OTHER,
+                                category = Value.NONE_OTHER,
+                                variant = Value.NONE_OTHER,
+                                productPosition = (position + 1).toString(),
+                                channelId = channel.id,
+                                isFreeOngkir = grid.freeOngkir.isActive,
+                                persoType = channel.persoType,
+                                categoryId = channel.categoryID,
+                                isTopAds = grid.isTopads
+                        )
+                ),
+                list = String.format(
+                        Value.LIST_WITH_HEADER, "1", LIST_MIX_LEFT, channel.header.name
+                )
+        )
+
+        fun sendMixLeftProductClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) {
+            getTracker().sendEnhanceEcommerceEvent(getMixLeftProductClick(channel, grid, position))
+        }
     }
 
     object PopularKeyword {
@@ -187,6 +354,9 @@ object HomePageTrackingV2 : BaseTracking() {
 
                 })
 
+        fun sendPopularKeywordClickItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String) {
+            getTracker().sendEnhanceEcommerceEvent(getPopularKeywordClickItem(channel, position, keyword))
+        }
 
         fun getPopularKeywordClickReload(channel: DynamicHomeChannel.Channels): HashMap<String, Any> {
             return DataLayer.mapOf(
@@ -196,6 +366,10 @@ object HomePageTrackingV2 : BaseTracking() {
                     Label.KEY, channel.header.name,
                     Label.CHANNEL_LABEL, channel.header.name
             ) as HashMap<String, Any>
+        }
+
+        fun sendPopularKeywordClickReload(channel: DynamicHomeChannel.Channels) {
+            getTracker().sendGeneralEvent(getPopularKeywordClickReload(channel))
         }
     }
 
@@ -213,14 +387,17 @@ object HomePageTrackingV2 : BaseTracking() {
                 products = channel.grids.mapIndexed { index, grid ->
                     Product(
                             name = grid.name,
-                            id = grid.id,
+                            id =  grid.id,
                             productPrice = convertRupiahToInt(grid.price).toString(),
                             brand = Value.NONE_OTHER,
                             category = Value.NONE_OTHER,
                             variant = Value.NONE_OTHER,
                             productPosition = (index + 1).toString(),
                             channelId = channel.id,
-                            isFreeOngkir = grid.freeOngkir.isActive
+                            isFreeOngkir = grid.freeOngkir.isActive,
+                            persoType = channel.persoType,
+                            categoryId = channel.categoryID,
+                            isTopAds = grid.isTopads
                     )
                 },
                 list = String.format(
@@ -243,7 +420,10 @@ object HomePageTrackingV2 : BaseTracking() {
                                 variant = Value.NONE_OTHER,
                                 productPosition = (position + 1).toString(),
                                 channelId = channel.id,
-                                isFreeOngkir = grid.freeOngkir.isActive
+                                isFreeOngkir = grid.freeOngkir.isActive,
+                                persoType = channel.persoType,
+                                categoryId = channel.categoryID,
+                                isTopAds = grid.isTopads
                         )
                 ),
                 list = String.format(

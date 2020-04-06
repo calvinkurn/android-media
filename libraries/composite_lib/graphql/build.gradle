@@ -31,7 +31,7 @@ android {
 project.ext {
     artifactId = 'graphql'
     groupId = 'com.tokopedia.graphql'
-    versionName = "1.0.40"
+    versionName = "1.1.2"
     artifactName = "graphql-debug"
 }
 
@@ -49,7 +49,7 @@ dependencies {
     //room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
-    androidTestApi rootProject.ext.dbDependencies.dbRoomTesting
+    androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler

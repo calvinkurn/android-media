@@ -7,7 +7,7 @@ include "features:category:tradein"
 include "features:common:developer_options"
 include "features:common:nps"
 include "features:common:resources_common"
-include "features:common:common_tradein"
+include "features:category:common_tradein"
 
 include "features:home:navigation-common"
 

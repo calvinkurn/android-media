@@ -55,15 +55,15 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         }
 
         intent.data?.run {
-            url = getEncodedParameterUrl(this)
+            url = WebViewHelper.getEncodedUrlCheckSecondUrl(this, url)
 
             val needTitleBar = getQueryParameter(KEY_TITLEBAR)
             needTitleBar?.let {
                 showTitleBar = it.toBoolean();
             }
 
-            val needOverride = getQueryParameter(KEY_ALLOW_OVERRIDE)
-            needOverride?.let {
+            val override = getQueryParameter(KEY_ALLOW_OVERRIDE)
+            override?.let {
                 allowOverride = it.toBoolean();
             }
 
@@ -73,97 +73,6 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             val needTitle = getQueryParameter(KEY_TITLE)
             needTitle?.let { title = it }
         }
-    }
-
-    /**
-     * This function is to get the url from the Uri
-     * Example:
-     * Input: tokopedia://webview?url=http://www.tokopedia.com/help
-     * Output:http://www.tokopedia.com/help
-     *
-     * Input: tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fhelp%2F
-     * Output:http://www.tokopedia.com/help
-     *
-     * Input: tokopedia://webview?url=https://js.tokopedia.com?url=http://www.tokopedia.com/help
-     * Output:https://js.tokopedia.com?url=https%3A%2F%2Fwww.tokopedia.com%2Fhelp%2F
-     *
-     * Input: tokopedia://webview?url=https://js.tokopedia.com?url=http://www.tokopedia.com/help?id=4&target=5&title=3
-     * Output:https://js.tokopedia.com?target=5&title=3&url=http%3A%2F%2Fwww.tokopedia.com%2Fhelp%3Fid%3D4%26target%3D5%26title%3D3
-     */
-    private fun getEncodedParameterUrl(intentUri: Uri): String {
-        val query = intentUri.query
-        return if (query != null && query.contains("$KEY_URL=")) {
-            url = query.substringAfter("$KEY_URL=").decode()
-            url = validateSymbol(url)
-            if (!url.contains("$KEY_URL=")) {
-                return url
-            }
-            val url2 = url.substringAfter("$KEY_URL=", "")
-            if (url2.isNotEmpty()) {
-                val url2BeforeAnd = url2.substringBefore("&")
-                val uriFromUrl = Uri.parse(url.replaceFirst("$KEY_URL=$url2BeforeAnd", "").validateAnd() )
-                uriFromUrl.buildUpon()
-                        .appendQueryParameter(KEY_URL, url2.encodeOnce())
-                        .build().toString()
-            } else {
-                url
-            }
-        } else {
-            ""
-        }
-    }
-
-    /**
-     * Validate the & and ? symbol
-     * Example input/output
-     * https://www.tokopedia.com/events/hiburan
-     * https://www.tokopedia.com/events/hiburan
-     *
-     * https://www.tokopedia.com/events/hiburan?parama=a&paramb=b
-     * https://www.tokopedia.com/events/hiburan?parama=a&paramb=b
-     *
-     * https://www.tokopedia.com/events/hiburan&utm_source=7teOvA
-     * https://www.tokopedia.com/events/hiburan
-     */
-    private fun validateSymbol(url: String): String {
-        val indexAnd = url.indexOf("&")
-        return if (indexAnd == -1) {
-            url
-        } else {
-            val urlBeforeAnd = url.substringBefore("&", "")
-            val indexQuestion = urlBeforeAnd.indexOf("?")
-            if (indexQuestion == -1) {
-                urlBeforeAnd
-            } else {
-                url
-            }
-        }
-    }
-
-    /**
-     * trim invalid &
-     * Example:
-     * https://www.tokopedia.com/help?&a=b
-     * https://www.tokopedia.com/help?a=b
-     *
-     * https://www.tokopedia.com/help?a=b&&c=d
-     * https://www.tokopedia.com/help?a=b&c=d
-     *
-     * https://www.tokopedia.com/help?a=b?&c=d
-     * https://www.tokopedia.com/help?a=b&c=d
-     */
-    private fun String.validateAnd(): String {
-        var url = replace("&&", "&")
-        val indexQuestionAnd = url.indexOf("?&")
-        if (indexQuestionAnd > -1) {
-            val indexQuestion = url.indexOf("?")
-            if (indexQuestion == indexQuestionAnd) {
-                url = url.replaceFirst("?&", "?")
-            } else {
-                url = url.replaceFirst("?&", "&")
-            }
-        }
-        return url
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -215,12 +124,12 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     companion object {
 
         fun getStartIntent(
-                context: Context,
-                url: String,
-                showToolbar: Boolean = true,
-                allowOverride: Boolean = true,
-                needLogin: Boolean = false,
-                title: String = ""
+            context: Context,
+            url: String,
+            showToolbar: Boolean = true,
+            allowOverride: Boolean = true,
+            needLogin: Boolean = false,
+            title: String = ""
         ): Intent {
             return Intent(context, BaseSimpleWebViewActivity::class.java).apply {
                 putExtra(KEY_URL, url.encodeOnce())
@@ -250,7 +159,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         @JvmStatic
         fun getInstanceIntentAppLink(context: Context, extras: Bundle): Intent {
             var webUrl = extras.getString(
-                    KEY_URL, TokopediaUrl.Companion.getInstance().WEB
+                KEY_URL, TokopediaUrl.getInstance().WEB
             )
             var showToolbar: Boolean
             var needLogin: Boolean

@@ -5,7 +5,7 @@ include "features:common:developer_options"
 include "features:common:nps"
 include "features:common:resources_common"
 include "features:common:qr_scanner"
-include "features:common:common_tradein"
+include "features:category:common_tradein"
 
 include "features:communication:broadcast_message_common"
 
@@ -119,6 +119,8 @@ include "features:merchant:shop_etalase_picker"
 include "features:merchant:official_store"
 include "features:merchant:brandlist"
 include "features:merchant:atc_variant"
+include ':features:merchant:variant_common'
+include 'features:merchant:favorite'
 
 include "features:operational:contact_us"
 include "features:operational:csat_rating"
@@ -204,6 +206,7 @@ include "features:user:liveness"
 
 include 'features:fcm_common'
 include 'features:user:campaign_shake_landing'
+include 'features:recharge_slice'
 
 include 'tkpdcore'
 include 'tkpdinbox'
