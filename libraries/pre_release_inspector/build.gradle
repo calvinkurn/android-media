@@ -24,8 +24,8 @@ dependencies {
 project.ext {
     artifactId = 'pre-release-inspector'
     groupId = 'com.tokopedia.library'
-    versionName = "0.0.1"
-    artifactName = "pre-release-inspector-release"
+    versionName = "0.0.2"
+    artifactName = "pre_release_inspector-release"
 }
 
 apply from: '../../publish_local.gradle'

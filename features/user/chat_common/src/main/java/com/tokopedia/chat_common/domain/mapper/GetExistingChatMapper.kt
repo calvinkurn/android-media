@@ -29,8 +29,13 @@ open class GetExistingChatMapper @Inject constructor() {
         val canLoadMore = pojo.chatReplies.hasNext
         val isReplyable: Boolean = pojo.chatReplies.textAreaReply != 0
         val blockedStatus: BlockedStatus = mapBlockedStatus(pojo)
+        val minReplyTime = pojo.chatReplies.minReplyTime
         listChat.reverse()
-        return ChatroomViewModel(listChat, headerModel, canLoadMore, isReplyable, blockedStatus)
+        return ChatroomViewModel(
+                listChat, headerModel,
+                canLoadMore, isReplyable,
+                blockedStatus, minReplyTime
+        )
 
     }
 
@@ -87,7 +92,7 @@ open class GetExistingChatMapper @Inject constructor() {
         return listChat
     }
 
-    private fun convertToMessageViewModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
+    open fun convertToMessageViewModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
         return MessageViewModel(
                 chatItemPojoByDateByTime.msgId.toString(),
                 chatItemPojoByDateByTime.senderId.toString(),
@@ -170,7 +175,7 @@ open class GetExistingChatMapper @Inject constructor() {
         )
     }
 
-    private fun convertToProductAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
+    open fun convertToProductAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
 
         val pojoAttribute = GsonBuilder().create().fromJson<ProductAttachmentAttributes>(chatItemPojoByDateByTime.attachment?.attributes,
                 ProductAttachmentAttributes::class.java)
