@@ -30,7 +30,6 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
 
         selectedDepartureID = intent.getStringExtra(EXTRA_DEPARTURE_ID)
         selectedDepartureTerm = intent.getStringExtra(EXTRA_DEPARTURE_TERM)
-
         super.onCreate(savedInstanceState)
     }
 

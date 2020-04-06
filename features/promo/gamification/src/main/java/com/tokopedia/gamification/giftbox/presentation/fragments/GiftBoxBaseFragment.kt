@@ -297,5 +297,4 @@ open class GiftBoxBaseFragment : Fragment() {
     fun fadeInSoundIcon() {
         imageSound.animate().alpha(1f).setDuration(300L).start()
     }
-
 }

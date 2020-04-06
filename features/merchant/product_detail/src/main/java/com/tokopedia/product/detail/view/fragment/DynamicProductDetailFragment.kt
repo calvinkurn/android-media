@@ -1024,10 +1024,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         pdpHashMapUtil?.updateDataP1(updatedDynamicProductInfo)
         updateButtonAfterClickVariant(indexOfSelectedVariant)
 
-        renderFullfillment()
-        dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap)
-        dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, 1)
-    }
+            renderFullfillment()
+            dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap)
+            dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, 1)
+            dynamicAdapter.notifyNotifyMe(pdpHashMapUtil?.notifyMeMap, null)
+        }
 
     private fun updateButtonAfterClickVariant(indexOfVariantButton: Int?) {
         if (viewModel.shopInfo == null) {
@@ -2432,8 +2433,15 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun scrollToPosition(position: Int) {
-        if (position != -1)
-            getRecyclerView(view).smoothScrollToPosition(position)
+        if (position >= 0) {
+            getRecyclerView(view).post {
+                try {
+                    getRecyclerView(view).smoothScrollToPosition(position)
+                } catch (e: Throwable) {
+
+                }
+            }
+        }
     }
 
     private fun showProgressDialog(onCancelClicked: (() -> Unit)? = null) {
@@ -2623,6 +2631,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         activity?.let {
             startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
                     ProductDetailConstant.REQUEST_CODE_LOGIN)
+        }
+    }
+
+    override fun showAlertUpcomingEnded() {
+        activity?.let {
+            onSwipeRefresh()
         }
     }
 }
