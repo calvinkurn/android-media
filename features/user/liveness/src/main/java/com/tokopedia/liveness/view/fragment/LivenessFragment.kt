@@ -385,10 +385,10 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
                     NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.liveness_failed_file_not_found))
                 }
             } else {
-                NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.liveness_failed_file_not_found))
+                NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.liveness_failed_file_image_null))
             }
         } catch (error: Throwable) {
-            NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.liveness_failed_file_not_found))
+            NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.liveness_failed_set_file))
         }
         return ""
     }
