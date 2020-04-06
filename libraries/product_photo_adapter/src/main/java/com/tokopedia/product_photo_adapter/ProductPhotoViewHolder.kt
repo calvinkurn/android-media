@@ -8,15 +8,16 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 
 class ProductPhotoViewHolder(itemView: View,
                              private val onDeleteButtonClickListener: OnDeleteButtonClickListener,
-                             private val onStartDragListener: OnStartDragListener)
+                             private val onPhotoChangeListener: OnPhotoChangeListener)
     : RecyclerView.ViewHolder(itemView) {
 
     interface OnDeleteButtonClickListener {
         fun onDeleteButtonClicked(position: Int)
     }
 
-    interface OnStartDragListener {
+    interface OnPhotoChangeListener {
         fun onStartDrag(viewHolder: RecyclerView.ViewHolder)
+        fun onRemovePhoto(viewHolder: RecyclerView.ViewHolder)
     }
 
     private var context: Context? = null
@@ -40,11 +41,12 @@ class ProductPhotoViewHolder(itemView: View,
         deleteButton = itemView.findViewById(R.id.iv_delete_button)
 
         dragHandleView?.setOnTouchListener { _, _ ->
-            onStartDragListener.onStartDrag(this)
+            onPhotoChangeListener.onStartDrag(this)
             true
         }
 
         deleteButton?.setOnClickListener {
+            onPhotoChangeListener.onRemovePhoto(this)
             onDeleteButtonClickListener.onDeleteButtonClicked(adapterPosition)
         }
     }

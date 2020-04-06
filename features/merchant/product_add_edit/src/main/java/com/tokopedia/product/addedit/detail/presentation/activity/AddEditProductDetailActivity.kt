@@ -30,6 +30,8 @@ class AddEditProductDetailActivity : BaseSimpleActivity(), HasComponent<AddEditP
     }
 
     override fun onBackPressed() {
+        super.onBackPressed()
+        onBackPressedHitTracking()
         val dialogBuilder = AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
                 .setMessage(R.string.message_alert_dialog_before_exit)
                 .setNegativeButton(R.string.label_negative_button_on_alert_dialog) { _, _ -> }
@@ -51,9 +53,16 @@ class AddEditProductDetailActivity : BaseSimpleActivity(), HasComponent<AddEditP
     }
 
     private fun saveProductToDraft() {
-        val fragment = fragment
-        if (fragment != null && fragment is AddEditProductDetailFragment) {
-            fragment.insertProductDraft(false)
+        val f = fragment
+        if (f != null && f is AddEditProductDetailFragment) {
+            f.insertProductDraft(false)
+        }
+    }
+
+    private fun onBackPressedHitTracking() {
+        val f = fragment
+        if (f!= null && f is AddEditProductDetailFragment) {
+            f.onBackPressed()
         }
     }
 }

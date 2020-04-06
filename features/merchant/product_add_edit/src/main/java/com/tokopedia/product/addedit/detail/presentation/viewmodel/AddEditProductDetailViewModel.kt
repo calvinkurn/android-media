@@ -75,6 +75,8 @@ class AddEditProductDetailViewModel @Inject constructor(
     val getAllProductsDraftResultLiveData: LiveData<Result<List<ProductInputModel>>>
         get() = getAllProductsDraftResultMutableLiveData
 
+    var isEditMode:Boolean = false
+
     private val mIsInputValid = MediatorLiveData<Boolean>().apply {
 
         addSource(mIsProductPhotoError) {
