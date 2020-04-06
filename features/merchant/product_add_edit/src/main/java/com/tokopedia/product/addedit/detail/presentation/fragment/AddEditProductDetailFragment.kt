@@ -114,6 +114,8 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
     @Inject
     lateinit var viewModel: AddEditProductDetailViewModel
 
+    private val productInputModel = ProductInputModel()
+
     private var productPhotoPaths = mutableListOf<String>()
 
     private var selectedDurationPosition: Int = UNIT_DAY
@@ -190,7 +192,10 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
                 .get(AddEditProductDetailViewModel::class.java)
 
         // store the selected image paths from previous activity
-        initialSelectedImagePathList?.let { productPhotoPaths.addAll(initialSelectedImagePathList) }
+        initialSelectedImagePathList?.let {
+            productPhotoPaths.addAll(initialSelectedImagePathList)
+            productInputModel.detailInputModel.imageUrlOrPathList = it
+        }
 
         // add edit product photo views
         addProductPhotoButton = view.findViewById(R.id.tv_add_product_photo)
@@ -500,6 +505,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
                     val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
                     productPhotoAdapter?.setProductPhotoPaths(imageUrlOrPathList)
                     productPhotoAdapter?.let { viewModel.validateProductPhotoInput(it.itemCount) }
+                    productInputModel.detailInputModel.imageUrlOrPathList = imageUrlOrPathList
                 }
                 REQUEST_CODE_GET_CATEGORY -> {
                     val categoryId = data.getLongExtra(CATEGORY_RESULT_ID, 0)
@@ -879,16 +885,11 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
     }
 
     fun insertProductDraft(isUploading: Boolean) {
-        val productInputModel = ProductInputModel()
         productInputModel.detailInputModel.productName = productNameField?.getEditableValue().toString()
-        Log.d("Success", productInputModel.detailInputModel.productName.toString())
         viewModel.insertProductDraft(productInputModel, 0, isUploading)
-        Log.d("Success", "Insert")
     }
 
     fun getAllProductsDraft() {
         viewModel.getAllProductsDraft()
     }
-
-
 }

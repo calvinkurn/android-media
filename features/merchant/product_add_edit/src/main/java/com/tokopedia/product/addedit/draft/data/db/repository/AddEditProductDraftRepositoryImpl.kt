@@ -17,10 +17,8 @@ class AddEditProductDraftRepositoryImpl @Inject constructor(private val draftDat
         return draftDataSource.insertDraft(draftJson, isUploading, shopId)
     }
 
-    override fun getDraft(productId: Long): LiveData<ProductInputModel> {
-        return Transformations.map(draftDataSource.getDraft(productId)) { draft ->
-            AddEditProductDraftMapper.mapDraftToProductInput(draft)
-        }
+    override fun getDraft(productId: Long): ProductInputModel {
+        return AddEditProductDraftMapper.mapDraftToProductInput(draftDataSource.getDraft(productId))
     }
 
     override fun getAllDrafts(): List<ProductInputModel> {
@@ -29,7 +27,7 @@ class AddEditProductDraftRepositoryImpl @Inject constructor(private val draftDat
         return listEntities.map { AddEditProductDraftMapper.mapDraftToProductInput(it) }
     }
 
-    override fun getAllDraftsCount(): LiveData<Int> {
+    override fun getAllDraftsCount(): Long {
         val shopId = UserSession(context).shopId
         return draftDataSource.getAllDraftsCount(shopId)
     }

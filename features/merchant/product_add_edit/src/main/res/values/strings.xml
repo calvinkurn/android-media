@@ -161,4 +161,10 @@
     <item name="category_id" type="id" />
     <item name="selected_catalog" type="id" />
 
+    <!-- add edit draft -->
+    <string name="message_alert_dialog_before_exit">Anda belum selesai menambahkan produk. Apakah Anda yakin ingin keluar?</string>
+    <string name="label_negative_button_on_alert_dialog">Batal</string>
+    <string name="label_positive_button_on_alert_dialog">Keluar</string>
+    <string name="label_neutral_button_on_alert_dialog">Simpan Draft</string>
+
 </resources>

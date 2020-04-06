@@ -1,6 +1,5 @@
 package com.tokopedia.product.addedit.draft.domain.usecase
 
-import androidx.lifecycle.LiveData
 import com.tokopedia.product.addedit.common.constant.AddEditProductDraftConstant
 import com.tokopedia.product.addedit.draft.data.db.repository.AddEditProductDraftRepository
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -8,7 +7,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class FetchProductDraftUseCase @Inject constructor(private val draftRepository: AddEditProductDraftRepository): UseCase<LiveData<ProductInputModel>>() {
+class GetProductDraftUseCase @Inject constructor(private val draftRepository: AddEditProductDraftRepository): UseCase<ProductInputModel>() {
 
     companion object {
         fun createRequestParams(productId: Long): RequestParams {
@@ -18,8 +17,10 @@ class FetchProductDraftUseCase @Inject constructor(private val draftRepository: 
         }
     }
 
-    override suspend fun executeOnBackground(): LiveData<ProductInputModel> {
-        val param = useCaseRequestParams.getLong(AddEditProductDraftConstant.DRAFT_PRODUCT_ID, Long.MIN_VALUE)
+    var params: RequestParams = RequestParams.EMPTY
+
+    override suspend fun executeOnBackground(): ProductInputModel {
+        val param = params.getLong(AddEditProductDraftConstant.DRAFT_PRODUCT_ID, Long.MIN_VALUE)
         return draftRepository.getDraft(param)
     }
 }

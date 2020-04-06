@@ -16,8 +16,10 @@ class DeleteProductDraftUseCase @Inject constructor(private val draftRepository:
         }
     }
 
+    val params: RequestParams = RequestParams.EMPTY
+
     override suspend fun executeOnBackground(): Boolean {
-        val param = useCaseRequestParams.getLong(AddEditProductDraftConstant.DRAFT_PRODUCT_ID, Long.MIN_VALUE)
+        val param = params.getLong(AddEditProductDraftConstant.DRAFT_PRODUCT_ID, Long.MIN_VALUE)
         return draftRepository.deleteDraft(param)
     }
 

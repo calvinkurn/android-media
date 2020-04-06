@@ -12,7 +12,7 @@ class AddEditProductDraftDataSource @Inject constructor(private val dataManager:
         return dataManager.insertDraft(json, isUploading, shopId)
     }
 
-    fun getDraft(productId: Long): LiveData<AddEditProductDraftEntity> {
+    fun getDraft(productId: Long): AddEditProductDraftEntity {
         return dataManager.getDraft(productId)
     }
 
@@ -21,7 +21,7 @@ class AddEditProductDraftDataSource @Inject constructor(private val dataManager:
         return dataManager.getAllDrafts(shopId)
     }
 
-    fun getAllDraftsCount(shopId: String): LiveData<Int> {
+    fun getAllDraftsCount(shopId: String): Long {
         checkUpdateBlankShopId(shopId)
         return dataManager.getAllDraftsCount(shopId)
     }

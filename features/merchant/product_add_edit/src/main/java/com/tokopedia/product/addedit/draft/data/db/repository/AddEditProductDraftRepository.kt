@@ -7,11 +7,11 @@ interface AddEditProductDraftRepository {
 
     fun insertDraft(productInputModel: ProductInputModel, isUploading: Boolean): Long
 
-    fun getDraft(productId: Long): LiveData<ProductInputModel>
+    fun getDraft(productId: Long): ProductInputModel
 
     fun getAllDrafts(): List<ProductInputModel>
 
-    fun getAllDraftsCount(): LiveData<Int>
+    fun getAllDraftsCount(): Long
 
     fun deleteDraft(productId: Long): Boolean
 

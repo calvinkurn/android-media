@@ -19,7 +19,7 @@ class AddEditProductDraftDataManager @Inject constructor(private val draftDao: A
         return draft.id
     }
 
-    fun getDraft(productId: Long): LiveData<AddEditProductDraftEntity> {
+    fun getDraft(productId: Long): AddEditProductDraftEntity {
         return draftDao.getDraft(productId)
     }
 
@@ -27,7 +27,7 @@ class AddEditProductDraftDataManager @Inject constructor(private val draftDao: A
         return draftDao.getAllDrafts(shopId)
     }
 
-    fun getAllDraftsCount(shopId: String): LiveData<Int> {
+    fun getAllDraftsCount(shopId: String): Long {
         return draftDao.getAllDraftsCount(shopId)
     }
 
@@ -43,22 +43,22 @@ class AddEditProductDraftDataManager @Inject constructor(private val draftDao: A
         return true
     }
 
-    fun updateDraft(productId: Long, data: String): Long? {
-        Transformations.map(getDraft(productId)) { draft ->
-            draft.data = data
-            draft.version = AddEditProductDraftConstant.DB_VERSION
-            draftDao.updateDraft(draft)
+    fun updateDraft(productId: Long, data: String): Long {
+        val draft = getDraft(productId).apply {
+            this.data = data
+            version = AddEditProductDraftConstant.DB_VERSION
         }
+        draftDao.updateDraft(draft)
         return productId
     }
 
     fun updateDraft(productId: Long, data: String, isUploading: Boolean): Long {
-        Transformations.map(getDraft(productId)) { draft ->
-            draft.data = data
-            draft.isUploading = isUploading
-            draft.version = AddEditProductDraftConstant.DB_VERSION
-            draftDao.updateDraft(draft)
+        val draft = getDraft(productId).apply {
+            this.data = data
+            this.isUploading = isUploading
+            version = AddEditProductDraftConstant.DB_VERSION
         }
+        draftDao.updateDraft(draft)
         return productId
     }
 
@@ -69,10 +69,10 @@ class AddEditProductDraftDataManager @Inject constructor(private val draftDao: A
 
     fun updateLoadingStatus(productId: Long, isUploading: Boolean): Boolean {
         return if (productId > 0) {
-            Transformations.map(getDraft(productId)) { draft ->
-                draft.isUploading = isUploading
-                draftDao.updateDraft(draft)
+            val draft = getDraft(productId).apply {
+                this.isUploading = isUploading
             }
+            draftDao.updateDraft(draft)
             true
         } else {
             draftDao.updateLoadingForAll(!isUploading, isUploading)

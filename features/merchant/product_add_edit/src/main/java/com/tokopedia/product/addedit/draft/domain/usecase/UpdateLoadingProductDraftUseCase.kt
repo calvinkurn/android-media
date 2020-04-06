@@ -1,6 +1,5 @@
 package com.tokopedia.product.addedit.draft.domain.usecase
 
-import androidx.lifecycle.LiveData
 import com.tokopedia.product.addedit.draft.data.db.repository.AddEditProductDraftRepository
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -25,9 +24,11 @@ class UpdateLoadingProductDraftUseCase @Inject constructor(private val draftRepo
         }
     }
 
+    var params: RequestParams = RequestParams.EMPTY
+
     override suspend fun executeOnBackground(): Boolean {
-        val paramProductId = useCaseRequestParams.getLong(DRAFT_PRODUCT_ID, 0)
-        val paramIsBoolean = useCaseRequestParams.getBoolean(IS_UPLOADING, false)
+        val paramProductId = params.getLong(DRAFT_PRODUCT_ID, 0)
+        val paramIsBoolean = params.getBoolean(IS_UPLOADING, false)
         return draftRepository.updateLoadingStatus(paramProductId, paramIsBoolean)
     }
 }
