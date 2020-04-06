@@ -27,7 +27,7 @@ class GetYoutubeVideoUseCase @Inject constructor(
     override suspend fun executeOnBackground(): Map<Type, RestResponse> {
 
         val restRequest = RestRequest.Builder(YOUTUBE_LINK, YoutubeVideoModel::class.java)
-                .setQueryParams(generateRequestParam())
+                .setQueryParams(queryParams = generateRequestParam())
                 .setRequestType(RequestType.GET)
                 .build()
 
@@ -37,17 +37,14 @@ class GetYoutubeVideoUseCase @Inject constructor(
     }
 
     private fun generateRequestParam(): Map<String, Any> {
-
-        return mapOf<String, Any>().apply {
-            PART to SNIPPET_CONTENT_DETAILS
-            ID to videoId
-            KEY to YOUTUBE_API_KEY
-        }
+        val requestParamMap = mutableMapOf<String, Any>()
+        requestParamMap[PART] = SNIPPET_CONTENT_DETAILS
+        requestParamMap[ID] = videoId.toString()
+        requestParamMap[KEY] = YOUTUBE_API_KEY
+        return requestParamMap
     }
 
     fun setVideoId(videoId: String) {
         this.videoId = videoId
     }
-
-
 }
