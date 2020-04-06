@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class ReleaseBookingUseCase @Inject constructor(private val gql: GraphqlUseCase) {
 
-    fun execute(productId: String): Observable<ReleaseBookingResponse> {
+    fun execute(productId: Int): Observable<ReleaseBookingResponse> {
         val param = mapOf("params" to arrayOf(
                 mapOf(
                         "product_id" to productId
