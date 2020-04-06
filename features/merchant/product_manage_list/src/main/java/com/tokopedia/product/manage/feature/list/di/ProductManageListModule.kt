@@ -27,6 +27,7 @@ import com.tokopedia.product.manage.oldlist.domain.ClearAllDraftProductUseCase
 import com.tokopedia.product.manage.oldlist.domain.FetchAllDraftProductCountUseCase
 import com.tokopedia.product.manage.oldlist.view.presenter.ProductDraftListCountPresenter
 import com.tokopedia.product.manage.oldlist.view.presenter.ProductDraftListCountPresenterImpl
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
@@ -175,4 +176,9 @@ class ProductManageListModule {
     fun provideMultiEditProductUseCase(graphqlRepository: GraphqlRepository): MultiEditProductUseCase {
         return MultiEditProductUseCase(graphqlRepository)
     }
+
+    @ProductManageListScope
+    @Provides
+    fun provideRemoteConfig(@ApplicationContext context: Context): FirebaseRemoteConfigImpl =
+            FirebaseRemoteConfigImpl(context)
 }

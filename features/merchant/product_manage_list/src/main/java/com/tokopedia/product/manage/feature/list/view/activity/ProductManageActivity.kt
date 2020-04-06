@@ -17,13 +17,18 @@ import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
 import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import javax.inject.Inject
 
 class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageListComponent> {
 
     companion object {
         private const val SCREEN_NAME = "Store - Manage product"
     }
+
+    @Inject
+    lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
     private val productManageSellerFragment by lazy {
         val uri = intent.data
@@ -37,7 +42,10 @@ class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageLi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        initInjector()
         goToOldManageProductIfEnabled()
+
         if (!GlobalConfig.isSellerApp()) {
             setupLayout(savedInstanceState)
         }
@@ -45,6 +53,10 @@ class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductManageLi
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setStatusBarColor(Color.WHITE)
         }
+    }
+
+    private fun initInjector() {
+        component.inject(this)
     }
 
     override fun getNewFragment(): Fragment? {
