@@ -5,15 +5,16 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeVideoModel
 import kotlinx.android.synthetic.main.item_product_add_video.view.*
 
-class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
+class YoutubeVideoTypeFactory : BaseAdapterTypeFactory() {
     private var listener: VideoLinkListener? = null
 
-    fun setVideoLinkListener(listener: VideoLinkListener){
+    fun setVideoLinkListener(listener: VideoLinkListener) {
         this.listener = listener
     }
 
@@ -21,7 +22,7 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
     fun type(youtubeVideoModel: YoutubeVideoModel): Int = VideoLinkViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
-        return when(type){
+        return when (type) {
             VideoLinkViewHolder.LAYOUT -> VideoLinkViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
@@ -30,7 +31,7 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
     class VideoLinkViewHolder(val view: View?, private val listener: VideoLinkListener?)
         : AbstractViewHolder<Visitable<*>>(view) {
         override fun bind(element: Visitable<*>) {
-            when(element) {
+            when (element) {
                 is VideoLinkModel -> {
                     itemView.textFieldUrl.textFieldInput.setText(element.inputUrl)
                     itemView.cardThumbnail.visibility =
@@ -52,10 +53,11 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
             }
         }
 
-        private fun loadLayout (imageUrl: String, title: String, description: String) {
+        private fun loadLayout(imageUrl: String, title: String, description: String) {
+            itemView.cardThumbnail?.visible()
             itemView.imgThumbnail.urlSrc = imageUrl
             itemView.tvVideoTitle.text = title
-            itemView.tvVideoSubtitle.text = description
+            itemView.tvVideoSubtitle.text = description.replace("\n", " ")
         }
 
         companion object {

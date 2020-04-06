@@ -3,7 +3,7 @@ package com.tokopedia.product.addedit.description.presentation.model.youtube
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.product.addedit.description.presentation.adapter.VideoLinkTypeFactory
+import com.tokopedia.product.addedit.description.presentation.adapter.YoutubeVideoTypeFactory
 
 data class YoutubeVideoModel(
         @SerializedName("kind")
@@ -18,7 +18,7 @@ data class YoutubeVideoModel(
         @SerializedName("items")
         @Expose
         var items: List<Item>? = null
-): Visitable<VideoLinkTypeFactory> {
+): Visitable<YoutubeVideoTypeFactory> {
     
     val id: String?
         get() = items?.firstOrNull()?.id
@@ -44,7 +44,7 @@ data class YoutubeVideoModel(
     val duration: String?
         get() = items?.firstOrNull()?.contentDetails?.duration.toString()
 
-    override fun type(typeFactory: VideoLinkTypeFactory): Int {
+    override fun type(typeFactory: YoutubeVideoTypeFactory): Int {
         return typeFactory.type(this)
     }
 }
