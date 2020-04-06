@@ -26,6 +26,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.LeftCha
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.RightChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
+import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
@@ -94,7 +95,9 @@ open class TopChatTypeFactoryImpl(
         return TopchatEmptyViewHolder.LAYOUT
     }
 
-
+    override fun type(productCarouselUiModel: ProductCarouselUiModel): Int {
+        return ProductCarouselListAttachmentViewHolder.LAYOUT
+    }
 
     override fun type(productAttachmentViewModel: ProductAttachmentViewModel): Int {
         return if (useNewProductCard) {
@@ -105,7 +108,7 @@ open class TopChatTypeFactoryImpl(
     }
 
     // Check if chat bubble first, if not return default ViewHolder
-    override fun createViewHolder(parent: ViewGroup, type: Int): AbstractViewHolder<*> {
+    override fun createViewHolder(parent: ViewGroup, type: Int, productCarouselListListener: ProductCarouselListAttachmentViewHolder.Listener): AbstractViewHolder<*> {
         val layoutRes = when (type) {
             ChatMessageViewHolder.TYPE_LEFT -> LeftChatMessageViewHolder.LAYOUT
             ChatMessageViewHolder.TYPE_RIGHT -> RightChatMessageViewHolder.LAYOUT
@@ -114,7 +117,18 @@ open class TopChatTypeFactoryImpl(
             else -> type
         }
         val view = LayoutInflater.from(parent.context).inflate(layoutRes, parent, false)
-        return createViewHolder(view, layoutRes)
+        return createViewHolder(view, layoutRes, productCarouselListListener)
+    }
+
+    private fun createViewHolder(
+            parent: View,
+            type: Int,
+            productCarouselListListener: ProductCarouselListAttachmentViewHolder.Listener
+    ): AbstractViewHolder<*> {
+        return when(type) {
+            ProductCarouselListAttachmentViewHolder.LAYOUT -> ProductCarouselListAttachmentViewHolder(parent, productAttachmentListener, productCarouselListListener)
+            else -> createViewHolder(parent, type)
+        }
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {

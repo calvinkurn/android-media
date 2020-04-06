@@ -22,6 +22,7 @@ import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -448,6 +449,13 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
             super.onReceivedError(view, request, error);
             Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s'", request.getUrl(), error.getErrorCode(), error.getDescription());
+        }
+
+        @TargetApi(android.os.Build.VERSION_CODES.M)
+        @Override
+        public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
+            super.onReceivedHttpError(view, request, errorResponse);
+            Timber.w("P1#WEBVIEW_ERROR_RESPONSE#'%s';status_code=%s;reason='%s'", request.getUrl(), errorResponse.getStatusCode(), errorResponse.getReasonPhrase());
         }
     }
 
