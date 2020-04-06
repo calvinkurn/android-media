@@ -14,6 +14,8 @@ import org.spekframework.spek2.style.gherkin.Feature
 internal class HandleWishlistActionTest: Spek({
 
     Feature("Handle wishlist action") {
+
+        
         createTestInstance()
 
         Scenario("Handle wishlist action with null product card options model") {
