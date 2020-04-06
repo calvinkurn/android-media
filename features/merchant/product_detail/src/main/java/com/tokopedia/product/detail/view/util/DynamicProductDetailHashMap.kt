@@ -94,7 +94,7 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     val getShopInfo: ProductShopInfoDataModel
         get() = shopInfoMap ?: ProductShopInfoDataModel()
 
-    fun updateDataP1(dataP1: DynamicProductInfoP1?) {
+    fun updateDataP1(dataP1: DynamicProductInfoP1?, shopOwner: Boolean) {
         dataP1?.let {
             snapShotMap?.run {
                 shouldRenderImageVariant = true
@@ -109,6 +109,7 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                 endDate = it.data.endDate
                 startDate = it.data.startDate
                 notifyMe = it.data.notifyMe
+                isShopOwner = shopOwner
             }
 
             valuePropositionDataModel?.run {

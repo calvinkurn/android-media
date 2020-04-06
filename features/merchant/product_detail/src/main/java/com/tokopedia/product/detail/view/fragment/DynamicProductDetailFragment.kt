@@ -1021,7 +1021,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
         productId = updatedDynamicProductInfo?.basic?.productID
         viewModel.getDynamicProductInfoP1 = updatedDynamicProductInfo
-        pdpHashMapUtil?.updateDataP1(updatedDynamicProductInfo)
+        pdpHashMapUtil?.updateDataP1(updatedDynamicProductInfo, viewModel.isShopOwner(viewModel.getDynamicProductInfoP1?.basic?.getShopId() ?: 0))
         updateButtonAfterClickVariant(indexOfSelectedVariant)
 
             renderFullfillment()
@@ -1239,7 +1239,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             updateProductId()
             et_search.hint = String.format(getString(R.string.pdp_search_hint), productInfo.basic.category.name)
-            pdpHashMapUtil?.updateDataP1(productInfo)
+            pdpHashMapUtil?.updateDataP1(productInfo, viewModel.isShopOwner(productInfo.basic.getShopId()))
             viewModel.listOfParentMedia = productInfo.data.media.toMutableList()
             shouldShowCodP1 = productInfo.data.isCOD
             actionButtonView.setButtonP1(productInfo.data.preOrder, productInfo.basic.isLeasing)
@@ -2563,10 +2563,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun observeToggleNotifyMe() {
-        viewLifecycleOwner.observe(viewModel.toggleTeaserNotifyMe) {
-            when (it) {
-                is Fail -> onFailNotifyMe(it.throwable)
-            }
+        viewLifecycleOwner.observe(viewModel.toggleTeaserNotifyMe) {data ->
+            data.doSuccessOrFail({
+                viewModel.variantData = VariantMapper.updateVariantDeals(viewModel.variantData, viewModel.getDynamicProductInfoP1?.basic?.getProductId() ?: 0)
+            },{
+                onFailNotifyMe(it)
+            })
         }
     }
 

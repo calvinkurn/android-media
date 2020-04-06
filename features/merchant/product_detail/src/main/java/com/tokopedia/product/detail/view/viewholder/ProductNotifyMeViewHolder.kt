@@ -5,9 +5,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
@@ -105,17 +103,22 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
 
     }
 
-    private fun bindButton(data: ProductNotifyMeDataModel) {
-        when (data.notifyMe) {
-            true -> {
-                itemView.btn_notify_me?.buttonType = UnifyButton.Type.ALTERNATE
-                itemView.btn_notify_me?.text = getString(R.string.notify_me_active)
-            }
-            false -> {
-                itemView.btn_notify_me?.buttonType = UnifyButton.Type.MAIN
-                itemView.btn_notify_me?.text = getString(R.string.notify_me_inactive)
-            }
+    private fun bindButton(data: ProductNotifyMeDataModel) = with(itemView) {
+        if (data.isShopOwner) {
+            btn_notify_me?.hide()
+        } else {
+            btn_notify_me?.show()
 
+            when (data.notifyMe) {
+                true -> {
+                    btn_notify_me?.buttonType = UnifyButton.Type.ALTERNATE
+                    btn_notify_me?.text = getString(R.string.notify_me_active)
+                }
+                false -> {
+                    btn_notify_me?.buttonType = UnifyButton.Type.MAIN
+                    btn_notify_me?.text = getString(R.string.notify_me_inactive)
+                }
+            }
         }
     }
 
