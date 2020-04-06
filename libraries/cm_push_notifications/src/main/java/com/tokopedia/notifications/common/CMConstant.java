@@ -113,6 +113,7 @@ public interface CMConstant {
         String PRODUCT_PRICE = "product_price";
         String PRODUCT_VARIANT = "product_variant";
         String PRODUCT_QUANTITY = "product_quantity";
+        String ATC_SHOP_ID = "shop_id";
         String SHOP_NAME = "shop_name";
         String SHOP_TYPE = "shop_type";
     }
