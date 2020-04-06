@@ -79,7 +79,7 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
         try {
             String whiteListedUsers = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.WHITELIST_USER_LOG_NOTIFICATION);
             String userId = sessionHandler.getUserId();
-            if (whiteListedUsers.contains(userId)) {
+            if (!userId.isEmpty() && whiteListedUsers.contains(userId)) {
                 executeLogOnMessageReceived(remoteMessage);
             }
         } catch (Exception exception) {
@@ -96,7 +96,7 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
                     "deviceId: " + sessionHandler.getDeviceId() + ", " +
                     "notificationId: " + remoteMessage.getFrom() + ", " +
                     "notificationCode: " + notificationCode;
-            Crashlytics.log(errorMessage);
+            Crashlytics.logException(new Exception(errorMessage));
         }
     }
 
