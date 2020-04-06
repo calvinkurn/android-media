@@ -27,11 +27,7 @@ import com.tokopedia.applink.merchant.DeeplinkMapperMerchant.isShopReview
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationOrder
 import com.tokopedia.applink.promo.getRegisteredNavigationTokopoints
 import com.tokopedia.applink.recommendation.getRegisteredNavigationRecommendation
-import com.tokopedia.applink.search.DeeplinkMapperSearch.getRegisteredNavigationSearch
-import com.tokopedia.config.GlobalConfig
-import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationPlay
 import com.tokopedia.applink.entertaiment.DeeplinkMapperEntertainment.getRegisteredNavigationEvents
-import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrah
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahOrderDetail
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahShop
