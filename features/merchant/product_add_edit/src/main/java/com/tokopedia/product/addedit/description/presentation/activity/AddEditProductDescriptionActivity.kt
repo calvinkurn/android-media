@@ -26,7 +26,7 @@ class AddEditProductDescriptionActivity : BaseSimpleActivity() {
             categoryId = getStringExtra(PARAM_CATEGORY_ID)
             descriptionInputModel = getParcelableExtra(PARAM_DESCRIPTION_INPUT_MODEL) ?: DescriptionInputModel()
             variantInputModel = getParcelableExtra(PARAM_VARIANT_INPUT_MODEL) ?: ProductVariantInputModel()
-            productDraft = getParcelableExtra(PARAM_PRODUCT_INPUT_MODEL) ?: ProductDraft()
+            productDraft = getParcelableExtra(PARAM_PRODUCT_DRAFT_MODEL) ?: ProductDraft()
             isEditMode = getBooleanExtra(PARAM_IS_EDIT_MODE, false)
         }
 
@@ -45,13 +45,13 @@ class AddEditProductDescriptionActivity : BaseSimpleActivity() {
         const val REQUEST_CODE_DESCRIPTION = 0x03
         const val PARAM_DESCRIPTION_INPUT_MODEL = "param_description_input_model"
         const val PARAM_VARIANT_INPUT_MODEL = "param_variant_input_model"
-        const val PARAM_PRODUCT_INPUT_MODEL = "param_product_input_model"
+        const val PARAM_PRODUCT_DRAFT_MODEL = "param_product_draft_model"
         const val PARAM_CATEGORY_ID = "param_category_id"
         const val PARAM_IS_EDIT_MODE = "is_edit_mode"
         fun createInstance(context: Context?, categoryId: String, productDraft: ProductDraft): Intent =
                 Intent(context, AddEditProductDescriptionActivity::class.java)
                         .putExtra(PARAM_CATEGORY_ID, categoryId)
-                        .putExtra(PARAM_PRODUCT_INPUT_MODEL, productDraft)
+                        .putExtra(PARAM_PRODUCT_DRAFT_MODEL, productDraft)
         fun createInstanceEditMode(context: Context?,
                                    categoryId: String,
                                    descriptionInputModel: DescriptionInputModel,

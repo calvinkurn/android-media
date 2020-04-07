@@ -11,14 +11,13 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_INPUT
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_DRAFT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextIntOrZero
 import com.tokopedia.product.addedit.common.util.setModeToNumberInput
 import com.tokopedia.product.addedit.common.util.setText
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
-import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentComponent
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_GRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_KILOGRAM
@@ -55,7 +54,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         fun createInstance(productDraft: ProductDraft): Fragment {
             return AddEditProductShipmentFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable(EXTRA_PRODUCT_INPUT, productDraft)
+                    putParcelable(EXTRA_PRODUCT_DRAFT, productDraft)
                 }
             }
         }
@@ -95,7 +94,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         arguments?.run {
             val shipmentInputModel: ShipmentInputModel = getParcelable(EXTRA_SHIPMENT_INPUT_MODEL) ?: ShipmentInputModel()
             val isEditMode = getBoolean(EXTRA_IS_EDITMODE, false)
-            productDraft = getParcelable(EXTRA_PRODUCT_INPUT) ?: ProductDraft()
+            productDraft = getParcelable(EXTRA_PRODUCT_DRAFT) ?: ProductDraft()
             shipmentViewModel.shipmentInputModel = shipmentInputModel
             shipmentViewModel.isEditMode = isEditMode
         }

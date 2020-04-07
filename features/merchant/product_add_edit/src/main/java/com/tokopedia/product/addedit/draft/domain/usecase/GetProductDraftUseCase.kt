@@ -7,7 +7,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class FetchProductDraftUseCase @Inject constructor(
+class GetProductDraftUseCase @Inject constructor(
     private val draftRepository: AddEditProductDraftRepository
 ): UseCase<ProductDraft>() {
 

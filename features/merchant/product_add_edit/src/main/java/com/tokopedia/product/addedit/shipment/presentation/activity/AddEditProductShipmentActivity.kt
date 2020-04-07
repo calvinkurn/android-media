@@ -11,7 +11,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
-import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentComponent
 import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentModule
 import com.tokopedia.product.addedit.shipment.di.DaggerAddEditProductShipmentComponent
@@ -23,7 +22,7 @@ class AddEditProductShipmentActivity : BaseSimpleActivity(), HasComponent<AddEdi
 
     override fun getNewFragment(): Fragment {
         val shipmentInputModel:ShipmentInputModel? = intent.getParcelableExtra(PARAM_SHIPMENT_INPUT_MODEL)
-        val productDraft: ProductDraft = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT)
+        val productDraft: ProductDraft = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_DRAFT)
         shipmentInputModel?.run {
             return AddEditProductShipmentFragment.createInstanceEditMode(shipmentInputModel)
         }

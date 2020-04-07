@@ -10,7 +10,6 @@ import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommenda
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
-import com.tokopedia.product.addedit.draft.domain.usecase.GetAllProductsDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.unifycomponents.list.ListItemUnify
@@ -26,8 +25,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         val provider: ResourceProvider, dispatcher: CoroutineDispatcher,
         private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
         private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
-        private val saveProductDraftUseCase: SaveProductDraftUseCase,
-        private val getAllProductsDraftUseCase: GetAllProductsDraftUseCase
+        private val saveProductDraftUseCase: SaveProductDraftUseCase
 )
     : BaseViewModel(dispatcher) {
 
@@ -68,12 +66,8 @@ class AddEditProductDetailViewModel @Inject constructor(
     var preOrderDurationMessage: String = ""
 
     private val saveProductDraftResultMutableLiveData = MutableLiveData<Result<Long>>()
-    val insertProductDraftResultLiveData: LiveData<Result<Long>>
+    val saveProductDraftResultLiveData: LiveData<Result<Long>>
         get() = saveProductDraftResultMutableLiveData
-
-    private val getAllProductsDraftResultMutableLiveData = MutableLiveData<Result<List<ProductDraft>>>()
-    val getAllProductsDraftResultLiveData: LiveData<Result<List<ProductDraft>>>
-        get() = getAllProductsDraftResultMutableLiveData
 
     var isEditMode:Boolean = false
 
@@ -351,16 +345,6 @@ class AddEditProductDetailViewModel @Inject constructor(
             }.let { Success(it) }
         }, onError = {
             saveProductDraftResultMutableLiveData.value = Fail(it)
-        })
-    }
-
-    fun getAllProductsDraft() {
-        launchCatchError(block = {
-            getAllProductsDraftResultMutableLiveData.value = withContext(Dispatchers.IO) {
-                getAllProductsDraftUseCase.executeOnBackground()
-            }.let { Success(it) }
-        }, onError = {
-            getAllProductsDraftResultMutableLiveData.value = Fail(it)
         })
     }
 }

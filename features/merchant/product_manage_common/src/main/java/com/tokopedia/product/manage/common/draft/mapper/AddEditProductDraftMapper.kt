@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.common.draft.mapper
 
+import android.util.Log
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.common.utils.network.CacheUtil
 import com.tokopedia.product.manage.common.draft.data.db.entity.AddEditProductDraftEntity
@@ -20,6 +21,7 @@ class AddEditProductDraftMapper {
             val productDraft: ProductDraft = CacheUtil.convertStringToModel(draft.data, ProductDraft::class.java)
             productDraft.productId = draft.id
             productDraft.completionPercent = getCompletionPercent(productDraft)
+            Log.d("Hello Product", productDraft.toString())
             return productDraft
         }
 
@@ -58,14 +60,12 @@ class AddEditProductDraftMapper {
                 completionCount++
             }
 
-            completionPercent = if (completionCount == MAX_COMPLETION_COUNT) {
-                MAX_COMPLETION_PERCENT
-            } else {
-                completionCount * 100 / MAX_COMPLETION_COUNT
-            }
+            completionPercent = (100 / 7) * completionCount
+
             if (completionPercent == 0) {
                 completionPercent = MIN_COMPLETION_PERCENT
-            }
+            } else if(completionPercent > MAX_COMPLETION_PERCENT)
+                completionPercent = MAX_COMPLETION_COUNT
 
             return completionPercent
         }

@@ -527,8 +527,6 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
             }
         }
 
-        getAllProductsDraft()
-
         subscribeToProductNameInputStatus()
         subscribeToProductNameRecommendation()
         subscribeToCategoryRecommendation()
@@ -539,8 +537,6 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         subscribeToPreOrderSwitchStatus()
         subscribeToPreOrderDurationInputStatus()
         subscribeToInputStatus()
-        subscribeToInsertProductDraftResult()
-        subscribeToGetAllProductsDraftResult()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -653,10 +649,6 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         inputAllDataInInputDraftModel()
         viewModel.saveProductDraft(productDraft, productDraft.productId, isUploading)
         Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
-    }
-
-    fun getAllProductsDraft() {
-        viewModel.getAllProductsDraft()
     }
 
     private fun inputAllDataInInputDraftModel() {
@@ -781,28 +773,6 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
             when (it) {
                 is Success -> onGetCategoryRecommendationSuccess(it)
                 is Fail -> onGetCategoryRecommendationFailed()
-            }
-        })
-    }
-
-    private fun subscribeToInsertProductDraftResult() {
-        viewModel.insertProductDraftResultLiveData.observe(this, Observer {
-            when (it) {
-                is Success -> Log.d("Hello Success", it.toString())
-                is Fail -> Log.d("Hello SFailed", it.throwable.message)
-            }
-        })
-    }
-
-    private fun subscribeToGetAllProductsDraftResult() {
-        viewModel.getAllProductsDraftResultLiveData.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    for (i in it.data) {
-                       Log.d("Hello Success", i.productId.toString())
-                    }
-                }
-                is Fail -> Log.d("Hello SFailed", it.throwable.message)
             }
         })
     }
