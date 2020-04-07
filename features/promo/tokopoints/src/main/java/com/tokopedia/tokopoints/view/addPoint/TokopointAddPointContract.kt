@@ -1,4 +1,4 @@
-package com.tokopedia.tokopoints.view.contract
+package com.tokopedia.tokopoints.view.addPoint
 
 import android.content.res.Resources
 import com.tokopedia.abstraction.base.view.listener.CustomerView
@@ -12,8 +12,8 @@ interface TokopointAddPointContract {
         fun inflateContainerLayout(success: Boolean)
     }
 
-    interface Presenter : CustomerPresenter<View> {
-        fun getRewardPoint(resources: Resources)
+    interface Presenter {
+        fun getRewardPoint()
     }
 }
 

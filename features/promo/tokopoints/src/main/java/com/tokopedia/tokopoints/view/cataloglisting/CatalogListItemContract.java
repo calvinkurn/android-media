@@ -1,4 +1,4 @@
-package com.tokopedia.tokopoints.view.contract;
+package com.tokopedia.tokopoints.view.cataloglisting;
 
 import android.content.Context;
 import android.content.res.Resources;
