@@ -173,7 +173,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(INTERNAL_TOKOPOINTS) }, DF_BASE, R.string.title_tokopoints))
 
             //Entertainment
-            add(DFP({ it.startsWith(EVENT_HOME)}, DFM_BASE, R.string.title_home_event))
+            add(DFP({ it.startsWith(EVENT_HOME)}, DF_BASE, R.string.title_home_event))
             // Salam
             add(DFP({ it.startsWith(SALAM_UMRAH_HOME_PAGE) }, DF_SALAM_UMRAH, R.string.title_salam, DFWebviewFallbackUrl.SALAM_UMRAH))
             add(DFP({ it.startsWith(SALAM_ORDER_DETAIL) }, DF_SALAM_UMRAH, R.string.title_salam, DFWebviewFallbackUrl.SALAM_UMRAH))
