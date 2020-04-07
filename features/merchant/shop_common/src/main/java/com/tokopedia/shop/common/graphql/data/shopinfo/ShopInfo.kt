@@ -173,6 +173,10 @@ data class ShopInfo(
             @Expose
             val note: String = "",
 
+            @SerializedName("reason")
+            @Expose
+            val reason: String = "",
+
             @SerializedName("until")
             @Expose
             val closeUntil: String = ""

@@ -175,6 +175,7 @@ class ShopPageFragment :
             savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.shop_page_main, container, false)
 
+
     override fun onDestroy() {
         shopViewModel.shopInfoResp.removeObservers(this)
         shopViewModel.whiteListResp.removeObservers(this)
@@ -555,9 +556,11 @@ class ShopPageFragment :
                 shopPageTracking?.sendScreenShopPage(shopCore.shopID, shopType)
             }
             shopPageFragmentHeaderViewHolder.updateShopTicker(shopInfo, isMyShop)
+
         }
         swipeToRefresh.isRefreshing = false
         view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
+
     }
 
     fun onBackPressed() {

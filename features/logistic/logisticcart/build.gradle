@@ -64,7 +64,7 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-    implementation rootProject.ext.firebase.performance
+
 
     //-------------------------------------------------------------------//
     //--------------------- Testing Library Section ---------------------//

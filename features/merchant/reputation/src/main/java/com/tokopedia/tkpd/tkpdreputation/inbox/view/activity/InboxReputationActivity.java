@@ -5,23 +5,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import com.google.android.material.tabs.TabLayout;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
@@ -61,11 +61,6 @@ public class InboxReputationActivity extends BaseTabActivity implements HasCompo
     private boolean goToReputationHistory;
     private ReputationTracking reputationTracking;
 
-    @Override
-    protected int getPageLimit() {
-        return OFFSCREEN_PAGE_LIMIT;
-    }
-
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, InboxReputationActivity.class);
     }
@@ -100,7 +95,7 @@ public class InboxReputationActivity extends BaseTabActivity implements HasCompo
             ReputationRouter applicationContext = (ReputationRouter) getApplicationContext();
             sellerReputationFragment = applicationContext.getReputationHistoryFragment();
         }
-        viewPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
+        viewPager.setOffscreenPageLimit(getPageLimit());
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
         indicator.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager, this) {
             @Override
@@ -129,6 +124,10 @@ public class InboxReputationActivity extends BaseTabActivity implements HasCompo
             if (goToReputationHistory) {
                 viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
             }
+        }
+
+        if (goToReputationHistory) {
+            viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
         }
 
         wrapTabIndicatorToTitle(indicator, (int) ReputationUtil.DptoPx(this, MARGIN_START_END_TAB), (int) ReputationUtil.DptoPx(this, MARGIN_TAB));
@@ -173,6 +172,11 @@ public class InboxReputationActivity extends BaseTabActivity implements HasCompo
     @Override
     protected PagerAdapter getViewPagerAdapter() {
         return new SectionsPagerAdapter(getSupportFragmentManager(), getFragmentList(), indicator);
+    }
+
+    @Override
+    protected int getPageLimit() {
+        return OFFSCREEN_PAGE_LIMIT;
     }
 
     protected List<Fragment> getFragmentList() {

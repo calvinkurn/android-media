@@ -1,6 +1,6 @@
 package com.tokopedia.product.manage.item.catalog.view.presenter;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.product.manage.item.catalog.view.listener.CatalogPickerView;
 
 /**

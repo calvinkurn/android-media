@@ -103,6 +103,7 @@ object DeeplinkDFMapper {
     private val DFM_USER_IDENTIFICATION_COMMON = "user_identification_common"
     private val DFM_OPPORTUNITY = "opportunity"
     private val DFM_SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
+    private val DFM_PAYMENT_SETTING_SELLERAPP = "payment_setting_sellerapp"
     private val DFM_SELLER_TOPADS_DASHBOARD = "seller_topads_dashboard"
 
     private var manager: SplitInstallManager? = null
@@ -243,13 +244,12 @@ object DeeplinkDFMapper {
 
     private val deeplinkDFPatternListSellerApp: List<DFP> by lazy {
         mutableListOf<DFP>().apply {
-            add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DFM_SHOP_SETTINGS_SELLERAPP, R.string.shop_settings_title, DFWebviewFallbackUrl.SHOP_SETTINGS))
-            add(DFP({
-                it.startsWith(TOPADS_DASHBOARD_SELLER) ||
-                    it.startsWith(TOPADS_DASHBOARD_INTERNAL)
-            }, DFM_SELLER_TOPADS_DASHBOARD, R.string.applink_topads_dashboard_title, DFWebviewFallbackUrl.TOP_ADS_DASHBOARD))
-            add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST) }, DFM_PRODUCT_MANAGE_SELLER, R.string.title_applink_product_manage,
-                DFWebviewFallbackUrl.MANAGE_PRODUCT))
+            add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DFM_BASE, R.string.shop_settings_title))
+            add(DFP({ it.startsWith(PAYMENT_SETTING) }, DFM_BASE, R.string.payment_settings_title))
+            add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST) }, DFM_BASE, R.string.title_applink_product_manage))
+            add(DFP({ it.startsWith(USER_IDENTIFICATION_FORM) }, DFM_BASE, R.string.user_identification_common_title))
+            add(DFP({ it.startsWith(TOPADS_DASHBOARD_SELLER) ||
+                it.startsWith(TOPADS_DASHBOARD_INTERNAL) }, DFM_SELLER_TOPADS_DASHBOARD, R.string.applink_topads_dashboard_title))
         }
     }
 

@@ -5,6 +5,7 @@
         upload KTP. Upload Sekarang</string>
     <string name="alert_not_verified_highlight_text">Upload Sekarang</string>
 
+    <string name="kyc_error_compress_image">Gagal memproses gambar. Silahkan pilih gambar lain.</string>
     <string name="alert_waiting_verification_text">Akun toko Anda sedang dalam proses menunggu
         verifikasi. Lihat status</string>
     <string name="alert_waiting_verification_highlight_text">Lihat status</string>

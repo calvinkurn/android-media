@@ -40,7 +40,7 @@ dependencies {
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.purchase_platform_common)
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
+    implementation project(rootProject.ext.features.opportunity)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.tkpddesign)
