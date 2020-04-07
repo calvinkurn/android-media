@@ -32,8 +32,8 @@ class AddEditProductDetailModule {
     @AddEditProductDetailScope
     @Provides
     fun provideProductDraftRepository(
-        draftDataSource: AddEditProductDraftDataSource,
-        userSession: UserSessionInterface
+            draftDataSource: AddEditProductDraftDataSource,
+            userSession: UserSessionInterface
     ): AddEditProductDraftRepository {
         return AddEditProductDraftRepositoryImpl(draftDataSource, userSession)
     }

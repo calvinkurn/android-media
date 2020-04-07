@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -64,7 +65,6 @@ import com.tokopedia.product.addedit.detail.presentation.viewholder.WholeSaleInp
 import com.tokopedia.product.addedit.detail.presentation.viewmodel.AddEditProductDetailViewModel
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
-import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddMainTracking
@@ -117,7 +117,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
     @Inject
     lateinit var viewModel: AddEditProductDetailViewModel
 
-    private val productInputModel = ProductInputModel()
+    private val productDraft = ProductDraft()
 
     private var productPhotoPaths = mutableListOf<String>()
 
@@ -197,14 +197,6 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         }
     }
 
-    fun onBackPressed() {
-        if (viewModel.isEditMode) {
-            ProductEditMainTracking.trackBack(shopId)
-        } else {
-            ProductAddMainTracking.trackBack(shopId)
-        }
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_add_edit_product_detail_layout, container, false)
@@ -217,10 +209,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
             .get(AddEditProductDetailViewModel::class.java)
 
         // store the selected image paths from previous activity
-        initialSelectedImagePathList?.let {
-            productPhotoPaths.addAll(initialSelectedImagePathList)
-            productInputModel.detailInputModel.imageUrlOrPathList = it
-        }
+        initialSelectedImagePathList?.let { productPhotoPaths.addAll(initialSelectedImagePathList) }
 
         // add edit product photo views
         addProductPhotoButton = view.findViewById(R.id.tv_add_product_photo)
@@ -579,6 +568,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
                             ProductEditMainTracking.clickBackOtherCategory(shopId)
                         }
                     }
+                    productDraft.detailInputModel.categoryName = categoryName
                 }
                 REQUEST_CODE_GET_CATALOG -> {
                     val jsonSelectedCatalog: String? = data.getStringExtra(EXTRA_JSON_CATALOG)
@@ -649,6 +639,46 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         priceField?.setError(errorMessage.isNotEmpty())
         priceField?.setMessage(errorMessage)
         updateWholeSaleErrorCounter(viewModel, productWholeSaleInputFormsView)
+    }
+
+    fun onBackPressed() {
+        if (viewModel.isEditMode) {
+            ProductEditMainTracking.trackBack(shopId)
+        } else {
+            ProductAddMainTracking.trackBack(shopId)
+        }
+    }
+
+    fun saveProductDraft(isUploading: Boolean) {
+        inputAllDataInInputDraftModel()
+        viewModel.saveProductDraft(productDraft, productDraft.productId, isUploading)
+        Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
+    }
+
+    fun getAllProductsDraft() {
+        viewModel.getAllProductsDraft()
+    }
+
+    private fun inputAllDataInInputDraftModel() {
+        productDraft.detailInputModel.productName = productNameField.getText()
+        productDraft.detailInputModel.categoryId = viewModel.selectedCategoryId
+        productDraft.detailInputModel.price = productPriceField.getTextFloatOrZero()
+        productDraft.detailInputModel.stock = productStockField.getTextIntOrZero()
+        productDraft.detailInputModel.minOrder = productMinOrderField.getTextIntOrZero()
+        productDraft.detailInputModel.condition = if (isProductConditionNew) CONDITION_NEW else CONDITION_USED
+        productDraft.detailInputModel.sku = productSkuField.getText()
+        productDraft.detailInputModel.imageUrlOrPathList = productPhotoPaths
+        productDraft.detailInputModel.preorder.apply {
+            duration = preOrderDurationField.getTextIntOrZero()
+            timeUnit = selectedDurationPosition
+            isActive = preOrderSwitch?.isChecked ?: false
+        }
+        getWholesaleInput().map { wholeSale ->
+            productDraft.detailInputModel.wholesaleList.map { wholeSaleDraft ->
+                wholeSaleDraft.price = wholeSale.price
+                wholeSaleDraft.quantity = wholeSale.price
+            }
+        }
     }
 
     private fun updateWholeSaleErrorCounter(viewModel: AddEditProductDetailViewModel, wholesaleInputForms: RecyclerView?) {
@@ -769,7 +799,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
             when (it) {
                 is Success -> {
                     for (i in it.data) {
-                        Log.d("Hello Success", i.id.toString())
+                       Log.d("Hello Success", i.productId.toString())
                     }
                 }
                 is Fail -> Log.d("Hello SFailed", it.throwable.message)
@@ -901,7 +931,8 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
             ProductAddMainTracking.clickContinue(shopId)
         }
         val categoryId = viewModel.selectedCategoryId
-        val intent = AddEditProductDescriptionActivity.createInstance(context, categoryId)
+        inputAllDataInInputDraftModel()
+        val intent = AddEditProductDescriptionActivity.createInstance(context, categoryId, productDraft)
         startActivityForResult(intent, REQUEST_CODE_DESCRIPTION)
     }
 
@@ -1003,13 +1034,5 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         }
     }
 
-    fun insertProductDraft(isUploading: Boolean) {
-        val productName = productNameField?.getEditableValue().toString()
-        val productDraft = ProductDraft(0, productName)
-        viewModel.insertProductDraft(productDraft, 0, isUploading)
-    }
 
-    fun getAllProductsDraft() {
-        viewModel.getAllProductsDraft()
-    }
 }

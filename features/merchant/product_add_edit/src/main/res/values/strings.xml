@@ -166,5 +166,6 @@
     <string name="label_negative_button_on_alert_dialog">Batal</string>
     <string name="label_positive_button_on_alert_dialog">Keluar</string>
     <string name="label_neutral_button_on_alert_dialog">Simpan Draft</string>
+    <string name="label_succes_save_draft">TopSeller: Produk berhasil disimpan dalam draft</string>
 
 </resources>

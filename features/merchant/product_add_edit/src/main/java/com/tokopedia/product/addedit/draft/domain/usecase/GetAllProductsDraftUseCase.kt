@@ -8,6 +8,5 @@ import javax.inject.Inject
 class GetAllProductsDraftUseCase @Inject constructor(
     private val draftRepository: AddEditProductDraftRepository
 ): UseCase<List<ProductDraft>>() {
-
     override suspend fun executeOnBackground(): List<ProductDraft> = draftRepository.getAllDrafts()
 }

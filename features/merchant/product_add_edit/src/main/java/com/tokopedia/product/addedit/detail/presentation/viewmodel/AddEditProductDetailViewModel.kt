@@ -11,7 +11,7 @@ import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendation
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.draft.domain.usecase.GetAllProductsDraftUseCase
-import com.tokopedia.product.addedit.draft.domain.usecase.InsertProductDraftUseCase
+import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -26,7 +26,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         val provider: ResourceProvider, dispatcher: CoroutineDispatcher,
         private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
         private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
-        private val insertProductDraftUseCase: InsertProductDraftUseCase,
+        private val saveProductDraftUseCase: SaveProductDraftUseCase,
         private val getAllProductsDraftUseCase: GetAllProductsDraftUseCase
 )
     : BaseViewModel(dispatcher) {
@@ -67,9 +67,9 @@ class AddEditProductDetailViewModel @Inject constructor(
         get() = mIsPreOrderDurationInputError
     var preOrderDurationMessage: String = ""
 
-    private val insertProductDraftResultMutableLiveData = MutableLiveData<Result<Long>>()
+    private val saveProductDraftResultMutableLiveData = MutableLiveData<Result<Long>>()
     val insertProductDraftResultLiveData: LiveData<Result<Long>>
-        get() = insertProductDraftResultMutableLiveData
+        get() = saveProductDraftResultMutableLiveData
 
     private val getAllProductsDraftResultMutableLiveData = MutableLiveData<Result<List<ProductDraft>>>()
     val getAllProductsDraftResultLiveData: LiveData<Result<List<ProductDraft>>>
@@ -343,14 +343,14 @@ class AddEditProductDetailViewModel @Inject constructor(
         })
     }
 
-    fun insertProductDraft(productDraft: ProductDraft, productId: Long, isUploading: Boolean) {
+    fun saveProductDraft(productDraft: ProductDraft, productId: Long, isUploading: Boolean) {
         launchCatchError(block = {
-            insertProductDraftUseCase.params = InsertProductDraftUseCase.createRequestParams(productDraft, productId, isUploading)
-            insertProductDraftResultMutableLiveData.value = withContext(Dispatchers.IO) {
-                insertProductDraftUseCase.executeOnBackground()
+            saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(productDraft, productId, isUploading)
+            saveProductDraftResultMutableLiveData.value = withContext(Dispatchers.IO) {
+                saveProductDraftUseCase.executeOnBackground()
             }.let { Success(it) }
         }, onError = {
-            insertProductDraftResultMutableLiveData.value = Fail(it)
+            saveProductDraftResultMutableLiveData.value = Fail(it)
         })
     }
 

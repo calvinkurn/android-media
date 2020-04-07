@@ -35,26 +35,26 @@ class AddEditProductDetailActivity : BaseSimpleActivity(), HasComponent<AddEditP
                 .setMessage(R.string.message_alert_dialog_before_exit)
                 .setNegativeButton(R.string.label_negative_button_on_alert_dialog) { _, _ -> }
                 .setPositiveButton(R.string.label_positive_button_on_alert_dialog) { _, _ ->
-                    backHome()
+                    super.onBackPressed()
                 }
                 .setNeutralButton(R.string.label_neutral_button_on_alert_dialog) { _, _ ->
                     saveProductToDraft()
-                    backHome()
+                    moveToManageProduct()
                 }
         val dialog = dialogBuilder.create()
         dialog.show()
     }
 
-    private fun backHome() {
-        val intentHome = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.SELLER_HOME)
-        startActivity(intentHome)
+    private fun moveToManageProduct() {
+        val intent = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
+        startActivity(intent)
         finish()
     }
 
     private fun saveProductToDraft() {
         val f = fragment
         if (f != null && f is AddEditProductDetailFragment) {
-            f.insertProductDraft(false)
+            f.saveProductDraft(false)
         }
     }
 

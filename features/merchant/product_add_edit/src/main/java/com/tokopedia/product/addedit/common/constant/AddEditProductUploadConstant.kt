@@ -31,6 +31,8 @@ class AddEditProductUploadConstant {
         const val EXTRA_VARIANT_INPUT = "EXTRA_VARIANT_INPUT"
         const val EXTRA_DETAIL_INPUT = "EXTRA_DETAIL_INPUT"
 
+        const val EXTRA_PRODUCT_INPUT = "EXTRA_PRODUCT_INPUT"
+
     }
 
 }

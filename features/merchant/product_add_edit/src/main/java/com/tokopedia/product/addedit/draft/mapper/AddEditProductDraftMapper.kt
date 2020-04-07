@@ -1,9 +1,10 @@
-package com.tokopedia.product.manage.common.draft.mapper
+package com.tokopedia.product.addedit.draft.mapper
 
+import android.util.Log
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.common.utils.network.CacheUtil
 import com.tokopedia.product.manage.common.draft.data.db.entity.AddEditProductDraftEntity
-import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
+import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 
 class AddEditProductDraftMapper {
 
@@ -12,18 +13,18 @@ class AddEditProductDraftMapper {
         private const val MIN_COMPLETION_PERCENT = 5
         private const val MAX_COMPLETION_PERCENT = 95
 
-        fun mapProductInputToJsonString(product: ProductDraft): String {
-            return CacheUtil.convertModelToString(product, object : TypeToken<ProductDraft>() {}.type)
+        fun mapProductInputToJsonString(productInputModel: ProductInputModel): String {
+            return CacheUtil.convertModelToString(productInputModel, object : TypeToken<ProductInputModel>() {}.type)
         }
 
-        fun mapDraftToProductInput(draft: AddEditProductDraftEntity): ProductDraft {
-            val productDraft: ProductDraft = CacheUtil.convertStringToModel(draft.data, ProductDraft::class.java)
-            productDraft.productId = draft.id
-            productDraft.completionPercent = getCompletionPercent(productDraft)
-            return productDraft
+        fun mapDraftToProductInput(draft: AddEditProductDraftEntity): ProductInputModel {
+            val productInputModel: ProductInputModel = CacheUtil.convertStringToModel(draft.data, ProductInputModel::class.java)
+            productInputModel.productId = draft.id
+            productInputModel.completionPercent = getCompletionPercent(productInputModel)
+            return productInputModel
         }
 
-        private fun getCompletionPercent(product: ProductDraft): Int {
+        private fun getCompletionPercent(product: ProductInputModel): Int {
 
             val productName = product.detailInputModel.productName
             val categoryId = product.detailInputModel.categoryId
@@ -39,7 +40,7 @@ class AddEditProductDraftMapper {
             if (productName.isNotEmpty()) {
                 completionCount++
             }
-            if (categoryId.isNotEmpty()) {
+            if (categoryId.toLong() > 0) {
                 completionCount++
             }
             if (price > 0) {
@@ -70,4 +71,8 @@ class AddEditProductDraftMapper {
             return completionPercent
         }
     }
+
+
+
+
 }
