@@ -32,7 +32,7 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
     @Inject
     lateinit var productDraftListCountPresenter: ProductDraftListCountPresenter
 
-    private fun onDraftCountLoaded(rowCount: Long) {
+    override fun onDraftCountLoaded(rowCount: Long) {
         if (rowCount == 0L) {
             tvDraftProductInfo.visibility = View.GONE
         } else {
@@ -43,12 +43,6 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
             }
             tvDraftProductInfo.visibility = View.VISIBLE
         }
-    }
-
-    override fun observeDraftCount() {
-        productDraftListCountPresenter.allDraftCount.observe(this, Observer {
-            onDraftCountLoaded(it.toLong())
-        })
     }
 
     override fun getLayoutRes(): Int = R.layout.fragment_product_manage_seller
@@ -93,7 +87,7 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
         super.onResume()
         registerDraftReceiver()
         if (isMyServiceRunning(UploadProductService::class.java)) {
-            observeDraftCount()
+            productDraftListCountPresenter.getAllDraftCount()
         } else {
             productDraftListCountPresenter.fetchAllDraftCountWithUpdateUploading()
         }
@@ -120,7 +114,7 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
         draftBroadCastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 if (intent.action == UploadProductService.ACTION_DRAFT_CHANGED) {
-                    observeDraftCount()
+                    productDraftListCountPresenter.getAllDraftCount()
                 }
             }
         }
@@ -140,7 +134,6 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
     override fun onPause() {
         super.onPause()
         unregisterDraftReceiver()
-        productDraftListCountPresenter.allDraftCount.removeObservers(this)
     }
 
     override fun onErrorGetPopUp(e: Throwable) {

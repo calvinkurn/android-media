@@ -10,7 +10,7 @@ interface AddEditProductDraftRepository {
 
     fun getAllDrafts(): List<ProductDraft>
 
-    fun getAllDraftsCount(): LiveData<Int>
+    fun getAllDraftsCount(): Long
 
     fun deleteDraft(productId: Long): Boolean
 

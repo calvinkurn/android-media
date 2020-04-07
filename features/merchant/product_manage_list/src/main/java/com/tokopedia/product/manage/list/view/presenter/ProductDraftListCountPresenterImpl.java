@@ -32,8 +32,9 @@ public class ProductDraftListCountPresenterImpl extends ProductDraftListCountPre
     }
 
     @Override
-    public LiveData<Integer> getAllDraftCount() {
-        return getAllProductsCountDraftUseCase.execute();
+    public void getAllDraftCount() {
+        long draftCount = getAllProductsCountDraftUseCase.execute();
+        getView().onDraftCountLoaded(draftCount);
     }
 
     @Override
@@ -79,12 +80,12 @@ public class ProductDraftListCountPresenterImpl extends ProductDraftListCountPre
 
             @Override
             public void onError(Throwable e) {
-                getView().observeDraftCount();
+                getAllDraftCount();
             }
 
             @Override
             public void onNext(Boolean aBoolean) {
-                getView().observeDraftCount();
+                getAllDraftCount();
             }
         };
     }

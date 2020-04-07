@@ -7,6 +7,6 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
  */
 
 public interface ProductDraftListCountView extends CustomerView {
-    void observeDraftCount();
+    void onDraftCountLoaded(long rowCount);
     void onDraftCountLoadError();
 }
