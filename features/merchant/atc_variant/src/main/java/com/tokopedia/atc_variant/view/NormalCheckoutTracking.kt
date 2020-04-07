@@ -14,6 +14,7 @@ class NormalCheckoutTracking {
     companion object {
         private const val KEY_PRODUCT_ID = "productId"
         private const val KEY_DIMENSION_81 = "dimension81"
+        private const val KEY_DIMENSION_40 = "dimension40"
         const val VIEW_PDP = "viewPDP"
         const val CLICK_PDP = "clickPDP"
         const val PRODUCT_DETAIL_PAGE = "product detail page"
@@ -95,7 +96,8 @@ class NormalCheckoutTracking {
         addComponentTracker(mapEvent, productInfo, layoutName)
     }
 
-    fun eventClickAddToCartInVariant(originalProductInfoAndVariant: ProductInfoAndVariant?,
+    fun eventClickAddToCartInVariant(irisSessionId: String,
+                                     originalProductInfoAndVariant: ProductInfoAndVariant?,
                                      selectedVariantId: String,
                                      selectedProductInfo: ProductInfo,
                                      qty: Int,
@@ -112,7 +114,9 @@ class NormalCheckoutTracking {
                                      customEventAction: String,
                                      layoutName: String
     ) {
-        eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant,
+        eventClickAddToCartOrBuyInVariant(
+                irisSessionId,
+                originalProductInfoAndVariant,
                 "click - tambah ke keranjang on variants page",
                 selectedVariantId, selectedProductInfo,
                 qty, shopId, shopType, shopName, cartId,
@@ -120,7 +124,9 @@ class NormalCheckoutTracking {
                 customEventLabel, customEventAction)
     }
 
-    fun eventClickBuyInVariant(originalProductInfoAndVariant: ProductInfoAndVariant?,
+    fun eventClickBuyInVariant(
+                              irisSessionId: String,
+                               originalProductInfoAndVariant: ProductInfoAndVariant?,
                                selectedVariantId: String,
                                selectedProductInfo: ProductInfo,
                                qty: Int,
@@ -136,7 +142,8 @@ class NormalCheckoutTracking {
                                customEventLabel: String,
                                customEventAction: String,
                                layoutName: String?) {
-        eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant,
+        eventClickAddToCartOrBuyInVariant(irisSessionId,
+                originalProductInfoAndVariant,
                 "click - beli on variants page",
                 selectedVariantId, selectedProductInfo,
                 qty, shopId, shopType, shopName, cartId,
@@ -144,7 +151,8 @@ class NormalCheckoutTracking {
                 customEventLabel, customEventAction, layoutName ?: "")
     }
 
-    fun eventClickBuyTradeIn(originalProductInfoAndVariant: ProductInfoAndVariant?,
+    fun eventClickBuyTradeIn(irisSessionId: String,
+                             originalProductInfoAndVariant: ProductInfoAndVariant?,
                              selectedVariantId: String,
                              selectedProductInfo: ProductInfo,
                              qty: Int,
@@ -157,7 +165,9 @@ class NormalCheckoutTracking {
                              customEventLabel: String,
                              layoutName: String) {
         isTrackTradeIn = true
-        eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant,
+        eventClickAddToCartOrBuyInVariant(
+                irisSessionId,
+                originalProductInfoAndVariant,
                 "click beli sekarang",
                 selectedVariantId, selectedProductInfo,
                 qty, shopId, shopType, shopName, cartId,
@@ -165,7 +175,8 @@ class NormalCheckoutTracking {
                 "", false, customEventLabel, "", layoutName)
     }
 
-    private fun eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant: ProductInfoAndVariant?,
+    private fun eventClickAddToCartOrBuyInVariant(irisSessionId:String,
+                                                  originalProductInfoAndVariant: ProductInfoAndVariant?,
                                                   actionLabel: String,
                                                   selectedVariantId: String,
                                                   selectedProductInfo: ProductInfo,
@@ -213,12 +224,18 @@ class NormalCheckoutTracking {
             else -> actionLabel
         }
 
+        val dimension40 = when {
+            reference == ApplinkConst.TOPCHAT -> "/chat"
+            else -> ""
+        }
+
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 mutableMapOf<String, Any>(
                         "event" to "addToCart",
                         "eventCategory" to category,
                         "eventAction" to eventAction,
                         "eventLabel" to eventLabel,
+                        "sessionIris" to irisSessionId,
                         KEY_PRODUCT_ID to selectedProductInfo.basic.id,
                         "layout" to "layout:${layoutName};catName:${originalProductInfoAndVariant.productInfo.category.name};catId:${originalProductInfoAndVariant.productInfo.category.id};",
                         "component" to "",
@@ -244,8 +261,8 @@ class NormalCheckoutTracking {
                                                 "dimension38" to (trackerAttribution ?: NONE_OTHER),
                                                 "dimension54" to getMultiOriginAttribution(multiOrigin),
                                                 "dimension83" to dimension83,
-                                                KEY_DIMENSION_81 to shopType
-
+                                                KEY_DIMENSION_81 to shopType,
+                                                KEY_DIMENSION_40 to dimension40
                                         )),
                                         "actionField" to mutableMapOf("list" to (trackerListName
                                                 ?: ""))

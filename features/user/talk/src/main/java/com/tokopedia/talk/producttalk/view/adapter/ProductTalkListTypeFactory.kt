@@ -2,6 +2,7 @@ package com.tokopedia.talk.producttalk.view.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.talk.producttalk.view.data.ChatBannerUiModel
 import com.tokopedia.talk.producttalk.view.viewmodel.*
 
 /**
@@ -14,5 +15,6 @@ interface ProductTalkListTypeFactory{
     fun type(viewModel: LoadProductTalkThreadViewModel):Int
     fun type(emptyProductTalkViewModel: EmptyProductTalkViewModel): Int
     fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
+    fun type(chatBannerUiModel: ChatBannerUiModel): Int
 
 }

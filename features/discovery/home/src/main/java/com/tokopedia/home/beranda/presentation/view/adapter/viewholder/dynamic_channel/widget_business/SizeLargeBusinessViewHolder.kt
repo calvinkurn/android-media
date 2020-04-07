@@ -7,13 +7,12 @@ import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.model.HomeWidget
-import com.tokopedia.home.beranda.presentation.view.fragment.BusinessUnitItemView
 import kotlinx.android.synthetic.main.layout_template_icon_business_widget.view.*
 import kotlinx.android.synthetic.main.layout_template_large_business.view.*
 
 class SizeLargeBusinessViewHolder (
-        itemView: View?,
-        listener: BusinessUnitItemView
+        itemView: View,
+        listener: BusinessUnitItemViewListener
 ) : SizeSmallBusinessViewHolder(itemView, listener) {
 
     companion object {

@@ -1,7 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel
 
 import android.os.Bundle
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
@@ -20,6 +20,9 @@ data class PlayCardViewModel(
     override fun equalsWith(b: Any?): Boolean {
         if (b is PlayCardViewModel) {
             return channel.id == b.channel.id
+                    && channel.name == b.channel.name
+                    && channel.header.name == b.channel.header.name
+                    && channel.header.applink == b.channel.header.applink
                     && playCardHome == b.playCardHome
                     && playCardHome?.channelId == b.playCardHome?.channelId
                     && playCardHome?.coverUrl == b.playCardHome?.coverUrl
@@ -29,6 +32,7 @@ data class PlayCardViewModel(
                     && playCardHome?.moderatorName == b.playCardHome?.moderatorName
                     && playCardHome?.title == b.playCardHome?.title
                     && playCardHome?.totalView == b.playCardHome?.totalView
+                    && playCardHome?.isShowTotalView == b.playCardHome?.isShowTotalView
         }
         return false
     }
@@ -78,6 +82,7 @@ data class PlayCardViewModel(
             return DataLayer.mapOf(
                     "event", "promoClick",
                     "eventCategory", "homepage-cmp",
+                    "channelId", playCardHome?.channelId,
                     "eventAction", "click on play dynamic banner",
                     "eventLabel", "Play-CMP_OTHERS_${playCardHome?.slug} - ${playCardHome?.channelId} - ${getLiveOrVod(playCardHome?.videoStream?.isLive)}",
                     "ecommerce", DataLayer.mapOf(
@@ -91,22 +96,23 @@ data class PlayCardViewModel(
 
     }
 
-    val enhanceImpressionPlayBanner: Map<String, Any>
-        get() {
-            val list: List<Any> = convertPromoEnhancePlayBanner(playCardHome)
-            return DataLayer.mapOf(
-                    "event", "promoView",
-                    "eventCategory", "homepage-cmp",
-                    "eventAction", "impression on play dynamic banner",
-                    "eventLabel", "Play-CMP_OTHERS_${playCardHome?.slug} - ${playCardHome?.channelId} - ${getLiveOrVod(playCardHome?.videoStream?.isLive)}",
-                    "ecommerce", DataLayer.mapOf(
-                    "promoView", DataLayer.mapOf(
-                    "promotions", DataLayer.listOf(
-                    *list.toTypedArray()
-            )
-            )
-            )
-            )
+
+    fun getEnhanceImpressionPlayBanner(isToIris: Boolean = false): Map<String, Any> {
+        val list: List<Any> = convertPromoEnhancePlayBanner(playCardHome)
+        return DataLayer.mapOf(
+                "event", if (isToIris) "promoViewIris" else "promoView",
+                "eventCategory", "homepage-cmp",
+                "eventAction", "impression on play dynamic banner",
+                "channelId", playCardHome?.channelId,
+                "eventLabel", "Play-CMP_OTHERS_${playCardHome?.slug} - ${playCardHome?.channelId} - ${getLiveOrVod(playCardHome?.videoStream?.isLive)}",
+                "ecommerce", DataLayer.mapOf(
+                "promoView", DataLayer.mapOf(
+                "promotions", DataLayer.listOf(
+                *list.toTypedArray()
+        )
+        )
+        )
+        )
     }
 
     private fun getLiveOrVod(isLive: Boolean?): String {

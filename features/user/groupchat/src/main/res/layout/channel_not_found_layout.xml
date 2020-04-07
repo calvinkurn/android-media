@@ -14,7 +14,7 @@
         android:paddingTop="@dimen/dp_48"
         android:minWidth="@dimen/dp_200"
         android:minHeight="@dimen/dp_200"
-        tools:src="@drawable/ic_play_no_connection"
+        tools:src="@drawable/unify_globalerrors_connection"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />

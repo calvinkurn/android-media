@@ -2,12 +2,16 @@ package com.tokopedia.home.beranda.listener
 
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analytics.performance.util.JankyFrameMonitoringUtil
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
+import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReviewResponse
+import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import kotlinx.coroutines.CoroutineScope
-import kotlin.coroutines.CoroutineContext
 
 import java.util.HashMap
 
@@ -40,6 +44,10 @@ interface HomeCategoryListener {
     fun onPromoClick(position: Int, slidesModel: BannerSlidesModel)
 
     fun openShop()
+
+    fun onOpenPlayChannelList(appLink: String)
+
+    fun sendIrisTrackerHashMap(tracker: HashMap<String, Any>)
 
     fun onOpenPlayActivity(root: android.view.View, channelId: String?)
 
@@ -81,6 +89,8 @@ interface HomeCategoryListener {
 
     fun onCloseGeolocationView()
 
+    fun sendEETracking(data: HashMap<String, Any>)
+
     fun putEEToTrackingQueue(data: HashMap<String, Any>)
 
     fun putEEToIris(data: HashMap<String, Any>)
@@ -88,4 +98,14 @@ interface HomeCategoryListener {
     fun getWindowWidth(): Int
 
     fun refreshHomeData()
+
+    fun getHomeJankyFramesUtil(): JankyFrameMonitoringUtil?
+
+    fun getTabBusinessWidget(position: Int)
+
+    fun getBusinessUnit(tabId: Int, position: Int)
+
+    fun getPlayChannel(position: Int)
+
+    fun updateExpiredChannel(dynamicChannelDataModel: DynamicChannelViewModel, position: Int)
 }

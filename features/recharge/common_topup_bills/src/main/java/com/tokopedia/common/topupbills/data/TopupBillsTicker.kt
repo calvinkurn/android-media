@@ -9,25 +9,25 @@ import com.google.gson.annotations.SerializedName
 class TopupBillsTicker(
         @SerializedName("ID")
         @Expose
-        val id: Int,
+        val id: Int = 0,
         @SerializedName("Name")
         @Expose
-        val name: String,
+        val name: String = "",
         @SerializedName("Content")
         @Expose
-        val content: String,
+        val content: String = "",
         @SerializedName("Type")
         @Expose
-        val type: String,
+        val type: String = "",
         @SerializedName("Environment")
         @Expose
-        val environment: String,
+        val environment: String = "",
         @SerializedName("ActionLink")
         @Expose
-        val actionLink: String,
+        val actionLink: String = "",
         @SerializedName("ActionText")
         @Expose
-        val actionText: String
+        val actionText: String = ""
 ) {
         companion object {
                 const val TYPE_INFO = "info"

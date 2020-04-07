@@ -49,7 +49,7 @@ public class WithdrawPasswordPresenter extends BaseDaggerPresenter<WithdrawPassw
     }
 
     @Override
-    public void doWithdraw(int withdrawal, BankAccount bankAccount, String password, boolean isSellerWithdrawal, String programName) {
+    public void doWithdraw(long withdrawal, BankAccount bankAccount, String password, boolean isSellerWithdrawal, String programName) {
 
         gqlSubmitWithdrawUseCase.setQuery(getView().loadRawString(R.raw.query_success_page));
         gqlSubmitWithdrawUseCase.setRequestParams(userSession.getEmail(), withdrawal, bankAccount,

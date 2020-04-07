@@ -16,9 +16,11 @@ object ProductDetailCommonConstant{
     const val PARAM_CATEGORY_ID = "categoryId"
     const val PARAM_USER_ID = "userId"
     const val PARAM_MIN_ORDER = "minOrder"
-    const val PARAM_WAREHOUSE_ID = "wareHouseId"
     const val PARAM_TRADE_IN = "tradeIn"
     const val FORCE_REFRESH = "forceRefresh"
+    const val PARAM_PRODUCT_IDS = "productIds"
+    const val PARAM_WAREHOUSE_ID = "warehouseID"
+    const val PARAM_CART_TYPE = "cartTypeParam"
 
     const val PARAM_SHOP_IDS = "shopIds"
     const val PARAM_SHOP_FIELDS = "fields"
@@ -64,4 +66,14 @@ object ProductDetailCommonConstant{
     const val PARAM_TRADEIN_TRADE_USED_PRICE = "usedPrice"
     const val PARAM_TRADEIN_TRADE_USER_ID = "UserId"
 
+    //notify me (teaser campaign)
+    const val PARAM_TEASER_CAMPAIGN_ID = "campaignId"
+    const val PARAM_TEASER_PRODUCT_ID = "productId"
+    const val PARAM_TEASER_ACTION = "action"
+    const val PARAM_TEASER_SOURCE = "source"
+    const val VALUE_TEASER_ACTION_REGISTER = "REGISTER"
+    const val VALUE_TEASER_ACTION_UNREGISTER = "UNREGISTER"
+    const val VALUE_TEASER_TRACKING_REGISTER = "on"
+    const val VALUE_TEASER_TRACKING_UNREGISTER = "off"
+    const val VALUE_TEASER_SOURCE = "pdp"
 }

@@ -36,8 +36,6 @@ class ReactNativeBrandListOsActivity : ReactFragmentActivity<ReactBrandListOsFra
 
         val EXTRA_TITLE = "EXTRA_TITLE"
 
-        @JvmStatic
-        @DeepLink(ApplinkConst.BRAND_LIST, ApplinkConst.BRAND_LIST_WITH_SLASH, ApplinkConst.BRAND_LIST_CATEGORY)
         fun getBrandlistApplinkCallingIntent(context: Context, bundle: Bundle): Intent {
             return createApplinkCallingIntent(context, ReactConst.Screen.BRANDLIST_PAGE, "All Brands", bundle)
         }

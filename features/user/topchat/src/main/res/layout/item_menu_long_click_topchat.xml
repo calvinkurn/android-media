@@ -6,26 +6,26 @@
     android:layout_height="wrap_content"
     android:background="?selectableItemBackground"
     android:orientation="horizontal"
-    android:paddingStart="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_16"
-    android:paddingEnd="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_16">
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/spacing_lvl4"
+    android:paddingEnd="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/spacing_lvl4">
 
     <ImageView
         android:id="@+id/ivIcon"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_width="@dimen/spacing_lvl5"
+        android:layout_height="@dimen/spacing_lvl5"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
         tools:src="@drawable/ic_chat_unread_filled_grey" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:layout_weight="1"
         app:typographyType="body_2"
         app:typographyWeight="bold"
-        android:layout_gravity="center_vertical"
         tools:text="@tools:sample/full_names" />
 </LinearLayout>

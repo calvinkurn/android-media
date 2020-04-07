@@ -3,26 +3,22 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
-import android.content.res.Resources
-import android.graphics.Rect
 import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
 import android.provider.Settings.Secure.getInt
-import com.google.android.material.snackbar.Snackbar
-import androidx.core.content.ContextCompat
 import android.view.View
-import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
-import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.logisticaddaddress.R
-import android.widget.EditText
 import com.tokopedia.logisticaddaddress.common.AddressConstants
 import kotlin.math.abs
 
@@ -62,11 +58,6 @@ object AddNewAddressUtils {
     }
 
     @JvmStatic
-    fun toDp(number: Int): Int {
-        return (number * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
-    }
-
-    @JvmStatic
     fun isGpsEnabled(context: Context?): Boolean {
         var isGpsOn = false
         context?.let {
@@ -96,9 +87,8 @@ object AddNewAddressUtils {
         return isGpsOn
     }
 
-    @JvmStatic
     fun hideKeyboard(et: EditText, context: Context?) {
-        val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE)
+        val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) ?: return
         (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(et.windowToken, 0)
     }
 

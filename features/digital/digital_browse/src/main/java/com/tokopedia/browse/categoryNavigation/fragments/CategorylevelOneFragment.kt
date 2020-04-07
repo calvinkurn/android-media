@@ -14,7 +14,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 
 import com.tokopedia.browse.R
 import com.tokopedia.browse.categoryNavigation.adapters.CategoryLevelOneAdapter
-import com.tokopedia.browse.categoryNavigation.data.model.category.CategoriesItem
+import com.tokopedia.browse.categoryNavigation.data.model.newcategory.CategoriesItem
 import com.tokopedia.browse.categoryNavigation.di.CategoryNavigationComponent
 import com.tokopedia.browse.categoryNavigation.di.DaggerCategoryNavigationComponent
 import com.tokopedia.browse.categoryNavigation.view.ActivityStateListener
@@ -27,6 +27,7 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 private const val EXTRA_CATEGORY_NAME = "CATEGORY_NAME"
+
 class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComponent> {
 
     @Inject
@@ -40,6 +41,8 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
     var selectedPosition = 0
 
     private var selectedItemIdentifier: String? = null
+
+    private lateinit var categoryLevelOneAdapter: CategoryLevelOneAdapter
 
     companion object {
         @JvmStatic
@@ -78,7 +81,8 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
     private fun initView() {
         val linearLayoutManager = LinearLayoutManager(context)
         master_list.layoutManager = linearLayoutManager
-        val categoryLevelOneAdapter = CategoryLevelOneAdapter(categoryList, listener, activityStateListener?.getActivityTrackingQueue())
+        addShimmerItems(categoryList)
+        categoryLevelOneAdapter = CategoryLevelOneAdapter(categoryList, listener, activityStateListener?.getActivityTrackingQueue())
         master_list.adapter = categoryLevelOneAdapter
 
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -86,9 +90,17 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
         categoryBrowseViewModel.bound()
     }
 
+    private fun addShimmerItems(categoryList: ArrayList<CategoriesItem>) {
+        // adding shimmer elements in recyclerview
+        val item = CategoriesItem()
+        item.type = 0
+        for (i in 0..8) {
+            categoryList.add(item)
+        }
+    }
+
     private fun setUpObserver() {
         categoryBrowseViewModel.getCategoryList().observe(viewLifecycleOwner, Observer {
-
             when (it) {
                 is Success -> {
                     categoryList.clear()
@@ -102,11 +114,10 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
                     }
                     master_list.adapter?.notifyDataSetChanged()
                     master_list.layoutManager?.scrollToPosition(selectedPosition)
-
                     initiateSlaveFragmentLoading(selectedPosition)
                 }
                 is Fail -> {
-                    (activity as CategoryChangeListener).onError()
+                    (activity as CategoryChangeListener).onError(it.throwable)
                 }
             }
 
@@ -115,7 +126,6 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
 
     private fun getPositionFromIdentifier(categoryList: ArrayList<CategoriesItem>): Int {
         for (i in 0 until categoryList.size) {
-
             categoryList[i].identifier?.let {
                 if (it == selectedItemIdentifier) {
                     selectedPosition = i
@@ -123,7 +133,6 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
                 }
             }
         }
-
         return 0
     }
 
@@ -157,6 +166,9 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
     interface CategorySelectListener {
         fun onItemClicked(id: String, position: Int, categoryName: String, applink: String?)
     }
+
+    override fun onPause() {
+        categoryLevelOneAdapter.onPause()
+        super.onPause()
+    }
 }
-
-

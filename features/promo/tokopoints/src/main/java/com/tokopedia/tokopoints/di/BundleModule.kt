@@ -2,12 +2,14 @@ package com.tokopedia.tokopoints.di
 
 import android.content.Context
 import android.os.Bundle
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.tokopoints.R
+import com.tokopedia.tokopoints.view.util.CommonConstant
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -35,11 +37,13 @@ class BundleModule constructor(private val bundle : Bundle = Bundle()){
     }
 
 
+
     @Provides
     fun getMultiGraphQlRequest(graphqlRepository: GraphqlRepository) = MultiRequestGraphqlUseCase(graphqlRepository)
 
     @Provides
     fun getGQLUserCase(graphqlRepository: GraphqlRepository) = GraphqlUseCase<GraphqlResponse>(graphqlRepository)
+
 
 
     companion object{

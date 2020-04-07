@@ -211,6 +211,22 @@ public class ProductManageViewModel implements Parcelable, Visitable<BaseListChe
         this.productVariant = productVariant;
     }
 
+    public String getImageFullUrl() {
+        return imageFullUrl;
+    }
+
+    public void setImageFullUrl(String imageFullUrl) {
+        this.imageFullUrl = imageFullUrl;
+    }
+
+    public boolean getIsFeatureProduct() {
+        return isFeatureProduct;
+    }
+
+    public void setIsFeatureProduct(boolean isFeatureProduct) {
+        this.isFeatureProduct = isFeatureProduct;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -275,20 +291,4 @@ public class ProductManageViewModel implements Parcelable, Visitable<BaseListChe
             return new ProductManageViewModel[size];
         }
     };
-
-    public String getImageFullUrl() {
-        return imageFullUrl;
-    }
-
-    public void setImageFullUrl(String imageFullUrl) {
-        this.imageFullUrl = imageFullUrl;
-    }
-
-    public boolean getIsFeatureProduct() {
-        return isFeatureProduct;
-    }
-
-    public void setIsFeatureProduct(boolean isFeatureProduct) {
-        this.isFeatureProduct = isFeatureProduct;
-    }
 }

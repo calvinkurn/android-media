@@ -1,0 +1,6 @@
+mutation check_email($email: String!) {
+  userProfileCompletionValidate(email: $email) {
+    isValid
+    emailMessage
+  }
+}

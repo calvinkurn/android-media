@@ -4,8 +4,9 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
+import com.tokopedia.onboarding.common.DefaultCoroutineDispatcherProvider
+import com.tokopedia.onboarding.common.OnboardingIoDispatcher
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -34,11 +35,9 @@ class OnboardingModule {
 
     @OnboardingScope
     @Provides
-    fun provideRemoteConfigInstance(): RemoteConfigInstance {
-        return RemoteConfigInstance.getInstance()
-    }
+    fun provideOnboardingAnalytics(): OnboardingAnalytics = OnboardingAnalytics()
 
     @OnboardingScope
     @Provides
-    fun provideOnboardingAnalytics(): OnboardingAnalytics = OnboardingAnalytics()
+    fun providerDispatcherProvider(): OnboardingIoDispatcher = DefaultCoroutineDispatcherProvider()
 }

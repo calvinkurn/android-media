@@ -25,6 +25,7 @@ object PlayLiveDynamicChannelQuery {
                 title
                 description
                 cover_url
+                is_show_total_view
                 total_view_formatted
                 moderator_id
                 moderator_name
@@ -39,6 +40,7 @@ object PlayLiveDynamicChannelQuery {
                     livestream_id
                     stream_url
                     is_playback
+                    is_auto_play
                   }
                 }
               }      

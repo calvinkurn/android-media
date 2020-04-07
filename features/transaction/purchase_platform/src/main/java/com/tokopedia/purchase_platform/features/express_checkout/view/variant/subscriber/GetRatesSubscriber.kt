@@ -4,8 +4,8 @@ import com.tokopedia.purchase_platform.features.express_checkout.view.variant.Ch
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel
-import com.tokopedia.logisticcart.shipping.model.ShippingDurationViewModel
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.purchase_platform.R
 import rx.Subscriber
@@ -39,31 +39,31 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
         } else if (ratesData.shippingDurationViewModels != null && ratesData.shippingDurationViewModels.size > 0) {
             var defaultProduct: ProductData? = null
             // Check is service id available
-            for (shippingDurationViewModel: ShippingDurationViewModel in ratesData.shippingDurationViewModels) {
+            for (shippingDurationUiModel: ShippingDurationUiModel in ratesData.shippingDurationViewModels) {
                 // Reset promo data since not needed by express checkout
-                shippingDurationViewModel.serviceData.isPromo = 0
-                for (product: ProductData in shippingDurationViewModel.serviceData.products) {
+                shippingDurationUiModel.serviceData.isPromo = 0
+                for (product: ProductData in shippingDurationUiModel.serviceData.products) {
                     product.promoCode = ""
                     if (defaultProduct == null) {
                         defaultProduct = product
                     }
                 }
-                if (shippingDurationViewModel.serviceData.serviceId == profileServiceId) {
-                    if (shippingDurationViewModel.serviceData.products.size > 0) {
+                if (shippingDurationUiModel.serviceData.serviceId == profileServiceId) {
+                    if (shippingDurationUiModel.serviceData.products.size > 0) {
                         if (currentSpId != 0) {
                             // Reset recommendation
-                            for (product: ProductData in shippingDurationViewModel.serviceData.products) {
+                            for (product: ProductData in shippingDurationUiModel.serviceData.products) {
                                 product.isRecommend = product.shipperProductId == currentSpId
                             }
                             // Reload rates data come here
-                            for (product: ProductData in shippingDurationViewModel.serviceData.products) {
+                            for (product: ProductData in shippingDurationUiModel.serviceData.products) {
                                 if (product.shipperProductId == currentSpId) {
                                     if (product.error.errorMessage.isNullOrEmpty()) {
-                                        prepareViewModel(product, shippingDurationViewModel.serviceData, shippingDurationViewModel.shippingCourierViewModelList)
+                                        prepareViewModel(product, shippingDurationUiModel.serviceData, shippingDurationUiModel.shippingCourierViewModelList)
                                         return
                                     } else {
                                         view?.setShippingCourierError(product.error.errorMessage)
-                                        view?.updateShippingData(product, shippingDurationViewModel.serviceData, shippingDurationViewModel.shippingCourierViewModelList)
+                                        view?.updateShippingData(product, shippingDurationUiModel.serviceData, shippingDurationUiModel.shippingCourierViewModelList)
                                         return
                                     }
                                 }
@@ -73,13 +73,13 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
                             return
                         } else {
                             // First time load rates data come here
-                            for (product: ProductData in shippingDurationViewModel.serviceData.products) {
+                            for (product: ProductData in shippingDurationUiModel.serviceData.products) {
                                 if (product.isRecommend) {
-                                    prepareViewModel(product, shippingDurationViewModel.serviceData, shippingDurationViewModel.shippingCourierViewModelList)
+                                    prepareViewModel(product, shippingDurationUiModel.serviceData, shippingDurationUiModel.shippingCourierViewModelList)
                                     return
                                 }
                             }
-                            prepareViewModel(shippingDurationViewModel.serviceData.products[0], shippingDurationViewModel.serviceData, shippingDurationViewModel.shippingCourierViewModelList)
+                            prepareViewModel(shippingDurationUiModel.serviceData.products[0], shippingDurationUiModel.serviceData, shippingDurationUiModel.shippingCourierViewModelList)
                             return
                         }
                     }
@@ -109,11 +109,11 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
         }
     }
 
-    private fun prepareViewModel(product: ProductData, serviceData: ServiceData, shippingCourierViewModels: MutableList<ShippingCourierViewModel>) {
+    private fun prepareViewModel(product: ProductData, serviceData: ServiceData, shippingCourierUiModels: MutableList<ShippingCourierUiModel>) {
         if (currentSpId == 0) {
             presenter.prepareViewModel(product)
         }
-        view?.updateShippingData(product, serviceData, shippingCourierViewModels)
+        view?.updateShippingData(product, serviceData, shippingCourierUiModels)
     }
 
 }

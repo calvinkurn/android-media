@@ -25,8 +25,8 @@ abstract class CMInAppImageDownloader(val cmInApp: CMInApp) {
 
     protected abstract suspend fun verifyAndUpdate()
 
-    protected fun downloadAndStore(context: Context, url: String, imageSizeAndTimeout: ImageSizeAndTimeout): String? {
-        val bitmap = downloadImage(context, url, imageSizeAndTimeout)
+    protected fun downloadAndStore(context: Context, url: String?, imageSizeAndTimeout: ImageSizeAndTimeout): String? {
+        val bitmap = url?.let {  downloadImage(context, url, imageSizeAndTimeout) }
         return bitmap?.let {
             storeBitmapToFile(context, bitmap)
         }

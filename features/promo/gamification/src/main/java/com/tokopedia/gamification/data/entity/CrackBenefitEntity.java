@@ -55,6 +55,9 @@ public class CrackBenefitEntity {
     @SerializedName("animationType")
     public String animationType;
 
+    @SerializedName("imageUrl")
+    public String imageUrl;
+
     public void setColor(String color) {
         this.color = color;
     }

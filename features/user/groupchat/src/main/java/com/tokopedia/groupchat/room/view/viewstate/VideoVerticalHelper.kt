@@ -16,7 +16,6 @@ import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.videoplayer.state.*
 import com.tokopedia.videoplayer.utils.sendViewToBack
 import com.tokopedia.videoplayer.view.player.TkpdVideoPlayer
@@ -35,8 +34,7 @@ class VideoVerticalHelper constructor (
         var setChatListHasSpaceOnTop: (Int) -> Unit,
         var backgroundHelper: PlayBackgroundHelper,
         var analytics: GroupChatAnalytics,
-        var gradientBackground: View,
-        var liveIndicator: View
+        var gradientBackground: View
 ): PlayBaseHelper(model) {
 
     companion object {
@@ -175,7 +173,6 @@ class VideoVerticalHelper constructor (
         hideContainer()
         endTime = System.currentTimeMillis()
         analytics.eventWatchVerticalVideo(viewModel?.channelId, (endTime - startTime).toString())
-        liveIndicator.hide()
     }
 
     fun setData(it: VideoStreamViewModel) {
@@ -191,7 +188,6 @@ class VideoVerticalHelper constructor (
         }
         playVideoSource(video)
         backgroundHelper.setEmptyBackground()
-        liveIndicator.showWithCondition(videoStreamViewModel.isActive)
     }
 
     fun isVideoShown(): Boolean {

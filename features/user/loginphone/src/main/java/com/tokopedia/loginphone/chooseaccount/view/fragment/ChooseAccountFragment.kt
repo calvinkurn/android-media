@@ -2,16 +2,13 @@ package com.tokopedia.loginphone.chooseaccount.view.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.text.Spanned
 import android.text.format.DateFormat
-import android.view.*
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -24,14 +21,10 @@ import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.linker.LinkerConstants
@@ -48,8 +41,8 @@ import com.tokopedia.loginphone.chooseaccount.viewmodel.ChooseAccountViewModel
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics
 import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifications.CMPushNotificationManager
-import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.track.TrackApp
@@ -318,7 +311,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     }
 
     private fun onErrorLoginToken(throwable: Throwable) {
-        onErrorLogin(ErrorHandlerSession.getErrorMessage(throwable, context, true))
+        onErrorLogin(ErrorHandler.getErrorMessage(context, throwable))
         logUnknownError(Throwable("Login Phone Number Login Token is not success"))
     }
 
@@ -340,14 +333,14 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     }
 
     private fun onErrorGetUserInfo(throwable: Throwable) {
-        onErrorLogin(ErrorHandlerSession.getErrorMessage(throwable, context, true))
+        onErrorLogin(ErrorHandler.getErrorMessage(context, throwable))
         logUnknownError(Throwable("Login Phone Number Get User Info is not success"))
     }
 
     //Impossible Flow
     private fun onGoToActivationPage(): (MessageErrorException) -> Unit {
         return {
-            onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, false))
+            onErrorLogin(ErrorHandler.getErrorMessage(context, it))
             logUnknownError(Throwable("Login Phone Number Login Token go to activation"))
         }
     }
@@ -385,7 +378,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
 
     private fun onErrorGetAccountList(e: Throwable) {
         dismissLoadingProgress()
-        val errorMessage = ErrorHandlerSession.getErrorMessage(e, context, true)
+        val errorMessage = ErrorHandler.getErrorMessage(context, e)
         NetworkErrorHelper.showEmptyState(context, view, errorMessage) {
             showLoadingProgress()
             getAccountList()

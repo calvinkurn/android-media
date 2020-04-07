@@ -5,7 +5,6 @@ import android.content.Intent;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 
 /**
@@ -18,6 +17,6 @@ public class ShopPageInternalRouter {
     }
 
     public static Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
-        return ShopProductListActivity.createIntent(context, shopId, keyword, etalaseId, "");
+        return ShopProductListActivity.createIntent(context, shopId, keyword, etalaseId, "", "");
     }
 }

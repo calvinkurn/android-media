@@ -31,7 +31,7 @@ class ShopPageTrackingShopSearchProduct(
 
     fun clickAutocompleteInternalShopPage(isOwner: Boolean, keyword: String, customDimensionShopPage: CustomDimensionShopPage) {
         sendGeneralEvent(
-                "",
+                CLICK_SHOP_PAGE,
                 getShopPageCategory(isOwner),
                 String.format(SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE, keyword),
                 "",
@@ -41,7 +41,7 @@ class ShopPageTrackingShopSearchProduct(
 
     fun clickAutocompleteExternalShopPage(isOwner: Boolean, keyword: String, customDimensionShopPage: CustomDimensionShopPage) {
         sendGeneralEvent(
-                "",
+                CLICK_SHOP_PAGE,
                 getShopPageCategory(isOwner),
                 String.format(SHOP_SEARCH_PRODUCT_CLICK_GLOBAL_SEARCH, keyword),
                 "",
@@ -56,6 +56,16 @@ class ShopPageTrackingShopSearchProduct(
                 SHOP_SEARCH_PRODUCT_CLICK_PRODUCT_AUTOCOMPLETE,
                 String.format(LABEL_SHOP_SEARCH_PRODUCT_KEYWORD_VALUE_PAGEURL, keyword, VALUE_PRODUCT, pageUrl),
                 null
+        )
+    }
+
+    fun typeSearch(isOwner: Boolean,keyword: String, customDimensionShopPage: CustomDimensionShopPage) {
+        sendEvent(
+                CLICK_SHOP_PAGE,
+                getShopPageCategory(isOwner),
+                SEARCH,
+                keyword,
+                customDimensionShopPage
         )
     }
 }

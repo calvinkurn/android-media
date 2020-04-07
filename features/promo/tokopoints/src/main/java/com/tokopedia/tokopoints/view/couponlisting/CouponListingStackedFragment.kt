@@ -3,7 +3,6 @@ package com.tokopedia.tokopoints.view.couponlisting
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +10,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
@@ -21,10 +20,9 @@ import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
-import com.tokopedia.tokopoints.di.TokoPointComponent
-import com.tokopedia.tokopoints.view.activity.CatalogListingActivity
+import com.tokopedia.tokopoints.di.TokopointsQueryModule
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration
-import com.tokopedia.tokopoints.view.contract.CouponListingStackedContract
+import com.tokopedia.tokopoints.view.cataloglisting.CatalogListingActivity
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity
 import com.tokopedia.tokopoints.view.util.*
 import kotlinx.android.synthetic.main.tp_fragment_stacked_coupon_listing.*
@@ -83,7 +81,9 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
 
     override fun initInjector() {
         DaggerTokopointBundleComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build().inject(this)
+            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            .tokopointsQueryModule(TokopointsQueryModule(requireActivity()))
+            .build().inject(this)
     }
 
     override fun onClick(source: View) {

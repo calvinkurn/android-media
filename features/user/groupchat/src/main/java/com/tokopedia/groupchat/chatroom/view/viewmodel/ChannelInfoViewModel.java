@@ -115,6 +115,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.backgroundViewModel = null;
         this.freezeViewModel = null;
         this.videoStreamViewModel = null;
+        this.chatPermitViewModel = null;
     }
 
     public ChannelInfoViewModel(String channelId, String title, String channelUrl, String bannerUrl,
@@ -166,7 +167,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.overlayViewModel = overlayViewModel;
         this.backgroundViewModel = backgroundViewModel;
         this.freezeViewModel = freezeViewModel;
-        this.chatPermitViewModel = this.chatPermitViewModel;
+        this.chatPermitViewModel = chatPermitViewModel;
     }
 
     protected ChannelInfoViewModel(Parcel in) {
@@ -206,6 +207,18 @@ public class ChannelInfoViewModel implements Parcelable {
         quickRepliesViewModel = in.createTypedArrayList(GroupChatQuickReplyItemViewModel.CREATOR);
         chatPermitViewModel = in.readParcelable(ChatPermitModel.class.getClassLoader());
     }
+
+    public static final Creator<ChannelInfoViewModel> CREATOR = new Creator<ChannelInfoViewModel>() {
+        @Override
+        public ChannelInfoViewModel createFromParcel(Parcel in) {
+            return new ChannelInfoViewModel(in);
+        }
+
+        @Override
+        public ChannelInfoViewModel[] newArray(int size) {
+            return new ChannelInfoViewModel[size];
+        }
+    };
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
@@ -249,18 +262,6 @@ public class ChannelInfoViewModel implements Parcelable {
     public int describeContents() {
         return 0;
     }
-
-    public static final Creator<ChannelInfoViewModel> CREATOR = new Creator<ChannelInfoViewModel>() {
-        @Override
-        public ChannelInfoViewModel createFromParcel(Parcel in) {
-            return new ChannelInfoViewModel(in);
-        }
-
-        @Override
-        public ChannelInfoViewModel[] newArray(int size) {
-            return new ChannelInfoViewModel[size];
-        }
-    };
 
     public String getChannelId() {
         return channelId;

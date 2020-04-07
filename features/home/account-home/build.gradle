@@ -79,6 +79,7 @@ dependencies {
     implementation project(rootProject.ext.features.userIdentificationCommon)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.features.discoveryCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.features.wishlistCommon)
@@ -87,9 +88,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 
     implementation rootProject.ext.unifyDependencies.icon
-    implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.dialog
+    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
@@ -111,7 +113,7 @@ dependencies {
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation rootProject.ext.playServicesDependencies.base
     implementation rootProject.ext.playServicesDependencies.auth
-    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.miscDependencies.multiDex
     implementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
@@ -123,7 +125,7 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
-    androidTestApi(project(rootProject.ext.libraries.instrumentation_test)) {
+    androidTestImplementation(project(rootProject.ext.libraries.instrumentation_test)) {
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
         exclude group: 'org.jetbrains.kotlin:kotlin-reflect'
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
@@ -144,7 +146,7 @@ dependencies {
 project.ext {
     artifactId = 'account'
     groupId = 'com.tokopedia.home'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "account-home-release"
 }
 

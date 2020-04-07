@@ -114,4 +114,10 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, pr
             exoPlayerHelper.onActivityStop()
         }
     }
+
+    fun resetImpressionHomeBanner() {
+        if(itemCount > 0){
+            (getViewHolder(0) as? BannerViewHolder)?.resetImpression()
+        }
+    }
 }

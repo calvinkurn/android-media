@@ -11,8 +11,9 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import rx.Observable
 import rx.schedulers.Schedulers
+import javax.inject.Inject
 
-open class GraphqlUseCase<T: Any>(private val graphqlRepository: GraphqlRepository): UseCase<T>() {
+open class GraphqlUseCase<T: Any> @Inject constructor(private val graphqlRepository: GraphqlRepository): UseCase<T>() {
 
     private var cacheStrategy: GraphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.NONE).build()
     private var graphqlQuery: String? = null

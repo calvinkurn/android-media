@@ -68,8 +68,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.features.seamlesslogin)
 
-    implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
@@ -95,8 +96,7 @@ dependencies {
         exclude group: "com.android.support"
     }
     implementation rootProject.ext.viewDependencies.ahBottomNavigation
-    implementation rootProject.ext.playServicesDependencies.analytics
-    implementation rootProject.ext.playServicesDependencies.tagManager
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.miscDependencies.parcelerApi
     annotationProcessor rootProject.ext.miscDependencies.parceler
@@ -115,21 +115,14 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.spek2Dsl
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
     testImplementation "org.json:json:20140107"
+    implementation project(rootProject.ext.libraries.iris)
 }
 
 project.ext {
     artifactId = 'search'
     groupId = 'com.tokopedia.discovery'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName ="search-release"
-    unitTestJavaIncludes = [
-            '**/UrlParamUtils.*'
-    ]
-    unitTestKotlinIncludes = [
-            '**/SearchShopViewModel.*',
-            '**/SearchViewModel.*',
-            '**/SearchKotlinExtKt.*',
-    ]
 }
 
 apply from: '../../../publish_local.gradle'

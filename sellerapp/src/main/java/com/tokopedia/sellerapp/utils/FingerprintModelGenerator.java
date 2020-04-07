@@ -106,8 +106,8 @@ public class FingerprintModelGenerator {
         String ssid         = DeviceConnectionInfo.getSSID(context);
         String carrier      = DeviceConnectionInfo.getCarrierName(context);
         String androidId = DeviceInfo.getAndroidId(context);
+        String imei = DeviceInfo.getImei(context);
         boolean isx86 = DeviceInfo.isx86();
-        int appsCount = DeviceInfo.getInstalledAppsCount(context);
         String packageName = DeviceInfo.getPackageName(context);
 
         FingerPrint fp = new FingerPrint.FingerPrintBuilder()
@@ -129,8 +129,8 @@ public class FingerprintModelGenerator {
                 .deviceLng(new LocationCache(context).getLongitudeCache())
                 .androidId(androidId)
                 .isx86(isx86)
-                .appsCount(appsCount)
                 .packageName(packageName)
+                .imei(imei)
                 .build();
 
         return new Gson().toJson(fp);

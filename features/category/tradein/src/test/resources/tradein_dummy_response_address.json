@@ -1,0 +1,41 @@
+{
+  "data": {
+    "keroAddressCorner": {
+      "status": "OK",
+      "config": "",
+      "server_process_time": "",
+      "data": [
+        {
+          "addr_id": 61176508,
+          "receiver_name": "Hefdy Elprama",
+          "addr_name": "Rumah",
+          "address_1": "Tokopedia Tower 48th Floors, Setiabudi, Karet, Jakarta Selatan 12930",
+          "address_2": "",
+          "postal_code": "12930",
+          "province": 13,
+          "city": 175,
+          "district": 2270,
+          "phone": "6281908878591",
+          "country": "Indonesia",
+          "province_name": "DKI Jakarta",
+          "city_name": "Jakarta Selatan",
+          "district_name": "Setiabudi",
+          "latitude": "",
+          "longitude": "",
+          "status": 2,
+          "is_primary": true,
+          "is_active": false,
+          "is_whitelist": true,
+          "partner_id": 0,
+          "partner_name": "",
+          "type": 1,
+          "is_corner": false
+        }
+      ],
+      "token": {
+        "district_recommendation": "Tokopedia+Kero:uQ+GYfj8zW038VEmDHJIpUFMoU8=",
+        "ut": "1576729005"
+      }
+    }
+  }
+}

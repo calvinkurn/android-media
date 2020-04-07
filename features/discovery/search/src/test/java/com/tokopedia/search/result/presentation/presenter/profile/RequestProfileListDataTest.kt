@@ -4,12 +4,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.InstantTaskExecutorRuleSpek
 import com.tokopedia.search.result.domain.model.SearchProfileModel
 import com.tokopedia.search.result.presentation.ProfileListSectionContract
-import com.tokopedia.search.result.presentation.model.EmptySearchProfileViewModel
-import com.tokopedia.search.result.presentation.model.ProfileRecommendationTitleViewModel
-import com.tokopedia.search.result.presentation.model.ProfileViewModel
 import com.tokopedia.search.result.presentation.presenter.profile.testinstance.searchProfileModelEmptyResult
 import com.tokopedia.search.result.presentation.presenter.profile.testinstance.searchProfileModelEmptyResultWithRecommendation
-import com.tokopedia.search.result.shop.presentation.viewmodel.shouldBeInstanceOf
 import com.tokopedia.search.shouldBe
 import com.tokopedia.usecase.UseCase
 import io.mockk.confirmVerified
@@ -24,6 +20,8 @@ class RequestProfileListDataTest: Spek({
     InstantTaskExecutorRuleSpek(this)
 
     Feature("Request Profile List Data Empty Result") {
+
+        
         createTestInstance()
 
         Scenario("No Result Empty Profile") {

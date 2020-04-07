@@ -15,8 +15,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.analytics.debugger.TetraDebugger
-import com.tokopedia.analytics.debugger.TetraDebugger.Companion.instance
+import com.tokopedia.analyticsdebugger.debugger.TetraDebugger
+import com.tokopedia.analyticsdebugger.debugger.TetraDebugger.Companion.instance
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal

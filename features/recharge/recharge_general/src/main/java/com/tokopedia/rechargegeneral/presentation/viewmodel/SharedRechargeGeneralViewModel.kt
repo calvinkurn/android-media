@@ -4,20 +4,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
-import kotlinx.coroutines.CoroutineDispatcher
+import com.tokopedia.rechargegeneral.util.RechargeGeneralDispatchersProvider
 import javax.inject.Inject
 
 /**
  * Created by resakemal on 10/12/19.
  */
-class SharedRechargeGeneralViewModel @Inject constructor(dispatcher: CoroutineDispatcher)
-    : BaseViewModel(dispatcher) {
+class SharedRechargeGeneralViewModel @Inject constructor(dispatcher: RechargeGeneralDispatchersProvider)
+    : BaseViewModel(dispatcher.Main) {
 
-    private val _recommendationItem = MutableLiveData<TopupBillsRecommendation>()
+    private val mutableRecommendationItem = MutableLiveData<TopupBillsRecommendation>()
     val recommendationItem : LiveData<TopupBillsRecommendation>
-        get() = _recommendationItem
+        get() = mutableRecommendationItem
 
     fun setRecommendationItem(recommendation: TopupBillsRecommendation) {
-        _recommendationItem.postValue(recommendation)
+        mutableRecommendationItem.postValue(recommendation)
     }
 }
