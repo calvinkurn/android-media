@@ -91,7 +91,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             if (quantityTextWatcher != null) {
                 etQty?.removeTextChangedListener(quantityTextWatcher)
             }
-            etQty?.setText("${product.quantity!!.orderQuantity}")
+            etQty?.setText("${product.quantity.orderQuantity}")
             quantityTextWatcher = QuantityTextWatcher(QuantityTextWatcher.QuantityTextwatcherListener { quantity ->
                 if (quantity.editable.isNotEmpty()) {
                     var zeroCount = 0
@@ -103,7 +103,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                         }
                     }
                     if (zeroCount == quantity.editable.length) {
-                        product.quantity!!.orderQuantity = 0
+                        product.quantity.orderQuantity = 0
                         validateQuantity()
                         listener.onProductChange(product)
                         return@QuantityTextwatcherListener
@@ -113,7 +113,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                         etQty?.setSelection(etQty?.length() ?: 0)
                     }
                 } else if (TextUtils.isEmpty(etQty?.text)) {
-                    product.quantity!!.orderQuantity = 0
+                    product.quantity.orderQuantity = 0
                     validateQuantity()
                     listener.onProductChange(product)
                     return@QuantityTextwatcherListener
@@ -126,24 +126,24 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                     e.printStackTrace()
                 }
 
-                product.quantity!!.orderQuantity = qty
+                product.quantity.orderQuantity = qty
                 validateQuantity()
                 listener.onProductChange(product)
             })
             etQty?.addTextChangedListener(quantityTextWatcher)
             btnQtyPlus?.setOnClickListener {
-                if (product.quantity!!.orderQuantity < product.quantity!!.maxOrderQuantity) {
-                    product.quantity!!.orderQuantity++
-                    etQty?.setText("${product.quantity!!.orderQuantity}")
+                if (product.quantity.orderQuantity < product.quantity.maxOrderQuantity) {
+                    product.quantity.orderQuantity++
+                    etQty?.setText("${product.quantity.orderQuantity}")
                 }
-                orderSummaryAnalytics.eventEditQuantityIncrease(product.productId.toString(), shop.shopId.toString(), product.quantity!!.orderQuantity.toString())
+                orderSummaryAnalytics.eventEditQuantityIncrease(product.productId.toString(), shop.shopId.toString(), product.quantity.orderQuantity.toString())
             }
             btnQtyMin?.setOnClickListener {
-                if (product.quantity!!.orderQuantity > product.quantity!!.minOrderQuantity) {
-                    product.quantity!!.orderQuantity--
-                    etQty?.setText("${product.quantity!!.orderQuantity}")
+                if (product.quantity.orderQuantity > product.quantity.minOrderQuantity) {
+                    product.quantity.orderQuantity--
+                    etQty?.setText("${product.quantity.orderQuantity}")
                 }
-                orderSummaryAnalytics.eventEditQuantityDecrease(product.productId.toString(), shop.shopId.toString(), product.quantity!!.orderQuantity.toString())
+                orderSummaryAnalytics.eventEditQuantityDecrease(product.productId.toString(), shop.shopId.toString(), product.quantity.orderQuantity.toString())
             }
 
             validateQuantity()
@@ -169,31 +169,29 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     private fun validateQuantity() {
         var error: String? = null
         val element = product.quantity
-        if (element != null) {
-            btnQtyMin?.setImageResource(R.drawable.bg_button_counter_minus_checkout_enabled)
-            btnQtyPlus?.setImageResource(R.drawable.bg_button_counter_plus_checkout_enabled)
+        btnQtyMin?.setImageResource(R.drawable.bg_button_counter_minus_checkout_enabled)
+        btnQtyPlus?.setImageResource(R.drawable.bg_button_counter_plus_checkout_enabled)
 
-            if (element.orderQuantity <= 0 || element.orderQuantity < element.minOrderQuantity) {
-                error = String.format(view.context.getString(R.string.min_order_x), element.minOrderQuantity)
-            } else if (element.orderQuantity > element.maxOrderQuantity) {
-                error = String.format(view.context.getString(R.string.max_order_x), element.maxOrderQuantity)
-            }
-            if (element.orderQuantity <= element.minOrderQuantity) {
-                btnQtyMin?.setImageResource(R.drawable.bg_button_counter_minus_checkout_disabled)
-            }
-            if (element.orderQuantity >= element.maxOrderQuantity) {
-                btnQtyPlus?.setImageResource(R.drawable.bg_button_counter_plus_checkout_disabled)
-            }
+        if (element.orderQuantity <= 0 || element.orderQuantity < element.minOrderQuantity) {
+            error = String.format(view.context.getString(R.string.min_order_x), element.minOrderQuantity)
+        } else if (element.orderQuantity > element.maxOrderQuantity) {
+            error = String.format(view.context.getString(R.string.max_order_x), element.maxOrderQuantity)
+        }
+        if (element.orderQuantity <= element.minOrderQuantity) {
+            btnQtyMin?.setImageResource(R.drawable.bg_button_counter_minus_checkout_disabled)
+        }
+        if (element.orderQuantity >= element.maxOrderQuantity) {
+            btnQtyPlus?.setImageResource(R.drawable.bg_button_counter_plus_checkout_disabled)
+        }
 
-            if (error != null) {
-                element.isStateError = true
-                tvErrorFormValidation?.text = error
-                tvErrorFormValidation?.visibility = View.VISIBLE
-            } else {
-                element.isStateError = false
-                tvErrorFormValidation?.visibility = View.GONE
-                showPrice()
-            }
+        if (error != null) {
+            element.isStateError = true
+            tvErrorFormValidation?.text = error
+            tvErrorFormValidation?.visibility = View.VISIBLE
+        } else {
+            element.isStateError = false
+            tvErrorFormValidation?.visibility = View.GONE
+            showPrice()
         }
     }
 
@@ -201,7 +199,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
         var productPrice = product.productPrice.toLong()
         if (product.wholesalePrice.isNotEmpty()) {
             for (wholesalePrice in product.wholesalePrice) {
-                if (product.quantity!!.orderQuantity >= wholesalePrice.qtyMin) {
+                if (product.quantity.orderQuantity >= wholesalePrice.qtyMin) {
                     productPrice = wholesalePrice.prdPrc.toLong()
                 }
             }

@@ -99,10 +99,10 @@ class PreferenceListBottomSheet(
     }
 
     private fun setupChild(child: View, profileId: Int) {
-        rvPreferenceList = child.rv_preference_list
-        btnAddPreference = child.btn_add_preference
-        progressBar = child.progress_bar
-        globalError = child.global_error
+        rvPreferenceList = child.findViewById(R.id.rv_preference_list)
+        btnAddPreference = child.findViewById(R.id.btn_add_preference)
+        progressBar = child.findViewById(R.id.progress_bar)
+        globalError = child.findViewById(R.id.global_error)
 
         rvPreferenceList?.layoutManager = LinearLayoutManager(child.context, LinearLayoutManager.VERTICAL, false)
         adapter = PreferenceListAdapter(getListener(), profileId)

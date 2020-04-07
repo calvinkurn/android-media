@@ -20,19 +20,21 @@ class ShippingDurationOccBottomSheet : ShippingDurationAdapterListener {
     private lateinit var listener: ShippingDurationOccBottomSheetListener
 
     fun showBottomSheet(fragment: Fragment, list: List<RatesViewModelType>, listener: ShippingDurationOccBottomSheetListener) {
-        fragment.fragmentManager?.let { fm ->
-            this.listener = listener
-            bottomSheetUnify = BottomSheetUnify().apply {
-                isDragable = true
-                isHideable = true
-                setTitle("Pengiriman dan pembayaran")
-                val child = View.inflate(fragment.context, R.layout.bottomsheet_shipping_occ, null)
-                setupChild(child, list)
-                fragment.view?.height?.div(2)?.let { height ->
-                    customPeekHeight = height
+        fragment.context?.let { context ->
+            fragment.fragmentManager?.let { fm ->
+                this.listener = listener
+                bottomSheetUnify = BottomSheetUnify().apply {
+                    isDragable = true
+                    isHideable = true
+                    setTitle(context.getString(R.string.title_bottomsheet_shipment))
+                    val child = View.inflate(context, R.layout.bottomsheet_shipping_occ, null)
+                    setupChild(child, list)
+                    fragment.view?.height?.div(2)?.let { height ->
+                        customPeekHeight = height
+                    }
+                    setChild(child)
+                    show(fm, null)
                 }
-                setChild(child)
-                show(fm, null)
             }
         }
     }
@@ -59,16 +61,10 @@ class ShippingDurationOccBottomSheet : ShippingDurationAdapterListener {
             selectedServiceId = shippingCourierUiModel.serviceData.serviceId
             if (shippingCourierUiModel.productData.error != null && shippingCourierUiModel.productData.error.errorMessage != null && shippingCourierUiModel.productData.error.errorId != null && shippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
                 flagNeedToSetPinpoint = true
-//                shippingCourierUiModel.serviceData.texts.textRangePrice = shippingCourierUiModel.productData.error.errorMessage
             }
         }
-            listener.onDurationChosen(serviceData, selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
+        listener.onDurationChosen(serviceData, selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
         bottomSheetUnify.dismiss()
-//            try {
-//                dismiss()
-//            } catch (e: IllegalStateException) {
-//                e.printStackTrace()
-//            }
     }
 
     override fun isToogleYearEndPromotionOn(): Boolean {

@@ -35,56 +35,73 @@ class OrderPriceSummaryBottomSheet {
     @SuppressLint("SetTextI18n")
     private fun setupView(child: View, orderCost: OrderCost) {
         child.tv_total_product_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalItemPrice, false)
+
+        val tvTotalProductDiscountValue = child.tv_total_product_discount_value
+        val tvTotalProductDiscountLabel = child.tv_total_product_discount_label
         if (orderCost.productDiscountAmount > 0) {
-            child.tv_total_product_discount_value.text = "-${CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.productDiscountAmount, false)}"
-            child.tv_total_product_discount_value.visible()
-            child.tv_total_product_discount_label.visible()
+            tvTotalProductDiscountValue.text = "-${CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.productDiscountAmount, false)}"
+            tvTotalProductDiscountValue.visible()
+            tvTotalProductDiscountLabel.visible()
         } else {
-            child.tv_total_product_discount_value.gone()
-            child.tv_total_product_discount_label.gone()
+            tvTotalProductDiscountValue.gone()
+            tvTotalProductDiscountLabel.gone()
         }
+
+        val tvTotalShippingPriceValue = child.tv_total_shipping_price_value
+        val tvTotalShippingDiscountValue = child.tv_total_shipping_discount_value
+        val tvTotalShippingDiscountLabel = child.tv_total_shipping_discount_label
         if (orderCost.shippingDiscountAmount > 0 && orderCost.shippingDiscountAmount >= orderCost.shippingFee) {
-            child.tv_total_shipping_price_value.setText(R.string.label_free_shipping)
-            child.tv_total_shipping_discount_value.gone()
-            child.tv_total_shipping_discount_label.gone()
+            tvTotalShippingPriceValue.setText(R.string.label_free_shipping)
+            tvTotalShippingDiscountValue.gone()
+            tvTotalShippingDiscountLabel.gone()
         } else {
-            child.tv_total_shipping_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.shippingFee - orderCost.shippingDiscountAmount, false)
+            tvTotalShippingPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.shippingFee - orderCost.shippingDiscountAmount, false)
             if (orderCost.shippingDiscountAmount > 0) {
-                child.tv_total_shipping_discount_value.text = "-${CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.shippingDiscountAmount, false)}"
-                child.tv_total_shipping_discount_value.visible()
-                child.tv_total_shipping_discount_label.visible()
+                tvTotalShippingDiscountValue.text = "-${CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.shippingDiscountAmount, false)}"
+                tvTotalShippingDiscountValue.visible()
+                tvTotalShippingDiscountLabel.visible()
             } else {
-                child.tv_total_shipping_discount_value.gone()
-                child.tv_total_shipping_discount_label.gone()
+                tvTotalShippingDiscountValue.gone()
+                tvTotalShippingDiscountLabel.gone()
             }
         }
+
+        val tvTotalInsurancePriceValue = child.tv_total_insurance_price_value
+        val tvTotalInsurancePriceLabel = child.tv_total_insurance_price_label
         if (orderCost.insuranceFee > 0.0) {
-            child.tv_total_insurance_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.insuranceFee, false)
-            child.tv_total_insurance_price_label.visible()
-            child.tv_total_insurance_price_value.visible()
+            tvTotalInsurancePriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.insuranceFee, false)
+            tvTotalInsurancePriceLabel.visible()
+            tvTotalInsurancePriceValue.visible()
         } else {
-            child.tv_total_insurance_price_label.gone()
-            child.tv_total_insurance_price_value.gone()
+            tvTotalInsurancePriceLabel.gone()
+            tvTotalInsurancePriceValue.gone()
         }
+
+        val tvTotalPaymentFeePriceValue = child.tv_total_payment_fee_price_value
+        val tvTotalPaymentFeePriceLabel = child.tv_total_payment_fee_price_label
         if (orderCost.paymentFee > 0.0) {
-            child.tv_total_payment_fee_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.paymentFee, false)
-            child.tv_total_payment_fee_price_label.visible()
-            child.tv_total_payment_fee_price_value.visible()
+            tvTotalPaymentFeePriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.paymentFee, false)
+            tvTotalPaymentFeePriceLabel.visible()
+            tvTotalPaymentFeePriceValue.visible()
         } else {
-            child.tv_total_payment_fee_price_label.gone()
-            child.tv_total_payment_fee_price_value.gone()
+            tvTotalPaymentFeePriceLabel.gone()
+            tvTotalPaymentFeePriceValue.gone()
         }
+
         child.tv_total_payment_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalPrice, false)
 
+        val tvTotalCashbackValue = child.tv_total_cashback_value
+        val tvTotalCashbackLabel = child.tv_total_cashback_label
+        val divider2 = child.divider2
         if (orderCost.cashbackAmount > 0) {
-            child.tv_total_cashback_value.text = CurrencyFormatUtil.convertPriceValue(orderCost.cashbackAmount.toDouble(), false)
-            child.tv_total_cashback_value.visible()
-            child.tv_total_cashback_label.visible()
-            child.divider2.visible()
+            tvTotalCashbackValue.text = CurrencyFormatUtil.convertPriceValue(orderCost.cashbackAmount.toDouble(), false)
+            tvTotalCashbackValue.visible()
+            tvTotalCashbackLabel.visible()
+            divider2.visible()
         } else {
-            child.tv_total_cashback_value.gone()
-            child.tv_total_cashback_label.gone()
-            child.divider2.gone()
+            tvTotalCashbackValue.gone()
+            tvTotalCashbackLabel.gone()
+            divider2.gone()
         }
     }
 }

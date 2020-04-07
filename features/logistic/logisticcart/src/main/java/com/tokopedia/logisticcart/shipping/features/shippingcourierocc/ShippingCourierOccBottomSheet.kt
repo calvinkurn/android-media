@@ -17,19 +17,21 @@ class ShippingCourierOccBottomSheet : ShippingCourierAdapterListener, ShippingDu
     private lateinit var bottomSheetUnify: BottomSheetUnify
 
     fun showBottomSheet(fragment: Fragment, list: List<RatesViewModelType>, listener: ShippingCourierOccBottomSheetListener) {
-        fragment.fragmentManager?.let { fm ->
-            this.listener = listener
-            bottomSheetUnify = BottomSheetUnify().apply {
-                isDragable = true
-                isHideable = true
-                setTitle("Pengiriman dan pembayaran")
-                val child = View.inflate(fragment.context, R.layout.bottomsheet_shipping_occ, null)
-                setupChild(child, list)
-                fragment.view?.height?.div(2)?.let { height ->
-                    customPeekHeight = height
+        fragment.context?.let { context ->
+            fragment.fragmentManager?.let { fm ->
+                this.listener = listener
+                bottomSheetUnify = BottomSheetUnify().apply {
+                    isDragable = true
+                    isHideable = true
+                    setTitle(context.getString(R.string.title_shipment_courier_bottomsheet_occ))
+                    val child = View.inflate(context, R.layout.bottomsheet_shipping_occ, null)
+                    setupChild(child, list)
+                    fragment.view?.height?.div(2)?.let { height ->
+                        customPeekHeight = height
+                    }
+                    setChild(child)
+                    show(fm, null)
                 }
-                setChild(child)
-                show(fm, null)
             }
         }
     }

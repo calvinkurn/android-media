@@ -129,7 +129,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         orderProduct = product
         if (shouldReloadRates) {
             calculateTotal()
-            if (product.quantity?.isStateError == false) {
+            if (!product.quantity.isStateError) {
                 orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.LOADING)
                 debounce()
             }
@@ -386,7 +386,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                     if (shipping?.serviceErrorMessage.isNullOrEmpty()) {
                                         validateUsePromo()
                                     } else {
-                                        orderTotal.value = orderTotal.value?.copy(buttonState = if (shipping?.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && orderProduct.quantity?.isStateError == false) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
+                                        orderTotal.value = orderTotal.value?.copy(buttonState = if (shipping?.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && !orderProduct.quantity.isStateError) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
                                     }
                                     if (!hasSentViewOspEe) {
                                         orderSummaryAnalytics.eventViewOrderSummaryPage(generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_1, OrderSummaryPageEnhanceECommerce.STEP_1_OPTION))
@@ -422,18 +422,18 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             uniqueId = orderShop.cartResponse.cartString
             addressId = _orderPreference?.preference?.address?.addressId ?: 0
             products = listOf(Product(orderProduct.productId.toLong(), orderProduct.isFreeOngkir))
-            weightInKilograms = orderProduct.quantity!!.orderQuantity * orderProduct.weight / 1000.0
+            weightInKilograms = orderProduct.quantity.orderQuantity * orderProduct.weight / 1000.0
             productInsurance = orderShop.cartResponse.product.productFinsurance
 
             var productPrice = orderProduct.productPrice.toLong()
             if (orderProduct.wholesalePrice.isNotEmpty()) {
                 for (wholesalePrice in orderProduct.wholesalePrice) {
-                    if (orderProduct.quantity!!.orderQuantity >= wholesalePrice.qtyMin) {
+                    if (orderProduct.quantity.orderQuantity >= wholesalePrice.qtyMin) {
                         productPrice = wholesalePrice.prdPrc.toLong()
                     }
                 }
             }
-            orderValue = orderProduct.quantity!!.orderQuantity * productPrice
+            orderValue = orderProduct.quantity.orderQuantity * productPrice
         }
     }
 
@@ -600,7 +600,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             if (shipping1.serviceErrorMessage.isNullOrEmpty()) {
                 validateUsePromo()
             } else {
-                orderTotal.value = orderTotal.value?.copy(buttonState = if (shipping1.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && orderProduct.quantity?.isStateError == false) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
+                orderTotal.value = orderTotal.value?.copy(buttonState = if (shipping1.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && !orderProduct.quantity.isStateError) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
             }
             calculateTotal()
         }
@@ -770,7 +770,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         val op = orderProduct
         val quantity = op.quantity
         val pref = _orderPreference
-        if (quantity != null && pref != null && pref.preference.profileId > 0) {
+        if (pref != null && pref.preference.profileId > 0) {
             val cart = UpdateCartOccCartRequest(
                     orderShop.cartResponse.cartId.toString(),
                     quantity.orderQuantity,
@@ -870,7 +870,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         }
     }
 
-    private fun doCheckout(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (Data) -> Unit, skipCheckIneligiblePromo: Boolean = false) {
+    private fun doCheckout(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (Data) -> Unit) {
         val param = CheckoutOccRequest(Profile(pref.preference.profileId), ParamCart(data = listOf(ParamData(
                 pref.preference.address.addressId,
                 listOf(
@@ -882,7 +882,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                 productData = listOf(
                                         ProductData(
                                                 product.productId,
-                                                product.quantity!!.orderQuantity,
+                                                product.quantity.orderQuantity,
                                                 product.notes
                                         )
                                 ),
@@ -913,7 +913,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     } else if (checkoutOccGqlResponse.response.data.error.message.isNotBlank()) {
                         globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = checkoutOccGqlResponse.response.data.error.message)
                     } else {
-                        globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = "Terjadi kesalahan dengan kode ${errorCode}")
+                        globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = "Terjadi kesalahan dengan kode $errorCode")
                     }
                 }
             } else {
@@ -1061,7 +1061,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         val promoRequest = PromoRequest()
 
         val ordersItem = Order(orderShop.shopId.toLong(), orderShop.cartResponse.cartString, listOf(
-                ProductDetail(orderProduct.productId.toLong(), orderProduct.quantity?.orderQuantity.toZeroIfNull())
+                ProductDetail(orderProduct.productId.toLong(), orderProduct.quantity.orderQuantity)
         ), isChecked = true)
 
         val shipping = _orderPreference?.shipping
@@ -1120,7 +1120,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         ordersItem.shopId = orderShop.shopId
         ordersItem.uniqueId = orderShop.cartResponse.cartString
 
-        ordersItem.productDetails = listOf(ProductDetailsItem(orderProduct.quantity?.orderQuantity.toZeroIfNull(), orderProduct.productId))
+        ordersItem.productDetails = listOf(ProductDetailsItem(orderProduct.quantity.orderQuantity, orderProduct.productId))
 
         val shipping = _orderPreference?.shipping
         if (shipping?.getRealShipperProductId() ?: 0 > 0 && shipping?.getRealShipperId() ?: 0 > 0) {
@@ -1196,7 +1196,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                             override fun onNext(t: ValidateUsePromoRevampUiModel) {
                                 validateUsePromoRevampUiModel = t
                                 updatePromoState(t.promoUiModel)
-                                orderTotal.value = orderTotal.value?.copy(buttonState = if (_orderPreference?.shipping?.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && orderProduct.quantity?.isStateError == false) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
+                                orderTotal.value = orderTotal.value?.copy(buttonState = if (_orderPreference?.shipping?.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && !orderProduct.quantity.isStateError) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
                             }
 
                             override fun onCompleted() {
@@ -1212,7 +1212,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     fun calculateTotal() {
         val quantity = orderProduct.quantity
-        if (quantity != null) {
+        if (quantity.orderQuantity > 0) {
             var productPrice = orderProduct.productPrice.toDouble()
             if (orderProduct.wholesalePrice.isNotEmpty()) {
                 for (wholesalePrice in orderProduct.wholesalePrice) {
@@ -1295,7 +1295,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             setBrand(null)
             setCategory(null)
             setVariant(null)
-            setQuantity(orderProduct.quantity?.orderQuantity ?: orderProduct.minOrderQuantity)
+            setQuantity(orderProduct.quantity.orderQuantity)
             setListName(orderProduct.productResponse.productTrackerData.trackerListName)
             setAttribution(orderProduct.productResponse.productTrackerData.attribution)
             setDiscountedPrice(orderProduct.productResponse.isSlashPrice)
