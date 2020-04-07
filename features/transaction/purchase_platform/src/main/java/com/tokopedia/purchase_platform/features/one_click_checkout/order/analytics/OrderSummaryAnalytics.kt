@@ -1,18 +1,10 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.analytics
 
-import android.content.Context
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.*
 import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics
 
 class OrderSummaryAnalytics : TransactionAnalytics() {
-
-    var irisSession: IrisSession? = null
-
-    fun OrderSummaryAnalytics(context: Context) {
-        irisSession = IrisSession(context)
-    }
 
     fun eventEditQuantityIncrease(productId: String, shopId: String, productQuantity: String) {
         sendEventCategoryActionLabel(

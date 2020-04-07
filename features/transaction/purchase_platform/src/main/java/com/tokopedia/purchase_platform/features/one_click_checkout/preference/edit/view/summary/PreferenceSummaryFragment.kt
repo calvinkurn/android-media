@@ -6,10 +6,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.dialog.DialogUnify
@@ -28,13 +31,46 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.preference.ed
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.payment.PaymentMethodFragment
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.shipping.ShippingDurationFragment
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.fragment_preference_summary.*
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
 class PreferenceSummaryFragment : BaseDaggerFragment() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var preferenceListAnalytics: PreferenceListAnalytics
+
+    private val viewModel: PreferenceSummaryViewModel by lazy {
+        ViewModelProviders.of(this, viewModelFactory)[PreferenceSummaryViewModel::class.java]
+    }
+
+    private var progressDialog: AlertDialog? = null
+
+    private val swipeRefreshLayout by lazy { view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout) }
+    private val mainContent by lazy { view?.findViewById<ConstraintLayout>(R.id.main_content) }
+    private val buttonSavePreference by lazy { view?.findViewById<UnifyButton>(R.id.btn_save) }
+
+    private val tvPreferenceName by lazy { view?.findViewById<Typography>(R.id.tv_preference_name) }
+    private val tvAddressName by lazy { view?.findViewById<Typography>(R.id.tv_address_name) }
+    private val tvAddressReceiver by lazy { view?.findViewById<Typography>(R.id.tv_address_receiver) }
+    private val tvAddressDetail by lazy { view?.findViewById<Typography>(R.id.tv_address_detail) }
+    private val buttonChangeAddress by lazy { view?.findViewById<Typography>(R.id.btn_change_address) }
+
+    private val tvShippingName by lazy { view?.findViewById<Typography>(R.id.tv_shipping_name) }
+    private val tvShippingDuration by lazy { view?.findViewById<Typography>(R.id.tv_shipping_duration) }
+    private val buttonChangeDuration by lazy { view?.findViewById<Typography>(R.id.btn_change_duration) }
+
+    private val ivPayment by lazy { view?.findViewById<ImageView>(R.id.iv_payment) }
+    private val tvPaymentName by lazy { view?.findViewById<Typography>(R.id.tv_payment_name) }
+    private val tvPaymentDetail by lazy { view?.findViewById<Typography>(R.id.tv_payment_detail) }
+    private val buttonChangePayment by lazy { view?.findViewById<Typography>(R.id.btn_change_payment) }
+
+    private val globalError by lazy { view?.findViewById<GlobalError>(R.id.global_error) }
 
     companion object {
 
@@ -48,17 +84,6 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             return preferenceSummaryFragment
         }
     }
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject
-    lateinit var preferenceListAnalytics: PreferenceListAnalytics
-
-    private val viewModel: PreferenceSummaryViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[PreferenceSummaryViewModel::class.java]
-    }
-
-    private var progressDialog: AlertDialog? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_preference_summary, container, false)
@@ -93,22 +118,22 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         viewModel.preference.observe(this, Observer {
             when (it) {
                 is OccState.Success -> {
-                    swipe_refresh_layout.isRefreshing = false
-                    btn_save.isEnabled = true
-                    global_error.gone()
-                    main_content.visible()
+                    swipeRefreshLayout?.isRefreshing = false
+                    buttonSavePreference?.isEnabled = true
+                    globalError?.gone()
+                    mainContent?.visible()
                     setupViews(it.data)
                 }
                 is OccState.Fail -> {
-                    swipe_refresh_layout.isRefreshing = false
-                    btn_save.isEnabled = false
+                    swipeRefreshLayout?.isRefreshing = false
+                    buttonSavePreference?.isEnabled = false
                     if (it.throwable != null) {
                         handleError(it.throwable)
                     }
                 }
                 else -> {
-                    swipe_refresh_layout.isRefreshing = true
-                    btn_save.isEnabled = false
+                    swipeRefreshLayout?.isRefreshing = true
+                    buttonSavePreference?.isEnabled = false
                 }
             }
         })
@@ -157,16 +182,16 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             if (parent is PreferenceEditActivity) {
                 val preferenceIndex = parent.preferenceIndex
                 if (preferenceIndex.isNotEmpty()) {
-                    tv_preference_name.text = preferenceIndex
-                    tv_preference_name.visible()
+                    tvPreferenceName?.text = preferenceIndex
+                    tvPreferenceName?.visible()
                 }
             }
         } else {
-            tv_preference_name.gone()
+            tvPreferenceName?.gone()
         }
 
         val addressModel = data.addressModel
-        tv_address_name.text = addressModel?.addressName ?: ""
+        tvAddressName?.text = addressModel?.addressName ?: ""
         val receiverName = addressModel?.receiverName
         val phone = addressModel?.phone
         var receiverText = ""
@@ -177,26 +202,26 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             }
         }
         if (receiverText.isNotEmpty()) {
-            tv_address_receiver.text = receiverText
-            tv_address_receiver.visible()
+            tvAddressReceiver?.text = receiverText
+            tvAddressReceiver?.visible()
         } else {
-            tv_address_receiver.gone()
+            tvAddressReceiver?.gone()
         }
-        tv_address_detail.text = addressModel?.fullAddress ?: ""
+        tvAddressDetail?.text = addressModel?.fullAddress ?: ""
 
         val shipmentModel = data.shipmentModel
-        tv_shipping_name.text = shipmentModel?.serviceName ?: ""
-        tv_shipping_duration.text = shipmentModel?.serviceDuration ?: ""
+        tvShippingName?.text = shipmentModel?.serviceName ?: ""
+        tvShippingDuration?.text = shipmentModel?.serviceDuration ?: ""
 
         val paymentModel = data.paymentModel
-        ImageHandler.loadImageFitCenter(context, iv_payment, paymentModel?.image)
-        tv_payment_name.text = paymentModel?.gatewayName ?: ""
+        ImageHandler.loadImageFitCenter(context, ivPayment, paymentModel?.image)
+        tvPaymentName?.text = paymentModel?.gatewayName ?: ""
         val description = paymentModel?.description
         if (description != null && description.isNotBlank()) {
-            tv_payment_detail.text = description
-            tv_payment_detail.visible()
+            tvPaymentDetail?.text = description
+            tvPaymentDetail?.visible()
         } else {
-            tv_payment_detail.gone()
+            tvPaymentDetail?.gone()
         }
     }
 
@@ -231,20 +256,20 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     }
 
     private fun showGlobalError(type: Int) {
-        global_error.setType(type)
-        global_error.setActionClickListener {
+        globalError?.setType(type)
+        globalError?.setActionClickListener {
             getPreferenceDetail()
         }
-        main_content.gone()
-        global_error.visible()
+        mainContent?.gone()
+        globalError?.visible()
     }
 
     private fun initViews() {
-        main_content.gone()
-        global_error.gone()
-        swipe_refresh_layout.isRefreshing = true
+        mainContent?.gone()
+        globalError?.gone()
+        swipeRefreshLayout?.isRefreshing = true
 
-        btn_change_address.setOnClickListener {
+        buttonChangeAddress?.setOnClickListener {
             val parent = activity
             if (parent is PreferenceEditActivity) {
                 preferenceListAnalytics.eventClickUbahAddressInPreferenceSettingPage()
@@ -252,7 +277,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             }
         }
 
-        btn_change_duration.setOnClickListener {
+        buttonChangeDuration?.setOnClickListener {
             val parent = activity
             if (parent is PreferenceEditActivity) {
                 preferenceListAnalytics.eventClickUbahShippingInPreferenceSettingPage()
@@ -260,7 +285,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             }
         }
 
-        btn_change_payment.setOnClickListener {
+        buttonChangePayment?.setOnClickListener {
             val parent = activity
             if (parent is PreferenceEditActivity) {
                 preferenceListAnalytics.eventClickUbahPaymentInPreferenceSettingPage()
@@ -268,7 +293,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             }
         }
 
-        btn_save.setOnClickListener {
+        buttonSavePreference?.setOnClickListener {
             if (viewModel.preference.value is OccState.Success) {
                 val parent = activity
                 if (parent is PreferenceEditActivity) {

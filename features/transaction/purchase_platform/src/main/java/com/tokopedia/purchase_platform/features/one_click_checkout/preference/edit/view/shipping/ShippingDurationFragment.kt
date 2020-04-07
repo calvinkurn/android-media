@@ -4,10 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
@@ -21,6 +25,8 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.preference.ed
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.payment.PaymentMethodFragment
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.fragment_shipping_duration.*
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -28,6 +34,27 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 
 class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapter.OnShippingMenuSelected{
+
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var preferenceListAnalytics: PreferenceListAnalytics
+
+    private val viewModel: ShippingDurationViewModel by lazy {
+        ViewModelProviders.of(this, viewModelFactory)[ShippingDurationViewModel::class.java]
+    }
+
+    val adapter = ShippingDurationItemAdapter(this)
+
+    private val swipeRefreshLayout by lazy { view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout) }
+    private val tickerInfo by lazy { view?.findViewById<Ticker>(R.id.ticker_info) }
+    private val shippingDurationList by lazy { view?.findViewById<RecyclerView>(R.id.shipping_duration_rv) }
+    private val buttonSaveDuration by lazy { view?.findViewById<UnifyButton>(R.id.btn_save_address) }
+    private val bottomLayout by lazy { view?.findViewById<FrameLayout>(R.id.bottom_layout_shipping) }
+
+    private val contentLayout by lazy { view?.findViewById<Group>(R.id.content_layout) }
+    private val globalError by lazy { view?.findViewById<GlobalError>(R.id.global_error) }
 
     companion object {
         private const val ARG_IS_EDIT = "is_edit"
@@ -40,17 +67,6 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
             return shippingDurationFragment
         }
     }
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject
-    lateinit var preferenceListAnalytics: PreferenceListAnalytics
-
-    private val viewModel: ShippingDurationViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[ShippingDurationViewModel::class.java]
-    }
-
-    val adapter = ShippingDurationItemAdapter(this)
 
     override fun getScreenName(): String = ""
 
@@ -78,9 +94,9 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
         viewModel.shippingDuration.observe(this, Observer {
             when (it) {
                 is OccState.Success -> {
-                    swipe_refresh_layout.isRefreshing = false
-                    global_error.gone()
-                    content_layout.visible()
+                    swipeRefreshLayout?.isRefreshing = false
+                    globalError?.gone()
+                    contentLayout?.visible()
 
                     btn_save_duration.setOnClickListener {
                         val selectedId = viewModel.selectedId
@@ -95,12 +111,12 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
 
                 is OccState.Fail -> {
                     if (!it.isConsumed) {
-                        swipe_refresh_layout.isRefreshing = false
+                        swipeRefreshLayout?.isRefreshing = false
                         if (it.throwable != null) {
                             handleError(it.throwable)
                         }
                     }
-                } else -> swipe_refresh_layout.isRefreshing = true
+                } else -> swipeRefreshLayout?.isRefreshing = true
             }
         })
     }
@@ -117,9 +133,9 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
         initViewModel()
         checkEntryPoint()
 
-        ticker_info.setTextDescription(getString(R.string.ticker_label_text))
-        shipping_duration_rv.adapter = adapter
-        shipping_duration_rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        tickerInfo?.setTextDescription(getString(R.string.ticker_label_text))
+        shippingDurationList?.adapter = adapter
+        shippingDurationList?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
     private fun checkEntryPoint(){
@@ -211,12 +227,12 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
     }
 
     private fun showGlobalError(type: Int) {
-        global_error.setType(type)
-        global_error.setActionClickListener {
+        globalError?.setType(type)
+        globalError?.setActionClickListener {
             viewModel.getShippingDuration()
         }
-        global_error.visible()
-        content_layout.gone()
+        globalError?.visible()
+        contentLayout?.gone()
     }
 
 }
