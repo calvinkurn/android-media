@@ -33,11 +33,12 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapter.OnShippingMenuSelected{
+class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapter.OnShippingMenuSelected {
 
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var preferenceListAnalytics: PreferenceListAnalytics
 
@@ -47,14 +48,14 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
 
     val adapter = ShippingDurationItemAdapter(this)
 
-    private val swipeRefreshLayout by lazy { view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout) }
-    private val tickerInfo by lazy { view?.findViewById<Ticker>(R.id.ticker_info) }
-    private val shippingDurationList by lazy { view?.findViewById<RecyclerView>(R.id.shipping_duration_rv) }
-    private val buttonSaveDuration by lazy { view?.findViewById<UnifyButton>(R.id.btn_save_address) }
-    private val bottomLayout by lazy { view?.findViewById<FrameLayout>(R.id.bottom_layout_shipping) }
+    private var swipeRefreshLayout: SwipeRefreshLayout? = null
+    private var tickerInfo: Ticker? = null
+    private var shippingDurationList: RecyclerView? = null
+    private var buttonSaveDuration: UnifyButton? = null
+    private var bottomLayout: FrameLayout? = null
 
-    private val contentLayout by lazy { view?.findViewById<Group>(R.id.content_layout) }
-    private val globalError by lazy { view?.findViewById<GlobalError>(R.id.global_error) }
+    private var contentLayout: Group? = null
+    private var globalError: GlobalError? = null
 
     companion object {
         private const val ARG_IS_EDIT = "is_edit"
@@ -86,7 +87,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
     private fun initViewModel() {
         val parent = activity
         if (parent is PreferenceEditActivity) {
-            if(parent.shippingId > 0) {
+            if (parent.shippingId > 0) {
                 viewModel.selectedId = parent.shippingId
             }
         }
@@ -100,7 +101,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
 
                     btn_save_duration.setOnClickListener {
                         val selectedId = viewModel.selectedId
-                        if (selectedId > 0 ) {
+                        if (selectedId > 0) {
                             preferenceListAnalytics.eventClickPilihMetodePembayaranInDuration(selectedId.toString())
                             goToNextStep()
                         }
@@ -116,7 +117,8 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
                             handleError(it.throwable)
                         }
                     }
-                } else -> swipeRefreshLayout?.isRefreshing = true
+                }
+                else -> swipeRefreshLayout?.isRefreshing = true
             }
         })
     }
@@ -130,6 +132,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initHeader()
+        initViews()
         initViewModel()
         checkEntryPoint()
 
@@ -138,10 +141,20 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
         shippingDurationList?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
-    private fun checkEntryPoint(){
+    private fun initViews() {
+        swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
+        tickerInfo = view?.findViewById(R.id.ticker_info)
+        shippingDurationList = view?.findViewById(R.id.shipping_duration_rv)
+        buttonSaveDuration = view?.findViewById(R.id.btn_save_address)
+        bottomLayout = view?.findViewById(R.id.bottom_layout_shipping)
+        contentLayout = view?.findViewById(R.id.content_layout)
+        globalError = view?.findViewById(R.id.global_error)
+    }
+
+    private fun checkEntryPoint() {
         val parent = activity
-        if(parent is PreferenceEditActivity) {
-            if(parent.listShopShipment.isNullOrEmpty() && parent.shippingParam == null) {
+        if (parent is PreferenceEditActivity) {
+            if (parent.listShopShipment.isNullOrEmpty() && parent.shippingParam == null) {
                 viewModel.getShippingDuration()
             } else {
                 hitRates()
@@ -149,9 +162,9 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
         }
     }
 
-    private fun hitRates(){
+    private fun hitRates() {
         val parent = activity
-        if(parent is PreferenceEditActivity) {
+        if (parent is PreferenceEditActivity) {
             viewModel.getRates(parent.listShopShipment, parent.shippingParam)
         }
     }
@@ -160,7 +173,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
         val parent = activity
         if (parent is PreferenceEditActivity) {
             val selectedId = viewModel.selectedId
-            if(selectedId > 0) {
+            if (selectedId > 0) {
                 parent.shippingId = selectedId
                 if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
                     parent.goBack()

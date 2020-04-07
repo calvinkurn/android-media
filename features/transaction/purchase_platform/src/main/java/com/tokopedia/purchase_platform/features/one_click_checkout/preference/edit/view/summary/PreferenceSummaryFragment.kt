@@ -42,6 +42,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var preferenceListAnalytics: PreferenceListAnalytics
 
@@ -51,26 +52,26 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
 
     private var progressDialog: AlertDialog? = null
 
-    private val swipeRefreshLayout by lazy { view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout) }
-    private val mainContent by lazy { view?.findViewById<ConstraintLayout>(R.id.main_content) }
-    private val buttonSavePreference by lazy { view?.findViewById<UnifyButton>(R.id.btn_save) }
+    private var swipeRefreshLayout: SwipeRefreshLayout? = null
+    private var mainContent: ConstraintLayout? = null
+    private var buttonSavePreference: UnifyButton? = null
 
-    private val tvPreferenceName by lazy { view?.findViewById<Typography>(R.id.tv_preference_name) }
-    private val tvAddressName by lazy { view?.findViewById<Typography>(R.id.tv_address_name) }
-    private val tvAddressReceiver by lazy { view?.findViewById<Typography>(R.id.tv_address_receiver) }
-    private val tvAddressDetail by lazy { view?.findViewById<Typography>(R.id.tv_address_detail) }
-    private val buttonChangeAddress by lazy { view?.findViewById<Typography>(R.id.btn_change_address) }
+    private var tvPreferenceName: Typography? = null
+    private var tvAddressName: Typography? = null
+    private var tvAddressReceiver: Typography? = null
+    private var tvAddressDetail: Typography? = null
+    private var buttonChangeAddress: Typography? = null
 
-    private val tvShippingName by lazy { view?.findViewById<Typography>(R.id.tv_shipping_name) }
-    private val tvShippingDuration by lazy { view?.findViewById<Typography>(R.id.tv_shipping_duration) }
-    private val buttonChangeDuration by lazy { view?.findViewById<Typography>(R.id.btn_change_duration) }
+    private var tvShippingName: Typography? = null
+    private var tvShippingDuration: Typography? = null
+    private var buttonChangeDuration: Typography? = null
 
-    private val ivPayment by lazy { view?.findViewById<ImageView>(R.id.iv_payment) }
-    private val tvPaymentName by lazy { view?.findViewById<Typography>(R.id.tv_payment_name) }
-    private val tvPaymentDetail by lazy { view?.findViewById<Typography>(R.id.tv_payment_detail) }
-    private val buttonChangePayment by lazy { view?.findViewById<Typography>(R.id.btn_change_payment) }
+    private var ivPayment: ImageView? = null
+    private var tvPaymentName: Typography? = null
+    private var tvPaymentDetail: Typography? = null
+    private var buttonChangePayment: Typography? = null
 
-    private val globalError by lazy { view?.findViewById<GlobalError>(R.id.global_error) }
+    private var globalError: GlobalError? = null
 
     companion object {
 
@@ -265,6 +266,27 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     }
 
     private fun initViews() {
+        swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
+        mainContent = view?.findViewById(R.id.main_content)
+        buttonSavePreference = view?.findViewById(R.id.btn_save)
+
+        tvPreferenceName = view?.findViewById(R.id.tv_preference_name)
+        tvAddressName = view?.findViewById(R.id.tv_address_name)
+        tvAddressReceiver = view?.findViewById(R.id.tv_address_receiver)
+        tvAddressDetail = view?.findViewById(R.id.tv_address_detail)
+        buttonChangeAddress = view?.findViewById(R.id.btn_change_address)
+
+        tvShippingName = view?.findViewById(R.id.tv_shipping_name)
+        tvShippingDuration = view?.findViewById(R.id.tv_shipping_duration)
+        buttonChangeDuration = view?.findViewById(R.id.btn_change_duration)
+
+        ivPayment = view?.findViewById(R.id.iv_payment)
+        tvPaymentName = view?.findViewById(R.id.tv_payment_name)
+        tvPaymentDetail = view?.findViewById(R.id.tv_payment_detail)
+        buttonChangePayment = view?.findViewById(R.id.btn_change_payment)
+
+        globalError = view?.findViewById(R.id.global_error)
+
         mainContent?.gone()
         globalError?.gone()
         swipeRefreshLayout?.isRefreshing = true
@@ -313,7 +335,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             parent.hideAddButton()
             val profileId = parent.profileId
             if (arguments?.getBoolean(ARG_IS_EDIT) == true && profileId > -1) {
-                if(parent.should_show_delete_button) {
+                if (parent.should_show_delete_button) {
                     parent.showDeleteButton()
                     parent.setDeleteButtonOnClickListener {
                         preferenceListAnalytics.eventClickTrashBinInEditPreference()

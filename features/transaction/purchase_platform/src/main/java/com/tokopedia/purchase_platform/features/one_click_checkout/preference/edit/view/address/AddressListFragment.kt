@@ -58,16 +58,16 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
     private lateinit var searchAddress: SearchInputView
     private val adapter = AddressListItemAdapter(this)
 
-    private val addressList by lazy { view?.findViewById<RecyclerView>(R.id.address_list_rv) }
-    private val swipeRefreshLayout by lazy { view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout) }
-    private val searchInputView by lazy { view?.findViewById<SearchInputView>(R.id.search_input_view) }
-    private val buttonSaveAddress by lazy { view?.findViewById<UnifyButton>(R.id.btn_save_address) }
-    private val bottomLayout by lazy { view?.findViewById<FrameLayout>(R.id.bottom_layout_address) }
+    private var addressList: RecyclerView? = null
+    private var swipeRefreshLayout: SwipeRefreshLayout? = null
+    private var searchInputView: SearchInputView? = null
+    private var buttonSaveAddress: UnifyButton? = null
+    private var bottomLayout: FrameLayout? = null
 
-    private val emptyStateLayout by lazy { view?.findViewById<LinearLayout>(R.id.empty_state_order_list) }
+    private var emptyStateLayout: LinearLayout? = null
 
-    private val textSearchError by lazy { view?.findViewById<TextView>(R.id.text_search_error) }
-    private val globalErrorLayout by lazy { view?.findViewById<GlobalError>(R.id.layout_global_error) }
+    private var textSearchError: TextView? = null
+    private var globalErrorLayout: GlobalError? = null
 
     companion object {
         const val REQUEST_FIRST_CREATE = 1
@@ -139,8 +139,8 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initHeader()
-        initViewModel()
         initView()
+        initViewModel()
         initSearch()
         address_list_rv.adapter = adapter
         address_list_rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -189,6 +189,15 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
     }
 
     private fun initView() {
+        addressList = view?.findViewById(R.id.address_list_rv)
+        swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
+        searchInputView = view?.findViewById(R.id.search_input_view)
+        buttonSaveAddress = view?.findViewById(R.id.btn_save_address)
+        bottomLayout = view?.findViewById(R.id.bottom_layout_address)
+        emptyStateLayout = view?.findViewById(R.id.empty_state_order_list)
+        textSearchError = view?.findViewById(R.id.text_search_error)
+        globalErrorLayout = view?.findViewById(R.id.layout_global_error)
+
         ImageHandler.LoadImage(iv_empty_state, EMPTY_STATE_PICT_URL)
     }
 
