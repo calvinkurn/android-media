@@ -41,7 +41,6 @@ import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
-import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -226,13 +225,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         context?.let { IrisSession(it).getSessionId() } ?: ""
     }
 
-    //Performance Monitoring
-    var performanceMonitoringP1: PerformanceMonitoring? = null
-    var performanceMonitoringP2: PerformanceMonitoring? = null
-    var performanceMonitoringP2General: PerformanceMonitoring? = null
-    var performanceMonitoringP2Login: PerformanceMonitoring? = null
-    var performanceMonitoringFull: PerformanceMonitoring? = null
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dynamic_product_detail_fragment, container, false)
     }
@@ -287,7 +279,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
         activity?.run {
             remoteConfig = FirebaseRemoteConfigImpl(this)
-            initPerformanceMonitoring()
         }
         context?.let {
             pdpHashMapUtil = DynamicProductDetailHashMap(it, mapOf(ProductDetailConstant.PRODUCT_SNAPSHOT to ProductSnapshotDataModel()))
@@ -1092,7 +1083,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 logException(it)
                 renderPageError(it)
             })
-            performanceMonitoringP1?.stopTrace()
+            (activity as? ProductDetailActivity)?.stopMonitoringP1()
         }
     }
 
@@ -1103,7 +1094,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             actionButtonView.setTopAdsButton(hasTopAds())
             pdpHashMapUtil?.updateDataP2Login(it)
             dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap, ProductDetailConstant.PAYLOAD_WISHLIST)
-            performanceMonitoringP2Login?.stopTrace()
+            (activity as? ProductDetailActivity)?.stopMonitoringP2Login()
         }
     }
 
@@ -1112,16 +1103,16 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             onSuccessGetDataP2Shop(it)
 
             if (!viewModel.isUserSessionActive) {
-                performanceMonitoringFull?.stopTrace()
+                (activity as? ProductDetailActivity)?.stopMonitoringFull()
             }
-            performanceMonitoringP2?.stopTrace()
+            (activity as? ProductDetailActivity)?.stopMonitoringP2()
         }
     }
 
     private fun observeP2General() {
         viewLifecycleOwner.observe(viewModel.p2General) {
             onSuccessGetDataP2General(it)
-            performanceMonitoringP2General?.stopTrace()
+            (activity as? ProductDetailActivity)?.stopMonitoringP2General()
         }
     }
 
@@ -1129,7 +1120,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         observe(viewModel.productInfoP3resp) {
             trackProductView(viewModel.tradeInParams.isEligible == 1)
             onSuccessGetDataP3Resp(it)
-            performanceMonitoringFull?.stopTrace()
+            (activity as? ProductDetailActivity)?.stopMonitoringFull()
         }
     }
 
@@ -1848,17 +1839,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
             pdpInstallmentBottomSheet.arguments = bundleData
             pdpInstallmentBottomSheet.show(childFragmentManager, "FT_TAG")
-        }
-    }
-
-    private fun initPerformanceMonitoring() {
-        performanceMonitoringP1 = PerformanceMonitoring.start(ProductDetailConstant.PDP_P1_TRACE)
-        performanceMonitoringP2 = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_TRACE)
-        performanceMonitoringP2General = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_GENERAL_TRACE)
-
-        if (viewModel.isUserSessionActive) {
-            performanceMonitoringP2Login = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_LOGIN_TRACE)
-            performanceMonitoringFull = PerformanceMonitoring.start(ProductDetailConstant.PDP_P3_TRACE)
         }
     }
 
