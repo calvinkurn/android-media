@@ -17,14 +17,14 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils.getStatusBarHeight
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
-import com.tokopedia.play.R
+import com.tokopedia.play.*
 import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
@@ -115,6 +115,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     @Inject
     lateinit var trackingQueue: TrackingQueue
 
+    private var playFpmVideoStart: PerformanceMonitoring? = null
+    private var playFpmLoadDataFromNetwork: PerformanceMonitoring? = null
+
     private val offset24 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5) }
     private val offset16 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) }
     private val offset12 by lazy { resources.getDimensionPixelOffset(com.tokopedia.play.R.dimen.play_offset_12) }
@@ -171,7 +174,12 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        playFpmVideoStart?.startTrace(PLAY_TRACE_VIDEO_START)
+        playFpmLoadDataFromNetwork?.startTrace(PLAY_TRACE_DATA_FROM_NETWORK)
+
         super.onCreate(savedInstanceState)
+
         playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
         viewModel = ViewModelProvider(this, viewModelFactory).get(PlayInteractionViewModel::class.java)
         channelId  = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
@@ -274,7 +282,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun observeVideoProperty() {
         playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
-            if (it.state == PlayVideoState.Playing) PlayAnalytics.clickPlayVideo(channelId, playViewModel.channelType)
+            if (it.state == PlayVideoState.Playing) {
+                playFpmVideoStart?.stopTrace()
+                PlayAnalytics.clickPlayVideo(channelId, playViewModel.channelType)
+            }
             if (it.state == PlayVideoState.Ended) showInteractionIfWatchMode()
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
@@ -290,9 +301,14 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
             when(it) {
                 is Success -> {
+                    playFpmLoadDataFromNetwork?.putIncrementMetric(PLAY_TRACE_DATA_FROM_NETWORK_SUCCESS, 1)
                     setChannelTitle(it.data.title)
                 }
+                is Fail -> {
+                    playFpmLoadDataFromNetwork?.putIncrementMetric(PLAY_TRACE_DATA_FROM_NETWORK_FAIL, 1)
+                }
             }
+            playFpmLoadDataFromNetwork?.stopTrace()
         })
     }
 

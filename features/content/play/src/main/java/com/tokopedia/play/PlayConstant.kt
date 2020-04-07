@@ -30,3 +30,8 @@ const val ERR_TOO_MANY_REQUEST = "TOP12"
 const val ERR_STATE_SOCKET = "Socket Connection"
 const val ERR_STATE_VIDEO = "Video Player"
 const val ERR_STATE_GLOBAL = "Global Error"
+
+const val PLAY_TRACE_VIDEO_START = ""
+const val PLAY_TRACE_DATA_FROM_NETWORK = ""
+const val PLAY_TRACE_DATA_FROM_NETWORK_SUCCESS = ""
+const val PLAY_TRACE_DATA_FROM_NETWORK_FAIL = ""
