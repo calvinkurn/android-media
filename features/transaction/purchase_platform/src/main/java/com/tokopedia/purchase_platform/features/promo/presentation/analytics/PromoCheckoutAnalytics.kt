@@ -39,7 +39,7 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
 
         if (eventNamePage != null && eventCategoryPage != null) {
             sendEventCategoryActionLabel(
-                    event,
+                    eventNamePage,
                     eventCategoryPage,
                     eventAction,
                     eventLabel
