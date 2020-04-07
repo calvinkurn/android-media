@@ -101,7 +101,7 @@ class MixLeftTrackerTest : Spek({
                             "currencyCode","IDR",
                             "click", DataLayer.mapOf(
                                 "actionField", DataLayer.mapOf(
-                                "list", "/ - p5 - dynamic channel left carousel - Testing Lefy - topads"
+                                "list", "/ - p1 - dynamic channel left carousel - Testing Left - topads"
                             ),
                         "products", DataLayer.listOf(
                             DataLayer.mapOf(
@@ -111,11 +111,11 @@ class MixLeftTrackerTest : Spek({
                                     "brand", "none / other",
                                     "variant","none / other",
                                     "category", "none / other",
-                                    "position", "0",
+                                    "position", "1",
                                     "dimension83", "bebas ongkir",
                                     "dimension84", "21370",
-                                    "list", "/ - p5 - dynamic channel left carousel - Testing Left - topads",
-                                    "dimension40", "/ - p5 - dynamic channel left carousel - Testing Left - topads"
+                                    "list", "/ - p1 - dynamic channel left carousel - Testing Left - topads",
+                                    "dimension40", "/ - p1 - dynamic channel left carousel - Testing Left - topads"
                             )
                         )
                 )
@@ -123,7 +123,7 @@ class MixLeftTrackerTest : Spek({
                 )
             }
             Then("must true") {
-                val result = areEqualKeyValues(testTracker.getTracker(), HomePageTrackingV2.MixLeft.getMixLeftProductClick(channel, channel.grids.first(), positionOnWidgetHome))
+                val result = areEqualKeyValues(testTracker.getTracker(), HomePageTrackingV2.MixLeft.getMixLeftProductClick(channel, channel.grids.first(), 0))
                 Assert.assertEquals(result, true)
             }
         }
@@ -133,54 +133,55 @@ class MixLeftTrackerTest : Spek({
         Scenario("View on product"){
             Given("the real tracker data"){
                 every { testTracker.getTracker() } returns DataLayer.mapOf(
-                "event", "productView",
-                "eventCategory", "homepage",
-                "eventAction", "impression on product dynamic channel left carousel",
-                "eventLabel", "",
-                "ecommerce", DataLayer.mapOf(
-                    "currencyCode","IDR",
-                    "impressions", DataLayer.listOf(
-                        DataLayer.mapOf(
-                                "name", "Realme 5 3/64 Ram 3Gb Rom 64Gb Garansi resmi",
-                                "id","580739285",
-                                "price", "1799000",
-                                "brand", "none / other",
-                                "variant","none / other",
-                                "category", "none / other",
-                                "position", "0",
-                                "dimension83", "bebas ongkir",
-                                "dimension84", "21370",
-                                "list", "/ - p5 - dynamic channel left carousel - Testing Left - topads",
-                                "dimension40", "/ - p5 - dynamic channel left carousel - Testing Left - topads"
-                        ),
-                        DataLayer.mapOf(
-                                "name", "Monster Mass Iron Labs 90 Capsules IronLabs MonsterMass 90Caps 90 Caps",
-                                "id","183822484",
-                                "price", "200000",
-                                "brand", "none / other",
-                                "variant","none / other",
-                                "category", "none / other",
-                                "position", "1",
-                                "dimension83", "bebas ongkir",
-                                "dimension84", "21370",
-                                "list", "/ - p5 - dynamic channel left carousel - Testing Left",
-                                "dimension40", "/ - p5 - dynamic channel left carousel - Testing Left"
-                        ),
-                        DataLayer.mapOf(
-                                "name", "Samsung Galaxy A30S [4GB/64GB] - Garansi Resmi Indonesia",
-                                "id", "558833181",
-                                "price", "2715000",
-                                "brand", "none / other",
-                                "variant","none / other",
-                                "category", "none / other",
-                                "position", "2",
-                                "dimension83", "bebas ongkir",
-                                "dimension84", "21370",
-                                "list", "/ - p5 - dynamic channel left carousel - Testing Left",
-                                "dimension40", "/ - p5 - dynamic channel left carousel - Testing Left"
-                        )
+                        "event", "productView",
+                        "eventCategory", "homepage",
+                        "eventAction", "impression on product dynamic channel left carousel",
+                        "eventLabel", channel.header.name,
+                        "channelId", channel.id,
+                        "ecommerce", DataLayer.mapOf(
+                            "currencyCode","IDR",
+                            "impressions", DataLayer.listOf(
+                                DataLayer.mapOf(
+                                        "name", "Realme 5 3/64 Ram 3Gb Rom 64Gb Garansi resmi",
+                                        "id","580739285",
+                                        "price", "1799000",
+                                        "brand", "none / other",
+                                        "variant","none / other",
+                                        "category", "none / other",
+                                        "position", "1",
+                                        "dimension83", "bebas ongkir",
+                                        "dimension84", "21370",
+                                        "list", "/ - p1 - dynamic channel left carousel - Testing Left - topads",
+                                        "dimension40", "/ - p1 - dynamic channel left carousel - Testing Left - topads"
+                                ),
+                                DataLayer.mapOf(
+                                        "name", "Monster Mass Iron Labs 90 Capsules IronLabs MonsterMass 90Caps 90 Caps",
+                                        "id","183822484",
+                                        "price", "200000",
+                                        "brand", "none / other",
+                                        "variant","none / other",
+                                        "category", "none / other",
+                                        "position", "2",
+                                        "dimension83", "bebas ongkir",
+                                        "dimension84", "21370",
+                                        "list", "/ - p1 - dynamic channel left carousel - Testing Left",
+                                        "dimension40", "/ - p1 - dynamic channel left carousel - Testing Left"
+                                ),
+                                DataLayer.mapOf(
+                                        "name", "Samsung Galaxy A30S [4GB/64GB] - Garansi Resmi Indonesia",
+                                        "id", "558833181",
+                                        "price", "2715000",
+                                        "brand", "none / other",
+                                        "variant","none / other",
+                                        "category", "none / other",
+                                        "position", "3",
+                                        "dimension83", "bebas ongkir",
+                                        "dimension84", "21370",
+                                        "list", "/ - p1 - dynamic channel left carousel - Testing Left",
+                                        "dimension40", "/ - p1 - dynamic channel left carousel - Testing Left"
+                                )
+                            )
                     )
-                )
                 )
             }
             Then("must true") {
