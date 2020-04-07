@@ -125,7 +125,7 @@ class DynamicProductDetailViewModelTest {
             userSessionInterface.shopId
         } returns shopId
 
-        val isShopOwner = viewModel.isShopOwner(shopId.toInt())
+        val isShopOwner = viewModel.isShopOwner()
 
         Assert.assertTrue(isShopOwner)
     }
@@ -138,7 +138,7 @@ class DynamicProductDetailViewModelTest {
             userSessionInterface.shopId
         } returns anotherShopId
 
-        val isShopOwner = viewModel.isShopOwner(shopId.toInt())
+        val isShopOwner = viewModel.isShopOwner()
 
         Assert.assertFalse(isShopOwner)
     }

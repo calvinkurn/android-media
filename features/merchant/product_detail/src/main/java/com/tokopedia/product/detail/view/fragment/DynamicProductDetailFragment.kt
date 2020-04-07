@@ -128,7 +128,6 @@ import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.variant_common.model.VariantCategory
@@ -754,11 +753,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     /**
      * ProductMerchantVoucherViewHolder
      */
-    override fun isOwner(): Boolean {
-        return viewModel.getDynamicProductInfoP1?.basic?.getShopId()?.let {
-            viewModel.isShopOwner(it)
-        } ?: false
-    }
+    override fun isOwner(): Boolean = viewModel.isShopOwner()
+
 
     override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int, dataTrackDataModel: ComponentTrackDataModel) {
         activity?.let {
@@ -1023,7 +1019,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
         productId = updatedDynamicProductInfo?.basic?.productID
         viewModel.getDynamicProductInfoP1 = updatedDynamicProductInfo
-        pdpHashMapUtil?.updateDataP1(updatedDynamicProductInfo, viewModel.isShopOwner(viewModel.getDynamicProductInfoP1?.basic?.getShopId() ?: 0))
+        pdpHashMapUtil?.updateDataP1(updatedDynamicProductInfo)
         updateButtonAfterClickVariant(indexOfSelectedVariant)
 
             renderFullfillment()
@@ -1241,7 +1237,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             updateProductId()
             et_search.hint = String.format(getString(R.string.pdp_search_hint), productInfo.basic.category.name)
-            pdpHashMapUtil?.updateDataP1(productInfo, viewModel.isShopOwner(productInfo.basic.getShopId()))
+            pdpHashMapUtil?.updateDataP1(productInfo)
             viewModel.listOfParentMedia = productInfo.data.media.toMutableList()
             shouldShowCodP1 = productInfo.data.isCOD
             actionButtonView.setButtonP1(productInfo.data.preOrder, productInfo.basic.isLeasing)
@@ -1765,7 +1761,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             menuShare.isEnabled = true
 
             viewModel.getDynamicProductInfoP1?.run {
-                val isOwned = viewModel.isShopOwner(basic.getShopId())
+                val isOwned = viewModel.isShopOwner()
                 val isSellerApp = GlobalConfig.isSellerApp()
 
                 val isValidCustomer = !isOwned && !isSellerApp
