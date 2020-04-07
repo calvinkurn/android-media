@@ -148,5 +148,7 @@ interface TopChatContract {
         )
 
         fun updateMinReplyTime(chatRoom: ChatroomViewModel)
+
+        fun getOrderProgress(messageId: String)
     }
 }

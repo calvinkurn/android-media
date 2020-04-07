@@ -185,6 +185,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     ::onSuccessGetExistingChatFirstTime
             )
             presenter.connectWebSocket(messageId)
+            presenter.getOrderProgress(messageId)
         } else {
             presenter.getMessageId(
                     toUserId,
