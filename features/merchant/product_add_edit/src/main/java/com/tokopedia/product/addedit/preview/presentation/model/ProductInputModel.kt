@@ -16,5 +16,6 @@ data class ProductInputModel (
         var descriptionInputModel: DescriptionInputModel = DescriptionInputModel(),
         var shipmentInputModel: ShipmentInputModel = ShipmentInputModel(),
         var variantInputModel: ProductVariantInputModel = ProductVariantInputModel(),
-        var productId: Long = 0L
+        var productId: Long = 0L,
+        var completionPercent: Int = 0
 ): Parcelable

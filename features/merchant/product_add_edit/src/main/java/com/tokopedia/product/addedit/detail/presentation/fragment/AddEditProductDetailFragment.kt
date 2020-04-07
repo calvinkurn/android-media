@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -73,6 +74,7 @@ import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
 import com.tokopedia.product_photo_adapter.ProductPhotoViewHolder
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
@@ -650,7 +652,8 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
 
     fun saveProductDraft(isUploading: Boolean) {
         inputAllDataInInputDraftModel()
-        viewModel.saveProductDraft(productInputModel, 0, isUploading)
+        viewModel.saveProductDraft(productInputModel, productInputModel.productId, isUploading)
+        Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
     }
 
     fun getAllProductsDraft() {

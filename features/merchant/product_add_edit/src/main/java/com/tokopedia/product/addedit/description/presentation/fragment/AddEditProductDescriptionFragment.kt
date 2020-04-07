@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.google.gson.reflect.TypeToken
@@ -234,7 +235,8 @@ class AddEditProductDescriptionFragment:
 
     fun saveProductDraft(isUploading: Boolean) {
         inputAllDataInInputDraftModel()
-        productInputModel?.let { descriptionViewModel.saveProductDraft(it, 0, isUploading) }
+        productInputModel?.let { descriptionViewModel.saveProductDraft(it, it.productId, isUploading) }
+        Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
     }
 
     private fun inputAllDataInInputDraftModel() {
