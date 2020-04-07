@@ -1,7 +1,7 @@
 package com.tokopedia.product.addedit.draft.domain.usecase
 
-import com.tokopedia.product.addedit.common.constant.AddEditProductDraftConstant
-import com.tokopedia.product.addedit.draft.data.db.repository.AddEditProductDraftRepository
+import com.tokopedia.product.manage.common.draft.constant.AddEditProductDraftConstant
+import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepository
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
