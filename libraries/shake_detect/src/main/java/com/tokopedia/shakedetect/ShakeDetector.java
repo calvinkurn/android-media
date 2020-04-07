@@ -124,7 +124,6 @@ public class ShakeDetector implements SensorEventListener {
     // actual magnitude, which would be computed using (expensive) Math.sqrt().
     final double magnitudeSquared = ax * ax + ay * ay + az * az;
     return magnitudeSquared > accelerationThreshold * accelerationThreshold;
-    Log.d("HomePerfTest ShakeDetector" , "isAccelerating End");
   }
 
   /** Sets the acceleration threshold sensitivity. */
