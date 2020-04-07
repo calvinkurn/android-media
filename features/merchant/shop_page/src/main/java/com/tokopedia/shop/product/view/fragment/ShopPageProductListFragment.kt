@@ -974,7 +974,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun showErrorToasterWithRetry(error: Throwable) {
-        stopPerformanceMonitoring()
         hideLoading()
         updateStateScrollListener()
         if (shopProductAdapter.shopProductViewModelList.size > 0) {
@@ -983,6 +982,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             shopProductAdapter.clearAllElements()
             onGetListErrorWithEmptyData(error)
         }
+        stopPerformanceMonitoring()
     }
 
     private fun onErrorGetMerchantVoucher() {
